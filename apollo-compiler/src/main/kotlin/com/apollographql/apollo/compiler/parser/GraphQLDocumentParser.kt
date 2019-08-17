@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler.parser
 
+import com.apollographql.apollo.compiler.formatPackageName
 import com.apollographql.apollo.compiler.ir.*
 import com.apollographql.apollo.compiler.parser.GraphQLDocumentSourceBuilder.graphQLDocumentSource
 import com.apollographql.apollo.compiler.parser.antlr.GraphQLLexer
@@ -26,10 +27,16 @@ class GraphQLDocumentParser(val schema: Schema) {
       )
     }
 
+    operations.checkMultipleOperationDefinitions()
+    fragments.checkMultipleFragmentDefinitions()
+    fragments.forEach { it.checkReferencedFragments(fragments) }
+
     val typeDeclarations = usedTypes.usedTypeDeclarations()
 
     return CodeGenerationIR(
         operations = operations.map { operation ->
+          operation.checkReferencedFragments(fragments)
+
           val operationReferencedFragments = fragments.filter { it.fragmentName in operation.fragmentsReferenced }
           val transientReferencedFragmentNames = operationReferencedFragments.flatMap { it.fragmentsReferenced }
           val transientReferencedFragments = fragments.filter { it.fragmentName in transientReferencedFragmentNames }
@@ -59,7 +66,7 @@ class GraphQLDocumentParser(val schema: Schema) {
       removeErrorListeners()
       addErrorListener(object : BaseErrorListener() {
         override fun syntaxError(recognizer: Recognizer<*, *>?, offendingSymbol: Any?, line: Int, position: Int, msg: String?,
-            e: RecognitionException?) {
+                                 e: RecognitionException?) {
           throw GraphQLDocumentParseException(
               graphQLFilePath = absolutePath,
               document = document,
@@ -104,16 +111,7 @@ class GraphQLDocumentParser(val schema: Schema) {
   }
 
   private fun GraphQLParser.DocumentContext.parse(graphQLFilePath: String): DocumentParseResult {
-    val fragments = definition().mapNotNull { it.fragmentDefinition() }.map { ctx ->
-      if (ctx.fragmentKeyword().text == "fragment") {
-        ctx.parse(schema)
-      } else {
-        throw ParseException(
-            message = "Unsupported token `${ctx.fragmentKeyword().text}`",
-            token = ctx.fragmentKeyword().start
-        )
-      }
-    }
+    val fragments = definition().mapNotNull { it.fragmentDefinition()?.parse(graphQLFilePath) }
     val operations = definition().mapNotNull { ctx ->
       ctx.operationDefinition()?.parse(graphQLFilePath)
     }
@@ -129,10 +127,10 @@ class GraphQLDocumentParser(val schema: Schema) {
     val operationName = NAME().text
     val variables = variableDefinitions().parse()
     val schemaType = operationType().schemaType()
-    val fields = selectionSet().parse(schemaType).also { fields ->
+    val fields = selectionSet().parse(schemaType = schemaType, variables = variables.result).also { fields ->
       if (fields.result.isEmpty()) {
         throw ParseException(
-            message = "GraphQL operation `$operationName` of type `$operationType` must have a selection of sub-fields",
+            message = "Operation `$operationName` of type `$operationType` must have a selection of sub-fields",
             token = operationType().start
         )
       }
@@ -159,7 +157,7 @@ class GraphQLDocumentParser(val schema: Schema) {
       "mutation" -> schema.mutationType
       "subscription" -> schema.subscriptionType
       else -> throw ParseException(
-          message = "Unknown GraphQL operation type `$text`",
+          message = "Unknown operation type `$text`",
           token = start
       )
     }
@@ -177,23 +175,29 @@ class GraphQLDocumentParser(val schema: Schema) {
         ?: ParseResult(result = emptyList(), usedTypes = emptySet())
   }
 
-  // TODO validate variable type
   private fun GraphQLParser.VariableDefinitionContext.parse(): ParseResult<Variable> {
     val name = variable().NAME().text
     val type = type().text
+    val schemaType = schema[type.replace("!", "").removeSurrounding(prefix = "[", suffix = "]")] ?: throw ParseException(
+        message = "Unknown variable type `$type`",
+        token = type().start
+    )
     return ParseResult(
         result = Variable(name = name, type = type),
-        usedTypes = setOf(type.replace("[", "").replace("]", "").replace("!", ""))
+        usedTypes = setOf(schemaType.name)
     )
   }
 
-  private fun GraphQLParser.SelectionSetContext?.parse(schemaType: Schema.Type): ParseResult<List<Field>> {
+  private fun GraphQLParser.SelectionSetContext?.parse(
+      schemaType: Schema.Type,
+      variables: List<Variable>
+  ): ParseResult<List<Field>> {
     val hasInlineFragments = this?.selection()?.find { it.inlineFragment() != null } != null
     val hasFragments = this?.selection()?.find { it.fragmentSpread() != null } != null
     val hasFields = this?.selection()?.find { it.field() != null } != null
     return this
         ?.selection()
-        ?.mapNotNull { ctx -> ctx.field()?.parse(schemaType) }
+        ?.mapNotNull { ctx -> ctx.field()?.parse(schemaType = schemaType, variables = variables) }
         ?.flatten()
         ?.let { (fields, usedTypes) ->
           val withTypenameField = (hasFields || hasInlineFragments || hasFragments) && !fields.contains(typenameField)
@@ -205,7 +209,7 @@ class GraphQLDocumentParser(val schema: Schema) {
         ?: ParseResult(result = emptyList(), usedTypes = emptySet())
   }
 
-  private fun GraphQLParser.FieldContext.parse(schemaType: Schema.Type): ParseResult<Field> {
+  private fun GraphQLParser.FieldContext.parse(schemaType: Schema.Type, variables: List<Variable>): ParseResult<Field> {
     val responseName = fieldName().alias()?.NAME(0)?.text ?: fieldName().NAME().text
     val fieldName = fieldName().alias()?.NAME(1)?.text ?: fieldName().NAME().text
     if (fieldName == typenameField.fieldName) {
@@ -216,16 +220,16 @@ class GraphQLDocumentParser(val schema: Schema) {
         token = fieldName().alias()?.NAME(1)?.symbol ?: fieldName().NAME().symbol
     )
     val schemaFieldType = schema[schemaField.type.rawType.name] ?: throw ParseException(
-        message = "Unknown GraphQL type `${schemaField.type.rawType.name}`",
+        message = "Unknown type `${schemaField.type.rawType.name}`",
         token = fieldName().alias()?.NAME(1)?.symbol ?: fieldName().NAME().symbol
     )
-    val arguments = arguments().parse(schemaField)
-    val fields = selectionSet().parse(schemaFieldType)
+    val arguments = arguments().parse(schemaField = schemaField, variables = variables)
+    val fields = selectionSet().parse(schemaType = schemaFieldType, variables = variables)
     val fragmentSpreads = selectionSet()?.selection()?.mapNotNull { ctx ->
       ctx.fragmentSpread()?.fragmentName()?.NAME()?.text
     } ?: emptyList()
     val inlineFragments = selectionSet()?.selection()?.mapNotNull { ctx ->
-      ctx.inlineFragment()?.parse(selectionSet())
+      ctx.inlineFragment()?.parse(parentSelectionSet = selectionSet(), variables = variables)
     }?.flatten() ?: ParseResult(result = emptyList())
 
     val mergeInlineFragmentFields = inlineFragments.result
@@ -276,25 +280,38 @@ class GraphQLDocumentParser(val schema: Schema) {
     } ?: emptyList()
   }
 
-  private fun GraphQLParser.ArgumentsContext?.parse(schemaField: Schema.Field): ParseResult<List<Argument>> {
+  private fun GraphQLParser.ArgumentsContext?.parse(schemaField: Schema.Field, variables: List<Variable>): ParseResult<List<Argument>> {
     return this
         ?.argument()
-        ?.map { ctx -> ctx.parse(schemaField) }
+        ?.map { ctx -> ctx.parse(schemaField = schemaField, variables = variables) }
         ?.flatten()
         ?: ParseResult(result = emptyList(), usedTypes = emptySet())
   }
 
-  private fun GraphQLParser.ArgumentContext.parse(schemaField: Schema.Field): ParseResult<Argument> {
+  private fun GraphQLParser.ArgumentContext.parse(schemaField: Schema.Field, variables: List<Variable>): ParseResult<Argument> {
     val name = NAME().text
     val schemaArgument = schemaField.args.find { it.name == name } ?: throw ParseException(
         message = "Unknown argument `$name` on field `${schemaField.name}`",
         token = NAME().symbol
     )
+
     val type = schemaArgument.type.asIrType()
-    val value = valueOrVariable().variable()?.let {
+    val value = valueOrVariable().variable()?.let { ctx ->
+      val variableDefinition = variables.find { variable -> variable.name == ctx.NAME().text } ?: throw ParseException(
+          message = "Undefined variable `${ctx.NAME().text}`",
+          token = ctx.start
+      )
+
+      if (variableDefinition.type != type && variableDefinition.type.removeSuffix("!") != type) {
+        throw ParseException(
+            message = "Variable `${ctx.NAME().text}` of type `${variableDefinition.type}` used in position expecting type `$type`",
+            token = ctx.start
+        )
+      }
+
       mapOf(
           "kind" to "Variable",
-          "variableName" to it.NAME().text
+          "variableName" to ctx.NAME().text
       )
     } ?: valueOrVariable().value().parse()
     return ParseResult(
@@ -307,10 +324,13 @@ class GraphQLDocumentParser(val schema: Schema) {
     )
   }
 
-  private fun GraphQLParser.InlineFragmentContext.parse(parentSelectionSet: GraphQLParser.SelectionSetContext): ParseResult<InlineFragment> {
+  private fun GraphQLParser.InlineFragmentContext.parse(
+      parentSelectionSet: GraphQLParser.SelectionSetContext,
+      variables: List<Variable>
+  ): ParseResult<InlineFragment> {
     val typeCondition = typeCondition().typeName().NAME().text
     val schemaType = schema[typeCondition] ?: throw ParseException(
-        message = "Can't resolve inline fragment on `$typeCondition}`",
+        message = "Unknown type`$typeCondition}`",
         token = typeCondition().typeName().NAME().symbol
     )
 
@@ -320,8 +340,8 @@ class GraphQLDocumentParser(val schema: Schema) {
       else -> listOf(typeCondition)
     }.distinct()
 
-    val fields = parentSelectionSet.parse(schemaType).plus(
-        selectionSet().parse(schemaType)
+    val fields = parentSelectionSet.parse(schemaType = schemaType, variables = variables).plus(
+        selectionSet().parse(schemaType = schemaType, variables = variables)
     ) { left, right -> left.union(right) }
     if (fields.result.isEmpty()) {
       throw ParseException(
@@ -345,18 +365,20 @@ class GraphQLDocumentParser(val schema: Schema) {
     )
   }
 
-  private fun GraphQLParser.FragmentDefinitionContext.parse(schema: Schema): ParseResult<Fragment> {
-    val fragmentName = fragmentName().text
-    if (fragmentName == "fragment") {
+  private fun GraphQLParser.FragmentDefinitionContext.parse(graphQLFilePath: String): ParseResult<Fragment> {
+    val fragmentKeyword = fragmentKeyword().text
+    if (fragmentKeyword != "fragment") {
       throw ParseException(
-          message = "Unsupported token `${fragmentName().text}`",
-          token = fragmentName().start
+          message = "Unsupported token `$fragmentKeyword`",
+          token = fragmentKeyword().start
       )
     }
 
+    val fragmentName = fragmentName().NAME().text
+
     val typeCondition = typeCondition().typeName().NAME().text
     val schemaType = schema[typeCondition] ?: throw ParseException(
-        message = "Unknown GraphQL type `$typeCondition`",
+        message = "Unknown type `$typeCondition`",
         token = typeCondition().typeName().NAME().symbol
     )
 
@@ -366,11 +388,11 @@ class GraphQLDocumentParser(val schema: Schema) {
       else -> listOf(typeCondition)
     }.distinct()
 
-    val fields = selectionSet().parse(schemaType)
+    val fields = selectionSet().parse(schemaType = schemaType, variables = emptyList())
     if (fields.result.isEmpty()) {
       throw ParseException(
           message = "Fragment `$fragmentName` must have a selection of sub-fields",
-          token = fragmentName().start
+          token = fragmentName().NAME().symbol
       )
     }
     val fragmentSpreads = selectionSet()?.selection()?.mapNotNull { selection ->
@@ -378,7 +400,7 @@ class GraphQLDocumentParser(val schema: Schema) {
     } ?: emptyList()
 
     val inlineFragments = selectionSet()?.selection()?.mapNotNull { ctx ->
-      ctx.inlineFragment()?.parse(selectionSet())
+      ctx.inlineFragment()?.parse(parentSelectionSet = selectionSet(), variables = emptyList())
     }?.flatten() ?: ParseResult(result = emptyList())
 
     val mergeInlineFragmentFields = inlineFragments.result
@@ -398,7 +420,8 @@ class GraphQLDocumentParser(val schema: Schema) {
             fields = fields.result.mergeFields(other = mergeInlineFragmentFields, parseContext = this),
             fragmentSpreads = fragmentSpreads.union(mergeInlineFragmentSpreadFragments).toList(),
             inlineFragments = inlineFragments.result.filter { it.typeCondition != typeCondition },
-            fragmentsReferenced = fields.result.referencedFragments()
+            fragmentsReferenced = fields.result.referencedFragments(),
+            filePath = graphQLFilePath
         ),
         usedTypes = setOf(typeCondition)
             .union(fields.usedTypes)
@@ -614,6 +637,38 @@ class GraphQLDocumentParser(val schema: Schema) {
 
     return copy(fragmentSpreads = (fragmentSpreads ?: emptyList()).union(other.fragmentSpreads ?: emptyList()).toList())
   }
+
+  private fun List<Operation>.checkMultipleOperationDefinitions() {
+    groupBy { it.filePath.formatPackageName(dropLast = true) + it.operationName }
+        .values
+        .find { it.size > 1 }
+        ?.last()
+        ?.run {
+          throw GraphQLParseException("There can be only one operation named `$operationName`\n$filePath")
+        }
+  }
+
+  private fun List<Fragment>.checkMultipleFragmentDefinitions() {
+    groupBy { it.fragmentName }
+        .values
+        .find { it.size > 1 }
+        ?.last()
+        ?.run { throw GraphQLParseException("There can be only one fragment named `$fragmentName`\n$filePath") }
+  }
+
+  private fun Operation.checkReferencedFragments(fragments: List<Fragment>) {
+    fragmentsReferenced.forEach { fragmentName ->
+      fragments.find { fragment -> fragment.fragmentName == fragmentName }
+          ?: throw GraphQLParseException("Undefined fragment `$fragmentName`\n$filePath")
+    }
+  }
+
+  private fun Fragment.checkReferencedFragments(fragments: List<Fragment>) {
+    fragmentsReferenced.forEach { fragmentName ->
+      fragments.find { fragment -> fragment.fragmentName == fragmentName }
+          ?: throw GraphQLParseException("Undefined fragment `$fragmentName`\n$filePath")
+    }
+  }
 }
 
 private data class DocumentParseResult(
@@ -633,7 +688,7 @@ private data class ParseResult<T>(
 }
 
 
-private class ParseException(message: String, val line: Int, val position: Int) : RuntimeException(message) {
+class ParseException(message: String, val line: Int, val position: Int) : RuntimeException(message) {
   companion object {
     operator fun invoke(message: String, token: Token) = ParseException(
         message = message,
@@ -643,7 +698,11 @@ private class ParseException(message: String, val line: Int, val position: Int) 
   }
 }
 
-private class GraphQLDocumentParseException(
+class GraphQLParseException(message: String) : RuntimeException(message) {
+  override fun fillInStackTrace(): Throwable = this
+}
+
+class GraphQLDocumentParseException(
     graphQLFilePath: String,
     document: String,
     parseException: ParseException
