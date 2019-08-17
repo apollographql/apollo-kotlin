@@ -5,20 +5,34 @@ apply plugin: 'java-gradle-plugin'
 sourceSets.main.java.srcDirs = []
 sourceSets.main.groovy.srcDirs = ["src/main/java", "src/main/groovy"]
 
+configurations {
+  fixtureClasspath
+}
+
 dependencies {
   compileOnly gradleApi()
+  compileOnly dep.androidPlugin
 
   implementation localGroovy()
   implementation project(':apollo-compiler')
   implementation dep.gradleNodePlugin
-  implementation dep.androidPlugin
   implementation dep.moshi
 
+  testImplementation dep.androidPlugin
   testImplementation dep.junit
   testImplementation(dep.spock) {
     exclude module: 'groovy-all'
   }
+  fixtureClasspath dep.androidPlugin
 }
+
+// Inspired by: https://github.com/square/sqldelight/blob/83145b28cbdd949e98e87819299638074bd21147/sqldelight-gradle-plugin/build.gradle#L18
+// Append any extra dependencies to the test fixtures via a custom configuration classpath. This
+// allows us to apply additional plugins in a fixture while still leveraging dependency resolution
+// and de-duplication semantics.
+tasks.getByName('pluginUnderTestMetadata').
+        getPluginClasspath().
+        from(configurations.fixtureClasspath)
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
 apply from: rootProject.file('gradle/bintray.gradle')
