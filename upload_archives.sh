@@ -7,4 +7,3 @@
 ./gradlew clean :apollo-http-cache:bintrayUpload
 ./gradlew clean :apollo-runtime:bintrayUpload
 ./gradlew clean :apollo-rx2-support:bintrayUpload
-./gradlew clean :apollo-rx-support:bintrayUpload
