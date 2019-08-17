@@ -88,6 +88,10 @@ class ApolloPlugin : Plugin<Project> {
           generateClassesTask.dependsOn(task)
         }
       }
+      else -> {
+        // InstantAppExtension or somthing else we don't support yet
+        throw IllegalArgumentException("${androidExtension.javaClass.name} is not supported at the moment")
+      }
     }
   }
 
