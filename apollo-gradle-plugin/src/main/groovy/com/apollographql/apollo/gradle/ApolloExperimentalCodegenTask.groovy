@@ -8,6 +8,7 @@ import com.apollographql.apollo.compiler.parser.GraphQLDocumentParser
 import com.apollographql.apollo.compiler.parser.Schema
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.*
 
@@ -20,7 +21,7 @@ class ApolloExperimentalCodegenTask extends SourceTask {
   @Input @Optional Property<String> schemaFilePath = project.objects.property(String.class)
   @Input @Optional Property<String> outputPackageName = project.objects.property(String.class)
   @OutputDirectory DirectoryProperty outputDir = project.objects.directoryProperty()
-  @Input Property<Map> customTypeMapping = project.objects.property(Map.class)
+  @Input MapProperty<String, String> customTypeMapping = project.objects.mapProperty(String.class, String.class)
   @Optional @Input Property<String> nullableValueType = project.objects.property(String.class)
   @Input Property<Boolean> useSemanticNaming = project.objects.property(Boolean.class)
   @Input Property<Boolean> generateModelBuilder = project.objects.property(Boolean.class)
