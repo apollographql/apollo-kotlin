@@ -1,8 +1,8 @@
 package com.apollographql.apollo.gradle.unit
 
 import com.apollographql.apollo.gradle.ApolloCodegenInstallTask
-import com.apollographql.apollo.gradle.ApolloPlugin
 import com.apollographql.apollo.gradle.ApolloPluginTestHelper
+import com.apollographql.apollo.gradle.TaskConfigurator
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
@@ -16,8 +16,8 @@ class ApolloIRGenTaskSpec extends Specification {
     ApolloPluginTestHelper.applyApolloPlugin(project)
     project.evaluate()
 
-    def debugTask = project.tasks.getByName(String.format(ApolloPlugin.APOLLO_CODEGEN_GENERATE_TASK_NAME, "Debug"))
-    def releaseTask = project.tasks.getByName(String.format(ApolloPlugin.APOLLO_CODEGEN_GENERATE_TASK_NAME, "Release"))
+    def debugTask = project.tasks.getByName(String.format(TaskConfigurator.APOLLO_CODEGEN_GENERATE_TASK_NAME, "Debug"))
+    def releaseTask = project.tasks.getByName(String.format(TaskConfigurator.APOLLO_CODEGEN_GENERATE_TASK_NAME, "Release"))
 
     then:
     debugTask.dependsOn.contains(ApolloCodegenInstallTask.NAME)
@@ -33,10 +33,10 @@ class ApolloIRGenTaskSpec extends Specification {
     ApolloPluginTestHelper.applyApolloPlugin(project)
     project.evaluate()
 
-    def generateApolloIR = project.tasks.getByName(String.format(ApolloPlugin.APOLLO_CODEGEN_GENERATE_TASK_NAME, ""))
+    def generateApolloIR = project.tasks.getByName(String.format(TaskConfigurator.APOLLO_CODEGEN_GENERATE_TASK_NAME, ""))
 
     then:
-    generateApolloIR.dependsOn.contains(project.tasks.getByName(String.format(ApolloPlugin.APOLLO_CODEGEN_GENERATE_TASK_NAME, "Debug")))
-    generateApolloIR.dependsOn.contains(project.tasks.getByName(String.format(ApolloPlugin.APOLLO_CODEGEN_GENERATE_TASK_NAME, "Release")))
+    generateApolloIR.dependsOn.contains(project.tasks.getByName(String.format(TaskConfigurator.APOLLO_CODEGEN_GENERATE_TASK_NAME, "Debug")))
+    generateApolloIR.dependsOn.contains(project.tasks.getByName(String.format(TaskConfigurator.APOLLO_CODEGEN_GENERATE_TASK_NAME, "Release")))
   }
 }
