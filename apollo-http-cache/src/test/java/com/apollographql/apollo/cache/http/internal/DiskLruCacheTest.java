@@ -44,7 +44,9 @@ import static com.apollographql.apollo.cache.http.internal.DiskLruCache.VERSION_
 import static org.junit.Assert.fail;
 
 /**
- * Copied from OkHttp 3.14.2: https://github.com/square/okhttp/blob/b8b6ee831c65208940c741f8e091ff02425566d5/okhttp-tests/src/test/java/okhttp3/internal/cache/DiskLruCacheTest.java
+ * Copied from OkHttp 3.14.2:
+ * https://github.com/square/okhttp/blob/b8b6ee831c65208940c741f8e091ff02425566d5/okhttp-tests
+ * /src/test/java/okhttp3/internal/cache/DiskLruCacheTest.java
  */
 public final class DiskLruCacheTest {
   @Rule public final TemporaryFolder tempDir = new TemporaryFolder();
@@ -1286,7 +1288,7 @@ public final class DiskLruCacheTest {
     assertThat(iterator.hasNext()).isFalse();
   }
 
-  @Test public void isClosed_uninitializedCache() throws Exception {
+  @Test public void isClosedUninitializedCache() throws Exception {
     // Create an uninitialized cache.
     cache = new DiskLruCache(fileSystem, cacheDir, appVersion, 2, Integer.MAX_VALUE, executor);
     toClose.add(cache);
@@ -1677,7 +1679,7 @@ public final class DiskLruCacheTest {
   private List<String> readJournalLines() throws Exception {
     List<String> result = new ArrayList<>();
     BufferedSource source = Okio.buffer(fileSystem.source(journalFile));
-    for (String line; (line = source.readUtf8Line()) != null; ) {
+    for (String line; (line = source.readUtf8Line()) != null;) {
       result.add(line);
     }
     source.close();

@@ -26,7 +26,9 @@ import okio.Sink;
 import okio.Source;
 
 /**
- * Copied from OkHttp 3.14.2: https://github.com/square/okhttp/blob/b8b6ee831c65208940c741f8e091ff02425566d5/okhttp-tests/src/test/java/okhttp3/internal/io/FaultyFileSystem.java
+ * Copied from OkHttp 3.14.2:
+ * ttps://github.com/square/okhttp/blob/b8b6ee831c65208940c741f8e091ff02425566d5/okhttp-tests
+ * /src/test/java/okhttp3/internal/io/FaultyFileSystem.java
  */
 public final class FaultyFileSystem implements FileSystem {
   private final FileSystem delegate;
@@ -100,7 +102,7 @@ public final class FaultyFileSystem implements FileSystem {
   private class FaultySink extends ForwardingSink {
     private final File file;
 
-    public FaultySink(Sink delegate, File file) {
+    FaultySink(Sink delegate, File file) {
       super(delegate);
       this.file = file;
     }
