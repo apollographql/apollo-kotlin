@@ -41,8 +41,4 @@ echo ${YELLOW}Deploying Rx2 Support ...${CLEAR}
 ./gradlew clean :apollo-rx2-support:bintrayUpload
 echo ${YELLOW}Deploying Rx2 Support - ${GREEN}Done!${CLEAR}
 
-echo ${YELLOW}Deploying Rx Support ...${CLEAR}
-./gradlew clean :apollo-rx-support:bintrayUpload
-echo ${YELLOW}Deploying Rx Support - ${GREEN}Done!${CLEAR}
-
 echo ${GREEN}ALL DONE!${CLEAR}

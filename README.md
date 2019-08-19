@@ -436,7 +436,7 @@ Apollo types can be converted to RxJava1 & RxJava2 `Observable` *types* using wr
 
 Conversion is done according to the following table:
 
-| Apollo type | RxJava1 / RxJava2 type|
+| Apollo type |  RxJava2 type|
 | :--- | :--- |
 | `ApolloCall<T>` | `Observable<Response<T>>` |
 | `ApolloSubscriptionCall<T>` | `Observable<Response<T>>` |
@@ -447,12 +447,6 @@ Conversion is done according to the following table:
 #### Including in your project
 
 Add one of the following `dependencies`:
-
-[ ![apollo-rx-support](https://img.shields.io/bintray/v/apollographql/android/apollo-rx-support.svg?label=apollo-rx-support) ](https://bintray.com/apollographql/android/apollo-rx-support/_latestVersion)
-```gradle
-// RxJava1 support
-implementation 'com.apollographql.apollo:apollo-rx-support:x.y.z'
-```
 
 [ ![apollo-rx2-support](https://img.shields.io/bintray/v/apollographql/android/apollo-rx2-support.svg?label=apollo-rx2-support) ](https://bintray.com/apollographql/android/apollo-rx2-support/_latestVersion)
 ```gradle
