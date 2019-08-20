@@ -5,6 +5,7 @@
 //
 package com.example.arguments_simple;
 
+import com.apollographql.apollo.api.FragmentResponseFieldMapper;
 import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.InputFieldMarshaller;
 import com.apollographql.apollo.api.InputFieldWriter;
@@ -19,6 +20,7 @@ import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.api.internal.Utils;
+import com.example.arguments_simple.fragment.HeroDetails;
 import com.example.arguments_simple.type.Episode;
 import java.io.IOException;
 import java.lang.Object;
@@ -33,12 +35,27 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, TestQuery.Variables> {
-  public static final String OPERATION_ID = "418ccff4835004e308b902b0231bebd109b6668198cf55d241556a9988bb4f5c";
+  public static final String OPERATION_ID = "770443359d50b897cb4272dfc7a948e64dd7cb9cc81065dde284045cddad7fc1";
 
-  public static final String QUERY_DOCUMENT = "query TestQuery($episode: Episode, $IncludeName: Boolean!) {\n"
+  public static final String QUERY_DOCUMENT = "query TestQuery($episode: Episode, $IncludeName: Boolean!, $friendsCount: Int!) {\n"
       + "  hero(episode: $episode) {\n"
       + "    __typename\n"
       + "    name @include(if: $IncludeName)\n"
+      + "    ...HeroDetails\n"
+      + "  }\n"
+      + "}\n"
+      + "fragment HeroDetails on Character {\n"
+      + "  __typename\n"
+      + "  friendsConnection(first: $friendsCount) {\n"
+      + "    __typename\n"
+      + "    totalCount\n"
+      + "    edges {\n"
+      + "      __typename\n"
+      + "      node {\n"
+      + "        __typename\n"
+      + "        name @include(if: $IncludeName)\n"
+      + "      }\n"
+      + "    }\n"
       + "  }\n"
       + "}";
 
@@ -51,9 +68,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   private final TestQuery.Variables variables;
 
-  public TestQuery(@NotNull Input<Episode> episode, boolean includeName) {
+  public TestQuery(@NotNull Input<Episode> episode, boolean includeName, int friendsCount) {
     Utils.checkNotNull(episode, "episode == null");
-    variables = new TestQuery.Variables(episode, includeName);
+    variables = new TestQuery.Variables(episode, includeName, friendsCount);
   }
 
   @Override
@@ -95,6 +112,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private boolean includeName;
 
+    private int friendsCount;
+
     Builder() {
     }
 
@@ -108,13 +127,18 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this;
     }
 
+    public Builder friendsCount(int friendsCount) {
+      this.friendsCount = friendsCount;
+      return this;
+    }
+
     public Builder episodeInput(@NotNull Input<Episode> episode) {
       this.episode = Utils.checkNotNull(episode, "episode == null");
       return this;
     }
 
     public TestQuery build() {
-      return new TestQuery(episode, includeName);
+      return new TestQuery(episode, includeName, friendsCount);
     }
   }
 
@@ -123,15 +147,19 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private final boolean includeName;
 
+    private final int friendsCount;
+
     private final transient Map<String, Object> valueMap = new LinkedHashMap<>();
 
-    Variables(Input<Episode> episode, boolean includeName) {
+    Variables(Input<Episode> episode, boolean includeName, int friendsCount) {
       this.episode = episode;
       this.includeName = includeName;
+      this.friendsCount = friendsCount;
       if (episode.defined) {
         this.valueMap.put("episode", episode.value);
       }
       this.valueMap.put("IncludeName", includeName);
+      this.valueMap.put("friendsCount", friendsCount);
     }
 
     public Input<Episode> episode() {
@@ -140,6 +168,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public boolean includeName() {
       return includeName;
+    }
+
+    public int friendsCount() {
+      return friendsCount;
     }
 
     @Override
@@ -156,6 +188,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
             writer.writeString("episode", episode.value != null ? episode.value.rawValue() : null);
           }
           writer.writeBoolean("includeName", includeName);
+          writer.writeInt("friendsCount", friendsCount);
         }
       };
     }
@@ -250,12 +283,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static class Hero {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forString("name", "name", null, true, Arrays.<ResponseField.Condition>asList(ResponseField.Condition.booleanCondition("IncludeName", false)))
+      ResponseField.forString("name", "name", null, true, Arrays.<ResponseField.Condition>asList(ResponseField.Condition.booleanCondition("IncludeName", false))),
+      ResponseField.forFragment("__typename", "__typename", Arrays.asList("Human",
+      "Droid"))
     };
 
     final @NotNull String __typename;
 
     final Optional<String> name;
+
+    private final @NotNull Fragments fragments;
 
     private transient volatile String $toString;
 
@@ -263,9 +300,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Hero(@NotNull String __typename, @Nullable String name) {
+    public Hero(@NotNull String __typename, @Nullable String name, @NotNull Fragments fragments) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.name = Optional.fromNullable(name);
+      this.fragments = Utils.checkNotNull(fragments, "fragments == null");
     }
 
     public @NotNull String __typename() {
@@ -279,6 +317,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.name;
     }
 
+    public @NotNull Fragments fragments() {
+      return this.fragments;
+    }
+
     @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
@@ -286,6 +328,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], name.isPresent() ? name.get() : null);
+          fragments.marshaller().marshal(writer);
         }
       };
     }
@@ -295,7 +338,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if ($toString == null) {
         $toString = "Hero{"
           + "__typename=" + __typename + ", "
-          + "name=" + name
+          + "name=" + name + ", "
+          + "fragments=" + fragments
           + "}";
       }
       return $toString;
@@ -309,7 +353,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (o instanceof Hero) {
         Hero that = (Hero) o;
         return this.__typename.equals(that.__typename)
-         && this.name.equals(that.name);
+         && this.name.equals(that.name)
+         && this.fragments.equals(that.fragments);
       }
       return false;
     }
@@ -322,18 +367,102 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         h ^= __typename.hashCode();
         h *= 1000003;
         h ^= name.hashCode();
+        h *= 1000003;
+        h ^= fragments.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
     }
 
+    public static class Fragments {
+      final @NotNull HeroDetails heroDetails;
+
+      private transient volatile String $toString;
+
+      private transient volatile int $hashCode;
+
+      private transient volatile boolean $hashCodeMemoized;
+
+      public Fragments(@NotNull HeroDetails heroDetails) {
+        this.heroDetails = Utils.checkNotNull(heroDetails, "heroDetails == null");
+      }
+
+      public @NotNull HeroDetails heroDetails() {
+        return this.heroDetails;
+      }
+
+      public ResponseFieldMarshaller marshaller() {
+        return new ResponseFieldMarshaller() {
+          @Override
+          public void marshal(ResponseWriter writer) {
+            final HeroDetails $heroDetails = heroDetails;
+            if ($heroDetails != null) {
+              $heroDetails.marshaller().marshal(writer);
+            }
+          }
+        };
+      }
+
+      @Override
+      public String toString() {
+        if ($toString == null) {
+          $toString = "Fragments{"
+            + "heroDetails=" + heroDetails
+            + "}";
+        }
+        return $toString;
+      }
+
+      @Override
+      public boolean equals(Object o) {
+        if (o == this) {
+          return true;
+        }
+        if (o instanceof Fragments) {
+          Fragments that = (Fragments) o;
+          return this.heroDetails.equals(that.heroDetails);
+        }
+        return false;
+      }
+
+      @Override
+      public int hashCode() {
+        if (!$hashCodeMemoized) {
+          int h = 1;
+          h *= 1000003;
+          h ^= heroDetails.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
+        }
+        return $hashCode;
+      }
+
+      public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
+        final HeroDetails.Mapper heroDetailsFieldMapper = new HeroDetails.Mapper();
+
+        @Override
+        public @NotNull Fragments map(ResponseReader reader, @NotNull String conditionalType) {
+          HeroDetails heroDetails = heroDetailsFieldMapper.map(reader);
+          return new Fragments(Utils.checkNotNull(heroDetails, "heroDetails == null"));
+        }
+      }
+    }
+
     public static final class Mapper implements ResponseFieldMapper<Hero> {
+      final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
+
       @Override
       public Hero map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String name = reader.readString($responseFields[1]);
-        return new Hero(__typename, name);
+        final Fragments fragments = reader.readConditional($responseFields[2], new ResponseReader.ConditionalTypeReader<Fragments>() {
+          @Override
+          public Fragments read(String conditionalType, ResponseReader reader) {
+            return fragmentsFieldMapper.map(reader, conditionalType);
+          }
+        });
+        return new Hero(__typename, name, fragments);
       }
     }
   }

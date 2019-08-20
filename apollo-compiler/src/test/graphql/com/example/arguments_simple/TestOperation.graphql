@@ -1,5 +1,17 @@
-query TestQuery($episode: Episode $IncludeName: Boolean!) {
+query TestQuery($episode: Episode $IncludeName: Boolean! $friendsCount: Int!) {
   hero(episode: $episode) {
     name @include(if: $IncludeName)
+    ...HeroDetails
+  }
+}
+
+fragment HeroDetails on Character {
+  friendsConnection(first: $friendsCount) {
+    totalCount
+    edges {
+      node {
+        name @include(if: $IncludeName)
+      }
+    }
   }
 }
