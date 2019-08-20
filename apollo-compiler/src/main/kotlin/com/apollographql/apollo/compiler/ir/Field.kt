@@ -126,7 +126,7 @@ data class Field(
   }
 
   private fun toTypeName(responseType: String, context: CodeGenerationContext): TypeName {
-    val packageName = if (isNonScalar()) "" else context.typesPackage
+    val packageName = if (isNonScalar()) "" else context.layoutArgs.typesPackageName()
     return JavaTypeResolver(context, packageName, isDeprecated ?: false).resolve(responseType, isOptional())
   }
 

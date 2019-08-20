@@ -106,7 +106,7 @@ class FragmentsResponseMapperBuilder(
       fragments
           .map { it.type.unwrapOptionalType(withoutAnnotations = true) as ClassName }
           .map {
-            val mapperClassName = ClassName.get(context.fragmentsPackage, it.simpleName(),
+            val mapperClassName = ClassName.get(context.layoutArgs.fragmentsPackageName(), it.simpleName(),
                 Util.RESPONSE_FIELD_MAPPER_TYPE_NAME)
             FieldSpec.builder(mapperClassName, it.mapperFieldName(), Modifier.FINAL)
                 .initializer(CodeBlock.of("new \$T()", mapperClassName))

@@ -138,7 +138,7 @@ class InputTypeSpecBuilder(
   }
 
   private fun TypeDeclarationField.javaTypeName(context: CodeGenerationContext): TypeName {
-    return JavaTypeResolver(context, context.typesPackage)
+    return JavaTypeResolver(context, context.layoutArgs.typesPackageName())
         .resolve(typeName = type, nullableValueType = NullableValueType.INPUT_TYPE)
   }
 

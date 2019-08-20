@@ -49,7 +49,6 @@ class CustomEnumTypeSpecBuilder(
           .build()
 
   companion object {
-    fun className(context: CodeGenerationContext): ClassName = ClassName.get(context.typesPackage, "CustomType")
+    fun className(context: CodeGenerationContext): ClassName = ClassName.get(context.layoutArgs.typesPackageName(), "CustomType")
   }
-
 }
