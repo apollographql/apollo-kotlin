@@ -139,8 +139,8 @@ class GraphQLCompiler {
   )
 
   class LayoutArguments(
-      val rootPackageName: String?,
-      val rootDir: File?,
+      private val rootPackageName: String?,
+      private val rootDir: File?,
       /**
        * the package name for fragments and types will be written
        */
@@ -152,6 +152,18 @@ class GraphQLCompiler {
        * and rootFolder instead
        */
       @Deprecated("please use rootPackageName instead")
-      val outputPackageName: String?
-  )
+      private val outputPackageName: String?
+  ) {
+    fun fragmentsPackageName(): String {
+      return if (irPackageName.isNotEmpty()) "$irPackageName.fragment" else "fragment"
+    }
+
+    fun typesPackageName(): String {
+      return if (irPackageName.isNotEmpty()) "$irPackageName.type" else "type"
+    }
+
+    fun operationPackageName(filePath: String): String {
+     return outputPackageName ?: filePath.formatPackageName()
+    }
+  }
 }

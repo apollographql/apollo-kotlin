@@ -3,12 +3,10 @@ package com.apollographql.apollo.compiler.codegen.kotlin
 import com.apollographql.apollo.compiler.GraphQLCompiler
 import com.apollographql.apollo.compiler.ast.CustomTypes
 import com.apollographql.apollo.compiler.ast.builder.ast
-import com.apollographql.apollo.compiler.formatPackageName
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.ir.ScalarType
 import com.apollographql.apollo.compiler.ir.TypeDeclaration
 import com.squareup.kotlinpoet.asClassName
-import com.squareup.moshi.Moshi
 import java.io.File
 
 class GraphQLKompiler(
@@ -18,25 +16,21 @@ class GraphQLKompiler(
     private val useSemanticNaming: Boolean
 ) {
   fun write(outputDir: File) {
-    val irPackageName = layoutArgs.irPackageName
-    val fragmentsPackage = if (irPackageName.isNotEmpty()) "$irPackageName.fragment" else "fragment"
-    val typesPackageName = if (irPackageName.isNotEmpty()) "$irPackageName.type" else "type"
     val customTypeMap = customTypeMap.supportedCustomTypes(ir.typesUsed)
     val schema = ir.ast(
         customTypeMap = customTypeMap,
-        typesPackageName = typesPackageName,
-        fragmentsPackage = fragmentsPackage,
+        typesPackageName = layoutArgs.typesPackageName(),
+        fragmentsPackage = layoutArgs.fragmentsPackageName(),
         useSemanticNaming = useSemanticNaming
     )
 
+    val irPackageName = layoutArgs.irPackageName
     if (irPackageName.isNotEmpty()) {
       File(outputDir, irPackageName.replace('.', File.separatorChar)).deleteRecursively()
     }
 
     val schemaCodegen = SchemaCodegen(
-        typesPackageName = typesPackageName,
-        fragmentsPackage = fragmentsPackage,
-        outputPackageName = layoutArgs.outputPackageName
+        layoutArgs = layoutArgs
     )
     schemaCodegen.apply(schema::accept).writeTo(outputDir)
   }
