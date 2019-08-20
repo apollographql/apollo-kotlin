@@ -36,12 +36,17 @@ class GraphQLCompiler {
     }
 
     if (args.generateKotlinModels) {
+      val layoutArgs = LayoutArguments(
+          rootPackageName = null,
+          rootDir = null,
+          irPackageName = irPackageName,
+          outputPackageName = args.outputPackageName
+      )
       GraphQLKompiler(
           ir = ir,
           customTypeMap = args.customTypeMap,
-          irPackageName = irPackageName,
-          outputPackageName = args.outputPackageName,
-          useSemanticNaming = args.useSemanticNaming
+          useSemanticNaming = args.useSemanticNaming,
+          layoutArgs = layoutArgs
       ).write(args.outputDir)
     } else {
       ir.writeJavaFiles(
@@ -131,5 +136,22 @@ class GraphQLCompiler {
       val suppressRawTypesWarning: Boolean,
       val generateKotlinModels: Boolean = false,
       val generateVisitorForPolymorphicDatatypes: Boolean = false
+  )
+
+  class LayoutArguments(
+      val rootPackageName: String?,
+      val rootDir: File?,
+      /**
+       * the package name for fragments and types will be written
+       */
+      @Deprecated("please use rootPackageName instead")
+      val irPackageName: String,
+      /**
+       * the package name for fragments, types, queries and mutations
+       * This will flatten all the classes in the same package name so you should use rootPackageName
+       * and rootFolder instead
+       */
+      @Deprecated("please use rootPackageName instead")
+      val outputPackageName: String?
   )
 }

@@ -62,12 +62,17 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
   private fun generateKotlinExpectedClasses(args: GraphQLCompiler.Arguments) {
     val irPackageName = args.outputPackageName ?: args.irFile!!.absolutePath.formatPackageName()
     val ir = args.ir ?: GraphQLCompiler.parseIrFile(args.irFile!!)
+    val layoutArgs = GraphQLCompiler.LayoutArguments(
+        rootPackageName = null,
+        rootDir = null,
+        irPackageName = irPackageName,
+        outputPackageName = args.outputPackageName
+    )
     GraphQLKompiler(
         ir = ir,
         customTypeMap = args.customTypeMap,
-        irPackageName = irPackageName,
-        outputPackageName = args.outputPackageName,
-        useSemanticNaming = args.useSemanticNaming
+        useSemanticNaming = args.useSemanticNaming,
+        layoutArgs = layoutArgs
     ).write(args.outputDir)
 
     Files.walkFileTree(args.irFile!!.parentFile.toPath(), object : SimpleFileVisitor<Path>() {

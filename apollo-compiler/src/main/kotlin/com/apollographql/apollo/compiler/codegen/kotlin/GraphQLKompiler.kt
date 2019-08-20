@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler.codegen.kotlin
 
+import com.apollographql.apollo.compiler.GraphQLCompiler
 import com.apollographql.apollo.compiler.ast.CustomTypes
 import com.apollographql.apollo.compiler.ast.builder.ast
 import com.apollographql.apollo.compiler.formatPackageName
@@ -13,15 +14,11 @@ import java.io.File
 class GraphQLKompiler(
     private val ir: CodeGenerationIR,
     private val customTypeMap: Map<String, String>,
-    /**
-     * the package name where fragments and types will be written
-     */
-    @Deprecated("please use rootPackageName instead")
-    private val irPackageName: String,
-    private val outputPackageName: String?,
+    private val layoutArgs: GraphQLCompiler.LayoutArguments,
     private val useSemanticNaming: Boolean
 ) {
   fun write(outputDir: File) {
+    val irPackageName = layoutArgs.irPackageName
     val fragmentsPackage = if (irPackageName.isNotEmpty()) "$irPackageName.fragment" else "fragment"
     val typesPackageName = if (irPackageName.isNotEmpty()) "$irPackageName.type" else "type"
     val customTypeMap = customTypeMap.supportedCustomTypes(ir.typesUsed)
@@ -39,7 +36,7 @@ class GraphQLKompiler(
     val schemaCodegen = SchemaCodegen(
         typesPackageName = typesPackageName,
         fragmentsPackage = fragmentsPackage,
-        outputPackageName = outputPackageName
+        outputPackageName = layoutArgs.outputPackageName
     )
     schemaCodegen.apply(schema::accept).writeTo(outputDir)
   }
