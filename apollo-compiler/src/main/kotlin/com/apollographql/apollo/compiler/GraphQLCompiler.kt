@@ -10,9 +10,6 @@ import com.squareup.moshi.Moshi
 import java.io.File
 
 class GraphQLCompiler {
-  private val moshi = Moshi.Builder().build()
-  private val irAdapter = moshi.adapter(CodeGenerationIR::class.java)
-
   fun write(args: Arguments) {
     val ir = args.ir ?: irAdapter.fromJson(args.irFile!!.readText())!!
     val irPackageName = args.outputPackageName ?: args.irFile!!.absolutePath.formatPackageName()
@@ -40,9 +37,9 @@ class GraphQLCompiler {
 
     if (args.generateKotlinModels) {
       GraphQLKompiler(
-          irFile = args.irFile,
-          ir = args.ir,
+          ir = ir,
           customTypeMap = args.customTypeMap,
+          irPackageName = irPackageName,
           outputPackageName = args.outputPackageName,
           useSemanticNaming = args.useSemanticNaming
       ).write(args.outputDir)
@@ -114,6 +111,11 @@ class GraphQLCompiler {
     @JvmField
     val IR_OUTPUT_DIRECTORY = listOf("generated", "source", "apollo", "generatedIR")
     const val APOLLOCODEGEN_VERSION = "0.19.1"
+
+    private val moshi = Moshi.Builder().build()
+    private val irAdapter = moshi.adapter(CodeGenerationIR::class.java)
+
+    fun parseIrFile(irFile: File) = irAdapter.fromJson(irFile.readText())!!
   }
 
   data class Arguments(

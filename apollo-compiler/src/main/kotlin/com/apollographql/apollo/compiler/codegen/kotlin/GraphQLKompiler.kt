@@ -11,18 +11,17 @@ import com.squareup.moshi.Moshi
 import java.io.File
 
 class GraphQLKompiler(
-    private val irFile: File?,
-    private val ir: CodeGenerationIR?,
+    private val ir: CodeGenerationIR,
     private val customTypeMap: Map<String, String>,
+    /**
+     * the package name where fragments and types will be written
+     */
+    @Deprecated("please use rootPackageName instead")
+    private val irPackageName: String,
     private val outputPackageName: String?,
     private val useSemanticNaming: Boolean
 ) {
-  private val moshi = Moshi.Builder().build()
-  private val irAdapter = moshi.adapter(CodeGenerationIR::class.java)
-
   fun write(outputDir: File) {
-    val ir = ir ?: irAdapter.fromJson(irFile!!.readText())!!
-    val irPackageName = outputPackageName ?: irFile!!.absolutePath.formatPackageName()
     val fragmentsPackage = if (irPackageName.isNotEmpty()) "$irPackageName.fragment" else "fragment"
     val typesPackageName = if (irPackageName.isNotEmpty()) "$irPackageName.type" else "type"
     val customTypeMap = customTypeMap.supportedCustomTypes(ir.typesUsed)
