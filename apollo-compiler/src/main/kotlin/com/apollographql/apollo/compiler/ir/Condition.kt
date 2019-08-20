@@ -3,7 +3,8 @@ package com.apollographql.apollo.compiler.ir
 data class Condition(
     val kind: String,
     val variableName: String,
-    val inverted: Boolean
+    val inverted: Boolean,
+    val sourceLocation: SourceLocation = SourceLocation.UNKNOWN
 ) {
 
   enum class Kind(val rawValue: String) {

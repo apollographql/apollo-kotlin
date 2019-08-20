@@ -14,12 +14,15 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
+import com.example.arguments_simple.fragment.HeroDetails
 import com.example.arguments_simple.type.Episode
 import kotlin.Any
 import kotlin.Array
 import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
+import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.jvm.Transient
 
@@ -27,18 +30,32 @@ import kotlin.jvm.Transient
     "NestedLambdaShadowedImplicitParameter")
 data class TestQuery(
   val episode: Input<Episode>,
-  val includeName: Boolean
+  val includeName: Boolean,
+  val friendsCount: Int,
+  val listOfListOfStringArgs: List<List<String?>>
 ) : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
       if (episode.defined) this["episode"] = episode.value
       this["IncludeName"] = includeName
+      this["friendsCount"] = friendsCount
+      this["listOfListOfStringArgs"] = listOfListOfStringArgs
     }
 
     override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
       if (episode.defined) writer.writeString("episode", episode.value?.rawValue)
       writer.writeBoolean("IncludeName", includeName)
+      writer.writeInt("friendsCount", friendsCount)
+      writer.writeList("listOfListOfStringArgs") { listItemWriter ->
+        listOfListOfStringArgs.forEach { value ->
+          listItemWriter.writeList { listItemWriter ->
+            value.forEach { value ->
+              listItemWriter.writeString(value)
+            }
+          }
+        }
+      }
     }
   }
 
@@ -56,27 +73,46 @@ data class TestQuery(
     /**
      * The name of the character
      */
-    val name: String?
+    val name: String?,
+    val fragments: Fragments
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeString(RESPONSE_FIELDS[0], __typename)
       it.writeString(RESPONSE_FIELDS[1], name)
+      fragments.marshaller().marshal(it)
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, true,
-              listOf(ResponseField.Condition.booleanCondition("IncludeName", false)))
+              listOf(ResponseField.Condition.booleanCondition("IncludeName", false))),
+          ResponseField.forString("__typename", "__typename", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): Hero {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
         val name = reader.readString(RESPONSE_FIELDS[1])
+        val fragments = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType, reader ->
+          val heroDetails = HeroDetails(reader)
+          Fragments(
+            heroDetails = heroDetails
+          )
+        }
+
         return Hero(
           __typename = __typename,
-          name = name
+          name = name,
+          fragments = fragments
         )
+      }
+    }
+
+    data class Fragments(
+      val heroDetails: HeroDetails
+    ) {
+      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+        heroDetails.marshaller().marshal(it)
       }
     }
   }
@@ -93,7 +129,10 @@ data class TestQuery(
           ResponseField.forObject("hero", "hero", mapOf<String, Any>(
             "episode" to mapOf<String, Any>(
               "kind" to "Variable",
-              "variableName" to "episode")), true, null)
+              "variableName" to "episode"),
+            "listOfListOfStringArgs" to mapOf<String, Any>(
+              "kind" to "Variable",
+              "variableName" to "listOfListOfStringArgs")), true, null)
           )
 
       operator fun invoke(reader: ResponseReader): Data {
@@ -110,13 +149,28 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "418ccff4835004e308b902b0231bebd109b6668198cf55d241556a9988bb4f5c"
+        "36f4332618a8e5295b0c464b25b3be7e961457f3e7d7baa4cdaf5db970be075d"
 
     val QUERY_DOCUMENT: String = """
-        |query TestQuery(${'$'}episode: Episode, ${'$'}IncludeName: Boolean!) {
-        |  hero(episode: ${'$'}episode) {
+        |query TestQuery(${'$'}episode: Episode, ${'$'}IncludeName: Boolean!, ${'$'}friendsCount: Int!, ${'$'}listOfListOfStringArgs: [[String]!]!) {
+        |  hero(episode: ${'$'}episode, listOfListOfStringArgs: ${'$'}listOfListOfStringArgs) {
         |    __typename
         |    name @include(if: ${'$'}IncludeName)
+        |    ...HeroDetails
+        |  }
+        |}
+        |fragment HeroDetails on Character {
+        |  __typename
+        |  friendsConnection(first: ${'$'}friendsCount) {
+        |    __typename
+        |    totalCount
+        |    edges {
+        |      __typename
+        |      node {
+        |        __typename
+        |        name @include(if: ${'$'}IncludeName)
+        |      }
+        |    }
         |  }
         |}
         """.trimMargin()
