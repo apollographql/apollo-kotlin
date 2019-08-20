@@ -9,11 +9,16 @@ import org.junit.Test
 import java.util.*
 
 class JavaTypeResolverTest {
+  private val packageNameProvider = PackageNameProvider(
+      rootPackageName = null,
+      rootDir = null,
+      outputPackageName = null,
+      irPackageName = ""
+  )
   private val defaultContext = CodeGenerationContext(
       reservedTypeNames = emptyList(),
       typeDeclarations = emptyList(),
-      fragmentsPackage = "",
-      typesPackage = "",
+      packageNameProvider = packageNameProvider,
       customTypeMap = emptyMap(),
       nullableValueType = NullableValueType.APOLLO_OPTIONAL,
       ir = CodeGenerationIR(emptyList(), emptyList(), emptyList()),

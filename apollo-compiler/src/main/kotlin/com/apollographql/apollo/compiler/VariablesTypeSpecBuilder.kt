@@ -147,7 +147,7 @@ class VariablesTypeSpecBuilder(
   }
 
   private fun Variable.javaTypeName(context: CodeGenerationContext): TypeName {
-    return JavaTypeResolver(context.copy(nullableValueType = NullableValueType.INPUT_TYPE), context.layoutArgs.typesPackageName())
+    return JavaTypeResolver(context.copy(nullableValueType = NullableValueType.INPUT_TYPE), context.packageNameProvider.typesPackageName())
         .resolve(type)
   }
 

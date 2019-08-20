@@ -1,6 +1,6 @@
 package com.apollographql.apollo.compiler.ir
 
-import com.apollographql.apollo.compiler.GraphQLCompiler
+import com.apollographql.apollo.compiler.PackageNameProvider
 import com.apollographql.apollo.compiler.NullableValueType
 
 data class CodeGenerationContext(
@@ -14,5 +14,5 @@ data class CodeGenerationContext(
     val useJavaBeansSemanticNaming: Boolean,
     val suppressRawTypesWarning: Boolean,
     val generateVisitorForPolymorphicDatatypes: Boolean,
-    val layoutArgs: GraphQLCompiler.LayoutArguments
+    val packageNameProvider: PackageNameProvider
 )

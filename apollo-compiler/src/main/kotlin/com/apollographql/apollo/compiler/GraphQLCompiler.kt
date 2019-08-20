@@ -13,7 +13,7 @@ class GraphQLCompiler {
   fun write(args: Arguments) {
     val ir = args.ir ?: irAdapter.fromJson(args.irFile!!.readText())!!
     val irPackageName = args.outputPackageName ?: args.irFile!!.absolutePath.formatPackageName()
-    val layoutArgs = LayoutArguments(
+    val packageNameProvider = PackageNameProvider(
         rootPackageName = null,
         rootDir = null,
         irPackageName = irPackageName,
@@ -23,7 +23,7 @@ class GraphQLCompiler {
     val context = CodeGenerationContext(
         reservedTypeNames = emptyList(),
         typeDeclarations = ir.typesUsed,
-        layoutArgs = layoutArgs,
+        packageNameProvider = packageNameProvider,
         customTypeMap = customTypeMap,
         nullableValueType = args.nullableValueType,
         ir = ir,
@@ -43,7 +43,7 @@ class GraphQLCompiler {
           ir = ir,
           customTypeMap = args.customTypeMap,
           useSemanticNaming = args.useSemanticNaming,
-          layoutArgs = layoutArgs
+          packageNameProvider = packageNameProvider
       ).write(args.outputDir)
     } else {
       ir.writeJavaFiles(
@@ -58,7 +58,7 @@ class GraphQLCompiler {
     fragments.forEach {
       val typeSpec = it.toTypeSpec(context.copy())
       JavaFile
-          .builder(context.layoutArgs.fragmentsPackageName(), typeSpec)
+          .builder(context.packageNameProvider.fragmentsPackageName(), typeSpec)
           .addFileComment(AUTO_GENERATED_FILE)
           .build()
           .writeTo(outputDir)
@@ -67,7 +67,7 @@ class GraphQLCompiler {
     typesUsed.supportedTypeDeclarations().forEach {
       val typeSpec = it.toTypeSpec(context.copy())
       JavaFile
-          .builder(context.layoutArgs.typesPackageName(), typeSpec)
+          .builder(context.packageNameProvider.typesPackageName(), typeSpec)
           .addFileComment(AUTO_GENERATED_FILE)
           .build()
           .writeTo(outputDir)
@@ -76,7 +76,7 @@ class GraphQLCompiler {
     if (context.customTypeMap.isNotEmpty()) {
       val typeSpec = CustomEnumTypeSpecBuilder(context.copy()).build()
       JavaFile
-          .builder(context.layoutArgs.typesPackageName(), typeSpec)
+          .builder(context.packageNameProvider.typesPackageName(), typeSpec)
           .addFileComment(AUTO_GENERATED_FILE)
           .build()
           .writeTo(outputDir)
@@ -84,7 +84,7 @@ class GraphQLCompiler {
 
     operations.map { OperationTypeSpecBuilder(it, fragments, context.useSemanticNaming) }
         .forEach {
-          val packageName = context.layoutArgs.operationPackageName(it.operation.filePath)
+          val packageName = context.packageNameProvider.operationPackageName(it.operation.filePath)
           val typeSpec = it.toTypeSpec(context.copy())
           JavaFile
               .builder(packageName, typeSpec)
@@ -135,37 +135,4 @@ class GraphQLCompiler {
       val generateVisitorForPolymorphicDatatypes: Boolean = false
   )
 
-  class LayoutArguments(
-      /**
-       * the root package name
-       *
-       * fragments will use rootPackageName.fragment
-       * types will use rootPackageName.type
-       * operations, will use rootPackageName.{relativePosition to rootDir}
-       */
-      private val rootPackageName: String?,
-      private val rootDir: File?,
-      /**
-       * the package name for fragments and types will be written
-       */
-      val irPackageName: String,
-      /**
-       * the package name for fragments, types, queries and mutations
-       * This will flatten all the classes in the same package name so you should use rootPackageName
-       * and rootFolder instead
-       */
-      private val outputPackageName: String?
-  ) {
-    fun fragmentsPackageName(): String {
-      return if (irPackageName.isNotEmpty()) "$irPackageName.fragment" else "fragment"
-    }
-
-    fun typesPackageName(): String {
-      return if (irPackageName.isNotEmpty()) "$irPackageName.type" else "type"
-    }
-
-    fun operationPackageName(filePath: String): String {
-     return outputPackageName ?: filePath.formatPackageName()
-    }
-  }
 }

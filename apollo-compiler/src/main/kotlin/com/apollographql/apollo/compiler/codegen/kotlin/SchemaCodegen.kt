@@ -1,35 +1,34 @@
 package com.apollographql.apollo.compiler.codegen.kotlin
 
-import com.apollographql.apollo.compiler.GraphQLCompiler
+import com.apollographql.apollo.compiler.PackageNameProvider
 import com.apollographql.apollo.compiler.ast.*
-import com.apollographql.apollo.compiler.formatPackageName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.TypeSpec
 import java.io.File
 
 internal class SchemaCodegen(
-    private val layoutArgs: GraphQLCompiler.LayoutArguments
+    private val packageNameProvider: PackageNameProvider
 ) : SchemaVisitor {
   private var fileSpecs: List<FileSpec> = emptyList()
 
   override fun visit(customTypes: CustomTypes) {
-    fileSpecs = fileSpecs + customTypes.typeSpec().fileSpec(layoutArgs.typesPackageName())
+    fileSpecs = fileSpecs + customTypes.typeSpec().fileSpec(packageNameProvider.typesPackageName())
   }
 
   override fun visit(enumType: EnumType) {
-    fileSpecs = fileSpecs + enumType.typeSpec().fileSpec(layoutArgs.typesPackageName())
+    fileSpecs = fileSpecs + enumType.typeSpec().fileSpec(packageNameProvider.typesPackageName())
   }
 
   override fun visit(inputType: InputType) {
-    fileSpecs = fileSpecs + inputType.typeSpec().fileSpec(layoutArgs.typesPackageName())
+    fileSpecs = fileSpecs + inputType.typeSpec().fileSpec(packageNameProvider.typesPackageName())
   }
 
   override fun visit(fragmentType: FragmentType) {
-    fileSpecs = fileSpecs + fragmentType.typeSpec().fileSpec(layoutArgs.fragmentsPackageName())
+    fileSpecs = fileSpecs + fragmentType.typeSpec().fileSpec(packageNameProvider.fragmentsPackageName())
   }
 
   override fun visit(operationType: OperationType) {
-    val targetPackage = layoutArgs.operationPackageName(operationType.filePath)
+    val targetPackage = packageNameProvider.operationPackageName(operationType.filePath)
     fileSpecs = fileSpecs + operationType.typeSpec(targetPackage).fileSpec(targetPackage)
   }
 

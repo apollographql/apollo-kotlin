@@ -178,7 +178,7 @@ class SchemaTypeSpecBuilder(
       return fragmentSpreads.map { fragmentName ->
         val optional = isOptional(fragmentName)
         FieldSpec.builder(
-            JavaTypeResolver(context = context, packageName = context.layoutArgs.fragmentsPackageName())
+            JavaTypeResolver(context = context, packageName = context.packageNameProvider.fragmentsPackageName())
                 .resolve(typeName = fragmentName.capitalize(), isOptional = optional), fragmentName.decapitalize())
             .addModifiers(Modifier.FINAL)
             .build()
@@ -194,7 +194,7 @@ class SchemaTypeSpecBuilder(
           fragmentName.decapitalize()
         }
         MethodSpec.methodBuilder(methodName)
-            .returns(JavaTypeResolver(context = context, packageName = context.layoutArgs.fragmentsPackageName())
+            .returns(JavaTypeResolver(context = context, packageName = context.packageNameProvider.fragmentsPackageName())
                 .resolve(typeName = fragmentName.capitalize(), isOptional = optional))
             .addModifiers(Modifier.PUBLIC)
             .addStatement("return this.\$L", fragmentName.decapitalize())

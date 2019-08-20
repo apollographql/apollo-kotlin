@@ -148,7 +148,7 @@ class OperationTypeSpecBuilder(
           .map { variable ->
             variable.name.decapitalize() to JavaTypeResolver(
                 context.copy(nullableValueType = NullableValueType.INPUT_TYPE),
-                context.layoutArgs.typesPackageName()
+                context.packageNameProvider.typesPackageName()
             ).resolve(variable.type)
           }
           .map { (name, type) ->
@@ -205,7 +205,7 @@ class OperationTypeSpecBuilder(
         .map {
           it.first to JavaTypeResolver(
               context.copy(nullableValueType = NullableValueType.INPUT_TYPE),
-              context.layoutArgs.typesPackageName()
+              context.packageNameProvider.typesPackageName()
           ).resolve(it.second)
         }
         .let {
