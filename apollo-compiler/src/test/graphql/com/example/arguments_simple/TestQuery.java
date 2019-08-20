@@ -30,15 +30,16 @@ import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, TestQuery.Variables> {
-  public static final String OPERATION_ID = "770443359d50b897cb4272dfc7a948e64dd7cb9cc81065dde284045cddad7fc1";
+  public static final String OPERATION_ID = "36f4332618a8e5295b0c464b25b3be7e961457f3e7d7baa4cdaf5db970be075d";
 
-  public static final String QUERY_DOCUMENT = "query TestQuery($episode: Episode, $IncludeName: Boolean!, $friendsCount: Int!) {\n"
-      + "  hero(episode: $episode) {\n"
+  public static final String QUERY_DOCUMENT = "query TestQuery($episode: Episode, $IncludeName: Boolean!, $friendsCount: Int!, $listOfListOfStringArgs: [[String]!]!) {\n"
+      + "  hero(episode: $episode, listOfListOfStringArgs: $listOfListOfStringArgs) {\n"
       + "    __typename\n"
       + "    name @include(if: $IncludeName)\n"
       + "    ...HeroDetails\n"
@@ -68,9 +69,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   private final TestQuery.Variables variables;
 
-  public TestQuery(@NotNull Input<Episode> episode, boolean includeName, int friendsCount) {
+  public TestQuery(@NotNull Input<Episode> episode, boolean includeName, int friendsCount,
+      @NotNull List<List<String>> listOfListOfStringArgs) {
     Utils.checkNotNull(episode, "episode == null");
-    variables = new TestQuery.Variables(episode, includeName, friendsCount);
+    Utils.checkNotNull(listOfListOfStringArgs, "listOfListOfStringArgs == null");
+    variables = new TestQuery.Variables(episode, includeName, friendsCount, listOfListOfStringArgs);
   }
 
   @Override
@@ -114,6 +117,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private int friendsCount;
 
+    private @NotNull List<List<String>> listOfListOfStringArgs;
+
     Builder() {
     }
 
@@ -132,13 +137,19 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this;
     }
 
+    public Builder listOfListOfStringArgs(@NotNull List<List<String>> listOfListOfStringArgs) {
+      this.listOfListOfStringArgs = listOfListOfStringArgs;
+      return this;
+    }
+
     public Builder episodeInput(@NotNull Input<Episode> episode) {
       this.episode = Utils.checkNotNull(episode, "episode == null");
       return this;
     }
 
     public TestQuery build() {
-      return new TestQuery(episode, includeName, friendsCount);
+      Utils.checkNotNull(listOfListOfStringArgs, "listOfListOfStringArgs == null");
+      return new TestQuery(episode, includeName, friendsCount, listOfListOfStringArgs);
     }
   }
 
@@ -149,17 +160,22 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private final int friendsCount;
 
+    private final @NotNull List<List<String>> listOfListOfStringArgs;
+
     private final transient Map<String, Object> valueMap = new LinkedHashMap<>();
 
-    Variables(Input<Episode> episode, boolean includeName, int friendsCount) {
+    Variables(Input<Episode> episode, boolean includeName, int friendsCount,
+        @NotNull List<List<String>> listOfListOfStringArgs) {
       this.episode = episode;
       this.includeName = includeName;
       this.friendsCount = friendsCount;
+      this.listOfListOfStringArgs = listOfListOfStringArgs;
       if (episode.defined) {
         this.valueMap.put("episode", episode.value);
       }
       this.valueMap.put("IncludeName", includeName);
       this.valueMap.put("friendsCount", friendsCount);
+      this.valueMap.put("listOfListOfStringArgs", listOfListOfStringArgs);
     }
 
     public Input<Episode> episode() {
@@ -172,6 +188,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public int friendsCount() {
       return friendsCount;
+    }
+
+    public @NotNull List<List<String>> listOfListOfStringArgs() {
+      return listOfListOfStringArgs;
     }
 
     @Override
@@ -189,6 +209,22 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           }
           writer.writeBoolean("includeName", includeName);
           writer.writeInt("friendsCount", friendsCount);
+          writer.writeList("listOfListOfStringArgs", new InputFieldWriter.ListWriter() {
+            @Override
+            public void write(InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
+              for (final List<String> $item : listOfListOfStringArgs) {
+                listItemWriter.writeList($item != null ? new InputFieldWriter.ListWriter() {
+                  @Override
+                  public void write(InputFieldWriter.ListItemWriter listItemWriter) throws
+                      IOException {
+                    for (final String $$item : $item) {
+                      listItemWriter.writeString($$item);
+                    }
+                  }
+                } : null);
+              }
+            }
+          });
         }
       };
     }
@@ -196,10 +232,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class Data implements Operation.Data {
     static final ResponseField[] $responseFields = {
-      ResponseField.forObject("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
+      ResponseField.forObject("hero", "hero", new UnmodifiableMapBuilder<String, Object>(2)
       .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
         .put("kind", "Variable")
         .put("variableName", "episode")
+        .build())
+      .put("listOfListOfStringArgs", new UnmodifiableMapBuilder<String, Object>(2)
+        .put("kind", "Variable")
+        .put("variableName", "listOfListOfStringArgs")
         .build())
       .build(), true, Collections.<ResponseField.Condition>emptyList())
     };

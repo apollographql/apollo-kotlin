@@ -17,9 +17,13 @@
 				{
 					"name": "friendsCount",
 					"type": "Int!"
+				},
+				{
+					"name": "listOfListOfStringArgs",
+					"type": "[[String]!]!"
 				}
 			],
-			"source": "query TestQuery($episode: Episode, $IncludeName: Boolean!, $friendsCount: Int!) {\n  hero(episode: $episode) {\n    __typename\n    name @include(if: $IncludeName)\n    ...HeroDetails\n  }\n}",
+			"source": "query TestQuery($episode: Episode, $IncludeName: Boolean!, $friendsCount: Int!, $listOfListOfStringArgs: [[String]!]!) {\n  hero(episode: $episode, listOfListOfStringArgs: $listOfListOfStringArgs) {\n    __typename\n    name @include(if: $IncludeName)\n    ...HeroDetails\n  }\n}",
 			"fields": [
 				{
 					"responseName": "hero",
@@ -33,6 +37,14 @@
 								"variableName": "episode"
 							},
 							"type": "Episode"
+						},
+						{
+							"name": "listOfListOfStringArgs",
+							"value": {
+								"kind": "Variable",
+								"variableName": "listOfListOfStringArgs"
+							},
+							"type": "[[String]]"
 						}
 					],
 					"isConditional": false,
@@ -73,8 +85,8 @@
 			"fragmentsReferenced": [
 				"HeroDetails"
 			],
-			"sourceWithFragments": "query TestQuery($episode: Episode, $IncludeName: Boolean!, $friendsCount: Int!) {\n  hero(episode: $episode) {\n    __typename\n    name @include(if: $IncludeName)\n    ...HeroDetails\n  }\n}\nfragment HeroDetails on Character {\n  __typename\n  friendsConnection(first: $friendsCount) {\n    __typename\n    totalCount\n    edges {\n      __typename\n      node {\n        __typename\n        name @include(if: $IncludeName)\n      }\n    }\n  }\n}",
-			"operationId": "23c510fa44de83a6dd9147d89a1ef7547a84947c358c4312015241e15816cd48"
+			"sourceWithFragments": "query TestQuery($episode: Episode, $IncludeName: Boolean!, $friendsCount: Int!, $listOfListOfStringArgs: [[String]!]!) {\n  hero(episode: $episode, listOfListOfStringArgs: $listOfListOfStringArgs) {\n    __typename\n    name @include(if: $IncludeName)\n    ...HeroDetails\n  }\n}\nfragment HeroDetails on Character {\n  __typename\n  friendsConnection(first: $friendsCount) {\n    __typename\n    totalCount\n    edges {\n      __typename\n      node {\n        __typename\n        name @include(if: $IncludeName)\n      }\n    }\n  }\n}",
+			"operationId": "6e68bd48b3148ee92895864a629cbe1f7e4609f40362389d5a6e8f1218711f2c"
 		}
 	],
 	"fragments": [

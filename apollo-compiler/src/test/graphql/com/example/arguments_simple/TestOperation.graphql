@@ -1,5 +1,5 @@
-query TestQuery($episode: Episode $IncludeName: Boolean! $friendsCount: Int!) {
-  hero(episode: $episode) {
+query TestQuery($episode: Episode $IncludeName: Boolean! $friendsCount: Int! $listOfListOfStringArgs: [[String]!]!) {
+  hero(episode: $episode listOfListOfStringArgs: $listOfListOfStringArgs) {
     name @include(if: $IncludeName)
     ...HeroDetails
   }

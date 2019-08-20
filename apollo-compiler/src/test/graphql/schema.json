@@ -27,6 +27,25 @@
                     "ofType": null
                   },
                   "defaultValue": null
+                },
+                {
+                  "name": "listOfListOfStringArgs",
+                  "description": "for test purpose only",
+                  "args": [],
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "LIST",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
                 }
               ],
               "type": {

@@ -194,7 +194,7 @@ class GraphQLDocumentParser(val schema: Schema) {
   private fun GraphQLParser.VariableDefinitionContext.parse(): ParseResult<Variable> {
     val name = variable().NAME().text
     val type = type().text
-    val schemaType = schema[type.replace("!", "").removeSurrounding(prefix = "[", suffix = "]")] ?: throw ParseException(
+    val schemaType = schema[type.replace("!", "").replace("[", "").replace("]", "")] ?: throw ParseException(
         message = "Unknown variable type `$type`",
         token = type().start
     )
@@ -695,7 +695,7 @@ class GraphQLDocumentParser(val schema: Schema) {
             sourceLocation = arg.sourceLocation
         )
 
-        if (arg.type != variable.type && arg.type != variable.type.removeSuffix("!")) {
+        if (!arg.type.isGraphQLTypeAssignableFrom(variable.type)) {
           throw ParseException(
               message = "Variable `$variableName` of type `${variable.type}` used in position expecting type `${arg.type}`",
               sourceLocation = arg.sourceLocation
@@ -726,6 +726,22 @@ class GraphQLDocumentParser(val schema: Schema) {
     }
 
     fields?.forEach { it.checkVariableDefinitions(operation = operation, filePath = filePath) }
+  }
+
+  private fun String.isGraphQLTypeAssignableFrom(otherType: String): Boolean {
+    var i = 0
+    var j = 0
+    do {
+      when {
+        this[i] == otherType[j] -> {
+          i++; j++
+        }
+        otherType[j] == '!' -> j++
+        else -> return false
+      }
+    } while (i < length && j < otherType.length)
+
+    return i == length && (j == otherType.length || (otherType[j] == '!' && j == otherType.length - 1))
   }
 }
 
