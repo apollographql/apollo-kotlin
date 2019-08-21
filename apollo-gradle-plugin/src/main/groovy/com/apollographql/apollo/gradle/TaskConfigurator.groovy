@@ -10,7 +10,7 @@ abstract class TaskConfigurator {
     public static final String APOLLO_CODEGEN_GENERATE_TASK_NAME = "generate%sApolloIR"
 
     final boolean useGlobalApolloCodegen = System.properties['apollographql.useGlobalApolloCodegen']?.toBoolean()
-    final boolean useExperimentalCodegen = System.properties['apollographql.useExperimentalCodegen']?.toBoolean()
+    final boolean useExperimentalCodegen = (System.properties['apollographql.useExperimentalCodegen'] ?: "true").toBoolean()
     protected final Project project
 
     TaskConfigurator(Project project) {

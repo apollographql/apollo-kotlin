@@ -6,6 +6,14 @@ import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
 class ApolloJavaPluginSpec extends Specification {
+  def setupSpec() {
+    System.setProperty("apollographql.useExperimentalCodegen", "false")
+  }
+
+  def cleanupSpec() {
+    System.clearProperty("apollographql.useExperimentalCodegen")
+  }
+
   def "creates an IRGen task under the apollo group"() {
     setup:
     def project = ProjectBuilder.builder().build()

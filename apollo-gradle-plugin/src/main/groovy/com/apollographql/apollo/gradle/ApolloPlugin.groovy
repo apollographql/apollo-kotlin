@@ -19,7 +19,7 @@ class ApolloPlugin implements Plugin<Project> {
   private Project project
   private final FileResolver fileResolver
   private boolean useGlobalApolloCodegen = System.properties['apollographql.useGlobalApolloCodegen']?.toBoolean()
-  private boolean useExperimentalCodegen = System.properties['apollographql.useExperimentalCodegen']?.toBoolean()
+  private boolean useExperimentalCodegen = (System.properties['apollographql.useExperimentalCodegen'] ?: "true").toBoolean()
 
   @Inject
   ApolloPlugin(FileResolver fileResolver) {

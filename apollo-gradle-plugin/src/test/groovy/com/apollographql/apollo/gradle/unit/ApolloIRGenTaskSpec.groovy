@@ -7,6 +7,15 @@ import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
 class ApolloIRGenTaskSpec extends Specification {
+
+  def setupSpec() {
+    System.setProperty("apollographql.useExperimentalCodegen", "false")
+  }
+
+  def cleanupSpec() {
+    System.clearProperty("apollographql.useExperimentalCodegen")
+  }
+
   def "creates tasks for default project variants that depend on apolloCodegenInstall task"() {
     setup:
     def project = ProjectBuilder.builder().build()
