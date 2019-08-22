@@ -58,7 +58,7 @@ class ApolloPluginTestHelper {
 
   private static def setupAndroidProject(Project project) {
     def localProperties = new File("${project.projectDir.absolutePath}", "local.properties")
-    localProperties.write("sdk.dir=${androidHome()}")
+    localProperties.write("sdk.dir=${escapeFilePathCharacters(androidHome())}")
 
     def manifest = new File("${project.projectDir.absolutePath}/src/main", "AndroidManifest.xml")
     manifest.getParentFile().mkdirs()
@@ -113,10 +113,17 @@ class ApolloPluginTestHelper {
 
   static def prepareLocalProperties(File destDir) {
     def localProperties = new File(destDir, "local.properties")
-    localProperties.write("sdk.dir=${androidHome()}")
+    localProperties.write("sdk.dir=${escapeFilePathCharacters(androidHome())}")
   }
 
-  static def replaceTextInFile(source, Closure replaceText){
+  static def replaceTextInFile(source, Closure replaceText) {
     source.write(replaceText(source.text))
+  }
+
+  static def escapeFilePathCharacters(CharSequence input) {
+    return input.replace([
+            "\\": "\\\\",
+            ":" : "\\:"
+    ])
   }
 }
