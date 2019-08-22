@@ -20,6 +20,7 @@ class BasicAndroidSpec extends Specification {
 
   def setupSpec() {
     testProjectDir = setupBasicAndroidProject()
+    System.setProperty("apollographql.useExperimentalCodegen", "false")
   }
 
   def "builds successfully and generates expected outputs"() {
@@ -419,6 +420,7 @@ class BasicAndroidSpec extends Specification {
 
   def cleanupSpec() {
     FileUtils.deleteDirectory(testProjectDir)
+    System.clearProperty("apollographql.useExperimentalCodegen")
   }
 
   private static File setupBasicAndroidProject() {

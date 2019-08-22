@@ -15,6 +15,7 @@ class FlavoredMultiSchemaSpec extends Specification {
 
   def setupSpec() {
     testProjectDir = setupFlavoredAndroidProject()
+    System.setProperty("apollographql.useExperimentalCodegen", "false")
   }
 
   def "generates expected outputs for the demo debug variant"() {
@@ -101,6 +102,7 @@ class FlavoredMultiSchemaSpec extends Specification {
 
   def cleanupSpec() {
     FileUtils.deleteDirectory(testProjectDir)
+    System.clearProperty("apollographql.useExperimentalCodegen")
   }
 
   private void assertDemoDebugGenerationSucces() {
