@@ -34,6 +34,7 @@ ext.dep = [
     supportAnnotations      : "com.android.support:support-annotations:$versions.supportLibVersion",
     recyclerView            : "com.android.support:recyclerview-v7:$versions.supportLibVersion",
     compiletesting          : 'com.google.testing.compile:compile-testing:0.15',
+    kotlinCompilerUtil      : 'io.github.sullis:kotlin-compiler-util:0.0.1',
     cache                   : "com.nytimes.android:cache:$versions.cacheVersion",
     guavaJre                : 'com.google.guava:guava:28.0-jre',
     javaPoet                : 'com.squareup:javapoet:1.9.0',

@@ -7,6 +7,7 @@ import com.google.common.truth.Truth.assertAbout
 import com.google.common.truth.Truth.assertThat
 import com.google.testing.compile.JavaFileObjects
 import com.google.testing.compile.JavaSourcesSubjectFactory.javaSources
+import io.github.sullis.kotlin.compiler.KotlinCompiler
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -67,6 +68,9 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
         outputPackageName = args.outputPackageName,
         useSemanticNaming = args.useSemanticNaming
     ).write(args.outputDir)
+
+    val compileResult = KotlinCompiler().compileSourceDir(args.outputDir.toPath())
+    assertThat(compileResult.isSuccess()).isTrue()
 
     Files.walkFileTree(args.irFile!!.parentFile.toPath(), object : SimpleFileVisitor<Path>() {
       override fun visitFile(expectedFile: Path, attrs: BasicFileAttributes): FileVisitResult {
