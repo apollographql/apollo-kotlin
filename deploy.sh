@@ -12,7 +12,6 @@ echo ${YELLOW}Deploying Api ...${CLEAR}
 ./gradlew clean :apollo-api:bintrayUpload
 echo ${YELLOW}Deploying Api - ${GREEN}Done!${CLEAR}
 
-
 echo ${YELLOW}Deploying Compiler ...${CLEAR}
 ./gradlew clean :apollo-compiler:bintrayUpload
 echo ${YELLOW}Deploying Compiler - ${GREEN}Done!${CLEAR}
