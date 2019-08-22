@@ -116,7 +116,7 @@ class ApolloPluginTestHelper {
     localProperties.write("sdk.dir=${escapeFilePathCharacters(androidHome())}")
   }
 
-  static def replaceTextInFile(source, Closure replaceText) {
+  static def replaceTextInFile(source, Closure replaceText){
     source.write(replaceText(source.text))
   }
 
