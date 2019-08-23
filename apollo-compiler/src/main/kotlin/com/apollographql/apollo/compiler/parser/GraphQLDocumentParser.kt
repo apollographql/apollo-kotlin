@@ -493,31 +493,29 @@ class GraphQLDocumentParser(val schema: Schema) {
     }
   }
 
-  private fun Set<String>.usedSchemaTypes(): List<Schema.Type> {
-    val types = filter { ScalarType.forName(it) == null }
-        .map {
-          schema[it] ?: throw ParseException(
-              message = "Unknown type `$it`",
-              sourceLocation = SourceLocation.UNKNOWN
-          )
-        }
+  private fun Set<String>.usedSchemaTypes(): Set<Schema.Type> {
+    if (isEmpty()) {
+      return emptySet()
+    }
+
+    val usedSchemaTypes = filter { ScalarType.forName(it) == null }
+        .map { schema[it] ?: throw GraphQLParseException(message = "Undefined schema type `$it`") }
         .filter { type -> type.kind == Schema.Kind.SCALAR || type.kind == Schema.Kind.ENUM || type.kind == Schema.Kind.INPUT_OBJECT }
-    val inputObjectTransientTypes = types
+        .toSet()
+
+    val inputObjectUsedTypes = usedSchemaTypes
         .mapNotNull { type -> type as? Schema.Type.InputObject }
-        .flatMap { inputObject ->
-          inputObject
-              .inputFields
-              .map { field -> field.type.rawType.name!! }
-              .filter { ScalarType.forName(it) == null }
-              .map { type ->
-                schema[type] ?: throw ParseException(
-                    message = "Unknown type `$type`",
-                    sourceLocation = SourceLocation.UNKNOWN
-                )
-              }
-              .filter { type -> type.kind == Schema.Kind.SCALAR || type.kind == Schema.Kind.ENUM || type.kind == Schema.Kind.INPUT_OBJECT }
-        }
-    return types + inputObjectTransientTypes
+        .flatMap { inputObject -> inputObject.usedTypes(exclude = this) }
+        .toSet()
+        .usedSchemaTypes()
+
+    return usedSchemaTypes + inputObjectUsedTypes
+  }
+
+  private fun Schema.Type.InputObject.usedTypes(exclude: Set<String>): Set<String> {
+    val usedTypes = inputFields.map { field -> field.type.rawType.name!! }.subtract(exclude)
+    val usedInputObjects = usedTypes.mapNotNull {schema[it] as? Schema.Type.InputObject }
+    return usedTypes + usedInputObjects.flatMap { inputObject -> inputObject.usedTypes(exclude + usedTypes) }
   }
 
   private fun List<Field>.union(other: List<Field>): List<Field> {
