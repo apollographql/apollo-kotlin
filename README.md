@@ -550,7 +550,7 @@ Add the following `dependency`:
 [ ![apollo-espresso-support](https://img.shields.io/bintray/v/apollographql/android/apollo-espresso-support.svg?label=apollo-espresso-support) ](https://bintray.com/apollographql/android/apollo-espresso-support/_latestVersion)
 ```gradle
 implementation 'com.apollographql.apollo:apollo-espresso-support:x.y.z'
-``
+```
 
 ##  Gradle Configuration of Apollo Android
 Apollo Android comes with logical defaults that will work for the majority of use cases, below you will find additional configuration that will add Optional Support & Semantic Query Naming.
