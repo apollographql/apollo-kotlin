@@ -30,32 +30,14 @@ class GraphQLDocumentParser(val schema: Schema) {
     operations.checkMultipleOperationDefinitions()
     fragments.checkMultipleFragmentDefinitions()
 
-    operations.forEach { it.checkReferencedFragments(fragments) }
-    fragments.forEach { it.checkReferencedFragments(fragments) }
-
-    operations.forEach { operation ->
-      val operationReferencedFragments = fragments.filter { it.fragmentName in operation.fragmentsReferenced }
-      operationReferencedFragments.forEach { it.checkVariableDefinitions(operation) }
-
-      val transientReferencedFragmentNames = operationReferencedFragments.flatMap { it.fragmentsReferenced }
-      val transientReferencedFragments = fragments.filter { it.fragmentName in transientReferencedFragmentNames }
-      transientReferencedFragments.forEach { it.checkVariableDefinitions(operation) }
-    }
-
     val typeDeclarations = usedTypes.usedTypeDeclarations()
 
     return CodeGenerationIR(
         operations = operations.map { operation ->
-          val operationReferencedFragments = fragments.filter { it.fragmentName in operation.fragmentsReferenced }
-          val transientReferencedFragmentNames = operationReferencedFragments.flatMap { it.fragmentsReferenced }
-          val transientReferencedFragments = fragments.filter { it.fragmentName in transientReferencedFragmentNames }
-          val referencedFragments = operationReferencedFragments + transientReferencedFragments
-
+          val referencedFragments = operation.referencedFragments(fragments)
           referencedFragments.forEach { it.checkVariableDefinitions(operation) }
 
-          val fragmentSource = referencedFragments.joinToString(separator = "\n") {
-            it.source
-          }
+          val fragmentSource = referencedFragments.joinToString(separator = "\n") { it.source }
           operation.copy(sourceWithFragments = operation.source + if (fragmentSource.isNotBlank()) "\n$fragmentSource" else "")
         },
         fragments = fragments,
@@ -151,18 +133,20 @@ class GraphQLDocumentParser(val schema: Schema) {
         )
       }
     }
+    val operation = Operation(
+        operationName = operationName,
+        operationType = operationType,
+        variables = variables.result,
+        source = graphQLDocumentSource,
+        sourceWithFragments = graphQLDocumentSource,
+        fields = fields.result.minus(typenameField),
+        fragmentsReferenced = fields.result.referencedFragments().distinct(),
+        filePath = graphQLFilePath,
+        operationId = ""
+    ).also { it.checkVariableDefinitions() }
+
     return ParseResult(
-        result = Operation(
-            operationName = operationName,
-            operationType = operationType,
-            variables = variables.result,
-            source = graphQLDocumentSource,
-            sourceWithFragments = graphQLDocumentSource,
-            fields = fields.result.minus(typenameField),
-            fragmentsReferenced = fields.result.referencedFragments().distinct(),
-            filePath = graphQLFilePath,
-            operationId = ""
-        ),
+        result = operation,
         usedTypes = variables.usedTypes + fields.usedTypes
     )
   }
@@ -658,17 +642,35 @@ class GraphQLDocumentParser(val schema: Schema) {
         ?.run { throw GraphQLParseException("$filePath: There can be only one fragment named `$fragmentName`") }
   }
 
+  private fun Operation.referencedFragments(fragments: List<Fragment>): List<Fragment> {
+    return fragmentsReferenced.flatMap { fragmentName ->
+      val fragment = fragments.find { fragment -> fragment.fragmentName == fragmentName }
+          ?: throw GraphQLParseException("Undefined fragment `$fragmentName`\n$filePath")
+      listOf(fragment) + fragment.referencedFragments(fragments)
+    }
+  }
+
+  private fun Fragment.referencedFragments(fragments: List<Fragment>): List<Fragment> {
+    return fragmentsReferenced.flatMap { fragmentName ->
+      val fragment = fragments.find { fragment -> fragment.fragmentName == fragmentName }
+          ?: throw GraphQLParseException("Undefined fragment `$fragmentName`\n$filePath")
+      listOf(fragment) + fragment.referencedFragments(fragments)
+    }
+  }
+
   private fun Operation.checkReferencedFragments(fragments: List<Fragment>) {
     fragmentsReferenced.forEach { fragmentName ->
-      fragments.find { fragment -> fragment.fragmentName == fragmentName }
+      val referencedFragment = fragments.find { fragment -> fragment.fragmentName == fragmentName }
           ?: throw GraphQLParseException("Undefined fragment `$fragmentName`\n$filePath")
+      referencedFragment.checkReferencedFragments(fragments)
     }
   }
 
   private fun Fragment.checkReferencedFragments(fragments: List<Fragment>) {
     fragmentsReferenced.forEach { fragmentName ->
-      fragments.find { fragment -> fragment.fragmentName == fragmentName }
+      val referencedFragment = fragments.find { fragment -> fragment.fragmentName == fragmentName }
           ?: throw GraphQLParseException("$filePath: Undefined fragment `$fragmentName`")
+      referencedFragment.checkReferencedFragments(fragments)
     }
   }
 
@@ -680,9 +682,13 @@ class GraphQLDocumentParser(val schema: Schema) {
   }
 
   private fun Fragment.checkVariableDefinitions(operation: Operation) {
-    fields.forEach { field ->
-      field.checkVariableDefinitions(operation = operation, filePath = filePath!!)
-      field.fields?.forEach { it.checkVariableDefinitions(operation = operation, filePath = filePath) }
+    try {
+      fields.forEach { field ->
+        field.checkVariableDefinitions(operation = operation, filePath = filePath!!)
+        field.fields?.forEach { it.checkVariableDefinitions(operation = operation, filePath = filePath) }
+      }
+    } catch (e: ParseException) {
+      throw GraphQLParseException("$filePath: ${e.message}[${operation.filePath}]")
     }
   }
 
