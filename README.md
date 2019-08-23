@@ -540,7 +540,10 @@ implementation 'com.apollographql.apollo:apollo-coroutines-support:x.y.z'
 The Apollo GraphQL client comes with a [IdlingResource](https://developer.android.com/training/testing/espresso/idling-resource) to use during your Android UI tests.
 
 ```kotlin
-IdlingRegistry.getInstance().register(ApolloIdlingResource.create("idlingResourceName", null))
+// Register the idlingResource before running your tests.
+// This should only be done once.
+val idlingResource = ApolloIdlingResource.create("idlingResourceName", apolloClient)
+IdlingRegistry.getInstance().register(idlingResource)
 ```
 
 #### Including in your project
