@@ -658,22 +658,6 @@ class GraphQLDocumentParser(val schema: Schema) {
     }
   }
 
-  private fun Operation.checkReferencedFragments(fragments: List<Fragment>) {
-    fragmentsReferenced.forEach { fragmentName ->
-      val referencedFragment = fragments.find { fragment -> fragment.fragmentName == fragmentName }
-          ?: throw GraphQLParseException("Undefined fragment `$fragmentName`\n$filePath")
-      referencedFragment.checkReferencedFragments(fragments)
-    }
-  }
-
-  private fun Fragment.checkReferencedFragments(fragments: List<Fragment>) {
-    fragmentsReferenced.forEach { fragmentName ->
-      val referencedFragment = fragments.find { fragment -> fragment.fragmentName == fragmentName }
-          ?: throw GraphQLParseException("$filePath: Undefined fragment `$fragmentName`")
-      referencedFragment.checkReferencedFragments(fragments)
-    }
-  }
-
   private fun Operation.checkVariableDefinitions() {
     fields.forEach { field ->
       field.checkVariableDefinitions(operation = this, filePath = filePath)
