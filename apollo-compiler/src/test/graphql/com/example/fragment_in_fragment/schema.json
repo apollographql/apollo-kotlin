@@ -1,6 +1,5 @@
 {
-  "data": {
-    "__schema": {
+  "__schema": {
       "queryType": {
         "name": "Root"
       },
@@ -5998,5 +5997,4 @@
         }
       ]
     }
-  }
 }
