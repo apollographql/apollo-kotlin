@@ -5,6 +5,7 @@
 //
 package com.example.fragment_in_fragment.fragment;
 
+import com.apollographql.apollo.api.FragmentResponseFieldMapper;
 import com.apollographql.apollo.api.GraphqlFragment;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
@@ -35,7 +36,7 @@ public class PilotFragment implements GraphqlFragment {
       + "  name\n"
       + "  homeworld {\n"
       + "    __typename\n"
-      + "    name\n"
+      + "    ...planetFragment\n"
       + "  }\n"
       + "}";
 
@@ -152,12 +153,12 @@ public class PilotFragment implements GraphqlFragment {
   public static class Homeworld {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forString("name", "name", null, true, Collections.<ResponseField.Condition>emptyList())
+      ResponseField.forFragment("__typename", "__typename", Arrays.asList("Planet"))
     };
 
     final @NotNull String __typename;
 
-    final Optional<String> name;
+    private final @NotNull Fragments fragments;
 
     private transient volatile String $toString;
 
@@ -165,20 +166,17 @@ public class PilotFragment implements GraphqlFragment {
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Homeworld(@NotNull String __typename, @Nullable String name) {
+    public Homeworld(@NotNull String __typename, @NotNull Fragments fragments) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
-      this.name = Optional.fromNullable(name);
+      this.fragments = Utils.checkNotNull(fragments, "fragments == null");
     }
 
     public @NotNull String __typename() {
       return this.__typename;
     }
 
-    /**
-     * The name of this planet.
-     */
-    public Optional<String> name() {
-      return this.name;
+    public @NotNull Fragments fragments() {
+      return this.fragments;
     }
 
     @SuppressWarnings("unchecked")
@@ -187,7 +185,7 @@ public class PilotFragment implements GraphqlFragment {
         @Override
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
-          writer.writeString($responseFields[1], name.isPresent() ? name.get() : null);
+          fragments.marshaller().marshal(writer);
         }
       };
     }
@@ -197,7 +195,7 @@ public class PilotFragment implements GraphqlFragment {
       if ($toString == null) {
         $toString = "Homeworld{"
           + "__typename=" + __typename + ", "
-          + "name=" + name
+          + "fragments=" + fragments
           + "}";
       }
       return $toString;
@@ -211,7 +209,7 @@ public class PilotFragment implements GraphqlFragment {
       if (o instanceof Homeworld) {
         Homeworld that = (Homeworld) o;
         return this.__typename.equals(that.__typename)
-         && this.name.equals(that.name);
+         && this.fragments.equals(that.fragments);
       }
       return false;
     }
@@ -223,19 +221,100 @@ public class PilotFragment implements GraphqlFragment {
         h *= 1000003;
         h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= name.hashCode();
+        h ^= fragments.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
     }
 
+    public static class Fragments {
+      final @NotNull PlanetFragment planetFragment;
+
+      private transient volatile String $toString;
+
+      private transient volatile int $hashCode;
+
+      private transient volatile boolean $hashCodeMemoized;
+
+      public Fragments(@NotNull PlanetFragment planetFragment) {
+        this.planetFragment = Utils.checkNotNull(planetFragment, "planetFragment == null");
+      }
+
+      public @NotNull PlanetFragment planetFragment() {
+        return this.planetFragment;
+      }
+
+      public ResponseFieldMarshaller marshaller() {
+        return new ResponseFieldMarshaller() {
+          @Override
+          public void marshal(ResponseWriter writer) {
+            final PlanetFragment $planetFragment = planetFragment;
+            if ($planetFragment != null) {
+              $planetFragment.marshaller().marshal(writer);
+            }
+          }
+        };
+      }
+
+      @Override
+      public String toString() {
+        if ($toString == null) {
+          $toString = "Fragments{"
+            + "planetFragment=" + planetFragment
+            + "}";
+        }
+        return $toString;
+      }
+
+      @Override
+      public boolean equals(Object o) {
+        if (o == this) {
+          return true;
+        }
+        if (o instanceof Fragments) {
+          Fragments that = (Fragments) o;
+          return this.planetFragment.equals(that.planetFragment);
+        }
+        return false;
+      }
+
+      @Override
+      public int hashCode() {
+        if (!$hashCodeMemoized) {
+          int h = 1;
+          h *= 1000003;
+          h ^= planetFragment.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
+        }
+        return $hashCode;
+      }
+
+      public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
+        final PlanetFragment.Mapper planetFragmentFieldMapper = new PlanetFragment.Mapper();
+
+        @Override
+        public @NotNull Fragments map(ResponseReader reader, @NotNull String conditionalType) {
+          PlanetFragment planetFragment = planetFragmentFieldMapper.map(reader);
+          return new Fragments(Utils.checkNotNull(planetFragment, "planetFragment == null"));
+        }
+      }
+    }
+
     public static final class Mapper implements ResponseFieldMapper<Homeworld> {
+      final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
+
       @Override
       public Homeworld map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
-        final String name = reader.readString($responseFields[1]);
-        return new Homeworld(__typename, name);
+        final Fragments fragments = reader.readConditional($responseFields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
+          @Override
+          public Fragments read(String conditionalType, ResponseReader reader) {
+            return fragmentsFieldMapper.map(reader, conditionalType);
+          }
+        });
+        return new Homeworld(__typename, fragments);
       }
     }
   }

@@ -45,7 +45,7 @@ data class PilotFragment(
         |  name
         |  homeworld {
         |    __typename
-        |    name
+        |    ...planetFragment
         |  }
         |}
         """.trimMargin()
@@ -69,29 +69,40 @@ data class PilotFragment(
 
   data class Homeworld(
     val __typename: String,
-    /**
-     * The name of this planet.
-     */
-    val name: String?
+    val fragments: Fragments
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
+      fragments.marshaller().marshal(it)
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("name", "name", null, true, null)
+          ResponseField.forString("__typename", "__typename", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): Homeworld {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
+        val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
+          val planetFragment = PlanetFragment(reader)
+          Fragments(
+            planetFragment = planetFragment
+          )
+        }
+
         return Homeworld(
           __typename = __typename,
-          name = name
+          fragments = fragments
         )
+      }
+    }
+
+    data class Fragments(
+      val planetFragment: PlanetFragment
+    ) {
+      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+        planetFragment.marshaller().marshal(it)
       }
     }
   }

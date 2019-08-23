@@ -23,6 +23,10 @@ fragment starshipFragment on Starship {
 fragment pilotFragment on Person {
   name
   homeworld {
-    name
+    ...planetFragment
   }
+}
+
+fragment planetFragment on Planet {
+  name
 }

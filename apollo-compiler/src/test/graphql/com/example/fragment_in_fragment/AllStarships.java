@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class AllStarships implements Query<AllStarships.Data, Optional<AllStarships.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "6c00a8f52589439b636c7ae6e7d58dd405e41a856291dd869bcf9cd8aed85db2";
+  public static final String OPERATION_ID = "6c884a44241acb498fbd197e1738520da30e7af8f311c7c74c86094de2a548de";
 
   public static final String QUERY_DOCUMENT = "query AllStarships {\n"
       + "  allStarships(first: 7) {\n"
@@ -63,8 +63,12 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       + "  name\n"
       + "  homeworld {\n"
       + "    __typename\n"
-      + "    name\n"
+      + "    ...planetFragment\n"
       + "  }\n"
+      + "}\n"
+      + "fragment planetFragment on Planet {\n"
+      + "  __typename\n"
+      + "  name\n"
       + "}";
 
   public static final OperationName OPERATION_NAME = new OperationName() {

@@ -167,7 +167,7 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
 
   companion object {
     const val OPERATION_ID: String =
-        "6c00a8f52589439b636c7ae6e7d58dd405e41a856291dd869bcf9cd8aed85db2"
+        "6c884a44241acb498fbd197e1738520da30e7af8f311c7c74c86094de2a548de"
 
     val QUERY_DOCUMENT: String = """
         |query AllStarships {
@@ -202,8 +202,12 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
         |  name
         |  homeworld {
         |    __typename
-        |    name
+        |    ...planetFragment
         |  }
+        |}
+        |fragment planetFragment on Planet {
+        |  __typename
+        |  name
         |}
         """.trimMargin()
 
