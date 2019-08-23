@@ -115,7 +115,8 @@ data class TestQuery(
                 "green" to mapOf<String, Any>(
                   "kind" to "Variable",
                   "variableName" to "greenValue"),
-                "blue" to "0.0"))), true, null)
+                "blue" to "0.0"),
+              "listOfStringNonOptional" to "[]")), true, null)
           )
 
       operator fun invoke(reader: ResponseReader): Data {
@@ -132,11 +133,11 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "b884beff93e8ae07fb00cfbb6f95ce377673dc97fd56f4a3ce2608dc8f48a8b6"
+        "f1d03df0c38959ec6ddfb1deb5f26e7a5390b18b1e86b04925839f6dbbab186f"
 
     val QUERY_DOCUMENT: String = """
         |query TestQuery(${'$'}episode: Episode, ${'$'}stars: Int!, ${'$'}greenValue: Float!) {
-        |  heroWithReview(episode: ${'$'}episode, review: {stars: ${'$'}stars, favoriteColor: {red: 0, green: ${'$'}greenValue, blue: 0}}) {
+        |  heroWithReview(episode: ${'$'}episode, review: {stars: ${'$'}stars, favoriteColor: {red: 0, green: ${'$'}greenValue, blue: 0}, listOfStringNonOptional: []}) {
         |    __typename
         |    name
         |    height(unit: FOOT)

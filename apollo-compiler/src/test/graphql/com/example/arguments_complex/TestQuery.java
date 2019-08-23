@@ -33,10 +33,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, TestQuery.Variables> {
-  public static final String OPERATION_ID = "b884beff93e8ae07fb00cfbb6f95ce377673dc97fd56f4a3ce2608dc8f48a8b6";
+  public static final String OPERATION_ID = "f1d03df0c38959ec6ddfb1deb5f26e7a5390b18b1e86b04925839f6dbbab186f";
 
   public static final String QUERY_DOCUMENT = "query TestQuery($episode: Episode, $stars: Int!, $greenValue: Float!) {\n"
-      + "  heroWithReview(episode: $episode, review: {stars: $stars, favoriteColor: {red: 0, green: $greenValue, blue: 0}}) {\n"
+      + "  heroWithReview(episode: $episode, review: {stars: $stars, favoriteColor: {red: 0, green: $greenValue, blue: 0}, listOfStringNonOptional: []}) {\n"
       + "    __typename\n"
       + "    name\n"
       + "    height(unit: FOOT)\n"
@@ -185,7 +185,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         .put("kind", "Variable")
         .put("variableName", "episode")
         .build())
-      .put("review", new UnmodifiableMapBuilder<String, Object>(2)
+      .put("review", new UnmodifiableMapBuilder<String, Object>(3)
         .put("stars", new UnmodifiableMapBuilder<String, Object>(2)
           .put("kind", "Variable")
           .put("variableName", "stars")
@@ -198,6 +198,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
             .build())
           .put("blue", "0.0")
           .build())
+        .put("listOfStringNonOptional", "[]")
         .build())
       .build(), true, Collections.<ResponseField.Condition>emptyList())
     };
