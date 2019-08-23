@@ -48,7 +48,6 @@ dependencies {
   compileOnly dep.jetbrainsAnnotations
 
   implementation dep.apolloRuntime
-  implementation dep.apolloRxSupport
   implementation dep.apolloRx2Support
   implementation dep.apolloHttpCache
   implementation dep.appcompat
