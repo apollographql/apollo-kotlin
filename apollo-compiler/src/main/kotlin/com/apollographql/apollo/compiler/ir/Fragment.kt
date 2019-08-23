@@ -17,7 +17,6 @@ data class Fragment(
     val fields: List<Field>,
     val fragmentSpreads: List<String>,
     val inlineFragments: List<InlineFragment>,
-    val fragmentsReferenced: List<String>,
     val filePath: String?
 ) : CodeGenerator {
 
