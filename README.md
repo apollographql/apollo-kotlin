@@ -541,8 +541,8 @@ The Apollo GraphQL client comes with a [IdlingResource](https://developer.androi
 
 ```kotlin
 // Register the idlingResource before running your tests.
-// This should only be done once.
-val idlingResource = ApolloIdlingResource.create("idlingResourceName", apolloClient)
+// This should be done once per client. Register several IdlingResources with the same name will crash
+val idlingResource = ApolloIdlingResource.create("apolloClientIdlingResource", apolloClient)
 IdlingRegistry.getInstance().register(idlingResource)
 ```
 
