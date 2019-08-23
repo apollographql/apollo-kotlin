@@ -1,5 +1,16 @@
 query TestQuery($episode: Episode, $stars: Int!, $greenValue: Float!) {
-  heroWithReview(episode: $episode, review: {stars: $stars, favoriteColor: {red: 0, green: $greenValue, blue: 0}}) {
+  heroWithReview(
+    episode: $episode,
+    review: {
+      stars: $stars,
+      favoriteColor: {
+        red: 0
+        green: $greenValue
+        blue: 0
+      }
+      listOfStringNonOptional: []
+    }
+  ) {
     name
     height(unit: FOOT)
   }

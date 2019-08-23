@@ -19,7 +19,7 @@
 					"type": "Float!"
 				}
 			],
-			"source": "query TestQuery($episode: Episode, $stars: Int!, $greenValue: Float!) {\n  heroWithReview(episode: $episode, review: {stars: $stars, favoriteColor: {red: 0, green: $greenValue, blue: 0}}) {\n    __typename\n    name\n    height(unit: FOOT)\n  }\n}",
+			"source": "query TestQuery($episode: Episode, $stars: Int!, $greenValue: Float!) {\n  heroWithReview(episode: $episode, review: {stars: $stars, favoriteColor: {red: 0, green: $greenValue, blue: 0}, listOfStringNonOptional: []}) {\n    __typename\n    name\n    height(unit: FOOT)\n  }\n}",
 			"fields": [
 				{
 					"responseName": "heroWithReview",
@@ -48,7 +48,8 @@
 										"variableName": "greenValue"
 									},
 									"blue": 0
-								}
+								},
+								"listOfStringNonOptional": []
 							},
 							"type": "ReviewInput"
 						}
@@ -96,8 +97,8 @@
 			"fragmentSpreads": [],
 			"inlineFragments": [],
 			"fragmentsReferenced": [],
-			"sourceWithFragments": "query TestQuery($episode: Episode, $stars: Int!, $greenValue: Float!) {\n  heroWithReview(episode: $episode, review: {stars: $stars, favoriteColor: {red: 0, green: $greenValue, blue: 0}}) {\n    __typename\n    name\n    height(unit: FOOT)\n  }\n}",
-			"operationId": "4905a0fccc07f97ecd6d660f5a68d4d49ffedc3f4688b76d17288dec1a1fdf93"
+			"sourceWithFragments": "query TestQuery($episode: Episode, $stars: Int!, $greenValue: Float!) {\n  heroWithReview(episode: $episode, review: {stars: $stars, favoriteColor: {red: 0, green: $greenValue, blue: 0}, listOfStringNonOptional: []}) {\n    __typename\n    name\n    height(unit: FOOT)\n  }\n}",
+			"operationId": "f24dcd0e757d38f765f69725d8480935bb14b860bf5a09781f542d93f2443cd3"
 		}
 	],
 	"fragments": [],

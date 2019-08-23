@@ -128,7 +128,7 @@ value
    ;
 
 inlineInputType
-   : '{' inlineInputTypeField ( ',' inlineInputTypeField )* '}'
+   : '{' inlineInputTypeField ( ','? inlineInputTypeField )* '}'
    ;
 
 inlineInputTypeField
