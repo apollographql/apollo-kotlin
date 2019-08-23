@@ -1,12 +1,12 @@
 package com.apollographql.apollo.compiler.parser
 
 import com.squareup.moshi.JsonClass
+import com.squareup.moshi.JsonReader
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okio.Okio
 import java.io.File
-import java.lang.RuntimeException
 
 @JsonClass(generateAdapter = true)
 class Schema(
@@ -131,27 +131,54 @@ class Schema(
           )
           .add(KotlinJsonAdapterFactory())
           .build()
-      try {
-        val source = Okio.buffer(Okio.source(schemaFile.inputStream()))
-        val introspection = moshi.adapter(IntrospectionQuery::class.java).fromJson(source)
-        return Schema(
-            queryType = introspection!!.data.__schema.queryType?.name ?: "query",
-            mutationType = introspection.data.__schema.mutationType?.name ?: "mutation",
-            subscriptionType = introspection.data.__schema.subscriptionType?.name ?: "subscription",
-            types = introspection.data.__schema.types.associateBy { it.name }
-        )
+
+      val source = try {
+        Okio.buffer(Okio.source(schemaFile.inputStream()))
       } catch (e: Exception) {
         throw RuntimeException("Failed to parse GraphQL schema introspection query from `$schemaFile`", e)
       }
+
+      val jsonReader = JsonReader.of(source)
+      return try {
+        jsonReader.locateSchemaRootNode().parseSchema(moshi)
+      } catch (e: Exception) {
+        throw RuntimeException("Failed to parse GraphQL schema introspection query from `$schemaFile`", e)
+      } finally {
+        jsonReader.close()
+      }
+    }
+
+    private fun JsonReader.locateSchemaRootNode(): JsonReader {
+      beginObject()
+      return when (nextName()) {
+        "data" -> {
+          beginObject()
+          if (nextName() == "__schema") {
+            peekJson()
+          } else {
+            throw IllegalArgumentException("Failed to locate schema root node `__schema`")
+          }
+        }
+
+        "__schema" -> peekJson()
+
+        else -> throw IllegalArgumentException("Failed to locate schema root node `__schema`")
+      }
+    }
+
+    private fun JsonReader.parseSchema(moshi: Moshi): Schema {
+      val introspectionSchema = moshi.adapter(IntrospectionQuery.Schema::class.java).fromJson(this)!!
+      return Schema(
+          queryType = introspectionSchema.queryType?.name ?: "query",
+          mutationType = introspectionSchema.mutationType?.name ?: "mutation",
+          subscriptionType = introspectionSchema.subscriptionType?.name ?: "subscription",
+          types = introspectionSchema.types.associateBy { it.name }
+      )
     }
   }
 }
 
-@JsonClass(generateAdapter = true)
-data class IntrospectionQuery(val data: Data) {
-  @JsonClass(generateAdapter = true)
-  data class Data(val __schema: Schema)
-
+object IntrospectionQuery {
   @JsonClass(generateAdapter = true)
   data class QueryType(val name: String)
 
