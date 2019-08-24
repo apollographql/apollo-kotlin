@@ -11,7 +11,7 @@ import java.util.*
 class JavaTypeResolverTest {
   private val packageNameProvider = PackageNameProvider(
       schemaFilePath = "",
-      rootPackageName = null
+      rootPackageName = packageName
   )
   private val defaultContext = CodeGenerationContext(
       reservedTypeNames = emptyList(),
