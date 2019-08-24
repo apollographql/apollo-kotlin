@@ -13,8 +13,8 @@ class GraphQLCompiler {
   fun write(args: Arguments) {
     val ir = args.ir ?: irAdapter.fromJson(args.irFile!!.readText())!!
     val packageNameProvider = PackageNameProvider(
-        customPackageName = args.outputPackageName,
-        schemaFilePath = args.schemaFilePath
+        schemaFilePath = args.schemaFilePath,
+        rootPackageName = args.outputPackageName
     )
     val customTypeMap = args.customTypeMap.supportedTypeMap(ir.typesUsed)
     val context = CodeGenerationContext(

@@ -6,10 +6,10 @@ import org.junit.Test
 class PackageNameProviderTest {
 
   @Test
-  fun `when custom package not set format package name from schema location`() {
+  fun `when root package not set format package name from schema location`() {
     val packageNameProvider = PackageNameProvider(
         schemaFilePath = "src/main/graphql/com/sample/api/schema.json",
-        customPackageName = null
+        rootPackageName = null
     )
 
     assertThat(packageNameProvider.packageName).isEqualTo("com.sample.api")
@@ -24,10 +24,10 @@ class PackageNameProviderTest {
   }
 
   @Test
-  fun `when custom package name set format package name from it`() {
+  fun `when root package name set format package name from it`() {
     val packageNameProvider = PackageNameProvider(
         schemaFilePath = "src/main/graphql/com/sample/api/schema.json",
-        customPackageName = "com.mysample.graphql"
+        rootPackageName = "com.mysample.graphql"
     )
 
     assertThat(packageNameProvider.packageName).isEqualTo("com.mysample.graphql")
@@ -45,7 +45,7 @@ class PackageNameProviderTest {
   fun `when schema located at the root format package name`() {
     val packageNameProvider = PackageNameProvider(
         schemaFilePath = "src/main/graphql/schema.json",
-        customPackageName = "com.mysample.graphql"
+        rootPackageName = "com.mysample.graphql"
     )
 
     assertThat(packageNameProvider.packageName).isEqualTo("com.mysample.graphql")

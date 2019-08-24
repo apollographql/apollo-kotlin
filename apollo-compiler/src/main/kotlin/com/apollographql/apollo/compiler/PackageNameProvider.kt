@@ -2,9 +2,9 @@ package com.apollographql.apollo.compiler
 
 class PackageNameProvider(
     private val schemaFilePath: String,
-    customPackageName: String? = null
+    rootPackageName: String? = null
 ) {
-  val packageName: String = customPackageName?.takeIf { it.isNotEmpty() } ?: schemaFilePath.formatPackageName()
+  val packageName: String = rootPackageName?.takeIf { it.isNotEmpty() } ?: schemaFilePath.formatPackageName()
   val fragmentsPackageName: String = "$packageName.fragment"
   val typesPackageName: String = "$packageName.type"
 
