@@ -12,12 +12,9 @@ import java.io.File
 class GraphQLCompiler {
   fun write(args: Arguments) {
     val ir = args.ir ?: irAdapter.fromJson(args.irFile!!.readText())!!
-    val irPackageName = args.outputPackageName ?: args.irFile!!.absolutePath.formatPackageName()
     val packageNameProvider = PackageNameProvider(
-        rootPackageName = null,
-        rootDir = null,
-        irPackageName = irPackageName,
-        outputPackageName = args.outputPackageName
+        customPackageName = args.outputPackageName,
+        schemaFilePath = args.schemaFilePath
     )
     val customTypeMap = args.customTypeMap.supportedTypeMap(ir.typesUsed)
     val context = CodeGenerationContext(
@@ -34,9 +31,7 @@ class GraphQLCompiler {
         generateVisitorForPolymorphicDatatypes = args.generateVisitorForPolymorphicDatatypes
     )
 
-    if (irPackageName.isNotEmpty()) {
-      File(args.outputDir, irPackageName.replace('.', File.separatorChar)).deleteRecursively()
-    }
+    File(args.outputDir, packageNameProvider.packageName.replace('.', File.separatorChar)).deleteRecursively()
 
     if (args.generateKotlinModels) {
       GraphQLKompiler(
@@ -48,17 +43,16 @@ class GraphQLCompiler {
     } else {
       ir.writeJavaFiles(
           context = context,
-          outputDir = args.outputDir,
-          outputPackageName = args.outputPackageName
+          outputDir = args.outputDir
       )
     }
   }
 
-  private fun CodeGenerationIR.writeJavaFiles(context: CodeGenerationContext, outputDir: File, outputPackageName: String?) {
+  private fun CodeGenerationIR.writeJavaFiles(context: CodeGenerationContext, outputDir: File) {
     fragments.forEach {
       val typeSpec = it.toTypeSpec(context.copy())
       JavaFile
-          .builder(context.packageNameProvider.fragmentsPackageName(), typeSpec)
+          .builder(context.packageNameProvider.fragmentsPackageName, typeSpec)
           .addFileComment(AUTO_GENERATED_FILE)
           .build()
           .writeTo(outputDir)
@@ -67,7 +61,7 @@ class GraphQLCompiler {
     typesUsed.supportedTypeDeclarations().forEach {
       val typeSpec = it.toTypeSpec(context.copy())
       JavaFile
-          .builder(context.packageNameProvider.typesPackageName(), typeSpec)
+          .builder(context.packageNameProvider.typesPackageName, typeSpec)
           .addFileComment(AUTO_GENERATED_FILE)
           .build()
           .writeTo(outputDir)
@@ -76,7 +70,7 @@ class GraphQLCompiler {
     if (context.customTypeMap.isNotEmpty()) {
       val typeSpec = CustomEnumTypeSpecBuilder(context.copy()).build()
       JavaFile
-          .builder(context.packageNameProvider.typesPackageName(), typeSpec)
+          .builder(context.packageNameProvider.typesPackageName, typeSpec)
           .addFileComment(AUTO_GENERATED_FILE)
           .build()
           .writeTo(outputDir)
@@ -123,6 +117,7 @@ class GraphQLCompiler {
   data class Arguments(
       val irFile: File?,
       val ir: CodeGenerationIR? = null,
+      val schemaFilePath: String,
       val outputDir: File,
       val customTypeMap: Map<String, String>,
       val nullableValueType: NullableValueType,
@@ -134,5 +129,4 @@ class GraphQLCompiler {
       val generateKotlinModels: Boolean = false,
       val generateVisitorForPolymorphicDatatypes: Boolean = false
   )
-
 }

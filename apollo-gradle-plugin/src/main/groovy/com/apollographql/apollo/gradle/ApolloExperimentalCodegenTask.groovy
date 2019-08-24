@@ -1,7 +1,6 @@
 package com.apollographql.apollo.gradle
 
 import com.apollographql.apollo.compiler.GraphQLCompiler
-import com.apollographql.apollo.compiler.InflectorKt
 import com.apollographql.apollo.compiler.NullableValueType
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.parser.GraphQLDocumentParser
@@ -49,14 +48,10 @@ class ApolloExperimentalCodegenTask extends SourceTask {
     for (CodegenGenerationTaskCommandArgsBuilder.ApolloCodegenIRArgs codegenArg : codegenArgs) {
       Schema schema = Schema.parse(codegenArg.schemaFile)
       CodeGenerationIR codeGenerationIR = new GraphQLDocumentParser(schema).parse(codegenArg.queryFilePaths.toList().collect { new File(it) })
-      String outputPackageName = outputPackageName.get()
-      if (outputPackageName != null && outputPackageName.trim().isEmpty()) {
-        outputPackageName = InflectorKt.formatPackageName(codegenArg.irOutputFolder.absolutePath, false)
-      }
       GraphQLCompiler.Arguments args = new GraphQLCompiler.Arguments(
-          null, codeGenerationIR, outputDir.get().asFile, customTypeMapping.get(),
+          null, codeGenerationIR, codegenArg.schemaFile.absolutePath, outputDir.get().asFile, customTypeMapping.get(),
           nullableValueType != null ? nullableValueType : NullableValueType.ANNOTATED, useSemanticNaming.get(),
-          generateModelBuilder.get(), useJavaBeansSemanticNaming.get(), outputPackageName,
+          generateModelBuilder.get(), useJavaBeansSemanticNaming.get(), outputPackageName.get(),
           suppressRawTypesWarning.get(), generateKotlinModels.get(), generateVisitorForPolymorphicDatatypes.get()
       )
       new GraphQLCompiler().write(args)

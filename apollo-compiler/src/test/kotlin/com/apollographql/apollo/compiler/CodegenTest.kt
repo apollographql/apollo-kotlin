@@ -60,13 +60,10 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
   }
 
   private fun generateKotlinExpectedClasses(args: GraphQLCompiler.Arguments) {
-    val irPackageName = args.outputPackageName ?: args.irFile!!.absolutePath.formatPackageName()
     val ir = args.ir ?: GraphQLCompiler.parseIrFile(args.irFile!!)
     val packageNameProvider = PackageNameProvider(
-        rootPackageName = null,
-        rootDir = null,
-        irPackageName = irPackageName,
-        outputPackageName = args.outputPackageName
+        customPackageName = args.outputPackageName,
+        schemaFilePath = args.schemaFilePath
     )
     GraphQLKompiler(
         ir = ir,
@@ -150,9 +147,9 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
               else -> true
             }
 
+            val schemaJson = folder.listFiles().find { it.isFile && it.name == "schema.json" } ?: File("src/test/graphql/schema.json")
             val ir = if (folder.name != "nested_inline_fragment" && folder.name != "reserved_words" && folder.name != "scalar_types" &&
                 folder.name != "union_inline_fragments") {
-              val schemaJson = folder.listFiles().find { it.isFile && it.name == "schema.json" } ?: File("src/test/graphql/schema.json")
               val schema = Schema(schemaJson)
               val graphQLFile = File(folder, "TestOperation.graphql")
               GraphQLDocumentParser(schema).parse(listOf(graphQLFile))
@@ -162,6 +159,7 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
             val args = GraphQLCompiler.Arguments(
                 irFile = irFile,
                 ir = ir,
+                schemaFilePath = schemaJson.absolutePath,
                 outputDir = GraphQLCompiler.OUTPUT_DIRECTORY.plus("sources").fold(File("build"), ::File),
                 customTypeMap = customTypeMap,
                 nullableValueType = nullableValueType,

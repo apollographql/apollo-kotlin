@@ -619,7 +619,7 @@ class GraphQLDocumentParser(val schema: Schema) {
   }
 
   private fun List<Operation>.checkMultipleOperationDefinitions() {
-    groupBy { it.filePath.formatPackageName(dropLast = true) + it.operationName }
+    groupBy { it.filePath.formatPackageName() + it.operationName }
         .values
         .find { it.size > 1 }
         ?.last()

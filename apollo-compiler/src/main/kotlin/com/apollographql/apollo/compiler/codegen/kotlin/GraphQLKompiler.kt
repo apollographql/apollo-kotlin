@@ -19,15 +19,12 @@ class GraphQLKompiler(
     val customTypeMap = customTypeMap.supportedCustomTypes(ir.typesUsed)
     val schema = ir.ast(
         customTypeMap = customTypeMap,
-        typesPackageName = packageNameProvider.typesPackageName(),
-        fragmentsPackage = packageNameProvider.fragmentsPackageName(),
+        typesPackageName = packageNameProvider.typesPackageName,
+        fragmentsPackage = packageNameProvider.fragmentsPackageName,
         useSemanticNaming = useSemanticNaming
     )
 
-    val irPackageName = packageNameProvider.irPackageName
-    if (irPackageName.isNotEmpty()) {
-      File(outputDir, irPackageName.replace('.', File.separatorChar)).deleteRecursively()
-    }
+    File(outputDir, packageNameProvider.packageName.replace('.', File.separatorChar)).deleteRecursively()
 
     val schemaCodegen = SchemaCodegen(
         packageNameProvider = packageNameProvider

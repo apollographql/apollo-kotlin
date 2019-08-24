@@ -12,19 +12,19 @@ internal class SchemaCodegen(
   private var fileSpecs: List<FileSpec> = emptyList()
 
   override fun visit(customTypes: CustomTypes) {
-    fileSpecs = fileSpecs + customTypes.typeSpec().fileSpec(packageNameProvider.typesPackageName())
+    fileSpecs = fileSpecs + customTypes.typeSpec().fileSpec(packageNameProvider.typesPackageName)
   }
 
   override fun visit(enumType: EnumType) {
-    fileSpecs = fileSpecs + enumType.typeSpec().fileSpec(packageNameProvider.typesPackageName())
+    fileSpecs = fileSpecs + enumType.typeSpec().fileSpec(packageNameProvider.typesPackageName)
   }
 
   override fun visit(inputType: InputType) {
-    fileSpecs = fileSpecs + inputType.typeSpec().fileSpec(packageNameProvider.typesPackageName())
+    fileSpecs = fileSpecs + inputType.typeSpec().fileSpec(packageNameProvider.typesPackageName)
   }
 
   override fun visit(fragmentType: FragmentType) {
-    fileSpecs = fileSpecs + fragmentType.typeSpec().fileSpec(packageNameProvider.fragmentsPackageName())
+    fileSpecs = fileSpecs + fragmentType.typeSpec().fileSpec(packageNameProvider.fragmentsPackageName)
   }
 
   override fun visit(operationType: OperationType) {
