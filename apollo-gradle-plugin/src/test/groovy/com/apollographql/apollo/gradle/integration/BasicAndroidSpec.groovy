@@ -395,7 +395,7 @@ class BasicAndroidSpec extends Specification {
         "build/generated/source/apollo/generatedIR/debug/src/main/graphql/com/myexample/DebugAPI.json").isFile()
     assert new File(testProjectDir,
         "build/generated/source/apollo/generatedIR/release/src/main/graphql/com/myexample/ReleaseAPI.json").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/myexample/DroidDetails.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/myexample/com/example/DroidDetails.java").isFile()
   }
 
   def "remove graphql files, builds successfully and generates expected outputs"() {
@@ -413,9 +413,9 @@ class BasicAndroidSpec extends Specification {
     then:
     result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
     // Java classes generated successfully
-    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/myexample/DroidDetails.java").isFile()
-    assert !new File(testProjectDir, "build/generated/source/apollo/classes/com/myexample/Films.java").exists()
-    assert !new File(testProjectDir, "build/generated/source/apollo/classes/fragment/SpeciesInformation.java").exists()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/myexample/com/example/DroidDetails.java").isFile()
+    assert !new File(testProjectDir, "build/generated/source/apollo/classes/com/myexample/com/example/Films.java").exists()
+    assert !new File(testProjectDir, "build/generated/source/apollo/classes/com/myexample/fragment/SpeciesInformation.java").exists()
   }
 
   def cleanupSpec() {
