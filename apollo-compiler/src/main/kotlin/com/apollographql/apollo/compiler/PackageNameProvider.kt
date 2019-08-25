@@ -18,15 +18,15 @@ class PackageNameProvider(
     rootPackageName: String? = null
 ) {
   val packageName: String = rootPackageName?.takeIf { it.isNotEmpty() } ?: schemaFilePath.formatPackageName()
-  val fragmentsPackageName: String = "$packageName.fragment"
-  val typesPackageName: String = "$packageName.type"
+  val fragmentsPackageName: String = "$packageName.fragment".removePrefix(".")
+  val typesPackageName: String = "$packageName.type".removePrefix(".")
 
   fun operationPackageName(operationFilePath: String): String {
     val relativePackageName = operationFilePath.formatPackageName()
-        .replace(schemaFilePath.formatPackageName(), "")
-        .replace("..", ".")
+        .removePrefix(schemaFilePath.formatPackageName())
+        .removePrefix(".")
         .removePrefix(packageName)
         .removePrefix(".")
-    return "$packageName.$relativePackageName".removeSuffix(".")
+    return "$packageName.$relativePackageName".removePrefix(".").removeSuffix(".")
   }
 }

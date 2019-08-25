@@ -16,7 +16,7 @@ class PackageNameProviderTest {
     assertThat(packageNameProvider.fragmentsPackageName).isEqualTo("com.sample.api.fragment")
     assertThat(packageNameProvider.typesPackageName).isEqualTo("com.sample.api.type")
 
-     assertThat(packageNameProvider.operationPackageName("src/main/graphql/com/sample/api/query.graphql")).isEqualTo("com.sample.api")
+    assertThat(packageNameProvider.operationPackageName("src/main/graphql/com/sample/api/query.graphql")).isEqualTo("com.sample.api")
     assertThat(packageNameProvider.operationPackageName("src/main/graphql/com/sample/api/features/query.graphql"))
         .isEqualTo("com.sample.api.features")
     assertThat(packageNameProvider.operationPackageName("src/main/graphql/com/sample/api/features/feature/query.graphql"))
@@ -42,7 +42,28 @@ class PackageNameProviderTest {
   }
 
   @Test
-  fun `when schema located at the root format package name`() {
+  fun `when schema located at the root and root package name not set, format package name`() {
+    val packageNameProvider = PackageNameProvider(
+        schemaFilePath = "src/main/graphql/schema.json",
+        rootPackageName = null
+    )
+
+    assertThat(packageNameProvider.packageName).isEqualTo("")
+    assertThat(packageNameProvider.fragmentsPackageName).isEqualTo("fragment")
+    assertThat(packageNameProvider.typesPackageName).isEqualTo("type")
+
+    assertThat(packageNameProvider.operationPackageName("src/main/graphql/sample/api/query.graphql"))
+        .isEqualTo("sample.api")
+    assertThat(packageNameProvider.operationPackageName("src/main/graphql/com/mysample/graphql/query.graphql"))
+        .isEqualTo("com.mysample.graphql")
+    assertThat(packageNameProvider.operationPackageName("src/main/graphql/com/mysample/graphql/features/query.graphql"))
+        .isEqualTo("com.mysample.graphql.features")
+    assertThat(packageNameProvider.operationPackageName("src/main/graphql/com/mysample/graphql/features/feature/query.graphql"))
+        .isEqualTo("com.mysample.graphql.features.feature")
+  }
+
+  @Test
+  fun `when schema located at the root and root package name set, format package name`() {
     val packageNameProvider = PackageNameProvider(
         schemaFilePath = "src/main/graphql/schema.json",
         rootPackageName = "com.mysample.graphql"
