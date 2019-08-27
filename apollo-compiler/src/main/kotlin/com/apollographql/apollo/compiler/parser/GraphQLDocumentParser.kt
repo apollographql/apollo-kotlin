@@ -126,7 +126,10 @@ class GraphQLDocumentParser(val schema: Schema) {
 
   private fun GraphQLParser.OperationDefinitionContext.parse(graphQLFilePath: String): ParseResult<Operation> {
     val operationType = operationType().text
-    val operationName = NAME().text
+    val operationName = NAME()?.text ?: throw ParseException(
+        message = "Apollo does not support anonymous operations",
+        token = operationType().start
+    )
     val variables = variableDefinitions().parse()
     val schemaType = operationType().schemaType()
     val fields = selectionSet().parse(schemaType).also { fields ->

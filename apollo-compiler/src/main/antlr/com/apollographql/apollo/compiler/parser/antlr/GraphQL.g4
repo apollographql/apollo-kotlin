@@ -36,7 +36,7 @@ definition
    ;
 
 operationDefinition
-   : operationType NAME variableDefinitions? directives? selectionSet
+   : operationType NAME? variableDefinitions? directives? selectionSet
    ;
 
 selectionSet
