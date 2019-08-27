@@ -12,7 +12,7 @@ import java.io.File
 class GraphQLCompiler {
   fun write(args: Arguments) {
     val ir = args.ir ?: irAdapter.fromJson(args.irFile!!.readText())!!
-    val irPackageName = args.outputPackageName ?: args.irFile!!.absolutePath.formatPackageName()
+    val irPackageName = args.irPackageName
     val packageNameProvider = PackageNameProvider(
         rootPackageName = null,
         rootDir = null,
@@ -48,13 +48,12 @@ class GraphQLCompiler {
     } else {
       ir.writeJavaFiles(
           context = context,
-          outputDir = args.outputDir,
-          outputPackageName = args.outputPackageName
+          outputDir = args.outputDir
       )
     }
   }
 
-  private fun CodeGenerationIR.writeJavaFiles(context: CodeGenerationContext, outputDir: File, outputPackageName: String?) {
+  private fun CodeGenerationIR.writeJavaFiles(context: CodeGenerationContext, outputDir: File) {
     fragments.forEach {
       val typeSpec = it.toTypeSpec(context.copy())
       JavaFile
@@ -129,10 +128,10 @@ class GraphQLCompiler {
       val useSemanticNaming: Boolean,
       val generateModelBuilder: Boolean,
       val useJavaBeansSemanticNaming: Boolean,
+      val irPackageName: String,
       val outputPackageName: String?,
       val suppressRawTypesWarning: Boolean,
       val generateKotlinModels: Boolean = false,
       val generateVisitorForPolymorphicDatatypes: Boolean = false
   )
-
 }

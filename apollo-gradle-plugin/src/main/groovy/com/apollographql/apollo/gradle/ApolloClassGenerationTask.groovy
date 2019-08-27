@@ -52,10 +52,12 @@ class ApolloClassGenerationTask extends SourceTask {
         if (outputPackageName != null && outputPackageName.trim().isEmpty()) {
           outputPackageName = null
         }
+        String irPackageName = outputPackageName ?: inputFile.absolutePath.formatPackageName()
+
         GraphQLCompiler.Arguments args = new GraphQLCompiler.Arguments(
             inputFile, null, outputDir.get().asFile, customTypeMapping.get(),
             nullableValueType != null ? nullableValueType : NullableValueType.ANNOTATED, useSemanticNaming.get(),
-            generateModelBuilder.get(), useJavaBeansSemanticNaming.get(), outputPackageName,
+            generateModelBuilder.get(), useJavaBeansSemanticNaming.get(), irPackageName, outputPackageName,
             suppressRawTypesWarning.get(), generateKotlinModels.get(), generateVisitorForPolymorphicDatatypes.get()
         )
         new GraphQLCompiler().write(args)

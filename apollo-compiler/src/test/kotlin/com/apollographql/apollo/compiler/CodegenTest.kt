@@ -159,6 +159,8 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
             } else null
 
             val irFile = File(folder, "TestOperation.json")
+            val outputPackageName = "com.example.${folder.name}"
+
             val args = GraphQLCompiler.Arguments(
                 irFile = irFile,
                 ir = ir,
@@ -169,7 +171,8 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
                 generateModelBuilder = generateModelBuilder,
                 useJavaBeansSemanticNaming = useJavaBeansSemanticNaming,
                 suppressRawTypesWarning = suppressRawTypesWarning,
-                outputPackageName = "com.example.${folder.name}",
+                irPackageName = outputPackageName,
+                outputPackageName = outputPackageName,
                 generateVisitorForPolymorphicDatatypes = generateVisitorForPolymorphicDatatypes
             )
             arrayOf(folder.name, args)
