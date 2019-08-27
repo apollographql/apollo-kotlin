@@ -50,6 +50,9 @@ class ApolloExperimentalCodegenTask extends SourceTask {
       Schema schema = Schema.parse(codegenArg.schemaFile)
       CodeGenerationIR codeGenerationIR = new GraphQLDocumentParser(schema).parse(codegenArg.queryFilePaths.toList().collect { new File(it) })
       String outputPackageName = outputPackageName.get()
+      if (outputPackageName != null && outputPackageName.trim().isEmpty()) {
+        outputPackageName = null
+      }
       String irPackageName =  InflectorKt.formatPackageName(codegenArg.irOutputFolder.absolutePath, false)
 
       GraphQLCompiler.Arguments args = new GraphQLCompiler.Arguments(

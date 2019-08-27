@@ -32,10 +32,6 @@ class PackageNameProvider(
   }
 
   fun operationPackageName(filePath: String): String {
-    return if (outputPackageName.isNullOrEmpty()) {
-      filePath.formatPackageName()
-    } else {
-      outputPackageName
-    }
+   return outputPackageName ?: filePath.formatPackageName()
   }
 }
