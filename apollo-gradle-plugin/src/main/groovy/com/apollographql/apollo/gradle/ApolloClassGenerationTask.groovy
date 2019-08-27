@@ -1,6 +1,7 @@
 package com.apollographql.apollo.gradle
 
 import com.apollographql.apollo.compiler.GraphQLCompiler
+import com.apollographql.apollo.compiler.InflectorKt
 import com.apollographql.apollo.compiler.NullableValueType
 import com.google.common.base.Joiner
 import org.gradle.api.Action
@@ -52,10 +53,12 @@ class ApolloClassGenerationTask extends SourceTask {
         if (outputPackageName != null && outputPackageName.trim().isEmpty()) {
           outputPackageName = null
         }
+        String irPackageName = outputPackageName ?: InflectorKt.formatPackageName(inputFile.absolutePath, true)
+
         GraphQLCompiler.Arguments args = new GraphQLCompiler.Arguments(
             inputFile, null, outputDir.get().asFile, customTypeMapping.get(),
             nullableValueType != null ? nullableValueType : NullableValueType.ANNOTATED, useSemanticNaming.get(),
-            generateModelBuilder.get(), useJavaBeansSemanticNaming.get(), outputPackageName,
+            generateModelBuilder.get(), useJavaBeansSemanticNaming.get(), irPackageName, outputPackageName,
             suppressRawTypesWarning.get(), generateKotlinModels.get(), generateVisitorForPolymorphicDatatypes.get()
         )
         new GraphQLCompiler().write(args)
