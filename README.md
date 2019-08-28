@@ -18,13 +18,14 @@ Apollo-Android is designed primarily with Android in mind but you can use it in 
 - [Consuming Code](#consuming-code)
 - [Custom Scalar Types](#custom-scalar-types)
 - [Support For Cached Responses](#support-for-cached-responses)
-- [RxJava Support](#rxjava-support)
+- [RxJava2 Support](#rxjava2-support)
+- [Coroutines Support](#coroutines-support)
+- [Android Espresso Support](#android-espresso-support)
 - [Gradle Configuration of Apollo Android](#gradle-configuration-of-apollo-android)
   - [Optional Support](#optional-support)
   - [Semantic Naming](#semantic-naming)
   - [Java Beans Semantic Naming for Accessors](#java-beans-semantic-naming-for-accessors)
   - [Explicit Schema location](#explicit-schema-location)
-  - [Use system pre-installed apollo-codegen](#use-system-pre-installed-apollo-codegen)
   - [Kotlin model generation (experimental)](#kotlin-model-generation-experimental)
 - [License](#license)
 
@@ -428,11 +429,11 @@ NormalizedCacheFactory memoryFirstThenSqlCacheFactory = new LruNormalizedCacheFa
 For concrete examples of using response caches, please see the following tests in the [`apollo-integration`](apollo-integration) module:
 `CacheTest`, `SqlNormalizedCacheTest`, `LruNormalizedCacheTest`. 
 
-## RxJava Support
+## RxJava2 Support
 
-Apollo GraphQL client comes with RxJava1 & RxJava2 support.
+The Apollo GraphQL client comes with RxJava2 support.
 
-Apollo types can be converted to RxJava1 & RxJava2 `Observable` *types* using wrapper functions `RxApollo.from(...)` & `Rx2Apollo.from(...)` (respectively).
+Apollo types can be converted to RxJava2 `Observable` *types* using wrapper functions `Rx2Apollo.from(...)`.
 
 Conversion is done according to the following table:
 
@@ -446,7 +447,7 @@ Conversion is done according to the following table:
 
 #### Including in your project
 
-Add one of the following `dependencies`:
+Add the following `dependency`:
 
 [ ![apollo-rx2-support](https://img.shields.io/bintray/v/apollographql/android/apollo-rx2-support.svg?label=apollo-rx2-support) ](https://bintray.com/apollographql/android/apollo-rx2-support/_latestVersion)
 ```gradle
@@ -504,6 +505,55 @@ disposable.clear();
 
 
 For a concrete example of using Rx wrappers for apollo types, checkout the sample app in the [`apollo-sample`](samples/apollo-sample) module.
+
+## Coroutines Support
+
+The Apollo GraphQL client comes with coroutines support with the following extensions:
+
+```kotlin
+fun <T> ApolloCall<T>.toChannel(capacity: Int = Channel.UNLIMITED): Channel<Response<T>>
+fun <T> ApolloCall<T>.toDeferred(): Deferred<Response<T>>
+fun <T> ApolloSubscriptionCall<T>.toChannel(capacity: Int = Channel.UNLIMITED): Channel<Response<T>>
+fun <T> ApolloQueryWatcher<T>.toChannel(capacity: Int = Channel.UNLIMITED): Channel<Response<T>>
+fun ApolloPrefetch.toJob(): Job
+```
+
+#### Including in your project
+
+Add the following `dependency`:
+
+[ ![apollo-coroutines-support](https://img.shields.io/bintray/v/apollographql/android/apollo-coroutines-support.svg?label=apollo-coroutines-coroutines) ](https://bintray.com/apollographql/android/apollo-coroutines-support/_latestVersion)
+```gradle
+repositories {
+    maven {
+        // The coroutines artifact is not deployed on jcenter yet
+        // See https://github.com/apollographql/apollo-android/issues/1325
+        url = uri("http://dl.bintray.com/apollographql/android")
+    }
+}
+
+implementation 'com.apollographql.apollo:apollo-coroutines-support:x.y.z'
+```
+
+## Android Espresso support
+
+The Apollo GraphQL client comes with a [IdlingResource](https://developer.android.com/training/testing/espresso/idling-resource) to use during your Android UI tests.
+
+```kotlin
+// Register the idlingResource before running your tests.
+// This should be done once per client. Register several IdlingResources with the same name will crash
+val idlingResource = ApolloIdlingResource.create("apolloClientIdlingResource", apolloClient)
+IdlingRegistry.getInstance().register(idlingResource)
+```
+
+#### Including in your project
+
+Add the following `dependency`:
+
+[ ![apollo-espresso-support](https://img.shields.io/bintray/v/apollographql/android/apollo-espresso-support.svg?label=apollo-espresso-support) ](https://bintray.com/apollographql/android/apollo-espresso-support/_latestVersion)
+```gradle
+implementation 'com.apollographql.apollo:apollo-espresso-support:x.y.z'
+```
 
 ##  Gradle Configuration of Apollo Android
 Apollo Android comes with logical defaults that will work for the majority of use cases, below you will find additional configuration that will add Optional Support & Semantic Query Naming.
@@ -624,15 +674,13 @@ apollo {
 }
 ```
 
-### Kotlin model generation (experimental)
+### Kotlin model generation
 By default Apollo Gradle plugin generates Java models but you can configure it to generate Kotlin models instead:
 ```groovy
 apollo {
   generateKotlinModels = true
 }
 ```
-
-It is still an experimental and not finalized yet. The structure of generated models is subject to change.
 
 ## License
 
