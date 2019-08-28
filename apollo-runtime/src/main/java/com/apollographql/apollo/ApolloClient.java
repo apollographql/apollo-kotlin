@@ -237,6 +237,15 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   }
 
   /**
+   * <p>Set the API server's base url.</p>
+   *
+   * @param serverUrl the url to set.
+   */
+  public void setServerUrl(HttpUrl serverUrl) {
+    this.serverUrl = serverUrl;   
+  }
+
+  /**
    * Returns the count of {@link ApolloCall} & {@link ApolloPrefetch} objects which are currently in progress.
    */
   public int activeCallsCount() {
