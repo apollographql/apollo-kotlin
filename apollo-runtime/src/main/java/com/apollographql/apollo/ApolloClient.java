@@ -76,7 +76,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     return new Builder();
   }
 
-  private final HttpUrl serverUrl;
+  private HttpUrl serverUrl;
   private final Call.Factory httpCallFactory;
   private final HttpCache httpCache;
   private final ApolloStore apolloStore;
