@@ -13,7 +13,7 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.*
 
 @CacheableTask
-class ApolloExperimentalCodegenTask extends SourceTask {
+class ApolloCodegenTask extends SourceTask {
   static final String NAME = "generate%sApolloClasses"
 
   @Input Property<String> variant = project.objects.property(String.class)
@@ -40,23 +40,23 @@ class ApolloExperimentalCodegenTask extends SourceTask {
         NullableValueType.values().find { it.value == nullableValueTypeStr } : null
 
     List<String> sourceSets = sourceSetNames.get().collect { it.toString() }
-    List<CodegenGenerationTaskCommandArgsBuilder.ApolloCodegenIRArgs> codegenArgs = new CodegenGenerationTaskCommandArgsBuilder(
+    List<CodegenGenerationTaskCommandArgsBuilder.ApolloCodegenArgs> codegenArgs = new CodegenGenerationTaskCommandArgsBuilder(
         this, schemaFilePath.get(), outputPackageName.get(), outputDir.get().asFile, variant.get(), sourceSets
     ).buildCodegenArgs()
 
     outputDir.asFile.get().delete()
 
-    for (CodegenGenerationTaskCommandArgsBuilder.ApolloCodegenIRArgs codegenArg : codegenArgs) {
+    for (CodegenGenerationTaskCommandArgsBuilder.ApolloCodegenArgs codegenArg : codegenArgs) {
       Schema schema = Schema.parse(codegenArg.schemaFile)
       CodeGenerationIR codeGenerationIR = new GraphQLDocumentParser(schema).parse(codegenArg.queryFilePaths.toList().collect { new File(it) })
       String outputPackageName = outputPackageName.get()
       if (outputPackageName != null && outputPackageName.trim().isEmpty()) {
         outputPackageName = null
       }
-      String irPackageName =  InflectorKt.formatPackageName(codegenArg.irOutputFolder.absolutePath, false)
+      String irPackageName =  InflectorKt.formatPackageName(codegenArg.outputFolder.absolutePath, false)
 
       GraphQLCompiler.Arguments args = new GraphQLCompiler.Arguments(
-          null, codeGenerationIR, outputDir.get().asFile, customTypeMapping.get(),
+          codeGenerationIR, outputDir.get().asFile, customTypeMapping.get(),
           nullableValueType != null ? nullableValueType : NullableValueType.ANNOTATED, useSemanticNaming.get(),
           generateModelBuilder.get(), useJavaBeansSemanticNaming.get(), irPackageName, outputPackageName,
           suppressRawTypesWarning.get(), generateKotlinModels.get(), generateVisitorForPolymorphicDatatypes.get()

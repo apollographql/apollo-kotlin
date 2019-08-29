@@ -655,17 +655,6 @@ apollo {
 }
 ```
 
-### Use system pre-installed `apollo-codegen`
-By default Apollo will enable gradle plugin that installs Node-JS and downloads `apollo-codegen` module into your project's build directory. If you already have Node-JS and `apollo-codegen` module installed on your computer, you can enable Apollo to use it and skip these steps. Apollo will fallback to default behaviour if verification of pre-installed version of `apollo-codegen` fails.          
-
-#### Usage
-To enable usage of pre-installed `apollo-codegen` module, set gradle system property `apollographql.useGlobalApolloCodegen` (for example in `gradle.properties` file):
-```properties
-systemProp.apollographql.useGlobalApolloCodegen=true
-```
-
-Note that this requires exactly version `0.19.1` (not older, not newer). You can install this conventionally via `npm install -g apollo-codegen@0.19.1`.
-
 ### Visitor generation for polymorphic datatypes
 Apollo Gradle plugin also supports generating visitors for compile-time safe handling of polymorphic datatypes. By default the feature is turned off since it requires source/target compatibility with Java 1.8. To opt into visitor generation:
 ```groovy
