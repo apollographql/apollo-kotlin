@@ -5,6 +5,7 @@
 //
 package com.example.fragment_with_inline_fragment.fragment;
 
+import com.apollographql.apollo.api.FragmentResponseFieldMapper;
 import com.apollographql.apollo.api.GraphqlFragment;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
@@ -29,6 +30,9 @@ import org.jetbrains.annotations.Nullable;
 public interface HeroDetails extends GraphqlFragment {
   String FRAGMENT_DEFINITION = "fragment HeroDetails on Character {\n"
       + "  __typename\n"
+      + "  ... on Droid {\n"
+      + "    ...DroidDetails\n"
+      + "  }\n"
       + "  name\n"
       + "  friendsConnection {\n"
       + "    __typename\n"
@@ -40,10 +44,6 @@ public interface HeroDetails extends GraphqlFragment {
       + "        name\n"
       + "      }\n"
       + "    }\n"
-      + "  }\n"
-      + "  ... on Droid {\n"
-      + "    name\n"
-      + "    primaryFunction\n"
       + "  }\n"
       + "}";
 
@@ -143,7 +143,7 @@ public interface HeroDetails extends GraphqlFragment {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forObject("friendsConnection", "friendsConnection", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forString("primaryFunction", "primaryFunction", null, true, Collections.<ResponseField.Condition>emptyList())
+      ResponseField.forFragment("__typename", "__typename", Arrays.asList("Droid"))
     };
 
     final @NotNull String __typename;
@@ -152,7 +152,7 @@ public interface HeroDetails extends GraphqlFragment {
 
     final @NotNull FriendsConnection1 friendsConnection;
 
-    final Optional<String> primaryFunction;
+    private final @NotNull Fragments fragments;
 
     private transient volatile String $toString;
 
@@ -161,11 +161,11 @@ public interface HeroDetails extends GraphqlFragment {
     private transient volatile boolean $hashCodeMemoized;
 
     public AsDroid(@NotNull String __typename, @NotNull String name,
-        @NotNull FriendsConnection1 friendsConnection, @Nullable String primaryFunction) {
+        @NotNull FriendsConnection1 friendsConnection, @NotNull Fragments fragments) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.name = Utils.checkNotNull(name, "name == null");
       this.friendsConnection = Utils.checkNotNull(friendsConnection, "friendsConnection == null");
-      this.primaryFunction = Optional.fromNullable(primaryFunction);
+      this.fragments = Utils.checkNotNull(fragments, "fragments == null");
     }
 
     public @NotNull String __typename() {
@@ -186,11 +186,8 @@ public interface HeroDetails extends GraphqlFragment {
       return this.friendsConnection;
     }
 
-    /**
-     * This droid's primary function
-     */
-    public Optional<String> primaryFunction() {
-      return this.primaryFunction;
+    public @NotNull Fragments fragments() {
+      return this.fragments;
     }
 
     @SuppressWarnings("unchecked")
@@ -201,7 +198,7 @@ public interface HeroDetails extends GraphqlFragment {
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], name);
           writer.writeObject($responseFields[2], friendsConnection.marshaller());
-          writer.writeString($responseFields[3], primaryFunction.isPresent() ? primaryFunction.get() : null);
+          fragments.marshaller().marshal(writer);
         }
       };
     }
@@ -213,7 +210,7 @@ public interface HeroDetails extends GraphqlFragment {
           + "__typename=" + __typename + ", "
           + "name=" + name + ", "
           + "friendsConnection=" + friendsConnection + ", "
-          + "primaryFunction=" + primaryFunction
+          + "fragments=" + fragments
           + "}";
       }
       return $toString;
@@ -229,7 +226,7 @@ public interface HeroDetails extends GraphqlFragment {
         return this.__typename.equals(that.__typename)
          && this.name.equals(that.name)
          && this.friendsConnection.equals(that.friendsConnection)
-         && this.primaryFunction.equals(that.primaryFunction);
+         && this.fragments.equals(that.fragments);
       }
       return false;
     }
@@ -245,7 +242,7 @@ public interface HeroDetails extends GraphqlFragment {
         h *= 1000003;
         h ^= friendsConnection.hashCode();
         h *= 1000003;
-        h ^= primaryFunction.hashCode();
+        h ^= fragments.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -257,7 +254,7 @@ public interface HeroDetails extends GraphqlFragment {
       builder.__typename = __typename;
       builder.name = name;
       builder.friendsConnection = friendsConnection;
-      builder.primaryFunction = primaryFunction.isPresent() ? primaryFunction.get() : null;
+      builder.fragments = fragments;
       return builder;
     }
 
@@ -265,8 +262,113 @@ public interface HeroDetails extends GraphqlFragment {
       return new Builder();
     }
 
+    public static class Fragments {
+      final Optional<DroidDetails> droidDetails;
+
+      private transient volatile String $toString;
+
+      private transient volatile int $hashCode;
+
+      private transient volatile boolean $hashCodeMemoized;
+
+      public Fragments(@Nullable DroidDetails droidDetails) {
+        this.droidDetails = Optional.fromNullable(droidDetails);
+      }
+
+      public Optional<DroidDetails> droidDetails() {
+        return this.droidDetails;
+      }
+
+      public ResponseFieldMarshaller marshaller() {
+        return new ResponseFieldMarshaller() {
+          @Override
+          public void marshal(ResponseWriter writer) {
+            final DroidDetails $droidDetails = droidDetails.isPresent() ? droidDetails.get() : null;
+            if ($droidDetails != null) {
+              $droidDetails.marshaller().marshal(writer);
+            }
+          }
+        };
+      }
+
+      @Override
+      public String toString() {
+        if ($toString == null) {
+          $toString = "Fragments{"
+            + "droidDetails=" + droidDetails
+            + "}";
+        }
+        return $toString;
+      }
+
+      @Override
+      public boolean equals(Object o) {
+        if (o == this) {
+          return true;
+        }
+        if (o instanceof Fragments) {
+          Fragments that = (Fragments) o;
+          return this.droidDetails.equals(that.droidDetails);
+        }
+        return false;
+      }
+
+      @Override
+      public int hashCode() {
+        if (!$hashCodeMemoized) {
+          int h = 1;
+          h *= 1000003;
+          h ^= droidDetails.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
+        }
+        return $hashCode;
+      }
+
+      public Builder toBuilder() {
+        Builder builder = new Builder();
+        builder.droidDetails = droidDetails.isPresent() ? droidDetails.get() : null;
+        return builder;
+      }
+
+      public static Builder builder() {
+        return new Builder();
+      }
+
+      public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
+        final DroidDetails.Mapper droidDetailsFieldMapper = new DroidDetails.Mapper();
+
+        @Override
+        public @NotNull Fragments map(ResponseReader reader, @NotNull String conditionalType) {
+          DroidDetails droidDetails = null;
+          if (DroidDetails.POSSIBLE_TYPES.contains(conditionalType)) {
+            droidDetails = droidDetailsFieldMapper.map(reader);
+          }
+          return new Fragments(droidDetails);
+        }
+      }
+
+      public static final class Builder {
+        private @Nullable DroidDetails droidDetails;
+
+        Builder() {
+        }
+
+        public Builder droidDetails(@Nullable DroidDetails droidDetails) {
+          this.droidDetails = droidDetails;
+          return this;
+        }
+
+        public Fragments build() {
+          return new Fragments(droidDetails);
+        }
+      }
+    }
+
     public static final class Mapper implements ResponseFieldMapper<AsDroid> {
       final FriendsConnection1.Mapper friendsConnection1FieldMapper = new FriendsConnection1.Mapper();
+
+      final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
 
       @Override
       public AsDroid map(ResponseReader reader) {
@@ -278,8 +380,13 @@ public interface HeroDetails extends GraphqlFragment {
             return friendsConnection1FieldMapper.map(reader);
           }
         });
-        final String primaryFunction = reader.readString($responseFields[3]);
-        return new AsDroid(__typename, name, friendsConnection, primaryFunction);
+        final Fragments fragments = reader.readConditional($responseFields[3], new ResponseReader.ConditionalTypeReader<Fragments>() {
+          @Override
+          public Fragments read(String conditionalType, ResponseReader reader) {
+            return fragmentsFieldMapper.map(reader, conditionalType);
+          }
+        });
+        return new AsDroid(__typename, name, friendsConnection, fragments);
       }
     }
 
@@ -290,7 +397,7 @@ public interface HeroDetails extends GraphqlFragment {
 
       private @NotNull FriendsConnection1 friendsConnection;
 
-      private @Nullable String primaryFunction;
+      private @NotNull Fragments fragments;
 
       Builder() {
       }
@@ -310,8 +417,8 @@ public interface HeroDetails extends GraphqlFragment {
         return this;
       }
 
-      public Builder primaryFunction(@Nullable String primaryFunction) {
-        this.primaryFunction = primaryFunction;
+      public Builder fragments(@NotNull Fragments fragments) {
+        this.fragments = fragments;
         return this;
       }
 
@@ -323,11 +430,20 @@ public interface HeroDetails extends GraphqlFragment {
         return this;
       }
 
+      public Builder fragments(@NotNull Mutator<Fragments.Builder> mutator) {
+        Utils.checkNotNull(mutator, "mutator == null");
+        Fragments.Builder builder = this.fragments != null ? this.fragments.toBuilder() : Fragments.builder();
+        mutator.accept(builder);
+        this.fragments = builder.build();
+        return this;
+      }
+
       public AsDroid build() {
         Utils.checkNotNull(__typename, "__typename == null");
         Utils.checkNotNull(name, "name == null");
         Utils.checkNotNull(friendsConnection, "friendsConnection == null");
-        return new AsDroid(__typename, name, friendsConnection, primaryFunction);
+        Utils.checkNotNull(fragments, "fragments == null");
+        return new AsDroid(__typename, name, friendsConnection, fragments);
       }
     }
   }

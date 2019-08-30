@@ -520,7 +520,7 @@ class GraphQLDocumentParser(val schema: Schema) {
 
   private fun Schema.Type.InputObject.usedTypes(exclude: Set<String>): Set<String> {
     val usedTypes = inputFields.map { field -> field.type.rawType.name!! }.subtract(exclude)
-    val usedInputObjects = usedTypes.mapNotNull {schema[it] as? Schema.Type.InputObject }
+    val usedInputObjects = usedTypes.mapNotNull { schema[it] as? Schema.Type.InputObject }
     return usedTypes + usedInputObjects.flatMap { inputObject -> inputObject.usedTypes(exclude + usedTypes) }
   }
 
@@ -642,10 +642,7 @@ class GraphQLDocumentParser(val schema: Schema) {
   private fun List<Field>.referencedFragmentNames(fragments: List<Fragment>, filePath: String): Set<String> {
     val referencedFragmentNames = flatMap { it.fragmentSpreads ?: emptyList() } +
         flatMap { it.fields?.referencedFragmentNames(fragments = fragments, filePath = filePath) ?: emptySet() } +
-        flatMap { it.inlineFragments?.flatMap { it.fragmentSpreads ?: emptyList() } ?: emptyList() } +
-        flatMap {
-          it.inlineFragments?.flatMap { it.fields.referencedFragmentNames(fragments = fragments, filePath = filePath) } ?: emptyList()
-        }
+        flatMap { it.inlineFragments?.flatMap { it.referencedFragments(fragments = fragments, filePath = filePath) } ?: emptyList() }
     return referencedFragmentNames.toSet().flatMap { fragmentName ->
       val fragment = fragments.find { fragment -> fragment.fragmentName == fragmentName }
           ?: throw GraphQLParseException("Undefined fragment `$fragmentName`\n$filePath")
@@ -654,11 +651,26 @@ class GraphQLDocumentParser(val schema: Schema) {
   }
 
   private fun Fragment.referencedFragments(fragments: List<Fragment>): Set<String> {
-    return fragmentSpreads.flatMap { fragmentName ->
-      val fragment = fragments.find { fragment -> fragment.fragmentName == fragmentName }
-          ?: throw GraphQLParseException("Undefined fragment `$fragmentName`\n$filePath")
-      listOf(fragmentName) + fragment.referencedFragments(fragments)
-    }.union(fields.referencedFragmentNames(fragments = fragments, filePath = filePath!!))
+    return fragmentSpreads
+        .flatMap { fragmentName ->
+          val fragment = fragments.find { fragment -> fragment.fragmentName == fragmentName }
+              ?: throw GraphQLParseException("Undefined fragment `$fragmentName`\n$filePath")
+
+          listOf(fragmentName) + fragment.referencedFragments(fragments)
+        }
+        .union(fields.referencedFragmentNames(fragments = fragments, filePath = filePath!!))
+        .union(inlineFragments.flatMap { it.referencedFragments(fragments = fragments, filePath = filePath) })
+  }
+
+  private fun InlineFragment.referencedFragments(fragments: List<Fragment>, filePath: String): Set<String> {
+    return (fragmentSpreads ?: emptyList())
+        .flatMap { fragmentName ->
+          val fragment = fragments.find { fragment -> fragment.fragmentName == fragmentName }
+              ?: throw GraphQLParseException("Undefined fragment `$fragmentName`\n$filePath")
+
+          listOf(fragmentName) + fragment.referencedFragments(fragments)
+        }
+        .union(fields.referencedFragmentNames(fragments = fragments, filePath = filePath))
   }
 
   private fun Operation.checkVariableDefinitions() {

@@ -7,6 +7,9 @@ query TestQuery {
 }
 
 fragment HeroDetails on Character {
+  ... on Droid {
+    ...DroidDetails
+  }
   name
   friendsConnection {
     totalCount
@@ -16,8 +19,9 @@ fragment HeroDetails on Character {
       }
     }
   }
-  ... on Droid {
-    name
-    primaryFunction
-  }
+}
+
+fragment DroidDetails on Droid {
+  name
+  primaryFunction
 }

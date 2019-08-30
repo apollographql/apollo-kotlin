@@ -47,6 +47,9 @@ data class HeroDetails(
     val FRAGMENT_DEFINITION: String = """
         |fragment HeroDetails on Character {
         |  __typename
+        |  ... on Droid {
+        |    ...DroidDetails
+        |  }
         |  name
         |  friendsConnection {
         |    __typename
@@ -58,10 +61,6 @@ data class HeroDetails(
         |        name
         |      }
         |    }
-        |  }
-        |  ... on Droid {
-        |    name
-        |    primaryFunction
         |  }
         |}
         """.trimMargin()
@@ -211,25 +210,19 @@ data class HeroDetails(
     /**
      * The friends of the droid exposed as a connection with edges
      */
-    val friendsConnection: FriendsConnection,
-    /**
-     * This droid's primary function
-     */
-    val primaryFunction: String?
+    val friendsConnection: FriendsConnection
   ) : HeroDetailCharacter {
     override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeString(RESPONSE_FIELDS[0], __typename)
       it.writeString(RESPONSE_FIELDS[1], name)
       it.writeObject(RESPONSE_FIELDS[2], friendsConnection.marshaller())
-      it.writeString(RESPONSE_FIELDS[3], primaryFunction)
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, false, null),
-          ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null),
-          ResponseField.forString("primaryFunction", "primaryFunction", null, true, null)
+          ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
           )
 
       val POSSIBLE_TYPES: Array<String> = arrayOf("Droid")
@@ -241,12 +234,10 @@ data class HeroDetails(
           FriendsConnection(reader)
         }
 
-        val primaryFunction = reader.readString(RESPONSE_FIELDS[3])
         return AsDroid(
           __typename = __typename,
           name = name,
-          friendsConnection = friendsConnection,
-          primaryFunction = primaryFunction
+          friendsConnection = friendsConnection
         )
       }
     }
