@@ -124,7 +124,11 @@ valueOrVariable
    ;
 
 value
-   : STRING # stringValue | NUMBER # numberValue | BOOLEAN # booleanValue | array # arrayValue | NAME # literalValue | inlineInputType # inlineInputTypeValue
+   : STRING # stringValue | NUMBER # numberValue | BOOLEAN # booleanValue | arrayValueType # arrayValue | NAME # literalValue | inlineInputType # inlineInputTypeValue
+   ;
+
+arrayValueType
+   : '[' valueOrVariable ( ','? valueOrVariable )* ']' | '[' ']'
    ;
 
 inlineInputType

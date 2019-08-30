@@ -71,7 +71,7 @@ object GraphQLDocumentSourceBuilder {
     }
 
   private val GraphQLParser.ArrayValueContext.source: String
-    get() = array().value().joinToString(separator = ", ", prefix = "[", postfix = "]") { it.source }
+    get() = arrayValueType().valueOrVariable().joinToString(separator = ", ", prefix = "[", postfix = "]") { it.source }
 
   private val GraphQLParser.InlineInputTypeContext.source: String
     get() = inlineInputTypeField().joinToString(separator = ", ", prefix = "{", postfix = "}") { ctx ->

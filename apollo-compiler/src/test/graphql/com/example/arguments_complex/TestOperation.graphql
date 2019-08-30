@@ -1,5 +1,5 @@
 query TestQuery($episode: Episode, $stars: Int!, $greenValue: Float!) {
-  heroWithReview(
+  heroWithReview (
     episode: $episode,
     review: {
       stars: $stars,
@@ -9,7 +9,8 @@ query TestQuery($episode: Episode, $stars: Int!, $greenValue: Float!) {
         blue: 0
       }
       listOfStringNonOptional: []
-    }
+    },
+    listOfInts: [$stars, $stars]
   ) {
     name
     height(unit: FOOT)

@@ -84,13 +84,26 @@
                 },
                 {
                   "name": "review",
-                   "description": "",
+                  "description": "",
                   "type": {
                     "kind": "INPUT_OBJECT",
                     "name": "ReviewInput",
                     "ofType": null
                   },
                   "defaultValue": null
+                },
+                {
+                  "name": "listOfInts",
+                  "description": "for test purpose only",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Int",
+                      "ofType": null
+                    }
+                  }
                 }
               ],
               "type": {
