@@ -50,10 +50,11 @@
 			"fragmentSpreads": [],
 			"inlineFragments": [],
 			"fragmentsReferenced": [
-				"HeroDetails"
+				"HeroDetails",
+				"DroidDetails"
 			],
-			"sourceWithFragments": "query TestQuery {\n  hero {\n    __typename\n    name\n    ...HeroDetails\n    appearsIn\n  }\n}\nfragment HeroDetails on Character {\n  __typename\n  name\n  friendsConnection {\n    __typename\n    totalCount\n    edges {\n      __typename\n      node {\n        __typename\n        name\n      }\n    }\n  }\n  ... on Droid {\n    name\n    primaryFunction\n  }\n}",
-			"operationId": "82ed8ea1e7e7b7d0344905a747cc94a1228c7ea59c809e9feb9c9d3604ff07cd"
+			"sourceWithFragments": "query TestQuery {\n  hero {\n    __typename\n    name\n    ...HeroDetails\n    appearsIn\n  }\n}\nfragment HeroDetails on Character {\n  __typename\n  ... on Droid {\n    ...DroidDetails\n  }\n  name\n  friendsConnection {\n    __typename\n    totalCount\n    edges {\n      __typename\n      node {\n        __typename\n        name\n      }\n    }\n  }\n}\nfragment DroidDetails on Droid {\n  __typename\n  name\n  primaryFunction\n}",
+			"operationId": "b9b4d9a4d5433370d1ddaab5cceb65ed236258444466521ea134a76aeb163a0f"
 		}
 	],
 	"fragments": [
@@ -65,7 +66,7 @@
 			],
 			"fragmentName": "HeroDetails",
 			"filePath": "src/test/graphql/com/example/fragment_with_inline_fragment/TestOperation.graphql",
-			"source": "fragment HeroDetails on Character {\n  __typename\n  name\n  friendsConnection {\n    __typename\n    totalCount\n    edges {\n      __typename\n      node {\n        __typename\n        name\n      }\n    }\n  }\n  ... on Droid {\n    name\n    primaryFunction\n  }\n}",
+			"source": "fragment HeroDetails on Character {\n  __typename\n  ... on Droid {\n    ...DroidDetails\n  }\n  name\n  friendsConnection {\n    __typename\n    totalCount\n    edges {\n      __typename\n      node {\n        __typename\n        name\n      }\n    }\n  }\n}",
 			"fields": [
 				{
 					"responseName": "__typename",
@@ -255,20 +256,50 @@
 							],
 							"fragmentSpreads": [],
 							"inlineFragments": []
-						},
-						{
-							"responseName": "primaryFunction",
-							"fieldName": "primaryFunction",
-							"type": "String",
-							"isConditional": false,
-							"description": "This droid's primary function",
-							"isDeprecated": false,
-							"deprecationReason": null
 						}
 					],
-					"fragmentSpreads": []
+					"fragmentSpreads": [
+						"DroidDetails"
+					]
 				}
 			]
+		},
+		{
+			"typeCondition": "Droid",
+			"possibleTypes": [
+				"Droid"
+			],
+			"fragmentName": "DroidDetails",
+			"filePath": "src/test/graphql/com/example/fragment_with_inline_fragment/TestOperation.graphql",
+			"source": "fragment DroidDetails on Droid {\n  __typename\n  name\n  primaryFunction\n}",
+			"fields": [
+				{
+					"responseName": "__typename",
+					"fieldName": "__typename",
+					"type": "String!",
+					"isConditional": false
+				},
+				{
+					"responseName": "name",
+					"fieldName": "name",
+					"type": "String!",
+					"isConditional": false,
+					"description": "What others call this droid",
+					"isDeprecated": false,
+					"deprecationReason": null
+				},
+				{
+					"responseName": "primaryFunction",
+					"fieldName": "primaryFunction",
+					"type": "String",
+					"isConditional": false,
+					"description": "This droid's primary function",
+					"isDeprecated": false,
+					"deprecationReason": null
+				}
+			],
+			"fragmentSpreads": [],
+			"inlineFragments": []
 		}
 	],
 	"typesUsed": [
