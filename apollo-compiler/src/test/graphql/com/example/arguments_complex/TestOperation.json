@@ -19,7 +19,7 @@
 					"type": "Float!"
 				}
 			],
-			"source": "query TestQuery($episode: Episode, $stars: Int!, $greenValue: Float!) {\n  heroWithReview(episode: $episode, review: {stars: $stars, favoriteColor: {red: 0, green: $greenValue, blue: 0}, listOfStringNonOptional: []}) {\n    __typename\n    name\n    height(unit: FOOT)\n  }\n}",
+			"source": "query TestQuery($episode: Episode, $stars: Int!, $greenValue: Float!) {\n  heroWithReview(episode: $episode, review: {stars: $stars, favoriteColor: {red: 0, green: $greenValue, blue: 0}, listOfStringNonOptional: []}, listOfInts: [$stars, $stars]) {\n    __typename\n    name\n    height(unit: FOOT)\n  }\n}",
 			"fields": [
 				{
 					"responseName": "heroWithReview",
@@ -52,6 +52,20 @@
 								"listOfStringNonOptional": []
 							},
 							"type": "ReviewInput"
+						},
+						{
+							"name": "listOfInts",
+							"value": [
+								{
+									"kind": "Variable",
+									"variableName": "stars"
+								},
+								{
+									"kind": "Variable",
+									"variableName": "stars"
+								}
+							],
+							"type": "[Int]"
 						}
 					],
 					"isConditional": false,
@@ -97,8 +111,8 @@
 			"fragmentSpreads": [],
 			"inlineFragments": [],
 			"fragmentsReferenced": [],
-			"sourceWithFragments": "query TestQuery($episode: Episode, $stars: Int!, $greenValue: Float!) {\n  heroWithReview(episode: $episode, review: {stars: $stars, favoriteColor: {red: 0, green: $greenValue, blue: 0}, listOfStringNonOptional: []}) {\n    __typename\n    name\n    height(unit: FOOT)\n  }\n}",
-			"operationId": "f24dcd0e757d38f765f69725d8480935bb14b860bf5a09781f542d93f2443cd3"
+			"sourceWithFragments": "query TestQuery($episode: Episode, $stars: Int!, $greenValue: Float!) {\n  heroWithReview(episode: $episode, review: {stars: $stars, favoriteColor: {red: 0, green: $greenValue, blue: 0}, listOfStringNonOptional: []}, listOfInts: [$stars, $stars]) {\n    __typename\n    name\n    height(unit: FOOT)\n  }\n}",
+			"operationId": "fef613fca4985a10eca172d819b557958b46df1c2d755302a18335b42c4a8e77"
 		}
 	],
 	"fragments": [],

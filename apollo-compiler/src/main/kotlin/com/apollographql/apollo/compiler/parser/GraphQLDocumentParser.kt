@@ -428,7 +428,16 @@ class GraphQLDocumentParser(val schema: Schema) {
     is GraphQLParser.BooleanValueContext -> BOOLEAN().text.trim().toBoolean()
     is GraphQLParser.StringValueContext -> STRING().text.trim().replace("\"", "")
     is GraphQLParser.LiteralValueContext -> NAME().text
-    is GraphQLParser.ArrayValueContext -> array().value().map { value -> value.parse() }
+    is GraphQLParser.ArrayValueContext -> {
+      arrayValueType().valueOrVariable().map { valueOrVariable ->
+        valueOrVariable.variable()?.let { variable ->
+          mapOf(
+              "kind" to "Variable",
+              "variableName" to variable.NAME().text
+          )
+        } ?: valueOrVariable.value().parse()
+      }
+    }
     is GraphQLParser.InlineInputTypeValueContext -> {
       inlineInputType().inlineInputTypeField().map { field ->
         val name = field.NAME().text
@@ -448,6 +457,7 @@ class GraphQLDocumentParser(val schema: Schema) {
         token = start
     )
   }
+
 
   private fun Schema.Type.lookupField(fieldName: String, token: Token): Schema.Field = when (this) {
     is Schema.Type.Interface -> fields?.find { it.name == fieldName }
@@ -520,7 +530,7 @@ class GraphQLDocumentParser(val schema: Schema) {
 
   private fun Schema.Type.InputObject.usedTypes(exclude: Set<String>): Set<String> {
     val usedTypes = inputFields.map { field -> field.type.rawType.name!! }.subtract(exclude)
-    val usedInputObjects = usedTypes.mapNotNull {schema[it] as? Schema.Type.InputObject }
+    val usedInputObjects = usedTypes.mapNotNull { schema[it] as? Schema.Type.InputObject }
     return usedTypes + usedInputObjects.flatMap { inputObject -> inputObject.usedTypes(exclude + usedTypes) }
   }
 

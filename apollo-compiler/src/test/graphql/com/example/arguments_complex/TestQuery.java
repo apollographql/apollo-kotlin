@@ -33,10 +33,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, TestQuery.Variables> {
-  public static final String OPERATION_ID = "f1d03df0c38959ec6ddfb1deb5f26e7a5390b18b1e86b04925839f6dbbab186f";
+  public static final String OPERATION_ID = "29a306b3e98c3424dcc3b0625487c63a3b1d18af6ded537c9be2f27694aea5c5";
 
   public static final String QUERY_DOCUMENT = "query TestQuery($episode: Episode, $stars: Int!, $greenValue: Float!) {\n"
-      + "  heroWithReview(episode: $episode, review: {stars: $stars, favoriteColor: {red: 0, green: $greenValue, blue: 0}, listOfStringNonOptional: []}) {\n"
+      + "  heroWithReview(episode: $episode, review: {stars: $stars, favoriteColor: {red: 0, green: $greenValue, blue: 0}, listOfStringNonOptional: []}, listOfInts: [$stars, $stars]) {\n"
       + "    __typename\n"
       + "    name\n"
       + "    height(unit: FOOT)\n"
@@ -180,7 +180,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class Data implements Operation.Data {
     static final ResponseField[] $responseFields = {
-      ResponseField.forObject("heroWithReview", "heroWithReview", new UnmodifiableMapBuilder<String, Object>(2)
+      ResponseField.forObject("heroWithReview", "heroWithReview", new UnmodifiableMapBuilder<String, Object>(3)
       .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
         .put("kind", "Variable")
         .put("variableName", "episode")
@@ -200,6 +200,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           .build())
         .put("listOfStringNonOptional", "[]")
         .build())
+      .put("listOfInts", "[{kind=Variable, variableName=stars}, {kind=Variable, variableName=stars}]")
       .build(), true, Collections.<ResponseField.Condition>emptyList())
     };
 
