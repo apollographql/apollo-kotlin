@@ -237,7 +237,7 @@ class GraphQLDocumentParser(val schema: Schema) {
       ctx.fragmentSpread()?.fragmentName()?.NAME()?.text
     } ?: emptyList()
     val inlineFragments = selectionSet()?.selection()?.mapNotNull { ctx ->
-      ctx.inlineFragment()?.parse(selectionSet())
+      ctx.inlineFragment()?.parse(parentSelectionSet = selectionSet(), parentSchemaType = schemaFieldType)
     }?.flatten() ?: ParseResult(result = emptyList())
 
     val mergeInlineFragmentFields = inlineFragments.result
@@ -322,12 +322,22 @@ class GraphQLDocumentParser(val schema: Schema) {
     )
   }
 
-  private fun GraphQLParser.InlineFragmentContext.parse(parentSelectionSet: GraphQLParser.SelectionSetContext): ParseResult<InlineFragment> {
+  private fun GraphQLParser.InlineFragmentContext.parse(
+      parentSelectionSet: GraphQLParser.SelectionSetContext,
+      parentSchemaType: Schema.Type
+  ): ParseResult<InlineFragment> {
     val typeCondition = typeCondition().typeName().NAME().text
     val schemaType = schema[typeCondition] ?: throw ParseException(
         message = "Unknown type`$typeCondition}`",
-        token = typeCondition().typeName().NAME().symbol
+        token = typeCondition().typeName().start
     )
+
+    if (!parentSchemaType.isAssignableFrom(schemaType)) {
+      throw ParseException(
+          message = "Fragment cannot be spread here as objects of type `${parentSchemaType.name}` can never be of type `$typeCondition`",
+          token = typeCondition().typeName().start
+      )
+    }
 
     val possibleTypes = when (schemaType) {
       is Schema.Type.Interface -> schemaType.possibleTypes?.map { it.rawType.name!! } ?: emptyList()
@@ -395,7 +405,7 @@ class GraphQLDocumentParser(val schema: Schema) {
     } ?: emptyList()
 
     val inlineFragments = selectionSet()?.selection()?.mapNotNull { ctx ->
-      ctx.inlineFragment()?.parse(selectionSet())
+      ctx.inlineFragment()?.parse(parentSelectionSet = selectionSet(), parentSchemaType = schemaType)
     }?.flatten() ?: ParseResult(result = emptyList())
 
     val mergeInlineFragmentFields = inlineFragments.result
@@ -741,6 +751,15 @@ class GraphQLDocumentParser(val schema: Schema) {
     }
 
     fields?.forEach { it.checkVariableDefinitions(operation = operation, filePath = filePath) }
+  }
+
+  private fun Schema.Type.isAssignableFrom(other: Schema.Type): Boolean {
+    return when (this) {
+      is Schema.Type.Union -> name == other.name || (possibleTypes ?: emptyList()).mapNotNull { it.rawType.name }.contains(other.name)
+      is Schema.Type.Interface -> name == other.name || (possibleTypes ?: emptyList()).mapNotNull { it.rawType.name }.contains(other.name)
+      is Schema.Type.Object -> name == other.name
+      else -> false
+    }
   }
 
   private fun String.isGraphQLTypeAssignableFrom(otherType: String): Boolean {
