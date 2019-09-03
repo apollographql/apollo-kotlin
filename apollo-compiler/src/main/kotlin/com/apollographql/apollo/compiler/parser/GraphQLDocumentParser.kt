@@ -754,11 +754,43 @@ class GraphQLDocumentParser(val schema: Schema) {
   }
 
   private fun Schema.Type.isAssignableFrom(other: Schema.Type): Boolean {
+    if (name == other.name) {
+      return true
+    }
     return when (this) {
-      is Schema.Type.Union -> name == other.name || (possibleTypes ?: emptyList()).mapNotNull { it.rawType.name }.contains(other.name)
-      is Schema.Type.Interface -> name == other.name || (possibleTypes ?: emptyList()).mapNotNull { it.rawType.name }.contains(other.name)
-      is Schema.Type.Object -> name == other.name
+      is Schema.Type.Union -> possibleTypes().intersect(other.possibleTypes()).isNotEmpty()
+      is Schema.Type.Interface -> {
+        val possibleTypes = (possibleTypes ?: emptyList()).mapNotNull { it.rawType.name }
+        possibleTypes.contains(other.name) || possibleTypes.any { typeName ->
+          val schemaType = schema[typeName] ?: throw throw GraphQLParseException(
+              message = "Unknown possible type `$typeName` for INTERFACE `$name`"
+          )
+          schemaType.isAssignableFrom(other)
+        }
+      }
       else -> false
+    }
+  }
+
+  private fun Schema.Type.possibleTypes(): Set<String> {
+    return when (this) {
+      is Schema.Type.Union -> (possibleTypes ?: emptyList()).flatMap { typeRef ->
+        val typeName = typeRef.rawType.name!!
+        val schemaType = schema[typeName] ?: throw throw GraphQLParseException(
+            message = "Unknown possible type `$typeName` for UNION `$name`"
+        )
+        schemaType.possibleTypes()
+      }.toSet()
+
+      is Schema.Type.Interface -> (possibleTypes ?: emptyList()).flatMap { typeRef ->
+        val typeName = typeRef.rawType.name!!
+        val schemaType = schema[typeName] ?: throw throw GraphQLParseException(
+            message = "Unknown possible type `$typeName` for INTERFACE `$name`"
+        )
+        schemaType.possibleTypes()
+      }.toSet()
+
+      else -> setOf(name)
     }
   }
 
