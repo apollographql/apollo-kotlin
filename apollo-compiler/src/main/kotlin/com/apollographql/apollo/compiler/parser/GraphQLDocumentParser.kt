@@ -240,13 +240,15 @@ class GraphQLDocumentParser(val schema: Schema) {
       ctx.inlineFragment()?.parse(parentSelectionSet = selectionSet(), parentSchemaType = schemaFieldType)
     }?.flatten() ?: ParseResult(result = emptyList())
 
-    val mergeInlineFragmentFields = inlineFragments.result
+    val inlineFragmentFieldsToMerge = inlineFragments.result
         .filter { it.typeCondition == schemaFieldType.name }
         .flatMap { it.fields }
         .filter { it != typenameField }
-    val mergeInlineFragmentSpreadFragments = inlineFragments.result
+    val inlineFragmentSpreadFragmentsToMerge = inlineFragments.result
         .filter { it.typeCondition == schemaFieldType.name }
         .flatMap { it.fragmentSpreads ?: emptyList() }
+
+    val mergedFields = fields.result.mergeFields(other = inlineFragmentFieldsToMerge, parseContext = this)
 
     val conditions = directives().parse()
     return ParseResult(
@@ -256,9 +258,11 @@ class GraphQLDocumentParser(val schema: Schema) {
             type = schemaField.type.asIrType(),
             args = arguments.result,
             isConditional = conditions.isNotEmpty(),
-            fields = fields.result.mergeFields(other = mergeInlineFragmentFields, parseContext = this),
-            fragmentSpreads = fragmentSpreads.union(mergeInlineFragmentSpreadFragments).toList(),
-            inlineFragments = inlineFragments.result.filter { it.typeCondition != schemaFieldType.name },
+            fields = mergedFields,
+            fragmentSpreads = fragmentSpreads.union(inlineFragmentSpreadFragmentsToMerge).toList(),
+            inlineFragments = inlineFragments.result.filter { it.typeCondition != schemaFieldType.name }.map { it.copy(
+                fields = it.fields.mergeFields(other = mergedFields, parseContext = this)
+            ) },
             description = schemaField.description?.trim(),
             isDeprecated = schemaField.isDeprecated,
             deprecationReason = schemaField.deprecationReason,

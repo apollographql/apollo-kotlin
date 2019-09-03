@@ -6,12 +6,11 @@ import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.ir.ScalarType
 import com.apollographql.apollo.compiler.ir.TypeDeclaration
 import com.squareup.javapoet.JavaFile
-import com.squareup.moshi.Moshi
 import java.io.File
 
 class GraphQLCompiler {
   fun write(args: Arguments) {
-    val ir = args.ir ?: irAdapter.fromJson(args.irFile!!.readText())!!
+    val ir = args.ir
     val irPackageName = args.irPackageName
     val packageNameProvider = PackageNameProvider(
         rootPackageName = null,
@@ -109,19 +108,11 @@ class GraphQLCompiler {
         "It should not be modified by hand.\n"
     @JvmField
     val OUTPUT_DIRECTORY = listOf("generated", "source", "apollo", "classes")
-    @JvmField
-    val IR_OUTPUT_DIRECTORY = listOf("generated", "source", "apollo", "generatedIR")
     const val APOLLOCODEGEN_VERSION = "0.19.1"
-
-    private val moshi = Moshi.Builder().build()
-    private val irAdapter = moshi.adapter(CodeGenerationIR::class.java)
-
-    fun parseIrFile(irFile: File) = irAdapter.fromJson(irFile.readText())!!
   }
 
   data class Arguments(
-      val irFile: File?,
-      val ir: CodeGenerationIR? = null,
+      val ir: CodeGenerationIR,
       val outputDir: File,
       val customTypeMap: Map<String, String>,
       val nullableValueType: NullableValueType,

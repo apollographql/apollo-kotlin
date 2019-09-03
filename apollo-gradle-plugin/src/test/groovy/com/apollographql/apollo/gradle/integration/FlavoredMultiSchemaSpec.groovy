@@ -15,7 +15,6 @@ class FlavoredMultiSchemaSpec extends Specification {
 
   def setupSpec() {
     testProjectDir = setupFlavoredAndroidProject()
-    System.setProperty("apollographql.useExperimentalCodegen", "false")
   }
 
   def "generates expected outputs for the demo debug variant"() {
@@ -33,7 +32,11 @@ class FlavoredMultiSchemaSpec extends Specification {
     then:
     result.task(":generateDemoDebugApolloClasses").outcome == TaskOutcome.SUCCESS
 
-    assertDemoDebugGenerationSucces()
+    assertDemoDebugGenerationSuccess()
+
+    assert !new File(testProjectDir, "build/generated/source/apollo/classes/demoRelease").exists()
+    assert !new File(testProjectDir, "build/generated/source/apollo/classes/fullDebug").exists()
+    assert !new File(testProjectDir, "build/generated/source/apollo/classes/fullRelease").exists()
   }
 
   def "generateDemoDebugApolloClasses is up-to-date after running once"() {
@@ -48,8 +51,8 @@ class FlavoredMultiSchemaSpec extends Specification {
 
     then:
     result.task(":generateDemoDebugApolloClasses").outcome == TaskOutcome.UP_TO_DATE
-
   }
+
 
   def "exception thrown for the generateDemoReleaseApolloClasses task due to the invalid GitHunt schema file"() {
     setup:
@@ -79,66 +82,98 @@ class FlavoredMultiSchemaSpec extends Specification {
         .build()
 
     then:
-    result.task(":generateDemoDebugApolloClasses").outcome == TaskOutcome.UP_TO_DATE
     result.task(":build").outcome == TaskOutcome.SUCCESS
 
-    // IR Files generated successfully
-    assert new File(testProjectDir, "build/generated/source/apollo/generatedIR/demoRelease/src/main/graphql/com/frontpage/api/DemoReleaseAPI.json").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/generatedIR/demoRelease/src/release/graphql/com/starwars/api/DemoReleaseAPI.json").isFile()
-
-    assert new File(testProjectDir, "build/generated/source/apollo/generatedIR/fullRelease/src/main/graphql/com/frontpage/api/FullReleaseAPI.json").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/generatedIR/fullRelease/src/release/graphql/com/starwars/api/FullReleaseAPI.json").isFile()
-
-    // OperationIdMap.json generated successfully
-//    assert new File(testProjectDir, "build/generated/source/apollo/generatedIR/demoRelease/src/main/graphql/com/frontpage/api/DemoReleaseOperationIdMap.json").isFile()
-//    assert new File(testProjectDir, "build/generated/source/apollo/generatedIR/demoRelease/src/release/graphql/com/starwars/api/DemoReleaseOperationIdMap.json").isFile()
-
-//    assert new File(testProjectDir, "build/generated/source/apollo/generatedIR/fullRelease/src/main/graphql/com/frontpage/api/FullReleaseOperationIdMap.json").isFile()
-//    assert new File(testProjectDir, "build/generated/source/apollo/generatedIR/fullRelease/src/release/graphql/com/starwars/api/FullReleaseOperationIdMap.json").isFile()
-
     // generates java classes for queries under the release source set
-    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/starwars/api/starship/StarshipQuery.java").isFile()
+    assertDemoDebugGenerationSuccess()
+    assertDemoReleaseGenerationSuccess()
+    assertFullDebugGenerationSuccess()
+    assertFullReleaseGenerationSuccess()
   }
 
   def cleanupSpec() {
     FileUtils.deleteDirectory(testProjectDir)
-    System.clearProperty("apollographql.useExperimentalCodegen")
   }
 
-  private void assertDemoDebugGenerationSucces() {
-    // IR Files generated successfully
-    assert new File(testProjectDir, "build/generated/source/apollo/generatedIR/demoDebug/src/demoDebug/graphql/com/githunt/api/DemoDebugAPI.json").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/generatedIR/demoDebug/src/demoDebug/graphql/com/starwars/api/DemoDebugAPI.json").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/generatedIR/demoDebug/src/main/graphql/com/frontpage/api/DemoDebugAPI.json").isFile()
-
-    // OperationIdMap.json file created
-//    assert new File(testProjectDir, "build/generated/source/apollo/generatedIR/demoDebug/src/demoDebug/graphql/com/githunt/api/DemoDebugOperationIdMap.json").isFile()
-//    assert new File(testProjectDir, "build/generated/source/apollo/generatedIR/demoDebug/src/demoDebug/graphql/com/starwars/api/DemoDebugOperationIdMap.json").isFile()
-//    assert new File(testProjectDir, "build/generated/source/apollo/generatedIR/demoDebug/src/main/graphql/com/frontpage/api/DemoDebugOperationIdMap.json").isFile()
-
+  private void assertDemoDebugGenerationSuccess() {
     // Java classes generated successfully
     // For Front Page
-    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/frontpage/api/fragment/PostDetails.java").isFile()
-
-    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/frontpage/api/posts/UpvoteMutation.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/demoDebug/com/frontpage/api/fragment/PostDetails.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/demoDebug/com/frontpage/api/posts/UpvoteMutation.java").isFile()
 
     // For Star Wars
-    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/starwars/api/fragment/HeroDetails.java").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/starwars/api/type/ReviewInput.java").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/starwars/api/type/Episode.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/demoDebug/com/starwars/api/fragment/HeroDetails.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/demoDebug/com/starwars/api/type/ReviewInput.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/demoDebug/com/starwars/api/type/Episode.java").isFile()
 
-    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/starwars/api/hero/HeroNameQuery.java").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/starwars/api/hero/HeroAndFriendsQuery.java").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/starwars/api/review/CreateAwesomeReviewMutation.java").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/starwars/api/review/CreateReviewForEpisodeMutation.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/demoDebug/com/starwars/api/hero/HeroNameQuery.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/demoDebug/com/starwars/api/hero/HeroAndFriendsQuery.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/demoDebug/com/starwars/api/review/CreateAwesomeReviewMutation.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/demoDebug/com/starwars/api/review/CreateReviewForEpisodeMutation.java").isFile()
+    assert !new File(testProjectDir, "build/generated/source/apollo/classes/demoDebug/com/starwars/api/starship/StarshipQuery.java").exists()
 
     // For GitHunt
-    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/githunt/api/fragment/FeedCommentFragment.java").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/githunt/api/fragment/RepositoryFragment.java").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/githunt/api/type/FeedType.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/demoDebug/com/githunt/api/fragment/FeedCommentFragment.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/demoDebug/com/githunt/api/fragment/RepositoryFragment.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/demoDebug/com/githunt/api/type/FeedType.java").isFile()
 
-    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/githunt/api/feed/FeedQuery.java").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/githunt/api/profile/CurrentUserForLayoutQuery.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/demoDebug/com/githunt/api/feed/FeedQuery.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/demoDebug/com/githunt/api/profile/CurrentUserForLayoutQuery.java").isFile()
+  }
+
+  private void assertDemoReleaseGenerationSuccess() {
+    // Java classes generated successfully
+    // For Front Page
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/demoRelease/com/frontpage/api/fragment/PostDetails.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/demoRelease/com/frontpage/api/posts/UpvoteMutation.java").isFile()
+
+    // For Star Wars
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/demoRelease/com/starwars/api/fragment/HeroDetails.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/demoRelease/com/starwars/api/type/ReviewInput.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/demoRelease/com/starwars/api/type/Episode.java").isFile()
+
+    assert !new File(testProjectDir, "build/generated/source/apollo/classes/demoRelease/com/starwars/api/hero/HeroNameQuery.java").exists()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/demoRelease/com/starwars/api/hero/HeroAndFriendsQuery.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/demoRelease/com/starwars/api/review/CreateAwesomeReviewMutation.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/demoRelease/com/starwars/api/review/CreateReviewForEpisodeMutation.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/demoRelease/com/starwars/api/starship/StarshipQuery.java").isFile()
+
+    // For GitHunt
+    assert !new File(testProjectDir, "build/generated/source/apollo/classes/demoRelease/com/githunt").exists()
+  }
+
+  private void assertFullDebugGenerationSuccess() {
+    // Java classes generated successfully
+    // For Front Page
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/fullDebug/com/frontpage/api/fragment/PostDetails.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/fullDebug/com/frontpage/api/posts/UpvoteMutation.java").isFile()
+
+    // For Star Wars
+    assert !new File(testProjectDir, "build/generated/source/apollo/classes/fullDebug/com/starwars").exists()
+
+    // For GitHunt
+    assert !new File(testProjectDir, "build/generated/source/apollo/classes/fullDebug/com/githunt").exists()
+  }
+
+  private void assertFullReleaseGenerationSuccess() {
+    // Java classes generated successfully
+    // For Front Page
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/fullRelease/com/frontpage/api/fragment/PostDetails.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/fullRelease/com/frontpage/api/posts/UpvoteMutation.java").isFile()
+
+    // For Star Wars
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/fullRelease/com/starwars/api/fragment/HeroDetails.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/fullRelease/com/starwars/api/type/ReviewInput.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/fullRelease/com/starwars/api/type/Episode.java").isFile()
+
+    assert !new File(testProjectDir, "build/generated/source/apollo/classes/fullRelease/com/starwars/api/hero/HeroNameQuery.java").exists()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/fullRelease/com/starwars/api/hero/HeroAndFriendsQuery.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/fullRelease/com/starwars/api/review/CreateAwesomeReviewMutation.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/fullRelease/com/starwars/api/review/CreateReviewForEpisodeMutation.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/fullRelease/com/starwars/api/starship/StarshipQuery.java").isFile()
+
+    // For GitHunt
+    assert !new File(testProjectDir, "build/generated/source/apollo/classes/fullRelease/com/githunt").exists()
   }
 
   private static File setupFlavoredAndroidProject() {

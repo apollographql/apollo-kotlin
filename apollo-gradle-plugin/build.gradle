@@ -16,7 +16,6 @@ dependencies {
   implementation localGroovy()
   implementation project(':apollo-compiler')
   implementation dep.guavaJre
-  implementation dep.gradleNodePlugin
   implementation dep.moshi
 
   testImplementation dep.androidPlugin

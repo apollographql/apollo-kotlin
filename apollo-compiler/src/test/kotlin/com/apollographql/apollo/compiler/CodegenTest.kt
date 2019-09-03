@@ -17,19 +17,13 @@ import java.util.*
 import javax.tools.JavaFileObject
 
 @RunWith(Parameterized::class)
-class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
+class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments, val graphQLFile: File) {
   private val javaExpectedFileMatcher = FileSystems.getDefault().getPathMatcher("glob:**.java")
   private val kotlinExpectedFileMatcher = FileSystems.getDefault().getPathMatcher("glob:**.kt")
   private val sourceFileObjects: MutableList<JavaFileObject> = ArrayList()
 
   @Test
   fun generateExpectedClasses() {
-    generateJavaExpectedClasses(args.copy(ir = null))
-    generateKotlinExpectedClasses(args.copy(ir = null))
-  }
-
-  @Test
-  fun generateExpectedClassesAntlrEngine() {
     generateJavaExpectedClasses(args)
     generateKotlinExpectedClasses(args)
   }
@@ -37,7 +31,7 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
   private fun generateJavaExpectedClasses(args: GraphQLCompiler.Arguments) {
     GraphQLCompiler().write(args)
 
-    Files.walkFileTree(args.irFile!!.parentFile.toPath(), object : SimpleFileVisitor<Path>() {
+    Files.walkFileTree(graphQLFile.parentFile.toPath(), object : SimpleFileVisitor<Path>() {
       override fun visitFile(expectedFile: Path, attrs: BasicFileAttributes): FileVisitResult {
         if (javaExpectedFileMatcher.matches(expectedFile)) {
           val expected = expectedFile.toFile()
@@ -60,22 +54,20 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
   }
 
   private fun generateKotlinExpectedClasses(args: GraphQLCompiler.Arguments) {
-    val irPackageName = args.outputPackageName ?: args.irFile!!.absolutePath.formatPackageName()
-    val ir = args.ir ?: GraphQLCompiler.parseIrFile(args.irFile!!)
     val packageNameProvider = PackageNameProvider(
         rootPackageName = null,
         rootDir = null,
-        irPackageName = irPackageName,
+        irPackageName = args.irPackageName,
         outputPackageName = args.outputPackageName
     )
     GraphQLKompiler(
-        ir = ir,
+        ir = args.ir,
         customTypeMap = args.customTypeMap,
         useSemanticNaming = args.useSemanticNaming,
         packageNameProvider = packageNameProvider
     ).write(args.outputDir)
 
-    Files.walkFileTree(args.irFile!!.parentFile.toPath(), object : SimpleFileVisitor<Path>() {
+    Files.walkFileTree(graphQLFile.parentFile.toPath(), object : SimpleFileVisitor<Path>() {
       override fun visitFile(expectedFile: Path, attrs: BasicFileAttributes): FileVisitResult {
         if (kotlinExpectedFileMatcher.matches(expectedFile)) {
           val expected = expectedFile.toFile()
@@ -114,6 +106,8 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
       return File("src/test/graphql/com/example/")
           .listFiles()
           .filter { it.isDirectory }
+          // TODO figure out what to do with these cases
+          .filter { it.name != "nested_inline_fragment" && it.name != "reserved_words" && it.name != "scalar_types" }
           .map { folder ->
             val customTypeMap = if (folder.name in listOf("custom_scalar_type", "input_object_type",
                     "mutation_create_review")) {
@@ -150,19 +144,14 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
               else -> true
             }
 
-            val ir = if (folder.name != "nested_inline_fragment" && folder.name != "reserved_words" && folder.name != "scalar_types" &&
-                folder.name != "union_inline_fragments") {
-              val schemaJson = folder.listFiles().find { it.isFile && it.name == "schema.json" } ?: File("src/test/graphql/schema.json")
-              val schema = Schema(schemaJson)
-              val graphQLFile = File(folder, "TestOperation.graphql")
-              GraphQLDocumentParser(schema).parse(listOf(graphQLFile))
-            } else null
+            val schemaJson = folder.listFiles().find { it.isFile && it.name == "schema.json" } ?: File("src/test/graphql/schema.json")
+            val schema = Schema(schemaJson)
+            val graphQLFile = File(folder, "TestOperation.graphql")
+            val ir = GraphQLDocumentParser(schema).parse(listOf(graphQLFile))
 
-            val irFile = File(folder, "TestOperation.json")
             val outputPackageName = "com.example.${folder.name}"
 
             val args = GraphQLCompiler.Arguments(
-                irFile = irFile,
                 ir = ir,
                 outputDir = GraphQLCompiler.OUTPUT_DIRECTORY.plus("sources").fold(File("build"), ::File),
                 customTypeMap = customTypeMap,
@@ -175,7 +164,7 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
                 outputPackageName = outputPackageName,
                 generateVisitorForPolymorphicDatatypes = generateVisitorForPolymorphicDatatypes
             )
-            arrayOf(folder.name, args)
+            arrayOf(folder.name, args, graphQLFile)
           }
     }
   }

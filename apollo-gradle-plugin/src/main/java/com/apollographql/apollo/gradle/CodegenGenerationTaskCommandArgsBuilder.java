@@ -3,26 +3,16 @@ package com.apollographql.apollo.gradle;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-
 import org.gradle.api.GradleException;
 import org.gradle.api.internal.AbstractTask;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
-
-import org.jetbrains.annotations.Nullable;
 
 class CodegenGenerationTaskCommandArgsBuilder {
   private final AbstractTask task;
@@ -42,29 +32,7 @@ class CodegenGenerationTaskCommandArgsBuilder {
     this.sourceSets = sourceSets;
   }
 
-  public List<CommandArgs> build() {
-    final List<ApolloCodegenIRArgs> codegenArgs = buildCodegenArgs();
-    List<CommandArgs> taskExecutionArgs = new ArrayList<>();
-    for (ApolloCodegenIRArgs codegenArg : codegenArgs) {
-      codegenArg.irOutputFolder.mkdirs();
-
-      List<String> args = new ArrayList<>();
-      args.add("generate");
-      args.addAll(codegenArg.queryFilePaths);
-      args.addAll(Arrays.asList(
-          "--add-typename",
-          "--schema", codegenArg.schemaFile.getAbsolutePath(),
-          "--output", codegenArg.irOutputFolder.getAbsolutePath() + File.separator + Utils.capitalize(variant) + "API.json",
-          "--operation-ids-path", codegenArg.irOutputFolder.getAbsolutePath() + File.separator + Utils.capitalize(variant) + "OperationIdMap.json",
-          "--merge-in-fields-from-fragment-spreads", "false",
-          "--target", "json"
-      ));
-      taskExecutionArgs.add(new CommandArgs(args));
-    }
-    return taskExecutionArgs;
-  }
-
-  public List<ApolloCodegenIRArgs> buildCodegenArgs() {
+  public List<ApolloCodegenArgs> buildCodegenArgs() {
     File schemaFile = null;
     if (schemaFilePath != null && !schemaFilePath.trim().isEmpty()) {
       schemaFile = Paths.get(schemaFilePath).toFile();
@@ -91,7 +59,7 @@ class CodegenGenerationTaskCommandArgsBuilder {
       }
     }
 
-    final List<ApolloCodegenIRArgs> codegenArgs;
+    final List<ApolloCodegenArgs> codegenArgs;
     if (schemaFile == null) {
       codegenArgs = codeGenArgs(task.getInputs().getSourceFiles().getFiles());
     } else {
@@ -99,7 +67,7 @@ class CodegenGenerationTaskCommandArgsBuilder {
       for (File queryFile : queryFilesFrom(task.getInputs().getSourceFiles().getFiles())) {
         queryFilePaths.add(queryFile.getAbsolutePath());
       }
-      codegenArgs = Collections.singletonList(new ApolloCodegenIRArgs(schemaFile, queryFilePaths, targetPackageFolder));
+      codegenArgs = Collections.singletonList(new ApolloCodegenArgs(schemaFile, queryFilePaths, targetPackageFolder));
     }
 
     return codegenArgs;
@@ -118,7 +86,7 @@ class CodegenGenerationTaskCommandArgsBuilder {
    * @param files - task input files which consist of .graphql query files and schema.json files
    * @return - a map with schema files as a key and associated query files as a value
    */
-  private List<ApolloCodegenIRArgs> codeGenArgs(Set<File> files) {
+  private List<ApolloCodegenArgs> codeGenArgs(Set<File> files) {
     final List<File> schemaFiles = getSchemaFilesFrom(files);
 
     if (schemaFiles.isEmpty()) {
@@ -131,14 +99,14 @@ class CodegenGenerationTaskCommandArgsBuilder {
           " Please ensure no schema files exist on the path to another one");
     }
 
-    ImmutableMap.Builder<String, ApolloCodegenIRArgs> schemaQueryMap = ImmutableMap.builder();
+    ImmutableMap.Builder<String, ApolloCodegenArgs> schemaQueryMap = ImmutableMap.builder();
     for (final File f : schemaFiles) {
       final String normalizedSchemaFileName = getPathRelativeToSourceSet(f);
       // ensures that only the highest priority schema file is used
       if (schemaQueryMap.build().containsKey(normalizedSchemaFileName)) {
         continue;
       }
-      schemaQueryMap.put(normalizedSchemaFileName, new ApolloCodegenIRArgs(f, FluentIterable.from(files).filter(new Predicate<File>() {
+      schemaQueryMap.put(normalizedSchemaFileName, new ApolloCodegenArgs(f, FluentIterable.from(files).filter(new Predicate<File>() {
         @Override public boolean apply(@Nullable File file) {
           return file != null && !schemaFiles.contains(file) && file.getParent().contains(getPathRelativeToSourceSet(f.getParentFile()));
         }
@@ -226,23 +194,15 @@ class CodegenGenerationTaskCommandArgsBuilder {
     return basePath.relativize(absolutePath).toString();
   }
 
-  static final class ApolloCodegenIRArgs {
+  static final class ApolloCodegenArgs {
     final File schemaFile;
     final Set<String> queryFilePaths;
-    final File irOutputFolder;
+    final File outputFolder;
 
-    ApolloCodegenIRArgs(File schemaFile, Set<String> queryFilePaths, File irOutputFolder) {
+    ApolloCodegenArgs(File schemaFile, Set<String> queryFilePaths, File outputFolder) {
       this.schemaFile = schemaFile;
       this.queryFilePaths = queryFilePaths;
-      this.irOutputFolder = irOutputFolder;
-    }
-  }
-
-  class CommandArgs {
-    final List<String> taskArguments;
-
-    CommandArgs(List<String> taskArguments) {
-      this.taskArguments = taskArguments;
+      this.outputFolder = outputFolder;
     }
   }
 }
