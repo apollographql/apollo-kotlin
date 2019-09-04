@@ -6,7 +6,7 @@ buildscript {
   }
 
   dependencies {
-    classpath dep.androidPlugin
+    classpath dep.android.plugin
   }
 }
 

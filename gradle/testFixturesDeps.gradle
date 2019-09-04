@@ -1,10 +1,10 @@
 apply from: "../../../../gradle/dependencies.gradle"
 
 ext.supportDeps = [
-	dep.appcompat
+	dep.android.appcompat
 ]
 
 ext.apolloApiCompileDeps = [
     dep.jetbrainsAnnotations,
-		dep.okHttp
+		dep.okHttp.okHttp
 ]

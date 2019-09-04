@@ -19,14 +19,13 @@ android {
 
 dependencies {
   compileOnly dep.jetbrainsAnnotations
-
   implementation "com.apollographql.apollo:apollo-runtime"
   implementation "com.apollographql.apollo:apollo-android-support"
   implementation "com.apollographql.apollo:apollo-rx2-support"
-  implementation dep.appcompat
-  implementation dep.recyclerView
-  implementation dep.rxandroid
-  implementation dep.rxjava2
+  implementation dep.android.appcompat
+  implementation dep.android.recyclerView
+  implementation dep.rx.java
+  implementation dep.rx.android
 
   testImplementation dep.junit
 }

@@ -8,7 +8,7 @@ buildscript {
   }
 
   dependencies {
-    classpath dep.androidPlugin
+    classpath dep.android.plugin
     classpath "com.apollographql.apollo:apollo-gradle-plugin"
   }
 }

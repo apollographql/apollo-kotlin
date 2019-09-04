@@ -10,20 +10,20 @@ configurations {
 }
 
 dependencies {
+  compileOnly dep.android.plugin
   compileOnly gradleApi()
-  compileOnly dep.androidPlugin
 
   implementation localGroovy()
   implementation project(':apollo-compiler')
   implementation dep.guavaJre
-  implementation dep.moshi
+  implementation dep.moshi.moshi
 
-  testImplementation dep.androidPlugin
+  testImplementation dep.android.plugin
   testImplementation dep.junit
   testImplementation(dep.spock) {
     exclude module: 'groovy-all'
   }
-  fixtureClasspath dep.androidPlugin
+  fixtureClasspath dep.android.plugin
 }
 
 // Inspired by: https://github.com/square/sqldelight/blob/83145b28cbdd949e98e87819299638074bd21147/sqldelight-gradle-plugin/build.gradle#L18

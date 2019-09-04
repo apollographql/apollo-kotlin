@@ -7,9 +7,9 @@ buildscript {
   }
 
   dependencies {
+    classpath dep.android.plugin
     classpath dep.gradleErrorpronePlugin
-    classpath dep.androidPlugin
-    classpath dep.kotlinGradlePlugin
+    classpath dep.kotlin.plugin
   }
 }
 
@@ -24,8 +24,8 @@ subprojects {
     }
 
     dependencies {
-      classpath dep.kotlinGradlePlugin
       classpath dep.bintrayGradlePlugin
+      classpath dep.kotlin.plugin
     }
   }
 
