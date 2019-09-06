@@ -20,8 +20,8 @@ repositories {
 }
 
 dependencies {
+    implementation dep.apollo.api
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
-    implementation dep.apolloApi
 }
 
 compileKotlin {

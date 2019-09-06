@@ -6,7 +6,7 @@ sourceCompatibility = JavaVersion.VERSION_1_7
 dependencies {
   compileOnly dep.jetbrainsAnnotations
 
-  implementation dep.okHttp
+  implementation dep.okHttp.okHttp
   implementation project(":apollo-api")
 
   testImplementation dep.junit

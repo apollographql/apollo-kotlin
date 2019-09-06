@@ -4,19 +4,17 @@ targetCompatibility = JavaVersion.VERSION_1_7
 sourceCompatibility = JavaVersion.VERSION_1_7
 
 dependencies {
-  compileOnly dep.jetbrainsAnnotations
-
-  api dep.okHttp
-  implementation dep.cache
   api project(":apollo-api") // apollo-espresso-support uses some apollo-api internals
+  api dep.okHttp.okHttp
+  compileOnly dep.jetbrainsAnnotations
+  implementation dep.cache
 
   testCompileOnly dep.jetbrainsAnnotations
-
   testCompile dep.mockito
   testImplementation dep.junit
   testImplementation dep.truth
-  testImplementation dep.mockWebServer
-  testImplementation dep.okhttpTestSupport
+  testImplementation dep.okHttp.mockWebServer
+  testImplementation dep.okHttp.testSupport
   testImplementation project(':apollo-rx2-support')
 }
 

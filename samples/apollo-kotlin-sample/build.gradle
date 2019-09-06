@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath dep.kotlinGradlePlugin
+        classpath dep.kotlin.plugin
     }
 }
 
@@ -35,13 +35,12 @@ dependencies {
     implementation "com.apollographql.apollo:apollo-android-support"
     implementation "com.apollographql.apollo:apollo-rx2-support"
     implementation "com.apollographql.apollo:apollo-coroutines-support"
-
-    implementation dep.kotlinStdLib
-    implementation dep.appcompat
-    implementation dep.apolloRuntime
-    implementation dep.recyclerView
-    implementation dep.rxjava2
-    implementation dep.rxandroid
-    implementation dep.kotlinxCoroutines
-    implementation dep.kotlinxCoroutinesAndroid
+    implementation dep.android.appcompat
+    implementation dep.android.recyclerView
+    implementation dep.apollo.runtime
+    implementation dep.kotlin.coroutines.android
+    implementation dep.kotlin.coroutines.core
+    implementation dep.kotlin.stdLib
+    implementation dep.rx.android
+    implementation dep.rx.java
 }

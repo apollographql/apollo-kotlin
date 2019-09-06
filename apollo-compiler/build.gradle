@@ -17,21 +17,21 @@ sourceSets {
 }
 
 dependencies {
-  implementation dep.javaPoet
-  implementation dep.kotlinpoet
-  implementation dep.kotlinStdLib
-  implementation dep.moshi
-  implementation dep.moshiKotlin
-  implementation dep.moshiAdapters
+  antlr dep.antlr.antlr
+  compile dep.antlr.runtime
+  implementation dep.kotlin.stdLib
+  implementation dep.moshi.adapters
+  implementation dep.moshi.kotlin
+  implementation dep.moshi.moshi
+  implementation dep.poet.java
+  implementation dep.poet.kotlin
   implementation project(":apollo-api")
 
-  compile dep.antlrRuntime
-  antlr dep.antlr
-  kapt dep.moshiKotlinCodegen
+  kapt dep.moshi.kotlinCodegen
 
+  testImplementation dep.compiletesting
   testImplementation dep.junit
   testImplementation dep.truth
-  testImplementation dep.compiletesting
 }
 
 compileKotlin.dependsOn generateGrammarSource

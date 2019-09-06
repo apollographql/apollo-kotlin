@@ -1,6 +1,6 @@
 buildscript {
   dependencies {
-    classpath dep.androidPlugin
+    classpath dep.android.plugin
   }
 }
 
@@ -38,13 +38,13 @@ dependencies {
 
   androidTestCompileOnly dep.jetbrainsAnnotations
 
+  androidTestImplementation(dep.android.testRunner) {
+    exclude module: 'support-annotations'
+  }
   androidTestImplementation project(":apollo-runtime")
   androidTestImplementation project(":apollo-api")
   androidTestImplementation dep.truth
-  androidTestImplementation dep.mockWebServer
-  androidTestImplementation(dep.testRunner) {
-    exclude module: 'support-annotations'
-  }
+  androidTestImplementation dep.okHttp.mockWebServer
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

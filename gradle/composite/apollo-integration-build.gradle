@@ -6,8 +6,8 @@ buildscript {
     google()
   }
   dependencies {
-    classpath dep.androidPlugin
-    classpath dep.apolloPlugin
+    classpath dep.android.plugin
+    classpath dep.apollo.plugin
   }
 }
 
@@ -37,7 +37,7 @@ android {
   packagingOptions {
     exclude 'META-INF/rxjava.properties'
   }
-  
+
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_8
     targetCompatibility JavaVersion.VERSION_1_8
@@ -47,21 +47,21 @@ android {
 dependencies {
   compileOnly dep.jetbrainsAnnotations
 
-  implementation dep.apolloRuntime
-  implementation dep.apolloRx2Support
-  implementation dep.apolloHttpCache
-  implementation dep.appcompat
+  implementation dep.android.appcompat
+  implementation dep.apollo.httpCache
+  implementation dep.apollo.runtime
+  implementation dep.apollo.rx2
 
   testCompileOnly dep.jetbrainsAnnotations
   testImplementation dep.junit
   testImplementation dep.truth
-  testImplementation dep.mockWebServer
-  testImplementation dep.okhttpTestSupport
+  testImplementation dep.okHttp.mockWebServer
+  testImplementation dep.okHttp.testSupport
 }
 
 apollo {
   customTypeMapping = [
-      'Date': "java.util.Date",
+      'Date'  : "java.util.Date",
       "Upload": "com.apollographql.apollo.api.FileUpload"
   ]
 }

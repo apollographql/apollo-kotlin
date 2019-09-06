@@ -1,6 +1,6 @@
 buildscript {
   dependencies {
-    classpath dep.androidPlugin
+    classpath dep.android.plugin
   }
 }
 
@@ -33,13 +33,13 @@ android {
 dependencies {
   compileOnly dep.jetbrainsAnnotations
 
+  implementation dep.android.espressoIdlingResource
   implementation project(":apollo-runtime")
-  implementation dep.espressoIdlingResource
 
   testCompileOnly dep.jetbrainsAnnotations
   testImplementation dep.junit
   testImplementation dep.truth
-  testImplementation dep.mockWebServer
+  testImplementation dep.okHttp.mockWebServer
   testImplementation project(':apollo-rx2-support')
 }
 

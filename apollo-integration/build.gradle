@@ -1,7 +1,7 @@
 buildscript {
   dependencies {
-    classpath dep.androidPlugin
-    classpath dep.apolloPlugin
+    classpath dep.android.plugin
+    classpath dep.apollo.plugin
   }
 }
 
@@ -32,18 +32,18 @@ android {
 dependencies {
   implementation dep.jetbrainsAnnotations
 
+  implementation dep.android.appcompat
+  implementation dep.kotlin.coroutines.core
+  implementation dep.kotlin.stdLib
   implementation project(':apollo-runtime')
   implementation project(':apollo-rx2-support')
   implementation project(':apollo-coroutines-support')
   implementation project(':apollo-http-cache')
-  implementation dep.appcompat
-  implementation dep.kotlinStdLib
-  implementation dep.kotlinxCoroutines
 
   testImplementation dep.junit
   testImplementation dep.truth
-  testImplementation dep.mockWebServer
-  testImplementation dep.okhttpTestSupport
+  testImplementation dep.okHttp.mockWebServer
+  testImplementation dep.okHttp.testSupport
   testImplementation dep.mockito
 }
 
