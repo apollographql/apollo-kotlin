@@ -47,6 +47,7 @@ buildscript {
   }
 }
 ```
+(If you are not using Android, this whole block will go at the top of your build.gradle file, not settings.gradle!)
 
 Then add the following to your app's build.gradle dependencies:
 
@@ -85,11 +86,12 @@ dependencies {
 }
 ```
 
-The plugin can then be applied as follows within your app module's `build.gradle` :
+The plugin can then be applied as follows within your app module's `build.gradle`, or :
 
 ```groovy
 apply plugin: 'com.apollographql.android'
 ```
+(If you are not on Android, still apply this artifact in your build.gradle file, after the `buildscript` block.)
 
 The Android Plugin must be applied before the Apollo plugin.
 For Kotlin users, the Apollo plugin must be applied before the Kotlin plugins.
