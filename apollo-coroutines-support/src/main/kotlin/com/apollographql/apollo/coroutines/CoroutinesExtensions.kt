@@ -8,8 +8,9 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
 
 private class ChannelCallback<T>(val channel: Channel<Response<T>>) : ApolloCall.Callback<T>() {
 
@@ -36,6 +37,54 @@ private fun checkCapacity(capacity: Int) {
             // Everything else than UNLIMITED or CONFLATED does not guarantee that channel.offer() succeeds all the time.
             // We don't support these use cases for now
             throw IllegalArgumentException("Bad channel capacity ($capacity). Only UNLIMITED and CONFLATED are supported")
+    }
+}
+
+/**
+ * Converts an {@link ApolloCall} to an {@link kotlinx.coroutines.flow.Flow}.
+ *
+ * @param <T>  the value type.
+ * @param capacity the {@link Capacity} used for the underlying channel. Only {@link kotlinx.coroutines.channels.Channel.UNLIMITED}
+ * and {@link kotlinx.coroutines.channels.Channel.CONFLATED} are supported at the moment
+ * @throws IllegalArgumentException if capacity is not {@link kotlinx.coroutines.channels.Channel.UNLIMITED}
+ * or {@link kotlinx.coroutines.channels.Channel.CONFLATED}
+ * @return a flow which emits Responses<T>
+ */
+fun <T> ApolloCall<T>.toFlow(capacity: Int = Channel.UNLIMITED) = flow {
+    checkCapacity(capacity)
+    val channel = Channel<Response<T>>(capacity)
+
+    enqueue(ChannelCallback(channel = channel))
+    try {
+        for (item in channel) {
+            emit(item)
+        }
+    } finally {
+        cancel()
+    }
+}
+
+/**
+ * Converts an {@link ApolloQueryWatcher} to an {@link kotlinx.coroutines.flow.Flow}.
+ *
+ * @param <T>  the value type.
+ * @param capacity the {@link Capacity} used for the underlying channel. Only {@link kotlinx.coroutines.channels.Channel.UNLIMITED}
+ * and {@link kotlinx.coroutines.channels.Channel.CONFLATED} are supported at the moment
+ * @throws IllegalArgumentException if capacity is not {@link kotlinx.coroutines.channels.Channel.UNLIMITED}
+ * or {@link kotlinx.coroutines.channels.Channel.CONFLATED}
+ * @return a flow which emits Responses<T>
+ */
+fun <T> ApolloQueryWatcher<T>.toFlow(capacity: Int = Channel.UNLIMITED) = flow {
+    checkCapacity(capacity)
+    val channel = Channel<Response<T>>(capacity)
+
+    enqueueAndWatch(ChannelCallback(channel = channel))
+    try {
+        for (item in channel) {
+            emit(item)
+        }
+    } finally {
+        cancel()
     }
 }
 
