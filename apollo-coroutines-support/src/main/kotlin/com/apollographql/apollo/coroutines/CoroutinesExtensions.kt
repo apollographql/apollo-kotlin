@@ -14,7 +14,13 @@ import kotlin.coroutines.resumeWithException
 private class ChannelCallback<T>(val channel: Channel<Response<T>>) : ApolloCall.Callback<T>() {
 
     override fun onResponse(response: Response<T>) {
-        channel.offer(response)
+        try {
+            channel.offer(response)
+        } catch (ex: Exception) {
+            // Swallow exception if the channel is closed.
+            // Due to concurrency, this can be called between channel.close and cancel().
+            // For the same reason, we cannot use channel.isClosedForSend.
+        }
     }
 
     override fun onFailure(e: ApolloException) {
