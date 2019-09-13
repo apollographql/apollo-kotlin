@@ -135,7 +135,13 @@ fun <T> ApolloSubscriptionCall<T>.toChannel(capacity: Int = Channel.UNLIMITED): 
         }
 
         override fun onResponse(response: Response<T>) {
-            channel.offer(response)
+            try {
+                channel.offer(response)
+            } catch (ex: Exception) {
+                // Swallow exception if the channel is closed.
+                // Due to concurrency, this can be called between channel.close and cancel().
+                // For the same reason, we cannot use channel.isClosedForSend.
+            }
         }
 
         override fun onFailure(e: ApolloException) {
