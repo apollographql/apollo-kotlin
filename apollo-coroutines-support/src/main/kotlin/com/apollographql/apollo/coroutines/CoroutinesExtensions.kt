@@ -18,8 +18,6 @@ private class ChannelCallback<T>(val channel: Channel<Response<T>>) : ApolloCall
             channel.offer(response)
         } catch (ex: Exception) {
             // Swallow exception if the channel is closed.
-            // Due to concurrency, this can be called between channel.close and cancel().
-            // For the same reason, we cannot use channel.isClosedForSend.
         }
     }
 
