@@ -8,6 +8,7 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ClosedSendChannelException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
@@ -16,8 +17,10 @@ private class ChannelCallback<T>(val channel: Channel<Response<T>>) : ApolloCall
     override fun onResponse(response: Response<T>) {
         try {
             channel.offer(response)
-        } catch (ex: Exception) {
-            // Swallow exception if the channel is closed.
+        } catch (ex: ClosedSendChannelException) {
+            // Swallow exception if the channel has already been closed without a cause.
+        } catch (ex: ApolloException) {
+            // Swallow exception if the channel has already been closed with an ApolloException.
         }
     }
 
@@ -141,8 +144,12 @@ fun <T> ApolloSubscriptionCall<T>.toChannel(capacity: Int = Channel.UNLIMITED): 
         override fun onResponse(response: Response<T>) {
             try {
                 channel.offer(response)
-            } catch (ex: Exception) {
-                // Swallow exception if the channel is closed.
+            } catch (ex: ClosedSendChannelException) {
+                // Swallow exception if the channel has already been closed without a cause.
+                // Due to concurrency, this can be called between channel.close and cancel().
+                // For the same reason, we cannot use channel.isClosedForSend.
+            } catch (ex: ApolloException) {
+                // Swallow exception if the channel has already been closed with an ApolloException.
                 // Due to concurrency, this can be called between channel.close and cancel().
                 // For the same reason, we cannot use channel.isClosedForSend.
             }
