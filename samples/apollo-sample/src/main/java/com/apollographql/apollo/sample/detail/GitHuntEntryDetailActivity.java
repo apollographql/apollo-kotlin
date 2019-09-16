@@ -63,43 +63,7 @@ public class GitHuntEntryDetailActivity extends AppCompatActivity {
 
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_repository_detail);
-
-    repoFullName = getIntent().getStringExtra(ARG_REPOSITORY_FULL_NAME);
-    application = (GitHuntApplication) getApplication();
-    content = (ViewGroup) findViewById(R.id.content_holder);
-    progressBar = (ProgressBar) findViewById(R.id.loading_bar);
-    name = (TextView) findViewById(R.id.tv_repository_name);
-    description = (TextView) findViewById(R.id.tv_repository_description);
-    postedBy = (TextView) findViewById(R.id.tv_posted_by);
-
-    commentsList = (RecyclerView) findViewById(R.id.comments);
-    commentsList.setAdapter(commentsListViewAdapter);
-    commentsList.addItemDecoration(new RecyclerView.ItemDecoration() {
-      final int verticalSpaceHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16,
-          getResources().getDisplayMetrics());
-
-      @Override
-      public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-        if (parent.getChildAdapterPosition(view) == 0) {
-          outRect.top = verticalSpaceHeight;
-          outRect.bottom = verticalSpaceHeight / 2;
-        } else if (parent.getChildAdapterPosition(view) == parent.getAdapter().getItemCount() - 1) {
-          outRect.top = verticalSpaceHeight / 2;
-          outRect.bottom = verticalSpaceHeight;
-        } else {
-          outRect.top = verticalSpaceHeight / 2;
-          outRect.bottom = verticalSpaceHeight / 2;
-        }
-      }
-    });
-    commentsList.addItemDecoration(new DividerItemDecoration(commentsList.getContext(),
-        ((LinearLayoutManager) commentsList.getLayoutManager()).getOrientation()));
-
-    if (getSupportActionBar() != null) {
-      getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
+    initializeUserInterface();
     fetchRepositoryDetails();
     subscribeRepoCommentAdded();
   }
@@ -113,6 +77,43 @@ public class GitHuntEntryDetailActivity extends AppCompatActivity {
       return super.onOptionsItemSelected(item);
   }
 
+    private void initializeUserInterface() {
+        setContentView(R.layout.activity_repository_detail);
+        repoFullName = getIntent().getStringExtra(ARG_REPOSITORY_FULL_NAME);
+        application = (GitHuntApplication) getApplication();
+        content = (ViewGroup) findViewById(R.id.content_holder);
+        progressBar = (ProgressBar) findViewById(R.id.loading_bar);
+        name = (TextView) findViewById(R.id.tv_repository_name);
+        description = (TextView) findViewById(R.id.tv_repository_description);
+        postedBy = (TextView) findViewById(R.id.tv_posted_by);
+        commentsList = (RecyclerView) findViewById(R.id.comments);
+        commentsList.setAdapter(commentsListViewAdapter);
+        commentsList.addItemDecoration(new RecyclerView.ItemDecoration() {
+            final int verticalSpaceHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16,
+                    getResources().getDisplayMetrics());
+
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                if (parent.getChildAdapterPosition(view) == 0) {
+                    outRect.top = verticalSpaceHeight;
+                    outRect.bottom = verticalSpaceHeight / 2;
+                } else if (parent.getChildAdapterPosition(view) == parent.getAdapter().getItemCount() - 1) {
+                    outRect.top = verticalSpaceHeight / 2;
+                    outRect.bottom = verticalSpaceHeight;
+                } else {
+                    outRect.top = verticalSpaceHeight / 2;
+                    outRect.bottom = verticalSpaceHeight / 2;
+                }
+            }
+        });
+        commentsList.addItemDecoration(new DividerItemDecoration(commentsList.getContext(),
+                ((LinearLayoutManager) commentsList.getLayoutManager()).getOrientation()));
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
   void setEntryData(EntryDetailQuery.Data data) {
     content.setVisibility(View.VISIBLE);
     progressBar.setVisibility(View.GONE);
@@ -120,13 +121,15 @@ public class GitHuntEntryDetailActivity extends AppCompatActivity {
     if (entry != null) {
         final EntryDetailQuery.Repository repository = entry.repository();
         if (repository != null) {
-            repository.full_name();
-            name.setText(repository.full_name());
-            description.setText(repository.description());
+            setRepositoryData(repository);
+        } else {
+            Log.w(TAG, "Repository information is null.");
         }
         final EntryDetailQuery.PostedBy entryAuthor = entry.postedBy();
         if (entryAuthor != null) {
             postedBy.setText(getResources().getString(R.string.posted_by, entryAuthor.login()));
+        } else {
+            Log.w(TAG, "PostedBy information is null.");
         }
         List<String> comments = new ArrayList<>();
         final List<EntryDetailQuery.Comment> entryComments = entry.comments();
@@ -137,7 +140,12 @@ public class GitHuntEntryDetailActivity extends AppCompatActivity {
     }
   }
 
-  private void fetchRepositoryDetails() {
+    private void setRepositoryData(EntryDetailQuery.Repository repository) {
+        name.setText(repository.full_name());
+        description.setText(repository.description());
+    }
+
+    private void fetchRepositoryDetails() {
     ApolloCall<EntryDetailQuery.Data> entryDetailQuery = application.apolloClient()
         .query(new EntryDetailQuery(repoFullName))
         .responseFetcher(ApolloResponseFetchers.CACHE_FIRST);
@@ -178,6 +186,8 @@ public class GitHuntEntryDetailActivity extends AppCompatActivity {
                       RepoCommentAddedSubscription.CommentAdded newComment = data.commentAdded();
                       if (newComment != null) {
                           commentsListViewAdapter.addItem(newComment.content());
+                      } else {
+                          Log.w(TAG, "Comment added subscription data is null.");
                       }
                       Toast.makeText(GitHuntEntryDetailActivity.this, "Subscription response received", Toast.LENGTH_SHORT)
                               .show();
