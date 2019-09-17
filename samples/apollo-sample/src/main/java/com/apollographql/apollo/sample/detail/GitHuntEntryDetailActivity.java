@@ -63,75 +63,89 @@ public class GitHuntEntryDetailActivity extends AppCompatActivity {
 
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_repository_detail);
-
-    repoFullName = getIntent().getStringExtra(ARG_REPOSITORY_FULL_NAME);
-    application = (GitHuntApplication) getApplication();
-    content = (ViewGroup) findViewById(R.id.content_holder);
-    progressBar = (ProgressBar) findViewById(R.id.loading_bar);
-    name = (TextView) findViewById(R.id.tv_repository_name);
-    description = (TextView) findViewById(R.id.tv_repository_description);
-    postedBy = (TextView) findViewById(R.id.tv_posted_by);
-
-    commentsList = (RecyclerView) findViewById(R.id.comments);
-    commentsList.setAdapter(commentsListViewAdapter);
-    commentsList.addItemDecoration(new RecyclerView.ItemDecoration() {
-      final int verticalSpaceHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16,
-          getResources().getDisplayMetrics());
-
-      @Override
-      public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-        if (parent.getChildAdapterPosition(view) == 0) {
-          outRect.top = verticalSpaceHeight;
-          outRect.bottom = verticalSpaceHeight / 2;
-        } else if (parent.getChildAdapterPosition(view) == parent.getAdapter().getItemCount() - 1) {
-          outRect.top = verticalSpaceHeight / 2;
-          outRect.bottom = verticalSpaceHeight;
-        } else {
-          outRect.top = verticalSpaceHeight / 2;
-          outRect.bottom = verticalSpaceHeight / 2;
-        }
-      }
-    });
-    commentsList.addItemDecoration(new DividerItemDecoration(commentsList.getContext(),
-        ((LinearLayoutManager) commentsList.getLayoutManager()).getOrientation()));
-
-    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+    initializeUserInterface();
     fetchRepositoryDetails();
     subscribeRepoCommentAdded();
   }
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
-      case android.R.id.home:
-        this.finish();
-        return true;
-      default:
-        return super.onOptionsItemSelected(item);
-    }
+      if (item.getItemId() == android.R.id.home) {
+          this.finish();
+          return true;
+      }
+      return super.onOptionsItemSelected(item);
   }
+
+    private void initializeUserInterface() {
+        setContentView(R.layout.activity_repository_detail);
+        repoFullName = getIntent().getStringExtra(ARG_REPOSITORY_FULL_NAME);
+        application = (GitHuntApplication) getApplication();
+        content = (ViewGroup) findViewById(R.id.content_holder);
+        progressBar = (ProgressBar) findViewById(R.id.loading_bar);
+        name = (TextView) findViewById(R.id.tv_repository_name);
+        description = (TextView) findViewById(R.id.tv_repository_description);
+        postedBy = (TextView) findViewById(R.id.tv_posted_by);
+        commentsList = (RecyclerView) findViewById(R.id.comments);
+        commentsList.setAdapter(commentsListViewAdapter);
+        commentsList.addItemDecoration(new RecyclerView.ItemDecoration() {
+            final int verticalSpaceHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16,
+                    getResources().getDisplayMetrics());
+
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                if (parent.getChildAdapterPosition(view) == 0) {
+                    outRect.top = verticalSpaceHeight;
+                    outRect.bottom = verticalSpaceHeight / 2;
+                } else if (parent.getChildAdapterPosition(view) == parent.getAdapter().getItemCount() - 1) {
+                    outRect.top = verticalSpaceHeight / 2;
+                    outRect.bottom = verticalSpaceHeight;
+                } else {
+                    outRect.top = verticalSpaceHeight / 2;
+                    outRect.bottom = verticalSpaceHeight / 2;
+                }
+            }
+        });
+        commentsList.addItemDecoration(new DividerItemDecoration(commentsList.getContext(),
+                ((LinearLayoutManager) commentsList.getLayoutManager()).getOrientation()));
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+    }
 
   void setEntryData(EntryDetailQuery.Data data) {
     content.setVisibility(View.VISIBLE);
     progressBar.setVisibility(View.GONE);
-
     final EntryDetailQuery.Entry entry = data.entry();
     if (entry != null) {
-      name.setText(entry.repository().full_name());
-      description.setText(entry.repository().description());
-      postedBy.setText(getResources().getString(R.string.posted_by, entry.postedBy().login()));
+        final EntryDetailQuery.Repository repository = entry.repository();
+        if (repository != null) {
+            setRepositoryData(repository);
+        } else {
+            Log.w(TAG, "Repository information is null.");
+        }
+        final EntryDetailQuery.PostedBy entryAuthor = entry.postedBy();
+        if (entryAuthor != null) {
+            postedBy.setText(getResources().getString(R.string.posted_by, entryAuthor.login()));
+        } else {
+            Log.w(TAG, "PostedBy information is null.");
+        }
+        List<String> comments = new ArrayList<>();
+        final List<EntryDetailQuery.Comment> entryComments = entry.comments();
+        for (EntryDetailQuery.Comment comment : entryComments) {
+            comments.add(comment.content());
+        }
+        commentsListViewAdapter.setItems(comments);
     }
-
-    List<String> comments = new ArrayList<>();
-    for (EntryDetailQuery.Comment comment : data.entry().comments()) {
-      comments.add(comment.content());
-    }
-    commentsListViewAdapter.setItems(comments);
   }
 
-  private void fetchRepositoryDetails() {
+    private void setRepositoryData(EntryDetailQuery.Repository repository) {
+        name.setText(repository.full_name());
+        description.setText(repository.description());
+    }
+
+    private void fetchRepositoryDetails() {
     ApolloCall<EntryDetailQuery.Data> entryDetailQuery = application.apolloClient()
         .query(new EntryDetailQuery(repoFullName))
         .responseFetcher(ApolloResponseFetchers.CACHE_FIRST);
@@ -142,7 +156,9 @@ public class GitHuntEntryDetailActivity extends AppCompatActivity {
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeWith(new DisposableObserver<Response<EntryDetailQuery.Data>>() {
           @Override public void onNext(Response<EntryDetailQuery.Data> dataResponse) {
-            setEntryData(dataResponse.data());
+              if (dataResponse.data() != null) {
+                  setEntryData(dataResponse.data());
+              }
           }
 
           @Override public void onError(Throwable e) {
@@ -165,9 +181,17 @@ public class GitHuntEntryDetailActivity extends AppCompatActivity {
         .subscribeWith(
             new DisposableSubscriber<Response<RepoCommentAddedSubscription.Data>>() {
               @Override public void onNext(Response<RepoCommentAddedSubscription.Data> response) {
-                commentsListViewAdapter.addItem(response.data().commentAdded().content());
-                Toast.makeText(GitHuntEntryDetailActivity.this, "Subscription response received", Toast.LENGTH_SHORT)
-                    .show();
+                  final RepoCommentAddedSubscription.Data data = response.data();
+                  if (data != null) {
+                      RepoCommentAddedSubscription.CommentAdded newComment = data.commentAdded();
+                      if (newComment != null) {
+                          commentsListViewAdapter.addItem(newComment.content());
+                      } else {
+                          Log.w(TAG, "Comment added subscription data is null.");
+                      }
+                      Toast.makeText(GitHuntEntryDetailActivity.this, "Subscription response received", Toast.LENGTH_SHORT)
+                              .show();
+                  }
               }
 
               @Override public void onError(Throwable e) {
