@@ -14,8 +14,8 @@ import kotlin.Double
 import kotlin.String
 import kotlin.Suppress
 
-@Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments",
-    "NestedLambdaShadowedImplicitParameter")
+@Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
+    "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
 data class HumanDetails(
   val __typename: String,
   /**

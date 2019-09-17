@@ -11,8 +11,8 @@ import com.apollographql.apollo.api.InputType
 import kotlin.Boolean
 import kotlin.Suppress
 
-@Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments",
-    "NestedLambdaShadowedImplicitParameter")
+@Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
+    "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
 data class TestInputType(
   val private_: Input<Boolean> = Input.optional(null)
 ) : InputType {
