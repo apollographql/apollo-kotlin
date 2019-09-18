@@ -17,8 +17,8 @@ internal object KotlinCodeGen {
 
   val suppressWarningsAnnotation = AnnotationSpec
       .builder(Suppress::class)
-      .addMember("%S, %S, %S, %S", "NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments",
-          "NestedLambdaShadowedImplicitParameter")
+      .addMember("%S, %S, %S, %S, %S", "NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
+          "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
       .build()
 
   fun deprecatedAnnotation(message: String) = AnnotationSpec

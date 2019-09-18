@@ -23,8 +23,8 @@ import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.jvm.Transient
 
-@Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments",
-    "NestedLambdaShadowedImplicitParameter")
+@Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
+    "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
 data class TestQuery(
   val id: String
 ) : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
