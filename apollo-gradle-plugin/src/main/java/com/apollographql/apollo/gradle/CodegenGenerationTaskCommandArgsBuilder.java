@@ -91,7 +91,7 @@ class CodegenGenerationTaskCommandArgsBuilder {
 
     if (schemaFiles.isEmpty()) {
       throw new GradleException("Couldn't find schema files for the variant " + Utils.capitalize(variant) + ". Please" +
-          " ensure a valid schema.json exists under the varian't source sets");
+          " ensure a valid schema.json exists under the variant's source sets");
     }
 
     if (illegalSchemasFound(schemaFiles)) {
