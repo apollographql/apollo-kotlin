@@ -2,11 +2,14 @@ package com.apollographql.apollo
 
 import com.apollographql.apollo.Utils.*
 import com.apollographql.apollo.api.Input
+import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
 import com.apollographql.apollo.coroutines.toChannel
 import com.apollographql.apollo.coroutines.toDeferred
+import com.apollographql.apollo.coroutines.toFlow
 import com.apollographql.apollo.coroutines.toJob
+import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloParseException
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery
@@ -16,6 +19,7 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.Dispatcher
@@ -191,6 +195,37 @@ class CoroutinesApolloTest {
     assertThat(channel.isClosedForReceive).isEqualTo(true)
   }
 
+    @Test
+    fun flowCanBeRead() {
+        server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
+
+        val flow = apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toFlow()
+
+        runBlocking {
+            val result = mutableListOf<Response<EpisodeHeroNameQuery.Data>>()
+            flow.toList(result)
+            assertThat(result.size).isEqualTo(1)
+            assertThat(result[0].data()?.hero()?.name()).isEqualTo("R2-D2")
+        }
+    }
+
+    @Test
+    fun flowError() {
+        server.enqueue(MockResponse().setResponseCode(200).setBody("nonsense"))
+
+        val flow = apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toFlow()
+
+        runBlocking {
+            val result = mutableListOf<Response<EpisodeHeroNameQuery.Data>>()
+            try {
+                flow.toList(result)
+            } catch (e: ApolloException) {
+                return@runBlocking
+            }
+
+            throw Exception("exception has not been thrown")
+        }
+    }
 
   companion object {
 
