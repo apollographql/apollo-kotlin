@@ -33,6 +33,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.TlsVersion;
+import okhttp3.internal.http.HttpMethod;
 import okio.Buffer;
 import okio.BufferedSink;
 import okio.BufferedSource;
@@ -269,9 +270,10 @@ final class ResponseHeaderRecord {
   }
 
   Response response() {
+    RequestBody body = HttpMethod.permitsRequestBody(requestMethod) ? RequestBody.create(MediaType.parse("application/json; charset=utf-8"), "") : null;
     Request cacheRequest = new Request.Builder()
         .url(url)
-        .method(requestMethod, RequestBody.create(MediaType.parse("application/json; charset=utf-8"), ""))
+        .method(requestMethod, body)
         .headers(varyHeaders)
         .build();
     return new Response.Builder()
