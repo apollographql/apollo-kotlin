@@ -17,6 +17,13 @@ abstract class TaskConfigurator {
   protected final ApolloCodegenTask createCodegenTask(String sourceSetOrVariantName, Collection sourceSets) {
     File outputFolder = new File(project.buildDir, Joiner.on(File.separator).join(GraphQLCompiler.OUTPUT_DIRECTORY + sourceSetOrVariantName))
     String taskName = String.format(ApolloCodegenTask.NAME, sourceSetOrVariantName.capitalize())
+    File transformedQueriesOutputFolder = null
+    if (project.apollo.transformedQueriesOutputDir.getOrNull()) {
+      transformedQueriesOutputFolder = new File(
+          project.apollo.transformedQueriesOutputDir.get(),
+          sourceSetOrVariantName
+      )
+    }
     return project.tasks.create(taskName, ApolloCodegenTask) {
       source(sourceSets.collect { it.graphql })
       excludeFiles = project.apollo.sourceSet.exclude
@@ -36,6 +43,7 @@ abstract class TaskConfigurator {
       suppressRawTypesWarning = project.apollo.suppressRawTypesWarning
       generateKotlinModels = project.apollo.generateKotlinModels
       generateVisitorForPolymorphicDatatypes = project.apollo.generateVisitorForPolymorphicDatatypes
+      transformedQueriesOutputDir.set(transformedQueriesOutputFolder)
     }
   }
 }

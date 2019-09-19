@@ -17,6 +17,7 @@ class ApolloExtension {
   final Property<Boolean> generateVisitorForPolymorphicDatatypes
   final Property<String> schemaFilePath
   final Property<String> outputPackageName
+  final Property<String> transformedQueriesOutputDir
   final MapProperty<String, String> customTypeMapping
 
   ApolloExtension(Project project) {
@@ -46,6 +47,9 @@ class ApolloExtension {
 
     outputPackageName = project.objects.property(String.class)
     outputPackageName.set("")
+
+    transformedQueriesOutputDir = project.objects.property(String.class)
+    transformedQueriesOutputDir.set("")
 
     customTypeMapping = project.objects.mapProperty(String.class, String.class)
     customTypeMapping.set(new LinkedHashMap())
@@ -85,6 +89,10 @@ class ApolloExtension {
 
   void setOutputPackageName(String outputPackageName) {
     this.outputPackageName.set(outputPackageName)
+  }
+
+  void setTransformedQueriesOutputDir(String transformedQueriesOutputDir) {
+    this.transformedQueriesOutputDir.set(transformedQueriesOutputDir)
   }
 
   void setCustomTypeMapping(Map customTypeMapping) {

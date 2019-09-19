@@ -29,6 +29,7 @@ class ApolloCodegenTask extends SourceTask {
   @Input Property<Boolean> suppressRawTypesWarning = project.objects.property(Boolean.class)
   @Input Property<Boolean> generateKotlinModels = project.objects.property(Boolean.class)
   @Input Property<Boolean> generateVisitorForPolymorphicDatatypes = project.objects.property(Boolean.class)
+  @Optional @OutputDirectory DirectoryProperty transformedQueriesOutputDir = project.objects.directoryProperty()
   @Input ListProperty<String> excludeFiles = project.objects.listProperty(String.class)
 
   @TaskAction
@@ -59,7 +60,8 @@ class ApolloCodegenTask extends SourceTask {
           codeGenerationIR, outputDir.get().asFile, customTypeMapping.get(),
           nullableValueType != null ? nullableValueType : NullableValueType.ANNOTATED, useSemanticNaming.get(),
           generateModelBuilder.get(), useJavaBeansSemanticNaming.get(), irPackageName, outputPackageName,
-          suppressRawTypesWarning.get(), generateKotlinModels.get(), generateVisitorForPolymorphicDatatypes.get()
+          suppressRawTypesWarning.get(), generateKotlinModels.get(), generateVisitorForPolymorphicDatatypes.get(),
+          transformedQueriesOutputDir.getOrNull()?.asFile
       )
       new GraphQLCompiler().write(args)
     }

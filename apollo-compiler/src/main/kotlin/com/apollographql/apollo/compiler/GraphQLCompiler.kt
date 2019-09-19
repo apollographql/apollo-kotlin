@@ -50,6 +50,13 @@ class GraphQLCompiler {
           outputDir = args.outputDir
       )
     }
+
+    args.transformedQueriesOutputDir?.let { transformedQueriesOutputDir ->
+      val transformedQueryOutput = TransformedQueryOutput(
+          packageNameProvider
+      )
+      transformedQueryOutput.apply { visit(ir.operations) }.writeTo(transformedQueriesOutputDir)
+    }
   }
 
   private fun CodeGenerationIR.writeJavaFiles(context: CodeGenerationContext, outputDir: File) {
@@ -123,6 +130,7 @@ class GraphQLCompiler {
       val outputPackageName: String?,
       val suppressRawTypesWarning: Boolean,
       val generateKotlinModels: Boolean = false,
-      val generateVisitorForPolymorphicDatatypes: Boolean = false
+      val generateVisitorForPolymorphicDatatypes: Boolean = false,
+      val transformedQueriesOutputDir: File? = null
   )
 }
