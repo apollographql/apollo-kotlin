@@ -118,6 +118,8 @@ class GraphQLCompiler {
         "It should not be modified by hand.\n"
     @JvmField
     val OUTPUT_DIRECTORY = listOf("generated", "source", "apollo", "classes")
+    @JvmField
+    val TRANSFORMED_QUERIES_OUTPUT_DIRECTORY = listOf("generated", "apollo", "transformedQueries")
     const val APOLLOCODEGEN_VERSION = "0.19.1"
   }
 

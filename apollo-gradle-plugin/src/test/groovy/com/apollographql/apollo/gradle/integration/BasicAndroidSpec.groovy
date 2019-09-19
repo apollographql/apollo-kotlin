@@ -91,7 +91,7 @@ class BasicAndroidSpec extends Specification {
     replaceTextInFile(new File("$testProjectDir/build.gradle")) {
       it.replace("apollo {",
           "apollo {\n " +
-              "transformedQueriesOutputDir = \"\$buildDir/transformedQueries/\"\n"
+              "generateTransformedQueries = true\n"
       )
     }
 
@@ -105,8 +105,8 @@ class BasicAndroidSpec extends Specification {
 
     then:
     result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
-    assert new File(testProjectDir, "build/transformedQueries/release/com/example/DroidDetails.graphql").isFile()
-    assert new File(testProjectDir, "build/transformedQueries/release/com/example/DroidDetails.graphql").getText(
+    assert new File(testProjectDir, "build/generated/apollo/transformedQueries/release/com/example/DroidDetails.graphql").isFile()
+    assert new File(testProjectDir, "build/generated/apollo/transformedQueries/release/com/example/DroidDetails.graphql").getText(
         'UTF-8').contains("__typename")
   }
 
