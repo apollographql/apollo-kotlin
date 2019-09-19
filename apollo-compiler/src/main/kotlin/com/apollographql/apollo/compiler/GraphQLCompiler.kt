@@ -52,6 +52,9 @@ class GraphQLCompiler {
     }
 
     args.transformedQueriesOutputDir?.let { transformedQueriesOutputDir ->
+      if (transformedQueriesOutputDir.exists()) {
+        transformedQueriesOutputDir.deleteRecursively()
+      }
       val transformedQueryOutput = TransformedQueryOutput(
           packageNameProvider
       )
