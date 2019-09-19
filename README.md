@@ -27,6 +27,7 @@ Apollo-Android is designed primarily with Android in mind but you can use it in 
   - [Java Beans Semantic Naming for Accessors](#java-beans-semantic-naming-for-accessors)
   - [Explicit Schema location](#explicit-schema-location)
   - [Kotlin model generation (experimental)](#kotlin-model-generation-experimental)
+  - [Transformed queries](#transformed-queries)
 - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update --> 
@@ -668,6 +669,17 @@ By default Apollo Gradle plugin generates Java models but you can configure it t
 ```groovy
 apollo {
   generateKotlinModels = true
+}
+```
+
+### Transformed queries
+When Apollo-Android executes your queries, the actual queries sent to the server differs slightly from what was given; specifically, type hints are added to variable-type fields, and fragments are bundled. These differences don't affect typical use. If you want access to these transformed queries, Apollo Gradle plugin can save them to a build directory for you. This can be useful if you need to upload a query's exact content to a server that doesn't support automatic persisted queries.
+
+#### Usage
+
+```groovy
+apollo {
+  generateTransformedQueries = true
 }
 ```
 
