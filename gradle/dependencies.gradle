@@ -1,6 +1,6 @@
 def versions = [
     androidPlugin         : '3.4.2',
-    apollo                : '1.1.2-SNAPSHOT',
+    apollo                : '1.2.0-SNAPSHOT',
     antlr4                : '4.5.3',
     bintray               : '1.8.0',
     cache                 : '2.0.2',
