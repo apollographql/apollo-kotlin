@@ -50,6 +50,16 @@ class GraphQLCompiler {
           outputDir = args.outputDir
       )
     }
+
+    args.transformedQueriesOutputDir?.let { transformedQueriesOutputDir ->
+      if (transformedQueriesOutputDir.exists()) {
+        transformedQueriesOutputDir.deleteRecursively()
+      }
+      val transformedQueryOutput = TransformedQueryOutput(
+          packageNameProvider
+      )
+      transformedQueryOutput.apply { visit(ir.operations) }.writeTo(transformedQueriesOutputDir)
+    }
   }
 
   private fun CodeGenerationIR.writeJavaFiles(context: CodeGenerationContext, outputDir: File) {
@@ -108,6 +118,8 @@ class GraphQLCompiler {
         "It should not be modified by hand.\n"
     @JvmField
     val OUTPUT_DIRECTORY = listOf("generated", "source", "apollo", "classes")
+    @JvmField
+    val TRANSFORMED_QUERIES_OUTPUT_DIRECTORY = listOf("generated", "apollo", "transformedQueries")
     const val APOLLOCODEGEN_VERSION = "0.19.1"
   }
 
@@ -123,6 +135,7 @@ class GraphQLCompiler {
       val outputPackageName: String?,
       val suppressRawTypesWarning: Boolean,
       val generateKotlinModels: Boolean = false,
-      val generateVisitorForPolymorphicDatatypes: Boolean = false
+      val generateVisitorForPolymorphicDatatypes: Boolean = false,
+      val transformedQueriesOutputDir: File? = null
   )
 }

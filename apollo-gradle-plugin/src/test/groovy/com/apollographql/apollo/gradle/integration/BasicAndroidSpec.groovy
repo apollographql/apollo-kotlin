@@ -86,6 +86,30 @@ class BasicAndroidSpec extends Specification {
     result.task(":generateApolloClasses").outcome == TaskOutcome.UP_TO_DATE
   }
 
+  def "set transformed queries output dir generates queries with __typename"() {
+    setup: "a testProject with a previous build and a modified build script"
+    replaceTextInFile(new File("$testProjectDir/build.gradle")) {
+      it.replace("apollo {",
+          "apollo {\n " +
+              "generateTransformedQueries = true\n"
+      )
+    }
+
+    when:
+    def result = GradleRunner.create().withProjectDir(testProjectDir)
+        .withPluginClasspath()
+        .withArguments("generateApolloClasses", "-Dapollographql.skipRuntimeDep=true")
+        .forwardStdError(new OutputStreamWriter(System.err))
+//        .forwardStdOutput(new OutputStreamWriter(System.out))
+        .build()
+
+    then:
+    result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
+    assert new File(testProjectDir, "build/generated/apollo/transformedQueries/release/com/example/DroidDetails.graphql").isFile()
+    assert new File(testProjectDir, "build/generated/apollo/transformedQueries/release/com/example/DroidDetails.graphql").getText(
+        'UTF-8').contains("__typename")
+  }
+
   def "exclude graphql files, builds successfully and generates expected outputs"() {
     setup: "a testProject with a excluded files"
     replaceTextInFile(new File("$testProjectDir/build.gradle")) {
