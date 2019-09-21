@@ -61,14 +61,14 @@ class FragmentsResponseMapperBuilder(
   private fun initFragmentsCode(fragmentFields: List<FieldSpec>): CodeBlock {
     val codeBuilder = fragmentFields.fold(CodeBlock.builder()) { builder, fragmentField ->
       val fieldClass = fragmentField.type.unwrapOptionalType(withoutAnnotations = true) as ClassName
-      if (fragmentField.type.isOptional()) {
+      if (fragmentField.type.isNullable()) {
         builder.addStatement("\$T \$N = null", fieldClass, fragmentField)
       } else {
         builder.addStatement("\$T \$N = \$L.map(\$L)", fieldClass, fragmentField, fieldClass.mapperFieldName(), READER_VAR)
       }
     }
     fragmentFields.fold(codeBuilder) { builder, fragmentField ->
-      if (fragmentField.type.isOptional()) {
+      if (fragmentField.type.isNullable()) {
         builder.add(initFragmentCode(fragmentField))
       } else {
         builder

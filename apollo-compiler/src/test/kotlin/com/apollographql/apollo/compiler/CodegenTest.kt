@@ -120,6 +120,7 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments, val 
               folder.name == "hero_details_java_optional" -> NullableValueType.JAVA_OPTIONAL
               folder.name == "fragments_with_type_condition_nullable" -> NullableValueType.ANNOTATED
               folder.name == "hero_details_nullable" -> NullableValueType.ANNOTATED
+              folder.name == "union_fragment" -> NullableValueType.ANNOTATED
               else -> NullableValueType.APOLLO_OPTIONAL
             }
             val useSemanticNaming = when {
