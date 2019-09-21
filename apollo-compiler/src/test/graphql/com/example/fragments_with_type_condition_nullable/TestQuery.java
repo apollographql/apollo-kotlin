@@ -374,8 +374,14 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
 
         @Override
         public @NotNull Fragments map(ResponseReader reader, @NotNull String conditionalType) {
-          HumanDetails humanDetails = humanDetailsFieldMapper.map(reader);
-          DroidDetails droidDetails = droidDetailsFieldMapper.map(reader);
+          HumanDetails humanDetails = null;
+          DroidDetails droidDetails = null;
+          if (HumanDetails.POSSIBLE_TYPES.contains(conditionalType)) {
+            humanDetails = humanDetailsFieldMapper.map(reader);
+          }
+          if (DroidDetails.POSSIBLE_TYPES.contains(conditionalType)) {
+            droidDetails = droidDetailsFieldMapper.map(reader);
+          }
           return new Fragments(humanDetails, droidDetails);
         }
       }
@@ -562,8 +568,14 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
 
         @Override
         public @NotNull Fragments map(ResponseReader reader, @NotNull String conditionalType) {
-          HumanDetails humanDetails = humanDetailsFieldMapper.map(reader);
-          DroidDetails droidDetails = droidDetailsFieldMapper.map(reader);
+          HumanDetails humanDetails = null;
+          DroidDetails droidDetails = null;
+          if (HumanDetails.POSSIBLE_TYPES.contains(conditionalType)) {
+            humanDetails = humanDetailsFieldMapper.map(reader);
+          }
+          if (DroidDetails.POSSIBLE_TYPES.contains(conditionalType)) {
+            droidDetails = droidDetailsFieldMapper.map(reader);
+          }
           return new Fragments(humanDetails, droidDetails);
         }
       }
