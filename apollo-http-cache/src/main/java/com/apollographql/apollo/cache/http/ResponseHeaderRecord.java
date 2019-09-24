@@ -270,7 +270,11 @@ final class ResponseHeaderRecord {
   }
 
   Response response() {
-    RequestBody body = HttpMethod.permitsRequestBody(requestMethod) ? RequestBody.create(MediaType.parse("application/json; charset=utf-8"), "") : null;
+    RequestBody body = null;
+    if (HttpMethod.permitsRequestBody(requestMethod)) {
+      body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), "");
+    }
+
     Request cacheRequest = new Request.Builder()
         .url(url)
         .method(requestMethod, body)
