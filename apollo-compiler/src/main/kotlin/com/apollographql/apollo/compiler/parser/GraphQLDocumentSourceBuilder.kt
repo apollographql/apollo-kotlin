@@ -49,10 +49,10 @@ object GraphQLDocumentSourceBuilder {
   private val GraphQLParser.FieldContext.source: String
     get() {
       val fieldName = fieldName().source
-      val directives = directives()?.source?.let { " $it" } ?: ""
       val arguments = arguments()?.source ?: ""
+      val directives = directives()?.source?.let { " $it" } ?: ""
       val selectionSet = selectionSet()?.format()?.let { " {\n$it\n}" } ?: ""
-      return "$fieldName$directives$arguments$selectionSet"
+      return "$fieldName$arguments$directives$selectionSet"
     }
 
   private val GraphQLParser.ArgumentsContext.source: String
