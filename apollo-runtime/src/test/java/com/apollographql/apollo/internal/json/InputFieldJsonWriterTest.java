@@ -204,7 +204,7 @@ public class InputFieldJsonWriterTest {
     }
 
     @Override public String typeName() {
-      throw new UnsupportedOperationException();
+      return clazz.getSimpleName();
     }
 
     @Override public Class javaType() {
