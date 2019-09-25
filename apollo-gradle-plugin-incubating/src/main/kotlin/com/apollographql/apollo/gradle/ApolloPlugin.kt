@@ -112,13 +112,13 @@ open class ApolloPlugin : Plugin<Project> {
           sourceSetNames = listOf(name)
       )
 
-      registerVariantTask(project, apolloVariant) {serviceVariantTask ->
-        val sourceDirectorySet =  if (!apolloExtension.generateKotlinModels) {
+      registerVariantTask(project, apolloVariant) { serviceVariantTask ->
+        val sourceDirectorySet = if (!apolloExtension.generateKotlinModels) {
           sourceSets.getByName(name).getJava()
         } else {
           sourceSets.getByName(name).kotlin!!
         }
-        val compileTaskName =  if (!apolloExtension.generateKotlinModels) {
+        val compileTaskName = if (!apolloExtension.generateKotlinModels) {
           "compileJava"
         } else {
           "compileKotlin"
@@ -130,10 +130,10 @@ open class ApolloPlugin : Plugin<Project> {
       AndroidTaskConfigurator.configure(apolloExtension, androidExtension, project, this::registerVariantTask)
     }
 
-    apolloExtension.services.forEach {service ->
+    apolloExtension.services.forEach { service ->
       val introspection = service.introspection
       if (introspection != null) {
-        project.tasks.register("download${service.name.capitalize()}ApolloSchema", ApolloDownloadSchemaTask::class.java) {task->
+        project.tasks.register("download${service.name.capitalize()}ApolloSchema", ApolloDownloadSchemaTask::class.java) { task ->
           task.group = TASK_GROUP
           task.schemaFilePath = service.schemaFilePath
           task.endpointUrl = introspection.endpointUrl!!

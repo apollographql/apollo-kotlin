@@ -47,11 +47,11 @@ class ConfigurationTests {
 
   @Test
   fun `useSemanticNaming defaults to true`() {
-      withSimpleProject("""
+    withSimpleProject("""
     """.trimIndent()) { dir ->
-        TestUtils.executeTask("generateApolloClasses", dir)
-        TestUtils.assertFileContains(dir, "main/0/com/example/DroidDetailsQuery.java", "class DroidDetailsQuery ")
-      }
+      TestUtils.executeTask("generateApolloClasses", dir)
+      TestUtils.assertFileContains(dir, "main/0/com/example/DroidDetailsQuery.java", "class DroidDetailsQuery ")
+    }
   }
 
   @Test

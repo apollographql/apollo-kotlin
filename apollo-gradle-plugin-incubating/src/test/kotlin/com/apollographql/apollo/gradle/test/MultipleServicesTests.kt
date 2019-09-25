@@ -12,7 +12,7 @@ class MultipleServicesTests {
   fun withMultipleServicesProject(apolloConfiguration: String, block: (File) -> Unit) {
     withProject(usesKotlinDsl = false,
         plugins = listOf(TestUtils.javaPlugin, TestUtils.apolloPlugin),
-        apolloConfiguration = apolloConfiguration) {dir ->
+        apolloConfiguration = apolloConfiguration) { dir ->
       val source = TestUtils.fixturesDirectory()
       val target = dir.child("src", "main", "graphql", "githunt")
       File(source, "githunt").copyRecursively(target = target, overwrite = true)
@@ -23,7 +23,7 @@ class MultipleServicesTests {
 
   @Test
   fun `default services are found`() {
-    withMultipleServicesProject("") {dir ->
+    withMultipleServicesProject("") { dir ->
       TestUtils.executeTask("build", dir)
 
       assertTrue(dir.generatedChild("main/0/com/example/DroidDetailsQuery.java").isFile)
@@ -46,7 +46,7 @@ class MultipleServicesTests {
         }
       }
     """.trimIndent()
-    withMultipleServicesProject(apolloConfiguration) {dir ->
+    withMultipleServicesProject(apolloConfiguration) { dir ->
       TestUtils.executeTask("build", dir)
 
       assertTrue(dir.generatedChild("main/starwars/com/example/DroidDetailsQuery.java").isFile)

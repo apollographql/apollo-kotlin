@@ -58,7 +58,8 @@ open class ApolloCodegenTask : SourceTask() {
     return super.getSource()
   }
 
-  @Internal lateinit var graphqlFiles: List<File>
+  @Internal
+  lateinit var graphqlFiles: List<File>
 
   @TaskAction
   fun taskAction() {

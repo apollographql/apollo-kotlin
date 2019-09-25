@@ -16,17 +16,17 @@ object AndroidTaskConfigurator {
                 androidExtension: Any,
                 project: Project,
                 registerVariantTask: (Project, ApolloVariant, block: (TaskProvider<ApolloCodegenTask>) -> Unit) -> Unit
-                ) {
+  ) {
     when {
       androidExtension is LibraryExtension -> {
         androidExtension.libraryVariants.all(Action { variant ->
-          registerAndroid(project,  apolloExtension, androidExtension, variant, registerVariantTask)
+          registerAndroid(project, apolloExtension, androidExtension, variant, registerVariantTask)
         })
         // TODO: add test variants ?
       }
       androidExtension is AppExtension -> {
         androidExtension.applicationVariants.all(Action { variant ->
-          registerAndroid(project,  apolloExtension, androidExtension, variant, registerVariantTask)
+          registerAndroid(project, apolloExtension, androidExtension, variant, registerVariantTask)
         })
         // TODO: add test variants ?
       }
@@ -48,7 +48,7 @@ object AndroidTaskConfigurator {
         sourceSetNames = variant.sourceSets.map { it.name }.distinct()
     )
 
-    registerVariantTask(project,  apolloVariant) { serviceVariantTask ->
+    registerVariantTask(project, apolloVariant) { serviceVariantTask ->
       if (apolloExtension.generateKotlinModels) {
         androidExtension.sourceSets.first { it.name == variant.name }.kotlin!!.srcDir(serviceVariantTask.get().outputDir)
         project.tasks.named("compile${variant.name.capitalize()}Kotlin").configure { it.dependsOn(serviceVariantTask) }

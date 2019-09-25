@@ -18,13 +18,13 @@ class KotlinCodegenTests {
     """.trimIndent()
     withProject(usesKotlinDsl = false,
         apolloConfiguration = apolloConfiguration,
-        plugins = listOf(TestUtils.javaPlugin, TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin)) {dir ->
+        plugins = listOf(TestUtils.javaPlugin, TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin)) { dir ->
 
       val source = TestUtils.fixturesDirectory()
       source.child("kotlin").copyRecursively(dir.child("src", "main", "kotlin"))
 
       TestUtils.executeTask("build", dir)
-      Assert.assertTrue(File(dir,"build/classes/kotlin/main/com/example/DroidDetailsQuery.class").isFile)
+      Assert.assertTrue(File(dir, "build/classes/kotlin/main/com/example/DroidDetailsQuery.class").isFile)
       Assert.assertTrue(dir.generatedChild("main/0/com/example/DroidDetailsQuery.kt").isFile)
       Assert.assertTrue(dir.generatedChild("main/0/com/example/type/CustomType.kt").isFile)
       Assert.assertTrue(dir.generatedChild("main/0/com/example/fragment/SpeciesInformation.kt").isFile)

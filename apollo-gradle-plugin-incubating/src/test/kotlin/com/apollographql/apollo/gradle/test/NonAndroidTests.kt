@@ -11,7 +11,7 @@ import java.io.File
 class NonAndroidTests {
   @Test
   fun `applying the apollo plugin does not pull the android plugin in the classpath`() {
-    withSimpleProject {dir ->
+    withSimpleProject { dir ->
       // Remove the google() repo where the android plugin resides
       File(dir, "build.gradle").replaceInText("google()", "")
 

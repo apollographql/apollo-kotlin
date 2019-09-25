@@ -17,7 +17,7 @@ class AndroidTests {
   fun `android library is compiling fine`() {
     withProject(apolloConfiguration = "",
         usesKotlinDsl = false,
-        plugins = listOf(TestUtils.androidLibraryPlugin, TestUtils.apolloPlugin)) {dir ->
+        plugins = listOf(TestUtils.androidLibraryPlugin, TestUtils.apolloPlugin)) { dir ->
       val result = TestUtils.executeTask("build", dir)
 
       assertEquals(TaskOutcome.SUCCESS, result.task(":build")!!.outcome)
@@ -36,7 +36,7 @@ class AndroidTests {
   fun `android library debug does not compile release`() {
     withProject(apolloConfiguration = "",
         usesKotlinDsl = false,
-        plugins = listOf(TestUtils.androidLibraryPlugin, TestUtils.apolloPlugin)) {dir ->
+        plugins = listOf(TestUtils.androidLibraryPlugin, TestUtils.apolloPlugin)) { dir ->
       val result = TestUtils.executeTask("generateDebugApolloClasses", dir)
 
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateDebugApolloClasses")!!.outcome)
@@ -51,7 +51,7 @@ class AndroidTests {
   fun `android library debug query overrides main`() {
     withProject(apolloConfiguration = "",
         usesKotlinDsl = false,
-        plugins = listOf(TestUtils.androidLibraryPlugin, TestUtils.apolloPlugin)) {dir ->
+        plugins = listOf(TestUtils.androidLibraryPlugin, TestUtils.apolloPlugin)) { dir ->
 
       val debugFile = File(dir, "src/debug/graphql/com/example/DroidDetails.graphql")
       File(dir, "src/main/graphql/com/example/DroidDetails.graphql").copyTo(debugFile)
@@ -72,7 +72,7 @@ class AndroidTests {
     withProject(apolloConfiguration = "",
         usesKotlinDsl = false,
         isFlavored = true,
-        plugins = listOf(TestUtils.androidLibraryPlugin, TestUtils.apolloPlugin)) {dir ->
+        plugins = listOf(TestUtils.androidLibraryPlugin, TestUtils.apolloPlugin)) { dir ->
 
       TestUtils.executeTask("build", dir)
 
@@ -88,7 +88,7 @@ class AndroidTests {
     withProject(apolloConfiguration = "",
         usesKotlinDsl = false,
         isFlavored = true,
-        plugins = listOf(TestUtils.androidLibraryPlugin, TestUtils.apolloPlugin)) {dir ->
+        plugins = listOf(TestUtils.androidLibraryPlugin, TestUtils.apolloPlugin)) { dir ->
 
       val freeDebugDir = File(dir, "src/freeDebug/graphql/com/example/")
       freeDebugDir.mkdirs()
@@ -113,7 +113,7 @@ class AndroidTests {
   fun `android application is compiling fine`() {
     withProject(apolloConfiguration = "",
         usesKotlinDsl = false,
-        plugins = listOf(TestUtils.androidApplicationPlugin, TestUtils.apolloPlugin)) {dir ->
+        plugins = listOf(TestUtils.androidApplicationPlugin, TestUtils.apolloPlugin)) { dir ->
       val result = TestUtils.executeTask("build", dir)
 
       assertEquals(TaskOutcome.SUCCESS, result.task(":build")!!.outcome)
@@ -132,7 +132,7 @@ class AndroidTests {
   fun `applying com-apollographql-android shows a warning`() {
     withProject(apolloConfiguration = "",
         usesKotlinDsl = false,
-        plugins = listOf(TestUtils.androidLibraryPlugin, TestUtils.apolloPluginAndroid)) {dir ->
+        plugins = listOf(TestUtils.androidLibraryPlugin, TestUtils.apolloPluginAndroid)) { dir ->
 
       val result = TestUtils.executeTask("generateDebugApolloClasses", dir)
 

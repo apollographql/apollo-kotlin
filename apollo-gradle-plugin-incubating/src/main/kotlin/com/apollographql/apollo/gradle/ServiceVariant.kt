@@ -72,19 +72,19 @@ class ServiceVariant(
       val services = schemaFiles.entries
           .sortedBy { it.value.canonicalPath } // make sure the order is predicable for tests
           .map { entry ->
-        val sourceFolderPath = entry.value.canonicalPath.relativePathToGraphql(dropLast = 1)!!
-        val files = findFilesInSourceSets(project, sourceSetNames, sourceFolderPath, ::isGraphQL).values.toList()
+            val sourceFolderPath = entry.value.canonicalPath.relativePathToGraphql(dropLast = 1)!!
+            val files = findFilesInSourceSets(project, sourceSetNames, sourceFolderPath, ::isGraphQL).values.toList()
 
-        val name = (i++).toString()//entry.key.split(File.separator).map { it.capitalize() }.joinToString("")
+            val name = (i++).toString()//entry.key.split(File.separator).map { it.capitalize() }.joinToString("")
 
-        ServiceVariant(
-            name = name,
-            files = files,
-            schemaFile = entry.value,
-            schemaPackageName = entry.value.canonicalPath.formatPackageName(dropLast = 1)!!,
-            rootPackageName = ""
-        )
-      }
+            ServiceVariant(
+                name = name,
+                files = files,
+                schemaFile = entry.value,
+                schemaPackageName = entry.value.canonicalPath.formatPackageName(dropLast = 1)!!,
+                rootPackageName = ""
+            )
+          }
 
       return services
     }

@@ -15,7 +15,7 @@ open class ApolloSourceSetExtension {
     this.schemaFile = schemaFile
   }
 
-  fun setExclude(exclude: List<String> ) {
+  fun setExclude(exclude: List<String>) {
     this.exclude = exclude
   }
 
