@@ -78,7 +78,7 @@ class GraphQLDocumentParser(val schema: Schema) {
     try {
       return parser.document()
           .also { ctx -> parser.checkEOF(ctx) }
-          .let { ctx -> ctx.parse(path) }
+          .parse(path)
     } catch (e: ParseException) {
       throw GraphQLDocumentParseException(
           graphQLFilePath = absolutePath,
@@ -252,7 +252,7 @@ class GraphQLDocumentParser(val schema: Schema) {
         .filter { it.responseName != Field.TYPE_NAME_FIELD.responseName }
     val inlineFragmentSpreadFragmentsToMerge = inlineFragments.result
         .filter { it.typeCondition == schemaFieldType.name }
-        .flatMap { it.fragmentSpreads ?: emptyList() }
+        .flatMap { it.fragmentSpreads }
 
     val mergedFields = fields.result.mergeFields(others = inlineFragmentFieldsToMerge)
 
@@ -271,9 +271,9 @@ class GraphQLDocumentParser(val schema: Schema) {
                   fields = it.fields.mergeFields(others = mergedFields)
               )
             },
-            description = schemaField.description?.trim(),
+            description = schemaField.description?.trim() ?: "",
             isDeprecated = schemaField.isDeprecated,
-            deprecationReason = schemaField.deprecationReason,
+            deprecationReason = schemaField.deprecationReason ?: "",
             conditions = conditions,
             sourceLocation = SourceLocation(start)
         ),
@@ -428,7 +428,7 @@ class GraphQLDocumentParser(val schema: Schema) {
         .filter { it.responseName != Field.TYPE_NAME_FIELD.responseName }
     val mergeInlineFragmentSpreadFragments = inlineFragments.result
         .filter { it.typeCondition == typeCondition }
-        .flatMap { it.fragmentSpreads ?: emptyList() }
+        .flatMap { it.fragmentSpreads }
 
     return ParseResult(
         result = Fragment(
@@ -513,23 +513,23 @@ class GraphQLDocumentParser(val schema: Schema) {
             else -> null
           }!!,
           name = type.name,
-          description = type.description?.trim(),
+          description = type.description?.trim() ?: "",
           values = (type as? Schema.Type.Enum)?.enumValues?.map { value ->
             TypeDeclarationValue(
                 name = value.name,
-                description = value.description?.trim(),
+                description = value.description?.trim() ?: "",
                 isDeprecated = value.isDeprecated || !value.deprecationReason.isNullOrBlank(),
-                deprecationReason = value.deprecationReason
+                deprecationReason = value.deprecationReason ?: ""
             )
-          },
+          } ?: emptyList(),
           fields = (type as? Schema.Type.InputObject)?.inputFields?.map { field ->
             TypeDeclarationField(
                 name = field.name,
-                description = field.description?.trim(),
+                description = field.description?.trim() ?: "",
                 type = field.type.asIrType(),
                 defaultValue = field.defaultValue.normalizeValue(field.type)
             )
-          }
+          } ?: emptyList()
       )
     }
   }
@@ -564,7 +564,7 @@ class GraphQLDocumentParser(val schema: Schema) {
     return map { targetField ->
       val targetFieldName = targetField.responseName + ":" + targetField.fieldName
       targetField.copy(
-          fields = targetField.fields?.union(
+          fields = targetField.fields.union(
               other.find { otherField ->
                 otherField.responseName + ":" + otherField.fieldName == targetFieldName
               }?.fields ?: emptyList()
@@ -635,14 +635,14 @@ class GraphQLDocumentParser(val schema: Schema) {
       )
     }
 
-    if (!(args ?: emptyList()).containsAll(other.args ?: emptyList())) {
+    if (!args.containsAll(other.args)) {
       throw ParseException(
           message = "Fields `$responseName` conflict because they have different arguments. Use different aliases on the fields.",
           sourceLocation = other.sourceLocation
       )
     }
 
-    if (!(inlineFragments ?: emptyList()).containsAll(other.inlineFragments ?: emptyList())) {
+    if (!inlineFragments.containsAll(other.inlineFragments)) {
       throw ParseException(
           message = "Fields `$responseName` conflict because they have different inline fragment. Use different aliases on the fields.",
           sourceLocation = other.sourceLocation
@@ -650,8 +650,8 @@ class GraphQLDocumentParser(val schema: Schema) {
     }
 
     return copy(
-        fields = (fields ?: emptyList()).mergeFields(other.fields ?: emptyList()),
-        fragmentSpreads = (fragmentSpreads ?: emptyList()).union(other.fragmentSpreads ?: emptyList()).toList()
+        fields = fields.mergeFields(other.fields),
+        fragmentSpreads = (fragmentSpreads).union(other.fragmentSpreads).toList()
     )
   }
 
@@ -675,8 +675,8 @@ class GraphQLDocumentParser(val schema: Schema) {
 
   private fun List<Field>.referencedFragmentNames(fragments: List<Fragment>, filePath: String): Set<String> {
     val referencedFragmentNames = flatMap { it.fragmentSpreads ?: emptyList() } +
-        flatMap { it.fields?.referencedFragmentNames(fragments = fragments, filePath = filePath) ?: emptySet() } +
-        flatMap { it.inlineFragments?.flatMap { it.referencedFragments(fragments = fragments, filePath = filePath) } ?: emptyList() }
+        flatMap { it.fields.referencedFragmentNames(fragments = fragments, filePath = filePath) } +
+        flatMap { it.inlineFragments.flatMap { it.referencedFragments(fragments = fragments, filePath = filePath) } }
     return referencedFragmentNames.toSet().flatMap { fragmentName ->
       val fragment = fragments.find { fragment -> fragment.fragmentName == fragmentName }
           ?: throw GraphQLParseException("Undefined fragment `$fragmentName`\n$filePath")
@@ -697,20 +697,18 @@ class GraphQLDocumentParser(val schema: Schema) {
   }
 
   private fun InlineFragment.referencedFragments(fragments: List<Fragment>, filePath: String): Set<String> {
-    return (fragmentSpreads ?: emptyList())
-        .flatMap { fragmentName ->
-          val fragment = fragments.find { fragment -> fragment.fragmentName == fragmentName }
-              ?: throw GraphQLParseException("Undefined fragment `$fragmentName`\n$filePath")
+    return fragmentSpreads.flatMap { fragmentName ->
+      val fragment = fragments.find { fragment -> fragment.fragmentName == fragmentName }
+          ?: throw GraphQLParseException("Undefined fragment `$fragmentName`\n$filePath")
 
-          listOf(fragmentName) + fragment.referencedFragments(fragments)
-        }
-        .union(fields.referencedFragmentNames(fragments = fragments, filePath = filePath))
+      listOf(fragmentName) + fragment.referencedFragments(fragments)
+    }.union(fields.referencedFragmentNames(fragments = fragments, filePath = filePath))
   }
 
   private fun Operation.checkVariableDefinitions() {
     fields.forEach { field ->
       field.checkVariableDefinitions(operation = this, filePath = filePath)
-      field.fields?.forEach { it.checkVariableDefinitions(operation = this, filePath = filePath) }
+      field.fields.forEach { it.checkVariableDefinitions(operation = this, filePath = filePath) }
     }
   }
 
@@ -718,7 +716,7 @@ class GraphQLDocumentParser(val schema: Schema) {
     try {
       fields.forEach { field ->
         field.checkVariableDefinitions(operation = operation, filePath = filePath!!)
-        field.fields?.forEach { it.checkVariableDefinitions(operation = operation, filePath = filePath) }
+        field.fields.forEach { it.checkVariableDefinitions(operation = operation, filePath = filePath) }
       }
     } catch (e: ParseException) {
       throw GraphQLParseException("$filePath: ${e.message}[${operation.filePath}]")
@@ -726,7 +724,7 @@ class GraphQLDocumentParser(val schema: Schema) {
   }
 
   private fun Field.checkVariableDefinitions(operation: Operation, filePath: String) {
-    args?.forEach { arg ->
+    args.forEach { arg ->
       if (arg.value is Map<*, *> && arg.value["kind"] == "Variable") {
         val variableName = arg.value["variableName"]
         val variable = operation.variables.find { it.name == variableName } ?: throw ParseException(
@@ -743,13 +741,13 @@ class GraphQLDocumentParser(val schema: Schema) {
       }
     }
 
-    inlineFragments?.forEach { fragment ->
+    inlineFragments.forEach { fragment ->
       fragment.fields.forEach { field ->
         field.checkVariableDefinitions(operation = operation, filePath = filePath)
       }
     }
 
-    conditions?.forEach { condition ->
+    conditions.forEach { condition ->
       val variable = operation.variables.find { it.name == condition.variableName } ?: throw ParseException(
           message = "Variable `${condition.variableName}` is not defined by operation `${operation.operationName}`",
           sourceLocation = condition.sourceLocation
@@ -764,7 +762,7 @@ class GraphQLDocumentParser(val schema: Schema) {
       }
     }
 
-    fields?.forEach { it.checkVariableDefinitions(operation = operation, filePath = filePath) }
+    fields.forEach { it.checkVariableDefinitions(operation = operation, filePath = filePath) }
   }
 
   private fun Schema.Type.isAssignableFrom(other: Schema.Type): Boolean {

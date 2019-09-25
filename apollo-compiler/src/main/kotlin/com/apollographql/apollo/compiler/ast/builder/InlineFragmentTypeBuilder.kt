@@ -18,7 +18,7 @@ internal fun List<InlineFragment>.inlineFragmentField(
   }
   val inlineFragmentRefs = associate { fragment ->
     val normalizedClassName = fragment.typeCondition.capitalize().escapeKotlinReservedWord()
-    val possibleTypes = fragment.possibleTypes ?: listOf(fragment.typeCondition)
+    val possibleTypes = fragment.possibleTypes
     context.addObjectType("As$normalizedClassName") { typeRef ->
       ObjectType.InlineFragment(
           className = typeRef.name,

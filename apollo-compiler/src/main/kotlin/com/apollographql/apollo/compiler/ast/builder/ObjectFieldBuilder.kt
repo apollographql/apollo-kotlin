@@ -26,23 +26,23 @@ private fun Field.scalar(context: Context): ObjectType.Field {
           customTypeMap = context.customTypeMap,
           typesPackageName = context.typesPackageName
       ),
-      description = description ?: "",
+      description = description,
       isOptional = !type.endsWith("!") || isConditional,
-      isDeprecated = isDeprecated ?: false,
-      deprecationReason = deprecationReason ?: "",
-      arguments = args?.associate { it.name to it.value.normalizeJsonValue(it.type) } ?: emptyMap(),
+      isDeprecated = isDeprecated,
+      deprecationReason = deprecationReason,
+      arguments = args.associate { it.name to it.value.normalizeJsonValue(it.type) },
       conditions = normalizedConditions
   )
 }
 
 private fun Field.array(context: Context): ObjectType.Field {
-  val fieldType = if (fields?.isNotEmpty() == true) {
+  val fieldType = if (fields.isNotEmpty()) {
     val objectType = FieldType.Object(
         context.registerObjectType(
             type = responseName.replace("[", "").replace("]", "").replace("!", ""),
             schemaType = type.replace("[", "").replace("]", "").replace("!", ""),
-            fragmentSpreads = fragmentSpreads ?: emptyList(),
-            inlineFragments = inlineFragments ?: emptyList(),
+            fragmentSpreads = fragmentSpreads,
+            inlineFragments = inlineFragments,
             fields = fields
         )
     )
@@ -68,11 +68,11 @@ private fun Field.array(context: Context): ObjectType.Field {
       responseName = responseName,
       schemaName = fieldName,
       type = fieldType,
-      description = description ?: "",
+      description = description,
       isOptional = !type.endsWith("!") || isConditional,
-      isDeprecated = isDeprecated ?: false,
+      isDeprecated = isDeprecated,
       deprecationReason = deprecationReason ?: "",
-      arguments = args?.associate { it.name to it.value.normalizeJsonValue(it.type) } ?: emptyMap(),
+      arguments = args.associate { it.name to it.value.normalizeJsonValue(it.type) },
       conditions = normalizedConditions
   )
 }
@@ -81,9 +81,9 @@ private fun Field.`object`(context: Context): ObjectType.Field {
   val typeRef = context.registerObjectType(
       type = responseName.replace("[", "").replace("[", "").replace("!", ""),
       schemaType = type.replace("[", "").replace("[", "").replace("!", ""),
-      fragmentSpreads = fragmentSpreads ?: emptyList(),
-      inlineFragments = inlineFragments ?: emptyList(),
-      fields = fields ?: emptyList()
+      fragmentSpreads = fragmentSpreads,
+      inlineFragments = inlineFragments,
+      fields = fields
   )
   return ObjectType.Field(
       name = responseName.decapitalize().escapeKotlinReservedWord(),
@@ -91,10 +91,10 @@ private fun Field.`object`(context: Context): ObjectType.Field {
       schemaName = fieldName,
       type = FieldType.Object(typeRef),
       description = description ?: "",
-      isOptional = !type.endsWith("!") || isConditional || (inlineFragments?.isNotEmpty() == true),
+      isOptional = !type.endsWith("!") || isConditional || inlineFragments.isNotEmpty(),
       isDeprecated = isDeprecated ?: false,
       deprecationReason = deprecationReason ?: "",
-      arguments = args?.associate { it.name to it.value.normalizeJsonValue(it.type) } ?: emptyMap(),
+      arguments = args.associate { it.name to it.value.normalizeJsonValue(it.type) },
       conditions = normalizedConditions
   )
 }
@@ -108,12 +108,12 @@ private val Field.isArrayTypeField: Boolean
 private val Field.normalizedConditions: List<ObjectType.Field.Condition>
   get() {
     return if (isConditional) {
-      conditions?.filter { it.kind == Condition.Kind.BOOLEAN.rawValue }?.map {
+      conditions.filter { it.kind == Condition.Kind.BOOLEAN.rawValue }.map {
         ObjectType.Field.Condition.Directive(
             variableName = it.variableName,
             inverted = it.inverted
         )
-      } ?: emptyList()
+      }
     } else {
       emptyList()
     }
