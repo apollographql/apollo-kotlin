@@ -33,11 +33,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, TestQuery.Variables> {
-  public static final String OPERATION_ID = "b1a5bbb02a3a876846b727d73a26bf205341d6e7b7181f17e93c8f3b0a5d4b3e";
+  public static final String OPERATION_ID = "e594110fa0ad8db4b20f09c75b0d5ec2dd8ec2d7f5e46e27c327717f418dbd9d";
 
   public static final String QUERY_DOCUMENT = "query TestQuery($id: ID!) {\n"
       + "  starship(id: $id) {\n"
-      + "    __typename\n"
       + "    id\n"
       + "    name\n"
       + "    coordinates\n"
@@ -227,13 +226,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class Starship {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forCustomType("id", "id", null, false, CustomType.ID, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forList("coordinates", "coordinates", null, true, Collections.<ResponseField.Condition>emptyList())
     };
-
-    final @NotNull String __typename;
 
     final @NotNull String id;
 
@@ -247,16 +243,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Starship(@NotNull String __typename, @NotNull String id, @NotNull String name,
+    public Starship(@NotNull String id, @NotNull String name,
         @Nullable List<List<Double>> coordinates) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.id = Utils.checkNotNull(id, "id == null");
       this.name = Utils.checkNotNull(name, "name == null");
       this.coordinates = Optional.fromNullable(coordinates);
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
     }
 
     /**
@@ -282,10 +273,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeCustom((ResponseField.CustomTypeField) $responseFields[1], id);
-          writer.writeString($responseFields[2], name);
-          writer.writeList($responseFields[3], coordinates.isPresent() ? coordinates.get() : null, new ResponseWriter.ListWriter() {
+          writer.writeCustom((ResponseField.CustomTypeField) $responseFields[0], id);
+          writer.writeString($responseFields[1], name);
+          writer.writeList($responseFields[2], coordinates.isPresent() ? coordinates.get() : null, new ResponseWriter.ListWriter() {
             @Override
             public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
               for (Object item : items) {
@@ -308,7 +298,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "Starship{"
-          + "__typename=" + __typename + ", "
           + "id=" + id + ", "
           + "name=" + name + ", "
           + "coordinates=" + coordinates
@@ -324,8 +313,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Starship) {
         Starship that = (Starship) o;
-        return this.__typename.equals(that.__typename)
-         && this.id.equals(that.id)
+        return this.id.equals(that.id)
          && this.name.equals(that.name)
          && this.coordinates.equals(that.coordinates);
       }
@@ -336,8 +324,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= id.hashCode();
         h *= 1000003;
@@ -353,10 +339,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<Starship> {
       @Override
       public Starship map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final String id = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[1]);
-        final String name = reader.readString($responseFields[2]);
-        final List<List<Double>> coordinates = reader.readList($responseFields[3], new ResponseReader.ListReader<List<Double>>() {
+        final String id = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        final List<List<Double>> coordinates = reader.readList($responseFields[2], new ResponseReader.ListReader<List<Double>>() {
           @Override
           public List<Double> read(ResponseReader.ListItemReader listItemReader) {
             return listItemReader.readList(new ResponseReader.ListReader<Double>() {
@@ -367,7 +352,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
             });
           }
         });
-        return new Starship(__typename, id, name, coordinates);
+        return new Starship(id, name, coordinates);
       }
     }
   }

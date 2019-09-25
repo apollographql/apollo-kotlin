@@ -110,7 +110,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "055627532ff2cdad7cb785d988937c4d22b30a473846600c41619a4f24084e01"
+        "e1649a0c73357be4076d4bd57ff1753279e2f8fd413c44e443d6ad00682e5195"
 
     val QUERY_DOCUMENT: String = """
         |query TestQuery {
@@ -121,12 +121,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         |  }
         |}
         |fragment Character on Character {
-        |  __typename
         |  id
         |  name
         |}
         |fragment Starship on Starship {
-        |  __typename
         |  name
         |}
         """.trimMargin()

@@ -11,7 +11,7 @@ object GraphQLDocumentSourceBuilder {
       val operationType = operationType().text
       val operationName = NAME().text
       val variables = variableDefinitions()?.source ?: ""
-      val fields = selectionSet()?.format(addTypeName = false)?.let { " {\n$it\n}" } ?: ""
+      val fields = selectionSet()?.format()?.let { " {\n$it\n}" } ?: ""
       return "$operationType $operationName$variables$fields".withIndents
     }
 
@@ -27,8 +27,10 @@ object GraphQLDocumentSourceBuilder {
   private val GraphQLParser.VariableDefinitionsContext.source: String
     get() = variableDefinition().joinToString(separator = ", ", prefix = "(", postfix = ")") { it.source }
 
-  private fun GraphQLParser.SelectionSetContext.format(addTypeName: Boolean = true): String {
-    val withTypeName = addTypeName && selection()?.find {
+  private fun GraphQLParser.SelectionSetContext.format(): String {
+    val hasInlineFragments = selection()?.find { it.inlineFragment() != null } != null
+    val hasFragments = selection()?.find { it.fragmentSpread() != null } != null
+    val withTypeName = (hasFragments || hasInlineFragments) && selection()?.find {
       it.field()?.fieldName()?.NAME()?.text == "__typename"
     } == null
     val fields = selection()?.mapNotNull { selection ->
@@ -42,7 +44,7 @@ object GraphQLDocumentSourceBuilder {
       val typeCondition = typeCondition().source
       val directives = directives()?.source?.let { "$it " } ?: ""
       val hasInlineFragments = selectionSet().selection()?.find { it.inlineFragment() != null } != null
-      val fields = selectionSet().format(addTypeName = hasInlineFragments)
+      val fields = selectionSet().format()
       return "... on $typeCondition $directives{\n$fields\n}"
     }
 

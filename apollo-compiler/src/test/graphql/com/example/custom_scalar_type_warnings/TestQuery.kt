@@ -32,15 +32,13 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class Hero(
-    val __typename: String,
     /**
      * Links
      */
     val links: List<Any>
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeList(RESPONSE_FIELDS[1], links) { value, listItemWriter ->
+      it.writeList(RESPONSE_FIELDS[0], links) { value, listItemWriter ->
         value?.forEach { value ->
           listItemWriter.writeCustom(CustomType.URL, value)
         }
@@ -49,17 +47,14 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forList("links", "links", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): Hero {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val links = reader.readList<Any>(RESPONSE_FIELDS[1]) {
+        val links = reader.readList<Any>(RESPONSE_FIELDS[0]) {
           it.readCustomType<Any>(CustomType.URL)
         }
         return Hero(
-          __typename = __typename,
           links = links
         )
       }
@@ -92,12 +87,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "3922907e29d945e3c89be3dda4e11ac5dbb88ae281fb804e1f13125b13bb6275"
+        "683d118580d831edfc93eba61b528944b74e18408efd9ab33e56af1fb3e5679f"
 
     val QUERY_DOCUMENT: String = """
         |query TestQuery {
         |  hero {
-        |    __typename
         |    links
         |  }
         |}

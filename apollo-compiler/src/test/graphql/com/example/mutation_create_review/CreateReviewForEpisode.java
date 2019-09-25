@@ -35,18 +35,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpisode.Data, Optional<CreateReviewForEpisode.Data>, CreateReviewForEpisode.Variables> {
-  public static final String OPERATION_ID = "e21a7c3210dfc89a23ac6ffa9cd5d4caf1b7ebecce91677433782e7b6f11f39c";
+  public static final String OPERATION_ID = "2b13ac5b97ab876615ec98492c5150f4154d304754f5c3797eb53280268d93fe";
 
   public static final String QUERY_DOCUMENT = "mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {\n"
       + "  createReview(episode: $ep, review: $review) {\n"
-      + "    __typename\n"
       + "    stars\n"
       + "    commentary\n"
       + "    listOfListOfString\n"
       + "    listOfListOfEnum\n"
       + "    listOfListOfCustom\n"
       + "    listOfListOfObject {\n"
-      + "      __typename\n"
       + "      name\n"
       + "    }\n"
       + "  }\n"
@@ -257,7 +255,6 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
 
   public static class CreateReview {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forInt("stars", "stars", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("commentary", "commentary", null, true, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forList("listOfListOfString", "listOfListOfString", null, true, Collections.<ResponseField.Condition>emptyList()),
@@ -265,8 +262,6 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
       ResponseField.forList("listOfListOfCustom", "listOfListOfCustom", null, true, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forList("listOfListOfObject", "listOfListOfObject", null, true, Collections.<ResponseField.Condition>emptyList())
     };
-
-    final @NotNull String __typename;
 
     final int stars;
 
@@ -286,22 +281,17 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public CreateReview(@NotNull String __typename, int stars, @Nullable String commentary,
+    public CreateReview(int stars, @Nullable String commentary,
         @Nullable List<List<String>> listOfListOfString,
         @Nullable List<List<Episode>> listOfListOfEnum,
         @Nullable List<List<Date>> listOfListOfCustom,
         @Nullable List<List<ListOfListOfObject>> listOfListOfObject) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.stars = stars;
       this.commentary = Optional.fromNullable(commentary);
       this.listOfListOfString = Optional.fromNullable(listOfListOfString);
       this.listOfListOfEnum = Optional.fromNullable(listOfListOfEnum);
       this.listOfListOfCustom = Optional.fromNullable(listOfListOfCustom);
       this.listOfListOfObject = Optional.fromNullable(listOfListOfObject);
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
     }
 
     /**
@@ -351,10 +341,9 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeInt($responseFields[1], stars);
-          writer.writeString($responseFields[2], commentary.isPresent() ? commentary.get() : null);
-          writer.writeList($responseFields[3], listOfListOfString.isPresent() ? listOfListOfString.get() : null, new ResponseWriter.ListWriter() {
+          writer.writeInt($responseFields[0], stars);
+          writer.writeString($responseFields[1], commentary.isPresent() ? commentary.get() : null);
+          writer.writeList($responseFields[2], listOfListOfString.isPresent() ? listOfListOfString.get() : null, new ResponseWriter.ListWriter() {
             @Override
             public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
               for (Object item : items) {
@@ -369,7 +358,7 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
               }
             }
           });
-          writer.writeList($responseFields[4], listOfListOfEnum.isPresent() ? listOfListOfEnum.get() : null, new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[3], listOfListOfEnum.isPresent() ? listOfListOfEnum.get() : null, new ResponseWriter.ListWriter() {
             @Override
             public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
               for (Object item : items) {
@@ -384,7 +373,7 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
               }
             }
           });
-          writer.writeList($responseFields[5], listOfListOfCustom.isPresent() ? listOfListOfCustom.get() : null, new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[4], listOfListOfCustom.isPresent() ? listOfListOfCustom.get() : null, new ResponseWriter.ListWriter() {
             @Override
             public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
               for (Object item : items) {
@@ -399,7 +388,7 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
               }
             }
           });
-          writer.writeList($responseFields[6], listOfListOfObject.isPresent() ? listOfListOfObject.get() : null, new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[5], listOfListOfObject.isPresent() ? listOfListOfObject.get() : null, new ResponseWriter.ListWriter() {
             @Override
             public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
               for (Object item : items) {
@@ -422,7 +411,6 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
     public String toString() {
       if ($toString == null) {
         $toString = "CreateReview{"
-          + "__typename=" + __typename + ", "
           + "stars=" + stars + ", "
           + "commentary=" + commentary + ", "
           + "listOfListOfString=" + listOfListOfString + ", "
@@ -441,8 +429,7 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
       }
       if (o instanceof CreateReview) {
         CreateReview that = (CreateReview) o;
-        return this.__typename.equals(that.__typename)
-         && this.stars == that.stars
+        return this.stars == that.stars
          && this.commentary.equals(that.commentary)
          && this.listOfListOfString.equals(that.listOfListOfString)
          && this.listOfListOfEnum.equals(that.listOfListOfEnum)
@@ -456,8 +443,6 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= stars;
         h *= 1000003;
@@ -481,10 +466,9 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
 
       @Override
       public CreateReview map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final int stars = reader.readInt($responseFields[1]);
-        final String commentary = reader.readString($responseFields[2]);
-        final List<List<String>> listOfListOfString = reader.readList($responseFields[3], new ResponseReader.ListReader<List<String>>() {
+        final int stars = reader.readInt($responseFields[0]);
+        final String commentary = reader.readString($responseFields[1]);
+        final List<List<String>> listOfListOfString = reader.readList($responseFields[2], new ResponseReader.ListReader<List<String>>() {
           @Override
           public List<String> read(ResponseReader.ListItemReader listItemReader) {
             return listItemReader.readList(new ResponseReader.ListReader<String>() {
@@ -495,7 +479,7 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
             });
           }
         });
-        final List<List<Episode>> listOfListOfEnum = reader.readList($responseFields[4], new ResponseReader.ListReader<List<Episode>>() {
+        final List<List<Episode>> listOfListOfEnum = reader.readList($responseFields[3], new ResponseReader.ListReader<List<Episode>>() {
           @Override
           public List<Episode> read(ResponseReader.ListItemReader listItemReader) {
             return listItemReader.readList(new ResponseReader.ListReader<Episode>() {
@@ -506,7 +490,7 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
             });
           }
         });
-        final List<List<Date>> listOfListOfCustom = reader.readList($responseFields[5], new ResponseReader.ListReader<List<Date>>() {
+        final List<List<Date>> listOfListOfCustom = reader.readList($responseFields[4], new ResponseReader.ListReader<List<Date>>() {
           @Override
           public List<Date> read(ResponseReader.ListItemReader listItemReader) {
             return listItemReader.readList(new ResponseReader.ListReader<Date>() {
@@ -517,7 +501,7 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
             });
           }
         });
-        final List<List<ListOfListOfObject>> listOfListOfObject = reader.readList($responseFields[6], new ResponseReader.ListReader<List<ListOfListOfObject>>() {
+        final List<List<ListOfListOfObject>> listOfListOfObject = reader.readList($responseFields[5], new ResponseReader.ListReader<List<ListOfListOfObject>>() {
           @Override
           public List<ListOfListOfObject> read(ResponseReader.ListItemReader listItemReader) {
             return listItemReader.readList(new ResponseReader.ListReader<ListOfListOfObject>() {
@@ -533,18 +517,15 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
             });
           }
         });
-        return new CreateReview(__typename, stars, commentary, listOfListOfString, listOfListOfEnum, listOfListOfCustom, listOfListOfObject);
+        return new CreateReview(stars, commentary, listOfListOfString, listOfListOfEnum, listOfListOfCustom, listOfListOfObject);
       }
     }
   }
 
   public static class ListOfListOfObject {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList())
     };
-
-    final @NotNull String __typename;
 
     final @NotNull String name;
 
@@ -554,13 +535,8 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public ListOfListOfObject(@NotNull String __typename, @NotNull String name) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    public ListOfListOfObject(@NotNull String name) {
       this.name = Utils.checkNotNull(name, "name == null");
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
     }
 
     /**
@@ -575,8 +551,7 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeString($responseFields[1], name);
+          writer.writeString($responseFields[0], name);
         }
       };
     }
@@ -585,7 +560,6 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
     public String toString() {
       if ($toString == null) {
         $toString = "ListOfListOfObject{"
-          + "__typename=" + __typename + ", "
           + "name=" + name
           + "}";
       }
@@ -599,8 +573,7 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
       }
       if (o instanceof ListOfListOfObject) {
         ListOfListOfObject that = (ListOfListOfObject) o;
-        return this.__typename.equals(that.__typename)
-         && this.name.equals(that.name);
+        return this.name.equals(that.name);
       }
       return false;
     }
@@ -609,8 +582,6 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= name.hashCode();
         $hashCode = h;
@@ -622,9 +593,8 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
     public static final class Mapper implements ResponseFieldMapper<ListOfListOfObject> {
       @Override
       public ListOfListOfObject map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final String name = reader.readString($responseFields[1]);
-        return new ListOfListOfObject(__typename, name);
+        final String name = reader.readString($responseFields[0]);
+        return new ListOfListOfObject(name);
       }
     }
   }

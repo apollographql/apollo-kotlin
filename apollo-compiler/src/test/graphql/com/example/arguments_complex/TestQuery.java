@@ -33,11 +33,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, TestQuery.Variables> {
-  public static final String OPERATION_ID = "29a306b3e98c3424dcc3b0625487c63a3b1d18af6ded537c9be2f27694aea5c5";
+  public static final String OPERATION_ID = "925f5ec264dc3f7058d0544f419acec4df8b0c68208976bfe938094e54dd83dc";
 
   public static final String QUERY_DOCUMENT = "query TestQuery($episode: Episode, $stars: Int!, $greenValue: Float!) {\n"
       + "  heroWithReview(episode: $episode, review: {stars: $stars, favoriteColor: {red: 0, green: $greenValue, blue: 0}, listOfStringNonOptional: []}, listOfInts: [$stars, $stars]) {\n"
-      + "    __typename\n"
       + "    name\n"
       + "    height(unit: FOOT)\n"
       + "  }\n"
@@ -282,14 +281,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class HeroWithReview {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forDouble("height", "height", new UnmodifiableMapBuilder<String, Object>(1)
       .put("unit", "FOOT")
       .build(), true, Collections.<ResponseField.Condition>emptyList())
     };
-
-    final @NotNull String __typename;
 
     final @NotNull String name;
 
@@ -301,15 +297,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public HeroWithReview(@NotNull String __typename, @NotNull String name,
-        @Nullable Double height) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    public HeroWithReview(@NotNull String name, @Nullable Double height) {
       this.name = Utils.checkNotNull(name, "name == null");
       this.height = Optional.fromNullable(height);
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
     }
 
     /**
@@ -331,9 +321,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeString($responseFields[1], name);
-          writer.writeDouble($responseFields[2], height.isPresent() ? height.get() : null);
+          writer.writeString($responseFields[0], name);
+          writer.writeDouble($responseFields[1], height.isPresent() ? height.get() : null);
         }
       };
     }
@@ -342,7 +331,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "HeroWithReview{"
-          + "__typename=" + __typename + ", "
           + "name=" + name + ", "
           + "height=" + height
           + "}";
@@ -357,8 +345,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof HeroWithReview) {
         HeroWithReview that = (HeroWithReview) o;
-        return this.__typename.equals(that.__typename)
-         && this.name.equals(that.name)
+        return this.name.equals(that.name)
          && this.height.equals(that.height);
       }
       return false;
@@ -368,8 +355,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= name.hashCode();
         h *= 1000003;
@@ -383,10 +368,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<HeroWithReview> {
       @Override
       public HeroWithReview map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final String name = reader.readString($responseFields[1]);
-        final Double height = reader.readDouble($responseFields[2]);
-        return new HeroWithReview(__typename, name, height);
+        final String name = reader.readString($responseFields[0]);
+        final Double height = reader.readDouble($responseFields[1]);
+        return new HeroWithReview(name, height);
       }
     }
   }

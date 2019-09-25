@@ -16,26 +16,22 @@ import kotlin.Suppress
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
 data class PlanetFragment(
-  val __typename: String,
   /**
    * The name of this planet.
    */
   val name: String?
 ) : GraphqlFragment {
   override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-    it.writeString(RESPONSE_FIELDS[0], __typename)
-    it.writeString(RESPONSE_FIELDS[1], name)
+    it.writeString(RESPONSE_FIELDS[0], name)
   }
 
   companion object {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, true, null)
         )
 
     val FRAGMENT_DEFINITION: String = """
         |fragment planetFragment on Planet {
-        |  __typename
         |  name
         |}
         """.trimMargin()
@@ -43,10 +39,8 @@ data class PlanetFragment(
     val POSSIBLE_TYPES: Array<String> = arrayOf("Planet")
 
     operator fun invoke(reader: ResponseReader): PlanetFragment {
-      val __typename = reader.readString(RESPONSE_FIELDS[0])
-      val name = reader.readString(RESPONSE_FIELDS[1])
+      val name = reader.readString(RESPONSE_FIELDS[0])
       return PlanetFragment(
-        __typename = __typename,
         name = name
       )
     }

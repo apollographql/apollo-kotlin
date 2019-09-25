@@ -26,21 +26,16 @@ import org.jetbrains.annotations.Nullable;
 
 public class HeroDetails implements GraphqlFragment {
   static final ResponseField[] $responseFields = {
-    ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
     ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
     ResponseField.forObject("friendsConnection", "friendsConnection", null, false, Collections.<ResponseField.Condition>emptyList())
   };
 
   public static final String FRAGMENT_DEFINITION = "fragment HeroDetails on Character {\n"
-      + "  __typename\n"
       + "  name\n"
       + "  friendsConnection {\n"
-      + "    __typename\n"
       + "    totalCount\n"
       + "    edges {\n"
-      + "      __typename\n"
       + "      node {\n"
-      + "        __typename\n"
       + "        name\n"
       + "      }\n"
       + "    }\n"
@@ -48,8 +43,6 @@ public class HeroDetails implements GraphqlFragment {
       + "}";
 
   public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Human", "Droid"));
-
-  final @NotNull String __typename;
 
   final @NotNull String name;
 
@@ -61,15 +54,9 @@ public class HeroDetails implements GraphqlFragment {
 
   private transient volatile boolean $hashCodeMemoized;
 
-  public HeroDetails(@NotNull String __typename, @NotNull String name,
-      @NotNull FriendsConnection friendsConnection) {
-    this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+  public HeroDetails(@NotNull String name, @NotNull FriendsConnection friendsConnection) {
     this.name = Utils.checkNotNull(name, "name == null");
     this.friendsConnection = Utils.checkNotNull(friendsConnection, "friendsConnection == null");
-  }
-
-  public @NotNull String __typename() {
-    return this.__typename;
   }
 
   /**
@@ -91,9 +78,8 @@ public class HeroDetails implements GraphqlFragment {
     return new ResponseFieldMarshaller() {
       @Override
       public void marshal(ResponseWriter writer) {
-        writer.writeString($responseFields[0], __typename);
-        writer.writeString($responseFields[1], name);
-        writer.writeObject($responseFields[2], friendsConnection.marshaller());
+        writer.writeString($responseFields[0], name);
+        writer.writeObject($responseFields[1], friendsConnection.marshaller());
       }
     };
   }
@@ -102,7 +88,6 @@ public class HeroDetails implements GraphqlFragment {
   public String toString() {
     if ($toString == null) {
       $toString = "HeroDetails{"
-        + "__typename=" + __typename + ", "
         + "name=" + name + ", "
         + "friendsConnection=" + friendsConnection
         + "}";
@@ -117,8 +102,7 @@ public class HeroDetails implements GraphqlFragment {
     }
     if (o instanceof HeroDetails) {
       HeroDetails that = (HeroDetails) o;
-      return this.__typename.equals(that.__typename)
-       && this.name.equals(that.name)
+      return this.name.equals(that.name)
        && this.friendsConnection.equals(that.friendsConnection);
     }
     return false;
@@ -128,8 +112,6 @@ public class HeroDetails implements GraphqlFragment {
   public int hashCode() {
     if (!$hashCodeMemoized) {
       int h = 1;
-      h *= 1000003;
-      h ^= __typename.hashCode();
       h *= 1000003;
       h ^= name.hashCode();
       h *= 1000003;
@@ -145,26 +127,22 @@ public class HeroDetails implements GraphqlFragment {
 
     @Override
     public HeroDetails map(ResponseReader reader) {
-      final String __typename = reader.readString($responseFields[0]);
-      final String name = reader.readString($responseFields[1]);
-      final FriendsConnection friendsConnection = reader.readObject($responseFields[2], new ResponseReader.ObjectReader<FriendsConnection>() {
+      final String name = reader.readString($responseFields[0]);
+      final FriendsConnection friendsConnection = reader.readObject($responseFields[1], new ResponseReader.ObjectReader<FriendsConnection>() {
         @Override
         public FriendsConnection read(ResponseReader reader) {
           return friendsConnectionFieldMapper.map(reader);
         }
       });
-      return new HeroDetails(__typename, name, friendsConnection);
+      return new HeroDetails(name, friendsConnection);
     }
   }
 
   public static class FriendsConnection {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forInt("totalCount", "totalCount", null, true, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forList("edges", "edges", null, true, Collections.<ResponseField.Condition>emptyList())
     };
-
-    final @NotNull String __typename;
 
     final Optional<Integer> totalCount;
 
@@ -176,15 +154,9 @@ public class HeroDetails implements GraphqlFragment {
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public FriendsConnection(@NotNull String __typename, @Nullable Integer totalCount,
-        @Nullable List<Edge> edges) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    public FriendsConnection(@Nullable Integer totalCount, @Nullable List<Edge> edges) {
       this.totalCount = Optional.fromNullable(totalCount);
       this.edges = Optional.fromNullable(edges);
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
     }
 
     /**
@@ -206,9 +178,8 @@ public class HeroDetails implements GraphqlFragment {
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeInt($responseFields[1], totalCount.isPresent() ? totalCount.get() : null);
-          writer.writeList($responseFields[2], edges.isPresent() ? edges.get() : null, new ResponseWriter.ListWriter() {
+          writer.writeInt($responseFields[0], totalCount.isPresent() ? totalCount.get() : null);
+          writer.writeList($responseFields[1], edges.isPresent() ? edges.get() : null, new ResponseWriter.ListWriter() {
             @Override
             public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
               for (Object item : items) {
@@ -224,7 +195,6 @@ public class HeroDetails implements GraphqlFragment {
     public String toString() {
       if ($toString == null) {
         $toString = "FriendsConnection{"
-          + "__typename=" + __typename + ", "
           + "totalCount=" + totalCount + ", "
           + "edges=" + edges
           + "}";
@@ -239,8 +209,7 @@ public class HeroDetails implements GraphqlFragment {
       }
       if (o instanceof FriendsConnection) {
         FriendsConnection that = (FriendsConnection) o;
-        return this.__typename.equals(that.__typename)
-         && this.totalCount.equals(that.totalCount)
+        return this.totalCount.equals(that.totalCount)
          && this.edges.equals(that.edges);
       }
       return false;
@@ -250,8 +219,6 @@ public class HeroDetails implements GraphqlFragment {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= totalCount.hashCode();
         h *= 1000003;
@@ -267,9 +234,8 @@ public class HeroDetails implements GraphqlFragment {
 
       @Override
       public FriendsConnection map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final Integer totalCount = reader.readInt($responseFields[1]);
-        final List<Edge> edges = reader.readList($responseFields[2], new ResponseReader.ListReader<Edge>() {
+        final Integer totalCount = reader.readInt($responseFields[0]);
+        final List<Edge> edges = reader.readList($responseFields[1], new ResponseReader.ListReader<Edge>() {
           @Override
           public Edge read(ResponseReader.ListItemReader listItemReader) {
             return listItemReader.readObject(new ResponseReader.ObjectReader<Edge>() {
@@ -280,18 +246,15 @@ public class HeroDetails implements GraphqlFragment {
             });
           }
         });
-        return new FriendsConnection(__typename, totalCount, edges);
+        return new FriendsConnection(totalCount, edges);
       }
     }
   }
 
   public static class Edge {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forObject("node", "node", null, true, Collections.<ResponseField.Condition>emptyList())
     };
-
-    final @NotNull String __typename;
 
     final Optional<Node> node;
 
@@ -301,13 +264,8 @@ public class HeroDetails implements GraphqlFragment {
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Edge(@NotNull String __typename, @Nullable Node node) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    public Edge(@Nullable Node node) {
       this.node = Optional.fromNullable(node);
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
     }
 
     /**
@@ -322,8 +280,7 @@ public class HeroDetails implements GraphqlFragment {
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeObject($responseFields[1], node.isPresent() ? node.get().marshaller() : null);
+          writer.writeObject($responseFields[0], node.isPresent() ? node.get().marshaller() : null);
         }
       };
     }
@@ -332,7 +289,6 @@ public class HeroDetails implements GraphqlFragment {
     public String toString() {
       if ($toString == null) {
         $toString = "Edge{"
-          + "__typename=" + __typename + ", "
           + "node=" + node
           + "}";
       }
@@ -346,8 +302,7 @@ public class HeroDetails implements GraphqlFragment {
       }
       if (o instanceof Edge) {
         Edge that = (Edge) o;
-        return this.__typename.equals(that.__typename)
-         && this.node.equals(that.node);
+        return this.node.equals(that.node);
       }
       return false;
     }
@@ -356,8 +311,6 @@ public class HeroDetails implements GraphqlFragment {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= node.hashCode();
         $hashCode = h;
@@ -371,25 +324,21 @@ public class HeroDetails implements GraphqlFragment {
 
       @Override
       public Edge map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final Node node = reader.readObject($responseFields[1], new ResponseReader.ObjectReader<Node>() {
+        final Node node = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<Node>() {
           @Override
           public Node read(ResponseReader reader) {
             return nodeFieldMapper.map(reader);
           }
         });
-        return new Edge(__typename, node);
+        return new Edge(node);
       }
     }
   }
 
   public static class Node {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList())
     };
-
-    final @NotNull String __typename;
 
     final @NotNull String name;
 
@@ -399,13 +348,8 @@ public class HeroDetails implements GraphqlFragment {
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Node(@NotNull String __typename, @NotNull String name) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    public Node(@NotNull String name) {
       this.name = Utils.checkNotNull(name, "name == null");
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
     }
 
     /**
@@ -420,8 +364,7 @@ public class HeroDetails implements GraphqlFragment {
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeString($responseFields[1], name);
+          writer.writeString($responseFields[0], name);
         }
       };
     }
@@ -430,7 +373,6 @@ public class HeroDetails implements GraphqlFragment {
     public String toString() {
       if ($toString == null) {
         $toString = "Node{"
-          + "__typename=" + __typename + ", "
           + "name=" + name
           + "}";
       }
@@ -444,8 +386,7 @@ public class HeroDetails implements GraphqlFragment {
       }
       if (o instanceof Node) {
         Node that = (Node) o;
-        return this.__typename.equals(that.__typename)
-         && this.name.equals(that.name);
+        return this.name.equals(that.name);
       }
       return false;
     }
@@ -454,8 +395,6 @@ public class HeroDetails implements GraphqlFragment {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= name.hashCode();
         $hashCode = h;
@@ -467,9 +406,8 @@ public class HeroDetails implements GraphqlFragment {
     public static final class Mapper implements ResponseFieldMapper<Node> {
       @Override
       public Node map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final String name = reader.readString($responseFields[1]);
-        return new Node(__typename, name);
+        final String name = reader.readString($responseFields[0]);
+        return new Node(name);
       }
     }
   }

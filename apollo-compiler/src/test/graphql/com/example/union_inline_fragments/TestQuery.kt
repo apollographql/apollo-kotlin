@@ -126,7 +126,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class Friend1(
-    val __typename: String,
     /**
      * The ID of the character
      */
@@ -138,24 +137,20 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val deprecated: String
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
-      it.writeString(RESPONSE_FIELDS[2], deprecated)
+      it.writeCustom(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField, id)
+      it.writeString(RESPONSE_FIELDS[1], deprecated)
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
           ResponseField.forString("deprecated", "deprecated", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): Friend1 {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
-        val deprecated = reader.readString(RESPONSE_FIELDS[2])
+        val id = reader.readCustomType<String>(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField)
+        val deprecated = reader.readString(RESPONSE_FIELDS[1])
         return Friend1(
-          __typename = __typename,
           id = id,
           deprecated = deprecated
         )
@@ -414,7 +409,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "8f2faf5f45edbcd0f65491d582a5a50f13cad39e3995dd5abe5ddb359d3cf066"
+        "5e8f4373584db078402dc3fe4d11c81d17052f946396758da133bcbd1d0ea1eb"
 
     val QUERY_DOCUMENT: String = """
         |query TestQuery {
@@ -440,7 +435,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         |        ... on Droid {
         |          primaryFunction
         |          friends {
-        |            __typename
         |            id
         |            deprecated
         |          }

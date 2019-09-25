@@ -1,6 +1,5 @@
 query TestQuery {
   hero {
-    __typename
     ...HeroDetails
     ...HumanDetails
   }
@@ -12,6 +11,5 @@ fragment HeroDetails on Character {
 }
 
 fragment HumanDetails on Human {
-  __typename
   name
 }

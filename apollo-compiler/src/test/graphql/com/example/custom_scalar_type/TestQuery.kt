@@ -33,7 +33,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class Hero(
-    val __typename: String,
     /**
      * The name of the character
      */
@@ -60,17 +59,16 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val links: List<java.lang.String>
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
-      it.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, birthDate)
-      it.writeList(RESPONSE_FIELDS[3], appearanceDates) { value, listItemWriter ->
+      it.writeString(RESPONSE_FIELDS[0], name)
+      it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, birthDate)
+      it.writeList(RESPONSE_FIELDS[2], appearanceDates) { value, listItemWriter ->
         value?.forEach { value ->
           listItemWriter.writeCustom(CustomType.DATE, value)
         }
       }
-      it.writeCustom(RESPONSE_FIELDS[4] as ResponseField.CustomTypeField, fieldWithUnsupportedType)
-      it.writeCustom(RESPONSE_FIELDS[5] as ResponseField.CustomTypeField, profileLink)
-      it.writeList(RESPONSE_FIELDS[6], links) { value, listItemWriter ->
+      it.writeCustom(RESPONSE_FIELDS[3] as ResponseField.CustomTypeField, fieldWithUnsupportedType)
+      it.writeCustom(RESPONSE_FIELDS[4] as ResponseField.CustomTypeField, profileLink)
+      it.writeList(RESPONSE_FIELDS[5], links) { value, listItemWriter ->
         value?.forEach { value ->
           listItemWriter.writeCustom(CustomType.URL, value)
         }
@@ -79,7 +77,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, false, null),
           ResponseField.forCustomType("birthDate", "birthDate", null, false, CustomType.DATE, null),
           ResponseField.forList("appearanceDates", "appearanceDates", null, false, null),
@@ -91,22 +88,20 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): Hero {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
-        val birthDate = reader.readCustomType<Date>(RESPONSE_FIELDS[2] as
+        val name = reader.readString(RESPONSE_FIELDS[0])
+        val birthDate = reader.readCustomType<Date>(RESPONSE_FIELDS[1] as
             ResponseField.CustomTypeField)
-        val appearanceDates = reader.readList<Date>(RESPONSE_FIELDS[3]) {
+        val appearanceDates = reader.readList<Date>(RESPONSE_FIELDS[2]) {
           it.readCustomType<Date>(CustomType.DATE)
         }
-        val fieldWithUnsupportedType = reader.readCustomType<Any>(RESPONSE_FIELDS[4] as
+        val fieldWithUnsupportedType = reader.readCustomType<Any>(RESPONSE_FIELDS[3] as
             ResponseField.CustomTypeField)
-        val profileLink = reader.readCustomType<java.lang.String>(RESPONSE_FIELDS[5] as
+        val profileLink = reader.readCustomType<java.lang.String>(RESPONSE_FIELDS[4] as
             ResponseField.CustomTypeField)
-        val links = reader.readList<java.lang.String>(RESPONSE_FIELDS[6]) {
+        val links = reader.readList<java.lang.String>(RESPONSE_FIELDS[5]) {
           it.readCustomType<java.lang.String>(CustomType.URL)
         }
         return Hero(
-          __typename = __typename,
           name = name,
           birthDate = birthDate,
           appearanceDates = appearanceDates,
@@ -144,12 +139,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "e7efe02b29424a4425cafac2dbd3374b420e11212cc5a00eb7ee28ec904fef69"
+        "0034290494a65d6ccf9ffb03137c4a280cbfb5ac595419d5512cbcbf6085fa54"
 
     val QUERY_DOCUMENT: String = """
         |query TestQuery {
         |  hero {
-        |    __typename
         |    name
         |    birthDate
         |    appearanceDates

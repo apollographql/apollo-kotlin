@@ -77,7 +77,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
   }
 
   data class Friend(
-    val __typename: String,
     /**
      * The name of the character
      */
@@ -92,14 +91,13 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
     val friends: List<Friend1?>?
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
-      it.writeList(RESPONSE_FIELDS[2], appearsIn) { value, listItemWriter ->
+      it.writeString(RESPONSE_FIELDS[0], name)
+      it.writeList(RESPONSE_FIELDS[1], appearsIn) { value, listItemWriter ->
         value?.forEach { value ->
           listItemWriter.writeString(value?.rawValue)
         }
       }
-      it.writeList(RESPONSE_FIELDS[3], friends) { value, listItemWriter ->
+      it.writeList(RESPONSE_FIELDS[2], friends) { value, listItemWriter ->
         value?.forEach { value ->
           listItemWriter.writeObject(value?.marshaller())
         }
@@ -108,26 +106,23 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, false, null),
           ResponseField.forList("appearsIn", "appearsIn", null, false, null),
           ResponseField.forList("friends", "friends", null, true, null)
           )
 
       operator fun invoke(reader: ResponseReader): Friend {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
-        val appearsIn = reader.readList<Episode>(RESPONSE_FIELDS[2]) {
+        val name = reader.readString(RESPONSE_FIELDS[0])
+        val appearsIn = reader.readList<Episode>(RESPONSE_FIELDS[1]) {
           it.readString()?.let{ Episode.safeValueOf(it) }
         }
-        val friends = reader.readList<Friend1>(RESPONSE_FIELDS[3]) {
+        val friends = reader.readList<Friend1>(RESPONSE_FIELDS[2]) {
           it.readObject<Friend1> { reader ->
             Friend1(reader)
           }
 
         }
         return Friend(
-          __typename = __typename,
           name = name,
           appearsIn = appearsIn,
           friends = friends
@@ -193,28 +188,23 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
   }
 
   data class Friend2(
-    val __typename: String,
     /**
      * The name of the character
      */
     val name: String
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
+      it.writeString(RESPONSE_FIELDS[0], name)
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): Friend2 {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
+        val name = reader.readString(RESPONSE_FIELDS[0])
         return Friend2(
-          __typename = __typename,
           name = name
         )
       }
@@ -304,7 +294,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
 
   companion object {
     const val OPERATION_ID: String =
-        "fbc3185d6cccc75f6ec4858073e261143cd085f47b6701080316e36cc970145a"
+        "0ca9112b6406c2bafd92ddb57300fe798d9b951a788f9386b7924d0db02f6b5f"
 
     val QUERY_DOCUMENT: String = """
         |query HeroDetailQuery {
@@ -312,13 +302,11 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
         |    __typename
         |    name
         |    friends {
-        |      __typename
         |      name
         |    }
         |    ... on Human {
         |      height
         |      friends {
-        |        __typename
         |        appearsIn
         |        friends {
         |          __typename
@@ -329,15 +317,11 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
         |  }
         |}
         |fragment HeroDetails on Character {
-        |  __typename
         |  name
         |  friendsConnection {
-        |    __typename
         |    totalCount
         |    edges {
-        |      __typename
         |      node {
-        |        __typename
         |        name
         |      }
         |    }

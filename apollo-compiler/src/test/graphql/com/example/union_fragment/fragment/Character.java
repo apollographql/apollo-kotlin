@@ -24,20 +24,16 @@ import org.jetbrains.annotations.NotNull;
 
 public class Character implements GraphqlFragment {
   static final ResponseField[] $responseFields = {
-    ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
     ResponseField.forCustomType("id", "id", null, false, CustomType.ID, Collections.<ResponseField.Condition>emptyList()),
     ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList())
   };
 
   public static final String FRAGMENT_DEFINITION = "fragment Character on Character {\n"
-      + "  __typename\n"
       + "  id\n"
       + "  name\n"
       + "}";
 
   public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Human", "Droid"));
-
-  final @NotNull String __typename;
 
   final @NotNull String id;
 
@@ -49,14 +45,9 @@ public class Character implements GraphqlFragment {
 
   private transient volatile boolean $hashCodeMemoized;
 
-  public Character(@NotNull String __typename, @NotNull String id, @NotNull String name) {
-    this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+  public Character(@NotNull String id, @NotNull String name) {
     this.id = Utils.checkNotNull(id, "id == null");
     this.name = Utils.checkNotNull(name, "name == null");
-  }
-
-  public @NotNull String __typename() {
-    return this.__typename;
   }
 
   /**
@@ -78,9 +69,8 @@ public class Character implements GraphqlFragment {
     return new ResponseFieldMarshaller() {
       @Override
       public void marshal(ResponseWriter writer) {
-        writer.writeString($responseFields[0], __typename);
-        writer.writeCustom((ResponseField.CustomTypeField) $responseFields[1], id);
-        writer.writeString($responseFields[2], name);
+        writer.writeCustom((ResponseField.CustomTypeField) $responseFields[0], id);
+        writer.writeString($responseFields[1], name);
       }
     };
   }
@@ -89,7 +79,6 @@ public class Character implements GraphqlFragment {
   public String toString() {
     if ($toString == null) {
       $toString = "Character{"
-        + "__typename=" + __typename + ", "
         + "id=" + id + ", "
         + "name=" + name
         + "}";
@@ -104,8 +93,7 @@ public class Character implements GraphqlFragment {
     }
     if (o instanceof Character) {
       Character that = (Character) o;
-      return this.__typename.equals(that.__typename)
-       && this.id.equals(that.id)
+      return this.id.equals(that.id)
        && this.name.equals(that.name);
     }
     return false;
@@ -115,8 +103,6 @@ public class Character implements GraphqlFragment {
   public int hashCode() {
     if (!$hashCodeMemoized) {
       int h = 1;
-      h *= 1000003;
-      h ^= __typename.hashCode();
       h *= 1000003;
       h ^= id.hashCode();
       h *= 1000003;
@@ -130,10 +116,9 @@ public class Character implements GraphqlFragment {
   public static final class Mapper implements ResponseFieldMapper<Character> {
     @Override
     public Character map(ResponseReader reader) {
-      final String __typename = reader.readString($responseFields[0]);
-      final String id = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[1]);
-      final String name = reader.readString($responseFields[2]);
-      return new Character(__typename, id, name);
+      final String id = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[0]);
+      final String name = reader.readString($responseFields[1]);
+      return new Character(id, name);
     }
   }
 }

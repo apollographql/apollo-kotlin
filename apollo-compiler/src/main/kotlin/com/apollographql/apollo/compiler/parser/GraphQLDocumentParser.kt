@@ -196,7 +196,6 @@ class GraphQLDocumentParser(val schema: Schema) {
   private fun GraphQLParser.SelectionSetContext?.parse(schemaType: Schema.Type): ParseResult<List<Field>> {
     val hasInlineFragments = this?.selection()?.find { it.inlineFragment() != null } != null
     val hasFragments = this?.selection()?.find { it.fragmentSpread() != null } != null
-    val hasFields = this?.selection()?.find { it.field() != null } != null
     return this
         ?.selection()
         ?.mapNotNull { ctx -> ctx.field()?.parse(schemaType) }
@@ -213,7 +212,7 @@ class GraphQLDocumentParser(val schema: Schema) {
           )
         }
         ?.let { (fields, usedTypes) ->
-          val withTypenameField = (hasFields || hasInlineFragments || hasFragments) &&
+          val withTypenameField = (hasInlineFragments || hasFragments) &&
               fields.find { it.responseName == Field.TYPE_NAME_FIELD.responseName } == null
           ParseResult(
               result = (if (withTypenameField) listOf(Field.TYPE_NAME_FIELD) else emptyList()) + fields,

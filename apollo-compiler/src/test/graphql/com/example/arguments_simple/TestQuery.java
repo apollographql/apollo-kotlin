@@ -36,7 +36,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, TestQuery.Variables> {
-  public static final String OPERATION_ID = "36f4332618a8e5295b0c464b25b3be7e961457f3e7d7baa4cdaf5db970be075d";
+  public static final String OPERATION_ID = "c327e6a1d03ddc9c24c45135bb956665821b3ed53fd7071c4bcb8715dafc976c";
 
   public static final String QUERY_DOCUMENT = "query TestQuery($episode: Episode, $IncludeName: Boolean!, $friendsCount: Int!, $listOfListOfStringArgs: [[String]!]!) {\n"
       + "  hero(episode: $episode, listOfListOfStringArgs: $listOfListOfStringArgs) {\n"
@@ -46,14 +46,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       + "  }\n"
       + "}\n"
       + "fragment HeroDetails on Character {\n"
-      + "  __typename\n"
       + "  friendsConnection(first: $friendsCount) {\n"
-      + "    __typename\n"
       + "    totalCount\n"
       + "    edges {\n"
-      + "      __typename\n"
       + "      node {\n"
-      + "        __typename\n"
       + "        name @include(if: $IncludeName)\n"
       + "      }\n"
       + "    }\n"

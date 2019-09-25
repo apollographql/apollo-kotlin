@@ -16,7 +16,6 @@ import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
-import com.apollographql.apollo.api.internal.Utils;
 import java.io.IOException;
 import java.lang.Integer;
 import java.lang.Object;
@@ -27,18 +26,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, TestQuery.Variables> {
-  public static final String OPERATION_ID = "e442e7d1da90271c3ea02f2b50cdc9fb858fc830cce998243e0ce085595f3ec2";
+  public static final String OPERATION_ID = "891f457ef884c9dba5cf3ace02d1ebad79bd22ddf56e57191015ec05bbca944c";
 
   public static final String QUERY_DOCUMENT = "query TestQuery($includeName: Boolean!, $skipFriends: Boolean!) {\n"
       + "  hero {\n"
-      + "    __typename\n"
       + "    name @include(if: $includeName)\n"
       + "    friendsConnection @skip(if: $skipFriends) {\n"
-      + "      __typename\n"
       + "      totalCount\n"
       + "    }\n"
       + "  }\n"
@@ -236,12 +232,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class Hero {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, true, Arrays.<ResponseField.Condition>asList(ResponseField.Condition.booleanCondition("includeName", false))),
       ResponseField.forObject("friendsConnection", "friendsConnection", null, true, Arrays.<ResponseField.Condition>asList(ResponseField.Condition.booleanCondition("skipFriends", true)))
     };
-
-    final @NotNull String __typename;
 
     final Optional<String> name;
 
@@ -253,15 +246,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Hero(@NotNull String __typename, @Nullable String name,
-        @Nullable FriendsConnection friendsConnection) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    public Hero(@Nullable String name, @Nullable FriendsConnection friendsConnection) {
       this.name = Optional.fromNullable(name);
       this.friendsConnection = Optional.fromNullable(friendsConnection);
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
     }
 
     /**
@@ -283,9 +270,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeString($responseFields[1], name.isPresent() ? name.get() : null);
-          writer.writeObject($responseFields[2], friendsConnection.isPresent() ? friendsConnection.get().marshaller() : null);
+          writer.writeString($responseFields[0], name.isPresent() ? name.get() : null);
+          writer.writeObject($responseFields[1], friendsConnection.isPresent() ? friendsConnection.get().marshaller() : null);
         }
       };
     }
@@ -294,7 +280,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "Hero{"
-          + "__typename=" + __typename + ", "
           + "name=" + name + ", "
           + "friendsConnection=" + friendsConnection
           + "}";
@@ -309,8 +294,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Hero) {
         Hero that = (Hero) o;
-        return this.__typename.equals(that.__typename)
-         && this.name.equals(that.name)
+        return this.name.equals(that.name)
          && this.friendsConnection.equals(that.friendsConnection);
       }
       return false;
@@ -320,8 +304,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= name.hashCode();
         h *= 1000003;
@@ -337,26 +319,22 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public Hero map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final String name = reader.readString($responseFields[1]);
-        final FriendsConnection friendsConnection = reader.readObject($responseFields[2], new ResponseReader.ObjectReader<FriendsConnection>() {
+        final String name = reader.readString($responseFields[0]);
+        final FriendsConnection friendsConnection = reader.readObject($responseFields[1], new ResponseReader.ObjectReader<FriendsConnection>() {
           @Override
           public FriendsConnection read(ResponseReader reader) {
             return friendsConnectionFieldMapper.map(reader);
           }
         });
-        return new Hero(__typename, name, friendsConnection);
+        return new Hero(name, friendsConnection);
       }
     }
   }
 
   public static class FriendsConnection {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forInt("totalCount", "totalCount", null, true, Collections.<ResponseField.Condition>emptyList())
     };
-
-    final @NotNull String __typename;
 
     final Optional<Integer> totalCount;
 
@@ -366,13 +344,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public FriendsConnection(@NotNull String __typename, @Nullable Integer totalCount) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    public FriendsConnection(@Nullable Integer totalCount) {
       this.totalCount = Optional.fromNullable(totalCount);
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
     }
 
     /**
@@ -387,8 +360,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeInt($responseFields[1], totalCount.isPresent() ? totalCount.get() : null);
+          writer.writeInt($responseFields[0], totalCount.isPresent() ? totalCount.get() : null);
         }
       };
     }
@@ -397,7 +369,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "FriendsConnection{"
-          + "__typename=" + __typename + ", "
           + "totalCount=" + totalCount
           + "}";
       }
@@ -411,8 +382,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof FriendsConnection) {
         FriendsConnection that = (FriendsConnection) o;
-        return this.__typename.equals(that.__typename)
-         && this.totalCount.equals(that.totalCount);
+        return this.totalCount.equals(that.totalCount);
       }
       return false;
     }
@@ -421,8 +391,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= totalCount.hashCode();
         $hashCode = h;
@@ -434,9 +402,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<FriendsConnection> {
       @Override
       public FriendsConnection map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final Integer totalCount = reader.readInt($responseFields[1]);
-        return new FriendsConnection(__typename, totalCount);
+        final Integer totalCount = reader.readInt($responseFields[0]);
+        return new FriendsConnection(totalCount);
       }
     }
   }

@@ -50,7 +50,6 @@ data class TestQuery(
   }
 
   data class Hero(
-    val __typename: String,
     /**
      * The name of the character
      */
@@ -67,27 +66,23 @@ data class TestQuery(
     val deprecatedBool: Boolean
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
-      it.writeString(RESPONSE_FIELDS[2], deprecated)
-      it.writeBoolean(RESPONSE_FIELDS[3], deprecatedBool)
+      it.writeString(RESPONSE_FIELDS[0], name)
+      it.writeString(RESPONSE_FIELDS[1], deprecated)
+      it.writeBoolean(RESPONSE_FIELDS[2], deprecatedBool)
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, false, null),
           ResponseField.forString("deprecated", "deprecated", null, false, null),
           ResponseField.forBoolean("deprecatedBool", "deprecatedBool", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): Hero {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
-        val deprecated = reader.readString(RESPONSE_FIELDS[2])
-        val deprecatedBool = reader.readBoolean(RESPONSE_FIELDS[3])
+        val name = reader.readString(RESPONSE_FIELDS[0])
+        val deprecated = reader.readString(RESPONSE_FIELDS[1])
+        val deprecatedBool = reader.readBoolean(RESPONSE_FIELDS[2])
         return Hero(
-          __typename = __typename,
           name = name,
           deprecated = deprecated,
           deprecatedBool = deprecatedBool
@@ -125,12 +120,11 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "786dfe7aa4320ca4657d7f1eb4e87284e942c640add42bd0e3fa07e8a9fb67b6"
+        "77ef679de40aa0be1241ac29fddb457b1fdb3195cb9c3e6e974f4c155ca8c518"
 
     val QUERY_DOCUMENT: String = """
         |query TestQuery(${'$'}episode: Episode) {
         |  hero(episode: ${'$'}episode) {
-        |    __typename
         |    name
         |    deprecated
         |    deprecatedBool

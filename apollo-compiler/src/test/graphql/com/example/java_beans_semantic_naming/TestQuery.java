@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "4f3cddab484b815b0c6e7999f362c5585f16fcde1011110fc3ae068f71614072";
+  public static final String OPERATION_ID = "51823dd7c6584662051842f506ebde40cbc80364ffb2cd64e700d504ef89bfa7";
 
   public static final String QUERY_DOCUMENT = "query TestQuery {\n"
       + "  hero {\n"
@@ -43,17 +43,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       + "  __typename\n"
       + "  name\n"
       + "  friendsConnection {\n"
-      + "    __typename\n"
       + "    totalCount\n"
       + "    edges {\n"
-      + "      __typename\n"
       + "      node {\n"
-      + "        __typename\n"
       + "        name\n"
       + "      }\n"
       + "    }\n"
       + "    pageInfo {\n"
-      + "      __typename\n"
       + "      hasNextPage\n"
       + "    }\n"
       + "    isEmpty\n"

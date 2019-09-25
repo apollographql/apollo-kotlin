@@ -32,28 +32,23 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class Node(
-    val __typename: String,
     /**
      * The name of the character
      */
     val name: String
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
+      it.writeString(RESPONSE_FIELDS[0], name)
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): Node {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
+        val name = reader.readString(RESPONSE_FIELDS[0])
         return Node(
-          __typename = __typename,
           name = name
         )
       }
@@ -61,31 +56,26 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class Edge(
-    val __typename: String,
     /**
      * The character represented by this friendship edge
      */
     val node: Node?
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeObject(RESPONSE_FIELDS[1], node?.marshaller())
+      it.writeObject(RESPONSE_FIELDS[0], node?.marshaller())
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forObject("node", "node", null, true, null)
           )
 
       operator fun invoke(reader: ResponseReader): Edge {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val node = reader.readObject<Node>(RESPONSE_FIELDS[1]) { reader ->
+        val node = reader.readObject<Node>(RESPONSE_FIELDS[0]) { reader ->
           Node(reader)
         }
 
         return Edge(
-          __typename = __typename,
           node = node
         )
       }
@@ -93,15 +83,13 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class FriendsConnection(
-    val __typename: String,
     /**
      * The edges for each of the character's friends.
      */
     val edges: List<Edge?>?
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeList(RESPONSE_FIELDS[1], edges) { value, listItemWriter ->
+      it.writeList(RESPONSE_FIELDS[0], edges) { value, listItemWriter ->
         value?.forEach { value ->
           listItemWriter.writeObject(value?.marshaller())
         }
@@ -110,20 +98,17 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forList("edges", "edges", null, true, null)
           )
 
       operator fun invoke(reader: ResponseReader): FriendsConnection {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val edges = reader.readList<Edge>(RESPONSE_FIELDS[1]) {
+        val edges = reader.readList<Edge>(RESPONSE_FIELDS[0]) {
           it.readObject<Edge> { reader ->
             Edge(reader)
           }
 
         }
         return FriendsConnection(
-          __typename = __typename,
           edges = edges
         )
       }
@@ -206,7 +191,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "7c5b1cf38290937b9969d3c77370740c66f6233428f04e1dd35c2d206efa1719"
+        "8ae876e9bd77f528d378e8596e25b7102c3c8e21dff1d06ea2769274c3aba497"
 
     val QUERY_DOCUMENT: String = """
         |query TestQuery {
@@ -214,11 +199,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         |    __typename
         |    name
         |    friendsConnection {
-        |      __typename
         |      edges {
-        |        __typename
         |        node {
-        |          __typename
         |          name
         |        }
         |      }
@@ -227,11 +209,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         |      name
         |      profileLink
         |      friendsConnection {
-        |        __typename
         |        edges {
-        |          __typename
         |          node {
-        |            __typename
         |            name
         |          }
         |        }

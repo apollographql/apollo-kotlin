@@ -31,7 +31,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class Review(
-    val __typename: String,
     /**
      * The number of stars this review gave, 1-5
      */
@@ -42,24 +41,20 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val commentary: String?
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeInt(RESPONSE_FIELDS[1], stars)
-      it.writeString(RESPONSE_FIELDS[2], commentary)
+      it.writeInt(RESPONSE_FIELDS[0], stars)
+      it.writeString(RESPONSE_FIELDS[1], commentary)
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forInt("stars", "stars", null, false, null),
           ResponseField.forString("commentary", "commentary", null, true, null)
           )
 
       operator fun invoke(reader: ResponseReader): Review {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val stars = reader.readInt(RESPONSE_FIELDS[1])
-        val commentary = reader.readString(RESPONSE_FIELDS[2])
+        val stars = reader.readInt(RESPONSE_FIELDS[0])
+        val commentary = reader.readString(RESPONSE_FIELDS[1])
         return Review(
-          __typename = __typename,
           stars = stars,
           commentary = commentary
         )
@@ -102,12 +97,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "4f993e15e441a7c02aa5a6d786812f5e37074a333d9c67a83809929f459726f1"
+        "a108d80d872f40066f8cea751fb3341983ca55afa2b15198dc37642ab3dcc6ea"
 
     val QUERY_DOCUMENT: String = """
         |query TestQuery {
         |  reviews(episode: JEDI, starsInt: 10, starsFloat: 9.9) {
-        |    __typename
         |    stars
         |    commentary
         |  }

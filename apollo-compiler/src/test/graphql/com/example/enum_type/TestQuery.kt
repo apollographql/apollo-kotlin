@@ -31,7 +31,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class Hero(
-    val __typename: String,
     /**
      * The name of the character
      */
@@ -46,33 +45,29 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val firstAppearsIn: Episode
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
-      it.writeList(RESPONSE_FIELDS[2], appearsIn) { value, listItemWriter ->
+      it.writeString(RESPONSE_FIELDS[0], name)
+      it.writeList(RESPONSE_FIELDS[1], appearsIn) { value, listItemWriter ->
         value?.forEach { value ->
           listItemWriter.writeString(value?.rawValue)
         }
       }
-      it.writeString(RESPONSE_FIELDS[3], firstAppearsIn.rawValue)
+      it.writeString(RESPONSE_FIELDS[2], firstAppearsIn.rawValue)
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, false, null),
           ResponseField.forList("appearsIn", "appearsIn", null, false, null),
           ResponseField.forEnum("firstAppearsIn", "firstAppearsIn", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): Hero {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
-        val appearsIn = reader.readList<Episode>(RESPONSE_FIELDS[2]) {
+        val name = reader.readString(RESPONSE_FIELDS[0])
+        val appearsIn = reader.readList<Episode>(RESPONSE_FIELDS[1]) {
           it.readString()?.let{ Episode.safeValueOf(it) }
         }
-        val firstAppearsIn = Episode.safeValueOf(reader.readString(RESPONSE_FIELDS[3]))
+        val firstAppearsIn = Episode.safeValueOf(reader.readString(RESPONSE_FIELDS[2]))
         return Hero(
-          __typename = __typename,
           name = name,
           appearsIn = appearsIn,
           firstAppearsIn = firstAppearsIn
@@ -107,12 +102,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "424f5306f4be3f78b90e5c704e1770756e3d874fb1355a809808fa972ddb79ed"
+        "cc03c614c14997c7fa4e8ce5bde6eb05e06fbb5839460a70a5a7bb7f3b208eb1"
 
     val QUERY_DOCUMENT: String = """
         |query TestQuery {
         |  hero {
-        |    __typename
         |    name
         |    appearsIn
         |    firstAppearsIn

@@ -53,7 +53,6 @@ data class CreateReviewForEpisodeMutation(
   }
 
   data class CreateReview(
-    val __typename: String,
     /**
      * The number of stars this review gave, 1-5
      */
@@ -64,24 +63,20 @@ data class CreateReviewForEpisodeMutation(
     val commentary: String?
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeInt(RESPONSE_FIELDS[1], stars)
-      it.writeString(RESPONSE_FIELDS[2], commentary)
+      it.writeInt(RESPONSE_FIELDS[0], stars)
+      it.writeString(RESPONSE_FIELDS[1], commentary)
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forInt("stars", "stars", null, false, null),
           ResponseField.forString("commentary", "commentary", null, true, null)
           )
 
       operator fun invoke(reader: ResponseReader): CreateReview {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val stars = reader.readInt(RESPONSE_FIELDS[1])
-        val commentary = reader.readString(RESPONSE_FIELDS[2])
+        val stars = reader.readInt(RESPONSE_FIELDS[0])
+        val commentary = reader.readString(RESPONSE_FIELDS[1])
         return CreateReview(
-          __typename = __typename,
           stars = stars,
           commentary = commentary
         )
@@ -121,12 +116,11 @@ data class CreateReviewForEpisodeMutation(
 
   companion object {
     const val OPERATION_ID: String =
-        "dc312e4edc4258722c5ddb00ad2a85faacd285090336d719a22f65fdc94022c7"
+        "2bf531083bfccce6b13251ab8308238039760142a778f2793c75c100910aaade"
 
     val QUERY_DOCUMENT: String = """
         |mutation CreateReviewForEpisode(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) {
         |  createReview(episode: ${'$'}ep, review: ${'$'}review) {
-        |    __typename
         |    stars
         |    commentary
         |  }

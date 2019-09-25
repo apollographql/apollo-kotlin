@@ -55,28 +55,23 @@ data class CreateReviewForEpisode(
   }
 
   data class ListOfListOfObject(
-    val __typename: String,
     /**
      * The name of the character
      */
     val name: String
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
+      it.writeString(RESPONSE_FIELDS[0], name)
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): ListOfListOfObject {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
+        val name = reader.readString(RESPONSE_FIELDS[0])
         return ListOfListOfObject(
-          __typename = __typename,
           name = name
         )
       }
@@ -84,7 +79,6 @@ data class CreateReviewForEpisode(
   }
 
   data class CreateReview(
-    val __typename: String,
     /**
      * The number of stars this review gave, 1-5
      */
@@ -111,10 +105,9 @@ data class CreateReviewForEpisode(
     val listOfListOfObject: List<List<ListOfListOfObject>>?
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeInt(RESPONSE_FIELDS[1], stars)
-      it.writeString(RESPONSE_FIELDS[2], commentary)
-      it.writeList(RESPONSE_FIELDS[3], listOfListOfString) { value, listItemWriter ->
+      it.writeInt(RESPONSE_FIELDS[0], stars)
+      it.writeString(RESPONSE_FIELDS[1], commentary)
+      it.writeList(RESPONSE_FIELDS[2], listOfListOfString) { value, listItemWriter ->
         value?.forEach { value ->
           listItemWriter.writeList(value) { value, listItemWriter ->
             value?.forEach { value ->
@@ -123,7 +116,7 @@ data class CreateReviewForEpisode(
           }
         }
       }
-      it.writeList(RESPONSE_FIELDS[4], listOfListOfEnum) { value, listItemWriter ->
+      it.writeList(RESPONSE_FIELDS[3], listOfListOfEnum) { value, listItemWriter ->
         value?.forEach { value ->
           listItemWriter.writeList(value) { value, listItemWriter ->
             value?.forEach { value ->
@@ -132,7 +125,7 @@ data class CreateReviewForEpisode(
           }
         }
       }
-      it.writeList(RESPONSE_FIELDS[5], listOfListOfCustom) { value, listItemWriter ->
+      it.writeList(RESPONSE_FIELDS[4], listOfListOfCustom) { value, listItemWriter ->
         value?.forEach { value ->
           listItemWriter.writeList(value) { value, listItemWriter ->
             value?.forEach { value ->
@@ -141,7 +134,7 @@ data class CreateReviewForEpisode(
           }
         }
       }
-      it.writeList(RESPONSE_FIELDS[6], listOfListOfObject) { value, listItemWriter ->
+      it.writeList(RESPONSE_FIELDS[5], listOfListOfObject) { value, listItemWriter ->
         value?.forEach { value ->
           listItemWriter.writeList(value) { value, listItemWriter ->
             value?.forEach { value ->
@@ -154,7 +147,6 @@ data class CreateReviewForEpisode(
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forInt("stars", "stars", null, false, null),
           ResponseField.forString("commentary", "commentary", null, true, null),
           ResponseField.forList("listOfListOfString", "listOfListOfString", null, true, null),
@@ -164,25 +156,24 @@ data class CreateReviewForEpisode(
           )
 
       operator fun invoke(reader: ResponseReader): CreateReview {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val stars = reader.readInt(RESPONSE_FIELDS[1])
-        val commentary = reader.readString(RESPONSE_FIELDS[2])
-        val listOfListOfString = reader.readList<List<String>>(RESPONSE_FIELDS[3]) {
+        val stars = reader.readInt(RESPONSE_FIELDS[0])
+        val commentary = reader.readString(RESPONSE_FIELDS[1])
+        val listOfListOfString = reader.readList<List<String>>(RESPONSE_FIELDS[2]) {
           it.readList<String> {
             it.readString()
           }
         }
-        val listOfListOfEnum = reader.readList<List<Episode>>(RESPONSE_FIELDS[4]) {
+        val listOfListOfEnum = reader.readList<List<Episode>>(RESPONSE_FIELDS[3]) {
           it.readList<Episode> {
             Episode.safeValueOf(it.readString())
           }
         }
-        val listOfListOfCustom = reader.readList<List<Date>>(RESPONSE_FIELDS[5]) {
+        val listOfListOfCustom = reader.readList<List<Date>>(RESPONSE_FIELDS[4]) {
           it.readList<Date> {
             it.readCustomType<Date>(CustomType.DATE)
           }
         }
-        val listOfListOfObject = reader.readList<List<ListOfListOfObject>>(RESPONSE_FIELDS[6]) {
+        val listOfListOfObject = reader.readList<List<ListOfListOfObject>>(RESPONSE_FIELDS[5]) {
           it.readList<ListOfListOfObject> {
             it.readObject<ListOfListOfObject> { reader ->
               ListOfListOfObject(reader)
@@ -191,7 +182,6 @@ data class CreateReviewForEpisode(
           }
         }
         return CreateReview(
-          __typename = __typename,
           stars = stars,
           commentary = commentary,
           listOfListOfString = listOfListOfString,
@@ -235,19 +225,17 @@ data class CreateReviewForEpisode(
 
   companion object {
     const val OPERATION_ID: String =
-        "e21a7c3210dfc89a23ac6ffa9cd5d4caf1b7ebecce91677433782e7b6f11f39c"
+        "2b13ac5b97ab876615ec98492c5150f4154d304754f5c3797eb53280268d93fe"
 
     val QUERY_DOCUMENT: String = """
         |mutation CreateReviewForEpisode(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) {
         |  createReview(episode: ${'$'}ep, review: ${'$'}review) {
-        |    __typename
         |    stars
         |    commentary
         |    listOfListOfString
         |    listOfListOfEnum
         |    listOfListOfCustom
         |    listOfListOfObject {
-        |      __typename
         |      name
         |    }
         |  }

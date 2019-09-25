@@ -28,35 +28,27 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "5ee989fce971d5749e601f42de75f04d03083ce81fa7016d192251d7e9c29612";
+  public static final String OPERATION_ID = "500c6a0a2ba3219c308a8e77b22fdabcef01e0236ffe51e5718bd82656c4d4f4";
 
   public static final String QUERY_DOCUMENT = "query TestQuery {\n"
       + "  r2: hero {\n"
-      + "    __typename\n"
       + "    name\n"
       + "    friendsConnection {\n"
-      + "      __typename\n"
       + "      totalCount\n"
       + "      edges {\n"
-      + "        __typename\n"
       + "        node {\n"
-      + "          __typename\n"
       + "          name\n"
       + "        }\n"
       + "      }\n"
       + "    }\n"
       + "  }\n"
       + "  luke: hero(episode: EMPIRE) {\n"
-      + "    __typename\n"
       + "    id\n"
       + "    name\n"
       + "    friendsConnection {\n"
-      + "      __typename\n"
       + "      totalCount\n"
       + "      edges {\n"
-      + "        __typename\n"
       + "        node {\n"
-      + "          __typename\n"
       + "          name\n"
       + "        }\n"
       + "      }\n"
@@ -226,12 +218,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class R2 {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forObject("friendsConnection", "friendsConnection", null, false, Collections.<ResponseField.Condition>emptyList())
     };
-
-    final @NotNull String __typename;
 
     final @NotNull String name;
 
@@ -243,15 +232,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public R2(@NotNull String __typename, @NotNull String name,
-        @NotNull FriendsConnection friendsConnection) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    public R2(@NotNull String name, @NotNull FriendsConnection friendsConnection) {
       this.name = Utils.checkNotNull(name, "name == null");
       this.friendsConnection = Utils.checkNotNull(friendsConnection, "friendsConnection == null");
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
     }
 
     /**
@@ -273,9 +256,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeString($responseFields[1], name);
-          writer.writeObject($responseFields[2], friendsConnection.marshaller());
+          writer.writeString($responseFields[0], name);
+          writer.writeObject($responseFields[1], friendsConnection.marshaller());
         }
       };
     }
@@ -284,7 +266,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "R2{"
-          + "__typename=" + __typename + ", "
           + "name=" + name + ", "
           + "friendsConnection=" + friendsConnection
           + "}";
@@ -299,8 +280,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof R2) {
         R2 that = (R2) o;
-        return this.__typename.equals(that.__typename)
-         && this.name.equals(that.name)
+        return this.name.equals(that.name)
          && this.friendsConnection.equals(that.friendsConnection);
       }
       return false;
@@ -310,8 +290,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= name.hashCode();
         h *= 1000003;
@@ -327,27 +305,23 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public R2 map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final String name = reader.readString($responseFields[1]);
-        final FriendsConnection friendsConnection = reader.readObject($responseFields[2], new ResponseReader.ObjectReader<FriendsConnection>() {
+        final String name = reader.readString($responseFields[0]);
+        final FriendsConnection friendsConnection = reader.readObject($responseFields[1], new ResponseReader.ObjectReader<FriendsConnection>() {
           @Override
           public FriendsConnection read(ResponseReader reader) {
             return friendsConnectionFieldMapper.map(reader);
           }
         });
-        return new R2(__typename, name, friendsConnection);
+        return new R2(name, friendsConnection);
       }
     }
   }
 
   public static class FriendsConnection {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forInt("totalCount", "totalCount", null, true, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forList("edges", "edges", null, true, Collections.<ResponseField.Condition>emptyList())
     };
-
-    final @NotNull String __typename;
 
     final Optional<Integer> totalCount;
 
@@ -359,15 +333,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public FriendsConnection(@NotNull String __typename, @Nullable Integer totalCount,
-        @Nullable List<Edge> edges) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    public FriendsConnection(@Nullable Integer totalCount, @Nullable List<Edge> edges) {
       this.totalCount = Optional.fromNullable(totalCount);
       this.edges = Optional.fromNullable(edges);
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
     }
 
     /**
@@ -389,9 +357,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeInt($responseFields[1], totalCount.isPresent() ? totalCount.get() : null);
-          writer.writeList($responseFields[2], edges.isPresent() ? edges.get() : null, new ResponseWriter.ListWriter() {
+          writer.writeInt($responseFields[0], totalCount.isPresent() ? totalCount.get() : null);
+          writer.writeList($responseFields[1], edges.isPresent() ? edges.get() : null, new ResponseWriter.ListWriter() {
             @Override
             public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
               for (Object item : items) {
@@ -407,7 +374,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "FriendsConnection{"
-          + "__typename=" + __typename + ", "
           + "totalCount=" + totalCount + ", "
           + "edges=" + edges
           + "}";
@@ -422,8 +388,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof FriendsConnection) {
         FriendsConnection that = (FriendsConnection) o;
-        return this.__typename.equals(that.__typename)
-         && this.totalCount.equals(that.totalCount)
+        return this.totalCount.equals(that.totalCount)
          && this.edges.equals(that.edges);
       }
       return false;
@@ -433,8 +398,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= totalCount.hashCode();
         h *= 1000003;
@@ -450,9 +413,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public FriendsConnection map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final Integer totalCount = reader.readInt($responseFields[1]);
-        final List<Edge> edges = reader.readList($responseFields[2], new ResponseReader.ListReader<Edge>() {
+        final Integer totalCount = reader.readInt($responseFields[0]);
+        final List<Edge> edges = reader.readList($responseFields[1], new ResponseReader.ListReader<Edge>() {
           @Override
           public Edge read(ResponseReader.ListItemReader listItemReader) {
             return listItemReader.readObject(new ResponseReader.ObjectReader<Edge>() {
@@ -463,18 +425,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
             });
           }
         });
-        return new FriendsConnection(__typename, totalCount, edges);
+        return new FriendsConnection(totalCount, edges);
       }
     }
   }
 
   public static class Edge {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forObject("node", "node", null, true, Collections.<ResponseField.Condition>emptyList())
     };
-
-    final @NotNull String __typename;
 
     final Optional<Node> node;
 
@@ -484,13 +443,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Edge(@NotNull String __typename, @Nullable Node node) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    public Edge(@Nullable Node node) {
       this.node = Optional.fromNullable(node);
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
     }
 
     /**
@@ -505,8 +459,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeObject($responseFields[1], node.isPresent() ? node.get().marshaller() : null);
+          writer.writeObject($responseFields[0], node.isPresent() ? node.get().marshaller() : null);
         }
       };
     }
@@ -515,7 +468,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "Edge{"
-          + "__typename=" + __typename + ", "
           + "node=" + node
           + "}";
       }
@@ -529,8 +481,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Edge) {
         Edge that = (Edge) o;
-        return this.__typename.equals(that.__typename)
-         && this.node.equals(that.node);
+        return this.node.equals(that.node);
       }
       return false;
     }
@@ -539,8 +490,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= node.hashCode();
         $hashCode = h;
@@ -554,25 +503,21 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public Edge map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final Node node = reader.readObject($responseFields[1], new ResponseReader.ObjectReader<Node>() {
+        final Node node = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<Node>() {
           @Override
           public Node read(ResponseReader reader) {
             return nodeFieldMapper.map(reader);
           }
         });
-        return new Edge(__typename, node);
+        return new Edge(node);
       }
     }
   }
 
   public static class Node {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList())
     };
-
-    final @NotNull String __typename;
 
     final @NotNull String name;
 
@@ -582,13 +527,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Node(@NotNull String __typename, @NotNull String name) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    public Node(@NotNull String name) {
       this.name = Utils.checkNotNull(name, "name == null");
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
     }
 
     /**
@@ -603,8 +543,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeString($responseFields[1], name);
+          writer.writeString($responseFields[0], name);
         }
       };
     }
@@ -613,7 +552,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "Node{"
-          + "__typename=" + __typename + ", "
           + "name=" + name
           + "}";
       }
@@ -627,8 +565,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Node) {
         Node that = (Node) o;
-        return this.__typename.equals(that.__typename)
-         && this.name.equals(that.name);
+        return this.name.equals(that.name);
       }
       return false;
     }
@@ -637,8 +574,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= name.hashCode();
         $hashCode = h;
@@ -650,22 +585,18 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<Node> {
       @Override
       public Node map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final String name = reader.readString($responseFields[1]);
-        return new Node(__typename, name);
+        final String name = reader.readString($responseFields[0]);
+        return new Node(name);
       }
     }
   }
 
   public static class Luke {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forCustomType("id", "id", null, false, CustomType.ID, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forObject("friendsConnection", "friendsConnection", null, false, Collections.<ResponseField.Condition>emptyList())
     };
-
-    final @NotNull String __typename;
 
     final @NotNull String id;
 
@@ -679,16 +610,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Luke(@NotNull String __typename, @NotNull String id, @NotNull String name,
+    public Luke(@NotNull String id, @NotNull String name,
         @NotNull FriendsConnection1 friendsConnection) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.id = Utils.checkNotNull(id, "id == null");
       this.name = Utils.checkNotNull(name, "name == null");
       this.friendsConnection = Utils.checkNotNull(friendsConnection, "friendsConnection == null");
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
     }
 
     /**
@@ -717,10 +643,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeCustom((ResponseField.CustomTypeField) $responseFields[1], id);
-          writer.writeString($responseFields[2], name);
-          writer.writeObject($responseFields[3], friendsConnection.marshaller());
+          writer.writeCustom((ResponseField.CustomTypeField) $responseFields[0], id);
+          writer.writeString($responseFields[1], name);
+          writer.writeObject($responseFields[2], friendsConnection.marshaller());
         }
       };
     }
@@ -729,7 +654,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "Luke{"
-          + "__typename=" + __typename + ", "
           + "id=" + id + ", "
           + "name=" + name + ", "
           + "friendsConnection=" + friendsConnection
@@ -745,8 +669,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Luke) {
         Luke that = (Luke) o;
-        return this.__typename.equals(that.__typename)
-         && this.id.equals(that.id)
+        return this.id.equals(that.id)
          && this.name.equals(that.name)
          && this.friendsConnection.equals(that.friendsConnection);
       }
@@ -757,8 +680,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= id.hashCode();
         h *= 1000003;
@@ -776,28 +697,24 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public Luke map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final String id = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[1]);
-        final String name = reader.readString($responseFields[2]);
-        final FriendsConnection1 friendsConnection = reader.readObject($responseFields[3], new ResponseReader.ObjectReader<FriendsConnection1>() {
+        final String id = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        final FriendsConnection1 friendsConnection = reader.readObject($responseFields[2], new ResponseReader.ObjectReader<FriendsConnection1>() {
           @Override
           public FriendsConnection1 read(ResponseReader reader) {
             return friendsConnection1FieldMapper.map(reader);
           }
         });
-        return new Luke(__typename, id, name, friendsConnection);
+        return new Luke(id, name, friendsConnection);
       }
     }
   }
 
   public static class FriendsConnection1 {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forInt("totalCount", "totalCount", null, true, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forList("edges", "edges", null, true, Collections.<ResponseField.Condition>emptyList())
     };
-
-    final @NotNull String __typename;
 
     final Optional<Integer> totalCount;
 
@@ -809,15 +726,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public FriendsConnection1(@NotNull String __typename, @Nullable Integer totalCount,
-        @Nullable List<Edge1> edges) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    public FriendsConnection1(@Nullable Integer totalCount, @Nullable List<Edge1> edges) {
       this.totalCount = Optional.fromNullable(totalCount);
       this.edges = Optional.fromNullable(edges);
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
     }
 
     /**
@@ -839,9 +750,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeInt($responseFields[1], totalCount.isPresent() ? totalCount.get() : null);
-          writer.writeList($responseFields[2], edges.isPresent() ? edges.get() : null, new ResponseWriter.ListWriter() {
+          writer.writeInt($responseFields[0], totalCount.isPresent() ? totalCount.get() : null);
+          writer.writeList($responseFields[1], edges.isPresent() ? edges.get() : null, new ResponseWriter.ListWriter() {
             @Override
             public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
               for (Object item : items) {
@@ -857,7 +767,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "FriendsConnection1{"
-          + "__typename=" + __typename + ", "
           + "totalCount=" + totalCount + ", "
           + "edges=" + edges
           + "}";
@@ -872,8 +781,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof FriendsConnection1) {
         FriendsConnection1 that = (FriendsConnection1) o;
-        return this.__typename.equals(that.__typename)
-         && this.totalCount.equals(that.totalCount)
+        return this.totalCount.equals(that.totalCount)
          && this.edges.equals(that.edges);
       }
       return false;
@@ -883,8 +791,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= totalCount.hashCode();
         h *= 1000003;
@@ -900,9 +806,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public FriendsConnection1 map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final Integer totalCount = reader.readInt($responseFields[1]);
-        final List<Edge1> edges = reader.readList($responseFields[2], new ResponseReader.ListReader<Edge1>() {
+        final Integer totalCount = reader.readInt($responseFields[0]);
+        final List<Edge1> edges = reader.readList($responseFields[1], new ResponseReader.ListReader<Edge1>() {
           @Override
           public Edge1 read(ResponseReader.ListItemReader listItemReader) {
             return listItemReader.readObject(new ResponseReader.ObjectReader<Edge1>() {
@@ -913,18 +818,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
             });
           }
         });
-        return new FriendsConnection1(__typename, totalCount, edges);
+        return new FriendsConnection1(totalCount, edges);
       }
     }
   }
 
   public static class Edge1 {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forObject("node", "node", null, true, Collections.<ResponseField.Condition>emptyList())
     };
-
-    final @NotNull String __typename;
 
     final Optional<Node1> node;
 
@@ -934,13 +836,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Edge1(@NotNull String __typename, @Nullable Node1 node) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    public Edge1(@Nullable Node1 node) {
       this.node = Optional.fromNullable(node);
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
     }
 
     /**
@@ -955,8 +852,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeObject($responseFields[1], node.isPresent() ? node.get().marshaller() : null);
+          writer.writeObject($responseFields[0], node.isPresent() ? node.get().marshaller() : null);
         }
       };
     }
@@ -965,7 +861,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "Edge1{"
-          + "__typename=" + __typename + ", "
           + "node=" + node
           + "}";
       }
@@ -979,8 +874,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Edge1) {
         Edge1 that = (Edge1) o;
-        return this.__typename.equals(that.__typename)
-         && this.node.equals(that.node);
+        return this.node.equals(that.node);
       }
       return false;
     }
@@ -989,8 +883,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= node.hashCode();
         $hashCode = h;
@@ -1004,25 +896,21 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public Edge1 map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final Node1 node = reader.readObject($responseFields[1], new ResponseReader.ObjectReader<Node1>() {
+        final Node1 node = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<Node1>() {
           @Override
           public Node1 read(ResponseReader reader) {
             return node1FieldMapper.map(reader);
           }
         });
-        return new Edge1(__typename, node);
+        return new Edge1(node);
       }
     }
   }
 
   public static class Node1 {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList())
     };
-
-    final @NotNull String __typename;
 
     final @NotNull String name;
 
@@ -1032,13 +920,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Node1(@NotNull String __typename, @NotNull String name) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    public Node1(@NotNull String name) {
       this.name = Utils.checkNotNull(name, "name == null");
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
     }
 
     /**
@@ -1053,8 +936,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeString($responseFields[1], name);
+          writer.writeString($responseFields[0], name);
         }
       };
     }
@@ -1063,7 +945,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "Node1{"
-          + "__typename=" + __typename + ", "
           + "name=" + name
           + "}";
       }
@@ -1077,8 +958,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Node1) {
         Node1 that = (Node1) o;
-        return this.__typename.equals(that.__typename)
-         && this.name.equals(that.name);
+        return this.name.equals(that.name);
       }
       return false;
     }
@@ -1087,8 +967,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= name.hashCode();
         $hashCode = h;
@@ -1100,9 +978,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<Node1> {
       @Override
       public Node1 map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final String name = reader.readString($responseFields[1]);
-        return new Node1(__typename, name);
+        final String name = reader.readString($responseFields[0]);
+        return new Node1(name);
       }
     }
   }

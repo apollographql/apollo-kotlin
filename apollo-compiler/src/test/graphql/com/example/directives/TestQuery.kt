@@ -51,28 +51,23 @@ data class TestQuery(
   }
 
   data class FriendsConnection(
-    val __typename: String,
     /**
      * The total number of friends
      */
     val totalCount: Int?
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeInt(RESPONSE_FIELDS[1], totalCount)
+      it.writeInt(RESPONSE_FIELDS[0], totalCount)
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forInt("totalCount", "totalCount", null, true, null)
           )
 
       operator fun invoke(reader: ResponseReader): FriendsConnection {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val totalCount = reader.readInt(RESPONSE_FIELDS[1])
+        val totalCount = reader.readInt(RESPONSE_FIELDS[0])
         return FriendsConnection(
-          __typename = __typename,
           totalCount = totalCount
         )
       }
@@ -80,7 +75,6 @@ data class TestQuery(
   }
 
   data class Hero(
-    val __typename: String,
     /**
      * The name of the character
      */
@@ -91,14 +85,12 @@ data class TestQuery(
     val friendsConnection: FriendsConnection?
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
-      it.writeObject(RESPONSE_FIELDS[2], friendsConnection?.marshaller())
+      it.writeString(RESPONSE_FIELDS[0], name)
+      it.writeObject(RESPONSE_FIELDS[1], friendsConnection?.marshaller())
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, true,
               listOf(ResponseField.Condition.booleanCondition("includeName", false))),
           ResponseField.forObject("friendsConnection", "friendsConnection", null, true,
@@ -106,14 +98,12 @@ data class TestQuery(
           )
 
       operator fun invoke(reader: ResponseReader): Hero {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
-        val friendsConnection = reader.readObject<FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
+        val name = reader.readString(RESPONSE_FIELDS[0])
+        val friendsConnection = reader.readObject<FriendsConnection>(RESPONSE_FIELDS[1]) { reader ->
           FriendsConnection(reader)
         }
 
         return Hero(
-          __typename = __typename,
           name = name,
           friendsConnection = friendsConnection
         )
@@ -147,15 +137,13 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "e442e7d1da90271c3ea02f2b50cdc9fb858fc830cce998243e0ce085595f3ec2"
+        "891f457ef884c9dba5cf3ace02d1ebad79bd22ddf56e57191015ec05bbca944c"
 
     val QUERY_DOCUMENT: String = """
         |query TestQuery(${'$'}includeName: Boolean!, ${'$'}skipFriends: Boolean!) {
         |  hero {
-        |    __typename
         |    name @include(if: ${'$'}includeName)
         |    friendsConnection @skip(if: ${'$'}skipFriends) {
-        |      __typename
         |      totalCount
         |    }
         |  }

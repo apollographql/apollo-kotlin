@@ -15,22 +15,19 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
-import com.apollographql.apollo.api.internal.Utils;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.lang.SuppressWarnings;
 import java.util.Collections;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "4f993e15e441a7c02aa5a6d786812f5e37074a333d9c67a83809929f459726f1";
+  public static final String OPERATION_ID = "a108d80d872f40066f8cea751fb3341983ca55afa2b15198dc37642ab3dcc6ea";
 
   public static final String QUERY_DOCUMENT = "query TestQuery {\n"
       + "  reviews(episode: JEDI, starsInt: 10, starsFloat: 9.9) {\n"
-      + "    __typename\n"
       + "    stars\n"
       + "    commentary\n"
       + "  }\n"
@@ -191,12 +188,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class Review {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forInt("stars", "stars", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("commentary", "commentary", null, true, Collections.<ResponseField.Condition>emptyList())
     };
-
-    final @NotNull String __typename;
 
     final int stars;
 
@@ -208,14 +202,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Review(@NotNull String __typename, int stars, @Nullable String commentary) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    public Review(int stars, @Nullable String commentary) {
       this.stars = stars;
       this.commentary = Optional.fromNullable(commentary);
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
     }
 
     /**
@@ -237,9 +226,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeInt($responseFields[1], stars);
-          writer.writeString($responseFields[2], commentary.isPresent() ? commentary.get() : null);
+          writer.writeInt($responseFields[0], stars);
+          writer.writeString($responseFields[1], commentary.isPresent() ? commentary.get() : null);
         }
       };
     }
@@ -248,7 +236,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "Review{"
-          + "__typename=" + __typename + ", "
           + "stars=" + stars + ", "
           + "commentary=" + commentary
           + "}";
@@ -263,8 +250,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Review) {
         Review that = (Review) o;
-        return this.__typename.equals(that.__typename)
-         && this.stars == that.stars
+        return this.stars == that.stars
          && this.commentary.equals(that.commentary);
       }
       return false;
@@ -274,8 +260,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= stars;
         h *= 1000003;
@@ -289,10 +273,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<Review> {
       @Override
       public Review map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final int stars = reader.readInt($responseFields[1]);
-        final String commentary = reader.readString($responseFields[2]);
-        return new Review(__typename, stars, commentary);
+        final int stars = reader.readInt($responseFields[0]);
+        final String commentary = reader.readString($responseFields[1]);
+        return new Review(stars, commentary);
       }
     }
   }

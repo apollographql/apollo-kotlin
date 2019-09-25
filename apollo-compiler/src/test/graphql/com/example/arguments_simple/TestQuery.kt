@@ -149,7 +149,7 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "36f4332618a8e5295b0c464b25b3be7e961457f3e7d7baa4cdaf5db970be075d"
+        "c327e6a1d03ddc9c24c45135bb956665821b3ed53fd7071c4bcb8715dafc976c"
 
     val QUERY_DOCUMENT: String = """
         |query TestQuery(${'$'}episode: Episode, ${'$'}IncludeName: Boolean!, ${'$'}friendsCount: Int!, ${'$'}listOfListOfStringArgs: [[String]!]!) {
@@ -160,14 +160,10 @@ data class TestQuery(
         |  }
         |}
         |fragment HeroDetails on Character {
-        |  __typename
         |  friendsConnection(first: ${'$'}friendsCount) {
-        |    __typename
         |    totalCount
         |    edges {
-        |      __typename
         |      node {
-        |        __typename
         |        name @include(if: ${'$'}IncludeName)
         |      }
         |    }

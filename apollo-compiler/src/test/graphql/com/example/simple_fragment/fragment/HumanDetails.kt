@@ -16,26 +16,22 @@ import kotlin.Suppress
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
 data class HumanDetails(
-  val __typename: String,
   /**
    * What this human calls themselves
    */
   val name: String
 ) : GraphqlFragment {
   override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-    it.writeString(RESPONSE_FIELDS[0], __typename)
-    it.writeString(RESPONSE_FIELDS[1], name)
+    it.writeString(RESPONSE_FIELDS[0], name)
   }
 
   companion object {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null)
         )
 
     val FRAGMENT_DEFINITION: String = """
         |fragment HumanDetails on Human {
-        |  __typename
         |  name
         |}
         """.trimMargin()
@@ -43,10 +39,8 @@ data class HumanDetails(
     val POSSIBLE_TYPES: Array<String> = arrayOf("Human")
 
     operator fun invoke(reader: ResponseReader): HumanDetails {
-      val __typename = reader.readString(RESPONSE_FIELDS[0])
-      val name = reader.readString(RESPONSE_FIELDS[1])
+      val name = reader.readString(RESPONSE_FIELDS[0])
       return HumanDetails(
-        __typename = __typename,
         name = name
       )
     }

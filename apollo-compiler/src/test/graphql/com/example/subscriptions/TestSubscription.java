@@ -30,11 +30,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestSubscription implements Subscription<TestSubscription.Data, Optional<TestSubscription.Data>, TestSubscription.Variables> {
-  public static final String OPERATION_ID = "f140c0e88b739f3c0b1c105d981b7f8e2780689b3ed8a9faf2d7ee8184a0cf25";
+  public static final String OPERATION_ID = "3a8ce6d6e691d0ff4d0a81d02a834a135c1c534844598b5bce637c7def49eca3";
 
   public static final String QUERY_DOCUMENT = "subscription TestSubscription($repo: String!) {\n"
       + "  commentAdded(repoFullName: $repo) {\n"
-      + "    __typename\n"
       + "    id\n"
       + "    content\n"
       + "  }\n"
@@ -226,12 +225,9 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
 
   public static class CommentAdded {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forInt("id", "id", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("content", "content", null, false, Collections.<ResponseField.Condition>emptyList())
     };
-
-    final @NotNull String __typename;
 
     final int id;
 
@@ -243,14 +239,9 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public CommentAdded(@NotNull String __typename, int id, @NotNull String content) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    public CommentAdded(int id, @NotNull String content) {
       this.id = id;
       this.content = Utils.checkNotNull(content, "content == null");
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
     }
 
     /**
@@ -272,9 +263,8 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeInt($responseFields[1], id);
-          writer.writeString($responseFields[2], content);
+          writer.writeInt($responseFields[0], id);
+          writer.writeString($responseFields[1], content);
         }
       };
     }
@@ -283,7 +273,6 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
     public String toString() {
       if ($toString == null) {
         $toString = "CommentAdded{"
-          + "__typename=" + __typename + ", "
           + "id=" + id + ", "
           + "content=" + content
           + "}";
@@ -298,8 +287,7 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
       }
       if (o instanceof CommentAdded) {
         CommentAdded that = (CommentAdded) o;
-        return this.__typename.equals(that.__typename)
-         && this.id == that.id
+        return this.id == that.id
          && this.content.equals(that.content);
       }
       return false;
@@ -309,8 +297,6 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= id;
         h *= 1000003;
@@ -324,10 +310,9 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
     public static final class Mapper implements ResponseFieldMapper<CommentAdded> {
       @Override
       public CommentAdded map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final int id = reader.readInt($responseFields[1]);
-        final String content = reader.readString($responseFields[2]);
-        return new CommentAdded(__typename, id, content);
+        final int id = reader.readInt($responseFields[0]);
+        final String content = reader.readString($responseFields[1]);
+        return new CommentAdded(id, content);
       }
     }
   }

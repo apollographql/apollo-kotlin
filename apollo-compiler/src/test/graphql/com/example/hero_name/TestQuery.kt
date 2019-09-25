@@ -30,7 +30,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class Hero(
-    val __typename: String,
     /**
      * The name of the character
      */
@@ -41,24 +40,20 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val id: String
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
-      it.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, id)
+      it.writeString(RESPONSE_FIELDS[0], name)
+      it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, false, null),
           ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null)
           )
 
       operator fun invoke(reader: ResponseReader): Hero {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
-        val id = reader.readCustomType<String>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)
+        val name = reader.readString(RESPONSE_FIELDS[0])
+        val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
         return Hero(
-          __typename = __typename,
           name = name,
           id = id
         )
@@ -92,16 +87,14 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "bc3371e1c1415a793a9d038c79756e72e552a5e1d27633ea47905f6a9c19f340"
+        "08f5d0fb36a51ebcc35da125cd709eaf6ee37ffda8587d55bca742c65818a4ab"
 
     val QUERY_DOCUMENT: String = """
         |query TestQuery {
         |  hero {
-        |    __typename
         |    name
         |  }
         |  hero {
-        |    __typename
         |    id
         |    name
         |  }

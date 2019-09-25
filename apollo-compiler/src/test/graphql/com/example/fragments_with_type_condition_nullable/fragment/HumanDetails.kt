@@ -17,7 +17,6 @@ import kotlin.Suppress
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
 data class HumanDetails(
-  val __typename: String,
   /**
    * What this human calls themselves
    */
@@ -28,21 +27,18 @@ data class HumanDetails(
   val height: Double?
 ) : GraphqlFragment {
   override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-    it.writeString(RESPONSE_FIELDS[0], __typename)
-    it.writeString(RESPONSE_FIELDS[1], name)
-    it.writeDouble(RESPONSE_FIELDS[2], height)
+    it.writeString(RESPONSE_FIELDS[0], name)
+    it.writeDouble(RESPONSE_FIELDS[1], height)
   }
 
   companion object {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forDouble("height", "height", null, true, null)
         )
 
     val FRAGMENT_DEFINITION: String = """
         |fragment HumanDetails on Human {
-        |  __typename
         |  name
         |  height
         |}
@@ -51,11 +47,9 @@ data class HumanDetails(
     val POSSIBLE_TYPES: Array<String> = arrayOf("Human")
 
     operator fun invoke(reader: ResponseReader): HumanDetails {
-      val __typename = reader.readString(RESPONSE_FIELDS[0])
-      val name = reader.readString(RESPONSE_FIELDS[1])
-      val height = reader.readDouble(RESPONSE_FIELDS[2])
+      val name = reader.readString(RESPONSE_FIELDS[0])
+      val height = reader.readDouble(RESPONSE_FIELDS[1])
       return HumanDetails(
-        __typename = __typename,
         name = name,
         height = height
       )

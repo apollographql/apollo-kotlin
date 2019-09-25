@@ -37,15 +37,13 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class Friend(
-    val __typename: String,
     /**
      * The movies this character appears in
      */
     val appearsIn: List<Episode?>
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeList(RESPONSE_FIELDS[1], appearsIn) { value, listItemWriter ->
+      it.writeList(RESPONSE_FIELDS[0], appearsIn) { value, listItemWriter ->
         value?.forEach { value ->
           listItemWriter.writeString(value?.rawValue)
         }
@@ -54,17 +52,14 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forList("appearsIn", "appearsIn", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): Friend {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val appearsIn = reader.readList<Episode>(RESPONSE_FIELDS[1]) {
+        val appearsIn = reader.readList<Episode>(RESPONSE_FIELDS[0]) {
           it.readString()?.let{ Episode.safeValueOf(it) }
         }
         return Friend(
-          __typename = __typename,
           appearsIn = appearsIn
         )
       }
@@ -128,28 +123,23 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class Friend1(
-    val __typename: String,
     /**
      * The ID of the character
      */
     val id: String
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
+      it.writeCustom(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField, id)
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null)
           )
 
       operator fun invoke(reader: ResponseReader): Friend1 {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+        val id = reader.readCustomType<String>(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField)
         return Friend1(
-          __typename = __typename,
           id = id
         )
       }
@@ -279,7 +269,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "14adf3d0e99c01ba1b6ddef42021f6167d761619e1d15a617d573ea5e82fc0a5"
+        "513432dcff481b40a79ab6e24b726401420716ad564a9fd16c04eb75e8d8f3be"
 
     val QUERY_DOCUMENT: String = """
         |query TestQuery {
@@ -289,14 +279,12 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         |    ... on Human {
         |      height
         |      friends {
-        |        __typename
         |        appearsIn
         |      }
         |    }
         |    ... on Droid {
         |      primaryFunction
         |      friends {
-        |        __typename
         |        id
         |      }
         |    }

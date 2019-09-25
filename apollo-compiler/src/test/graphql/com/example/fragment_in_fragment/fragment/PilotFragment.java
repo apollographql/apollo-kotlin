@@ -26,13 +26,11 @@ import org.jetbrains.annotations.Nullable;
 
 public class PilotFragment implements GraphqlFragment {
   static final ResponseField[] $responseFields = {
-    ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
     ResponseField.forString("name", "name", null, true, Collections.<ResponseField.Condition>emptyList()),
     ResponseField.forObject("homeworld", "homeworld", null, true, Collections.<ResponseField.Condition>emptyList())
   };
 
   public static final String FRAGMENT_DEFINITION = "fragment pilotFragment on Person {\n"
-      + "  __typename\n"
       + "  name\n"
       + "  homeworld {\n"
       + "    __typename\n"
@@ -41,8 +39,6 @@ public class PilotFragment implements GraphqlFragment {
       + "}";
 
   public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Person"));
-
-  final @NotNull String __typename;
 
   final Optional<String> name;
 
@@ -54,15 +50,9 @@ public class PilotFragment implements GraphqlFragment {
 
   private transient volatile boolean $hashCodeMemoized;
 
-  public PilotFragment(@NotNull String __typename, @Nullable String name,
-      @Nullable Homeworld homeworld) {
-    this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+  public PilotFragment(@Nullable String name, @Nullable Homeworld homeworld) {
     this.name = Optional.fromNullable(name);
     this.homeworld = Optional.fromNullable(homeworld);
-  }
-
-  public @NotNull String __typename() {
-    return this.__typename;
   }
 
   /**
@@ -84,9 +74,8 @@ public class PilotFragment implements GraphqlFragment {
     return new ResponseFieldMarshaller() {
       @Override
       public void marshal(ResponseWriter writer) {
-        writer.writeString($responseFields[0], __typename);
-        writer.writeString($responseFields[1], name.isPresent() ? name.get() : null);
-        writer.writeObject($responseFields[2], homeworld.isPresent() ? homeworld.get().marshaller() : null);
+        writer.writeString($responseFields[0], name.isPresent() ? name.get() : null);
+        writer.writeObject($responseFields[1], homeworld.isPresent() ? homeworld.get().marshaller() : null);
       }
     };
   }
@@ -95,7 +84,6 @@ public class PilotFragment implements GraphqlFragment {
   public String toString() {
     if ($toString == null) {
       $toString = "PilotFragment{"
-        + "__typename=" + __typename + ", "
         + "name=" + name + ", "
         + "homeworld=" + homeworld
         + "}";
@@ -110,8 +98,7 @@ public class PilotFragment implements GraphqlFragment {
     }
     if (o instanceof PilotFragment) {
       PilotFragment that = (PilotFragment) o;
-      return this.__typename.equals(that.__typename)
-       && this.name.equals(that.name)
+      return this.name.equals(that.name)
        && this.homeworld.equals(that.homeworld);
     }
     return false;
@@ -121,8 +108,6 @@ public class PilotFragment implements GraphqlFragment {
   public int hashCode() {
     if (!$hashCodeMemoized) {
       int h = 1;
-      h *= 1000003;
-      h ^= __typename.hashCode();
       h *= 1000003;
       h ^= name.hashCode();
       h *= 1000003;
@@ -138,15 +123,14 @@ public class PilotFragment implements GraphqlFragment {
 
     @Override
     public PilotFragment map(ResponseReader reader) {
-      final String __typename = reader.readString($responseFields[0]);
-      final String name = reader.readString($responseFields[1]);
-      final Homeworld homeworld = reader.readObject($responseFields[2], new ResponseReader.ObjectReader<Homeworld>() {
+      final String name = reader.readString($responseFields[0]);
+      final Homeworld homeworld = reader.readObject($responseFields[1], new ResponseReader.ObjectReader<Homeworld>() {
         @Override
         public Homeworld read(ResponseReader reader) {
           return homeworldFieldMapper.map(reader);
         }
       });
-      return new PilotFragment(__typename, name, homeworld);
+      return new PilotFragment(name, homeworld);
     }
   }
 

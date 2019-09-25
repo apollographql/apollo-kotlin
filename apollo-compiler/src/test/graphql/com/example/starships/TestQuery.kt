@@ -49,7 +49,6 @@ data class TestQuery(
   }
 
   data class Starship(
-    val __typename: String,
     /**
      * The ID of the starship
      */
@@ -61,10 +60,9 @@ data class TestQuery(
     val coordinates: List<List<Double>>?
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
-      it.writeString(RESPONSE_FIELDS[2], name)
-      it.writeList(RESPONSE_FIELDS[3], coordinates) { value, listItemWriter ->
+      it.writeCustom(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField, id)
+      it.writeString(RESPONSE_FIELDS[1], name)
+      it.writeList(RESPONSE_FIELDS[2], coordinates) { value, listItemWriter ->
         value?.forEach { value ->
           listItemWriter.writeList(value) { value, listItemWriter ->
             value?.forEach { value ->
@@ -77,23 +75,20 @@ data class TestQuery(
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
           ResponseField.forString("name", "name", null, false, null),
           ResponseField.forList("coordinates", "coordinates", null, true, null)
           )
 
       operator fun invoke(reader: ResponseReader): Starship {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
-        val name = reader.readString(RESPONSE_FIELDS[2])
-        val coordinates = reader.readList<List<Double>>(RESPONSE_FIELDS[3]) {
+        val id = reader.readCustomType<String>(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField)
+        val name = reader.readString(RESPONSE_FIELDS[1])
+        val coordinates = reader.readList<List<Double>>(RESPONSE_FIELDS[2]) {
           it.readList<Double> {
             it.readDouble()
           }
         }
         return Starship(
-          __typename = __typename,
           id = id,
           name = name,
           coordinates = coordinates
@@ -131,12 +126,11 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "b1a5bbb02a3a876846b727d73a26bf205341d6e7b7181f17e93c8f3b0a5d4b3e"
+        "e594110fa0ad8db4b20f09c75b0d5ec2dd8ec2d7f5e46e27c327717f418dbd9d"
 
     val QUERY_DOCUMENT: String = """
         |query TestQuery(${'$'}id: ID!) {
         |  starship(id: ${'$'}id) {
-        |    __typename
         |    id
         |    name
         |    coordinates

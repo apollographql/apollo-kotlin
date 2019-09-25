@@ -26,11 +26,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "424f5306f4be3f78b90e5c704e1770756e3d874fb1355a809808fa972ddb79ed";
+  public static final String OPERATION_ID = "cc03c614c14997c7fa4e8ce5bde6eb05e06fbb5839460a70a5a7bb7f3b208eb1";
 
   public static final String QUERY_DOCUMENT = "query TestQuery {\n"
       + "  hero {\n"
-      + "    __typename\n"
       + "    name\n"
       + "    appearsIn\n"
       + "    firstAppearsIn\n"
@@ -176,13 +175,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class Hero {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forList("appearsIn", "appearsIn", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("firstAppearsIn", "firstAppearsIn", null, false, Collections.<ResponseField.Condition>emptyList())
     };
-
-    final @NotNull String __typename;
 
     final @NotNull String name;
 
@@ -196,16 +192,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Hero(@NotNull String __typename, @NotNull String name, @NotNull List<Episode> appearsIn,
+    public Hero(@NotNull String name, @NotNull List<Episode> appearsIn,
         @NotNull Episode firstAppearsIn) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.name = Utils.checkNotNull(name, "name == null");
       this.appearsIn = Utils.checkNotNull(appearsIn, "appearsIn == null");
       this.firstAppearsIn = Utils.checkNotNull(firstAppearsIn, "firstAppearsIn == null");
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
     }
 
     /**
@@ -234,9 +225,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeString($responseFields[1], name);
-          writer.writeList($responseFields[2], appearsIn, new ResponseWriter.ListWriter() {
+          writer.writeString($responseFields[0], name);
+          writer.writeList($responseFields[1], appearsIn, new ResponseWriter.ListWriter() {
             @Override
             public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
               for (Object item : items) {
@@ -244,7 +234,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
               }
             }
           });
-          writer.writeString($responseFields[3], firstAppearsIn.rawValue());
+          writer.writeString($responseFields[2], firstAppearsIn.rawValue());
         }
       };
     }
@@ -253,7 +243,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "Hero{"
-          + "__typename=" + __typename + ", "
           + "name=" + name + ", "
           + "appearsIn=" + appearsIn + ", "
           + "firstAppearsIn=" + firstAppearsIn
@@ -269,8 +258,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Hero) {
         Hero that = (Hero) o;
-        return this.__typename.equals(that.__typename)
-         && this.name.equals(that.name)
+        return this.name.equals(that.name)
          && this.appearsIn.equals(that.appearsIn)
          && this.firstAppearsIn.equals(that.firstAppearsIn);
       }
@@ -281,8 +269,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= name.hashCode();
         h *= 1000003;
@@ -298,22 +284,21 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<Hero> {
       @Override
       public Hero map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final String name = reader.readString($responseFields[1]);
-        final List<Episode> appearsIn = reader.readList($responseFields[2], new ResponseReader.ListReader<Episode>() {
+        final String name = reader.readString($responseFields[0]);
+        final List<Episode> appearsIn = reader.readList($responseFields[1], new ResponseReader.ListReader<Episode>() {
           @Override
           public Episode read(ResponseReader.ListItemReader listItemReader) {
             return Episode.safeValueOf(listItemReader.readString());
           }
         });
-        final String firstAppearsInStr = reader.readString($responseFields[3]);
+        final String firstAppearsInStr = reader.readString($responseFields[2]);
         final Episode firstAppearsIn;
         if (firstAppearsInStr != null) {
           firstAppearsIn = Episode.safeValueOf(firstAppearsInStr);
         } else {
           firstAppearsIn = null;
         }
-        return new Hero(__typename, name, appearsIn, firstAppearsIn);
+        return new Hero(name, appearsIn, firstAppearsIn);
       }
     }
   }

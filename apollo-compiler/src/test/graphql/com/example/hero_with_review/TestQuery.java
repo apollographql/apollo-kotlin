@@ -31,11 +31,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQuery.Data>, TestQuery.Variables> {
-  public static final String OPERATION_ID = "dd016b42aecc3540fc1c58cc72f772117db09486d03c7904452c0a2c46e2e0de";
+  public static final String OPERATION_ID = "8ea755da2b9f5bcead2f2a5e9b6b166d46373d170779f364dc71cc56a16cd41e";
 
   public static final String QUERY_DOCUMENT = "mutation TestQuery($ep: Episode!) {\n"
       + "  createReview(episode: $ep, review: {stars: 5, listOfEnums: [JEDI, EMPIRE, NEWHOPE], listOfStringNonOptional: [\"1\", \"2\", \"3\"], favoriteColor: {red: 1, blue: 1}}) {\n"
-      + "    __typename\n"
       + "    stars\n"
       + "    commentary\n"
       + "  }\n"
@@ -233,12 +232,9 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
 
   public static class CreateReview {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forInt("stars", "stars", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("commentary", "commentary", null, true, Collections.<ResponseField.Condition>emptyList())
     };
-
-    final @NotNull String __typename;
 
     final int stars;
 
@@ -250,14 +246,9 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public CreateReview(@NotNull String __typename, int stars, @Nullable String commentary) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    public CreateReview(int stars, @Nullable String commentary) {
       this.stars = stars;
       this.commentary = Optional.fromNullable(commentary);
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
     }
 
     /**
@@ -279,9 +270,8 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeInt($responseFields[1], stars);
-          writer.writeString($responseFields[2], commentary.isPresent() ? commentary.get() : null);
+          writer.writeInt($responseFields[0], stars);
+          writer.writeString($responseFields[1], commentary.isPresent() ? commentary.get() : null);
         }
       };
     }
@@ -290,7 +280,6 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
     public String toString() {
       if ($toString == null) {
         $toString = "CreateReview{"
-          + "__typename=" + __typename + ", "
           + "stars=" + stars + ", "
           + "commentary=" + commentary
           + "}";
@@ -305,8 +294,7 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
       }
       if (o instanceof CreateReview) {
         CreateReview that = (CreateReview) o;
-        return this.__typename.equals(that.__typename)
-         && this.stars == that.stars
+        return this.stars == that.stars
          && this.commentary.equals(that.commentary);
       }
       return false;
@@ -316,8 +304,6 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= stars;
         h *= 1000003;
@@ -331,10 +317,9 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
     public static final class Mapper implements ResponseFieldMapper<CreateReview> {
       @Override
       public CreateReview map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final int stars = reader.readInt($responseFields[1]);
-        final String commentary = reader.readString($responseFields[2]);
-        return new CreateReview(__typename, stars, commentary);
+        final int stars = reader.readInt($responseFields[0]);
+        final String commentary = reader.readString($responseFields[1]);
+        return new CreateReview(stars, commentary);
       }
     }
   }

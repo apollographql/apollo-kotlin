@@ -27,20 +27,16 @@ import org.jetbrains.annotations.Nullable;
 
 public class StarshipFragment implements GraphqlFragment {
   static final ResponseField[] $responseFields = {
-    ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
     ResponseField.forCustomType("id", "id", null, false, CustomType.ID, Collections.<ResponseField.Condition>emptyList()),
     ResponseField.forString("name", "name", null, true, Collections.<ResponseField.Condition>emptyList()),
     ResponseField.forObject("pilotConnection", "pilotConnection", null, true, Collections.<ResponseField.Condition>emptyList())
   };
 
   public static final String FRAGMENT_DEFINITION = "fragment starshipFragment on Starship {\n"
-      + "  __typename\n"
       + "  id\n"
       + "  name\n"
       + "  pilotConnection {\n"
-      + "    __typename\n"
       + "    edges {\n"
-      + "      __typename\n"
       + "      node {\n"
       + "        __typename\n"
       + "        ...pilotFragment\n"
@@ -50,8 +46,6 @@ public class StarshipFragment implements GraphqlFragment {
       + "}";
 
   public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Starship"));
-
-  final @NotNull String __typename;
 
   final @NotNull String id;
 
@@ -65,16 +59,11 @@ public class StarshipFragment implements GraphqlFragment {
 
   private transient volatile boolean $hashCodeMemoized;
 
-  public StarshipFragment(@NotNull String __typename, @NotNull String id, @Nullable String name,
+  public StarshipFragment(@NotNull String id, @Nullable String name,
       @Nullable PilotConnection pilotConnection) {
-    this.__typename = Utils.checkNotNull(__typename, "__typename == null");
     this.id = Utils.checkNotNull(id, "id == null");
     this.name = Optional.fromNullable(name);
     this.pilotConnection = Optional.fromNullable(pilotConnection);
-  }
-
-  public @NotNull String __typename() {
-    return this.__typename;
   }
 
   /**
@@ -100,10 +89,9 @@ public class StarshipFragment implements GraphqlFragment {
     return new ResponseFieldMarshaller() {
       @Override
       public void marshal(ResponseWriter writer) {
-        writer.writeString($responseFields[0], __typename);
-        writer.writeCustom((ResponseField.CustomTypeField) $responseFields[1], id);
-        writer.writeString($responseFields[2], name.isPresent() ? name.get() : null);
-        writer.writeObject($responseFields[3], pilotConnection.isPresent() ? pilotConnection.get().marshaller() : null);
+        writer.writeCustom((ResponseField.CustomTypeField) $responseFields[0], id);
+        writer.writeString($responseFields[1], name.isPresent() ? name.get() : null);
+        writer.writeObject($responseFields[2], pilotConnection.isPresent() ? pilotConnection.get().marshaller() : null);
       }
     };
   }
@@ -112,7 +100,6 @@ public class StarshipFragment implements GraphqlFragment {
   public String toString() {
     if ($toString == null) {
       $toString = "StarshipFragment{"
-        + "__typename=" + __typename + ", "
         + "id=" + id + ", "
         + "name=" + name + ", "
         + "pilotConnection=" + pilotConnection
@@ -128,8 +115,7 @@ public class StarshipFragment implements GraphqlFragment {
     }
     if (o instanceof StarshipFragment) {
       StarshipFragment that = (StarshipFragment) o;
-      return this.__typename.equals(that.__typename)
-       && this.id.equals(that.id)
+      return this.id.equals(that.id)
        && this.name.equals(that.name)
        && this.pilotConnection.equals(that.pilotConnection);
     }
@@ -140,8 +126,6 @@ public class StarshipFragment implements GraphqlFragment {
   public int hashCode() {
     if (!$hashCodeMemoized) {
       int h = 1;
-      h *= 1000003;
-      h ^= __typename.hashCode();
       h *= 1000003;
       h ^= id.hashCode();
       h *= 1000003;
@@ -159,26 +143,22 @@ public class StarshipFragment implements GraphqlFragment {
 
     @Override
     public StarshipFragment map(ResponseReader reader) {
-      final String __typename = reader.readString($responseFields[0]);
-      final String id = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[1]);
-      final String name = reader.readString($responseFields[2]);
-      final PilotConnection pilotConnection = reader.readObject($responseFields[3], new ResponseReader.ObjectReader<PilotConnection>() {
+      final String id = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[0]);
+      final String name = reader.readString($responseFields[1]);
+      final PilotConnection pilotConnection = reader.readObject($responseFields[2], new ResponseReader.ObjectReader<PilotConnection>() {
         @Override
         public PilotConnection read(ResponseReader reader) {
           return pilotConnectionFieldMapper.map(reader);
         }
       });
-      return new StarshipFragment(__typename, id, name, pilotConnection);
+      return new StarshipFragment(id, name, pilotConnection);
     }
   }
 
   public static class PilotConnection {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forList("edges", "edges", null, true, Collections.<ResponseField.Condition>emptyList())
     };
-
-    final @NotNull String __typename;
 
     final Optional<List<Edge>> edges;
 
@@ -188,13 +168,8 @@ public class StarshipFragment implements GraphqlFragment {
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public PilotConnection(@NotNull String __typename, @Nullable List<Edge> edges) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    public PilotConnection(@Nullable List<Edge> edges) {
       this.edges = Optional.fromNullable(edges);
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
     }
 
     /**
@@ -209,8 +184,7 @@ public class StarshipFragment implements GraphqlFragment {
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeList($responseFields[1], edges.isPresent() ? edges.get() : null, new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[0], edges.isPresent() ? edges.get() : null, new ResponseWriter.ListWriter() {
             @Override
             public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
               for (Object item : items) {
@@ -226,7 +200,6 @@ public class StarshipFragment implements GraphqlFragment {
     public String toString() {
       if ($toString == null) {
         $toString = "PilotConnection{"
-          + "__typename=" + __typename + ", "
           + "edges=" + edges
           + "}";
       }
@@ -240,8 +213,7 @@ public class StarshipFragment implements GraphqlFragment {
       }
       if (o instanceof PilotConnection) {
         PilotConnection that = (PilotConnection) o;
-        return this.__typename.equals(that.__typename)
-         && this.edges.equals(that.edges);
+        return this.edges.equals(that.edges);
       }
       return false;
     }
@@ -250,8 +222,6 @@ public class StarshipFragment implements GraphqlFragment {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= edges.hashCode();
         $hashCode = h;
@@ -265,8 +235,7 @@ public class StarshipFragment implements GraphqlFragment {
 
       @Override
       public PilotConnection map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final List<Edge> edges = reader.readList($responseFields[1], new ResponseReader.ListReader<Edge>() {
+        final List<Edge> edges = reader.readList($responseFields[0], new ResponseReader.ListReader<Edge>() {
           @Override
           public Edge read(ResponseReader.ListItemReader listItemReader) {
             return listItemReader.readObject(new ResponseReader.ObjectReader<Edge>() {
@@ -277,18 +246,15 @@ public class StarshipFragment implements GraphqlFragment {
             });
           }
         });
-        return new PilotConnection(__typename, edges);
+        return new PilotConnection(edges);
       }
     }
   }
 
   public static class Edge {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forObject("node", "node", null, true, Collections.<ResponseField.Condition>emptyList())
     };
-
-    final @NotNull String __typename;
 
     final Optional<Node> node;
 
@@ -298,13 +264,8 @@ public class StarshipFragment implements GraphqlFragment {
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Edge(@NotNull String __typename, @Nullable Node node) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    public Edge(@Nullable Node node) {
       this.node = Optional.fromNullable(node);
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
     }
 
     /**
@@ -319,8 +280,7 @@ public class StarshipFragment implements GraphqlFragment {
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeObject($responseFields[1], node.isPresent() ? node.get().marshaller() : null);
+          writer.writeObject($responseFields[0], node.isPresent() ? node.get().marshaller() : null);
         }
       };
     }
@@ -329,7 +289,6 @@ public class StarshipFragment implements GraphqlFragment {
     public String toString() {
       if ($toString == null) {
         $toString = "Edge{"
-          + "__typename=" + __typename + ", "
           + "node=" + node
           + "}";
       }
@@ -343,8 +302,7 @@ public class StarshipFragment implements GraphqlFragment {
       }
       if (o instanceof Edge) {
         Edge that = (Edge) o;
-        return this.__typename.equals(that.__typename)
-         && this.node.equals(that.node);
+        return this.node.equals(that.node);
       }
       return false;
     }
@@ -353,8 +311,6 @@ public class StarshipFragment implements GraphqlFragment {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= node.hashCode();
         $hashCode = h;
@@ -368,14 +324,13 @@ public class StarshipFragment implements GraphqlFragment {
 
       @Override
       public Edge map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final Node node = reader.readObject($responseFields[1], new ResponseReader.ObjectReader<Node>() {
+        final Node node = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<Node>() {
           @Override
           public Node read(ResponseReader reader) {
             return nodeFieldMapper.map(reader);
           }
         });
-        return new Edge(__typename, node);
+        return new Edge(node);
       }
     }
   }

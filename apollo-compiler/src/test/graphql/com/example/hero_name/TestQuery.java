@@ -25,15 +25,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "bc3371e1c1415a793a9d038c79756e72e552a5e1d27633ea47905f6a9c19f340";
+  public static final String OPERATION_ID = "08f5d0fb36a51ebcc35da125cd709eaf6ee37ffda8587d55bca742c65818a4ab";
 
   public static final String QUERY_DOCUMENT = "query TestQuery {\n"
       + "  hero {\n"
-      + "    __typename\n"
       + "    name\n"
       + "  }\n"
       + "  hero {\n"
-      + "    __typename\n"
       + "    id\n"
       + "    name\n"
       + "  }\n"
@@ -178,12 +176,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class Hero {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forCustomType("id", "id", null, false, CustomType.ID, Collections.<ResponseField.Condition>emptyList())
     };
-
-    final @NotNull String __typename;
 
     final @NotNull String name;
 
@@ -195,14 +190,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Hero(@NotNull String __typename, @NotNull String name, @NotNull String id) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    public Hero(@NotNull String name, @NotNull String id) {
       this.name = Utils.checkNotNull(name, "name == null");
       this.id = Utils.checkNotNull(id, "id == null");
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
     }
 
     /**
@@ -224,9 +214,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeString($responseFields[1], name);
-          writer.writeCustom((ResponseField.CustomTypeField) $responseFields[2], id);
+          writer.writeString($responseFields[0], name);
+          writer.writeCustom((ResponseField.CustomTypeField) $responseFields[1], id);
         }
       };
     }
@@ -235,7 +224,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "Hero{"
-          + "__typename=" + __typename + ", "
           + "name=" + name + ", "
           + "id=" + id
           + "}";
@@ -250,8 +238,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Hero) {
         Hero that = (Hero) o;
-        return this.__typename.equals(that.__typename)
-         && this.name.equals(that.name)
+        return this.name.equals(that.name)
          && this.id.equals(that.id);
       }
       return false;
@@ -261,8 +248,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= name.hashCode();
         h *= 1000003;
@@ -276,10 +261,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<Hero> {
       @Override
       public Hero map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final String name = reader.readString($responseFields[1]);
-        final String id = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[2]);
-        return new Hero(__typename, name, id);
+        final String name = reader.readString($responseFields[0]);
+        final String id = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[1]);
+        return new Hero(name, id);
       }
     }
   }

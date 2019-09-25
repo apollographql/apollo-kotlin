@@ -26,11 +26,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "3922907e29d945e3c89be3dda4e11ac5dbb88ae281fb804e1f13125b13bb6275";
+  public static final String OPERATION_ID = "683d118580d831edfc93eba61b528944b74e18408efd9ab33e56af1fb3e5679f";
 
   public static final String QUERY_DOCUMENT = "query TestQuery {\n"
       + "  hero {\n"
-      + "    __typename\n"
       + "    links\n"
       + "  }\n"
       + "}";
@@ -174,11 +173,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class Hero {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forList("links", "links", null, false, Collections.<ResponseField.Condition>emptyList())
     };
-
-    final @NotNull String __typename;
 
     final @NotNull List<Object> links;
 
@@ -188,13 +184,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Hero(@NotNull String __typename, @NotNull List<Object> links) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    public Hero(@NotNull List<Object> links) {
       this.links = Utils.checkNotNull(links, "links == null");
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
     }
 
     /**
@@ -209,8 +200,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeList($responseFields[1], links, new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[0], links, new ResponseWriter.ListWriter() {
             @Override
             public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
               for (Object item : items) {
@@ -226,7 +216,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "Hero{"
-          + "__typename=" + __typename + ", "
           + "links=" + links
           + "}";
       }
@@ -240,8 +229,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Hero) {
         Hero that = (Hero) o;
-        return this.__typename.equals(that.__typename)
-         && this.links.equals(that.links);
+        return this.links.equals(that.links);
       }
       return false;
     }
@@ -250,8 +238,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= links.hashCode();
         $hashCode = h;
@@ -263,14 +249,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<Hero> {
       @Override
       public Hero map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final List<Object> links = reader.readList($responseFields[1], new ResponseReader.ListReader<Object>() {
+        final List<Object> links = reader.readList($responseFields[0], new ResponseReader.ListReader<Object>() {
           @Override
           public Object read(ResponseReader.ListItemReader listItemReader) {
             return listItemReader.readCustomType(CustomType.URL);
           }
         });
-        return new Hero(__typename, links);
+        return new Hero(links);
       }
     }
   }

@@ -48,7 +48,6 @@ data class TestQuery(
   }
 
   data class CreateReview(
-    val __typename: String,
     /**
      * The number of stars this review gave, 1-5
      */
@@ -59,24 +58,20 @@ data class TestQuery(
     val commentary: String?
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeInt(RESPONSE_FIELDS[1], stars)
-      it.writeString(RESPONSE_FIELDS[2], commentary)
+      it.writeInt(RESPONSE_FIELDS[0], stars)
+      it.writeString(RESPONSE_FIELDS[1], commentary)
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forInt("stars", "stars", null, false, null),
           ResponseField.forString("commentary", "commentary", null, true, null)
           )
 
       operator fun invoke(reader: ResponseReader): CreateReview {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val stars = reader.readInt(RESPONSE_FIELDS[1])
-        val commentary = reader.readString(RESPONSE_FIELDS[2])
+        val stars = reader.readInt(RESPONSE_FIELDS[0])
+        val commentary = reader.readString(RESPONSE_FIELDS[1])
         return CreateReview(
-          __typename = __typename,
           stars = stars,
           commentary = commentary
         )
@@ -120,12 +115,11 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "dd016b42aecc3540fc1c58cc72f772117db09486d03c7904452c0a2c46e2e0de"
+        "8ea755da2b9f5bcead2f2a5e9b6b166d46373d170779f364dc71cc56a16cd41e"
 
     val QUERY_DOCUMENT: String = """
         |mutation TestQuery(${'$'}ep: Episode!) {
         |  createReview(episode: ${'$'}ep, review: {stars: 5, listOfEnums: [JEDI, EMPIRE, NEWHOPE], listOfStringNonOptional: ["1", "2", "3"], favoriteColor: {red: 1, blue: 1}}) {
-        |    __typename
         |    stars
         |    commentary
         |  }

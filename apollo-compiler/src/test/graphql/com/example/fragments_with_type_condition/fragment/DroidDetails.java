@@ -25,20 +25,16 @@ import org.jetbrains.annotations.Nullable;
 
 public class DroidDetails implements GraphqlFragment {
   static final ResponseField[] $responseFields = {
-    ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
     ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
     ResponseField.forString("primaryFunction", "primaryFunction", null, true, Collections.<ResponseField.Condition>emptyList())
   };
 
   public static final String FRAGMENT_DEFINITION = "fragment DroidDetails on Droid {\n"
-      + "  __typename\n"
       + "  name\n"
       + "  primaryFunction\n"
       + "}";
 
   public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Droid"));
-
-  final @NotNull String __typename;
 
   final @NotNull String name;
 
@@ -50,15 +46,9 @@ public class DroidDetails implements GraphqlFragment {
 
   private transient volatile boolean $hashCodeMemoized;
 
-  public DroidDetails(@NotNull String __typename, @NotNull String name,
-      @Nullable String primaryFunction) {
-    this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+  public DroidDetails(@NotNull String name, @Nullable String primaryFunction) {
     this.name = Utils.checkNotNull(name, "name == null");
     this.primaryFunction = Optional.fromNullable(primaryFunction);
-  }
-
-  public @NotNull String __typename() {
-    return this.__typename;
   }
 
   /**
@@ -80,9 +70,8 @@ public class DroidDetails implements GraphqlFragment {
     return new ResponseFieldMarshaller() {
       @Override
       public void marshal(ResponseWriter writer) {
-        writer.writeString($responseFields[0], __typename);
-        writer.writeString($responseFields[1], name);
-        writer.writeString($responseFields[2], primaryFunction.isPresent() ? primaryFunction.get() : null);
+        writer.writeString($responseFields[0], name);
+        writer.writeString($responseFields[1], primaryFunction.isPresent() ? primaryFunction.get() : null);
       }
     };
   }
@@ -91,7 +80,6 @@ public class DroidDetails implements GraphqlFragment {
   public String toString() {
     if ($toString == null) {
       $toString = "DroidDetails{"
-        + "__typename=" + __typename + ", "
         + "name=" + name + ", "
         + "primaryFunction=" + primaryFunction
         + "}";
@@ -106,8 +94,7 @@ public class DroidDetails implements GraphqlFragment {
     }
     if (o instanceof DroidDetails) {
       DroidDetails that = (DroidDetails) o;
-      return this.__typename.equals(that.__typename)
-       && this.name.equals(that.name)
+      return this.name.equals(that.name)
        && this.primaryFunction.equals(that.primaryFunction);
     }
     return false;
@@ -117,8 +104,6 @@ public class DroidDetails implements GraphqlFragment {
   public int hashCode() {
     if (!$hashCodeMemoized) {
       int h = 1;
-      h *= 1000003;
-      h ^= __typename.hashCode();
       h *= 1000003;
       h ^= name.hashCode();
       h *= 1000003;
@@ -132,10 +117,9 @@ public class DroidDetails implements GraphqlFragment {
   public static final class Mapper implements ResponseFieldMapper<DroidDetails> {
     @Override
     public DroidDetails map(ResponseReader reader) {
-      final String __typename = reader.readString($responseFields[0]);
-      final String name = reader.readString($responseFields[1]);
-      final String primaryFunction = reader.readString($responseFields[2]);
-      return new DroidDetails(__typename, name, primaryFunction);
+      final String name = reader.readString($responseFields[0]);
+      final String primaryFunction = reader.readString($responseFields[1]);
+      return new DroidDetails(name, primaryFunction);
     }
   }
 }

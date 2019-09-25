@@ -77,15 +77,12 @@ public class OptimisticCacheTestCase {
 
     UUID mutationId = UUID.randomUUID();
     HeroAndFriendsNamesQuery.Data data = new HeroAndFriendsNamesQuery.Data(new HeroAndFriendsNamesQuery.Hero(
-        "Droid",
         "R222-D222",
         Arrays.asList(
             new HeroAndFriendsNamesQuery.Friend(
-                "Human",
                 "SuperMan"
             ),
             new HeroAndFriendsNamesQuery.Friend(
-                "Human",
                 "Batman"
             )
         )
@@ -142,17 +139,14 @@ public class OptimisticCacheTestCase {
 
     HeroAndFriendsNamesWithIDsQuery.Data data1 = new HeroAndFriendsNamesWithIDsQuery.Data(
         new HeroAndFriendsNamesWithIDsQuery.Hero(
-            "Droid",
             "2001",
             "R222-D222",
             Arrays.asList(
                 new HeroAndFriendsNamesWithIDsQuery.Friend(
-                    "Human",
                     "1000",
                     "SuperMan"
                 ),
                 new HeroAndFriendsNamesWithIDsQuery.Friend(
-                    "Human",
                     "1003",
                     "Batman"
                 )
@@ -190,7 +184,6 @@ public class OptimisticCacheTestCase {
     );
 
     HeroNameWithIdQuery.Data data2 = new HeroNameWithIdQuery.Data(new HeroNameWithIdQuery.Hero(
-        "Human",
         "1000",
         "Beast"
     ));
@@ -290,7 +283,7 @@ public class OptimisticCacheTestCase {
     UUID mutationId = UUID.randomUUID();
     apolloClient.apolloStore().writeOptimisticUpdates(
         new HeroNameQuery(),
-        new HeroNameQuery.Data(new HeroNameQuery.Hero("Droid", "R22-D22")),
+        new HeroNameQuery.Data(new HeroNameQuery.Hero("R22-D22")),
         mutationId
     ).execute();
 
@@ -346,7 +339,7 @@ public class OptimisticCacheTestCase {
             .build()
     );
     apolloClient.mutate(updateReviewMutation, new UpdateReviewMutation.Data(new UpdateReviewMutation.UpdateReview(
-        "Review", "empireReview2", 5, "Great"))).enqueue(
+        "empireReview2", 5, "Great"))).enqueue(
         new ApolloCall.Callback<UpdateReviewMutation.Data>() {
           @Override public void onResponse(@NotNull Response<UpdateReviewMutation.Data> response) {
           }
@@ -426,17 +419,14 @@ public class OptimisticCacheTestCase {
 
     HeroAndFriendsNamesWithIDsQuery.Data data1 = new HeroAndFriendsNamesWithIDsQuery.Data(
         new HeroAndFriendsNamesWithIDsQuery.Hero(
-            "Droid",
             "2001",
             "R222-D222",
             Arrays.asList(
                 new HeroAndFriendsNamesWithIDsQuery.Friend(
-                    "Human",
                     "1000",
                     "Robocop"
                 ),
                 new HeroAndFriendsNamesWithIDsQuery.Friend(
-                    "Human",
                     "1003",
                     "Batman"
                 )
@@ -446,7 +436,6 @@ public class OptimisticCacheTestCase {
     apolloClient.apolloStore().writeOptimisticUpdatesAndPublish(query1, data1, mutationId1).execute();
 
     HeroNameWithIdQuery.Data data2 = new HeroNameWithIdQuery.Data(new HeroNameWithIdQuery.Hero(
-        "Human",
         "1000",
         "Spiderman"
     ));

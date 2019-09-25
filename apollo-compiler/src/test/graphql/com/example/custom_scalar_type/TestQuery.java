@@ -27,11 +27,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "e7efe02b29424a4425cafac2dbd3374b420e11212cc5a00eb7ee28ec904fef69";
+  public static final String OPERATION_ID = "0034290494a65d6ccf9ffb03137c4a280cbfb5ac595419d5512cbcbf6085fa54";
 
   public static final String QUERY_DOCUMENT = "query TestQuery {\n"
       + "  hero {\n"
-      + "    __typename\n"
       + "    name\n"
       + "    birthDate\n"
       + "    appearanceDates\n"
@@ -180,7 +179,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class Hero {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forCustomType("birthDate", "birthDate", null, false, CustomType.DATE, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forList("appearanceDates", "appearanceDates", null, false, Collections.<ResponseField.Condition>emptyList()),
@@ -188,8 +186,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forCustomType("profileLink", "profileLink", null, false, CustomType.URL, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forList("links", "links", null, false, Collections.<ResponseField.Condition>emptyList())
     };
-
-    final @NotNull String __typename;
 
     final @NotNull String name;
 
@@ -209,20 +205,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Hero(@NotNull String __typename, @NotNull String name, @NotNull Date birthDate,
-        @NotNull List<Date> appearanceDates, @NotNull Object fieldWithUnsupportedType,
-        @NotNull String profileLink, @NotNull List<String> links) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    public Hero(@NotNull String name, @NotNull Date birthDate, @NotNull List<Date> appearanceDates,
+        @NotNull Object fieldWithUnsupportedType, @NotNull String profileLink,
+        @NotNull List<String> links) {
       this.name = Utils.checkNotNull(name, "name == null");
       this.birthDate = Utils.checkNotNull(birthDate, "birthDate == null");
       this.appearanceDates = Utils.checkNotNull(appearanceDates, "appearanceDates == null");
       this.fieldWithUnsupportedType = Utils.checkNotNull(fieldWithUnsupportedType, "fieldWithUnsupportedType == null");
       this.profileLink = Utils.checkNotNull(profileLink, "profileLink == null");
       this.links = Utils.checkNotNull(links, "links == null");
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
     }
 
     /**
@@ -272,10 +263,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeString($responseFields[1], name);
-          writer.writeCustom((ResponseField.CustomTypeField) $responseFields[2], birthDate);
-          writer.writeList($responseFields[3], appearanceDates, new ResponseWriter.ListWriter() {
+          writer.writeString($responseFields[0], name);
+          writer.writeCustom((ResponseField.CustomTypeField) $responseFields[1], birthDate);
+          writer.writeList($responseFields[2], appearanceDates, new ResponseWriter.ListWriter() {
             @Override
             public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
               for (Object item : items) {
@@ -283,9 +273,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
               }
             }
           });
-          writer.writeCustom((ResponseField.CustomTypeField) $responseFields[4], fieldWithUnsupportedType);
-          writer.writeCustom((ResponseField.CustomTypeField) $responseFields[5], profileLink);
-          writer.writeList($responseFields[6], links, new ResponseWriter.ListWriter() {
+          writer.writeCustom((ResponseField.CustomTypeField) $responseFields[3], fieldWithUnsupportedType);
+          writer.writeCustom((ResponseField.CustomTypeField) $responseFields[4], profileLink);
+          writer.writeList($responseFields[5], links, new ResponseWriter.ListWriter() {
             @Override
             public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
               for (Object item : items) {
@@ -301,7 +291,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "Hero{"
-          + "__typename=" + __typename + ", "
           + "name=" + name + ", "
           + "birthDate=" + birthDate + ", "
           + "appearanceDates=" + appearanceDates + ", "
@@ -320,8 +309,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Hero) {
         Hero that = (Hero) o;
-        return this.__typename.equals(that.__typename)
-         && this.name.equals(that.name)
+        return this.name.equals(that.name)
          && this.birthDate.equals(that.birthDate)
          && this.appearanceDates.equals(that.appearanceDates)
          && this.fieldWithUnsupportedType.equals(that.fieldWithUnsupportedType)
@@ -335,8 +323,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= name.hashCode();
         h *= 1000003;
@@ -358,24 +344,23 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<Hero> {
       @Override
       public Hero map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final String name = reader.readString($responseFields[1]);
-        final Date birthDate = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[2]);
-        final List<Date> appearanceDates = reader.readList($responseFields[3], new ResponseReader.ListReader<Date>() {
+        final String name = reader.readString($responseFields[0]);
+        final Date birthDate = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[1]);
+        final List<Date> appearanceDates = reader.readList($responseFields[2], new ResponseReader.ListReader<Date>() {
           @Override
           public Date read(ResponseReader.ListItemReader listItemReader) {
             return listItemReader.readCustomType(CustomType.DATE);
           }
         });
-        final Object fieldWithUnsupportedType = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[4]);
-        final String profileLink = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[5]);
-        final List<String> links = reader.readList($responseFields[6], new ResponseReader.ListReader<String>() {
+        final Object fieldWithUnsupportedType = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[3]);
+        final String profileLink = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[4]);
+        final List<String> links = reader.readList($responseFields[5], new ResponseReader.ListReader<String>() {
           @Override
           public String read(ResponseReader.ListItemReader listItemReader) {
             return listItemReader.readCustomType(CustomType.URL);
           }
         });
-        return new Hero(__typename, name, birthDate, appearanceDates, fieldWithUnsupportedType, profileLink, links);
+        return new Hero(name, birthDate, appearanceDates, fieldWithUnsupportedType, profileLink, links);
       }
     }
   }

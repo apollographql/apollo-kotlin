@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "14adf3d0e99c01ba1b6ddef42021f6167d761619e1d15a617d573ea5e82fc0a5";
+  public static final String OPERATION_ID = "513432dcff481b40a79ab6e24b726401420716ad564a9fd16c04eb75e8d8f3be";
 
   public static final String QUERY_DOCUMENT = "query TestQuery {\n"
       + "  hero {\n"
@@ -38,14 +38,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       + "    ... on Human {\n"
       + "      height\n"
       + "      friends {\n"
-      + "        __typename\n"
       + "        appearsIn\n"
       + "      }\n"
       + "    }\n"
       + "    ... on Droid {\n"
       + "      primaryFunction\n"
       + "      friends {\n"
-      + "        __typename\n"
       + "        id\n"
       + "      }\n"
       + "    }\n"
@@ -399,11 +397,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class Friend {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forList("appearsIn", "appearsIn", null, false, Collections.<ResponseField.Condition>emptyList())
     };
-
-    final @NotNull String __typename;
 
     final @NotNull List<Episode> appearsIn;
 
@@ -413,13 +408,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Friend(@NotNull String __typename, @NotNull List<Episode> appearsIn) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    public Friend(@NotNull List<Episode> appearsIn) {
       this.appearsIn = Utils.checkNotNull(appearsIn, "appearsIn == null");
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
     }
 
     /**
@@ -434,8 +424,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeList($responseFields[1], appearsIn, new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[0], appearsIn, new ResponseWriter.ListWriter() {
             @Override
             public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
               for (Object item : items) {
@@ -451,7 +440,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "Friend{"
-          + "__typename=" + __typename + ", "
           + "appearsIn=" + appearsIn
           + "}";
       }
@@ -465,8 +453,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Friend) {
         Friend that = (Friend) o;
-        return this.__typename.equals(that.__typename)
-         && this.appearsIn.equals(that.appearsIn);
+        return this.appearsIn.equals(that.appearsIn);
       }
       return false;
     }
@@ -475,8 +462,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= appearsIn.hashCode();
         $hashCode = h;
@@ -488,14 +473,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<Friend> {
       @Override
       public Friend map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final List<Episode> appearsIn = reader.readList($responseFields[1], new ResponseReader.ListReader<Episode>() {
+        final List<Episode> appearsIn = reader.readList($responseFields[0], new ResponseReader.ListReader<Episode>() {
           @Override
           public Episode read(ResponseReader.ListItemReader listItemReader) {
             return Episode.safeValueOf(listItemReader.readString());
           }
         });
-        return new Friend(__typename, appearsIn);
+        return new Friend(appearsIn);
       }
     }
   }
@@ -647,11 +631,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class Friend1 {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forCustomType("id", "id", null, false, CustomType.ID, Collections.<ResponseField.Condition>emptyList())
     };
-
-    final @NotNull String __typename;
 
     final @NotNull String id;
 
@@ -661,13 +642,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Friend1(@NotNull String __typename, @NotNull String id) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    public Friend1(@NotNull String id) {
       this.id = Utils.checkNotNull(id, "id == null");
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
     }
 
     /**
@@ -682,8 +658,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeCustom((ResponseField.CustomTypeField) $responseFields[1], id);
+          writer.writeCustom((ResponseField.CustomTypeField) $responseFields[0], id);
         }
       };
     }
@@ -692,7 +667,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "Friend1{"
-          + "__typename=" + __typename + ", "
           + "id=" + id
           + "}";
       }
@@ -706,8 +680,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Friend1) {
         Friend1 that = (Friend1) o;
-        return this.__typename.equals(that.__typename)
-         && this.id.equals(that.id);
+        return this.id.equals(that.id);
       }
       return false;
     }
@@ -716,8 +689,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= id.hashCode();
         $hashCode = h;
@@ -729,9 +700,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<Friend1> {
       @Override
       public Friend1 map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final String id = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[1]);
-        return new Friend1(__typename, id);
+        final String id = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[0]);
+        return new Friend1(id);
       }
     }
   }

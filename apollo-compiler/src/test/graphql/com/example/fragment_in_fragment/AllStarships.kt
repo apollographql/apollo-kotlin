@@ -71,31 +71,26 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
   }
 
   data class Edge(
-    val __typename: String,
     /**
      * The item at the end of the edge
      */
     val node: Node?
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeObject(RESPONSE_FIELDS[1], node?.marshaller())
+      it.writeObject(RESPONSE_FIELDS[0], node?.marshaller())
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forObject("node", "node", null, true, null)
           )
 
       operator fun invoke(reader: ResponseReader): Edge {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val node = reader.readObject<Node>(RESPONSE_FIELDS[1]) { reader ->
+        val node = reader.readObject<Node>(RESPONSE_FIELDS[0]) { reader ->
           Node(reader)
         }
 
         return Edge(
-          __typename = __typename,
           node = node
         )
       }
@@ -103,15 +98,13 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
   }
 
   data class AllStarship(
-    val __typename: String,
     /**
      * A list of edges.
      */
     val edges: List<Edge?>?
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeList(RESPONSE_FIELDS[1], edges) { value, listItemWriter ->
+      it.writeList(RESPONSE_FIELDS[0], edges) { value, listItemWriter ->
         value?.forEach { value ->
           listItemWriter.writeObject(value?.marshaller())
         }
@@ -120,20 +113,17 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forList("edges", "edges", null, true, null)
           )
 
       operator fun invoke(reader: ResponseReader): AllStarship {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val edges = reader.readList<Edge>(RESPONSE_FIELDS[1]) {
+        val edges = reader.readList<Edge>(RESPONSE_FIELDS[0]) {
           it.readObject<Edge> { reader ->
             Edge(reader)
           }
 
         }
         return AllStarship(
-          __typename = __typename,
           edges = edges
         )
       }
@@ -167,14 +157,12 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
 
   companion object {
     const val OPERATION_ID: String =
-        "6c884a44241acb498fbd197e1738520da30e7af8f311c7c74c86094de2a548de"
+        "5f98a1d4c36aef3fc7b4ab0bac95682c03ea6ef11149a34e1a0fa9399c70b5a9"
 
     val QUERY_DOCUMENT: String = """
         |query AllStarships {
         |  allStarships(first: 7) {
-        |    __typename
         |    edges {
-        |      __typename
         |      node {
         |        __typename
         |        ...starshipFragment
@@ -183,13 +171,10 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
         |  }
         |}
         |fragment starshipFragment on Starship {
-        |  __typename
         |  id
         |  name
         |  pilotConnection {
-        |    __typename
         |    edges {
-        |      __typename
         |      node {
         |        __typename
         |        ...pilotFragment
@@ -198,7 +183,6 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
         |  }
         |}
         |fragment pilotFragment on Person {
-        |  __typename
         |  name
         |  homeworld {
         |    __typename
@@ -206,7 +190,6 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
         |  }
         |}
         |fragment planetFragment on Planet {
-        |  __typename
         |  name
         |}
         """.trimMargin()

@@ -26,20 +26,16 @@ import org.jetbrains.annotations.Nullable;
 
 public class HumanDetails implements GraphqlFragment {
   static final ResponseField[] $responseFields = {
-    ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
     ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
     ResponseField.forDouble("height", "height", null, true, Collections.<ResponseField.Condition>emptyList())
   };
 
   public static final String FRAGMENT_DEFINITION = "fragment HumanDetails on Human {\n"
-      + "  __typename\n"
       + "  name\n"
       + "  height\n"
       + "}";
 
   public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Human"));
-
-  final @NotNull String __typename;
 
   final @NotNull String name;
 
@@ -51,14 +47,9 @@ public class HumanDetails implements GraphqlFragment {
 
   private transient volatile boolean $hashCodeMemoized;
 
-  public HumanDetails(@NotNull String __typename, @NotNull String name, @Nullable Double height) {
-    this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+  public HumanDetails(@NotNull String name, @Nullable Double height) {
     this.name = Utils.checkNotNull(name, "name == null");
     this.height = Optional.fromNullable(height);
-  }
-
-  public @NotNull String __typename() {
-    return this.__typename;
   }
 
   /**
@@ -80,9 +71,8 @@ public class HumanDetails implements GraphqlFragment {
     return new ResponseFieldMarshaller() {
       @Override
       public void marshal(ResponseWriter writer) {
-        writer.writeString($responseFields[0], __typename);
-        writer.writeString($responseFields[1], name);
-        writer.writeDouble($responseFields[2], height.isPresent() ? height.get() : null);
+        writer.writeString($responseFields[0], name);
+        writer.writeDouble($responseFields[1], height.isPresent() ? height.get() : null);
       }
     };
   }
@@ -91,7 +81,6 @@ public class HumanDetails implements GraphqlFragment {
   public String toString() {
     if ($toString == null) {
       $toString = "HumanDetails{"
-        + "__typename=" + __typename + ", "
         + "name=" + name + ", "
         + "height=" + height
         + "}";
@@ -106,8 +95,7 @@ public class HumanDetails implements GraphqlFragment {
     }
     if (o instanceof HumanDetails) {
       HumanDetails that = (HumanDetails) o;
-      return this.__typename.equals(that.__typename)
-       && this.name.equals(that.name)
+      return this.name.equals(that.name)
        && this.height.equals(that.height);
     }
     return false;
@@ -117,8 +105,6 @@ public class HumanDetails implements GraphqlFragment {
   public int hashCode() {
     if (!$hashCodeMemoized) {
       int h = 1;
-      h *= 1000003;
-      h ^= __typename.hashCode();
       h *= 1000003;
       h ^= name.hashCode();
       h *= 1000003;
@@ -132,10 +118,9 @@ public class HumanDetails implements GraphqlFragment {
   public static final class Mapper implements ResponseFieldMapper<HumanDetails> {
     @Override
     public HumanDetails map(ResponseReader reader) {
-      final String __typename = reader.readString($responseFields[0]);
-      final String name = reader.readString($responseFields[1]);
-      final Double height = reader.readDouble($responseFields[2]);
-      return new HumanDetails(__typename, name, height);
+      final String name = reader.readString($responseFields[0]);
+      final Double height = reader.readDouble($responseFields[1]);
+      return new HumanDetails(name, height);
     }
   }
 }

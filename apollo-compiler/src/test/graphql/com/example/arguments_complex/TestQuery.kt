@@ -56,7 +56,6 @@ data class TestQuery(
   }
 
   data class HeroWithReview(
-    val __typename: String,
     /**
      * What this human calls themselves
      */
@@ -67,25 +66,21 @@ data class TestQuery(
     val height: Double?
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
-      it.writeDouble(RESPONSE_FIELDS[2], height)
+      it.writeString(RESPONSE_FIELDS[0], name)
+      it.writeDouble(RESPONSE_FIELDS[1], height)
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, false, null),
           ResponseField.forDouble("height", "height", mapOf<String, Any>(
             "unit" to "FOOT"), true, null)
           )
 
       operator fun invoke(reader: ResponseReader): HeroWithReview {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
-        val height = reader.readDouble(RESPONSE_FIELDS[2])
+        val name = reader.readString(RESPONSE_FIELDS[0])
+        val height = reader.readDouble(RESPONSE_FIELDS[1])
         return HeroWithReview(
-          __typename = __typename,
           name = name,
           height = height
         )
@@ -136,12 +131,11 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "29a306b3e98c3424dcc3b0625487c63a3b1d18af6ded537c9be2f27694aea5c5"
+        "925f5ec264dc3f7058d0544f419acec4df8b0c68208976bfe938094e54dd83dc"
 
     val QUERY_DOCUMENT: String = """
         |query TestQuery(${'$'}episode: Episode, ${'$'}stars: Int!, ${'$'}greenValue: Float!) {
         |  heroWithReview(episode: ${'$'}episode, review: {stars: ${'$'}stars, favoriteColor: {red: 0, green: ${'$'}greenValue, blue: 0}, listOfStringNonOptional: []}, listOfInts: [${'$'}stars, ${'$'}stars]) {
-        |    __typename
         |    name
         |    height(unit: FOOT)
         |  }

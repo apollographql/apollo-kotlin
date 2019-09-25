@@ -12,7 +12,6 @@ import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
-import com.apollographql.apollo.api.internal.Utils;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -20,23 +19,18 @@ import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PlanetFragment implements GraphqlFragment {
   static final ResponseField[] $responseFields = {
-    ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
     ResponseField.forString("name", "name", null, true, Collections.<ResponseField.Condition>emptyList())
   };
 
   public static final String FRAGMENT_DEFINITION = "fragment planetFragment on Planet {\n"
-      + "  __typename\n"
       + "  name\n"
       + "}";
 
   public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Planet"));
-
-  final @NotNull String __typename;
 
   final Optional<String> name;
 
@@ -46,13 +40,8 @@ public class PlanetFragment implements GraphqlFragment {
 
   private transient volatile boolean $hashCodeMemoized;
 
-  public PlanetFragment(@NotNull String __typename, @Nullable String name) {
-    this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+  public PlanetFragment(@Nullable String name) {
     this.name = Optional.fromNullable(name);
-  }
-
-  public @NotNull String __typename() {
-    return this.__typename;
   }
 
   /**
@@ -67,8 +56,7 @@ public class PlanetFragment implements GraphqlFragment {
     return new ResponseFieldMarshaller() {
       @Override
       public void marshal(ResponseWriter writer) {
-        writer.writeString($responseFields[0], __typename);
-        writer.writeString($responseFields[1], name.isPresent() ? name.get() : null);
+        writer.writeString($responseFields[0], name.isPresent() ? name.get() : null);
       }
     };
   }
@@ -77,7 +65,6 @@ public class PlanetFragment implements GraphqlFragment {
   public String toString() {
     if ($toString == null) {
       $toString = "PlanetFragment{"
-        + "__typename=" + __typename + ", "
         + "name=" + name
         + "}";
     }
@@ -91,8 +78,7 @@ public class PlanetFragment implements GraphqlFragment {
     }
     if (o instanceof PlanetFragment) {
       PlanetFragment that = (PlanetFragment) o;
-      return this.__typename.equals(that.__typename)
-       && this.name.equals(that.name);
+      return this.name.equals(that.name);
     }
     return false;
   }
@@ -101,8 +87,6 @@ public class PlanetFragment implements GraphqlFragment {
   public int hashCode() {
     if (!$hashCodeMemoized) {
       int h = 1;
-      h *= 1000003;
-      h ^= __typename.hashCode();
       h *= 1000003;
       h ^= name.hashCode();
       $hashCode = h;
@@ -114,9 +98,8 @@ public class PlanetFragment implements GraphqlFragment {
   public static final class Mapper implements ResponseFieldMapper<PlanetFragment> {
     @Override
     public PlanetFragment map(ResponseReader reader) {
-      final String __typename = reader.readString($responseFields[0]);
-      final String name = reader.readString($responseFields[1]);
-      return new PlanetFragment(__typename, name);
+      final String name = reader.readString($responseFields[0]);
+      return new PlanetFragment(name);
     }
   }
 }

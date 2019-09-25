@@ -47,7 +47,6 @@ data class TestSubscription(
   }
 
   data class CommentAdded(
-    val __typename: String,
     /**
      * The SQL ID of this entry
      */
@@ -58,24 +57,20 @@ data class TestSubscription(
     val content: String
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeInt(RESPONSE_FIELDS[1], id)
-      it.writeString(RESPONSE_FIELDS[2], content)
+      it.writeInt(RESPONSE_FIELDS[0], id)
+      it.writeString(RESPONSE_FIELDS[1], content)
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forInt("id", "id", null, false, null),
           ResponseField.forString("content", "content", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): CommentAdded {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val id = reader.readInt(RESPONSE_FIELDS[1])
-        val content = reader.readString(RESPONSE_FIELDS[2])
+        val id = reader.readInt(RESPONSE_FIELDS[0])
+        val content = reader.readString(RESPONSE_FIELDS[1])
         return CommentAdded(
-          __typename = __typename,
           id = id,
           content = content
         )
@@ -115,12 +110,11 @@ data class TestSubscription(
 
   companion object {
     const val OPERATION_ID: String =
-        "f140c0e88b739f3c0b1c105d981b7f8e2780689b3ed8a9faf2d7ee8184a0cf25"
+        "3a8ce6d6e691d0ff4d0a81d02a834a135c1c534844598b5bce637c7def49eca3"
 
     val QUERY_DOCUMENT: String = """
         |subscription TestSubscription(${'$'}repo: String!) {
         |  commentAdded(repoFullName: ${'$'}repo) {
-        |    __typename
         |    id
         |    content
         |  }

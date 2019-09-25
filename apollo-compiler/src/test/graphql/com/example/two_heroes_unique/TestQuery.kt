@@ -30,28 +30,23 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class R2(
-    val __typename: String,
     /**
      * The name of the character
      */
     val name: String
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
+      it.writeString(RESPONSE_FIELDS[0], name)
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): R2 {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
+        val name = reader.readString(RESPONSE_FIELDS[0])
         return R2(
-          __typename = __typename,
           name = name
         )
       }
@@ -59,7 +54,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class Luke(
-    val __typename: String,
     /**
      * The ID of the character
      */
@@ -70,24 +64,20 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val name: String
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
-      it.writeString(RESPONSE_FIELDS[2], name)
+      it.writeCustom(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField, id)
+      it.writeString(RESPONSE_FIELDS[1], name)
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
           ResponseField.forString("name", "name", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): Luke {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
-        val name = reader.readString(RESPONSE_FIELDS[2])
+        val id = reader.readCustomType<String>(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField)
+        val name = reader.readString(RESPONSE_FIELDS[1])
         return Luke(
-          __typename = __typename,
           id = id,
           name = name
         )
@@ -130,16 +120,14 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "c4890d84f04de970692ee9da3521a903297dea7e613ece3ff1caac59f4016191"
+        "14674ca953c1eb8c4ce29ddd3f1b4bf2875178996f93ccceaa301a1a7186ce79"
 
     val QUERY_DOCUMENT: String = """
         |query TestQuery {
         |  r2: hero {
-        |    __typename
         |    name
         |  }
         |  luke: hero(episode: EMPIRE) {
-        |    __typename
         |    id
         |    name
         |  }

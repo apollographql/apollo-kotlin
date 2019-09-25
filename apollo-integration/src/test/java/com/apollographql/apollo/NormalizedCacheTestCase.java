@@ -764,7 +764,6 @@ public class NormalizedCacheTestCase {
         apolloClient.query(new StarshipByIdQuery("Starship1")),
         new Predicate<Response<StarshipByIdQuery.Data>>() {
           @Override public boolean test(Response<StarshipByIdQuery.Data> response) throws Exception {
-            assertThat(response.data().starship().__typename()).isEqualTo("Starship");
             assertThat(response.data().starship().name()).isEqualTo("SuperRocket");
             assertThat(response.data().starship().coordinates()).hasSize(3);
             assertThat(response.data().starship().coordinates()).containsExactly(asList(100d, 200d), asList(300d, 400d),
@@ -778,7 +777,6 @@ public class NormalizedCacheTestCase {
         apolloClient.query(new StarshipByIdQuery("Starship1")).responseFetcher(CACHE_ONLY),
         new Predicate<Response<StarshipByIdQuery.Data>>() {
           @Override public boolean test(Response<StarshipByIdQuery.Data> response) throws Exception {
-            assertThat(response.data().starship().__typename()).isEqualTo("Starship");
             assertThat(response.data().starship().name()).isEqualTo("SuperRocket");
             assertThat(response.data().starship().coordinates()).hasSize(3);
             assertThat(response.data().starship().coordinates()).containsExactly(asList(100d, 200d), asList(300d, 400d),

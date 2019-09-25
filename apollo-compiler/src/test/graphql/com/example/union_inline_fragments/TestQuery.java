@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "8f2faf5f45edbcd0f65491d582a5a50f13cad39e3995dd5abe5ddb359d3cf066";
+  public static final String OPERATION_ID = "5e8f4373584db078402dc3fe4d11c81d17052f946396758da133bcbd1d0ea1eb";
 
   public static final String QUERY_DOCUMENT = "query TestQuery {\n"
       + "  search(text: \"test\") {\n"
@@ -55,7 +55,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       + "        ... on Droid {\n"
       + "          primaryFunction\n"
       + "          friends {\n"
-      + "            __typename\n"
       + "            id\n"
       + "            deprecated\n"
       + "          }\n"
@@ -875,12 +874,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class Friend2 {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forCustomType("id", "id", null, false, CustomType.ID, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("deprecated", "deprecated", null, false, Collections.<ResponseField.Condition>emptyList())
     };
-
-    final @NotNull String __typename;
 
     final @NotNull String id;
 
@@ -892,15 +888,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Friend2(@NotNull String __typename, @NotNull String id,
-        @NotNull @Deprecated String deprecated) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    public Friend2(@NotNull String id, @NotNull @Deprecated String deprecated) {
       this.id = Utils.checkNotNull(id, "id == null");
       this.deprecated = Utils.checkNotNull(deprecated, "deprecated == null");
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
     }
 
     /**
@@ -923,9 +913,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeCustom((ResponseField.CustomTypeField) $responseFields[1], id);
-          writer.writeString($responseFields[2], deprecated);
+          writer.writeCustom((ResponseField.CustomTypeField) $responseFields[0], id);
+          writer.writeString($responseFields[1], deprecated);
         }
       };
     }
@@ -934,7 +923,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "Friend2{"
-          + "__typename=" + __typename + ", "
           + "id=" + id + ", "
           + "deprecated=" + deprecated
           + "}";
@@ -949,8 +937,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Friend2) {
         Friend2 that = (Friend2) o;
-        return this.__typename.equals(that.__typename)
-         && this.id.equals(that.id)
+        return this.id.equals(that.id)
          && this.deprecated.equals(that.deprecated);
       }
       return false;
@@ -960,8 +947,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= id.hashCode();
         h *= 1000003;
@@ -975,10 +960,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<Friend2> {
       @Override
       public Friend2 map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final String id = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[1]);
-        final String deprecated = reader.readString($responseFields[2]);
-        return new Friend2(__typename, id, deprecated);
+        final String id = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[0]);
+        final String deprecated = reader.readString($responseFields[1]);
+        return new Friend2(id, deprecated);
       }
     }
   }

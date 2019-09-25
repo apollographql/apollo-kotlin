@@ -119,7 +119,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "4f3cddab484b815b0c6e7999f362c5585f16fcde1011110fc3ae068f71614072"
+        "51823dd7c6584662051842f506ebde40cbc80364ffb2cd64e700d504ef89bfa7"
 
     val QUERY_DOCUMENT: String = """
         |query TestQuery {
@@ -134,17 +134,13 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         |  __typename
         |  name
         |  friendsConnection {
-        |    __typename
         |    totalCount
         |    edges {
-        |      __typename
         |      node {
-        |        __typename
         |        name
         |      }
         |    }
         |    pageInfo {
-        |      __typename
         |      hasNextPage
         |    }
         |    isEmpty
