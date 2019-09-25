@@ -5,4 +5,8 @@ query TestQuery {
     # the last comment
     name
   }
+  hero {
+    id
+    name
+  }
 }
