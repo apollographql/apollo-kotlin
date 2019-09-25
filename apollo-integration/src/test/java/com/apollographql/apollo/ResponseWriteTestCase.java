@@ -335,7 +335,6 @@ public class ResponseWriteTestCase {
             assertThat(response.data().hero().fragments().heroWithFriendsFragment().friends()).hasSize(2);
             assertThat(response.data().hero().fragments().heroWithFriendsFragment().friends().get(0).fragments().humanWithIdFragment().id()).isEqualTo("1006");
             assertThat(response.data().hero().fragments().heroWithFriendsFragment().friends().get(0).fragments().humanWithIdFragment().name()).isEqualTo("SuperMan");
-            assertThat(response.data().hero().fragments().heroWithFriendsFragment().friends().get(1).fragments().humanWithIdFragment().__typename()).isEqualTo("Human");
             assertThat(response.data().hero().fragments().heroWithFriendsFragment().friends().get(1).fragments().humanWithIdFragment().id()).isEqualTo("1004");
             assertThat(response.data().hero().fragments().heroWithFriendsFragment().friends().get(1).fragments().humanWithIdFragment().name()).isEqualTo("Beast");
             return true;
@@ -431,17 +430,13 @@ public class ResponseWriteTestCase {
         new Predicate<Response<HeroAndFriendsWithFragmentsQuery.Data>>() {
           @Override public boolean test(Response<HeroAndFriendsWithFragmentsQuery.Data> response) throws Exception {
             assertThat(response.data().hero().__typename()).isEqualTo("Droid");
-            assertThat(response.data().hero().fragments().heroWithFriendsFragment().__typename()).isEqualTo("Droid");
             assertThat(response.data().hero().fragments().heroWithFriendsFragment().id()).isEqualTo("2001");
             assertThat(response.data().hero().fragments().heroWithFriendsFragment().name()).isEqualTo("R2-D2");
             assertThat(response.data().hero().fragments().heroWithFriendsFragment().friends()).hasSize(3);
-            assertThat(response.data().hero().fragments().heroWithFriendsFragment().friends().get(0).fragments().humanWithIdFragment().__typename()).isEqualTo("Human");
             assertThat(response.data().hero().fragments().heroWithFriendsFragment().friends().get(0).fragments().humanWithIdFragment().id()).isEqualTo("1000");
             assertThat(response.data().hero().fragments().heroWithFriendsFragment().friends().get(0).fragments().humanWithIdFragment().name()).isEqualTo("Luke Skywalker");
-            assertThat(response.data().hero().fragments().heroWithFriendsFragment().friends().get(1).fragments().humanWithIdFragment().__typename()).isEqualTo("Human");
             assertThat(response.data().hero().fragments().heroWithFriendsFragment().friends().get(1).fragments().humanWithIdFragment().id()).isEqualTo("1002");
             assertThat(response.data().hero().fragments().heroWithFriendsFragment().friends().get(1).fragments().humanWithIdFragment().name()).isEqualTo("Han Solo");
-            assertThat(response.data().hero().fragments().heroWithFriendsFragment().friends().get(2).fragments().humanWithIdFragment().__typename()).isEqualTo("Human");
             assertThat(response.data().hero().fragments().heroWithFriendsFragment().friends().get(2).fragments().humanWithIdFragment().id()).isEqualTo("1003");
             assertThat(response.data().hero().fragments().heroWithFriendsFragment().friends().get(2).fragments().humanWithIdFragment().name()).isEqualTo("Leia Organa");
             return true;
@@ -488,14 +483,11 @@ public class ResponseWriteTestCase {
         new Predicate<Response<HeroAndFriendsWithFragmentsQuery.Data>>() {
           @Override public boolean test(Response<HeroAndFriendsWithFragmentsQuery.Data> response) throws Exception {
             assertThat(response.data().hero().__typename()).isEqualTo("Droid");
-            assertThat(response.data().hero().fragments().heroWithFriendsFragment().__typename()).isEqualTo("Droid");
             assertThat(response.data().hero().fragments().heroWithFriendsFragment().id()).isEqualTo("2001");
             assertThat(response.data().hero().fragments().heroWithFriendsFragment().name()).isEqualTo("R222-D222");
             assertThat(response.data().hero().fragments().heroWithFriendsFragment().friends()).hasSize(2);
-            assertThat(response.data().hero().fragments().heroWithFriendsFragment().friends().get(0).fragments().humanWithIdFragment().__typename()).isEqualTo("Human");
             assertThat(response.data().hero().fragments().heroWithFriendsFragment().friends().get(0).fragments().humanWithIdFragment().id()).isEqualTo("1000");
             assertThat(response.data().hero().fragments().heroWithFriendsFragment().friends().get(0).fragments().humanWithIdFragment().name()).isEqualTo("SuperMan");
-            assertThat(response.data().hero().fragments().heroWithFriendsFragment().friends().get(1).fragments().humanWithIdFragment().__typename()).isEqualTo("Human");
             assertThat(response.data().hero().fragments().heroWithFriendsFragment().friends().get(1).fragments().humanWithIdFragment().id()).isEqualTo("1002");
             assertThat(response.data().hero().fragments().heroWithFriendsFragment().friends().get(1).fragments().humanWithIdFragment().name()).isEqualTo("Beast");
             return true;
