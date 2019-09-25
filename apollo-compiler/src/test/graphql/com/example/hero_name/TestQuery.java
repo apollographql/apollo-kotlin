@@ -15,6 +15,7 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.Utils;
+import com.example.hero_name.type.CustomType;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -24,11 +25,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "8b2daaf4bcd7b88157fe5d1ac7fb10e91a375f4d13ce1d049ed2bbc6cecf7431";
+  public static final String OPERATION_ID = "bc3371e1c1415a793a9d038c79756e72e552a5e1d27633ea47905f6a9c19f340";
 
   public static final String QUERY_DOCUMENT = "query TestQuery {\n"
       + "  hero {\n"
       + "    __typename\n"
+      + "    name\n"
+      + "  }\n"
+      + "  hero {\n"
+      + "    __typename\n"
+      + "    id\n"
       + "    name\n"
       + "  }\n"
       + "}";
@@ -173,12 +179,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static class Hero {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList())
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forCustomType("id", "id", null, false, CustomType.ID, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @NotNull String __typename;
 
     final @NotNull String name;
+
+    final @NotNull String id;
 
     private transient volatile String $toString;
 
@@ -186,9 +195,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Hero(@NotNull String __typename, @NotNull String name) {
+    public Hero(@NotNull String __typename, @NotNull String name, @NotNull String id) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.name = Utils.checkNotNull(name, "name == null");
+      this.id = Utils.checkNotNull(id, "id == null");
     }
 
     public @NotNull String __typename() {
@@ -202,6 +212,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.name;
     }
 
+    /**
+     * The ID of the character
+     */
+    public @NotNull String id() {
+      return this.id;
+    }
+
     @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
@@ -209,6 +226,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], name);
+          writer.writeCustom((ResponseField.CustomTypeField) $responseFields[2], id);
         }
       };
     }
@@ -218,7 +236,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if ($toString == null) {
         $toString = "Hero{"
           + "__typename=" + __typename + ", "
-          + "name=" + name
+          + "name=" + name + ", "
+          + "id=" + id
           + "}";
       }
       return $toString;
@@ -232,7 +251,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (o instanceof Hero) {
         Hero that = (Hero) o;
         return this.__typename.equals(that.__typename)
-         && this.name.equals(that.name);
+         && this.name.equals(that.name)
+         && this.id.equals(that.id);
       }
       return false;
     }
@@ -245,6 +265,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         h ^= __typename.hashCode();
         h *= 1000003;
         h ^= name.hashCode();
+        h *= 1000003;
+        h ^= id.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -256,7 +278,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       public Hero map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String name = reader.readString($responseFields[1]);
-        return new Hero(__typename, name);
+        final String id = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[2]);
+        return new Hero(__typename, name, id);
       }
     }
   }

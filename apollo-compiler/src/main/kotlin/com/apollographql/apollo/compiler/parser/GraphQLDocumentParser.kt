@@ -11,12 +11,6 @@ import java.io.File
 import java.io.IOException
 
 class GraphQLDocumentParser(val schema: Schema) {
-  private val typenameField = Field(
-      responseName = "__typename",
-      fieldName = "__typename",
-      type = "String!"
-  )
-
   fun parse(graphQLFiles: List<File>): CodeGenerationIR {
     val (operations, fragments, usedTypes) = graphQLFiles.fold(DocumentParseResult()) { acc, graphQLFile ->
       val result = graphQLFile.parse()
@@ -146,7 +140,7 @@ class GraphQLDocumentParser(val schema: Schema) {
         variables = variables.result,
         source = graphQLDocumentSource,
         sourceWithFragments = graphQLDocumentSource,
-        fields = fields.result.minus(typenameField),
+        fields = fields.result.filterNot { it.responseName == Field.TYPE_NAME_FIELD.responseName },
         fragmentsReferenced = emptyList(),
         filePath = graphQLFilePath,
         operationId = ""
@@ -208,9 +202,21 @@ class GraphQLDocumentParser(val schema: Schema) {
         ?.mapNotNull { ctx -> ctx.field()?.parse(schemaType) }
         ?.flatten()
         ?.let { (fields, usedTypes) ->
-          val withTypenameField = (hasFields || hasInlineFragments || hasFragments) && !fields.contains(typenameField)
+          val uniqueFields = fields.groupBy { it.responseName }.map { (_, fields) ->
+            fields.fold<Field, Field?>(null) { first, second ->
+              first?.merge(second) ?: second
+            }!!
+          }
           ParseResult(
-              result = (if (withTypenameField) listOf(typenameField) else emptyList()) + fields,
+              result = uniqueFields,
+              usedTypes = usedTypes
+          )
+        }
+        ?.let { (fields, usedTypes) ->
+          val withTypenameField = (hasFields || hasInlineFragments || hasFragments) &&
+              fields.find { it.responseName == Field.TYPE_NAME_FIELD.responseName } == null
+          ParseResult(
+              result = (if (withTypenameField) listOf(Field.TYPE_NAME_FIELD) else emptyList()) + fields,
               usedTypes = usedTypes
           )
         }
@@ -220,8 +226,8 @@ class GraphQLDocumentParser(val schema: Schema) {
   private fun GraphQLParser.FieldContext.parse(schemaType: Schema.Type): ParseResult<Field> {
     val responseName = fieldName().alias()?.NAME(0)?.text ?: fieldName().NAME().text
     val fieldName = fieldName().alias()?.NAME(1)?.text ?: fieldName().NAME().text
-    if (fieldName == typenameField.fieldName) {
-      return ParseResult(result = typenameField, usedTypes = emptySet())
+    if (responseName == Field.TYPE_NAME_FIELD.responseName) {
+      return ParseResult(result = Field.TYPE_NAME_FIELD, usedTypes = emptySet())
     }
     val schemaField = schemaType.lookupField(
         fieldName = fieldName,
@@ -243,12 +249,12 @@ class GraphQLDocumentParser(val schema: Schema) {
     val inlineFragmentFieldsToMerge = inlineFragments.result
         .filter { it.typeCondition == schemaFieldType.name }
         .flatMap { it.fields }
-        .filter { it != typenameField }
+        .filter { it.responseName != Field.TYPE_NAME_FIELD.responseName }
     val inlineFragmentSpreadFragmentsToMerge = inlineFragments.result
         .filter { it.typeCondition == schemaFieldType.name }
         .flatMap { it.fragmentSpreads ?: emptyList() }
 
-    val mergedFields = fields.result.mergeFields(other = inlineFragmentFieldsToMerge, parseContext = this)
+    val mergedFields = fields.result.mergeFields(others = inlineFragmentFieldsToMerge)
 
     val conditions = directives().parse()
     return ParseResult(
@@ -260,13 +266,16 @@ class GraphQLDocumentParser(val schema: Schema) {
             isConditional = conditions.isNotEmpty(),
             fields = mergedFields,
             fragmentSpreads = fragmentSpreads.union(inlineFragmentSpreadFragmentsToMerge).toList(),
-            inlineFragments = inlineFragments.result.filter { it.typeCondition != schemaFieldType.name }.map { it.copy(
-                fields = it.fields.mergeFields(other = mergedFields, parseContext = this)
-            ) },
+            inlineFragments = inlineFragments.result.filter { it.typeCondition != schemaFieldType.name }.map {
+              it.copy(
+                  fields = it.fields.mergeFields(others = mergedFields)
+              )
+            },
             description = schemaField.description?.trim(),
             isDeprecated = schemaField.isDeprecated,
             deprecationReason = schemaField.deprecationReason,
-            conditions = conditions
+            conditions = conditions,
+            sourceLocation = SourceLocation(start)
         ),
         usedTypes = setOf(schemaField.type.rawType.name!!)
             .union(arguments.usedTypes)
@@ -368,7 +377,8 @@ class GraphQLDocumentParser(val schema: Schema) {
             typeCondition = typeCondition,
             possibleTypes = possibleTypes,
             fields = fields.result,
-            fragmentSpreads = fragmentSpreads
+            fragmentSpreads = fragmentSpreads,
+            sourceLocation = SourceLocation(start)
         ),
         usedTypes = setOf(typeCondition).union(fields.usedTypes)
     )
@@ -415,7 +425,7 @@ class GraphQLDocumentParser(val schema: Schema) {
     val mergeInlineFragmentFields = inlineFragments.result
         .filter { it.typeCondition == typeCondition }
         .flatMap { it.fields }
-        .filter { it != typenameField }
+        .filter { it.responseName != Field.TYPE_NAME_FIELD.responseName }
     val mergeInlineFragmentSpreadFragments = inlineFragments.result
         .filter { it.typeCondition == typeCondition }
         .flatMap { it.fragmentSpreads ?: emptyList() }
@@ -426,10 +436,11 @@ class GraphQLDocumentParser(val schema: Schema) {
             typeCondition = typeCondition,
             source = graphQLDocumentSource,
             possibleTypes = possibleTypes,
-            fields = fields.result.mergeFields(other = mergeInlineFragmentFields, parseContext = this),
+            fields = fields.result.mergeFields(mergeInlineFragmentFields),
             fragmentSpreads = fragmentSpreads.union(mergeInlineFragmentSpreadFragments).toList(),
             inlineFragments = inlineFragments.result.filter { it.typeCondition != typeCondition },
-            filePath = graphQLFilePath
+            filePath = graphQLFilePath,
+            sourceLocation = SourceLocation(start)
         ),
         usedTypes = setOf(typeCondition)
             .union(fields.usedTypes)
@@ -595,54 +606,53 @@ class GraphQLDocumentParser(val schema: Schema) {
       usedTypes = flatMap { (_, usedTypes) -> usedTypes }.toSet()
   )
 
-  private fun List<Field>.mergeFields(other: List<Field>, parseContext: ParserRuleContext): List<Field> {
-    val mergeFieldMap = other.groupBy { otherField ->
-      find { field -> field.responseName == otherField.responseName }
+  private fun List<Field>.mergeFields(others: List<Field>): List<Field> {
+    val missingFields = others.filter { otherField ->
+      find { field -> field.responseName == otherField.responseName } == null
     }
     return map { field ->
-      field.merge(other = mergeFieldMap[field]?.firstOrNull(), parseContext = parseContext)
-    } + (mergeFieldMap[null] ?: emptyList())
+      val otherField = others.find { it.responseName == field.responseName }
+      if (otherField != null) {
+        field.merge(otherField)
+      } else {
+        field
+      }
+    } + missingFields
   }
 
-  private fun Field.merge(other: Field?, parseContext: ParserRuleContext): Field {
-    if (other == null) return this
-
+  private fun Field.merge(other: Field): Field {
     if (fieldName != other.fieldName) {
       throw ParseException(
           message = "Fields `$responseName` conflict because they have different schema names. Use different aliases on the fields.",
-          token = parseContext.start
+          sourceLocation = other.sourceLocation
       )
     }
 
     if (type != other.type) {
       throw ParseException(
           message = "Fields `$responseName` conflict because they have different schema types. Use different aliases on the fields.",
-          token = parseContext.start
+          sourceLocation = other.sourceLocation
       )
     }
 
     if (!(args ?: emptyList()).containsAll(other.args ?: emptyList())) {
       throw ParseException(
           message = "Fields `$responseName` conflict because they have different arguments. Use different aliases on the fields.",
-          token = parseContext.start
-      )
-    }
-
-    if (!(fields ?: emptyList()).containsAll(other.fields ?: emptyList())) {
-      throw ParseException(
-          message = "Fields `$responseName` conflict because they have different selection sets. Use different aliases on the fields.",
-          token = parseContext.start
+          sourceLocation = other.sourceLocation
       )
     }
 
     if (!(inlineFragments ?: emptyList()).containsAll(other.inlineFragments ?: emptyList())) {
       throw ParseException(
           message = "Fields `$responseName` conflict because they have different inline fragment. Use different aliases on the fields.",
-          token = parseContext.start
+          sourceLocation = other.sourceLocation
       )
     }
 
-    return copy(fragmentSpreads = (fragmentSpreads ?: emptyList()).union(other.fragmentSpreads ?: emptyList()).toList())
+    return copy(
+        fields = (fields ?: emptyList()).mergeFields(other.fields ?: emptyList()),
+        fragmentSpreads = (fragmentSpreads ?: emptyList()).union(other.fragmentSpreads ?: emptyList()).toList()
+    )
   }
 
   private fun List<Operation>.checkMultipleOperationDefinitions() {

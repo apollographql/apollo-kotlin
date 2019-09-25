@@ -4,7 +4,7 @@ data class Condition(
     val kind: String,
     val variableName: String,
     val inverted: Boolean,
-    val sourceLocation: SourceLocation = SourceLocation.UNKNOWN
+    val sourceLocation: SourceLocation
 ) {
 
   enum class Kind(val rawValue: String) {

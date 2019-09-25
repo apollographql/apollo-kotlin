@@ -16,7 +16,8 @@ data class Field(
     val description: String? = null,
     val isDeprecated: Boolean? = false,
     val deprecationReason: String? = null,
-    val conditions: List<Condition>? = null
+    val conditions: List<Condition>? = null,
+    val sourceLocation: SourceLocation
 ) : CodeGenerator {
 
   override fun toTypeSpec(context: CodeGenerationContext, abstract: Boolean): TypeSpec {
@@ -157,6 +158,11 @@ data class Field(
   }
 
   companion object {
-    val TYPE_NAME_FIELD = Field(responseName = "__typename", fieldName = "__typename", type = "String!")
+    val TYPE_NAME_FIELD = Field(
+        responseName = "__typename",
+        fieldName = "__typename",
+        type = "String!",
+        sourceLocation = SourceLocation.UNKNOWN
+    )
   }
 }
