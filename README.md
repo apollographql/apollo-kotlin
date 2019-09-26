@@ -705,7 +705,7 @@ buildscript {
 }
 ```
 
-You might have to change your configuration block, especially if you're using `outputPackageName` and/or `exclude` options:
+You might have to change your configuration block, especially if you're using `outputPackageName` and/or `exclude` options. The apollo configuration now looks like:
 
 ```groovy
 apollo {
@@ -776,6 +776,8 @@ apollo {
   }
 }
 ```
+
+The incubating plugin will replace the existing plugin in a future verison.
 
 ## License
 
