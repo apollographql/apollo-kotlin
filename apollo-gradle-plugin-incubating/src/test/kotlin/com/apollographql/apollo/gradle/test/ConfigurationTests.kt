@@ -260,7 +260,7 @@ class ConfigurationTests {
       val result = TestUtils.executeTask("generateApolloClasses", dir)
 
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloClasses")!!.outcome)
-      val transformedQuery = dir.child("build", "generated", "apollo", "transformedQueries", "main", "service0", "com", "example", "DroidDetails.graphql")
+      val transformedQuery = dir.child("build", "generated", "transformedQueries", "apollo", "main", "service0", "com", "example", "DroidDetails.graphql")
       assertThat(transformedQuery.readText(), containsString("__typename"))
     }
   }

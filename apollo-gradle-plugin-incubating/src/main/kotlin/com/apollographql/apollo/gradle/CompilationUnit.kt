@@ -16,8 +16,8 @@ class CompilationUnit(
         project: Project
 ) {
     val name = "${variantName}${serviceName}"
-    val outputDir = project.buildDir.child("generated", "apollo", "classes", variantName, serviceName)
-    val transformedQueriesDir = project.buildDir.child("generated", "apollo", "transformedQueries", variantName, serviceName)
+    val outputDir = project.buildDir.child("generated", "source", "apollo", "classes", variantName, serviceName)
+    val transformedQueriesDir = project.buildDir.child("generated", "transformedQueries", "apollo", variantName, serviceName)
 
     companion object {
         fun from(project: Project, apolloVariant: ApolloVariant, service: Service): CompilationUnit {

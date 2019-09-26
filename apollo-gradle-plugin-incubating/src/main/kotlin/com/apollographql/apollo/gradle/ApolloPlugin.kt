@@ -188,7 +188,7 @@ open class ApolloPlugin : Plugin<Project> {
 
       it.source(compilationUnit.files)
       if (compilationUnit.schemaFile != null) {
-        it.source(compilationUnit.files)
+        it.source(compilationUnit.schemaFile)
       }
 
       it.graphqlFiles = compilationUnit.files

@@ -1,11 +1,16 @@
 package com.apollographql.apollo.gradle.test
 
+import com.apollographql.apollo.compiler.child
 import com.apollographql.apollo.gradle.util.TestUtils
+import com.apollographql.apollo.gradle.util.TestUtils.fileContains
 import com.apollographql.apollo.gradle.util.TestUtils.withSimpleProject
 import com.apollographql.apollo.gradle.util.generatedChild
+import com.apollographql.apollo.gradle.util.replaceInText
 import org.gradle.testkit.runner.TaskOutcome
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.CoreMatchers.not
+import org.junit.Assert.*
 import org.junit.Test
 import java.io.File
 
@@ -67,5 +72,38 @@ class UpToDateTests {
 
     val text = File(dir, "build.gradle").readText()
     File(dir, "build.gradle").writeText(text.replace(apolloBlock, ""))
+  }
+
+  @Test
+  fun `change graphql file rebuilds the sources`() {
+    withSimpleProject { dir ->
+      var result = TestUtils.executeTask("generateApolloClasses", dir, "-i")
+
+      assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloClasses")!!.outcome)
+      assertThat(dir.generatedChild("main/service0/com/example/DroidDetailsQuery.java").readText(), containsString("classification"))
+
+      dir.child("src", "main", "graphql", "com", "example", "DroidDetails.graphql").replaceInText("classification", "")
+
+      result = TestUtils.executeTask("generateApolloClasses", dir, "-i")
+
+      assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloClasses")!!.outcome)
+      assertThat(dir.generatedChild("main/service0/com/example/DroidDetailsQuery.java").readText(), not(containsString("classification")))
+    }
+  }
+
+  @Test
+  fun `change schema file rebuilds the sources`() {
+    withSimpleProject { dir ->
+      var result = TestUtils.executeTask("generateApolloClasses", dir, "-i")
+
+      assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloClasses")!!.outcome)
+
+      val schemaFile = dir.child("src", "main", "graphql", "com", "example", "schema.json")
+      schemaFile.writeText(schemaFile.readText() + "fezfze\n\n")
+
+      result = TestUtils.executeTask("generateApolloClasses", dir, "-i")
+
+      assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloClasses")!!.outcome)
+    }
   }
 }
