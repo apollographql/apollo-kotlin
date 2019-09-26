@@ -1,5 +1,5 @@
 
-# Apollo GraphQL Client for Android
+# Apollo GraphQL Client for Android and the JVM
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg?maxAge=2592000)](https://raw.githubusercontent.com/apollographql/apollo-android/master/LICENSE) [![Get on Slack](https://img.shields.io/badge/slack-join-orange.svg)](http://www.apollostack.com/#slack)
 [![Build status](https://travis-ci.org/apollographql/apollo-android.svg?branch=master)](https://travis-ci.org/apollographql/apollo-android)
@@ -28,6 +28,7 @@ Apollo-Android is designed primarily with Android in mind but you can use it in 
   - [Explicit Schema location](#explicit-schema-location)
   - [Kotlin model generation (experimental)](#kotlin-model-generation-experimental)
   - [Transformed queries](#transformed-queries)
+  - [Incubating plugin](#incubating-plugin)
 - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update --> 
@@ -680,6 +681,99 @@ When Apollo-Android executes your queries, the actual queries sent to the server
 ```groovy
 apollo {
   generateTransformedQueries = true
+}
+```
+
+## Incubating plugin
+The incubating plugin is available in the SNAPSHOTS starting with version 1.2.0-SNAPSHOT.
+Compared to the current plugin, it:
+* is 100% written in kotlin for autocompletion and compile-time type safety.
+* has a notion of `service` for declaring multiple schemas and their graphql files.
+* replaces `outputPackageName` with `rootPackageName` so that the package hierarchy is not flattened. ([issue](https://github.com/apollographql/apollo-android/issues/1367))
+* adds a `downloadXYZSchema` to automatically update the schema.json. ([issue](https://github.com/apollographql/apollo-android/issues/1516))
+
+To test it, change the artifact from `apollo-gradle-plugin` to `apollo-gradle-plugin-incubating`:
+
+```groovy
+buildscript {
+  repositories {
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+  }
+  dependencies {
+    classpath 'com.apollographql.apollo:apollo-gradle-plugin-incubating:1.2.0-SNAPSHOT'
+  }
+}
+```
+
+You might have to change your configuration block, especially if you're using `outputPackageName` and/or `exclude` options:
+
+```groovy
+apollo {
+  generateKotlinModels = true
+  customTypeMapping = ["DateTime": "java.util.Date"]
+  // useSemanticNaming and other root options do not change
+  // ...
+
+  /**
+   * Use a service to define a schema and associated graphql files.
+   * You can omit this block alltogether and the plugin will default to the found schema.json and .graphql files.
+   * You need to define it if you want to configure it more.
+   */
+  service("starwars") {
+    /**
+     * schemaFilePath is the path to the schema.json file relative to the current project directory.
+     * schemaFilePath can point outside of src/{variant}/graphql but in that case, you'll want
+     * to define `rootPackageName` else fragments/types will be stored at the root of the namespace.
+     * By default, the plugin will look for a schema.json file in src/{variant}/graphql
+     * This parameter is mandatory.
+     */
+    schemaFilePath = "src/main/graphql/com/starwars/schema.json"
+
+    /**
+     * sourceFolderPath is the path to the folder where graphql files are searched.
+     * sourceFolderPath is relative to the current sourceSet (e.g src/{variant}/graphql/{sourceFolderPath})
+     * By default, this is the directory where the schema.json is stored or "." if the schema is outside e.g. src/{variant}/graphql.
+     * You need to define this if you have two or more services whose schema is stored outside src/{variant}/graphql.
+     * If not, you can certainly omit it.
+     * This parameter is optional.
+     */
+    sourceFolderPath = "com/starwars"
+
+    /**
+     * list of pattern of files to exclude as in PatternFilterable.
+     * This parameter is optional.
+     */
+    exclude = []
+
+    /**
+     * The introspection block is used to add a `downloadXYZApolloSchema` task to update your schema.json easily
+     * This block is optional.
+     */
+    introspection {
+      /**
+       * the HTTP enpoint of your graphql service.
+       */
+      endpointUrl = "https://api.example.com/graphql"
+
+      /**
+       * Extra query parameters needed by your service
+       */
+      queryParameters = []
+
+      /**
+       * Extra headers needed by your service
+       */
+      headers = []
+    }
+  }
+
+  /**
+   * There can be any number of services
+   */
+  service("githunt") {
+    schemaFilePath = "src/main/graphql/com/githunt/schema.json"
+    // etc..
+  }
 }
 ```
 
