@@ -75,7 +75,7 @@ class ServiceVariant(
             val sourceFolderPath = entry.value.canonicalPath.relativePathToGraphql(dropLast = 1)!!
             val files = findFilesInSourceSets(project, sourceSetNames, sourceFolderPath, ::isGraphQL).values.toList()
 
-            val name = (i++).toString()//entry.key.split(File.separator).map { it.capitalize() }.joinToString("")
+            val name = "service${i++}"
 
             ServiceVariant(
                 name = name,
