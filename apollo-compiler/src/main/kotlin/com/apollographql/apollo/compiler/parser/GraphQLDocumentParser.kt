@@ -202,13 +202,13 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
         ?.mapNotNull { ctx -> ctx.field()?.parse(schemaType) }
         ?.flatten()
         ?.let { (fields, usedTypes) ->
-          val uniqueFields = fields.groupBy { it.responseName }.map { (_, fields) ->
+          val reconciledFields = fields.groupBy { it.responseName }.map { (_, fields) ->
             fields.fold<Field, Field?>(null) { first, second ->
               first?.merge(second) ?: second
             }!!
           }
           ParseResult(
-              result = uniqueFields,
+              result = reconciledFields,
               usedTypes = usedTypes
           )
         }
@@ -606,54 +606,6 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
       usedTypes = flatMap { (_, usedTypes) -> usedTypes }.toSet()
   )
 
-  private fun List<Field>.mergeFields(others: List<Field>): List<Field> {
-    val missingFields = others.filter { otherField ->
-      find { field -> field.responseName == otherField.responseName } == null
-    }
-    return map { field ->
-      val otherField = others.find { it.responseName == field.responseName }
-      if (otherField != null) {
-        field.merge(otherField)
-      } else {
-        field
-      }
-    } + missingFields
-  }
-
-  private fun Field.merge(other: Field): Field {
-    if (fieldName != other.fieldName) {
-      throw ParseException(
-          message = "Fields `$responseName` conflict because they have different schema names. Use different aliases on the fields.",
-          sourceLocation = other.sourceLocation
-      )
-    }
-
-    if (type != other.type) {
-      throw ParseException(
-          message = "Fields `$responseName` conflict because they have different schema types. Use different aliases on the fields.",
-          sourceLocation = other.sourceLocation
-      )
-    }
-
-    if (!args.containsAll(other.args)) {
-      throw ParseException(
-          message = "Fields `$responseName` conflict because they have different arguments. Use different aliases on the fields.",
-          sourceLocation = other.sourceLocation
-      )
-    }
-
-    if (!inlineFragments.containsAll(other.inlineFragments)) {
-      throw ParseException(
-          message = "Fields `$responseName` conflict because they have different inline fragment. Use different aliases on the fields.",
-          sourceLocation = other.sourceLocation
-      )
-    }
-
-    return copy(
-        fields = fields.mergeFields(other.fields),
-        fragmentSpreads = (fragmentSpreads).union(other.fragmentSpreads).toList()
-    )
-  }
 
   private fun List<Operation>.checkMultipleOperationDefinitions() {
     groupBy { packageNameProvider.operationPackageName(it.filePath) + it.operationName }
@@ -844,7 +796,6 @@ private operator fun SourceLocation.Companion.invoke(token: Token) = SourceLocat
     position = token.charPositionInLine
 )
 
-
 class ParseException(message: String, val sourceLocation: SourceLocation) : RuntimeException(message) {
   companion object {
     operator fun invoke(message: String, token: Token) = ParseException(
@@ -877,8 +828,7 @@ class GraphQLDocumentParseException(
       }
 
       val documentLines = document.lines()
-      return "\nFailed to parse GraphQL file $graphQLFilePath (${parseException.sourceLocation.line}:" +
-          "${parseException.sourceLocation.position})\n${parseException.message}" +
+      return "\nFailed to parse GraphQL file $graphQLFilePath ${parseException.sourceLocation}\n${parseException.message}" +
           "\n----------------------------------------------------\n" +
           parseException.let { error ->
             val prefix = if (error.sourceLocation.line - 2 >= 0) {
