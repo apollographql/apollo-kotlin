@@ -9,18 +9,6 @@ import java.util.regex.Pattern
  * The singularization methods were heavily based off rogueweb <link> https://code.google.com/archive/p/rogueweb/source</link>
  */
 
-fun String.formatPackageName(dropLast: Boolean = true): String {
-  val parts = split(File.separatorChar)
-  (parts.size - 1 downTo 2)
-      .filter { parts[it - 2] == "src" && parts[it] == "graphql" }
-      .forEach {
-        return parts.subList(it + 1, parts.size).let { parts ->
-          if (dropLast) parts.dropLast(1) else parts
-        }.joinToString(".")
-      }
-  throw IllegalArgumentException("Files must be organized like src/main/graphql/...")
-}
-
 fun String.singularize(): String {
   if (uncountable.contains(this.toLowerCase())) return this
 

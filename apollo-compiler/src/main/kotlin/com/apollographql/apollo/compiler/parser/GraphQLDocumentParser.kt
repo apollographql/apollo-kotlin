@@ -1,6 +1,6 @@
 package com.apollographql.apollo.compiler.parser
 
-import com.apollographql.apollo.compiler.formatPackageName
+import com.apollographql.apollo.compiler.PackageNameProvider
 import com.apollographql.apollo.compiler.ir.*
 import com.apollographql.apollo.compiler.parser.GraphQLDocumentSourceBuilder.graphQLDocumentSource
 import com.apollographql.apollo.compiler.parser.antlr.GraphQLLexer
@@ -10,7 +10,7 @@ import org.antlr.v4.runtime.atn.PredictionMode
 import java.io.File
 import java.io.IOException
 
-class GraphQLDocumentParser(val schema: Schema) {
+class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider: PackageNameProvider) {
   fun parse(graphQLFiles: List<File>): CodeGenerationIR {
     val (operations, fragments, usedTypes) = graphQLFiles.fold(DocumentParseResult()) { acc, graphQLFile ->
       val result = graphQLFile.parse()
@@ -656,7 +656,7 @@ class GraphQLDocumentParser(val schema: Schema) {
   }
 
   private fun List<Operation>.checkMultipleOperationDefinitions() {
-    groupBy { it.filePath.formatPackageName(dropLast = true) + it.operationName }
+    groupBy { packageNameProvider.operationPackageName(it.filePath) + it.operationName }
         .values
         .find { it.size > 1 }
         ?.last()

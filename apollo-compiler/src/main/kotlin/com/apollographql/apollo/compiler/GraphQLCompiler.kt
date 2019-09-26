@@ -11,18 +11,11 @@ import java.io.File
 class GraphQLCompiler {
   fun write(args: Arguments) {
     val ir = args.ir
-    val irPackageName = args.irPackageName
-    val packageNameProvider = PackageNameProvider(
-        rootPackageName = null,
-        rootDir = null,
-        irPackageName = irPackageName,
-        outputPackageName = args.outputPackageName
-    )
     val customTypeMap = args.customTypeMap.supportedTypeMap(ir.typesUsed)
     val context = CodeGenerationContext(
         reservedTypeNames = emptyList(),
         typeDeclarations = ir.typesUsed,
-        packageNameProvider = packageNameProvider,
+        packageNameProvider = args.packageNameProvider,
         customTypeMap = customTypeMap,
         nullableValueType = args.nullableValueType,
         ir = ir,
@@ -33,8 +26,8 @@ class GraphQLCompiler {
         generateVisitorForPolymorphicDatatypes = args.generateVisitorForPolymorphicDatatypes
     )
 
-    if (irPackageName.isNotEmpty()) {
-      File(args.outputDir, irPackageName.replace('.', File.separatorChar)).deleteRecursively()
+    if (args.packageNameProvider.schemaPackageName.isNotBlank()) {
+      File(args.outputDir, args.packageNameProvider.schemaPackageName.replace('.', File.separatorChar)).deleteRecursively()
     }
 
     if (args.generateKotlinModels) {
@@ -42,7 +35,7 @@ class GraphQLCompiler {
           ir = ir,
           customTypeMap = args.customTypeMap,
           useSemanticNaming = args.useSemanticNaming,
-          packageNameProvider = packageNameProvider
+          packageNameProvider = args.packageNameProvider
       ).write(args.outputDir)
     } else {
       ir.writeJavaFiles(
@@ -56,7 +49,7 @@ class GraphQLCompiler {
         transformedQueriesOutputDir.deleteRecursively()
       }
       val transformedQueryOutput = TransformedQueryOutput(
-          packageNameProvider
+          args.packageNameProvider
       )
       transformedQueryOutput.apply { visit(ir.operations) }.writeTo(transformedQueriesOutputDir)
     }
@@ -66,7 +59,7 @@ class GraphQLCompiler {
     fragments.forEach {
       val typeSpec = it.toTypeSpec(context.copy())
       JavaFile
-          .builder(context.packageNameProvider.fragmentsPackageName(), typeSpec)
+          .builder(context.packageNameProvider.fragmentsPackageName, typeSpec)
           .addFileComment(AUTO_GENERATED_FILE)
           .build()
           .writeTo(outputDir)
@@ -75,7 +68,7 @@ class GraphQLCompiler {
     typesUsed.supportedTypeDeclarations().forEach {
       val typeSpec = it.toTypeSpec(context.copy())
       JavaFile
-          .builder(context.packageNameProvider.typesPackageName(), typeSpec)
+          .builder(context.packageNameProvider.typesPackageName, typeSpec)
           .addFileComment(AUTO_GENERATED_FILE)
           .build()
           .writeTo(outputDir)
@@ -84,7 +77,7 @@ class GraphQLCompiler {
     if (context.customTypeMap.isNotEmpty()) {
       val typeSpec = CustomEnumTypeSpecBuilder(context.copy()).build()
       JavaFile
-          .builder(context.packageNameProvider.typesPackageName(), typeSpec)
+          .builder(context.packageNameProvider.typesPackageName, typeSpec)
           .addFileComment(AUTO_GENERATED_FILE)
           .build()
           .writeTo(outputDir)
@@ -120,22 +113,26 @@ class GraphQLCompiler {
     val OUTPUT_DIRECTORY = listOf("generated", "source", "apollo", "classes")
     @JvmField
     val TRANSFORMED_QUERIES_OUTPUT_DIRECTORY = listOf("generated", "apollo", "transformedQueries")
-    const val APOLLOCODEGEN_VERSION = "0.19.1"
   }
 
   data class Arguments(
       val ir: CodeGenerationIR,
       val outputDir: File,
       val customTypeMap: Map<String, String>,
-      val nullableValueType: NullableValueType,
       val useSemanticNaming: Boolean,
-      val generateModelBuilder: Boolean,
-      val useJavaBeansSemanticNaming: Boolean,
-      val irPackageName: String,
-      val outputPackageName: String?,
-      val suppressRawTypesWarning: Boolean,
+      val packageNameProvider: PackageNameProvider,
       val generateKotlinModels: Boolean = false,
-      val generateVisitorForPolymorphicDatatypes: Boolean = false,
-      val transformedQueriesOutputDir: File? = null
+      val transformedQueriesOutputDir: File? = null,
+
+      // only if generateKotlinModels = false
+      val nullableValueType: NullableValueType,
+      // only if generateKotlinModels = false
+      val generateModelBuilder: Boolean,
+      // only if generateKotlinModels = false
+      val useJavaBeansSemanticNaming: Boolean,
+      // only if generateKotlinModels = false
+      val suppressRawTypesWarning: Boolean,
+      // only if generateKotlinModels = false
+      val generateVisitorForPolymorphicDatatypes: Boolean = false
   )
 }

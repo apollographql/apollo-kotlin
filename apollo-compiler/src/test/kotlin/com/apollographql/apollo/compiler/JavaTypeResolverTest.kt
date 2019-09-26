@@ -10,10 +10,9 @@ import java.util.*
 
 class JavaTypeResolverTest {
   private val packageNameProvider = PackageNameProvider(
-      rootPackageName = null,
-      rootDir = null,
+      rootPackageName = "",
       outputPackageName = null,
-      irPackageName = ""
+      schemaPackageName = ""
   )
   private val defaultContext = CodeGenerationContext(
       reservedTypeNames = emptyList(),
