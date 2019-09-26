@@ -62,7 +62,7 @@ private val ObjectType.companionObjectSpec: TypeSpec
   get() {
     return TypeSpec.companionObjectBuilder()
         .addProperty(responseFieldsPropertySpec(fields))
-        .addFunction(fields.toMapperFun(ClassName.bestGuess(className)))
+        .addFunction(fields.toMapperFun(ClassName(packageName = "", simpleName = className)))
         .build()
   }
 

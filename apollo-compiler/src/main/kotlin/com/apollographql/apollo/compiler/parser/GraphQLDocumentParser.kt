@@ -162,10 +162,56 @@ class GraphQLDocumentParser(val schema: Schema) {
           token = start
       )
     }
-    return schema[operationRoot] ?: throw ParseException(
+
+    val schemaType = schema[operationRoot] ?: throw ParseException(
         message = "Can't resolve root for `$text` operation type",
         token = start
     )
+
+    return if (operationRoot == schema.queryType && schemaType is Schema.Type.Object) {
+      val schemaField = Schema.Field(
+          name = "__schema",
+          description = null,
+          deprecationReason = null,
+          type = Schema.TypeRef(
+              kind = Schema.Kind.NON_NULL,
+              name = null,
+              ofType = Schema.TypeRef(
+                  kind = Schema.Kind.OBJECT,
+                  name = "__Schema",
+                  ofType = null
+              )
+          )
+      )
+      val typeField = Schema.Field(
+          name = "__type",
+          description = null,
+          deprecationReason = null,
+          type = Schema.TypeRef(
+              kind = Schema.Kind.OBJECT,
+              name = "__Type",
+              ofType = null
+          ),
+          args = listOf(Schema.Field.Argument(
+              name = "name",
+              description = null,
+              deprecationReason = null,
+              type = Schema.TypeRef(
+                  kind = Schema.Kind.NON_NULL,
+                  name = null,
+                  ofType = Schema.TypeRef(
+                      kind = Schema.Kind.SCALAR,
+                      name = "String",
+                      ofType = null
+                  )
+              ),
+              defaultValue = null
+          ))
+      )
+      schemaType.copy(fields = schemaType.fields?.plus(schemaField)?.plus(typeField))
+    } else {
+      schemaType
+    }
   }
 
   private fun GraphQLParser.VariableDefinitionsContext?.parse(): ParseResult<List<Variable>> {

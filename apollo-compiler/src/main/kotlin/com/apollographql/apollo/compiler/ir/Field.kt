@@ -26,8 +26,8 @@ data class Field(
         typeName = formatClassName(),
         schemaType = type,
         fields = fields,
-        fragmentSpreads = fragmentSpreads ?: emptyList(),
-        inlineFragments = inlineFragments ?: emptyList(),
+        fragmentSpreads = fragmentSpreads,
+        inlineFragments = inlineFragments,
         context = context,
         abstract = abstract
     )
@@ -98,7 +98,13 @@ data class Field(
         .build()
   }
 
-  fun formatClassName() = responseName.let { if (isList()) it.singularize() else it }.capitalize()
+  fun formatClassName() = responseName.let { if (isList()) it.singularize() else it }.let { originalClassName ->
+    var className = originalClassName
+    while (className.first() == '_') {
+      className = className.removeRange(0, 1)
+    }
+    "_".repeat(originalClassName.length - className.length) + className.capitalize()
+  }
 
   fun isOptional(): Boolean = isConditional || !methodResponseType().endsWith("!") || inlineFragments.isNotEmpty()
 

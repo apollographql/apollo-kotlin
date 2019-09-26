@@ -26,7 +26,7 @@ internal class Context(
   val objectTypes: Map<TypeRef, ObjectType> = objectTypeContainer
 
   fun addObjectType(typeName: String, packageName: String = "",
-      provideObjectType: (TypeRef) -> ObjectType): TypeRef {
+                    provideObjectType: (TypeRef) -> ObjectType): TypeRef {
     val uniqueTypeRef = (reservedObjectTypeRefs).generateUniqueTypeRef(
         typeName = typeName.let { if (it != "Data") it.singularize() else it },
         packageName = packageName
@@ -66,7 +66,13 @@ internal fun Context.registerObjectType(
           isOptional = { typeCondition != schemaType.removeSuffix("!") }
       )
 
-  val normalizedClassName = type.removeSuffix("!").capitalize().escapeKotlinReservedWord()
+  val normalizedClassName = type.removeSuffix("!").escapeKotlinReservedWord().let { originalClassName ->
+    var className = originalClassName
+    while (className.first() == '_') {
+      className = className.removeRange(0, 1)
+    }
+    "_".repeat(originalClassName.length - className.length) + className.capitalize()
+  }
   return addObjectType(normalizedClassName) { typeRef ->
     ObjectType.Object(
         className = typeRef.name,
