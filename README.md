@@ -688,7 +688,7 @@ apollo {
 The incubating plugin is available in the SNAPSHOTS starting with version 1.2.0-SNAPSHOT.
 Compared to the current plugin, it:
 * is 100% written in Kotlin for autocompletion and compile-time type safety.
-* has a notion of `service` for declaring multiple schemas and their graphql files.
+* has a notion of `service` for declaring multiple schemas and their GraphQL files.
 * replaces `outputPackageName` with `rootPackageName` so that the package hierarchy is not flattened. ([issue](https://github.com/apollographql/apollo-android/issues/1367))
 * adds a `downloadXYZSchema` to automatically update the schema.json. ([issue](https://github.com/apollographql/apollo-android/issues/1516))
 
@@ -751,7 +751,7 @@ apollo {
      */
     introspection {
       /**
-       * the HTTP enpoint of your graphql service.
+       * the HTTP endpoint of your GraphQL service.
        */
       endpointUrl = "https://api.example.com/graphql"
 
