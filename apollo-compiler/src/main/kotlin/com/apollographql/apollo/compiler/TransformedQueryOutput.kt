@@ -13,7 +13,7 @@ internal class TransformedQueryOutput(
       val targetPackage = packageNameProvider.operationPackageName(operation.filePath)
       TransformedQuery(
           queryName = operation.operationName,
-          queryDocument = operation.sourceWithFragments!!,
+          queryDocument = operation.source,
           packageName = targetPackage
       )
     }
