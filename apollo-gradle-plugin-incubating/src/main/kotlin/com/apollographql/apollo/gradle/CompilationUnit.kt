@@ -6,140 +6,143 @@ import org.gradle.api.tasks.util.PatternSet
 import java.io.File
 
 class CompilationUnit(
-    val serviceName: String,
-    val files: List<File>,
-    val schemaFile: File?,
-    val schemaPackageName: String,
-    val rootPackageName: String,
-    val outputDir: File,
-    val transformedQueriesDir: File,
-    val androidVariant: Any?
+        val serviceName: String,
+        val variantName: String,
+        val files: List<File>,
+        val schemaFile: File?,
+        val schemaPackageName: String,
+        val rootPackageName: String,
+        val androidVariant: Any?,
+        project: Project
 ) {
+    val name = "${variantName}${serviceName}"
+    val outputDir = project.buildDir.child("generated", "apollo", "classes", variantName, serviceName)
+    val transformedQueriesDir = project.buildDir.child("generated", "apollo", "transformedQueries", variantName, serviceName)
 
-  companion object {
-    fun from(project: Project, apolloVariant: ApolloVariant, service: Service): CompilationUnit {
-      val sourceSetNames = apolloVariant.sourceSetNames
+    companion object {
+        fun from(project: Project, apolloVariant: ApolloVariant, service: Service): CompilationUnit {
+            val sourceSetNames = apolloVariant.sourceSetNames
 
-      val schemaFilePath = service.schemaFilePath
-      if (schemaFilePath == null) {
-        throw IllegalArgumentException("Please define schemaFilePath for service '${service.name}'")
-      }
+            val schemaFilePath = service.schemaFilePath
+            if (schemaFilePath == null) {
+                throw IllegalArgumentException("Please define schemaFilePath for service '${service.name}'")
+            }
 
-      var schemaFile = project.projectDir.child(schemaFilePath)
-      if (!schemaFile.isFile) {
-        throw IllegalArgumentException("No schema found at:\n${schemaFile.absolutePath}")
-      }
-      val schemaKey = schemaFile.canonicalPath.relativePathToGraphql()
-      if (schemaKey != null) {
-        // schema is under src/{foo}/graphql, see if it is overriden by anoter variant
-        val schemaCandidates = findFilesInSourceSets(project, sourceSetNames, schemaKey) { true }
-        schemaFile = schemaCandidates.values.first()
-      }
+            var schemaFile = project.projectDir.child(schemaFilePath)
+            if (!schemaFile.isFile) {
+                throw IllegalArgumentException("No schema found at:\n${schemaFile.absolutePath}")
+            }
+            val schemaKey = schemaFile.canonicalPath.relativePathToGraphql()
+            if (schemaKey != null) {
+                // schema is under src/{foo}/graphql, see if it is overriden by anoter variant
+                val schemaCandidates = findFilesInSourceSets(project, sourceSetNames, schemaKey) { true }
+                schemaFile = schemaCandidates.values.first()
+            }
 
-      val sourceFolderPath = if (service.sourceFolderPath != null) {
-        service.sourceFolderPath!!
-      } else {
-        // if schemaFilePath is outside src/{foo}/graphql, search the whole graphql folder
-        schemaFile.canonicalPath.relativePathToGraphql(dropLast = 1) ?: "."
-      }
+            val sourceFolderPath = if (service.sourceFolderPath != null) {
+                service.sourceFolderPath!!
+            } else {
+                // if schemaFilePath is outside src/{foo}/graphql, search the whole graphql folder
+                schemaFile.canonicalPath.relativePathToGraphql(dropLast = 1) ?: "."
+            }
 
-      val candidateFiles = findFilesInSourceSets(project, sourceSetNames, sourceFolderPath, ::isGraphQL).values.toList()
+            val candidateFiles = findFilesInSourceSets(project, sourceSetNames, sourceFolderPath, ::isGraphQL).values.toList()
 
-      val files = if (service.exclude != null) {
-        val patternSet = PatternSet()
-        patternSet.exclude(service.exclude!!)
-        project.files(candidateFiles).asFileTree.matching(patternSet).toList()
-      } else {
-        candidateFiles
-      }
+            val files = if (service.exclude != null) {
+                val patternSet = PatternSet()
+                patternSet.exclude(service.exclude!!)
+                project.files(candidateFiles).asFileTree.matching(patternSet).toList()
+            } else {
+                candidateFiles
+            }
 
-      val schemaPackageName = schemaFile.canonicalPath.formatPackageName(dropLast = 1) ?: ""
+            val schemaPackageName = schemaFile.canonicalPath.formatPackageName(dropLast = 1) ?: ""
 
-      return CompilationUnit(
-          serviceName = service.name,
-          files = files,
-          schemaFile = schemaFile,
-          schemaPackageName = schemaPackageName,
-          rootPackageName = service.rootPackageName ?: "",
-          transformedQueriesDir = project.buildDir.child("generated", "apollo", "transformedQueries", apolloVariant.name, service.name),
-          outputDir = project.buildDir.child("generated", "apollo", "classes", apolloVariant.name, service.name),
-          androidVariant = apolloVariant.androidVariant
-      )
-    }
-
-    fun default(project: Project, apolloVariant: ApolloVariant): List<CompilationUnit> {
-      val sourceSetNames = apolloVariant.sourceSetNames
-      val schemaFiles = findFilesInSourceSets(project, sourceSetNames, ".") {
-        it.name == "schema.json"
-      }
-
-      if (schemaFiles.isEmpty()) {
-        return emptyList()
-      }
-
-      var i = 0
-      val services = schemaFiles.entries
-          .sortedBy { it.value.canonicalPath } // make sure the order is predicable for tests
-          .map { entry ->
-            val sourceFolderPath = entry.value.canonicalPath.relativePathToGraphql(dropLast = 1)!!
-            val files = findFilesInSourceSets(project, sourceSetNames, sourceFolderPath, ::isGraphQL).values.toList()
-
-            val name = "service${i++}"
-
-            CompilationUnit(
-                serviceName = name,
-                files = files,
-                schemaFile = entry.value,
-                schemaPackageName = entry.value.canonicalPath.formatPackageName(dropLast = 1)!!,
-                rootPackageName = "",
-                transformedQueriesDir = project.buildDir.child("generated", "apollo", "transformedQueries", name, name),
-                outputDir = project.buildDir.child("generated", "apollo", "classes", apolloVariant.name, name),
-                androidVariant = apolloVariant.androidVariant
+            return CompilationUnit(
+                    serviceName = service.name,
+                    variantName = apolloVariant.name,
+                    files = files,
+                    schemaFile = schemaFile,
+                    schemaPackageName = schemaPackageName,
+                    rootPackageName = service.rootPackageName ?: "",
+                    androidVariant = apolloVariant.androidVariant,
+                    project = project
             )
-          }
-
-      return services
-    }
-
-    fun isGraphQL(file: File): Boolean {
-      return file.name.endsWith(".graphql") || file.name.endsWith(".gql")
-    }
-
-    /**
-     * Finds the files in the given sourceSets taking into account their precedence according to the android plugin order
-     *
-     * Returns a map with the relative path to the path as key and the file as value
-     *
-     * Files coming last will have higher priorities that the first ones.
-     */
-    private fun findFilesInSourceSets(project: Project, sourceSetNames: List<String>, path: String, predicate: (File) -> Boolean): Map<String, File> {
-      val candidates = mutableMapOf<String, File>()
-      sourceSetNames.forEach { sourceSetName ->
-        val root = project.projectDir.child("src", sourceSetName, "graphql", path)
-        val files = root.findFiles(predicate)
-
-        files.forEach {
-          val key = if (root.isFile) {
-            // toRelativeString only works on directories.
-            ""
-          } else {
-            it.toRelativeString(root)
-          }
-
-          // overwrite the previous entry if it was there already
-          // this is ok as Android orders the sourceSetNames from lower to higher priority
-          candidates[key] = it
         }
-      }
-      return candidates
-    }
 
-    private fun File.findFiles(predicate: (File) -> Boolean): List<File> {
-      return when {
-        isDirectory -> listFiles()?.flatMap { it.findFiles(predicate) } ?: emptyList()
-        isFile && predicate(this) -> listOf(this)
-        else -> emptyList()
-      }
+        fun default(project: Project, apolloVariant: ApolloVariant): List<CompilationUnit> {
+            val sourceSetNames = apolloVariant.sourceSetNames
+            val schemaFiles = findFilesInSourceSets(project, sourceSetNames, ".") {
+                it.name == "schema.json"
+            }
+
+            if (schemaFiles.isEmpty()) {
+                return emptyList()
+            }
+
+            var i = 0
+            val services = schemaFiles.entries
+                    .sortedBy { it.value.canonicalPath } // make sure the order is predicable for tests
+                    .map { entry ->
+                        val sourceFolderPath = entry.value.canonicalPath.relativePathToGraphql(dropLast = 1)!!
+                        val files = findFilesInSourceSets(project, sourceSetNames, sourceFolderPath, ::isGraphQL).values.toList()
+
+                        val name = "service${i++}"
+
+                        CompilationUnit(
+                                serviceName = name,
+                                variantName = apolloVariant.name,
+                                files = files,
+                                schemaFile = entry.value,
+                                schemaPackageName = entry.value.canonicalPath.formatPackageName(dropLast = 1)!!,
+                                rootPackageName = "",
+                                androidVariant = apolloVariant.androidVariant,
+                                project = project
+                        )
+                    }
+
+            return services
+        }
+
+        fun isGraphQL(file: File): Boolean {
+            return file.name.endsWith(".graphql") || file.name.endsWith(".gql")
+        }
+
+        /**
+         * Finds the files in the given sourceSets taking into account their precedence according to the android plugin order
+         *
+         * Returns a map with the relative path to the path as key and the file as value
+         *
+         * Files coming last will have higher priorities that the first ones.
+         */
+        private fun findFilesInSourceSets(project: Project, sourceSetNames: List<String>, path: String, predicate: (File) -> Boolean): Map<String, File> {
+            val candidates = mutableMapOf<String, File>()
+            sourceSetNames.forEach { sourceSetName ->
+                val root = project.projectDir.child("src", sourceSetName, "graphql", path)
+                val files = root.findFiles(predicate)
+
+                files.forEach {
+                    val key = if (root.isFile) {
+                        // toRelativeString only works on directories.
+                        ""
+                    } else {
+                        it.toRelativeString(root)
+                    }
+
+                    // overwrite the previous entry if it was there already
+                    // this is ok as Android orders the sourceSetNames from lower to higher priority
+                    candidates[key] = it
+                }
+            }
+            return candidates
+        }
+
+        private fun File.findFiles(predicate: (File) -> Boolean): List<File> {
+            return when {
+                isDirectory -> listFiles()?.flatMap { it.findFiles(predicate) } ?: emptyList()
+                isFile && predicate(this) -> listOf(this)
+                else -> emptyList()
+            }
+        }
     }
-  }
 }

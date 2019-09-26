@@ -25,16 +25,16 @@ class UpToDateTests {
     assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloClasses")!!.outcome)
 
     // Java classes generated successfully
-    assertTrue(dir.generatedChild("main/0/com/example/DroidDetailsQuery.java").isFile)
-    assertTrue(dir.generatedChild("main/0/com/example/FilmsQuery.java").isFile)
-    assertTrue(dir.generatedChild("main/0/com/example/fragment/SpeciesInformation.java").isFile)
+    assertTrue(dir.generatedChild("main/service0/com/example/DroidDetailsQuery.java").isFile)
+    assertTrue(dir.generatedChild("main/service0/com/example/FilmsQuery.java").isFile)
+    assertTrue(dir.generatedChild("main/service0/com/example/fragment/SpeciesInformation.java").isFile)
 
     // verify that the custom type generated was Object.class because no customType mapping was specified
-    TestUtils.assertFileContains(dir, "main/0/com/example/type/CustomType.java", "return Object.class;")
+    TestUtils.assertFileContains(dir, "main/service0/com/example/type/CustomType.java", "return Object.class;")
 
     // Optional is not added to the generated classes
-    assert(!TestUtils.fileContains(dir, "main/0/com/example/DroidDetailsQuery.java", "Optional"))
-    TestUtils.assertFileContains(dir, "main/0/com/example/DroidDetailsQuery.java", "import org.jetbrains.annotations.Nullable;")
+    assert(!TestUtils.fileContains(dir, "main/service0/com/example/DroidDetailsQuery.java", "Optional"))
+    TestUtils.assertFileContains(dir, "main/service0/com/example/DroidDetailsQuery.java", "import org.jetbrains.annotations.Nullable;")
   }
 
   fun `nothing changed, task up to date`(dir: File) {
@@ -43,9 +43,9 @@ class UpToDateTests {
     assertEquals(TaskOutcome.UP_TO_DATE, result.task(":generateApolloClasses")!!.outcome)
 
     // Java classes generated successfully
-    assertTrue(dir.generatedChild("main/0/com/example/DroidDetailsQuery.java").isFile)
-    assertTrue(dir.generatedChild("main/0/com/example/FilmsQuery.java").isFile)
-    assertTrue(dir.generatedChild("main/0/com/example/fragment/SpeciesInformation.java").isFile)
+    assertTrue(dir.generatedChild("main/service0/com/example/DroidDetailsQuery.java").isFile)
+    assertTrue(dir.generatedChild("main/service0/com/example/FilmsQuery.java").isFile)
+    assertTrue(dir.generatedChild("main/service0/com/example/fragment/SpeciesInformation.java").isFile)
   }
 
   fun `adding a custom type to the build script re-generates the CustomType class`(dir: File) {
@@ -63,7 +63,7 @@ class UpToDateTests {
     // and the task should run again
     assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloClasses")!!.outcome)
 
-    TestUtils.assertFileContains(dir, "main/0/com/example/type/CustomType.java", "return Date.class;")
+    TestUtils.assertFileContains(dir, "main/service0/com/example/type/CustomType.java", "return Date.class;")
 
     val text = File(dir, "build.gradle").readText()
     File(dir, "build.gradle").writeText(text.replace(apolloBlock, ""))
