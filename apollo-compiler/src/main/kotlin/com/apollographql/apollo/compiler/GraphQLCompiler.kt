@@ -51,7 +51,7 @@ class GraphQLCompiler {
       val transformedQueryOutput = TransformedQueryOutput(
           args.packageNameProvider
       )
-      transformedQueryOutput.apply { visit(ir.operations) }.writeTo(transformedQueriesOutputDir)
+      transformedQueryOutput.apply { visit(ir) }.writeTo(transformedQueriesOutputDir)
     }
   }
 

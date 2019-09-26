@@ -1,36 +1,44 @@
 package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo.compiler.ir.Operation
+import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import java.io.File
 
 internal class TransformedQueryOutput(
     private val packageNameProvider: PackageNameProvider
 ) {
-  private var transformedQueries: List<TransformedQuery> = emptyList()
+  private var transformedDocuments: List<TransformedDocument> = emptyList()
 
-  fun visit(operations: List<Operation>) {
-    transformedQueries = transformedQueries + operations.map { operation ->
+  fun visit(ir: CodeGenerationIR) {
+    transformedDocuments = transformedDocuments + ir.operations.map { operation ->
       val targetPackage = packageNameProvider.operationPackageName(operation.filePath)
-      TransformedQuery(
-          queryName = operation.operationName,
-          queryDocument = operation.source,
+      TransformedDocument(
+          name = operation.operationName,
+          document = operation.source,
+          packageName = targetPackage
+      )
+    }
+    transformedDocuments = transformedDocuments + ir.fragments.map { fragment ->
+      val targetPackage = packageNameProvider.fragmentsPackageName
+      TransformedDocument(
+          name = fragment.fragmentName,
+          document = fragment.source,
           packageName = targetPackage
       )
     }
   }
 
   fun writeTo(outputDir: File) {
-    transformedQueries.forEach { transformedQuery ->
-      outputDir.resolve(transformedQuery.packageName.replace('.', File.separatorChar)).run {
+    transformedDocuments.forEach { transformedDocument ->
+      outputDir.resolve(transformedDocument.packageName.replace('.', File.separatorChar)).run {
         mkdirs()
-        resolve("${transformedQuery.queryName}.graphql")
-      }.writeText(transformedQuery.queryDocument)
+        resolve("${transformedDocument.name}.graphql")
+      }.writeText(transformedDocument.document)
     }
   }
 
-  private class TransformedQuery(
-      val queryName: String,
-      val queryDocument: String,
+  private class TransformedDocument(
+      val name: String,
+      val document: String,
       val packageName: String
   )
 }
