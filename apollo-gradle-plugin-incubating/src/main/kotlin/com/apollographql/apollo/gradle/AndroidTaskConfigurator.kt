@@ -49,12 +49,11 @@ object AndroidTaskConfigurator {
     )
 
     registerVariantTask(project, apolloVariant) { serviceVariantTask ->
+      variant.registerJavaGeneratingTask(serviceVariantTask.get(), serviceVariantTask.get().outputDir)
       if (apolloExtension.generateKotlinModels) {
+        // For java, this is done by registerJavaGeneratingTask
         androidExtension.sourceSets.first { it.name == variant.name }.kotlin!!.srcDir(serviceVariantTask.get().outputDir)
         project.tasks.named("compile${variant.name.capitalize()}Kotlin").configure { it.dependsOn(serviceVariantTask) }
-      } else {
-        // apparently, this does everything automagically
-        variant.registerJavaGeneratingTask(serviceVariantTask.get(), serviceVariantTask.get().outputDir)
       }
     }
   }
