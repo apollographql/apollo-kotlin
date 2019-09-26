@@ -1,6 +1,11 @@
 package com.apollographql.apollo.compiler.ir
 
-class SourceLocation(val line: Int, val position: Int) {
+data class SourceLocation(val line: Int, val position: Int) {
+
+  override fun toString(): String {
+    return "($line:$position)"
+  }
+
   companion object {
     val UNKNOWN = SourceLocation(-1, -1)
   }
