@@ -45,7 +45,8 @@ object AndroidTaskConfigurator {
 
     val apolloVariant = ApolloVariant(
         name = variant.name,
-        sourceSetNames = variant.sourceSets.map { it.name }.distinct()
+        sourceSetNames = variant.sourceSets.map { it.name }.distinct(),
+        androidVariant = variant
     )
 
     registerVariantTask(project, apolloVariant) { serviceVariantTask ->

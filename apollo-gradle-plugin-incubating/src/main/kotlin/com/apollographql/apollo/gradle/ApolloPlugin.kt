@@ -19,7 +19,7 @@ open class ApolloPlugin : Plugin<Project> {
   private lateinit var generateClassesTask: TaskProvider<Task>
 
   override fun apply(project: Project) {
-    apolloExtension = project.extensions.create("apollo", ApolloExtension::class.java)
+    apolloExtension = project.extensions.create("apollo", ApolloExtension::class.java, project)
 
     // for backward compatibility
     apolloSourceSetExtension = (apolloExtension as ExtensionAware).extensions.create("sourceSet", ApolloSourceSetExtension::class.java)
@@ -109,7 +109,8 @@ open class ApolloPlugin : Plugin<Project> {
       val name = "main"
       val apolloVariant = ApolloVariant(
           name = name,
-          sourceSetNames = listOf(name)
+          sourceSetNames = listOf(name),
+          androidVariant = null
       )
 
       registerVariantTask(project, apolloVariant) { serviceVariantTask ->
@@ -152,19 +153,21 @@ open class ApolloPlugin : Plugin<Project> {
       it.group = TASK_GROUP
     }
 
-    var serviceVariants = apolloExtension.services.map {
-      ServiceVariant.from(project, apolloVariant.sourceSetNames, it)
+    var compilationUnits = apolloExtension.services.map {
+      CompilationUnit.from(project, apolloVariant, it)
     }
-    if (serviceVariants.isEmpty()) {
-      serviceVariants = ServiceVariant.default(project, apolloVariant.sourceSetNames)
+    if (compilationUnits.isEmpty()) {
+      compilationUnits = CompilationUnit.default(project, apolloVariant)
     }
-    serviceVariants.forEach { serviceVariant ->
-      val serviceVariantTask = registerCodegenTasks(project, apolloExtension, apolloVariant.name, serviceVariant)
+    compilationUnits.forEach { compilationUnit ->
+      val codegenTask = registerCodegenTasks(project, apolloExtension, apolloVariant.name, compilationUnit)
       generateVariantClassesTask.configure {
-        it.dependsOn(serviceVariantTask)
+        it.dependsOn(codegenTask)
       }
 
-      addOutputDirToSourceSetDir(serviceVariantTask)
+      addOutputDirToSourceSetDir(codegenTask)
+
+      apolloExtension.compilationUnits.add(compilationUnit)
     }
 
     generateClassesTask.configure {
@@ -172,30 +175,29 @@ open class ApolloPlugin : Plugin<Project> {
     }
   }
 
-  fun registerCodegenTasks(project: Project, extension: ApolloExtension, variantName: String, serviceVariant: ServiceVariant): TaskProvider<ApolloCodegenTask> {
-    val taskName = "generate${variantName.capitalize()}${serviceVariant.name.capitalize()}ApolloClasses"
+  fun registerCodegenTasks(project: Project, extension: ApolloExtension, variantName: String, compilationUnit: CompilationUnit): TaskProvider<ApolloCodegenTask> {
+    val taskName = "generate${variantName.capitalize()}${compilationUnit.serviceName.capitalize()}ApolloClasses"
 
     return project.tasks.register(taskName, ApolloCodegenTask::class.java) {
-      val outputFolder = project.buildDir.child("generated", "apollo", "classes", variantName, serviceVariant.name)
 
       val transformedQueriesOutputDir = if (extension.generateTransformedQueries) {
-        project.buildDir.child("generated", "apollo", "transformedQueries", variantName, serviceVariant.name)
+        compilationUnit.transformedQueriesDir
       } else {
         null
       }
 
-      it.source(serviceVariant.files)
-      if (serviceVariant.schemaFile != null) {
-        it.source(serviceVariant.files)
+      it.source(compilationUnit.files)
+      if (compilationUnit.schemaFile != null) {
+        it.source(compilationUnit.files)
       }
 
-      it.graphqlFiles = serviceVariant.files
-      it.schemaFile = serviceVariant.schemaFile
-      it.schemaPackageName = serviceVariant.schemaPackageName
-      it.rootPackageName = serviceVariant.rootPackageName
+      it.graphqlFiles = compilationUnit.files
+      it.schemaFile = compilationUnit.schemaFile
+      it.schemaPackageName = compilationUnit.schemaPackageName
+      it.rootPackageName = compilationUnit.rootPackageName
       it.group = TASK_GROUP
-      it.description = "Generate Android classes for ${variantName.capitalize()}${serviceVariant.name} GraphQL queries"
-      it.outputDir = outputFolder
+      it.description = "Generate Android classes for ${variantName.capitalize()}${compilationUnit.serviceName} GraphQL queries"
+      it.outputDir = compilationUnit.outputDir
       it.nullableValueType = extension.nullableValueType ?: NullableValueType.ANNOTATED.value
       it.useSemanticNaming = extension.useSemanticNaming
       it.generateModelBuilder = extension.generateModelBuilder

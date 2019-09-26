@@ -5,16 +5,21 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.util.PatternSet
 import java.io.File
 
-class ServiceVariant(
-    val name: String,
+class CompilationUnit(
+    val serviceName: String,
     val files: List<File>,
     val schemaFile: File?,
     val schemaPackageName: String,
-    val rootPackageName: String
+    val rootPackageName: String,
+    val outputDir: File,
+    val transformedQueriesDir: File,
+    val androidVariant: Any?
 ) {
 
   companion object {
-    fun from(project: Project, sourceSetNames: List<String>, service: Service): ServiceVariant {
+    fun from(project: Project, apolloVariant: ApolloVariant, service: Service): CompilationUnit {
+      val sourceSetNames = apolloVariant.sourceSetNames
+
       val schemaFilePath = service.schemaFilePath
       if (schemaFilePath == null) {
         throw IllegalArgumentException("Please define schemaFilePath for service '${service.name}'")
@@ -50,16 +55,20 @@ class ServiceVariant(
 
       val schemaPackageName = schemaFile.canonicalPath.formatPackageName(dropLast = 1) ?: ""
 
-      return ServiceVariant(
-          name = service.name,
+      return CompilationUnit(
+          serviceName = service.name,
           files = files,
           schemaFile = schemaFile,
           schemaPackageName = schemaPackageName,
-          rootPackageName = service.rootPackageName ?: ""
+          rootPackageName = service.rootPackageName ?: "",
+          transformedQueriesDir = project.buildDir.child("generated", "apollo", "transformedQueries", apolloVariant.name, service.name),
+          outputDir = project.buildDir.child("generated", "apollo", "classes", apolloVariant.name, service.name),
+          androidVariant = apolloVariant.androidVariant
       )
     }
 
-    fun default(project: Project, sourceSetNames: List<String>): List<ServiceVariant> {
+    fun default(project: Project, apolloVariant: ApolloVariant): List<CompilationUnit> {
+      val sourceSetNames = apolloVariant.sourceSetNames
       val schemaFiles = findFilesInSourceSets(project, sourceSetNames, ".") {
         it.name == "schema.json"
       }
@@ -77,12 +86,15 @@ class ServiceVariant(
 
             val name = "service${i++}"
 
-            ServiceVariant(
-                name = name,
+            CompilationUnit(
+                serviceName = name,
                 files = files,
                 schemaFile = entry.value,
                 schemaPackageName = entry.value.canonicalPath.formatPackageName(dropLast = 1)!!,
-                rootPackageName = ""
+                rootPackageName = "",
+                transformedQueriesDir = project.buildDir.child("generated", "apollo", "transformedQueries", name, name),
+                outputDir = project.buildDir.child("generated", "apollo", "classes", apolloVariant.name, name),
+                androidVariant = apolloVariant.androidVariant
             )
           }
 

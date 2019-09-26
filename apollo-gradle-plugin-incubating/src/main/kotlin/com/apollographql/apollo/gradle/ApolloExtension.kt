@@ -2,8 +2,10 @@ package com.apollographql.apollo.gradle
 
 import com.apollographql.apollo.compiler.NullableValueType
 import org.gradle.api.Action
+import org.gradle.api.NamedDomainObjectContainer
+import org.gradle.api.Project
 
-open class ApolloExtension {
+open class ApolloExtension(project: Project) {
   @JvmField
   var nullableValueType: String? = null
   @JvmField
@@ -27,6 +29,7 @@ open class ApolloExtension {
   @JvmField
   var services = mutableListOf<Service>()
 
+  val compilationUnits = project.container(CompilationUnit::class.java)
 
   /**
    * Deprecated,use @{link service} instead
