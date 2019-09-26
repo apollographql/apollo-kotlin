@@ -7,7 +7,7 @@
 
 Apollo-Android is a GraphQL compliant client that generates Java models from standard GraphQL queries.  These models give you a typesafe API to work with GraphQL servers.  Apollo will help you keep your GraphQL query statements together, organized, and easy to access from Java. Change a query and recompile your project - Apollo code gen will rebuild your data model.  Code generation also allows Apollo to read and unmarshal responses from the network without the need of any reflection (see example generated code below).  Future versions of Apollo-Android will also work with AutoValue and other value object generators.
 
-Apollo-Android is designed primarily with Android in mind but you can use it in any java/kotlin app. The android-only parts are in `apollo-android-support` and are only needed to use SQLite as a cache or the android main thread for callbacks.
+Apollo-Android is designed primarily with Android in mind but you can use it in any Java/Kotlin app. The android-only parts are in `apollo-android-support` and are only needed to use SQLite as a cache or the android main thread for callbacks.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE (https://github.com/thlorenz/doctoc) -->
@@ -687,7 +687,7 @@ apollo {
 ## Incubating plugin
 The incubating plugin is available in the SNAPSHOTS starting with version 1.2.0-SNAPSHOT.
 Compared to the current plugin, it:
-* is 100% written in kotlin for autocompletion and compile-time type safety.
+* is 100% written in Kotlin for autocompletion and compile-time type safety.
 * has a notion of `service` for declaring multiple schemas and their graphql files.
 * replaces `outputPackageName` with `rootPackageName` so that the package hierarchy is not flattened. ([issue](https://github.com/apollographql/apollo-android/issues/1367))
 * adds a `downloadXYZSchema` to automatically update the schema.json. ([issue](https://github.com/apollographql/apollo-android/issues/1516))
@@ -716,7 +716,7 @@ apollo {
 
   /**
    * Use a service to define a schema and associated graphql files.
-   * You can omit this block alltogether and the plugin will default to the found schema.json and .graphql files.
+   * You can omit this block altogether and the plugin will default to the found schema.json and .graphql files.
    * You need to define it if you want to configure it more.
    */
   service("starwars") {
