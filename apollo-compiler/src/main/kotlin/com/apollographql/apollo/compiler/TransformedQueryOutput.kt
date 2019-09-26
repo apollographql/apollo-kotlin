@@ -3,42 +3,43 @@ package com.apollographql.apollo.compiler
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import java.io.File
 
-internal class TransformedQueryOutput(
-    private val packageNameProvider: PackageNameProvider
-) {
+internal class TransformedQueryOutput {
   private var transformedDocuments: List<TransformedDocument> = emptyList()
 
   fun visit(ir: CodeGenerationIR) {
     transformedDocuments = transformedDocuments + ir.operations.map { operation ->
-      val targetPackage = packageNameProvider.operationPackageName(operation.filePath)
       TransformedDocument(
-          name = operation.operationName,
           document = operation.source,
-          packageName = targetPackage
+          filePath = operation.filePath.relativePathToGraphql()!!
       )
     }
     transformedDocuments = transformedDocuments + ir.fragments.map { fragment ->
-      val targetPackage = packageNameProvider.fragmentsPackageName
       TransformedDocument(
-          name = fragment.fragmentName,
           document = fragment.source,
-          packageName = targetPackage
+          filePath = fragment.filePath!!.relativePathToGraphql()!!
       )
     }
   }
 
   fun writeTo(outputDir: File) {
-    transformedDocuments.forEach { transformedDocument ->
-      outputDir.resolve(transformedDocument.packageName.replace('.', File.separatorChar)).run {
-        mkdirs()
-        resolve("${transformedDocument.name}.graphql")
-      }.writeText(transformedDocument.document)
-    }
+    transformedDocuments
+      .groupBy { it.filePath } // Multiple documents can be from the same file, e.g. fragments
+      .forEach { (filePath, transformedDocuments) ->
+        val outputFile = outputDir.resolve(filePath).also {
+          it.parentFile.mkdirs()
+        }
+        transformedDocuments.forEachIndexed { i, transformedDocument ->
+          if (i == 0) {
+            outputFile.writeText(transformedDocument.document)
+          } else {
+            outputFile.appendText("\n\n" + transformedDocument.document)
+          }
+        }
+      }
   }
 
   private class TransformedDocument(
-      val name: String,
       val document: String,
-      val packageName: String
+      val filePath: String
   )
 }
