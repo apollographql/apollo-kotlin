@@ -1,5 +1,7 @@
 .gradle
-/.idea
+.idea/*.xml
+.idea/caches/
+.idea/libraries/
 *.iml
 build
 local.properties
