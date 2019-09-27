@@ -5,16 +5,24 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.util.PatternSet
 import java.io.File
 
-class ServiceVariant(
-    val name: String,
+class CompilationUnit(
+    val serviceName: String,
+    val variantName: String,
     val files: List<File>,
     val schemaFile: File?,
     val schemaPackageName: String,
-    val rootPackageName: String
+    val rootPackageName: String,
+    val androidVariant: Any?,
+    project: Project
 ) {
+  val name = "${variantName}${serviceName}"
+  val outputDir = project.buildDir.child("generated", "source", "apollo", "classes", variantName, serviceName)
+  val transformedQueriesDir = project.buildDir.child("generated", "transformedQueries", "apollo", variantName, serviceName)
 
   companion object {
-    fun from(project: Project, sourceSetNames: List<String>, service: Service): ServiceVariant {
+    fun from(project: Project, apolloVariant: ApolloVariant, service: Service): CompilationUnit {
+      val sourceSetNames = apolloVariant.sourceSetNames
+
       val schemaFilePath = service.schemaFilePath
       if (schemaFilePath == null) {
         throw IllegalArgumentException("Please define schemaFilePath for service '${service.name}'")
@@ -50,16 +58,20 @@ class ServiceVariant(
 
       val schemaPackageName = schemaFile.canonicalPath.formatPackageName(dropLast = 1) ?: ""
 
-      return ServiceVariant(
-          name = service.name,
+      return CompilationUnit(
+          serviceName = service.name,
+          variantName = apolloVariant.name,
           files = files,
           schemaFile = schemaFile,
           schemaPackageName = schemaPackageName,
-          rootPackageName = service.rootPackageName ?: ""
+          rootPackageName = service.rootPackageName ?: "",
+          androidVariant = apolloVariant.androidVariant,
+          project = project
       )
     }
 
-    fun default(project: Project, sourceSetNames: List<String>): List<ServiceVariant> {
+    fun default(project: Project, apolloVariant: ApolloVariant): List<CompilationUnit> {
+      val sourceSetNames = apolloVariant.sourceSetNames
       val schemaFiles = findFilesInSourceSets(project, sourceSetNames, ".") {
         it.name == "schema.json"
       }
@@ -75,14 +87,17 @@ class ServiceVariant(
             val sourceFolderPath = entry.value.canonicalPath.relativePathToGraphql(dropLast = 1)!!
             val files = findFilesInSourceSets(project, sourceSetNames, sourceFolderPath, ::isGraphQL).values.toList()
 
-            val name = (i++).toString()//entry.key.split(File.separator).map { it.capitalize() }.joinToString("")
+            val name = "service${i++}"
 
-            ServiceVariant(
-                name = name,
+            CompilationUnit(
+                serviceName = name,
+                variantName = apolloVariant.name,
                 files = files,
                 schemaFile = entry.value,
                 schemaPackageName = entry.value.canonicalPath.formatPackageName(dropLast = 1)!!,
-                rootPackageName = ""
+                rootPackageName = "",
+                androidVariant = apolloVariant.androidVariant,
+                project = project
             )
           }
 

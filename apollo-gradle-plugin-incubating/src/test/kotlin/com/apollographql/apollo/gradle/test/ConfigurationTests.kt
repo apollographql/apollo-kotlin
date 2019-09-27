@@ -21,7 +21,7 @@ class ConfigurationTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloClasses", dir)
-      TestUtils.assertFileContains(dir, "main/0/com/example/type/CustomType.java", "return Date.class;")
+      TestUtils.assertFileContains(dir, "main/service0/com/example/type/CustomType.java", "return Date.class;")
     }
   }
 
@@ -40,7 +40,7 @@ class ConfigurationTests {
       }
     """.trimIndent()) { dir ->
         TestUtils.executeTask("generateApolloClasses", dir)
-        TestUtils.assertFileContains(dir, "main/0/com/example/DroidDetailsQuery.java", pair.second)
+        TestUtils.assertFileContains(dir, "main/service0/com/example/DroidDetailsQuery.java", pair.second)
       }
     }
   }
@@ -50,7 +50,7 @@ class ConfigurationTests {
     withSimpleProject("""
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloClasses", dir)
-      TestUtils.assertFileContains(dir, "main/0/com/example/DroidDetailsQuery.java", "class DroidDetailsQuery ")
+      TestUtils.assertFileContains(dir, "main/service0/com/example/DroidDetailsQuery.java", "class DroidDetailsQuery ")
     }
   }
 
@@ -62,7 +62,7 @@ class ConfigurationTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloClasses", dir)
-      TestUtils.assertFileContains(dir, "main/0/com/example/DroidDetails.java", "class DroidDetails ")
+      TestUtils.assertFileContains(dir, "main/service0/com/example/DroidDetails.java", "class DroidDetails ")
     }
   }
 
@@ -71,7 +71,7 @@ class ConfigurationTests {
     withSimpleProject("""
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloClasses", dir)
-      TestUtils.assertFileDoesNotContain(dir, "main/0/com/example/DroidDetailsQuery.java", "Builder toBuilder()")
+      TestUtils.assertFileDoesNotContain(dir, "main/service0/com/example/DroidDetailsQuery.java", "Builder toBuilder()")
     }
   }
 
@@ -83,7 +83,7 @@ class ConfigurationTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloClasses", dir)
-      TestUtils.assertFileContains(dir, "main/0/com/example/DroidDetailsQuery.java", "Builder toBuilder()")
+      TestUtils.assertFileContains(dir, "main/service0/com/example/DroidDetailsQuery.java", "Builder toBuilder()")
     }
   }
 
@@ -92,7 +92,7 @@ class ConfigurationTests {
     withSimpleProject("""
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloClasses", dir)
-      TestUtils.assertFileContains(dir, "main/0/com/example/DroidDetailsQuery.java", "String name()")
+      TestUtils.assertFileContains(dir, "main/service0/com/example/DroidDetailsQuery.java", "String name()")
     }
   }
 
@@ -104,7 +104,7 @@ class ConfigurationTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloClasses", dir)
-      TestUtils.assertFileContains(dir, "main/0/com/example/DroidDetailsQuery.java", "String getName()")
+      TestUtils.assertFileContains(dir, "main/service0/com/example/DroidDetailsQuery.java", "String getName()")
     }
   }
 
@@ -260,7 +260,7 @@ class ConfigurationTests {
       val result = TestUtils.executeTask("generateApolloClasses", dir)
 
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloClasses")!!.outcome)
-      val transformedQuery = dir.child("build", "generated", "apollo", "transformedQueries", "main", "0", "com", "example", "DroidDetails.graphql")
+      val transformedQuery = dir.child("build", "generated", "transformedQueries", "apollo", "main", "service0", "com", "example", "DroidDetails.graphql")
       assertThat(transformedQuery.readText(), containsString("__typename"))
     }
   }

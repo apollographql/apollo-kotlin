@@ -26,11 +26,11 @@ class MultipleServicesTests {
     withMultipleServicesProject("") { dir ->
       TestUtils.executeTask("build", dir)
 
-      assertTrue(dir.generatedChild("main/0/com/example/DroidDetailsQuery.java").isFile)
-      assertTrue(dir.generatedChild("main/0/com/example/FilmsQuery.java").isFile)
-      assertTrue(dir.generatedChild("main/0/com/example/fragment/SpeciesInformation.java").isFile)
-      assertTrue(dir.generatedChild("main/1/githunt/FeedQuery.java").isFile)
-      assertTrue(dir.generatedChild("main/1/githunt/fragment/RepositoryFragment.java").isFile)
+      assertTrue(dir.generatedChild("main/service0/com/example/DroidDetailsQuery.java").isFile)
+      assertTrue(dir.generatedChild("main/service0/com/example/FilmsQuery.java").isFile)
+      assertTrue(dir.generatedChild("main/service0/com/example/fragment/SpeciesInformation.java").isFile)
+      assertTrue(dir.generatedChild("main/service1/githunt/FeedQuery.java").isFile)
+      assertTrue(dir.generatedChild("main/service1/githunt/fragment/RepositoryFragment.java").isFile)
     }
   }
 

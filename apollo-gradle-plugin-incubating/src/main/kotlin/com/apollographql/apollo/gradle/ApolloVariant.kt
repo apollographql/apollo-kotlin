@@ -1,7 +1,5 @@
 package com.apollographql.apollo.gradle
 
-import org.gradle.api.file.SourceDirectorySet
-
 class ApolloVariant(
     /**
      * The full name of the variant
@@ -23,6 +21,12 @@ class ApolloVariant(
      * etc...
      *
      */
-    val sourceSetNames: List<String>
+    val sourceSetNames: List<String>,
 
+    /**
+     * The androidVariant if any. This can be used to link other tasks/plugins in your build logic.
+     * This is Any so that it does not pull a dependency on the gradle plugin but can be safely cast
+     * to BaseVariant.
+     */
+    val androidVariant: Any?
 )

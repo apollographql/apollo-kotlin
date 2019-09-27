@@ -12,9 +12,6 @@ import java.io.File
 @CacheableTask
 open class ApolloCodegenTask : SourceTask() {
   @get:Input
-  var schemaFile: File? = null
-
-  @get:Input
   lateinit var rootPackageName: String
 
   @get:Input
@@ -57,6 +54,9 @@ open class ApolloCodegenTask : SourceTask() {
   override fun getSource(): FileTree {
     return super.getSource()
   }
+
+  @Internal
+  var schemaFile: File? = null
 
   @Internal
   lateinit var graphqlFiles: List<File>
