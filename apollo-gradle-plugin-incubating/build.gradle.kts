@@ -27,10 +27,12 @@ dependencies {
   testImplementation(dep("okHttp").dot("mockWebServer"))
 }
 
-tasks.named<Task>("test") {
+tasks.withType<Test> {
   dependsOn(":apollo-api:installLocally")
   dependsOn(":apollo-compiler:installLocally")
   dependsOn("installLocally")
+
+  inputs.dir("src/test/files")
 }
 
 apply(rootProject.file("gradle/gradle-mvn-push.gradle"))
