@@ -16,7 +16,7 @@ internal class TransformedQueryOutput {
     transformedDocuments = transformedDocuments + ir.fragments.map { fragment ->
       TransformedDocument(
           document = fragment.source,
-          filePath = fragment.filePath!!.relativePathToGraphql()!!
+          filePath = fragment.filePath.relativePathToGraphql()!!
       )
     }
   }
@@ -28,13 +28,9 @@ internal class TransformedQueryOutput {
         val outputFile = outputDir.resolve(filePath).also {
           it.parentFile.mkdirs()
         }
-        transformedDocuments.forEachIndexed { i, transformedDocument ->
-          if (i == 0) {
-            outputFile.writeText(transformedDocument.document)
-          } else {
-            outputFile.appendText("\n\n" + transformedDocument.document)
-          }
-        }
+        transformedDocuments
+          .joinToString(separator = "\n\n") { it.document }
+          .also { outputFile.writeText(it) }
       }
   }
 
