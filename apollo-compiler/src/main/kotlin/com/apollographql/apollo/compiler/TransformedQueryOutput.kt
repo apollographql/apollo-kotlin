@@ -1,36 +1,41 @@
 package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo.compiler.ir.Operation
+import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import java.io.File
 
-internal class TransformedQueryOutput(
-    private val packageNameProvider: PackageNameProvider
-) {
-  private var transformedQueries: List<TransformedQuery> = emptyList()
+internal class TransformedQueryOutput {
+  private var transformedDocuments: List<TransformedDocument> = emptyList()
 
-  fun visit(operations: List<Operation>) {
-    transformedQueries = transformedQueries + operations.map { operation ->
-      val targetPackage = packageNameProvider.operationPackageName(operation.filePath)
-      TransformedQuery(
-          queryName = operation.operationName,
-          queryDocument = operation.sourceWithFragments!!,
-          packageName = targetPackage
+  fun visit(ir: CodeGenerationIR) {
+    transformedDocuments = transformedDocuments + ir.operations.map { operation ->
+      TransformedDocument(
+          document = operation.source,
+          filePath = operation.filePath.relativePathToGraphql()!!
+      )
+    }
+    transformedDocuments = transformedDocuments + ir.fragments.map { fragment ->
+      TransformedDocument(
+          document = fragment.source,
+          filePath = fragment.filePath.relativePathToGraphql()!!
       )
     }
   }
 
   fun writeTo(outputDir: File) {
-    transformedQueries.forEach { transformedQuery ->
-      outputDir.resolve(transformedQuery.packageName.replace('.', File.separatorChar)).run {
-        mkdirs()
-        resolve("${transformedQuery.queryName}.graphql")
-      }.writeText(transformedQuery.queryDocument)
-    }
+    transformedDocuments
+      .groupBy { it.filePath } // Multiple documents can be from the same file, e.g. fragments
+      .forEach { (filePath, transformedDocuments) ->
+        val outputFile = outputDir.resolve(filePath).also {
+          it.parentFile.mkdirs()
+        }
+        transformedDocuments
+          .joinToString(separator = "\n\n") { it.document }
+          .also { outputFile.writeText(it) }
+      }
   }
 
-  private class TransformedQuery(
-      val queryName: String,
-      val queryDocument: String,
-      val packageName: String
+  private class TransformedDocument(
+      val document: String,
+      val filePath: String
   )
 }
