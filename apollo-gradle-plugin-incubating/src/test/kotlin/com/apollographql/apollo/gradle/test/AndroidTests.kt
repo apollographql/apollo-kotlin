@@ -137,7 +137,7 @@ class AndroidTests {
       val result = TestUtils.executeTask("generateDebugApolloClasses", dir)
 
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateDebugApolloClasses")!!.outcome)
-      assertThat(result.output, containsString("You can use `com.apollographql.apollo` if you prefer."))
+      assertThat(result.output, containsString("The `com.apollographql.android` plugin is deprecated"))
     }
   }
 }
