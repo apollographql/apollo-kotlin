@@ -15,11 +15,13 @@ data class Fragment(
     val typeCondition: String,
     val possibleTypes: List<String>,
     val fields: List<Field>,
-    val fragmentSpreads: List<String>,
+    val fragmentRefs: List<FragmentRef>,
     val inlineFragments: List<InlineFragment>,
-    val filePath: String?,
+    val filePath: String,
     val sourceLocation: SourceLocation
 ) : CodeGenerator {
+
+  val fragmentSpreads: List<String> = fragmentRefs.map { it.name }
 
   /** Returns the Java interface that represents this Fragment object. */
   override fun toTypeSpec(context: CodeGenerationContext, abstract: Boolean): TypeSpec {

@@ -11,7 +11,7 @@ data class Field(
     val args: List<Argument> = emptyList(),
     val isConditional: Boolean = false,
     val fields: List<Field> = emptyList(),
-    val fragmentSpreads: List<String> = emptyList(),
+    val fragmentRefs: List<FragmentRef>,
     val inlineFragments: List<InlineFragment> = emptyList(),
     val description: String = "",
     val isDeprecated: Boolean = false,
@@ -19,6 +19,8 @@ data class Field(
     val conditions: List<Condition> = emptyList(),
     val sourceLocation: SourceLocation
 ) : CodeGenerator {
+
+  val fragmentSpreads: List<String> = fragmentRefs.map { it.name }
 
   override fun toTypeSpec(context: CodeGenerationContext, abstract: Boolean): TypeSpec {
     val fields = if (isNonScalar()) fields else emptyList()
@@ -167,6 +169,7 @@ data class Field(
         responseName = "__typename",
         fieldName = "__typename",
         type = "String!",
+        fragmentRefs = emptyList(),
         sourceLocation = SourceLocation.UNKNOWN
     )
   }
