@@ -2,6 +2,8 @@ package com.apollographql.apollo.gradle
 
 import com.apollographql.apollo.compiler.*
 import org.gradle.api.Project
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.util.PatternSet
 import java.io.File
 
@@ -16,8 +18,40 @@ class CompilationUnit(
     project: Project
 ) {
   val name = "${variantName}${serviceName}"
-  val outputDir = project.buildDir.child("generated", "source", "apollo", "classes", variantName, serviceName)
-  val transformedQueriesDir = project.buildDir.child("generated", "transformedQueries", "apollo", variantName, serviceName)
+  val outputDir: DirectoryProperty = project.objects.directoryProperty()
+  val transformedQueriesDir: DirectoryProperty = project.objects.directoryProperty()
+
+  /**
+   * Sets the output properties for [codegenTask] and this CompilationUnit such that [Provider]s
+   * accessed via this CompilationUnit carry dependencies on [codegenTask]'s outputs.
+   *
+   * @see org.gradle.api.provider.Property.set
+   */
+  internal fun setupOutputProperties(
+      codegenTask: ApolloCodegenTask,
+      willGenerateTransformedQueries: Boolean,
+      project: Project
+  ) {
+    codegenTask.outputDir.apply {
+      set(project.buildDir.child("generated", "source", "apollo", "classes", variantName, serviceName))
+      finalizeValue()
+    }
+    outputDir.apply {
+      set(codegenTask.outputDir)
+      disallowChanges()
+    }
+
+    codegenTask.transformedQueriesOutputDir.apply {
+      if (willGenerateTransformedQueries) {
+        set(project.buildDir.child("generated", "transformedQueries", "apollo", variantName, serviceName))
+      }
+      finalizeValue()
+    }
+    transformedQueriesDir.apply {
+      set(codegenTask.transformedQueriesOutputDir)
+      disallowChanges()
+    }
+  }
 
   companion object {
     fun from(project: Project, apolloVariant: ApolloVariant, service: Service): CompilationUnit {

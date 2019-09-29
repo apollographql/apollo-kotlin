@@ -1,7 +1,6 @@
 package com.apollographql.apollo.gradle
 
 import com.apollographql.apollo.compiler.NullableValueType
-import com.apollographql.apollo.compiler.child
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -179,13 +178,6 @@ open class ApolloPlugin : Plugin<Project> {
     val taskName = "generate${variantName.capitalize()}${compilationUnit.serviceName.capitalize()}ApolloClasses"
 
     return project.tasks.register(taskName, ApolloCodegenTask::class.java) {
-
-      val transformedQueriesOutputDir = if (extension.generateTransformedQueries) {
-        compilationUnit.transformedQueriesDir
-      } else {
-        null
-      }
-
       it.source(compilationUnit.files)
       if (compilationUnit.schemaFile != null) {
         it.source(compilationUnit.schemaFile)
@@ -197,7 +189,6 @@ open class ApolloPlugin : Plugin<Project> {
       it.rootPackageName = compilationUnit.rootPackageName
       it.group = TASK_GROUP
       it.description = "Generate Android classes for ${variantName.capitalize()}${compilationUnit.serviceName} GraphQL queries"
-      it.outputDir = compilationUnit.outputDir
       it.nullableValueType = extension.nullableValueType ?: NullableValueType.ANNOTATED.value
       it.useSemanticNaming = extension.useSemanticNaming
       it.generateModelBuilder = extension.generateModelBuilder
@@ -206,7 +197,7 @@ open class ApolloPlugin : Plugin<Project> {
       it.generateKotlinModels = extension.generateKotlinModels
       it.generateVisitorForPolymorphicDatatypes = extension.generateVisitorForPolymorphicDatatypes
       it.customTypeMapping = extension.customTypeMapping
-      it.transformedQueriesOutputDir = transformedQueriesOutputDir
+      compilationUnit.setupOutputProperties(it, extension.generateTransformedQueries, project)
     }
   }
 }
