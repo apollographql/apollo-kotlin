@@ -272,7 +272,7 @@ class ConfigurationTests {
         generateTransformedQueries = true
         
         compilationUnits.all { compilationUnit ->
-          def customTaskProvider = tasks.register("customTask" + compilationUnit.name) {
+          tasks.register("customTask" + compilationUnit.name) {
             inputs.dir(compilationUnit.outputDir)
             inputs.dir(compilationUnit.transformedQueriesDir)
           }
