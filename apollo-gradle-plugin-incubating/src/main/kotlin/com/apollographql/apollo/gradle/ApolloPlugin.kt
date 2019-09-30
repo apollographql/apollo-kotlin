@@ -1,6 +1,7 @@
 package com.apollographql.apollo.gradle
 
 import com.apollographql.apollo.compiler.NullableValueType
+import com.apollographql.apollo.compiler.child
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -177,7 +178,7 @@ open class ApolloPlugin : Plugin<Project> {
   fun registerCodegenTasks(project: Project, extension: ApolloExtension, variantName: String, compilationUnit: CompilationUnit): TaskProvider<ApolloCodegenTask> {
     val taskName = "generate${variantName.capitalize()}${compilationUnit.serviceName.capitalize()}ApolloClasses"
 
-    return project.tasks.register(taskName, ApolloCodegenTask::class.java) {
+    val taskProvider = project.tasks.register(taskName, ApolloCodegenTask::class.java) {
       it.source(compilationUnit.files)
       if (compilationUnit.schemaFile != null) {
         it.source(compilationUnit.schemaFile)
@@ -197,7 +198,20 @@ open class ApolloPlugin : Plugin<Project> {
       it.generateKotlinModels = extension.generateKotlinModels
       it.generateVisitorForPolymorphicDatatypes = extension.generateVisitorForPolymorphicDatatypes
       it.customTypeMapping = extension.customTypeMapping
-      compilationUnit.setupOutputProperties(it, extension.generateTransformedQueries, project)
+      it.outputDir.apply {
+        set(project.buildDir.child("generated", "source", "apollo", "classes", variantName, compilationUnit.serviceName))
+        disallowChanges()
+      }
+      it.transformedQueriesOutputDir.apply {
+        if (extension.generateTransformedQueries) {
+          set(project.buildDir.child("generated", "transformedQueries", "apollo", variantName, compilationUnit.serviceName))
+        }
+        disallowChanges()
+      }
     }
+    compilationUnit.outputDir = taskProvider.flatMap { it.outputDir }
+    compilationUnit.transformedQueriesDir = taskProvider.flatMap { it.transformedQueriesOutputDir }
+
+    return taskProvider
   }
 }
