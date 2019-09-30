@@ -1,8 +1,7 @@
 package com.apollographql.apollo.gradle
 
-import com.apollographql.apollo.compiler.NullableValueType
+import com.apollographql.apollo.gradle.api.CompilationUnit
 import org.gradle.api.Action
-import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 
 open class ApolloExtension(project: Project) {

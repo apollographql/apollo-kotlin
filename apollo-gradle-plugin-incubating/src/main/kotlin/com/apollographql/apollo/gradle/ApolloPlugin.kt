@@ -153,10 +153,10 @@ open class ApolloPlugin : Plugin<Project> {
     }
 
     var compilationUnits = apolloExtension.services.map {
-      CompilationUnit.from(project, apolloVariant, it)
+      DefaultCompilationUnit.from(project, apolloVariant, it)
     }
     if (compilationUnits.isEmpty()) {
-      compilationUnits = CompilationUnit.default(project, apolloVariant)
+      compilationUnits = DefaultCompilationUnit.default(project, apolloVariant)
     }
     compilationUnits.forEach { compilationUnit ->
       val codegenTask = registerCodegenTasks(project, apolloExtension, apolloVariant.name, compilationUnit)
@@ -174,10 +174,10 @@ open class ApolloPlugin : Plugin<Project> {
     }
   }
 
-  fun registerCodegenTasks(project: Project, extension: ApolloExtension, variantName: String, compilationUnit: CompilationUnit): TaskProvider<ApolloCodegenTask> {
+  fun registerCodegenTasks(project: Project, extension: ApolloExtension, variantName: String, compilationUnit: DefaultCompilationUnit): TaskProvider<ApolloCodegenTask> {
     val taskName = "generate${variantName.capitalize()}${compilationUnit.serviceName.capitalize()}ApolloClasses"
 
-    return project.tasks.register(taskName, ApolloCodegenTask::class.java) {
+    val taskProvider = project.tasks.register(taskName, ApolloCodegenTask::class.java) {
       it.source(compilationUnit.files)
       if (compilationUnit.schemaFile != null) {
         it.source(compilationUnit.schemaFile)
@@ -197,7 +197,20 @@ open class ApolloPlugin : Plugin<Project> {
       it.generateKotlinModels = extension.generateKotlinModels
       it.generateVisitorForPolymorphicDatatypes = extension.generateVisitorForPolymorphicDatatypes
       it.customTypeMapping = extension.customTypeMapping
-      compilationUnit.setupOutputProperties(it, extension.generateTransformedQueries, project)
+      it.outputDir.apply {
+        set(compilationUnit.outputDirectory)
+        disallowChanges()
+      }
+      it.transformedQueriesOutputDir.apply {
+        if (extension.generateTransformedQueries) {
+          set(compilationUnit.transformedQueriesDirectory)
+        }
+        disallowChanges()
+      }
     }
+    compilationUnit.outputDir = taskProvider.flatMap { it.outputDir }
+    compilationUnit.transformedQueriesDir = taskProvider.flatMap { it.transformedQueriesOutputDir }
+
+    return taskProvider
   }
 }
