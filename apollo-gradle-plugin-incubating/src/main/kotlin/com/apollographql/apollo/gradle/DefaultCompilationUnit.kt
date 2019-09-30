@@ -19,8 +19,8 @@ class DefaultCompilationUnit(
     project: Project
 ): CompilationUnit {
   val name = "${variantName}${serviceName.capitalize()}"
-  val outputDirectory = project.buildDir.child("generated", "source", "apollo", "classes", variantName, serviceName)
-  val transformedQueriesDirectory = project.buildDir.child("generated", "transformedQueries", "apollo", variantName, serviceName)
+  internal val outputDirectory = project.buildDir.child("generated", "source", "apollo", "classes", variantName, serviceName)
+  internal val transformedQueriesDirectory = project.buildDir.child("generated", "transformedQueries", "apollo", variantName, serviceName)
 
   override lateinit var outputDir: Provider<Directory>
   override lateinit var transformedQueriesDir: Provider<Directory>
