@@ -86,14 +86,13 @@ class DefaultCompilationUnit(
         return emptyList()
       }
 
-      var i = 0
       val services = schemaFiles.entries
           .sortedBy { it.value.canonicalPath } // make sure the order is predicable for tests
-          .map { entry ->
+          .mapIndexed { i, entry ->
             val sourceFolderPath = entry.value.canonicalPath.relativePathToGraphql(dropLast = 1)!!
             val files = findFilesInSourceSets(project, sourceSetNames, sourceFolderPath, ::isGraphQL).values.toList()
 
-            val name = "service${i++}"
+            val name = "service$i"
 
             DefaultCompilationUnit(
                 serviceName = name,
