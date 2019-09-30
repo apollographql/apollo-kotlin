@@ -1,29 +1,32 @@
 package com.apollographql.apollo.gradle
 
 import com.apollographql.apollo.compiler.*
+import com.apollographql.apollo.gradle.api.CompilationUnit
 import org.gradle.api.Project
 import org.gradle.api.file.Directory
-import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.util.PatternSet
 import java.io.File
 
-class CompilationUnit(
-    val serviceName: String,
-    val variantName: String,
+class DefaultCompilationUnit(
+    override val serviceName: String,
+    override val variantName: String,
+    override val androidVariant: Any?,
     val files: List<File>,
     val schemaFile: File?,
     val schemaPackageName: String,
     val rootPackageName: String,
-    val androidVariant: Any?,
     project: Project
-) {
-  val name = "${variantName}${serviceName}"
-  lateinit var outputDir: Provider<Directory>
-  lateinit var transformedQueriesDir: Provider<Directory>
+): CompilationUnit {
+  val name = "${variantName}${serviceName.capitalize()}"
+  val outputDirectory = project.buildDir.child("generated", "source", "apollo", "classes", variantName, serviceName)
+  val transformedQueriesDirectory = project.buildDir.child("generated", "transformedQueries", "apollo", variantName, serviceName)
+
+  override lateinit var outputDir: Provider<Directory>
+  override lateinit var transformedQueriesDir: Provider<Directory>
 
   companion object {
-    fun from(project: Project, apolloVariant: ApolloVariant, service: Service): CompilationUnit {
+    fun from(project: Project, apolloVariant: ApolloVariant, service: Service): DefaultCompilationUnit {
       val sourceSetNames = apolloVariant.sourceSetNames
 
       val schemaFilePath = service.schemaFilePath
@@ -61,7 +64,7 @@ class CompilationUnit(
 
       val schemaPackageName = schemaFile.canonicalPath.formatPackageName(dropLast = 1) ?: ""
 
-      return CompilationUnit(
+      return DefaultCompilationUnit(
           serviceName = service.name,
           variantName = apolloVariant.name,
           files = files,
@@ -73,7 +76,7 @@ class CompilationUnit(
       )
     }
 
-    fun default(project: Project, apolloVariant: ApolloVariant): List<CompilationUnit> {
+    fun default(project: Project, apolloVariant: ApolloVariant): List<DefaultCompilationUnit> {
       val sourceSetNames = apolloVariant.sourceSetNames
       val schemaFiles = findFilesInSourceSets(project, sourceSetNames, ".") {
         it.name == "schema.json"
@@ -92,7 +95,7 @@ class CompilationUnit(
 
             val name = "service${i++}"
 
-            CompilationUnit(
+            DefaultCompilationUnit(
                 serviceName = name,
                 variantName = apolloVariant.name,
                 files = files,

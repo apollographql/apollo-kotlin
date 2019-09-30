@@ -1,7 +1,6 @@
 package com.apollographql.apollo.gradle
 
 import com.apollographql.apollo.compiler.NullableValueType
-import com.apollographql.apollo.compiler.child
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -154,10 +153,10 @@ open class ApolloPlugin : Plugin<Project> {
     }
 
     var compilationUnits = apolloExtension.services.map {
-      CompilationUnit.from(project, apolloVariant, it)
+      DefaultCompilationUnit.from(project, apolloVariant, it)
     }
     if (compilationUnits.isEmpty()) {
-      compilationUnits = CompilationUnit.default(project, apolloVariant)
+      compilationUnits = DefaultCompilationUnit.default(project, apolloVariant)
     }
     compilationUnits.forEach { compilationUnit ->
       val codegenTask = registerCodegenTasks(project, apolloExtension, apolloVariant.name, compilationUnit)
@@ -175,7 +174,7 @@ open class ApolloPlugin : Plugin<Project> {
     }
   }
 
-  fun registerCodegenTasks(project: Project, extension: ApolloExtension, variantName: String, compilationUnit: CompilationUnit): TaskProvider<ApolloCodegenTask> {
+  fun registerCodegenTasks(project: Project, extension: ApolloExtension, variantName: String, compilationUnit: DefaultCompilationUnit): TaskProvider<ApolloCodegenTask> {
     val taskName = "generate${variantName.capitalize()}${compilationUnit.serviceName.capitalize()}ApolloClasses"
 
     val taskProvider = project.tasks.register(taskName, ApolloCodegenTask::class.java) {
@@ -199,12 +198,12 @@ open class ApolloPlugin : Plugin<Project> {
       it.generateVisitorForPolymorphicDatatypes = extension.generateVisitorForPolymorphicDatatypes
       it.customTypeMapping = extension.customTypeMapping
       it.outputDir.apply {
-        set(project.buildDir.child("generated", "source", "apollo", "classes", variantName, compilationUnit.serviceName))
+        set(compilationUnit.outputDirectory)
         disallowChanges()
       }
       it.transformedQueriesOutputDir.apply {
         if (extension.generateTransformedQueries) {
-          set(project.buildDir.child("generated", "transformedQueries", "apollo", variantName, compilationUnit.serviceName))
+          set(compilationUnit.transformedQueriesDirectory)
         }
         disallowChanges()
       }
