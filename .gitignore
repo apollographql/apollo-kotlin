@@ -1,6 +1,8 @@
 .gradle
 .idea/*.xml
 .idea/caches/
+.idea/copyright/
+.idea/inspectionProfiles/
 .idea/libraries/
 *.iml
 build
