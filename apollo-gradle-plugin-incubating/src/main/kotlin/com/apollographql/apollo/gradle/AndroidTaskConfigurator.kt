@@ -51,11 +51,11 @@ object AndroidTaskConfigurator {
 
     registerVariantTask(project, apolloVariant) { serviceVariantTask ->
       if (apolloExtension.generateKotlinModels) {
-        variant.addJavaSourceFoldersToModel(serviceVariantTask.get().outputDir)
+        variant.addJavaSourceFoldersToModel(serviceVariantTask.get().outputDir.get().asFile)
         androidExtension.sourceSets.first { it.name == variant.name }.kotlin!!.srcDir(serviceVariantTask.get().outputDir)
         project.tasks.named("compile${variant.name.capitalize()}Kotlin").configure { it.dependsOn(serviceVariantTask) }
       } else {
-        variant.registerJavaGeneratingTask(serviceVariantTask.get(), serviceVariantTask.get().outputDir)
+        variant.registerJavaGeneratingTask(serviceVariantTask.get(), serviceVariantTask.get().outputDir.get().asFile)
       }
     }
   }

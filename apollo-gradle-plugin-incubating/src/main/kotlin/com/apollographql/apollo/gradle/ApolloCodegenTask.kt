@@ -5,6 +5,7 @@ import com.apollographql.apollo.compiler.NullableValueType
 import com.apollographql.apollo.compiler.PackageNameProvider
 import com.apollographql.apollo.compiler.parser.GraphQLDocumentParser
 import com.apollographql.apollo.compiler.parser.Schema
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.FileTree
 import org.gradle.api.tasks.*
 import java.io.File
@@ -18,7 +19,7 @@ open class ApolloCodegenTask : SourceTask() {
   lateinit var schemaPackageName: String
 
   @get:OutputDirectory
-  lateinit var outputDir: File
+  val outputDir: DirectoryProperty = project.objects.directoryProperty()
 
   @get:Input
   lateinit var customTypeMapping: Map<String, String>
@@ -45,8 +46,8 @@ open class ApolloCodegenTask : SourceTask() {
   var generateVisitorForPolymorphicDatatypes: Boolean = false
 
   @Optional
-  @get:Input
-  var transformedQueriesOutputDir: File? = null
+  @get:OutputDirectory
+  val transformedQueriesOutputDir: DirectoryProperty = project.objects.directoryProperty()
 
   @InputFiles
   @SkipWhenEmpty
@@ -73,7 +74,7 @@ open class ApolloCodegenTask : SourceTask() {
       return
     }
 
-    outputDir.delete()
+    outputDir.get().asFile.delete()
 
     val schema = Schema.invoke(schemaFile!!)
 
@@ -86,7 +87,7 @@ open class ApolloCodegenTask : SourceTask() {
     val codeGenerationIR = GraphQLDocumentParser(schema, packageNameProvider).parse(graphqlFiles)
     val args = GraphQLCompiler.Arguments(
         ir = codeGenerationIR,
-        outputDir = outputDir,
+        outputDir = outputDir.get().asFile,
         customTypeMap = customTypeMapping,
         nullableValueType = nullableValueTypeEnum ?: NullableValueType.ANNOTATED,
         useSemanticNaming = useSemanticNaming,
@@ -96,7 +97,7 @@ open class ApolloCodegenTask : SourceTask() {
         generateKotlinModels = generateKotlinModels,
         generateVisitorForPolymorphicDatatypes = generateVisitorForPolymorphicDatatypes,
         packageNameProvider = packageNameProvider,
-        transformedQueriesOutputDir = transformedQueriesOutputDir
+        transformedQueriesOutputDir = transformedQueriesOutputDir.getOrNull()?.asFile
     )
     GraphQLCompiler().write(args)
   }

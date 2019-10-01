@@ -264,4 +264,24 @@ class ConfigurationTests {
       assertThat(transformedQuery.readText(), containsString("__typename"))
     }
   }
+
+  @Test
+  fun `compilation unit directory properties carry task dependencies`() {
+    withSimpleProject("""
+      apollo {
+        generateTransformedQueries = true
+        
+        compilationUnits.all { compilationUnit ->
+          tasks.register("customTask" + compilationUnit.name) {
+            inputs.dir(compilationUnit.outputDir)
+            inputs.dir(compilationUnit.transformedQueriesDir)
+          }
+        }
+      }
+    """.trimIndent()) { dir ->
+      val result = TestUtils.executeTask("customTaskmainservice0", dir)
+
+      assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainService0ApolloClasses")!!.outcome)
+    }
+  }
 }
