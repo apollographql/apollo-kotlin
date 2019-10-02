@@ -22,6 +22,7 @@ script:
   - ./gradlew :apollo-gradle-plugin-incubating:test --tests "com.apollographql.apollo.gradle.test.*"
   - ./gradlew :apollo-gradle-plugin-incubating:test --tests "com.apollographql.apollo.gradle.dsltest.KotlinDSLTests"
   - .buildscript/integration_tests_composite.sh
+  - ./gradlew -p samples build
 
 before_script:
   - android list target
