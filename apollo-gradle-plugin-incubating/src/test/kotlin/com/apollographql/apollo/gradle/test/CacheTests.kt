@@ -25,17 +25,17 @@ class CacheTests {
       """.trimIndent())
 
       System.out.println("build the project")
-      var result = TestUtils.executeTask("generateMainService0ApolloClasses", dir, "--build-cache")
+      var result = TestUtils.executeTask("generateMainService0ApolloSources", dir, "--build-cache")
 
-      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainService0ApolloClasses")!!.outcome)
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainService0ApolloSources")!!.outcome)
 
       System.out.println("delete build folder")
       dir.child("build").deleteRecursively()
 
       System.out.println("build from cache")
-      result = TestUtils.executeTask("generateMainService0ApolloClasses", dir, "--build-cache")
+      result = TestUtils.executeTask("generateMainService0ApolloSources", dir, "--build-cache")
 
-      Assert.assertEquals(TaskOutcome.FROM_CACHE, result.task(":generateMainService0ApolloClasses")!!.outcome)
+      Assert.assertEquals(TaskOutcome.FROM_CACHE, result.task(":generateMainService0ApolloSources")!!.outcome)
     }
   }
 }

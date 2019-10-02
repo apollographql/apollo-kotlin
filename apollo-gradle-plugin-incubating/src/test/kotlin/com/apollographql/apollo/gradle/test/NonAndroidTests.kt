@@ -15,9 +15,9 @@ class NonAndroidTests {
       // Remove the google() repo where the android plugin resides
       File(dir, "build.gradle").replaceInText("google()", "")
 
-      val result = TestUtils.executeTask("generateApolloClasses", dir)
+      val result = TestUtils.executeTask("generateApolloSources", dir)
 
-      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloClasses")!!.outcome)
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
     }
   }
 }

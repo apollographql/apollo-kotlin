@@ -1,5 +1,6 @@
-package com.apollographql.apollo.gradle
+package com.apollographql.apollo.gradle.api
 
+import com.apollographql.apollo.gradle.api.Introspection
 import groovy.lang.Closure
 import org.gradle.api.Action
 

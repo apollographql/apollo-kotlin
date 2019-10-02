@@ -11,7 +11,7 @@ import org.gradle.api.tasks.*
 import java.io.File
 
 @CacheableTask
-open class ApolloCodegenTask : SourceTask() {
+open class ApolloGenerateSourcesTask : SourceTask() {
   @get:Input
   lateinit var rootPackageName: String
 

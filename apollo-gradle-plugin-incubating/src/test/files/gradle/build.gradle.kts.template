@@ -1,4 +1,4 @@
-import com.apollographql.apollo.gradle.ApolloExtension
+import com.apollographql.apollo.gradle.api.ApolloExtension
 
 buildscript {
   apply("../../../gradle/dependencies.gradle")
