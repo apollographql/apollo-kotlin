@@ -17,5 +17,6 @@ subprojects {
   repositories {
     google()
     mavenCentral()
+    jcenter() // needed for trove4j (transitive dependency of lintVitalRelease)
   }
 }
