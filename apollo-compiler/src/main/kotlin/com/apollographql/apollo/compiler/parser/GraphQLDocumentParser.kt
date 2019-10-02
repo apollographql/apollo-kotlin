@@ -584,7 +584,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
     }
   }
 
-  private fun Set<String>.usedSchemaTypes(): Set<Schema.Type> {
+  private fun Set<String>.usedSchemaTypes(exclude: Set<String> = emptySet()): Set<Schema.Type> {
     if (isEmpty()) {
       return emptySet()
     }
@@ -596,9 +596,9 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
 
     val inputObjectUsedTypes = usedSchemaTypes
         .mapNotNull { type -> type as? Schema.Type.InputObject }
-        .flatMap { inputObject -> inputObject.usedTypes(exclude = this) }
+        .flatMap { inputObject -> inputObject.usedTypes(exclude = this + exclude) }
         .toSet()
-        .usedSchemaTypes()
+        .usedSchemaTypes(this + exclude)
 
     return usedSchemaTypes + inputObjectUsedTypes
   }

@@ -2188,6 +2188,37 @@
                 "ofType": null
               },
               "defaultValue": "new"
+            },
+            {
+              "name": "reviewRefInput",
+              "description": "Circle ref to review input",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "ReviewRefInput",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "ReviewRefInput",
+          "description": "Circle ref to review input",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "reviewInput",
+              "description": null,
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "ReviewInput",
+                "ofType": null
+              },
+              "defaultValue": null
             }
           ],
           "interfaces": null,
