@@ -1,4 +1,4 @@
-package com.apollographql.apollo.gradle
+package com.apollographql.apollo.gradle.api
 
 class Introspection {
   var endpointUrl: String? = null

@@ -20,7 +20,7 @@ class ConfigurationTests {
         suppressRawTypesWarning = "true"
       }
     """.trimIndent()) { dir ->
-      TestUtils.executeTask("generateApolloClasses", dir)
+      TestUtils.executeTask("generateApolloSources", dir)
       TestUtils.assertFileContains(dir, "main/service0/com/example/type/CustomType.java", "return Date.class;")
     }
   }
@@ -39,7 +39,7 @@ class ConfigurationTests {
         nullableValueType = "${pair.first}"
       }
     """.trimIndent()) { dir ->
-        TestUtils.executeTask("generateApolloClasses", dir)
+        TestUtils.executeTask("generateApolloSources", dir)
         TestUtils.assertFileContains(dir, "main/service0/com/example/DroidDetailsQuery.java", pair.second)
       }
     }
@@ -49,7 +49,7 @@ class ConfigurationTests {
   fun `useSemanticNaming defaults to true`() {
     withSimpleProject("""
     """.trimIndent()) { dir ->
-      TestUtils.executeTask("generateApolloClasses", dir)
+      TestUtils.executeTask("generateApolloSources", dir)
       TestUtils.assertFileContains(dir, "main/service0/com/example/DroidDetailsQuery.java", "class DroidDetailsQuery ")
     }
   }
@@ -61,7 +61,7 @@ class ConfigurationTests {
         useSemanticNaming = false
       }
     """.trimIndent()) { dir ->
-      TestUtils.executeTask("generateApolloClasses", dir)
+      TestUtils.executeTask("generateApolloSources", dir)
       TestUtils.assertFileContains(dir, "main/service0/com/example/DroidDetails.java", "class DroidDetails ")
     }
   }
@@ -70,7 +70,7 @@ class ConfigurationTests {
   fun `generateModelBuilders defaults to false`() {
     withSimpleProject("""
     """.trimIndent()) { dir ->
-      TestUtils.executeTask("generateApolloClasses", dir)
+      TestUtils.executeTask("generateApolloSources", dir)
       TestUtils.assertFileDoesNotContain(dir, "main/service0/com/example/DroidDetailsQuery.java", "Builder toBuilder()")
     }
   }
@@ -82,7 +82,7 @@ class ConfigurationTests {
         generateModelBuilder = true
       }
     """.trimIndent()) { dir ->
-      TestUtils.executeTask("generateApolloClasses", dir)
+      TestUtils.executeTask("generateApolloSources", dir)
       TestUtils.assertFileContains(dir, "main/service0/com/example/DroidDetailsQuery.java", "Builder toBuilder()")
     }
   }
@@ -91,7 +91,7 @@ class ConfigurationTests {
   fun `useJavaBeansSemanticNaming defaults to false`() {
     withSimpleProject("""
     """.trimIndent()) { dir ->
-      TestUtils.executeTask("generateApolloClasses", dir)
+      TestUtils.executeTask("generateApolloSources", dir)
       TestUtils.assertFileContains(dir, "main/service0/com/example/DroidDetailsQuery.java", "String name()")
     }
   }
@@ -103,7 +103,7 @@ class ConfigurationTests {
         useJavaBeansSemanticNaming = true
       }
     """.trimIndent()) { dir ->
-      TestUtils.executeTask("generateApolloClasses", dir)
+      TestUtils.executeTask("generateApolloSources", dir)
       TestUtils.assertFileContains(dir, "main/service0/com/example/DroidDetailsQuery.java", "String getName()")
     }
   }
@@ -117,7 +117,7 @@ class ConfigurationTests {
     """.trimIndent()) { dir ->
       var exception: Exception? = null
       try {
-        TestUtils.executeTask("generateApolloClasses", dir)
+        TestUtils.executeTask("generateApolloSources", dir)
       } catch (e: UnexpectedBuildFailure) {
         exception = e
         assertThat(e.message, containsString("is not supported anymore"))
@@ -135,7 +135,7 @@ class ConfigurationTests {
     """.trimIndent()) { dir ->
       var exception: Exception? = null
       try {
-        TestUtils.executeTask("generateApolloClasses", dir)
+        TestUtils.executeTask("generateApolloSources", dir)
       } catch (e: UnexpectedBuildFailure) {
         exception = e
         assertThat(e.message, containsString("is not supported anymore"))
@@ -156,7 +156,7 @@ class ConfigurationTests {
     """.trimIndent()) { dir ->
       var exception: Exception? = null
       try {
-        TestUtils.executeTask("generateApolloClasses", dir)
+        TestUtils.executeTask("generateApolloSources", dir)
       } catch (e: UnexpectedBuildFailure) {
         exception = e
         assertThat(e.message, containsString("is not supported anymore"))
@@ -177,7 +177,7 @@ class ConfigurationTests {
     """.trimIndent()) { dir ->
       var exception: Exception? = null
       try {
-        TestUtils.executeTask("generateApolloClasses", dir)
+        TestUtils.executeTask("generateApolloSources", dir)
       } catch (e: UnexpectedBuildFailure) {
         exception = e
         assertThat(e.message, containsString("is not supported anymore"))
@@ -201,7 +201,7 @@ class ConfigurationTests {
       File(dir, "src/main/graphql/starwars/schema.json").copyTo(File(dir, "starwars.json"))
       File(dir, "src/main/graphql/starwars/schema.json").delete()
 
-      TestUtils.executeTask("generateApolloClasses", dir)
+      TestUtils.executeTask("generateApolloSources", dir)
       assertTrue(dir.generatedChild("main/starwars/starwars/DroidDetailsQuery.java").isFile)
       assertTrue(dir.generatedChild("main/starwars/type/CustomType.java").isFile)
       assertTrue(dir.generatedChild("main/starwars/fragment/SpeciesInformation.java").isFile)
@@ -224,7 +224,7 @@ class ConfigurationTests {
       File(dir, "src/main/graphql/starwars/schema.json").copyTo(File(dir, "starwars.json"))
       File(dir, "src/main/graphql/starwars/schema.json").delete()
 
-      TestUtils.executeTask("generateApolloClasses", dir)
+      TestUtils.executeTask("generateApolloSources", dir)
       assertTrue(dir.generatedChild("main/starwars/com/starwars/starwars/DroidDetailsQuery.java").isFile)
       assertTrue(dir.generatedChild("main/starwars/com/starwars/type/CustomType.java").isFile)
       assertTrue(dir.generatedChild("main/starwars/com/starwars/fragment/SpeciesInformation.java").isFile)
@@ -244,9 +244,9 @@ class ConfigurationTests {
       File(dir, "src/main/graphql/com/example/error.gql").writeText("this is not valid graphql")
       File(dir, "src/main/graphql/com/example/error/").mkdir()
       File(dir, "src/main/graphql/com/example/error/error.gql").writeText("this is not valid graphql")
-      val result = TestUtils.executeTask("generateApolloClasses", dir)
+      val result = TestUtils.executeTask("generateApolloSources", dir)
 
-      assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloClasses")!!.outcome)
+      assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
     }
   }
 
@@ -257,9 +257,9 @@ class ConfigurationTests {
         generateTransformedQueries = true
       }
     """.trimIndent()) { dir ->
-      val result = TestUtils.executeTask("generateApolloClasses", dir)
+      val result = TestUtils.executeTask("generateApolloSources", dir)
 
-      assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloClasses")!!.outcome)
+      assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
       val transformedQuery = dir.child("build", "generated", "transformedQueries", "apollo", "main", "service0", "com", "example", "DroidDetails.graphql")
       assertThat(transformedQuery.readText(), containsString("__typename"))
     }
@@ -281,7 +281,7 @@ class ConfigurationTests {
     """.trimIndent()) { dir ->
       val result = TestUtils.executeTask("customTaskmainservice0", dir)
 
-      assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainService0ApolloClasses")!!.outcome)
+      assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainService0ApolloSources")!!.outcome)
     }
   }
 }

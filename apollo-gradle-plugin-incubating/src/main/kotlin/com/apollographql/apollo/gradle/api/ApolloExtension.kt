@@ -1,6 +1,5 @@
-package com.apollographql.apollo.gradle
+package com.apollographql.apollo.gradle.api
 
-import com.apollographql.apollo.gradle.api.CompilationUnit
 import org.gradle.api.Action
 import org.gradle.api.Project
 

@@ -25,9 +25,9 @@ class UpToDateTests {
   }
 
   private fun `builds successfully and generates expected outputs`(dir: File) {
-    val result = TestUtils.executeTask("generateApolloClasses", dir)
+    val result = TestUtils.executeTask("generateApolloSources", dir)
 
-    assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloClasses")!!.outcome)
+    assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
 
     // Java classes generated successfully
     assertTrue(dir.generatedChild("main/service0/com/example/DroidDetailsQuery.java").isFile)
@@ -43,9 +43,9 @@ class UpToDateTests {
   }
 
   fun `nothing changed, task up to date`(dir: File) {
-    val result = TestUtils.executeTask("generateApolloClasses", dir)
+    val result = TestUtils.executeTask("generateApolloSources", dir)
 
-    assertEquals(TaskOutcome.UP_TO_DATE, result.task(":generateApolloClasses")!!.outcome)
+    assertEquals(TaskOutcome.UP_TO_DATE, result.task(":generateApolloSources")!!.outcome)
 
     // Java classes generated successfully
     assertTrue(dir.generatedChild("main/service0/com/example/DroidDetailsQuery.java").isFile)
@@ -62,11 +62,11 @@ class UpToDateTests {
 
     File(dir, "build.gradle").appendText(apolloBlock)
 
-    val result = TestUtils.executeTask("generateApolloClasses", dir)
+    val result = TestUtils.executeTask("generateApolloSources", dir)
 
     // modifying the customTypeMapping should cause the task to be out of date
     // and the task should run again
-    assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloClasses")!!.outcome)
+    assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
 
     TestUtils.assertFileContains(dir, "main/service0/com/example/type/CustomType.java", "return Date.class;")
 
@@ -77,16 +77,16 @@ class UpToDateTests {
   @Test
   fun `change graphql file rebuilds the sources`() {
     withSimpleProject { dir ->
-      var result = TestUtils.executeTask("generateApolloClasses", dir, "-i")
+      var result = TestUtils.executeTask("generateApolloSources", dir, "-i")
 
-      assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloClasses")!!.outcome)
+      assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
       assertThat(dir.generatedChild("main/service0/com/example/DroidDetailsQuery.java").readText(), containsString("classification"))
 
       dir.child("src", "main", "graphql", "com", "example", "DroidDetails.graphql").replaceInText("classification", "")
 
-      result = TestUtils.executeTask("generateApolloClasses", dir, "-i")
+      result = TestUtils.executeTask("generateApolloSources", dir, "-i")
 
-      assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloClasses")!!.outcome)
+      assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
       assertThat(dir.generatedChild("main/service0/com/example/DroidDetailsQuery.java").readText(), not(containsString("classification")))
     }
   }
@@ -94,16 +94,16 @@ class UpToDateTests {
   @Test
   fun `change schema file rebuilds the sources`() {
     withSimpleProject { dir ->
-      var result = TestUtils.executeTask("generateApolloClasses", dir, "-i")
+      var result = TestUtils.executeTask("generateApolloSources", dir, "-i")
 
-      assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloClasses")!!.outcome)
+      assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
 
       val schemaFile = dir.child("src", "main", "graphql", "com", "example", "schema.json")
       schemaFile.writeText(schemaFile.readText() + "fezfze\n\n")
 
-      result = TestUtils.executeTask("generateApolloClasses", dir, "-i")
+      result = TestUtils.executeTask("generateApolloSources", dir, "-i")
 
-      assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloClasses")!!.outcome)
+      assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
     }
   }
 }

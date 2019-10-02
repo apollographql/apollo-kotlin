@@ -120,7 +120,7 @@ object TestUtils {
 
     block(dest)
 
-    dest.deleteRecursively()
+    //dest.deleteRecursively()
   }
 
   /**
@@ -162,7 +162,7 @@ object TestUtils {
   fun fixturesDirectory() = File(System.getProperty("user.dir")).child("src", "test", "files")
 }
 
-fun File.generatedChild(path: String) = child("build", "generated", "source", "apollo", "classes", path)
+fun File.generatedChild(path: String) = child("build", "generated", "source", "apollo", path)
 
 fun File.replaceInText(oldValue: String, newValue: String) {
   val text = readText()

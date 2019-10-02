@@ -39,8 +39,8 @@ class KotlinDSLTests {
         plugins = listOf(TestUtils.javaPlugin, TestUtils.apolloPlugin),
         apolloConfiguration = apolloConfiguration
     ) { dir ->
-      val result = TestUtils.executeTask("generateApolloClasses", dir)
-      assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloClasses")!!.outcome)
+      val result = TestUtils.executeTask("generateApolloSources", dir)
+      assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
       Assert.assertTrue(dir.generatedChild("main/starwars/com/starwars/com/example/DroidDetails.java").isFile)
     }
   }
@@ -76,8 +76,8 @@ class KotlinDSLTests {
         plugins = listOf(TestUtils.javaPlugin, TestUtils.apolloPlugin),
         apolloConfiguration = apolloConfiguration
     ) { dir ->
-      val result = TestUtils.executeTask("generateApolloClasses", dir)
-      assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloClasses")!!.outcome)
+      val result = TestUtils.executeTask("generateApolloSources", dir)
+      assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
       Assert.assertTrue(dir.generatedChild("main/starwars/com/starwars/com/example/DroidDetails.java").isFile)
     }
   }

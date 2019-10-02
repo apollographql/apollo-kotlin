@@ -2,6 +2,7 @@ package com.apollographql.apollo.gradle
 
 import com.apollographql.apollo.compiler.*
 import com.apollographql.apollo.gradle.api.CompilationUnit
+import com.apollographql.apollo.gradle.api.Service
 import org.gradle.api.Project
 import org.gradle.api.file.Directory
 import org.gradle.api.provider.Provider
@@ -19,7 +20,7 @@ class DefaultCompilationUnit(
     project: Project
 ): CompilationUnit {
   val name = "${variantName}${serviceName.capitalize()}"
-  internal val outputDirectory = project.buildDir.child("generated", "source", "apollo", "classes", variantName, serviceName)
+  internal val outputDirectory = project.buildDir.child("generated", "source", "apollo", variantName, serviceName)
   internal val transformedQueriesDirectory = project.buildDir.child("generated", "transformedQueries", "apollo", variantName, serviceName)
 
   override lateinit var outputDir: Provider<Directory>
