@@ -26,15 +26,19 @@ public final class ColorInput implements InputType {
 
   private final Input<Episode> enumWithDefaultValue;
 
+  private final Input<ReviewRefInput> reviewRefInput;
+
   private transient volatile int $hashCode;
 
   private transient volatile boolean $hashCodeMemoized;
 
-  ColorInput(int red, Input<Double> green, double blue, Input<Episode> enumWithDefaultValue) {
+  ColorInput(int red, Input<Double> green, double blue, Input<Episode> enumWithDefaultValue,
+      Input<ReviewRefInput> reviewRefInput) {
     this.red = red;
     this.green = green;
     this.blue = blue;
     this.enumWithDefaultValue = enumWithDefaultValue;
+    this.reviewRefInput = reviewRefInput;
   }
 
   /**
@@ -65,6 +69,13 @@ public final class ColorInput implements InputType {
     return this.enumWithDefaultValue.value;
   }
 
+  /**
+   * Circle ref to review input
+   */
+  public @Nullable ReviewRefInput reviewRefInput() {
+    return this.reviewRefInput.value;
+  }
+
   public static Builder builder() {
     return new Builder();
   }
@@ -82,6 +93,9 @@ public final class ColorInput implements InputType {
         if (enumWithDefaultValue.defined) {
           writer.writeString("enumWithDefaultValue", enumWithDefaultValue.value != null ? enumWithDefaultValue.value.rawValue() : null);
         }
+        if (reviewRefInput.defined) {
+          writer.writeObject("reviewRefInput", reviewRefInput.value != null ? reviewRefInput.value.marshaller() : null);
+        }
       }
     };
   }
@@ -98,6 +112,8 @@ public final class ColorInput implements InputType {
       h ^= Double.valueOf(blue).hashCode();
       h *= 1000003;
       h ^= enumWithDefaultValue.hashCode();
+      h *= 1000003;
+      h ^= reviewRefInput.hashCode();
       $hashCode = h;
       $hashCodeMemoized = true;
     }
@@ -114,7 +130,8 @@ public final class ColorInput implements InputType {
       return this.red == that.red
        && this.green.equals(that.green)
        && Double.doubleToLongBits(this.blue) == Double.doubleToLongBits(that.blue)
-       && this.enumWithDefaultValue.equals(that.enumWithDefaultValue);
+       && this.enumWithDefaultValue.equals(that.enumWithDefaultValue)
+       && this.reviewRefInput.equals(that.reviewRefInput);
     }
     return false;
   }
@@ -127,6 +144,8 @@ public final class ColorInput implements InputType {
     private double blue = 1.5;
 
     private Input<Episode> enumWithDefaultValue = Input.fromNullable(Episode.safeValueOf("new"));
+
+    private Input<ReviewRefInput> reviewRefInput = Input.absent();
 
     Builder() {
     }
@@ -164,6 +183,14 @@ public final class ColorInput implements InputType {
     }
 
     /**
+     * Circle ref to review input
+     */
+    public Builder reviewRefInput(@Nullable ReviewRefInput reviewRefInput) {
+      this.reviewRefInput = Input.fromNullable(reviewRefInput);
+      return this;
+    }
+
+    /**
      * Green color
      */
     public Builder greenInput(@NotNull Input<Double> green) {
@@ -179,8 +206,16 @@ public final class ColorInput implements InputType {
       return this;
     }
 
+    /**
+     * Circle ref to review input
+     */
+    public Builder reviewRefInputInput(@NotNull Input<ReviewRefInput> reviewRefInput) {
+      this.reviewRefInput = Utils.checkNotNull(reviewRefInput, "reviewRefInput == null");
+      return this;
+    }
+
     public ColorInput build() {
-      return new ColorInput(red, green, blue, enumWithDefaultValue);
+      return new ColorInput(red, green, blue, enumWithDefaultValue, reviewRefInput);
     }
   }
 }
