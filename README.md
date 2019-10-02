@@ -26,7 +26,7 @@ Apollo-Android is designed primarily with Android in mind but you can use it in 
   - [Semantic Naming](#semantic-naming)
   - [Java Beans Semantic Naming for Accessors](#java-beans-semantic-naming-for-accessors)
   - [Explicit Schema location](#explicit-schema-location)
-  - [Kotlin model generation (experimental)](#kotlin-model-generation-experimental)
+  - [Kotlin model generation](#kotlin-model-generation)
   - [Transformed queries](#transformed-queries)
   - [Incubating plugin](#incubating-plugin)
 - [License](#license)
