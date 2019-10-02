@@ -35,7 +35,6 @@ tasks.withType<Test> {
   inputs.dir("src/test/files")
 }
 
-
 apply(rootProject.file("gradle/gradle-mvn-push.gradle"))
 apply(rootProject.file("gradle/bintray.gradle"))
 
