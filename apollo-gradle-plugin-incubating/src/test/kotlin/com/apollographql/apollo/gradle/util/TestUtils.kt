@@ -120,7 +120,7 @@ object TestUtils {
 
     block(dest)
 
-    //dest.deleteRecursively()
+    dest.deleteRecursively()
   }
 
   /**
