@@ -67,28 +67,26 @@ public class ApolloServerInterceptorFileUploadTest {
       .file(upload1)
       .build();
 
-  private final String expectedOperationsPartBodySingle = "{\"operationName\":\"SingleUpload\"," +
-      "\"variables\":{\"file\":null}," +
-      "\"query\":\"mutation SingleUpload($file: Upload!) {  " +
-      "singleUpload(file: $file) {    __typename    id    path    filename    mimetype  }}\"}";
+  private final String expectedOperationsPartBodySingle = " {\"operationName\":\"SingleUpload\",\"variables\":{\"file\":null}" +
+      ",\"query\":\"mutation SingleUpload($file: Upload!) " +
+      "{ singleUpload(file: $file) { __typename id path filename mimetype } }\"}";
   private final String expectedMapPartBodySingle = "{\"0\":[\"variables.file\"]}";
 
   private final SingleUploadTwiceMutation mutationTwice = SingleUploadTwiceMutation.builder()
       .file1(upload1)
       .file2(upload2)
       .build();
-  private final String expectedOperationsPartBodyTwice = "{\"operationName\":\"SingleUploadTwice\"," +
-      "\"variables\":{\"file1\":null,\"file2\":null}," +
-      "\"query\":\"mutation SingleUploadTwice($file1: Upload!, $file2: Upload!) {  " +
-      "file1: singleUpload(file: $file1) {    __typename    id    path    filename    mimetype  }  " +
-      "file2: singleUpload(file: $file2) {    __typename    id    path    filename    mimetype  }}\"}";
+
+  private final String expectedOperationsPartBodyTwice = "{\"operationName\":\"SingleUploadTwice\",\"variables\"" +
+      ":{\"file1\":null,\"file2\":null},\"query\":\"mutation SingleUploadTwice($file1: Upload!, $file2: Upload!) " +
+      "{ file1: singleUpload(file: $file1) { __typename id path filename mimetype } file2: singleUpload(file: $file2)" +
+      " { __typename id path filename mimetype } }\"}";
   private final String expectedMapPartBodyTwice = "{\"0\":[\"variables.file1\"],\"1\":[\"variables.file2\"]}";
 
   private MultipleUploadMutation mutationMultiple = null;
-  private final String expectedOperationsPartBodyMultiple = "{\"operationName\":\"MultipleUpload\"," +
-      "\"variables\":{\"files\":[null,null]}," +
-      "\"query\":\"mutation MultipleUpload($files: [Upload!]!) {  " +
-      "multipleUpload(files: $files) {    __typename    id    path    filename    mimetype  }}\"}";
+  private final String expectedOperationsPartBodyMultiple = "{\"operationName\":\"MultipleUpload\",\"variables\"" +
+      ":{\"files\":[null,null]},\"query\":\"mutation MultipleUpload($files: [Upload!]!) { multipleUpload(files: $files)" +
+      " { __typename id path filename mimetype } }\"}";
   private final String expectedMapPartBodyMultiple = "{\"0\":[\"variables.files.0\"],\"1\":[\"variables.files.1\"]}";
 
   private final NestedUploadMutation mutationNested = NestedUploadMutation.builder()
@@ -97,10 +95,10 @@ public class ApolloServerInterceptorFileUploadTest {
       .topFileList(new ArrayList<>(Arrays.asList(upload1, upload0)))
       .build();
   private final String expectedOperationsPartBodyNested = "{\"operationName\":\"NestedUpload\"," +
-      "\"variables\":{\"topFile\":null,\"topFileList\":[null,null],\"nested\":{\"recursiveNested\":[" +
-      "{\"file\":null,\"fileList\":[null,null]},{\"file\":null,\"fileList\":[null,null]}],\"file\":null,\"fileList\":[null,null]}}," +
-      "\"query\":\"mutation NestedUpload($topFile: Upload, $topFileList: [Upload], $nested: NestedObject) {  " +
-      "nestedUpload(topFile: $topFile, topFileList: $topFileList, nested: $nested)}\"}";
+      "\"variables\":{\"topFile\":null,\"topFileList\":[null,null],\"nested\":{\"recursiveNested\":" +
+      "[{\"file\":null,\"fileList\":[null,null]},{\"file\":null,\"fileList\":[null,null]}],\"file\":null," +
+      "\"fileList\":[null,null]}},\"query\":\"mutation NestedUpload($topFile: Upload, $topFileList: [Upload]," +
+      " $nested: NestedObject) { nestedUpload(topFile: $topFile, topFileList: $topFileList, nested: $nested) }\"}";
   private final String expectedMapPartBodyNested = "{\"0\":[\"variables.topFile\"],\"1\":[\"variables.topFileList.0\"]," +
       "\"2\":[\"variables.topFileList.1\"],\"3\":[\"variables.nested.recursiveNested.0.file\"]," +
       "\"4\":[\"variables.nested.recursiveNested.0.fileList.0\"],\"5\":[\"variables.nested.recursiveNested.0.fileList.1\"]," +
