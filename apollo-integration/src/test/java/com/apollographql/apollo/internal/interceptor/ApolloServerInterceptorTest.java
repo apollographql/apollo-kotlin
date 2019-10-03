@@ -156,7 +156,7 @@ public class ApolloServerInterceptorTest {
         assertThat(request.header(HttpCache.CACHE_EXPIRE_TIMEOUT_HEADER)).isNull();
         assertThat(request.header(HttpCache.CACHE_EXPIRE_AFTER_READ_HEADER)).isNull();
         assertThat(request.header(HttpCache.CACHE_PREFETCH_HEADER)).isNull();
-        assertThat(request.url().queryParameter("query")).isEqualTo(query.queryDocument().replace("\n", ""));
+        assertThat(request.url().queryParameter("query")).isEqualTo(query.queryDocument().replaceAll("\\s *", " "));
         assertThat(request.url().queryParameter("operationName")).isEqualTo(query.name().name());
         assertThat(request.url().queryParameter("variables")).isEqualTo("{\"after\":\"some cursor\",\"first\":null,\"last\":100}");
         assertThat(request.url().queryParameter("extensions")).isEqualTo("{\"persistedQuery\":{\"version\":1," +
@@ -189,10 +189,12 @@ public class ApolloServerInterceptorTest {
       throw new RuntimeException(e);
     }
     String expectedRequestBody = "{\"operationName\":\"AllFilms\"," +
-        "\"variables\":{\"after\":\"some cursor\",\"first\":null,\"last\":100}," +
-        "\"query\":\"query AllFilms($after: String, $first: Int, $before: String, $last: Int) {  " +
-        "allFilms(after: $after, first: $first, before: $before, last: $last) {    " +
-        "__typename    totalCount    films {      __typename      title      releaseDate    }  }}\"}";
+        "\"variables\":{\"after\":\"some cursor\",\"first\":null," +
+        "\"last\":100},\"query\":\"query AllFilms($after: String, " +
+        "$first: Int, $before: String, $last: Int) { allFilms(after: " +
+        "$after, first: $first, before: $before, last: $last) { __typename " +
+        "totalCount films { __typename title releaseDate } } }\"}";
+
     assertThat(bodyBuffer.readUtf8()).isEqualTo(expectedRequestBody);
   }
 
