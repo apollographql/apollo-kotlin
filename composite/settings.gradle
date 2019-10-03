@@ -4,7 +4,7 @@ include ':java-sample'
 project(':java-sample').projectDir = file('../samples/java-sample')
 include ':kotlin-sample'
 project(':kotlin-sample').projectDir = file('../samples/kotlin-sample')
-include ':integration-tests'
-project(':integration-tests').projectDir = file('../integration-tests')
+include ':apollo-integration'
+project(':apollo-integration').projectDir = file('../apollo-integration')
 
 includeBuild('../')
