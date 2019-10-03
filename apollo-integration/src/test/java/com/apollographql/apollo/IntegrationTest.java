@@ -124,36 +124,12 @@ public class IntegrationTest {
     );
 
     assertThat(server.takeRequest().getBody().readString(Charsets.UTF_8))
-        .isEqualTo("{\"operationName\":\"AllPlanets\",\"variables\":{},"
-            + "\"query\":\"query AllPlanets {  "
-            + "allPlanets(first: 300) {"
-            + "    __typename"
-            + "    planets {"
-            + "      __typename"
-            + "      ...PlanetFragment"
-            + "      filmConnection {"
-            + "        __typename"
-            + "        totalCount"
-            + "        films {"
-            + "          __typename"
-            + "          title"
-            + "          ...FilmFragment"
-            + "        }"
-            + "      }"
-            + "    }"
-            + "  }"
-            + "}"
-            + "fragment PlanetFragment on Planet {"
-            + "  __typename"
-            + "  name"
-            + "  climates"
-            + "  surfaceWater"
-            + "}"
-            + "fragment FilmFragment on Film {"
-            + "  __typename"
-            + "  title"
-            + "  producers"
-            + "}\"}");
+        .isEqualTo("{\"operationName\":\"AllPlanets\",\"variables\":" +
+            "{},\"query\":\"query AllPlanets { allPlanets(first: 300) " +
+            "{ __typename planets { __typename ...PlanetFragment filmConnection " +
+            "{ __typename totalCount films { __typename title ...FilmFragment } } } } } " +
+            "fragment PlanetFragment on Planet { __typename name climates surfaceWater } " +
+            "fragment FilmFragment on Film { __typename title producers }\"}");
   }
 
   @Test public void error_response() throws Exception {
