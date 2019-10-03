@@ -9,6 +9,7 @@ buildscript {
 
   dependencies {
     classpath dep.android.plugin
+    classpath dep.kotlin.plugin
     classpath "com.apollographql.apollo:apollo-gradle-plugin"
   }
 }
@@ -17,5 +18,6 @@ subprojects {
   repositories {
     google()
     mavenCentral()
+    jcenter()
   }
 }

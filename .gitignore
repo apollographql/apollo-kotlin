@@ -1,9 +1,11 @@
 .gradle
-.idea/*.xml
-.idea/caches/
-.idea/copyright/
-.idea/inspectionProfiles/
-.idea/libraries/
+**/.idea/*.xml
+**/.idea/caches/
+**/.idea/copyright/
+**/.idea/inspectionProfiles/
+**/.idea/libraries/
+**/.idea/$PRODUCT_WORKSPACE_FILE$
+**/.idea/.gitignore
 *.iml
 build
 local.properties

@@ -1,10 +1,3 @@
-buildscript {
-  dependencies {
-    classpath dep.android.plugin
-    classpath dep.apollo.plugin
-  }
-}
-
 apply plugin: 'com.android.application'
 apply plugin: 'com.apollographql.android'
 apply plugin: 'kotlin-android'
@@ -35,10 +28,11 @@ dependencies {
   implementation dep.android.appcompat
   implementation dep.kotlin.coroutines.core
   implementation dep.kotlin.stdLib
-  implementation project(':apollo-runtime')
-  implementation project(':apollo-rx2-support')
-  implementation project(':apollo-coroutines-support')
-  implementation project(':apollo-http-cache')
+
+  implementation "com.apollographql.apollo:apollo-runtime"
+  implementation "com.apollographql.apollo:apollo-rx2-support"
+  implementation "com.apollographql.apollo:apollo-coroutines-support"
+  implementation "com.apollographql.apollo:apollo-http-cache"
 
   testImplementation dep.junit
   testImplementation dep.truth
