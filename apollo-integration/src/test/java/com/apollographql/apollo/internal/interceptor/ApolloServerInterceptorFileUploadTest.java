@@ -67,7 +67,7 @@ public class ApolloServerInterceptorFileUploadTest {
       .file(upload1)
       .build();
 
-  private final String expectedOperationsPartBodySingle = " {\"operationName\":\"SingleUpload\",\"variables\":{\"file\":null}" +
+  private final String expectedOperationsPartBodySingle = "{\"operationName\":\"SingleUpload\",\"variables\":{\"file\":null}" +
       ",\"query\":\"mutation SingleUpload($file: Upload!) " +
       "{ singleUpload(file: $file) { __typename id path filename mimetype } }\"}";
   private final String expectedMapPartBodySingle = "{\"0\":[\"variables.file\"]}";
