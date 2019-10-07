@@ -188,6 +188,7 @@ public final class ApolloServerInterceptor implements ApolloInterceptor {
   static ByteString httpPostRequestBody(Operation operation, ScalarTypeAdapters scalarTypeAdapters,
       boolean writeQueryDocument, boolean autoPersistQueries) throws IOException {
     Buffer buffer = new Buffer();
+    String queryDocument = operation.queryDocument().replaceAll("\\s *", " ");
     JsonWriter jsonWriter = JsonWriter.of(buffer);
     jsonWriter.setSerializeNulls(true);
     jsonWriter.beginObject();
@@ -201,12 +202,12 @@ public final class ApolloServerInterceptor implements ApolloInterceptor {
           .name("persistedQuery")
           .beginObject()
           .name("version").value(1)
-          .name("sha256Hash").value(operation.operationId())
+          .name("sha256Hash").value(queryDocument)
           .endObject()
           .endObject();
     }
     if (!autoPersistQueries || writeQueryDocument) {
-      jsonWriter.name("query").value(operation.queryDocument().replaceAll("\\s *", " "));
+      jsonWriter.name("query").value(queryDocument);
     }
     jsonWriter.endObject();
     jsonWriter.close();
