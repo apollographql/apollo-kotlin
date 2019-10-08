@@ -128,15 +128,23 @@ value
    ;
 
 arrayValueType
-   : '[' valueOrVariable ( ','? valueOrVariable )* ']' | '[' ']'
+   : '[' valueOrVariable ( ','? valueOrVariable )* ']' | emptyArray
+   ;
+
+emptyArray
+   : '[' ']'
    ;
 
 inlineInputType
-   : '{' inlineInputTypeField ( ','? inlineInputTypeField )* '}'
+   : '{' inlineInputTypeField ( ','? inlineInputTypeField )* '}' | emptyMap
    ;
 
 inlineInputTypeField
    : NAME ':' valueOrVariable
+   ;
+
+emptyMap
+   : '{' '}'
    ;
 
 type

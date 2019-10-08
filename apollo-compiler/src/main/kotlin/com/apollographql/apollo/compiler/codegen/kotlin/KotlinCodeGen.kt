@@ -102,14 +102,14 @@ internal object KotlinCodeGen {
 
       when {
         type is FieldType.Scalar && type is FieldType.Scalar.Custom -> {
-          builder.add("(%S, %S, %L, %L, %T.%L, %L)", responseName, schemaName, arguments.toCode(), isOptional,
+          builder.add("(%S, %S, %L, %L, %T.%L, %L)", responseName, schemaName, arguments.takeIf { it.isNotEmpty() }.toCode(), isOptional,
               type.customEnumType.asTypeName(), type.customEnumConst, conditionsListCode(conditions))
         }
         type is FieldType.InlineFragment -> {
           builder.add("(%S, %S, %L)", responseName, schemaName, conditionsListCode(conditions))
         }
         else -> {
-          builder.add("(%S, %S, %L, %L, %L)", responseName, schemaName, arguments.toCode(), isOptional,
+          builder.add("(%S, %S, %L, %L, %L)", responseName, schemaName, arguments.takeIf { it.isNotEmpty() }.toCode(), isOptional,
               conditionsListCode(conditions))
         }
       }
@@ -392,22 +392,18 @@ internal object KotlinCodeGen {
 
   fun TypeRef.asTypeName() = ClassName(packageName = packageName, simpleName = name.capitalize())
 
-  private fun Map<String, Any>.toCode(): CodeBlock? {
-    if (isEmpty()) return null
-
-    return map { it.toCode() }
-        .foldIndexed(CodeBlock.builder().add(
-            "mapOf<%T, Any>(\n",
-            String::class.asTypeName()).indent()
-        ) { index, builder, code ->
-          if (index > 0) {
-            builder.add(",\n")
-          }
-          builder.add(code)
-        }
-        .unindent()
-        .add(")")
-        .build()
+  private fun Map<String, Any>?.toCode(): CodeBlock? {
+    return when {
+      this == null -> null
+      this.isEmpty() -> CodeBlock.of("emptyMap<%T, Any>()", String::class.asTypeName())
+      else -> CodeBlock.builder()
+          .add("mapOf<%T, Any>(\n", String::class.asTypeName())
+          .indent()
+          .add(map { it.toCode() }.joinToCode(separator = ",\n"))
+          .unindent()
+          .add(")")
+          .build()
+    }
   }
 
   @Suppress("UNCHECKED_CAST")
