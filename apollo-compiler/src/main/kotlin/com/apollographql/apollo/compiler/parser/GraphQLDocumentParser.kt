@@ -504,28 +504,36 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
     is GraphQLParser.StringValueContext -> STRING().text.trim().replace("\"", "")
     is GraphQLParser.LiteralValueContext -> NAME().text
     is GraphQLParser.ArrayValueContext -> {
-      arrayValueType().valueOrVariable().map { valueOrVariable ->
-        valueOrVariable.variable()?.let { variable ->
-          mapOf(
-              "kind" to "Variable",
-              "variableName" to variable.NAME().text
-          )
-        } ?: valueOrVariable.value().parse()
+      if (arrayValueType().emptyArray() != null) {
+        emptyList<Any?>()
+      } else {
+        arrayValueType().valueOrVariable().map { valueOrVariable ->
+          valueOrVariable.variable()?.let { variable ->
+            mapOf(
+                "kind" to "Variable",
+                "variableName" to variable.NAME().text
+            )
+          } ?: valueOrVariable.value().parse()
+        }
       }
     }
     is GraphQLParser.InlineInputTypeValueContext -> {
-      inlineInputType().inlineInputTypeField().map { field ->
-        val name = field.NAME().text
-        val variableValue = field.valueOrVariable().variable()?.NAME()?.text
-        val value = field.valueOrVariable().value()?.parse()
-        name to when {
-          variableValue != null -> mapOf(
-              "kind" to "Variable",
-              "variableName" to variableValue
-          )
-          else -> value
-        }
-      }.toMap()
+      if (inlineInputType().emptyMap() != null) {
+        emptyMap<String, Any?>()
+      } else {
+        inlineInputType().inlineInputTypeField().map { field ->
+          val name = field.NAME().text
+          val variableValue = field.valueOrVariable().variable()?.NAME()?.text
+          val value = field.valueOrVariable().value()?.parse()
+          name to when {
+            variableValue != null -> mapOf(
+                "kind" to "Variable",
+                "variableName" to variableValue
+            )
+            else -> value
+          }
+        }.toMap()
+      }
     }
     else -> throw ParseException(
         message = "Unsupported argument value `$text`",

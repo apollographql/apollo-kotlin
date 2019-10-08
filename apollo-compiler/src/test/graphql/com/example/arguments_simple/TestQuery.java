@@ -36,13 +36,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, TestQuery.Variables> {
-  public static final String OPERATION_ID = "36f4332618a8e5295b0c464b25b3be7e961457f3e7d7baa4cdaf5db970be075d";
+  public static final String OPERATION_ID = "8153aa4a8d74f3a80dabf112d6483e1267ad24222b8fbc4276400648d2b2d303";
 
   public static final String QUERY_DOCUMENT = "query TestQuery($episode: Episode, $IncludeName: Boolean!, $friendsCount: Int!, $listOfListOfStringArgs: [[String]!]!) {\n"
       + "  hero(episode: $episode, listOfListOfStringArgs: $listOfListOfStringArgs) {\n"
       + "    __typename\n"
       + "    name @include(if: $IncludeName)\n"
       + "    ...HeroDetails\n"
+      + "  }\n"
+      + "  heroWithReview(episode: $episode, review: {}) {\n"
+      + "    __typename\n"
+      + "    name\n"
       + "  }\n"
       + "}\n"
       + "fragment HeroDetails on Character {\n"
@@ -241,10 +245,20 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         .put("kind", "Variable")
         .put("variableName", "listOfListOfStringArgs")
         .build())
+      .build(), true, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forObject("heroWithReview", "heroWithReview", new UnmodifiableMapBuilder<String, Object>(2)
+      .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
+        .put("kind", "Variable")
+        .put("variableName", "episode")
+        .build())
+      .put("review", new UnmodifiableMapBuilder<String, Object>(0)
+        .build())
       .build(), true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final Optional<Hero> hero;
+
+    final Optional<HeroWithReview> heroWithReview;
 
     private transient volatile String $toString;
 
@@ -252,12 +266,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Data(@Nullable Hero hero) {
+    public Data(@Nullable Hero hero, @Nullable HeroWithReview heroWithReview) {
       this.hero = Optional.fromNullable(hero);
+      this.heroWithReview = Optional.fromNullable(heroWithReview);
     }
 
     public Optional<Hero> hero() {
       return this.hero;
+    }
+
+    public Optional<HeroWithReview> heroWithReview() {
+      return this.heroWithReview;
     }
 
     @SuppressWarnings("unchecked")
@@ -266,6 +285,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         @Override
         public void marshal(ResponseWriter writer) {
           writer.writeObject($responseFields[0], hero.isPresent() ? hero.get().marshaller() : null);
+          writer.writeObject($responseFields[1], heroWithReview.isPresent() ? heroWithReview.get().marshaller() : null);
         }
       };
     }
@@ -274,7 +294,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "Data{"
-          + "hero=" + hero
+          + "hero=" + hero + ", "
+          + "heroWithReview=" + heroWithReview
           + "}";
       }
       return $toString;
@@ -287,7 +308,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Data) {
         Data that = (Data) o;
-        return this.hero.equals(that.hero);
+        return this.hero.equals(that.hero)
+         && this.heroWithReview.equals(that.heroWithReview);
       }
       return false;
     }
@@ -298,6 +320,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         int h = 1;
         h *= 1000003;
         h ^= hero.hashCode();
+        h *= 1000003;
+        h ^= heroWithReview.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -307,6 +331,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<Data> {
       final Hero.Mapper heroFieldMapper = new Hero.Mapper();
 
+      final HeroWithReview.Mapper heroWithReviewFieldMapper = new HeroWithReview.Mapper();
+
       @Override
       public Data map(ResponseReader reader) {
         final Hero hero = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<Hero>() {
@@ -315,7 +341,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
             return heroFieldMapper.map(reader);
           }
         });
-        return new Data(hero);
+        final HeroWithReview heroWithReview = reader.readObject($responseFields[1], new ResponseReader.ObjectReader<HeroWithReview>() {
+          @Override
+          public HeroWithReview read(ResponseReader reader) {
+            return heroWithReviewFieldMapper.map(reader);
+          }
+        });
+        return new Data(hero, heroWithReview);
       }
     }
   }
@@ -503,6 +535,97 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           }
         });
         return new Hero(__typename, name, fragments);
+      }
+    }
+  }
+
+  public static class HeroWithReview {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList())
+    };
+
+    final @NotNull String __typename;
+
+    final @NotNull String name;
+
+    private transient volatile String $toString;
+
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    public HeroWithReview(@NotNull String __typename, @NotNull String name) {
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.name = Utils.checkNotNull(name, "name == null");
+    }
+
+    public @NotNull String __typename() {
+      return this.__typename;
+    }
+
+    /**
+     * What this human calls themselves
+     */
+    public @NotNull String name() {
+      return this.name;
+    }
+
+    @SuppressWarnings("unchecked")
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+        }
+      };
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "HeroWithReview{"
+          + "__typename=" + __typename + ", "
+          + "name=" + name
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof HeroWithReview) {
+        HeroWithReview that = (HeroWithReview) o;
+        return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= __typename.hashCode();
+        h *= 1000003;
+        h ^= name.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<HeroWithReview> {
+      @Override
+      public HeroWithReview map(ResponseReader reader) {
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        return new HeroWithReview(__typename, name);
       }
     }
   }

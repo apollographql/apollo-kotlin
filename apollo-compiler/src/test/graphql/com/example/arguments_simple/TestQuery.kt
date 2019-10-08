@@ -117,11 +117,42 @@ data class TestQuery(
     }
   }
 
+  data class HeroWithReview(
+    val __typename: String,
+    /**
+     * What this human calls themselves
+     */
+    val name: String
+  ) {
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeString(RESPONSE_FIELDS[1], name)
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forString("name", "name", null, false, null)
+          )
+
+      operator fun invoke(reader: ResponseReader): HeroWithReview {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val name = reader.readString(RESPONSE_FIELDS[1])
+        return HeroWithReview(
+          __typename = __typename,
+          name = name
+        )
+      }
+    }
+  }
+
   data class Data(
-    val hero: Hero?
+    val hero: Hero?,
+    val heroWithReview: HeroWithReview?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeObject(RESPONSE_FIELDS[0], hero?.marshaller())
+      it.writeObject(RESPONSE_FIELDS[1], heroWithReview?.marshaller())
     }
 
     companion object {
@@ -132,7 +163,12 @@ data class TestQuery(
               "variableName" to "episode"),
             "listOfListOfStringArgs" to mapOf<String, Any>(
               "kind" to "Variable",
-              "variableName" to "listOfListOfStringArgs")), true, null)
+              "variableName" to "listOfListOfStringArgs")), true, null),
+          ResponseField.forObject("heroWithReview", "heroWithReview", mapOf<String, Any>(
+            "episode" to mapOf<String, Any>(
+              "kind" to "Variable",
+              "variableName" to "episode"),
+            "review" to emptyMap<String, Any>()), true, null)
           )
 
       operator fun invoke(reader: ResponseReader): Data {
@@ -140,8 +176,13 @@ data class TestQuery(
           Hero(reader)
         }
 
+        val heroWithReview = reader.readObject<HeroWithReview>(RESPONSE_FIELDS[1]) { reader ->
+          HeroWithReview(reader)
+        }
+
         return Data(
-          hero = hero
+          hero = hero,
+          heroWithReview = heroWithReview
         )
       }
     }
@@ -149,7 +190,7 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "36f4332618a8e5295b0c464b25b3be7e961457f3e7d7baa4cdaf5db970be075d"
+        "8153aa4a8d74f3a80dabf112d6483e1267ad24222b8fbc4276400648d2b2d303"
 
     val QUERY_DOCUMENT: String = """
         |query TestQuery(${'$'}episode: Episode, ${'$'}IncludeName: Boolean!, ${'$'}friendsCount: Int!, ${'$'}listOfListOfStringArgs: [[String]!]!) {
@@ -157,6 +198,10 @@ data class TestQuery(
         |    __typename
         |    name @include(if: ${'$'}IncludeName)
         |    ...HeroDetails
+        |  }
+        |  heroWithReview(episode: ${'$'}episode, review: {}) {
+        |    __typename
+        |    name
         |  }
         |}
         |fragment HeroDetails on Character {

@@ -3,6 +3,12 @@ query TestQuery($episode: Episode $IncludeName: Boolean! $friendsCount: Int! $li
     name @include(if: $IncludeName)
     ...HeroDetails
   }
+  heroWithReview (
+    episode: $episode,
+    review: {}
+  ) {
+    name
+  }
 }
 
 fragment HeroDetails on Character {
