@@ -73,6 +73,10 @@ data class ReviewInput(
   /**
    * for test purpose only
    */
+  val listOfInputTypes: Input<List<ColorInput?>> = Input.optional(emptyList()),
+  /**
+   * for test purpose only
+   */
   val booleanWithDefaultValue: Input<Boolean> = Input.optional(true),
   /**
    * for test purpose only
@@ -146,6 +150,15 @@ data class ReviewInput(
       listOfStringNonOptional.forEach { value ->
         listItemWriter.writeString(value)
       }
+    }
+    if (listOfInputTypes.defined) {
+      writer.writeList("listOfInputTypes", listOfInputTypes.value?.let { value ->
+        InputFieldWriter.ListWriter { listItemWriter ->
+          value.forEach { value ->
+            listItemWriter.writeObject(value?.marshaller())
+          }
+        }
+      })
     }
     if (booleanWithDefaultValue.defined) writer.writeBoolean("booleanWithDefaultValue",
         booleanWithDefaultValue.value)

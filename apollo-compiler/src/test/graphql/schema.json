@@ -2006,6 +2006,21 @@
                 }
               }
             },
+             {
+              "name": "listOfInputTypes",
+              "description": "for test purpose only",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "colorInput",
+                  "ofType": null
+                }
+              },
+              "defaultValue": "[]"
+            },
             {
               "name": "booleanWithDefaultValue",
               "description": "for test purpose only",
