@@ -642,7 +642,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
         if (type.rawType.kind == Schema.Kind.ENUM) {
           null
         } else {
-          toString().removePrefix("[").removeSuffix("]").split(',').map { value ->
+          toString().removePrefix("[").removeSuffix("]").split(',').filter { it.isNotBlank() }.map { value ->
             value.trim().replace("\"", "").normalizeValue(type.ofType!!)
           }
         }

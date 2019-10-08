@@ -371,16 +371,13 @@ internal object KotlinCodeGen {
   }
 
   private fun List<Any>.toDefaultValueCodeBlock(typeName: TypeName, fieldType: FieldType.Array): CodeBlock {
-    val codeBuilder = CodeBlock.builder().add("listOf(")
-    return filterNotNull()
-        .map {
-          it.toDefaultValueCodeBlock((typeName as ParameterizedTypeName).typeArguments.first(), fieldType.rawType)
-        }
-        .foldIndexed(codeBuilder) { index, builder, code ->
-          builder.add(if (index > 0) ", " else "").add(code)
-        }
-        .add(")")
-        .build()
+    return if (isEmpty()) {
+      CodeBlock.of("emptyList()")
+    } else {
+      filterNotNull()
+          .map { it.toDefaultValueCodeBlock((typeName as ParameterizedTypeName).typeArguments.first(), fieldType.rawType) }
+          .joinToCode(prefix = "listOf(", separator = ", ", suffix = ")")
+    }
   }
 
   private fun Number.castTo(type: TypeName): Number = when (type) {
