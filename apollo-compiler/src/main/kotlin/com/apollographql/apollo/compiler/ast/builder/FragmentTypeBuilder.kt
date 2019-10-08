@@ -8,17 +8,31 @@ import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo.compiler.ir.Fragment
 
 internal fun Fragment.ast(context: Context): FragmentType {
+  val typeRef = context.registerObjectType(
+      type = fragmentName.capitalize().escapeKotlinReservedWord(),
+      schemaType = fragmentName.capitalize().escapeKotlinReservedWord(),
+      fragmentSpreads = fragmentSpreads,
+      inlineFragments = emptyList(),
+      fields = fields,
+      singularize = false
+  )
   val inlineFragmentField = inlineFragments.takeIf { it.isNotEmpty() }?.inlineFragmentField(
       type = fragmentName,
       schemaType = typeCondition,
       context = context
   )
+  val fragmentType = context.objectTypes[typeRef] as ObjectType.Object
+  val nestedObjects = context.objectTypes.minus(typeRef).let { objectTypes ->
+    fragmentType.fragmentsType?.let { fragmentsType ->
+      objectTypes + (TypeRef(fragmentsType.className) to fragmentsType)
+    } ?: objectTypes
+  }
   return FragmentType(
-      name = fragmentName.capitalize().escapeKotlinReservedWord(),
+      name = fragmentType.className,
       definition = source,
       possibleTypes = possibleTypes,
-      fields = fields.map { it.ast(context) }.let { if (inlineFragmentField != null) it + inlineFragmentField else it },
-      nestedObjects = context.objectTypes
+      fields = fragmentType.fields.let { if (inlineFragmentField != null) it + inlineFragmentField else it },
+      nestedObjects = nestedObjects
   )
 }
 

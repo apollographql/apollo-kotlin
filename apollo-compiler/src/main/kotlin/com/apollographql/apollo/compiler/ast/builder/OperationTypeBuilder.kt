@@ -9,7 +9,7 @@ internal fun Operation.ast(
     operationClassName: String,
     context: Context
 ): OperationType {
-  val dataTypeRef = context.addObjectType(typeName = "Data") {
+  val dataTypeRef = context.addObjectType(typeName = "Data", singularize = false) {
     ObjectType.Object(
         className = "Data",
         schemaName = "Data",

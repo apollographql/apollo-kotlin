@@ -20,23 +20,27 @@ data class HeroDetails(
   /**
    * The name of the character
    */
-  val name: String
+  val name: String,
+  val fragments: Fragments
 ) : GraphqlFragment {
   override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
     it.writeString(RESPONSE_FIELDS[0], __typename)
     it.writeString(RESPONSE_FIELDS[1], name)
+    fragments.marshaller().marshal(it)
   }
 
   companion object {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null)
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forString("__typename", "__typename", null, false, null)
         )
 
     val FRAGMENT_DEFINITION: String = """
         |fragment HeroDetails on Character {
         |  __typename
         |  name
+        |  ... HumanDetails
         |}
         """.trimMargin()
 
@@ -45,10 +49,43 @@ data class HeroDetails(
     operator fun invoke(reader: ResponseReader): HeroDetails {
       val __typename = reader.readString(RESPONSE_FIELDS[0])
       val name = reader.readString(RESPONSE_FIELDS[1])
+      val fragments = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType, reader ->
+        val humanDetails = if (HumanDetails.POSSIBLE_TYPES.contains(conditionalType))
+            HumanDetails(reader) else null
+        Fragments(
+          humanDetails = humanDetails
+        )
+      }
+
       return HeroDetails(
         __typename = __typename,
-        name = name
+        name = name,
+        fragments = fragments
       )
+    }
+  }
+
+  data class Fragments(
+    val humanDetails: HumanDetails?
+  ) {
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeObject(RESPONSE_FIELDS[0], humanDetails?.marshaller())
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forObject("HumanDetails", "HumanDetails", null, true, listOf("Human"))
+          )
+
+      operator fun invoke(reader: ResponseReader): Fragments {
+        val humanDetails = reader.readObject<HumanDetails>(RESPONSE_FIELDS[0]) { reader ->
+          HumanDetails(reader)
+        }
+
+        return Fragments(
+          humanDetails = humanDetails
+        )
+      }
     }
   }
 }

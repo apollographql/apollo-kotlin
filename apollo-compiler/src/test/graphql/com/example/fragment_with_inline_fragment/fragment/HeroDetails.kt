@@ -26,7 +26,7 @@ data class HeroDetails(
   /**
    * The friends of the character exposed as a connection with edges
    */
-  val friendsConnection: FriendsConnection1,
+  val friendsConnection: FriendsConnection,
   val inlineFragment: HeroDetailCharacter?
 ) : GraphqlFragment {
   override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -70,8 +70,8 @@ data class HeroDetails(
     operator fun invoke(reader: ResponseReader): HeroDetails {
       val __typename = reader.readString(RESPONSE_FIELDS[0])
       val name = reader.readString(RESPONSE_FIELDS[1])
-      val friendsConnection = reader.readObject<FriendsConnection1>(RESPONSE_FIELDS[2]) { reader ->
-        FriendsConnection1(reader)
+      val friendsConnection = reader.readObject<FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
+        FriendsConnection(reader)
       }
 
       val inlineFragment = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType, reader ->
@@ -88,10 +88,6 @@ data class HeroDetails(
         inlineFragment = inlineFragment
       )
     }
-  }
-
-  interface HeroDetailCharacter {
-    fun marshaller(): ResponseFieldMarshaller
   }
 
   data class Node(
@@ -201,46 +197,8 @@ data class HeroDetails(
     }
   }
 
-  data class AsDroid(
-    val __typename: String,
-    /**
-     * What others call this droid
-     */
-    val name: String,
-    /**
-     * The friends of the droid exposed as a connection with edges
-     */
-    val friendsConnection: FriendsConnection
-  ) : HeroDetailCharacter {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
-      it.writeObject(RESPONSE_FIELDS[2], friendsConnection.marshaller())
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("name", "name", null, false, null),
-          ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
-          )
-
-      val POSSIBLE_TYPES: Array<String> = arrayOf("Droid")
-
-      operator fun invoke(reader: ResponseReader): AsDroid {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
-        val friendsConnection = reader.readObject<FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
-          FriendsConnection(reader)
-        }
-
-        return AsDroid(
-          __typename = __typename,
-          name = name,
-          friendsConnection = friendsConnection
-        )
-      }
-    }
+  interface HeroDetailCharacter {
+    fun marshaller(): ResponseFieldMarshaller
   }
 
   data class Node1(
@@ -345,6 +303,49 @@ data class HeroDetails(
           __typename = __typename,
           totalCount = totalCount,
           edges = edges
+        )
+      }
+    }
+  }
+
+  data class AsDroid(
+    val __typename: String,
+    /**
+     * What others call this droid
+     */
+    val name: String,
+    /**
+     * The friends of the droid exposed as a connection with edges
+     */
+    val friendsConnection: FriendsConnection1
+  ) : HeroDetailCharacter {
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeString(RESPONSE_FIELDS[1], name)
+      it.writeObject(RESPONSE_FIELDS[2], friendsConnection.marshaller())
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forString("name", "name", null, false, null),
+          ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
+          )
+
+      val POSSIBLE_TYPES: Array<String> = arrayOf("Droid")
+
+      operator fun invoke(reader: ResponseReader): AsDroid {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val name = reader.readString(RESPONSE_FIELDS[1])
+        val friendsConnection = reader.readObject<FriendsConnection1>(RESPONSE_FIELDS[2]) {
+            reader ->
+          FriendsConnection1(reader)
+        }
+
+        return AsDroid(
+          __typename = __typename,
+          name = name,
+          friendsConnection = friendsConnection
         )
       }
     }
