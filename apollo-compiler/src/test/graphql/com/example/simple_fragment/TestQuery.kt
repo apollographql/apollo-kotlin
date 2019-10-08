@@ -101,7 +101,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "f258982f7e2b12d61c678aa68c0baee6ae552768b670dd2f56b92d36c1cfd83b"
+        "735900932e4632e47a5458e762c6fb91bcb1caf5b252542b276e89b4991022c1"
 
     val QUERY_DOCUMENT: String = """
         |query TestQuery {
@@ -114,6 +114,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         |fragment HeroDetails on Character {
         |  __typename
         |  name
+        |  ... HumanDetails
         |}
         |fragment HumanDetails on Human {
         |  __typename
