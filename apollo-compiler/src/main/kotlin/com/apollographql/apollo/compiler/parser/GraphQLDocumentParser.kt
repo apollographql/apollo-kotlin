@@ -504,7 +504,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
     is GraphQLParser.StringValueContext -> STRING().text.trim().replace("\"", "")
     is GraphQLParser.LiteralValueContext -> NAME().text
     is GraphQLParser.ArrayValueContext -> {
-      if (arrayValueType().getChild(0) is GraphQLParser.EmptyArrayContext) {
+      if (arrayValueType().emptyArray() != null) {
         emptyList<Any?>()
       } else {
         arrayValueType().valueOrVariable().map { valueOrVariable ->
@@ -518,7 +518,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
       }
     }
     is GraphQLParser.InlineInputTypeValueContext -> {
-      if (inlineInputType().getChild(0) is GraphQLParser.EmptyMapContext) {
+      if (inlineInputType().emptyMap() != null) {
         emptyMap<String, Any?>()
       } else {
         inlineInputType().inlineInputTypeField().map { field ->
