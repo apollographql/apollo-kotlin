@@ -161,7 +161,7 @@ fun checkTestFixture(actual: File, expected: File) {
   val expectedText = expected.readText()
 
   if (actualText != expectedText) {
-    when (System.getProperty("updateTestFixtures").trim()) {
+    when (System.getProperty("updateTestFixtures")?.trim()) {
       "on", "true", "1" ->{
         expected.writeText(actualText)
       }

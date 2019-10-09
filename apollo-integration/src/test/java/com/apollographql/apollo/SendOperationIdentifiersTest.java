@@ -17,7 +17,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.mockwebserver.MockWebServer;
 
-import static com.apollographql.apollo.Utils.enqueueAndAssertResponse;
 import static com.apollographql.apollo.integration.normalizer.type.Episode.EMPIRE;
 import static com.google.common.truth.Truth.assertThat;
 
@@ -59,7 +58,7 @@ public class SendOperationIdentifiersTest {
     final AtomicBoolean applicationInterceptorHeader = new AtomicBoolean();
     final AtomicBoolean networkInterceptorHeader = new AtomicBoolean();
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
-        .dispatcher(new Dispatcher(Utils.immediateExecutorService()))
+        .dispatcher(new Dispatcher(Utils.INSTANCE.immediateExecutorService()))
         .addInterceptor(new Interceptor() {
           @Override public okhttp3.Response intercept(Chain chain) throws IOException {
             Request request = chain.request();
@@ -83,10 +82,10 @@ public class SendOperationIdentifiersTest {
     ApolloClient apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
-        .dispatcher(Utils.immediateExecutor())
+        .dispatcher(Utils.INSTANCE.immediateExecutor())
         .build();
 
-    enqueueAndAssertResponse(
+    Utils.INSTANCE.enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameResponse.json",
         apolloClient.query(heroAndFriendsNamesQuery),

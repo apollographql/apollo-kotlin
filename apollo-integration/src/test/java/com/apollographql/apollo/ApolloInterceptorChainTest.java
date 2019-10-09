@@ -55,7 +55,7 @@ public class ApolloInterceptorChainTest {
     List<ApolloInterceptor> interceptors = Collections.singletonList(interceptor);
     RealApolloInterceptorChain chain = new RealApolloInterceptorChain(interceptors);
     chain.proceedAsync(
-        ApolloInterceptor.InterceptorRequest.builder(query).fetchFromCache(false).build(), Utils.immediateExecutor(),
+        ApolloInterceptor.InterceptorRequest.builder(query).fetchFromCache(false).build(), Utils.INSTANCE.immediateExecutor(),
         new CallBack() {
           @Override public void onResponse(@NotNull InterceptorResponse response) {
           }
@@ -103,7 +103,7 @@ public class ApolloInterceptorChainTest {
     List<ApolloInterceptor> interceptors = Collections.singletonList(interceptor);
     RealApolloInterceptorChain chain = new RealApolloInterceptorChain(interceptors);
     chain.proceedAsync(ApolloInterceptor.InterceptorRequest.builder(query).fetchFromCache(false).build(),
-        Utils.immediateExecutor(), new CallBack() {
+        Utils.INSTANCE.immediateExecutor(), new CallBack() {
           @Override public void onResponse(@NotNull InterceptorResponse response) {
             assertThat(response).isEqualTo(expectedResponse);
             counter.decrementAndGet();
@@ -153,7 +153,7 @@ public class ApolloInterceptorChainTest {
     List<ApolloInterceptor> interceptors = Collections.singletonList(interceptor);
     RealApolloInterceptorChain chain = new RealApolloInterceptorChain(interceptors);
     chain.proceedAsync(ApolloInterceptor.InterceptorRequest.builder(query).fetchFromCache(false).build(),
-        Utils.immediateExecutor(), new CallBack() {
+        Utils.INSTANCE.immediateExecutor(), new CallBack() {
           @Override public void onResponse(@NotNull InterceptorResponse response) {
 
           }

@@ -1,5 +1,6 @@
 package com.apollographql.apollo.internal.interceptor;
 
+import com.apollographql.apollo.Utils;
 import com.google.common.base.Predicate;
 
 import com.apollographql.apollo.cache.ApolloCacheHeaders;
@@ -18,6 +19,7 @@ import com.apollographql.apollo.response.ScalarTypeAdapters;
 
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
@@ -188,12 +190,7 @@ public class ApolloServerInterceptorTest {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-    String expectedRequestBody = "{\"operationName\":\"AllFilms\"," +
-        "\"variables\":{\"after\":\"some cursor\",\"first\":null,\"last\":100}," +
-        "\"query\":\"query AllFilms($after: String, $first: Int, $before: String, $last: Int) {  " +
-        "allFilms(after: $after, first: $first, before: $before, last: $last) {    " +
-        "__typename    totalCount    films {      __typename      title      releaseDate    }  }}\"}";
-    assertThat(bodyBuffer.readUtf8()).isEqualTo(expectedRequestBody);
+    Utils.INSTANCE.checkTestFixture(bodyBuffer.readUtf8(), "ApolloServerInterceptorTest/interceptorRequestBody.json");
   }
 
   private static class AssertHttpCallFactory implements Call.Factory {

@@ -22,9 +22,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static com.apollographql.apollo.Utils.assertResponse;
-import static com.apollographql.apollo.Utils.enqueueAndAssertResponse;
-import static com.apollographql.apollo.Utils.mockResponse;
 import static com.google.common.truth.Truth.assertThat;
 
 public class ApolloPrefetchTest {
@@ -48,13 +45,13 @@ public class ApolloPrefetchTest {
             return lastHttResponse;
           }
         })
-        .dispatcher(new Dispatcher(Utils.immediateExecutorService()))
+        .dispatcher(new Dispatcher(Utils.INSTANCE.immediateExecutorService()))
         .build();
 
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
-        .dispatcher(Utils.immediateExecutor())
+        .dispatcher(Utils.INSTANCE.immediateExecutor())
         .httpCache(new ApolloHttpCache(cacheStore, null))
         .build();
   }
@@ -64,10 +61,10 @@ public class ApolloPrefetchTest {
   }
 
   @Test public void prefetchDefault() throws IOException, ApolloException {
-    server.enqueue(mockResponse("HttpCacheTestAllPlanets.json"));
+    server.enqueue(Utils.INSTANCE.mockResponse("HttpCacheTestAllPlanets.json"));
     prefetch(apolloClient.prefetch(new AllPlanetsQuery()));
     checkCachedResponse("HttpCacheTestAllPlanets.json");
-    assertResponse(
+    Utils.INSTANCE.assertResponse(
         apolloClient
             .query(new AllPlanetsQuery())
             .httpCachePolicy(HttpCachePolicy.CACHE_ONLY.expireAfter(2, TimeUnit.SECONDS)),
@@ -83,13 +80,13 @@ public class ApolloPrefetchTest {
     ApolloClient apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
-        .dispatcher(Utils.immediateExecutor())
+        .dispatcher(Utils.INSTANCE.immediateExecutor())
         .build();
 
-    server.enqueue(mockResponse("HttpCacheTestAllPlanets.json"));
+    server.enqueue(Utils.INSTANCE.mockResponse("HttpCacheTestAllPlanets.json"));
     prefetch(apolloClient.prefetch(new AllPlanetsQuery()));
 
-    enqueueAndAssertResponse(
+    Utils.INSTANCE.enqueueAndAssertResponse(
         server,
         "HttpCacheTestAllPlanets.json",
         apolloClient.query(new AllPlanetsQuery()),
@@ -106,14 +103,14 @@ public class ApolloPrefetchTest {
     cacheStore.delegate = faultyCacheStore;
 
     faultyCacheStore.failStrategy(FaultyHttpCacheStore.FailStrategy.FAIL_HEADER_WRITE);
-    server.enqueue(mockResponse("HttpCacheTestAllPlanets.json"));
+    server.enqueue(Utils.INSTANCE.mockResponse("HttpCacheTestAllPlanets.json"));
 
     Rx2Apollo.from(apolloClient.prefetch(new AllPlanetsQuery()))
         .test()
         .assertError(Exception.class);
     checkNoCachedResponse();
 
-    server.enqueue(mockResponse("HttpCacheTestAllPlanets.json"));
+    server.enqueue(Utils.INSTANCE.mockResponse("HttpCacheTestAllPlanets.json"));
     faultyCacheStore.failStrategy(FaultyHttpCacheStore.FailStrategy.FAIL_BODY_WRITE);
     Rx2Apollo.from(apolloClient.prefetch(new AllPlanetsQuery()))
         .test()
@@ -125,7 +122,7 @@ public class ApolloPrefetchTest {
     String cacheKey = lastHttRequest.headers(HttpCache.CACHE_KEY_HEADER).get(0);
     okhttp3.Response response = apolloClient.cachedHttpResponse(cacheKey);
     assertThat(response).isNotNull();
-    assertThat(response.body().source().readUtf8()).isEqualTo(Utils.readFileToString(getClass(), "/" + fileName));
+    assertThat(response.body().source().readUtf8()).isEqualTo(Utils.INSTANCE.readFileToString(getClass(), "/" + fileName));
     response.body().source().close();
   }
 

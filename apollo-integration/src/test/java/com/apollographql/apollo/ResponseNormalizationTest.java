@@ -35,7 +35,6 @@ import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockWebServer;
 
-import static com.apollographql.apollo.Utils.enqueueAndAssertResponse;
 import static com.apollographql.apollo.integration.normalizer.type.Episode.EMPIRE;
 import static com.apollographql.apollo.integration.normalizer.type.Episode.JEDI;
 import static com.google.common.truth.Truth.assertThat;
@@ -51,14 +50,14 @@ public class ResponseNormalizationTest {
 
   @Before public void setUp() {
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
-        .dispatcher(new Dispatcher(Utils.immediateExecutorService()))
+        .dispatcher(new Dispatcher(Utils.INSTANCE.immediateExecutorService()))
         .build();
 
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
         .normalizedCache(new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), new IdFieldCacheKeyResolver())
-        .dispatcher(Utils.immediateExecutor())
+        .dispatcher(Utils.INSTANCE.immediateExecutor())
         .build();
     normalizedCache = apolloClient.apolloStore().normalizedCache();
   }
@@ -279,7 +278,7 @@ public class ResponseNormalizationTest {
   }
 
   private <T> void assertHasNoErrors(String mockResponse, Query<?, T, ?> query) throws Exception {
-    enqueueAndAssertResponse(
+    Utils.INSTANCE.enqueueAndAssertResponse(
         server,
         mockResponse,
         apolloClient.query(query),

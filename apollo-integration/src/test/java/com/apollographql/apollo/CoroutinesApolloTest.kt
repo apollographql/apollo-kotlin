@@ -1,6 +1,8 @@
 package com.apollographql.apollo
 
-import com.apollographql.apollo.Utils.*
+import com.apollographql.apollo.Utils.immediateExecutor
+import com.apollographql.apollo.Utils.immediateExecutorService
+import com.apollographql.apollo.Utils.mockResponse
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy

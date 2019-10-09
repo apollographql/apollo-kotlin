@@ -40,7 +40,7 @@ public class AsyncNormalizedCacheTestCase {
   }
 
   private MockResponse mockResponse(String fileName) throws IOException, ApolloException {
-    return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), "/" + fileName), 32);
+    return new MockResponse().setChunkedBody(Utils.INSTANCE.readFileToString(getClass(), "/" + fileName), 32);
   }
 
   @Test public void testAsync() throws IOException, InterruptedException, ApolloException {
