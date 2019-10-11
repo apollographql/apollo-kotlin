@@ -25,10 +25,14 @@ internal class Context(
   private val objectTypeContainer: MutableMap<TypeRef, ObjectType> = LinkedHashMap()
   val objectTypes: Map<TypeRef, ObjectType> = objectTypeContainer
 
-  fun addObjectType(typeName: String, packageName: String = "",
-                    provideObjectType: (TypeRef) -> ObjectType): TypeRef {
+  fun addObjectType(
+      typeName: String,
+      packageName: String = "",
+      singularize: Boolean = true,
+      provideObjectType: (TypeRef) -> ObjectType
+  ): TypeRef {
     val uniqueTypeRef = (reservedObjectTypeRefs).generateUniqueTypeRef(
-        typeName = typeName.let { if (it != "Data") it.singularize() else it },
+        typeName = typeName.let { if (singularize) it.singularize() else it },
         packageName = packageName
     )
     reservedObjectTypeRefs.add(uniqueTypeRef)
@@ -51,7 +55,8 @@ internal fun Context.registerObjectType(
     schemaType: String,
     fragmentSpreads: List<String>,
     inlineFragments: List<InlineFragment>,
-    fields: List<Field>
+    fields: List<Field>,
+    singularize: Boolean = true
 ): TypeRef {
   val inlineFragmentField = inlineFragments.takeIf { it.isNotEmpty() }?.inlineFragmentField(
       type = type,
@@ -73,7 +78,10 @@ internal fun Context.registerObjectType(
     }
     "_".repeat(originalClassName.length - className.length) + className.capitalize()
   }
-  return addObjectType(normalizedClassName) { typeRef ->
+  return addObjectType(
+      typeName = normalizedClassName,
+      singularize = singularize
+  ) { typeRef ->
     ObjectType.Object(
         className = typeRef.name,
         schemaName = type,

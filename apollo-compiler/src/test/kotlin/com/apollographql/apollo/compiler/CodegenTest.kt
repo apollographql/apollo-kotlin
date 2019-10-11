@@ -1,6 +1,5 @@
 package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo.compiler.codegen.kotlin.GraphQLKompiler
 import com.apollographql.apollo.compiler.parser.GraphQLDocumentParser
 import com.apollographql.apollo.compiler.parser.Schema
 import com.google.common.truth.Truth.assertAbout
