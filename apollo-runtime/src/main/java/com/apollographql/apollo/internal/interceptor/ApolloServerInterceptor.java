@@ -37,6 +37,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
@@ -62,7 +63,7 @@ public final class ApolloServerInterceptor implements ApolloInterceptor {
   final boolean prefetch;
   final ApolloLogger logger;
   final ScalarTypeAdapters scalarTypeAdapters;
-  Call httpCall;
+  AtomicReference<Call> httpCallRef = new AtomicReference<>();
   volatile boolean disposed;
 
   public ApolloServerInterceptor(@NotNull HttpUrl serverUrl, @NotNull Call.Factory httpCallFactory,
@@ -86,19 +87,22 @@ public final class ApolloServerInterceptor implements ApolloInterceptor {
     });
   }
 
-  @Override public synchronized void dispose() {
+  @Override
+  public void dispose() {
     disposed = true;
+
+    final Call httpCall = httpCallRef.getAndSet(null);
     if (httpCall != null) {
       httpCall.cancel();
-      httpCall = null;
     }
   }
 
-  synchronized void executeHttpCall(@NotNull final InterceptorRequest request, @NotNull final CallBack callBack) {
+  void executeHttpCall(@NotNull final InterceptorRequest request, @NotNull final CallBack callBack) {
     if (disposed) return;
 
     callBack.onFetch(FetchSourceType.NETWORK);
 
+    final Call httpCall;
     try {
       if (request.useHttpGetMethodForQueries && request.operation instanceof Query) {
         httpCall = httpGetCall(request.operation, request.cacheHeaders, request.requestHeaders,
@@ -113,17 +117,33 @@ public final class ApolloServerInterceptor implements ApolloInterceptor {
       return;
     }
 
+    final Call previousCall = httpCallRef.getAndSet(httpCall);
+    if (previousCall != null) {
+      previousCall.cancel();
+    }
+
+    if (httpCall.isCanceled() || disposed) {
+      httpCallRef.compareAndSet(httpCall, null);
+      return;
+    }
+
     httpCall.enqueue(new Callback() {
-      @Override public void onFailure(@NotNull Call call, @NotNull IOException e) {
-        if (disposed) return;
-        logger.e(e, "Failed to execute http call for operation %s", request.operation.name().name());
-        callBack.onFailure(new ApolloNetworkException("Failed to execute http call", e));
+      @Override
+      public void onFailure(@NotNull Call call, @NotNull IOException e) {
+        if (httpCallRef.compareAndSet(call, null)) {
+          if (disposed) return;
+          logger.e(e, "Failed to execute http call for operation %s", request.operation.name().name());
+          callBack.onFailure(new ApolloNetworkException("Failed to execute http call", e));
+        }
       }
 
-      @Override public void onResponse(@NotNull Call call, @NotNull Response response) {
-        if (disposed) return;
-        callBack.onResponse(new ApolloInterceptor.InterceptorResponse(response));
-        callBack.onCompleted();
+      @Override
+      public void onResponse(@NotNull Call call, @NotNull Response response) {
+        if (httpCallRef.compareAndSet(call, null)) {
+          if (disposed) return;
+          callBack.onResponse(new ApolloInterceptor.InterceptorResponse(response));
+          callBack.onCompleted();
+        }
       }
     });
   }
@@ -345,5 +365,4 @@ public final class ApolloServerInterceptor implements ApolloInterceptor {
       this.file = file;
     }
   }
-
 }
