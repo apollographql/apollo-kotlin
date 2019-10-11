@@ -1,13 +1,3 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath dep.kotlin.plugin
-    }
-}
-
 apply plugin: 'com.android.application'
 apply plugin: 'com.apollographql.android'
 apply plugin: 'kotlin-android'
@@ -35,9 +25,9 @@ dependencies {
     implementation "com.apollographql.apollo:apollo-android-support"
     implementation "com.apollographql.apollo:apollo-rx2-support"
     implementation "com.apollographql.apollo:apollo-coroutines-support"
+    implementation "com.apollographql.apollo:apollo-runtime"
     implementation dep.android.appcompat
     implementation dep.android.recyclerView
-    implementation dep.apollo.runtime
     implementation dep.kotlin.coroutines.android
     implementation dep.kotlin.coroutines.core
     implementation dep.kotlin.stdLib

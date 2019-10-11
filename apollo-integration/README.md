@@ -1,0 +1,1 @@
+Use [the composite build](../composite) to develop integration tests.
