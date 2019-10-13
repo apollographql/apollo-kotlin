@@ -502,41 +502,53 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
     return when (schemaTypeRef.kind) {
       Schema.Kind.ENUM -> text.toString().trim()
       Schema.Kind.INTERFACE, Schema.Kind.OBJECT, Schema.Kind.INPUT_OBJECT, Schema.Kind.UNION -> {
-        with(this as GraphQLParser.InlineInputTypeValueContext) {
-          when {
-            inlineInputType().emptyMap() != null -> emptyMap<String, Any?>()
-            else -> inlineInputType().inlineInputTypeField().map { field ->
-              val name = field.NAME().text
-              val schemaFieldType = schema[schemaTypeRef.name]!!.let { schemaType ->
-                when (schemaType) {
-                  is Schema.Type.InputObject -> schemaType.lookupField(fieldName = name, token = field.NAME().symbol).type
-                  else -> schemaType.lookupField(fieldName = name, token = field.NAME().symbol).type
-                }
+        val inlineInputType = (this as? GraphQLParser.InlineInputTypeValueContext)?.inlineInputType() ?: throw ParseException(
+            message = "Can't parse `Object` value, expected map",
+            token = start
+        )
+        when {
+          inlineInputType.emptyMap() != null -> emptyMap<String, Any?>()
+          else -> inlineInputType.inlineInputTypeField().map { field ->
+            val name = field.NAME().text
+            val schemaFieldType = schema[schemaTypeRef.name]!!.let { schemaType ->
+              when (schemaType) {
+                is Schema.Type.InputObject -> schemaType.lookupField(fieldName = name, token = field.NAME().symbol).type
+                else -> schemaType.lookupField(fieldName = name, token = field.NAME().symbol).type
               }
-              val variableValue = field.valueOrVariable().variable()?.NAME()?.text
-              val value = field.valueOrVariable().value()?.parse(schemaFieldType)
-              name to when {
-                variableValue != null -> mapOf(
-                    "kind" to "Variable",
-                    "variableName" to variableValue
-                )
-                else -> value
-              }
-            }.toMap()
-          }
+            }
+            val variableValue = field.valueOrVariable().variable()?.NAME()?.text
+            val value = field.valueOrVariable().value()?.parse(schemaFieldType)
+            name to when {
+              variableValue != null -> mapOf(
+                  "kind" to "Variable",
+                  "variableName" to variableValue
+              )
+              else -> value
+            }
+          }.toMap()
         }
       }
       Schema.Kind.SCALAR -> when (ScalarType.forName(schemaTypeRef.name ?: "")) {
-        ScalarType.INT -> text.trim().toInt()
-        ScalarType.BOOLEAN -> text.trim().toBoolean()
-        ScalarType.FLOAT -> text.trim().toDouble()
+        ScalarType.INT -> text.trim().toIntOrNull() ?: throw ParseException(
+            message = "Can't parse `Int` value",
+            token = start
+        )
+        ScalarType.BOOLEAN -> text.trim().toLowerCase() == "true"
+        ScalarType.FLOAT -> text.trim().toDoubleOrNull() ?: throw ParseException(
+            message = "Can't parse `Float` value",
+            token = start
+        )
         else -> text.toString().replace("\"", "")
       }
       Schema.Kind.NON_NULL -> parse(schemaTypeRef.ofType!!)
-      Schema.Kind.LIST -> with(this as GraphQLParser.ArrayValueContext) {
+      Schema.Kind.LIST -> {
+        val arrayValueType = (this as? GraphQLParser.ArrayValueContext)?.arrayValueType() ?: throw ParseException(
+            message = "Can't parse `Array` value, expected array",
+            token = start
+        )
         when {
-          arrayValueType().emptyArray() != null -> emptyList<Any?>()
-          else -> arrayValueType().valueOrVariable().map { valueOrVariable ->
+          arrayValueType.emptyArray() != null -> emptyList<Any?>()
+          else -> arrayValueType.valueOrVariable().map { valueOrVariable ->
             valueOrVariable.variable()?.let { variable ->
               mapOf(
                   "kind" to "Variable",
