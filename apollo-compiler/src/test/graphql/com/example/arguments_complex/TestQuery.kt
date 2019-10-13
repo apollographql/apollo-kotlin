@@ -111,7 +111,7 @@ data class TestQuery(
                 "kind" to "Variable",
                 "variableName" to "stars"),
               "favoriteColor" to mapOf<String, Any>(
-                "red" to "0.0",
+                "red" to "0",
                 "green" to mapOf<String, Any>(
                   "kind" to "Variable",
                   "variableName" to "greenValue"),

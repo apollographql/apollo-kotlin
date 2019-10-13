@@ -376,7 +376,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
           "kind" to "Variable",
           "variableName" to ctx.NAME().text
       )
-    } ?: valueOrVariable().value().parse()
+    } ?: valueOrVariable().value().parse(schemaArgument.type)
     return ParseResult(
         result = Argument(
             name = name,
@@ -498,62 +498,79 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
     )
   }
 
-  private fun GraphQLParser.ValueContext.parse(): Any = when (this) {
-    is GraphQLParser.NumberValueContext -> NUMBER().text.trim().toDouble()
-    is GraphQLParser.BooleanValueContext -> BOOLEAN().text.trim().toBoolean()
-    is GraphQLParser.StringValueContext -> STRING().text.trim().replace("\"", "")
-    is GraphQLParser.LiteralValueContext -> NAME().text
-    is GraphQLParser.ArrayValueContext -> {
-      if (arrayValueType().emptyArray() != null) {
-        emptyList<Any?>()
-      } else {
-        arrayValueType().valueOrVariable().map { valueOrVariable ->
-          valueOrVariable.variable()?.let { variable ->
-            mapOf(
-                "kind" to "Variable",
-                "variableName" to variable.NAME().text
-            )
-          } ?: valueOrVariable.value().parse()
+  private fun GraphQLParser.ValueContext.parse(schemaTypeRef: Schema.TypeRef): Any {
+    return when (schemaTypeRef.kind) {
+      Schema.Kind.ENUM -> text.toString().trim()
+      Schema.Kind.INTERFACE, Schema.Kind.OBJECT, Schema.Kind.INPUT_OBJECT, Schema.Kind.UNION -> {
+        with(this as GraphQLParser.InlineInputTypeValueContext) {
+          when {
+            inlineInputType().emptyMap() != null -> emptyMap<String, Any?>()
+            else -> inlineInputType().inlineInputTypeField().map { field ->
+              val name = field.NAME().text
+              val schemaFieldType = schema[schemaTypeRef.name]!!.let { schemaType ->
+                when (schemaType) {
+                  is Schema.Type.InputObject -> schemaType.lookupField(fieldName = name, token = field.NAME().symbol).type
+                  else -> schemaType.lookupField(fieldName = name, token = field.NAME().symbol).type
+                }
+              }
+              val variableValue = field.valueOrVariable().variable()?.NAME()?.text
+              val value = field.valueOrVariable().value()?.parse(schemaFieldType)
+              name to when {
+                variableValue != null -> mapOf(
+                    "kind" to "Variable",
+                    "variableName" to variableValue
+                )
+                else -> value
+              }
+            }.toMap()
+          }
+        }
+      }
+      Schema.Kind.SCALAR -> when (ScalarType.forName(schemaTypeRef.name ?: "")) {
+        ScalarType.INT -> text.trim().toInt()
+        ScalarType.BOOLEAN -> text.trim().toBoolean()
+        ScalarType.FLOAT -> text.trim().toDouble()
+        else -> text.toString().replace("\"", "")
+      }
+      Schema.Kind.NON_NULL -> parse(schemaTypeRef.ofType!!)
+      Schema.Kind.LIST -> with(this as GraphQLParser.ArrayValueContext) {
+        when {
+          arrayValueType().emptyArray() != null -> emptyList<Any?>()
+          else -> arrayValueType().valueOrVariable().map { valueOrVariable ->
+            valueOrVariable.variable()?.let { variable ->
+              mapOf(
+                  "kind" to "Variable",
+                  "variableName" to variable.NAME().text
+              )
+            } ?: valueOrVariable.value().parse(schemaTypeRef.ofType!!)
+          }
         }
       }
     }
-    is GraphQLParser.InlineInputTypeValueContext -> {
-      if (inlineInputType().emptyMap() != null) {
-        emptyMap<String, Any?>()
-      } else {
-        inlineInputType().inlineInputTypeField().map { field ->
-          val name = field.NAME().text
-          val variableValue = field.valueOrVariable().variable()?.NAME()?.text
-          val value = field.valueOrVariable().value()?.parse()
-          name to when {
-            variableValue != null -> mapOf(
-                "kind" to "Variable",
-                "variableName" to variableValue
-            )
-            else -> value
-          }
-        }.toMap()
-      }
+  }
+
+  private fun Schema.Type.lookupField(fieldName: String, token: Token): Schema.Field {
+    val field = when (this) {
+      is Schema.Type.Interface -> fields?.find { it.name == fieldName }
+      is Schema.Type.Object -> fields?.find { it.name == fieldName }
+      is Schema.Type.Union -> fields?.find { it.name == fieldName }
+      else -> throw ParseException(
+          message = "Can't query `$fieldName` on type `$name`. `$name` is not one of the expected types: `INTERFACE`, `OBJECT`, `UNION`.",
+          token = token
+      )
     }
-    else -> throw ParseException(
-        message = "Unsupported argument value `$text`",
-        token = start
+    return field ?: throw ParseException(
+        message = "Can't query `$fieldName` on type `$name`",
+        token = token
     )
   }
 
-
-  private fun Schema.Type.lookupField(fieldName: String, token: Token): Schema.Field = when (this) {
-    is Schema.Type.Interface -> fields?.find { it.name == fieldName }
-    is Schema.Type.Object -> fields?.find { it.name == fieldName }
-    is Schema.Type.Union -> fields?.find { it.name == fieldName }
-    else -> throw ParseException(
-        message = "Can't query `$fieldName` on type `$name`. `$name` is not one of the expected types: `INTERFACE`, `OBJECT`, `UNION`.",
+  private fun Schema.Type.InputObject.lookupField(fieldName: String, token: Token): Schema.InputField {
+    return inputFields.find { it.name == fieldName } ?: throw ParseException(
+        message = "Can't query `$fieldName` on type `$name`",
         token = token
     )
-  } ?: throw ParseException(
-      message = "Can't query `$fieldName` on type `$name`",
-      token = token
-  )
+  }
 
   private fun Schema.TypeRef.asIrType(): String = when (kind) {
     Schema.Kind.LIST -> "[${ofType!!.asIrType()}]"
@@ -646,13 +663,8 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
       }
       Schema.Kind.NON_NULL -> normalizeValue(type.ofType!!)
       Schema.Kind.LIST -> {
-        //TODO: remove this restriction required for backward compatibility
-        if (type.rawType.kind == Schema.Kind.ENUM) {
-          null
-        } else {
-          toString().removePrefix("[").removeSuffix("]").split(',').filter { it.isNotBlank() }.map { value ->
-            value.trim().replace("\"", "").normalizeValue(type.ofType!!)
-          }
+        toString().removePrefix("[").removeSuffix("]").split(',').filter { it.isNotBlank() }.map { value ->
+          value.trim().replace("\"", "").normalizeValue(type.ofType!!)
         }
       }
       else -> toString()
@@ -663,7 +675,6 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
       result = map { (result, _) -> result },
       usedTypes = flatMap { (_, usedTypes) -> usedTypes }.toSet()
   )
-
 
   private fun List<Operation>.checkMultipleOperationDefinitions() {
     groupBy { packageNameProvider.operationPackageName(it.filePath) + it.operationName }

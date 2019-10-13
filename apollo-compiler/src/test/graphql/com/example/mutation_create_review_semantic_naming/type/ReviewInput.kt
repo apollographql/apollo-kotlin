@@ -45,6 +45,10 @@ data class ReviewInput(
   /**
    * for test purpose only
    */
+  val nonNullableEnumWithDefaultValue: Episode = Episode.safeValueOf("JEDI"),
+  /**
+   * for test purpose only
+   */
   val nullableEnum: Input<Episode> = Input.optional(null),
   /**
    * for test purpose only
@@ -57,7 +61,8 @@ data class ReviewInput(
   /**
    * for test purpose only
    */
-  val listOfEnums: Input<List<Episode?>> = Input.optional(null),
+  val listOfEnums: Input<List<Episode?>> = Input.optional(listOf(Episode.safeValueOf("NEWHOPE"),
+      Episode.safeValueOf("EMPIRE"))),
   /**
    * for test purpose only
    */
@@ -107,6 +112,7 @@ data class ReviewInput(
     writer.writeObject("favoriteColor", favoriteColor.marshaller())
     if (enumWithDefaultValue.defined) writer.writeString("enumWithDefaultValue",
         enumWithDefaultValue.value?.rawValue)
+    writer.writeString("nonNullableEnumWithDefaultValue", nonNullableEnumWithDefaultValue.rawValue)
     if (nullableEnum.defined) writer.writeString("nullableEnum", nullableEnum.value?.rawValue)
     if (listOfCustomScalar.defined) {
       writer.writeList("listOfCustomScalar", listOfCustomScalar.value?.let { value ->

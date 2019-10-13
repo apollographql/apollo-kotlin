@@ -21,7 +21,7 @@ data class ColorInput(
   /**
    * Red color
    */
-  val red: Int,
+  val red: Int = 1,
   /**
    * Green color
    */
@@ -29,7 +29,7 @@ data class ColorInput(
   /**
    * Blue color
    */
-  val blue: Double,
+  val blue: Double = 1.5,
   /**
    * for test purpose only
    */

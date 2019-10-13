@@ -34,21 +34,30 @@ private val InputType.primaryConstructorSpec: FunSpec
   }
 
 private fun InputType.Field.parameterSpec(): ParameterSpec {
-  val typeName = type.asTypeName()
+  val rawTypeName = type.asTypeName()
+  val typeName = when {
+    isOptional -> Input::class.asClassName().parameterizedBy(rawTypeName)
+    else -> rawTypeName
+  }
+  val defaultValue = when {
+    isOptional -> CodeBlock.of(
+        "%T.optional(%L)",
+        Input::class,
+        defaultValue?.toDefaultValueCodeBlock(
+            typeName = rawTypeName,
+            fieldType = type
+        )
+    )
+    defaultValue != null -> defaultValue.toDefaultValueCodeBlock(
+        typeName = typeName,
+        fieldType = type
+    )
+    else -> null
+  }
   return ParameterSpec
-      .builder(
-          name = name,
-          type = if (isOptional) Input::class.asClassName().parameterizedBy(typeName) else typeName
-      ).apply {
-        if (isOptional) {
-          defaultValue(
-              CodeBlock.of("%T.optional(%L)", Input::class, defaultValue?.toDefaultValueCodeBlock(
-                  typeName = typeName,
-                  fieldType = type
-              ))
-          )
-        }
-      }.build()
+      .builder(name = name, type = typeName)
+      .applyIf(defaultValue != null) { defaultValue(defaultValue!!) }
+      .build()
 }
 
 private val InputType.marshallerFunSpec: FunSpec
