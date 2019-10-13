@@ -31,9 +31,6 @@ import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockWebServer;
 
-import static com.apollographql.apollo.Utils.assertResponse;
-import static com.apollographql.apollo.Utils.enqueueAndAssertResponse;
-import static com.apollographql.apollo.Utils.mockResponse;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_FIRST;
 import static com.google.common.truth.Truth.assertThat;
@@ -46,12 +43,12 @@ public class QueryRefetchTest {
     server = new MockWebServer();
     server.start();
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
-        .dispatcher(new Dispatcher(Utils.immediateExecutorService()))
+        .dispatcher(new Dispatcher(Utils.INSTANCE.immediateExecutorService()))
         .build();
 
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
-        .dispatcher(Utils.immediateExecutor())
+        .dispatcher(Utils.INSTANCE.immediateExecutor())
         .okHttpClient(okHttpClient)
         .normalizedCache(new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), new IdFieldCacheKeyResolver())
         .build();
@@ -70,8 +67,8 @@ public class QueryRefetchTest {
         ReviewInput.builder().stars(5).commentary("Awesome").favoriteColor(ColorInput.builder().build()).build()
     );
 
-    server.enqueue(mockResponse("CreateReviewResponse.json"));
-    server.enqueue(mockResponse("ReviewsEmpireEpisodeResponse.json"));
+    server.enqueue(Utils.INSTANCE.mockResponse("CreateReviewResponse.json"));
+    server.enqueue(Utils.INSTANCE.mockResponse("ReviewsEmpireEpisodeResponse.json"));
 
     RealApolloCall call = (RealApolloCall) apolloClient.mutate(mutation).refetchQueries(new ReviewsByEpisodeQuery(Episode.EMPIRE));
     Rx2Apollo
@@ -79,7 +76,7 @@ public class QueryRefetchTest {
         .test();
 
     assertThat(server.getRequestCount()).isEqualTo(2);
-    assertResponse(
+    Utils.INSTANCE.assertResponse(
         apolloClient.query(new ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(CACHE_ONLY),
         new Predicate<Response<ReviewsByEpisodeQuery.Data>>() {
           @Override public boolean test(Response<ReviewsByEpisodeQuery.Data> response) throws Exception {
@@ -93,7 +90,7 @@ public class QueryRefetchTest {
   }
 
   @Test @SuppressWarnings("CheckReturnValue") public void refetchPreCachedQuery() throws Exception {
-    enqueueAndAssertResponse(
+    Utils.INSTANCE.enqueueAndAssertResponse(
         server,
         "ReviewsEmpireEpisodeResponse.json",
         apolloClient.query(new ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(NETWORK_FIRST),
@@ -104,7 +101,7 @@ public class QueryRefetchTest {
         }
     );
 
-    assertResponse(
+    Utils.INSTANCE.assertResponse(
         apolloClient.query(new ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(CACHE_ONLY),
         new Predicate<Response<ReviewsByEpisodeQuery.Data>>() {
           @Override public boolean test(Response<ReviewsByEpisodeQuery.Data> response) throws Exception {
@@ -121,8 +118,8 @@ public class QueryRefetchTest {
         ReviewInput.builder().stars(5).commentary("Awesome").favoriteColor(ColorInput.builder().build()).build()
     );
 
-    server.enqueue(mockResponse("CreateReviewResponse.json"));
-    server.enqueue(mockResponse("ReviewsEmpireEpisodeResponseUpdated.json"));
+    server.enqueue(Utils.INSTANCE.mockResponse("CreateReviewResponse.json"));
+    server.enqueue(Utils.INSTANCE.mockResponse("ReviewsEmpireEpisodeResponseUpdated.json"));
 
     RealApolloCall call = (RealApolloCall) apolloClient.mutate(mutation).refetchQueries(new ReviewsByEpisodeQuery(Episode.EMPIRE));
     Rx2Apollo
@@ -130,7 +127,7 @@ public class QueryRefetchTest {
         .test();
     assertThat(server.getRequestCount()).isEqualTo(3);
 
-    assertResponse(
+    Utils.INSTANCE.assertResponse(
         apolloClient.query(new ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(CACHE_ONLY),
         new Predicate<Response<ReviewsByEpisodeQuery.Data>>() {
           @Override public boolean test(Response<ReviewsByEpisodeQuery.Data> response) throws Exception {
@@ -144,9 +141,9 @@ public class QueryRefetchTest {
   }
 
   @Test @SuppressWarnings("CheckReturnValue") public void refetchWatchers() throws Exception {
-    server.enqueue(mockResponse("ReviewsEmpireEpisodeResponse.json"));
-    server.enqueue(mockResponse("CreateReviewResponse.json"));
-    server.enqueue(mockResponse("ReviewsEmpireEpisodeResponseUpdated.json"));
+    server.enqueue(Utils.INSTANCE.mockResponse("ReviewsEmpireEpisodeResponse.json"));
+    server.enqueue(Utils.INSTANCE.mockResponse("CreateReviewResponse.json"));
+    server.enqueue(Utils.INSTANCE.mockResponse("ReviewsEmpireEpisodeResponseUpdated.json"));
 
     final AtomicReference<Response<ReviewsByEpisodeQuery.Data>> empireReviewsWatchResponse = new AtomicReference<>();
     ApolloQueryWatcher<ReviewsByEpisodeQuery.Data> queryWatcher = apolloClient.query(new ReviewsByEpisodeQuery(Episode.EMPIRE))

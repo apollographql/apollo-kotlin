@@ -35,9 +35,6 @@ import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockWebServer;
 
-import static com.apollographql.apollo.Utils.enqueueAndAssertResponse;
-import static com.apollographql.apollo.Utils.immediateExecutor;
-import static com.apollographql.apollo.Utils.mockResponse;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY;
 import static com.google.common.truth.Truth.assertThat;
@@ -49,12 +46,12 @@ public class ApolloWatcherTest {
 
   @Before public void setUp() throws IOException {
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
-        .dispatcher(new Dispatcher(Utils.immediateExecutorService()))
+        .dispatcher(new Dispatcher(Utils.INSTANCE.immediateExecutorService()))
         .build();
 
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
-        .dispatcher(immediateExecutor())
+        .dispatcher(Utils.INSTANCE.immediateExecutor())
         .okHttpClient(okHttpClient)
         .logger(new Logger() {
           @Override
@@ -74,7 +71,7 @@ public class ApolloWatcherTest {
   public void testQueryWatcherUpdated_SameQuery_DifferentResults() throws Exception {
     final List<String> heroNameList = new ArrayList<>();
     EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
-    server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
+    server.enqueue(Utils.INSTANCE.mockResponse("EpisodeHeroNameResponseWithId.json"));
 
     ApolloQueryWatcher<EpisodeHeroNameQuery.Data> watcher = apolloClient.query(query).watcher();
     watcher.enqueueAndWatch(
@@ -90,7 +87,7 @@ public class ApolloWatcherTest {
 
 
     // Another newer call gets updated information
-    enqueueAndAssertResponse(
+    Utils.INSTANCE.enqueueAndAssertResponse(
         server,
         "EpisodeHeroNameResponseNameChange.json",
         apolloClient.query(query).responseFetcher(NETWORK_ONLY),
@@ -112,7 +109,7 @@ public class ApolloWatcherTest {
       TimeoutException, ApolloException {
     final List<String> heroNameList = new ArrayList<>();
     EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
-    server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
+    server.enqueue(Utils.INSTANCE.mockResponse("EpisodeHeroNameResponseWithId.json"));
 
     ApolloQueryWatcher<EpisodeHeroNameQuery.Data> watcher = apolloClient.query(query).watcher();
     watcher.enqueueAndWatch(
@@ -148,7 +145,7 @@ public class ApolloWatcherTest {
   public void testQueryWatcherNotUpdated_SameQuery_SameResults() throws Exception {
     final List<String> heroNameList = new ArrayList<>();
     EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
-    server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
+    server.enqueue(Utils.INSTANCE.mockResponse("EpisodeHeroNameResponseWithId.json"));
 
     ApolloQueryWatcher<EpisodeHeroNameQuery.Data> watcher = apolloClient.query(query).watcher();
     watcher.enqueueAndWatch(
@@ -162,7 +159,7 @@ public class ApolloWatcherTest {
           }
         });
 
-    server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
+    server.enqueue(Utils.INSTANCE.mockResponse("EpisodeHeroNameResponseWithId.json"));
     apolloClient.query(query).responseFetcher(NETWORK_ONLY).enqueue(null);
 
     watcher.cancel();
@@ -173,7 +170,7 @@ public class ApolloWatcherTest {
   @Test
   public void testQueryWatcherUpdated_DifferentQuery_DifferentResults() throws Exception {
     final List<String> heroNameList = new ArrayList<>();
-    server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
+    server.enqueue(Utils.INSTANCE.mockResponse("EpisodeHeroNameResponseWithId.json"));
     EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
 
     ApolloQueryWatcher<EpisodeHeroNameQuery.Data> watcher = apolloClient.query(query).watcher();
@@ -192,7 +189,7 @@ public class ApolloWatcherTest {
         .episode(Episode.NEWHOPE)
         .build();
 
-    enqueueAndAssertResponse(
+    Utils.INSTANCE.enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameWithIdsNameChange.json",
         apolloClient.query(friendsQuery).responseFetcher(NETWORK_ONLY),
@@ -211,7 +208,7 @@ public class ApolloWatcherTest {
   @Test
   public void testQueryWatcherNotUpdated_DifferentQueries() throws Exception {
     final List<String> heroNameList = new ArrayList<>();
-    server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
+    server.enqueue(Utils.INSTANCE.mockResponse("EpisodeHeroNameResponseWithId.json"));
     EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
 
     ApolloQueryWatcher<EpisodeHeroNameQuery.Data> watcher = apolloClient.query(query).watcher();
@@ -228,7 +225,7 @@ public class ApolloWatcherTest {
 
     HeroAndFriendsNamesWithIDsQuery friendsQuery = HeroAndFriendsNamesWithIDsQuery.builder().episode(Episode.NEWHOPE).build();
 
-    server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
+    server.enqueue(Utils.INSTANCE.mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
     apolloClient.query(friendsQuery).responseFetcher(NETWORK_ONLY).enqueue(null);
 
     watcher.cancel();
@@ -239,7 +236,7 @@ public class ApolloWatcherTest {
   @Test
   public void testRefetchCacheControl() throws Exception {
     final List<String> heroNameList = new ArrayList<>();
-    server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
+    server.enqueue(Utils.INSTANCE.mockResponse("EpisodeHeroNameResponseWithId.json"));
     EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
 
     ApolloQueryWatcher<EpisodeHeroNameQuery.Data> watcher = apolloClient.query(query).watcher();
@@ -256,11 +253,11 @@ public class ApolloWatcherTest {
             });
 
     //A different call gets updated information.
-    server.enqueue(mockResponse("EpisodeHeroNameResponseNameChange.json"));
+    server.enqueue(Utils.INSTANCE.mockResponse("EpisodeHeroNameResponseNameChange.json"));
 
     //To verify that the updated response comes from server use a different name change
     // -- this is for the refetch
-    server.enqueue(mockResponse("EpisodeHeroNameResponseNameChangeTwo.json"));
+    server.enqueue(Utils.INSTANCE.mockResponse("EpisodeHeroNameResponseNameChangeTwo.json"));
     apolloClient.query(query).responseFetcher(NETWORK_ONLY).enqueue(null);
 
     watcher.cancel();
@@ -273,7 +270,7 @@ public class ApolloWatcherTest {
   public void testQueryWatcherUpdated_SameQuery_DifferentResults_cacheOnly() throws Exception {
     final List<String> heroNameList = new ArrayList<>();
     EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
-    server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
+    server.enqueue(Utils.INSTANCE.mockResponse("EpisodeHeroNameResponseWithId.json"));
     apolloClient.query(query).enqueue(new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
       @Override public void onResponse(@NotNull Response<EpisodeHeroNameQuery.Data> response) {
       }
@@ -297,7 +294,7 @@ public class ApolloWatcherTest {
         });
 
     //Another newer call gets updated information
-    server.enqueue(mockResponse("EpisodeHeroNameResponseNameChange.json"));
+    server.enqueue(Utils.INSTANCE.mockResponse("EpisodeHeroNameResponseNameChange.json"));
     apolloClient.query(query).responseFetcher(NETWORK_ONLY).enqueue(null);
 
     watcher.cancel();
@@ -310,7 +307,7 @@ public class ApolloWatcherTest {
   public void testQueryWatcherNotCalled_WhenCanceled() throws Exception {
     final List<String> heroNameList = new ArrayList<>();
     EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
-    server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
+    server.enqueue(Utils.INSTANCE.mockResponse("EpisodeHeroNameResponseWithId.json"));
 
     ApolloQueryWatcher<EpisodeHeroNameQuery.Data> watcher = apolloClient.query(query).watcher();
 
@@ -327,7 +324,7 @@ public class ApolloWatcherTest {
 
 
     watcher.cancel();
-    enqueueAndAssertResponse(
+    Utils.INSTANCE.enqueueAndAssertResponse(
         server,
         "EpisodeHeroNameResponseNameChange.json",
         apolloClient.query(query).responseFetcher(NETWORK_ONLY),
@@ -360,7 +357,7 @@ public class ApolloWatcherTest {
           }
         });
 
-    server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
+    server.enqueue(Utils.INSTANCE.mockResponse("EpisodeHeroNameResponseWithId.json"));
     apolloClient.query(query).enqueue(new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
       @Override public void onResponse(Response<EpisodeHeroNameQuery.Data> response) {
         assertThat(response.data()).isNotNull();

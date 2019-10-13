@@ -35,14 +35,14 @@ class BaseFetcherTest {
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
         .writeTimeout(2, TimeUnit.SECONDS)
         .readTimeout(2, TimeUnit.SECONDS)
-        .dispatcher(new Dispatcher(Utils.immediateExecutorService()))
+        .dispatcher(new Dispatcher(Utils.INSTANCE.immediateExecutorService()))
         .build();
 
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
         .normalizedCache(new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), new IdFieldCacheKeyResolver())
-        .dispatcher(Utils.immediateExecutor())
+        .dispatcher(Utils.INSTANCE.immediateExecutor())
         .build();
   }
 
@@ -74,7 +74,7 @@ class BaseFetcherTest {
   }
 
   MockResponse mockResponse(String fileName) throws IOException {
-    return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), "/" + fileName), 32);
+    return new MockResponse().setChunkedBody(Utils.INSTANCE.readFileToString(getClass(), "/" + fileName), 32);
   }
 
 }

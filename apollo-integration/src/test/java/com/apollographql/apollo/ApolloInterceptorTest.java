@@ -1,8 +1,6 @@
 package com.apollographql.apollo;
 
 
-import android.support.annotation.NonNull;
-
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.exception.ApolloException;
@@ -34,8 +32,6 @@ import okhttp3.ResponseBody;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
-import static com.apollographql.apollo.Utils.assertResponse;
-import static com.apollographql.apollo.Utils.enqueueAndAssertResponse;
 import static com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorResponse;
 import static com.google.common.truth.Truth.assertThat;
 
@@ -50,7 +46,7 @@ public class ApolloInterceptorTest {
   @Before
   public void setup() {
     okHttpClient = new OkHttpClient.Builder()
-        .dispatcher(new Dispatcher(Utils.immediateExecutorService()))
+        .dispatcher(new Dispatcher(Utils.INSTANCE.immediateExecutorService()))
         .build();
   }
 
@@ -198,7 +194,7 @@ public class ApolloInterceptorTest {
 
     client = createApolloClient(interceptor);
 
-    enqueueAndAssertResponse(
+    Utils.INSTANCE.enqueueAndAssertResponse(
         server,
         FILE_EPISODE_HERO_NAME_WITH_ID,
         client.query(query),
@@ -226,7 +222,7 @@ public class ApolloInterceptorTest {
         .addApplicationInterceptor(secondInterceptor)
         .build();
 
-    assertResponse(
+    Utils.INSTANCE.assertResponse(
         client.query(query),
         new Predicate<Response<EpisodeHeroNameQuery.Data>>() {
           @Override public boolean test(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
@@ -279,7 +275,7 @@ public class ApolloInterceptorTest {
   }
 
   private ApolloClient createApolloClient(ApolloInterceptor interceptor) {
-    return createApolloClient(interceptor, Utils.immediateExecutor());
+    return createApolloClient(interceptor, Utils.INSTANCE.immediateExecutor());
   }
 
   @NotNull private InterceptorResponse prepareInterceptorResponse(EpisodeHeroNameQuery query) {
@@ -302,7 +298,7 @@ public class ApolloInterceptorTest {
   }
 
   private MockResponse mockResponse(String fileName) throws IOException {
-    return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), "/" + fileName), 32);
+    return new MockResponse().setChunkedBody(Utils.INSTANCE.readFileToString(getClass(), "/" + fileName), 32);
   }
 
   private static class SpyingApolloInterceptor implements ApolloInterceptor {

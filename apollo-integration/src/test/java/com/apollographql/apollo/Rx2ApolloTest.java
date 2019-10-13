@@ -21,9 +21,6 @@ import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockWebServer;
 
-import static com.apollographql.apollo.Utils.immediateExecutor;
-import static com.apollographql.apollo.Utils.immediateExecutorService;
-import static com.apollographql.apollo.Utils.mockResponse;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY;
 import static com.apollographql.apollo.integration.normalizer.type.Episode.EMPIRE;
 import static com.apollographql.apollo.integration.normalizer.type.Episode.NEWHOPE;
@@ -38,12 +35,12 @@ public class Rx2ApolloTest {
 
   @Before public void setup() {
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
-        .dispatcher(new Dispatcher(immediateExecutorService()))
+        .dispatcher(new Dispatcher(Utils.INSTANCE.immediateExecutorService()))
         .build();
 
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
-        .dispatcher(immediateExecutor())
+        .dispatcher(Utils.INSTANCE.immediateExecutor())
         .okHttpClient(okHttpClient)
         .normalizedCache(new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), new IdFieldCacheKeyResolver())
         .build();
@@ -51,7 +48,7 @@ public class Rx2ApolloTest {
 
   @Test
   public void callProducesValue() throws Exception {
-    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
+    server.enqueue(Utils.INSTANCE.mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
     Rx2Apollo
         .from(apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))))
         .test()
@@ -67,7 +64,7 @@ public class Rx2ApolloTest {
 
   @Test
   public void callIsCanceledWhenDisposed() throws Exception {
-    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
+    server.enqueue(Utils.INSTANCE.mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
 
     TestObserver<Response<EpisodeHeroNameQuery.Data>> testObserver = new TestObserver<>();
     Disposable disposable = Rx2Apollo
@@ -82,7 +79,7 @@ public class Rx2ApolloTest {
 
   @Test
   public void prefetchCompletes() throws Exception {
-    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
+    server.enqueue(Utils.INSTANCE.mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
     Rx2Apollo
         .from(apolloClient.prefetch(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))))
         .test()
@@ -92,7 +89,7 @@ public class Rx2ApolloTest {
 
   @Test
   public void prefetchIsCanceledWhenDisposed() throws Exception {
-    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
+    server.enqueue(Utils.INSTANCE.mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
 
     TestObserver<EpisodeHeroNameQuery.Data> testObserver = new TestObserver<>();
     Disposable disposable = Rx2Apollo
@@ -109,7 +106,7 @@ public class Rx2ApolloTest {
   @Test
   @SuppressWarnings("CheckReturnValue")
   public void queryWatcherUpdatedSameQueryDifferentResults() throws Exception {
-    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
+    server.enqueue(Utils.INSTANCE.mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
     TestObserver<EpisodeHeroNameQuery.Data> observer = new TestObserver<>();
     Rx2Apollo
         .from(apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
@@ -121,7 +118,7 @@ public class Rx2ApolloTest {
         })
         .subscribeWith(observer);
 
-    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE));
+    server.enqueue(Utils.INSTANCE.mockResponse(FILE_EPISODE_HERO_NAME_CHANGE));
     apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE)))
         .responseFetcher(NETWORK_ONLY)
         .enqueue(null);
@@ -144,7 +141,7 @@ public class Rx2ApolloTest {
   @Test
   @SuppressWarnings("CheckReturnValue")
   public void queryWatcherNotUpdatedSameQuerySameResults() throws Exception {
-    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
+    server.enqueue(Utils.INSTANCE.mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
     TestObserver<EpisodeHeroNameQuery.Data> observer = new TestObserver<>();
     Rx2Apollo
         .from(apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
@@ -156,7 +153,7 @@ public class Rx2ApolloTest {
         })
         .subscribeWith(observer);
 
-    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
+    server.enqueue(Utils.INSTANCE.mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
     apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).responseFetcher(NETWORK_ONLY)
         .enqueue(null);
 
@@ -173,7 +170,7 @@ public class Rx2ApolloTest {
   @Test
   @SuppressWarnings("CheckReturnValue")
   public void queryWatcherUpdatedDifferentQueryDifferentResults() throws Exception {
-    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
+    server.enqueue(Utils.INSTANCE.mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
 
     TestObserver<EpisodeHeroNameQuery.Data> observer = new TestObserver<>();
     Rx2Apollo
@@ -186,7 +183,7 @@ public class Rx2ApolloTest {
         })
         .subscribeWith(observer);
 
-    server.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"));
+    server.enqueue(Utils.INSTANCE.mockResponse("HeroAndFriendsNameWithIdsNameChange.json"));
     apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(NEWHOPE))).enqueue(null);
 
     observer
@@ -207,7 +204,7 @@ public class Rx2ApolloTest {
 
   @Test
   public void queryWatcherNotCalledWhenCanceled() throws Exception {
-    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
+    server.enqueue(Utils.INSTANCE.mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
 
     TestObserver<EpisodeHeroNameQuery.Data> testObserver = new TestObserver<>();
     TestScheduler scheduler = new TestScheduler();
@@ -223,7 +220,7 @@ public class Rx2ApolloTest {
         .subscribeWith(testObserver);
 
     scheduler.triggerActions();
-    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE));
+    server.enqueue(Utils.INSTANCE.mockResponse(FILE_EPISODE_HERO_NAME_CHANGE));
     apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).responseFetcher(NETWORK_ONLY)
         .enqueue(null);
     disposable.dispose();

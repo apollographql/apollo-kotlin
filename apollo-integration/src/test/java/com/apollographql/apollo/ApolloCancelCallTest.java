@@ -30,11 +30,11 @@ public class ApolloCancelCallTest {
   public void setup() {
     cacheStore = new MockHttpCacheStore();
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
-        .dispatcher(new Dispatcher(Utils.immediateExecutorService()))
+        .dispatcher(new Dispatcher(Utils.INSTANCE.immediateExecutorService()))
         .build();
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
-        .dispatcher(Utils.immediateExecutor())
+        .dispatcher(Utils.INSTANCE.immediateExecutor())
         .okHttpClient(okHttpClient)
         .httpCache(new ApolloHttpCache(cacheStore, null))
         .build();
@@ -55,7 +55,7 @@ public class ApolloCancelCallTest {
   @Test
   public void cancelCallAfterEnqueueNoCallback() throws Exception {
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
-        .dispatcher(new Dispatcher(Utils.immediateExecutorService()))
+        .dispatcher(new Dispatcher(Utils.INSTANCE.immediateExecutorService()))
         .build();
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
@@ -99,6 +99,6 @@ public class ApolloCancelCallTest {
   }
 
   private MockResponse mockResponse(String fileName) throws IOException {
-    return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), "/" + fileName), 32);
+    return new MockResponse().setChunkedBody(Utils.INSTANCE.readFileToString(getClass(), "/" + fileName), 32);
   }
 }

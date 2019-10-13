@@ -34,8 +34,6 @@ import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockWebServer;
 
-import static com.apollographql.apollo.Utils.assertResponse;
-import static com.apollographql.apollo.Utils.enqueueAndAssertResponse;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY;
 import static com.apollographql.apollo.integration.normalizer.type.Episode.JEDI;
 import static com.google.common.truth.Truth.assertThat;
@@ -50,14 +48,14 @@ public class ResponseWriteTestCase {
 
   @Before public void setUp() {
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
-        .dispatcher(new Dispatcher(Utils.immediateExecutorService()))
+        .dispatcher(new Dispatcher(Utils.INSTANCE.immediateExecutorService()))
         .build();
 
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
         .normalizedCache(new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), new IdFieldCacheKeyResolver())
-        .dispatcher(Utils.immediateExecutor())
+        .dispatcher(Utils.INSTANCE.immediateExecutor())
         .addCustomTypeAdapter(CustomType.DATE, new CustomTypeAdapter<Date>() {
           @Override public Date decode(CustomTypeValue value) {
             try {
@@ -78,7 +76,7 @@ public class ResponseWriteTestCase {
   public void customType() throws Exception {
     EpisodeHeroWithDatesQuery query = new EpisodeHeroWithDatesQuery(Input.fromNullable(JEDI));
 
-    enqueueAndAssertResponse(
+    Utils.INSTANCE.enqueueAndAssertResponse(
         server,
         "EpisodeHeroWithDatesResponse.json",
         apolloClient.query(query),
@@ -148,7 +146,7 @@ public class ResponseWriteTestCase {
   public void enums() throws Exception {
     HeroNameWithEnumsQuery query = new HeroNameWithEnumsQuery();
 
-    enqueueAndAssertResponse(
+    Utils.INSTANCE.enqueueAndAssertResponse(
         server,
         "HeroNameWithEnumsResponse.json",
         apolloClient.query(query),
@@ -214,7 +212,7 @@ public class ResponseWriteTestCase {
   public void objects() throws Exception {
     HeroAndFriendsNamesWithIDsQuery query = new HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(JEDI));
 
-    enqueueAndAssertResponse(
+    Utils.INSTANCE.enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameWithIdsResponse.json",
         apolloClient.query(query),
@@ -293,7 +291,7 @@ public class ResponseWriteTestCase {
   public void operation_with_fragments() throws Exception {
     HeroAndFriendsWithFragmentsQuery query = new HeroAndFriendsWithFragmentsQuery(Input.fromNullable(Episode.NEWHOPE));
 
-    enqueueAndAssertResponse(
+    Utils.INSTANCE.enqueueAndAssertResponse(
         server,
         "HeroAndFriendsWithFragmentResponse.json",
         apolloClient.query(query),
@@ -378,7 +376,7 @@ public class ResponseWriteTestCase {
   public void operation_with_inline_fragments() throws Exception {
     EpisodeHeroWithInlineFragmentQuery query = new EpisodeHeroWithInlineFragmentQuery(Input.fromNullable(Episode.NEWHOPE));
 
-    enqueueAndAssertResponse(
+    Utils.INSTANCE.enqueueAndAssertResponse(
         server,
         "EpisodeHeroWithInlineFragmentResponse.json",
         apolloClient.query(query),
@@ -456,7 +454,7 @@ public class ResponseWriteTestCase {
   public void fragments() throws Exception {
     HeroAndFriendsWithFragmentsQuery query = new HeroAndFriendsWithFragmentsQuery(Input.fromNullable(Episode.NEWHOPE));
 
-    enqueueAndAssertResponse(
+    Utils.INSTANCE.enqueueAndAssertResponse(
         server,
         "HeroAndFriendsWithFragmentResponse.json",
         apolloClient.query(query),
@@ -543,7 +541,7 @@ public class ResponseWriteTestCase {
   @Test public void listOfList() throws Exception {
     StarshipByIdQuery query = new StarshipByIdQuery("Starship1");
 
-    enqueueAndAssertResponse(
+    Utils.INSTANCE.enqueueAndAssertResponse(
         server,
         "StarshipByIdResponse.json",
         apolloClient.query(query),
@@ -582,7 +580,7 @@ public class ResponseWriteTestCase {
   }
 
   private <T> void assertCachedQueryResponse(Query<?, T, ?> query, Predicate<Response<T>> predicate) throws Exception {
-    assertResponse(
+    Utils.INSTANCE.assertResponse(
         apolloClient.query(query).responseFetcher(CACHE_ONLY),
         predicate
     );
