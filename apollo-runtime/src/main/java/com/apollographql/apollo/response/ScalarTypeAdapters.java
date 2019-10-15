@@ -33,7 +33,7 @@ public final class ScalarTypeAdapters {
 
     if (customTypeAdapter == null) {
       throw new IllegalArgumentException(String.format("Can't map GraphQL type: %s to: %s. Did you forget to add "
-          + "custom type adapter?", scalarType.typeName(), scalarType.javaType()));
+          + "a custom type adapter?", scalarType.typeName(), scalarType.javaType()));
     }
 
     return customTypeAdapter;
