@@ -375,7 +375,10 @@ internal object KotlinCodeGen {
       CodeBlock.of("emptyList()")
     } else {
       filterNotNull()
-          .map { it.toDefaultValueCodeBlock((typeName as ParameterizedTypeName).typeArguments.first(), fieldType.rawType) }
+          .map { value ->
+            val rawTypeName = (typeName as ParameterizedTypeName).typeArguments.first().copy(nullable = false)
+            value.toDefaultValueCodeBlock(rawTypeName, fieldType.rawType)
+          }
           .joinToCode(prefix = "listOf(", separator = ", ", suffix = ")")
     }
   }
@@ -389,7 +392,7 @@ internal object KotlinCodeGen {
 
   fun TypeRef.asTypeName() = ClassName(packageName = packageName, simpleName = name.capitalize())
 
-  private fun Map<String, Any>?.toCode(): CodeBlock? {
+  private fun Map<String, Any?>?.toCode(): CodeBlock? {
     return when {
       this == null -> null
       this.isEmpty() -> CodeBlock.of("emptyMap<%T, Any>()", String::class.asTypeName())
@@ -404,23 +407,9 @@ internal object KotlinCodeGen {
   }
 
   @Suppress("UNCHECKED_CAST")
-  private fun Map.Entry<String, Any>.toCode() = when (value) {
+  private fun Map.Entry<String, Any?>.toCode() = when (value) {
     is Map<*, *> -> CodeBlock.of("%S to %L", key, (value as Map<String, Any>).toCode())
+    null -> CodeBlock.of("%S to null", key)
     else -> CodeBlock.of("%S to %S", key, value)
-  }
-
-  fun Any.normalizeJsonValue(graphQLType: String): Any = when (this) {
-    is Number -> {
-      when (ScalarType.forName(graphQLType.removeSuffix("!"))) {
-        is ScalarType.INT -> toInt()
-        is ScalarType.FLOAT -> toDouble()
-        else -> this
-      }
-    }
-    is Boolean, is Map<*, *> -> this
-    is List<*> -> this.mapNotNull {
-      it?.normalizeJsonValue(graphQLType.removeSuffix("!").removePrefix("[").removeSuffix("]"))
-    }
-    else -> toString()
   }
 }

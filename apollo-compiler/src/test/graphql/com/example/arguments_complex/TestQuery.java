@@ -191,7 +191,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           .put("variableName", "stars")
           .build())
         .put("favoriteColor", new UnmodifiableMapBuilder<String, Object>(3)
-          .put("red", "0.0")
+          .put("red", "0")
           .put("green", new UnmodifiableMapBuilder<String, Object>(2)
             .put("kind", "Variable")
             .put("variableName", "greenValue")
