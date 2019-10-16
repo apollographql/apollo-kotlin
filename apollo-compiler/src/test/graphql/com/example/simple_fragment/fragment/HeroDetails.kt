@@ -69,23 +69,7 @@ data class HeroDetails(
     val humanDetails: HumanDetails?
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeObject(RESPONSE_FIELDS[0], humanDetails?.marshaller())
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forObject("HumanDetails", "HumanDetails", null, true, listOf("Human"))
-          )
-
-      operator fun invoke(reader: ResponseReader): Fragments {
-        val humanDetails = reader.readObject<HumanDetails>(RESPONSE_FIELDS[0]) { reader ->
-          HumanDetails(reader)
-        }
-
-        return Fragments(
-          humanDetails = humanDetails
-        )
-      }
+      humanDetails?.marshaller()?.marshal(it)
     }
   }
 }

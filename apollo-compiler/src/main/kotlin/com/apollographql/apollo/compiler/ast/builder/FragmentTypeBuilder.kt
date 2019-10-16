@@ -22,17 +22,14 @@ internal fun Fragment.ast(context: Context): FragmentType {
       context = context
   )
   val fragmentType = context.objectTypes[typeRef] as ObjectType.Object
-  val nestedObjects = context.objectTypes.minus(typeRef).let { objectTypes ->
-    fragmentType.fragmentsType?.let { fragmentsType ->
-      objectTypes + (TypeRef(fragmentsType.className) to fragmentsType)
-    } ?: objectTypes
-  }
+  val nestedObjects = context.objectTypes.minus(typeRef)
   return FragmentType(
       name = fragmentType.className,
       definition = source,
       possibleTypes = possibleTypes,
       fields = fragmentType.fields.let { if (inlineFragmentField != null) it + inlineFragmentField else it },
-      nestedObjects = nestedObjects
+      nestedObjects = nestedObjects,
+      fragmentsType = fragmentType.fragmentsType
   )
 }
 

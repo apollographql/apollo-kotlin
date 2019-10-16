@@ -131,7 +131,8 @@ internal data class FragmentType(
     val definition: String,
     val possibleTypes: List<String>,
     val fields: List<ObjectType.Field>,
-    val nestedObjects: Map<TypeRef, ObjectType>
+    val nestedObjects: Map<TypeRef, ObjectType>,
+    val fragmentsType: ObjectType?
 )
 
 internal data class Schema(

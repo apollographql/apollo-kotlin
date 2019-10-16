@@ -45,6 +45,16 @@ internal fun ObjectType.typeSpec(): TypeSpec {
   }
 }
 
+internal val ObjectType.fragmentsTypeSpec: TypeSpec
+  get() {
+    return TypeSpec.classBuilder(className)
+        .addModifiers(KModifier.DATA)
+        .primaryConstructor(primaryConstructorSpec)
+        .addProperties(fields.map { field -> field.asPropertySpec(initializer = CodeBlock.of(field.name)) })
+        .addFunction(marshallerFunSpec)
+        .build()
+  }
+
 private val ObjectType.primaryConstructorSpec: FunSpec
   get() {
     return FunSpec.constructorBuilder()
@@ -79,16 +89,6 @@ private val ObjectType.InlineFragment.companionObjectSpec: TypeSpec
             )
             .build()
         )
-        .build()
-  }
-
-private val ObjectType.fragmentsTypeSpec: TypeSpec
-  get() {
-    return TypeSpec.classBuilder(className)
-        .addModifiers(KModifier.DATA)
-        .primaryConstructor(primaryConstructorSpec)
-        .addProperties(fields.map { field -> field.asPropertySpec(initializer = CodeBlock.of(field.name)) })
-        .addFunction(marshallerFunSpec)
         .build()
   }
 

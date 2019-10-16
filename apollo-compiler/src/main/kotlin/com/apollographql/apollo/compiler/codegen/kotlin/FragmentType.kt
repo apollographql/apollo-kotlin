@@ -1,6 +1,7 @@
 package com.apollographql.apollo.compiler.codegen.kotlin
 
 import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.ast.FragmentType
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.asPropertySpec
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.asTypeName
@@ -20,6 +21,7 @@ internal fun FragmentType.typeSpec() =
         .primaryConstructor(primaryConstructorSpec)
         .addProperties(fields.map { field -> field.asPropertySpec(initializer = CodeBlock.of(field.name)) })
         .addType(companionObjectTypeSpec)
+        .applyIf(fragmentsType != null) { addType(fragmentsType!!.fragmentsTypeSpec) }
         .addTypes(nestedObjects.map { (_, type) -> type.typeSpec() })
         .addFunction(marshallerFunSpec(fields, true))
         .build()
