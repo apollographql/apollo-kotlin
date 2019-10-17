@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler.codegen.kotlin
 
+import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.ast.ObjectType
@@ -11,43 +12,88 @@ import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.toMapperFu
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 
-internal fun ObjectType.typeSpec(): TypeSpec {
-  return when (this) {
-    is ObjectType.Object -> TypeSpec
-        .classBuilder(className)
-        .addModifiers(KModifier.DATA)
-        .primaryConstructor(primaryConstructorSpec)
-        .addProperties(fields.map { it.asPropertySpec(initializer = CodeBlock.of(it.name)) })
-        .addType(companionObjectSpec)
-        .applyIf(fragmentsType != null) { addType(fragmentsType!!.fragmentsTypeSpec) }
-        .addFunction(marshallerFunSpec(fields))
-        .build()
+internal fun ObjectType.typeSpec(): TypeSpec = when (kind) {
+  is ObjectType.Kind.Object -> TypeSpec
+      .classBuilder(name)
+      .addModifiers(KModifier.DATA)
+      .primaryConstructor(primaryConstructorSpec)
+      .addProperties(fields.map { it.asPropertySpec(initializer = CodeBlock.of(it.name)) })
+      .addType(TypeSpec.companionObjectBuilder()
+          .addProperty(responseFieldsPropertySpec(fields))
+          .addFunction(fields.toMapperFun(ClassName(packageName = "", simpleName = name)))
+          .build())
+      .applyIf(fragmentsType != null) { addType(fragmentsType!!.fragmentsTypeSpec) }
+      .addFunction(marshallerFunSpec(fields))
+      .addTypes(nestedObjects.map { (_, type) -> type.typeSpec() })
+      .build()
 
-    is ObjectType.InlineFragmentSuper -> TypeSpec
-        .interfaceBuilder(className)
-        .addFunction(
-            FunSpec.builder("marshaller")
-                .addModifiers(KModifier.ABSTRACT)
-                .returns(ResponseFieldMarshaller::class)
-                .build()
-        )
-        .build()
+  is ObjectType.Kind.InlineFragmentSuper -> TypeSpec
+      .interfaceBuilder(name)
+      .addFunction(
+          FunSpec.builder("marshaller")
+              .addModifiers(KModifier.ABSTRACT)
+              .returns(ResponseFieldMarshaller::class)
+              .build()
+      )
+      .build()
 
-    is ObjectType.InlineFragment -> TypeSpec
-        .classBuilder(className)
-        .addModifiers(KModifier.DATA)
-        .primaryConstructor(primaryConstructorSpec)
-        .addProperties(fields.map { it.asPropertySpec(initializer = CodeBlock.of(it.name)) })
-        .addSuperinterface(superInterface.asTypeName())
-        .addType(companionObjectSpec)
-        .addFunction(marshallerFunSpec(fields = fields, override = true))
-        .build()
-  }
+  is ObjectType.Kind.InlineFragment -> TypeSpec
+      .classBuilder(name)
+      .addModifiers(KModifier.DATA)
+      .primaryConstructor(primaryConstructorSpec)
+      .addProperties(fields.map { it.asPropertySpec(initializer = CodeBlock.of(it.name)) })
+      .addSuperinterface(kind.superInterface.asTypeName())
+      .addType(TypeSpec.companionObjectBuilder()
+          .addProperty(responseFieldsPropertySpec(fields))
+          .addFunction(fields.toMapperFun(ClassName.bestGuess(name)))
+          .addProperty(PropertySpec.builder("POSSIBLE_TYPES",
+              Array<String>::class.asClassName().parameterizedBy(String::class.asClassName()))
+              .initializer(kind.possibleTypes
+                  .map { CodeBlock.of("%S", it) }
+                  .joinToCode(prefix = "arrayOf(", separator = ", ", suffix = ")")
+              )
+              .build()
+          )
+          .build())
+      .addFunction(marshallerFunSpec(fields = fields, override = true))
+      .applyIf(fragmentsType != null) { addType(fragmentsType!!.fragmentsTypeSpec) }
+      .addTypes(nestedObjects.map { (_, type) -> type.typeSpec() })
+      .build()
+
+  is ObjectType.Kind.Fragment -> TypeSpec
+      .classBuilder(name)
+      .addModifiers(KModifier.DATA)
+      .addSuperinterface(GraphqlFragment::class.java)
+      .addAnnotation(KotlinCodeGen.suppressWarningsAnnotation)
+      .primaryConstructor(primaryConstructorSpec)
+      .addProperties(fields.map { field -> field.asPropertySpec(initializer = CodeBlock.of(field.name)) })
+      .addType(TypeSpec
+          .companionObjectBuilder()
+          .addProperty(responseFieldsPropertySpec(fields))
+          .addProperty(PropertySpec.builder("FRAGMENT_DEFINITION", String::class)
+              .initializer("%S", kind.definition)
+              .build()
+          )
+          .addProperty(PropertySpec.builder("POSSIBLE_TYPES",
+              Array<String>::class.asClassName().parameterizedBy(String::class.asClassName()))
+              .initializer(kind.possibleTypes
+                  .map { CodeBlock.of("%S", it) }
+                  .joinToCode(prefix = "arrayOf(", separator = ", ", suffix = ")")
+              )
+              .build()
+          )
+          .addFunction(fields.toMapperFun(ClassName.bestGuess(name)))
+          .build())
+      .applyIf(fragmentsType != null) { addType(fragmentsType!!.fragmentsTypeSpec) }
+      .addFunction(marshallerFunSpec(fields, true))
+      .addTypes(nestedObjects.map { (_, type) -> type.typeSpec() })
+      .build()
+
 }
 
-internal val ObjectType.fragmentsTypeSpec: TypeSpec
+private val ObjectType.fragmentsTypeSpec: TypeSpec
   get() {
-    return TypeSpec.classBuilder(className)
+    return TypeSpec.classBuilder(name)
         .addModifiers(KModifier.DATA)
         .primaryConstructor(primaryConstructorSpec)
         .addProperties(fields.map { field -> field.asPropertySpec(initializer = CodeBlock.of(field.name)) })
@@ -65,30 +111,6 @@ private val ObjectType.primaryConstructorSpec: FunSpec
               type = if (field.isOptional) typeName.copy(nullable = true) else typeName
           ).build()
         })
-        .build()
-  }
-
-private val ObjectType.companionObjectSpec: TypeSpec
-  get() {
-    return TypeSpec.companionObjectBuilder()
-        .addProperty(responseFieldsPropertySpec(fields))
-        .addFunction(fields.toMapperFun(ClassName(packageName = "", simpleName = className)))
-        .build()
-  }
-
-private val ObjectType.InlineFragment.companionObjectSpec: TypeSpec
-  get() {
-    return TypeSpec.companionObjectBuilder()
-        .addProperty(responseFieldsPropertySpec(fields))
-        .addFunction(fields.toMapperFun(ClassName.bestGuess(className)))
-        .addProperty(PropertySpec.builder("POSSIBLE_TYPES",
-            Array<String>::class.asClassName().parameterizedBy(String::class.asClassName()))
-            .initializer(possibleTypes
-                .map { CodeBlock.of("%S", it) }
-                .joinToCode(prefix = "arrayOf(", separator = ", ", suffix = ")")
-            )
-            .build()
-        )
         .build()
   }
 

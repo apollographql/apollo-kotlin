@@ -14,85 +14,84 @@ import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.toMapperFu
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 
-internal fun OperationType.typeSpec(targetPackage: String) =
-    TypeSpec
-        .classBuilder(name)
-        .addAnnotation(suppressWarningsAnnotation)
-        .addSuperinterface(superInterfaceType(targetPackage))
-        .applyIf(variables.fields.isNotEmpty()) {
-          addModifiers(KModifier.DATA)
-          primaryConstructor(primaryConstructorSpec)
-          addProperties(variables.fields.map { variable -> variable.asPropertySpec(CodeBlock.of(variable.name)) })
-          addProperty(variablePropertySpec)
-        }
-        .addFunction(FunSpec.builder("operationId")
-            .addModifiers(KModifier.OVERRIDE)
-            .returns(String::class)
-            .addCode("return OPERATION_ID")
-            .build()
-        )
-        .addFunction(FunSpec.builder("queryDocument")
-            .addModifiers(KModifier.OVERRIDE)
-            .returns(String::class)
-            .addCode("return QUERY_DOCUMENT")
-            .build()
-        )
-        .addFunction(FunSpec.builder("wrapData")
-            .addModifiers(KModifier.OVERRIDE)
-            .addParameter(ParameterSpec.builder("data", data.asTypeName().copy(nullable = true)).build())
-            .returns(data.asTypeName().copy(nullable = true))
-            .addCode("return data")
-            .build()
-        )
-        .addFunction(FunSpec.builder("variables")
-            .addModifiers(KModifier.OVERRIDE)
-            .returns(Operation.Variables::class.asClassName())
-            .apply {
-              if (variables.fields.isNotEmpty()) {
-                addCode("return variables")
-              } else {
-                addCode("return %T.EMPTY_VARIABLES", Operation::class)
-              }
-            }
-            .build()
-        )
-        .addFunction(FunSpec.builder("name")
-            .addModifiers(KModifier.OVERRIDE)
-            .returns(OperationName::class)
-            .addCode("return OPERATION_NAME")
-            .build()
-        )
-        .addFunction(FunSpec.builder("responseFieldMapper")
-            .addModifiers(KModifier.OVERRIDE)
-            .returns(ResponseFieldMapper::class.asClassName().parameterizedBy(data.asTypeName()))
-            .beginControlFlow("return %T {", ResponseFieldMapper::class)
-            .addStatement("%T(it)", data.asTypeName())
-            .endControlFlow()
-            .build()
-        )
-        .addTypes(nestedObjects.map { (ref, type) ->
-          if (ref == data) {
-            (type as ObjectType.Object).toOperationDataTypeSpec(data.name)
-          } else {
-            type.typeSpec()
-          }
-        })
-        .addType(TypeSpec.companionObjectBuilder()
-            .addProperty(PropertySpec.builder("OPERATION_ID", String::class)
-                .addModifiers(KModifier.CONST)
-                .initializer("%S", operationId)
-                .build()
-            )
-            .addProperty(PropertySpec.builder("QUERY_DOCUMENT", String::class)
-                .initializer("%S", queryDocument)
-                .build()
-            )
-            .addProperty(PropertySpec.builder("OPERATION_NAME", OperationName::class)
-                .initializer("%T { %S }", OperationName::class, operationName)
-                .build())
-            .build()
-        )
+internal fun OperationType.typeSpec(targetPackage: String) = TypeSpec
+    .classBuilder(name)
+    .addAnnotation(suppressWarningsAnnotation)
+    .addSuperinterface(superInterfaceType(targetPackage))
+    .applyIf(variables.fields.isNotEmpty()) {
+      addModifiers(KModifier.DATA)
+      primaryConstructor(primaryConstructorSpec)
+      addProperties(variables.fields.map { variable -> variable.asPropertySpec(CodeBlock.of(variable.name)) })
+      addProperty(variablePropertySpec)
+    }
+    .addFunction(FunSpec.builder("operationId")
+        .addModifiers(KModifier.OVERRIDE)
+        .returns(String::class)
+        .addCode("return OPERATION_ID")
         .build()
+    )
+    .addFunction(FunSpec.builder("queryDocument")
+        .addModifiers(KModifier.OVERRIDE)
+        .returns(String::class)
+        .addCode("return QUERY_DOCUMENT")
+        .build()
+    )
+    .addFunction(FunSpec.builder("wrapData")
+        .addModifiers(KModifier.OVERRIDE)
+        .addParameter(ParameterSpec.builder("data", data.asTypeName().copy(nullable = true)).build())
+        .returns(data.asTypeName().copy(nullable = true))
+        .addCode("return data")
+        .build()
+    )
+    .addFunction(FunSpec.builder("variables")
+        .addModifiers(KModifier.OVERRIDE)
+        .returns(Operation.Variables::class.asClassName())
+        .apply {
+          if (variables.fields.isNotEmpty()) {
+            addCode("return variables")
+          } else {
+            addCode("return %T.EMPTY_VARIABLES", Operation::class)
+          }
+        }
+        .build()
+    )
+    .addFunction(FunSpec.builder("name")
+        .addModifiers(KModifier.OVERRIDE)
+        .returns(OperationName::class)
+        .addCode("return OPERATION_NAME")
+        .build()
+    )
+    .addFunction(FunSpec.builder("responseFieldMapper")
+        .addModifiers(KModifier.OVERRIDE)
+        .returns(ResponseFieldMapper::class.asClassName().parameterizedBy(data.asTypeName()))
+        .beginControlFlow("return %T {", ResponseFieldMapper::class)
+        .addStatement("%T(it)", data.asTypeName())
+        .endControlFlow()
+        .build()
+    )
+    .addTypes(nestedObjects.map { (ref, type) ->
+      if (ref == data) {
+        type.toOperationDataTypeSpec(data.name)
+      } else {
+        type.typeSpec()
+      }
+    })
+    .addType(TypeSpec.companionObjectBuilder()
+        .addProperty(PropertySpec.builder("OPERATION_ID", String::class)
+            .addModifiers(KModifier.CONST)
+            .initializer("%S", operationId)
+            .build()
+        )
+        .addProperty(PropertySpec.builder("QUERY_DOCUMENT", String::class)
+            .initializer("%S", queryDocument)
+            .build()
+        )
+        .addProperty(PropertySpec.builder("OPERATION_NAME", OperationName::class)
+            .initializer("%T { %S }", OperationName::class, operationName)
+            .build())
+        .build()
+    )
+    .build()
 
 private fun OperationType.superInterfaceType(targetPackage: String): TypeName {
   val dataTypeName = ClassName(packageName = targetPackage, simpleName = name, simpleNames = *arrayOf("Data"))
@@ -105,7 +104,8 @@ private fun OperationType.superInterfaceType(targetPackage: String): TypeName {
 
 private val OperationType.primaryConstructorSpec: FunSpec
   get() {
-    return FunSpec.constructorBuilder()
+    return FunSpec
+        .constructorBuilder()
         .addParameters(variables.fields.map { variable ->
           val typeName = variable.type.asTypeName()
           ParameterSpec.builder(
@@ -118,7 +118,8 @@ private val OperationType.primaryConstructorSpec: FunSpec
 
 private val OperationType.variablePropertySpec: PropertySpec
   get() {
-    return PropertySpec.builder("variables", Operation.Variables::class)
+    return PropertySpec
+        .builder("variables", Operation.Variables::class)
         .addModifiers(KModifier.PRIVATE)
         .addAnnotation(Transient::class)
         .initializer("%L", TypeSpec.anonymousClassBuilder()
@@ -132,7 +133,8 @@ private val OperationType.variablePropertySpec: PropertySpec
 
 private val InputType.variablesValueMapSpec: FunSpec
   get() {
-    return FunSpec.builder("valueMap")
+    return FunSpec
+        .builder("valueMap")
         .addModifiers(KModifier.OVERRIDE)
         .returns(Map::class.asClassName().parameterizedBy(String::class.asClassName(),
             Any::class.asClassName().copy(nullable = true)))
@@ -154,7 +156,8 @@ private val InputType.variablesValueMapSpec: FunSpec
 
 private val InputType.variablesMarshallerSpec: FunSpec
   get() {
-    return FunSpec.builder("marshaller")
+    return FunSpec
+        .builder("marshaller")
         .returns(InputFieldMarshaller::class)
         .addModifiers(KModifier.OVERRIDE)
         .addCode(CodeBlock.builder()
@@ -168,7 +171,7 @@ private val InputType.variablesMarshallerSpec: FunSpec
         .build()
   }
 
-private fun ObjectType.Object.toOperationDataTypeSpec(name: String) =
+private fun ObjectType.toOperationDataTypeSpec(name: String) =
     TypeSpec
         .classBuilder(name)
         .addModifiers(KModifier.DATA)

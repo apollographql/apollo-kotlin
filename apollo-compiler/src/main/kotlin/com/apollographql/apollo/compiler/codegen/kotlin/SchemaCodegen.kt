@@ -23,7 +23,7 @@ internal class SchemaCodegen(
     fileSpecs = fileSpecs + inputType.typeSpec().fileSpec(packageNameProvider.typesPackageName)
   }
 
-  override fun visit(fragmentType: FragmentType) {
+  override fun visit(fragmentType: ObjectType) {
     fileSpecs = fileSpecs + fragmentType.typeSpec().fileSpec(packageNameProvider.fragmentsPackageName)
   }
 

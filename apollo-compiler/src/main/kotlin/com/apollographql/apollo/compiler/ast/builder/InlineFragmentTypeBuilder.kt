@@ -13,20 +13,31 @@ internal fun List<InlineFragment>.inlineFragmentField(
 ): ObjectType.Field {
   val superInterfaceName = type.replace("[", "").replace("]", "").replace("!", "").singularize().capitalize() +
       schemaType.replace("[", "").replace("]", "").replace("!", "").singularize().capitalize()
-  val superInterface = context.addObjectType(superInterfaceName.escapeKotlinReservedWord()) { typeRef ->
-    ObjectType.InlineFragmentSuper(className = typeRef.name)
-  }
+  val superInterface = context.registerObjectType(
+      name = superInterfaceName.escapeKotlinReservedWord(),
+      schemaTypeName = "",
+      fragmentSpreads = emptyList(),
+      inlineFragments = emptyList(),
+      fields = emptyList(),
+      kind = ObjectType.Kind.InlineFragmentSuper,
+      singularize = false
+  )
   val inlineFragmentRefs = associate { fragment ->
     val normalizedClassName = fragment.typeCondition.capitalize().escapeKotlinReservedWord()
     val possibleTypes = fragment.possibleTypes
-    context.addObjectType("As$normalizedClassName") { typeRef ->
-      ObjectType.InlineFragment(
-          className = typeRef.name,
-          fields = fragment.fields.map { it.ast(context) },
-          superInterface = superInterface,
-          possibleTypes = possibleTypes
-      )
-    } to possibleTypes
+
+    context.registerObjectType(
+        name = "As$normalizedClassName",
+        schemaTypeName = fragment.typeCondition,
+        fragmentSpreads = fragment.fragmentSpreads,
+        inlineFragments = emptyList(),
+        fields = fragment.fields,
+        kind = ObjectType.Kind.InlineFragment(
+            superInterface = superInterface,
+            possibleTypes = possibleTypes
+        ),
+        singularize = false
+    ) to possibleTypes
   }
   return ObjectType.Field(
       name = "inlineFragment",

@@ -51,31 +51,24 @@ internal data class OperationType(
   }
 }
 
-internal sealed class ObjectType {
+internal data class ObjectType(
+    val name: String,
+    val schemaTypeName: String,
+    val fields: List<Field>,
+    val fragmentsType: ObjectType?,
+    val kind: Kind,
+    val nestedObjects: Map<TypeRef, ObjectType> = emptyMap()
+) {
 
-  abstract val className: String
+  sealed class Kind {
+    object Object : Kind()
 
-  abstract val fields: List<Field>
+    object InlineFragmentSuper : Kind()
 
-  data class Object(
-      override val className: String,
-      val schemaName: String,
-      override val fields: List<Field>,
-      val fragmentsType: ObjectType?
-  ) : ObjectType()
+    class InlineFragment(val superInterface: TypeRef, val possibleTypes: List<String>) : Kind()
 
-  internal data class InlineFragmentSuper(
-      override val className: String
-  ) : ObjectType() {
-    override val fields: List<Field> = emptyList()
+    class Fragment(val definition: String, val possibleTypes: List<String>) : Kind()
   }
-
-  data class InlineFragment(
-      override val className: String,
-      override val fields: List<Field>,
-      val superInterface: TypeRef,
-      val possibleTypes: List<String>
-  ) : ObjectType()
 
   data class Field(
       val name: String,
@@ -126,20 +119,11 @@ internal data class InputType(
   )
 }
 
-internal data class FragmentType(
-    val name: String,
-    val definition: String,
-    val possibleTypes: List<String>,
-    val fields: List<ObjectType.Field>,
-    val nestedObjects: Map<TypeRef, ObjectType>,
-    val fragmentsType: ObjectType?
-)
-
 internal data class Schema(
     val enums: List<EnumType>,
     val customTypes: CustomTypes,
     val inputTypes: List<InputType>,
-    val fragments: List<FragmentType>,
+    val fragments: List<ObjectType>,
     val operations: List<OperationType>
 ) {
   fun accept(visitor: SchemaVisitor) {
@@ -158,7 +142,7 @@ internal interface SchemaVisitor {
 
   fun visit(inputType: InputType)
 
-  fun visit(fragmentType: FragmentType)
+  fun visit(fragmentType: ObjectType)
 
   fun visit(operationType: OperationType)
 }

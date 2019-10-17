@@ -38,11 +38,12 @@ private fun Field.array(context: Context): ObjectType.Field {
   val fieldType = if (fields.isNotEmpty()) {
     val objectType = FieldType.Object(
         context.registerObjectType(
-            type = responseName.replace("[", "").replace("]", "").replace("!", ""),
-            schemaType = type.replace("[", "").replace("]", "").replace("!", ""),
+            name = responseName.replace("[", "").replace("]", "").replace("!", ""),
+            schemaTypeName = type.replace("[", "").replace("]", "").replace("!", ""),
             fragmentSpreads = fragmentSpreads,
             inlineFragments = inlineFragments,
-            fields = fields
+            fields = fields,
+            kind = ObjectType.Kind.Object
         )
     )
 
@@ -78,11 +79,12 @@ private fun Field.array(context: Context): ObjectType.Field {
 
 private fun Field.`object`(context: Context): ObjectType.Field {
   val typeRef = context.registerObjectType(
-      type = responseName.replace("[", "").replace("[", "").replace("!", ""),
-      schemaType = type.replace("[", "").replace("[", "").replace("!", ""),
+      name = responseName.replace("[", "").replace("[", "").replace("!", ""),
+      schemaTypeName = type.replace("[", "").replace("[", "").replace("!", ""),
       fragmentSpreads = fragmentSpreads,
       inlineFragments = inlineFragments,
-      fields = fields
+      fields = fields,
+      kind = ObjectType.Kind.Object
   )
   return ObjectType.Field(
       name = responseName.decapitalize().escapeKotlinReservedWord(),
