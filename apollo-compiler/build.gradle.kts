@@ -9,15 +9,8 @@ withConvention(JavaPluginConvention::class) {
   targetCompatibility = JavaVersion.VERSION_1_7
   sourceCompatibility = JavaVersion.VERSION_1_7
 
-  sourceSets {
-    // As temporary solution enable this to verify if generated kotlin test fixtures compiles
-    //  test {
-    //    java {
-    //      srcDir "src/test/graphql"
-    //      exclude "**/*.java"
-    //    }
-    //  }
-  }
+  // As temporary solution enable this to verify if generated kotlin test fixtures compiles
+  sourceSets["test"].java.srcDir("src/test/graphql").exclude("**/*.java")
 }
 
 dependencies {
