@@ -35,8 +35,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
-import static com.apollographql.apollo.Utils.assertResponse;
-import static com.apollographql.apollo.Utils.enqueueAndAssertResponse;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY;
 import static com.google.common.truth.Truth.assertThat;
 
@@ -46,25 +44,25 @@ public class OptimisticCacheTestCase {
 
   @Before public void setUp() {
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
-        .dispatcher(new Dispatcher(Utils.immediateExecutorService()))
+        .dispatcher(new Dispatcher(Utils.INSTANCE.immediateExecutorService()))
         .build();
 
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
         .normalizedCache(new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), new IdFieldCacheKeyResolver())
-        .dispatcher(Utils.immediateExecutor())
+        .dispatcher(Utils.INSTANCE.immediateExecutor())
         .build();
   }
 
   private MockResponse mockResponse(String fileName) throws IOException {
-    return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), "/" + fileName), 32);
+    return new MockResponse().setChunkedBody(Utils.INSTANCE.readFileToString(getClass(), "/" + fileName), 32);
   }
 
   @Test public void simple() throws Exception {
     HeroAndFriendsNamesQuery query = new HeroAndFriendsNamesQuery(Input.fromNullable(Episode.JEDI));
 
-    enqueueAndAssertResponse(
+    Utils.INSTANCE.enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameResponse.json",
         apolloClient.query(query),
@@ -92,7 +90,7 @@ public class OptimisticCacheTestCase {
     ));
     apolloClient.apolloStore().writeOptimisticUpdatesAndPublish(query, data, mutationId).execute();
 
-    assertResponse(
+    Utils.INSTANCE.assertResponse(
         apolloClient.query(query).responseFetcher(CACHE_ONLY),
         new Predicate<Response<HeroAndFriendsNamesQuery.Data>>() {
           @Override public boolean test(Response<HeroAndFriendsNamesQuery.Data> response) throws Exception {
@@ -107,7 +105,7 @@ public class OptimisticCacheTestCase {
 
     apolloClient.apolloStore().rollbackOptimisticUpdates(mutationId).execute();
 
-    assertResponse(
+    Utils.INSTANCE.assertResponse(
         apolloClient.query(query).responseFetcher(CACHE_ONLY),
         new Predicate<Response<HeroAndFriendsNamesQuery.Data>>() {
           @Override public boolean test(Response<HeroAndFriendsNamesQuery.Data> response) throws Exception {
@@ -129,7 +127,7 @@ public class OptimisticCacheTestCase {
     HeroNameWithIdQuery query2 = new HeroNameWithIdQuery();
     UUID mutationId2 = UUID.randomUUID();
 
-    enqueueAndAssertResponse(
+    Utils.INSTANCE.enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameWithIdsResponse.json",
         apolloClient.query(query1),
@@ -162,7 +160,7 @@ public class OptimisticCacheTestCase {
     apolloClient.apolloStore().writeOptimisticUpdatesAndPublish(query1, data1, mutationId1).execute();
 
     // check if query1 see optimistic updates
-    assertResponse(
+    Utils.INSTANCE.assertResponse(
         apolloClient.query(query1).responseFetcher(CACHE_ONLY),
         new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
           @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
@@ -178,7 +176,7 @@ public class OptimisticCacheTestCase {
         }
     );
 
-    enqueueAndAssertResponse(
+    Utils.INSTANCE.enqueueAndAssertResponse(
         server,
         "HeroNameWithIdResponse.json",
         apolloClient.query(query2),
@@ -197,7 +195,7 @@ public class OptimisticCacheTestCase {
     apolloClient.apolloStore().writeOptimisticUpdatesAndPublish(query2, data2, mutationId2).execute();
 
     // check if query1 see the latest optimistic updates
-    assertResponse(
+    Utils.INSTANCE.assertResponse(
         apolloClient.query(query1).responseFetcher(CACHE_ONLY),
         new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
           @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
@@ -214,7 +212,7 @@ public class OptimisticCacheTestCase {
     );
 
     // check if query2 see the latest optimistic updates
-    assertResponse(
+    Utils.INSTANCE.assertResponse(
         apolloClient.query(query2).responseFetcher(CACHE_ONLY),
         new Predicate<Response<HeroNameWithIdQuery.Data>>() {
           @Override public boolean test(Response<HeroNameWithIdQuery.Data> response) throws Exception {
@@ -229,7 +227,7 @@ public class OptimisticCacheTestCase {
     apolloClient.apolloStore().rollbackOptimisticUpdates(mutationId1).execute();
 
     // check if query1 see the latest optimistic updates
-    assertResponse(
+    Utils.INSTANCE.assertResponse(
         apolloClient.query(query1).responseFetcher(CACHE_ONLY),
         new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
           @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
@@ -248,7 +246,7 @@ public class OptimisticCacheTestCase {
     );
 
     // check if query2 see the latest optimistic updates
-    assertResponse(
+    Utils.INSTANCE.assertResponse(
         apolloClient.query(query2).responseFetcher(CACHE_ONLY),
         new Predicate<Response<HeroNameWithIdQuery.Data>>() {
           @Override public boolean test(Response<HeroNameWithIdQuery.Data> response) throws Exception {
@@ -263,7 +261,7 @@ public class OptimisticCacheTestCase {
     apolloClient.apolloStore().rollbackOptimisticUpdates(mutationId2).execute();
 
     // check if query2 see the latest optimistic updates
-    assertResponse(
+    Utils.INSTANCE.assertResponse(
         apolloClient.query(query2).responseFetcher(CACHE_ONLY),
         new Predicate<Response<HeroNameWithIdQuery.Data>>() {
           @Override public boolean test(Response<HeroNameWithIdQuery.Data> response) throws Exception {
@@ -276,7 +274,7 @@ public class OptimisticCacheTestCase {
   }
 
   @Test public void full_persisted_partial_optimistic() throws Exception {
-    enqueueAndAssertResponse(
+    Utils.INSTANCE.enqueueAndAssertResponse(
         server,
         "HeroNameWithEnumsResponse.json",
         apolloClient.query(new HeroNameWithEnumsQuery()),
@@ -294,7 +292,7 @@ public class OptimisticCacheTestCase {
         mutationId
     ).execute();
 
-    assertResponse(
+    Utils.INSTANCE.assertResponse(
         apolloClient.query(new HeroNameWithEnumsQuery()).responseFetcher(CACHE_ONLY),
         new Predicate<Response<HeroNameWithEnumsQuery.Data>>() {
           @Override public boolean test(Response<HeroNameWithEnumsQuery.Data> response) throws Exception {
@@ -308,7 +306,7 @@ public class OptimisticCacheTestCase {
 
     apolloClient.apolloStore().rollbackOptimisticUpdates(mutationId).execute();
 
-    assertResponse(
+    Utils.INSTANCE.assertResponse(
         apolloClient.query(new HeroNameWithEnumsQuery()).responseFetcher(CACHE_ONLY),
         new Predicate<Response<HeroNameWithEnumsQuery.Data>>() {
           @Override public boolean test(Response<HeroNameWithEnumsQuery.Data> response) throws Exception {
@@ -402,7 +400,7 @@ public class OptimisticCacheTestCase {
     HeroNameWithIdQuery query2 = new HeroNameWithIdQuery();
     UUID mutationId2 = UUID.randomUUID();
 
-    enqueueAndAssertResponse(
+    Utils.INSTANCE.enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameWithIdsResponse.json",
         apolloClient.query(query1),
@@ -413,7 +411,7 @@ public class OptimisticCacheTestCase {
         }
     );
 
-    enqueueAndAssertResponse(
+    Utils.INSTANCE.enqueueAndAssertResponse(
         server,
         "HeroNameWithIdResponse.json",
         apolloClient.query(query2),
@@ -453,7 +451,7 @@ public class OptimisticCacheTestCase {
     apolloClient.apolloStore().writeOptimisticUpdatesAndPublish(query2, data2, mutationId2).execute();
 
     // check if query1 see optimistic updates
-    assertResponse(
+    Utils.INSTANCE.assertResponse(
         apolloClient.query(query1).responseFetcher(CACHE_ONLY),
         new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
           @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
@@ -470,7 +468,7 @@ public class OptimisticCacheTestCase {
     );
 
     // check if query2 see the latest optimistic updates
-    assertResponse(
+    Utils.INSTANCE.assertResponse(
         apolloClient.query(query2).responseFetcher(CACHE_ONLY),
         new Predicate<Response<HeroNameWithIdQuery.Data>>() {
           @Override public boolean test(Response<HeroNameWithIdQuery.Data> response) throws Exception {
@@ -485,7 +483,7 @@ public class OptimisticCacheTestCase {
     apolloClient.apolloStore().rollbackOptimisticUpdates(mutationId2).execute();
 
     // check if query1 see the latest optimistic updates
-    assertResponse(
+    Utils.INSTANCE.assertResponse(
         apolloClient.query(query1).responseFetcher(CACHE_ONLY),
         new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
           @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
@@ -502,7 +500,7 @@ public class OptimisticCacheTestCase {
     );
 
     // check if query2 see the latest optimistic updates
-    assertResponse(
+    Utils.INSTANCE.assertResponse(
         apolloClient.query(query2).responseFetcher(CACHE_ONLY),
         new Predicate<Response<HeroNameWithIdQuery.Data>>() {
           @Override public boolean test(Response<HeroNameWithIdQuery.Data> response) throws Exception {
@@ -517,7 +515,7 @@ public class OptimisticCacheTestCase {
     apolloClient.apolloStore().rollbackOptimisticUpdates(mutationId1).execute();
 
     // check if query1 see the latest non-optimistic updates
-    assertResponse(
+    Utils.INSTANCE.assertResponse(
         apolloClient.query(query1).responseFetcher(CACHE_ONLY),
         new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
           @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
@@ -536,7 +534,7 @@ public class OptimisticCacheTestCase {
     );
 
     // check if query2 see the latest non-optimistic updates
-    assertResponse(
+    Utils.INSTANCE.assertResponse(
         apolloClient.query(query2).responseFetcher(CACHE_ONLY),
         new Predicate<Response<HeroNameWithIdQuery.Data>>() {
           @Override public boolean test(Response<HeroNameWithIdQuery.Data> response) throws Exception {

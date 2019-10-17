@@ -1908,6 +1908,20 @@
               "defaultValue": "JEDI"
             },
             {
+              "name": "nonNullableEnumWithDefaultValue",
+              "description": "for test purpose only",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "Episode",
+                  "ofType": null
+                }
+              },
+              "defaultValue": "JEDI"
+            },
+            {
               "name": "nullableEnum",
               "description": "for test purpose only",
               "type": {
@@ -2005,6 +2019,21 @@
                   }
                 }
               }
+            },
+             {
+              "name": "listOfInputTypes",
+              "description": "for test purpose only",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "colorInput",
+                  "ofType": null
+                }
+              },
+              "defaultValue": "[]"
             },
             {
               "name": "booleanWithDefaultValue",

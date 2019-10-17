@@ -86,7 +86,7 @@ internal sealed class ObjectType {
       val isOptional: Boolean,
       val isDeprecated: Boolean,
       val deprecationReason: String,
-      val arguments: Map<String, Any>,
+      val arguments: Map<String, Any?>,
       val conditions: List<Condition>
   ) {
     sealed class Condition {

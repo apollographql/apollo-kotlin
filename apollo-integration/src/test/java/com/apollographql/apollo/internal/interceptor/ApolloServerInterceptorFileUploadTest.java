@@ -1,6 +1,7 @@
 package com.apollographql.apollo.internal.interceptor;
 
 import com.apollographql.apollo.Logger;
+import com.apollographql.apollo.Utils;
 import com.apollographql.apollo.api.FileUpload;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.ScalarType;
@@ -88,12 +89,17 @@ public class ApolloServerInterceptorFileUploadTest {
       ":{\"files\":[null,null]},\"query\":\"mutation MultipleUpload($files: [Upload!]!) { multipleUpload(files: $files)" +
       " { __typename id path filename mimetype } }\"}";
   private final String expectedMapPartBodyMultiple = "{\"0\":[\"variables.files.0\"],\"1\":[\"variables.files.1\"]}";
+=======
+
+  private MultipleUploadMutation mutationMultiple = null;
+>>>>>>> 070ce06b2902444be4193b66f68c36efcb5f7463
 
   private final NestedUploadMutation mutationNested = NestedUploadMutation.builder()
       .nested(nestedObject2)
       .topFile(upload2)
       .topFileList(new ArrayList<>(Arrays.asList(upload1, upload0)))
       .build();
+<<<<<<< HEAD
   private final String expectedOperationsPartBodyNested = "{\"operationName\":\"NestedUpload\"," +
       "\"variables\":{\"topFile\":null,\"topFileList\":[null,null],\"nested\":{\"recursiveNested\":" +
       "[{\"file\":null,\"fileList\":[null,null]},{\"file\":null,\"fileList\":[null,null]}],\"file\":null," +
@@ -105,6 +111,8 @@ public class ApolloServerInterceptorFileUploadTest {
       "\"6\":[\"variables.nested.recursiveNested.1.file\"],\"7\":[\"variables.nested.recursiveNested.1.fileList.0\"]," +
       "\"8\":[\"variables.nested.recursiveNested.1.fileList.1\"],\"9\":[\"variables.nested.file\"]," +
       "\"10\":[\"variables.nested.fileList.0\"],\"11\":[\"variables.nested.fileList.1\"]}";
+=======
+>>>>>>> 070ce06b2902444be4193b66f68c36efcb5f7463
 
   private File createFile(String fileName, String content) {
     String tempDir = System.getProperty("java.io.tmpdir");
@@ -275,10 +283,10 @@ public class ApolloServerInterceptorFileUploadTest {
 
     // Check
     MultipartBody.Part part0 = body.parts().get(0);
-    assertOperationsPart(part0, expectedOperationsPartBodySingle);
+    assertOperationsPart(part0, "expectedOperationsPartBodySingle.json");
 
     MultipartBody.Part part1 = body.parts().get(1);
-    assertMapPart(part1, expectedMapPartBodySingle);
+    assertMapPart(part1, "expectedMapPartBodySingle.json");
 
     MultipartBody.Part part2 = body.parts().get(2);
     assertFileContentPart(part2, "0", "file1.jpg", "image/jpg");
@@ -293,10 +301,10 @@ public class ApolloServerInterceptorFileUploadTest {
 
     // Check
     MultipartBody.Part part0 = body.parts().get(0);
-    assertOperationsPart(part0, expectedOperationsPartBodyTwice);
+    assertOperationsPart(part0, "expectedOperationsPartBodyTwice.json");
 
     MultipartBody.Part part1 = body.parts().get(1);
-    assertMapPart(part1, expectedMapPartBodyTwice);
+    assertMapPart(part1, "expectedMapPartBodyTwice.json");
 
     MultipartBody.Part part2 = body.parts().get(2);
     assertFileContentPart(part2, "0", "file1.jpg", "image/jpg");
@@ -314,10 +322,10 @@ public class ApolloServerInterceptorFileUploadTest {
 
     // Check
     MultipartBody.Part part0 = body.parts().get(0);
-    assertOperationsPart(part0, expectedOperationsPartBodyMultiple);
+    assertOperationsPart(part0, "expectedOperationsPartBodyMultiple.json");
 
     MultipartBody.Part part1 = body.parts().get(1);
-    assertMapPart(part1, expectedMapPartBodyMultiple);
+    assertMapPart(part1, "expectedMapPartBodyMultiple.json");
 
     MultipartBody.Part part2 = body.parts().get(2);
     assertFileContentPart(part2, "0", "file1.jpg", "image/jpg");
@@ -335,13 +343,13 @@ public class ApolloServerInterceptorFileUploadTest {
 
     // Check
     MultipartBody.Part part0 = body.parts().get(0);
-    assertOperationsPart(part0, expectedOperationsPartBodyNested);
+    assertOperationsPart(part0, "expectedOperationsPartBodyNested.json");
 
     MultipartBody.Part part1 = body.parts().get(1);
-    assertMapPart(part1, expectedMapPartBodyNested);
+    assertMapPart(part1, "expectedMapPartBodyNested.json");
   }
 
-  private void assertOperationsPart(MultipartBody.Part part, String expected) {
+  private void assertOperationsPart(MultipartBody.Part part, String expectedPath) {
     assertThat(part.headers().get("Content-Disposition")).isEqualTo("form-data; name=\"operations\"");
     assertThat(part.body().contentType()).isEqualTo(ApolloServerInterceptor.MEDIA_TYPE);
     Buffer bodyBuffer = new Buffer();
@@ -350,11 +358,11 @@ public class ApolloServerInterceptorFileUploadTest {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-    assertThat(bodyBuffer.readUtf8()).isEqualTo(expected);
 
+    Utils.INSTANCE.checkTestFixture(bodyBuffer.readUtf8(), "ApolloServerInterceptorFileUploadTest/" + expectedPath);
   }
 
-  private void assertMapPart(MultipartBody.Part part, String expected) {
+  private void assertMapPart(MultipartBody.Part part, String expectedPath) {
     assertThat(part.headers().get("Content-Disposition")).isEqualTo("form-data; name=\"map\"");
     assertThat(part.body().contentType()).isEqualTo(ApolloServerInterceptor.MEDIA_TYPE);
     Buffer bodyBuffer = new Buffer();
@@ -363,7 +371,7 @@ public class ApolloServerInterceptorFileUploadTest {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-    assertThat(bodyBuffer.readUtf8()).isEqualTo(expected);
+    Utils.INSTANCE.checkTestFixture(bodyBuffer.readUtf8(), "ApolloServerInterceptorFileUploadTest/" + expectedPath);
   }
 
   private void assertFileContentPart(MultipartBody.Part part, String expectedName, String expectedFileName,

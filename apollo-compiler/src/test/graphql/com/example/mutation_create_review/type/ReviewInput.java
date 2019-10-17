@@ -33,6 +33,8 @@ public final class ReviewInput implements InputType {
 
   private final Input<Episode> enumWithDefaultValue;
 
+  private final @NotNull Episode nonNullableEnumWithDefaultValue;
+
   private final Input<Episode> nullableEnum;
 
   private final Input<List<Date>> listOfCustomScalar;
@@ -46,6 +48,8 @@ public final class ReviewInput implements InputType {
   private final Input<List<String>> listOfString;
 
   private final @NotNull List<String> listOfStringNonOptional;
+
+  private final Input<List<ColorInput>> listOfInputTypes;
 
   private final Input<Boolean> booleanWithDefaultValue;
 
@@ -65,17 +69,20 @@ public final class ReviewInput implements InputType {
 
   ReviewInput(int stars, Input<Integer> nullableIntFieldWithDefaultValue, Input<String> commentary,
       @NotNull ColorInput favoriteColor, Input<Episode> enumWithDefaultValue,
-      Input<Episode> nullableEnum, Input<List<Date>> listOfCustomScalar, Input<Date> customScalar,
+      @NotNull Episode nonNullableEnumWithDefaultValue, Input<Episode> nullableEnum,
+      Input<List<Date>> listOfCustomScalar, Input<Date> customScalar,
       Input<List<Episode>> listOfEnums, Input<List<Integer>> listOfInt,
       Input<List<String>> listOfString, @NotNull List<String> listOfStringNonOptional,
-      Input<Boolean> booleanWithDefaultValue, Input<List<List<String>>> listOfListOfString,
-      Input<List<List<Episode>>> listOfListOfEnum, Input<List<List<Date>>> listOfListOfCustom,
-      Input<List<List<ColorInput>>> listOfListOfObject, Input<String> capitalizedField) {
+      Input<List<ColorInput>> listOfInputTypes, Input<Boolean> booleanWithDefaultValue,
+      Input<List<List<String>>> listOfListOfString, Input<List<List<Episode>>> listOfListOfEnum,
+      Input<List<List<Date>>> listOfListOfCustom, Input<List<List<ColorInput>>> listOfListOfObject,
+      Input<String> capitalizedField) {
     this.stars = stars;
     this.nullableIntFieldWithDefaultValue = nullableIntFieldWithDefaultValue;
     this.commentary = commentary;
     this.favoriteColor = favoriteColor;
     this.enumWithDefaultValue = enumWithDefaultValue;
+    this.nonNullableEnumWithDefaultValue = nonNullableEnumWithDefaultValue;
     this.nullableEnum = nullableEnum;
     this.listOfCustomScalar = listOfCustomScalar;
     this.customScalar = customScalar;
@@ -83,6 +90,7 @@ public final class ReviewInput implements InputType {
     this.listOfInt = listOfInt;
     this.listOfString = listOfString;
     this.listOfStringNonOptional = listOfStringNonOptional;
+    this.listOfInputTypes = listOfInputTypes;
     this.booleanWithDefaultValue = booleanWithDefaultValue;
     this.listOfListOfString = listOfListOfString;
     this.listOfListOfEnum = listOfListOfEnum;
@@ -124,6 +132,13 @@ public final class ReviewInput implements InputType {
    */
   public @Nullable Episode enumWithDefaultValue() {
     return this.enumWithDefaultValue.value;
+  }
+
+  /**
+   * for test purpose only
+   */
+  public @NotNull Episode nonNullableEnumWithDefaultValue() {
+    return this.nonNullableEnumWithDefaultValue;
   }
 
   /**
@@ -173,6 +188,13 @@ public final class ReviewInput implements InputType {
    */
   public @NotNull List<String> listOfStringNonOptional() {
     return this.listOfStringNonOptional;
+  }
+
+  /**
+   * for test purpose only
+   */
+  public @Nullable List<ColorInput> listOfInputTypes() {
+    return this.listOfInputTypes.value;
   }
 
   /**
@@ -237,6 +259,7 @@ public final class ReviewInput implements InputType {
         if (enumWithDefaultValue.defined) {
           writer.writeString("enumWithDefaultValue", enumWithDefaultValue.value != null ? enumWithDefaultValue.value.rawValue() : null);
         }
+        writer.writeString("nonNullableEnumWithDefaultValue", nonNullableEnumWithDefaultValue.rawValue());
         if (nullableEnum.defined) {
           writer.writeString("nullableEnum", nullableEnum.value != null ? nullableEnum.value.rawValue() : null);
         }
@@ -291,6 +314,16 @@ public final class ReviewInput implements InputType {
             }
           }
         });
+        if (listOfInputTypes.defined) {
+          writer.writeList("listOfInputTypes", listOfInputTypes.value != null ? new InputFieldWriter.ListWriter() {
+            @Override
+            public void write(InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
+              for (final ColorInput $item : listOfInputTypes.value) {
+                listItemWriter.writeObject($item != null ? $item.marshaller() : null);
+              }
+            }
+          } : null);
+        }
         if (booleanWithDefaultValue.defined) {
           writer.writeBoolean("booleanWithDefaultValue", booleanWithDefaultValue.value);
         }
@@ -388,6 +421,8 @@ public final class ReviewInput implements InputType {
       h *= 1000003;
       h ^= enumWithDefaultValue.hashCode();
       h *= 1000003;
+      h ^= nonNullableEnumWithDefaultValue.hashCode();
+      h *= 1000003;
       h ^= nullableEnum.hashCode();
       h *= 1000003;
       h ^= listOfCustomScalar.hashCode();
@@ -401,6 +436,8 @@ public final class ReviewInput implements InputType {
       h ^= listOfString.hashCode();
       h *= 1000003;
       h ^= listOfStringNonOptional.hashCode();
+      h *= 1000003;
+      h ^= listOfInputTypes.hashCode();
       h *= 1000003;
       h ^= booleanWithDefaultValue.hashCode();
       h *= 1000003;
@@ -431,6 +468,7 @@ public final class ReviewInput implements InputType {
        && this.commentary.equals(that.commentary)
        && this.favoriteColor.equals(that.favoriteColor)
        && this.enumWithDefaultValue.equals(that.enumWithDefaultValue)
+       && this.nonNullableEnumWithDefaultValue.equals(that.nonNullableEnumWithDefaultValue)
        && this.nullableEnum.equals(that.nullableEnum)
        && this.listOfCustomScalar.equals(that.listOfCustomScalar)
        && this.customScalar.equals(that.customScalar)
@@ -438,6 +476,7 @@ public final class ReviewInput implements InputType {
        && this.listOfInt.equals(that.listOfInt)
        && this.listOfString.equals(that.listOfString)
        && this.listOfStringNonOptional.equals(that.listOfStringNonOptional)
+       && this.listOfInputTypes.equals(that.listOfInputTypes)
        && this.booleanWithDefaultValue.equals(that.booleanWithDefaultValue)
        && this.listOfListOfString.equals(that.listOfListOfString)
        && this.listOfListOfEnum.equals(that.listOfListOfEnum)
@@ -459,19 +498,23 @@ public final class ReviewInput implements InputType {
 
     private Input<Episode> enumWithDefaultValue = Input.fromNullable(Episode.safeValueOf("JEDI"));
 
+    private @NotNull Episode nonNullableEnumWithDefaultValue = Episode.safeValueOf("JEDI");
+
     private Input<Episode> nullableEnum = Input.absent();
 
     private Input<List<Date>> listOfCustomScalar = Input.absent();
 
     private Input<Date> customScalar = Input.absent();
 
-    private Input<List<Episode>> listOfEnums = Input.absent();
+    private Input<List<Episode>> listOfEnums = Input.fromNullable(Arrays.<Episode>asList(Episode.safeValueOf("NEWHOPE"), Episode.safeValueOf("EMPIRE")));
 
     private Input<List<Integer>> listOfInt = Input.fromNullable(Arrays.<Integer>asList(1, 2, 3));
 
     private Input<List<String>> listOfString = Input.fromNullable(Arrays.<String>asList("test1", "test2", "test3"));
 
     private @NotNull List<String> listOfStringNonOptional;
+
+    private Input<List<ColorInput>> listOfInputTypes = Input.fromNullable(Arrays.<ColorInput>asList());
 
     private Input<Boolean> booleanWithDefaultValue = Input.fromNullable(true);
 
@@ -531,6 +574,14 @@ public final class ReviewInput implements InputType {
     /**
      * for test purpose only
      */
+    public Builder nonNullableEnumWithDefaultValue(@NotNull Episode nonNullableEnumWithDefaultValue) {
+      this.nonNullableEnumWithDefaultValue = nonNullableEnumWithDefaultValue;
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
     public Builder nullableEnum(@Nullable Episode nullableEnum) {
       this.nullableEnum = Input.fromNullable(nullableEnum);
       return this;
@@ -581,6 +632,14 @@ public final class ReviewInput implements InputType {
      */
     public Builder listOfStringNonOptional(@NotNull List<String> listOfStringNonOptional) {
       this.listOfStringNonOptional = listOfStringNonOptional;
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder listOfInputTypes(@Nullable List<ColorInput> listOfInputTypes) {
+      this.listOfInputTypes = Input.fromNullable(listOfInputTypes);
       return this;
     }
 
@@ -707,6 +766,14 @@ public final class ReviewInput implements InputType {
     /**
      * for test purpose only
      */
+    public Builder listOfInputTypesInput(@NotNull Input<List<ColorInput>> listOfInputTypes) {
+      this.listOfInputTypes = Utils.checkNotNull(listOfInputTypes, "listOfInputTypes == null");
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
     public Builder booleanWithDefaultValueInput(@NotNull Input<Boolean> booleanWithDefaultValue) {
       this.booleanWithDefaultValue = Utils.checkNotNull(booleanWithDefaultValue, "booleanWithDefaultValue == null");
       return this;
@@ -754,8 +821,9 @@ public final class ReviewInput implements InputType {
 
     public ReviewInput build() {
       Utils.checkNotNull(favoriteColor, "favoriteColor == null");
+      Utils.checkNotNull(nonNullableEnumWithDefaultValue, "nonNullableEnumWithDefaultValue == null");
       Utils.checkNotNull(listOfStringNonOptional, "listOfStringNonOptional == null");
-      return new ReviewInput(stars, nullableIntFieldWithDefaultValue, commentary, favoriteColor, enumWithDefaultValue, nullableEnum, listOfCustomScalar, customScalar, listOfEnums, listOfInt, listOfString, listOfStringNonOptional, booleanWithDefaultValue, listOfListOfString, listOfListOfEnum, listOfListOfCustom, listOfListOfObject, capitalizedField);
+      return new ReviewInput(stars, nullableIntFieldWithDefaultValue, commentary, favoriteColor, enumWithDefaultValue, nonNullableEnumWithDefaultValue, nullableEnum, listOfCustomScalar, customScalar, listOfEnums, listOfInt, listOfString, listOfStringNonOptional, listOfInputTypes, booleanWithDefaultValue, listOfListOfString, listOfListOfEnum, listOfListOfCustom, listOfListOfObject, capitalizedField);
     }
   }
 }

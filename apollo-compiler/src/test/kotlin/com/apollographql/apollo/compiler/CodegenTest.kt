@@ -1,78 +1,67 @@
 package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo.compiler.codegen.kotlin.GraphQLKompiler
 import com.apollographql.apollo.compiler.parser.GraphQLDocumentParser
 import com.apollographql.apollo.compiler.parser.Schema
 import com.google.common.truth.Truth.assertAbout
-import com.google.common.truth.Truth.assertThat
 import com.google.testing.compile.JavaFileObjects
 import com.google.testing.compile.JavaSourcesSubjectFactory.javaSources
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import java.io.File
+import java.lang.Exception
 import java.nio.file.*
 import java.nio.file.attribute.BasicFileAttributes
-import java.util.*
 import javax.tools.JavaFileObject
 
 @RunWith(Parameterized::class)
 class CodeGenTest(val folder: File) {
-  private val javaExpectedFileMatcher = FileSystems.getDefault().getPathMatcher("glob:**.java")
-  private val kotlinExpectedFileMatcher = FileSystems.getDefault().getPathMatcher("glob:**.kt")
-  private val sourceFileObjects: MutableList<JavaFileObject> = ArrayList()
-
   @Test
   fun generateExpectedClasses() {
-    generateJavaExpectedClasses(arguments(folder = folder, generateKotlinModels = false))
-    generateKotlinExpectedClasses(arguments(folder = folder, generateKotlinModels = true))
+    generateExpectedClasses(arguments(folder = folder, generateKotlinModels = false))
+    generateExpectedClasses(arguments(folder = folder, generateKotlinModels = true))
   }
 
-  private fun generateJavaExpectedClasses(args: GraphQLCompiler.Arguments) {
+  private fun generateExpectedClasses(args: GraphQLCompiler.Arguments) {
+    val sourceFileObjects = mutableListOf<JavaFileObject>()
     GraphQLCompiler().write(args)
+
+    val extension = if (args.generateKotlinModels) {
+      "kt"
+    } else {
+      "java"
+    }
+
+    val pathMatcher = FileSystems.getDefault().getPathMatcher("glob:**.$extension")
 
     Files.walkFileTree(folder.toPath(), object : SimpleFileVisitor<Path>() {
       override fun visitFile(expectedFile: Path, attrs: BasicFileAttributes): FileVisitResult {
-        if (javaExpectedFileMatcher.matches(expectedFile)) {
+        if (pathMatcher.matches(expectedFile)) {
           val expected = expectedFile.toFile()
 
-          val actualClassName = actualClassName(expectedFile, "java")
-          val actual = findActual(actualClassName, "java", args)
+          val actualClassName = actualClassName(expectedFile, extension)
+          val actual = findActual(actualClassName, extension, args)
 
           if (!actual.isFile) {
             throw AssertionError("Couldn't find actual file: $actual")
           }
 
-          assertThat(actual.readText()).isEqualTo(expected.readText())
-          sourceFileObjects.add(JavaFileObjects.forSourceLines("com.example.${folder.name}.$actualClassName",
-              actual.readLines()))
-        }
-        return FileVisitResult.CONTINUE
-      }
-    })
-    assertAbout(javaSources()).that(sourceFileObjects).compilesWithoutError()
-  }
+          checkTestFixture(actual = actual, expected = expected)
 
-  private fun generateKotlinExpectedClasses(args: GraphQLCompiler.Arguments) {
-    GraphQLCompiler().write(args)
 
-    Files.walkFileTree(folder.toPath(), object : SimpleFileVisitor<Path>() {
-      override fun visitFile(expectedFile: Path, attrs: BasicFileAttributes): FileVisitResult {
-        if (kotlinExpectedFileMatcher.matches(expectedFile)) {
-          val expected = expectedFile.toFile()
-
-          val actualClassName = actualClassName(expectedFile, "kt")
-          val actual = findActual(actualClassName, "kt", args)
-
-          if (!actual.isFile) {
-            throw AssertionError("Couldn't find actual file: $actual")
+          // XXX also test kotlin compilation
+          if (!args.generateKotlinModels) {
+            sourceFileObjects.add(JavaFileObjects.forSourceLines("com.example.${folder.name}.$actualClassName",
+                actual.readLines()))
           }
-
-          assertThat(actual.readText()).isEqualTo(expected.readText())
         }
         return FileVisitResult.CONTINUE
       }
     })
+
+    if (!args.generateKotlinModels) {
+      assertAbout(javaSources()).that(sourceFileObjects).compilesWithoutError()
+    }
   }
 
   private fun actualClassName(expectedFile: Path, extension: String): String {
@@ -126,7 +115,7 @@ class CodeGenTest(val folder: File) {
         else -> true
       }
 
-      val schemaJson = folder.listFiles().find { it.isFile && it.name == "schema.json" }
+      val schemaJson = folder.listFiles()!!.find { it.isFile && it.name == "schema.json" }
           ?: File("src/test/graphql/schema.json")
       val schema = Schema(schemaJson)
       val graphQLFile = File(folder, "TestOperation.graphql")
@@ -163,6 +152,26 @@ class CodeGenTest(val folder: File) {
           .filter { it.isDirectory }
           // TODO figure out what to do with these cases
           .filter { it.name != "nested_inline_fragment" && it.name != "reserved_words" && it.name != "scalar_types" }
+    }
+  }
+}
+
+fun checkTestFixture(actual: File, expected: File) {
+  val actualText = actual.readText()
+  val expectedText = expected.readText()
+
+  if (actualText != expectedText) {
+    when (System.getProperty("updateTestFixtures")?.trim()) {
+      "on", "true", "1" ->{
+        expected.writeText(actualText)
+      }
+      else -> {
+        throw Exception("""generatedFile content doesn't match the expectedFile content.
+      |If you changed the compiler recently, you need to update the testFixtures.
+      |Run the tests with `-DupdateTestFixtures=true` to do so.
+      |generatedFile: ${actual.path}
+      |expectedFile: ${expected.path}""".trimMargin())
+      }
     }
   }
 }

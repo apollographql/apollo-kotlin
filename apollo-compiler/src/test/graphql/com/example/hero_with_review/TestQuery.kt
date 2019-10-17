@@ -98,11 +98,11 @@ data class TestQuery(
               "kind" to "Variable",
               "variableName" to "ep"),
             "review" to mapOf<String, Any>(
-              "stars" to "5.0",
+              "stars" to "5",
               "listOfEnums" to "[JEDI, EMPIRE, NEWHOPE]",
               "listOfStringNonOptional" to "[1, 2, 3]",
               "favoriteColor" to mapOf<String, Any>(
-                "red" to "1.0",
+                "red" to "1",
                 "blue" to "1.0"))), true, null)
           )
 

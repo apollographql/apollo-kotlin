@@ -28,6 +28,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -77,11 +78,11 @@ public class IntegrationTest {
 
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
-        .okHttpClient(new OkHttpClient.Builder().dispatcher(new Dispatcher(Utils.immediateExecutorService())).build())
+        .okHttpClient(new OkHttpClient.Builder().dispatcher(new Dispatcher(Utils.INSTANCE.immediateExecutorService())).build())
         .addCustomTypeAdapter(CustomType.DATE, dateCustomTypeAdapter)
         .normalizedCache(new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), new IdFieldCacheKeyResolver())
         .defaultResponseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
-        .dispatcher(Utils.immediateExecutor())
+        .dispatcher(Utils.INSTANCE.immediateExecutor())
         .build();
   }
 
@@ -130,6 +131,8 @@ public class IntegrationTest {
             "{ __typename totalCount films { __typename title ...FilmFragment } } } } } " +
             "fragment PlanetFragment on Planet { __typename name climates surfaceWater } " +
             "fragment FilmFragment on Film { __typename title producers }\"}");
+    String body = server.takeRequest().getBody().readString(Charsets.UTF_8);
+    Utils.INSTANCE.checkTestFixture(body, "IntegrationTest/allPlanets.json");
   }
 
   @Test public void error_response() throws Exception {
@@ -266,7 +269,7 @@ public class IntegrationTest {
   }
 
   @Test public void operationResponseParser() throws Exception {
-    String json = Utils.readFileToString(getClass(), "/HeroNameResponse.json");
+    String json = Utils.INSTANCE.readFileToString(getClass(), "/HeroNameResponse.json");
 
     HeroNameQuery query = new HeroNameQuery();
     Response<HeroNameQuery.Data> response = new OperationResponseParser<>(query, query.responseFieldMapper(), new ScalarTypeAdapters(Collections.EMPTY_MAP))
@@ -276,7 +279,7 @@ public class IntegrationTest {
   }
 
   @Test public void operationJsonWriter() throws Exception {
-    String json = Utils.readFileToString(getClass(), "/OperationJsonWriter.json");
+    String json = Utils.INSTANCE.readFileToString(getClass(), "/OperationJsonWriter.json");
 
     AllPlanetsQuery query = new AllPlanetsQuery();
     Response<AllPlanetsQuery.Data> response = new OperationResponseParser<>(query, query.responseFieldMapper(), new ScalarTypeAdapters(Collections.EMPTY_MAP))
@@ -293,7 +296,7 @@ public class IntegrationTest {
   }
 
   private MockResponse mockResponse(String fileName) throws IOException {
-    return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), "/" + fileName), 32);
+    return new MockResponse().setChunkedBody(Utils.INSTANCE.readFileToString(getClass(), "/" + fileName), 32);
   }
 
   private static <T> void assertResponse(ApolloCall<T> call, Predicate<Response<T>> predicate) {

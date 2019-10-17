@@ -21,7 +21,7 @@ data class ColorInput(
   /**
    * Red color
    */
-  val red: Int,
+  val red: Int = 1,
   /**
    * Green color
    */
@@ -29,7 +29,7 @@ data class ColorInput(
   /**
    * Blue color
    */
-  val blue: Double,
+  val blue: Double = 1.5,
   /**
    * for test purpose only
    */
@@ -37,7 +37,7 @@ data class ColorInput(
   /**
    * Circle ref to review input
    */
-  val reviewRefInput: Input<ReviewRefInput> = Input.optional(null)
+  val reviewRefInput: Input<ReviewRefInput> = Input.absent()
 ) : InputType {
   override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
     writer.writeInt("red", red)

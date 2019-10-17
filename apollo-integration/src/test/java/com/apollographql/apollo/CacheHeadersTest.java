@@ -72,8 +72,8 @@ public class CacheHeadersTest {
     ApolloClient apolloClient = ApolloClient.builder()
         .normalizedCache(cacheFactory, new IdFieldCacheKeyResolver())
         .serverUrl(server.url("/"))
-        .okHttpClient(new OkHttpClient.Builder().dispatcher(new Dispatcher(Utils.immediateExecutorService())).build())
-        .dispatcher(Utils.immediateExecutor())
+        .okHttpClient(new OkHttpClient.Builder().dispatcher(new Dispatcher(Utils.INSTANCE.immediateExecutorService())).build())
+        .dispatcher(Utils.INSTANCE.immediateExecutor())
         .build();
 
     server.enqueue(mockResponse("HeroAndFriendsNameResponse.json"));
@@ -121,8 +121,8 @@ public class CacheHeadersTest {
     ApolloClient apolloClient = ApolloClient.builder()
         .normalizedCache(cacheFactory, new IdFieldCacheKeyResolver())
         .serverUrl(server.url("/"))
-        .okHttpClient(new OkHttpClient.Builder().dispatcher(new Dispatcher(Utils.immediateExecutorService())).build())
-        .dispatcher(Utils.immediateExecutor())
+        .okHttpClient(new OkHttpClient.Builder().dispatcher(new Dispatcher(Utils.INSTANCE.immediateExecutorService())).build())
+        .dispatcher(Utils.INSTANCE.immediateExecutor())
         .defaultCacheHeaders(cacheHeaders)
         .build();
 
@@ -134,7 +134,7 @@ public class CacheHeadersTest {
   }
 
   private MockResponse mockResponse(String fileName) throws IOException {
-    return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), "/" + fileName), 32);
+    return new MockResponse().setChunkedBody(Utils.INSTANCE.readFileToString(getClass(), "/" + fileName), 32);
   }
 
 }

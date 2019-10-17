@@ -33,7 +33,7 @@ data class ReviewInput(
   /**
    * Comment about the movie, optional
    */
-  val commentary: Input<String> = Input.optional(null),
+  val commentary: Input<String> = Input.absent(),
   /**
    * Favorite color, optional
    */
@@ -45,19 +45,24 @@ data class ReviewInput(
   /**
    * for test purpose only
    */
-  val nullableEnum: Input<Episode> = Input.optional(null),
+  val nonNullableEnumWithDefaultValue: Episode = Episode.safeValueOf("JEDI"),
   /**
    * for test purpose only
    */
-  val listOfCustomScalar: Input<List<Any?>> = Input.optional(null),
+  val nullableEnum: Input<Episode> = Input.absent(),
   /**
    * for test purpose only
    */
-  val customScalar: Input<Any> = Input.optional(null),
+  val listOfCustomScalar: Input<List<Any?>> = Input.absent(),
   /**
    * for test purpose only
    */
-  val listOfEnums: Input<List<Episode?>> = Input.optional(null),
+  val customScalar: Input<Any> = Input.absent(),
+  /**
+   * for test purpose only
+   */
+  val listOfEnums: Input<List<Episode?>> = Input.optional(listOf(Episode.safeValueOf("NEWHOPE"),
+      Episode.safeValueOf("EMPIRE"))),
   /**
    * for test purpose only
    */
@@ -73,27 +78,31 @@ data class ReviewInput(
   /**
    * for test purpose only
    */
+  val listOfInputTypes: Input<List<ColorInput?>> = Input.optional(emptyList()),
+  /**
+   * for test purpose only
+   */
   val booleanWithDefaultValue: Input<Boolean> = Input.optional(true),
   /**
    * for test purpose only
    */
-  val listOfListOfString: Input<List<List<String>>> = Input.optional(null),
+  val listOfListOfString: Input<List<List<String>>> = Input.absent(),
   /**
    * for test purpose only
    */
-  val listOfListOfEnum: Input<List<List<Episode>>> = Input.optional(null),
+  val listOfListOfEnum: Input<List<List<Episode>>> = Input.absent(),
   /**
    * for test purpose only
    */
-  val listOfListOfCustom: Input<List<List<Any>>> = Input.optional(null),
+  val listOfListOfCustom: Input<List<List<Any>>> = Input.absent(),
   /**
    * for test purpose only
    */
-  val listOfListOfObject: Input<List<List<ColorInput>>> = Input.optional(null),
+  val listOfListOfObject: Input<List<List<ColorInput>>> = Input.absent(),
   /**
    * for test purpose only
    */
-  val capitalizedField: Input<String> = Input.optional(null)
+  val capitalizedField: Input<String> = Input.absent()
 ) : InputType {
   override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
     writer.writeInt("stars", stars)
@@ -103,6 +112,7 @@ data class ReviewInput(
     writer.writeObject("favoriteColor", favoriteColor.marshaller())
     if (enumWithDefaultValue.defined) writer.writeString("enumWithDefaultValue",
         enumWithDefaultValue.value?.rawValue)
+    writer.writeString("nonNullableEnumWithDefaultValue", nonNullableEnumWithDefaultValue.rawValue)
     if (nullableEnum.defined) writer.writeString("nullableEnum", nullableEnum.value?.rawValue)
     if (listOfCustomScalar.defined) {
       writer.writeList("listOfCustomScalar", listOfCustomScalar.value?.let { value ->
@@ -146,6 +156,15 @@ data class ReviewInput(
       listOfStringNonOptional.forEach { value ->
         listItemWriter.writeString(value)
       }
+    }
+    if (listOfInputTypes.defined) {
+      writer.writeList("listOfInputTypes", listOfInputTypes.value?.let { value ->
+        InputFieldWriter.ListWriter { listItemWriter ->
+          value.forEach { value ->
+            listItemWriter.writeObject(value?.marshaller())
+          }
+        }
+      })
     }
     if (booleanWithDefaultValue.defined) writer.writeBoolean("booleanWithDefaultValue",
         booleanWithDefaultValue.value)

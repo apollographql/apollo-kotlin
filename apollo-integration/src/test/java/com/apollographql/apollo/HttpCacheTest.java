@@ -72,7 +72,7 @@ public class HttpCacheTest {
     okHttpClient = new OkHttpClient.Builder()
         .addInterceptor(new TrackingInterceptor())
         .addInterceptor(cache.interceptor())
-        .dispatcher(new Dispatcher(Utils.immediateExecutorService()))
+        .dispatcher(new Dispatcher(Utils.INSTANCE.immediateExecutorService()))
         .readTimeout(2, TimeUnit.SECONDS)
         .writeTimeout(2, TimeUnit.SECONDS)
         .build();
@@ -80,7 +80,7 @@ public class HttpCacheTest {
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
-        .dispatcher(Utils.immediateExecutor())
+        .dispatcher(Utils.INSTANCE.immediateExecutor())
         .addCustomTypeAdapter(CustomType.DATE, dateCustomTypeAdapter)
         .httpCache(cache)
         .build();
@@ -165,9 +165,9 @@ public class HttpCacheTest {
         .serverUrl(server.url("/"))
         .okHttpClient(new OkHttpClient.Builder()
             .addInterceptor(new TrackingInterceptor())
-            .dispatcher(new Dispatcher(Utils.immediateExecutorService()))
+            .dispatcher(new Dispatcher(Utils.INSTANCE.immediateExecutorService()))
             .build())
-        .dispatcher(Utils.immediateExecutor())
+        .dispatcher(Utils.INSTANCE.immediateExecutor())
         .build();
 
     Rx2Apollo.from(apolloClient
@@ -654,7 +654,7 @@ public class HttpCacheTest {
     String cacheKey = lastHttRequest.headers(HttpCache.CACHE_KEY_HEADER).get(0);
     okhttp3.Response response = apolloClient.cachedHttpResponse(cacheKey);
     assertThat(response).isNotNull();
-    assertThat(response.body().source().readUtf8()).isEqualTo(Utils.readFileToString(getClass(), fileName));
+    assertThat(response.body().source().readUtf8()).isEqualTo(Utils.INSTANCE.readFileToString(getClass(), fileName));
     response.body().source().close();
   }
 
@@ -665,7 +665,7 @@ public class HttpCacheTest {
   }
 
   private MockResponse mockResponse(String fileName) throws IOException {
-    return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), fileName), 32);
+    return new MockResponse().setChunkedBody(Utils.INSTANCE.readFileToString(getClass(), fileName), 32);
   }
 
   private class TrackingInterceptor implements Interceptor {

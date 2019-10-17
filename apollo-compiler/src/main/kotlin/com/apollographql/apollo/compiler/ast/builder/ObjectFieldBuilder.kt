@@ -2,7 +2,6 @@ package com.apollographql.apollo.compiler.ast.builder
 
 import com.apollographql.apollo.compiler.ast.FieldType
 import com.apollographql.apollo.compiler.ast.ObjectType
-import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.normalizeJsonValue
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo.compiler.ir.Condition
 import com.apollographql.apollo.compiler.ir.Field
@@ -30,7 +29,7 @@ private fun Field.scalar(context: Context): ObjectType.Field {
       isOptional = !type.endsWith("!") || isConditional,
       isDeprecated = isDeprecated,
       deprecationReason = deprecationReason,
-      arguments = args.associate { it.name to it.value.normalizeJsonValue(it.type) },
+      arguments = args.associate { it.name to it.value },
       conditions = normalizedConditions
   )
 }
@@ -72,7 +71,7 @@ private fun Field.array(context: Context): ObjectType.Field {
       isOptional = !type.endsWith("!") || isConditional,
       isDeprecated = isDeprecated,
       deprecationReason = deprecationReason ?: "",
-      arguments = args.associate { it.name to it.value.normalizeJsonValue(it.type) },
+      arguments = args.associate { it.name to it.value },
       conditions = normalizedConditions
   )
 }
@@ -94,7 +93,7 @@ private fun Field.`object`(context: Context): ObjectType.Field {
       isOptional = !type.endsWith("!") || isConditional || inlineFragments.isNotEmpty(),
       isDeprecated = isDeprecated ?: false,
       deprecationReason = deprecationReason ?: "",
-      arguments = args.associate { it.name to it.value.normalizeJsonValue(it.type) },
+      arguments = args.associate { it.name to it.value },
       conditions = normalizedConditions
   )
 }

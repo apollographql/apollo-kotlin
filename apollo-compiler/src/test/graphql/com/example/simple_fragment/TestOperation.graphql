@@ -9,6 +9,7 @@ query TestQuery {
 fragment HeroDetails on Character {
   __typename
   name
+  ... HumanDetails
 }
 
 fragment HumanDetails on Human {
