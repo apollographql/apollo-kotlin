@@ -150,20 +150,21 @@ class Schema(
 
     private fun JsonReader.locateSchemaRootNode(): JsonReader {
       beginObject()
-      return when (nextName()) {
-        "data" -> {
-          beginObject()
-          if (nextName() == "__schema") {
-            peekJson()
-          } else {
-            throw IllegalArgumentException("Failed to locate schema root node `__schema`")
+
+      var schemaJsonReader: JsonReader? = null
+      try {
+        while (schemaJsonReader == null && hasNext()) {
+          when (nextName()) {
+            "data" -> beginObject()
+            "__schema" -> schemaJsonReader = peekJson()
+            else -> skipValue()
           }
         }
-
-        "__schema" -> peekJson()
-
-        else -> throw IllegalArgumentException("Failed to locate schema root node `__schema`")
+      } catch (e: Exception) {
+        throw IllegalArgumentException("Failed to locate schema root node `__schema`", e)
       }
+
+      return schemaJsonReader ?: throw IllegalArgumentException("Failed to locate schema root node `__schema`")
     }
 
     private fun JsonReader.parseSchema(moshi: Moshi): Schema {

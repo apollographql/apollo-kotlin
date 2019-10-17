@@ -1,5 +1,7 @@
 {
+  "errors": [],
   "data": {
+    "bla-bla": "-bla",
     "__schema": {
       "queryType": {
         "name": "Query"
