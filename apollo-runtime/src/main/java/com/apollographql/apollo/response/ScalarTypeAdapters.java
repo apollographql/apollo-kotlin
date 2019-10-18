@@ -112,6 +112,11 @@ public final class ScalarTypeAdapters {
         return new CustomTypeValue.GraphQLString(null);
       }
     });
+    adapters.put(Object.class, new DefaultCustomTypeAdapter<Object>() {
+      @NotNull @Override public Object decode(@NotNull CustomTypeValue value) {
+        return value.value;
+      }
+    });
     return adapters;
   }
 
