@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,17 +46,20 @@ public final class RealSubscriptionManager implements SubscriptionManager {
   private final long connectionHeartbeatTimeoutMs;
   private final ResponseFieldMapperFactory responseFieldMapperFactory = new ResponseFieldMapperFactory();
   private final Runnable connectionAcknowledgeTimeoutTimerTask = new Runnable() {
-    @Override public void run() {
+    @Override
+    public void run() {
       onConnectionAcknowledgeTimeout();
     }
   };
   private final Runnable inactivityTimeoutTimerTask = new Runnable() {
-    @Override public void run() {
+    @Override
+    public void run() {
       onInactivityTimeout();
     }
   };
   private final Runnable connectionHeartbeatTimeoutTimerTask = new Runnable() {
-    @Override public void run() {
+    @Override
+    public void run() {
       onConnectionHeartbeatTimeout();
     }
   };
@@ -143,7 +147,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
     if (state == State.STOPPING || state == State.STOPPED) {
       callback.onError(new ApolloSubscriptionException(
           "Illegal state: " + state.name() + " for subscriptions to be created."
-          + " SubscriptionManager.start() must be called to re-enable subscriptions."));
+              + " SubscriptionManager.start() must be called to re-enable subscriptions."));
       return;
     }
     timer.cancelTask(INACTIVITY_TIMEOUT_TIMER_TASK_ID);
@@ -182,25 +186,32 @@ public final class RealSubscriptionManager implements SubscriptionManager {
   }
 
   void onTransportConnected() {
-    Collection<SubscriptionRecord> subscriptionRecords;
+    final Collection<SubscriptionRecord> subscriptionRecords;
     synchronized (this) {
-      subscriptionRecords = subscriptions.values();
-      setStateAndNotify(State.CONNECTED);
-      transport.send(new OperationClientMessage.Init(connectionParams));
+      if (state == State.CONNECTING) {
+        subscriptionRecords = subscriptions.values();
+        setStateAndNotify(State.CONNECTED);
+        transport.send(new OperationClientMessage.Init(connectionParams));
+      } else {
+        subscriptionRecords = Collections.emptyList();
+      }
     }
 
     for (SubscriptionRecord record : subscriptionRecords) {
       record.callback.onConnected();
     }
 
-    timer.schedule(CONNECTION_ACKNOWLEDGE_TIMEOUT_TIMER_TASK_ID, connectionAcknowledgeTimeoutTimerTask,
-        CONNECTION_ACKNOWLEDGE_TIMEOUT);
+    if (state == State.CONNECTED) {
+      timer.schedule(CONNECTION_ACKNOWLEDGE_TIMEOUT_TIMER_TASK_ID, connectionAcknowledgeTimeoutTimerTask,
+          CONNECTION_ACKNOWLEDGE_TIMEOUT);
+    }
   }
 
   void onConnectionAcknowledgeTimeout() {
     timer.cancelTask(CONNECTION_ACKNOWLEDGE_TIMEOUT_TIMER_TASK_ID);
     dispatcher.execute(new Runnable() {
-      @Override public void run() {
+      @Override
+      public void run() {
         onTransportFailure(new ApolloNetworkException("Subscription server is not responding"));
       }
     });
@@ -209,7 +220,8 @@ public final class RealSubscriptionManager implements SubscriptionManager {
   void onInactivityTimeout() {
     timer.cancelTask(INACTIVITY_TIMEOUT_TIMER_TASK_ID);
     dispatcher.execute(new Runnable() {
-      @Override public void run() {
+      @Override
+      public void run() {
         disconnect(false);
       }
     });
@@ -330,11 +342,13 @@ public final class RealSubscriptionManager implements SubscriptionManager {
   private void onConnectionAcknowledgeServerMessage() {
     timer.cancelTask(CONNECTION_ACKNOWLEDGE_TIMEOUT_TIMER_TASK_ID);
     synchronized (this) {
-      setStateAndNotify(State.ACTIVE);
-      for (Map.Entry<String, SubscriptionRecord> entry : subscriptions.entrySet()) {
-        String subscriptionId = entry.getKey();
-        Subscription<?, ?, ?> subscription = entry.getValue().subscription;
-        transport.send(new OperationClientMessage.Start(subscriptionId, subscription, scalarTypeAdapters));
+      if (state == State.CONNECTED) {
+        setStateAndNotify(State.ACTIVE);
+        for (Map.Entry<String, SubscriptionRecord> entry : subscriptions.entrySet()) {
+          String subscriptionId = entry.getKey();
+          Subscription<?, ?, ?> subscription = entry.getValue().subscription;
+          transport.send(new OperationClientMessage.Start(subscriptionId, subscription, scalarTypeAdapters));
+        }
       }
     }
   }
@@ -426,7 +440,8 @@ public final class RealSubscriptionManager implements SubscriptionManager {
     @Override
     public void onConnected() {
       dispatcher.execute(new Runnable() {
-        @Override public void run() {
+        @Override
+        public void run() {
           delegate.onTransportConnected();
         }
       });
@@ -435,7 +450,8 @@ public final class RealSubscriptionManager implements SubscriptionManager {
     @Override
     public void onFailure(final Throwable t) {
       dispatcher.execute(new Runnable() {
-        @Override public void run() {
+        @Override
+        public void run() {
           delegate.onTransportFailure(t);
         }
       });
@@ -444,7 +460,8 @@ public final class RealSubscriptionManager implements SubscriptionManager {
     @Override
     public void onMessage(final OperationServerMessage message) {
       dispatcher.execute(new Runnable() {
-        @Override public void run() {
+        @Override
+        public void run() {
           delegate.onOperationServerMessage(message);
         }
       });
@@ -453,7 +470,8 @@ public final class RealSubscriptionManager implements SubscriptionManager {
     @Override
     public void onClosed() {
       dispatcher.execute(new Runnable() {
-        @Override public void run() {
+        @Override
+        public void run() {
           delegate.onConnectionClosed();
         }
       });
@@ -466,7 +484,8 @@ public final class RealSubscriptionManager implements SubscriptionManager {
 
     void schedule(final int taskId, final Runnable task, long delay) {
       TimerTask timerTask = new TimerTask() {
-        @Override public void run() {
+        @Override
+        public void run() {
           try {
             task.run();
           } finally {
