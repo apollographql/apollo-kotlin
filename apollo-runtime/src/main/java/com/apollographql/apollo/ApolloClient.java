@@ -31,7 +31,16 @@ import com.apollographql.apollo.internal.subscription.RealSubscriptionManager;
 import com.apollographql.apollo.internal.subscription.SubscriptionManager;
 import com.apollographql.apollo.response.CustomTypeAdapter;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
+import com.apollographql.apollo.subscription.SubscriptionConnectionParams;
+import com.apollographql.apollo.subscription.SubscriptionConnectionParamsProvider;
 import com.apollographql.apollo.subscription.SubscriptionTransport;
+import okhttp3.Call;
+import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Response;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,15 +54,6 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import okhttp3.Call;
-import okhttp3.HttpUrl;
-import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
-import okhttp3.Response;
-
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 /**
@@ -61,7 +61,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
  * the responses back.
  *
  * <h3>ApolloClient should be shared</h3>
- *
+ * <p>
  * Since each ApolloClient holds its own connection pool and thread pool, it is recommended to only create a single
  * ApolloClient and use that for execution of all the queries, as this would reduce latency and would also save memory.
  * Conversely, creating a client for each query execution would result in resource wastage on idle pools.
@@ -163,7 +163,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
    * Which will put the subscriptionManager in a connectible state if its
    * current state is STOPPED. This is a noop if the current state is anything
    * other than STOPPED.
-   *
+   * <p>
    * When subscriptions are re-enabled after having been disabled, the
    * underlying transport isn't reconnected immediately, but will be on the
    * first new subscription created.
@@ -177,7 +177,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
    * Which will unsubscribe from all active subscriptions, disconnect the
    * underlying transport (eg websocket), and put the subscriptionManager in
    * the STOPPED state.
-   *
+   * <p>
    * New subscriptions will fail until {@link #enableSubscriptions} is called.
    */
   public void disableSubscriptions() {
@@ -276,7 +276,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         .build();
   }
 
-  @SuppressWarnings("WeakerAccess") public static class Builder {
+  @SuppressWarnings("WeakerAccess")
+  public static class Builder {
     Call.Factory callFactory;
     HttpUrl serverUrl;
     HttpCache httpCache;
@@ -292,7 +293,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     final List<ApolloInterceptor> applicationInterceptors = new ArrayList<>();
     boolean enableAutoPersistedQueries;
     Optional<SubscriptionTransport.Factory> subscriptionTransportFactory = Optional.absent();
-    Optional<Map<String, Object>> subscriptionConnectionParams = Optional.absent();
+    SubscriptionConnectionParamsProvider subscriptionConnectionParams = new SubscriptionConnectionParamsProvider.Const(
+        new SubscriptionConnectionParams());
     long subscriptionHeartbeatTimeout = -1;
     boolean useHttpGetMethodForQueries;
     boolean useHttpGetMethodForPersistedQueries;
@@ -483,15 +485,25 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     }
 
     /**
-     * <p>Sets up subscription connection parameters to be sent to the server when connection is established with
-     * subscription server</p>
+     * <p>Sets up subscription connection parameters to be sent to the server when connection is established with subscription server</p>
      *
-     * @param subscriptionConnectionParams map of connection parameters to be sent
+     * @param connectionParams map of connection parameters to be sent
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public Builder subscriptionConnectionParams(@NotNull Map<String, Object> subscriptionConnectionParams) {
-      this.subscriptionConnectionParams = Optional.of(checkNotNull(subscriptionConnectionParams,
-          "subscriptionConnectionParams is null"));
+    public Builder subscriptionConnectionParams(@NotNull final SubscriptionConnectionParams connectionParams) {
+      this.subscriptionConnectionParams = new SubscriptionConnectionParamsProvider.Const(checkNotNull(connectionParams,
+          "connectionParams is null"));
+      return this;
+    }
+
+    /**
+     * <p>Sets up subscription connection parameters to be sent to the server when connection is established with subscription server</p>
+     *
+     * @param provider connection parameters provider
+     * @return The {@link Builder} object to be used for chaining method calls
+     */
+    public Builder subscriptionConnectionParams(@NotNull SubscriptionConnectionParamsProvider provider) {
+      this.subscriptionConnectionParams = checkNotNull(provider, "provider is null");
       return this;
     }
 
@@ -525,7 +537,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
      * Sets flag whether GraphQL Persisted queries should be sent via HTTP GET requests.
      *
      * @param useHttpGetMethodForPersistedQueries {@code true} if HTTP GET requests should be used,
-     * {@code false} otherwise.
+     *                                            {@code false} otherwise.
      * @return The {@link Builder} object to be used for chaining method calls
      */
     public Builder useHttpGetMethodForPersistedQueries(boolean useHttpGetMethodForPersistedQueries) {
@@ -535,7 +547,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
 
     /**
      * Builds the {@link ApolloClient} instance using the configured values.
-     *
+     * <p>
      * Note that if the {@link #dispatcher} is not called, then a default {@link Executor} is used.
      *
      * @return The configured {@link ApolloClient}
@@ -575,8 +587,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       Optional<SubscriptionTransport.Factory> subscriptionTransportFactory = this.subscriptionTransportFactory;
       if (subscriptionTransportFactory.isPresent()) {
         subscriptionManager = new RealSubscriptionManager(scalarTypeAdapters, subscriptionTransportFactory.get(),
-            subscriptionConnectionParams.or(Collections.<String, Object>emptyMap()), dispatcher,
-            subscriptionHeartbeatTimeout);
+            subscriptionConnectionParams, dispatcher, subscriptionHeartbeatTimeout);
       }
 
       return new ApolloClient(serverUrl,
@@ -599,7 +610,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     private Executor defaultDispatcher() {
       return new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60, TimeUnit.SECONDS,
           new SynchronousQueue<Runnable>(), new ThreadFactory() {
-        @Override public Thread newThread(@NotNull Runnable runnable) {
+        @Override
+        public Thread newThread(@NotNull Runnable runnable) {
           return new Thread(runnable, "Apollo Dispatcher");
         }
       });
