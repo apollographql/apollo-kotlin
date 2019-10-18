@@ -11,9 +11,9 @@ internal fun TypeDeclaration.ast() = EnumType(
       EnumType.Value(
           constName = value.name.toUpperCase().escapeKotlinReservedWord(),
           value = value.name,
-          description = value.description ?: "",
-          isDeprecated = value.isDeprecated ?: false,
-          deprecationReason = value.deprecationReason ?: ""
+          description = value.description,
+          isDeprecated = value.isDeprecated,
+          deprecationReason = value.deprecationReason
       )
     }
 )
