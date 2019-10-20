@@ -31,8 +31,10 @@ import com.apollographql.apollo.internal.subscription.RealSubscriptionManager;
 import com.apollographql.apollo.internal.subscription.SubscriptionManager;
 import com.apollographql.apollo.response.CustomTypeAdapter;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
+import com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeListener;
 import com.apollographql.apollo.subscription.SubscriptionConnectionParams;
 import com.apollographql.apollo.subscription.SubscriptionConnectionParamsProvider;
+import com.apollographql.apollo.subscription.SubscriptionManagerState;
 import com.apollographql.apollo.subscription.SubscriptionTransport;
 import okhttp3.Call;
 import okhttp3.HttpUrl;
@@ -156,6 +158,33 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   public <D extends Subscription.Data, T, V extends Subscription.Variables> ApolloSubscriptionCall<T> subscribe(
       @NotNull Subscription<D, T, V> subscription) {
     return new RealApolloSubscriptionCall<>(subscription, subscriptionManager);
+  }
+
+  /**
+   * Adds new listener for subscription manager state changes.
+   *
+   * @param onStateChangeListener to be called when state changed
+   */
+  public void addOnSubscriptionManagerStateChangeListener(@NotNull OnSubscriptionManagerStateChangeListener onStateChangeListener) {
+    subscriptionManager.addOnStateChangeListener(checkNotNull(onStateChangeListener, "onStateChangeListener is null"));
+  }
+
+  /**
+   * Removes listener for subscription manager state changes.
+   *
+   * @param onStateChangeListener to remove
+   */
+  public void removeOnSubscriptionManagerStateChangeListener(@NotNull OnSubscriptionManagerStateChangeListener onStateChangeListener) {
+    subscriptionManager.removeOnStateChangeListener(checkNotNull(onStateChangeListener, "onStateChangeListener is null"));
+  }
+
+  /**
+   * Returns the current state of subscription manager.
+   *
+   * @return current state
+   */
+  public SubscriptionManagerState getSubscriptionManagerState() {
+    return subscriptionManager.getState();
   }
 
   /**
