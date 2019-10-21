@@ -31,9 +31,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, TestQuery.Variables> {
-  public static final String OPERATION_ID = "e442e7d1da90271c3ea02f2b50cdc9fb858fc830cce998243e0ce085595f3ec2";
+  public static final String OPERATION_ID = "d982d286b1e673c0b6c045152503cdd4d5cfb2381e7d0c22381875176e72c7a2";
 
-  public static final String QUERY_DOCUMENT = "query TestQuery($includeName: Boolean!, $skipFriends: Boolean!) {\n"
+  public static final String QUERY_DOCUMENT = "query TestQuery($includeName: Boolean!, $skipFriends: Boolean!) @operationDirective(dummy: \"hello\") {\n"
       + "  hero {\n"
       + "    __typename\n"
       + "    name @include(if: $includeName)\n"

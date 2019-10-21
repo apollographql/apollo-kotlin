@@ -147,10 +147,10 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "e442e7d1da90271c3ea02f2b50cdc9fb858fc830cce998243e0ce085595f3ec2"
+        "d982d286b1e673c0b6c045152503cdd4d5cfb2381e7d0c22381875176e72c7a2"
 
     val QUERY_DOCUMENT: String = """
-        |query TestQuery(${'$'}includeName: Boolean!, ${'$'}skipFriends: Boolean!) {
+        |query TestQuery(${'$'}includeName: Boolean!, ${'$'}skipFriends: Boolean!) @operationDirective(dummy: "hello") {
         |  hero {
         |    __typename
         |    name @include(if: ${'$'}includeName)
