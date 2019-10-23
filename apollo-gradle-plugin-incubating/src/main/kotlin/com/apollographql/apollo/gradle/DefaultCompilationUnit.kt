@@ -25,7 +25,6 @@ class DefaultCompilationUnit(
   internal val outputDirectory = project.buildDir.child("generated", "source", "apollo", variantName, serviceName)
   internal val transformedQueriesDirectory = project.buildDir.child("generated", "transformedQueries", "apollo", variantName, serviceName)
 
-
   override lateinit var outputDir: Provider<Directory>
   override lateinit var transformedQueriesDir: Provider<Directory>
 

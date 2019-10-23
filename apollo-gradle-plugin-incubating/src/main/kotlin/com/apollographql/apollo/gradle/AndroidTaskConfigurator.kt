@@ -10,6 +10,32 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.TaskProvider
 
 object AndroidTaskConfigurator {
+  fun getVariants(project: Project, androidExtension: Any) {
+    when {
+      androidExtension is LibraryExtension -> {
+        androidExtension.libraryVariants.all(Action { variant ->
+          val apolloVariant = ApolloVariant(
+              name = variant.name,
+              sourceSetNames = variant.sourceSets.map { it.name }.distinct(),
+              androidVariant = variant
+          )
+          registerAndroid(project, apolloExtension, androidExtension, variant, registerVariantTask)
+        })
+        // TODO: add test variants ?
+      }
+      androidExtension is AppExtension -> {
+        androidExtension.applicationVariants.all(Action { variant ->
+          registerAndroid(project, apolloExtension, androidExtension, variant, registerVariantTask)
+        })
+        // TODO: add test variants ?
+      }
+      else -> {
+        // InstantAppExtension or something else we don't support yet
+        throw IllegalArgumentException("${androidExtension.javaClass.name} is not supported at the moment")
+      }
+    }
+  }
+
   fun configure(apolloExtension: ApolloExtension,
                 androidExtension: Any,
                 project: Project,
