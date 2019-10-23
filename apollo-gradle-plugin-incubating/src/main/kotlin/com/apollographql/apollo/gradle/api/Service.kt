@@ -4,7 +4,7 @@ import com.apollographql.apollo.gradle.api.Introspection
 import groovy.lang.Closure
 import org.gradle.api.Action
 
-class Service(val name: String) {
+class Service(val name: String): CompilerParams by DefaultCompilerParams() {
   /**
    * Place where the schema.json file is.
    * This path is relative to the current project directory.

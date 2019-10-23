@@ -5,7 +5,6 @@ import com.apollographql.apollo.gradle.api.ApolloExtension
 import com.apollographql.apollo.gradle.api.ApolloSourceSetExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.TaskProvider
@@ -13,19 +12,40 @@ import org.gradle.api.tasks.TaskProvider
 open class ApolloPlugin : Plugin<Project> {
   companion object {
     const val TASK_GROUP = "apollo"
+
+    fun useService(schemaFilePath: String?, outputPackageName: String? = null, exclude: String? = null): String {
+      var ret = """
+      |Please use a service instead:
+      |apollo {
+      |  service("github") {
+      """.trimMargin()
+
+      if (schemaFilePath != null) {
+        ret += "\n    schemaFilePath = \"$schemaFilePath\""
+      }
+      if (outputPackageName != null) {
+        ret += "\n    rootPackageName = \"$outputPackageName\""
+      }
+      if (exclude != null) {
+        ret += "\n    exclude = $exclude"
+      }
+      ret += """
+      |
+      |  }
+      |}
+    """.trimMargin()
+      return ret
+    }
   }
 
-  private lateinit var apolloExtension: ApolloExtension
-  private lateinit var apolloSourceSetExtension: ApolloSourceSetExtension
-  private lateinit var generateSourcesTaskProvider: TaskProvider<Task>
 
   override fun apply(project: Project) {
-    apolloExtension = project.extensions.create("apollo", ApolloExtension::class.java, project)
+    val apolloExtension = project.extensions.create("apollo", ApolloExtension::class.java, project)
 
     // for backward compatibility
-    apolloSourceSetExtension = (apolloExtension as ExtensionAware).extensions.create("sourceSet", ApolloSourceSetExtension::class.java)
+    val apolloSourceSetExtension = (apolloExtension as ExtensionAware).extensions.create("sourceSet", ApolloSourceSetExtension::class.java)
 
-    generateSourcesTaskProvider = project.tasks.register("generateApolloSources") {
+    val generateSourcesTaskProvider = project.tasks.register("generateApolloSources") {
       it.group = TASK_GROUP
     }
 
@@ -39,76 +59,20 @@ open class ApolloPlugin : Plugin<Project> {
 
     // the extension block has not been evaluated yet, register a callback once the project has been evaluated
     project.afterEvaluate {
-      afterEvaluate(it)
+      afterEvaluate(it, apolloExtension, apolloSourceSetExtension)
     }
   }
 
-  private fun useService(schemaFilePath: String?, outputPackageName: String? = null, exclude: String? = null): String {
-    var ret = """
-      |Please use a service instead:
-      |apollo {
-      |  service("github") {
-      """.trimMargin()
-
-    if (schemaFilePath != null) {
-      ret += "\n    schemaFilePath = \"$schemaFilePath\""
-    }
-    if (outputPackageName != null) {
-      ret += "\n    rootPackageName = \"$outputPackageName\""
-    }
-    if (exclude != null) {
-      ret += "\n    exclude = $exclude"
-    }
-    ret += """
-      |
-      |  }
-      |}
-    """.trimMargin()
-    return ret
-  }
-
-  private fun afterEvaluate(project: Project) {
-
-    val androidExtension = project.extensions.findByName("android")
-
-    if (apolloExtension.generateKotlinModels && apolloExtension.generateModelBuilder) {
-      throw IllegalArgumentException("""
-        Using `generateModelBuilder = true` does not make sense with `generateKotlinModels = true`. You can use .copy() as models are data classes.
-      """.trimIndent())
-    }
-
-    if (apolloExtension.generateKotlinModels && apolloExtension.useJavaBeansSemanticNaming) {
-      throw IllegalArgumentException("""
-        Using `useJavaBeansSemanticNaming = true` does not make sense with `generateKotlinModels = true`
-      """.trimIndent())
-    }
-
-    if (apolloExtension.generateKotlinModels && apolloExtension.nullableValueType != null) {
-      throw IllegalArgumentException("""
-        Using `nullableValueType = true` does not make sense with `generateKotlinModels = true`
-      """.trimIndent())
-    }
-
-    if (apolloExtension.schemaFilePath != null) {
-      throw IllegalArgumentException("""
-        apollo.schemaFilePath is not supported anymore as it doesn't work for multiple services.
-        
-      """.trimIndent() + useService(apolloExtension.schemaFilePath, apolloExtension.outputPackageName))
-    }
-
-    if (apolloExtension.outputPackageName != null) {
-      throw IllegalArgumentException("""
-        apollo.outputPackageName is not supported anymore as it doesn't work for multiple services and also flattens the packages.
-        
-      """.trimIndent() + useService(apolloExtension.schemaFilePath, apolloExtension.outputPackageName))
-    }
+  private fun afterEvaluate(project: Project, apolloExtension: ApolloExtension, apolloSourceSetExtension: ApolloSourceSetExtension) {
 
     if (apolloSourceSetExtension.schemaFile != null || apolloSourceSetExtension.exclude != null) {
       throw IllegalArgumentException("""
         apollo.sourceSet is not supported anymore.
         
-      """.trimIndent() + useService(apolloSourceSetExtension.schemaFile, null, "[${apolloSourceSetExtension.exclude?.joinToString(",")}]"))
+      """.trimIndent() + ApolloPlugin.useService(apolloSourceSetExtension.schemaFile, null, "[${apolloSourceSetExtension.exclude?.joinToString(",")}]"))
     }
+
+    val androidExtension = project.extensions.findByName("android")
 
     if (androidExtension == null) {
       val javaPlugin = project.convention.getPlugin(JavaPluginConvention::class.java)
@@ -122,13 +86,13 @@ open class ApolloPlugin : Plugin<Project> {
           androidVariant = null
       )
 
-      registerVariantTask(project, apolloVariant) { generateSourcesTaskProvider ->
-        val sourceDirectorySet = if (!apolloExtension.generateKotlinModels) {
+      registerVariantTask(project, apolloExtension, apolloVariant) { generateSourcesTaskProvider, generateKotlinModels ->
+        val sourceDirectorySet = if (!generateKotlinModels) {
           sourceSets.getByName(name).getJava()
         } else {
           sourceSets.getByName(name).kotlin!!
         }
-        val compileTaskName = if (!apolloExtension.generateKotlinModels) {
+        val compileTaskName = if (!generateKotlinModels) {
           "compileJava"
         } else {
           "compileKotlin"
@@ -155,8 +119,9 @@ open class ApolloPlugin : Plugin<Project> {
   }
 
   private fun registerVariantTask(project: Project,
+                                  apolloExtension: ApolloExtension,
                                   apolloVariant: ApolloVariant,
-                                  addOutputDirToSourceSetDir: (TaskProvider<ApolloGenerateSourcesTask>) -> Unit) {
+                                  addOutputDirToSourceSetDir: (TaskProvider<ApolloGenerateSourcesTask>, Boolean) -> Unit) {
 
     val generateVariantClassesTask = project.tasks.register("generate${apolloVariant.name.capitalize()}ApolloSources") {
       it.group = TASK_GROUP
@@ -172,18 +137,18 @@ open class ApolloPlugin : Plugin<Project> {
     }
 
     var compilationUnits = apolloExtension.services.map {
-      DefaultCompilationUnit.from(project, apolloVariant, it)
+      DefaultCompilationUnit.from(project, apolloExtension, apolloVariant, it)
     }
     if (compilationUnits.isEmpty()) {
-      compilationUnits = DefaultCompilationUnit.default(project, apolloVariant)
+      compilationUnits = DefaultCompilationUnit.default(project, apolloExtension, apolloVariant)
     }
     compilationUnits.forEach { compilationUnit ->
-      val generateSourcesTaskProvider = registerGenerateSourcesTask(project, apolloExtension, apolloVariant.name, compilationUnit)
+      val generateSourcesTaskProvider = registerGenerateSourcesTask(project, compilationUnit)
       generateVariantClassesTask.configure {
         it.dependsOn(generateSourcesTaskProvider)
       }
 
-      addOutputDirToSourceSetDir(generateSourcesTaskProvider)
+      addOutputDirToSourceSetDir(generateSourcesTaskProvider, compilationUnit.compilerParams.generateKotlinModels)
 
       apolloExtension.compilationUnits.add(compilationUnit)
     }
@@ -193,7 +158,8 @@ open class ApolloPlugin : Plugin<Project> {
     }
   }
 
-  fun registerGenerateSourcesTask(project: Project, extension: ApolloExtension, variantName: String, compilationUnit: DefaultCompilationUnit): TaskProvider<ApolloGenerateSourcesTask> {
+  fun registerGenerateSourcesTask(project: Project, compilationUnit: DefaultCompilationUnit): TaskProvider<ApolloGenerateSourcesTask> {
+    val variantName = compilationUnit.variantName
     val taskName = "generate${variantName.capitalize()}${compilationUnit.serviceName.capitalize()}ApolloSources"
 
     val taskProvider = project.tasks.register(taskName, ApolloGenerateSourcesTask::class.java) {
@@ -208,25 +174,26 @@ open class ApolloPlugin : Plugin<Project> {
       it.rootPackageName = compilationUnit.rootPackageName
       it.group = TASK_GROUP
       it.description = "Generate Android classes for ${variantName.capitalize()}${compilationUnit.serviceName} GraphQL queries"
-      it.nullableValueType = extension.nullableValueType ?: NullableValueType.ANNOTATED.value
-      it.useSemanticNaming = extension.useSemanticNaming
-      it.generateModelBuilder = extension.generateModelBuilder
-      it.useJavaBeansSemanticNaming = extension.useJavaBeansSemanticNaming
-      it.suppressRawTypesWarning = extension.suppressRawTypesWarning
-      it.generateKotlinModels = extension.generateKotlinModels
-      it.generateVisitorForPolymorphicDatatypes = extension.generateVisitorForPolymorphicDatatypes
-      it.customTypeMapping = extension.customTypeMapping
+      it.nullableValueType = compilationUnit.compilerParams.nullableValueType
+      it.useSemanticNaming = compilationUnit.compilerParams.useSemanticNaming
+      it.generateModelBuilder = compilationUnit.compilerParams.generateModelBuilder
+      it.useJavaBeansSemanticNaming = compilationUnit.compilerParams.useJavaBeansSemanticNaming
+      it.suppressRawTypesWarning = compilationUnit.compilerParams.suppressRawTypesWarning
+      it.generateKotlinModels = compilationUnit.compilerParams.generateKotlinModels
+      it.generateVisitorForPolymorphicDatatypes = compilationUnit.compilerParams.generateVisitorForPolymorphicDatatypes
+      it.customTypeMapping = compilationUnit.compilerParams.customTypeMapping
       it.outputDir.apply {
         set(compilationUnit.outputDirectory)
         disallowChanges()
       }
       it.transformedQueriesOutputDir.apply {
-        if (extension.generateTransformedQueries) {
+        if (compilationUnit.compilerParams.generateTransformedQueries) {
           set(compilationUnit.transformedQueriesDirectory)
         }
         disallowChanges()
       }
     }
+
     compilationUnit.outputDir = taskProvider.flatMap { it.outputDir }
     compilationUnit.transformedQueriesDir = taskProvider.flatMap { it.transformedQueriesOutputDir }
 

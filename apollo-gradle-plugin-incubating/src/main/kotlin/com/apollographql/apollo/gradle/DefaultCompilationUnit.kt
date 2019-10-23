@@ -1,6 +1,7 @@
 package com.apollographql.apollo.gradle
 
 import com.apollographql.apollo.compiler.*
+import com.apollographql.apollo.gradle.api.ApolloExtension
 import com.apollographql.apollo.gradle.api.CompilationUnit
 import com.apollographql.apollo.gradle.api.Service
 import org.gradle.api.Project
@@ -17,17 +18,19 @@ class DefaultCompilationUnit(
     val schemaFile: File?,
     val schemaPackageName: String,
     val rootPackageName: String,
+    val compilerParams: ResolvedCompilerParams,
     project: Project
-): CompilationUnit {
+) : CompilationUnit {
   val name = "${variantName}${serviceName.capitalize()}"
   internal val outputDirectory = project.buildDir.child("generated", "source", "apollo", variantName, serviceName)
   internal val transformedQueriesDirectory = project.buildDir.child("generated", "transformedQueries", "apollo", variantName, serviceName)
+
 
   override lateinit var outputDir: Provider<Directory>
   override lateinit var transformedQueriesDir: Provider<Directory>
 
   companion object {
-    fun from(project: Project, apolloVariant: ApolloVariant, service: Service): DefaultCompilationUnit {
+    fun from(project: Project, apolloExtension: ApolloExtension, apolloVariant: ApolloVariant, service: Service): DefaultCompilationUnit {
       val sourceSetNames = apolloVariant.sourceSetNames
 
       val schemaFilePath = service.schemaFilePath
@@ -73,11 +76,12 @@ class DefaultCompilationUnit(
           schemaPackageName = schemaPackageName,
           rootPackageName = service.rootPackageName ?: "",
           androidVariant = apolloVariant.androidVariant,
+          compilerParams = ResolvedCompilerParams.from(apolloExtension, service),
           project = project
       )
     }
 
-    fun default(project: Project, apolloVariant: ApolloVariant): List<DefaultCompilationUnit> {
+    fun default(project: Project, apolloExtension: ApolloExtension, apolloVariant: ApolloVariant): List<DefaultCompilationUnit> {
       val sourceSetNames = apolloVariant.sourceSetNames
       val schemaFiles = findFilesInSourceSets(project, sourceSetNames, ".") {
         it.name == "schema.json"
@@ -103,6 +107,7 @@ class DefaultCompilationUnit(
                 schemaPackageName = entry.value.canonicalPath.formatPackageName(dropLast = 1)!!,
                 rootPackageName = "",
                 androidVariant = apolloVariant.androidVariant,
+                compilerParams = ResolvedCompilerParams.from(apolloExtension, service),
                 project = project
             )
           }

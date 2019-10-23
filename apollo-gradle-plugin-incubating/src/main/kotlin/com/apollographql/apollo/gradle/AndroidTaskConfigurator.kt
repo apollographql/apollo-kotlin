@@ -13,7 +13,7 @@ object AndroidTaskConfigurator {
   fun configure(apolloExtension: ApolloExtension,
                 androidExtension: Any,
                 project: Project,
-                registerVariantTask: (Project, ApolloVariant, block: (TaskProvider<ApolloGenerateSourcesTask>) -> Unit) -> Unit
+                registerVariantTask: (Project, ApolloExtension, ApolloVariant, block: (TaskProvider<ApolloGenerateSourcesTask>, Boolean) -> Unit) -> Unit
   ) {
     when {
       androidExtension is LibraryExtension -> {
@@ -39,7 +39,7 @@ object AndroidTaskConfigurator {
                               apolloExtension: ApolloExtension,
                               androidExtension: BaseExtension,
                               variant: BaseVariant,
-                              registerVariantTask: (Project, ApolloVariant, block: (TaskProvider<ApolloGenerateSourcesTask>) -> Unit) -> Unit) {
+                              registerVariantTask: (Project, ApolloExtension, ApolloVariant, block: (TaskProvider<ApolloGenerateSourcesTask>, Boolean) -> Unit) -> Unit) {
 
     val apolloVariant = ApolloVariant(
         name = variant.name,
@@ -47,8 +47,8 @@ object AndroidTaskConfigurator {
         androidVariant = variant
     )
 
-    registerVariantTask(project, apolloVariant) { generateSourcesTaskProvider ->
-      if (apolloExtension.generateKotlinModels) {
+    registerVariantTask(project, apolloExtension, apolloVariant) { generateSourcesTaskProvider, generateKotlinModels ->
+      if (generateKotlinModels) {
         variant.addJavaSourceFoldersToModel(generateSourcesTaskProvider.get().outputDir.get().asFile)
         androidExtension.sourceSets.first { it.name == variant.name }.kotlin!!.srcDir(generateSourcesTaskProvider.get().outputDir)
         project.tasks.named("compile${variant.name.capitalize()}Kotlin").configure { it.dependsOn(generateSourcesTaskProvider) }
