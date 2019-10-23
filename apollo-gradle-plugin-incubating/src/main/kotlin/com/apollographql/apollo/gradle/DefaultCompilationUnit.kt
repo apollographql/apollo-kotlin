@@ -106,7 +106,7 @@ class DefaultCompilationUnit(
                 schemaPackageName = entry.value.canonicalPath.formatPackageName(dropLast = 1)!!,
                 rootPackageName = "",
                 androidVariant = apolloVariant.androidVariant,
-                compilerParams = ResolvedCompilerParams.from(apolloExtension, service),
+                compilerParams = ResolvedCompilerParams.from(apolloExtension, null),
                 project = project
             )
           }

@@ -187,7 +187,24 @@ class ConfigurationTests {
   }
 
   @Test
-  fun `schemaFilePath can be changed`() {
+  fun `service compilerParams override extension compilerParams`() {
+    withSimpleProject("""
+      apollo {
+        useSemanticNaming = false
+        service("starwars") {
+          useSemanticNaming = true
+          schemaFilePath = "src/main/graphql/com/example/schema.json"
+        }
+      }
+    """.trimIndent()) { dir ->
+      TestUtils.executeTask("generateApolloSources", dir)
+      TestUtils.assertFileContains(dir, "main/starwars/com/example/DroidDetailsQuery.java", "class DroidDetailsQuery ")
+    }
+  }
+
+
+  @Test
+  fun `sourceFolderPath can be changed`() {
     withSimpleProject("""
       apollo {
         service("starwars") {

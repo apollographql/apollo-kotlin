@@ -17,19 +17,19 @@ class ResolvedCompilerParams(
     val generateVisitorForPolymorphicDatatypes: Boolean
 ) {
   companion object {
-    fun from(apolloExtension: ApolloExtension, serviceParams: CompilerParams): ResolvedCompilerParams {
+    fun from(apolloExtension: ApolloExtension, serviceParams: CompilerParams?): ResolvedCompilerParams {
 
       val params = ResolvedCompilerParams(
-          generateKotlinModels = serviceParams.generateKotlinModels ?: apolloExtension.generateKotlinModels ?: false,
-          generateTransformedQueries = serviceParams.generateTransformedQueries ?: apolloExtension.generateTransformedQueries ?: false,
-          customTypeMapping = serviceParams.customTypeMapping ?: apolloExtension.customTypeMapping ?: emptyMap(),
-          suppressRawTypesWarning = serviceParams.suppressRawTypesWarning ?: apolloExtension.suppressRawTypesWarning ?: false,
-          useSemanticNaming = serviceParams.useSemanticNaming ?: apolloExtension.useSemanticNaming ?: true,
+          generateKotlinModels = serviceParams?.generateKotlinModels ?: apolloExtension.generateKotlinModels ?: false,
+          generateTransformedQueries = serviceParams?.generateTransformedQueries ?: apolloExtension.generateTransformedQueries ?: false,
+          customTypeMapping = serviceParams?.customTypeMapping ?: apolloExtension.customTypeMapping ?: emptyMap(),
+          suppressRawTypesWarning = serviceParams?.suppressRawTypesWarning ?: apolloExtension.suppressRawTypesWarning ?: false,
+          useSemanticNaming = serviceParams?.useSemanticNaming ?: apolloExtension.useSemanticNaming ?: true,
 
-          nullableValueType = serviceParams.nullableValueType ?: apolloExtension.nullableValueType ?: NullableValueType.ANNOTATED.value,
-          generateModelBuilder = serviceParams.generateModelBuilder ?: apolloExtension.generateModelBuilder ?: false,
-          useJavaBeansSemanticNaming = serviceParams.useJavaBeansSemanticNaming ?: apolloExtension.useJavaBeansSemanticNaming ?: false,
-          generateVisitorForPolymorphicDatatypes = serviceParams.generateVisitorForPolymorphicDatatypes
+          nullableValueType = serviceParams?.nullableValueType ?: apolloExtension.nullableValueType ?: NullableValueType.ANNOTATED.value,
+          generateModelBuilder = serviceParams?.generateModelBuilder ?: apolloExtension.generateModelBuilder ?: false,
+          useJavaBeansSemanticNaming = serviceParams?.useJavaBeansSemanticNaming ?: apolloExtension.useJavaBeansSemanticNaming ?: false,
+          generateVisitorForPolymorphicDatatypes = serviceParams?.generateVisitorForPolymorphicDatatypes
               ?: apolloExtension.generateVisitorForPolymorphicDatatypes ?: false
       )
 
@@ -45,7 +45,7 @@ class ResolvedCompilerParams(
       """.trimIndent())
       }
 
-      if (params.generateKotlinModels && serviceParams.nullableValueType ?: apolloExtension.nullableValueType != null) {
+      if (params.generateKotlinModels && serviceParams?.nullableValueType ?: apolloExtension.nullableValueType != null) {
         throw IllegalArgumentException("""
         Using `nullableValueType` does not make sense with `generateKotlinModels = true`
       """.trimIndent())
