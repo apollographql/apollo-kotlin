@@ -11,10 +11,12 @@ import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.response.CustomTypeAdapter;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
+import com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeListener;
 import com.apollographql.apollo.subscription.OperationClientMessage;
 import com.apollographql.apollo.subscription.OperationServerMessage;
 import com.apollographql.apollo.subscription.SubscriptionConnectionParams;
 import com.apollographql.apollo.subscription.SubscriptionConnectionParamsProvider;
+import com.apollographql.apollo.subscription.SubscriptionManagerState;
 import com.apollographql.apollo.subscription.SubscriptionTransport;
 
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +47,7 @@ public class SubscriptionManagerTest {
         new MockExecutor(), connectionHeartbeatTimeoutMs);
     subscriptionManager.addOnStateChangeListener(onStateChangeListener);
     assertThat(subscriptionTransportFactory.subscriptionTransport).isNotNull();
-    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.DISCONNECTED);
+    assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.DISCONNECTED);
   }
 
   @Test public void connecting() {
@@ -54,12 +56,12 @@ public class SubscriptionManagerTest {
     assertThat(subscriptionTransportFactory.subscriptionTransport).isNotNull();
     assertThat(subscriptionTransportFactory.subscriptionTransport.connected).isTrue();
     assertThat(subscriptionTransportFactory.subscriptionTransport.lastSentMessage).isNull();
-    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.CONNECTING);
+    assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.CONNECTING);
 
     subscriptionManager.subscribe(subscription2, new SubscriptionManagerCallbackAdapter<Operation.Data>());
     assertThat(subscriptionTransportFactory.subscriptionTransport.connected).isTrue();
     assertThat(subscriptionTransportFactory.subscriptionTransport.lastSentMessage).isNull();
-    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.CONNECTING);
+    assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.CONNECTING);
 
     assertThat(subscriptionManager.subscriptions).hasSize(2);
     assertThat(subscriptionManager.subscriptions.get(idForSubscription(subscription1))).isNotNull();
@@ -71,7 +73,7 @@ public class SubscriptionManagerTest {
   @Test public void connected() {
     subscriptionManager.subscribe(subscription1, new SubscriptionManagerCallbackAdapter<Operation.Data>());
     subscriptionTransportFactory.callback.onConnected();
-    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.CONNECTED);
+    assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.CONNECTED);
     assertThat(subscriptionTransportFactory.subscriptionTransport.lastSentMessage).isInstanceOf(OperationClientMessage.Init.class);
     assertThat(subscriptionManager.timer.tasks).containsKey(RealSubscriptionManager.CONNECTION_ACKNOWLEDGE_TIMEOUT_TIMER_TASK_ID);
   }
@@ -80,7 +82,7 @@ public class SubscriptionManagerTest {
     subscriptionManager.subscribe(subscription1, new SubscriptionManagerCallbackAdapter<Operation.Data>());
     subscriptionTransportFactory.callback.onConnected();
     subscriptionTransportFactory.callback.onMessage(new OperationServerMessage.ConnectionAcknowledge());
-    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.ACTIVE);
+    assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.ACTIVE);
     assertThat(subscriptionTransportFactory.subscriptionTransport.lastSentMessage).isInstanceOf(OperationClientMessage.Start.class);
     assertThat(((OperationClientMessage.Start) subscriptionTransportFactory.subscriptionTransport.lastSentMessage).subscriptionId).isEqualTo(idForSubscription(subscription1));
     assertThat(subscriptionManager.timer.tasks).isEmpty();
@@ -98,7 +100,7 @@ public class SubscriptionManagerTest {
 
     assertThat(subscriptionManager.timer.tasks).containsKey(RealSubscriptionManager.INACTIVITY_TIMEOUT_TIMER_TASK_ID);
 
-    onStateChangeListener.awaitState(RealSubscriptionManager.State.DISCONNECTED, RealSubscriptionManager
+    onStateChangeListener.awaitState(SubscriptionManagerState.DISCONNECTED, RealSubscriptionManager
         .INACTIVITY_TIMEOUT + 800, TimeUnit.MILLISECONDS);
 
     assertThat(subscriptionTransportFactory.subscriptionTransport.disconnectMessage).isInstanceOf(OperationClientMessage.Terminate.class);
@@ -111,14 +113,14 @@ public class SubscriptionManagerTest {
     subscriptionTransportFactory.callback.onMessage(new OperationServerMessage.ConnectionAcknowledge());
     subscriptionManager.unsubscribe(subscription1);
 
-    onStateChangeListener.awaitState(RealSubscriptionManager.State.DISCONNECTED, RealSubscriptionManager
+    onStateChangeListener.awaitState(SubscriptionManagerState.DISCONNECTED, RealSubscriptionManager
         .INACTIVITY_TIMEOUT + 800, TimeUnit.MILLISECONDS);
 
     subscriptionManager.subscribe(subscription2, new SubscriptionManagerCallbackAdapter<Operation.Data>());
     subscriptionTransportFactory.callback.onConnected();
     subscriptionTransportFactory.callback.onMessage(new OperationServerMessage.ConnectionAcknowledge());
 
-    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.ACTIVE);
+    assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.ACTIVE);
     assertThat(subscriptionTransportFactory.subscriptionTransport.lastSentMessage).isInstanceOf(OperationClientMessage.Start.class);
     assertThat(((OperationClientMessage.Start) subscriptionTransportFactory.subscriptionTransport.lastSentMessage).subscriptionId).isEqualTo(idForSubscription(subscription2));
     assertThat(subscriptionManager.timer.tasks).isEmpty();
@@ -130,7 +132,7 @@ public class SubscriptionManagerTest {
 
     assertThat(subscriptionManager.timer.tasks).containsKey(RealSubscriptionManager.CONNECTION_ACKNOWLEDGE_TIMEOUT_TIMER_TASK_ID);
 
-    onStateChangeListener.awaitState(RealSubscriptionManager.State.DISCONNECTED, RealSubscriptionManager
+    onStateChangeListener.awaitState(SubscriptionManagerState.DISCONNECTED, RealSubscriptionManager
         .CONNECTION_ACKNOWLEDGE_TIMEOUT + 800, TimeUnit.MILLISECONDS);
 
     assertThat(subscriptionTransportFactory.subscriptionTransport.disconnectMessage).isInstanceOf(OperationClientMessage.Terminate.class);
@@ -149,7 +151,7 @@ public class SubscriptionManagerTest {
     assertThat(subscriptionManagerCallback1.networkError).isInstanceOf(UnsupportedOperationException.class);
     assertThat(subscriptionManagerCallback2.networkError).isInstanceOf(UnsupportedOperationException.class);
     assertThat(subscriptionTransportFactory.subscriptionTransport.disconnectMessage).isInstanceOf(OperationClientMessage.Terminate.class);
-    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.DISCONNECTED);
+    assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.DISCONNECTED);
     assertThat(subscriptionManager.timer.tasks).isEmpty();
     assertThat(subscriptionManager.subscriptions).isEmpty();
   }
@@ -226,37 +228,37 @@ public class SubscriptionManagerTest {
     subscriptionTransportFactory.callback.onMessage(new OperationServerMessage.ConnectionAcknowledge());
     subscriptionTransportFactory.callback.onMessage(new OperationServerMessage.ConnectionKeepAlive());
 
-    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.ACTIVE);
+    assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.ACTIVE);
     assertThat(subscriptionManager.timer.tasks).containsKey(RealSubscriptionManager.CONNECTION_KEEP_ALIVE_TIMEOUT_TIMER_TASK_ID);
 
-    onStateChangeListener.awaitState(RealSubscriptionManager.State.DISCONNECTED, connectionHeartbeatTimeoutMs + 800, TimeUnit.MILLISECONDS);
-    onStateChangeListener.awaitState(RealSubscriptionManager.State.CONNECTING, 800, TimeUnit.MILLISECONDS);
+    onStateChangeListener.awaitState(SubscriptionManagerState.DISCONNECTED, connectionHeartbeatTimeoutMs + 800, TimeUnit.MILLISECONDS);
+    onStateChangeListener.awaitState(SubscriptionManagerState.CONNECTING, 800, TimeUnit.MILLISECONDS);
   }
 
   @Test public void startWhenDisconnected() {
-    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.DISCONNECTED);
+    assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.DISCONNECTED);
 
     subscriptionManager.start();
-    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.DISCONNECTED);
+    assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.DISCONNECTED);
   }
 
   @Test public void startWhenConnected() {
     subscriptionManager.subscribe(subscription1, new SubscriptionManagerCallbackAdapter<Operation.Data>());
     subscriptionTransportFactory.callback.onConnected();
-    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.CONNECTED);
+    assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.CONNECTED);
 
     subscriptionManager.start();
-	  assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.CONNECTED);
+    assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.CONNECTED);
   }
 
   @Test public void startWhenActive() {
     subscriptionManager.subscribe(subscription1, new SubscriptionManagerCallbackAdapter<Operation.Data>());
     subscriptionTransportFactory.callback.onConnected();
     subscriptionTransportFactory.callback.onMessage(new OperationServerMessage.ConnectionAcknowledge());
-    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.ACTIVE);
+    assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.ACTIVE);
 
     subscriptionManager.start();
-    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.ACTIVE);
+    assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.ACTIVE);
   }
 
   @Test public void startWhenStopped() {
@@ -264,36 +266,36 @@ public class SubscriptionManagerTest {
     subscriptionTransportFactory.callback.onConnected();
     subscriptionTransportFactory.callback.onMessage(new OperationServerMessage.ConnectionAcknowledge());
     subscriptionManager.stop();
-    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.STOPPED);
+    assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.STOPPED);
 
     subscriptionManager.start();
-    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.DISCONNECTED);
+    assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.DISCONNECTED);
   }
 
   @Test public void stopWhenDisconnected() {
-	  assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.DISCONNECTED);
+    assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.DISCONNECTED);
     subscriptionManager.stop();
-    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.STOPPED);
+    assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.STOPPED);
   }
 
   @Test public void stopWhenConnected() {
     subscriptionManager.subscribe(subscription1, new SubscriptionManagerCallbackAdapter<Operation.Data>());
     subscriptionManager.subscribe(subscription2, new SubscriptionManagerCallbackAdapter<Operation.Data>());
     subscriptionTransportFactory.callback.onConnected();
-    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.CONNECTED);
+    assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.CONNECTED);
 
     subscriptionManager.stop();
-    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.STOPPED);
+    assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.STOPPED);
   }
 
   @Test public void stopWhenActive() {
     subscriptionManager.subscribe(subscription1, new SubscriptionManagerCallbackAdapter<Operation.Data>());
     subscriptionTransportFactory.callback.onConnected();
     subscriptionTransportFactory.callback.onMessage(new OperationServerMessage.ConnectionAcknowledge());
-    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.ACTIVE);
+    assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.ACTIVE);
 
     subscriptionManager.stop();
-    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.STOPPED);
+    assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.STOPPED);
   }
 
   @Test public void stopWhenStopped() {
@@ -301,10 +303,10 @@ public class SubscriptionManagerTest {
     subscriptionTransportFactory.callback.onConnected();
     subscriptionTransportFactory.callback.onMessage(new OperationServerMessage.ConnectionAcknowledge());
     subscriptionManager.stop();
-    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.STOPPED);
+    assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.STOPPED);
 
     subscriptionManager.stop();
-    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.STOPPED);
+    assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.STOPPED);
   }
 
   @Test public void subscriptionWhenStopped() {
@@ -312,11 +314,11 @@ public class SubscriptionManagerTest {
     SubscriptionManagerCallbackAdapter<Operation.Data> subscriptionManagerCallback = new SubscriptionManagerCallbackAdapter<>();
     subscriptionManager.subscribe(subscription1, subscriptionManagerCallback);
 
-    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.STOPPED);
+    assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.STOPPED);
     assertThat(subscriptionManagerCallback.error).isInstanceOf(ApolloSubscriptionException.class);
     assertThat(subscriptionManagerCallback.error.getMessage()).startsWith("Illegal state: STOPPED");
   }
-  
+
   @Test public void connectionTerminated() {
     SubscriptionManagerCallbackAdapter<Operation.Data> subscriptionManagerCallback = new SubscriptionManagerCallbackAdapter<>();
     subscriptionManager.subscribe(subscription1, subscriptionManagerCallback);
@@ -324,10 +326,10 @@ public class SubscriptionManagerTest {
     subscriptionTransportFactory.callback.onConnected();
     subscriptionTransportFactory.callback.onMessage(new OperationServerMessage.ConnectionAcknowledge());
 
-    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.ACTIVE);
+    assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.ACTIVE);
 
     subscriptionTransportFactory.callback.onClosed();
-    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.DISCONNECTED);
+    assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.DISCONNECTED);
     assertThat(subscriptionManagerCallback.terminated).isTrue();
   }
 
@@ -360,18 +362,18 @@ public class SubscriptionManagerTest {
     }
   }
 
-  private static class SubscriptionManagerOnStateChangeListener implements RealSubscriptionManager.OnStateChangeListener {
-    private final List<RealSubscriptionManager.State> stateNotifications = new ArrayList<>();
+  private static class SubscriptionManagerOnStateChangeListener implements OnSubscriptionManagerStateChangeListener {
+    private final List<SubscriptionManagerState> stateNotifications = new ArrayList<>();
 
     @Override
-    public void onStateChange(RealSubscriptionManager.State fromState, RealSubscriptionManager.State toState) {
+    public void onStateChange(SubscriptionManagerState fromState, SubscriptionManagerState toState) {
       synchronized (stateNotifications) {
         stateNotifications.add(toState);
         stateNotifications.notify();
       }
     }
 
-    void awaitState(RealSubscriptionManager.State state, long timeout, TimeUnit timeUnit) throws InterruptedException {
+    void awaitState(SubscriptionManagerState state, long timeout, TimeUnit timeUnit) throws InterruptedException {
       synchronized (stateNotifications) {
         if (stateNotifications.contains(state)) {
           return;
@@ -463,6 +465,8 @@ public class SubscriptionManagerTest {
       terminated = true;
     }
 
-    @Override public void onConnected() { connected = true; }
+    @Override public void onConnected() {
+      connected = true;
+    }
   }
 }
