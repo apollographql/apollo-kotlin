@@ -41,6 +41,7 @@ object AndroidTaskConfigurator {
     return container
   }
 
+  // TODO: make this lazy
   fun registerGeneratedDirectory(
       project: Project,
       androidExtension: Any,
@@ -49,14 +50,12 @@ object AndroidTaskConfigurator {
   ) {
 
     val variant = compilationUnit.androidVariant as BaseVariant
-    if (compilationUnit.compilerParams.generateKotlinModels) {
+    if (compilationUnit.compilerParams.generateKotlinModels.get()) {
       variant.addJavaSourceFoldersToModel(codegenProvider.get().outputDir.get().asFile)
       androidExtension as BaseExtension
-      // TODO: make this lazy
       androidExtension.sourceSets.first { it.name == variant.name }.kotlin!!.srcDir(codegenProvider.get().outputDir)
       project.tasks.named("compile${variant.name.capitalize()}Kotlin").configure { it.dependsOn(codegenProvider) }
     } else {
-      // TODO: make this lazy
       variant.registerJavaGeneratingTask(codegenProvider.get(), codegenProvider.get().outputDir.get().asFile)
     }
   }

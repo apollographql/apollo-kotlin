@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler.codegen.kotlin
 
+import com.apollographql.apollo.compiler.DeprecatedPackageNameProvider
 import com.apollographql.apollo.compiler.PackageNameProvider
 import com.apollographql.apollo.compiler.ast.CustomTypes
 import com.apollographql.apollo.compiler.ast.builder.ast
@@ -24,7 +25,7 @@ class GraphQLKompiler(
         useSemanticNaming = useSemanticNaming
     )
 
-    val irPackageName = packageNameProvider.schemaPackageName
+    val irPackageName = (packageNameProvider as? DeprecatedPackageNameProvider)?.schemaPackageName ?: ""
     if (irPackageName.isNotEmpty()) {
       File(outputDir, irPackageName.replace('.', File.separatorChar)).deleteRecursively()
     }

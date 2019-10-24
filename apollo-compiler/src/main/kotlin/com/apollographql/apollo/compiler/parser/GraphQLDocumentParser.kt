@@ -11,7 +11,7 @@ import java.io.File
 import java.io.IOException
 
 class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider: PackageNameProvider) {
-  fun parse(graphQLFiles: List<File>): CodeGenerationIR {
+  fun parse(graphQLFiles: Collection<File>): CodeGenerationIR {
     val (operations, fragments, usedTypes) = graphQLFiles.fold(DocumentParseResult()) { acc, graphQLFile ->
       val result = graphQLFile.parse()
       DocumentParseResult(

@@ -14,8 +14,12 @@ class MultipleServicesTests {
         plugins = listOf(TestUtils.javaPlugin, TestUtils.apolloPlugin),
         apolloConfiguration = apolloConfiguration) { dir ->
       val source = TestUtils.fixturesDirectory()
+
       val target = dir.child("src", "main", "graphql", "githunt")
-      File(source, "githunt").copyRecursively(target = target, overwrite = true)
+      source.child("githunt").copyRecursively(target = target, overwrite = true)
+
+      dir.child("src", "main", "graphql", "com").copyRecursively(target = dir.child("src", "main", "graphql", "starwars"), overwrite = true)
+      dir.child("src", "main", "graphql", "com").deleteRecursively()
 
       block(dir)
     }
@@ -26,11 +30,11 @@ class MultipleServicesTests {
     withMultipleServicesProject("") { dir ->
       TestUtils.executeTask("build", dir)
 
-      assertTrue(dir.generatedChild("main/service0/com/example/DroidDetailsQuery.java").isFile)
-      assertTrue(dir.generatedChild("main/service0/com/example/FilmsQuery.java").isFile)
-      assertTrue(dir.generatedChild("main/service0/com/example/fragment/SpeciesInformation.java").isFile)
-      assertTrue(dir.generatedChild("main/service1/githunt/FeedQuery.java").isFile)
-      assertTrue(dir.generatedChild("main/service1/githunt/fragment/RepositoryFragment.java").isFile)
+      assertTrue(dir.generatedChild("main/service0/githunt/FeedQuery.java").isFile)
+      assertTrue(dir.generatedChild("main/service0/githunt/fragment/RepositoryFragment.java").isFile)
+      assertTrue(dir.generatedChild("main/service1/starwars/example/DroidDetailsQuery.java").isFile)
+      assertTrue(dir.generatedChild("main/service1/starwars/example/FilmsQuery.java").isFile)
+      assertTrue(dir.generatedChild("main/service1/starwars/example/fragment/SpeciesInformation.java").isFile)
     }
   }
 
@@ -39,21 +43,21 @@ class MultipleServicesTests {
     val apolloConfiguration = """
       apollo {
         service("starwars") {
-          schemaFilePath = "src/main/graphql/com/example/schema.json"
+          sourceFolder = "starwars"
         }
         service("githunt") {
-          schemaFilePath = "src/main/graphql/githunt/schema.json"
+          sourceFolder = "githunt"
         }
       }
     """.trimIndent()
     withMultipleServicesProject(apolloConfiguration) { dir ->
       TestUtils.executeTask("build", dir)
 
-      assertTrue(dir.generatedChild("main/starwars/com/example/DroidDetailsQuery.java").isFile)
-      assertTrue(dir.generatedChild("main/starwars/com/example/FilmsQuery.java").isFile)
-      assertTrue(dir.generatedChild("main/starwars/com/example/fragment/SpeciesInformation.java").isFile)
-      assertTrue(dir.generatedChild("main/githunt/githunt/FeedQuery.java").isFile)
-      assertTrue(dir.generatedChild("main/githunt/githunt/fragment/RepositoryFragment.java").isFile)
+      assertTrue(dir.generatedChild("main/starwars/example/DroidDetailsQuery.java").isFile)
+      assertTrue(dir.generatedChild("main/starwars/example/FilmsQuery.java").isFile)
+      assertTrue(dir.generatedChild("main/starwars/example/fragment/SpeciesInformation.java").isFile)
+      assertTrue(dir.generatedChild("main/githunt/FeedQuery.java").isFile)
+      assertTrue(dir.generatedChild("main/githunt/fragment/RepositoryFragment.java").isFile)
     }
   }
 }

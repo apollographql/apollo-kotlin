@@ -122,12 +122,12 @@ class CodeGenTest(val folder: File) {
 
       val outputPackageName = "com.example.${folder.name}"
 
-      val packageNameProvider = PackageNameProvider(
+      val packageNameProvider = DeprecatedPackageNameProvider(
           rootPackageName = "",
           schemaPackageName = "",
           outputPackageName = outputPackageName
       )
-      val ir = GraphQLDocumentParser(schema, packageNameProvider).parse(listOf(graphQLFile))
+      val ir = GraphQLDocumentParser(schema, packageNameProvider).parse(setOf(graphQLFile))
       val args = GraphQLCompiler.Arguments(
           ir = ir,
           outputDir = GraphQLCompiler.OUTPUT_DIRECTORY.plus("sources").fold(File("build"), ::File),

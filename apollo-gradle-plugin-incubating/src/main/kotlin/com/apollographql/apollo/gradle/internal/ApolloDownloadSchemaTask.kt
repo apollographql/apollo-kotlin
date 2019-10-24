@@ -5,30 +5,32 @@ import com.squareup.moshi.JsonWriter
 import okhttp3.*
 import okio.Okio
 import org.gradle.api.DefaultTask
+import org.gradle.api.provider.MapProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import java.io.ByteArrayOutputStream
 
-open class ApolloDownloadSchemaTask : DefaultTask() {
-  @Input
-  var endpointUrl: String? = null
+abstract class ApolloDownloadSchemaTask : DefaultTask() {
+  @get:Input
+  abstract val endpointUrl: Property<String>
 
-  @Input
-  var schemaFilePath: String? = null
+  @get:Input
+  abstract val schemaFilePath: Property<String>
 
-  @Optional
-  @Input
-  var headers: Map<String, String>? = null
+  @get:Optional
+  @get:Input
+  abstract val headers: MapProperty<String, String>
 
-  @Optional
-  @Input
-  var queryParameters: Map<String, String>? = null
+  @get:Optional
+  @get:Input
+  abstract val queryParameters: MapProperty<String, String>
 
   @TaskAction
   fun taskAction() {
-    if (schemaFilePath == null) {
-      throw IllegalArgumentException("you need to define service.schemaFilePath.")
+    if (!schemaFilePath.isPresent) {
+      throw IllegalArgumentException("you need to define schemaFilePath.")
     }
 
     val byteArrayOutputStream = ByteArrayOutputStream()
@@ -43,12 +45,12 @@ open class ApolloDownloadSchemaTask : DefaultTask() {
     val requestBuilder = Request.Builder()
         .post(body)
 
-    headers?.entries?.forEach {
+    headers.get().entries.forEach {
       requestBuilder.addHeader(it.key, it.value)
     }
 
-    val urlBuilder = HttpUrl.get(endpointUrl!!).newBuilder()
-    queryParameters?.entries?.forEach {
+    val urlBuilder = HttpUrl.get(endpointUrl.get()).newBuilder()
+    queryParameters.get().entries.forEach {
       urlBuilder.addQueryParameter(it.key, it.value)
     }
 
@@ -62,7 +64,7 @@ open class ApolloDownloadSchemaTask : DefaultTask() {
       throw Exception("cannot get schema: ${response.code()}:\n${response.body()?.string()}")
     }
 
-    project.projectDir.child(schemaFilePath!!).writeText(response.body()!!.string())
+    project.projectDir.child(schemaFilePath.get()).writeText(response.body()!!.string())
   }
 
   companion object {

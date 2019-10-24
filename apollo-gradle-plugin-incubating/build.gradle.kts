@@ -37,4 +37,3 @@ tasks.withType<Test> {
 
 apply(rootProject.file("gradle/gradle-mvn-push.gradle"))
 apply(rootProject.file("gradle/bintray.gradle"))
-

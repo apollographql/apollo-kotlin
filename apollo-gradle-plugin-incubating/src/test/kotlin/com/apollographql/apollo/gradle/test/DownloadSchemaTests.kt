@@ -17,7 +17,7 @@ class DownloadSchemaTests {
   val apolloConfiguration = """
       apollo {
         service("mock") {
-          schemaFilePath = "src/main/graphql/com/example/schema.json"
+          schemaPath = "com/example/schema.json"
           introspection {
             endpointUrl = "${mockServer.url("/").url()}"
           }
@@ -39,6 +39,26 @@ class DownloadSchemaTests {
     }
   }
 
+  @Test
+  fun `download schema is never up-to-date`() {
+
+    withSimpleProject(apolloConfiguration = apolloConfiguration) { dir ->
+      val content = "schema should be here"
+      val mockResponse = MockResponse().setBody(content)
+      mockServer.enqueue(mockResponse)
+
+      var result = TestUtils.executeTask("downloadMockApolloSchema", dir)
+      assertEquals(TaskOutcome.SUCCESS, result.task(":downloadMockApolloSchema")?.outcome)
+
+      mockServer.enqueue(mockResponse)
+
+      // Since the task does not declare any output, it should never be up-to-date
+      result = TestUtils.executeTask("downloadMockApolloSchema", dir)
+      assertEquals(TaskOutcome.SUCCESS, result.task(":downloadMockApolloSchema")?.outcome)
+
+      assertEquals(content, dir.child("src", "main", "graphql", "com", "example", "schema.json").readText())
+    }
+  }
 
   @Test
   fun `download schema is never cached`() {

@@ -1,9 +1,9 @@
 package com.apollographql.apollo.gradle
 
 import com.apollographql.apollo.compiler.GraphQLCompiler
-import com.apollographql.apollo.compiler.PackageNameProviderKt
+import com.apollographql.apollo.compiler.DeprecatedPackageNameProviderKt
 import com.apollographql.apollo.compiler.NullableValueType
-import com.apollographql.apollo.compiler.PackageNameProvider
+import com.apollographql.apollo.compiler.DeprecatedPackageNameProvider
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.parser.GraphQLDocumentParser
 import com.apollographql.apollo.compiler.parser.Schema
@@ -53,9 +53,9 @@ class ApolloCodegenTask extends SourceTask {
       if (outputPackageName != null && outputPackageName.trim().isEmpty()) {
         outputPackageName = null
       }
-      String irPackageName =  PackageNameProviderKt.formatPackageName(codegenArg.outputFolder.canonicalPath, 0)
+      String irPackageName =  DeprecatedPackageNameProviderKt.formatPackageName(codegenArg.outputFolder.canonicalPath, 0)
 
-      PackageNameProvider packageNameProvider = new PackageNameProvider(
+      DeprecatedPackageNameProvider packageNameProvider = new DeprecatedPackageNameProvider(
               "",
               irPackageName,
               outputPackageName

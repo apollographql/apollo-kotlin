@@ -1,15 +1,18 @@
 package com.apollographql.apollo.gradle.api
 
 import org.gradle.api.Project
+import org.gradle.api.model.ObjectFactory
+import javax.inject.Inject
 
 /**
  * @Deprecated
  *
  * This class is only there for backward compatibility reasons with the old groovy plugin
  */
-open class ApolloSourceSetExtension(project: Project) {
-  val schemaFile = project.objects.property(String::class.java)
-  val exclude = project.objects.listProperty(String::class.java)
+@Deprecated("please use services instead")
+open class ApolloSourceSetExtension @Inject constructor(objects: ObjectFactory) {
+  val schemaFile = objects.property(String::class.java)
+  val exclude = objects.listProperty(String::class.java)
 
   fun setSchemaFile(schemaFile: String) {
     this.schemaFile.set(schemaFile)

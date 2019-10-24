@@ -1,104 +1,132 @@
 package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo.compiler.GraphQLCompiler
-import com.apollographql.apollo.compiler.NullableValueType
-import com.apollographql.apollo.compiler.PackageNameProvider
+import com.apollographql.apollo.compiler.*
 import com.apollographql.apollo.compiler.parser.GraphQLDocumentParser
 import com.apollographql.apollo.compiler.parser.Schema
-import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.file.FileTree
+import org.gradle.api.DefaultTask
+import org.gradle.api.file.*
+import org.gradle.api.provider.MapProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.*
-import java.io.File
 
 @CacheableTask
-open class ApolloGenerateSourcesTask : SourceTask() {
+abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Input
-  lateinit var rootPackageName: String
+  @get:Optional
+  abstract val customTypeMapping: MapProperty<String, String>
 
   @get:Input
-  lateinit var schemaPackageName: String
+  @get:Optional
+  abstract val nullableValueType: Property<String>
+
+  @get:Input
+  @get:Optional
+  abstract val useSemanticNaming: Property<Boolean>
+
+  @get:Input
+  @get:Optional
+  abstract val generateModelBuilder: Property<Boolean>
+
+  @get:Input
+  @get:Optional
+  abstract val useJavaBeansSemanticNaming: Property<Boolean>
+
+  @get:Input
+  @get:Optional
+  abstract val suppressRawTypesWarning: Property<Boolean>
+
+  @get:Input
+  @get:Optional
+  abstract val generateKotlinModels: Property<Boolean>
+
+  @get:Input
+  @get:Optional
+  abstract val generateVisitorForPolymorphicDatatypes: Property<Boolean>
+
+  @get:Input
+  @get:Optional
+  abstract val rootPackageName: Property<String>
+
+  @get:InputFiles
+  @get:SkipWhenEmpty
+  @get:PathSensitive(PathSensitivity.RELATIVE)
+  abstract val graphqlFiles: ConfigurableFileCollection
+
+  @get:InputFile
+  @get:PathSensitive(PathSensitivity.RELATIVE)
+  abstract val schemaFile: RegularFileProperty
+
+  @get:Input
+  abstract val rootFolders: Property<Collection<String>>
 
   @get:OutputDirectory
-  val outputDir: DirectoryProperty = project.objects.directoryProperty()
+  @get:PathSensitive(PathSensitivity.RELATIVE)
+  abstract val outputDir: DirectoryProperty
 
-  @get:Input
-  lateinit var customTypeMapping: Map<String, String>
-
-  @get:Input
-  lateinit var nullableValueType: String
-
-  @get:Input
-  var useSemanticNaming: Boolean = false
-
-  @get:Input
-  var generateModelBuilder: Boolean = false
-
-  @get:Input
-  var useJavaBeansSemanticNaming: Boolean = false
-
-  @get:Input
-  var suppressRawTypesWarning: Boolean = false
-
-  @get:Input
-  var generateKotlinModels: Boolean = false
-
-  @get:Input
-  var generateVisitorForPolymorphicDatatypes: Boolean = false
-
-  @Optional
+  @get:Optional
   @get:OutputDirectory
-  val transformedQueriesOutputDir: DirectoryProperty = project.objects.directoryProperty()
-
-  @InputFiles
-  @SkipWhenEmpty
-  @PathSensitive(PathSensitivity.RELATIVE)
-  override fun getSource(): FileTree {
-    return super.getSource()
-  }
-
-  @Internal
-  var schemaFile: File? = null
-
-  @Internal
-  lateinit var graphqlFiles: List<File>
+  abstract val transformedQueriesOutputDir: DirectoryProperty
 
   @TaskAction
   fun taskAction() {
-    val nullableValueTypeEnum = NullableValueType.values().find { it.value == nullableValueType }
 
-    if (schemaFile == null || !schemaFile!!.exists()) {
-      return
-    }
+    sanityChecks()
 
-    if (graphqlFiles.isEmpty()) {
-      return
-    }
+    val realSchemaFile = schemaFile.get().asFile
 
     outputDir.get().asFile.delete()
 
-    val schema = Schema.invoke(schemaFile!!)
+    val schema = Schema.invoke(realSchemaFile)
 
-    val packageNameProvider = PackageNameProvider(
-        schemaPackageName = schemaPackageName,
-        rootPackageName = rootPackageName,
-        outputPackageName = null
+    val packageNameProvider = PluginPackageNameProvider(
+        rootFolders = rootFolders.get(),
+        rootPackageName = rootPackageName.getOrElse(""),
+        schemaFile = realSchemaFile
     )
 
-    val codeGenerationIR = GraphQLDocumentParser(schema, packageNameProvider).parse(graphqlFiles)
+    val nullableValueTypeEnum = NullableValueType.values().find { it.value == nullableValueType.getOrElse(NullableValueType.ANNOTATED.value) }
+    if (nullableValueTypeEnum == null) {
+      throw IllegalArgumentException("Unknown nullableValueType: '${nullableValueType.get()}'. Possible values:\n" +
+          NullableValueType.values().map { it.value }.joinToString("\n"))
+    }
+
+    val codeGenerationIR = GraphQLDocumentParser(schema, packageNameProvider).parse(graphqlFiles.files)
     val args = GraphQLCompiler.Arguments(
         ir = codeGenerationIR,
         outputDir = outputDir.get().asFile,
-        customTypeMap = customTypeMapping,
-        nullableValueType = nullableValueTypeEnum ?: NullableValueType.ANNOTATED,
-        useSemanticNaming = useSemanticNaming,
-        generateModelBuilder = generateModelBuilder,
-        useJavaBeansSemanticNaming = useJavaBeansSemanticNaming,
-        suppressRawTypesWarning = suppressRawTypesWarning,
-        generateKotlinModels = generateKotlinModels,
-        generateVisitorForPolymorphicDatatypes = generateVisitorForPolymorphicDatatypes,
+        customTypeMap = customTypeMapping.getOrElse(emptyMap()),
+        nullableValueType = nullableValueTypeEnum,
+        useSemanticNaming = useSemanticNaming.getOrElse(true),
+        generateModelBuilder = generateModelBuilder.getOrElse(false),
+        useJavaBeansSemanticNaming = useJavaBeansSemanticNaming.getOrElse(false),
+        suppressRawTypesWarning = suppressRawTypesWarning.getOrElse(false),
+        generateKotlinModels = generateKotlinModels.getOrElse(false),
+        generateVisitorForPolymorphicDatatypes = generateVisitorForPolymorphicDatatypes.getOrElse(false),
         packageNameProvider = packageNameProvider,
-        transformedQueriesOutputDir = transformedQueriesOutputDir.getOrNull()?.asFile
+        transformedQueriesOutputDir = transformedQueriesOutputDir.orNull?.asFile
     )
+
     GraphQLCompiler().write(args)
+  }
+
+  private fun sanityChecks() {
+    if (generateKotlinModels.getOrElse(false) && generateModelBuilder.getOrElse(false)) {
+      throw IllegalArgumentException("""
+        Using `generateModelBuilder = true` does not make sense with `generateKotlinModels = true`. You can use .copy() as models are data classes.
+      """.trimIndent())
+    }
+
+    if (generateKotlinModels.getOrElse(false) && useJavaBeansSemanticNaming.getOrElse(false)) {
+      throw IllegalArgumentException("""
+        Using `useJavaBeansSemanticNaming = true` does not make sense with `generateKotlinModels = true`
+      """.trimIndent())
+    }
+
+    if (generateKotlinModels.getOrElse(false) && nullableValueType.isPresent) {
+      throw IllegalArgumentException("""
+        Using `nullableValueType` does not make sense with `generateKotlinModels = true`
+      """.trimIndent())
+    }
+
   }
 }

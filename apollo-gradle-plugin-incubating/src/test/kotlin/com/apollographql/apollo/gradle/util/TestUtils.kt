@@ -135,13 +135,17 @@ object TestUtils {
     block(dir)
   }
 
-  fun executeTask(task: String, projectDir: File, vararg args: String): BuildResult {
+  fun executeGradle(projectDir: File, vararg args: String): BuildResult {
     return GradleRunner.create()
         .forwardStdOutput(System.out.writer())
         .forwardStdError(System.err.writer())
         .withProjectDir(projectDir)
-        .withArguments(task, "--stacktrace", *args)
+        .withArguments("--stacktrace", *args)
         .build()
+  }
+
+  fun executeTask(task: String, projectDir: File, vararg args: String): BuildResult {
+    return executeGradle(projectDir, task, *args)
   }
 
   fun assertFileContains(projectDir: File, path: String, content: String) {

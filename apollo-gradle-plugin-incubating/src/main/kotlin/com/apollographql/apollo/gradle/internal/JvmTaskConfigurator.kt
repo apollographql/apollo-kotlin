@@ -27,18 +27,18 @@ object JvmTaskConfigurator {
     val sourceSets = javaPlugin.sourceSets
     val name = compilationUnit.variantName
 
-    val sourceDirectorySet = if (!compilationUnit.compilerParams.generateKotlinModels) {
+    val sourceDirectorySet = if (!compilationUnit.compilerParams.generateKotlinModels.get()) {
       sourceSets.getByName(name).java
     } else {
       sourceSets.getByName(name).kotlin!!
     }
 
-    val compileTaskName = if (!compilationUnit.compilerParams.generateKotlinModels) {
+    val compileTaskName = if (!compilationUnit.compilerParams.generateKotlinModels.get()) {
       "compileJava"
     } else {
       "compileKotlin"
     }
-    sourceDirectorySet.srcDir(codegenProvider.get().outputDir)
-    project.tasks.named(compileTaskName).configure { it.dependsOn(codegenProvider) }
+    sourceDirectorySet.srcDir(codegenProvider.flatMap { it.outputDir })
+    project.tasks.named(compileTaskName) { it.dependsOn(codegenProvider) }
   }
 }

@@ -1,61 +1,48 @@
 package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.gradle.api.CompilerParams
+import com.apollographql.apollo.gradle.api.Introspection
 import com.apollographql.apollo.gradle.api.Service
-import groovy.lang.Closure
 import org.gradle.api.Action
+import org.gradle.api.model.ObjectFactory
+import javax.inject.Inject
 
-class DefaultService(val name: String): CompilerParams by DefaultCompilerParams(), Service {
-  /**
-   * Place where the schema.json file is.
-   * This path is relative to the current project directory.
-   * schemaFilePath can point outside of src/{foo}/graphql but in that case, you'll want
-   * to define rootPackageName else fragments/types will be stored at the root of the namespace.
-   * By default, the plugin will look for a schema.json file in src/{foo}/graphql
-   */
-  var schemaFilePath: String? = null
+open class DefaultService @Inject constructor(val objects: ObjectFactory, val name: String) : CompilerParams by DefaultCompilerParams(objects), Service {
+  override val schemaPath = objects.property(String::class.java)
+  override fun schemaPath(schemaPath: String) {
+    this.schemaPath.set(schemaPath)
+  }
 
-  /**
-   * Place where the graphql files are searched.
-   * This path is relative to the current sourceSet (e.g src/{foo}/graphql/{sourceFolderPath})
-   * By default, this is the directory where the schema.json is stored or "." if the schema is outside.
-   * You need to define this if you have two or more services whose schema is stored outside src/{foo}/graphql.
-   * If not, you can certainly omit it.
-   */
-  var sourceFolderPath: String? = null
+  override val sourceFolder = objects.property(String::class.java)
+  override fun sourceFolder(sourceFolder: String) {
+    this.sourceFolder.set(sourceFolder)
+  }
 
-  var rootPackageName: String? = null
+  override val rootPackageName = objects.property(String::class.java)
+  override fun rootPackageName(rootPackageName: String) {
+    this.rootPackageName.set(rootPackageName)
+  }
 
-  /**
-   * list of pattern of files to exclude
-   */
-  var exclude: List<String>? = null
+  override val exclude = objects.listProperty(String::class.java)
+  override fun exclude(exclude: List<String>) {
+    this.exclude.set(exclude)
+  }
 
   var introspection: DefaultIntrospection? = null
 
-  override fun introspection(closure: Closure<DefaultIntrospection>) {
-    val introspection = DefaultIntrospection()
-    closure.delegate = introspection
-    closure.resolveStrategy = Closure.DELEGATE_FIRST
-    closure.call()
+  override fun introspection(configure: Action<in Introspection>) {
+    val introspection = objects.newInstance(DefaultIntrospection::class.java, objects)
 
-    introspection(introspection)
-  }
-
-  fun introspection(action: Action<DefaultIntrospection>) {
-    val introspection = DefaultIntrospection()
-    action.execute(introspection)
-
-    introspection(introspection)
-  }
-
-  fun introspection(introspection: DefaultIntrospection) {
-    if (introspection.endpointUrl == null) {
-      throw IllegalArgumentException("introspection must have a url")
-    }
     if (this.introspection != null) {
       throw IllegalArgumentException("there must be only one introspection block")
     }
+
+    configure.execute(introspection)
+
+    if (!introspection.endpointUrl.isPresent) {
+      throw IllegalArgumentException("introspection must have a url")
+    }
+
     this.introspection = introspection
   }
 }
