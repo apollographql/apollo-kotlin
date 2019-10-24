@@ -1,7 +1,6 @@
 package com.apollographql.apollo.subscription;
 
 import com.apollographql.apollo.api.Subscription;
-import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.apollographql.apollo.internal.json.InputFieldJsonWriter;
 import com.apollographql.apollo.internal.json.JsonWriter;
 import com.apollographql.apollo.internal.json.Utils;
