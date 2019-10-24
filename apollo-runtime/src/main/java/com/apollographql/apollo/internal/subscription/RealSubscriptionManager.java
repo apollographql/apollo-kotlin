@@ -9,6 +9,7 @@ import com.apollographql.apollo.response.OperationResponseParser;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
 import com.apollographql.apollo.subscription.OperationClientMessage;
 import com.apollographql.apollo.subscription.OperationServerMessage;
+import com.apollographql.apollo.subscription.SubscriptionConnectionParamsProvider;
 import com.apollographql.apollo.subscription.SubscriptionTransport;
 
 import org.jetbrains.annotations.NotNull;
@@ -41,7 +42,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
 
   private final ScalarTypeAdapters scalarTypeAdapters;
   private final SubscriptionTransport transport;
-  private Map<String, Object> connectionParams;
+  private final SubscriptionConnectionParamsProvider connectionParams;
   private final Executor dispatcher;
   private final long connectionHeartbeatTimeoutMs;
   private final ResponseFieldMapperFactory responseFieldMapperFactory = new ResponseFieldMapperFactory();
@@ -66,7 +67,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
   private final List<OnStateChangeListener> onStateChangeListeners = new CopyOnWriteArrayList<>();
 
   public RealSubscriptionManager(@NotNull ScalarTypeAdapters scalarTypeAdapters,
-      @NotNull final SubscriptionTransport.Factory transportFactory, @NotNull Map<String, Object> connectionParams,
+      @NotNull final SubscriptionTransport.Factory transportFactory, @NotNull SubscriptionConnectionParamsProvider connectionParams,
       @NotNull final Executor dispatcher, long connectionHeartbeatTimeoutMs) {
     checkNotNull(scalarTypeAdapters, "scalarTypeAdapters == null");
     checkNotNull(transportFactory, "transportFactory == null");
@@ -191,7 +192,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
       if (state == State.CONNECTING) {
         subscriptionRecords = subscriptions.values();
         setStateAndNotify(State.CONNECTED);
-        transport.send(new OperationClientMessage.Init(connectionParams));
+        transport.send(new OperationClientMessage.Init(connectionParams.provide()));
       } else {
         subscriptionRecords = Collections.emptyList();
       }

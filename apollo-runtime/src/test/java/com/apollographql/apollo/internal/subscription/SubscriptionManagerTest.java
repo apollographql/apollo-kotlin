@@ -13,6 +13,8 @@ import com.apollographql.apollo.response.CustomTypeAdapter;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
 import com.apollographql.apollo.subscription.OperationClientMessage;
 import com.apollographql.apollo.subscription.OperationServerMessage;
+import com.apollographql.apollo.subscription.SubscriptionConnectionParams;
+import com.apollographql.apollo.subscription.SubscriptionConnectionParamsProvider;
 import com.apollographql.apollo.subscription.SubscriptionTransport;
 
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +41,8 @@ public class SubscriptionManagerTest {
   @Before public void setUp() {
     subscriptionTransportFactory = new MockSubscriptionTransportFactory();
     subscriptionManager = new RealSubscriptionManager(new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
-        subscriptionTransportFactory, Collections.<String, Object>emptyMap(), new MockExecutor(), connectionHeartbeatTimeoutMs);
+        subscriptionTransportFactory, new SubscriptionConnectionParamsProvider.Const(new SubscriptionConnectionParams()),
+        new MockExecutor(), connectionHeartbeatTimeoutMs);
     subscriptionManager.addOnStateChangeListener(onStateChangeListener);
     assertThat(subscriptionTransportFactory.subscriptionTransport).isNotNull();
     assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.DISCONNECTED);
