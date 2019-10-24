@@ -1,4 +1,6 @@
-package com.apollographql.apollo.gradle.api
+package com.apollographql.apollo.gradle.internal
+
+import com.apollographql.apollo.gradle.api.CompilerParams
 
 class DefaultCompilerParams(
     override var generateKotlinModels: Boolean? = null,

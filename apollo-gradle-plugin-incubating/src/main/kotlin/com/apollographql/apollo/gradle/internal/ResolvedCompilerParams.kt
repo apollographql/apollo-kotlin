@@ -1,7 +1,6 @@
 package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.compiler.NullableValueType
-import com.apollographql.apollo.gradle.api.ApolloExtension
 import com.apollographql.apollo.gradle.api.CompilerParams
 
 class ResolvedCompilerParams(
@@ -17,7 +16,7 @@ class ResolvedCompilerParams(
     val generateVisitorForPolymorphicDatatypes: Boolean
 ) {
   companion object {
-    fun from(apolloExtension: ApolloExtension, serviceParams: CompilerParams?): ResolvedCompilerParams {
+    fun from(apolloExtension: DefaultApolloExtension, serviceParams: CompilerParams?): ResolvedCompilerParams {
 
       val params = ResolvedCompilerParams(
           generateKotlinModels = serviceParams?.generateKotlinModels ?: apolloExtension.generateKotlinModels ?: false,

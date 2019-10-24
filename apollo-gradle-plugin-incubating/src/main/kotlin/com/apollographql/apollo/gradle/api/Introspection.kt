@@ -1,7 +1,7 @@
 package com.apollographql.apollo.gradle.api
 
-class Introspection {
-  var endpointUrl: String? = null
-  var queryParameters: Map<String, String>? = null
-  var headers: Map<String, String>? = null
+interface Introspection {
+  var endpointUrl: String?
+  var queryParameters: Map<String, String>?
+  var headers: Map<String, String>?
 }

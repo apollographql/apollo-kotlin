@@ -1,9 +1,7 @@
 package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.compiler.*
-import com.apollographql.apollo.gradle.api.ApolloExtension
 import com.apollographql.apollo.gradle.api.CompilationUnit
-import com.apollographql.apollo.gradle.api.Service
 import org.gradle.api.Project
 import org.gradle.api.file.Directory
 import org.gradle.api.provider.Provider
@@ -29,7 +27,7 @@ class DefaultCompilationUnit(
   override lateinit var transformedQueriesDir: Provider<Directory>
 
   companion object {
-    fun from(project: Project, apolloExtension: ApolloExtension, apolloVariant: ApolloVariant, service: Service): DefaultCompilationUnit {
+    fun from(project: Project, apolloExtension: DefaultApolloExtension, apolloVariant: ApolloVariant, service: DefaultService): DefaultCompilationUnit {
       val sourceSetNames = apolloVariant.sourceSetNames
 
       val schemaFilePath = service.schemaFilePath
@@ -80,7 +78,7 @@ class DefaultCompilationUnit(
       )
     }
 
-    fun default(project: Project, apolloExtension: ApolloExtension, apolloVariant: ApolloVariant): List<DefaultCompilationUnit> {
+    fun default(project: Project, apolloExtension: DefaultApolloExtension, apolloVariant: ApolloVariant): List<DefaultCompilationUnit> {
       val sourceSetNames = apolloVariant.sourceSetNames
       val schemaFiles = findFilesInSourceSets(project, sourceSetNames, ".") {
         it.name == "schema.json"

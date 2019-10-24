@@ -1,49 +1,19 @@
 package com.apollographql.apollo.gradle.api
 
+import com.apollographql.apollo.gradle.internal.DefaultService
 import org.gradle.api.Action
-import org.gradle.api.Project
+import org.gradle.api.NamedDomainObjectContainer
 
-open class ApolloExtension(project: Project): CompilerParams by DefaultCompilerParams() {
-  /**
-   * This is the input to the apollo plugin. Users will populate the services from their gradle files
-   */
-  val services = mutableListOf<Service>()
-
+interface ApolloExtension: CompilerParams {
   /**
    * compilationUnits is meant to be consumed by other gradle plugin.
    * The apollo plugin will add the {@link CompilationUnit} as it creates them
    */
-  val compilationUnits = project.container(CompilationUnit::class.java)
+  val compilationUnits: NamedDomainObjectContainer<CompilationUnit>?
 
-  fun service(name: String, action: Action<Service>) {
-    val service = Service(name)
-    action.execute(service)
-    services.add(service)
-  }
+  fun service(name: String, action: Action<DefaultService>)
 
-  /**
-   * Deprecated,use @{link service} instead
-   */
-  @JvmField
-  var schemaFilePath: String? = null
+  fun setSchemaFilePath(schemaFilePath: String)
 
-  /**
-   * Deprecated, use @{link service} instead
-   */
-  @JvmField
-  var outputPackageName: String? = null
-
-  /**
-   * For backward compatibility
-   */
-  fun setSchemaFilePath(schemaFilePath: String) {
-    this.schemaFilePath = schemaFilePath
-  }
-
-  /**
-   * For backward compatibility
-   */
-  fun setOutputPackageName(outputPackageName: String) {
-    this.outputPackageName = outputPackageName
-  }
+  fun setOutputPackageName(outputPackageName: String)
 }

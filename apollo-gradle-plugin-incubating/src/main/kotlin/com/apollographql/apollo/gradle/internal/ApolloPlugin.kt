@@ -1,6 +1,5 @@
 package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo.gradle.api.ApolloExtension
 import com.apollographql.apollo.gradle.api.ApolloSourceSetExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -37,17 +36,17 @@ open class ApolloPlugin : Plugin<Project> {
     }
 
     private fun deprecationChecks(apolloSourceSetExtension: ApolloSourceSetExtension) {
-      if (apolloSourceSetExtension.schemaFile != null || apolloSourceSetExtension.exclude != null) {
+      if (apolloSourceSetExtension.schemaFile.isPresent || apolloSourceSetExtension.exclude.get().isNotEmpty()) {
         throw IllegalArgumentException("""
         apollo.sourceSet is not supported anymore.
         
-      """.trimIndent() + useService(apolloSourceSetExtension.schemaFile, null, "[${apolloSourceSetExtension.exclude?.joinToString(",")}]"))
+      """.trimIndent() + useService(apolloSourceSetExtension.schemaFile.getOrElse("null"),
+            null, "[${apolloSourceSetExtension.exclude.get().joinToString(",")}]"))
       }
     }
 
 
-
-    private fun registerCodegenTasks(project: Project, apolloExtension: ApolloExtension) {
+    private fun registerCodegenTasks(project: Project, apolloExtension: DefaultApolloExtension) {
       val androidExtension = project.extensions.findByName("android")
 
       val apolloVariants = if (androidExtension == null) {
@@ -58,15 +57,15 @@ open class ApolloPlugin : Plugin<Project> {
 
       val rootProvider = registerRootTask(project)
 
-      apolloVariants.all {apolloVariant ->
+      apolloVariants.all { apolloVariant ->
         val variantProvider = registerVariantTask(project, apolloVariant.name)
 
         val compilationUnits = if (apolloExtension.services.isEmpty()) {
           DefaultCompilationUnit.default(project, apolloExtension, apolloVariant)
         } else {
-            apolloExtension.services.map {
-              DefaultCompilationUnit.from(project, apolloExtension, apolloVariant, it)
-            }
+          apolloExtension.services.map {
+            DefaultCompilationUnit.from(project, apolloExtension, apolloVariant, it)
+          }
         }
 
         compilationUnits.forEach { compilationUnit ->
@@ -160,7 +159,7 @@ open class ApolloPlugin : Plugin<Project> {
       }
     }
 
-    private fun registerDownloadSchemaTasks(project: Project, apolloExtension: ApolloExtension) {
+    private fun registerDownloadSchemaTasks(project: Project, apolloExtension: DefaultApolloExtension) {
       apolloExtension.services.forEach { service ->
         val introspection = service.introspection
         if (introspection != null) {
@@ -175,7 +174,7 @@ open class ApolloPlugin : Plugin<Project> {
       }
     }
 
-    private fun afterEvaluate(project: Project, apolloExtension: ApolloExtension, apolloSourceSetExtension: ApolloSourceSetExtension) {
+    private fun afterEvaluate(project: Project, apolloExtension: DefaultApolloExtension, apolloSourceSetExtension: ApolloSourceSetExtension) {
 
       deprecationChecks(apolloSourceSetExtension)
 
@@ -186,9 +185,9 @@ open class ApolloPlugin : Plugin<Project> {
   }
 
   override fun apply(project: Project) {
-    val apolloExtension = project.extensions.create("apollo", ApolloExtension::class.java, project)
+    val apolloExtension = project.extensions.create("apollo", DefaultApolloExtension::class.java, project)
     // for backward compatibility
-    val apolloSourceSetExtension = (apolloExtension as ExtensionAware).extensions.create("sourceSet", ApolloSourceSetExtension::class.java)
+    val apolloSourceSetExtension = (apolloExtension as ExtensionAware).extensions.create("sourceSet", ApolloSourceSetExtension::class.java, project)
 
     // the extension block has not been evaluated yet, register a callback once the project has been evaluated
     project.afterEvaluate {
