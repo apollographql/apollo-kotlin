@@ -9,43 +9,6 @@ import org.junit.Test
 
 class KotlinDSLTests {
   @Test
-  fun `project configures correctly and generates something`() {
-    val apolloConfiguration = """
-      (extensions.getByName("apollo") as ApolloExtension).apply {
-        setNullableValueType("annotated")
-        setUseJavaBeansSemanticNaming(false)
-        setGenerateModelBuilder(false)
-        setUseSemanticNaming(false)
-        setUseJavaBeansSemanticNaming(false)
-        setSuppressRawTypesWarning(false)
-        setGenerateVisitorForPolymorphicDatatypes(false)
-        //setSchemaFilePath("")
-        //setOutputPackageName("")
-        setCustomTypeMapping(mapOf("DateTime" to "java.util.Date"))
-        setGenerateKotlinModels(false)
-        setGenerateTransformedQueries(false)
-        
-        service("starwars") {
-          sourceFolderPath = "com/example"
-          schemaFilePath = "src/main/graphql/com/example/schema.json"
-          rootPackageName = "com.starwars"
-          exclude = listOf("*.gql")
-        }
-      }
-    """.trimIndent()
-
-    TestUtils.withProject(
-        usesKotlinDsl = true,
-        plugins = listOf(TestUtils.javaPlugin, TestUtils.apolloPlugin),
-        apolloConfiguration = apolloConfiguration
-    ) { dir ->
-      val result = TestUtils.executeTask("generateApolloSources", dir)
-      assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
-      Assert.assertTrue(dir.generatedChild("main/starwars/com/starwars/com/example/DroidDetails.java").isFile)
-    }
-  }
-
-  @Test
   fun `property syntax is also working`() {
     val apolloConfiguration = """
       (extensions.getByName("apollo") as ApolloExtension).apply {
