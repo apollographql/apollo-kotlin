@@ -3147,6 +3147,31 @@
           ]
         },
         {
+          "name": "operationDirective",
+          "description": "Dummy directive that can be placed on operations.",
+          "locations": [
+            "QUERY",
+            "MUTATION",
+            "SUBSCRIPTION"
+          ],
+          "args": [
+            {
+              "name": "dummy",
+              "description": "blah",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ]
+        },
+        {
           "name": "deprecated",
           "description": "Marks an element of a GraphQL schema as no longer supported.",
           "locations": [
