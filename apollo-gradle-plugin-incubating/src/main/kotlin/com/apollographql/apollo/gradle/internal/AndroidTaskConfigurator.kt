@@ -1,11 +1,9 @@
-package com.apollographql.apollo.gradle
+package com.apollographql.apollo.gradle.internal
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.api.BaseVariant
-import com.apollographql.apollo.gradle.api.ApolloExtension
-import org.gradle.api.Action
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskProvider

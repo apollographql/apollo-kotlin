@@ -1,4 +1,4 @@
-package com.apollographql.apollo.gradle
+package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.compiler.NullableValueType
 import com.apollographql.apollo.gradle.api.ApolloExtension

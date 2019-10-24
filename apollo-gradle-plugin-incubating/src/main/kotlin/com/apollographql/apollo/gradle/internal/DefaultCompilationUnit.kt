@@ -1,4 +1,4 @@
-package com.apollographql.apollo.gradle
+package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.compiler.*
 import com.apollographql.apollo.gradle.api.ApolloExtension
@@ -55,7 +55,7 @@ class DefaultCompilationUnit(
         schemaFile.canonicalPath.relativePathToGraphql(dropLast = 1) ?: "."
       }
 
-      val candidateFiles = findFilesInSourceSets(project, sourceSetNames, sourceFolderPath, ::isGraphQL).values.toList()
+      val candidateFiles = findFilesInSourceSets(project, sourceSetNames, sourceFolderPath, Companion::isGraphQL).values.toList()
 
       val files = if (service.exclude != null) {
         val patternSet = PatternSet()
@@ -94,7 +94,7 @@ class DefaultCompilationUnit(
           .sortedBy { it.value.canonicalPath } // make sure the order is predicable for tests
           .mapIndexed { i, entry ->
             val sourceFolderPath = entry.value.canonicalPath.relativePathToGraphql(dropLast = 1)!!
-            val files = findFilesInSourceSets(project, sourceSetNames, sourceFolderPath, ::isGraphQL).values.toList()
+            val files = findFilesInSourceSets(project, sourceSetNames, sourceFolderPath, Companion::isGraphQL).values.toList()
 
             val name = "service$i"
 

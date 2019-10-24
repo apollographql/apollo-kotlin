@@ -1,11 +1,10 @@
-package com.apollographql.apollo.gradle
+package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.compiler.child
 import com.squareup.moshi.JsonWriter
 import okhttp3.*
 import okio.Okio
 import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
