@@ -12,6 +12,7 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.union_inline_fragments.type.CustomType
 import com.example.union_inline_fragments.type.Episode
 import kotlin.Array
@@ -414,45 +415,47 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "8f2faf5f45edbcd0f65491d582a5a50f13cad39e3995dd5abe5ddb359d3cf066"
+        "d917122adce28477721dc274dd7fce307cb1b714452af1df8bb26087b8ec33d0"
 
-    val QUERY_DOCUMENT: String = """
-        |query TestQuery {
-        |  search(text: "test") {
-        |    __typename
-        |    ... on Character {
-        |      id
-        |      name
-        |      friends {
-        |        __typename
-        |        ... on Character {
-        |          name
-        |        }
-        |        ... on Human {
-        |          homePlanet
-        |          friends {
-        |            __typename
-        |            ... on Character {
-        |              firstAppearsIn
-        |            }
-        |          }
-        |        }
-        |        ... on Droid {
-        |          primaryFunction
-        |          friends {
-        |            __typename
-        |            id
-        |            deprecated
-        |          }
-        |        }
-        |      }
-        |    }
-        |    ... on Starship {
-        |      name
-        |    }
-        |  }
-        |}
-        """.trimMargin()
+    val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
+          """
+          |query TestQuery {
+          |  search(text: "test") {
+          |    __typename
+          |    ... on Character {
+          |      id
+          |      name
+          |      friends {
+          |        __typename
+          |        ... on Character {
+          |          name
+          |        }
+          |        ... on Human {
+          |          homePlanet
+          |          friends {
+          |            __typename
+          |            ... on Character {
+          |              firstAppearsIn
+          |            }
+          |          }
+          |        }
+          |        ... on Droid {
+          |          primaryFunction
+          |          friends {
+          |            __typename
+          |            id
+          |            deprecated
+          |          }
+          |        }
+          |      }
+          |    }
+          |    ... on Starship {
+          |      name
+          |    }
+          |  }
+          |}
+          """.trimMargin()
+        )
 
     val OPERATION_NAME: OperationName = OperationName { "TestQuery" }
   }

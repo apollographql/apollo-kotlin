@@ -15,6 +15,7 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.Utils;
+import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.hero_name.type.CustomType;
 import java.lang.Object;
 import java.lang.Override;
@@ -25,19 +26,21 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "bc3371e1c1415a793a9d038c79756e72e552a5e1d27633ea47905f6a9c19f340";
+  public static final String OPERATION_ID = "c10c6dfe569b0fbb60c67e42c973f7ffef2314b43004c527a03bdd790ef0f5dc";
 
-  public static final String QUERY_DOCUMENT = "query TestQuery {\n"
-      + "  hero {\n"
-      + "    __typename\n"
-      + "    name\n"
-      + "  }\n"
-      + "  hero {\n"
-      + "    __typename\n"
-      + "    id\n"
-      + "    name\n"
-      + "  }\n"
-      + "}";
+  public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
+    "query TestQuery {\n"
+        + "  hero {\n"
+        + "    __typename\n"
+        + "    name\n"
+        + "  }\n"
+        + "  hero {\n"
+        + "    __typename\n"
+        + "    id\n"
+        + "    name\n"
+        + "  }\n"
+        + "}"
+  );
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override

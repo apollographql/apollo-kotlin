@@ -16,6 +16,7 @@ import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.api.internal.Utils;
+import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.union_inline_fragments.type.CustomType;
 import com.example.union_inline_fragments.type.Episode;
 import java.lang.Deprecated;
@@ -30,43 +31,45 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "8f2faf5f45edbcd0f65491d582a5a50f13cad39e3995dd5abe5ddb359d3cf066";
+  public static final String OPERATION_ID = "d917122adce28477721dc274dd7fce307cb1b714452af1df8bb26087b8ec33d0";
 
-  public static final String QUERY_DOCUMENT = "query TestQuery {\n"
-      + "  search(text: \"test\") {\n"
-      + "    __typename\n"
-      + "    ... on Character {\n"
-      + "      id\n"
-      + "      name\n"
-      + "      friends {\n"
-      + "        __typename\n"
-      + "        ... on Character {\n"
-      + "          name\n"
-      + "        }\n"
-      + "        ... on Human {\n"
-      + "          homePlanet\n"
-      + "          friends {\n"
-      + "            __typename\n"
-      + "            ... on Character {\n"
-      + "              firstAppearsIn\n"
-      + "            }\n"
-      + "          }\n"
-      + "        }\n"
-      + "        ... on Droid {\n"
-      + "          primaryFunction\n"
-      + "          friends {\n"
-      + "            __typename\n"
-      + "            id\n"
-      + "            deprecated\n"
-      + "          }\n"
-      + "        }\n"
-      + "      }\n"
-      + "    }\n"
-      + "    ... on Starship {\n"
-      + "      name\n"
-      + "    }\n"
-      + "  }\n"
-      + "}";
+  public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
+    "query TestQuery {\n"
+        + "  search(text: \"test\") {\n"
+        + "    __typename\n"
+        + "    ... on Character {\n"
+        + "      id\n"
+        + "      name\n"
+        + "      friends {\n"
+        + "        __typename\n"
+        + "        ... on Character {\n"
+        + "          name\n"
+        + "        }\n"
+        + "        ... on Human {\n"
+        + "          homePlanet\n"
+        + "          friends {\n"
+        + "            __typename\n"
+        + "            ... on Character {\n"
+        + "              firstAppearsIn\n"
+        + "            }\n"
+        + "          }\n"
+        + "        }\n"
+        + "        ... on Droid {\n"
+        + "          primaryFunction\n"
+        + "          friends {\n"
+        + "            __typename\n"
+        + "            id\n"
+        + "            deprecated\n"
+        + "          }\n"
+        + "        }\n"
+        + "      }\n"
+        + "    }\n"
+        + "    ... on Starship {\n"
+        + "      name\n"
+        + "    }\n"
+        + "  }\n"
+        + "}"
+  );
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override

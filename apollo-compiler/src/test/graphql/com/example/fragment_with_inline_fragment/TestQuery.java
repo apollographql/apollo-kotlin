@@ -17,6 +17,7 @@ import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Mutator;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.Utils;
+import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.fragment_with_inline_fragment.fragment.HeroDetails;
 import com.example.fragment_with_inline_fragment.type.Episode;
 import java.lang.Object;
@@ -30,39 +31,41 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "9a3b4733b0a5ac1597c28321cafe174dc3ff1bf921eab01b739db4907d54a8e8";
+  public static final String OPERATION_ID = "bde12a64d113bd023a2b00439b07af505f314359f662a0bf2ab5a330c8baa494";
 
-  public static final String QUERY_DOCUMENT = "query TestQuery {\n"
-      + "  hero {\n"
-      + "    __typename\n"
-      + "    name\n"
-      + "    ...HeroDetails\n"
-      + "    appearsIn\n"
-      + "  }\n"
-      + "}\n"
-      + "fragment HeroDetails on Character {\n"
-      + "  __typename\n"
-      + "  ... on Droid {\n"
-      + "    ...DroidDetails\n"
-      + "  }\n"
-      + "  name\n"
-      + "  friendsConnection {\n"
-      + "    __typename\n"
-      + "    totalCount\n"
-      + "    edges {\n"
-      + "      __typename\n"
-      + "      node {\n"
-      + "        __typename\n"
-      + "        name\n"
-      + "      }\n"
-      + "    }\n"
-      + "  }\n"
-      + "}\n"
-      + "fragment DroidDetails on Droid {\n"
-      + "  __typename\n"
-      + "  name\n"
-      + "  primaryFunction\n"
-      + "}";
+  public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
+    "query TestQuery {\n"
+        + "  hero {\n"
+        + "    __typename\n"
+        + "    name\n"
+        + "    ...HeroDetails\n"
+        + "    appearsIn\n"
+        + "  }\n"
+        + "}\n"
+        + "fragment HeroDetails on Character {\n"
+        + "  __typename\n"
+        + "  ... on Droid {\n"
+        + "    ...DroidDetails\n"
+        + "  }\n"
+        + "  name\n"
+        + "  friendsConnection {\n"
+        + "    __typename\n"
+        + "    totalCount\n"
+        + "    edges {\n"
+        + "      __typename\n"
+        + "      node {\n"
+        + "        __typename\n"
+        + "        name\n"
+        + "      }\n"
+        + "    }\n"
+        + "  }\n"
+        + "}\n"
+        + "fragment DroidDetails on Droid {\n"
+        + "  __typename\n"
+        + "  name\n"
+        + "  primaryFunction\n"
+        + "}"
+  );
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override

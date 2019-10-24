@@ -12,6 +12,7 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.fragment_used_twice.fragment.HeroDetails
 import com.example.fragment_used_twice.fragment.HumanDetails
 import kotlin.Array
@@ -101,32 +102,34 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "3ab8e54ec77be2555e6f95608644d9a42f4c2a297211a681980533b3ba9b0b79"
+        "0717d3202204df80ffc6546a0b8dd179f40c29c183ebbea21e7c16ae27e0d056"
 
-    val QUERY_DOCUMENT: String = """
-        |query TestQuery {
-        |  hero {
-        |    __typename
-        |    ...HeroDetails
-        |    ...HumanDetails
-        |  }
-        |}
-        |fragment HeroDetails on Character {
-        |  __typename
-        |  name
-        |  ...CharacterDetails
-        |}
-        |fragment HumanDetails on Human {
-        |  __typename
-        |  name
-        |  ...CharacterDetails
-        |}
-        |fragment CharacterDetails on Character {
-        |  __typename
-        |  name
-        |  birthDate
-        |}
-        """.trimMargin()
+    val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
+          """
+          |query TestQuery {
+          |  hero {
+          |    __typename
+          |    ...HeroDetails
+          |    ...HumanDetails
+          |  }
+          |}
+          |fragment HeroDetails on Character {
+          |  __typename
+          |  name
+          |  ...CharacterDetails
+          |}
+          |fragment HumanDetails on Human {
+          |  __typename
+          |  name
+          |  ...CharacterDetails
+          |}
+          |fragment CharacterDetails on Character {
+          |  __typename
+          |  name
+          |  birthDate
+          |}
+          """.trimMargin()
+        )
 
     val OPERATION_NAME: OperationName = OperationName { "TestQuery" }
   }

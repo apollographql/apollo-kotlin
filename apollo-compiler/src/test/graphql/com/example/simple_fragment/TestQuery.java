@@ -16,6 +16,7 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.Utils;
+import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.simple_fragment.fragment.HeroDetails;
 import com.example.simple_fragment.fragment.HumanDetails;
 import java.lang.Object;
@@ -28,24 +29,26 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "735900932e4632e47a5458e762c6fb91bcb1caf5b252542b276e89b4991022c1";
+  public static final String OPERATION_ID = "11b6156b253df199195798f2de386724580e3882c9888f7e5d1685c42b64e0cf";
 
-  public static final String QUERY_DOCUMENT = "query TestQuery {\n"
-      + "  hero {\n"
-      + "    __typename\n"
-      + "    ...HeroDetails\n"
-      + "    ...HumanDetails\n"
-      + "  }\n"
-      + "}\n"
-      + "fragment HeroDetails on Character {\n"
-      + "  __typename\n"
-      + "  name\n"
-      + "  ... HumanDetails\n"
-      + "}\n"
-      + "fragment HumanDetails on Human {\n"
-      + "  __typename\n"
-      + "  name\n"
-      + "}";
+  public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
+    "query TestQuery {\n"
+        + "  hero {\n"
+        + "    __typename\n"
+        + "    ...HeroDetails\n"
+        + "    ...HumanDetails\n"
+        + "  }\n"
+        + "}\n"
+        + "fragment HeroDetails on Character {\n"
+        + "  __typename\n"
+        + "  name\n"
+        + "  ... HumanDetails\n"
+        + "}\n"
+        + "fragment HumanDetails on Human {\n"
+        + "  __typename\n"
+        + "  name\n"
+        + "}"
+  );
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override

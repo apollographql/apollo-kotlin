@@ -14,6 +14,7 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.arguments_complex.type.Episode
 import kotlin.Any
 import kotlin.Array
@@ -136,17 +137,19 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "29a306b3e98c3424dcc3b0625487c63a3b1d18af6ded537c9be2f27694aea5c5"
+        "ea0219363b8af60b029b30af551861cbae30648978be2060651eacc0e34a79d0"
 
-    val QUERY_DOCUMENT: String = """
-        |query TestQuery(${'$'}episode: Episode, ${'$'}stars: Int!, ${'$'}greenValue: Float!) {
-        |  heroWithReview(episode: ${'$'}episode, review: {stars: ${'$'}stars, favoriteColor: {red: 0, green: ${'$'}greenValue, blue: 0}, listOfStringNonOptional: []}, listOfInts: [${'$'}stars, ${'$'}stars]) {
-        |    __typename
-        |    name
-        |    height(unit: FOOT)
-        |  }
-        |}
-        """.trimMargin()
+    val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
+          """
+          |query TestQuery(${'$'}episode: Episode, ${'$'}stars: Int!, ${'$'}greenValue: Float!) {
+          |  heroWithReview(episode: ${'$'}episode, review: {stars: ${'$'}stars, favoriteColor: {red: 0, green: ${'$'}greenValue, blue: 0}, listOfStringNonOptional: []}, listOfInts: [${'$'}stars, ${'$'}stars]) {
+          |    __typename
+          |    name
+          |    height(unit: FOOT)
+          |  }
+          |}
+          """.trimMargin()
+        )
 
     val OPERATION_NAME: OperationName = OperationName { "TestQuery" }
   }

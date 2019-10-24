@@ -16,6 +16,7 @@ import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.api.internal.Utils;
+import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.two_heroes_unique.type.CustomType;
 import java.lang.Object;
 import java.lang.Override;
@@ -26,19 +27,21 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "c4890d84f04de970692ee9da3521a903297dea7e613ece3ff1caac59f4016191";
+  public static final String OPERATION_ID = "266f79f66749232e217afd9b47a628fd7096d4c48345bc245a7f63105be9e75d";
 
-  public static final String QUERY_DOCUMENT = "query TestQuery {\n"
-      + "  r2: hero {\n"
-      + "    __typename\n"
-      + "    name\n"
-      + "  }\n"
-      + "  luke: hero(episode: EMPIRE) {\n"
-      + "    __typename\n"
-      + "    id\n"
-      + "    name\n"
-      + "  }\n"
-      + "}";
+  public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
+    "query TestQuery {\n"
+        + "  r2: hero {\n"
+        + "    __typename\n"
+        + "    name\n"
+        + "  }\n"
+        + "  luke: hero(episode: EMPIRE) {\n"
+        + "    __typename\n"
+        + "    id\n"
+        + "    name\n"
+        + "  }\n"
+        + "}"
+  );
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override

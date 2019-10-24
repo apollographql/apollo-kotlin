@@ -15,6 +15,7 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.Utils;
+import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.custom_scalar_type.type.CustomType;
 import java.lang.Object;
 import java.lang.Override;
@@ -27,19 +28,21 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "e7efe02b29424a4425cafac2dbd3374b420e11212cc5a00eb7ee28ec904fef69";
+  public static final String OPERATION_ID = "5b1986dc0a04871a5bcbfdb1d7a5b9f935fd9b2d68da8990744106c4b253f177";
 
-  public static final String QUERY_DOCUMENT = "query TestQuery {\n"
-      + "  hero {\n"
-      + "    __typename\n"
-      + "    name\n"
-      + "    birthDate\n"
-      + "    appearanceDates\n"
-      + "    fieldWithUnsupportedType\n"
-      + "    profileLink\n"
-      + "    links\n"
-      + "  }\n"
-      + "}";
+  public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
+    "query TestQuery {\n"
+        + "  hero {\n"
+        + "    __typename\n"
+        + "    name\n"
+        + "    birthDate\n"
+        + "    appearanceDates\n"
+        + "    fieldWithUnsupportedType\n"
+        + "    profileLink\n"
+        + "    links\n"
+        + "  }\n"
+        + "}"
+  );
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override

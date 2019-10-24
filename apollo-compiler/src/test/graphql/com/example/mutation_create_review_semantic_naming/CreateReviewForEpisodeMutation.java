@@ -18,6 +18,7 @@ import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.api.internal.Utils;
+import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.mutation_create_review_semantic_naming.type.Episode;
 import com.example.mutation_create_review_semantic_naming.type.ReviewInput;
 import java.io.IOException;
@@ -32,15 +33,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class CreateReviewForEpisodeMutation implements Mutation<CreateReviewForEpisodeMutation.Data, Optional<CreateReviewForEpisodeMutation.Data>, CreateReviewForEpisodeMutation.Variables> {
-  public static final String OPERATION_ID = "dc312e4edc4258722c5ddb00ad2a85faacd285090336d719a22f65fdc94022c7";
+  public static final String OPERATION_ID = "0cd4b32f15788d426344f5f8d2ee1a3cebb72c167005cb147d2a47761c120a41";
 
-  public static final String QUERY_DOCUMENT = "mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {\n"
-      + "  createReview(episode: $ep, review: $review) {\n"
-      + "    __typename\n"
-      + "    stars\n"
-      + "    commentary\n"
-      + "  }\n"
-      + "}";
+  public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
+    "mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {\n"
+        + "  createReview(episode: $ep, review: $review) {\n"
+        + "    __typename\n"
+        + "    stars\n"
+        + "    commentary\n"
+        + "  }\n"
+        + "}"
+  );
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override

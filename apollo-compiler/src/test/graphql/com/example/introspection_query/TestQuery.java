@@ -16,6 +16,7 @@ import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.api.internal.Utils;
+import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -26,25 +27,27 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "83b062d9f8641da1394fb8753bb9eba2c24bac3cb727074d9613bdf1d5ceacb7";
+  public static final String OPERATION_ID = "08518fde8892d59c699c4d48f384d7199d933a5846e6936d910cb492b8f84684";
 
-  public static final String QUERY_DOCUMENT = "query TestQuery {\n"
-      + "  __schema {\n"
-      + "    __typename\n"
-      + "    queryType {\n"
-      + "      __typename\n"
-      + "      name\n"
-      + "    }\n"
-      + "    types {\n"
-      + "      __typename\n"
-      + "      name\n"
-      + "    }\n"
-      + "  }\n"
-      + "  __type(name: \"Vehicle\") {\n"
-      + "    __typename\n"
-      + "    name\n"
-      + "  }\n"
-      + "}";
+  public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
+    "query TestQuery {\n"
+        + "  __schema {\n"
+        + "    __typename\n"
+        + "    queryType {\n"
+        + "      __typename\n"
+        + "      name\n"
+        + "    }\n"
+        + "    types {\n"
+        + "      __typename\n"
+        + "      name\n"
+        + "    }\n"
+        + "  }\n"
+        + "  __type(name: \"Vehicle\") {\n"
+        + "    __typename\n"
+        + "    name\n"
+        + "  }\n"
+        + "}"
+  );
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override

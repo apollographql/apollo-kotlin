@@ -13,6 +13,7 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.input_object_type.type.Episode
 import com.example.input_object_type.type.ReviewInput
 import kotlin.Any
@@ -120,17 +121,19 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "bee70e240139955f4daaa717766afe0aa3052a987bbca371483628eafcd84efc"
+        "9850c60bd20e2361afd7a41d51b709fcba9637809e387afe5c7a1cb738fc254b"
 
-    val QUERY_DOCUMENT: String = """
-        |mutation TestQuery(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) {
-        |  createReview(episode: ${'$'}ep, review: ${'$'}review) {
-        |    __typename
-        |    stars
-        |    commentary
-        |  }
-        |}
-        """.trimMargin()
+    val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
+          """
+          |mutation TestQuery(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) {
+          |  createReview(episode: ${'$'}ep, review: ${'$'}review) {
+          |    __typename
+          |    stars
+          |    commentary
+          |  }
+          |}
+          """.trimMargin()
+        )
 
     val OPERATION_NAME: OperationName = OperationName { "TestQuery" }
   }

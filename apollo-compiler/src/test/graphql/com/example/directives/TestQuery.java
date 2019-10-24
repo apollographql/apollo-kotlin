@@ -17,6 +17,7 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.Utils;
+import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import java.io.IOException;
 import java.lang.Integer;
 import java.lang.Object;
@@ -31,18 +32,20 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, TestQuery.Variables> {
-  public static final String OPERATION_ID = "d982d286b1e673c0b6c045152503cdd4d5cfb2381e7d0c22381875176e72c7a2";
+  public static final String OPERATION_ID = "c2c4bbf6368fd611eb19628164b0ef04ccad73f4c96b0416c254b8375b5d04f8";
 
-  public static final String QUERY_DOCUMENT = "query TestQuery($includeName: Boolean!, $skipFriends: Boolean!) @operationDirective(dummy: \"hello\") {\n"
-      + "  hero {\n"
-      + "    __typename\n"
-      + "    name @include(if: $includeName)\n"
-      + "    friendsConnection @skip(if: $skipFriends) {\n"
-      + "      __typename\n"
-      + "      totalCount\n"
-      + "    }\n"
-      + "  }\n"
-      + "}";
+  public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
+    "query TestQuery($includeName: Boolean!, $skipFriends: Boolean!) @operationDirective(dummy: \"hello\") {\n"
+        + "  hero {\n"
+        + "    __typename\n"
+        + "    name @include(if: $includeName)\n"
+        + "    friendsConnection @skip(if: $skipFriends) {\n"
+        + "      __typename\n"
+        + "      totalCount\n"
+        + "    }\n"
+        + "  }\n"
+        + "}"
+  );
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override

@@ -12,6 +12,7 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.simple_fragment.fragment.HeroDetails
 import com.example.simple_fragment.fragment.HumanDetails
 import kotlin.Array
@@ -101,26 +102,28 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "735900932e4632e47a5458e762c6fb91bcb1caf5b252542b276e89b4991022c1"
+        "11b6156b253df199195798f2de386724580e3882c9888f7e5d1685c42b64e0cf"
 
-    val QUERY_DOCUMENT: String = """
-        |query TestQuery {
-        |  hero {
-        |    __typename
-        |    ...HeroDetails
-        |    ...HumanDetails
-        |  }
-        |}
-        |fragment HeroDetails on Character {
-        |  __typename
-        |  name
-        |  ... HumanDetails
-        |}
-        |fragment HumanDetails on Human {
-        |  __typename
-        |  name
-        |}
-        """.trimMargin()
+    val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
+          """
+          |query TestQuery {
+          |  hero {
+          |    __typename
+          |    ...HeroDetails
+          |    ...HumanDetails
+          |  }
+          |}
+          |fragment HeroDetails on Character {
+          |  __typename
+          |  name
+          |  ... HumanDetails
+          |}
+          |fragment HumanDetails on Human {
+          |  __typename
+          |  name
+          |}
+          """.trimMargin()
+        )
 
     val OPERATION_NAME: OperationName = OperationName { "TestQuery" }
   }

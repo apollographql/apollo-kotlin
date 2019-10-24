@@ -12,6 +12,7 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.fragment_with_inline_fragment.fragment.HeroDetails
 import com.example.fragment_with_inline_fragment.type.Episode
 import kotlin.Array
@@ -119,41 +120,43 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "9a3b4733b0a5ac1597c28321cafe174dc3ff1bf921eab01b739db4907d54a8e8"
+        "bde12a64d113bd023a2b00439b07af505f314359f662a0bf2ab5a330c8baa494"
 
-    val QUERY_DOCUMENT: String = """
-        |query TestQuery {
-        |  hero {
-        |    __typename
-        |    name
-        |    ...HeroDetails
-        |    appearsIn
-        |  }
-        |}
-        |fragment HeroDetails on Character {
-        |  __typename
-        |  ... on Droid {
-        |    ...DroidDetails
-        |  }
-        |  name
-        |  friendsConnection {
-        |    __typename
-        |    totalCount
-        |    edges {
-        |      __typename
-        |      node {
-        |        __typename
-        |        name
-        |      }
-        |    }
-        |  }
-        |}
-        |fragment DroidDetails on Droid {
-        |  __typename
-        |  name
-        |  primaryFunction
-        |}
-        """.trimMargin()
+    val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
+          """
+          |query TestQuery {
+          |  hero {
+          |    __typename
+          |    name
+          |    ...HeroDetails
+          |    appearsIn
+          |  }
+          |}
+          |fragment HeroDetails on Character {
+          |  __typename
+          |  ... on Droid {
+          |    ...DroidDetails
+          |  }
+          |  name
+          |  friendsConnection {
+          |    __typename
+          |    totalCount
+          |    edges {
+          |      __typename
+          |      node {
+          |        __typename
+          |        name
+          |      }
+          |    }
+          |  }
+          |}
+          |fragment DroidDetails on Droid {
+          |  __typename
+          |  name
+          |  primaryFunction
+          |}
+          """.trimMargin()
+        )
 
     val OPERATION_NAME: OperationName = OperationName { "TestQuery" }
   }

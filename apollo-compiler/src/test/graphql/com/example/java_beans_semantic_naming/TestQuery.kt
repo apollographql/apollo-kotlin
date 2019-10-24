@@ -12,6 +12,7 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.java_beans_semantic_naming.fragment.HeroDetails
 import com.example.java_beans_semantic_naming.type.Episode
 import kotlin.Array
@@ -119,42 +120,44 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "4f3cddab484b815b0c6e7999f362c5585f16fcde1011110fc3ae068f71614072"
+        "a2bc6502baa27d33261b6be530fcaecea248e26e4522c359e8dc6c62c10cafdc"
 
-    val QUERY_DOCUMENT: String = """
-        |query TestQuery {
-        |  hero {
-        |    __typename
-        |    name
-        |    ...HeroDetails
-        |    appearsIn
-        |  }
-        |}
-        |fragment HeroDetails on Character {
-        |  __typename
-        |  name
-        |  friendsConnection {
-        |    __typename
-        |    totalCount
-        |    edges {
-        |      __typename
-        |      node {
-        |        __typename
-        |        name
-        |      }
-        |    }
-        |    pageInfo {
-        |      __typename
-        |      hasNextPage
-        |    }
-        |    isEmpty
-        |  }
-        |  ... on Droid {
-        |    name
-        |    primaryFunction
-        |  }
-        |}
-        """.trimMargin()
+    val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
+          """
+          |query TestQuery {
+          |  hero {
+          |    __typename
+          |    name
+          |    ...HeroDetails
+          |    appearsIn
+          |  }
+          |}
+          |fragment HeroDetails on Character {
+          |  __typename
+          |  name
+          |  friendsConnection {
+          |    __typename
+          |    totalCount
+          |    edges {
+          |      __typename
+          |      node {
+          |        __typename
+          |        name
+          |      }
+          |    }
+          |    pageInfo {
+          |      __typename
+          |      hasNextPage
+          |    }
+          |    isEmpty
+          |  }
+          |  ... on Droid {
+          |    name
+          |    primaryFunction
+          |  }
+          |}
+          """.trimMargin()
+        )
 
     val OPERATION_NAME: OperationName = OperationName { "TestQuery" }
   }

@@ -14,6 +14,7 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.arguments_simple.fragment.HeroDetails
 import com.example.arguments_simple.type.Episode
 import kotlin.Any
@@ -190,35 +191,37 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "8153aa4a8d74f3a80dabf112d6483e1267ad24222b8fbc4276400648d2b2d303"
+        "89afe30dd0fa5ddce3d0b743d3adf68e55a48d0c11d10e495c0ec095949e6d04"
 
-    val QUERY_DOCUMENT: String = """
-        |query TestQuery(${'$'}episode: Episode, ${'$'}IncludeName: Boolean!, ${'$'}friendsCount: Int!, ${'$'}listOfListOfStringArgs: [[String]!]!) {
-        |  hero(episode: ${'$'}episode, listOfListOfStringArgs: ${'$'}listOfListOfStringArgs) {
-        |    __typename
-        |    name @include(if: ${'$'}IncludeName)
-        |    ...HeroDetails
-        |  }
-        |  heroWithReview(episode: ${'$'}episode, review: {}) {
-        |    __typename
-        |    name
-        |  }
-        |}
-        |fragment HeroDetails on Character {
-        |  __typename
-        |  friendsConnection(first: ${'$'}friendsCount) {
-        |    __typename
-        |    totalCount
-        |    edges {
-        |      __typename
-        |      node {
-        |        __typename
-        |        name @include(if: ${'$'}IncludeName)
-        |      }
-        |    }
-        |  }
-        |}
-        """.trimMargin()
+    val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
+          """
+          |query TestQuery(${'$'}episode: Episode, ${'$'}IncludeName: Boolean!, ${'$'}friendsCount: Int!, ${'$'}listOfListOfStringArgs: [[String]!]!) {
+          |  hero(episode: ${'$'}episode, listOfListOfStringArgs: ${'$'}listOfListOfStringArgs) {
+          |    __typename
+          |    name @include(if: ${'$'}IncludeName)
+          |    ...HeroDetails
+          |  }
+          |  heroWithReview(episode: ${'$'}episode, review: {}) {
+          |    __typename
+          |    name
+          |  }
+          |}
+          |fragment HeroDetails on Character {
+          |  __typename
+          |  friendsConnection(first: ${'$'}friendsCount) {
+          |    __typename
+          |    totalCount
+          |    edges {
+          |      __typename
+          |      node {
+          |        __typename
+          |        name @include(if: ${'$'}IncludeName)
+          |      }
+          |    }
+          |  }
+          |}
+          """.trimMargin()
+        )
 
     val OPERATION_NAME: OperationName = OperationName { "TestQuery" }
   }

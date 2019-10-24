@@ -13,6 +13,7 @@ import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
 import com.apollographql.apollo.api.Subscription
+import com.apollographql.apollo.internal.QueryDocumentMinifier
 import kotlin.Any
 import kotlin.Array
 import kotlin.Int
@@ -115,17 +116,19 @@ data class TestSubscription(
 
   companion object {
     const val OPERATION_ID: String =
-        "f140c0e88b739f3c0b1c105d981b7f8e2780689b3ed8a9faf2d7ee8184a0cf25"
+        "55460a650cce0aa4bb131446ec3e56225710e36940223934bee09e1723e41190"
 
-    val QUERY_DOCUMENT: String = """
-        |subscription TestSubscription(${'$'}repo: String!) {
-        |  commentAdded(repoFullName: ${'$'}repo) {
-        |    __typename
-        |    id
-        |    content
-        |  }
-        |}
-        """.trimMargin()
+    val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
+          """
+          |subscription TestSubscription(${'$'}repo: String!) {
+          |  commentAdded(repoFullName: ${'$'}repo) {
+          |    __typename
+          |    id
+          |    content
+          |  }
+          |}
+          """.trimMargin()
+        )
 
     val OPERATION_NAME: OperationName = OperationName { "TestSubscription" }
   }

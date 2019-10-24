@@ -13,6 +13,7 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.mutation_create_review.type.CustomType
 import com.example.mutation_create_review.type.Episode
 import com.example.mutation_create_review.type.ReviewInput
@@ -235,24 +236,26 @@ data class CreateReviewForEpisode(
 
   companion object {
     const val OPERATION_ID: String =
-        "e21a7c3210dfc89a23ac6ffa9cd5d4caf1b7ebecce91677433782e7b6f11f39c"
+        "c07e5abc4b4070cd773623194c07f546e609af467a1d34f7bf01c37272245296"
 
-    val QUERY_DOCUMENT: String = """
-        |mutation CreateReviewForEpisode(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) {
-        |  createReview(episode: ${'$'}ep, review: ${'$'}review) {
-        |    __typename
-        |    stars
-        |    commentary
-        |    listOfListOfString
-        |    listOfListOfEnum
-        |    listOfListOfCustom
-        |    listOfListOfObject {
-        |      __typename
-        |      name
-        |    }
-        |  }
-        |}
-        """.trimMargin()
+    val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
+          """
+          |mutation CreateReviewForEpisode(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) {
+          |  createReview(episode: ${'$'}ep, review: ${'$'}review) {
+          |    __typename
+          |    stars
+          |    commentary
+          |    listOfListOfString
+          |    listOfListOfEnum
+          |    listOfListOfCustom
+          |    listOfListOfObject {
+          |      __typename
+          |      name
+          |    }
+          |  }
+          |}
+          """.trimMargin()
+        )
 
     val OPERATION_NAME: OperationName = OperationName { "CreateReviewForEpisode" }
   }

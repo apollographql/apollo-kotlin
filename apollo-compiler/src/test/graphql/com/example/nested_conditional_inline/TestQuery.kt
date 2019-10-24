@@ -14,6 +14,7 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.nested_conditional_inline.type.Episode
 import kotlin.Any
 import kotlin.Array
@@ -387,34 +388,36 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "889b355e84859a8d921df39c9c91993790199dc7c93868ed8a6739ac577579d8"
+        "a9f066a7d1092096ab154f16f32114a4bd71e959b789f37879249cdf6309ea86"
 
-    val QUERY_DOCUMENT: String = """
-        |query TestQuery(${'$'}episode: Episode) {
-        |  hero(episode: ${'$'}episode) {
-        |    __typename
-        |    name
-        |    ... on Human {
-        |      friends {
-        |        __typename
-        |        name
-        |        ... on Human {
-        |          height(unit: FOOT)
-        |        }
-        |      }
-        |    }
-        |    ... on Droid {
-        |      friends {
-        |        __typename
-        |        name
-        |        ... on Human {
-        |          height(unit: METER)
-        |        }
-        |      }
-        |    }
-        |  }
-        |}
-        """.trimMargin()
+    val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
+          """
+          |query TestQuery(${'$'}episode: Episode) {
+          |  hero(episode: ${'$'}episode) {
+          |    __typename
+          |    name
+          |    ... on Human {
+          |      friends {
+          |        __typename
+          |        name
+          |        ... on Human {
+          |          height(unit: FOOT)
+          |        }
+          |      }
+          |    }
+          |    ... on Droid {
+          |      friends {
+          |        __typename
+          |        name
+          |        ... on Human {
+          |          height(unit: METER)
+          |        }
+          |      }
+          |    }
+          |  }
+          |}
+          """.trimMargin()
+        )
 
     val OPERATION_NAME: OperationName = OperationName { "TestQuery" }
   }

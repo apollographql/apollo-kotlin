@@ -226,7 +226,7 @@ public final class ApolloServerInterceptor implements ApolloInterceptor {
           .endObject();
     }
     if (!autoPersistQueries || writeQueryDocument) {
-      jsonWriter.name("query").value(operation.queryDocument().replaceAll("\\n", ""));
+      jsonWriter.name("query").value(operation.queryDocument());
     }
     jsonWriter.endObject();
     jsonWriter.close();
@@ -238,7 +238,7 @@ public final class ApolloServerInterceptor implements ApolloInterceptor {
       boolean autoPersistQueries) throws IOException {
     HttpUrl.Builder urlBuilder = serverUrl.newBuilder();
     if (!autoPersistQueries || writeQueryDocument) {
-      urlBuilder.addQueryParameter("query", operation.queryDocument().replaceAll("\\n", ""));
+      urlBuilder.addQueryParameter("query", operation.queryDocument());
     }
     if (operation.variables() != Operation.EMPTY_VARIABLES) {
       addVariablesUrlQueryParameter(urlBuilder, operation, scalarTypeAdapters);

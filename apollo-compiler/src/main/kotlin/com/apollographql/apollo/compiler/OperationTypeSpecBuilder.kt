@@ -4,6 +4,7 @@ import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.compiler.VisitorSpec.VISITOR_CLASSNAME
 import com.apollographql.apollo.compiler.ir.*
+import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
@@ -57,7 +58,7 @@ class OperationTypeSpecBuilder(
   private fun TypeSpec.Builder.addOperationId(operation: Operation): TypeSpec.Builder {
     addField(FieldSpec.builder(ClassNames.STRING, OPERATION_ID_FIELD_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-        .initializer("\$S", operation.sourceWithFragments?.filter { it != '\n' }?.sha256())
+        .initializer("\$S", QueryDocumentMinifier.minify(operation.sourceWithFragments).sha256())
         .build()
     )
 
@@ -74,7 +75,15 @@ class OperationTypeSpecBuilder(
   private fun TypeSpec.Builder.addQueryDocumentDefinition(): TypeSpec.Builder {
     addField(FieldSpec.builder(ClassNames.STRING, QUERY_DOCUMENT_FIELD_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-        .initializer("\$S", operation.sourceWithFragments)
+        .initializer(
+            CodeBlock.builder()
+                .add("\$T.minify(\n", QueryDocumentMinifier::class.java)
+                .indent()
+                .add("\$S\n", operation.sourceWithFragments)
+                .unindent()
+                .add(")")
+                .build()
+        )
         .build()
     )
 

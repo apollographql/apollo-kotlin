@@ -12,6 +12,7 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.hero_name.type.CustomType
 import kotlin.Array
 import kotlin.String
@@ -92,21 +93,23 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "bc3371e1c1415a793a9d038c79756e72e552a5e1d27633ea47905f6a9c19f340"
+        "c10c6dfe569b0fbb60c67e42c973f7ffef2314b43004c527a03bdd790ef0f5dc"
 
-    val QUERY_DOCUMENT: String = """
-        |query TestQuery {
-        |  hero {
-        |    __typename
-        |    name
-        |  }
-        |  hero {
-        |    __typename
-        |    id
-        |    name
-        |  }
-        |}
-        """.trimMargin()
+    val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
+          """
+          |query TestQuery {
+          |  hero {
+          |    __typename
+          |    name
+          |  }
+          |  hero {
+          |    __typename
+          |    id
+          |    name
+          |  }
+          |}
+          """.trimMargin()
+        )
 
     val OPERATION_NAME: OperationName = OperationName { "TestQuery" }
   }

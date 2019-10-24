@@ -16,6 +16,7 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.Utils;
+import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.fragment_used_twice.fragment.HeroDetails;
 import com.example.fragment_used_twice.fragment.HumanDetails;
 import java.lang.Object;
@@ -28,30 +29,32 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "3ab8e54ec77be2555e6f95608644d9a42f4c2a297211a681980533b3ba9b0b79";
+  public static final String OPERATION_ID = "0717d3202204df80ffc6546a0b8dd179f40c29c183ebbea21e7c16ae27e0d056";
 
-  public static final String QUERY_DOCUMENT = "query TestQuery {\n"
-      + "  hero {\n"
-      + "    __typename\n"
-      + "    ...HeroDetails\n"
-      + "    ...HumanDetails\n"
-      + "  }\n"
-      + "}\n"
-      + "fragment HeroDetails on Character {\n"
-      + "  __typename\n"
-      + "  name\n"
-      + "  ...CharacterDetails\n"
-      + "}\n"
-      + "fragment HumanDetails on Human {\n"
-      + "  __typename\n"
-      + "  name\n"
-      + "  ...CharacterDetails\n"
-      + "}\n"
-      + "fragment CharacterDetails on Character {\n"
-      + "  __typename\n"
-      + "  name\n"
-      + "  birthDate\n"
-      + "}";
+  public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
+    "query TestQuery {\n"
+        + "  hero {\n"
+        + "    __typename\n"
+        + "    ...HeroDetails\n"
+        + "    ...HumanDetails\n"
+        + "  }\n"
+        + "}\n"
+        + "fragment HeroDetails on Character {\n"
+        + "  __typename\n"
+        + "  name\n"
+        + "  ...CharacterDetails\n"
+        + "}\n"
+        + "fragment HumanDetails on Human {\n"
+        + "  __typename\n"
+        + "  name\n"
+        + "  ...CharacterDetails\n"
+        + "}\n"
+        + "fragment CharacterDetails on Character {\n"
+        + "  __typename\n"
+        + "  name\n"
+        + "  birthDate\n"
+        + "}"
+  );
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override

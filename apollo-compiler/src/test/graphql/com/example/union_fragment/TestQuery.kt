@@ -12,6 +12,7 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.union_fragment.fragment.Character
 import com.example.union_fragment.fragment.Starship
 import kotlin.Array
@@ -110,26 +111,28 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "055627532ff2cdad7cb785d988937c4d22b30a473846600c41619a4f24084e01"
+        "de57eb41c200d48c0f6c508ebf5b4d23b8edd06c6cea371db90ac8160f911b1f"
 
-    val QUERY_DOCUMENT: String = """
-        |query TestQuery {
-        |  search(text: "test") {
-        |    __typename
-        |    ...Character
-        |    ...Starship
-        |  }
-        |}
-        |fragment Character on Character {
-        |  __typename
-        |  id
-        |  name
-        |}
-        |fragment Starship on Starship {
-        |  __typename
-        |  name
-        |}
-        """.trimMargin()
+    val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
+          """
+          |query TestQuery {
+          |  search(text: "test") {
+          |    __typename
+          |    ...Character
+          |    ...Starship
+          |  }
+          |}
+          |fragment Character on Character {
+          |  __typename
+          |  id
+          |  name
+          |}
+          |fragment Starship on Starship {
+          |  __typename
+          |  name
+          |}
+          """.trimMargin()
+        )
 
     val OPERATION_NAME: OperationName = OperationName { "TestQuery" }
   }

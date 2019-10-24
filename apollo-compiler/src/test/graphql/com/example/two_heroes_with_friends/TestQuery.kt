@@ -12,6 +12,7 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.two_heroes_with_friends.type.CustomType
 import kotlin.Array
 import kotlin.Int
@@ -369,43 +370,45 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "5ee989fce971d5749e601f42de75f04d03083ce81fa7016d192251d7e9c29612"
+        "21133941aec3d5db7db82cc2688faa410a90b34e7cb283efa038fe67526b6b4b"
 
-    val QUERY_DOCUMENT: String = """
-        |query TestQuery {
-        |  r2: hero {
-        |    __typename
-        |    name
-        |    friendsConnection {
-        |      __typename
-        |      totalCount
-        |      edges {
-        |        __typename
-        |        node {
-        |          __typename
-        |          name
-        |        }
-        |      }
-        |    }
-        |  }
-        |  luke: hero(episode: EMPIRE) {
-        |    __typename
-        |    id
-        |    name
-        |    friendsConnection {
-        |      __typename
-        |      totalCount
-        |      edges {
-        |        __typename
-        |        node {
-        |          __typename
-        |          name
-        |        }
-        |      }
-        |    }
-        |  }
-        |}
-        """.trimMargin()
+    val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
+          """
+          |query TestQuery {
+          |  r2: hero {
+          |    __typename
+          |    name
+          |    friendsConnection {
+          |      __typename
+          |      totalCount
+          |      edges {
+          |        __typename
+          |        node {
+          |          __typename
+          |          name
+          |        }
+          |      }
+          |    }
+          |  }
+          |  luke: hero(episode: EMPIRE) {
+          |    __typename
+          |    id
+          |    name
+          |    friendsConnection {
+          |      __typename
+          |      totalCount
+          |      edges {
+          |        __typename
+          |        node {
+          |          __typename
+          |          name
+          |        }
+          |      }
+          |    }
+          |  }
+          |}
+          """.trimMargin()
+        )
 
     val OPERATION_NAME: OperationName = OperationName { "TestQuery" }
   }

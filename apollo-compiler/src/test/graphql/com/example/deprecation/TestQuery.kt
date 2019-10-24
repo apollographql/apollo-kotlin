@@ -14,6 +14,7 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.deprecation.type.Episode
 import kotlin.Any
 import kotlin.Array
@@ -125,18 +126,20 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "786dfe7aa4320ca4657d7f1eb4e87284e942c640add42bd0e3fa07e8a9fb67b6"
+        "8f4a8c01b4bf0eb76356829f8062621ff66c3b53b6bf92753661cca41ef3ade4"
 
-    val QUERY_DOCUMENT: String = """
-        |query TestQuery(${'$'}episode: Episode) {
-        |  hero(episode: ${'$'}episode) {
-        |    __typename
-        |    name
-        |    deprecated
-        |    deprecatedBool
-        |  }
-        |}
-        """.trimMargin()
+    val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
+          """
+          |query TestQuery(${'$'}episode: Episode) {
+          |  hero(episode: ${'$'}episode) {
+          |    __typename
+          |    name
+          |    deprecated
+          |    deprecatedBool
+          |  }
+          |}
+          """.trimMargin()
+        )
 
     val OPERATION_NAME: OperationName = OperationName { "TestQuery" }
   }

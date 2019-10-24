@@ -11,6 +11,7 @@ import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.marshaller
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.responseFieldsPropertySpec
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.suppressWarningsAnnotation
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.toMapperFun
+import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 
@@ -83,7 +84,15 @@ internal fun OperationType.typeSpec(targetPackage: String) = TypeSpec
             .build()
         )
         .addProperty(PropertySpec.builder("QUERY_DOCUMENT", String::class)
-            .initializer("%S", queryDocument)
+            .initializer(
+                CodeBlock.builder()
+                    .add("%T.minify(\n", QueryDocumentMinifier::class.java)
+                    .indent()
+                    .add("%S\n", queryDocument)
+                    .unindent()
+                    .add(")")
+                    .build()
+            )
             .build()
         )
         .addProperty(PropertySpec.builder("OPERATION_NAME", OperationName::class)

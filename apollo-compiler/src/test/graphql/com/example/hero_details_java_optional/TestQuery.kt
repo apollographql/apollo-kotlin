@@ -12,6 +12,7 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.internal.QueryDocumentMinifier
 import kotlin.Array
 import kotlin.Int
 import kotlin.String
@@ -203,27 +204,29 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "0751f7502f83c24c778f90fc8719a3b8f2db547711d3d0a8ec82588c549f2960"
+        "6298efc5535c4a084ea32f95e9be418d8539c852ce96af37110175be4ceed09b"
 
-    val QUERY_DOCUMENT: String = """
-        |query TestQuery {
-        |  hero {
-        |    __typename
-        |    name
-        |    friendsConnection {
-        |      __typename
-        |      totalCount
-        |      edges {
-        |        __typename
-        |        node {
-        |          __typename
-        |          name
-        |        }
-        |      }
-        |    }
-        |  }
-        |}
-        """.trimMargin()
+    val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
+          """
+          |query TestQuery {
+          |  hero {
+          |    __typename
+          |    name
+          |    friendsConnection {
+          |      __typename
+          |      totalCount
+          |      edges {
+          |        __typename
+          |        node {
+          |          __typename
+          |          name
+          |        }
+          |      }
+          |    }
+          |  }
+          |}
+          """.trimMargin()
+        )
 
     val OPERATION_NAME: OperationName = OperationName { "TestQuery" }
   }

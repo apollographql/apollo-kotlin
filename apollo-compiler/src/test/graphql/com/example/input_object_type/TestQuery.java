@@ -18,6 +18,7 @@ import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.api.internal.Utils;
+import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.input_object_type.type.Episode;
 import com.example.input_object_type.type.ReviewInput;
 import java.io.IOException;
@@ -32,15 +33,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQuery.Data>, TestQuery.Variables> {
-  public static final String OPERATION_ID = "bee70e240139955f4daaa717766afe0aa3052a987bbca371483628eafcd84efc";
+  public static final String OPERATION_ID = "9850c60bd20e2361afd7a41d51b709fcba9637809e387afe5c7a1cb738fc254b";
 
-  public static final String QUERY_DOCUMENT = "mutation TestQuery($ep: Episode!, $review: ReviewInput!) {\n"
-      + "  createReview(episode: $ep, review: $review) {\n"
-      + "    __typename\n"
-      + "    stars\n"
-      + "    commentary\n"
-      + "  }\n"
-      + "}";
+  public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
+    "mutation TestQuery($ep: Episode!, $review: ReviewInput!) {\n"
+        + "  createReview(episode: $ep, review: $review) {\n"
+        + "    __typename\n"
+        + "    stars\n"
+        + "    commentary\n"
+        + "  }\n"
+        + "}"
+  );
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override

@@ -16,6 +16,7 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.api.internal.Utils;
+import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.union_fragment.fragment.Character;
 import com.example.union_fragment.fragment.Starship;
 import java.lang.Object;
@@ -29,24 +30,26 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
-  public static final String OPERATION_ID = "055627532ff2cdad7cb785d988937c4d22b30a473846600c41619a4f24084e01";
+  public static final String OPERATION_ID = "de57eb41c200d48c0f6c508ebf5b4d23b8edd06c6cea371db90ac8160f911b1f";
 
-  public static final String QUERY_DOCUMENT = "query TestQuery {\n"
-      + "  search(text: \"test\") {\n"
-      + "    __typename\n"
-      + "    ...Character\n"
-      + "    ...Starship\n"
-      + "  }\n"
-      + "}\n"
-      + "fragment Character on Character {\n"
-      + "  __typename\n"
-      + "  id\n"
-      + "  name\n"
-      + "}\n"
-      + "fragment Starship on Starship {\n"
-      + "  __typename\n"
-      + "  name\n"
-      + "}";
+  public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
+    "query TestQuery {\n"
+        + "  search(text: \"test\") {\n"
+        + "    __typename\n"
+        + "    ...Character\n"
+        + "    ...Starship\n"
+        + "  }\n"
+        + "}\n"
+        + "fragment Character on Character {\n"
+        + "  __typename\n"
+        + "  id\n"
+        + "  name\n"
+        + "}\n"
+        + "fragment Starship on Starship {\n"
+        + "  __typename\n"
+        + "  name\n"
+        + "}"
+  );
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override

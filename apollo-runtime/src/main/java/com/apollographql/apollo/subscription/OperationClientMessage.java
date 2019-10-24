@@ -1,6 +1,7 @@
 package com.apollographql.apollo.subscription;
 
 import com.apollographql.apollo.api.Subscription;
+import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.apollographql.apollo.internal.json.InputFieldJsonWriter;
 import com.apollographql.apollo.internal.json.JsonWriter;
 import com.apollographql.apollo.internal.json.Utils;
@@ -80,7 +81,7 @@ public abstract class OperationClientMessage {
       writer.name(JSON_KEY_ID).value(subscriptionId);
       writer.name(JSON_KEY_TYPE).value(TYPE);
       writer.name(JSON_KEY_PAYLOAD).beginObject();
-      writer.name(JSON_KEY_QUERY).value(subscription.queryDocument().replaceAll("\\n", ""));
+      writer.name(JSON_KEY_QUERY).value(subscription.queryDocument());
       writer.name(JSON_KEY_VARIABLES).beginObject();
       subscription.variables().marshaller().marshal(new InputFieldJsonWriter(writer, scalarTypeAdapters));
       writer.endObject();

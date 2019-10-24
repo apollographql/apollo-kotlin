@@ -18,6 +18,7 @@ import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.api.internal.Utils;
+import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.hero_with_review.type.Episode;
 import java.io.IOException;
 import java.lang.Object;
@@ -31,15 +32,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQuery.Data>, TestQuery.Variables> {
-  public static final String OPERATION_ID = "dd016b42aecc3540fc1c58cc72f772117db09486d03c7904452c0a2c46e2e0de";
+  public static final String OPERATION_ID = "df7f6bf82724eedee5118f165075b5de1a2b3a06d0390126bf7932dc8df3f082";
 
-  public static final String QUERY_DOCUMENT = "mutation TestQuery($ep: Episode!) {\n"
-      + "  createReview(episode: $ep, review: {stars: 5, listOfEnums: [JEDI, EMPIRE, NEWHOPE], listOfStringNonOptional: [\"1\", \"2\", \"3\"], favoriteColor: {red: 1, blue: 1}}) {\n"
-      + "    __typename\n"
-      + "    stars\n"
-      + "    commentary\n"
-      + "  }\n"
-      + "}";
+  public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
+    "mutation TestQuery($ep: Episode!) {\n"
+        + "  createReview(episode: $ep, review: {stars: 5, listOfEnums: [JEDI, EMPIRE, NEWHOPE], listOfStringNonOptional: [\"1\", \"2\", \"3\"], favoriteColor: {red: 1, blue: 1}}) {\n"
+        + "    __typename\n"
+        + "    stars\n"
+        + "    commentary\n"
+        + "  }\n"
+        + "}"
+  );
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override
