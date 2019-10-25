@@ -15,6 +15,7 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.Utils;
+import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.inline_fragments_with_friends.type.CustomType;
 import com.example.inline_fragments_with_friends.type.Episode;
 import java.lang.Double;
@@ -29,28 +30,30 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "14adf3d0e99c01ba1b6ddef42021f6167d761619e1d15a617d573ea5e82fc0a5";
+  public static final String OPERATION_ID = "6a20c9553e5f209b6cc63f98b9d154b5d5917cdea11a903e5dc7f8f420f949b6";
 
-  public static final String QUERY_DOCUMENT = "query TestQuery {\n"
-      + "  hero {\n"
-      + "    __typename\n"
-      + "    name\n"
-      + "    ... on Human {\n"
-      + "      height\n"
-      + "      friends {\n"
-      + "        __typename\n"
-      + "        appearsIn\n"
-      + "      }\n"
-      + "    }\n"
-      + "    ... on Droid {\n"
-      + "      primaryFunction\n"
-      + "      friends {\n"
-      + "        __typename\n"
-      + "        id\n"
-      + "      }\n"
-      + "    }\n"
-      + "  }\n"
-      + "}";
+  public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
+    "query TestQuery {\n"
+        + "  hero {\n"
+        + "    __typename\n"
+        + "    name\n"
+        + "    ... on Human {\n"
+        + "      height\n"
+        + "      friends {\n"
+        + "        __typename\n"
+        + "        appearsIn\n"
+        + "      }\n"
+        + "    }\n"
+        + "    ... on Droid {\n"
+        + "      primaryFunction\n"
+        + "      friends {\n"
+        + "        __typename\n"
+        + "        id\n"
+        + "      }\n"
+        + "    }\n"
+        + "  }\n"
+        + "}"
+  );
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override

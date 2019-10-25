@@ -17,7 +17,7 @@ android:
     - google-gdk-license-.+
 
 script:
-  - ./gradlew clean build connectedCheck -x checkstyleTest --stacktrace --max-workers=2 -x :apollo-android-support:connectedCheck -x :apollo-gradle-plugin-incubating:test
+  - ./gradlew clean build connectedCheck -x checkstyleTest --stacktrace --max-workers=2 -x :apollo-android-support:connectedCheck -x :apollo-gradle-plugin-incubating:test -x :apollo-gradle-plugin:test
   # We are running these tests in different gradle instances to avoid a OOM error. See https://github.com/gradle/gradle/issues/8354
   - ./gradlew :apollo-gradle-plugin-incubating:test --tests "com.apollographql.apollo.gradle.test.*"
   - ./gradlew :apollo-gradle-plugin-incubating:test --tests "com.apollographql.apollo.gradle.dsltest.KotlinDSLTests"

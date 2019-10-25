@@ -18,6 +18,7 @@ import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.api.internal.Utils;
+import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
@@ -30,15 +31,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestSubscription implements Subscription<TestSubscription.Data, Optional<TestSubscription.Data>, TestSubscription.Variables> {
-  public static final String OPERATION_ID = "f140c0e88b739f3c0b1c105d981b7f8e2780689b3ed8a9faf2d7ee8184a0cf25";
+  public static final String OPERATION_ID = "55460a650cce0aa4bb131446ec3e56225710e36940223934bee09e1723e41190";
 
-  public static final String QUERY_DOCUMENT = "subscription TestSubscription($repo: String!) {\n"
-      + "  commentAdded(repoFullName: $repo) {\n"
-      + "    __typename\n"
-      + "    id\n"
-      + "    content\n"
-      + "  }\n"
-      + "}";
+  public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
+    "subscription TestSubscription($repo: String!) {\n"
+        + "  commentAdded(repoFullName: $repo) {\n"
+        + "    __typename\n"
+        + "    id\n"
+        + "    content\n"
+        + "  }\n"
+        + "}"
+  );
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override

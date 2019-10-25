@@ -18,6 +18,7 @@ import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.api.internal.Utils;
+import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.starships.type.CustomType;
 import java.io.IOException;
 import java.lang.Double;
@@ -33,16 +34,18 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, TestQuery.Variables> {
-  public static final String OPERATION_ID = "b1a5bbb02a3a876846b727d73a26bf205341d6e7b7181f17e93c8f3b0a5d4b3e";
+  public static final String OPERATION_ID = "a4c440f9a7ea17b55ba60d3ac9603f8be88a1db31c679f55982eb9f57b5b6181";
 
-  public static final String QUERY_DOCUMENT = "query TestQuery($id: ID!) {\n"
-      + "  starship(id: $id) {\n"
-      + "    __typename\n"
-      + "    id\n"
-      + "    name\n"
-      + "    coordinates\n"
-      + "  }\n"
-      + "}";
+  public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
+    "query TestQuery($id: ID!) {\n"
+        + "  starship(id: $id) {\n"
+        + "    __typename\n"
+        + "    id\n"
+        + "    name\n"
+        + "    coordinates\n"
+        + "  }\n"
+        + "}"
+  );
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override

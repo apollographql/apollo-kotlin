@@ -16,6 +16,7 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.Utils;
+import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.java_beans_semantic_naming.fragment.HeroDetails;
 import com.example.java_beans_semantic_naming.type.Episode;
 import java.lang.Object;
@@ -29,40 +30,42 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "4f3cddab484b815b0c6e7999f362c5585f16fcde1011110fc3ae068f71614072";
+  public static final String OPERATION_ID = "a2bc6502baa27d33261b6be530fcaecea248e26e4522c359e8dc6c62c10cafdc";
 
-  public static final String QUERY_DOCUMENT = "query TestQuery {\n"
-      + "  hero {\n"
-      + "    __typename\n"
-      + "    name\n"
-      + "    ...HeroDetails\n"
-      + "    appearsIn\n"
-      + "  }\n"
-      + "}\n"
-      + "fragment HeroDetails on Character {\n"
-      + "  __typename\n"
-      + "  name\n"
-      + "  friendsConnection {\n"
-      + "    __typename\n"
-      + "    totalCount\n"
-      + "    edges {\n"
-      + "      __typename\n"
-      + "      node {\n"
-      + "        __typename\n"
-      + "        name\n"
-      + "      }\n"
-      + "    }\n"
-      + "    pageInfo {\n"
-      + "      __typename\n"
-      + "      hasNextPage\n"
-      + "    }\n"
-      + "    isEmpty\n"
-      + "  }\n"
-      + "  ... on Droid {\n"
-      + "    name\n"
-      + "    primaryFunction\n"
-      + "  }\n"
-      + "}";
+  public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
+    "query TestQuery {\n"
+        + "  hero {\n"
+        + "    __typename\n"
+        + "    name\n"
+        + "    ...HeroDetails\n"
+        + "    appearsIn\n"
+        + "  }\n"
+        + "}\n"
+        + "fragment HeroDetails on Character {\n"
+        + "  __typename\n"
+        + "  name\n"
+        + "  friendsConnection {\n"
+        + "    __typename\n"
+        + "    totalCount\n"
+        + "    edges {\n"
+        + "      __typename\n"
+        + "      node {\n"
+        + "        __typename\n"
+        + "        name\n"
+        + "      }\n"
+        + "    }\n"
+        + "    pageInfo {\n"
+        + "      __typename\n"
+        + "      hasNextPage\n"
+        + "    }\n"
+        + "    isEmpty\n"
+        + "  }\n"
+        + "  ... on Droid {\n"
+        + "    name\n"
+        + "    primaryFunction\n"
+        + "  }\n"
+        + "}"
+  );
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override

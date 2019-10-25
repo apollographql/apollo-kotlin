@@ -12,6 +12,7 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.unique_type_name.fragment.HeroDetails
 import com.example.unique_type_name.type.Episode
 import kotlin.Array
@@ -304,46 +305,48 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
 
   companion object {
     const val OPERATION_ID: String =
-        "fbc3185d6cccc75f6ec4858073e261143cd085f47b6701080316e36cc970145a"
+        "11473383397766137d7923128dd8cd6f27fcab32df9d9c091f08cf12a893a556"
 
-    val QUERY_DOCUMENT: String = """
-        |query HeroDetailQuery {
-        |  heroDetailQuery {
-        |    __typename
-        |    name
-        |    friends {
-        |      __typename
-        |      name
-        |    }
-        |    ... on Human {
-        |      height
-        |      friends {
-        |        __typename
-        |        appearsIn
-        |        friends {
-        |          __typename
-        |          ...HeroDetails
-        |        }
-        |      }
-        |    }
-        |  }
-        |}
-        |fragment HeroDetails on Character {
-        |  __typename
-        |  name
-        |  friendsConnection {
-        |    __typename
-        |    totalCount
-        |    edges {
-        |      __typename
-        |      node {
-        |        __typename
-        |        name
-        |      }
-        |    }
-        |  }
-        |}
-        """.trimMargin()
+    val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
+          """
+          |query HeroDetailQuery {
+          |  heroDetailQuery {
+          |    __typename
+          |    name
+          |    friends {
+          |      __typename
+          |      name
+          |    }
+          |    ... on Human {
+          |      height
+          |      friends {
+          |        __typename
+          |        appearsIn
+          |        friends {
+          |          __typename
+          |          ...HeroDetails
+          |        }
+          |      }
+          |    }
+          |  }
+          |}
+          |fragment HeroDetails on Character {
+          |  __typename
+          |  name
+          |  friendsConnection {
+          |    __typename
+          |    totalCount
+          |    edges {
+          |      __typename
+          |      node {
+          |        __typename
+          |        name
+          |      }
+          |    }
+          |  }
+          |}
+          """.trimMargin()
+        )
 
     val OPERATION_NAME: OperationName = OperationName { "HeroDetailQuery" }
   }

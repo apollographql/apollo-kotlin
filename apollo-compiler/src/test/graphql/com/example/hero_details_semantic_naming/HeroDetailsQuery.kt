@@ -12,6 +12,7 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.internal.QueryDocumentMinifier
 import kotlin.Array
 import kotlin.Int
 import kotlin.String
@@ -203,27 +204,29 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data, HeroDetailsQuery.Data, Ope
 
   companion object {
     const val OPERATION_ID: String =
-        "eaf88bad79bc63c493e8f919b6ea71ff246df40b2d53ad12f65d1cf05b36c42a"
+        "257332d822c9bcd5dabeff3f3dda46875a47846f6eeae88f9042c94e3effeee7"
 
-    val QUERY_DOCUMENT: String = """
-        |query HeroDetails {
-        |  hero {
-        |    __typename
-        |    name
-        |    friendsConnection {
-        |      __typename
-        |      totalCount
-        |      edges {
-        |        __typename
-        |        node {
-        |          __typename
-        |          name
-        |        }
-        |      }
-        |    }
-        |  }
-        |}
-        """.trimMargin()
+    val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
+          """
+          |query HeroDetails {
+          |  hero {
+          |    __typename
+          |    name
+          |    friendsConnection {
+          |      __typename
+          |      totalCount
+          |      edges {
+          |        __typename
+          |        node {
+          |          __typename
+          |          name
+          |        }
+          |      }
+          |    }
+          |  }
+          |}
+          """.trimMargin()
+        )
 
     val OPERATION_NAME: OperationName = OperationName { "HeroDetails" }
   }

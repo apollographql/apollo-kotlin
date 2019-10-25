@@ -17,6 +17,7 @@ import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.api.internal.Utils;
+import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.fragment_in_fragment.fragment.StarshipFragment;
 import java.lang.Object;
 import java.lang.Override;
@@ -29,47 +30,49 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class AllStarships implements Query<AllStarships.Data, Optional<AllStarships.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "6c884a44241acb498fbd197e1738520da30e7af8f311c7c74c86094de2a548de";
+  public static final String OPERATION_ID = "1296a4041eb330b2810e426f9347f76c6df3a969ab7f7e56f250bf9c6a07982e";
 
-  public static final String QUERY_DOCUMENT = "query AllStarships {\n"
-      + "  allStarships(first: 7) {\n"
-      + "    __typename\n"
-      + "    edges {\n"
-      + "      __typename\n"
-      + "      node {\n"
-      + "        __typename\n"
-      + "        ...starshipFragment\n"
-      + "      }\n"
-      + "    }\n"
-      + "  }\n"
-      + "}\n"
-      + "fragment starshipFragment on Starship {\n"
-      + "  __typename\n"
-      + "  id\n"
-      + "  name\n"
-      + "  pilotConnection {\n"
-      + "    __typename\n"
-      + "    edges {\n"
-      + "      __typename\n"
-      + "      node {\n"
-      + "        __typename\n"
-      + "        ...pilotFragment\n"
-      + "      }\n"
-      + "    }\n"
-      + "  }\n"
-      + "}\n"
-      + "fragment pilotFragment on Person {\n"
-      + "  __typename\n"
-      + "  name\n"
-      + "  homeworld {\n"
-      + "    __typename\n"
-      + "    ...planetFragment\n"
-      + "  }\n"
-      + "}\n"
-      + "fragment planetFragment on Planet {\n"
-      + "  __typename\n"
-      + "  name\n"
-      + "}";
+  public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
+    "query AllStarships {\n"
+        + "  allStarships(first: 7) {\n"
+        + "    __typename\n"
+        + "    edges {\n"
+        + "      __typename\n"
+        + "      node {\n"
+        + "        __typename\n"
+        + "        ...starshipFragment\n"
+        + "      }\n"
+        + "    }\n"
+        + "  }\n"
+        + "}\n"
+        + "fragment starshipFragment on Starship {\n"
+        + "  __typename\n"
+        + "  id\n"
+        + "  name\n"
+        + "  pilotConnection {\n"
+        + "    __typename\n"
+        + "    edges {\n"
+        + "      __typename\n"
+        + "      node {\n"
+        + "        __typename\n"
+        + "        ...pilotFragment\n"
+        + "      }\n"
+        + "    }\n"
+        + "  }\n"
+        + "}\n"
+        + "fragment pilotFragment on Person {\n"
+        + "  __typename\n"
+        + "  name\n"
+        + "  homeworld {\n"
+        + "    __typename\n"
+        + "    ...planetFragment\n"
+        + "  }\n"
+        + "}\n"
+        + "fragment planetFragment on Planet {\n"
+        + "  __typename\n"
+        + "  name\n"
+        + "}"
+  );
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override

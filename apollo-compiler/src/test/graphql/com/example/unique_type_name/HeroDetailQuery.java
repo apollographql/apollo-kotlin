@@ -16,6 +16,7 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.Utils;
+import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.unique_type_name.fragment.HeroDetails;
 import com.example.unique_type_name.type.Episode;
 import java.lang.Double;
@@ -30,44 +31,46 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Optional<HeroDetailQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "fbc3185d6cccc75f6ec4858073e261143cd085f47b6701080316e36cc970145a";
+  public static final String OPERATION_ID = "11473383397766137d7923128dd8cd6f27fcab32df9d9c091f08cf12a893a556";
 
-  public static final String QUERY_DOCUMENT = "query HeroDetailQuery {\n"
-      + "  heroDetailQuery {\n"
-      + "    __typename\n"
-      + "    name\n"
-      + "    friends {\n"
-      + "      __typename\n"
-      + "      name\n"
-      + "    }\n"
-      + "    ... on Human {\n"
-      + "      height\n"
-      + "      friends {\n"
-      + "        __typename\n"
-      + "        appearsIn\n"
-      + "        friends {\n"
-      + "          __typename\n"
-      + "          ...HeroDetails\n"
-      + "        }\n"
-      + "      }\n"
-      + "    }\n"
-      + "  }\n"
-      + "}\n"
-      + "fragment HeroDetails on Character {\n"
-      + "  __typename\n"
-      + "  name\n"
-      + "  friendsConnection {\n"
-      + "    __typename\n"
-      + "    totalCount\n"
-      + "    edges {\n"
-      + "      __typename\n"
-      + "      node {\n"
-      + "        __typename\n"
-      + "        name\n"
-      + "      }\n"
-      + "    }\n"
-      + "  }\n"
-      + "}";
+  public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
+    "query HeroDetailQuery {\n"
+        + "  heroDetailQuery {\n"
+        + "    __typename\n"
+        + "    name\n"
+        + "    friends {\n"
+        + "      __typename\n"
+        + "      name\n"
+        + "    }\n"
+        + "    ... on Human {\n"
+        + "      height\n"
+        + "      friends {\n"
+        + "        __typename\n"
+        + "        appearsIn\n"
+        + "        friends {\n"
+        + "          __typename\n"
+        + "          ...HeroDetails\n"
+        + "        }\n"
+        + "      }\n"
+        + "    }\n"
+        + "  }\n"
+        + "}\n"
+        + "fragment HeroDetails on Character {\n"
+        + "  __typename\n"
+        + "  name\n"
+        + "  friendsConnection {\n"
+        + "    __typename\n"
+        + "    totalCount\n"
+        + "    edges {\n"
+        + "      __typename\n"
+        + "      node {\n"
+        + "        __typename\n"
+        + "        name\n"
+        + "      }\n"
+        + "    }\n"
+        + "  }\n"
+        + "}"
+  );
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override

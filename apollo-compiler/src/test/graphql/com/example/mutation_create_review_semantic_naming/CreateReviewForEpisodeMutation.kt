@@ -13,6 +13,7 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.mutation_create_review_semantic_naming.type.Episode
 import com.example.mutation_create_review_semantic_naming.type.ReviewInput
 import kotlin.Any
@@ -121,17 +122,19 @@ data class CreateReviewForEpisodeMutation(
 
   companion object {
     const val OPERATION_ID: String =
-        "dc312e4edc4258722c5ddb00ad2a85faacd285090336d719a22f65fdc94022c7"
+        "0cd4b32f15788d426344f5f8d2ee1a3cebb72c167005cb147d2a47761c120a41"
 
-    val QUERY_DOCUMENT: String = """
-        |mutation CreateReviewForEpisode(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) {
-        |  createReview(episode: ${'$'}ep, review: ${'$'}review) {
-        |    __typename
-        |    stars
-        |    commentary
-        |  }
-        |}
-        """.trimMargin()
+    val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
+          """
+          |mutation CreateReviewForEpisode(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) {
+          |  createReview(episode: ${'$'}ep, review: ${'$'}review) {
+          |    __typename
+          |    stars
+          |    commentary
+          |  }
+          |}
+          """.trimMargin()
+        )
 
     val OPERATION_NAME: OperationName = OperationName { "CreateReviewForEpisode" }
   }

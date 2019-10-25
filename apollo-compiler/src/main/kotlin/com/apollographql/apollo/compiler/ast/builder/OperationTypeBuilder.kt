@@ -4,6 +4,7 @@ import com.apollographql.apollo.compiler.ast.*
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo.compiler.ir.Operation
 import com.apollographql.apollo.compiler.sha256
+import com.apollographql.apollo.internal.QueryDocumentMinifier
 
 internal fun Operation.ast(
     operationClassName: String,
@@ -28,8 +29,8 @@ internal fun Operation.ast(
       name = operationClassName,
       type = operationType,
       operationName = operationName,
-      operationId = (sourceWithFragments ?: "").filter { it != '\n' }.sha256(),
-      queryDocument = sourceWithFragments!!,
+      operationId = QueryDocumentMinifier.minify(sourceWithFragments).sha256(),
+      queryDocument = sourceWithFragments,
       variables = InputType(
           name = "Variables",
           description = "",

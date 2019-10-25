@@ -19,6 +19,7 @@ import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.api.internal.Utils;
+import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.deprecation.type.Episode;
 import java.io.IOException;
 import java.lang.Deprecated;
@@ -33,16 +34,18 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, TestQuery.Variables> {
-  public static final String OPERATION_ID = "786dfe7aa4320ca4657d7f1eb4e87284e942c640add42bd0e3fa07e8a9fb67b6";
+  public static final String OPERATION_ID = "8f4a8c01b4bf0eb76356829f8062621ff66c3b53b6bf92753661cca41ef3ade4";
 
-  public static final String QUERY_DOCUMENT = "query TestQuery($episode: Episode) {\n"
-      + "  hero(episode: $episode) {\n"
-      + "    __typename\n"
-      + "    name\n"
-      + "    deprecated\n"
-      + "    deprecatedBool\n"
-      + "  }\n"
-      + "}";
+  public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
+    "query TestQuery($episode: Episode) {\n"
+        + "  hero(episode: $episode) {\n"
+        + "    __typename\n"
+        + "    name\n"
+        + "    deprecated\n"
+        + "    deprecatedBool\n"
+        + "  }\n"
+        + "}"
+  );
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override

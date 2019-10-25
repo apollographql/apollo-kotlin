@@ -13,6 +13,7 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.hero_with_review.type.Episode
 import kotlin.Any
 import kotlin.Array
@@ -120,17 +121,19 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "dd016b42aecc3540fc1c58cc72f772117db09486d03c7904452c0a2c46e2e0de"
+        "df7f6bf82724eedee5118f165075b5de1a2b3a06d0390126bf7932dc8df3f082"
 
-    val QUERY_DOCUMENT: String = """
-        |mutation TestQuery(${'$'}ep: Episode!) {
-        |  createReview(episode: ${'$'}ep, review: {stars: 5, listOfEnums: [JEDI, EMPIRE, NEWHOPE], listOfStringNonOptional: ["1", "2", "3"], favoriteColor: {red: 1, blue: 1}}) {
-        |    __typename
-        |    stars
-        |    commentary
-        |  }
-        |}
-        """.trimMargin()
+    val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
+          """
+          |mutation TestQuery(${'$'}ep: Episode!) {
+          |  createReview(episode: ${'$'}ep, review: {stars: 5, listOfEnums: [JEDI, EMPIRE, NEWHOPE], listOfStringNonOptional: ["1", "2", "3"], favoriteColor: {red: 1, blue: 1}}) {
+          |    __typename
+          |    stars
+          |    commentary
+          |  }
+          |}
+          """.trimMargin()
+        )
 
     val OPERATION_NAME: OperationName = OperationName { "TestQuery" }
   }

@@ -13,6 +13,7 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.internal.QueryDocumentMinifier
 import kotlin.Any
 import kotlin.Array
 import kotlin.Boolean
@@ -147,20 +148,22 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "d982d286b1e673c0b6c045152503cdd4d5cfb2381e7d0c22381875176e72c7a2"
+        "c2c4bbf6368fd611eb19628164b0ef04ccad73f4c96b0416c254b8375b5d04f8"
 
-    val QUERY_DOCUMENT: String = """
-        |query TestQuery(${'$'}includeName: Boolean!, ${'$'}skipFriends: Boolean!) @operationDirective(dummy: "hello") {
-        |  hero {
-        |    __typename
-        |    name @include(if: ${'$'}includeName)
-        |    friendsConnection @skip(if: ${'$'}skipFriends) {
-        |      __typename
-        |      totalCount
-        |    }
-        |  }
-        |}
-        """.trimMargin()
+    val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
+          """
+          |query TestQuery(${'$'}includeName: Boolean!, ${'$'}skipFriends: Boolean!) @operationDirective(dummy: "hello") {
+          |  hero {
+          |    __typename
+          |    name @include(if: ${'$'}includeName)
+          |    friendsConnection @skip(if: ${'$'}skipFriends) {
+          |      __typename
+          |      totalCount
+          |    }
+          |  }
+          |}
+          """.trimMargin()
+        )
 
     val OPERATION_NAME: OperationName = OperationName { "TestQuery" }
   }

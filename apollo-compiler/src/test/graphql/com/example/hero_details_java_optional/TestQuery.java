@@ -14,6 +14,7 @@ import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Utils;
+import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
@@ -26,25 +27,27 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "0751f7502f83c24c778f90fc8719a3b8f2db547711d3d0a8ec82588c549f2960";
+  public static final String OPERATION_ID = "6298efc5535c4a084ea32f95e9be418d8539c852ce96af37110175be4ceed09b";
 
-  public static final String QUERY_DOCUMENT = "query TestQuery {\n"
-      + "  hero {\n"
-      + "    __typename\n"
-      + "    name\n"
-      + "    friendsConnection {\n"
-      + "      __typename\n"
-      + "      totalCount\n"
-      + "      edges {\n"
-      + "        __typename\n"
-      + "        node {\n"
-      + "          __typename\n"
-      + "          name\n"
-      + "        }\n"
-      + "      }\n"
-      + "    }\n"
-      + "  }\n"
-      + "}";
+  public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
+    "query TestQuery {\n"
+        + "  hero {\n"
+        + "    __typename\n"
+        + "    name\n"
+        + "    friendsConnection {\n"
+        + "      __typename\n"
+        + "      totalCount\n"
+        + "      edges {\n"
+        + "        __typename\n"
+        + "        node {\n"
+        + "          __typename\n"
+        + "          name\n"
+        + "        }\n"
+        + "      }\n"
+        + "    }\n"
+        + "  }\n"
+        + "}"
+  );
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override

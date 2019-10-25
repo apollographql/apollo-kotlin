@@ -16,6 +16,7 @@ import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.api.internal.Utils;
+import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.two_heroes_with_friends.type.CustomType;
 import java.lang.Integer;
 import java.lang.Object;
@@ -28,41 +29,43 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "5ee989fce971d5749e601f42de75f04d03083ce81fa7016d192251d7e9c29612";
+  public static final String OPERATION_ID = "21133941aec3d5db7db82cc2688faa410a90b34e7cb283efa038fe67526b6b4b";
 
-  public static final String QUERY_DOCUMENT = "query TestQuery {\n"
-      + "  r2: hero {\n"
-      + "    __typename\n"
-      + "    name\n"
-      + "    friendsConnection {\n"
-      + "      __typename\n"
-      + "      totalCount\n"
-      + "      edges {\n"
-      + "        __typename\n"
-      + "        node {\n"
-      + "          __typename\n"
-      + "          name\n"
-      + "        }\n"
-      + "      }\n"
-      + "    }\n"
-      + "  }\n"
-      + "  luke: hero(episode: EMPIRE) {\n"
-      + "    __typename\n"
-      + "    id\n"
-      + "    name\n"
-      + "    friendsConnection {\n"
-      + "      __typename\n"
-      + "      totalCount\n"
-      + "      edges {\n"
-      + "        __typename\n"
-      + "        node {\n"
-      + "          __typename\n"
-      + "          name\n"
-      + "        }\n"
-      + "      }\n"
-      + "    }\n"
-      + "  }\n"
-      + "}";
+  public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
+    "query TestQuery {\n"
+        + "  r2: hero {\n"
+        + "    __typename\n"
+        + "    name\n"
+        + "    friendsConnection {\n"
+        + "      __typename\n"
+        + "      totalCount\n"
+        + "      edges {\n"
+        + "        __typename\n"
+        + "        node {\n"
+        + "          __typename\n"
+        + "          name\n"
+        + "        }\n"
+        + "      }\n"
+        + "    }\n"
+        + "  }\n"
+        + "  luke: hero(episode: EMPIRE) {\n"
+        + "    __typename\n"
+        + "    id\n"
+        + "    name\n"
+        + "    friendsConnection {\n"
+        + "      __typename\n"
+        + "      totalCount\n"
+        + "      edges {\n"
+        + "        __typename\n"
+        + "        node {\n"
+        + "          __typename\n"
+        + "          name\n"
+        + "        }\n"
+        + "      }\n"
+        + "    }\n"
+        + "  }\n"
+        + "}"
+  );
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override

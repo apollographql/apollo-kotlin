@@ -13,6 +13,7 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.starships.type.CustomType
 import kotlin.Any
 import kotlin.Array
@@ -131,18 +132,20 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "b1a5bbb02a3a876846b727d73a26bf205341d6e7b7181f17e93c8f3b0a5d4b3e"
+        "a4c440f9a7ea17b55ba60d3ac9603f8be88a1db31c679f55982eb9f57b5b6181"
 
-    val QUERY_DOCUMENT: String = """
-        |query TestQuery(${'$'}id: ID!) {
-        |  starship(id: ${'$'}id) {
-        |    __typename
-        |    id
-        |    name
-        |    coordinates
-        |  }
-        |}
-        """.trimMargin()
+    val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
+          """
+          |query TestQuery(${'$'}id: ID!) {
+          |  starship(id: ${'$'}id) {
+          |    __typename
+          |    id
+          |    name
+          |    coordinates
+          |  }
+          |}
+          """.trimMargin()
+        )
 
     val OPERATION_NAME: OperationName = OperationName { "TestQuery" }
   }

@@ -15,6 +15,7 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.Utils;
+import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.inline_fragment_merge_fields.type.CustomType;
 import java.lang.Object;
 import java.lang.Override;
@@ -26,38 +27,40 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "7c5b1cf38290937b9969d3c77370740c66f6233428f04e1dd35c2d206efa1719";
+  public static final String OPERATION_ID = "5ff8c88e5dfec4301ed7c0603bae2088ecdd096a8336ed0c2e5d386b08ebe5c5";
 
-  public static final String QUERY_DOCUMENT = "query TestQuery {\n"
-      + "  hero {\n"
-      + "    __typename\n"
-      + "    name\n"
-      + "    friendsConnection {\n"
-      + "      __typename\n"
-      + "      edges {\n"
-      + "        __typename\n"
-      + "        node {\n"
-      + "          __typename\n"
-      + "          name\n"
-      + "        }\n"
-      + "      }\n"
-      + "    }\n"
-      + "    ... on Character {\n"
-      + "      name\n"
-      + "      profileLink\n"
-      + "      friendsConnection {\n"
-      + "        __typename\n"
-      + "        edges {\n"
-      + "          __typename\n"
-      + "          node {\n"
-      + "            __typename\n"
-      + "            name\n"
-      + "          }\n"
-      + "        }\n"
-      + "      }\n"
-      + "    }\n"
-      + "  }\n"
-      + "}";
+  public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
+    "query TestQuery {\n"
+        + "  hero {\n"
+        + "    __typename\n"
+        + "    name\n"
+        + "    friendsConnection {\n"
+        + "      __typename\n"
+        + "      edges {\n"
+        + "        __typename\n"
+        + "        node {\n"
+        + "          __typename\n"
+        + "          name\n"
+        + "        }\n"
+        + "      }\n"
+        + "    }\n"
+        + "    ... on Character {\n"
+        + "      name\n"
+        + "      profileLink\n"
+        + "      friendsConnection {\n"
+        + "        __typename\n"
+        + "        edges {\n"
+        + "          __typename\n"
+        + "          node {\n"
+        + "            __typename\n"
+        + "            name\n"
+        + "          }\n"
+        + "        }\n"
+        + "      }\n"
+        + "    }\n"
+        + "  }\n"
+        + "}"
+  );
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override

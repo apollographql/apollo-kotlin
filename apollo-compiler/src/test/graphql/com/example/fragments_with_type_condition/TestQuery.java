@@ -16,6 +16,7 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.Utils;
+import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.fragments_with_type_condition.fragment.DroidDetails;
 import com.example.fragments_with_type_condition.fragment.HumanDetails;
 import java.lang.Object;
@@ -28,30 +29,32 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "fd5c78538b2ae8cc23e2da84f634abc4454cf9767e104a0625dc0a8917dfb121";
+  public static final String OPERATION_ID = "919cec7210259fa24fc6026fe680b96f357c14ebf3c8a734979dcfb819685d6a";
 
-  public static final String QUERY_DOCUMENT = "query TestQuery {\n"
-      + "  r2: hero {\n"
-      + "    __typename\n"
-      + "    ...HumanDetails\n"
-      + "    ...DroidDetails\n"
-      + "  }\n"
-      + "  luke: hero {\n"
-      + "    __typename\n"
-      + "    ...HumanDetails\n"
-      + "    ...DroidDetails\n"
-      + "  }\n"
-      + "}\n"
-      + "fragment HumanDetails on Human {\n"
-      + "  __typename\n"
-      + "  name\n"
-      + "  height\n"
-      + "}\n"
-      + "fragment DroidDetails on Droid {\n"
-      + "  __typename\n"
-      + "  name\n"
-      + "  primaryFunction\n"
-      + "}";
+  public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
+    "query TestQuery {\n"
+        + "  r2: hero {\n"
+        + "    __typename\n"
+        + "    ...HumanDetails\n"
+        + "    ...DroidDetails\n"
+        + "  }\n"
+        + "  luke: hero {\n"
+        + "    __typename\n"
+        + "    ...HumanDetails\n"
+        + "    ...DroidDetails\n"
+        + "  }\n"
+        + "}\n"
+        + "fragment HumanDetails on Human {\n"
+        + "  __typename\n"
+        + "  name\n"
+        + "  height\n"
+        + "}\n"
+        + "fragment DroidDetails on Droid {\n"
+        + "  __typename\n"
+        + "  name\n"
+        + "  primaryFunction\n"
+        + "}"
+  );
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override

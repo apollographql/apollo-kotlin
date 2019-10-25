@@ -12,6 +12,7 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.inline_fragment_merge_fields.type.CustomType
 import kotlin.Any
 import kotlin.Array
@@ -206,40 +207,42 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "7c5b1cf38290937b9969d3c77370740c66f6233428f04e1dd35c2d206efa1719"
+        "5ff8c88e5dfec4301ed7c0603bae2088ecdd096a8336ed0c2e5d386b08ebe5c5"
 
-    val QUERY_DOCUMENT: String = """
-        |query TestQuery {
-        |  hero {
-        |    __typename
-        |    name
-        |    friendsConnection {
-        |      __typename
-        |      edges {
-        |        __typename
-        |        node {
-        |          __typename
-        |          name
-        |        }
-        |      }
-        |    }
-        |    ... on Character {
-        |      name
-        |      profileLink
-        |      friendsConnection {
-        |        __typename
-        |        edges {
-        |          __typename
-        |          node {
-        |            __typename
-        |            name
-        |          }
-        |        }
-        |      }
-        |    }
-        |  }
-        |}
-        """.trimMargin()
+    val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
+          """
+          |query TestQuery {
+          |  hero {
+          |    __typename
+          |    name
+          |    friendsConnection {
+          |      __typename
+          |      edges {
+          |        __typename
+          |        node {
+          |          __typename
+          |          name
+          |        }
+          |      }
+          |    }
+          |    ... on Character {
+          |      name
+          |      profileLink
+          |      friendsConnection {
+          |        __typename
+          |        edges {
+          |          __typename
+          |          node {
+          |            __typename
+          |            name
+          |          }
+          |        }
+          |      }
+          |    }
+          |  }
+          |}
+          """.trimMargin()
+        )
 
     val OPERATION_NAME: OperationName = OperationName { "TestQuery" }
   }

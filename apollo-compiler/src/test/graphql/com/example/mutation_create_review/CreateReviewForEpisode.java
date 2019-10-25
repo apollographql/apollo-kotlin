@@ -18,6 +18,7 @@ import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.api.internal.Utils;
+import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.mutation_create_review.type.CustomType;
 import com.example.mutation_create_review.type.Episode;
 import com.example.mutation_create_review.type.ReviewInput;
@@ -35,22 +36,24 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpisode.Data, Optional<CreateReviewForEpisode.Data>, CreateReviewForEpisode.Variables> {
-  public static final String OPERATION_ID = "e21a7c3210dfc89a23ac6ffa9cd5d4caf1b7ebecce91677433782e7b6f11f39c";
+  public static final String OPERATION_ID = "c07e5abc4b4070cd773623194c07f546e609af467a1d34f7bf01c37272245296";
 
-  public static final String QUERY_DOCUMENT = "mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {\n"
-      + "  createReview(episode: $ep, review: $review) {\n"
-      + "    __typename\n"
-      + "    stars\n"
-      + "    commentary\n"
-      + "    listOfListOfString\n"
-      + "    listOfListOfEnum\n"
-      + "    listOfListOfCustom\n"
-      + "    listOfListOfObject {\n"
-      + "      __typename\n"
-      + "      name\n"
-      + "    }\n"
-      + "  }\n"
-      + "}";
+  public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
+    "mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {\n"
+        + "  createReview(episode: $ep, review: $review) {\n"
+        + "    __typename\n"
+        + "    stars\n"
+        + "    commentary\n"
+        + "    listOfListOfString\n"
+        + "    listOfListOfEnum\n"
+        + "    listOfListOfCustom\n"
+        + "    listOfListOfObject {\n"
+        + "      __typename\n"
+        + "      name\n"
+        + "    }\n"
+        + "  }\n"
+        + "}"
+  );
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override
