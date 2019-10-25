@@ -196,7 +196,7 @@ public class WebSocketSubscriptionTransportMessageTest {
 
   private static final class MockSubscription implements Subscription<Operation.Data, Operation.Data, Operation.Variables> {
     @Override public String queryDocument() {
-      return "subscription{commentAdded{id\n  name\n}";
+      return "subscription{commentAdded{id  name}";
     }
 
     @Override public Variables variables() {
