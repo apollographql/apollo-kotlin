@@ -160,15 +160,20 @@ open class ApolloPlugin : Plugin<Project> {
         it.generateVisitorForPolymorphicDatatypes.set(compilationUnit.compilerParams.generateVisitorForPolymorphicDatatypes)
         it.customTypeMapping.set(compilationUnit.compilerParams.customTypeMapping)
         it.outputDir.apply {
-          set(project.buildDir.child("generated", "source", "apollo", compilationUnit.variantName, compilationUnit.serviceName))
+          set(project.layout.buildDirectory.map {
+            it.dir("generated/source/apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}")
+          })
           disallowChanges()
         }
         it.transformedQueriesOutputDir.apply {
-          if (compilationUnit.compilerParams.generateTransformedQueries.isPresent) {
-            set(project.buildDir.child("generated", "transformedQueries", "apollo", compilationUnit.variantName, compilationUnit.serviceName))
+          if (compilationUnit.compilerParams.generateTransformedQueries.getOrElse(false)) {
+            set(project.layout.buildDirectory.map {
+              it.dir("generated/transformedQueries/apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}")
+            })
           }
           disallowChanges()
         }
+        Unit
       }
     }
 

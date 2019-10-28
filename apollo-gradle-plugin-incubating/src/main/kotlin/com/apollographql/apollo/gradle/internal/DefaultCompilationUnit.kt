@@ -55,7 +55,7 @@ class DefaultCompilationUnit(
     }
   }
 
-  fun sources():Sources {
+  fun sources(): Sources {
     if (sources != null) {
       return sources!!
     }
