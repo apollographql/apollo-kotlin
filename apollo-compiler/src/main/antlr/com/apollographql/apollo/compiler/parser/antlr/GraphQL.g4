@@ -40,7 +40,7 @@ operationDefinition
    ;
 
 selectionSet
-   : '{' selection ( ','? selection )* '}'
+   : '{' (selection)* '}'
    ;
 
 operationType
@@ -64,7 +64,7 @@ alias
    ;
 
 arguments
-   : '(' argument ( ','? argument )* ')'
+   : '(' (argument)* ')'
    ;
 
 argument
@@ -104,7 +104,7 @@ typeCondition
    ;
 
 variableDefinitions
-   : '(' variableDefinition ( ','? variableDefinition )* ')'
+   : '(' (variableDefinition)* ')'
    ;
 
 variableDefinition
@@ -128,7 +128,7 @@ value
    ;
 
 arrayValueType
-   : '[' valueOrVariable ( ','? valueOrVariable )* ']' | emptyArray
+   : '[' (valueOrVariable)* ']' | emptyArray
    ;
 
 emptyArray
@@ -136,7 +136,7 @@ emptyArray
    ;
 
 inlineInputType
-   : '{' inlineInputTypeField ( ','? inlineInputTypeField )* '}' | emptyMap
+   : '{' (inlineInputTypeField)* '}' | emptyMap
    ;
 
 inlineInputTypeField
@@ -161,10 +161,6 @@ listType
 
 nonNullType
    : '!'
-   ;
-
-array
-   : '[' value ( ','? value )* ']' | '[' ']'
    ;
 
 STRING
@@ -200,5 +196,8 @@ WS
    : [ \t\n\r]+ -> skip
    ;
 COMMENT
-    : '#' ~[\r\n]* -> skip
+    : '#' ~[\n\r]* -> skip
+    ;
+COMMA
+    : ',' -> skip
     ;
