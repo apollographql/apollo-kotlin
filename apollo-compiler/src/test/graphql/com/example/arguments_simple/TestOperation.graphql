@@ -4,8 +4,8 @@ query TestQuery($episode: Episode $IncludeName: Boolean! $friendsCount: Int! $li
     ...HeroDetails
   }
   heroWithReview (
-    episode: $episode,
-    review: {}
+    episode: $episode
+    review: {},
   ) {
     name
   }
