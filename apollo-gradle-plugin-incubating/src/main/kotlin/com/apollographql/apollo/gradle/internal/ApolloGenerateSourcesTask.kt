@@ -1,6 +1,7 @@
 package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.compiler.*
+import com.apollographql.apollo.compiler.DefaultPackageNameProvider
 import com.apollographql.apollo.compiler.parser.GraphQLDocumentParser
 import com.apollographql.apollo.compiler.parser.Schema
 import org.gradle.api.DefaultTask
@@ -78,7 +79,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
     val schema = Schema.invoke(realSchemaFile)
 
-    val packageNameProvider = PluginPackageNameProvider(
+    val packageNameProvider = DefaultPackageNameProvider(
         rootFolders = rootFolders.get(),
         rootPackageName = rootPackageName.getOrElse(""),
         schemaFile = realSchemaFile

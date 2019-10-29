@@ -1,12 +1,9 @@
-package com.apollographql.apollo.gradle.internal
+package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo.compiler.PackageNameProvider
-import com.apollographql.apollo.compiler.appendPackageName
-import org.gradle.api.file.SourceDirectorySet
 import java.io.File
 
-class PluginPackageNameProvider(rootFolders: Collection<String>, schemaFile: File, private val rootPackageName: String) : PackageNameProvider {
-  private val roots = rootFolders.map(::File)
+class DefaultPackageNameProvider(rootFolders: Collection<String>, schemaFile: File, private val rootPackageName: String) : PackageNameProvider {
+  private val roots = rootFolders.map(::File).map { File(it.canonicalPath) }
   private val schemaPackageName = try {
     filePackageName(schemaFile.absolutePath)
   } catch (e: IllegalArgumentException) {
@@ -22,7 +19,7 @@ class PluginPackageNameProvider(rootFolders: Collection<String>, schemaFile: Fil
   }
 
   fun filePackageName(filePath: String): String {
-    val file = File(filePath)
+    val file = File(File(filePath).canonicalPath)
     roots.forEach { sourceDir ->
       try {
         val relative = file.toRelativeString(sourceDir)

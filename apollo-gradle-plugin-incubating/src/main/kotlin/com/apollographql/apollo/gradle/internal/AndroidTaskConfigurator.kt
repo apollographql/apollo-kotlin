@@ -41,7 +41,7 @@ object AndroidTaskConfigurator {
     return container
   }
 
-  // TODO: make this lazy
+  // TODO: make this lazy (https://github.com/apollographql/apollo-android/issues/1454)
   fun registerGeneratedDirectory(
       project: Project,
       androidExtension: Any,
