@@ -443,7 +443,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
     SubscriptionRecord subscriptionRecord;
     synchronized (this) {
       try {
-        subscriptionRecord = subscriptions.get(UUID.fromString(subscriptionId));
+        subscriptionRecord = subscriptions.remove(UUID.fromString(subscriptionId));
       } catch (IllegalArgumentException e) {
         subscriptionRecord = null;
       }
