@@ -71,7 +71,7 @@ buildscript {
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
   }
   dependencies {
-    classpath 'com.apollographql.apollo:apollo-gradle-plugin:1.2.1-SNAPSHOT'
+    classpath 'com.apollographql.apollo:apollo-gradle-plugin:1.2.2-SNAPSHOT'
   }
 }
 ```
@@ -83,7 +83,7 @@ repositories {
 }
 
 dependencies {
-  implementation 'com.apollographql.apollo:apollo-runtime:1.2.1-SNAPSHOT'
+  implementation 'com.apollographql.apollo:apollo-runtime:1.2.2-SNAPSHOT'
 }
 ```
 
