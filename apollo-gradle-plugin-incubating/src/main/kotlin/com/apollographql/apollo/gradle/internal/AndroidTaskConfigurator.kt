@@ -1,11 +1,9 @@
-package com.apollographql.apollo.gradle
+package com.apollographql.apollo.gradle.internal
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.api.BaseVariant
-import com.apollographql.apollo.gradle.api.ApolloExtension
-import org.gradle.api.Action
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskProvider
@@ -43,6 +41,7 @@ object AndroidTaskConfigurator {
     return container
   }
 
+  // TODO: make this lazy (https://github.com/apollographql/apollo-android/issues/1454)
   fun registerGeneratedDirectory(
       project: Project,
       androidExtension: Any,
@@ -51,14 +50,12 @@ object AndroidTaskConfigurator {
   ) {
 
     val variant = compilationUnit.androidVariant as BaseVariant
-    if (compilationUnit.compilerParams.generateKotlinModels) {
+    if (compilationUnit.compilerParams.generateKotlinModels.get()) {
       variant.addJavaSourceFoldersToModel(codegenProvider.get().outputDir.get().asFile)
       androidExtension as BaseExtension
-      // TODO: make this lazy
       androidExtension.sourceSets.first { it.name == variant.name }.kotlin!!.srcDir(codegenProvider.get().outputDir)
       project.tasks.named("compile${variant.name.capitalize()}Kotlin").configure { it.dependsOn(codegenProvider) }
     } else {
-      // TODO: make this lazy
       variant.registerJavaGeneratingTask(codegenProvider.get(), codegenProvider.get().outputDir.get().asFile)
     }
   }

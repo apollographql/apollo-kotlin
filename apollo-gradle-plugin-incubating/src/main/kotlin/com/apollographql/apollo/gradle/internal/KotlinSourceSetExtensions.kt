@@ -1,10 +1,9 @@
-package com.apollographql.apollo.gradle
+package com.apollographql.apollo.gradle.internal
 
 import com.android.build.gradle.api.AndroidSourceSet
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.internal.HasConvention
 import org.gradle.api.tasks.SourceSet
-import org.gradle.api.tasks.SourceSetContainer
 import org.jetbrains.kotlin.gradle.plugin.KOTLIN_DSL_NAME
 import org.jetbrains.kotlin.gradle.plugin.KOTLIN_JS_DSL_NAME
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet

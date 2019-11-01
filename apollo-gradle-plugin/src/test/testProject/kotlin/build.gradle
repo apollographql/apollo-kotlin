@@ -19,8 +19,16 @@ repositories {
     jcenter()
 }
 
+sourceSets {
+    main {
+        java {
+            srcDirs += '../../../../apollo-api/src/main/java'
+        }
+    }
+}
+
 dependencies {
-    implementation dep.apollo.api
+    implementation apolloApiCompileDeps
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
 }
 

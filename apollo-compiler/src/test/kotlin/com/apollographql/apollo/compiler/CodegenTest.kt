@@ -10,8 +10,6 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import java.io.File
 import java.lang.Exception
-import java.nio.file.*
-import java.nio.file.attribute.BasicFileAttributes
 import javax.tools.JavaFileObject
 
 @RunWith(Parameterized::class)
@@ -24,6 +22,8 @@ class CodeGenTest(val folder: File) {
 
   private fun generateExpectedClasses(args: GraphQLCompiler.Arguments) {
     val sourceFileObjects = mutableListOf<JavaFileObject>()
+
+    args.outputDir.deleteRecursively()
     GraphQLCompiler().write(args)
 
     val extension = if (args.generateKotlinModels) {
@@ -32,49 +32,37 @@ class CodeGenTest(val folder: File) {
       "java"
     }
 
-    val pathMatcher = FileSystems.getDefault().getPathMatcher("glob:**.$extension")
-
-    Files.walkFileTree(folder.toPath(), object : SimpleFileVisitor<Path>() {
-      override fun visitFile(expectedFile: Path, attrs: BasicFileAttributes): FileVisitResult {
-        if (pathMatcher.matches(expectedFile)) {
-          val expected = expectedFile.toFile()
-
-          val actualClassName = actualClassName(expectedFile, extension)
-          val actual = findActual(actualClassName, extension, args)
-
-          if (!actual.isFile) {
-            throw AssertionError("Couldn't find actual file: $actual")
-          }
-
-          checkTestFixture(actual = actual, expected = expected)
-
-
-          // XXX also test kotlin compilation
-          if (!args.generateKotlinModels) {
-            sourceFileObjects.add(JavaFileObjects.forSourceLines("com.example.${folder.name}.$actualClassName",
-                actual.readLines()))
-          }
-        }
-        return FileVisitResult.CONTINUE
+    val walk = folder.walkTopDown()
+    walk.forEach {file ->
+      if (!file.name.endsWith(extension)) {
+        return@forEach
       }
-    })
+
+      val expected = file.relativeTo(folder)
+      val relativePath = "com/example/${folder.name}/${expected.path}"
+      val actual = File(args.outputDir, relativePath)
+
+      if (!actual.isFile) {
+        throw AssertionError("Couldn't find actual file: $actual")
+      }
+
+      checkTestFixture(actual = actual, expected = file)
+
+      // XXX also test kotlin compilation
+      if (!args.generateKotlinModels) {
+        val qualifiedName = relativePath
+            .substringBeforeLast(".")
+            .split(File.separator)
+            .joinToString(".")
+
+        sourceFileObjects.add(JavaFileObjects.forSourceLines(qualifiedName,
+            actual.readLines()))
+      }
+    }
 
     if (!args.generateKotlinModels) {
       assertAbout(javaSources()).that(sourceFileObjects).compilesWithoutError()
     }
-  }
-
-  private fun actualClassName(expectedFile: Path, extension: String): String {
-    return expectedFile.fileName.toString().replace("Expected", "").replace(".$extension", "")
-  }
-
-  private fun findActual(className: String, extension: String, args: GraphQLCompiler.Arguments): File {
-    val possiblePaths = arrayOf("$className.$extension", "type/$className.$extension", "fragment/$className.$extension")
-    possiblePaths
-        .map { args.outputDir.toPath().resolve("com/example/${folder.name}/$it").toFile() }
-        .filter { it.isFile }
-        .forEach { return it }
-    throw AssertionError("Couldn't find actual file: $className")
   }
 
   companion object {
@@ -120,17 +108,17 @@ class CodeGenTest(val folder: File) {
       val schema = Schema(schemaJson)
       val graphQLFile = File(folder, "TestOperation.graphql")
 
-      val outputPackageName = "com.example.${folder.name}"
-
-      val packageNameProvider = PackageNameProvider(
-          rootPackageName = "",
-          schemaPackageName = "",
-          outputPackageName = outputPackageName
+      val packageNameProvider = DefaultPackageNameProvider(
+          rootFolders = listOf(folder.absolutePath),
+          schemaFile = schemaJson,
+          rootPackageName = "com.example.${folder.name}"
       )
-      val ir = GraphQLDocumentParser(schema, packageNameProvider).parse(listOf(graphQLFile))
+
+      val ir = GraphQLDocumentParser(schema, packageNameProvider).parse(setOf(graphQLFile))
+      val language = if (generateKotlinModels) "kotlin" else "java"
       val args = GraphQLCompiler.Arguments(
           ir = ir,
-          outputDir = GraphQLCompiler.OUTPUT_DIRECTORY.plus("sources").fold(File("build"), ::File),
+          outputDir = File("build/generated/test/${folder.name}/$language"),
           customTypeMap = customTypeMap,
           generateKotlinModels = generateKotlinModels,
           nullableValueType = nullableValueType,

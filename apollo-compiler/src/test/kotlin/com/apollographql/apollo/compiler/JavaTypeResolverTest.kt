@@ -9,7 +9,7 @@ import org.junit.Test
 import java.util.*
 
 class JavaTypeResolverTest {
-  private val packageNameProvider = PackageNameProvider(
+  private val packageNameProvider = DeprecatedPackageNameProvider(
       rootPackageName = "",
       outputPackageName = null,
       schemaPackageName = ""

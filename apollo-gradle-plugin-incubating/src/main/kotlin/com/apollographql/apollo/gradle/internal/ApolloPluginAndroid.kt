@@ -1,4 +1,4 @@
-package com.apollographql.apollo.gradle
+package com.apollographql.apollo.gradle.internal
 
 import org.gradle.api.Project
 

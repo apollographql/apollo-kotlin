@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler.codegen.kotlin
 
+import com.apollographql.apollo.compiler.DeprecatedPackageNameProvider
 import com.apollographql.apollo.compiler.PackageNameProvider
 import com.apollographql.apollo.compiler.ast.*
 import com.squareup.kotlinpoet.FileSpec

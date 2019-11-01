@@ -1,49 +1,45 @@
 package com.apollographql.apollo.gradle.api
 
+import com.apollographql.apollo.gradle.internal.DefaultService
 import org.gradle.api.Action
-import org.gradle.api.Project
+import org.gradle.api.DomainObjectCollection
+import org.gradle.api.provider.Property
 
-open class ApolloExtension(project: Project): CompilerParams by DefaultCompilerParams() {
-  /**
-   * This is the input to the apollo plugin. Users will populate the services from their gradle files
-   */
-  val services = mutableListOf<Service>()
+interface ApolloExtension: CompilerParams {
 
-  /**
-   * compilationUnits is meant to be consumed by other gradle plugin.
-   * The apollo plugin will add the {@link CompilationUnit} as it creates them
-   */
-  val compilationUnits = project.container(CompilationUnit::class.java)
+  val compilationUnits: DomainObjectCollection<CompilationUnit>
 
-  fun service(name: String, action: Action<Service>) {
-    val service = Service(name)
-    action.execute(service)
-    services.add(service)
-  }
+  fun service(name: String, action: Action<DefaultService>)
 
   /**
-   * Deprecated,use @{link service} instead
+   * @Deprecated
+   *
+   * Used for backward compatibility reasons with the old groovy plugin
    */
-  @JvmField
-  var schemaFilePath: String? = null
+  @Deprecated("please use services instead")
+  val schemaFilePath: Property<String>
 
   /**
-   * Deprecated, use @{link service} instead
+   * @Deprecated
+   *
+   * Used for backward compatibility reasons with the old groovy plugin
    */
-  @JvmField
-  var outputPackageName: String? = null
+  @Deprecated("please use services instead")
+  fun setSchemaFilePath(schemaFilePath: String)
 
   /**
-   * For backward compatibility
+   * @Deprecated
+   *
+   * Used for backward compatibility reasons with the old groovy plugin
    */
-  fun setSchemaFilePath(schemaFilePath: String) {
-    this.schemaFilePath = schemaFilePath
-  }
+  @Deprecated("please use services instead")
+  val outputPackageName: Property<String>
 
   /**
-   * For backward compatibility
+   * @Deprecated
+   *
+   * Used for backward compatibility reasons with the old groovy plugin
    */
-  fun setOutputPackageName(outputPackageName: String) {
-    this.outputPackageName = outputPackageName
-  }
+  @Deprecated("please use services instead")
+  fun setOutputPackageName(outputPackageName: String)
 }

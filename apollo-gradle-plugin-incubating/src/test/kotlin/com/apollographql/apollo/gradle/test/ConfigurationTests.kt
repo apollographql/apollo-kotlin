@@ -17,7 +17,7 @@ class ConfigurationTests {
     withSimpleProject("""
       apollo {
         customTypeMapping = ["DateTime": "java.util.Date"]
-        suppressRawTypesWarning = "true"
+        suppressRawTypesWarning = true
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
@@ -193,7 +193,7 @@ class ConfigurationTests {
         useSemanticNaming = false
         service("starwars") {
           useSemanticNaming = true
-          schemaFilePath = "src/main/graphql/com/example/schema.json"
+          schemaPath("com/example/schema.json")
         }
       }
     """.trimIndent()) { dir ->
@@ -204,47 +204,37 @@ class ConfigurationTests {
 
 
   @Test
-  fun `sourceFolderPath can be changed`() {
+  fun `sourceFolder can be changed`() {
     withSimpleProject("""
       apollo {
         service("starwars") {
-          schemaFilePath = "starwars.json"
-          sourceFolderPath = "starwars"
+          sourceFolder("starwars")
         }
       }
     """.trimIndent()) { dir ->
       File(dir, "src/main/graphql/com/example").copyRecursively(File(dir, "src/main/graphql/starwars"))
       File(dir, "src/main/graphql/com").deleteRecursively()
-      File(dir, "src/main/graphql/starwars/schema.json").copyTo(File(dir, "starwars.json"))
-      File(dir, "src/main/graphql/starwars/schema.json").delete()
 
       TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("main/starwars/starwars/DroidDetailsQuery.java").isFile)
+      assertTrue(dir.generatedChild("main/starwars/DroidDetailsQuery.java").isFile)
       assertTrue(dir.generatedChild("main/starwars/type/CustomType.java").isFile)
       assertTrue(dir.generatedChild("main/starwars/fragment/SpeciesInformation.java").isFile)
     }
   }
 
   @Test
-  fun `rootPackageName can be changed`() {
+  fun `rootPackageName works as expected`() {
     withSimpleProject("""
       apollo {
-        service("starwars") {
-          schemaFilePath = "starwars.json"
-          sourceFolderPath = "starwars"
+        service("service") {
           rootPackageName = "com.starwars"
         }
       }
     """.trimIndent()) { dir ->
-      File(dir, "src/main/graphql/com/example").copyRecursively(File(dir, "src/main/graphql/starwars"))
-      File(dir, "src/main/graphql/com").deleteRecursively()
-      File(dir, "src/main/graphql/starwars/schema.json").copyTo(File(dir, "starwars.json"))
-      File(dir, "src/main/graphql/starwars/schema.json").delete()
-
       TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("main/starwars/com/starwars/starwars/DroidDetailsQuery.java").isFile)
-      assertTrue(dir.generatedChild("main/starwars/com/starwars/type/CustomType.java").isFile)
-      assertTrue(dir.generatedChild("main/starwars/com/starwars/fragment/SpeciesInformation.java").isFile)
+      assertTrue(dir.generatedChild("main/service/com/starwars/com/example/DroidDetailsQuery.java").isFile)
+      assertTrue(dir.generatedChild("main/service/com/starwars/com/example/type/CustomType.java").isFile)
+      assertTrue(dir.generatedChild("main/service/com/starwars/com/example/fragment/SpeciesInformation.java").isFile)
     }
   }
 
@@ -253,7 +243,7 @@ class ConfigurationTests {
     withSimpleProject("""
       apollo {
         service("starwars") {
-          schemaFilePath = "src/main/graphql/com/example/schema.json"
+          schemaPath("com/example/schema.json")
           exclude = ["**/*.gql"]
         }
       }
