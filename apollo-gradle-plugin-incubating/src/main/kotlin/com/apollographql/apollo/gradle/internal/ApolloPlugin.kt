@@ -1,6 +1,7 @@
 package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.compiler.child
+import com.apollographql.apollo.gradle.api.ApolloExtension
 import com.apollographql.apollo.gradle.api.ApolloSourceSetExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -212,7 +213,7 @@ open class ApolloPlugin : Plugin<Project> {
   }
 
   override fun apply(project: Project) {
-    val apolloExtension = project.extensions.create("apollo", DefaultApolloExtension::class.java, project)
+    val apolloExtension = project.extensions.create(ApolloExtension::class.java, "apollo", DefaultApolloExtension::class.java, project) as DefaultApolloExtension
     // for backward compatibility
     val apolloSourceSetExtension = (apolloExtension as ExtensionAware).extensions.create("sourceSet", ApolloSourceSetExtension::class.java, project.objects)
 
