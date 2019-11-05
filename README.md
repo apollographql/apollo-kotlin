@@ -719,7 +719,7 @@ apollo {
    * You can omit this block altogether and the plugin will default to the found schema.json and
    * .graphql files in src/{foo}/graphql.
 .  *
-   * Adding it allows you to customize it more and download your schema through gradle
+   * Adding it allows you to customize it more and download your schema through Gradle
    */
   service("starwars") {
     /**
