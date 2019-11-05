@@ -61,7 +61,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   abstract val rootFolders: Property<Collection<String>>
 
   @get:OutputDirectory
-  @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val outputDir: DirectoryProperty
 
   @get:Optional
