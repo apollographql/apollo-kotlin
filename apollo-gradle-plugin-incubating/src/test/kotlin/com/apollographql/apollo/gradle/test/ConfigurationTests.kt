@@ -109,10 +109,10 @@ class ConfigurationTests {
   }
 
   @Test
-  fun `schemaFilePath fails`() {
+  fun `schemaFilePath with absolute path fails`() {
     withSimpleProject("""
       apollo {
-        schemaFilePath = "schema.json"
+        schemaFilePath = "/home/apollographql/schema.json"
       }
     """.trimIndent()) { dir ->
       var exception: Exception? = null
@@ -120,7 +120,25 @@ class ConfigurationTests {
         TestUtils.executeTask("generateApolloSources", dir)
       } catch (e: UnexpectedBuildFailure) {
         exception = e
-        assertThat(e.message, containsString("is not supported anymore"))
+        assertThat(e.message, containsString("schemaPath = \"/home/apollographql/schema.json\""))
+      }
+      assertNotNull(exception)
+    }
+  }
+
+  @Test
+  fun `schemaFilePath with relative path fails`() {
+    withSimpleProject("""
+      apollo {
+        schemaFilePath = "src/main/graphql/schema.json"
+      }
+    """.trimIndent()) { dir ->
+      var exception: Exception? = null
+      try {
+        TestUtils.executeTask("generateApolloSources", dir)
+      } catch (e: UnexpectedBuildFailure) {
+        exception = e
+        assertThat(e.message, containsString("schemaPath = \"schema.json\""))
       }
       assertNotNull(exception)
     }
