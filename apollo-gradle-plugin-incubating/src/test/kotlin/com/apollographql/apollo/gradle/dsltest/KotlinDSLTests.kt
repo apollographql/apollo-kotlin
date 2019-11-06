@@ -118,5 +118,31 @@ class KotlinDSLTests {
     }
   }
 
+  @Test
+  fun `DslMarker is working as expected`() {
+    val apolloConfiguration = """
+      configure<ApolloExtension> {
+        service("starwars") {
+          // this should trigger a compilation error
+          schemaFilePath.set("foo")
+        }
+      }
+    """.trimIndent()
 
+    TestUtils.withProject(
+        usesKotlinDsl = true,
+        plugins = listOf(TestUtils.javaPlugin, TestUtils.apolloPlugin),
+        apolloConfiguration = apolloConfiguration
+    ) { dir ->
+
+      var exception: Exception? = null
+      try {
+        TestUtils.executeTask("generateApolloSources", dir)
+      } catch (e: UnexpectedBuildFailure) {
+        exception = e
+        Assert.assertThat(e.message, CoreMatchers.containsString("can't be called in this context by"))
+      }
+      Assert.assertNotNull(exception)
+    }
+  }
 }

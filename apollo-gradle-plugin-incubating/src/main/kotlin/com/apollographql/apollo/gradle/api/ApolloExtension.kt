@@ -5,6 +5,7 @@ import org.gradle.api.Action
 import org.gradle.api.DomainObjectCollection
 import org.gradle.api.provider.Property
 
+@ApolloGraphqlDslMarker
 interface ApolloExtension: CompilerParams {
 
   val compilationUnits: DomainObjectCollection<CompilationUnit>

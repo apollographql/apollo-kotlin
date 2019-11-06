@@ -1,11 +1,9 @@
 package com.apollographql.apollo.gradle.api
 
-import org.apache.tools.ant.types.resources.FileProvider
 import org.gradle.api.file.*
-import org.gradle.api.provider.ListProperty
-import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 
+@ApolloGraphqlDslMarker
 interface CompilationUnit {
   val name: String
   val serviceName: String

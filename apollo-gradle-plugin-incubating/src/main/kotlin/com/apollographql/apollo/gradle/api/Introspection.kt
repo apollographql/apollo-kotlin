@@ -3,6 +3,7 @@ package com.apollographql.apollo.gradle.api
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 
+@ApolloGraphqlDslMarker
 interface Introspection {
   val endpointUrl: Property<String>
   fun endpointUrl(endpointUrl: String)
