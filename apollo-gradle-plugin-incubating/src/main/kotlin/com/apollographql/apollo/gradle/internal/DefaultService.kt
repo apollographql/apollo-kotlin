@@ -3,6 +3,7 @@ package com.apollographql.apollo.gradle.internal
 import com.apollographql.apollo.gradle.api.CompilerParams
 import com.apollographql.apollo.gradle.api.Introspection
 import com.apollographql.apollo.gradle.api.Service
+import groovy.lang.Closure
 import org.gradle.api.Action
 import org.gradle.api.model.ObjectFactory
 import javax.inject.Inject
@@ -29,6 +30,24 @@ open class DefaultService @Inject constructor(val objects: ObjectFactory, val na
   }
 
   var introspection: DefaultIntrospection? = null
+
+  fun introspection(configure: Closure<Introspection>) {
+    val introspection = objects.newInstance(DefaultIntrospection::class.java, objects)
+
+    if (this.introspection != null) {
+      throw IllegalArgumentException("there must be only one introspection block")
+    }
+
+    configure.delegate = introspection
+    configure.resolveStrategy = Closure.DELEGATE_ONLY
+    configure.call()
+
+    if (!introspection.endpointUrl.isPresent) {
+      throw IllegalArgumentException("introspection must have a url")
+    }
+
+    this.introspection = introspection
+  }
 
   override fun introspection(configure: Action<in Introspection>) {
     val introspection = objects.newInstance(DefaultIntrospection::class.java, objects)

@@ -3,6 +3,7 @@ package com.apollographql.apollo.gradle.internal
 import com.apollographql.apollo.gradle.api.ApolloExtension
 import com.apollographql.apollo.gradle.api.CompilationUnit
 import com.apollographql.apollo.gradle.api.CompilerParams
+import groovy.lang.Closure
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.provider.Property
@@ -18,6 +19,15 @@ open class DefaultApolloExtension(val project: Project): CompilerParams by Defau
    * The apollo plugin will add the {@link CompilationUnit} as it creates them
    */
   override val compilationUnits = project.container(CompilationUnit::class.java)
+
+  fun service(name: String, closure: Closure<DefaultService>) {
+    val service = project.objects.newInstance(DefaultService::class.java, project.objects, name)
+    closure.delegate = service
+    // do not resolve properties in parent scopes
+    closure.resolveStrategy = Closure.DELEGATE_ONLY
+    closure.call()
+    services.add(service)
+  }
 
   override fun service(name: String, action: Action<DefaultService>) {
     val service = project.objects.newInstance(DefaultService::class.java, project.objects, name)

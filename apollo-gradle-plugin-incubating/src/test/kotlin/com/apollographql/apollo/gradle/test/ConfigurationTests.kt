@@ -6,7 +6,9 @@ import com.apollographql.apollo.gradle.util.TestUtils.withSimpleProject
 import com.apollographql.apollo.gradle.util.generatedChild
 import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.UnexpectedBuildFailure
+import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.containsString
+import org.junit.Assert
 import org.junit.Assert.*
 import org.junit.Test
 import java.io.File
@@ -307,6 +309,26 @@ class ConfigurationTests {
       val result = TestUtils.executeTask("customTaskmainservice0", dir)
 
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainService0ApolloSources")!!.outcome)
+    }
+  }
+
+  @Test
+  fun `DslMarker is working for groovy`() {
+    withSimpleProject("""
+      apollo {
+        service("starwars") {
+          schemaFilePath = "foo"
+        }
+      }
+    """.trimIndent()) { dir ->
+      var exception: Exception? = null
+      try {
+        TestUtils.executeTask("generateApolloSources", dir)
+      } catch (e: UnexpectedBuildFailure) {
+        exception = e
+        assertThat(e.message, containsString("Could not set unknown property"))
+      }
+      assertNotNull(exception)
     }
   }
 }
