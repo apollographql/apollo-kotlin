@@ -92,10 +92,10 @@ public class InputFieldJsonWriter implements InputFieldWriter {
         writeBoolean(fieldName, ((CustomTypeValue.GraphQLBoolean) customTypeValue).value);
       } else if (customTypeValue instanceof CustomTypeValue.GraphQLNumber) {
         writeNumber(fieldName, ((CustomTypeValue.GraphQLNumber) customTypeValue).value);
-      } else if (customTypeValue instanceof CustomTypeValue.GraphQLJsonString) {
-        writeString(fieldName, ((CustomTypeValue.GraphQLJsonString) customTypeValue).value);
-      } else if (customTypeValue instanceof CustomTypeValue.GraphQLJson) {
-        writeMap(fieldName, ((CustomTypeValue.GraphQLJson) customTypeValue).value);
+      } else if (customTypeValue instanceof CustomTypeValue.GraphQLJsonObject ||
+          customTypeValue instanceof CustomTypeValue.GraphQLJsonList) {
+        jsonWriter.name(fieldName);
+        writeToJson(value, jsonWriter);
       } else {
         throw new IllegalArgumentException("Unsupported custom value type: " + customTypeValue);
       }
@@ -211,10 +211,9 @@ public class InputFieldJsonWriter implements InputFieldWriter {
           writeBoolean(((CustomTypeValue.GraphQLBoolean) customTypeValue).value);
         } else if (customTypeValue instanceof CustomTypeValue.GraphQLNumber) {
           writeNumber(((CustomTypeValue.GraphQLNumber) customTypeValue).value);
-        } else if (customTypeValue instanceof CustomTypeValue.GraphQLJsonString) {
-          writeString(((CustomTypeValue.GraphQLJsonString) customTypeValue).value);
-        } else if (customTypeValue instanceof CustomTypeValue.GraphQLJson) {
-          writeMap(((CustomTypeValue.GraphQLJson) customTypeValue).value);
+        } else if (customTypeValue instanceof CustomTypeValue.GraphQLJsonObject ||
+            customTypeValue instanceof CustomTypeValue.GraphQLJsonList) {
+          writeToJson(value, jsonWriter);
         } else {
           throw new IllegalArgumentException("Unsupported custom value type: " + customTypeValue);
         }

@@ -8,14 +8,17 @@ import com.apollographql.apollo.response.CustomTypeAdapter;
 import com.apollographql.apollo.response.CustomTypeValue;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
 
+import com.sun.javafx.collections.UnmodifiableObservableMap;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
@@ -147,38 +150,54 @@ public class InputFieldJsonWriterTest {
   }
 
   @Test
-  public void writeCustomJsonString() throws IOException {
-    Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new HashMap<>();
-    customTypeAdapters.put(new MockCustomScalarType(CustomTypeValue.GraphQLJsonString.class), new MockCustomTypeAdapter() {
-      @NotNull @Override public CustomTypeValue encode(@NotNull Object value) {
-        return new CustomTypeValue.GraphQLJsonString((String) value);
-      }
-    });
-    inputFieldJsonWriter = new InputFieldJsonWriter(jsonWriter, new ScalarTypeAdapters(customTypeAdapters));
-    inputFieldJsonWriter.writeCustom("someField", new MockCustomScalarType(CustomTypeValue.GraphQLJsonString.class), "{\"someField\": \"someValue\"}");
-    inputFieldJsonWriter.writeCustom("someNullField", new MockCustomScalarType(CustomTypeValue.GraphQLJsonString.class), null);
-    assertThat(jsonBuffer.readUtf8()).isEqualTo("{\"someField\":\"{\\\"someField\\\": \\\"someValue\\\"}\",\"someNullField\":null");
+  public void writeCustomJsonObject() throws IOException {
+    final Map<String, Object> value = new UnmodifiableMapBuilder<String, Object>()
+        .put("stringField", "string")
+        .put("booleanField", true)
+        .put("numberField", new BigDecimal(100))
+        .put("listField", Arrays.asList(
+            "string",
+            true,
+            new BigDecimal(100),
+            new UnmodifiableMapBuilder<String, Object>()
+                .put("stringField", "string")
+                .put("numberField", new BigDecimal(100))
+                .put("booleanField", true)
+                .put("listField", Arrays.asList(1, 2, 3))
+                .build()
+            )
+        )
+        .put("objectField", new UnmodifiableMapBuilder<String, Object>()
+            .put("stringField", "string")
+            .put("numberField", new BigDecimal(100))
+            .put("booleanField", true)
+            .put("listField", Arrays.asList(1, 2, 3))
+            .build()
+        )
+        .build();
+
+    inputFieldJsonWriter.writeCustom("someField", new MockCustomScalarType(Map.class), value);
+    inputFieldJsonWriter.writeCustom("someNullField", new MockCustomScalarType(Map.class), null);
+    assertThat(jsonBuffer.readUtf8()).isEqualTo("{\"someField\":{\"objectField\":{\"numberField\":100,\"booleanField\":true,\"listField\":[1,2,3],\"stringField\":\"string\"},\"numberField\":100,\"booleanField\":true,\"listField\":[\"string\",true,100,{\"numberField\":100,\"booleanField\":true,\"listField\":[1,2,3],\"stringField\":\"string\"}],\"stringField\":\"string\"},\"someNullField\":null");
   }
 
   @Test
-  public void writeCustomJson() throws IOException {
-    Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new HashMap<>();
-    customTypeAdapters.put(new MockCustomScalarType(CustomTypeValue.GraphQLJson.class), new MockCustomTypeAdapter() {
-      @NotNull @Override public CustomTypeValue encode(@NotNull Object value) {
-        return new CustomTypeValue.GraphQLJson((Map<String, Object>) value);
-      }
-    });
-    inputFieldJsonWriter = new InputFieldJsonWriter(jsonWriter, new ScalarTypeAdapters(customTypeAdapters));
+  public void writeCustomList() throws IOException {
+    final List<Object> value = Arrays.asList(
+        "string",
+        true,
+        new BigDecimal(100),
+        new UnmodifiableMapBuilder<String, Object>()
+            .put("stringField", "string")
+            .put("numberField", new BigDecimal(100))
+            .put("booleanField", true)
+            .put("listField", Arrays.asList(1, 2, 3))
+            .build()
+    );
 
-    Map<String, Object> objectMap = new LinkedHashMap<>();
-    objectMap.put("booleanField", true);
-    objectMap.put("stringField", "someValue");
-    objectMap.put("numberField", 100);
-    objectMap.put("objectField", new UnmodifiableMapBuilder().put("someField", "someValue").build());
-
-    inputFieldJsonWriter.writeCustom("someField", new MockCustomScalarType(CustomTypeValue.GraphQLJson.class), objectMap);
-    inputFieldJsonWriter.writeCustom("someNullField", new MockCustomScalarType(CustomTypeValue.GraphQLJson.class), null);
-    assertThat(jsonBuffer.readUtf8()).isEqualTo("{\"someField\":{\"booleanField\":true,\"stringField\":\"someValue\",\"numberField\":100,\"objectField\":{\"someField\":\"someValue\"}},\"someNullField\":null");
+    inputFieldJsonWriter.writeCustom("someField", new MockCustomScalarType(List.class), value);
+    inputFieldJsonWriter.writeCustom("someNullField", new MockCustomScalarType(List.class), null);
+    assertThat(jsonBuffer.readUtf8()).isEqualTo("{\"someField\":[\"string\",true,100,{\"numberField\":100,\"booleanField\":true,\"listField\":[1,2,3],\"stringField\":\"string\"}],\"someNullField\":null");
   }
 
   @Test
