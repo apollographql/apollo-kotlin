@@ -97,6 +97,12 @@ class AndroidTests {
       freeDebugDir.mkdirs()
       File(freeDebugDir, "schema.json").writeText("This is an invalid schema")
 
+      val paidDebugDir = File(dir, "src/paidDebug/graphql/com/example/")
+      paidDebugDir.mkdirs()
+      File(dir, "src/main/graphql/com/example/schema.json").copyTo(File(paidDebugDir, "schema.json"))
+
+      File(dir, "src/main/graphql/com/example/schema.json").delete()
+
       var exception: Exception? = null
       try {
         TestUtils.executeTask("generateFreeDebugApolloSources", dir)
