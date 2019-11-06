@@ -5,7 +5,7 @@
 [![Build status](https://travis-ci.org/apollographql/apollo-android.svg?branch=master)](https://travis-ci.org/apollographql/apollo-android)
 [![GitHub release](https://img.shields.io/github/release/apollographql/apollo-android.svg)](https://github.com/apollographql/apollo-android/releases/latest)
 
-Apollo-Android is a GraphQL compliant client that generates Java models from standard GraphQL queries.  These models give you a typesafe API to work with GraphQL servers.  Apollo will help you keep your GraphQL query statements together, organized, and easy to access from Java. Change a query and recompile your project - Apollo code gen will rebuild your data model.  Code generation also allows Apollo to read and unmarshal responses from the network without the need of any reflection (see example generated code below).  Future versions of Apollo-Android will also work with AutoValue and other value object generators.
+Apollo-Android is a GraphQL compliant client that generates Java models from standard GraphQL queries.  These models give you a typesafe API to work with GraphQL servers.  Apollo will help you keep your GraphQL query statements together, organized, and easy to access from Java. Change a query and recompile your project - Apollo code gen will rebuild your data model.  Code generation also allows Apollo to read and unmarshal responses from the network without the need of any reflection (see example generated code below).
 
 Apollo-Android is designed primarily with Android in mind but you can use it in any Java/Kotlin app. The android-only parts are in `apollo-android-support` and are only needed to use SQLite as a cache or the android main thread for callbacks.
 
@@ -716,28 +716,27 @@ apollo {
 
   /**
    * Use a service to define a schema and associated graphql files.
-   * You can omit this block altogether and the plugin will default to the found schema.json and .graphql files.
-   * You need to define it if you want to configure it more.
+   * You can omit this block altogether and the plugin will default to the found schema.json and
+   * .graphql files in src/{foo}/graphql.
+.  *
+   * Adding it allows you to customize it more and download your schema through Gradle
    */
   service("starwars") {
     /**
-     * schemaFilePath is the path to the schema.json file relative to the current project directory.
-     * schemaFilePath can point outside of src/{variant}/graphql but in that case, you'll want
-     * to define `rootPackageName` else fragments/types will be stored at the root of the namespace.
-     * By default, the plugin will look for a schema.json file in src/{variant}/graphql
-     * This parameter is mandatory.
+     * sourceFolder is where the graphql files are searched.
+     * This path is relative to the current sourceSet (e.g src/main/graphql/{sourceFolder})
+     * By default, this is "."
      */
-    schemaFilePath = "src/main/graphql/com/starwars/schema.json"
+    sourceFolder = "."
 
     /**
-     * sourceFolderPath is the path to the folder where graphql files are searched.
-     * sourceFolderPath is relative to the current sourceSet (e.g src/{variant}/graphql/{sourceFolderPath})
-     * By default, this is the directory where the schema.json is stored or "." if the schema is outside e.g. src/{variant}/graphql.
-     * You need to define this if you have two or more services whose schema is stored outside src/{variant}/graphql.
-     * If not, you can certainly omit it.
-     * This parameter is optional.
+     * schemaPath is where schema.json is.
+     *
+     * This path is relative to the current sourceSet (e.g src/main/graphql/{schemaPath})
+     * schemaPath can point outside of src/{variant}/graphql but in that case, you'll want
+     * to define `rootPackageName` else fragments/types will be stored at the root of the namespace.
      */
-    sourceFolderPath = "com/starwars"
+    schemaPath = "com/starwars/schema.json"
 
     /**
      * list of pattern of files to exclude as in PatternFilterable.
@@ -746,7 +745,8 @@ apollo {
     exclude = []
 
     /**
-     * The introspection block is used to add a `downloadXYZApolloSchema` task to update your schema.json easily
+     * The introspection block is used to add a `downloadXYZApolloSchema` task to update your
+     * schema.json easily
      * This block is optional.
      */
     introspection {
@@ -771,7 +771,7 @@ apollo {
    * There can be any number of services
    */
   service("githunt") {
-    schemaFilePath = "src/main/graphql/com/githunt/schema.json"
+    schemaPath = "com/githunt/schema.json"
     // etc..
   }
 }

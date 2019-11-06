@@ -12,7 +12,8 @@ open class ApolloPlugin : Plugin<Project> {
   companion object {
     const val TASK_GROUP = "apollo"
 
-    fun useService(schemaFilePath: String?, outputPackageName: String? = null, exclude: String? = null): String {
+    fun useService(project: Project, schemaFilePath: String?, outputPackageName: String? = null, exclude: String? = null): String {
+
       var ret = """
       |Please use a service instead:
       |apollo {
@@ -20,7 +21,13 @@ open class ApolloPlugin : Plugin<Project> {
       """.trimMargin()
 
       if (schemaFilePath != null) {
-        ret += "\n    schemaFilePath = \"$schemaFilePath\""
+        val match = Regex("src/.*/graphql/(.*)").matchEntire(schemaFilePath)
+        val schemaPath = if (match != null) {
+          match.groupValues[1]
+        } else {
+          project.file(schemaFilePath).absolutePath
+        }
+        ret += "\n    schemaPath = \"$schemaPath\""
       }
       if (outputPackageName != null) {
         ret += "\n    rootPackageName = \"$outputPackageName\""
@@ -41,7 +48,7 @@ open class ApolloPlugin : Plugin<Project> {
         throw IllegalArgumentException("""
         apollo.sourceSet is not supported anymore.
         
-      """.trimIndent() + useService(apolloSourceSetExtension.schemaFile.getOrElse("null"),
+      """.trimIndent() + useService(apolloExtension.project, apolloSourceSetExtension.schemaFile.orNull,
             null, "[${apolloSourceSetExtension.exclude.get().joinToString(",")}]"))
       }
 
@@ -49,14 +56,14 @@ open class ApolloPlugin : Plugin<Project> {
         throw IllegalArgumentException("""
         apollo.schemaFilePath is not supported anymore as it doesn't work for multiple services.
         
-      """.trimIndent() + ApolloPlugin.useService(apolloExtension.schemaFilePath.get(), apolloExtension.outputPackageName.getOrElse("null")))
+      """.trimIndent() + useService(apolloExtension.project, apolloExtension.schemaFilePath.get(), apolloExtension.outputPackageName.orNull))
       }
 
       if (apolloExtension.outputPackageName.isPresent) {
         throw IllegalArgumentException("""
         apollo.outputPackageName is not supported anymore as it doesn't work for multiple services and also flattens the packages.
         
-      """.trimIndent() + ApolloPlugin.useService(apolloExtension.schemaFilePath.getOrElse("null"), apolloExtension.outputPackageName.get()))
+      """.trimIndent() + useService(apolloExtension.project, apolloExtension.schemaFilePath.orNull, apolloExtension.outputPackageName.get()))
       }
     }
 
