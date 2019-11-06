@@ -3,11 +3,47 @@ package com.apollographql.apollo.gradle.dsltest
 import com.apollographql.apollo.gradle.util.TestUtils
 import com.apollographql.apollo.gradle.util.generatedChild
 import org.gradle.testkit.runner.TaskOutcome
+import org.gradle.testkit.runner.UnexpectedBuildFailure
+import org.hamcrest.CoreMatchers
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class KotlinDSLTests {
+  @Test
+  fun `generated accessors work as expected`() {
+    val apolloConfiguration = """
+      apollo {
+        nullableValueType("annotated")
+      }
+    """.trimIndent()
+
+    TestUtils.withGeneratedAccessorsProject(apolloConfiguration) {dir ->
+      TestUtils.executeGradle(dir)
+    }
+  }
+
+  @Test
+  fun `generated accessors do not expose DefaultApolloExtension`() {
+    val apolloConfiguration = """
+      apollo {
+        println("apollo has ${'$'}{services.size} services")
+      }
+    """.trimIndent()
+
+    TestUtils.withGeneratedAccessorsProject(apolloConfiguration) {dir ->
+      var exception: Exception? = null
+      try {
+        TestUtils.executeGradle(dir)
+      } catch (e: UnexpectedBuildFailure) {
+        exception = e
+        Assert.assertThat(e.message, CoreMatchers.containsString("Unresolved reference: services"))
+      }
+      Assert.assertNotNull(exception)
+    }
+  }
+
+
   @Test
   fun `parameters do not throw`() {
     val apolloConfiguration = """
