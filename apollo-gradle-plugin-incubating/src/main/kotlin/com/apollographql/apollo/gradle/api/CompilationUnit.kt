@@ -1,9 +1,9 @@
 package com.apollographql.apollo.gradle.api
 
-import org.apache.tools.ant.types.resources.FileProvider
-import org.gradle.api.file.*
-import org.gradle.api.provider.ListProperty
-import org.gradle.api.provider.Property
+import org.gradle.api.Action
+import org.gradle.api.file.Directory
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Provider
 
 interface CompilationUnit {
@@ -17,6 +17,12 @@ interface CompilationUnit {
   val outputDir: Provider<Directory>
   val transformedQueriesDir: Provider<Directory>
 
+  fun configure(configure: Action<Params>)
   fun setSources(rootFolder: Provider<Directory>)
-  fun setSources(rootFolders: FileCollection, graphqlFiles: FileCollection, schemaFile: Provider<RegularFile>, rootPackageName: Provider<String>)
+
+  data class Params(
+      val graphqlFolder: DirectoryProperty,
+      val schemaFile: RegularFileProperty,
+      val rootPackageName: Provider<String>
+  )
 }

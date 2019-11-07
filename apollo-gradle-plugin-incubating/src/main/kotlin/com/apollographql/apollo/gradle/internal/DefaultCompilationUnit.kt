@@ -1,10 +1,14 @@
 package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo.compiler.*
+import com.apollographql.apollo.compiler.child
+import com.apollographql.apollo.compiler.toPackageName
 import com.apollographql.apollo.gradle.api.CompilationUnit
 import com.apollographql.apollo.gradle.api.CompilerParams
+import org.gradle.api.Action
 import org.gradle.api.Project
-import org.gradle.api.file.*
+import org.gradle.api.file.Directory
+import org.gradle.api.file.FileCollection
+import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
@@ -17,7 +21,7 @@ class DefaultCompilationUnit(
 
     override var compilerParams: CompilerParams,
 
-    private var sourcesLocator: SourcesLocator,
+    private val sourcesLocator: SourcesLocator,
     private val sourceSetNames: List<String>,
     private val project: Project
 ) : CompilationUnit {
@@ -71,46 +75,47 @@ class DefaultCompilationUnit(
     return sources!!
   }
 
-  override fun setSources(rootFolder: Provider<Directory>) {
-    val schemaFile = project.objects.fileProperty().value {
-      val root = rootFolder.get().asFile
-      val walk = root.walkTopDown()
-      val file = walk.find {
-        it.name.endsWith(".json")
+  override fun configure(configure: Action<CompilationUnit.Params>) {
+    val params = CompilationUnit.Params(
+        project.objects.directoryProperty(),
+        project.objects.fileProperty(),
+        project.provider { "" }
+    )
+    configure.execute(params)
+
+    require(params.graphqlFolder.isPresent) { "rootFolder must be specified" }
+
+    if (params.schemaFile.isPresent.not()) {
+      params.schemaFile.value {
+        val root = params.graphqlFolder.get().asFile
+        root.walkTopDown().find {
+          it.name.endsWith(".json")
+        } ?: throw IllegalArgumentException("cannot find a schema in ${root.absolutePath}")
       }
-      if (file == null) {
-        throw IllegalArgumentException("cannot find a schema in ${root.absolutePath}")
-      }
-      file
     }
 
     val graphqlFiles = project.objects.fileCollection()
-    graphqlFiles.setFrom(rootFolder.map {
-      it.asFileTree.matching {
+    graphqlFiles.setFrom(params.graphqlFolder.map { dir ->
+      dir.asFileTree.matching {
         it.include("**.graphql", "**.gql")
       }
     })
 
     val rootFolders = project.objects.fileCollection()
-    rootFolders.setFrom(rootFolder)
-
-    val rootPackageName = project.provider { "" }
+    rootFolders.setFrom(params.graphqlFolder)
 
     sources = Sources(
-        schemaFile = schemaFile,
+        schemaFile = params.schemaFile,
         graphqlFiles = graphqlFiles,
         rootFolders = rootFolders,
-        rootPackageName = rootPackageName
+        rootPackageName = params.rootPackageName
     )
   }
 
-  override fun setSources(rootFolders: FileCollection, graphqlFiles: FileCollection, schemaFile: Provider<RegularFile>, rootPackageName: Provider<String>) {
-    sources = Sources(
-        schemaFile = schemaFile,
-        graphqlFiles = graphqlFiles,
-        rootFolders = rootFolders,
-        rootPackageName = rootPackageName
-    )
+  override fun setSources(rootFolder: Provider<Directory>) {
+    configure(Action {
+      it.graphqlFolder.set(rootFolder)
+    })
   }
 
   fun sourcesFromService(fromService: SourcesLocator.FromService) {
