@@ -117,7 +117,6 @@ class ConfigurationTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      dir.generatedChild("main/service0/com/starwars").list()?.forEach(::println)
       assertTrue(dir.generatedChild("main/service0/com/starwars/com/example/DroidDetailsQuery.java").isFile)
       assertTrue(dir.generatedChild("main/service0/com/starwars/com/example/type/CustomType.java").isFile)
       assertTrue(dir.generatedChild("main/service0/com/starwars/com/example/fragment/SpeciesInformation.java").isFile)
@@ -236,7 +235,6 @@ class ConfigurationTests {
     }
   }
 
-
   @Test
   fun `sourceFolder can be changed`() {
     withSimpleProject("""
@@ -270,6 +268,52 @@ class ConfigurationTests {
       assertTrue(dir.generatedChild("main/service/com/starwars/com/example/DroidDetailsQuery.java").isFile)
       assertTrue(dir.generatedChild("main/service/com/starwars/com/example/type/CustomType.java").isFile)
       assertTrue(dir.generatedChild("main/service/com/starwars/com/example/fragment/SpeciesInformation.java").isFile)
+    }
+  }
+
+  @Test
+  fun `rootPackageName can be overridden in compilationUnits`() {
+    withSimpleProject("""
+      apollo {
+        rootPackageName "com.default"
+        service("starwars") {
+          rootPackageName "com.starwars"
+        }
+        onCompilationUnits {
+          compilerParams {
+            rootPackageName.set("com.overrides")
+          }
+        }
+      }
+    """.trimIndent()) { dir ->
+      TestUtils.executeTask("generateApolloSources", dir)
+      assertTrue(dir.generatedChild("main/starwars/com/overrides/com/example/DroidDetailsQuery.java").isFile)
+      assertTrue(dir.generatedChild("main/starwars/com/overrides/com/example/type/CustomType.java").isFile)
+      assertTrue(dir.generatedChild("main/starwars/com/overrides/com/example/fragment/SpeciesInformation.java").isFile)
+    }
+  }
+
+  @Test
+  fun `sources can be overridden in compilationUnits`() {
+    withSimpleProject("""
+      apollo {
+        service("starwars") {
+          schemaPath("com/some/other/schema.json")
+          sourceFolder("com/some/other")
+        }
+        
+        onCompilationUnits {
+          sources { source ->
+            source.schemaFile(file("src/main/graphql/com/example/schema.json"))
+            source.graphqlDir(file("src/main/graphql/"))
+          }
+        }
+      }
+    """.trimIndent()) { dir ->
+      TestUtils.executeTask("generateApolloSources", dir)
+      assertTrue(dir.generatedChild("main/starwars/com/example/DroidDetailsQuery.java").isFile)
+      assertTrue(dir.generatedChild("main/starwars/com/example/type/CustomType.java").isFile)
+      assertTrue(dir.generatedChild("main/starwars/com/example/fragment/SpeciesInformation.java").isFile)
     }
   }
 

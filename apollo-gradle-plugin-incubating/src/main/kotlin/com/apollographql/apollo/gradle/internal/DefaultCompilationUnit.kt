@@ -3,6 +3,7 @@ package com.apollographql.apollo.gradle.internal
 import com.apollographql.apollo.compiler.child
 import com.apollographql.apollo.gradle.api.CompilationUnit
 import com.apollographql.apollo.gradle.api.CompilerParams
+import groovy.lang.Closure
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
@@ -68,6 +69,12 @@ class DefaultCompilationUnit(
     return sources!!
   }
 
+  override fun compilerParams(closure: Closure<*>) {
+    closure.delegate = compilerParams
+    closure.resolveStrategy = Closure.DELEGATE_FIRST
+    closure.call()
+  }
+
   override fun compilerParams(action: Action<CompilerParams>) {
     action.execute(compilerParams)
   }
@@ -92,9 +99,7 @@ class DefaultCompilationUnit(
 
     val graphqlFiles = project.objects.fileCollection()
     graphqlFiles.setFrom(params.graphqlDir.map { dir ->
-      dir.asFileTree.matching {
-        it.include("**.graphql", "**.gql")
-      }
+      dir.asFileTree.filter(::isGraphQL)
     })
 
     val rootFolders = project.objects.fileCollection()

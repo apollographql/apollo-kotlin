@@ -1,5 +1,6 @@
 package com.apollographql.apollo.gradle.api
 
+import groovy.lang.Closure
 import org.gradle.api.Action
 import org.gradle.api.file.Directory
 import org.gradle.api.file.DirectoryProperty
@@ -16,6 +17,7 @@ interface CompilationUnit {
   val outputDir: Provider<Directory>
   val transformedQueriesDir: Provider<Directory>
 
+  fun compilerParams(closure: Closure<*>)
   fun compilerParams(action: Action<CompilerParams>)
   fun sources(action: Action<Sources>)
 
