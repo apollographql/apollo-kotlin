@@ -202,7 +202,7 @@ class DefaultCompilationUnit(
       }
 
       return schemaFiles.entries
-          .sortedBy { it.value.canonicalPath } // make sure the order is predictable for tests and in general
+          .sortedBy { it.key } // make sure the order is predictable for tests and in general
           .mapIndexed { i, entry ->
             val name = "service$i"
             val sourceFolder = entry.key.substringBeforeLast("/")
@@ -224,11 +224,11 @@ class DefaultCompilationUnit(
     }
 
     /**
-     * Finds the files in the given sourceSets taking into account their precedence according to the android plugin order
+     * Finds the files in the given sourceSets.
      *
      * Returns a map with the relative path to the path as key and the file as value
      *
-     * Files coming last will have higher priorities that the first ones.
+     * @throws [kotlin.IllegalArgumentException] if there are multiple files with the same relative path
      */
     private fun findFilesInSourceSets(project: Project, sourceSetNames: List<String>, path: String, predicate: (File) -> Boolean): Map<String, File> {
       val candidates = mutableMapOf<String, File>()
@@ -244,8 +244,9 @@ class DefaultCompilationUnit(
             it.toRelativeString(root)
           }
 
-          // overwrite the previous entry if it was there already
-          // this is ok as Android orders the sourceSetNames from lower to higher priority
+          if (candidates[key] != null) {
+            throw IllegalArgumentException("ApolloGraphQL: duplicate file found:\n${it.absolutePath}\n${candidates[key]?.absolutePath}")
+          }
           candidates[key] = it
         }
       }

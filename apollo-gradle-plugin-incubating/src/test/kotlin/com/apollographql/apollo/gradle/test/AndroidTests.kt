@@ -57,12 +57,15 @@ class AndroidTests {
       File(dir, "src/main/graphql/com/example/DroidDetails.graphql").copyTo(debugFile)
       debugFile.replaceInText("c3BlY2llczoy", "speciesIdForDebug")
 
-      val result = TestUtils.executeTask("generateDebugApolloSources", dir)
+      var exception: Exception? = null
+      try {
+        TestUtils.executeTask("generateDebugApolloSources", dir)
+      } catch (e: UnexpectedBuildFailure) {
+        exception = e
+        assertThat(e.message, containsString("duplicate file found"))
+      }
 
-      assertEquals(TaskOutcome.SUCCESS, result.task(":generateDebugApolloSources")!!.outcome)
-
-      // Java classes generated successfully
-      assertThat(dir.generatedChild("debug/service0/com/example/DroidDetailsQuery.java").readText(), containsString("speciesIdForDebug"))
+      assertNotNull(exception)
     }
   }
 
@@ -93,6 +96,12 @@ class AndroidTests {
       val freeDebugDir = File(dir, "src/freeDebug/graphql/com/example/")
       freeDebugDir.mkdirs()
       File(freeDebugDir, "schema.json").writeText("This is an invalid schema")
+
+      val paidDebugDir = File(dir, "src/paidDebug/graphql/com/example/")
+      paidDebugDir.mkdirs()
+      File(dir, "src/main/graphql/com/example/schema.json").copyTo(File(paidDebugDir, "schema.json"))
+
+      File(dir, "src/main/graphql/com/example/schema.json").delete()
 
       var exception: Exception? = null
       try {

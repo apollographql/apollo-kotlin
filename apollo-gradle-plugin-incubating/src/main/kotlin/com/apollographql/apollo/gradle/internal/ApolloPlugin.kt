@@ -149,7 +149,7 @@ open class ApolloPlugin : Plugin<Project> {
 
       return project.tasks.register(taskName, ApolloGenerateSourcesTask::class.java) {
         it.group = TASK_GROUP
-        it.description = "Generate Android classes for ${compilationUnit.name.capitalize()} GraphQL queries"
+        it.description = "Generate Apollo models for ${compilationUnit.name.capitalize()} GraphQL queries"
 
         val sources = compilationUnit.sources()
 
