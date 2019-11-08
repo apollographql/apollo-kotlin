@@ -110,6 +110,21 @@ class ConfigurationTests {
   }
 
   @Test
+  fun `rootPackageName works as expected`() {
+    withSimpleProject("""
+      apollo {
+        rootPackageName("com.starwars")
+      }
+    """.trimIndent()) { dir ->
+      TestUtils.executeTask("generateApolloSources", dir)
+      dir.generatedChild("main/service0/com/starwars").list()?.forEach(::println)
+      assertTrue(dir.generatedChild("main/service0/com/starwars/com/example/DroidDetailsQuery.java").isFile)
+      assertTrue(dir.generatedChild("main/service0/com/starwars/com/example/type/CustomType.java").isFile)
+      assertTrue(dir.generatedChild("main/service0/com/starwars/com/example/fragment/SpeciesInformation.java").isFile)
+    }
+  }
+
+  @Test
   fun `schemaFilePath with absolute path fails`() {
     withSimpleProject("""
       apollo {
@@ -242,9 +257,10 @@ class ConfigurationTests {
   }
 
   @Test
-  fun `rootPackageName works as expected`() {
+  fun `rootPackageName can be overridden in service`() {
     withSimpleProject("""
       apollo {
+        rootPackageName "com.something.else"
         service("service") {
           rootPackageName "com.starwars"
         }

@@ -1,7 +1,6 @@
 package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.compiler.child
-import com.apollographql.apollo.compiler.toPackageName
 import com.apollographql.apollo.gradle.api.CompilationUnit
 import com.apollographql.apollo.gradle.api.CompilerParams
 import org.gradle.api.Action
@@ -30,8 +29,7 @@ class DefaultCompilationUnit(
     ) : SourcesLocator()
 
     class FromFiles(
-        val schema: File,
-        val sourceFolder: String
+        val schema: File
     ) : SourcesLocator()
   }
 
@@ -61,7 +59,6 @@ class DefaultCompilationUnit(
 
     when (val locator = sourcesLocator) {
       is SourcesLocator.FromFiles -> {
-        compilerParams.rootPackageName(locator.sourceFolder.toPackageName())
         sourcesFromFiles(locator)
       }
       is SourcesLocator.FromService -> {
@@ -155,14 +152,14 @@ class DefaultCompilationUnit(
     val rootFolders = project.objects.fileCollection().apply {
       setFrom({
         sourceSetNames.map {
-          project.projectDir.child("src", it, "graphql", fromFiles.sourceFolder)
+          project.projectDir.child("src", it, "graphql")
         }
       })
     }
     val schemaFile = project.objects.fileProperty().value { fromFiles.schema }
     val graphqlFiles = project.objects.fileCollection().apply {
       setFrom({
-        findFilesInSourceSets(project, sourceSetNames, fromFiles.sourceFolder, ::isGraphQL).values
+        findFilesInSourceSets(project, sourceSetNames, ".", ::isGraphQL).values
       })
     }
 
@@ -201,9 +198,8 @@ class DefaultCompilationUnit(
 
       return schemaFiles.entries
           .sortedBy { it.key } // make sure the order is predictable for tests and in general
-          .mapIndexed { i, entry ->
+          .mapIndexed { i, (_, value) ->
             val name = "service$i"
-            val sourceFolder = entry.key.substringBeforeLast("/")
 
             DefaultCompilationUnit(
                 project = project,
@@ -212,7 +208,7 @@ class DefaultCompilationUnit(
                 androidVariant = apolloVariant.androidVariant,
                 serviceName = name,
                 compilerParams = apolloExtension,
-                sourcesLocator = SourcesLocator.FromFiles(entry.value, sourceFolder)
+                sourcesLocator = SourcesLocator.FromFiles(value)
             )
           }
     }

@@ -17,7 +17,7 @@ interface CompilationUnit {
   val transformedQueriesDir: Provider<Directory>
 
   fun compilerParams(action: Action<CompilerParams>)
-  fun sources(configure: Action<Sources>)
+  fun sources(action: Action<Sources>)
 
   class Sources(
       val schemaFile: RegularFileProperty,
