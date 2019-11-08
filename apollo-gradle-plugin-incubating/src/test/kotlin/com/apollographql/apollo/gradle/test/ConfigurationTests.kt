@@ -10,6 +10,8 @@ import org.hamcrest.CoreMatchers.containsString
 import org.junit.Assert.*
 import org.junit.Test
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
 
 class ConfigurationTests {
   @Test
@@ -307,6 +309,42 @@ class ConfigurationTests {
       val result = TestUtils.executeTask("customTaskmainservice0", dir)
 
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainService0ApolloSources")!!.outcome)
+    }
+  }
+
+  @Test
+  fun `symlinks are not followed for the schema`() {
+    withSimpleProject { dir ->
+      dir.child("src/main/graphql/com/example/schema.json").copyTo(dir.child("schema.json"))
+      dir.child("src/main/graphql/com/example/schema.json").delete()
+
+
+      Files.createSymbolicLink(dir.child(
+          "src/main/graphql/com/example/schema.json").toPath(),
+          dir.child("schema.json").toPath()
+      )
+
+      TestUtils.executeTask("generateApolloSources", dir)
+
+      assertTrue(dir.generatedChild("main/service0/com/example/fragment/SpeciesInformation.java").isFile)
+    }
+  }
+
+  @Test
+  fun `symlinks are not followed for sources`() {
+    withSimpleProject { dir ->
+      dir.child("src/main/graphql/com/example").copyRecursively(dir.child("tmp"))
+      dir.child("src/main/graphql/com/").deleteRecursively()
+
+
+      Files.createSymbolicLink(
+          dir.child("src/main/graphql/example").toPath(),
+          dir.child("tmp").toPath()
+      )
+
+      TestUtils.executeTask("generateApolloSources", dir)
+
+      assertTrue(dir.generatedChild("main/service0/example/fragment/SpeciesInformation.java").isFile)
     }
   }
 }

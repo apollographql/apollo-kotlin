@@ -211,7 +211,7 @@ class DefaultCompilationUnit(
       }
 
       return schemaFiles.entries
-          .sortedBy { it.value.canonicalPath } // make sure the order is predictable for tests and in general
+          .sortedBy { it.key } // make sure the order is predictable for tests and in general
           .mapIndexed { i, entry ->
             val name = "service$i"
             val sourceFolder = entry.key.substringBeforeLast("/")

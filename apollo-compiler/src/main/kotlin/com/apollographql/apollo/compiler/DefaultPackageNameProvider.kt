@@ -3,11 +3,11 @@ package com.apollographql.apollo.compiler
 import java.io.File
 
 class DefaultPackageNameProvider(rootFolders: Collection<String>, schemaFile: File, private val rootPackageName: String) : PackageNameProvider {
-  private val roots = rootFolders.map(::File).map { File(it.canonicalPath) }
+  private val roots = rootFolders.map(::File).map { File(it.absolutePath).normalize() }
   private val schemaPackageName = try {
     filePackageName(schemaFile.absolutePath)
   } catch (e: IllegalArgumentException) {
-    // Can happen if the schema is not in the roots
+    // Can happen if the schema is not under roots
     ""
   }
 
@@ -19,7 +19,7 @@ class DefaultPackageNameProvider(rootFolders: Collection<String>, schemaFile: Fi
   }
 
   fun filePackageName(filePath: String): String {
-    val file = File(File(filePath).canonicalPath)
+    val file = File(File(filePath).absolutePath).normalize()
     roots.forEach { sourceDir ->
       try {
         val relative = file.toRelativeString(sourceDir)
