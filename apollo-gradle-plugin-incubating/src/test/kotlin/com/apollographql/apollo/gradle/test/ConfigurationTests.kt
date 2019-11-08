@@ -245,7 +245,7 @@ class ConfigurationTests {
     withSimpleProject("""
       apollo {
         service("service") {
-          rootPackageName = "com.starwars"
+          rootPackageName "com.starwars"
         }
       }
     """.trimIndent()) { dir ->

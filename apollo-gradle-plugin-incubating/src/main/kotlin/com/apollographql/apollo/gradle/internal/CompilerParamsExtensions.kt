@@ -1,6 +1,5 @@
 package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo.compiler.NullableValueType
 import com.apollographql.apollo.gradle.api.CompilerParams
 import org.gradle.api.model.ObjectFactory
 
@@ -15,6 +14,7 @@ fun CompilerParams.withFallback(other: CompilerParams, factory: ObjectFactory): 
   merge.generateModelBuilder.set(this.generateModelBuilder.orElse(other.generateModelBuilder))
   merge.useJavaBeansSemanticNaming.set(this.useJavaBeansSemanticNaming.orElse(other.useJavaBeansSemanticNaming))
   merge.generateVisitorForPolymorphicDatatypes.set(this.generateVisitorForPolymorphicDatatypes.orElse(other.generateVisitorForPolymorphicDatatypes))
+  merge.rootPackageName.set(this.rootPackageName.orElse(other.rootPackageName))
   return merge
 }
 

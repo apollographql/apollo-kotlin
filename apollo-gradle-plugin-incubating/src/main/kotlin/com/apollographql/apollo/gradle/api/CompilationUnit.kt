@@ -5,6 +5,7 @@ import org.gradle.api.file.Directory
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Provider
+import java.io.File
 
 interface CompilationUnit {
   val name: String
@@ -17,12 +18,24 @@ interface CompilationUnit {
   val outputDir: Provider<Directory>
   val transformedQueriesDir: Provider<Directory>
 
-  fun configure(configure: Action<Params>)
-  fun setSources(rootFolder: Provider<Directory>)
+  fun compilerParams(action: Action<CompilerParams>)
+  fun sources(configure: Action<Sources>)
 
-  data class Params(
-      val graphqlFolder: DirectoryProperty,
+  class Sources(
       val schemaFile: RegularFileProperty,
-      val rootPackageName: Provider<String>
-  )
+      val graphqlDir: DirectoryProperty
+  ) {
+    fun schemaFile(schemaFile: File) {
+      this.schemaFile.set(schemaFile)
+    }
+
+    fun graphqlDir(graphqlDir: File) {
+      require(graphqlDir.isDirectory) { "graphqlDir must be a directory: ${graphqlDir.absolutePath}"}
+      this.graphqlDir.set(graphqlDir)
+    }
+
+    fun graphqlDir(graphqlDir: Provider<out Directory>) {
+      this.graphqlDir.set(graphqlDir)
+    }
+  }
 }

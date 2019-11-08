@@ -6,7 +6,6 @@ import com.apollographql.apollo.gradle.api.CompilationUnit
 import com.apollographql.apollo.gradle.api.CompilerParams
 import org.gradle.api.Action
 import org.gradle.api.Project
-import org.gradle.api.file.Directory
 import org.gradle.api.file.FileCollection
 import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.ListProperty
@@ -29,7 +28,6 @@ class DefaultCompilationUnit(
     class FromService(
         val schemaPath: Property<String>,
         val sourceFolder: Property<String>,
-        val rootPackageName: Provider<String>,
         val exclude: ListProperty<String>
     ) : SourcesLocator()
 
@@ -39,11 +37,10 @@ class DefaultCompilationUnit(
     ) : SourcesLocator()
   }
 
-  class Sources(
+  internal class Sources(
       val schemaFile: Provider<RegularFile>,
       val graphqlFiles: FileCollection,
-      val rootFolders: FileCollection,
-      val rootPackageName: Provider<String>
+      val rootFolders: FileCollection
   )
 
   override val name = "${variantName}${serviceName.capitalize()}"
@@ -59,13 +56,14 @@ class DefaultCompilationUnit(
     }
   }
 
-  fun sources(): Sources {
+  internal fun sources(): Sources {
     if (sources != null) {
       return sources!!
     }
 
     when (val locator = sourcesLocator) {
       is SourcesLocator.FromFiles -> {
+        compilerParams.rootPackageName(locator.sourceFolder.toPackageName())
         sourcesFromFiles(locator)
       }
       is SourcesLocator.FromService -> {
@@ -75,19 +73,22 @@ class DefaultCompilationUnit(
     return sources!!
   }
 
-  override fun configure(configure: Action<CompilationUnit.Params>) {
-    val params = CompilationUnit.Params(
-        project.objects.directoryProperty(),
-        project.objects.fileProperty(),
-        project.provider { "" }
-    )
-    configure.execute(params)
+  override fun compilerParams(action: Action<CompilerParams>) {
+    action.execute(compilerParams)
+  }
 
-    require(params.graphqlFolder.isPresent) { "rootFolder must be specified" }
+  override fun sources(action: Action<CompilationUnit.Sources>) {
+    val params = CompilationUnit.Sources(
+        project.objects.fileProperty(),
+        project.objects.directoryProperty()
+    )
+    action.execute(params)
+
+    require(params.graphqlDir.isPresent) { "rootFolder must be specified" }
 
     if (params.schemaFile.isPresent.not()) {
       params.schemaFile.value {
-        val root = params.graphqlFolder.get().asFile
+        val root = params.graphqlDir.get().asFile
         root.walkTopDown().find {
           it.name.endsWith(".json")
         } ?: throw IllegalArgumentException("cannot find a schema in ${root.absolutePath}")
@@ -95,30 +96,19 @@ class DefaultCompilationUnit(
     }
 
     val graphqlFiles = project.objects.fileCollection()
-    graphqlFiles.setFrom(params.graphqlFolder.map { dir ->
+    graphqlFiles.setFrom(params.graphqlDir.map { dir ->
       dir.asFileTree.matching {
         it.include("**.graphql", "**.gql")
       }
     })
 
     val rootFolders = project.objects.fileCollection()
-    rootFolders.setFrom(params.graphqlFolder)
+    rootFolders.setFrom(params.graphqlDir)
 
-    sources = Sources(
-        schemaFile = params.schemaFile,
-        graphqlFiles = graphqlFiles,
-        rootFolders = rootFolders,
-        rootPackageName = params.rootPackageName
-    )
+    sources = Sources(params.schemaFile, graphqlFiles, rootFolders)
   }
 
-  override fun setSources(rootFolder: Provider<Directory>) {
-    configure(Action {
-      it.graphqlFolder.set(rootFolder)
-    })
-  }
-
-  fun sourcesFromService(fromService: SourcesLocator.FromService) {
+  private fun sourcesFromService(fromService: SourcesLocator.FromService) {
     val sourceFolder = fromService.sourceFolder.orElse(".")
     val rootFolders = project.objects.fileCollection().apply {
       setFrom({
@@ -159,12 +149,11 @@ class DefaultCompilationUnit(
     sources = Sources(
         schemaFile = schemaFile,
         graphqlFiles = graphqlFiles,
-        rootFolders = rootFolders,
-        rootPackageName = fromService.rootPackageName
+        rootFolders = rootFolders
     )
   }
 
-  fun sourcesFromFiles(fromFiles: SourcesLocator.FromFiles) {
+  private fun sourcesFromFiles(fromFiles: SourcesLocator.FromFiles) {
     val rootFolders = project.objects.fileCollection().apply {
       setFrom({
         sourceSetNames.map {
@@ -172,7 +161,6 @@ class DefaultCompilationUnit(
         }
       })
     }
-    val rootPackageName = project.provider { fromFiles.sourceFolder.toPackageName() }
     val schemaFile = project.objects.fileProperty().value { fromFiles.schema }
     val graphqlFiles = project.objects.fileCollection().apply {
       setFrom({
@@ -183,8 +171,7 @@ class DefaultCompilationUnit(
     sources = Sources(
         schemaFile = schemaFile,
         graphqlFiles = graphqlFiles,
-        rootFolders = rootFolders,
-        rootPackageName = rootPackageName
+        rootFolders = rootFolders
     )
   }
 
@@ -193,7 +180,6 @@ class DefaultCompilationUnit(
       val compilerParams = service.withFallback(apolloExtension, project.objects)
 
       val sourcesLocator = SourcesLocator.FromService(
-          rootPackageName = service.rootPackageName,
           schemaPath = service.schemaPath,
           sourceFolder = service.sourceFolder,
           exclude = service.exclude

@@ -8,6 +8,7 @@ import org.gradle.api.provider.Property
 interface ApolloExtension: CompilerParams {
 
   val compilationUnits: DomainObjectCollection<CompilationUnit>
+  fun onCompilationUnits(action: Action<CompilationUnit>)
 
   fun service(name: String, action: Action<DefaultService>)
 

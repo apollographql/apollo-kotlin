@@ -1,6 +1,5 @@
 package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo.compiler.child
 import com.apollographql.apollo.gradle.api.ApolloExtension
 import com.apollographql.apollo.gradle.api.ApolloSourceSetExtension
 import org.gradle.api.Plugin
@@ -157,7 +156,6 @@ open class ApolloPlugin : Plugin<Project> {
         it.graphqlFiles.setFrom(sources.graphqlFiles)
         it.rootFolders.set(sources.rootFolders.map { it.absolutePath })
         it.schemaFile.set(sources.schemaFile)
-        it.rootPackageName.set(sources.rootPackageName)
 
         it.nullableValueType.set(compilationUnit.compilerParams.nullableValueType)
         it.useSemanticNaming.set(compilationUnit.compilerParams.useSemanticNaming)
@@ -167,6 +165,7 @@ open class ApolloPlugin : Plugin<Project> {
         it.generateKotlinModels.set(compilationUnit.compilerParams.generateKotlinModels)
         it.generateVisitorForPolymorphicDatatypes.set(compilationUnit.compilerParams.generateVisitorForPolymorphicDatatypes)
         it.customTypeMapping.set(compilationUnit.compilerParams.customTypeMapping)
+        it.rootPackageName.set(compilationUnit.compilerParams.rootPackageName)
         it.outputDir.apply {
           set(project.layout.buildDirectory.map {
             it.dir("generated/source/apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}")
