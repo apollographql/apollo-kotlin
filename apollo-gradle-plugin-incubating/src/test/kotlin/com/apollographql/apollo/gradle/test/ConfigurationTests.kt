@@ -242,7 +242,7 @@ class ConfigurationTests {
   
   @Test
   fun `schemaPath can be absolute path`() {
-    val schema = File(System.getProperty("user.dir"), "src/main/graphql/com/example/schema.json")
+    val schema = File(System.getProperty("user.dir"), "src/test/files/starwars/schema.json")
     withSimpleProject("""
       apollo {
         service("starwars") {
@@ -257,7 +257,7 @@ class ConfigurationTests {
 
   @Test
   fun `sourceFolder can be absolute path`() {
-    val folder = File(System.getProperty("user.dir"), "src/main/graphql/com/example")
+    val folder = File(System.getProperty("user.dir"), "src/test/files/starwars")
     withSimpleProject("""
       apollo {
         service("starwars") {
