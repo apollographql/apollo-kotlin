@@ -206,7 +206,7 @@ class DefaultCompilationUnit(
           |Please use a service instead:
           |apollo {
           |  service("serviceName") {
-          |    schemaPath("com/example/schema.json")
+          |    sourceFolder = "serviceName"
           |  }
           |}
         """.trimMargin()

@@ -4,7 +4,9 @@ import com.apollographql.apollo.compiler.child
 import com.apollographql.apollo.gradle.util.TestUtils
 import com.apollographql.apollo.gradle.util.TestUtils.withProject
 import com.apollographql.apollo.gradle.util.generatedChild
-import org.junit.Assert.assertTrue
+import org.gradle.testkit.runner.UnexpectedBuildFailure
+import org.hamcrest.CoreMatchers.containsString
+import org.junit.Assert.*
 import org.junit.Test
 import java.io.File
 
@@ -26,20 +28,21 @@ class MultipleServicesTests {
   }
 
   @Test
-  fun `default services are found`() {
+  fun `multiple schema files without using service is not supported`() {
     withMultipleServicesProject("") { dir ->
-      TestUtils.executeTask("build", dir)
-
-      assertTrue(dir.generatedChild("main/service0/githunt/FeedQuery.java").isFile)
-      assertTrue(dir.generatedChild("main/service0/githunt/fragment/RepositoryFragment.java").isFile)
-      assertTrue(dir.generatedChild("main/service1/starwars/example/DroidDetailsQuery.java").isFile)
-      assertTrue(dir.generatedChild("main/service1/starwars/example/FilmsQuery.java").isFile)
-      assertTrue(dir.generatedChild("main/service1/starwars/example/fragment/SpeciesInformation.java").isFile)
+      var exception: Exception? = null
+      try {
+        TestUtils.executeTask("generateApolloSources", dir)
+      } catch (e: UnexpectedBuildFailure) {
+        exception = e
+        assertThat(e.message, containsString("By default only one schema.json file is supported. If you have multiple schema.json,"))
+      }
+      assertNotNull(exception)
     }
   }
 
   @Test
-  fun `can specify services explicitely`() {
+  fun `can specify services explicitly`() {
     val apolloConfiguration = """
       apollo {
         service("starwars") {
