@@ -19,6 +19,7 @@ interface CompilationUnit {
 
   fun compilerParams(closure: Closure<*>)
   fun compilerParams(action: Action<CompilerParams>)
+  fun sources(closure: Closure<*>)
   fun sources(action: Action<Sources>)
 
   class Sources(

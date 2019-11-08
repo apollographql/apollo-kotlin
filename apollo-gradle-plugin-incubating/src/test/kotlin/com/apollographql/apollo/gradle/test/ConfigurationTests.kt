@@ -303,9 +303,9 @@ class ConfigurationTests {
         }
         
         onCompilationUnits {
-          sources { source ->
-            source.schemaFile(file("src/main/graphql/com/example/schema.json"))
-            source.graphqlDir(file("src/main/graphql/"))
+          sources {
+            schemaFile(file("src/main/graphql/com/example/schema.json"))
+            graphqlDir(file("src/main/graphql/"))
           }
         }
       }

@@ -79,13 +79,27 @@ class DefaultCompilationUnit(
     action.execute(compilerParams)
   }
 
+  override fun sources(closure: Closure<*>) {
+    val params = CompilationUnit.Sources(
+        project.objects.fileProperty(),
+        project.objects.directoryProperty()
+    )
+    closure.delegate = params
+    closure.resolveStrategy = Closure.DELEGATE_FIRST
+    closure.call()
+    customSources(params)
+  }
+
   override fun sources(action: Action<CompilationUnit.Sources>) {
     val params = CompilationUnit.Sources(
         project.objects.fileProperty(),
         project.objects.directoryProperty()
     )
     action.execute(params)
+    customSources(params)
+  }
 
+  private fun customSources(params: CompilationUnit.Sources) {
     require(params.graphqlDir.isPresent) { "rootFolder must be specified" }
 
     if (params.schemaFile.isPresent.not()) {
