@@ -2,11 +2,15 @@ package com.apollographql.apollo.response;
 
 import com.apollographql.apollo.api.FileUpload;
 import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -104,11 +108,31 @@ public class ScalarTypeAdaptersTest {
     assertThat(adapter.encode(10.10d).value).isEqualTo(10.10d);
   }
 
-   @Test
+  @Test
   public void defaultObjectAdapter() {
     final CustomTypeAdapter<Object> adapter = defaultAdapter(Object.class);
     assertThat(adapter.decode(CustomTypeValue.fromRawValue(RuntimeException.class))).isEqualTo("class java.lang.RuntimeException");
     assertThat(adapter.encode(RuntimeException.class).value).isEqualTo("class java.lang.RuntimeException");
+  }
+
+  @Test
+  public void defaultMapAdapter() {
+    final Map<String, Object> value = new UnmodifiableMapBuilder<String, Object>()
+        .put("key1", "value1")
+        .put("key2", "value2")
+        .build();
+
+    final CustomTypeAdapter<Map> adapter = defaultAdapter(Map.class);
+    assertThat(adapter.decode(CustomTypeValue.fromRawValue(value))).isEqualTo(value);
+    assertThat(adapter.encode(value).value).isEqualTo(value);
+  }
+
+  @Test
+  public void defaultListAdapter() {
+    final List<String> value = Arrays.asList("item 1", "item 2");
+    final CustomTypeAdapter<List> adapter = defaultAdapter(List.class);
+    assertThat(adapter.decode(CustomTypeValue.fromRawValue(value))).isEqualTo(value);
+    assertThat(adapter.encode(value).value).isEqualTo(value);
   }
 
   private <T> CustomTypeAdapter<T> defaultAdapter(final Class<T> clazz) {

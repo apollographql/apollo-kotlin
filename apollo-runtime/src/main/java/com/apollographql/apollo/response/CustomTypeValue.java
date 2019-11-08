@@ -1,7 +1,5 @@
 package com.apollographql.apollo.response;
 
-import com.apollographql.apollo.internal.json.Utils;
-
 import java.util.List;
 import java.util.Map;
 
@@ -15,13 +13,12 @@ import java.util.Map;
 public abstract class CustomTypeValue<T> {
   public final T value;
 
+  @SuppressWarnings("unchecked")
   public static CustomTypeValue fromRawValue(Object value) {
-    if (value instanceof Map || value instanceof List) {
-      try {
-        return new GraphQLJsonString(Utils.toJsonString(value));
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
+    if (value instanceof Map) {
+      return new GraphQLJsonObject((Map<String, Object>) value);
+    } else if (value instanceof List) {
+      return new GraphQLJsonList((List<Object>) value);
     } else if (value instanceof Boolean) {
       return new GraphQLBoolean((Boolean) value);
     } else if (value instanceof Number) {
@@ -63,19 +60,19 @@ public abstract class CustomTypeValue<T> {
   }
 
   /**
-   * Represents a {@code JsonString} value
+   * Represents a JSON object value
    */
-  public static class GraphQLJsonString extends CustomTypeValue<String> {
-    public GraphQLJsonString(String value) {
+  public static class GraphQLJsonObject extends CustomTypeValue<Map<String, Object>> {
+    public GraphQLJsonObject(Map<String, Object> value) {
       super(value);
     }
   }
 
   /**
-   * Represents a JSON object value, will serialized as an regular json object
+   * Represents a JSON list value
    */
-  public static class GraphQLJson extends CustomTypeValue<Map<String, Object>> {
-    public GraphQLJson(Map<String, Object> value) {
+  public static class GraphQLJsonList extends CustomTypeValue<List<Object>> {
+    public GraphQLJsonList(List<Object> value) {
       super(value);
     }
   }
