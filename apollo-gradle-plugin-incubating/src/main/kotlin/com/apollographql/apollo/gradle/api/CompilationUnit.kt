@@ -12,9 +12,7 @@ interface CompilationUnit {
   val serviceName: String
   val variantName: String
   val androidVariant: Any?
-
-  var compilerParams: CompilerParams
-
+  val compilerParams: CompilerParams
   val outputDir: Provider<Directory>
   val transformedQueriesDir: Provider<Directory>
 

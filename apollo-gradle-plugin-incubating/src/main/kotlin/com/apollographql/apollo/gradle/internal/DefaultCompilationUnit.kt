@@ -17,9 +17,7 @@ class DefaultCompilationUnit(
     override val serviceName: String,
     override val variantName: String,
     override val androidVariant: Any?,
-
-    override var compilerParams: CompilerParams,
-
+    override val compilerParams: CompilerParams,
     private val sourcesLocator: SourcesLocator,
     private val sourceSetNames: List<String>,
     private val project: Project

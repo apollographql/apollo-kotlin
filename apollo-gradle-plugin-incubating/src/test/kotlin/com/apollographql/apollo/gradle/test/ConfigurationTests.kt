@@ -11,7 +11,6 @@ import org.junit.Assert.*
 import org.junit.Test
 import java.io.File
 import java.nio.file.Files
-import java.nio.file.Path
 
 class ConfigurationTests {
   @Test
@@ -298,7 +297,7 @@ class ConfigurationTests {
       apollo {
         generateTransformedQueries = true
         
-        compilationUnits.all { compilationUnit ->
+        onCompilationUnits { compilationUnit ->
           tasks.register("customTask" + compilationUnit.name) {
             inputs.dir(compilationUnit.outputDir)
             inputs.dir(compilationUnit.transformedQueriesDir)
