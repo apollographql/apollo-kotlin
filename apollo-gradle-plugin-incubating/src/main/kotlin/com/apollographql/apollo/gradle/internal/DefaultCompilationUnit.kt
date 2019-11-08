@@ -190,27 +190,32 @@ class DefaultCompilationUnit(
       )
     }
 
-    fun fromFiles(project: Project, apolloExtension: DefaultApolloExtension, apolloVariant: ApolloVariant): List<DefaultCompilationUnit> {
+    fun fromFiles(project: Project, apolloExtension: DefaultApolloExtension, apolloVariant: ApolloVariant): DefaultCompilationUnit {
       val sourceSetNames = apolloVariant.sourceSetNames
       val schemaFiles = findFilesInSourceSets(project, sourceSetNames, ".") {
         it.name == "schema.json"
       }
+      require(schemaFiles.size == 1) {
+        """|
+          |By default only one schema.json file is supported. If you have multiple schema.json,
+          |Please use a service instead:
+          |apollo {
+          |  service("serviceName") {
+          |    schemaPath("com/example/schema.json")
+          |  }
+          |}
+        """.trimMargin()
+      }
 
-      return schemaFiles.entries
-          .sortedBy { it.key } // make sure the order is predictable for tests and in general
-          .mapIndexed { i, (_, value) ->
-            val name = "service$i"
-
-            DefaultCompilationUnit(
-                project = project,
-                variantName = apolloVariant.name,
-                sourceSetNames = apolloVariant.sourceSetNames,
-                androidVariant = apolloVariant.androidVariant,
-                serviceName = name,
-                compilerParams = apolloExtension,
-                sourcesLocator = SourcesLocator.FromFiles(value)
-            )
-          }
+      return DefaultCompilationUnit(
+          project = project,
+          variantName = apolloVariant.name,
+          sourceSetNames = apolloVariant.sourceSetNames,
+          androidVariant = apolloVariant.androidVariant,
+          serviceName = "service0",
+          compilerParams = apolloExtension,
+          sourcesLocator = SourcesLocator.FromFiles(schemaFiles.values.first())
+      )
     }
 
     fun isGraphQL(file: File): Boolean {
