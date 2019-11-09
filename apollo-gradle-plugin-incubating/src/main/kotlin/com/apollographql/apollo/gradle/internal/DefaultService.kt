@@ -18,11 +18,6 @@ open class DefaultService @Inject constructor(val objects: ObjectFactory, val na
     this.sourceFolder.set(sourceFolder)
   }
 
-  override val rootPackageName = objects.property(String::class.java)
-  override fun rootPackageName(rootPackageName: String) {
-    this.rootPackageName.set(rootPackageName)
-  }
-
   override val exclude = objects.listProperty(String::class.java)
   override fun exclude(exclude: List<String>) {
     this.exclude.set(exclude)

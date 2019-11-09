@@ -22,7 +22,7 @@ class ConfigurationTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "main/service0/com/example/type/CustomType.java", "return Date.class;")
+      TestUtils.assertFileContains(dir, "main/service/com/example/type/CustomType.java", "return Date.class;")
     }
   }
 
@@ -41,7 +41,7 @@ class ConfigurationTests {
       }
     """.trimIndent()) { dir ->
         TestUtils.executeTask("generateApolloSources", dir)
-        TestUtils.assertFileContains(dir, "main/service0/com/example/DroidDetailsQuery.java", pair.second)
+        TestUtils.assertFileContains(dir, "main/service/com/example/DroidDetailsQuery.java", pair.second)
       }
     }
   }
@@ -51,7 +51,7 @@ class ConfigurationTests {
     withSimpleProject("""
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "main/service0/com/example/DroidDetailsQuery.java", "class DroidDetailsQuery ")
+      TestUtils.assertFileContains(dir, "main/service/com/example/DroidDetailsQuery.java", "class DroidDetailsQuery ")
     }
   }
 
@@ -63,7 +63,7 @@ class ConfigurationTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "main/service0/com/example/DroidDetails.java", "class DroidDetails ")
+      TestUtils.assertFileContains(dir, "main/service/com/example/DroidDetails.java", "class DroidDetails ")
     }
   }
 
@@ -72,7 +72,7 @@ class ConfigurationTests {
     withSimpleProject("""
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileDoesNotContain(dir, "main/service0/com/example/DroidDetailsQuery.java", "Builder toBuilder()")
+      TestUtils.assertFileDoesNotContain(dir, "main/service/com/example/DroidDetailsQuery.java", "Builder toBuilder()")
     }
   }
 
@@ -84,7 +84,7 @@ class ConfigurationTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "main/service0/com/example/DroidDetailsQuery.java", "Builder toBuilder()")
+      TestUtils.assertFileContains(dir, "main/service/com/example/DroidDetailsQuery.java", "Builder toBuilder()")
     }
   }
 
@@ -93,7 +93,7 @@ class ConfigurationTests {
     withSimpleProject("""
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "main/service0/com/example/DroidDetailsQuery.java", "String name()")
+      TestUtils.assertFileContains(dir, "main/service/com/example/DroidDetailsQuery.java", "String name()")
     }
   }
 
@@ -105,7 +105,21 @@ class ConfigurationTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "main/service0/com/example/DroidDetailsQuery.java", "String getName()")
+      TestUtils.assertFileContains(dir, "main/service/com/example/DroidDetailsQuery.java", "String getName()")
+    }
+  }
+
+  @Test
+  fun `rootPackageName works as expected`() {
+    withSimpleProject("""
+      apollo {
+        rootPackageName("com.starwars")
+      }
+    """.trimIndent()) { dir ->
+      TestUtils.executeTask("generateApolloSources", dir)
+      assertTrue(dir.generatedChild("main/service/com/starwars/com/example/DroidDetailsQuery.java").isFile)
+      assertTrue(dir.generatedChild("main/service/com/starwars/com/example/type/CustomType.java").isFile)
+      assertTrue(dir.generatedChild("main/service/com/starwars/com/example/fragment/SpeciesInformation.java").isFile)
     }
   }
 
@@ -277,11 +291,12 @@ class ConfigurationTests {
   }
 
   @Test
-  fun `rootPackageName works as expected`() {
+  fun `rootPackageName can be overridden in service`() {
     withSimpleProject("""
       apollo {
+        rootPackageName "com.something.else"
         service("service") {
-          rootPackageName = "com.starwars"
+          rootPackageName "com.starwars"
         }
       }
     """.trimIndent()) { dir ->
@@ -289,6 +304,52 @@ class ConfigurationTests {
       assertTrue(dir.generatedChild("main/service/com/starwars/com/example/DroidDetailsQuery.java").isFile)
       assertTrue(dir.generatedChild("main/service/com/starwars/com/example/type/CustomType.java").isFile)
       assertTrue(dir.generatedChild("main/service/com/starwars/com/example/fragment/SpeciesInformation.java").isFile)
+    }
+  }
+
+  @Test
+  fun `rootPackageName can be overridden in compilationUnits`() {
+    withSimpleProject("""
+      apollo {
+        rootPackageName "com.default"
+        service("starwars") {
+          rootPackageName "com.starwars"
+        }
+        onCompilationUnits {
+          compilerParams {
+            rootPackageName.set("com.overrides")
+          }
+        }
+      }
+    """.trimIndent()) { dir ->
+      TestUtils.executeTask("generateApolloSources", dir)
+      assertTrue(dir.generatedChild("main/starwars/com/overrides/com/example/DroidDetailsQuery.java").isFile)
+      assertTrue(dir.generatedChild("main/starwars/com/overrides/com/example/type/CustomType.java").isFile)
+      assertTrue(dir.generatedChild("main/starwars/com/overrides/com/example/fragment/SpeciesInformation.java").isFile)
+    }
+  }
+
+  @Test
+  fun `sources can be overridden in compilationUnits`() {
+    withSimpleProject("""
+      apollo {
+        service("starwars") {
+          schemaPath("com/some/other/schema.json")
+          sourceFolder("com/some/other")
+        }
+        
+        onCompilationUnits {
+          sources {
+            schemaFile(file("src/main/graphql/com/example/schema.json"))
+            graphqlDir(file("src/main/graphql/"))
+          }
+        }
+      }
+    """.trimIndent()) { dir ->
+      TestUtils.executeTask("generateApolloSources", dir)
+      assertTrue(dir.generatedChild("main/starwars/com/example/DroidDetailsQuery.java").isFile)
+      assertTrue(dir.generatedChild("main/starwars/com/example/type/CustomType.java").isFile)
+      assertTrue(dir.generatedChild("main/starwars/com/example/fragment/SpeciesInformation.java").isFile)
     }
   }
 
@@ -321,7 +382,7 @@ class ConfigurationTests {
       val result = TestUtils.executeTask("generateApolloSources", dir)
 
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
-      val transformedQuery = dir.child("build", "generated", "transformedQueries", "apollo", "main", "service0", "com", "example", "DroidDetails.graphql")
+      val transformedQuery = dir.child("build", "generated", "transformedQueries", "apollo", "main", "service", "com", "example", "DroidDetails.graphql")
       assertThat(transformedQuery.readText(), containsString("__typename"))
     }
   }
@@ -332,17 +393,17 @@ class ConfigurationTests {
       apollo {
         generateTransformedQueries = true
         
-        compilationUnits.all { compilationUnit ->
-          tasks.register("customTask" + compilationUnit.name) {
+        onCompilationUnits { compilationUnit ->
+          tasks.register("customTask" + compilationUnit.name.capitalize()) {
             inputs.dir(compilationUnit.outputDir)
             inputs.dir(compilationUnit.transformedQueriesDir)
           }
         }
       }
     """.trimIndent()) { dir ->
-      val result = TestUtils.executeTask("customTaskmainservice0", dir)
+      val result = TestUtils.executeTask("customTaskMainservice", dir)
 
-      assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainService0ApolloSources")!!.outcome)
+      assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainServiceApolloSources")!!.outcome)
     }
   }
 
@@ -360,7 +421,7 @@ class ConfigurationTests {
 
       TestUtils.executeTask("generateApolloSources", dir)
 
-      assertTrue(dir.generatedChild("main/service0/com/example/fragment/SpeciesInformation.java").isFile)
+      assertTrue(dir.generatedChild("main/service/com/example/fragment/SpeciesInformation.java").isFile)
     }
   }
 
@@ -378,7 +439,7 @@ class ConfigurationTests {
 
       TestUtils.executeTask("generateApolloSources", dir)
 
-      assertTrue(dir.generatedChild("main/service0/example/fragment/SpeciesInformation.java").isFile)
+      assertTrue(dir.generatedChild("main/service/example/fragment/SpeciesInformation.java").isFile)
     }
   }
 }

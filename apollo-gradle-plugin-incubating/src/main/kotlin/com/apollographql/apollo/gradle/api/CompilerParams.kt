@@ -2,6 +2,7 @@ package com.apollographql.apollo.gradle.api
 
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 
 interface CompilerParams {
   val generateKotlinModels: Property<Boolean>
@@ -24,7 +25,7 @@ interface CompilerParams {
   fun useSemanticNaming(useSemanticNaming: Boolean)
   fun setUseSemanticNaming(useSemanticNaming: Boolean)
 
-  val nullableValueType:Property<String>
+  val nullableValueType: Property<String>
   fun nullableValueType(nullableValueType: String)
   fun setNullableValueType(nullableValueType: String)
 
@@ -39,4 +40,7 @@ interface CompilerParams {
   val generateVisitorForPolymorphicDatatypes: Property<Boolean>
   fun generateVisitorForPolymorphicDatatypes(generateVisitorForPolymorphicDatatypes: Boolean)
   fun setGenerateVisitorForPolymorphicDatatypes(generateVisitorForPolymorphicDatatypes: Boolean)
+
+  val rootPackageName: Provider<String>
+  fun rootPackageName(rootPackageName: String)
 }

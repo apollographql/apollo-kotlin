@@ -23,12 +23,12 @@ class AndroidTests {
       assertEquals(TaskOutcome.SUCCESS, result.task(":build")!!.outcome)
 
       // Java classes generated successfully
-      assertTrue(dir.generatedChild("debug/service0/com/example/DroidDetailsQuery.java").isFile)
-      assertTrue(dir.generatedChild("debug/service0/com/example/FilmsQuery.java").isFile)
-      assertTrue(dir.generatedChild("debug/service0/com/example/fragment/SpeciesInformation.java").isFile)
-      assertTrue(dir.generatedChild("release/service0/com/example/DroidDetailsQuery.java").isFile)
-      assertTrue(dir.generatedChild("release/service0/com/example/FilmsQuery.java").isFile)
-      assertTrue(dir.generatedChild("release/service0/com/example/fragment/SpeciesInformation.java").isFile)
+      assertTrue(dir.generatedChild("debug/service/com/example/DroidDetailsQuery.java").isFile)
+      assertTrue(dir.generatedChild("debug/service/com/example/FilmsQuery.java").isFile)
+      assertTrue(dir.generatedChild("debug/service/com/example/fragment/SpeciesInformation.java").isFile)
+      assertTrue(dir.generatedChild("release/service/com/example/DroidDetailsQuery.java").isFile)
+      assertTrue(dir.generatedChild("release/service/com/example/FilmsQuery.java").isFile)
+      assertTrue(dir.generatedChild("release/service/com/example/fragment/SpeciesInformation.java").isFile)
     }
   }
 
@@ -42,8 +42,8 @@ class AndroidTests {
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateDebugApolloSources")!!.outcome)
 
       // Java classes generated successfully
-      assertTrue(dir.generatedChild("debug/service0/com/example/DroidDetailsQuery.java").isFile)
-      assertFalse(dir.generatedChild("release/service0/com/example/DroidDetailsQuery.java").exists())
+      assertTrue(dir.generatedChild("debug/service/com/example/DroidDetailsQuery.java").isFile)
+      assertFalse(dir.generatedChild("release/service/com/example/DroidDetailsQuery.java").exists())
     }
   }
 
@@ -79,10 +79,10 @@ class AndroidTests {
 
       TestUtils.executeTask("build", dir)
 
-      assertTrue(dir.generatedChild("freeDebug/service0/com/example/DroidDetailsQuery.java").isFile)
-      assertTrue(dir.generatedChild("freeRelease/service0/com/example/DroidDetailsQuery.java").isFile)
-      assertTrue(dir.generatedChild("paidDebug/service0/com/example/DroidDetailsQuery.java").isFile)
-      assertTrue(dir.generatedChild("paidRelease/service0/com/example/DroidDetailsQuery.java").isFile)
+      assertTrue(dir.generatedChild("freeDebug/service/com/example/DroidDetailsQuery.java").isFile)
+      assertTrue(dir.generatedChild("freeRelease/service/com/example/DroidDetailsQuery.java").isFile)
+      assertTrue(dir.generatedChild("paidDebug/service/com/example/DroidDetailsQuery.java").isFile)
+      assertTrue(dir.generatedChild("paidRelease/service/com/example/DroidDetailsQuery.java").isFile)
     }
   }
 
@@ -128,12 +128,12 @@ class AndroidTests {
       assertEquals(TaskOutcome.SUCCESS, result.task(":build")!!.outcome)
 
       // Java classes generated successfully
-      assertTrue(dir.generatedChild("debug/service0/com/example/DroidDetailsQuery.java").isFile)
-      assertTrue(dir.generatedChild("debug/service0/com/example/FilmsQuery.java").isFile)
-      assertTrue(dir.generatedChild("debug/service0/com/example/fragment/SpeciesInformation.java").isFile)
-      assertTrue(dir.generatedChild("release/service0/com/example/DroidDetailsQuery.java").isFile)
-      assertTrue(dir.generatedChild("release/service0/com/example/FilmsQuery.java").isFile)
-      assertTrue(dir.generatedChild("release/service0/com/example/fragment/SpeciesInformation.java").isFile)
+      assertTrue(dir.generatedChild("debug/service/com/example/DroidDetailsQuery.java").isFile)
+      assertTrue(dir.generatedChild("debug/service/com/example/FilmsQuery.java").isFile)
+      assertTrue(dir.generatedChild("debug/service/com/example/fragment/SpeciesInformation.java").isFile)
+      assertTrue(dir.generatedChild("release/service/com/example/DroidDetailsQuery.java").isFile)
+      assertTrue(dir.generatedChild("release/service/com/example/FilmsQuery.java").isFile)
+      assertTrue(dir.generatedChild("release/service/com/example/fragment/SpeciesInformation.java").isFile)
     }
   }
 

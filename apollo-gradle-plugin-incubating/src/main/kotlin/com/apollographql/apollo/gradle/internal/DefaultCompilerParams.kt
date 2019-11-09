@@ -1,6 +1,7 @@
 package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.gradle.api.CompilerParams
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
 
 class DefaultCompilerParams(val factory: ObjectFactory) : CompilerParams {
@@ -49,6 +50,11 @@ class DefaultCompilerParams(val factory: ObjectFactory) : CompilerParams {
     this.generateVisitorForPolymorphicDatatypes.set(generateVisitorForPolymorphicDatatypes)
   }
 
+  override val rootPackageName = factory.property(String::class.java)
+  override fun rootPackageName(rootPackageName: String) {
+    this.rootPackageName.set(rootPackageName)
+  }
+  
   @Deprecated(message = "please use generateKotlinModels instead", replaceWith = ReplaceWith("generateKotlinModels"))
   override fun setGenerateKotlinModels(generateKotlinModels: Boolean) {
     System.err.println("setGenerateKotlinModels(Boolean) is deprecated, please use generateKotlinModels(Boolean) instead")

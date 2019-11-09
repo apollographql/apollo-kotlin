@@ -2,12 +2,11 @@ package com.apollographql.apollo.gradle.api
 
 import com.apollographql.apollo.gradle.internal.DefaultService
 import org.gradle.api.Action
-import org.gradle.api.DomainObjectCollection
 import org.gradle.api.provider.Property
 
 interface ApolloExtension: CompilerParams {
 
-  val compilationUnits: DomainObjectCollection<CompilationUnit>
+  fun onCompilationUnits(action: Action<CompilationUnit>)
 
   fun service(name: String, action: Action<DefaultService>)
 

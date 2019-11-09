@@ -5,9 +5,8 @@ import com.apollographql.apollo.gradle.api.CompilationUnit
 import com.apollographql.apollo.gradle.api.CompilerParams
 import org.gradle.api.Action
 import org.gradle.api.Project
-import org.gradle.api.provider.Property
 
-open class DefaultApolloExtension(val project: Project): CompilerParams by DefaultCompilerParams(project.objects), ApolloExtension {
+open class DefaultApolloExtension(val project: Project) : CompilerParams by DefaultCompilerParams(project.objects), ApolloExtension {
   /**
    * This is the input to the apollo plugin. Users will populate the services from their gradle files
    */
@@ -17,7 +16,11 @@ open class DefaultApolloExtension(val project: Project): CompilerParams by Defau
    * compilationUnits is meant to be consumed by other gradle plugin.
    * The apollo plugin will add the {@link CompilationUnit} as it creates them
    */
-  override val compilationUnits = project.container(CompilationUnit::class.java)
+  internal val compilationUnits = project.container(CompilationUnit::class.java)
+
+  override fun onCompilationUnits(action: Action<CompilationUnit>) {
+    compilationUnits.all(action)
+  }
 
   override fun service(name: String, action: Action<DefaultService>) {
     val service = project.objects.newInstance(DefaultService::class.java, project.objects, name)
