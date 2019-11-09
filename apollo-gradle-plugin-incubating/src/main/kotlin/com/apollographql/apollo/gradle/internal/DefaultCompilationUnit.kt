@@ -199,16 +199,7 @@ open class DefaultCompilationUnit @Inject constructor(
       val schemaFiles = findFilesInSourceSets(project, sourceSetNames, ".") {
         it.name == "schema.json"
       }
-      require(schemaFiles.size <= 1) {
-        val service = schemaFiles.keys.joinToString("\n") {
-          """
-            |  service("serviceName") {
-            |    sourceFolder = "${it.replace("/schema.json", "")}"
-            |  }
-          """.trimMargin()
-        }
-        "By default only one schema.json file is supported.\nPlease use multiple services instead:\napollo {\n$service\n}"
-      }
+      require(schemaFiles.size <= 1) { multipleSchemaError(schemaFiles.keys) }
 
       val schema = schemaFiles.values.firstOrNull() ?: return null
       return project.objects.newInstance(DefaultCompilationUnit::class.java,
@@ -263,6 +254,17 @@ open class DefaultCompilationUnit @Inject constructor(
         isFile && predicate(this) -> listOf(this)
         else -> emptyList()
       }
+    }
+
+    private fun multipleSchemaError(schemaPaths: Set<String>): String {
+      val service = schemaPaths.joinToString("\n") {
+        """|
+          |  service("serviceName") {
+          |    sourceFolder = "${it.replace("/schema.json", "")}"
+          |  }
+        """.trimMargin()
+      }
+      return "By default only one schema.json file is supported.\nPlease use multiple services instead:\napollo {\n$service\n}"
     }
   }
 }
