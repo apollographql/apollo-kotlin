@@ -106,7 +106,9 @@ abstract class DefaultCompilationUnit @Inject constructor(
           apolloExtension,
           apolloVariant,
           service
-      )
+      ).apply {
+        graphqlSourceDirectorySet.include("**/*.graphql", "**/*.gql")
+      }
     }
 
     fun fromService(project: Project, apolloExtension: DefaultApolloExtension, apolloVariant: ApolloVariant, service: DefaultService): DefaultCompilationUnit {
