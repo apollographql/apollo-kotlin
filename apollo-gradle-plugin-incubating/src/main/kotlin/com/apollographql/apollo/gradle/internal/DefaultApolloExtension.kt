@@ -6,7 +6,9 @@ import com.apollographql.apollo.gradle.api.CompilerParams
 import org.gradle.api.Action
 import org.gradle.api.Project
 
-open class DefaultApolloExtension(val project: Project) : CompilerParams by DefaultCompilerParams(project.objects), ApolloExtension {
+open class DefaultApolloExtension(val project: Project)
+  : CompilerParams by project.objects.newInstance(DefaultCompilerParams::class.java)
+    , ApolloExtension {
   /**
    * This is the input to the apollo plugin. Users will populate the services from their gradle files
    */

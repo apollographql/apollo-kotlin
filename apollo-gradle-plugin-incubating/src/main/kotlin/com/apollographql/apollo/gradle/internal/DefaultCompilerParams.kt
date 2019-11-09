@@ -1,60 +1,71 @@
 package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.gradle.api.CompilerParams
+import org.gradle.api.Project
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.model.ObjectFactory
+import org.gradle.api.file.SourceDirectorySet
+import org.gradle.api.provider.MapProperty
+import org.gradle.api.provider.Property
+import javax.inject.Inject
 
-class DefaultCompilerParams(val factory: ObjectFactory) : CompilerParams {
-  override val generateKotlinModels = factory.property(Boolean::class.java)
+abstract class DefaultCompilerParams @Inject constructor(val project: Project) : CompilerParams {
+  abstract override val graphqlSourceDirectorySet: SourceDirectorySet
+
+  abstract override val schemaFile: RegularFileProperty
+  override fun schemaFile(path: Any) {
+    this.schemaFile.set { project.file(path) }
+  }
+
+  abstract override val generateKotlinModels: Property<Boolean>
   override fun generateKotlinModels(generateKotlinModels: Boolean) {
     this.generateKotlinModels.set(generateKotlinModels)
   }
 
-  override val generateTransformedQueries = factory.property(Boolean::class.java)
+  abstract override val generateTransformedQueries: Property<Boolean>
   override fun generateTransformedQueries(generateTransformedQueries: Boolean) {
     this.generateTransformedQueries.set(generateTransformedQueries)
   }
 
-  override val customTypeMapping = factory.mapProperty(String::class.java, String::class.java)
+  override val customTypeMapping = project.objects.mapProperty(String::class.java, String::class.java)
   override fun customTypeMapping(customTypeMapping: Map<String, String>) {
     this.customTypeMapping.set(customTypeMapping)
   }
 
-  override val suppressRawTypesWarning = factory.property(Boolean::class.java)
+  abstract override val suppressRawTypesWarning: Property<Boolean>
   override fun suppressRawTypesWarning(suppressRawTypesWarning: Boolean) {
     this.suppressRawTypesWarning.set(suppressRawTypesWarning)
   }
 
-  override val useSemanticNaming = factory.property(Boolean::class.java)
+  abstract override val useSemanticNaming: Property<Boolean>
   override fun useSemanticNaming(useSemanticNaming: Boolean) {
     this.useSemanticNaming.set(useSemanticNaming)
   }
 
-  override val nullableValueType = factory.property(String::class.java)
+  abstract override val nullableValueType: Property<String>
   override fun nullableValueType(nullableValueType: String) {
     this.nullableValueType.set(nullableValueType)
   }
 
-  override val generateModelBuilder = factory.property(Boolean::class.java)
+  abstract override val generateModelBuilder: Property<Boolean>
   override fun generateModelBuilder(generateModelBuilder: Boolean) {
     this.generateModelBuilder.set(generateModelBuilder)
   }
 
-  override val useJavaBeansSemanticNaming = factory.property(Boolean::class.java)
+  abstract override val useJavaBeansSemanticNaming: Property<Boolean>
   override fun useJavaBeansSemanticNaming(useJavaBeansSemanticNaming: Boolean) {
     this.useJavaBeansSemanticNaming.set(useJavaBeansSemanticNaming)
   }
 
-  override val generateVisitorForPolymorphicDatatypes = factory.property(Boolean::class.java)
+  abstract override val generateVisitorForPolymorphicDatatypes: Property<Boolean>
   override fun generateVisitorForPolymorphicDatatypes(generateVisitorForPolymorphicDatatypes: Boolean) {
     this.generateVisitorForPolymorphicDatatypes.set(generateVisitorForPolymorphicDatatypes)
   }
 
-  override val rootPackageName = factory.property(String::class.java)
+  abstract override val rootPackageName: Property<String>
   override fun rootPackageName(rootPackageName: String) {
     this.rootPackageName.set(rootPackageName)
   }
-  
+
   @Deprecated(message = "please use generateKotlinModels instead", replaceWith = ReplaceWith("generateKotlinModels"))
   override fun setGenerateKotlinModels(generateKotlinModels: Boolean) {
     System.err.println("setGenerateKotlinModels(Boolean) is deprecated, please use generateKotlinModels(Boolean) instead")

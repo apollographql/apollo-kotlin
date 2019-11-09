@@ -6,9 +6,11 @@ import com.apollographql.apollo.compiler.parser.GraphQLDocumentParser
 import com.apollographql.apollo.compiler.parser.Schema
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.*
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.*
+import java.io.File
 
 @CacheableTask
 abstract class ApolloGenerateSourcesTask : DefaultTask() {
@@ -58,7 +60,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   abstract val schemaFile: RegularFileProperty
 
   @get:Input
-  abstract val rootFolders: Property<Collection<String>>
+  abstract val rootFolders: ListProperty<String>
 
   @get:OutputDirectory
   abstract val outputDir: DirectoryProperty
@@ -69,8 +71,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @TaskAction
   fun taskAction() {
-
-    sanityChecks()
 
     val realSchemaFile = schemaFile.get().asFile
 
@@ -84,13 +84,16 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         schemaFile = realSchemaFile
     )
 
+    val files = graphqlFiles.files
+    sanityChecks(packageNameProvider, files)
+
     val nullableValueTypeEnum = NullableValueType.values().find { it.value == nullableValueType.getOrElse(NullableValueType.ANNOTATED.value) }
     if (nullableValueTypeEnum == null) {
-      throw IllegalArgumentException("Unknown nullableValueType: '${nullableValueType.get()}'. Possible values:\n" +
+      throw IllegalArgumentException("ApolloGraphQL: Unknown nullableValueType: '${nullableValueType.get()}'. Possible values:\n" +
           NullableValueType.values().map { it.value }.joinToString("\n"))
     }
 
-    val codeGenerationIR = GraphQLDocumentParser(schema, packageNameProvider).parse(graphqlFiles.files)
+    val codeGenerationIR = GraphQLDocumentParser(schema, packageNameProvider).parse(files)
     val args = GraphQLCompiler.Arguments(
         ir = codeGenerationIR,
         outputDir = outputDir.get().asFile,
@@ -109,24 +112,32 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
     GraphQLCompiler().write(args)
   }
 
-  private fun sanityChecks() {
+  private fun sanityChecks(packageNameProvider: DefaultPackageNameProvider, files: Set<File>) {
     if (generateKotlinModels.getOrElse(false) && generateModelBuilder.getOrElse(false)) {
       throw IllegalArgumentException("""
-        Using `generateModelBuilder = true` does not make sense with `generateKotlinModels = true`. You can use .copy() as models are data classes.
+        ApolloGraphQL: Using `generateModelBuilder = true` does not make sense with `generateKotlinModels = true`. You can use .copy() as models are data classes.
       """.trimIndent())
     }
 
     if (generateKotlinModels.getOrElse(false) && useJavaBeansSemanticNaming.getOrElse(false)) {
       throw IllegalArgumentException("""
-        Using `useJavaBeansSemanticNaming = true` does not make sense with `generateKotlinModels = true`
+        ApolloGraphQL: Using `useJavaBeansSemanticNaming = true` does not make sense with `generateKotlinModels = true`
       """.trimIndent())
     }
 
     if (generateKotlinModels.getOrElse(false) && nullableValueType.isPresent) {
       throw IllegalArgumentException("""
-        Using `nullableValueType` does not make sense with `generateKotlinModels = true`
+        ApolloGraphQL: Using `nullableValueType` does not make sense with `generateKotlinModels = true`
       """.trimIndent())
     }
 
+    val map = files.groupBy { packageNameProvider.filePackageName(it.normalize().absolutePath) to it.nameWithoutExtension }
+
+    map.values.forEach {
+      require(it.size == 1) {
+        "ApolloGraphQL: duplicate(s) graphql file(s) found:\n" +
+            it.map { it.absolutePath }.joinToString("\n")
+      }
+    }
   }
 }

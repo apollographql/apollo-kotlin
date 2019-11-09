@@ -1,10 +1,17 @@
 package com.apollographql.apollo.gradle.api
 
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 
 interface CompilerParams {
+  val graphqlSourceDirectorySet: SourceDirectorySet
+
+  val schemaFile: RegularFileProperty
+  fun schemaFile(path: Any)
+
   val generateKotlinModels: Property<Boolean>
   fun generateKotlinModels(generateKotlinModels: Boolean)
   fun setGenerateKotlinModels(generateKotlinModels: Boolean)

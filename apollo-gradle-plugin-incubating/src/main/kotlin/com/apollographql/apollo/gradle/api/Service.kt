@@ -8,10 +8,10 @@ interface Service : CompilerParams {
   fun introspection(configure: Action<in Introspection>)
 
   val schemaPath: Property<String>
-  fun schemaPath(schemaFilePath: String)
+  fun schemaPath(schemaPath: String)
 
   val sourceFolder: Property<String>
-  fun sourceFolder(sourceFolderPath: String)
+  fun sourceFolder(sourceFolder: String)
 
   val exclude: ListProperty<String>
   fun exclude(exclude: List<String>)
