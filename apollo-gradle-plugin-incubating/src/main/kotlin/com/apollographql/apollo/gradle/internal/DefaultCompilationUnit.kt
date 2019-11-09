@@ -3,7 +3,6 @@ package com.apollographql.apollo.gradle.internal
 import com.apollographql.apollo.compiler.child
 import com.apollographql.apollo.gradle.api.CompilationUnit
 import com.apollographql.apollo.gradle.api.CompilerParams
-import groovy.lang.Closure
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
@@ -12,11 +11,11 @@ import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import java.io.File
+import javax.inject.Inject
 
-class DefaultCompilationUnit(
+open class DefaultCompilationUnit @Inject constructor(
     override val serviceName: String,
     override val variantName: String,
-    override val androidVariant: Any?,
     override val compilerParams: CompilerParams,
     private val sourcesLocator: SourcesLocator,
     private val sourceSetNames: List<String>,
@@ -40,6 +39,7 @@ class DefaultCompilationUnit(
       val rootFolders: FileCollection
   )
 
+  override var androidVariant: Any? = null
   override val name = "${variantName}${serviceName.capitalize()}"
 
   private var sources: Sources? = null
@@ -69,25 +69,8 @@ class DefaultCompilationUnit(
     return sources!!
   }
 
-  override fun compilerParams(closure: Closure<*>) {
-    closure.delegate = compilerParams
-    closure.resolveStrategy = Closure.DELEGATE_FIRST
-    closure.call()
-  }
-
   override fun compilerParams(action: Action<CompilerParams>) {
     action.execute(compilerParams)
-  }
-
-  override fun sources(closure: Closure<*>) {
-    val params = CompilationUnit.Sources(
-        project.objects.fileProperty(),
-        project.objects.directoryProperty()
-    )
-    closure.delegate = params
-    closure.resolveStrategy = Closure.DELEGATE_FIRST
-    closure.call()
-    customSources(params)
   }
 
   override fun sources(action: Action<CompilationUnit.Sources>) {
@@ -198,15 +181,17 @@ class DefaultCompilationUnit(
           sourceFolder = service.sourceFolder,
           exclude = service.exclude
       )
-      return DefaultCompilationUnit(
-          project = project,
-          variantName = apolloVariant.name,
-          sourceSetNames = apolloVariant.sourceSetNames,
-          androidVariant = apolloVariant.androidVariant,
-          serviceName = service.name,
-          sourcesLocator = sourcesLocator,
-          compilerParams = compilerParams
-      )
+
+      return project.objects.newInstance(DefaultCompilationUnit::class.java,
+          service.name,
+          apolloVariant.name,
+          compilerParams,
+          sourcesLocator,
+          apolloVariant.sourceSetNames,
+          project
+      ).apply {
+        androidVariant = apolloVariant.androidVariant
+      }
     }
 
     fun fromFiles(project: Project, apolloExtension: DefaultApolloExtension, apolloVariant: ApolloVariant): DefaultCompilationUnit? {
@@ -226,15 +211,16 @@ class DefaultCompilationUnit(
       }
 
       val schema = schemaFiles.values.firstOrNull() ?: return null
-      return DefaultCompilationUnit(
-          project = project,
-          variantName = apolloVariant.name,
-          sourceSetNames = apolloVariant.sourceSetNames,
-          androidVariant = apolloVariant.androidVariant,
-          serviceName = "service0",
-          compilerParams = apolloExtension,
-          sourcesLocator = SourcesLocator.FromFiles(schema)
-      )
+      return project.objects.newInstance(DefaultCompilationUnit::class.java,
+          "service0",
+          apolloVariant.name,
+          apolloExtension,
+          SourcesLocator.FromFiles(schema),
+          apolloVariant.sourceSetNames,
+          project
+      ).apply {
+        apolloVariant.androidVariant
+      }
     }
 
     fun isGraphQL(file: File): Boolean {

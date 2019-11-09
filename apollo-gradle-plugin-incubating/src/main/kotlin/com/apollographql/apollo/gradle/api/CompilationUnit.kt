@@ -17,9 +17,7 @@ interface CompilationUnit {
   val outputDir: Provider<Directory>
   val transformedQueriesDir: Provider<Directory>
 
-  fun compilerParams(closure: Closure<*>)
   fun compilerParams(action: Action<CompilerParams>)
-  fun sources(closure: Closure<*>)
   fun sources(action: Action<Sources>)
 
   class Sources(
