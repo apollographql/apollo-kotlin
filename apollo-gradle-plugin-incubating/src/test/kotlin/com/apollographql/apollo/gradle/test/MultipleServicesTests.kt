@@ -35,7 +35,7 @@ class MultipleServicesTests {
         TestUtils.executeTask("generateApolloSources", dir)
       } catch (e: UnexpectedBuildFailure) {
         exception = e
-        assertThat(e.message, containsString("By default only one schema.json file is supported. If you have multiple schema.json,"))
+        assertThat(e.message, containsString("By default only one schema.json file is supported."))
       }
       assertNotNull(exception)
     }

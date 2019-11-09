@@ -209,23 +209,23 @@ class DefaultCompilationUnit(
       )
     }
 
-    fun fromFiles(project: Project, apolloExtension: DefaultApolloExtension, apolloVariant: ApolloVariant): DefaultCompilationUnit {
+    fun fromFiles(project: Project, apolloExtension: DefaultApolloExtension, apolloVariant: ApolloVariant): DefaultCompilationUnit? {
       val sourceSetNames = apolloVariant.sourceSetNames
       val schemaFiles = findFilesInSourceSets(project, sourceSetNames, ".") {
         it.name == "schema.json"
       }
-      require(schemaFiles.size == 1) {
-        """|
-          |By default only one schema.json file is supported. If you have multiple schema.json,
-          |Please use a service instead:
-          |apollo {
-          |  service("serviceName") {
-          |    sourceFolder = "serviceName"
-          |  }
-          |}
-        """.trimMargin()
+      require(schemaFiles.size <= 1) {
+        val service = schemaFiles.keys.joinToString("\n") {
+          """
+            |  service("serviceName") {
+            |    sourceFolder = "${it.replace("/schema.json", "")}"
+            |  }
+          """.trimMargin()
+        }
+        "By default only one schema.json file is supported.\nPlease use multiple services instead:\napollo {\n$service\n}"
       }
 
+      val schema = schemaFiles.values.firstOrNull() ?: return null
       return DefaultCompilationUnit(
           project = project,
           variantName = apolloVariant.name,
@@ -233,7 +233,7 @@ class DefaultCompilationUnit(
           androidVariant = apolloVariant.androidVariant,
           serviceName = "service0",
           compilerParams = apolloExtension,
-          sourcesLocator = SourcesLocator.FromFiles(schemaFiles.values.first())
+          sourcesLocator = SourcesLocator.FromFiles(schema)
       )
     }
 

@@ -83,7 +83,7 @@ open class ApolloPlugin : Plugin<Project> {
         val variantProvider = registerVariantTask(project, apolloVariant.name)
 
         val compilationUnits = if (apolloExtension.services.isEmpty()) {
-          listOf(DefaultCompilationUnit.fromFiles(project, apolloExtension, apolloVariant))
+          listOfNotNull(DefaultCompilationUnit.fromFiles(project, apolloExtension, apolloVariant))
         } else {
           apolloExtension.services.map {
             DefaultCompilationUnit.fromService(project, apolloExtension, apolloVariant, it)
