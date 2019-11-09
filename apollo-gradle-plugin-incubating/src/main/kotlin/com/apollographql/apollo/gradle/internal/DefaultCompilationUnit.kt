@@ -219,7 +219,7 @@ open class DefaultCompilationUnit @Inject constructor(
           apolloVariant.sourceSetNames,
           project
       ).apply {
-        apolloVariant.androidVariant
+        androidVariant = apolloVariant.androidVariant
       }
     }
 
