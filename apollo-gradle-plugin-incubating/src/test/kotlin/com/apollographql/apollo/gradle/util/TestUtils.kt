@@ -26,7 +26,9 @@ object TestUtils {
 
     block(dest)
 
-    dest.deleteRecursively()
+    // It's ok to not delete the directory as it will be deleted before next test
+    // During developement, it's easy to keep the testProject around to investigate if something goes wrong
+    // dest.deleteRecursively()
   }
 
   fun withProject(usesKotlinDsl: Boolean,

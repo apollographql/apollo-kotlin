@@ -1,67 +1,67 @@
 package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.gradle.api.CompilerParams
-import org.gradle.api.Project
+import org.gradle.api.file.ProjectLayout
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.file.SourceDirectorySet
-import org.gradle.api.provider.MapProperty
+import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
 import javax.inject.Inject
 
-abstract class DefaultCompilerParams @Inject constructor(val project: Project) : CompilerParams {
-  abstract override val graphqlSourceDirectorySet: SourceDirectorySet
+abstract class DefaultCompilerParams @Inject constructor(objects: ObjectFactory, val projectLayout: ProjectLayout) : CompilerParams {
+  override val graphqlSourceDirectorySet = objects.sourceDirectorySet("graphql", "graphql")
 
   abstract override val schemaFile: RegularFileProperty
   override fun schemaFile(path: Any) {
-    this.schemaFile.set { project.file(path) }
+    this.schemaFile.set {projectLayout.files(path).first()}
   }
 
-  abstract override val generateKotlinModels: Property<Boolean>
+  override val generateKotlinModels = objects.property(Boolean::class.java)
   override fun generateKotlinModels(generateKotlinModels: Boolean) {
     this.generateKotlinModels.set(generateKotlinModels)
   }
 
-  abstract override val generateTransformedQueries: Property<Boolean>
+  override val generateTransformedQueries= objects.property(Boolean::class.java)
   override fun generateTransformedQueries(generateTransformedQueries: Boolean) {
     this.generateTransformedQueries.set(generateTransformedQueries)
   }
 
-  override val customTypeMapping = project.objects.mapProperty(String::class.java, String::class.java)
+  // I'm not using a MapProperty here since I didn't find a way to represent the difference between absent and empty
+  override val customTypeMapping = objects.property(Map::class.java) as Property<Map<String, String>>
   override fun customTypeMapping(customTypeMapping: Map<String, String>) {
     this.customTypeMapping.set(customTypeMapping)
   }
 
-  abstract override val suppressRawTypesWarning: Property<Boolean>
+  override val suppressRawTypesWarning= objects.property(Boolean::class.java)
   override fun suppressRawTypesWarning(suppressRawTypesWarning: Boolean) {
     this.suppressRawTypesWarning.set(suppressRawTypesWarning)
   }
 
-  abstract override val useSemanticNaming: Property<Boolean>
+  override val useSemanticNaming= objects.property(Boolean::class.java)
   override fun useSemanticNaming(useSemanticNaming: Boolean) {
     this.useSemanticNaming.set(useSemanticNaming)
   }
 
-  abstract override val nullableValueType: Property<String>
+  override val nullableValueType= objects.property(String::class.java)
   override fun nullableValueType(nullableValueType: String) {
     this.nullableValueType.set(nullableValueType)
   }
 
-  abstract override val generateModelBuilder: Property<Boolean>
+  override val generateModelBuilder= objects.property(Boolean::class.java)
   override fun generateModelBuilder(generateModelBuilder: Boolean) {
     this.generateModelBuilder.set(generateModelBuilder)
   }
 
-  abstract override val useJavaBeansSemanticNaming: Property<Boolean>
+  override val useJavaBeansSemanticNaming= objects.property(Boolean::class.java)
   override fun useJavaBeansSemanticNaming(useJavaBeansSemanticNaming: Boolean) {
     this.useJavaBeansSemanticNaming.set(useJavaBeansSemanticNaming)
   }
 
-  abstract override val generateVisitorForPolymorphicDatatypes: Property<Boolean>
+  override val generateVisitorForPolymorphicDatatypes= objects.property(Boolean::class.java)
   override fun generateVisitorForPolymorphicDatatypes(generateVisitorForPolymorphicDatatypes: Boolean) {
     this.generateVisitorForPolymorphicDatatypes.set(generateVisitorForPolymorphicDatatypes)
   }
 
-  abstract override val rootPackageName: Property<String>
+  override val rootPackageName= objects.property(String::class.java)
   override fun rootPackageName(rootPackageName: String) {
     this.rootPackageName.set(rootPackageName)
   }

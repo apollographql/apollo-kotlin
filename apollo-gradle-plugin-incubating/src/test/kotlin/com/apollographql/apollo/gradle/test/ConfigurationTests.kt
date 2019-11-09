@@ -316,9 +316,7 @@ class ConfigurationTests {
           rootPackageName "com.starwars"
         }
         onCompilationUnits {
-          compilerParams {
-            rootPackageName.set("com.overrides")
-          }
+          rootPackageName.set("com.overrides")
         }
       }
     """.trimIndent()) { dir ->
@@ -339,10 +337,9 @@ class ConfigurationTests {
         }
         
         onCompilationUnits {
-          sources {
-            schemaFile(file("src/main/graphql/com/example/schema.json"))
-            graphqlDir(file("src/main/graphql/"))
-          }
+          schemaFile(file("src/main/graphql/com/example/schema.json"))
+          graphqlSourceDirectorySet.srcDir(file("src/main/graphql/"))
+          graphqlSourceDirectorySet.include("**/*.graphql")
         }
       }
     """.trimIndent()) { dir ->

@@ -20,7 +20,7 @@ interface CompilerParams {
   fun generateTransformedQueries(generateTransformedQueries: Boolean)
   fun setGenerateTransformedQueries(generateTransformedQueries: Boolean)
 
-  val customTypeMapping: MapProperty<String, String>
+  val customTypeMapping: Property<Map<String, String>>
   fun customTypeMapping(customTypeMapping: Map<String, String>)
   fun setCustomTypeMapping(customTypeMapping: Map<String, String>)
 

@@ -23,8 +23,49 @@ abstract class DefaultCompilationUnit @Inject constructor(
   abstract override val outputDir: DirectoryProperty
   abstract override val transformedQueriesDir: DirectoryProperty
 
+  private fun resolveSchema(graphqlSourceDirectorySet: SourceDirectorySet): File {
+    if (service.schemaPath.isPresent) {
+      val schemaPath = service.schemaPath.get()
+      if (schemaPath.startsWith(File.separator)) {
+        return project.file(schemaPath)
+      } else if (schemaPath.startsWith("..")) {
+        return project.file("src/main/graphql/$schemaPath").normalize()
+      } else {
+        val all = apolloVariant.sourceSetNames.map {
+          project.file("src/$it/graphql/$schemaPath")
+        }
+
+        val candidates = all.filter {
+          it.exists()
+        }
+
+        require(candidates.size <= 1) {
+          "ApolloGraphQL: duplicate(s) schema file(s) found:\n${candidates.map { it.absolutePath }.joinToString("\n")}"
+        }
+        require(candidates.size == 1) {
+          "ApolloGraphQL: cannot find a schema file at $schemaPath. Tried:\n${all.map { it.absolutePath }.joinToString("\n")}"
+        }
+
+        return candidates.first()
+      }
+    } else {
+      val candidates = graphqlSourceDirectorySet.srcDirs.flatMap {
+        it.walkTopDown().filter { it.name == "schema.json" }.toList()
+      }
+
+      require(candidates.size <= 1) {
+        multipleSchemaError(candidates)
+      }
+      require(candidates.size == 1) {
+        "ApolloGraphQL: cannot find schema.json. Please specify it explicitely. Looked under:\n" +
+            graphqlSourceDirectorySet.srcDirs.map { it.absolutePath }.joinToString("\n")
+      }
+      return candidates.first()
+    }
+  }
+
   fun setSourcesIfNeeded(graphqlSourceDirectorySet: SourceDirectorySet, schemaFile: RegularFileProperty) {
-    if (graphqlSourceDirectorySet.isEmpty) {
+    if (graphqlSourceDirectorySet.srcDirs.isEmpty()) {
       if (schemaFile.isPresent) {
         graphqlSourceDirectorySet.srcDir(schemaFile.asFile.get().parent)
       } else {
@@ -45,43 +86,7 @@ abstract class DefaultCompilationUnit @Inject constructor(
     }
 
     if (!schemaFile.isPresent) {
-      if (service.schemaPath.isPresent) {
-        val schemaPath = service.schemaPath.get()
-        if (schemaPath.startsWith(File.separator)) {
-          schemaFile.set(project.file(schemaPath))
-        } else if (schemaPath.startsWith("..")) {
-          schemaFile.set(project.file("src/main/graphql/$schemaPath").normalize())
-        } else {
-          val all = apolloVariant.sourceSetNames.map {
-            project.file("src/$it/graphql/$schemaPath")
-          }
-
-          val candidates = all.filter {
-            it.exists()
-          }
-
-          require(candidates.size <= 1) {
-            "ApolloGraphQL: duplicate(s) schema file(s) found:\n${candidates.map { it.absolutePath }.joinToString("\n")}"
-          }
-          require(candidates.size == 1) {
-            "ApolloGraphQL: cannot find a schema file at $schemaPath. Tried:\n${all.map { it.absolutePath }.joinToString("\n")}"
-          }
-
-          schemaFile.set(candidates.first())
-        }
-      } else {
-        val candidates = graphqlSourceDirectorySet.filter {
-          it.name == "schema.json"
-        }.files
-
-        require(candidates.size <= 1) {
-          multipleSchemaError(candidates)
-        }
-        require(candidates.size == 1) {
-          "ApolloGraphQL: cannot find schema.json. Please specify it explicitely. Looked under:\n" +
-              graphqlSourceDirectorySet.srcDirs.map { it.absolutePath }.joinToString("\n")
-        }
-      }
+      schemaFile.set { resolveSchema(graphqlSourceDirectorySet) }
     }
   }
 
@@ -113,7 +118,7 @@ abstract class DefaultCompilationUnit @Inject constructor(
       return createDefaultCompilationUnit(project, apolloExtension, apolloVariant, service)
     }
 
-    private fun multipleSchemaError(schemaList: Set<File>): String {
+    private fun multipleSchemaError(schemaList: List<File>): String {
       val services = schemaList.joinToString("\n") {
         """|
           |  service("${it.parentFile.name}") {
