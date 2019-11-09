@@ -203,7 +203,7 @@ open class DefaultCompilationUnit @Inject constructor(
 
       val schema = schemaFiles.values.firstOrNull() ?: return null
       return project.objects.newInstance(DefaultCompilationUnit::class.java,
-          "service0",
+          "service",
           apolloVariant.name,
           apolloExtension,
           SourcesLocator.FromFiles(schema),

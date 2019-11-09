@@ -27,7 +27,7 @@ class SourceDirectorySetTests {
       Assert.assertTrue(File(dir, "build/tmp/kotlin-classes/debug/com/example/DroidDetailsQuery.class").isFile)
       Assert.assertTrue(File(dir, "build/tmp/kotlin-classes/debug/com/example/Main.class").isFile)
       Assert.assertTrue(File(dir, "build/outputs/apk/debug/testProject-debug.apk").isFile)
-      Assert.assertTrue(dir.generatedChild("debug/service0/com/example/DroidDetailsQuery.kt").isFile)
+      Assert.assertTrue(dir.generatedChild("debug/service/com/example/DroidDetailsQuery.kt").isFile)
     }
   }
 
@@ -49,7 +49,7 @@ class SourceDirectorySetTests {
 
       Assert.assertTrue(File(dir, "build/classes/kotlin/main/com/example/DroidDetailsQuery.class").isFile)
       Assert.assertTrue(File(dir, "build/classes/kotlin/main/com/example/Main.class").isFile)
-      Assert.assertTrue(dir.generatedChild("main/service0/com/example/DroidDetailsQuery.kt").isFile)
+      Assert.assertTrue(dir.generatedChild("main/service/com/example/DroidDetailsQuery.kt").isFile)
       Assert.assertTrue(File(dir, "build/libs/testProject.jar").isFile)
     }
   }
@@ -73,7 +73,7 @@ class SourceDirectorySetTests {
       Assert.assertTrue(File(dir, "build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/example/DroidDetailsQuery.class").isFile)
       Assert.assertTrue(File(dir, "build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/example/Main.class").isFile)
       Assert.assertTrue(File(dir, "build/outputs/apk/debug/testProject-debug.apk").isFile)
-      Assert.assertTrue(dir.generatedChild("debug/service0/com/example/DroidDetailsQuery.java").isFile)
+      Assert.assertTrue(dir.generatedChild("debug/service/com/example/DroidDetailsQuery.java").isFile)
     }
   }
 
@@ -95,7 +95,7 @@ class SourceDirectorySetTests {
 
       Assert.assertTrue(File(dir, "build/classes/java/main/com/example/DroidDetailsQuery.class").isFile)
       Assert.assertTrue(File(dir, "build/classes/java/main/com/example/Main.class").isFile)
-      Assert.assertTrue(dir.generatedChild("main/service0/com/example/DroidDetailsQuery.java").isFile)
+      Assert.assertTrue(dir.generatedChild("main/service/com/example/DroidDetailsQuery.java").isFile)
       Assert.assertTrue(File(dir, "build/libs/testProject.jar").isFile)
     }
   }
