@@ -55,11 +55,11 @@ public interface CustomTypeAdapter<T> {
   T decode(@NotNull CustomTypeValue value);
 
   /**
-   * Serializes the custom scalar type to the corresponding string value. Usually used in serializing variables or input
+   * Serializes the custom scalar type to the corresponding {@link CustomTypeValue} value. Usually used in serializing variables or input
    * values.
    *
    * @param value the custom scalar type to serialize
-   * @return serialized string value
+   * @return serialized value
    */
   @NotNull CustomTypeValue encode(@NotNull T value);
 }

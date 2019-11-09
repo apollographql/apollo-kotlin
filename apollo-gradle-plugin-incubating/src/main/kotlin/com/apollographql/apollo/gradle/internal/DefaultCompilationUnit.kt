@@ -106,37 +106,54 @@ open class DefaultCompilationUnit @Inject constructor(
   }
 
   private fun sourcesFromService(fromService: SourcesLocator.FromService) {
-    val sourceFolder = fromService.sourceFolder.orElse(".")
-    val rootFolders = project.objects.fileCollection().apply {
-      setFrom({
+    val sourceFolder = fromService.sourceFolder.orElse(".").get()
+    val rootFolders = project.objects.fileCollection()
+    if (sourceFolder.startsWith(File.separator)) {
+      rootFolders.setFrom(File(sourceFolder))
+    } else {
+      rootFolders.setFrom({
         sourceSetNames.map {
-          project.projectDir.child("src", it, "graphql", sourceFolder.get())
+          project.projectDir.child("src", it, "graphql", sourceFolder)
         }
       })
     }
 
     val schemaFile = project.objects.fileProperty().value {
       if (fromService.schemaPath.isPresent) {
-        val map = findFilesInSourceSets(project, sourceSetNames, fromService.schemaPath.get(), { true })
-        if (map.isEmpty()) {
-          val tried = sourceSetNames.map { project.projectDir.child("src", it, "graphql", fromService.schemaPath.get()).absolutePath }
-          throw IllegalArgumentException("cannot find a schema. Tried:\n${tried.joinToString("\n")}")
+        val schemaPath = fromService.schemaPath.get()
+        if (schemaPath.startsWith(File.separator)) {
+          File(schemaPath).also {
+            require(it.exists()) { "Provided schema with absolute path does not exist: ${it.absolutePath}" }
+          }
+        } else {
+          val map = findFilesInSourceSets(project, sourceSetNames, schemaPath, { true })
+          if (map.isEmpty()) {
+            val tried = sourceSetNames.map { project.projectDir.child("src", it, "graphql", schemaPath).absolutePath }
+            throw IllegalArgumentException("cannot find a schema. Tried:\n${tried.joinToString("\n")}")
+          }
+          map.values.first()
         }
-        map.values.first()
       } else {
-        val map = findFilesInSourceSets(project, sourceSetNames, sourceFolder.get(), { it.name.endsWith(".json") })
-        if (map.isEmpty()) {
-          val tried = sourceSetNames.map { project.projectDir.child("src", it, "graphql", sourceFolder.get()).absolutePath }
-          throw IllegalArgumentException("cannot find a schema. Please specify service.schemaPath. Tried:\n${tried.joinToString("\n")}")
+        if (sourceFolder.startsWith(File.separator)) {
+          File(sourceFolder).findFiles(::isJsonFile).first()
+        } else {
+          val map = findFilesInSourceSets(project, sourceSetNames, sourceFolder, ::isJsonFile)
+          if (map.isEmpty()) {
+            val tried = sourceSetNames.map { project.projectDir.child("src", it, "graphql", sourceFolder).absolutePath }
+            throw IllegalArgumentException("cannot find a schema. Please specify service.schemaPath. Tried:\n${tried.joinToString("\n")}")
+          }
+          map.values.first()
         }
-        map.values.first()
       }
     }
 
     val graphqlFiles = project.objects.fileCollection().apply {
       setFrom({
-        val candidates = findFilesInSourceSets(project, sourceSetNames, sourceFolder.get(), ::isGraphQL).values
-
+        val candidates = if (sourceFolder.startsWith(File.separator)) {
+          File(sourceFolder).findFiles(::isGraphQL)
+        } else {
+          findFilesInSourceSets(project, sourceSetNames, sourceFolder, ::isGraphQL).values
+        }
         project.files(candidates).asFileTree.matching {
           it.exclude(fromService.exclude.get())
         }.files
@@ -217,6 +234,8 @@ open class DefaultCompilationUnit @Inject constructor(
     fun isGraphQL(file: File): Boolean {
       return file.name.endsWith(".graphql") || file.name.endsWith(".gql")
     }
+
+    fun isJsonFile(file: File) = file.name.endsWith(".json")
 
     /**
      * Finds the files in the given sourceSets.

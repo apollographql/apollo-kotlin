@@ -253,6 +253,42 @@ class ConfigurationTests {
       assertTrue(dir.generatedChild("main/starwars/fragment/SpeciesInformation.java").isFile)
     }
   }
+  
+  @Test
+  fun `schemaPath can be absolute path`() {
+    val schema = File(System.getProperty("user.dir"), "src/test/files/starwars/schema.json")
+    withSimpleProject("""
+      apollo {
+        service("starwars") {
+          schemaPath("${schema.absolutePath}")
+        }
+      }
+    """.trimIndent()) { dir ->
+      TestUtils.executeTask("generateApolloSources", dir)
+      TestUtils.assertFileContains(dir, "main/starwars/com/example/DroidDetailsQuery.java", "class DroidDetailsQuery ")
+    }
+  }
+
+  @Test
+  fun `sourceFolder can be absolute path`() {
+    val folder = File(System.getProperty("user.dir"), "src/test/files/starwars")
+    withSimpleProject("""
+      apollo {
+        service("starwars") {
+          sourceFolder("${folder.absolutePath}")
+        }
+      }
+    """.trimIndent()) { dir ->
+      File(dir, "src/main/graphql/com").deleteRecursively()
+
+      TestUtils.executeTask("generateApolloSources", dir)
+      println(dir.absolutePath)
+      dir.list()?.forEach(::println)
+      assertTrue(dir.generatedChild("main/starwars/DroidDetailsQuery.java").isFile)
+      assertTrue(dir.generatedChild("main/starwars/type/CustomType.java").isFile)
+      assertTrue(dir.generatedChild("main/starwars/fragment/SpeciesInformation.java").isFile)
+    }
+  }
 
   @Test
   fun `rootPackageName can be overridden in service`() {

@@ -5,6 +5,7 @@ import com.apollographql.apollo.api.ScalarType;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +19,7 @@ public final class ScalarTypeAdapters {
   public ScalarTypeAdapters(@NotNull Map<ScalarType, CustomTypeAdapter> customAdapters) {
     Map<ScalarType, CustomTypeAdapter> nonNullcustomAdapters = checkNotNull(customAdapters, "customAdapters == null");
     this.customAdapters = new HashMap<>();
-    for (Map.Entry<ScalarType, CustomTypeAdapter> entry:nonNullcustomAdapters.entrySet()) {
+    for (Map.Entry<ScalarType, CustomTypeAdapter> entry : nonNullcustomAdapters.entrySet()) {
       this.customAdapters.put(entry.getKey().typeName(), entry.getValue());
     }
   }
@@ -53,7 +54,7 @@ public final class ScalarTypeAdapters {
         } else if (value instanceof CustomTypeValue.GraphQLString) {
           return Boolean.parseBoolean(((CustomTypeValue.GraphQLString) value).value);
         } else {
-          throw new IllegalArgumentException("Can't map: " + value + " to Boolean");
+          throw new IllegalArgumentException("Can't decode: " + value + " into Boolean");
         }
       }
     });
@@ -64,7 +65,7 @@ public final class ScalarTypeAdapters {
         } else if (value instanceof CustomTypeValue.GraphQLString) {
           return Integer.parseInt(((CustomTypeValue.GraphQLString) value).value);
         } else {
-          throw new IllegalArgumentException("Can't map: " + value + " to Integer");
+          throw new IllegalArgumentException("Can't decode: " + value + " into Integer");
         }
       }
     });
@@ -75,7 +76,7 @@ public final class ScalarTypeAdapters {
         } else if (value instanceof CustomTypeValue.GraphQLString) {
           return Long.parseLong(((CustomTypeValue.GraphQLString) value).value);
         } else {
-          throw new IllegalArgumentException("Can't map: " + value + " to Long");
+          throw new IllegalArgumentException("Can't decode: " + value + " into Long");
         }
       }
     });
@@ -86,7 +87,7 @@ public final class ScalarTypeAdapters {
         } else if (value instanceof CustomTypeValue.GraphQLString) {
           return Float.parseFloat(((CustomTypeValue.GraphQLString) value).value);
         } else {
-          throw new IllegalArgumentException("Can't map: " + value + " to Float");
+          throw new IllegalArgumentException("Can't decode: " + value + " into Float");
         }
       }
     });
@@ -97,7 +98,7 @@ public final class ScalarTypeAdapters {
         } else if (value instanceof CustomTypeValue.GraphQLString) {
           return Double.parseDouble(((CustomTypeValue.GraphQLString) value).value);
         } else {
-          throw new IllegalArgumentException("Can't map: " + value + " to Double");
+          throw new IllegalArgumentException("Can't decode: " + value + " into Double");
         }
       }
     });
@@ -115,6 +116,24 @@ public final class ScalarTypeAdapters {
     adapters.put(Object.class, new DefaultCustomTypeAdapter<Object>() {
       @NotNull @Override public Object decode(@NotNull CustomTypeValue value) {
         return value.value;
+      }
+    });
+    adapters.put(Map.class, new DefaultCustomTypeAdapter<Map>() {
+      @NotNull @Override public Map decode(@NotNull CustomTypeValue value) {
+        if (value instanceof CustomTypeValue.GraphQLJsonObject) {
+          return ((CustomTypeValue.GraphQLJsonObject) value).value;
+        } else {
+          throw new IllegalArgumentException("Can't decode: " + value + " into Map");
+        }
+      }
+    });
+    adapters.put(List.class, new DefaultCustomTypeAdapter<List>() {
+      @NotNull @Override public List decode(@NotNull CustomTypeValue value) {
+        if (value instanceof CustomTypeValue.GraphQLJsonList) {
+          return ((CustomTypeValue.GraphQLJsonList) value).value;
+        } else {
+          throw new IllegalArgumentException("Can't decode: " + value + " into List");
+        }
       }
     });
     return adapters;
