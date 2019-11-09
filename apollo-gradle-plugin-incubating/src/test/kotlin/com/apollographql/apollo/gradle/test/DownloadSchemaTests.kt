@@ -1,12 +1,11 @@
 package com.apollographql.apollo.gradle.test
 
-import com.apollographql.apollo.compiler.child
+import com.apollographql.apollo.gradle.internal.child
 import com.apollographql.apollo.gradle.util.TestUtils
 import com.apollographql.apollo.gradle.util.TestUtils.withSimpleProject
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.gradle.testkit.runner.TaskOutcome
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.File

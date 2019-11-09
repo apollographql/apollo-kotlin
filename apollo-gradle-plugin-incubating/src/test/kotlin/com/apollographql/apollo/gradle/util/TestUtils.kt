@@ -1,6 +1,6 @@
 package com.apollographql.apollo.gradle.util
 
-import com.apollographql.apollo.compiler.child
+import com.apollographql.apollo.gradle.internal.child
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.hamcrest.CoreMatchers.containsString
