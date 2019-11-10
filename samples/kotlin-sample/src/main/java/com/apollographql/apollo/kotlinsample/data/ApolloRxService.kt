@@ -7,7 +7,7 @@ import com.apollographql.apollo.kotlinsample.GithubRepositoryDetailQuery
 import com.apollographql.apollo.kotlinsample.type.OrderDirection
 import com.apollographql.apollo.kotlinsample.type.PullRequestState
 import com.apollographql.apollo.kotlinsample.type.RepositoryOrderField
-import com.apollographql.apollo.rx2.Rx2Apollo
+import com.apollographql.apollo.rx2.rxQuery
 import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -29,9 +29,7 @@ class ApolloRxService(
         .orderDirection(OrderDirection.DESC)
         .build()
 
-    val call = apolloClient.query(repositoriesQuery)
-
-    val disposable = Rx2Apollo.from(call)
+    val disposable = apolloClient.rxQuery(repositoriesQuery)
         .subscribeOn(processScheduler)
         .observeOn(resultScheduler)
         .map(this::mapRepositoriesResponseToRepositories)
@@ -49,9 +47,7 @@ class ApolloRxService(
         .pullRequestStates(listOf(PullRequestState.OPEN))
         .build()
 
-    val call = apolloClient.query(repositoryDetailQuery)
-
-    val disposable = Rx2Apollo.from(call)
+    val disposable = apolloClient.rxQuery(repositoryDetailQuery)
         .subscribeOn(processScheduler)
         .observeOn(resultScheduler)
         .subscribe(
@@ -67,9 +63,7 @@ class ApolloRxService(
         .name(repositoryName)
         .build()
 
-    val call = apolloClient.query(commitsQuery)
-
-    val disposable = Rx2Apollo.from(call)
+    val disposable = apolloClient.rxQuery(commitsQuery)
         .subscribeOn(processScheduler)
         .observeOn(resultScheduler)
         .map { response ->
