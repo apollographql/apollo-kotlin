@@ -12,7 +12,7 @@ abstract class DefaultCompilerParams @Inject constructor(objects: ObjectFactory,
 
   abstract override val schemaFile: RegularFileProperty
   override fun schemaFile(path: Any) {
-    this.schemaFile.set {projectLayout.files(path).first()}
+    this.schemaFile.set { projectLayout.files(path).first() }
   }
 
   override val generateKotlinModels = objects.property(Boolean::class.java)
@@ -20,7 +20,7 @@ abstract class DefaultCompilerParams @Inject constructor(objects: ObjectFactory,
     this.generateKotlinModels.set(generateKotlinModels)
   }
 
-  override val generateTransformedQueries= objects.property(Boolean::class.java)
+  override val generateTransformedQueries = objects.property(Boolean::class.java)
   override fun generateTransformedQueries(generateTransformedQueries: Boolean) {
     this.generateTransformedQueries.set(generateTransformedQueries)
   }
@@ -29,41 +29,42 @@ abstract class DefaultCompilerParams @Inject constructor(objects: ObjectFactory,
   // This triggers a warning in gradle 6.0 unfortunately but we really need to differentiate absent and empty in
   // CompilerParams.withFallback
   override val customTypeMapping = objects.property(Map::class.java) as Property<Map<String, String>>
+
   override fun customTypeMapping(customTypeMapping: Map<String, String>) {
     this.customTypeMapping.set(customTypeMapping)
   }
 
-  override val suppressRawTypesWarning= objects.property(Boolean::class.java)
+  override val suppressRawTypesWarning = objects.property(Boolean::class.java)
   override fun suppressRawTypesWarning(suppressRawTypesWarning: Boolean) {
     this.suppressRawTypesWarning.set(suppressRawTypesWarning)
   }
 
-  override val useSemanticNaming= objects.property(Boolean::class.java)
+  override val useSemanticNaming = objects.property(Boolean::class.java)
   override fun useSemanticNaming(useSemanticNaming: Boolean) {
     this.useSemanticNaming.set(useSemanticNaming)
   }
 
-  override val nullableValueType= objects.property(String::class.java)
+  override val nullableValueType = objects.property(String::class.java)
   override fun nullableValueType(nullableValueType: String) {
     this.nullableValueType.set(nullableValueType)
   }
 
-  override val generateModelBuilder= objects.property(Boolean::class.java)
+  override val generateModelBuilder = objects.property(Boolean::class.java)
   override fun generateModelBuilder(generateModelBuilder: Boolean) {
     this.generateModelBuilder.set(generateModelBuilder)
   }
 
-  override val useJavaBeansSemanticNaming= objects.property(Boolean::class.java)
+  override val useJavaBeansSemanticNaming = objects.property(Boolean::class.java)
   override fun useJavaBeansSemanticNaming(useJavaBeansSemanticNaming: Boolean) {
     this.useJavaBeansSemanticNaming.set(useJavaBeansSemanticNaming)
   }
 
-  override val generateVisitorForPolymorphicDatatypes= objects.property(Boolean::class.java)
+  override val generateVisitorForPolymorphicDatatypes = objects.property(Boolean::class.java)
   override fun generateVisitorForPolymorphicDatatypes(generateVisitorForPolymorphicDatatypes: Boolean) {
     this.generateVisitorForPolymorphicDatatypes.set(generateVisitorForPolymorphicDatatypes)
   }
 
-  override val rootPackageName= objects.property(String::class.java)
+  override val rootPackageName = objects.property(String::class.java)
   override fun rootPackageName(rootPackageName: String) {
     this.rootPackageName.set(rootPackageName)
   }
