@@ -9,9 +9,6 @@ import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.internal.subscription.ApolloSubscriptionTerminatedException;
 import com.apollographql.apollo.internal.util.Cancelable;
-
-import org.jetbrains.annotations.NotNull;
-
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
 import io.reactivex.CompletableEmitter;
@@ -25,8 +22,10 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
+import io.reactivex.annotations.CheckReturnValue;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.exceptions.Exceptions;
+import org.jetbrains.annotations.NotNull;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
@@ -48,6 +47,8 @@ public class Rx2Apollo {
    * @return the converted Observable
    * @throws NullPointerException if watcher == null
    */
+  @NotNull
+  @CheckReturnValue
   public static <T> Observable<Response<T>> from(@NotNull final ApolloQueryWatcher<T> watcher) {
     checkNotNull(watcher, "watcher == null");
     return Observable.create(new ObservableOnSubscribe<Response<T>>() {
@@ -81,7 +82,9 @@ public class Rx2Apollo {
    * @return the converted Observable
    * @throws NullPointerException if originalCall == null
    */
-  @NotNull public static <T> Observable<Response<T>> from(@NotNull final ApolloCall<T> call) {
+  @NotNull
+  @CheckReturnValue
+  public static <T> Observable<Response<T>> from(@NotNull final ApolloCall<T> call) {
     checkNotNull(call, "call == null");
 
     return Observable.create(new ObservableOnSubscribe<Response<T>>() {
@@ -118,7 +121,9 @@ public class Rx2Apollo {
    * @return the converted Completable
    * @throws NullPointerException if prefetch == null
    */
-  @NotNull public static Completable from(@NotNull final ApolloPrefetch prefetch) {
+  @NotNull
+  @CheckReturnValue
+  public static Completable from(@NotNull final ApolloPrefetch prefetch) {
     checkNotNull(prefetch, "prefetch == null");
 
     return Completable.create(new CompletableOnSubscribe() {
@@ -142,11 +147,15 @@ public class Rx2Apollo {
     });
   }
 
-  @NotNull public static <T> Flowable<Response<T>> from(@NotNull ApolloSubscriptionCall<T> call) {
+  @NotNull
+  @CheckReturnValue
+  public static <T> Flowable<Response<T>> from(@NotNull ApolloSubscriptionCall<T> call) {
     return from(call, BackpressureStrategy.LATEST);
   }
 
-  @NotNull public static <T> Flowable<Response<T>> from(@NotNull final ApolloSubscriptionCall<T> call,
+  @NotNull
+  @CheckReturnValue
+  public static <T> Flowable<Response<T>> from(@NotNull final ApolloSubscriptionCall<T> call,
       @NotNull BackpressureStrategy backpressureStrategy) {
     checkNotNull(call, "originalCall == null");
     checkNotNull(backpressureStrategy, "backpressureStrategy == null");
@@ -194,7 +203,9 @@ public class Rx2Apollo {
    * @param <T>       the value type
    * @return the converted Single
    */
-  @NotNull public static <T> Single<T> from(@NotNull final ApolloStoreOperation<T> operation) {
+  @NotNull
+  @CheckReturnValue
+  public static <T> Single<T> from(@NotNull final ApolloStoreOperation<T> operation) {
     checkNotNull(operation, "operation == null");
     return Single.create(new SingleOnSubscribe<T>() {
       @Override
