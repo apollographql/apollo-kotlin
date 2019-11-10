@@ -61,10 +61,13 @@ object AndroidTaskConfigurator {
   ) {
     val variant = compilationUnit.androidVariant as BaseVariant
     if (compilationUnit.generateKotlinModels()) {
+      // This is apparently needed for intelliJ to find the generated files
       variant.addJavaSourceFoldersToModel(codegenProvider.get().outputDir.get().asFile)
-      androidExtension as BaseExtension
-      androidExtension.sourceSets.first { it.name == variant.name }.kotlin!!.srcDir(codegenProvider.get().outputDir)
-      project.tasks.named("compile${variant.name.capitalize()}Kotlin").configure { it.dependsOn(codegenProvider) }
+      // Tell the kotlin compiler to compile our files
+      project.tasks.named("compile${variant.name.capitalize()}Kotlin").configure {
+        it.dependsOn(codegenProvider)
+        (it as KotlinCompile).source(codegenProvider.get().outputDir.asFile.get())
+      }
     } else {
       variant.registerJavaGeneratingTask(codegenProvider.get(), codegenProvider.get().outputDir.get().asFile)
 
