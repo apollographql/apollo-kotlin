@@ -36,7 +36,7 @@ interface CompilerParams {
    *
    * empty by default.
    */
-  val customTypeMapping: Property<Map<String, String>>
+  val customTypeMapping: MapProperty<String, String>
   fun customTypeMapping(customTypeMapping: Map<String, String>)
   fun setCustomTypeMapping(customTypeMapping: Map<String, String>)
 
