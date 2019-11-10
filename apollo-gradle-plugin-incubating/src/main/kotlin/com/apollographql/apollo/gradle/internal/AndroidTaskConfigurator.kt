@@ -10,28 +10,38 @@ import org.gradle.api.tasks.TaskProvider
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 object AndroidTaskConfigurator {
+  private fun apolloVariant(baseVariant: BaseVariant): ApolloVariant {
+    return ApolloVariant(
+        name = baseVariant.name,
+        sourceSetNames = baseVariant.sourceSets.map { it.name }.distinct(),
+        androidVariant = baseVariant
+    )
+  }
+
   fun getVariants(project: Project, androidExtension: Any): NamedDomainObjectContainer<ApolloVariant> {
     val container = project.container(ApolloVariant::class.java)
 
-    when {
-      androidExtension is LibraryExtension -> {
-        // TODO: add test variants ?
+    when (androidExtension) {
+      is LibraryExtension -> {
         androidExtension.libraryVariants.all { variant ->
-          container.add(ApolloVariant(
-              name = variant.name,
-              sourceSetNames = variant.sourceSets.map { it.name }.distinct(),
-              androidVariant = variant
-          ))
+          container.add(apolloVariant(variant))
+        }
+        androidExtension.testVariants.all { variant ->
+          container.add(apolloVariant(variant))
+        }
+        androidExtension.unitTestVariants.all { variant ->
+          container.add(apolloVariant(variant))
         }
       }
-      androidExtension is AppExtension -> {
-        // TODO: add test variants ?
+      is AppExtension -> {
         androidExtension.applicationVariants.all { variant ->
-          container.add(ApolloVariant(
-              name = variant.name,
-              sourceSetNames = variant.sourceSets.map { it.name }.distinct(),
-              androidVariant = variant
-          ))
+          container.add(apolloVariant(variant))
+        }
+        androidExtension.testVariants.all { variant ->
+          container.add(apolloVariant(variant))
+        }
+        androidExtension.unitTestVariants.all { variant ->
+          container.add(apolloVariant(variant))
         }
       }
       else -> {

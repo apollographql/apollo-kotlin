@@ -145,4 +145,79 @@ class SourceDirectorySetTests {
       Assert.assertTrue(File(dir, "build/libs/testProject.jar").isFile)
     }
   }
+
+  @Test
+  fun `non-android jvm can add queries to the test variant`() {
+    val apolloConfiguration = """
+      apollo {
+        generateKotlinModels = false
+      }
+    """.trimIndent()
+    TestUtils.withProject(usesKotlinDsl = false,
+        apolloConfiguration = apolloConfiguration,
+        plugins = listOf(TestUtils.javaPlugin, TestUtils.apolloPlugin)) { dir ->
+
+      val source = TestUtils.fixturesDirectory()
+      source.child("java").copyRecursively(dir.child("src", "test", "java"))
+
+      dir.child("src/main/graphql").copyRecursively(dir.child("src/test/graphql"))
+      dir.child("src/main/graphql").deleteRecursively()
+
+      TestUtils.executeTask("test", dir)
+
+      Assert.assertTrue(File(dir, "build/classes/java/test/com/example/DroidDetailsQuery.class").isFile)
+      Assert.assertTrue(File(dir, "build/classes/java/test/com/example/Main.class").isFile)
+      Assert.assertTrue(dir.generatedChild("test/service/com/example/DroidDetailsQuery.java").isFile)
+    }
+  }
+
+  @Test
+  fun `android can add queries to the test variant`() {
+    val apolloConfiguration = """
+      apollo {
+        generateKotlinModels = false
+      }
+    """.trimIndent()
+    TestUtils.withProject(usesKotlinDsl = false,
+        apolloConfiguration = apolloConfiguration,
+        plugins = listOf(TestUtils.javaPlugin, TestUtils.apolloPlugin)) { dir ->
+
+      val source = TestUtils.fixturesDirectory()
+      source.child("java").copyRecursively(dir.child("src", "test", "java"))
+
+      dir.child("src/main/graphql").copyRecursively(dir.child("src/test/graphql"))
+      dir.child("src/main/graphql").deleteRecursively()
+
+      TestUtils.executeTask("test", dir)
+
+      Assert.assertTrue(File(dir, "build/classes/java/test/com/example/DroidDetailsQuery.class").isFile)
+      Assert.assertTrue(File(dir, "build/classes/java/test/com/example/Main.class").isFile)
+      Assert.assertTrue(dir.generatedChild("test/service/com/example/DroidDetailsQuery.java").isFile)
+    }
+  }
+
+  @Test
+  fun `android can add queries to the androidTest variant`() {
+    val apolloConfiguration = """
+      apollo {
+        generateKotlinModels = false
+      }
+    """.trimIndent()
+    TestUtils.withProject(usesKotlinDsl = false,
+        apolloConfiguration = apolloConfiguration,
+        plugins = listOf(TestUtils.androidApplicationPlugin, TestUtils.apolloPlugin)) { dir ->
+
+      val source = TestUtils.fixturesDirectory()
+      source.child("java").copyRecursively(dir.child("src", "androidTest", "java"))
+
+      dir.child("src/main/graphql").copyRecursively(dir.child("src/androidTest/graphql"))
+      dir.child("src/main/graphql").deleteRecursively()
+
+      TestUtils.executeTask("assembleAndroidTest", dir)
+
+      Assert.assertTrue(dir.generatedChild("debugAndroidTest/service/com/example/DroidDetailsQuery.java").isFile)
+      Assert.assertTrue(dir.child("build/outputs/apk/androidTest/debug/testProject-debug-androidTest.apk").isFile)
+
+    }
+  }
 }
