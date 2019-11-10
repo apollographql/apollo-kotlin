@@ -1,4 +1,5 @@
 apply(plugin = "java-library")
+apply(plugin = "org.jetbrains.kotlin.jvm")
 
 withConvention(JavaPluginConvention::class) {
   targetCompatibility = JavaVersion.VERSION_1_7
