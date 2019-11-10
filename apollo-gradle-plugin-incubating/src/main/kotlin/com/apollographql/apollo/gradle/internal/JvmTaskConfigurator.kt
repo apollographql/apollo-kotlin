@@ -48,7 +48,9 @@ object JvmTaskConfigurator {
        *
        * To workaround this, we're adding the java generated models folder here
        */
-      project.tasks.named("compileKotlin").configure {
+      project.tasks.matching {
+        it.name == "compileKotlin"
+      }.configureEach{
         (it as KotlinCompile).source(codegenProvider.get().outputDir.get().asFile)
       }
     }

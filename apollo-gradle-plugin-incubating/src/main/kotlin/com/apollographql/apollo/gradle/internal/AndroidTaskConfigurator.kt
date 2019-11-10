@@ -66,7 +66,9 @@ object AndroidTaskConfigurator {
        *
        * To workaround this, we're adding the java generated models folder here
        */
-      project.tasks.named("compile${variant.name.capitalize()}Kotlin").configure {
+      project.tasks.matching {
+        it.name == "compile${variant.name.capitalize()}Kotlin"
+      }.configureEach{
         it.dependsOn(codegenProvider)
         (it as KotlinCompile).source(codegenProvider.get().outputDir.get().asFile)
       }
