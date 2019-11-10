@@ -110,11 +110,17 @@ interface CompilerParams {
    * The graphql files containing the queries.
    *
    * This SourceDirectorySet includes .graphql and .gql files by default.
+   *
+   * By default, it will use [Service.sourceFolder] to populate the SourceDirectorySet.
+   * You can override it from [ApolloExtension.onCompilationUnits] for more advanced use cases
    */
   val graphqlSourceDirectorySet: SourceDirectorySet
 
   /**
    * The schema file
+   *
+   * By default, it will use [Service.schemaFile] to set schemaFile.
+   * You can override it from [ApolloExtension.onCompilationUnits] for more advanced use cases
    */
   val schemaFile: RegularFileProperty
   fun schemaFile(path: Any)
