@@ -40,7 +40,7 @@ object JvmTaskConfigurator {
       "compileKotlin"
     }
 
-    if (!compilationUnit.generateKotlinModels()) {
+    if (!compilationUnit.compilerParams.generateKotlinModels.get()) {
       /**
        * By the time we come here, the KotlinCompile task has been configured by the kotlin plugin already.
        *
