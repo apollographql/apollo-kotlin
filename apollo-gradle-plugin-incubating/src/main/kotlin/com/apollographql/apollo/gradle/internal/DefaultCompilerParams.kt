@@ -26,6 +26,8 @@ abstract class DefaultCompilerParams @Inject constructor(objects: ObjectFactory,
   }
 
   // I'm not using a MapProperty here since I didn't find a way to represent the difference between absent and empty
+  // This triggers a warning in gradle 6.0 unfortunately but we really need to differentiate absent and empty in
+  // CompilerParams.withFallback
   override val customTypeMapping = objects.property(Map::class.java) as Property<Map<String, String>>
   override fun customTypeMapping(customTypeMapping: Map<String, String>) {
     this.customTypeMapping.set(customTypeMapping)
