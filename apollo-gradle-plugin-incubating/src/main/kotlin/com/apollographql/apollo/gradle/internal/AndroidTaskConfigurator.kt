@@ -7,6 +7,7 @@ import com.android.build.gradle.api.BaseVariant
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskProvider
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 object AndroidTaskConfigurator {
   fun getVariants(project: Project, androidExtension: Any): NamedDomainObjectContainer<ApolloVariant> {
@@ -57,6 +58,18 @@ object AndroidTaskConfigurator {
       project.tasks.named("compile${variant.name.capitalize()}Kotlin").configure { it.dependsOn(codegenProvider) }
     } else {
       variant.registerJavaGeneratingTask(codegenProvider.get(), codegenProvider.get().outputDir.get().asFile)
+
+      /**
+       * By the time we come here, the KotlinCompile task has been configured by the kotlin plugin already.
+       *
+       * Right now this is done in [org.jetbrains.kotlin.gradle.plugin.AbstractAndroidProjectHandler.configureSources].
+       *
+       * To workaround this, we're adding the java generated models folder here
+       */
+      project.tasks.named("compile${variant.name.capitalize()}Kotlin").configure {
+        it.dependsOn(codegenProvider)
+        (it as KotlinCompile).source(codegenProvider.get().outputDir.get().asFile)
+      }
     }
   }
 }
