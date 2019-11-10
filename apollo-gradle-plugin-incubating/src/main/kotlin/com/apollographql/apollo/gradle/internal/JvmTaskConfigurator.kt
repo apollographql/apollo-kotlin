@@ -11,7 +11,10 @@ object JvmTaskConfigurator {
   fun getVariants(project: Project): NamedDomainObjectContainer<ApolloVariant> {
     val container = project.container(ApolloVariant::class.java)
 
-    listOf("main", "test").forEach {name ->
+    val javaPlugin = project.convention.getPlugin(JavaPluginConvention::class.java)
+    val sourceSets = javaPlugin.sourceSets
+
+    sourceSets.map { it.name }.forEach {name ->
       val apolloVariant = ApolloVariant(
           name = name,
           sourceSetNames = listOf(name),

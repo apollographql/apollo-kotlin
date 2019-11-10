@@ -172,6 +172,39 @@ class SourceDirectorySetTests {
   }
 
   @Test
+  fun `non-android jvm can add additional sourceSets`() {
+    val apolloConfiguration = """
+      sourceSets {
+        foo {
+        }
+      }
+      dependencies {
+        fooImplementation dep.jetbrainsAnnotations
+        fooImplementation dep.apollo.api
+      }
+      apollo {
+        generateKotlinModels = false
+      }
+    """.trimIndent()
+    TestUtils.withProject(usesKotlinDsl = false,
+        apolloConfiguration = apolloConfiguration,
+        plugins = listOf(TestUtils.javaPlugin, TestUtils.apolloPlugin)) { dir ->
+
+      val source = TestUtils.fixturesDirectory()
+      source.child("java").copyRecursively(dir.child("src", "foo", "java"))
+
+      dir.child("src/main/graphql").copyRecursively(dir.child("src/foo/graphql"))
+      dir.child("src/main/graphql").deleteRecursively()
+
+      TestUtils.executeTask("compileFooJava", dir)
+
+      Assert.assertTrue(File(dir, "build/classes/java/foo/com/example/DroidDetailsQuery.class").isFile)
+      Assert.assertTrue(File(dir, "build/classes/java/foo/com/example/Main.class").isFile)
+      Assert.assertTrue(dir.generatedChild("foo/service/com/example/DroidDetailsQuery.java").isFile)
+    }
+  }
+
+  @Test
   fun `android can add queries to the test variant`() {
     val apolloConfiguration = """
       apollo {
