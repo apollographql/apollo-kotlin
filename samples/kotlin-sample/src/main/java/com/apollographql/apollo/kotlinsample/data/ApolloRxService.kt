@@ -1,6 +1,7 @@
 package com.apollographql.apollo.kotlinsample.data
 
 import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.kotlinsample.GithubRepositoriesQuery
 import com.apollographql.apollo.kotlinsample.GithubRepositoryCommitsQuery
 import com.apollographql.apollo.kotlinsample.GithubRepositoryDetailQuery
@@ -63,7 +64,10 @@ class ApolloRxService(
         .name(repositoryName)
         .build()
 
-    val disposable = apolloClient.rxQuery(commitsQuery)
+    val disposable = apolloClient
+        .rxQuery(commitsQuery) {
+          httpCachePolicy(HttpCachePolicy.NETWORK_FIRST)
+        }
         .subscribeOn(processScheduler)
         .observeOn(resultScheduler)
         .map { response ->

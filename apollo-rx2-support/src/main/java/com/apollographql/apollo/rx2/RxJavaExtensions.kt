@@ -36,16 +36,18 @@ inline fun <T> ApolloSubscriptionCall<T>.rx(
  */
 @JvmSynthetic
 inline fun <D : Operation.Data, T, V : Operation.Variables> ApolloClient.rxQuery(
-    query: Query<D, T, V>
-): Observable<Response<T>> = query(query).rx()
+    query: Query<D, T, V>,
+    configure: ApolloQueryCall<T>.() -> Unit = {}
+): Observable<Response<T>> = query(query).apply(configure).rx()
 
 /**
  * Creates a new [ApolloMutationCall] call and then converts it to a [Single].
  */
 @JvmSynthetic
 inline fun <D : Operation.Data, T, V : Operation.Variables> ApolloClient.rxMutate(
-    mutation: Mutation<D, T, V>
-): Single<Response<T>> = mutate(mutation).rx().singleOrError()
+    mutation: Mutation<D, T, V>,
+    configure: ApolloMutationCall<T>.() -> Unit = {}
+): Single<Response<T>> = mutate(mutation).apply(configure).rx().singleOrError()
 
 /**
  * Creates a new [ApolloMutationCall] call and then converts it to a [Single].
@@ -57,8 +59,9 @@ inline fun <D : Operation.Data, T, V : Operation.Variables> ApolloClient.rxMutat
 @JvmSynthetic
 inline fun <D : Operation.Data, T, V : Operation.Variables> ApolloClient.rxMutate(
     mutation: Mutation<D, T, V>,
-    withOptimisticUpdates: D
-): Single<Response<T>> = mutate(mutation, withOptimisticUpdates).rx().singleOrError()
+    withOptimisticUpdates: D,
+    configure: ApolloMutationCall<T>.() -> Unit = {}
+): Single<Response<T>> = mutate(mutation, withOptimisticUpdates).apply(configure).rx().singleOrError()
 
 /**
  * Creates the [ApolloPrefetch] by wrapping the operation object inside and then converts it to a [Completable].
