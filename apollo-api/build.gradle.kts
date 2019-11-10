@@ -6,6 +6,7 @@ withConvention(JavaPluginConvention::class) {
 }
 
 dependencies {
+  add("compileOnly", groovy.util.Eval.x(project, "x.dep.kotlin.stdLib"))
   add("compileOnly", groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
 
   add("implementation", groovy.util.Eval.x(project, "x.dep.jetbrainsAnnotations"))
