@@ -1,12 +1,13 @@
 package com.apollographql.apollo.response;
 
-import com.apollographql.apollo.api.FileUpload;
+import com.apollographql.apollo.api.CustomTypeAdapter;
+import com.apollographql.apollo.api.CustomTypeValue;
 import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;

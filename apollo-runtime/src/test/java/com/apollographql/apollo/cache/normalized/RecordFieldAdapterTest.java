@@ -1,7 +1,7 @@
 package com.apollographql.apollo.cache.normalized;
 
-import com.apollographql.apollo.response.CustomTypeAdapter;
-import com.apollographql.apollo.response.CustomTypeValue;
+import com.apollographql.apollo.api.CustomTypeAdapter;
+import com.apollographql.apollo.api.CustomTypeValue;
 
 import org.junit.Before;
 import org.junit.Test;

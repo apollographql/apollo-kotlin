@@ -1,13 +1,13 @@
 package com.apollographql.apollo.subscription;
 
-import com.apollographql.apollo.response.CustomTypeAdapter;
+import com.apollographql.apollo.api.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
-import com.apollographql.apollo.response.ScalarTypeAdapters;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
 
 import org.junit.Before;
 import org.junit.Test;

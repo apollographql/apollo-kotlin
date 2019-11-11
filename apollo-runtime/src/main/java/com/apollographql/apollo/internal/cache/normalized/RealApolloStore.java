@@ -17,7 +17,7 @@ import com.apollographql.apollo.internal.ApolloLogger;
 import com.apollographql.apollo.internal.field.CacheFieldValueResolver;
 import com.apollographql.apollo.internal.response.RealResponseReader;
 import com.apollographql.apollo.internal.response.RealResponseWriter;
-import com.apollographql.apollo.response.ScalarTypeAdapters;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

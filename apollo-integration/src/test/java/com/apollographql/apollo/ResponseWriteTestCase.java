@@ -16,8 +16,8 @@ import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsF
 import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragment;
 import com.apollographql.apollo.integration.normalizer.type.CustomType;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
-import com.apollographql.apollo.response.CustomTypeAdapter;
-import com.apollographql.apollo.response.CustomTypeValue;
+import com.apollographql.apollo.api.CustomTypeAdapter;
+import com.apollographql.apollo.api.CustomTypeValue;
 
 import org.junit.Before;
 import org.junit.Rule;
