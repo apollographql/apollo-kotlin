@@ -1,4 +1,5 @@
 @file:Suppress("NOTHING_TO_INLINE")
+@file:JvmName("KotlinExtensions")
 
 package com.apollographql.apollo.api
 
