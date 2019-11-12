@@ -1,6 +1,5 @@
 package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo.compiler.child
 import com.squareup.moshi.JsonWriter
 import okhttp3.*
 import okio.Okio

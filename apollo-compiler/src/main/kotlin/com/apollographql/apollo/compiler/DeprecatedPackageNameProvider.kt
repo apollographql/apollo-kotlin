@@ -32,16 +32,12 @@ class DeprecatedPackageNameProvider(
     }
 
     val packageName = filePath.formatPackageName(dropLast = 1)
-    if (packageName == null) {
-      throw IllegalArgumentException("graphql file must be placed under src/{foo}/graphql:\n$filePath")
-    }
+        ?: throw IllegalArgumentException("graphql file must be placed under src/{foo}/graphql:\n$filePath")
     return rootPackageName.appendPackageName(packageName)
   }
 }
 
 fun String.appendPackageName(packageName: String) = "$this.$packageName".removePrefix(".").removeSuffix(".")
-
-fun File.child(vararg path: String) = File(this, path.toList().joinToString(File.separator))
 
 fun String.relativePathToGraphql(dropLast: Int = 0): String? {
   val parts = split(File.separator)

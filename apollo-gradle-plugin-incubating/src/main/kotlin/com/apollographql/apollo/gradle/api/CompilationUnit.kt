@@ -1,6 +1,5 @@
 package com.apollographql.apollo.gradle.api
 
-import groovy.lang.Closure
 import org.gradle.api.Action
 import org.gradle.api.file.Directory
 import org.gradle.api.file.DirectoryProperty
