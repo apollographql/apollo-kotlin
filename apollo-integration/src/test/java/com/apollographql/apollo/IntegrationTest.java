@@ -17,18 +17,17 @@ import com.apollographql.apollo.integration.httpcache.type.CustomType;
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.HeroNameQuery;
 import com.apollographql.apollo.internal.json.JsonWriter;
-import com.apollographql.apollo.response.CustomTypeAdapter;
-import com.apollographql.apollo.response.CustomTypeValue;
+import com.apollographql.apollo.api.CustomTypeAdapter;
+import com.apollographql.apollo.api.CustomTypeValue;
 import com.apollographql.apollo.response.OperationJsonWriter;
 import com.apollographql.apollo.response.OperationResponseParser;
-import com.apollographql.apollo.response.ScalarTypeAdapters;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;

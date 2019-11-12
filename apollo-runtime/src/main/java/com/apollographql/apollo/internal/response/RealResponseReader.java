@@ -6,9 +6,9 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.internal.field.FieldValueResolver;
-import com.apollographql.apollo.response.CustomTypeAdapter;
-import com.apollographql.apollo.response.CustomTypeValue;
-import com.apollographql.apollo.response.ScalarTypeAdapters;
+import com.apollographql.apollo.api.CustomTypeAdapter;
+import com.apollographql.apollo.api.CustomTypeValue;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import java.util.Map;
 @SuppressWarnings("WeakerAccess") public final class RealResponseReader<R> implements ResponseReader {
   final Operation.Variables operationVariables;
   private final R recordSet;
-  final com.apollographql.apollo.response.ScalarTypeAdapters scalarTypeAdapters;
+  final ScalarTypeAdapters scalarTypeAdapters;
   final FieldValueResolver<R> fieldValueResolver;
   final ResolveDelegate<R> resolveDelegate;
   private final Map<String, Object> variableValues;

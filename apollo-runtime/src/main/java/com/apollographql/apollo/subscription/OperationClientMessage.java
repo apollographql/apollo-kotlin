@@ -4,7 +4,7 @@ import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.internal.json.InputFieldJsonWriter;
 import com.apollographql.apollo.internal.json.JsonWriter;
 import com.apollographql.apollo.internal.json.Utils;
-import com.apollographql.apollo.response.ScalarTypeAdapters;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
 
 import java.io.IOException;
 import java.util.Map;

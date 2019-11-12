@@ -1,13 +1,13 @@
 package com.apollographql.apollo.internal.response;
 
-import com.apollographql.apollo.response.CustomTypeAdapter;
+import com.apollographql.apollo.api.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.Optional;
-import com.apollographql.apollo.response.ScalarTypeAdapters;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -205,7 +205,7 @@ public final class RealResponseWriter implements ResponseWriter {
 
   @SuppressWarnings("unchecked") private static final class ListItemWriter implements ResponseWriter.ListItemWriter {
     final Operation.Variables operationVariables;
-    final com.apollographql.apollo.response.ScalarTypeAdapters scalarTypeAdapters;
+    final ScalarTypeAdapters scalarTypeAdapters;
     final List accumulator;
 
     ListItemWriter(Operation.Variables operationVariables, ScalarTypeAdapters scalarTypeAdapters, List accumulator) {

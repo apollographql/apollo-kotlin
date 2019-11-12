@@ -6,7 +6,7 @@ import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.internal.ResponseFieldMapperFactory;
 import com.apollographql.apollo.response.OperationResponseParser;
-import com.apollographql.apollo.response.ScalarTypeAdapters;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeListener;
 import com.apollographql.apollo.subscription.OperationClientMessage;
 import com.apollographql.apollo.subscription.OperationServerMessage;

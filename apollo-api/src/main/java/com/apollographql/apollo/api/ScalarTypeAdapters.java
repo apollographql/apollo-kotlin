@@ -1,7 +1,4 @@
-package com.apollographql.apollo.response;
-
-import com.apollographql.apollo.api.FileUpload;
-import com.apollographql.apollo.api.ScalarType;
+package com.apollographql.apollo.api;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
