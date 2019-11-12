@@ -1,4 +1,5 @@
 apply(plugin = "java")
+apply(plugin = "kotlin")
 
 withConvention(JavaPluginConvention::class) {
   targetCompatibility = JavaVersion.VERSION_1_7
@@ -6,6 +7,7 @@ withConvention(JavaPluginConvention::class) {
 }
 
 dependencies {
+  add("compileOnly", groovy.util.Eval.x(project, "x.dep.kotlin.stdLib"))
   add("compileOnly", groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
 
   add("implementation", groovy.util.Eval.x(project, "x.dep.jetbrainsAnnotations"))
