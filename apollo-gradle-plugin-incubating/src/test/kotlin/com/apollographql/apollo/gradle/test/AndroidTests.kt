@@ -62,7 +62,7 @@ class AndroidTests {
         TestUtils.executeTask("generateDebugApolloSources", dir)
       } catch (e: UnexpectedBuildFailure) {
         exception = e
-        assertThat(e.message, containsString("duplicate file found"))
+        assertThat(e.message, containsString("duplicate(s) graphql file(s) found"))
       }
 
       assertNotNull(exception)

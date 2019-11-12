@@ -14,7 +14,7 @@ import java.io.File
 
 class UpToDateTests {
   @Test
-  fun test() {
+  fun `complete test`() {
     withSimpleProject { dir ->
       `builds successfully and generates expected outputs`(dir)
       `nothing changed, task up to date`(dir)

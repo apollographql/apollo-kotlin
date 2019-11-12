@@ -47,9 +47,7 @@ val installTask = tasks.register("installTask", InstallGraphQLFilesTask::class.j
 
 configure<ApolloExtension> {
   onCompilationUnits {
-    sources {
-      graphqlDir(installTask.flatMap { it.outputDir })
-    }
+    graphqlSourceDirectorySet.srcDir(installTask.flatMap { it.outputDir })
   }
 }
 """.trimIndent()

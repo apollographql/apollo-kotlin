@@ -151,21 +151,26 @@ open class ApolloPlugin : Plugin<Project> {
         it.group = TASK_GROUP
         it.description = "Generate Apollo models for ${compilationUnit.name.capitalize()} GraphQL queries"
 
-        val sources = compilationUnit.sources()
+        val compilerParams = compilationUnit
+            .withFallback(project.objects, compilationUnit.service)
+            .withFallback(project.objects, compilationUnit.apolloExtension)
 
-        it.graphqlFiles.setFrom(sources.graphqlFiles)
-        it.rootFolders.set(sources.rootFolders.map { it.absolutePath })
-        it.schemaFile.set(sources.schemaFile)
+        compilationUnit.setSourcesIfNeeded(compilerParams.graphqlSourceDirectorySet, compilerParams.schemaFile)
 
-        it.nullableValueType.set(compilationUnit.compilerParams.nullableValueType)
-        it.useSemanticNaming.set(compilationUnit.compilerParams.useSemanticNaming)
-        it.generateModelBuilder.set(compilationUnit.compilerParams.generateModelBuilder)
-        it.useJavaBeansSemanticNaming.set(compilationUnit.compilerParams.useJavaBeansSemanticNaming)
-        it.suppressRawTypesWarning.set(compilationUnit.compilerParams.suppressRawTypesWarning)
-        it.generateKotlinModels.set(compilationUnit.compilerParams.generateKotlinModels)
-        it.generateVisitorForPolymorphicDatatypes.set(compilationUnit.compilerParams.generateVisitorForPolymorphicDatatypes)
-        it.customTypeMapping.set(compilationUnit.compilerParams.customTypeMapping)
-        it.rootPackageName.set(compilationUnit.compilerParams.rootPackageName)
+        it.graphqlFiles.setFrom(compilerParams.graphqlSourceDirectorySet)
+        // I'm not sure if gradle is sensitive to the order of the rootFolders. Sort them just in case.
+        it.rootFolders.set(project.provider { compilerParams.graphqlSourceDirectorySet.srcDirs.map { it.absolutePath }.sorted() })
+        it.schemaFile.set(compilerParams.schemaFile)
+
+        it.nullableValueType.set(compilerParams.nullableValueType)
+        it.useSemanticNaming.set(compilerParams.useSemanticNaming)
+        it.generateModelBuilder.set(compilerParams.generateModelBuilder)
+        it.useJavaBeansSemanticNaming.set(compilerParams.useJavaBeansSemanticNaming)
+        it.suppressRawTypesWarning.set(compilerParams.suppressRawTypesWarning)
+        it.generateKotlinModels.set(compilationUnit.generateKotlinModels())
+        it.generateVisitorForPolymorphicDatatypes.set(compilerParams.generateVisitorForPolymorphicDatatypes)
+        it.customTypeMapping.set(compilerParams.customTypeMapping)
+        it.rootPackageName.set(compilerParams.rootPackageName)
         it.outputDir.apply {
           set(project.layout.buildDirectory.map {
             it.dir("generated/source/apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}")
@@ -173,7 +178,7 @@ open class ApolloPlugin : Plugin<Project> {
           disallowChanges()
         }
         it.transformedQueriesOutputDir.apply {
-          if (compilationUnit.compilerParams.generateTransformedQueries.getOrElse(false)) {
+          if (compilerParams.generateTransformedQueries.getOrElse(false)) {
             set(project.layout.buildDirectory.map {
               it.dir("generated/transformedQueries/apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}")
             })

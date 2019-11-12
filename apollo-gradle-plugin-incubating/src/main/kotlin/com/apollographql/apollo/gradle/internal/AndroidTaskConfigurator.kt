@@ -48,9 +48,8 @@ object AndroidTaskConfigurator {
       compilationUnit: DefaultCompilationUnit,
       codegenProvider: TaskProvider<ApolloGenerateSourcesTask>
   ) {
-
     val variant = compilationUnit.androidVariant as BaseVariant
-    if (compilationUnit.compilerParams.generateKotlinModels.get()) {
+    if (compilationUnit.generateKotlinModels()) {
       variant.addJavaSourceFoldersToModel(codegenProvider.get().outputDir.get().asFile)
       androidExtension as BaseExtension
       androidExtension.sourceSets.first { it.name == variant.name }.kotlin!!.srcDir(codegenProvider.get().outputDir)
