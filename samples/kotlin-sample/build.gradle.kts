@@ -1,6 +1,6 @@
 import com.android.build.gradle.BaseExtension
 apply(plugin = "com.android.application")
-apply(plugin = "com.apollographql.android")
+apply(plugin = "com.apollographql.apollo")
 apply(plugin = "kotlin-android")
 apply(plugin = "kotlin-android-extensions")
 
