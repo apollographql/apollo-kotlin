@@ -44,6 +44,13 @@ public interface Operation<D extends Operation.Data, T, V extends Operation.Vari
    */
   @NotNull String operationId();
 
+  /**
+   * Parses provided GraphQL operation raw response
+   *
+   * @param response operation raw response to parse
+   * @param scalarTypeAdapters configured instance of custom GraphQL scalar type adapters
+   * @return parsed GraphQL operation {@link Response}
+   */
   @NotNull Response<T> parse(@NotNull Map<String, Object> response, @NotNull ScalarTypeAdapters scalarTypeAdapters);
 
   /**
