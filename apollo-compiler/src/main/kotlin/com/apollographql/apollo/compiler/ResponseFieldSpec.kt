@@ -383,7 +383,7 @@ class ResponseFieldSpec(
 
   private fun conditionsCodeBlock(irField: Field): CodeBlock {
     val conditions = irField.conditions.let {
-      if (irField.isConditional) it ?: emptyList() else emptyList()
+      if (irField.isConditional) it else emptyList()
     }.filter { it.kind == Condition.Kind.BOOLEAN.rawValue }
 
     if (conditions.isEmpty()) {

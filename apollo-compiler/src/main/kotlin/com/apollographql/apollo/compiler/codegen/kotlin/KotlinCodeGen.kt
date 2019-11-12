@@ -9,7 +9,6 @@ import com.apollographql.apollo.compiler.ast.FieldType
 import com.apollographql.apollo.compiler.ast.InputType
 import com.apollographql.apollo.compiler.ast.ObjectType
 import com.apollographql.apollo.compiler.ast.TypeRef
-import com.apollographql.apollo.compiler.ir.ScalarType
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 
@@ -206,23 +205,23 @@ internal object KotlinCodeGen {
         CodeBlock.builder()
             .beginControlFlow("%L.readConditional(%L) { conditionalType, reader ->", reader, field)
             .add(
-                fields.map { field ->
-                  if (field.isOptional) {
+                fields.map { fragmentField ->
+                  if (fragmentField.isOptional) {
                     CodeBlock.of("val %L = if (%T.POSSIBLE_TYPES.contains(conditionalType)) %T(reader) else null",
-                        field.name, field.type.asTypeName(), field.type.asTypeName())
+                        fragmentField.name, fragmentField.type.asTypeName(), fragmentField.type.asTypeName())
                   } else {
-                    CodeBlock.of("val %L = %T(reader)", field.name, field.type.asTypeName())
+                    CodeBlock.of("val %L = %T(reader)", fragmentField.name, fragmentField.type.asTypeName())
                   }
                 }.joinToCode(separator = "\n", suffix = "\n")
             )
             .addStatement("%L(", name)
             .indent()
             .add(
-                fields.map { field ->
-                  if (field.isOptional) {
-                    CodeBlock.of("%L = %L", field.name, field.name)
+                fields.map { fragmentField ->
+                  if (fragmentField.isOptional) {
+                    CodeBlock.of("%L = %L", fragmentField.name, fragmentField.name)
                   } else {
-                    CodeBlock.of("%L = %L", field.name, field.name)
+                    CodeBlock.of("%L = %L", fragmentField.name, fragmentField.name)
                   }
 
                 }.joinToCode(separator = ",\n", suffix = "\n")

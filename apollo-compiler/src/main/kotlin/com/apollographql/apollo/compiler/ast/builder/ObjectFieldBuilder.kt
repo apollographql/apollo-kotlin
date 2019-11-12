@@ -71,7 +71,7 @@ private fun Field.array(context: Context): ObjectType.Field {
       description = description,
       isOptional = !type.endsWith("!") || isConditional,
       isDeprecated = isDeprecated,
-      deprecationReason = deprecationReason ?: "",
+      deprecationReason = deprecationReason,
       arguments = args.associate { it.name to it.value },
       conditions = normalizedConditions
   )
@@ -91,10 +91,10 @@ private fun Field.`object`(context: Context): ObjectType.Field {
       responseName = responseName,
       schemaName = fieldName,
       type = FieldType.Object(typeRef),
-      description = description ?: "",
+      description = description,
       isOptional = !type.endsWith("!") || isConditional || inlineFragments.isNotEmpty(),
-      isDeprecated = isDeprecated ?: false,
-      deprecationReason = deprecationReason ?: "",
+      isDeprecated = isDeprecated,
+      deprecationReason = deprecationReason,
       arguments = args.associate { it.name to it.value },
       conditions = normalizedConditions
   )
