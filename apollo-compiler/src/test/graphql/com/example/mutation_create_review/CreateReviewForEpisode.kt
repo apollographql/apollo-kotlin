@@ -9,10 +9,13 @@ import com.apollographql.apollo.api.InputFieldMarshaller
 import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
+import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.mutation_create_review.type.CustomType
 import com.example.mutation_create_review.type.Episode
@@ -54,6 +57,9 @@ data class CreateReviewForEpisode(
   override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
     Data(it)
   }
+
+  override fun parse(response: Map<String, Any>, scalarTypeAdapters: ScalarTypeAdapters):
+      Response<Data> = SimpleOperationResponseParser.parse(response, this, scalarTypeAdapters)
 
   data class ListOfListOfObject(
     val __typename: String,

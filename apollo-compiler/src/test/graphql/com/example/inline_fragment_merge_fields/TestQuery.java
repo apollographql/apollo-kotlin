@@ -8,12 +8,15 @@ package com.example.inline_fragment_merge_fields;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
+import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.api.internal.SimpleOperationResponseParser;
 import com.apollographql.apollo.api.internal.Utils;
 import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.inline_fragment_merge_fields.type.CustomType;
@@ -23,6 +26,7 @@ import java.lang.String;
 import java.lang.SuppressWarnings;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -107,6 +111,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   @Override
   public OperationName name() {
     return OPERATION_NAME;
+  }
+
+  @Override
+  @NotNull
+  public Response<Optional<TestQuery.Data>> parse(@NotNull final Map<String, Object> response,
+      @NotNull final ScalarTypeAdapters scalarTypeAdapters) {
+    return SimpleOperationResponseParser.parse(response, this, scalarTypeAdapters);
   }
 
   public static final class Builder {

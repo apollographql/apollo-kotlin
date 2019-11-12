@@ -1,6 +1,7 @@
 package com.apollographql.apollo.compiler.codegen.kotlin
 
 import com.apollographql.apollo.api.*
+import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.ast.InputType
 import com.apollographql.apollo.compiler.ast.ObjectType
@@ -68,6 +69,20 @@ internal fun OperationType.typeSpec(targetPackage: String) = TypeSpec
         .beginControlFlow("return %T {", ResponseFieldMapper::class)
         .addStatement("%T(it)", data.asTypeName())
         .endControlFlow()
+        .build()
+    )
+    .addFunction(FunSpec.builder("parse")
+        .addModifiers(KModifier.OVERRIDE)
+        .addParameter(ParameterSpec
+            .builder("response", Map::class.asClassName().parameterizedBy(String::class.asTypeName(), Any::class.asClassName()))
+            .build()
+        )
+        .addParameter(ParameterSpec
+            .builder("scalarTypeAdapters", ScalarTypeAdapters::class.asClassName())
+            .build()
+        )
+        .returns(Response::class.asClassName().parameterizedBy(data.asTypeName()))
+        .addStatement("return %T.parse(response, this, scalarTypeAdapters)", SimpleOperationResponseParser::class.asTypeName())
         .build()
     )
     .addTypes(nestedObjects.map { (ref, type) ->

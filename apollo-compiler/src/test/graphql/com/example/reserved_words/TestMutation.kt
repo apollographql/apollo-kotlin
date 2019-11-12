@@ -5,14 +5,8 @@
 //
 package com.example.reserved_words
 
-import com.apollographql.apollo.api.InputFieldMarshaller
-import com.apollographql.apollo.api.Mutation
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.OperationName
-import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.ResponseFieldMapper
-import com.apollographql.apollo.api.ResponseFieldMarshaller
-import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.api.*
+import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.example.reserved_words.type.TestInputType
 import kotlin.Any
 import kotlin.Array
@@ -46,6 +40,9 @@ data class TestMutation(
   override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
     Data(it)
   }
+
+  override fun parse(response: Map<String, Any>, scalarTypeAdapters: ScalarTypeAdapters):
+    Response<Data> = SimpleOperationResponseParser.parse(response, this, scalarTypeAdapters)
 
   data class Operation(
     val __typename: String,
