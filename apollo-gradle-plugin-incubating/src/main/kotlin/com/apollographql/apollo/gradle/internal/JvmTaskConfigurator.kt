@@ -4,6 +4,7 @@ import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.TaskProvider
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 object JvmTaskConfigurator {
 
@@ -37,6 +38,21 @@ object JvmTaskConfigurator {
       "compileJava"
     } else {
       "compileKotlin"
+    }
+
+    if (!compilationUnit.compilerParams.generateKotlinModels.get()) {
+      /**
+       * By the time we come here, the KotlinCompile task has been configured by the kotlin plugin already.
+       *
+       * Right now this is done in [org.jetbrains.kotlin.gradle.plugin.AbstractAndroidProjectHandler.configureSources].
+       *
+       * To workaround this, we're adding the java generated models folder here
+       */
+      project.tasks.matching {
+        it.name == "compileKotlin"
+      }.configureEach{
+        (it as KotlinCompile).source(codegenProvider.get().outputDir.get().asFile)
+      }
     }
     sourceDirectorySet.srcDir(codegenProvider.flatMap { it.outputDir })
     project.tasks.named(compileTaskName) { it.dependsOn(codegenProvider) }
