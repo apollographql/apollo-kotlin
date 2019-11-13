@@ -32,10 +32,11 @@ object JvmTaskConfigurator {
     val sourceSets = javaPlugin.sourceSets
     val sourceSetName = compilationUnit.variantName
 
-    val taskName = when(compilationUnit.variantName) {
-      "main" -> ""
-      else -> compilationUnit.variantName
-    }.capitalize()
+    var taskName = compilationUnit.variantName.capitalize()
+    if (taskName == "Main") {
+      // Special case: The main variant will use "compileJava" and not "compileMainJava"
+      taskName = ""
+    }
 
     val sourceDirectorySet = if (!compilationUnit.generateKotlinModels()) {
       sourceSets.getByName(sourceSetName).java

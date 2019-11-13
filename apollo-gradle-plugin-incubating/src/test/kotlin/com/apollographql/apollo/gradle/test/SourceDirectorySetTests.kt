@@ -3,6 +3,7 @@ package com.apollographql.apollo.gradle.test
 import com.apollographql.apollo.gradle.internal.child
 import com.apollographql.apollo.gradle.util.TestUtils
 import com.apollographql.apollo.gradle.util.generatedChild
+import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Assert
 import org.junit.Test
 import java.io.File
@@ -196,11 +197,16 @@ class SourceDirectorySetTests {
       dir.child("src/main/graphql").copyRecursively(dir.child("src/foo/graphql"))
       dir.child("src/main/graphql").deleteRecursively()
 
-      TestUtils.executeTask("compileFooJava", dir)
+      val result = TestUtils.executeTask("compileFooJava", dir)
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":compileFooJava")!!.outcome)
 
       Assert.assertTrue(File(dir, "build/classes/java/foo/com/example/DroidDetailsQuery.class").isFile)
       Assert.assertTrue(File(dir, "build/classes/java/foo/com/example/Main.class").isFile)
       Assert.assertTrue(dir.generatedChild("foo/service/com/example/DroidDetailsQuery.java").isFile)
+
+      // Also verify that the compile task is compileJava and not compileMainJava
+      val resultMain = TestUtils.executeTask("compileJava", dir)
+      Assert.assertEquals(TaskOutcome.NO_SOURCE, resultMain.task(":compileJava")!!.outcome)
     }
   }
 
