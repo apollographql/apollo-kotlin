@@ -1,5 +1,7 @@
 package com.apollographql.apollo;
 
+import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.integration.normalizer.HeroNameWithIdQuery;
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
@@ -24,11 +26,15 @@ import com.apollographql.apollo.response.OperationResponseParser;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Types;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,6 +44,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -48,6 +55,7 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okio.Buffer;
 
+import static com.apollographql.apollo.integration.normalizer.type.Episode.EMPIRE;
 import static com.apollographql.apollo.integration.normalizer.type.Episode.JEDI;
 import static com.google.common.truth.Truth.assertThat;
 
@@ -285,6 +293,29 @@ public class IntegrationTest {
     writer.write(jsonWriter);
 
     assertThat(buffer.readUtf8()).isEqualTo(json);
+  }
+
+  @Test public void parseOperationResponseFromRawResponse() throws Exception {
+    final String json = Utils.INSTANCE.readFileToString(getClass(), "/ResponseErrorWithData.json");
+
+    final Moshi moshi = new Moshi.Builder().build();
+    final Type type = Types.newParameterizedType(Map.class, String.class, Object.class);
+    final JsonAdapter<Map<String, Object>> adapter = moshi.adapter(type);
+    final Map<String, Object> data = adapter.fromJson(json);
+
+    final Response<EpisodeHeroNameQuery.Data> response = new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))
+        .parse(data, new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()));
+
+    assertThat(response.data()).isNotNull();
+    assertThat(response.data().hero()).isNotNull();
+    assertThat(response.data().hero().name()).isEqualTo("R2-D2");
+    assertThat(response.errors()).containsExactly(
+        new Error(
+            "Cannot query field \"names\" on type \"Species\".",
+            Collections.singletonList(new Error.Location(3, 5)),
+            Collections.<String, Object>emptyMap()
+        )
+    );
   }
 
   private MockResponse mockResponse(String fileName) throws IOException {

@@ -160,9 +160,9 @@ public final class OperationResponseParser<D extends Operation.Data, W> {
     if (data != null) {
       for (Map.Entry<String, Object> entry : data.entrySet()) {
         if ("line".equals(entry.getKey())) {
-          line = ((BigDecimal) entry.getValue()).longValue();
+          line = ((Number) entry.getValue()).longValue();
         } else if ("column".equals(entry.getKey())) {
-          column = ((BigDecimal) entry.getValue()).longValue();
+          column = ((Number) entry.getValue()).longValue();
         }
       }
     }
