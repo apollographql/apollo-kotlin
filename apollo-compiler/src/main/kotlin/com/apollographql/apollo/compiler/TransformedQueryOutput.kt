@@ -1,41 +1,39 @@
 package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
+import com.apollographql.apollo.internal.QueryDocumentMinifier
 import java.io.File
 
-internal class TransformedQueryOutput {
+internal class TransformedQueryOutput(val packageNameProvider: PackageNameProvider) {
   private var transformedDocuments: List<TransformedDocument> = emptyList()
 
   fun visit(ir: CodeGenerationIR) {
     transformedDocuments = transformedDocuments + ir.operations.map { operation ->
       TransformedDocument(
-          document = operation.source,
-          filePath = operation.filePath.relativePathToGraphql()!!
-      )
-    }
-    transformedDocuments = transformedDocuments + ir.fragments.map { fragment ->
-      TransformedDocument(
-          document = fragment.source,
-          filePath = fragment.filePath.relativePathToGraphql()!!
+          sourceWithFragments = operation.sourceWithFragments,
+          filePath = operation.filePath
       )
     }
   }
 
   fun writeTo(outputDir: File) {
     transformedDocuments
-      .groupBy { it.filePath } // Multiple documents can be from the same file, e.g. fragments
-      .forEach { (filePath, transformedDocuments) ->
-        val outputFile = outputDir.resolve(filePath).also {
+      .forEach { transformedDocument ->
+        val filename = transformedDocument.filePath.substringAfterLast(File.separator)
+        val relativePath = packageNameProvider.operationPackageName(transformedDocument.filePath)
+            .replace(".", File.separator)
+            .let {
+              it + File.separator + filename
+            }
+        val outputFile = outputDir.resolve(relativePath).also {
           it.parentFile.mkdirs()
         }
-        transformedDocuments
-          .joinToString(separator = "\n\n") { it.document }
-          .also { outputFile.writeText(it) }
+        outputFile.writeText(QueryDocumentMinifier.minify(transformedDocument.sourceWithFragments))
       }
   }
 
   private class TransformedDocument(
-      val document: String,
+      val sourceWithFragments: String,
       val filePath: String
   )
 }

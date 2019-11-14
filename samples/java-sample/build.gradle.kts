@@ -1,6 +1,6 @@
 import com.android.build.gradle.BaseExtension
 apply(plugin = "com.android.application")
-apply(plugin = "com.apollographql.android")
+apply(plugin = "com.apollographql.apollo")
 
 extensions.findByType(BaseExtension::class.java)!!.apply {
   compileSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt())

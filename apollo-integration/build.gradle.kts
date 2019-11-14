@@ -1,8 +1,8 @@
 import com.android.build.gradle.BaseExtension
-import com.apollographql.apollo.gradle.ApolloExtension
+import com.apollographql.apollo.gradle.api.ApolloExtension
 
 apply(plugin = "com.android.application")
-apply(plugin = "com.apollographql.android")
+apply(plugin = "com.apollographql.apollo")
 apply(plugin = "kotlin-android")
 
 extensions.findByType(BaseExtension::class.java)!!.apply {
@@ -45,9 +45,26 @@ dependencies {
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
 }
 
-extensions.getByType(ApolloExtension::class.java).apply {
-  setCustomTypeMapping(mapOf(
+configure<ApolloExtension> {
+  customTypeMapping(mapOf(
       "Date" to "java.util.Date",
       "Upload" to "com.apollographql.apollo.api.FileUpload"
   ))
+  generateTransformedQueries(true)
+  service("httpcache") {
+    sourceFolder("com/apollographql/apollo/integration/httpcache")
+    rootPackageName("com.apollographql.apollo.integration.httpcache")
+  }
+  service("interceptor") {
+    sourceFolder("com/apollographql/apollo/integration/interceptor")
+    rootPackageName("com.apollographql.apollo.integration.interceptor")
+  }
+  service("normalizer") {
+    sourceFolder("com/apollographql/apollo/integration/normalizer")
+    rootPackageName("com.apollographql.apollo.integration.normalizer")
+  }
+  service("upload") {
+    sourceFolder("com/apollographql/apollo/integration/upload")
+    rootPackageName("com.apollographql.apollo.integration.upload")
+  }
 }
