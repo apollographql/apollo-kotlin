@@ -21,6 +21,7 @@ Apollo-Android is designed primarily with Android in mind but you can use it in 
 - [RxJava2 Support](#rxjava2-support)
 - [Coroutines Support](#coroutines-support)
 - [Android Espresso Support](#android-espresso-support)
+- [Use generated models only](#use-generated-models-only)
 - [Gradle Configuration of Apollo Android](#gradle-configuration-of-apollo-android)
   - [Optional Support](#optional-support)
   - [Semantic Naming](#semantic-naming)
@@ -556,6 +557,28 @@ Add the following `dependency`:
 ```gradle
 implementation 'com.apollographql.apollo:apollo-espresso-support:x.y.z'
 ```
+
+##  Use generated models only
+
+Any `Operation` instance provides API to parse `Response` from raw data `Map<String, Object>` that represents GraphQL operation response returned by server.
+If for some reason you want to use your own network layer and don't want to use fully featured `ApolloClient` provided by `apollo-runtime` you can use this API:
+
+```java
+    String json = "...";
+    
+    //  we use Moshi json library here to simplify JSON string deserialization into Map 
+    Moshi moshi = new Moshi.Builder().build();
+    Type type = Types.newParameterizedType(Map.class, String.class, Object.class);
+    JsonAdapter<Map<String, Object>> adapter = moshi.adapter(type);
+    Map<String, Object> data = adapter.fromJson(json);
+
+    // if you have custom scalar types, provide proper instance of ScalarTypeAdapters with your own custom adapters
+    ScalarTypeAdapters scalarTypeAdapters = new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap())
+
+    Response<Query.Data> response = new Query().parse(data, scalarTypeAdapters);
+```
+
+Just make sure you added `apollo-api` dependency to your project's build.gradle file.
 
 ##  Gradle Configuration of Apollo Android
 Apollo Android comes with logical defaults that will work for the majority of use cases, below you will find additional configuration that will add Optional Support & Semantic Query Naming.

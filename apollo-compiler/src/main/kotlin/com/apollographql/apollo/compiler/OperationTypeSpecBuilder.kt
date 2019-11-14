@@ -1,7 +1,10 @@
 package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.api.OperationName
+import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ResponseFieldMapper
+import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.compiler.VisitorSpec.VISITOR_CLASSNAME
 import com.apollographql.apollo.compiler.ir.*
 import com.apollographql.apollo.internal.QueryDocumentMinifier
@@ -30,6 +33,7 @@ class OperationTypeSpecBuilder(
         .addBuilder(context)
         .addType(operation.toTypeSpec(newContext, abstract))
         .addOperationName()
+        .addMethod(parseMethod(context))
         .build()
         .flatten(excludeTypeNames = listOf(
             VISITOR_CLASSNAME,
@@ -264,6 +268,27 @@ class OperationTypeSpecBuilder(
 
     return addOperationNameField()
         .addOperationNameAccessor()
+  }
+
+  private fun parseMethod(context: CodeGenerationContext): MethodSpec {
+    return MethodSpec
+        .methodBuilder("parse")
+        .addAnnotation(Annotations.OVERRIDE)
+        .addAnnotation(Annotations.NONNULL)
+        .addModifiers(Modifier.PUBLIC)
+        .addParameter(ParameterSpec
+            .builder(ParameterizedTypeName.get(Map::class.java, String::class.java, Object::class.java), "response", Modifier.FINAL)
+            .addAnnotation(Annotations.NONNULL)
+            .build()
+        )
+        .addParameter(ParameterSpec
+            .builder(ScalarTypeAdapters::class.java, "scalarTypeAdapters", Modifier.FINAL)
+            .addAnnotation(Annotations.NONNULL)
+            .build()
+        )
+        .returns(ParameterizedTypeName.get(ClassName.get(Response::class.java), wrapperType(context)))
+        .addStatement("return \$T.parse(response, this, scalarTypeAdapters)", SimpleOperationResponseParser::class.java)
+        .build()
   }
 
   companion object {

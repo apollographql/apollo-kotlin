@@ -4,8 +4,10 @@ import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.IdleResourceCallback;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
+import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 
 import org.junit.Before;
@@ -16,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -66,6 +69,10 @@ public class ApolloCallTrackerTest {
 
     @NotNull @Override public String operationId() {
       return "";
+    }
+
+    @NotNull @Override public Response parse(@NotNull Map response, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+      throw new UnsupportedOperationException();
     }
   };
 

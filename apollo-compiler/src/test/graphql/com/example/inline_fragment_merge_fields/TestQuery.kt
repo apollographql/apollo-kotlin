@@ -8,10 +8,13 @@ package com.example.inline_fragment_merge_fields
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.inline_fragment_merge_fields.type.CustomType
 import kotlin.Any
@@ -19,6 +22,7 @@ import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
+import kotlin.collections.Map
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
@@ -31,6 +35,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
     Data(it)
   }
+
+  override fun parse(response: Map<String, Any>, scalarTypeAdapters: ScalarTypeAdapters):
+      Response<Data> = SimpleOperationResponseParser.parse(response, this, scalarTypeAdapters)
 
   data class Node(
     val __typename: String,

@@ -3,6 +3,7 @@ package com.apollographql.apollo.subscription;
 import com.apollographql.apollo.api.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
+import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.Subscription;
@@ -221,6 +222,10 @@ public class WebSocketSubscriptionTransportMessageTest {
 
     @NotNull @Override public String operationId() {
       return "someId";
+    }
+
+    @NotNull @Override public Response<Data> parse(@NotNull Map<String, Object> response, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+      throw new UnsupportedOperationException();
     }
   }
 }

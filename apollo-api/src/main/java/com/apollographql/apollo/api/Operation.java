@@ -1,9 +1,9 @@
 package com.apollographql.apollo.api;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Collections;
 import java.util.Map;
-
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a GraphQL operation (mutation or query).
@@ -43,6 +43,15 @@ public interface Operation<D extends Operation.Data, T, V extends Operation.Vari
    * @return operation identifier.
    */
   @NotNull String operationId();
+
+  /**
+   * Parses provided GraphQL operation raw response
+   *
+   * @param response operation raw response to parse
+   * @param scalarTypeAdapters configured instance of custom GraphQL scalar type adapters
+   * @return parsed GraphQL operation {@link Response}
+   */
+  @NotNull Response<T> parse(@NotNull Map<String, Object> response, @NotNull ScalarTypeAdapters scalarTypeAdapters);
 
   /**
    * Abstraction for data returned by the server in response to this operation.

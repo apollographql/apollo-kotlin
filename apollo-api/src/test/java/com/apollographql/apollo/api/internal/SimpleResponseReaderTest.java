@@ -4,13 +4,12 @@ import com.apollographql.apollo.api.CustomTypeAdapter;
 import com.apollographql.apollo.api.CustomTypeValue;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
+import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
-import com.apollographql.apollo.api.internal.SimpleResponseReader;
-import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
@@ -18,7 +17,6 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -848,6 +846,10 @@ public class SimpleResponseReaderTest {
 
     @NotNull @Override public String operationId() {
       return "";
+    }
+
+    @NotNull @Override public Response parse(@NotNull Map response, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+      throw new UnsupportedOperationException();
     }
   };
 }

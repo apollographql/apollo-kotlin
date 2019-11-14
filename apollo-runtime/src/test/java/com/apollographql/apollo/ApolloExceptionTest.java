@@ -2,8 +2,10 @@ package com.apollographql.apollo;
 
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
+import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.exception.ApolloParseException;
@@ -15,6 +17,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.net.SocketTimeoutException;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -77,6 +80,10 @@ import static com.google.common.truth.Truth.assertThat;
 
       @Override public Object wrapData(Data data) {
         return data;
+      }
+
+      @NotNull @Override public Response parse(@NotNull Map response, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+        throw new UnsupportedOperationException();
       }
     };
   }

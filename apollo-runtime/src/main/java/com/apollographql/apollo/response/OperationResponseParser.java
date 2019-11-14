@@ -12,7 +12,6 @@ import com.apollographql.apollo.internal.json.ResponseJsonStreamReader;
 import com.apollographql.apollo.internal.response.RealResponseReader;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -160,9 +159,9 @@ public final class OperationResponseParser<D extends Operation.Data, W> {
     if (data != null) {
       for (Map.Entry<String, Object> entry : data.entrySet()) {
         if ("line".equals(entry.getKey())) {
-          line = ((BigDecimal) entry.getValue()).longValue();
+          line = ((Number) entry.getValue()).longValue();
         } else if ("column".equals(entry.getKey())) {
-          column = ((BigDecimal) entry.getValue()).longValue();
+          column = ((Number) entry.getValue()).longValue();
         }
       }
     }

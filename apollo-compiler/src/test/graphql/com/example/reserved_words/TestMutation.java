@@ -9,12 +9,15 @@ import com.apollographql.apollo.api.InputFieldMarshaller;
 import com.apollographql.apollo.api.InputFieldWriter;
 import com.apollographql.apollo.api.Mutation;
 import com.apollographql.apollo.api.OperationName;
+import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.api.internal.SimpleOperationResponseParser;
 import com.apollographql.apollo.api.internal.Utils;
 import com.example.reserved_words.type.TestInputType;
 import java.io.IOException;
@@ -79,6 +82,13 @@ public final class TestMutation implements Mutation<TestMutation.Data, Optional<
   @Override
   public OperationName name() {
     return OPERATION_NAME;
+  }
+
+  @Override
+  @NotNull
+  public Response<Optional<Data>> parse(@NotNull final Map<String, Object> response,
+      @NotNull final ScalarTypeAdapters scalarTypeAdapters) {
+    return SimpleOperationResponseParser.parse(response, this, scalarTypeAdapters);
   }
 
   public static final class Builder {
