@@ -12,7 +12,6 @@ import com.apollographql.apollo.internal.json.ResponseJsonStreamReader;
 import com.apollographql.apollo.internal.response.RealResponseReader;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

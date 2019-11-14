@@ -6,6 +6,7 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseFieldMarshaller;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
@@ -20,6 +21,7 @@ import org.mockito.stubbing.Answer;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.AbstractExecutorService;
 import java.util.concurrent.Executor;
@@ -296,6 +298,10 @@ public class ApolloAutoPersistedQueryInterceptorTest {
       @Override public ResponseFieldMarshaller marshaller() {
         throw new UnsupportedOperationException();
       }
+    }
+
+    @NotNull @Override public com.apollographql.apollo.api.Response<Data> parse(@NotNull Map<String, Object> response, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+      throw new UnsupportedOperationException();
     }
   }
 
