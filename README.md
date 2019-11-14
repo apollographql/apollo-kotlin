@@ -25,7 +25,7 @@ Apollo-android features:
 
 The latest Gradle plugin version is [ ![Download](https://api.bintray.com/packages/apollographql/android/apollo-gradle-plugin/images/download.svg) ](https://bintray.com/apollographql/android/apollo-gradle-plugin/_latestVersion)
 
-To use this plugin, add the dependency to your project's root build.gradle file and apply the `com.apollographql.android` plugin:
+To use this plugin, add the dependency to your project's root build.gradle file:
 
 ```groovy
 buildscript {
@@ -36,13 +36,13 @@ buildscript {
     classpath("com.apollographql.apollo:apollo-gradle-plugin:x.y.z")
   }
 }
-
-apply plugin: 'com.apollographql.android'
 ```
 
-Then add the following to your app's build.gradle dependencies:
+Then add the dependencies to your app's build.gradle and apply file and apply the `com.apollographql.android` plugin:
 
 ```groovy
+apply plugin: 'com.apollographql.android'
+
 repositories {
     jcenter()
 }
