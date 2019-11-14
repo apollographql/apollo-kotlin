@@ -214,10 +214,12 @@ Advanced topics are available in the [doc folder](doc):
 * [doc/caching.md](doc/caching.md) 
 * [doc/plugin-configuration.md](doc/plugin-configuration.md) 
 * [doc/android.md](doc/android.md) 
-* [doc/fileupload.md](doc/fileupload.md) 
-* [doc/rxjava2.md](doc/rxjava2.md) 
+* [doc/file-upload.md](doc/file-upload.md)
+* [doc/rxjava2.md](doc/rxjava2.md)
 * [doc/coroutines.md](doc/coroutines.md) 
+* [doc/persisted-queries.md](doc/no-runtime.md)
 * [doc/no-runtime.md](doc/no-runtime.md) 
+* [doc/subscriptions.md](doc/subscriptions.md) 
 
 ## License
 
