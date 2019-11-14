@@ -9,6 +9,18 @@ Apollo-Android is a GraphQL compliant client that generates Java and Kotlin mode
 
 Apollo-Android is designed primarily with Android in mind but you can use it in any Java/Kotlin app. The android-only parts are in `apollo-android-support` and are only needed to use SQLite as a cache or the android main thread for callbacks.
 
+Apollo-android features:
+
+* Automatic generation of typesafe models.
+* Support for Java and Kotlin code generation.
+* Queries, Mutations and Subscriptions.
+* Reflection-free parsing of responses.
+* HTTP cache.
+* Normalized cache.
+* File Upload.
+* Custom scalar types.
+* Support for RxJava2 and Coroutines. 
+
 ## Adding Apollo-Android to your Project
 
 The latest Gradle plugin version is [ ![Download](https://api.bintray.com/packages/apollographql/android/apollo-gradle-plugin/images/download.svg) ](https://bintray.com/apollographql/android/apollo-gradle-plugin/_latestVersion)
