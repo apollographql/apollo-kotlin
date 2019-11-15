@@ -89,4 +89,20 @@ class DownloadSchemaTests {
       assertEquals(content2, schemaFile.readText())
     }
   }
+
+  @Test
+  fun `manually downloading a schema is working`() {
+
+    withSimpleProject(apolloConfiguration = "") { dir ->
+      val content = "schema should be here"
+      val mockResponse = MockResponse().setBody(content)
+      mockServer.enqueue(mockResponse)
+
+      TestUtils.executeGradle(dir, "downloadApolloSchema",
+          "-Pcom.apollographql.apollo.schema=schema.json",
+          "-Pcom.apollographql.apollo.endpoint=${mockServer.url("/")}")
+
+      assertEquals(content, dir.child("schema.json").readText())
+    }
+  }
 }

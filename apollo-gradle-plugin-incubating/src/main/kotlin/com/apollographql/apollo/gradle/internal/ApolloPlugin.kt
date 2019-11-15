@@ -8,6 +8,7 @@ import org.gradle.api.Task
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.util.GradleVersion
+import java.net.URLDecoder
 
 open class ApolloPlugin : Plugin<Project> {
   companion object {
@@ -202,16 +203,53 @@ open class ApolloPlugin : Plugin<Project> {
             task.endpointUrl.set(introspection.endpointUrl)
             task.queryParameters.set(introspection.queryParameters)
             task.headers.set(introspection.headers)
-
-            /**
-             * We cannot know in advance if the backend schema changed so don't cache or mark this task up-to-date
-             * This code actually redundant because the task has no output but adding it make it explicit.
-             */
-            task.outputs.upToDateWhen { false }
-            task.outputs.cacheIf { false }
           }
         }
       }
+
+      project.tasks.register("downloadApolloSchema", ApolloDownloadSchemaTask::class.java) { task ->
+        task.group = TASK_GROUP
+
+        task.schemaFilePath.set(project.provider {
+          val schema = project.findProperty("com.apollographql.apollo.schema") as? String
+          require(schema != null) {
+            "downloadApolloSchema requires setting -Pcom.apollographql.apollo.schema=/path/to/your/schema.json"
+          }
+          schema
+        })
+
+        task.endpointUrl.set(project.provider {
+          val endpoint = project.findProperty("com.apollographql.apollo.endpoint") as? String
+          require(endpoint != null) {
+            "downloadApolloSchema requires setting -Pcom.apollographql.apollo.endpoint=https://your.graphql.endpoint"
+          }
+          endpoint
+        })
+
+        task.queryParameters.set(project.provider {
+          (project.findProperty("com.apollographql.apollo.query_params") as? String)
+              ?.let {
+                toMap(it)
+              } ?: emptyMap()
+        })
+        task.headers.set(project.provider {
+          (project.findProperty("com.apollographql.apollo.headers") as? String)
+              ?.let {
+                toMap(it)
+              } ?: emptyMap()
+        })
+      }
+    }
+
+    private fun toMap(s: String): Map<String, String> {
+      return s.split("&")
+          .map {
+            val keyValue = it.split("=")
+            val key = URLDecoder.decode(keyValue[0], "UTF-8")
+            val value = URLDecoder.decode(keyValue[1], "UTF-8")
+
+            key to value
+          }.toMap()
     }
 
     private fun afterEvaluate(project: Project, apolloExtension: DefaultApolloExtension, apolloSourceSetExtension: ApolloSourceSetExtension) {
