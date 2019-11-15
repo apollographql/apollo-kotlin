@@ -153,16 +153,25 @@ object TestUtils {
   }
 
   fun executeGradle(projectDir: File, vararg args: String): BuildResult {
+    return executeGradleWithVersion(projectDir, null, *args)
+  }
+
+  fun executeGradleWithVersion(projectDir: File, gradleVersion: String?, vararg args: String): BuildResult {
     return GradleRunner.create()
         .forwardStdOutput(System.out.writer())
         .forwardStdError(System.err.writer())
         .withProjectDir(projectDir)
         .withArguments("--stacktrace", *args)
+        .apply {
+          if (gradleVersion != null) {
+            withGradleVersion(gradleVersion)
+          }
+        }
         .build()
   }
 
   fun executeTask(task: String, projectDir: File, vararg args: String): BuildResult {
-    return executeGradle(projectDir, task, *args)
+    return executeGradleWithVersion(projectDir, null, task, *args)
   }
 
   fun assertFileContains(projectDir: File, path: String, content: String) {

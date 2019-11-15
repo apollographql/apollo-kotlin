@@ -7,6 +7,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.tasks.TaskProvider
+import org.gradle.util.GradleVersion
 
 open class ApolloPlugin : Plugin<Project> {
   companion object {
@@ -224,6 +225,10 @@ open class ApolloPlugin : Plugin<Project> {
   }
 
   override fun apply(project: Project) {
+    require (GradleVersion.current().compareTo(GradleVersion.version("5.6")) >= 0) {
+      "apollo-android requires Gradle version 5.6 or greater"
+    }
+
     val apolloExtension = project.extensions.create(ApolloExtension::class.java, "apollo", DefaultApolloExtension::class.java, project) as DefaultApolloExtension
     // for backward compatibility
     val apolloSourceSetExtension = (apolloExtension as ExtensionAware).extensions.create("sourceSet", ApolloSourceSetExtension::class.java, project.objects)
