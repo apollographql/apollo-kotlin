@@ -134,5 +134,5 @@ NormalizedCacheFactory memoryFirstThenSqlCacheFactory = new LruNormalizedCacheFa
 
 ```
 
-For concrete examples of using response caches, please see the following tests in the [`apollo-integration`](apollo-integration) module:
+For concrete examples of using response caches, please see the following tests in the [`apollo-integration`](https://github.com/apollographql/apollo-android/tree/master/apollo-integration) module:
 `CacheTest`, `SqlNormalizedCacheTest`, `LruNormalizedCacheTest`. 
