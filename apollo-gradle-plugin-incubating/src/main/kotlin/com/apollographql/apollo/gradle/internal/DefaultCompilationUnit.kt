@@ -115,7 +115,7 @@ abstract class DefaultCompilationUnit @Inject constructor(
       return createDefaultCompilationUnit(project, apolloExtension, apolloVariant, service)
     }
 
-    fun fromFiles(project: Project, apolloExtension: DefaultApolloExtension, apolloVariant: ApolloVariant): DefaultCompilationUnit? {
+    fun fromFiles(project: Project, apolloExtension: DefaultApolloExtension, apolloVariant: ApolloVariant): DefaultCompilationUnit{
       val service = project.objects.newInstance(DefaultService::class.java, project.objects, "service")
       return createDefaultCompilationUnit(project, apolloExtension, apolloVariant, service)
     }

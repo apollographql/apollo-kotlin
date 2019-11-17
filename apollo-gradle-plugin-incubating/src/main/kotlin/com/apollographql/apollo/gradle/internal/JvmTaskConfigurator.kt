@@ -11,33 +11,43 @@ object JvmTaskConfigurator {
   fun getVariants(project: Project): NamedDomainObjectContainer<ApolloVariant> {
     val container = project.container(ApolloVariant::class.java)
 
-    // TODO: should we add tasks for the test sourceSet ?
-    val name = "main"
-    val apolloVariant = ApolloVariant(
-        name = name,
-        sourceSetNames = listOf(name),
-        androidVariant = null
-    )
+    val javaPlugin = project.convention.getPlugin(JavaPluginConvention::class.java)
+    val sourceSets = javaPlugin.sourceSets
 
-    container.add(apolloVariant)
+    sourceSets.map { it.name }.forEach {name ->
+      val apolloVariant = ApolloVariant(
+          name = name,
+          sourceSetNames = listOf(name),
+          androidVariant = null
+      )
+
+      container.add(apolloVariant)
+    }
+
     return container
   }
 
   fun registerGeneratedDirectory(project: Project, compilationUnit: DefaultCompilationUnit, codegenProvider: TaskProvider<ApolloGenerateSourcesTask>) {
     val javaPlugin = project.convention.getPlugin(JavaPluginConvention::class.java)
     val sourceSets = javaPlugin.sourceSets
-    val name = compilationUnit.variantName
+    val sourceSetName = compilationUnit.variantName
+
+    var taskName = compilationUnit.variantName.capitalize()
+    if (taskName == "Main") {
+      // Special case: The main variant will use "compileJava" and not "compileMainJava"
+      taskName = ""
+    }
 
     val sourceDirectorySet = if (!compilationUnit.generateKotlinModels()) {
-      sourceSets.getByName(name).java
+      sourceSets.getByName(sourceSetName).java
     } else {
-      sourceSets.getByName(name).kotlin!!
+      sourceSets.getByName(sourceSetName).kotlin!!
     }
 
     val compileTaskName = if (!compilationUnit.generateKotlinModels()) {
-      "compileJava"
+      "compile${taskName}Java"
     } else {
-      "compileKotlin"
+      "compile${taskName}Kotlin"
     }
 
     if (!compilationUnit.generateKotlinModels()) {
