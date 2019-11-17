@@ -61,7 +61,7 @@ dependencies {
 ## Generating models from your queries
 
 1) Create a directory for your GraphQL files like you would do for Java/Kotlin: `src/main/graphql/com/com/example/`. Apollo-Android will generate models in the `com.apollographql.apollo.sample` package.
-2) Add your `schema.json` to the directory at `src/main/graphql/com/example/schema.json`. If you don't have a `schema.json` file yet, read the section about [downloading a schema file](). 
+2) Add your `schema.json` to the directory at `src/main/graphql/com/example/schema.json`. If you don't have a `schema.json` file yet, read the section about [downloading a schema file](#downloading-a-schemajson-file). 
 3) Put your GraphQL queries in a `.graphql` files. For an exemple: `src/main/graphql/com/example/feed.graphql`: 
 
 ```
