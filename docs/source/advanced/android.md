@@ -1,4 +1,6 @@
-# Android Support
+---
+title: Android Support
+---
 
 Apollo-Android has support artifacts to help with caching and testing.
 

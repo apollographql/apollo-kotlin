@@ -1,3 +1,5 @@
-# Subscriptions
+---
+title: Subscriptions
+---
 
 // TODO

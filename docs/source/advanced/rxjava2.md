@@ -1,4 +1,7 @@
-# RxJava2 support
+---
+title: RxJava2 support 
+---
+
 The Apollo GraphQL client comes with RxJava2 support.
 
 Apollo types can be converted to RxJava2 `Observable` *types* using wrapper functions `Rx2Apollo.from(...)` in Java or using extension functions in Kotlin.

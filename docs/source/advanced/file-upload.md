@@ -1,4 +1,7 @@
-# File upload
+---
+title: File upload 
+---
+
 Apollo Android supports file uploading over [graphql-multipart-request-spec](https://github.com/jaydenseric/graphql-multipart-request-spec).
 
 You need to define this mapping in your build.gradle file.
