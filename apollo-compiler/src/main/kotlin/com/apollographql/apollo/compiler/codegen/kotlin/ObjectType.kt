@@ -3,6 +3,7 @@ package com.apollographql.apollo.compiler.codegen.kotlin
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.compiler.applyIf
+import com.apollographql.apollo.compiler.ast.FieldType
 import com.apollographql.apollo.compiler.ast.ObjectType
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.asPropertySpec
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.asTypeName
@@ -18,6 +19,7 @@ internal fun ObjectType.typeSpec(): TypeSpec = when (kind) {
       .addModifiers(KModifier.DATA)
       .primaryConstructor(primaryConstructorSpec)
       .addProperties(fields.map { it.asPropertySpec(initializer = CodeBlock.of(it.name)) })
+      .addProperties(inlineFragmentProperties)
       .addType(TypeSpec.companionObjectBuilder()
           .addProperty(responseFieldsPropertySpec(fields))
           .addFunction(fields.toMapperFun(ClassName(packageName = "", simpleName = name)))
@@ -90,6 +92,22 @@ internal fun ObjectType.typeSpec(): TypeSpec = when (kind) {
       .build()
 
 }
+
+private val ObjectType.inlineFragmentProperties: List<PropertySpec>
+  get() {
+    val inlineFragmentField = fields.find { it.type is FieldType.InlineFragment }
+    val inlineFragmentFieldType = inlineFragmentField?.type as? FieldType.InlineFragment
+    return inlineFragmentFieldType?.fragmentRefs?.map { fragmentRef ->
+      val fragmentType = fragmentRef.asTypeName()
+      PropertySpec
+          .builder(
+              name = fragmentRef.name.decapitalize().replace(regex = "\\d+\$".toRegex(), replacement = ""),
+              type = fragmentType.copy(nullable = true)
+          )
+          .initializer("%L as? %T", inlineFragmentField.name, fragmentType)
+          .build()
+    } ?: emptyList()
+  }
 
 private val ObjectType.fragmentsTypeSpec: TypeSpec
   get() {

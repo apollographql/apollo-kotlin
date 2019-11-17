@@ -242,6 +242,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
     val friends: List<Friend2?>?,
     val inlineFragment: HeroDetailQueryCharacter?
   ) {
+    val asHuman: AsHuman? = inlineFragment as? AsHuman
+
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeString(RESPONSE_FIELDS[0], __typename)
       it.writeString(RESPONSE_FIELDS[1], name)

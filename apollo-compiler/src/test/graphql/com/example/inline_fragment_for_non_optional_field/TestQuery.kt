@@ -77,6 +77,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val __typename: String,
     val inlineFragment: HeroCharacter?
   ) {
+    val asHuman: AsHuman? = inlineFragment as? AsHuman
+
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeString(RESPONSE_FIELDS[0], __typename)
       it.writeObject(RESPONSE_FIELDS[1], inlineFragment?.marshaller())
