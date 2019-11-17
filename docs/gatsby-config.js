@@ -24,14 +24,14 @@ module.exports = {
             'gradle/plugin-configuration'
           ],
           Advanced: [
-            'android',
-            'caching',
-            'coroutines',
-            'file-upload',
-            'no-runtime',
-            'persisted-queries',
-            'rxjava2',
-            'subscriptions'
+            'advanced/android',
+            'advanced/caching',
+            'advanced/coroutines',
+            'advanced/file-upload',
+            'advanced/no-runtime',
+            'advanced/persisted-queries',
+            'advanced/rxjava2',
+            'advanced/subscriptions'
           ]
         }
       }
