@@ -26,6 +26,15 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
   @get:Input
   abstract val queryParameters: MapProperty<String, String>
 
+  init {
+    /**
+     * We cannot know in advance if the backend schema changed so don't cache or mark this task up-to-date
+     * This code actually redundant because the task has no output but adding it make it explicit.
+     */
+    outputs.upToDateWhen { false }
+    outputs.cacheIf { false }
+  }
+
   @TaskAction
   fun taskAction() {
     if (!schemaFilePath.isPresent) {
