@@ -112,6 +112,8 @@ data class TestQuery(
     val name: String,
     val inlineFragment: FriendCharacter?
   ) {
+    val asHuman: AsHuman1? = inlineFragment as? AsHuman1
+
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeString(RESPONSE_FIELDS[0], __typename)
       it.writeString(RESPONSE_FIELDS[1], name)
@@ -244,6 +246,8 @@ data class TestQuery(
     val name: String,
     val inlineFragment: FriendCharacter1?
   ) {
+    val asHuman: AsHuman2? = inlineFragment as? AsHuman2
+
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeString(RESPONSE_FIELDS[0], __typename)
       it.writeString(RESPONSE_FIELDS[1], name)
@@ -332,6 +336,10 @@ data class TestQuery(
     val name: String,
     val inlineFragment: HeroCharacter?
   ) {
+    val asHuman: AsHuman? = inlineFragment as? AsHuman
+
+    val asDroid: AsDroid? = inlineFragment as? AsDroid
+
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeString(RESPONSE_FIELDS[0], __typename)
       it.writeString(RESPONSE_FIELDS[1], name)

@@ -128,6 +128,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val name: String,
     val inlineFragment: HeroCharacter?
   ) {
+    val asHuman: AsHuman? = inlineFragment as? AsHuman
+
+    val asDroid: AsDroid? = inlineFragment as? AsDroid
+
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeString(RESPONSE_FIELDS[0], __typename)
       it.writeString(RESPONSE_FIELDS[1], name)

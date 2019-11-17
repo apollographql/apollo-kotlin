@@ -236,6 +236,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val name: String,
     val inlineFragment: FriendCharacter?
   ) {
+    val asHuman: AsHuman? = inlineFragment as? AsHuman
+
+    val asDroid: AsDroid? = inlineFragment as? AsDroid
+
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeString(RESPONSE_FIELDS[0], __typename)
       it.writeString(RESPONSE_FIELDS[1], name)
@@ -360,6 +364,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val __typename: String,
     val inlineFragment: SearchSearchResult?
   ) {
+    val asCharacter: AsCharacter? = inlineFragment as? AsCharacter
+
+    val asStarship: AsStarship? = inlineFragment as? AsStarship
+
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeString(RESPONSE_FIELDS[0], __typename)
       it.writeObject(RESPONSE_FIELDS[1], inlineFragment?.marshaller())
