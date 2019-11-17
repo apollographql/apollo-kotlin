@@ -1,4 +1,6 @@
-# Support For Cached Responses
+---
+title: Support For Cached Responses 
+---
 
 Apollo GraphQL client allows you to cache responses, making it suitable for use even while offline. The client can be configured with 3 levels of caching:
 
