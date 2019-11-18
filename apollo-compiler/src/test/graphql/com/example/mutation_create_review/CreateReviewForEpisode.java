@@ -18,10 +18,10 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier;
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.api.internal.Utils;
-import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.mutation_create_review.type.CustomType;
 import com.example.mutation_create_review.type.Episode;
 import com.example.mutation_create_review.type.ReviewInput;
@@ -39,7 +39,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpisode.Data, Optional<CreateReviewForEpisode.Data>, CreateReviewForEpisode.Variables> {
-  public static final String OPERATION_ID = "c07e5abc4b4070cd773623194c07f546e609af467a1d34f7bf01c37272245296";
+  public static final String OPERATION_ID = "a03fabd18e65530a10eeb22fa148067109b2bd93c21ffbdcb4a920fd90742154";
 
   public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
     "mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {\n"
@@ -54,6 +54,7 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
         + "      __typename\n"
         + "      name\n"
         + "    }\n"
+        + "    listOfListOfListOfString\n"
         + "  }\n"
         + "}"
   );
@@ -109,7 +110,7 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
 
   @Override
   @NotNull
-  public Response<Optional<CreateReviewForEpisode.Data>> parse(@NotNull final Map<String, Object> response,
+  public Response<Optional<CreateReviewForEpisode.Data>> parse(@NotNull final Map<String, ?> response,
       @NotNull final ScalarTypeAdapters scalarTypeAdapters) {
     return SimpleOperationResponseParser.parse(response, this, scalarTypeAdapters);
   }
@@ -276,7 +277,8 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
       ResponseField.forList("listOfListOfString", "listOfListOfString", null, true, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forList("listOfListOfEnum", "listOfListOfEnum", null, true, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forList("listOfListOfCustom", "listOfListOfCustom", null, true, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forList("listOfListOfObject", "listOfListOfObject", null, true, Collections.<ResponseField.Condition>emptyList())
+      ResponseField.forList("listOfListOfObject", "listOfListOfObject", null, true, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forList("listOfListOfListOfString", "listOfListOfListOfString", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @NotNull String __typename;
@@ -293,6 +295,8 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
 
     final Optional<List<List<ListOfListOfObject>>> listOfListOfObject;
 
+    final Optional<List<List<List<String>>>> listOfListOfListOfString;
+
     private transient volatile String $toString;
 
     private transient volatile int $hashCode;
@@ -303,7 +307,8 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
         @Nullable List<List<String>> listOfListOfString,
         @Nullable List<List<Episode>> listOfListOfEnum,
         @Nullable List<List<Date>> listOfListOfCustom,
-        @Nullable List<List<ListOfListOfObject>> listOfListOfObject) {
+        @Nullable List<List<ListOfListOfObject>> listOfListOfObject,
+        @Nullable List<List<List<String>>> listOfListOfListOfString) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.stars = stars;
       this.commentary = Optional.fromNullable(commentary);
@@ -311,6 +316,7 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
       this.listOfListOfEnum = Optional.fromNullable(listOfListOfEnum);
       this.listOfListOfCustom = Optional.fromNullable(listOfListOfCustom);
       this.listOfListOfObject = Optional.fromNullable(listOfListOfObject);
+      this.listOfListOfListOfString = Optional.fromNullable(listOfListOfListOfString);
     }
 
     public @NotNull String __typename() {
@@ -357,6 +363,13 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
      */
     public Optional<List<List<ListOfListOfObject>>> listOfListOfObject() {
       return this.listOfListOfObject;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Optional<List<List<List<String>>>> listOfListOfListOfString() {
+      return this.listOfListOfListOfString;
     }
 
     @SuppressWarnings("unchecked")
@@ -427,6 +440,29 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
               }
             }
           });
+          writer.writeList($responseFields[7], listOfListOfListOfString.isPresent() ? listOfListOfListOfString.get() : null, new ResponseWriter.ListWriter() {
+            @Override
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeList((List) item, new ResponseWriter.ListWriter() {
+                  @Override
+                  public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+                    for (Object item : items) {
+                      listItemWriter.writeList((List) item, new ResponseWriter.ListWriter() {
+                        @Override
+                        public void write(List items,
+                            ResponseWriter.ListItemWriter listItemWriter) {
+                          for (Object item : items) {
+                            listItemWriter.writeString((String) item);
+                          }
+                        }
+                      });
+                    }
+                  }
+                });
+              }
+            }
+          });
         }
       };
     }
@@ -441,7 +477,8 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
           + "listOfListOfString=" + listOfListOfString + ", "
           + "listOfListOfEnum=" + listOfListOfEnum + ", "
           + "listOfListOfCustom=" + listOfListOfCustom + ", "
-          + "listOfListOfObject=" + listOfListOfObject
+          + "listOfListOfObject=" + listOfListOfObject + ", "
+          + "listOfListOfListOfString=" + listOfListOfListOfString
           + "}";
       }
       return $toString;
@@ -460,7 +497,8 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
          && this.listOfListOfString.equals(that.listOfListOfString)
          && this.listOfListOfEnum.equals(that.listOfListOfEnum)
          && this.listOfListOfCustom.equals(that.listOfListOfCustom)
-         && this.listOfListOfObject.equals(that.listOfListOfObject);
+         && this.listOfListOfObject.equals(that.listOfListOfObject)
+         && this.listOfListOfListOfString.equals(that.listOfListOfListOfString);
       }
       return false;
     }
@@ -483,6 +521,8 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
         h ^= listOfListOfCustom.hashCode();
         h *= 1000003;
         h ^= listOfListOfObject.hashCode();
+        h *= 1000003;
+        h ^= listOfListOfListOfString.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -546,7 +586,23 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
             });
           }
         });
-        return new CreateReview(__typename, stars, commentary, listOfListOfString, listOfListOfEnum, listOfListOfCustom, listOfListOfObject);
+        final List<List<List<String>>> listOfListOfListOfString = reader.readList($responseFields[7], new ResponseReader.ListReader<List<List<String>>>() {
+          @Override
+          public List<List<String>> read(ResponseReader.ListItemReader listItemReader) {
+            return listItemReader.readList(new ResponseReader.ListReader<List<String>>() {
+              @Override
+              public List<String> read(ResponseReader.ListItemReader listItemReader) {
+                return listItemReader.readList(new ResponseReader.ListReader<String>() {
+                  @Override
+                  public String read(ResponseReader.ListItemReader listItemReader) {
+                    return listItemReader.readString();
+                  }
+                });
+              }
+            });
+          }
+        });
+        return new CreateReview(__typename, stars, commentary, listOfListOfString, listOfListOfEnum, listOfListOfCustom, listOfListOfObject, listOfListOfListOfString);
       }
     }
   }

@@ -15,8 +15,8 @@ import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
 import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
-import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.starships.type.CustomType
 import kotlin.Any
 import kotlin.Array
@@ -91,9 +91,10 @@ data class TestQuery(
           )
 
       operator fun invoke(reader: ResponseReader): Starship {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
-        val name = reader.readString(RESPONSE_FIELDS[2])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as
+            ResponseField.CustomTypeField)!!
+        val name = reader.readString(RESPONSE_FIELDS[2])!!
         val coordinates = reader.readList<List<Double>>(RESPONSE_FIELDS[3]) {
           it.readList<Double> {
             it.readDouble()
@@ -128,7 +129,6 @@ data class TestQuery(
         val starship = reader.readObject<Starship>(RESPONSE_FIELDS[0]) { reader ->
           Starship(reader)
         }
-
         return Data(
           starship = starship
         )

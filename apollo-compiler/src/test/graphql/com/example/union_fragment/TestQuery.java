@@ -16,10 +16,10 @@ import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier;
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.api.internal.Utils;
-import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.union_fragment.fragment.Character;
 import com.example.union_fragment.fragment.Starship;
 import java.lang.Object;
@@ -104,7 +104,7 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
 
   @Override
   @NotNull
-  public Response<TestQuery.Data> parse(@NotNull final Map<String, Object> response,
+  public Response<TestQuery.Data> parse(@NotNull final Map<String, ?> response,
       @NotNull final ScalarTypeAdapters scalarTypeAdapters) {
     return SimpleOperationResponseParser.parse(response, this, scalarTypeAdapters);
   }

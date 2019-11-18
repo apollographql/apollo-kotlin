@@ -14,8 +14,8 @@ import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
 import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
-import com.apollographql.apollo.internal.QueryDocumentMinifier
 import kotlin.Any
 import kotlin.Array
 import kotlin.String
@@ -54,7 +54,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): QueryType {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
         val name = reader.readString(RESPONSE_FIELDS[1])
         return QueryType(
           __typename = __typename,
@@ -80,7 +80,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): Type {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
         val name = reader.readString(RESPONSE_FIELDS[1])
         return Type(
           __typename = __typename,
@@ -119,17 +119,15 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): __Schema {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
         val queryType = reader.readObject<QueryType>(RESPONSE_FIELDS[1]) { reader ->
           QueryType(reader)
-        }
-
+        }!!
         val types = reader.readList<Type>(RESPONSE_FIELDS[2]) {
           it.readObject<Type> { reader ->
             Type(reader)
           }
-
-        }
+        }!!
         return __Schema(
           __typename = __typename,
           queryType = queryType,
@@ -155,7 +153,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): __Type {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
         val name = reader.readString(RESPONSE_FIELDS[1])
         return __Type(
           __typename = __typename,
@@ -184,12 +182,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       operator fun invoke(reader: ResponseReader): Data {
         val __schema = reader.readObject<__Schema>(RESPONSE_FIELDS[0]) { reader ->
           __Schema(reader)
-        }
-
+        }!!
         val __type = reader.readObject<__Type>(RESPONSE_FIELDS[1]) { reader ->
           __Type(reader)
         }
-
         return Data(
           __schema = __schema,
           __type = __type

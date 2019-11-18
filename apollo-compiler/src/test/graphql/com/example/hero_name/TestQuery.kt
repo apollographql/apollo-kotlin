@@ -14,8 +14,8 @@ import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
 import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
-import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.hero_name.type.CustomType
 import kotlin.Any
 import kotlin.Array
@@ -63,9 +63,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): Hero {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
-        val id = reader.readCustomType<String>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val name = reader.readString(RESPONSE_FIELDS[1])!!
+        val id = reader.readCustomType<String>(RESPONSE_FIELDS[2] as
+            ResponseField.CustomTypeField)!!
         return Hero(
           __typename = __typename,
           name = name,
@@ -91,7 +92,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         val hero = reader.readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
           Hero(reader)
         }
-
         return Data(
           hero = hero
         )

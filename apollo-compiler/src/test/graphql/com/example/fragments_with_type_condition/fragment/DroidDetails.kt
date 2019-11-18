@@ -50,8 +50,8 @@ data class DroidDetails(
     val POSSIBLE_TYPES: Array<String> = arrayOf("Droid")
 
     operator fun invoke(reader: ResponseReader): DroidDetails {
-      val __typename = reader.readString(RESPONSE_FIELDS[0])
-      val name = reader.readString(RESPONSE_FIELDS[1])
+      val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+      val name = reader.readString(RESPONSE_FIELDS[1])!!
       val primaryFunction = reader.readString(RESPONSE_FIELDS[2])
       return DroidDetails(
         __typename = __typename,

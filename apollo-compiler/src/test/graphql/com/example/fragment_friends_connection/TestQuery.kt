@@ -14,8 +14,8 @@ import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
 import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
-import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.fragment_friends_connection.fragment.HeroDetails
 import kotlin.Any
 import kotlin.Array
@@ -54,14 +54,13 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): Hero {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
         val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
           val heroDetails = HeroDetails(reader)
           Fragments(
             heroDetails = heroDetails
           )
-        }
-
+        }!!
         return Hero(
           __typename = __typename,
           fragments = fragments
@@ -94,7 +93,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         val hero = reader.readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
           Hero(reader)
         }
-
         return Data(
           hero = hero
         )

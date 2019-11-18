@@ -16,8 +16,8 @@ import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
 import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
-import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.deprecation.type.Episode
 import kotlin.Any
 import kotlin.Array
@@ -89,10 +89,10 @@ data class TestQuery(
           )
 
       operator fun invoke(reader: ResponseReader): Hero {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
-        val deprecated = reader.readString(RESPONSE_FIELDS[2])
-        val deprecatedBool = reader.readBoolean(RESPONSE_FIELDS[3])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val name = reader.readString(RESPONSE_FIELDS[1])!!
+        val deprecated = reader.readString(RESPONSE_FIELDS[2])!!
+        val deprecatedBool = reader.readBoolean(RESPONSE_FIELDS[3])!!
         return Hero(
           __typename = __typename,
           name = name,
@@ -122,7 +122,6 @@ data class TestQuery(
         val hero = reader.readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
           Hero(reader)
         }
-
         return Data(
           hero = hero
         )

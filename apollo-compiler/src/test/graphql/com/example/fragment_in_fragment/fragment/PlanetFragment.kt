@@ -43,7 +43,7 @@ data class PlanetFragment(
     val POSSIBLE_TYPES: Array<String> = arrayOf("Planet")
 
     operator fun invoke(reader: ResponseReader): PlanetFragment {
-      val __typename = reader.readString(RESPONSE_FIELDS[0])
+      val __typename = reader.readString(RESPONSE_FIELDS[0])!!
       val name = reader.readString(RESPONSE_FIELDS[1])
       return PlanetFragment(
         __typename = __typename,

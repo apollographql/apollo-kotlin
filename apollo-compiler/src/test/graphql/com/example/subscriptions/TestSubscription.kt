@@ -15,8 +15,8 @@ import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.Subscription
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
-import com.apollographql.apollo.internal.QueryDocumentMinifier
 import kotlin.Any
 import kotlin.Array
 import kotlin.Int
@@ -78,9 +78,9 @@ data class TestSubscription(
           )
 
       operator fun invoke(reader: ResponseReader): CommentAdded {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val id = reader.readInt(RESPONSE_FIELDS[1])
-        val content = reader.readString(RESPONSE_FIELDS[2])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val id = reader.readInt(RESPONSE_FIELDS[1])!!
+        val content = reader.readString(RESPONSE_FIELDS[2])!!
         return CommentAdded(
           __typename = __typename,
           id = id,
@@ -112,7 +112,6 @@ data class TestSubscription(
         val commentAdded = reader.readObject<CommentAdded>(RESPONSE_FIELDS[0]) { reader ->
           CommentAdded(reader)
         }
-
         return Data(
           commentAdded = commentAdded
         )

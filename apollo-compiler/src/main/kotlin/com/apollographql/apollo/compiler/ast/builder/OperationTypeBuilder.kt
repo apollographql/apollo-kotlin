@@ -4,7 +4,7 @@ import com.apollographql.apollo.compiler.ast.*
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo.compiler.ir.Operation
 import com.apollographql.apollo.compiler.sha256
-import com.apollographql.apollo.internal.QueryDocumentMinifier
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 
 internal fun Operation.ast(
     operationClassName: String,

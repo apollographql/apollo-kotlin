@@ -52,10 +52,10 @@ data class CharacterDetails(
     val POSSIBLE_TYPES: Array<String> = arrayOf("Human", "Droid")
 
     operator fun invoke(reader: ResponseReader): CharacterDetails {
-      val __typename = reader.readString(RESPONSE_FIELDS[0])
-      val name = reader.readString(RESPONSE_FIELDS[1])
+      val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+      val name = reader.readString(RESPONSE_FIELDS[1])!!
       val birthDate = reader.readCustomType<Any>(RESPONSE_FIELDS[2] as
-          ResponseField.CustomTypeField)
+          ResponseField.CustomTypeField)!!
       return CharacterDetails(
         __typename = __typename,
         name = name,

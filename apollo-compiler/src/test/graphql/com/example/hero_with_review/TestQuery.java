@@ -18,10 +18,10 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier;
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.api.internal.Utils;
-import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.hero_with_review.type.Episode;
 import java.io.IOException;
 import java.lang.Object;
@@ -97,7 +97,7 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
 
   @Override
   @NotNull
-  public Response<Optional<TestQuery.Data>> parse(@NotNull final Map<String, Object> response,
+  public Response<Optional<TestQuery.Data>> parse(@NotNull final Map<String, ?> response,
       @NotNull final ScalarTypeAdapters scalarTypeAdapters) {
     return SimpleOperationResponseParser.parse(response, this, scalarTypeAdapters);
   }

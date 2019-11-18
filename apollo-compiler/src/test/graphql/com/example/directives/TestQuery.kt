@@ -15,8 +15,8 @@ import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
 import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
-import com.apollographql.apollo.internal.QueryDocumentMinifier
 import kotlin.Any
 import kotlin.Array
 import kotlin.Boolean
@@ -76,7 +76,7 @@ data class TestQuery(
           )
 
       operator fun invoke(reader: ResponseReader): FriendsConnection {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
         val totalCount = reader.readInt(RESPONSE_FIELDS[1])
         return FriendsConnection(
           __typename = __typename,
@@ -113,12 +113,11 @@ data class TestQuery(
           )
 
       operator fun invoke(reader: ResponseReader): Hero {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
         val name = reader.readString(RESPONSE_FIELDS[1])
         val friendsConnection = reader.readObject<FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
           FriendsConnection(reader)
         }
-
         return Hero(
           __typename = __typename,
           name = name,
@@ -144,7 +143,6 @@ data class TestQuery(
         val hero = reader.readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
           Hero(reader)
         }
-
         return Data(
           hero = hero
         )

@@ -14,8 +14,8 @@ import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
 import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
-import com.apollographql.apollo.internal.QueryDocumentMinifier
 import kotlin.Any
 import kotlin.Array
 import kotlin.Int
@@ -64,8 +64,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): Review {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val stars = reader.readInt(RESPONSE_FIELDS[1])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val stars = reader.readInt(RESPONSE_FIELDS[1])!!
         val commentary = reader.readString(RESPONSE_FIELDS[2])
         return Review(
           __typename = __typename,
@@ -96,11 +96,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): Data {
-        val reviews = reader.readList<Review>(RESPONSE_FIELDS[0]) {
+        val reviews = reader.readList<Review?>(RESPONSE_FIELDS[0]) {
           it.readObject<Review> { reader ->
             Review(reader)
           }
-
         }
         return Data(
           reviews = reviews

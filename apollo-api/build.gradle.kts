@@ -7,6 +7,7 @@ withConvention(JavaPluginConvention::class) {
 }
 
 dependencies {
+  add("api", project(":apollo-api-core", configuration = "default"))
   add("compileOnly", groovy.util.Eval.x(project, "x.dep.kotlin.stdLib"))
   add("compileOnly", groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
 
@@ -19,6 +20,7 @@ dependencies {
 apply {
   from(rootProject.file("gradle/gradle-mvn-push.gradle"))
 }
+
 apply {
   from(rootProject.file("gradle/bintray.gradle"))
 }

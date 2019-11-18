@@ -14,8 +14,8 @@ import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
 import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
-import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.unique_type_name.fragment.HeroDetails
 import com.example.unique_type_name.type.Episode
 import kotlin.Any
@@ -61,14 +61,13 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
           )
 
       operator fun invoke(reader: ResponseReader): Friend1 {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
         val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
           val heroDetails = HeroDetails(reader)
           Fragments(
             heroDetails = heroDetails
           )
-        }
-
+        }!!
         return Friend1(
           __typename = __typename,
           fragments = fragments
@@ -124,16 +123,15 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
           )
 
       operator fun invoke(reader: ResponseReader): Friend {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
-        val appearsIn = reader.readList<Episode>(RESPONSE_FIELDS[2]) {
-          it.readString()?.let{ Episode.safeValueOf(it) }
-        }
-        val friends = reader.readList<Friend1>(RESPONSE_FIELDS[3]) {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val name = reader.readString(RESPONSE_FIELDS[1])!!
+        val appearsIn = reader.readList<Episode?>(RESPONSE_FIELDS[2]) {
+          Episode.safeValueOf(it.readString())
+        }!!
+        val friends = reader.readList<Friend1?>(RESPONSE_FIELDS[3]) {
           it.readObject<Friend1> { reader ->
             Friend1(reader)
           }
-
         }
         return Friend(
           __typename = __typename,
@@ -182,13 +180,12 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
       val POSSIBLE_TYPES: Array<String> = arrayOf("Human")
 
       operator fun invoke(reader: ResponseReader): AsHuman {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
-        val friends = reader.readList<Friend>(RESPONSE_FIELDS[2]) {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val name = reader.readString(RESPONSE_FIELDS[1])!!
+        val friends = reader.readList<Friend?>(RESPONSE_FIELDS[2]) {
           it.readObject<Friend> { reader ->
             Friend(reader)
           }
-
         }
         val height = reader.readDouble(RESPONSE_FIELDS[3])
         return AsHuman(
@@ -220,8 +217,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
           )
 
       operator fun invoke(reader: ResponseReader): Friend2 {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val name = reader.readString(RESPONSE_FIELDS[1])!!
         return Friend2(
           __typename = __typename,
           name = name
@@ -264,13 +261,12 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
           )
 
       operator fun invoke(reader: ResponseReader): HeroDetailQuery1 {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
-        val friends = reader.readList<Friend2>(RESPONSE_FIELDS[2]) {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val name = reader.readString(RESPONSE_FIELDS[1])!!
+        val friends = reader.readList<Friend2?>(RESPONSE_FIELDS[2]) {
           it.readObject<Friend2> { reader ->
             Friend2(reader)
           }
-
         }
         val inlineFragment = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType, reader ->
           when(conditionalType) {
@@ -305,7 +301,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
         val heroDetailQuery = reader.readObject<HeroDetailQuery1>(RESPONSE_FIELDS[0]) { reader ->
           HeroDetailQuery1(reader)
         }
-
         return Data(
           heroDetailQuery = heroDetailQuery
         )

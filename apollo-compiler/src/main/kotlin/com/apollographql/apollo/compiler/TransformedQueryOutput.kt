@@ -1,7 +1,7 @@
 package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
-import com.apollographql.apollo.internal.QueryDocumentMinifier
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import java.io.File
 
 internal class TransformedQueryOutput(val packageNameProvider: PackageNameProvider) {

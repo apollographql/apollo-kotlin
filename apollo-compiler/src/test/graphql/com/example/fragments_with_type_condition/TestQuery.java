@@ -17,9 +17,9 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier;
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser;
 import com.apollographql.apollo.api.internal.Utils;
-import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.fragments_with_type_condition.fragment.DroidDetails;
 import com.example.fragments_with_type_condition.fragment.HumanDetails;
 import java.lang.Object;
@@ -109,7 +109,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   @Override
   @NotNull
-  public Response<Optional<TestQuery.Data>> parse(@NotNull final Map<String, Object> response,
+  public Response<Optional<TestQuery.Data>> parse(@NotNull final Map<String, ?> response,
       @NotNull final ScalarTypeAdapters scalarTypeAdapters) {
     return SimpleOperationResponseParser.parse(response, this, scalarTypeAdapters);
   }

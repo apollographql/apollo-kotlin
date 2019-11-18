@@ -14,8 +14,8 @@ import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
 import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
-import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.inline_fragment_merge_fields.type.CustomType
 import kotlin.Any
 import kotlin.Array
@@ -58,8 +58,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): Node {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val name = reader.readString(RESPONSE_FIELDS[1])!!
         return Node(
           __typename = __typename,
           name = name
@@ -87,11 +87,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): Edge {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
         val node = reader.readObject<Node>(RESPONSE_FIELDS[1]) { reader ->
           Node(reader)
         }
-
         return Edge(
           __typename = __typename,
           node = node
@@ -123,12 +122,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): FriendsConnection {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val edges = reader.readList<Edge>(RESPONSE_FIELDS[1]) {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val edges = reader.readList<Edge?>(RESPONSE_FIELDS[1]) {
           it.readObject<Edge> { reader ->
             Edge(reader)
           }
-
         }
         return FriendsConnection(
           __typename = __typename,
@@ -170,14 +168,13 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): Hero {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val name = reader.readString(RESPONSE_FIELDS[1])!!
         val friendsConnection = reader.readObject<FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
           FriendsConnection(reader)
-        }
-
+        }!!
         val profileLink = reader.readCustomType<Any>(RESPONSE_FIELDS[3] as
-            ResponseField.CustomTypeField)
+            ResponseField.CustomTypeField)!!
         return Hero(
           __typename = __typename,
           name = name,
@@ -204,7 +201,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         val hero = reader.readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
           Hero(reader)
         }
-
         return Data(
           hero = hero
         )

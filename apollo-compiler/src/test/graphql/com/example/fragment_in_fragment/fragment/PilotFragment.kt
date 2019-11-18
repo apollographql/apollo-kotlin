@@ -53,12 +53,11 @@ data class PilotFragment(
     val POSSIBLE_TYPES: Array<String> = arrayOf("Person")
 
     operator fun invoke(reader: ResponseReader): PilotFragment {
-      val __typename = reader.readString(RESPONSE_FIELDS[0])
+      val __typename = reader.readString(RESPONSE_FIELDS[0])!!
       val name = reader.readString(RESPONSE_FIELDS[1])
       val homeworld = reader.readObject<Homeworld>(RESPONSE_FIELDS[2]) { reader ->
         Homeworld(reader)
       }
-
       return PilotFragment(
         __typename = __typename,
         name = name,
@@ -83,14 +82,13 @@ data class PilotFragment(
           )
 
       operator fun invoke(reader: ResponseReader): Homeworld {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
         val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
           val planetFragment = PlanetFragment(reader)
           Fragments(
             planetFragment = planetFragment
           )
-        }
-
+        }!!
         return Homeworld(
           __typename = __typename,
           fragments = fragments

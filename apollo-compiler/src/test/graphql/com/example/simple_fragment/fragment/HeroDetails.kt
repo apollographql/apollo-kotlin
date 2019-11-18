@@ -47,16 +47,15 @@ data class HeroDetails(
     val POSSIBLE_TYPES: Array<String> = arrayOf("Human", "Droid")
 
     operator fun invoke(reader: ResponseReader): HeroDetails {
-      val __typename = reader.readString(RESPONSE_FIELDS[0])
-      val name = reader.readString(RESPONSE_FIELDS[1])
+      val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+      val name = reader.readString(RESPONSE_FIELDS[1])!!
       val fragments = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType, reader ->
         val humanDetails = if (HumanDetails.POSSIBLE_TYPES.contains(conditionalType))
             HumanDetails(reader) else null
         Fragments(
           humanDetails = humanDetails
         )
-      }
-
+      }!!
       return HeroDetails(
         __typename = __typename,
         name = name,

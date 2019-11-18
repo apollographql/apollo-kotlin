@@ -14,8 +14,8 @@ import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
 import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
-import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.union_fragment.fragment.Character
 import com.example.union_fragment.fragment.Starship
 import kotlin.Any
@@ -56,7 +56,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): Search {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
         val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
           val character = if (Character.POSSIBLE_TYPES.contains(conditionalType)) Character(reader)
               else null
@@ -66,8 +66,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
             character = character,
             starship = starship
           )
-        }
-
+        }!!
         return Search(
           __typename = __typename,
           fragments = fragments
@@ -104,11 +103,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): Data {
-        val search = reader.readList<Search>(RESPONSE_FIELDS[0]) {
+        val search = reader.readList<Search?>(RESPONSE_FIELDS[0]) {
           it.readObject<Search> { reader ->
             Search(reader)
           }
-
         }
         return Data(
           search = search

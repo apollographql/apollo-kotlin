@@ -18,10 +18,10 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier;
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.api.internal.Utils;
-import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.mutation_create_review_semantic_naming.type.Episode;
 import com.example.mutation_create_review_semantic_naming.type.ReviewInput;
 import java.io.IOException;
@@ -99,7 +99,7 @@ public final class CreateReviewForEpisodeMutation implements Mutation<CreateRevi
 
   @Override
   @NotNull
-  public Response<Optional<CreateReviewForEpisodeMutation.Data>> parse(@NotNull final Map<String, Object> response,
+  public Response<Optional<CreateReviewForEpisodeMutation.Data>> parse(@NotNull final Map<String, ?> response,
       @NotNull final ScalarTypeAdapters scalarTypeAdapters) {
     return SimpleOperationResponseParser.parse(response, this, scalarTypeAdapters);
   }

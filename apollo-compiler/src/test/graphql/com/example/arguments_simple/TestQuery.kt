@@ -16,8 +16,8 @@ import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
 import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
-import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.arguments_simple.fragment.HeroDetails
 import com.example.arguments_simple.type.Episode
 import kotlin.Any
@@ -98,15 +98,14 @@ data class TestQuery(
           )
 
       operator fun invoke(reader: ResponseReader): Hero {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
         val name = reader.readString(RESPONSE_FIELDS[1])
         val fragments = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType, reader ->
           val heroDetails = HeroDetails(reader)
           Fragments(
             heroDetails = heroDetails
           )
-        }
-
+        }!!
         return Hero(
           __typename = __typename,
           name = name,
@@ -143,8 +142,8 @@ data class TestQuery(
           )
 
       operator fun invoke(reader: ResponseReader): HeroWithReview {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val name = reader.readString(RESPONSE_FIELDS[1])!!
         return HeroWithReview(
           __typename = __typename,
           name = name
@@ -182,11 +181,9 @@ data class TestQuery(
         val hero = reader.readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
           Hero(reader)
         }
-
         val heroWithReview = reader.readObject<HeroWithReview>(RESPONSE_FIELDS[1]) { reader ->
           HeroWithReview(reader)
         }
-
         return Data(
           hero = hero,
           heroWithReview = heroWithReview

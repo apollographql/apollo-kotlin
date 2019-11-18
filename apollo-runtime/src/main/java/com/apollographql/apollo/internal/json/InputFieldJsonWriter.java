@@ -87,11 +87,11 @@ public class InputFieldJsonWriter implements InputFieldWriter {
       CustomTypeAdapter customTypeAdapter = scalarTypeAdapters.adapterFor(scalarType);
       CustomTypeValue customTypeValue = customTypeAdapter.encode(value);
       if (customTypeValue instanceof CustomTypeValue.GraphQLString) {
-        writeString(fieldName, ((CustomTypeValue.GraphQLString) customTypeValue).value);
+        writeString(fieldName, ((CustomTypeValue.GraphQLString) customTypeValue).getValue());
       } else if (customTypeValue instanceof CustomTypeValue.GraphQLBoolean) {
-        writeBoolean(fieldName, ((CustomTypeValue.GraphQLBoolean) customTypeValue).value);
+        writeBoolean(fieldName, ((CustomTypeValue.GraphQLBoolean) customTypeValue).getValue());
       } else if (customTypeValue instanceof CustomTypeValue.GraphQLNumber) {
-        writeNumber(fieldName, ((CustomTypeValue.GraphQLNumber) customTypeValue).value);
+        writeNumber(fieldName, ((CustomTypeValue.GraphQLNumber) customTypeValue).getValue());
       } else if (customTypeValue instanceof CustomTypeValue.GraphQLJsonObject
           || customTypeValue instanceof CustomTypeValue.GraphQLJsonList) {
         jsonWriter.name(fieldName);
@@ -206,11 +206,11 @@ public class InputFieldJsonWriter implements InputFieldWriter {
         CustomTypeAdapter customTypeAdapter = scalarTypeAdapters.adapterFor(scalarType);
         CustomTypeValue customTypeValue = customTypeAdapter.encode(value);
         if (customTypeValue instanceof CustomTypeValue.GraphQLString) {
-          writeString(((CustomTypeValue.GraphQLString) customTypeValue).value);
+          writeString(((CustomTypeValue.GraphQLString) customTypeValue).getValue());
         } else if (customTypeValue instanceof CustomTypeValue.GraphQLBoolean) {
-          writeBoolean(((CustomTypeValue.GraphQLBoolean) customTypeValue).value);
+          writeBoolean(((CustomTypeValue.GraphQLBoolean) customTypeValue).getValue());
         } else if (customTypeValue instanceof CustomTypeValue.GraphQLNumber) {
-          writeNumber(((CustomTypeValue.GraphQLNumber) customTypeValue).value);
+          writeNumber(((CustomTypeValue.GraphQLNumber) customTypeValue).getValue());
         } else if (customTypeValue instanceof CustomTypeValue.GraphQLJsonObject
             || customTypeValue instanceof CustomTypeValue.GraphQLJsonList) {
           writeToJson(value, jsonWriter);

@@ -16,8 +16,8 @@ import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
 import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
-import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.nested_conditional_inline.type.Episode
 import kotlin.Any
 import kotlin.Array
@@ -92,8 +92,8 @@ data class TestQuery(
       val POSSIBLE_TYPES: Array<String> = arrayOf("Human")
 
       operator fun invoke(reader: ResponseReader): AsHuman1 {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val name = reader.readString(RESPONSE_FIELDS[1])!!
         val height = reader.readDouble(RESPONSE_FIELDS[2])
         return AsHuman1(
           __typename = __typename,
@@ -128,8 +128,8 @@ data class TestQuery(
           )
 
       operator fun invoke(reader: ResponseReader): Friend {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val name = reader.readString(RESPONSE_FIELDS[1])!!
         val inlineFragment = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType, reader ->
           when(conditionalType) {
             in AsHuman1.POSSIBLE_TYPES -> AsHuman1(reader)
@@ -177,13 +177,12 @@ data class TestQuery(
       val POSSIBLE_TYPES: Array<String> = arrayOf("Human")
 
       operator fun invoke(reader: ResponseReader): AsHuman {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
-        val friends = reader.readList<Friend>(RESPONSE_FIELDS[2]) {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val name = reader.readString(RESPONSE_FIELDS[1])!!
+        val friends = reader.readList<Friend?>(RESPONSE_FIELDS[2]) {
           it.readObject<Friend> { reader ->
             Friend(reader)
           }
-
         }
         return AsHuman(
           __typename = __typename,
@@ -226,8 +225,8 @@ data class TestQuery(
       val POSSIBLE_TYPES: Array<String> = arrayOf("Human")
 
       operator fun invoke(reader: ResponseReader): AsHuman2 {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val name = reader.readString(RESPONSE_FIELDS[1])!!
         val height = reader.readDouble(RESPONSE_FIELDS[2])
         return AsHuman2(
           __typename = __typename,
@@ -262,8 +261,8 @@ data class TestQuery(
           )
 
       operator fun invoke(reader: ResponseReader): Friend1 {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val name = reader.readString(RESPONSE_FIELDS[1])!!
         val inlineFragment = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType, reader ->
           when(conditionalType) {
             in AsHuman2.POSSIBLE_TYPES -> AsHuman2(reader)
@@ -311,13 +310,12 @@ data class TestQuery(
       val POSSIBLE_TYPES: Array<String> = arrayOf("Droid")
 
       operator fun invoke(reader: ResponseReader): AsDroid {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
-        val friends = reader.readList<Friend1>(RESPONSE_FIELDS[2]) {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val name = reader.readString(RESPONSE_FIELDS[1])!!
+        val friends = reader.readList<Friend1?>(RESPONSE_FIELDS[2]) {
           it.readObject<Friend1> { reader ->
             Friend1(reader)
           }
-
         }
         return AsDroid(
           __typename = __typename,
@@ -354,8 +352,8 @@ data class TestQuery(
           )
 
       operator fun invoke(reader: ResponseReader): Hero {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val name = reader.readString(RESPONSE_FIELDS[1])!!
         val inlineFragment = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType, reader ->
           when(conditionalType) {
             in AsHuman.POSSIBLE_TYPES -> AsHuman(reader)
@@ -392,7 +390,6 @@ data class TestQuery(
         val hero = reader.readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
           Hero(reader)
         }
-
         return Data(
           hero = hero
         )

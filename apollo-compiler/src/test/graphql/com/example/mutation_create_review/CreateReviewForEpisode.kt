@@ -15,8 +15,8 @@ import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
 import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
-import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.mutation_create_review.type.CustomType
 import com.example.mutation_create_review.type.Episode
 import com.example.mutation_create_review.type.ReviewInput
@@ -80,8 +80,8 @@ data class CreateReviewForEpisode(
           )
 
       operator fun invoke(reader: ResponseReader): ListOfListOfObject {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val name = reader.readString(RESPONSE_FIELDS[1])!!
         return ListOfListOfObject(
           __typename = __typename,
           name = name
@@ -115,7 +115,11 @@ data class CreateReviewForEpisode(
     /**
      * for test purpose only
      */
-    val listOfListOfObject: List<List<ListOfListOfObject>>?
+    val listOfListOfObject: List<List<ListOfListOfObject>>?,
+    /**
+     * for test purpose only
+     */
+    val listOfListOfListOfString: List<List<List<String?>>>?
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeString(RESPONSE_FIELDS[0], __typename)
@@ -157,6 +161,19 @@ data class CreateReviewForEpisode(
           }
         }
       }
+      it.writeList(RESPONSE_FIELDS[7], listOfListOfListOfString) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeList(value) { value, listItemWriter ->
+            value?.forEach { value ->
+              listItemWriter.writeList(value) { value, listItemWriter ->
+                value?.forEach { value ->
+                  listItemWriter.writeString(value)
+                }
+              }
+            }
+          }
+        }
+      }
     }
 
     companion object {
@@ -167,12 +184,14 @@ data class CreateReviewForEpisode(
           ResponseField.forList("listOfListOfString", "listOfListOfString", null, true, null),
           ResponseField.forList("listOfListOfEnum", "listOfListOfEnum", null, true, null),
           ResponseField.forList("listOfListOfCustom", "listOfListOfCustom", null, true, null),
-          ResponseField.forList("listOfListOfObject", "listOfListOfObject", null, true, null)
+          ResponseField.forList("listOfListOfObject", "listOfListOfObject", null, true, null),
+          ResponseField.forList("listOfListOfListOfString", "listOfListOfListOfString", null, true,
+              null)
           )
 
       operator fun invoke(reader: ResponseReader): CreateReview {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val stars = reader.readInt(RESPONSE_FIELDS[1])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val stars = reader.readInt(RESPONSE_FIELDS[1])!!
         val commentary = reader.readString(RESPONSE_FIELDS[2])
         val listOfListOfString = reader.readList<List<String>>(RESPONSE_FIELDS[3]) {
           it.readList<String> {
@@ -194,7 +213,13 @@ data class CreateReviewForEpisode(
             it.readObject<ListOfListOfObject> { reader ->
               ListOfListOfObject(reader)
             }
-
+          }
+        }
+        val listOfListOfListOfString = reader.readList<List<List<String?>>>(RESPONSE_FIELDS[7]) {
+          it.readList<List<String?>> {
+            it.readList<String?> {
+              it.readString()
+            }
           }
         }
         return CreateReview(
@@ -204,7 +229,8 @@ data class CreateReviewForEpisode(
           listOfListOfString = listOfListOfString,
           listOfListOfEnum = listOfListOfEnum,
           listOfListOfCustom = listOfListOfCustom,
-          listOfListOfObject = listOfListOfObject
+          listOfListOfObject = listOfListOfObject,
+          listOfListOfListOfString = listOfListOfListOfString
         )
       }
     }
@@ -232,7 +258,6 @@ data class CreateReviewForEpisode(
         val createReview = reader.readObject<CreateReview>(RESPONSE_FIELDS[0]) { reader ->
           CreateReview(reader)
         }
-
         return Data(
           createReview = createReview
         )
@@ -242,7 +267,7 @@ data class CreateReviewForEpisode(
 
   companion object {
     const val OPERATION_ID: String =
-        "c07e5abc4b4070cd773623194c07f546e609af467a1d34f7bf01c37272245296"
+        "a03fabd18e65530a10eeb22fa148067109b2bd93c21ffbdcb4a920fd90742154"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -258,6 +283,7 @@ data class CreateReviewForEpisode(
           |      __typename
           |      name
           |    }
+          |    listOfListOfListOfString
           |  }
           |}
           """.trimMargin()

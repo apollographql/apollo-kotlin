@@ -7,7 +7,7 @@ import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.compiler.VisitorSpec.VISITOR_CLASSNAME
 import com.apollographql.apollo.compiler.ir.*
-import com.apollographql.apollo.internal.QueryDocumentMinifier
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
@@ -277,7 +277,8 @@ class OperationTypeSpecBuilder(
         .addAnnotation(Annotations.NONNULL)
         .addModifiers(Modifier.PUBLIC)
         .addParameter(ParameterSpec
-            .builder(ParameterizedTypeName.get(Map::class.java, String::class.java, Object::class.java), "response", Modifier.FINAL)
+            .builder(ParameterizedTypeName.get(ClassName.get(Map::class.java), ClassName.get(String::class.java),
+                WildcardTypeName.subtypeOf(Any::class.java)), "response", Modifier.FINAL)
             .addAnnotation(Annotations.NONNULL)
             .build()
         )

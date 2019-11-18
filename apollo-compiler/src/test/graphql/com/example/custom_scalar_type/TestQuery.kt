@@ -14,8 +14,8 @@ import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
 import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
-import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.custom_scalar_type.type.CustomType
 import java.util.Date
 import kotlin.Any
@@ -99,20 +99,20 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): Hero {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val name = reader.readString(RESPONSE_FIELDS[1])!!
         val birthDate = reader.readCustomType<Date>(RESPONSE_FIELDS[2] as
-            ResponseField.CustomTypeField)
+            ResponseField.CustomTypeField)!!
         val appearanceDates = reader.readList<Date>(RESPONSE_FIELDS[3]) {
           it.readCustomType<Date>(CustomType.DATE)
-        }
+        }!!
         val fieldWithUnsupportedType = reader.readCustomType<Any>(RESPONSE_FIELDS[4] as
-            ResponseField.CustomTypeField)
+            ResponseField.CustomTypeField)!!
         val profileLink = reader.readCustomType<java.lang.String>(RESPONSE_FIELDS[5] as
-            ResponseField.CustomTypeField)
+            ResponseField.CustomTypeField)!!
         val links = reader.readList<java.lang.String>(RESPONSE_FIELDS[6]) {
           it.readCustomType<java.lang.String>(CustomType.URL)
-        }
+        }!!
         return Hero(
           __typename = __typename,
           name = name,
@@ -142,7 +142,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         val hero = reader.readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
           Hero(reader)
         }
-
         return Data(
           hero = hero
         )

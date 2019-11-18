@@ -16,9 +16,9 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier;
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser;
 import com.apollographql.apollo.api.internal.Utils;
-import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
@@ -102,7 +102,7 @@ public final class HeroDetails implements Query<HeroDetails.Data, Optional<HeroD
 
   @Override
   @NotNull
-  public Response<Optional<HeroDetails.Data>> parse(@NotNull final Map<String, Object> response,
+  public Response<Optional<HeroDetails.Data>> parse(@NotNull final Map<String, ?> response,
       @NotNull final ScalarTypeAdapters scalarTypeAdapters) {
     return SimpleOperationResponseParser.parse(response, this, scalarTypeAdapters);
   }

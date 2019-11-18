@@ -18,10 +18,10 @@ import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier;
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.api.internal.Utils;
-import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
@@ -96,7 +96,7 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
 
   @Override
   @NotNull
-  public Response<Optional<TestSubscription.Data>> parse(@NotNull final Map<String, Object> response,
+  public Response<Optional<TestSubscription.Data>> parse(@NotNull final Map<String, ?> response,
       @NotNull final ScalarTypeAdapters scalarTypeAdapters) {
     return SimpleOperationResponseParser.parse(response, this, scalarTypeAdapters);
   }

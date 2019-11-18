@@ -14,8 +14,8 @@ import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
 import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
-import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.two_heroes_unique.type.CustomType
 import kotlin.Any
 import kotlin.Array
@@ -57,8 +57,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): R2 {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val name = reader.readString(RESPONSE_FIELDS[1])!!
         return R2(
           __typename = __typename,
           name = name
@@ -92,9 +92,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): Luke {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
-        val name = reader.readString(RESPONSE_FIELDS[2])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as
+            ResponseField.CustomTypeField)!!
+        val name = reader.readString(RESPONSE_FIELDS[2])!!
         return Luke(
           __typename = __typename,
           id = id,
@@ -124,11 +125,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         val r2 = reader.readObject<R2>(RESPONSE_FIELDS[0]) { reader ->
           R2(reader)
         }
-
         val luke = reader.readObject<Luke>(RESPONSE_FIELDS[1]) { reader ->
           Luke(reader)
         }
-
         return Data(
           r2 = r2,
           luke = luke

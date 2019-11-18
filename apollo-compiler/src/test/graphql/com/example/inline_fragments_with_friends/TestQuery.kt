@@ -14,8 +14,8 @@ import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
 import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
-import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.inline_fragments_with_friends.type.CustomType
 import com.example.inline_fragments_with_friends.type.Episode
 import kotlin.Any
@@ -68,10 +68,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): Friend {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val appearsIn = reader.readList<Episode>(RESPONSE_FIELDS[1]) {
-          it.readString()?.let{ Episode.safeValueOf(it) }
-        }
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val appearsIn = reader.readList<Episode?>(RESPONSE_FIELDS[1]) {
+          Episode.safeValueOf(it.readString())
+        }!!
         return Friend(
           __typename = __typename,
           appearsIn = appearsIn
@@ -117,14 +117,13 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       val POSSIBLE_TYPES: Array<String> = arrayOf("Human")
 
       operator fun invoke(reader: ResponseReader): AsHuman {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val name = reader.readString(RESPONSE_FIELDS[1])!!
         val height = reader.readDouble(RESPONSE_FIELDS[2])
-        val friends = reader.readList<Friend>(RESPONSE_FIELDS[3]) {
+        val friends = reader.readList<Friend?>(RESPONSE_FIELDS[3]) {
           it.readObject<Friend> { reader ->
             Friend(reader)
           }
-
         }
         return AsHuman(
           __typename = __typename,
@@ -155,8 +154,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): Friend1 {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as
+            ResponseField.CustomTypeField)!!
         return Friend1(
           __typename = __typename,
           id = id
@@ -202,14 +202,13 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       val POSSIBLE_TYPES: Array<String> = arrayOf("Droid")
 
       operator fun invoke(reader: ResponseReader): AsDroid {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val name = reader.readString(RESPONSE_FIELDS[1])!!
         val primaryFunction = reader.readString(RESPONSE_FIELDS[2])
-        val friends = reader.readList<Friend1>(RESPONSE_FIELDS[3]) {
+        val friends = reader.readList<Friend1?>(RESPONSE_FIELDS[3]) {
           it.readObject<Friend1> { reader ->
             Friend1(reader)
           }
-
         }
         return AsDroid(
           __typename = __typename,
@@ -247,8 +246,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): Hero {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val name = reader.readString(RESPONSE_FIELDS[1])!!
         val inlineFragment = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType, reader ->
           when(conditionalType) {
             in AsHuman.POSSIBLE_TYPES -> AsHuman(reader)
@@ -282,7 +281,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         val hero = reader.readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
           Hero(reader)
         }
-
         return Data(
           hero = hero
         )

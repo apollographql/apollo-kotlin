@@ -14,8 +14,8 @@ import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
 import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
-import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.fragment_in_fragment.fragment.StarshipFragment
 import kotlin.Any
 import kotlin.Array
@@ -55,14 +55,13 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
           )
 
       operator fun invoke(reader: ResponseReader): Node {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
         val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
           val starshipFragment = StarshipFragment(reader)
           Fragments(
             starshipFragment = starshipFragment
           )
-        }
-
+        }!!
         return Node(
           __typename = __typename,
           fragments = fragments
@@ -98,11 +97,10 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
           )
 
       operator fun invoke(reader: ResponseReader): Edge {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
         val node = reader.readObject<Node>(RESPONSE_FIELDS[1]) { reader ->
           Node(reader)
         }
-
         return Edge(
           __typename = __typename,
           node = node
@@ -134,12 +132,11 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
           )
 
       operator fun invoke(reader: ResponseReader): AllStarship {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val edges = reader.readList<Edge>(RESPONSE_FIELDS[1]) {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val edges = reader.readList<Edge?>(RESPONSE_FIELDS[1]) {
           it.readObject<Edge> { reader ->
             Edge(reader)
           }
-
         }
         return AllStarship(
           __typename = __typename,
@@ -166,7 +163,6 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
         val allStarships = reader.readObject<AllStarship>(RESPONSE_FIELDS[0]) { reader ->
           AllStarship(reader)
         }
-
         return Data(
           allStarships = allStarships
         )

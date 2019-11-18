@@ -17,10 +17,10 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier;
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.api.internal.Utils;
-import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.fragment_in_fragment.fragment.StarshipFragment;
 import java.lang.Object;
 import java.lang.Override;
@@ -127,7 +127,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
   @Override
   @NotNull
-  public Response<Optional<AllStarships.Data>> parse(@NotNull final Map<String, Object> response,
+  public Response<Optional<AllStarships.Data>> parse(@NotNull final Map<String, ?> response,
       @NotNull final ScalarTypeAdapters scalarTypeAdapters) {
     return SimpleOperationResponseParser.parse(response, this, scalarTypeAdapters);
   }

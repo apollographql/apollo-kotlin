@@ -51,7 +51,7 @@ public final class RealResponseWriter implements ResponseWriter {
   @SuppressWarnings("unchecked")
   @Override public void writeCustom(@NotNull ResponseField.CustomTypeField field, @Nullable Object value) {
     CustomTypeAdapter typeAdapter = scalarTypeAdapters.adapterFor(field.scalarType());
-    writeScalarFieldValue(field, value != null ? typeAdapter.encode(value).value : null);
+    writeScalarFieldValue(field, value != null ? typeAdapter.encode(value).getValue() : null);
   }
 
   @Override public void writeObject(@NotNull ResponseField field, @Nullable ResponseFieldMarshaller marshaller) {
@@ -236,7 +236,7 @@ public final class RealResponseWriter implements ResponseWriter {
 
     @Override public void writeCustom(@NotNull ScalarType scalarType, @Nullable Object value) {
       CustomTypeAdapter typeAdapter = scalarTypeAdapters.adapterFor(scalarType);
-      accumulator.add(value != null ? typeAdapter.encode(value).value : null);
+      accumulator.add(value != null ? typeAdapter.encode(value).getValue() : null);
     }
 
     @Override public void writeObject(ResponseFieldMarshaller marshaller) {

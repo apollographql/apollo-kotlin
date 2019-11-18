@@ -12,7 +12,7 @@ import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.marshaller
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.responseFieldsPropertySpec
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.suppressWarningsAnnotation
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.toMapperFun
-import com.apollographql.apollo.internal.QueryDocumentMinifier
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 

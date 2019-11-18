@@ -8,5 +8,6 @@ mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {
     listOfListOfObject {
       name
     }
+    listOfListOfListOfString
   }
 }

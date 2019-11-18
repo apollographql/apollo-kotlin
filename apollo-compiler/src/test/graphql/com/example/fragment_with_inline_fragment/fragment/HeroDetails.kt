@@ -68,12 +68,11 @@ data class HeroDetails(
     val POSSIBLE_TYPES: Array<String> = arrayOf("Human", "Droid")
 
     operator fun invoke(reader: ResponseReader): HeroDetails {
-      val __typename = reader.readString(RESPONSE_FIELDS[0])
-      val name = reader.readString(RESPONSE_FIELDS[1])
+      val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+      val name = reader.readString(RESPONSE_FIELDS[1])!!
       val friendsConnection = reader.readObject<FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
         FriendsConnection(reader)
-      }
-
+      }!!
       val inlineFragment = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType, reader ->
         when(conditionalType) {
           in AsDroid.POSSIBLE_TYPES -> AsDroid(reader)
@@ -109,8 +108,8 @@ data class HeroDetails(
           )
 
       operator fun invoke(reader: ResponseReader): Node {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val name = reader.readString(RESPONSE_FIELDS[1])!!
         return Node(
           __typename = __typename,
           name = name
@@ -138,11 +137,10 @@ data class HeroDetails(
           )
 
       operator fun invoke(reader: ResponseReader): Edge {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
         val node = reader.readObject<Node>(RESPONSE_FIELDS[1]) { reader ->
           Node(reader)
         }
-
         return Edge(
           __typename = __typename,
           node = node
@@ -180,13 +178,12 @@ data class HeroDetails(
           )
 
       operator fun invoke(reader: ResponseReader): FriendsConnection {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
         val totalCount = reader.readInt(RESPONSE_FIELDS[1])
-        val edges = reader.readList<Edge>(RESPONSE_FIELDS[2]) {
+        val edges = reader.readList<Edge?>(RESPONSE_FIELDS[2]) {
           it.readObject<Edge> { reader ->
             Edge(reader)
           }
-
         }
         return FriendsConnection(
           __typename = __typename,
@@ -220,8 +217,8 @@ data class HeroDetails(
           )
 
       operator fun invoke(reader: ResponseReader): Node1 {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val name = reader.readString(RESPONSE_FIELDS[1])!!
         return Node1(
           __typename = __typename,
           name = name
@@ -249,11 +246,10 @@ data class HeroDetails(
           )
 
       operator fun invoke(reader: ResponseReader): Edge1 {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
         val node = reader.readObject<Node1>(RESPONSE_FIELDS[1]) { reader ->
           Node1(reader)
         }
-
         return Edge1(
           __typename = __typename,
           node = node
@@ -291,13 +287,12 @@ data class HeroDetails(
           )
 
       operator fun invoke(reader: ResponseReader): FriendsConnection1 {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
         val totalCount = reader.readInt(RESPONSE_FIELDS[1])
-        val edges = reader.readList<Edge1>(RESPONSE_FIELDS[2]) {
+        val edges = reader.readList<Edge1?>(RESPONSE_FIELDS[2]) {
           it.readObject<Edge1> { reader ->
             Edge1(reader)
           }
-
         }
         return FriendsConnection1(
           __typename = __typename,
@@ -338,20 +333,18 @@ data class HeroDetails(
       val POSSIBLE_TYPES: Array<String> = arrayOf("Droid")
 
       operator fun invoke(reader: ResponseReader): AsDroid {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val name = reader.readString(RESPONSE_FIELDS[1])!!
         val friendsConnection = reader.readObject<FriendsConnection1>(RESPONSE_FIELDS[2]) {
             reader ->
           FriendsConnection1(reader)
-        }
-
+        }!!
         val fragments = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType, reader ->
           val droidDetails = DroidDetails(reader)
           Fragments(
             droidDetails = droidDetails
           )
-        }
-
+        }!!
         return AsDroid(
           __typename = __typename,
           name = name,

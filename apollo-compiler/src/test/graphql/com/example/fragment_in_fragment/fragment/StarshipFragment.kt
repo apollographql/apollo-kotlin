@@ -65,13 +65,12 @@ data class StarshipFragment(
     val POSSIBLE_TYPES: Array<String> = arrayOf("Starship")
 
     operator fun invoke(reader: ResponseReader): StarshipFragment {
-      val __typename = reader.readString(RESPONSE_FIELDS[0])
-      val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+      val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+      val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)!!
       val name = reader.readString(RESPONSE_FIELDS[2])
       val pilotConnection = reader.readObject<PilotConnection>(RESPONSE_FIELDS[3]) { reader ->
         PilotConnection(reader)
       }
-
       return StarshipFragment(
         __typename = __typename,
         id = id,
@@ -97,14 +96,13 @@ data class StarshipFragment(
           )
 
       operator fun invoke(reader: ResponseReader): Node {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
         val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
           val pilotFragment = PilotFragment(reader)
           Fragments(
             pilotFragment = pilotFragment
           )
-        }
-
+        }!!
         return Node(
           __typename = __typename,
           fragments = fragments
@@ -140,11 +138,10 @@ data class StarshipFragment(
           )
 
       operator fun invoke(reader: ResponseReader): Edge {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
         val node = reader.readObject<Node>(RESPONSE_FIELDS[1]) { reader ->
           Node(reader)
         }
-
         return Edge(
           __typename = __typename,
           node = node
@@ -176,12 +173,11 @@ data class StarshipFragment(
           )
 
       operator fun invoke(reader: ResponseReader): PilotConnection {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val edges = reader.readList<Edge>(RESPONSE_FIELDS[1]) {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+        val edges = reader.readList<Edge?>(RESPONSE_FIELDS[1]) {
           it.readObject<Edge> { reader ->
             Edge(reader)
           }
-
         }
         return PilotConnection(
           __typename = __typename,

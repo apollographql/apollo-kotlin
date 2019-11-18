@@ -43,8 +43,8 @@ data class HumanDetails(
     val POSSIBLE_TYPES: Array<String> = arrayOf("Human")
 
     operator fun invoke(reader: ResponseReader): HumanDetails {
-      val __typename = reader.readString(RESPONSE_FIELDS[0])
-      val name = reader.readString(RESPONSE_FIELDS[1])
+      val __typename = reader.readString(RESPONSE_FIELDS[0])!!
+      val name = reader.readString(RESPONSE_FIELDS[1])!!
       return HumanDetails(
         __typename = __typename,
         name = name

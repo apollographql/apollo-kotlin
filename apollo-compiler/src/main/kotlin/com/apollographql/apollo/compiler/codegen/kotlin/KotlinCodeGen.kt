@@ -73,9 +73,7 @@ internal object KotlinCodeGen {
     return PropertySpec
         .builder(
             name = "RESPONSE_FIELDS",
-            type = Array<ResponseField>::
-            class.asClassName().parameterizedBy(ResponseField::
-            class.asClassName()),
+            type = Array<ResponseField>::class.asClassName().parameterizedBy(ResponseField::class.asClassName()),
             modifiers = *arrayOf(KModifier.PRIVATE)
         )
         .initializer(initializer)
@@ -130,11 +128,11 @@ internal object KotlinCodeGen {
 
   fun List<ObjectType.Field>.toMapperFun(responseTypeName: TypeName): FunSpec {
     val readFieldsCode = mapIndexed { index, field ->
-      CodeBlock.of("val %L = %L", field.name, field.type.readCode(
+      CodeBlock.of("val %L = %L%L", field.name, field.type.readCode(
           reader = "reader",
           field = "RESPONSE_FIELDS[$index]",
           optional = field.isOptional
-      ))
+      ), if (field.isOptional || field.type is FieldType.Scalar.Enum) "" else "!!")
     }.joinToCode(separator = "\n", suffix = "\n")
     val mapFieldsCode = map { field ->
       CodeBlock.of("%L = %L", field.name, field.name)
@@ -162,10 +160,12 @@ internal object KotlinCodeGen {
         is FieldType.Scalar.Int -> CodeBlock.of("%L.readInt(%L)", reader, field)
         is FieldType.Scalar.Boolean -> CodeBlock.of("%L.readBoolean(%L)", reader, field)
         is FieldType.Scalar.Float -> CodeBlock.of("%L.readDouble(%L)", reader, field)
-        is FieldType.Scalar.Enum -> if (optional) {
-          CodeBlock.of("%L.readString(%L)?.let{ %T.safeValueOf(it) }", reader, field, typeRef.asTypeName())
-        } else {
-          CodeBlock.of("%T.safeValueOf(%L.readString(%L))", typeRef.asTypeName(), reader, field)
+        is FieldType.Scalar.Enum -> {
+          when {
+            field.isBlank() -> CodeBlock.of("%T.safeValueOf(%L.readString(%L))", typeRef.asTypeName(), reader, field)
+            optional -> CodeBlock.of("%L.readString(%L)?.let{ %T.safeValueOf(it) }", reader, field, typeRef.asTypeName())
+            else -> CodeBlock.of("%T.safeValueOf(%L.readString(%L)!!)", typeRef.asTypeName(), reader, field)
+          }
         }
         is FieldType.Scalar.Custom -> if (field.isNotEmpty()) {
           CodeBlock.of("%L.readCustomType<%T>(%L as %T)", reader, ClassName.bestGuess(mappedType),
@@ -182,16 +182,16 @@ internal object KotlinCodeGen {
             .indent()
             .addStatement("%T(reader)", typeRef.asTypeName())
             .unindent()
-            .add("}\n")
+            .add("}")
             .build()
       }
       is FieldType.Array -> {
         CodeBlock.builder()
             .apply {
               if (field.isBlank()) {
-                add("%L.readList<%T> {\n", reader, rawType.asTypeName())
+                add("%L.readList<%T> {\n", reader, rawType.asTypeName().copy(nullable = isOptional))
               } else {
-                add("%L.readList<%T>(%L) {\n", reader, rawType.asTypeName(), field)
+                add("%L.readList<%T>(%L) {\n", reader, rawType.asTypeName().copy(nullable = isOptional), field)
               }
             }
             .indent()
@@ -203,7 +203,8 @@ internal object KotlinCodeGen {
       }
       is FieldType.Fragments -> {
         CodeBlock.builder()
-            .beginControlFlow("%L.readConditional(%L) { conditionalType, reader ->", reader, field)
+            .addStatement("%L.readConditional(%L) { conditionalType, reader ->", reader, field)
+            .indent()
             .add(
                 fields.map { fragmentField ->
                   if (fragmentField.isOptional) {
@@ -228,7 +229,8 @@ internal object KotlinCodeGen {
             )
             .unindent()
             .addStatement(")")
-            .endControlFlow()
+            .unindent()
+            .add("}")
             .build()
       }
       is FieldType.InlineFragment -> {
