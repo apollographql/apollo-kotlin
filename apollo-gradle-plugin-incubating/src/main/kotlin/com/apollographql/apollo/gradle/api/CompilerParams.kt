@@ -18,7 +18,6 @@ interface CompilerParams {
    */
   val generateKotlinModels: Property<Boolean>
   fun generateKotlinModels(generateKotlinModels: Boolean)
-  fun setGenerateKotlinModels(generateKotlinModels: Boolean)
 
   /**
    * Whether to generate the transformed queries. Transformed queries are the queries as sent to the
@@ -29,7 +28,6 @@ interface CompilerParams {
    */
   val generateTransformedQueries: Property<Boolean>
   fun generateTransformedQueries(generateTransformedQueries: Boolean)
-  fun setGenerateTransformedQueries(generateTransformedQueries: Boolean)
 
   /**
    * For custom scalar types like Date, map from the GraphQL type to the jvm/kotlin type.
@@ -38,7 +36,6 @@ interface CompilerParams {
    */
   val customTypeMapping: MapProperty<String, String>
   fun customTypeMapping(customTypeMapping: Map<String, String>)
-  fun setCustomTypeMapping(customTypeMapping: Map<String, String>)
 
   /**
    * The custom types code generate some warnings that might make the build fail.
@@ -48,7 +45,6 @@ interface CompilerParams {
    */
   val suppressRawTypesWarning: Property<Boolean>
   fun suppressRawTypesWarning(suppressRawTypesWarning: Boolean)
-  fun setSuppressRawTypesWarning(suppressRawTypesWarning: Boolean)
 
   /**
    * Whether to suffix your queries, etc.. with `Query`, etc..
@@ -57,7 +53,6 @@ interface CompilerParams {
    */
   val useSemanticNaming: Property<Boolean>
   fun useSemanticNaming(useSemanticNaming: Boolean)
-  fun setUseSemanticNaming(useSemanticNaming: Boolean)
 
   /**
    * The nullable value type to use. One of: annotated, apolloOptional, guavaOptional, javaOptional, inputType
@@ -67,7 +62,6 @@ interface CompilerParams {
    */
   val nullableValueType: Property<String>
   fun nullableValueType(nullableValueType: String)
-  fun setNullableValueType(nullableValueType: String)
 
   /**
    * Whether to generate builders for java models
@@ -77,7 +71,6 @@ interface CompilerParams {
    */
   val generateModelBuilder: Property<Boolean>
   fun generateModelBuilder(generateModelBuilder: Boolean)
-  fun setGenerateModelBuilder(generateModelBuilder: Boolean)
 
   /**
    * Whether to use java beans getters in the models.
@@ -87,14 +80,12 @@ interface CompilerParams {
    */
   val useJavaBeansSemanticNaming: Property<Boolean>
   fun useJavaBeansSemanticNaming(useJavaBeansSemanticNaming: Boolean)
-  fun setUseJavaBeansSemanticNaming(useJavaBeansSemanticNaming: Boolean)
 
   /**
    *
    */
   val generateVisitorForPolymorphicDatatypes: Property<Boolean>
   fun generateVisitorForPolymorphicDatatypes(generateVisitorForPolymorphicDatatypes: Boolean)
-  fun setGenerateVisitorForPolymorphicDatatypes(generateVisitorForPolymorphicDatatypes: Boolean)
 
   /**
    * The package name of the models is computed from their folder hierarchy like for java sources.
