@@ -85,7 +85,7 @@ interface CompilerParams {
    *
    * The empty string by default.
    */
-  val rootPackageName: Provider<String>
+  val rootPackageName: Property<String>
 
   /**
    * The graphql files containing the queries.
@@ -104,5 +104,4 @@ interface CompilerParams {
    * You can override it from [ApolloExtension.onCompilationUnits] for more advanced use cases
    */
   val schemaFile: RegularFileProperty
-  fun schemaFile(path: Any)
 }
