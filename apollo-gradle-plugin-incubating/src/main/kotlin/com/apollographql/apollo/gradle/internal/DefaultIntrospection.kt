@@ -10,24 +10,10 @@ import javax.inject.Inject
 
 abstract class DefaultIntrospection @Inject constructor(val objects: ObjectFactory): Introspection {
   abstract override val endpointUrl: Property<String>
-  override fun endpointUrl(endpointUrl: String) {
-    this.endpointUrl.set(endpointUrl)
-  }
 
   abstract override val queryParameters: MapProperty<String, String>
-  override fun queryParameters(queryParameters: Map<String, String>) {
-    this.queryParameters.set(queryParameters)
-  }
 
   abstract override val headers: MapProperty<String, String>
-  override fun headers(headers: Map<String, String>) {
-    this.headers.set(headers)
-  }
 
   abstract override val sourceSetName: Property<String>
-
-  override fun sourceSetName(sourceSetName: String) {
-    this.sourceSetName.set(sourceSetName)
-  }
-
 }

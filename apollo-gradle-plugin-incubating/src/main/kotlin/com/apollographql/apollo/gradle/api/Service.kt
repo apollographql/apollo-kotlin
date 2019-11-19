@@ -24,7 +24,6 @@ interface Service : CompilerParams {
    * By default sourceFolder is ".", i.e it uses everything under src/$foo/graphql
    */
   val sourceFolder: Property<String>
-  fun sourceFolder(sourceFolder: String)
 
   /**
    * path to the schema file relative to the current source set (src/$foo/graphql/$schemaPath). The plugin
@@ -33,11 +32,9 @@ interface Service : CompilerParams {
    * By default, the plugin looks for a "schema.json" file in the sourceFolders
    */
   val schemaPath: Property<String>
-  fun schemaPath(schemaPath: String)
 
   /**
    * Files to exclude from the graphql files as in [org.gradle.api.tasks.util.PatternFilterable]
    */
   val exclude: ListProperty<String>
-  fun exclude(exclude: List<String>)
 }
