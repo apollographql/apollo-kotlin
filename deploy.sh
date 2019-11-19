@@ -24,13 +24,13 @@ echo ${YELLOW}Deploying Espresso Support ...${CLEAR}
 ./gradlew clean :apollo-espresso-support:bintrayUpload
 echo ${YELLOW}Deploying Espresso Support - ${GREEN}Done!${CLEAR}
 
-echo ${YELLOW}Deploying Gradle Plugin ...${CLEAR}
-./gradlew clean :apollo-gradle-plugin:bintrayUpload
-echo ${YELLOW}Deploying Gradle Plugin - ${GREEN}Done!${CLEAR}
+echo ${YELLOW}Deploying Gradle Plugin Deprecated ...${CLEAR}
+./gradlew clean :apollo-gradle-plugin-deprecated:bintrayUpload
+echo ${YELLOW}Deploying Gradle Plugin Deprecated - ${GREEN}Done!${CLEAR}
 
-echo ${YELLOW}Deploying Gradle Plugin Incubating...${CLEAR}
-./gradlew clean :apollo-gradle-plugin-incubating:bintrayUpload publishPlugins
-echo ${YELLOW}Deploying Gradle Plugin Incubating - ${GREEN}Done!${CLEAR}
+echo ${YELLOW}Deploying Gradle Plugin...${CLEAR}
+./gradlew clean :apollo-gradle-plugin:bintrayUpload publishPlugins
+echo ${YELLOW}Deploying Gradle Plugin - ${GREEN}Done!${CLEAR}
 
 echo ${YELLOW}Deploying Http Cache ...${CLEAR}
 ./gradlew clean :apollo-http-cache:bintrayUpload

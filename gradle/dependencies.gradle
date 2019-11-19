@@ -1,6 +1,6 @@
 def versions = [
     androidPlugin         : '3.4.2',
-    apollo                : '1.2.2-SNAPSHOT', // This should only be used by apollo-gradle-plugin-incubating:test to get the artifacts locally
+    apollo                : '1.2.2-SNAPSHOT', // This should only be used by apollo-gradle-plugin:test to get the artifacts locally
     antlr4                : '4.5.3',
     bintray               : '1.8.0',
     cache                 : '2.0.2',
@@ -40,7 +40,7 @@ ext.dep = [
     ],
     apollo                : [
         plugin          : "com.apollographql.apollo:apollo-gradle-plugin:$versions.apollo",
-        pluginIncubating: "com.apollographql.apollo:apollo-gradle-plugin-incubating:$versions.apollo",
+        pluginDeprecated: "com.apollographql.apollo:apollo-gradle-plugin-deprecated:$versions.apollo",
         runtime         : "com.apollographql.apollo:apollo-runtime:$versions.apollo",
         rx2             : "com.apollographql.apollo:apollo-rx2-support:$versions.apollo",
         httpCache       : "com.apollographql.apollo:apollo-http-cache:$versions.apollo",

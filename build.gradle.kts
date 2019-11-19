@@ -49,7 +49,7 @@ subprojects {
   group = property("GROUP")!!
   version = property("VERSION_NAME")!!
 
-  if (project.name != "apollo-gradle-plugin") {
+  if (project.name != "apollo-gradle-plugin-deprecated") {
     apply(plugin = "checkstyle")
 
     extensions.findByType(CheckstyleExtension::class.java)!!.apply {
