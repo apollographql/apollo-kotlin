@@ -46,25 +46,25 @@ dependencies {
 }
 
 configure<ApolloExtension> {
-  customTypeMapping(mapOf(
+  customTypeMapping.set(mapOf(
       "Date" to "java.util.Date",
       "Upload" to "com.apollographql.apollo.api.FileUpload"
   ))
-  generateTransformedQueries(true)
+  generateTransformedQueries.set(true)
   service("httpcache") {
-    sourceFolder("com/apollographql/apollo/integration/httpcache")
-    rootPackageName("com.apollographql.apollo.integration.httpcache")
+    sourceFolder.set("com/apollographql/apollo/integration/httpcache")
+    rootPackageName.set("com.apollographql.apollo.integration.httpcache")
   }
   service("interceptor") {
-    sourceFolder("com/apollographql/apollo/integration/interceptor")
-    rootPackageName("com.apollographql.apollo.integration.interceptor")
+    sourceFolder.set("com/apollographql/apollo/integration/interceptor")
+    rootPackageName.set("com.apollographql.apollo.integration.interceptor")
   }
   service("normalizer") {
-    sourceFolder("com/apollographql/apollo/integration/normalizer")
-    rootPackageName("com.apollographql.apollo.integration.normalizer")
+    sourceFolder.set("com/apollographql/apollo/integration/normalizer")
+    rootPackageName.set("com.apollographql.apollo.integration.normalizer")
   }
   service("upload") {
-    sourceFolder("com/apollographql/apollo/integration/upload")
-    rootPackageName("com.apollographql.apollo.integration.upload")
+    sourceFolder.set("com/apollographql/apollo/integration/upload")
+    rootPackageName.set("com.apollographql.apollo.integration.upload")
   }
 }
