@@ -2,6 +2,7 @@ plugins {
   id("java")
   id("org.jetbrains.kotlin.jvm")
   id("java-gradle-plugin")
+  id("com.gradle.plugin-publish") version "0.10.1"
 }
 
 // groovy strings with double quotes are GString.
@@ -38,6 +39,23 @@ tasks.withType<Test> {
   dependsOn("installLocally")
 
   inputs.dir("src/test/files")
+}
+
+pluginBundle {
+  website = "https://github.com/apollographql/apollo-android"
+  vcsUrl = "https://github.com/apollographql/apollo-android"
+  tags = listOf("graphql", "apollo", "apollographql", "kotlin", "java", "jvm", "android", "graphql-client")
+}
+
+gradlePlugin {
+  plugins {
+    create("apolloGradlePlugin") {
+      id = "com.apollographql.apollo"
+      displayName = "Apollo-Android GraphQL client plugin."
+      description = "Automatically generates typesafe java and kotlin models from your GraphQL files."
+      implementationClass = "com.apollographql.apollo.gradle.internal.ApolloPlugin"
+    }
+  }
 }
 
 apply(rootProject.file("gradle/gradle-mvn-push.gradle"))
