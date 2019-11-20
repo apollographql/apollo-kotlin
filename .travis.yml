@@ -17,7 +17,7 @@ android:
     - google-gdk-license-.+
 
 script:
-  - ./gradlew clean build publishPlugins connectedCheck -x checkstyleTest --stacktrace --max-workers=2 -x :apollo-android-support:connectedCheck
+  - ./gradlew clean build connectedCheck -x checkstyleTest --stacktrace --max-workers=2 -x :apollo-android-support:connectedCheck
   - ./gradlew -p composite build
 
 before_script:
