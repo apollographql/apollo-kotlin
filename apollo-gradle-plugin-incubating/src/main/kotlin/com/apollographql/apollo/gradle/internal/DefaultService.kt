@@ -11,19 +11,10 @@ open class DefaultService @Inject constructor(val objects: ObjectFactory, val na
   : CompilerParams by objects.newInstance(DefaultCompilerParams::class.java), Service {
 
   override val schemaPath = objects.property(String::class.java)
-  override fun schemaPath(schemaPath: String) {
-    this.schemaPath.set(schemaPath)
-  }
 
   override val sourceFolder = objects.property(String::class.java)
-  override fun sourceFolder(sourceFolder: String) {
-    this.sourceFolder.set(sourceFolder)
-  }
 
   override val exclude = objects.listProperty(String::class.java)
-  override fun exclude(exclude: List<String>) {
-    this.exclude.set(exclude)
-  }
 
   var introspection: DefaultIntrospection? = null
 

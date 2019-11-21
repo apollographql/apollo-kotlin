@@ -113,7 +113,7 @@ class ConfigurationTests {
   fun `rootPackageName works as expected`() {
     withSimpleProject("""
       apollo {
-        rootPackageName("com.starwars")
+        rootPackageName = "com.starwars"
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
@@ -226,7 +226,7 @@ class ConfigurationTests {
         useSemanticNaming = false
         service("starwars") {
           useSemanticNaming = true
-          schemaPath("com/example/schema.json")
+          schemaPath = "com/example/schema.json"
         }
       }
     """.trimIndent()) { dir ->
@@ -240,7 +240,7 @@ class ConfigurationTests {
     withSimpleProject("""
       apollo {
         service("starwars") {
-          sourceFolder("starwars")
+          sourceFolder = "starwars"
         }
       }
     """.trimIndent()) { dir ->
@@ -260,7 +260,7 @@ class ConfigurationTests {
     withSimpleProject("""
       apollo {
         service("starwars") {
-          schemaPath("${schema.absolutePath}")
+          schemaPath = "${schema.absolutePath}"
         }
       }
     """.trimIndent()) { dir ->
@@ -275,7 +275,7 @@ class ConfigurationTests {
     withSimpleProject("""
       apollo {
         service("starwars") {
-          sourceFolder("${folder.absolutePath}")
+          sourceFolder = "${folder.absolutePath}"
         }
       }
     """.trimIndent()) { dir ->
@@ -294,9 +294,9 @@ class ConfigurationTests {
   fun `rootPackageName can be overridden in service`() {
     withSimpleProject("""
       apollo {
-        rootPackageName "com.something.else"
+        rootPackageName = "com.something.else"
         service("service") {
-          rootPackageName "com.starwars"
+          rootPackageName = "com.starwars"
         }
       }
     """.trimIndent()) { dir ->
@@ -311,12 +311,12 @@ class ConfigurationTests {
   fun `rootPackageName can be overridden in compilationUnits`() {
     withSimpleProject("""
       apollo {
-        rootPackageName "com.default"
+        rootPackageName = "com.default"
         service("starwars") {
-          rootPackageName "com.starwars"
+          rootPackageName = "com.starwars"
         }
         onCompilationUnits {
-          rootPackageName.set("com.overrides")
+          rootPackageName = "com.overrides"
         }
       }
     """.trimIndent()) { dir ->
@@ -332,12 +332,12 @@ class ConfigurationTests {
     withSimpleProject("""
       apollo {
         service("starwars") {
-          schemaPath("com/some/other/schema.json")
-          sourceFolder("com/some/other")
+          schemaPath = "com/some/other/schema.json"
+          sourceFolder = "com/some/other"
         }
         
         onCompilationUnits {
-          schemaFile(file("src/main/graphql/com/example/schema.json"))
+          schemaFile = file("src/main/graphql/com/example/schema.json")
           graphqlSourceDirectorySet.srcDir(file("src/main/graphql/"))
           graphqlSourceDirectorySet.include("**/*.graphql")
         }
@@ -355,7 +355,7 @@ class ConfigurationTests {
     withSimpleProject("""
       apollo {
         service("starwars") {
-          schemaPath("com/example/schema.json")
+          schemaPath = "com/example/schema.json"
           exclude = ["**/*.gql"]
         }
       }

@@ -17,8 +17,6 @@ interface CompilerParams {
    * Whether to generate java (default) or kotlin models
    */
   val generateKotlinModels: Property<Boolean>
-  fun generateKotlinModels(generateKotlinModels: Boolean)
-  fun setGenerateKotlinModels(generateKotlinModels: Boolean)
 
   /**
    * Whether to generate the transformed queries. Transformed queries are the queries as sent to the
@@ -28,8 +26,6 @@ interface CompilerParams {
    * The transformedQueries are written in [CompilationUnit.transformedQueriesDir]
    */
   val generateTransformedQueries: Property<Boolean>
-  fun generateTransformedQueries(generateTransformedQueries: Boolean)
-  fun setGenerateTransformedQueries(generateTransformedQueries: Boolean)
 
   /**
    * For custom scalar types like Date, map from the GraphQL type to the jvm/kotlin type.
@@ -37,8 +33,6 @@ interface CompilerParams {
    * empty by default.
    */
   val customTypeMapping: MapProperty<String, String>
-  fun customTypeMapping(customTypeMapping: Map<String, String>)
-  fun setCustomTypeMapping(customTypeMapping: Map<String, String>)
 
   /**
    * The custom types code generate some warnings that might make the build fail.
@@ -47,8 +41,6 @@ interface CompilerParams {
    * false by default
    */
   val suppressRawTypesWarning: Property<Boolean>
-  fun suppressRawTypesWarning(suppressRawTypesWarning: Boolean)
-  fun setSuppressRawTypesWarning(suppressRawTypesWarning: Boolean)
 
   /**
    * Whether to suffix your queries, etc.. with `Query`, etc..
@@ -56,8 +48,6 @@ interface CompilerParams {
    * true by default
    */
   val useSemanticNaming: Property<Boolean>
-  fun useSemanticNaming(useSemanticNaming: Boolean)
-  fun setUseSemanticNaming(useSemanticNaming: Boolean)
 
   /**
    * The nullable value type to use. One of: annotated, apolloOptional, guavaOptional, javaOptional, inputType
@@ -66,8 +56,6 @@ interface CompilerParams {
    * only valid for java models as kotlin has nullable support
    */
   val nullableValueType: Property<String>
-  fun nullableValueType(nullableValueType: String)
-  fun setNullableValueType(nullableValueType: String)
 
   /**
    * Whether to generate builders for java models
@@ -76,8 +64,6 @@ interface CompilerParams {
    * only valid for java models as kotlin has data classes
    */
   val generateModelBuilder: Property<Boolean>
-  fun generateModelBuilder(generateModelBuilder: Boolean)
-  fun setGenerateModelBuilder(generateModelBuilder: Boolean)
 
   /**
    * Whether to use java beans getters in the models.
@@ -86,15 +72,11 @@ interface CompilerParams {
    * only valif for java as kotlin has properties
    */
   val useJavaBeansSemanticNaming: Property<Boolean>
-  fun useJavaBeansSemanticNaming(useJavaBeansSemanticNaming: Boolean)
-  fun setUseJavaBeansSemanticNaming(useJavaBeansSemanticNaming: Boolean)
 
   /**
    *
    */
   val generateVisitorForPolymorphicDatatypes: Property<Boolean>
-  fun generateVisitorForPolymorphicDatatypes(generateVisitorForPolymorphicDatatypes: Boolean)
-  fun setGenerateVisitorForPolymorphicDatatypes(generateVisitorForPolymorphicDatatypes: Boolean)
 
   /**
    * The package name of the models is computed from their folder hierarchy like for java sources.
@@ -103,8 +85,7 @@ interface CompilerParams {
    *
    * The empty string by default.
    */
-  val rootPackageName: Provider<String>
-  fun rootPackageName(rootPackageName: String)
+  val rootPackageName: Property<String>
 
   /**
    * The graphql files containing the queries.
@@ -123,5 +104,4 @@ interface CompilerParams {
    * You can override it from [ApolloExtension.onCompilationUnits] for more advanced use cases
    */
   val schemaFile: RegularFileProperty
-  fun schemaFile(path: Any)
 }

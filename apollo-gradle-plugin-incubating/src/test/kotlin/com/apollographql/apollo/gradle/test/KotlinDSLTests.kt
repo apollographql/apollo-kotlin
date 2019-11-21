@@ -14,7 +14,7 @@ class KotlinDSLTests {
   fun `generated accessors work as expected`() {
     val apolloConfiguration = """
       apollo {
-        nullableValueType("annotated")
+        nullableValueType.set("annotated")
       }
     """.trimIndent()
 
@@ -48,24 +48,24 @@ class KotlinDSLTests {
   fun `parameters do not throw`() {
     val apolloConfiguration = """
       configure<ApolloExtension> {
-        nullableValueType("annotated")
-        useJavaBeansSemanticNaming(false)
-        generateModelBuilder(false)
-        useSemanticNaming(false)
-        useJavaBeansSemanticNaming(false)
-        suppressRawTypesWarning(false)
-        generateVisitorForPolymorphicDatatypes(false)
-        //schemaFilePath("")
-        //outputPackageName("")
-        customTypeMapping(mapOf("DateTime" to "java.util.Date"))
-        generateKotlinModels(false)
-        generateTransformedQueries(false)
+        nullableValueType.set("annotated")
+        useJavaBeansSemanticNaming.set(false)
+        generateModelBuilder.set(false)
+        useSemanticNaming.set(false)
+        useJavaBeansSemanticNaming.set(false)
+        suppressRawTypesWarning.set(false)
+        generateVisitorForPolymorphicDatatypes.set(false)
+        //schemaFilePath.set("")
+        //outputPackageName.set("")
+        customTypeMapping.set(mapOf("DateTime" to "java.util.Date"))
+        generateKotlinModels.set(false)
+        generateTransformedQueries.set(false)
         
         service("starwars") {
-          sourceFolder("com/example")
-          schemaPath("com/example/schema.json")
-          rootPackageName("com.starwars")
-          exclude(listOf("*.gql"))
+          sourceFolder.set("com/example")
+          schemaPath.set("com/example/schema.json")
+          rootPackageName.set("com.starwars")
+          exclude.set(listOf("*.gql"))
         }
       }
     """.trimIndent()
@@ -80,43 +80,4 @@ class KotlinDSLTests {
       Assert.assertTrue(dir.generatedChild("main/starwars/com/starwars/DroidDetails.java").isFile)
     }
   }
-
-  @Test
-  fun `deprecated syntax is working`() {
-    val apolloConfiguration = """
-      configure<ApolloExtension> {
-        setNullableValueType("annotated")
-        setUseJavaBeansSemanticNaming(false)
-        setGenerateModelBuilder(false)
-        setUseSemanticNaming(false)
-        setUseJavaBeansSemanticNaming(false)
-        setSuppressRawTypesWarning(false)
-        setGenerateVisitorForPolymorphicDatatypes(false)
-        //setSchemaFilePath("")
-        //setOutputPackageName("")
-        setCustomTypeMapping(mapOf("DateTime" to "java.util.Date"))
-        setGenerateKotlinModels(false)
-        setGenerateTransformedQueries(false)
-        
-        service("starwars") {
-          sourceFolder("com/example")
-          schemaPath("com/example/schema.json")
-          rootPackageName("com.starwars")
-          exclude(listOf("*.gql"))
-        }
-      }
-    """.trimIndent()
-
-    TestUtils.withProject(
-        usesKotlinDsl = true,
-        plugins = listOf(TestUtils.javaPlugin, TestUtils.apolloPlugin),
-        apolloConfiguration = apolloConfiguration
-    ) { dir ->
-      val result = TestUtils.executeTask("generateApolloSources", dir)
-      assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
-      Assert.assertTrue(dir.generatedChild("main/starwars/com/starwars/DroidDetails.java").isFile)
-    }
-  }
-
-
 }
