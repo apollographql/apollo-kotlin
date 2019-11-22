@@ -13,6 +13,33 @@ apply plugin: 'com.apollographql.android'
 // Do this
 apply plugin: 'com.apollographql.apollo'
 ```
+
+### Using multiple services
+
+The plugin now requires that you specify multiple services explicitely. If you previously had the following layout:
+
+```bash
+src/main/graphql/com/github/schema.json
+src/main/graphql/com/github/GetRepositories.graphql
+src/main/graphql/com/starwars/schema.json
+src/main/graphql/com/starwars/GetHeroes.graphql
+```
+
+You will need to define 2 services:
+
+```kotlin
+apollo {
+  service("github") {
+    sourceFolder.set("com.github")
+    rootPackageName.set("com.github")
+  }
+  service("starwars") {
+    sourceFolder.set("com.starwars")
+    rootPackageName.set("com.starwars")
+  }
+}
+```
+
 ### Specifying schema and graphql files location
 
 The root `schemaFilePath`, `outputPackageName` and `sourceSets.graphql` are removed and will throw an error if you try to use them. Instead you can use [CompilationUnit] to control what files the compiler will use as inputs.
@@ -49,6 +76,8 @@ apollo {
 }
 ```
 
+Read [plugin-configuration](plugin-configuration.md) for a complete description of what the different options do.
+
 ### Kotlin DSL
 
 The plugin uses gradle [Properties](https://docs.gradle.org/current/javadoc/org/gradle/api/provider/Property.html) to support [lazy configuration](https://docs.gradle.org/current/userguide/lazy_configuration.html) and wiring tasks together.
@@ -78,29 +107,5 @@ Also, the classes of the plugin have been split between a [api](https://github.c
 import com.apollographql.apollo.gradle.api.ApolloExtension
 ```
 
-### Using multiple services
 
-The plugin now requires that you specify multiple services explicitely. If you previously had the following layout:
-
-```bash
-src/main/graphql/com/github/schema.json
-src/main/graphql/com/github/GetRepositories.graphql
-src/main/graphql/com/starwars/schema.json
-src/main/graphql/com/starwars/GetHeroes.graphql
-```
-
-You will need to define 2 services:
-
-```kotlin
-apollo {
-  service("github") {
-    sourceFolder.set("com.github")
-    rootPackageName.set("com.github")
-  }
-  service("starwars") {
-    sourceFolder.set("com.starwars")
-    rootPackageName.set("com.starwars")
-  }
-}
-```
 
