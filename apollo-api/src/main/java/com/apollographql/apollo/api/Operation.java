@@ -46,7 +46,7 @@ public interface Operation<D extends Operation.Data, T, V extends Operation.Vari
    */
   @NotNull String operationId();
 
-    /**
+  /**
    * Parses provided GraphQL operation raw response
    *
    * @param source for operation raw response to parse
