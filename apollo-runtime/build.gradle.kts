@@ -27,12 +27,6 @@ apply {
   from(rootProject.file("gradle/bintray.gradle"))
 }
 
-tasks.withType<Checkstyle> {
-  exclude("**/BufferedSourceJsonReader.java")
-  exclude("**/JsonScope.java")
-  exclude("**/JsonUtf8Writer.java")
-}
-
 tasks.withType<Javadoc> {
   options.encoding = "UTF-8"
 }

@@ -19,6 +19,13 @@ dependencies {
 apply {
   from(rootProject.file("gradle/gradle-mvn-push.gradle"))
 }
+
 apply {
   from(rootProject.file("gradle/bintray.gradle"))
+}
+
+tasks.withType<Checkstyle> {
+  exclude("**/BufferedSourceJsonReader.java")
+  exclude("**/JsonScope.java")
+  exclude("**/JsonUtf8Writer.java")
 }
