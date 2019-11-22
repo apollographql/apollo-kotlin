@@ -18,13 +18,16 @@ import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.hero_with_review.type.Episode
+import java.io.IOException
 import kotlin.Any
 import kotlin.Array
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.Map
+import kotlin.jvm.Throws
 import kotlin.jvm.Transient
+import okio.BufferedSource
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
@@ -51,8 +54,9 @@ data class TestQuery(
     Data(it)
   }
 
-  override fun parse(response: Map<String, Any>, scalarTypeAdapters: ScalarTypeAdapters):
-      Response<Data> = SimpleOperationResponseParser.parse(response, this, scalarTypeAdapters)
+  @Throws(IOException::class)
+  override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters): Response<Data>
+      = SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters)
 
   data class CreateReview(
     val __typename: String,

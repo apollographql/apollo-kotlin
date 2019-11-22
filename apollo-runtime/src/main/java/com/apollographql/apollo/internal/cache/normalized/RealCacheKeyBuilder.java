@@ -3,7 +3,7 @@ package com.apollographql.apollo.internal.cache.normalized;
 import com.apollographql.apollo.api.InputType;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.ResponseField;
-import com.apollographql.apollo.internal.json.JsonWriter;
+import com.apollographql.apollo.api.internal.json.JsonWriter;
 import com.apollographql.apollo.internal.json.SortedInputFieldMapWriter;
 import com.apollographql.apollo.internal.json.Utils;
 

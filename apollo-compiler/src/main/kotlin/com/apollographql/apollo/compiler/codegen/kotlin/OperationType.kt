@@ -15,6 +15,9 @@ import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.toMapperFu
 import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.jvm.throws
+import okio.BufferedSource
+import java.io.IOException
 
 internal fun OperationType.typeSpec(targetPackage: String) = TypeSpec
     .classBuilder(name)
@@ -74,15 +77,16 @@ internal fun OperationType.typeSpec(targetPackage: String) = TypeSpec
     .addFunction(FunSpec.builder("parse")
         .addModifiers(KModifier.OVERRIDE)
         .addParameter(ParameterSpec
-            .builder("response", Map::class.asClassName().parameterizedBy(String::class.asTypeName(), Any::class.asClassName()))
+            .builder("source", BufferedSource::class)
             .build()
         )
         .addParameter(ParameterSpec
-            .builder("scalarTypeAdapters", ScalarTypeAdapters::class.asClassName())
+            .builder("scalarTypeAdapters", ScalarTypeAdapters::class)
             .build()
         )
+        .throws(IOException::class)
         .returns(Response::class.asClassName().parameterizedBy(data.asTypeName()))
-        .addStatement("return %T.parse(response, this, scalarTypeAdapters)", SimpleOperationResponseParser::class.asTypeName())
+        .addStatement("return %T.parse(source, this, scalarTypeAdapters)", SimpleOperationResponseParser::class)
         .build()
     )
     .addTypes(nestedObjects.map { (ref, type) ->

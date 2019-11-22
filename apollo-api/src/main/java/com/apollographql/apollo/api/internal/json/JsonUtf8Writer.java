@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apollographql.apollo.internal.json;
+package com.apollographql.apollo.api.internal.json;
 
 import java.io.IOException;
 
@@ -22,13 +22,13 @@ import org.jetbrains.annotations.Nullable;
 import okio.BufferedSink;
 import okio.Sink;
 
-import static com.apollographql.apollo.internal.json.JsonScope.DANGLING_NAME;
-import static com.apollographql.apollo.internal.json.JsonScope.EMPTY_ARRAY;
-import static com.apollographql.apollo.internal.json.JsonScope.EMPTY_DOCUMENT;
-import static com.apollographql.apollo.internal.json.JsonScope.EMPTY_OBJECT;
-import static com.apollographql.apollo.internal.json.JsonScope.NONEMPTY_ARRAY;
-import static com.apollographql.apollo.internal.json.JsonScope.NONEMPTY_DOCUMENT;
-import static com.apollographql.apollo.internal.json.JsonScope.NONEMPTY_OBJECT;
+import static com.apollographql.apollo.api.internal.json.JsonScope.DANGLING_NAME;
+import static com.apollographql.apollo.api.internal.json.JsonScope.EMPTY_ARRAY;
+import static com.apollographql.apollo.api.internal.json.JsonScope.EMPTY_DOCUMENT;
+import static com.apollographql.apollo.api.internal.json.JsonScope.EMPTY_OBJECT;
+import static com.apollographql.apollo.api.internal.json.JsonScope.NONEMPTY_ARRAY;
+import static com.apollographql.apollo.api.internal.json.JsonScope.NONEMPTY_DOCUMENT;
+import static com.apollographql.apollo.api.internal.json.JsonScope.NONEMPTY_OBJECT;
 
 final class JsonUtf8Writer extends JsonWriter {
 

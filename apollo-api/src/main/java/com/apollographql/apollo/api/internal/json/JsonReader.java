@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.apollographql.apollo.internal.json;
+package com.apollographql.apollo.api.internal.json;
 
-import com.apollographql.apollo.json.JsonDataException;
+import com.apollographql.apollo.api.json.JsonDataException;
 
 import java.io.Closeable;
 import java.io.IOException;

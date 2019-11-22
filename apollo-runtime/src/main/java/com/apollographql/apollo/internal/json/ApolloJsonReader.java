@@ -1,5 +1,7 @@
 package com.apollographql.apollo.internal.json;
 
+import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader;
+import com.apollographql.apollo.api.internal.json.ResponseJsonStreamReader;
 import okio.BufferedSource;
 
 public final class ApolloJsonReader {

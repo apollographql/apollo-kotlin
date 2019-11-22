@@ -31,6 +31,7 @@ import java.lang.SuppressWarnings;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import okio.BufferedSource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -97,9 +98,9 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
 
   @Override
   @NotNull
-  public Response<Optional<TestQuery.Data>> parse(@NotNull final Map<String, Object> response,
-      @NotNull final ScalarTypeAdapters scalarTypeAdapters) {
-    return SimpleOperationResponseParser.parse(response, this, scalarTypeAdapters);
+  public Response<Optional<TestQuery.Data>> parse(@NotNull final BufferedSource source,
+      @NotNull final ScalarTypeAdapters scalarTypeAdapters) throws IOException {
+    return SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters);
   }
 
   public static final class Builder {

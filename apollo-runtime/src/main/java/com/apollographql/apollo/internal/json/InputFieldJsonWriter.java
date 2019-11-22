@@ -10,6 +10,7 @@ import com.apollographql.apollo.api.ScalarTypeAdapters;
 import java.io.IOException;
 import java.util.Map;
 
+import com.apollographql.apollo.api.internal.json.JsonWriter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

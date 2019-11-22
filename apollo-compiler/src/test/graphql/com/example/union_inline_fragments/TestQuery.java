@@ -22,6 +22,7 @@ import com.apollographql.apollo.api.internal.Utils;
 import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.union_inline_fragments.type.CustomType;
 import com.example.union_inline_fragments.type.Episode;
+import java.io.IOException;
 import java.lang.Deprecated;
 import java.lang.Object;
 import java.lang.Override;
@@ -30,7 +31,7 @@ import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import okio.BufferedSource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -124,9 +125,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   @Override
   @NotNull
-  public Response<Optional<TestQuery.Data>> parse(@NotNull final Map<String, Object> response,
-      @NotNull final ScalarTypeAdapters scalarTypeAdapters) {
-    return SimpleOperationResponseParser.parse(response, this, scalarTypeAdapters);
+  public Response<Optional<TestQuery.Data>> parse(@NotNull final BufferedSource source,
+      @NotNull final ScalarTypeAdapters scalarTypeAdapters) throws IOException {
+    return SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters);
   }
 
   public static final class Builder {

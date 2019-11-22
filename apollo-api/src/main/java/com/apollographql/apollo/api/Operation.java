@@ -1,7 +1,9 @@
 package com.apollographql.apollo.api;
 
+import okio.BufferedSource;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 
@@ -44,14 +46,14 @@ public interface Operation<D extends Operation.Data, T, V extends Operation.Vari
    */
   @NotNull String operationId();
 
-  /**
+    /**
    * Parses provided GraphQL operation raw response
    *
-   * @param response operation raw response to parse
+   * @param source for operation raw response to parse
    * @param scalarTypeAdapters configured instance of custom GraphQL scalar type adapters
    * @return parsed GraphQL operation {@link Response}
    */
-  @NotNull Response<T> parse(@NotNull Map<String, Object> response, @NotNull ScalarTypeAdapters scalarTypeAdapters);
+  @NotNull Response<T> parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) throws IOException;
 
   /**
    * Abstraction for data returned by the server in response to this operation.

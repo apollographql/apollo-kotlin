@@ -35,6 +35,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import okio.BufferedSource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -109,9 +110,9 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
 
   @Override
   @NotNull
-  public Response<Optional<CreateReviewForEpisode.Data>> parse(@NotNull final Map<String, Object> response,
-      @NotNull final ScalarTypeAdapters scalarTypeAdapters) {
-    return SimpleOperationResponseParser.parse(response, this, scalarTypeAdapters);
+  public Response<Optional<CreateReviewForEpisode.Data>> parse(@NotNull final BufferedSource source,
+      @NotNull final ScalarTypeAdapters scalarTypeAdapters) throws IOException {
+    return SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters);
   }
 
   public static final class Builder {

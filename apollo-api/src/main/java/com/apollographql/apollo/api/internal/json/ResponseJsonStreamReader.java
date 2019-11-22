@@ -1,4 +1,4 @@
-package com.apollographql.apollo.internal.json;
+package com.apollographql.apollo.api.internal.json;
 
 import java.io.IOException;
 import java.math.BigDecimal;

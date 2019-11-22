@@ -10,6 +10,7 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 
+import okio.BufferedSource;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -71,7 +72,7 @@ public class ApolloCallTrackerTest {
       return "";
     }
 
-    @NotNull @Override public Response parse(@NotNull Map response, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+    @NotNull @Override public Response parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
       throw new UnsupportedOperationException();
     }
   };

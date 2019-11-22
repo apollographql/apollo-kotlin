@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apollographql.apollo.internal.json;
+package com.apollographql.apollo.api.internal.json;
 
-import com.apollographql.apollo.json.JsonDataException;
+import com.apollographql.apollo.api.json.JsonDataException;
 
 import java.io.Closeable;
 import java.io.Flushable;
@@ -25,8 +25,8 @@ import org.jetbrains.annotations.Nullable;
 
 import okio.BufferedSink;
 
-import static com.apollographql.apollo.internal.json.JsonScope.EMPTY_OBJECT;
-import static com.apollographql.apollo.internal.json.JsonScope.NONEMPTY_OBJECT;
+import static com.apollographql.apollo.api.internal.json.JsonScope.EMPTY_OBJECT;
+import static com.apollographql.apollo.api.internal.json.JsonScope.NONEMPTY_OBJECT;
 
 /**
  * Writes a JSON (<a href="http://www.ietf.org/rfc/rfc7159.txt">RFC 7159</a>)

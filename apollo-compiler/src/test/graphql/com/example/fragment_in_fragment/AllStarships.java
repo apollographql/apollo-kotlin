@@ -22,6 +22,7 @@ import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.api.internal.Utils;
 import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.fragment_in_fragment.fragment.StarshipFragment;
+import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -29,7 +30,7 @@ import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import okio.BufferedSource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -127,9 +128,9 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
   @Override
   @NotNull
-  public Response<Optional<AllStarships.Data>> parse(@NotNull final Map<String, Object> response,
-      @NotNull final ScalarTypeAdapters scalarTypeAdapters) {
-    return SimpleOperationResponseParser.parse(response, this, scalarTypeAdapters);
+  public Response<Optional<AllStarships.Data>> parse(@NotNull final BufferedSource source,
+      @NotNull final ScalarTypeAdapters scalarTypeAdapters) throws IOException {
+    return SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters);
   }
 
   public static final class Builder {

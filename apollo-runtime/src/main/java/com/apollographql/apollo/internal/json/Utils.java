@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import com.apollographql.apollo.api.internal.json.JsonWriter;
 import org.jetbrains.annotations.NotNull;
 
 import okio.Buffer;
