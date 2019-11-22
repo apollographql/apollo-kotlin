@@ -1,117 +1,151 @@
 
 #  Gradle Configuration of Apollo Android
-Apollo Android comes with logical defaults that will work for the majority of use cases, below you will find additional configuration that will add Optional Support & Semantic Query Naming.
 
-## Optional Support
-By default Apollo-Android will return `null` when a graph api returns a `null` field.  Apollo allows you to configure the generated code to instead use a Guava `Optional<T>` or a shaded`Apollo Optional<T>` rather than simply returning the scalar value or null.
+Apollo-Android comes with logical defaults that will work for the majority of use cases, below you will find additional configuration.
 
-```groovy
-apollo {
-  nullableValueType = "apolloOptional"  //use one or the other
-  nullableValueType = "guavaOptional"   //use one or the other
-}
-```
+## Service
 
-## Semantic Naming
-By default Apollo-Android expects queries to be written as follows:
-```Query someQuery{....}```
-alternatively you can turn on Semantic Naming which will allow you to define queries without the Query suffix:
-```Query some{....}```
+Apollo-Android can use several services for multiple schemas and endpoints. The schema and graphql files related to different services must be in different folders.
 
-With Semantic Naming enabled you will still see a SomeQuery.java generated same as the first query above.
+You can configure services by calling `ApolloExtension.service(String)`:
 
 ```groovy
 apollo {
-  useSemanticNaming = false
-}
-```
-
-## Java Beans Semantic Naming for Accessors
-By default, the generated classes have accessor methods whose names are identical to the name of the Schema field.
-
-```query Foo { bar }```
-
-results in a class signature like:
-
-```
-class Foo {
-    public Bar bar() { ... }
-}
-```
-
-Alternatively, turning on Java Beans Semantic Naming will result in those methods being pre-pended with `get` or `is`:
-
-```
-class Foo {
-    public Bar getBar() { ... }
-}
-```
-
-```groovy
-apollo {
-  useJavaBeansSemanticNaming = true
-}
-```
-
-## Explicit Schema location
-By default Apollo-Android tries to lookup GraphQL schema file in `/graphql` folder, the same folder where all your GraphQL queries are stored. 
-For example, if query files are located at `/src/main/graphql/com/example/api` then the schema file should be placed in the same location `/src/main/graphql/com/example/api`. Relative path of schema file to `/src/main/graphql` root folder defines the package name for generated models, in our example the package name of generated models will be `com.example.api`.
-
-Alternatively, you can explicitly provide GraphQL schema file location and package name for generated models:
-
-```groovy
-apollo {
-  sourceSet {
-    schemaFile = "/path_to_schema_file/my-schema.json"
+  service("github") {
+    // src/{foo}/graphql/github
+    sourceFolder.set("github")
   }
-  outputPackageName = "com.my-example.graphql.api"
-}
-```
-
-### Exclude GraphQL files
-Apollo Gradle plugin supports GraphQL operations defined in `*.graphql|*.gql` files. You can provide additional configuration to exclude certain GraphQL files by providing file filters. 
-
-```groovy
-apollo {
-  sourceSet {
-    exclude = "**/*.gql"
+  service("starwars") {
+    // src/{foo}/graphql/starwars
+    sourceFolder.set("starwars")
   }
-  outputPackageName = "com.my-example.graphql.api"
-}
-```
+}```
 
-If there is more than one filter:
+A service will compile all your graphql files for all variants in your project. For a simple JVM project it's usually just one variant but for android projects, you can define different queries for different variants.
+
+## CompilationUnit
+
+A CompilationUnit is a single invocation of the Apollo compiler. It's the combination of a service and a variant.
+
+## CompilerParams
+
+You can configure the Apollo compiler using [CompilerParams](src/main/kotlin/com/apollographql/apollo/gradle/api/CompilerParams.kt). `ApolloExtension`, `Service` and `CompilationUnit` all implement `CompilerParams` so you can overrride values as needed.
+
+* Default compiler parameters are taken from `ApolloExtension`
+* Compiler parameters from `Service` override the ones from `ApolloExtension`
+* Compiler parameters from `CompilerUnit` override the ones from `Service`
+
 
 ```groovy
 apollo {
-  sourceSet {
-    exclude = ["**/Query1.graphql", "**/Query2.graphql"]
+  // rootPackageName is empty by default
+  service("github") {
+    rootPackageName.set("com.github")
   }
-  outputPackageName = "com.my-example.graphql.api"
+
+  onCompilationUnit {
+    if (variantName == "debug") {
+        // the debug variant will use the com.github.debug package
+        rootPackageName.set("com.github.debug")
+    } else {
+        // other variants will use "com.github"
+    }
+  }
 }
 ```
 
-## Visitor generation for polymorphic datatypes
-Apollo Gradle plugin also supports generating visitors for compile-time safe handling of polymorphic datatypes. By default the feature is turned off since it requires source/target compatibility with Java 1.8. To opt into visitor generation:
-```groovy
-apollo {
-  generateVisitorForPolymorphicDatatypes = true
-}
-```
+The complete list of parameters can be found in [CompilerParams](src/main/kotlin/com/apollographql/apollo/gradle/api/CompilerParams.kt):
 
-## Kotlin model generation
-By default Apollo Gradle plugin generates Java models but you can configure it to generate Kotlin models instead:
-```groovy
-apollo {
-  generateKotlinModels = true
-}
-```
+```kotlin
+  /**
+   * Whether to generate java (default) or kotlin models
+   */
+  val generateKotlinModels: Property<Boolean>
 
-## Transformed queries
-When Apollo-Android executes your queries, the actual queries sent to the server differs slightly from what was given; specifically, type hints are added to variable-type fields. These differences don't affect typical use. If you want access to these transformed queries, Apollo Gradle plugin can save them to a build directory for you. This can be useful if you need to upload a query's exact content to a server that doesn't support automatic persisted queries.
+  /**
+   * Whether to generate the transformed queries. Transformed queries are the queries as sent to the
+   * server. This can be useful if you need to upload a query's exact content to a server that doesn't
+   * support automatic persisted queries.
+   *
+   * The transformedQueries are written in [CompilationUnit.transformedQueriesDir]
+   */
+  val generateTransformedQueries: Property<Boolean>
 
-```groovy
-apollo {
-  generateTransformedQueries = true
-}
+  /**
+   * For custom scalar types like Date, map from the GraphQL type to the jvm/kotlin type.
+   *
+   * empty by default.
+   */
+  val customTypeMapping: MapProperty<String, String>
+
+  /**
+   * The custom types code generate some warnings that might make the build fail.
+   * suppressRawTypesWarning will add the appropriate SuppressWarning annotation
+   *
+   * false by default
+   */
+  val suppressRawTypesWarning: Property<Boolean>
+
+  /**
+   * Whether to suffix your queries, etc.. with `Query`, etc..
+   *
+   * true by default
+   */
+  val useSemanticNaming: Property<Boolean>
+
+  /**
+   * The nullable value type to use. One of: annotated, apolloOptional, guavaOptional, javaOptional, inputType
+   *
+   * annotated by default
+   * only valid for java models as kotlin has nullable support
+   */
+  val nullableValueType: Property<String>
+
+  /**
+   * Whether to generate builders for java models
+   *
+   * false by default
+   * only valid for java models as kotlin has data classes
+   */
+  val generateModelBuilder: Property<Boolean>
+
+  /**
+   * Whether to use java beans getters in the models.
+   *
+   * false by default
+   * only valif for java as kotlin has properties
+   */
+  val useJavaBeansSemanticNaming: Property<Boolean>
+
+  /**
+   *
+   */
+  val generateVisitorForPolymorphicDatatypes: Property<Boolean>
+
+  /**
+   * The package name of the models is computed from their folder hierarchy like for java sources.
+   *
+   * If you want, you can prepend a custom package name here to namespace your models.
+   *
+   * The empty string by default.
+   */
+  val rootPackageName: Property<String>
+
+  /**
+   * The graphql files containing the queries.
+   *
+   * This SourceDirectorySet includes .graphql and .gql files by default.
+   *
+   * By default, it will use [Service.sourceFolder] to populate the SourceDirectorySet.
+   * You can override it from [ApolloExtension.onCompilationUnits] for more advanced use cases
+   */
+  val graphqlSourceDirectorySet: SourceDirectorySet
+
+  /**
+   * The schema file
+   *
+   * By default, it will use [Service.schemaFile] to set schemaFile.
+   * You can override it from [ApolloExtension.onCompilationUnits] for more advanced use cases
+   */
+  val schemaFile: RegularFileProperty
 ```

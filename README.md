@@ -41,7 +41,7 @@ buildscript {
 Then add the dependencies to your app's build.gradle and apply file and apply the `com.apollographql.android` plugin:
 
 ```groovy
-apply plugin: 'com.apollographql.android'
+apply plugin: 'com.apollographql.apollo'
 
 repositories {
     jcenter()
@@ -56,12 +56,25 @@ dependencies {
 }
 ```
 
-**NOTE: Apollo Gradle plugin requires Gradle 5.1.1 or higher.**
+**NOTE: Apollo Gradle plugin requires Gradle 5.6 or higher.**
+
+## Downloading a schema.json file
+
+You can get a schema.json file by running an introspection query on your endpoint. Else, there the Apollo plugin has a `downloadApolloSchema` that you can use:
+
+```bash
+./gradlew downloadApolloSchema -Pcom.apollographql.apollo.schema=/path/to/your/schema.json -Pcom.apollographql.apollo.endpoint=https://your.graphq.enpoint
+```
+
+If your endpoint requires authentification, you can use the following parameters:
+
+* `-Pcom.apollographql.apollo.query_params=params`: Will add the given params to the query string. Params must be a query string (e.g. key1=value1&key2=value2, where key and values are urlencoded)
+* `-Pcom.apollographql.apollo.headers=params`: This is the same as query_params except it will use HTTP headers. Params must also be a query string.
 
 ## Generating models from your queries
 
 1) Create a directory for your GraphQL files like you would do for Java/Kotlin: `src/main/graphql/com/com/example/`. Apollo-Android will generate models in the `com.apollographql.apollo.sample` package.
-2) Add your `schema.json` to the directory at `src/main/graphql/com/example/schema.json`. If you don't have a `schema.json` file yet, read the section about [downloading a schema file](#downloading-a-schemajson-file). 
+2) Add your `schema.json` to the directory at `src/main/graphql/com/example/schema.json`.
 3) Put your GraphQL queries in a `.graphql` files. For an exemple: `src/main/graphql/com/example/feed.graphql`: 
 
 ```
@@ -100,7 +113,7 @@ fragment FeedCommentFragment on Comment {
 
 ```groovy
 apollo {
-  generateKotlinModels = true // or false
+  generateKotlinModels.set(true) // or false
 }
 ```
 
@@ -196,9 +209,10 @@ apollo {
 }
 ```
 
-## Downloading a schema.json file
+## Migrating to Apollo-Android plugin 1.3
 
-You can get a schema.json file by running an introspection query on your endpoint. Else, you can use the apollo CLI. See [here](https://github.com/apollographql/apollo-tooling#apollo-clientdownload-schema-output) for instructions.
+If you're updating to version 1.3, you might need to update your build scripts. Read [doc/migrating.md](doc/migrating.md) for more details.
+
 
 ## Intellij Plugin
 
@@ -222,7 +236,7 @@ Latest development changes are available in Sonatype's snapshots repository:
 
 Advanced topics are available in the [doc folder](doc):
 
-* [doc/caching.md](doc/caching.md) 
+* [doc/caching.md](doc/caching.md)
 * [doc/plugin-configuration.md](doc/plugin-configuration.md) 
 * [doc/android.md](doc/android.md) 
 * [doc/file-upload.md](doc/file-upload.md)
