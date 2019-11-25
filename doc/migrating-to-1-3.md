@@ -8,7 +8,7 @@ We renamed the plugin id from `com.apollographql.android` to `com.apollographql.
 
 ```groovy
 // Don't do this
-apply plugin: 'com.apollographql.android'
+// apply plugin: 'com.apollographql.android'
 
 // Do this
 apply plugin: 'com.apollographql.apollo'
