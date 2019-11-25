@@ -16,6 +16,7 @@ def versions = [
     mockito               : '1.9.5',
     moshi                 : '1.8.0',
     okHttp                : '3.12.2',
+    okio                  : '1.15.0',
     rxjava                : '2.0.5',
     rxandroid             : '2.0.1',
     spock                 : '0.7-groovy-2.0',
@@ -74,6 +75,7 @@ ext.dep = [
         okHttp       : "com.squareup.okhttp3:okhttp:$versions.okHttp",
         testSupport  : "com.squareup.okhttp3:okhttp-testing-support:$versions.okHttp",
     ],
+    okio                  : "com.squareup.okio:okio:$versions.okio",
     poet                  : [
         java  : "com.squareup:javapoet:$versions.javaPoet",
         kotlin: "com.squareup:kotlinpoet:$versions.kotlinPoet",

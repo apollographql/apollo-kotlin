@@ -10,6 +10,7 @@ dependencies {
   add("compileOnly", groovy.util.Eval.x(project, "x.dep.kotlin.stdLib"))
   add("compileOnly", groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
 
+  add("api", groovy.util.Eval.x(project, "x.dep.okio"))
   add("implementation", groovy.util.Eval.x(project, "x.dep.jetbrainsAnnotations"))
 
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.junit"))
