@@ -1,5 +1,6 @@
 package com.apollographql.apollo.internal.subscription;
 
+import com.apollographql.apollo.api.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Response;
@@ -7,10 +8,9 @@ import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
-import com.apollographql.apollo.api.CustomTypeAdapter;
-import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeListener;
 import com.apollographql.apollo.subscription.OperationClientMessage;
 import com.apollographql.apollo.subscription.OperationServerMessage;
@@ -18,6 +18,7 @@ import com.apollographql.apollo.subscription.SubscriptionConnectionParams;
 import com.apollographql.apollo.subscription.SubscriptionConnectionParamsProvider;
 import com.apollographql.apollo.subscription.SubscriptionManagerState;
 import com.apollographql.apollo.subscription.SubscriptionTransport;
+import okio.BufferedSource;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +26,6 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
@@ -435,7 +435,7 @@ public class SubscriptionManagerTest {
       return operationId;
     }
 
-    @NotNull @Override public Response<Data> parse(@NotNull Map<String, Object> response, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+    @NotNull @Override public Response<Data> parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
       throw new UnsupportedOperationException();
     }
   }

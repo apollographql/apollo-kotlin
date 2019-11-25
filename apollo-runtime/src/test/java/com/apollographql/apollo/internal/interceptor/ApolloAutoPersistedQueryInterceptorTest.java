@@ -13,6 +13,7 @@ import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.internal.ApolloLogger;
 
+import okio.BufferedSource;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -300,7 +301,7 @@ public class ApolloAutoPersistedQueryInterceptorTest {
       }
     }
 
-    @NotNull @Override public com.apollographql.apollo.api.Response<Data> parse(@NotNull Map<String, Object> response, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+    @NotNull @Override public com.apollographql.apollo.api.Response<Data> parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
       throw new UnsupportedOperationException();
     }
   }
