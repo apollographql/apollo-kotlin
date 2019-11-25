@@ -10,6 +10,7 @@ import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
+import okio.BufferedSource;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
@@ -848,7 +849,7 @@ public class SimpleResponseReaderTest {
       return "";
     }
 
-    @NotNull @Override public Response parse(@NotNull Map response, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+    @NotNull @Override public Response parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
       throw new UnsupportedOperationException();
     }
   };

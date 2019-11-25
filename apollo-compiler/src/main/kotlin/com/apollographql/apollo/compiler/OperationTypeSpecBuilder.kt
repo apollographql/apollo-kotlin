@@ -9,6 +9,8 @@ import com.apollographql.apollo.compiler.VisitorSpec.VISITOR_CLASSNAME
 import com.apollographql.apollo.compiler.ir.*
 import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.squareup.javapoet.*
+import okio.BufferedSource
+import java.io.IOException
 import javax.lang.model.element.Modifier
 
 class OperationTypeSpecBuilder(
@@ -277,7 +279,7 @@ class OperationTypeSpecBuilder(
         .addAnnotation(Annotations.NONNULL)
         .addModifiers(Modifier.PUBLIC)
         .addParameter(ParameterSpec
-            .builder(ParameterizedTypeName.get(Map::class.java, String::class.java, Object::class.java), "response", Modifier.FINAL)
+            .builder(BufferedSource::class.java, "source", Modifier.FINAL)
             .addAnnotation(Annotations.NONNULL)
             .build()
         )
@@ -286,8 +288,9 @@ class OperationTypeSpecBuilder(
             .addAnnotation(Annotations.NONNULL)
             .build()
         )
+        .addException(IOException::class.java)
         .returns(ParameterizedTypeName.get(ClassName.get(Response::class.java), wrapperType(context)))
-        .addStatement("return \$T.parse(response, this, scalarTypeAdapters)", SimpleOperationResponseParser::class.java)
+        .addStatement("return \$T.parse(source, this, scalarTypeAdapters)", SimpleOperationResponseParser::class.java)
         .build()
   }
 

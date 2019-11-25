@@ -6,25 +6,23 @@ import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
-import com.apollographql.apollo.api.ScalarTypeAdapters;
-
+import okhttp3.Protocol;
+import okhttp3.Request;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
+import okio.BufferedSource;
+import okio.ByteString;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Map;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import okhttp3.Protocol;
-import okhttp3.Request;
-import okhttp3.WebSocket;
-import okhttp3.WebSocketListener;
-import okio.ByteString;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -224,7 +222,7 @@ public class WebSocketSubscriptionTransportMessageTest {
       return "someId";
     }
 
-    @NotNull @Override public Response<Data> parse(@NotNull Map<String, Object> response, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+    @NotNull @Override public Response<Data> parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
       throw new UnsupportedOperationException();
     }
   }

@@ -21,13 +21,14 @@ import com.apollographql.apollo.api.internal.Utils;
 import com.apollographql.apollo.internal.QueryDocumentMinifier;
 import com.example.fragments_with_type_condition_nullable.fragment.DroidDetails;
 import com.example.fragments_with_type_condition_nullable.fragment.HumanDetails;
+import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Map;
+import okio.BufferedSource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -108,9 +109,9 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
 
   @Override
   @NotNull
-  public Response<TestQuery.Data> parse(@NotNull final Map<String, Object> response,
-      @NotNull final ScalarTypeAdapters scalarTypeAdapters) {
-    return SimpleOperationResponseParser.parse(response, this, scalarTypeAdapters);
+  public Response<TestQuery.Data> parse(@NotNull final BufferedSource source,
+      @NotNull final ScalarTypeAdapters scalarTypeAdapters) throws IOException {
+    return SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters);
   }
 
   public static final class Builder {

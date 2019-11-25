@@ -7,8 +7,8 @@ import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.field.MapFieldValueResolver;
-import com.apollographql.apollo.internal.json.BufferedSourceJsonReader;
-import com.apollographql.apollo.internal.json.ResponseJsonStreamReader;
+import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader;
+import com.apollographql.apollo.api.internal.json.ResponseJsonStreamReader;
 import com.apollographql.apollo.internal.response.RealResponseReader;
 
 import java.io.IOException;

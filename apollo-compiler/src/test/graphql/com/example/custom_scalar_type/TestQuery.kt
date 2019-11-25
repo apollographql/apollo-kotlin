@@ -17,13 +17,15 @@ import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.custom_scalar_type.type.CustomType
+import java.io.IOException
 import java.util.Date
 import kotlin.Any
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
-import kotlin.collections.Map
+import kotlin.jvm.Throws
+import okio.BufferedSource
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
@@ -37,8 +39,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     Data(it)
   }
 
-  override fun parse(response: Map<String, Any>, scalarTypeAdapters: ScalarTypeAdapters):
-      Response<Data> = SimpleOperationResponseParser.parse(response, this, scalarTypeAdapters)
+  @Throws(IOException::class)
+  override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters): Response<Data>
+      = SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters)
 
   data class Hero(
     val __typename: String,

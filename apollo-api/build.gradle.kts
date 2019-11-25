@@ -10,15 +10,24 @@ dependencies {
   add("compileOnly", groovy.util.Eval.x(project, "x.dep.kotlin.stdLib"))
   add("compileOnly", groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
 
+  add("api", groovy.util.Eval.x(project, "x.dep.okio"))
   add("implementation", groovy.util.Eval.x(project, "x.dep.jetbrainsAnnotations"))
 
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.junit"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.truth"))
+  add("testImplementation", groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
 }
 
 apply {
   from(rootProject.file("gradle/gradle-mvn-push.gradle"))
 }
+
 apply {
   from(rootProject.file("gradle/bintray.gradle"))
+}
+
+tasks.withType<Checkstyle> {
+  exclude("**/BufferedSourceJsonReader.java")
+  exclude("**/JsonScope.java")
+  exclude("**/JsonUtf8Writer.java")
 }

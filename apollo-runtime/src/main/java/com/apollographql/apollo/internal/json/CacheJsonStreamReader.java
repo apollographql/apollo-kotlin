@@ -1,5 +1,7 @@
 package com.apollographql.apollo.internal.json;
 
+import com.apollographql.apollo.api.internal.json.JsonReader;
+import com.apollographql.apollo.api.internal.json.ResponseJsonStreamReader;
 import com.apollographql.apollo.cache.normalized.CacheReference;
 
 import java.io.IOException;

@@ -4,8 +4,12 @@ import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
+import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader;
+import com.apollographql.apollo.api.internal.json.ResponseJsonStreamReader;
+import okio.BufferedSource;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,8 +21,28 @@ public final class SimpleOperationResponseParser {
   private SimpleOperationResponseParser() {
   }
 
+  public static <D extends Operation.Data, W> Response<W> parse(@NotNull final BufferedSource source,
+      @NotNull final Operation<D, W, ?> operation, @NotNull final ScalarTypeAdapters scalarTypeAdapters) throws IOException {
+    checkNotNull(source, "source == null");
+    checkNotNull(operation, "operation == null");
+    checkNotNull(scalarTypeAdapters, "scalarTypeAdapters == null");
+
+    BufferedSourceJsonReader jsonReader = null;
+    try {
+      jsonReader = new BufferedSourceJsonReader(source);
+      jsonReader.beginObject();
+
+      final Map<String, Object> response = new ResponseJsonStreamReader(jsonReader).toMap();
+      return parse(response, operation, scalarTypeAdapters);
+    } finally {
+      if (jsonReader != null) {
+        jsonReader.close();
+      }
+    }
+  }
+
   @SuppressWarnings("unchecked")
-  public static <D extends Operation.Data, W> Response<W> parse(@NotNull final Map<String, Object> response,
+  private static <D extends Operation.Data, W> Response<W> parse(@NotNull final Map<String, Object> response,
       @NotNull final Operation<D, W, ?> operation, @NotNull final ScalarTypeAdapters scalarTypeAdapters) {
     checkNotNull(response, "response == null");
     checkNotNull(operation, "operation == null");

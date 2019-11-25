@@ -9,9 +9,10 @@ import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.exception.ApolloParseException;
-import com.apollographql.apollo.json.JsonEncodingException;
+import com.apollographql.apollo.api.json.JsonEncodingException;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 
+import okio.BufferedSource;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -82,7 +83,7 @@ import static com.google.common.truth.Truth.assertThat;
         return data;
       }
 
-      @NotNull @Override public Response parse(@NotNull Map response, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+      @NotNull @Override public Response parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
         throw new UnsupportedOperationException();
       }
     };

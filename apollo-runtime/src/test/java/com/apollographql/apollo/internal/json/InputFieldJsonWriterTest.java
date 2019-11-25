@@ -8,6 +8,7 @@ import com.apollographql.apollo.api.CustomTypeAdapter;
 import com.apollographql.apollo.api.CustomTypeValue;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
 
+import com.apollographql.apollo.api.internal.json.JsonWriter;
 import org.junit.Before;
 import org.junit.Test;
 

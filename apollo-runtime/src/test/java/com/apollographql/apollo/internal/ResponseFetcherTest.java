@@ -9,6 +9,7 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
 
+import okio.BufferedSource;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -63,7 +64,7 @@ public class ResponseFetcherTest {
         return data;
       }
 
-      @NotNull @Override public Response parse(@NotNull Map response, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+      @NotNull @Override public Response parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
         throw new UnsupportedOperationException();
       }
     };

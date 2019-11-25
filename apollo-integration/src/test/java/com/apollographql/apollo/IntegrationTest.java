@@ -1,14 +1,13 @@
 package com.apollographql.apollo;
 
-import com.apollographql.apollo.api.ScalarType;
-import com.apollographql.apollo.integration.normalizer.HeroNameWithIdQuery;
-import com.google.common.base.Charsets;
-import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
-
+import com.apollographql.apollo.api.CustomTypeAdapter;
+import com.apollographql.apollo.api.CustomTypeValue;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
+import com.apollographql.apollo.api.internal.json.JsonWriter;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
 import com.apollographql.apollo.exception.ApolloException;
@@ -18,23 +17,24 @@ import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery;
 import com.apollographql.apollo.integration.httpcache.type.CustomType;
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.HeroNameQuery;
-import com.apollographql.apollo.internal.json.JsonWriter;
-import com.apollographql.apollo.api.CustomTypeAdapter;
-import com.apollographql.apollo.api.CustomTypeValue;
 import com.apollographql.apollo.response.OperationJsonWriter;
 import com.apollographql.apollo.response.OperationResponseParser;
-import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.rx2.Rx2Apollo;
-
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.Moshi;
-import com.squareup.moshi.Types;
+import com.google.common.base.Charsets;
+import com.google.common.base.Function;
+import com.google.common.collect.FluentIterable;
+import io.reactivex.functions.Predicate;
+import okhttp3.Dispatcher;
+import okhttp3.OkHttpClient;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import okio.Buffer;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -44,16 +44,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-
-import org.jetbrains.annotations.NotNull;
-
-import io.reactivex.functions.Predicate;
-import okhttp3.Dispatcher;
-import okhttp3.OkHttpClient;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
-import okio.Buffer;
 
 import static com.apollographql.apollo.integration.normalizer.type.Episode.EMPIRE;
 import static com.apollographql.apollo.integration.normalizer.type.Episode.JEDI;
@@ -66,7 +56,8 @@ public class IntegrationTest {
   private ApolloClient apolloClient;
   private CustomTypeAdapter<Date> dateCustomTypeAdapter;
 
-  @Rule public final MockWebServer server = new MockWebServer();
+  @Rule
+  public final MockWebServer server = new MockWebServer();
 
   @Before public void setUp() {
     dateCustomTypeAdapter = new CustomTypeAdapter<Date>() {
@@ -295,16 +286,25 @@ public class IntegrationTest {
     assertThat(buffer.readUtf8()).isEqualTo(json);
   }
 
-  @Test public void parseOperationResponseFromRawResponse() throws Exception {
-    final String json = Utils.INSTANCE.readFileToString(getClass(), "/ResponseErrorWithData.json");
+  @Test public void parseSuccessOperationRawResponse() throws Exception {
+    final AllPlanetsQuery query = new AllPlanetsQuery();
+    final Response<AllPlanetsQuery.Data> response = query.parse(
+        new Buffer().readFrom(getClass().getResourceAsStream("/AllPlanetsNullableField.json")),
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap())
+    );
 
-    final Moshi moshi = new Moshi.Builder().build();
-    final Type type = Types.newParameterizedType(Map.class, String.class, Object.class);
-    final JsonAdapter<Map<String, Object>> adapter = moshi.adapter(type);
-    final Map<String, Object> data = adapter.fromJson(json);
+    assertThat(response.operation()).isEqualTo(query);
+    assertThat(response.hasErrors()).isFalse();
+    assertThat(response.data()).isNotNull();
+    assertThat(response.data().allPlanets().planets()).isNotEmpty();
+  }
 
-    final Response<EpisodeHeroNameQuery.Data> response = new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))
-        .parse(data, new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()));
+  @Test public void parseErrorOperationRawResponse() throws Exception {
+    final EpisodeHeroNameQuery query = new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE));
+    final Response<EpisodeHeroNameQuery.Data> response = query.parse(
+        new Buffer().readFrom(getClass().getResourceAsStream("/ResponseErrorWithData.json")),
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap())
+    );
 
     assertThat(response.data()).isNotNull();
     assertThat(response.data().hero()).isNotNull();

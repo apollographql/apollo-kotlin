@@ -15,7 +15,7 @@ import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.internal.ApolloLogger;
 import com.apollographql.apollo.internal.json.InputFieldJsonWriter;
-import com.apollographql.apollo.internal.json.JsonWriter;
+import com.apollographql.apollo.api.internal.json.JsonWriter;
 import com.apollographql.apollo.request.RequestHeaders;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
 import okhttp3.Call;

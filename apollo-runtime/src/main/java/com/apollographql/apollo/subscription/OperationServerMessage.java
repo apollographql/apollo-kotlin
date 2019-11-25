@@ -1,8 +1,8 @@
 package com.apollographql.apollo.subscription;
 
-import com.apollographql.apollo.internal.json.BufferedSourceJsonReader;
-import com.apollographql.apollo.internal.json.JsonReader;
-import com.apollographql.apollo.internal.json.ResponseJsonStreamReader;
+import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader;
+import com.apollographql.apollo.api.internal.json.JsonReader;
+import com.apollographql.apollo.api.internal.json.ResponseJsonStreamReader;
 
 import java.io.IOException;
 import java.util.Collections;

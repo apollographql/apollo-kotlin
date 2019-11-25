@@ -4,7 +4,7 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.internal.Optional;
-import com.apollographql.apollo.internal.json.JsonWriter;
+import com.apollographql.apollo.api.internal.json.JsonWriter;
 import com.apollographql.apollo.internal.response.RealResponseWriter;
 import com.apollographql.apollo.internal.response.ResolveDelegate;
 

@@ -1,7 +1,7 @@
 package com.apollographql.apollo.cache.normalized;
 
 import com.apollographql.apollo.internal.json.CacheJsonStreamReader;
-import com.apollographql.apollo.internal.json.JsonWriter;
+import com.apollographql.apollo.api.internal.json.JsonWriter;
 
 import org.jetbrains.annotations.NotNull;
 
