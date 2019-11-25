@@ -275,6 +275,8 @@ public abstract class JsonWriter implements Closeable, Flushable {
    */
   public abstract JsonWriter value(@Nullable String value) throws IOException;
 
+  public abstract JsonWriter jsonValue(String value) throws IOException;
+
   /**
    * Encodes {@code null}.
    *

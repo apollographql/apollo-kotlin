@@ -1,9 +1,8 @@
 package com.apollographql.apollo.subscription;
 
 import com.apollographql.apollo.api.Subscription;
-import com.apollographql.apollo.internal.json.InputFieldJsonWriter;
 import com.apollographql.apollo.api.internal.json.JsonWriter;
-import com.apollographql.apollo.internal.json.Utils;
+import com.apollographql.apollo.api.internal.json.Utils;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
 
 import java.io.IOException;
@@ -81,9 +80,7 @@ public abstract class OperationClientMessage {
       writer.name(JSON_KEY_TYPE).value(TYPE);
       writer.name(JSON_KEY_PAYLOAD).beginObject();
       writer.name(JSON_KEY_QUERY).value(subscription.queryDocument());
-      writer.name(JSON_KEY_VARIABLES).beginObject();
-      subscription.variables().marshaller().marshal(new InputFieldJsonWriter(writer, scalarTypeAdapters));
-      writer.endObject();
+      writer.name(JSON_KEY_VARIABLES).jsonValue(subscription.variables().marshal(scalarTypeAdapters));
       writer.name(JSON_KEY_OPERATION_NAME).value(subscription.name().name());
       writer.endObject();
     }

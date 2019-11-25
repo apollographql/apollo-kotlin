@@ -1,4 +1,4 @@
-package com.apollographql.apollo.internal.json;
+package com.apollographql.apollo.api.internal.json;
 
 import com.apollographql.apollo.api.InputFieldMarshaller;
 import com.apollographql.apollo.api.InputFieldWriter;
@@ -10,12 +10,10 @@ import com.apollographql.apollo.api.ScalarTypeAdapters;
 import java.io.IOException;
 import java.util.Map;
 
-import com.apollographql.apollo.api.internal.json.JsonWriter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
-import static com.apollographql.apollo.internal.json.Utils.writeToJson;
 
 public class InputFieldJsonWriter implements InputFieldWriter {
   private final JsonWriter jsonWriter;
@@ -96,7 +94,7 @@ public class InputFieldJsonWriter implements InputFieldWriter {
       } else if (customTypeValue instanceof CustomTypeValue.GraphQLJsonObject
           || customTypeValue instanceof CustomTypeValue.GraphQLJsonList) {
         jsonWriter.name(fieldName);
-        writeToJson(value, jsonWriter);
+        Utils.writeToJson(value, jsonWriter);
       } else {
         throw new IllegalArgumentException("Unsupported custom value type: " + customTypeValue);
       }
@@ -134,7 +132,7 @@ public class InputFieldJsonWriter implements InputFieldWriter {
       jsonWriter.name(fieldName).nullValue();
     } else {
       jsonWriter.name(fieldName);
-      writeToJson(value, jsonWriter);
+      Utils.writeToJson(value, jsonWriter);
     }
   }
 
@@ -196,7 +194,7 @@ public class InputFieldJsonWriter implements InputFieldWriter {
     }
 
     @Override public void writeMap(@Nullable Map<String, Object> value) throws IOException {
-      writeToJson(value, jsonWriter);
+      Utils.writeToJson(value, jsonWriter);
     }
 
     @SuppressWarnings("unchecked")
@@ -214,7 +212,7 @@ public class InputFieldJsonWriter implements InputFieldWriter {
           writeNumber(((CustomTypeValue.GraphQLNumber) customTypeValue).value);
         } else if (customTypeValue instanceof CustomTypeValue.GraphQLJsonObject
             || customTypeValue instanceof CustomTypeValue.GraphQLJsonList) {
-          writeToJson(value, jsonWriter);
+          Utils.writeToJson(value, jsonWriter);
         } else {
           throw new IllegalArgumentException("Unsupported custom value type: " + customTypeValue);
         }

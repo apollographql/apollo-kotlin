@@ -1,5 +1,8 @@
 package com.apollographql.apollo.api;
 
+import com.apollographql.apollo.api.internal.json.InputFieldJsonWriter;
+import com.apollographql.apollo.api.internal.json.JsonWriter;
+import okio.Buffer;
 import okio.BufferedSource;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,7 +52,7 @@ public interface Operation<D extends Operation.Data, T, V extends Operation.Vari
   /**
    * Parses provided GraphQL operation raw response
    *
-   * @param source for operation raw response to parse
+   * @param source             for operation raw response to parse
    * @param scalarTypeAdapters configured instance of custom GraphQL scalar type adapters
    * @return parsed GraphQL operation {@link Response}
    */
@@ -99,6 +102,24 @@ public interface Operation<D extends Operation.Data, T, V extends Operation.Vari
         @Override public void marshal(InputFieldWriter writer) {
         }
       };
+    }
+
+    /**
+     * Serializes variables as JSON string to be sent to the GraphQL server.
+     *
+     * @param scalarTypeAdapters adapters for custom GraphQL scalar types
+     * @return JSON string
+     * @throws IOException
+     */
+    public final String marshal(@NotNull final ScalarTypeAdapters scalarTypeAdapters) throws IOException {
+      final Buffer buffer = new Buffer();
+      final JsonWriter jsonWriter = JsonWriter.of(buffer);
+      jsonWriter.setSerializeNulls(true);
+      jsonWriter.beginObject();
+      marshaller().marshal(new InputFieldJsonWriter(jsonWriter, scalarTypeAdapters));
+      jsonWriter.endObject();
+      jsonWriter.close();
+      return buffer.readUtf8();
     }
   }
 

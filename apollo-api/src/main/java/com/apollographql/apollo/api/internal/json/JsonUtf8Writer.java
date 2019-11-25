@@ -170,6 +170,20 @@ final class JsonUtf8Writer extends JsonWriter {
     return this;
   }
 
+  @Override public JsonWriter jsonValue(String value) throws IOException {
+    if (value == null) {
+      return nullValue();
+    }
+    if (promoteValueToName) {
+      return name(value);
+    }
+    writeDeferredName();
+    beforeValue();
+    sink.writeUtf8(value);
+    pathIndices[stackSize - 1]++;
+    return this;
+  }
+
   @Override public JsonWriter nullValue() throws IOException {
     if (deferredName != null) {
       if (serializeNulls) {

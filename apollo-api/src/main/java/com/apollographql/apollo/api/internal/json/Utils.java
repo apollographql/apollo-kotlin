@@ -1,28 +1,10 @@
-package com.apollographql.apollo.internal.json;
+package com.apollographql.apollo.api.internal.json;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import com.apollographql.apollo.api.internal.json.JsonWriter;
-import org.jetbrains.annotations.NotNull;
-
-import okio.Buffer;
-
-import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
-
 public final class Utils {
-
-  public static String toJsonString(@NotNull Object data) throws IOException {
-    checkNotNull(data, "data == null");
-
-    Buffer buffer = new Buffer();
-    JsonWriter jsonWriter = JsonWriter.of(buffer);
-    writeToJson(data, jsonWriter);
-    jsonWriter.close();
-
-    return buffer.readUtf8();
-  }
 
   @SuppressWarnings("unchecked")
   public static void writeToJson(Object value, JsonWriter jsonWriter) throws IOException {

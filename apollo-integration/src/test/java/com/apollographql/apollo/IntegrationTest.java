@@ -318,6 +318,20 @@ public class IntegrationTest {
     );
   }
 
+  @Test public void writeOperationRawRequest() throws Exception {
+    final EpisodeHeroNameQuery query = new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE));
+
+    final ScalarTypeAdapters scalarTypeAdapters = new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap());
+
+    final String payload = "{" +
+        "\"operationName\": " + query.name().name() + ", " +
+        "\"query\": " + query.queryDocument() + ", " +
+        "\"variables\": " + query.variables().marshal(scalarTypeAdapters) +
+        "}";
+
+    assertThat(payload).isEqualTo("{\"operationName\":\"EpisodeHeroName\",\"query\":\"query EpisodeHeroName($episode: Episode) { hero(episode: $episode) { __typename name } }\",\"variables\":{\"episode\":\"EMPIRE\"}}");
+  }
+
   private MockResponse mockResponse(String fileName) throws IOException {
     return new MockResponse().setChunkedBody(Utils.INSTANCE.readFileToString(getClass(), "/" + fileName), 32);
   }
