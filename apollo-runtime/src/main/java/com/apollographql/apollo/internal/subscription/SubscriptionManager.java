@@ -57,7 +57,7 @@ public interface SubscriptionManager {
   void stop();
 
   interface Callback<T> {
-    void onResponse(@NotNull Response<T> response);
+    void onResponse(@NotNull SubscriptionResponse<T> response);
 
     void onError(@NotNull ApolloSubscriptionException error);
 

@@ -10,7 +10,10 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
 import com.apollographql.apollo.api.Subscription;
+import com.apollographql.apollo.api.internal.Supplier;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
+import com.apollographql.apollo.cache.normalized.ApolloStore;
+import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeListener;
 import com.apollographql.apollo.subscription.OperationClientMessage;
 import com.apollographql.apollo.subscription.OperationServerMessage;
@@ -26,6 +29,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
@@ -44,7 +48,11 @@ public class SubscriptionManagerTest {
     subscriptionTransportFactory = new MockSubscriptionTransportFactory();
     subscriptionManager = new RealSubscriptionManager(new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
         subscriptionTransportFactory, new SubscriptionConnectionParamsProvider.Const(new SubscriptionConnectionParams()),
-        new MockExecutor(), connectionHeartbeatTimeoutMs);
+        new MockExecutor(), connectionHeartbeatTimeoutMs, new Supplier<ResponseNormalizer<Map<String, Object>>>() {
+      @Override public ResponseNormalizer<Map<String, Object>> get() {
+        return ApolloStore.NO_APOLLO_STORE.networkResponseNormalizer();
+      }
+    });
     subscriptionManager.addOnStateChangeListener(onStateChangeListener);
     assertThat(subscriptionTransportFactory.subscriptionTransport).isNotNull();
     assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.DISCONNECTED);
@@ -445,14 +453,14 @@ public class SubscriptionManagerTest {
   }
 
   private static class SubscriptionManagerCallbackAdapter<T> implements SubscriptionManager.Callback<T> {
-    volatile Response<T> response;
+    volatile SubscriptionResponse<T> response;
     volatile ApolloSubscriptionException error;
     volatile Throwable networkError;
     volatile boolean completed;
     volatile boolean terminated;
     volatile boolean connected;
 
-    @Override public void onResponse(@NotNull Response<T> response) {
+    @Override public void onResponse(@NotNull SubscriptionResponse<T> response) {
       this.response = response;
     }
 

@@ -67,4 +67,8 @@ configure<ApolloExtension> {
     sourceFolder.set("com/apollographql/apollo/integration/upload")
     rootPackageName.set("com.apollographql.apollo.integration.upload")
   }
+  service("subscription") {
+    sourceFolder.set("com/apollographql/apollo/integration/subscription")
+    rootPackageName.set("com.apollographql.apollo.integration.subscription")
+  }
 }

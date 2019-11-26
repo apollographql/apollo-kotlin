@@ -9,6 +9,7 @@ import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.api.cache.http.HttpCache;
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.api.internal.Supplier;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
@@ -26,6 +27,7 @@ import com.apollographql.apollo.internal.RealApolloPrefetch;
 import com.apollographql.apollo.internal.RealApolloSubscriptionCall;
 import com.apollographql.apollo.internal.ResponseFieldMapperFactory;
 import com.apollographql.apollo.internal.cache.normalized.RealApolloStore;
+import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.subscription.NoOpSubscriptionManager;
 import com.apollographql.apollo.internal.subscription.RealSubscriptionManager;
 import com.apollographql.apollo.internal.subscription.SubscriptionManager;
@@ -157,7 +159,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   @Override
   public <D extends Subscription.Data, T, V extends Subscription.Variables> ApolloSubscriptionCall<T> subscribe(
       @NotNull Subscription<D, T, V> subscription) {
-    return new RealApolloSubscriptionCall<>(subscription, subscriptionManager);
+    return new RealApolloSubscriptionCall<>(subscription, subscriptionManager, apolloStore, ApolloSubscriptionCall.CachePolicy.NO_CACHE,
+        dispatcher, responseFieldMapperFactory, logger);
   }
 
   /**
@@ -185,6 +188,10 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
    */
   public SubscriptionManagerState getSubscriptionManagerState() {
     return subscriptionManager.getState();
+  }
+
+  public SubscriptionManager getSubscriptionManager() {
+    return subscriptionManager;
   }
 
   /**
@@ -615,8 +622,14 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       SubscriptionManager subscriptionManager = new NoOpSubscriptionManager();
       Optional<SubscriptionTransport.Factory> subscriptionTransportFactory = this.subscriptionTransportFactory;
       if (subscriptionTransportFactory.isPresent()) {
+        final ApolloStore finalApolloStore = apolloStore;
         subscriptionManager = new RealSubscriptionManager(scalarTypeAdapters, subscriptionTransportFactory.get(),
-            subscriptionConnectionParams, dispatcher, subscriptionHeartbeatTimeout);
+            subscriptionConnectionParams, dispatcher, subscriptionHeartbeatTimeout,
+            new Supplier<ResponseNormalizer<Map<String, Object>>>() {
+              @Override public ResponseNormalizer<Map<String, Object>> get() {
+                return finalApolloStore.networkResponseNormalizer();
+              }
+            });
       }
 
       return new ApolloClient(serverUrl,

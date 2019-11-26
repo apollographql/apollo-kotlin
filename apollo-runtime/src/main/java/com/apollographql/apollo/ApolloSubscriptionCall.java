@@ -36,6 +36,14 @@ public interface ApolloSubscriptionCall<T> extends Cancelable {
   ApolloSubscriptionCall<T> clone();
 
   /**
+   * Sets the cache policy for response/request cache.
+   *
+   * @param cachePolicy {@link CachePolicy} to set
+   * @return {@link ApolloSubscriptionCall} with the provided {@link CachePolicy}
+   */
+  @NotNull ApolloSubscriptionCall<T> cachePolicy(@NotNull CachePolicy cachePolicy);
+
+  /**
    * Factory for creating {@link ApolloSubscriptionCall} calls.
    */
   interface Factory {
@@ -47,6 +55,26 @@ public interface ApolloSubscriptionCall<T> extends Cancelable {
      */
     <D extends Subscription.Data, T, V extends Subscription.Variables> ApolloSubscriptionCall<T> subscribe(
         @NotNull Subscription<D, T, V> subscription);
+  }
+
+  /**
+   * Subscription normalized cache policy.
+   */
+  enum CachePolicy {
+    /**
+     * Signals the apollo subscription client to bypass normalized cache. Fetch GraphQL response from the network only and don't cache it.
+     */
+    NO_CACHE,
+
+    /**
+     * Signals the apollo subscription client to fetch the GraphQL response from the network only and cache it to normalized cache.
+     */
+    NETWORK_ONLY,
+
+    /**
+     * Signals the apollo subscription client to first fetch the GraphQL response from the cache, then fetch it from network.
+     */
+    CACHE_AND_NETWORK
   }
 
   /**

@@ -12,12 +12,22 @@ import org.jetbrains.annotations.NotNull;
 public class IdFieldCacheKeyResolver extends CacheKeyResolver {
   @NotNull @Override
   public CacheKey fromFieldRecordSet(@NotNull ResponseField field, @NotNull Map<String, Object> recordSet) {
-    return formatCacheKey((String) recordSet.get("id"));
+    Object id = recordSet.get("id");
+    if (id != null) {
+      return formatCacheKey(id.toString());
+    } else {
+      return formatCacheKey(null);
+    }
   }
 
   @NotNull @Override
   public CacheKey fromFieldArguments(@NotNull ResponseField field, @NotNull Operation.Variables variables) {
-    return formatCacheKey((String) field.resolveArgument("id", variables));
+    Object id = field.resolveArgument("id", variables);
+    if (id != null) {
+      return formatCacheKey(id.toString());
+    } else {
+      return formatCacheKey(null);
+    }
   }
 
   private CacheKey formatCacheKey(String id) {

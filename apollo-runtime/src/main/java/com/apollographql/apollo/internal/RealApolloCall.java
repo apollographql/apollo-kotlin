@@ -402,7 +402,6 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     ResponseFetcher responseFetcher;
     CacheHeaders cacheHeaders;
     RequestHeaders requestHeaders = RequestHeaders.NONE;
-    ApolloInterceptorChain interceptorChain;
     Executor dispatcher;
     ApolloLogger logger;
     List<ApolloInterceptor> applicationInterceptors;
