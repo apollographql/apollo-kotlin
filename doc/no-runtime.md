@@ -26,12 +26,9 @@ To compose a GraphQL POST request along with operation variables to be sent to t
     // Generated GraphQL query, mutation, subscription
     final Query query = ...;
 
-    // if you have custom scalar types, provide proper instance of ScalarTypeAdapters with your own custom adapters
-    final ScalarTypeAdapters scalarTypeAdapters = new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap());
-
     final String requestPayload = "{" +
         "\"operationName\": " + query.name().name() + ", " +
         "\"query\": " + query.queryDocument() + ", " +
-        "\"variables\": " + query.variables().marshal(scalarTypeAdapters) +
+        "\"variables\": " + query.variables().marshal() +
         "}";
 ```

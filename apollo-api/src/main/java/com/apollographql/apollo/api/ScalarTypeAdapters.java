@@ -1,5 +1,6 @@
 package com.apollographql.apollo.api;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -10,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 public final class ScalarTypeAdapters {
+  public static ScalarTypeAdapters DEFAULT = new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap());
   private static final Map<Class, CustomTypeAdapter> DEFAULT_ADAPTERS = defaultAdapters();
   private final Map<String, CustomTypeAdapter> customAdapters;
 

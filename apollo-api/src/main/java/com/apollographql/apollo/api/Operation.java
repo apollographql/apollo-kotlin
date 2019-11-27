@@ -107,6 +107,16 @@ public interface Operation<D extends Operation.Data, T, V extends Operation.Vari
     /**
      * Serializes variables as JSON string to be sent to the GraphQL server.
      *
+     * @return JSON string
+     * @throws IOException
+     */
+    public final String marshal() throws IOException {
+      return marshal(ScalarTypeAdapters.DEFAULT);
+    }
+
+    /**
+     * Serializes variables as JSON string to be sent to the GraphQL server.
+     *
      * @param scalarTypeAdapters adapters for custom GraphQL scalar types
      * @return JSON string
      * @throws IOException
