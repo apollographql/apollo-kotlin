@@ -14,7 +14,7 @@ import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.internal.ApolloLogger;
-import com.apollographql.apollo.internal.json.InputFieldJsonWriter;
+import com.apollographql.apollo.api.internal.json.InputFieldJsonWriter;
 import com.apollographql.apollo.api.internal.json.JsonWriter;
 import com.apollographql.apollo.request.RequestHeaders;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
@@ -212,9 +212,7 @@ public final class ApolloServerInterceptor implements ApolloInterceptor {
     jsonWriter.setSerializeNulls(true);
     jsonWriter.beginObject();
     jsonWriter.name("operationName").value(operation.name().name());
-    jsonWriter.name("variables").beginObject();
-    operation.variables().marshaller().marshal(new InputFieldJsonWriter(jsonWriter, scalarTypeAdapters));
-    jsonWriter.endObject();
+    jsonWriter.name("variables").jsonValue(operation.variables().marshal(scalarTypeAdapters));
     if (autoPersistQueries) {
       jsonWriter.name("extensions")
           .beginObject()
