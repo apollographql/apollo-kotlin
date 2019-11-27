@@ -1,6 +1,5 @@
 package com.apollographql.apollo.internal.subscription;
 
-import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeListener;
 import com.apollographql.apollo.subscription.SubscriptionManagerState;
