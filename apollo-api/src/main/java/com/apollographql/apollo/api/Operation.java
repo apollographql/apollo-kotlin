@@ -52,7 +52,7 @@ public interface Operation<D extends Operation.Data, T, V extends Operation.Vari
   /**
    * Parses provided GraphQL operation raw response
    *
-   * @param source             for operation raw response to parse
+   * @param source for operation raw response to parse
    * @param scalarTypeAdapters configured instance of custom GraphQL scalar type adapters
    * @return parsed GraphQL operation {@link Response}
    */
