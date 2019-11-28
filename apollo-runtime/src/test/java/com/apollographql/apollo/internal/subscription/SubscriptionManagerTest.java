@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -433,6 +434,10 @@ public class SubscriptionManagerTest {
 
     @NotNull @Override public String operationId() {
       return operationId;
+    }
+
+    @NotNull @Override public Response<Data> parse(@NotNull BufferedSource source) {
+      throw new UnsupportedOperationException();
     }
 
     @NotNull @Override public Response<Data> parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) {

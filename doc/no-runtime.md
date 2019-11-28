@@ -17,15 +17,40 @@ If for some reason you want to use your own network layer and don't want to use 
     Response<Query.Data> response = new Query().parse(httpResponse.body().source());
 ```
 
+If you do have custom GraphQL scalar types, pass properly configured instance of `com.apollographql.apollo.api.ScalarTypeAdapters`:
+
+```java
+    okhttp3.Response httpResponse = ...;
+
+    ScalarTypeAdapters scalarTypeAdapters = new ScalarTypeAdapters(<provide your custom scalar type adapters>);
+
+    Response<Query.Data> response = new Query().parse(httpResponse.body().source(), scalarTypeAdapters);
+```
+
 To compose a GraphQL POST request along with operation variables to be sent to the server, you can use `Operation.Variables#marshal()` API: 
 
 ```java
     // Generated GraphQL query, mutation, subscription
-    final Query query = ...;
+    Query query = ...;
 
-    final String requestPayload = "{" +
+    String requestPayload = "{" +
         "\"operationName\": " + query.name().name() + ", " +
         "\"query\": " + query.queryDocument() + ", " +
         "\"variables\": " + query.variables().marshal() +
+        "}";
+```
+
+The same to serialize variables with the custom GraphQL scalar type adapters:
+
+```java
+    // Generated GraphQL query, mutation, subscription
+    Query query = ...;
+  
+    ScalarTypeAdapters scalarTypeAdapters = new ScalarTypeAdapters(<provide your custom scalar type adapters>);
+
+    String requestPayload = "{" +
+        "\"operationName\": " + query.name().name() + ", " +
+        "\"query\": " + query.queryDocument() + ", " +
+        "\"variables\": " + query.variables().marshal(scalarTypeAdapters) +
         "}";
 ```

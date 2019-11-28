@@ -17,6 +17,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -81,6 +82,10 @@ import static com.google.common.truth.Truth.assertThat;
 
       @Override public Object wrapData(Data data) {
         return data;
+      }
+
+      @NotNull @Override public Response parse(@NotNull BufferedSource source) {
+        throw new UnsupportedOperationException();
       }
 
       @NotNull @Override public Response parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
