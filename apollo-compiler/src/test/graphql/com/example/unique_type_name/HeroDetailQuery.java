@@ -131,6 +131,13 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     return SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters);
   }
 
+  @Override
+  @NotNull
+  public Response<Optional<HeroDetailQuery.Data>> parse(@NotNull final BufferedSource source) throws
+      IOException {
+    return parse(source, ScalarTypeAdapters.DEFAULT);
+  }
+
   public static final class Builder {
     Builder() {
     }

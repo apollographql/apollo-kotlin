@@ -107,6 +107,12 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
     return SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters);
   }
 
+  @Override
+  @NotNull
+  public Response<TestQuery.Data> parse(@NotNull final BufferedSource source) throws IOException {
+    return parse(source, ScalarTypeAdapters.DEFAULT);
+  }
+
   public static final class Builder {
     Builder() {
     }

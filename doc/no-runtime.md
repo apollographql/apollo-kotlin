@@ -14,10 +14,7 @@ If for some reason you want to use your own network layer and don't want to use 
 ```java
     okhttp3.Response httpResponse = ...;
 
-    // if you have custom scalar types, provide proper instance of ScalarTypeAdapters with your own custom adapters
-    ScalarTypeAdapters scalarTypeAdapters = new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap());
-
-    Response<Query.Data> response = new Query().parse(httpResponse.body().source(), scalarTypeAdapters);
+    Response<Query.Data> response = new Query().parse(httpResponse.body().source());
 ```
 
 To compose a GraphQL POST request along with operation variables to be sent to the server, you can use `Operation.Variables#marshal()` API: 

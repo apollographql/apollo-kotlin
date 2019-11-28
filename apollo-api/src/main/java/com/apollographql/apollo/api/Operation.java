@@ -59,6 +59,14 @@ public interface Operation<D extends Operation.Data, T, V extends Operation.Vari
   @NotNull Response<T> parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) throws IOException;
 
   /**
+   * Parses provided GraphQL operation raw response
+   *
+   * @param source for operation raw response to parse
+   * @return parsed GraphQL operation {@link Response}
+   */
+  @NotNull Response<T> parse(@NotNull BufferedSource source) throws IOException;
+
+  /**
    * Abstraction for data returned by the server in response to this operation.
    */
   interface Data {
