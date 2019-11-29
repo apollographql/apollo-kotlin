@@ -51,6 +51,7 @@ ext.dep = [
     compiletesting        : "com.google.testing.compile:compile-testing:$versions.compiletesting",
     cache                 : "com.nytimes.android:cache:$versions.cache",
     errorProneCore        : "com.google.errorprone:error_prone_core:2.1.1",
+    gradleJapiCmpPlugin   : "me.champeau.gradle:japicmp-gradle-plugin:0.2.8",
     gradleErrorpronePlugin: "net.ltgt.gradle:gradle-errorprone-plugin:0.0.12",
     guavaJre              : "com.google.guava:guava:$versions.guava",
     jetbrainsAnnotations  : "org.jetbrains:annotations:$versions.jetbrainsAnnotations",
