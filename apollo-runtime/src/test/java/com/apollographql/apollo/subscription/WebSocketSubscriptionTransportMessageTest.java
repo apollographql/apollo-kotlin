@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Map;
@@ -220,6 +221,10 @@ public class WebSocketSubscriptionTransportMessageTest {
 
     @NotNull @Override public String operationId() {
       return "someId";
+    }
+
+    @NotNull @Override public Response<Data> parse(@NotNull BufferedSource source) throws IOException {
+      throw new UnsupportedOperationException();
     }
 
     @NotNull @Override public Response<Data> parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) {

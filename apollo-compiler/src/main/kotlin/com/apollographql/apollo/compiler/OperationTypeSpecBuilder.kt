@@ -36,6 +36,7 @@ class OperationTypeSpecBuilder(
         .addType(operation.toTypeSpec(newContext, abstract))
         .addOperationName()
         .addMethod(parseMethod(context))
+        .addMethod(parseMethodWithDefaultScalarTypeAdapters(context))
         .build()
         .flatten(excludeTypeNames = listOf(
             VISITOR_CLASSNAME,
@@ -291,6 +292,23 @@ class OperationTypeSpecBuilder(
         .addException(IOException::class.java)
         .returns(ParameterizedTypeName.get(ClassName.get(Response::class.java), wrapperType(context)))
         .addStatement("return \$T.parse(source, this, scalarTypeAdapters)", SimpleOperationResponseParser::class.java)
+        .build()
+  }
+
+  private fun parseMethodWithDefaultScalarTypeAdapters(context: CodeGenerationContext): MethodSpec {
+    return MethodSpec
+        .methodBuilder("parse")
+        .addAnnotation(Annotations.OVERRIDE)
+        .addAnnotation(Annotations.NONNULL)
+        .addModifiers(Modifier.PUBLIC)
+        .addParameter(ParameterSpec
+            .builder(BufferedSource::class.java, "source", Modifier.FINAL)
+            .addAnnotation(Annotations.NONNULL)
+            .build()
+        )
+        .addException(IOException::class.java)
+        .returns(ParameterizedTypeName.get(ClassName.get(Response::class.java), wrapperType(context)))
+        .addStatement("return parse(source, \$T.DEFAULT)", ScalarTypeAdapters::class.java)
         .build()
   }
 

@@ -84,6 +84,10 @@ public class ApolloIdlingResourceTest {
       return "";
     }
 
+    @NotNull @Override public Response parse(@NotNull BufferedSource source) {
+      throw new UnsupportedOperationException();
+    }
+
     @NotNull @Override public Response parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
       throw new UnsupportedOperationException();
     }

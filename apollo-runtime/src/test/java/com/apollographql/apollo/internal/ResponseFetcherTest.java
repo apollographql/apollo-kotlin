@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import okhttp3.OkHttpClient;
 
+import java.io.IOException;
 import java.util.Map;
 
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_FIRST;
@@ -62,6 +63,10 @@ public class ResponseFetcherTest {
 
       @Override public Object wrapData(Data data) {
         return data;
+      }
+
+      @NotNull @Override public Response parse(@NotNull BufferedSource source) {
+       throw new UnsupportedOperationException();
       }
 
       @NotNull @Override public Response parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) {

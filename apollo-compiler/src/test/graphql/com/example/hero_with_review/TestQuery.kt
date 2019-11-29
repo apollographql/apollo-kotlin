@@ -15,6 +15,7 @@ import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
 import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.ScalarTypeAdapters.DEFAULT
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.hero_with_review.type.Episode
@@ -57,6 +58,9 @@ data class TestQuery(
   @Throws(IOException::class)
   override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters): Response<Data>
       = SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters)
+
+  @Throws(IOException::class)
+  override fun parse(source: BufferedSource): Response<Data> = parse(source, DEFAULT)
 
   data class CreateReview(
     val __typename: String,

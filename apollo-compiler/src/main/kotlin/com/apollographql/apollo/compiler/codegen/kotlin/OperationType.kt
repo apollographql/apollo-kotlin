@@ -89,6 +89,17 @@ internal fun OperationType.typeSpec(targetPackage: String) = TypeSpec
         .addStatement("return %T.parse(source, this, scalarTypeAdapters)", SimpleOperationResponseParser::class)
         .build()
     )
+    .addFunction(FunSpec.builder("parse")
+        .addModifiers(KModifier.OVERRIDE)
+        .addParameter(ParameterSpec
+            .builder("source", BufferedSource::class)
+            .build()
+        )
+        .throws(IOException::class)
+        .returns(Response::class.asClassName().parameterizedBy(data.asTypeName()))
+        .addStatement("return parse(source, %M)", MemberName(ScalarTypeAdapters::class.asClassName(), "DEFAULT"))
+        .build()
+    )
     .addTypes(nestedObjects.map { (ref, type) ->
       if (ref == data) {
         type.toOperationDataTypeSpec(data.name)

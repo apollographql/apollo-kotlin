@@ -14,6 +14,7 @@ import okio.BufferedSource;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.text.ParseException;
@@ -847,6 +848,10 @@ public class SimpleResponseReaderTest {
 
     @NotNull @Override public String operationId() {
       return "";
+    }
+
+    @NotNull @Override public Response parse(@NotNull BufferedSource source) throws IOException {
+       throw new UnsupportedOperationException();
     }
 
     @NotNull @Override public Response parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) {

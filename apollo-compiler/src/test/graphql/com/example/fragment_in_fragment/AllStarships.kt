@@ -14,6 +14,7 @@ import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
 import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.ScalarTypeAdapters.DEFAULT
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.fragment_in_fragment.fragment.StarshipFragment
@@ -40,6 +41,9 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
   @Throws(IOException::class)
   override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters): Response<Data>
       = SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters)
+
+  @Throws(IOException::class)
+  override fun parse(source: BufferedSource): Response<Data> = parse(source, DEFAULT)
 
   data class Node(
     val __typename: String,

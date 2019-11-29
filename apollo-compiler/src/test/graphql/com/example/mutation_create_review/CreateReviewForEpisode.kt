@@ -15,6 +15,7 @@ import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
 import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.ScalarTypeAdapters.DEFAULT
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.example.mutation_create_review.type.CustomType
@@ -64,6 +65,9 @@ data class CreateReviewForEpisode(
   @Throws(IOException::class)
   override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters): Response<Data>
       = SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters)
+
+  @Throws(IOException::class)
+  override fun parse(source: BufferedSource): Response<Data> = parse(source, DEFAULT)
 
   data class ListOfListOfObject(
     val __typename: String,

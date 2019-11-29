@@ -20,6 +20,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -299,6 +300,10 @@ public class ApolloAutoPersistedQueryInterceptorTest {
       @Override public ResponseFieldMarshaller marshaller() {
         throw new UnsupportedOperationException();
       }
+    }
+
+    @NotNull @Override public com.apollographql.apollo.api.Response<Data> parse(@NotNull BufferedSource source) {
+      throw new UnsupportedOperationException();
     }
 
     @NotNull @Override public com.apollographql.apollo.api.Response<Data> parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) {

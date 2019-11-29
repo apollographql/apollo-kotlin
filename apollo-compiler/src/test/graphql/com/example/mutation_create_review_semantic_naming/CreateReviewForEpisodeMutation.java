@@ -105,6 +105,13 @@ public final class CreateReviewForEpisodeMutation implements Mutation<CreateRevi
     return SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters);
   }
 
+  @Override
+  @NotNull
+  public Response<Optional<CreateReviewForEpisodeMutation.Data>> parse(@NotNull final BufferedSource source)
+      throws IOException {
+    return parse(source, ScalarTypeAdapters.DEFAULT);
+  }
+
   public static final class Builder {
     private @NotNull Episode ep;
 
