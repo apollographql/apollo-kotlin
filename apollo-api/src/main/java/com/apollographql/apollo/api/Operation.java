@@ -2,6 +2,7 @@ package com.apollographql.apollo.api;
 
 import com.apollographql.apollo.api.internal.json.InputFieldJsonWriter;
 import com.apollographql.apollo.api.internal.json.JsonWriter;
+import com.apollographql.apollo.response.ScalarTypeAdapters;
 import okio.Buffer;
 import okio.BufferedSource;
 import org.jetbrains.annotations.NotNull;
@@ -56,7 +57,7 @@ public interface Operation<D extends Operation.Data, T, V extends Operation.Vari
    * @param scalarTypeAdapters configured instance of custom GraphQL scalar type adapters
    * @return parsed GraphQL operation {@link Response}
    */
-  @NotNull Response<T> parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) throws IOException;
+  @NotNull Response<T> parse(@NotNull BufferedSource source, @NotNull com.apollographql.apollo.response.ScalarTypeAdapters scalarTypeAdapters) throws IOException;
 
   /**
    * Parses provided GraphQL operation raw response
@@ -129,7 +130,7 @@ public interface Operation<D extends Operation.Data, T, V extends Operation.Vari
      * @return JSON string
      * @throws IOException
      */
-    public final String marshal(@NotNull final ScalarTypeAdapters scalarTypeAdapters) throws IOException {
+    public final String marshal(@NotNull final com.apollographql.apollo.response.ScalarTypeAdapters scalarTypeAdapters) throws IOException {
       final Buffer buffer = new Buffer();
       final JsonWriter jsonWriter = JsonWriter.of(buffer);
       jsonWriter.setSerializeNulls(true);

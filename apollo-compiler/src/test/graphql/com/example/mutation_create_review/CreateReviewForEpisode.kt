@@ -14,10 +14,10 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
-import com.apollographql.apollo.api.ScalarTypeAdapters
-import com.apollographql.apollo.api.ScalarTypeAdapters.DEFAULT
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.internal.QueryDocumentMinifier
+import com.apollographql.apollo.response.ScalarTypeAdapters
+import com.apollographql.apollo.response.ScalarTypeAdapters.DEFAULT
 import com.example.mutation_create_review.type.CustomType
 import com.example.mutation_create_review.type.Episode
 import com.example.mutation_create_review.type.ReviewInput

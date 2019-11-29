@@ -6,7 +6,7 @@ import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
-import com.apollographql.apollo.api.ScalarTypeAdapters;
+import com.apollographql.apollo.response.ScalarTypeAdapters;
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
 
 import okio.BufferedSource;
@@ -16,9 +16,6 @@ import org.junit.Test;
 import org.jetbrains.annotations.NotNull;
 
 import okhttp3.OkHttpClient;
-
-import java.io.IOException;
-import java.util.Map;
 
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_FIRST;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY;

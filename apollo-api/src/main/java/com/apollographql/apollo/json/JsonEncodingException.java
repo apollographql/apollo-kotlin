@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apollographql.apollo.api.json;
+package com.apollographql.apollo.json;
 
 import java.io.IOException;
 

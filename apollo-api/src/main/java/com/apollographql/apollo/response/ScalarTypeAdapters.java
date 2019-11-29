@@ -1,4 +1,4 @@
-package com.apollographql.apollo.api;
+package com.apollographql.apollo.response;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -6,6 +6,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.apollographql.apollo.api.FileUpload;
+import com.apollographql.apollo.api.ScalarType;
 import org.jetbrains.annotations.NotNull;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
