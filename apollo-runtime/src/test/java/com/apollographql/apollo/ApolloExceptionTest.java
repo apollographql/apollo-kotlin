@@ -5,11 +5,11 @@ import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
-import com.apollographql.apollo.api.ScalarTypeAdapters;
+import com.apollographql.apollo.response.ScalarTypeAdapters;
 import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.exception.ApolloParseException;
-import com.apollographql.apollo.api.json.JsonEncodingException;
+import com.apollographql.apollo.json.JsonEncodingException;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 
 import okio.BufferedSource;
@@ -17,9 +17,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.net.SocketTimeoutException;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 

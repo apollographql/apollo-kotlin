@@ -17,7 +17,7 @@ If for some reason you want to use your own network layer and don't want to use 
     Response<Query.Data> response = new Query().parse(httpResponse.body().source());
 ```
 
-If you do have custom GraphQL scalar types, pass properly configured instance of `com.apollographql.apollo.api.ScalarTypeAdapters`:
+If you do have custom GraphQL scalar types, pass properly configured instance of `com.apollographql.apollo.response.ScalarTypeAdapters`:
 
 ```java
     okhttp3.Response httpResponse = ...;

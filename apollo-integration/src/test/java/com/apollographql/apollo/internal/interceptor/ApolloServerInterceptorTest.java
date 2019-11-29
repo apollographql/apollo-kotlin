@@ -5,7 +5,7 @@ import com.google.common.base.Predicate;
 
 import com.apollographql.apollo.cache.ApolloCacheHeaders;
 import com.apollographql.apollo.cache.CacheHeaders;
-import com.apollographql.apollo.api.CustomTypeAdapter;
+import com.apollographql.apollo.response.CustomTypeAdapter;
 import com.apollographql.apollo.Logger;
 import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.ScalarType;
@@ -15,7 +15,7 @@ import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.integration.interceptor.AllFilmsQuery;
 import com.apollographql.apollo.internal.ApolloLogger;
 import com.apollographql.apollo.request.RequestHeaders;
-import com.apollographql.apollo.api.ScalarTypeAdapters;
+import com.apollographql.apollo.response.ScalarTypeAdapters;
 
 import org.junit.Test;
 

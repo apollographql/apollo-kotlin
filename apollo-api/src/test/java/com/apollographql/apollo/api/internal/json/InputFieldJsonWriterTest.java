@@ -4,12 +4,10 @@ import com.apollographql.apollo.api.InputFieldMarshaller;
 import com.apollographql.apollo.api.InputFieldWriter;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
-import com.apollographql.apollo.api.CustomTypeAdapter;
-import com.apollographql.apollo.api.CustomTypeValue;
-import com.apollographql.apollo.api.ScalarTypeAdapters;
+import com.apollographql.apollo.response.CustomTypeAdapter;
+import com.apollographql.apollo.response.CustomTypeValue;
+import com.apollographql.apollo.response.ScalarTypeAdapters;
 
-import com.apollographql.apollo.api.internal.json.InputFieldJsonWriter;
-import com.apollographql.apollo.api.internal.json.JsonWriter;
 import org.junit.Before;
 import org.junit.Test;
 

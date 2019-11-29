@@ -1,7 +1,7 @@
 package com.apollographql.apollo.api.internal;
 
-import com.apollographql.apollo.api.CustomTypeAdapter;
-import com.apollographql.apollo.api.CustomTypeValue;
+import com.apollographql.apollo.response.CustomTypeAdapter;
+import com.apollographql.apollo.response.CustomTypeValue;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Response;
@@ -9,7 +9,7 @@ import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ScalarType;
-import com.apollographql.apollo.api.ScalarTypeAdapters;
+import com.apollographql.apollo.response.ScalarTypeAdapters;
 import okio.BufferedSource;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;

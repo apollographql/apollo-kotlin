@@ -3,7 +3,7 @@ package com.apollographql.apollo.subscription;
 import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.api.internal.json.JsonWriter;
 import com.apollographql.apollo.api.internal.json.Utils;
-import com.apollographql.apollo.api.ScalarTypeAdapters;
+import com.apollographql.apollo.response.ScalarTypeAdapters;
 
 import java.io.IOException;
 import java.util.Map;

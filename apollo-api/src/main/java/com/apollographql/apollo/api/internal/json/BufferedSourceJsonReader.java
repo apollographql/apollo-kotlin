@@ -15,8 +15,8 @@
  */
 package com.apollographql.apollo.api.internal.json;
 
-import com.apollographql.apollo.api.json.JsonDataException;
-import com.apollographql.apollo.api.json.JsonEncodingException;
+import com.apollographql.apollo.json.JsonDataException;
+import com.apollographql.apollo.json.JsonEncodingException;
 
 import java.io.EOFException;
 import java.io.IOException;

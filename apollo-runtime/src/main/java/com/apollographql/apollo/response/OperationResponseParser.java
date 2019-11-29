@@ -4,7 +4,6 @@ import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
-import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.field.MapFieldValueResolver;
 import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader;

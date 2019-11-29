@@ -1,4 +1,4 @@
-package com.apollographql.apollo.api;
+package com.apollographql.apollo.response;
 
 import java.util.List;
 import java.util.Map;

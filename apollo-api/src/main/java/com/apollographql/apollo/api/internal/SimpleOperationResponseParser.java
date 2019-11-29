@@ -3,7 +3,7 @@ package com.apollographql.apollo.api.internal;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.api.ScalarTypeAdapters;
+import com.apollographql.apollo.response.ScalarTypeAdapters;
 import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader;
 import com.apollographql.apollo.api.internal.json.ResponseJsonStreamReader;
 import okio.BufferedSource;

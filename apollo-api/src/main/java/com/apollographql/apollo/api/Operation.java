@@ -2,6 +2,7 @@ package com.apollographql.apollo.api;
 
 import com.apollographql.apollo.api.internal.json.InputFieldJsonWriter;
 import com.apollographql.apollo.api.internal.json.JsonWriter;
+import com.apollographql.apollo.response.ScalarTypeAdapters;
 import okio.Buffer;
 import okio.BufferedSource;
 import org.jetbrains.annotations.NotNull;

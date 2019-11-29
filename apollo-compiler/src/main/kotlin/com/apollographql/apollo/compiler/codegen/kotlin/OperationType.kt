@@ -13,6 +13,7 @@ import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.responseFi
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.suppressWarningsAnnotation
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.toMapperFun
 import com.apollographql.apollo.internal.QueryDocumentMinifier
+import com.apollographql.apollo.response.ScalarTypeAdapters
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.jvm.throws
