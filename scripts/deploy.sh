@@ -28,9 +28,12 @@ fi
 #
 # Deploy the release to Bintray if the build happens on master
 #
-if [ "$TRAVIS_TAG" != "" ]; then
+if [ "$TRAVIS_TAG" == "" ]; then
+  echo "Skipping snapshot deployment: not a tag"
+else
   echo "Deploy to bintray..."
   ./gradlew bintrayUpload
   echo "Deployed to bintray!"
+
 fi
 
