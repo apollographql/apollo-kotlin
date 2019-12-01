@@ -37,4 +37,6 @@ abstract class DefaultCompilerParams @Inject constructor(objects: ObjectFactory)
   abstract override val generateVisitorForPolymorphicDatatypes : Property<Boolean>
 
   abstract override val rootPackageName : Property<String>
+
+  abstract override val generateAsInternal: Property<Boolean>
 }

@@ -2,15 +2,13 @@ package com.apollographql.apollo.compiler.codegen.kotlin
 
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.ast.EnumType
-import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.PropertySpec
-import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.*
 
-internal fun EnumType.typeSpec() =
+internal fun EnumType.typeSpec(generateAsInternal: Boolean = false) =
     TypeSpec
         .enumBuilder(name)
         .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }
+        .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
         .primaryConstructor(primaryConstructorSpec)
         .addProperty(rawValuePropertySpec)
         .apply {

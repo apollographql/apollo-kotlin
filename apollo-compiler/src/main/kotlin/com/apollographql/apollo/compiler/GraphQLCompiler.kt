@@ -36,7 +36,8 @@ class GraphQLCompiler {
           ir = ir,
           customTypeMap = args.customTypeMap,
           useSemanticNaming = args.useSemanticNaming,
-          packageNameProvider = args.packageNameProvider
+          packageNameProvider = args.packageNameProvider,
+          generateAsInternal = args.generateAsInternal
       ).write(args.outputDir)
     } else {
       ir.writeJavaFiles(
@@ -122,6 +123,7 @@ class GraphQLCompiler {
       val packageNameProvider: PackageNameProvider,
       val generateKotlinModels: Boolean = false,
       val transformedQueriesOutputDir: File? = null,
+      val generateAsInternal: Boolean = false,
 
       // only if generateKotlinModels = false
       val nullableValueType: NullableValueType,

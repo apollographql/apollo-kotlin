@@ -36,7 +36,7 @@ import okio.BufferedSource
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
-data class CreateReviewForEpisode(
+internal data class CreateReviewForEpisode(
   val ep: Episode,
   val review: ReviewInput
 ) : Mutation<CreateReviewForEpisode.Data, CreateReviewForEpisode.Data, Operation.Variables> {

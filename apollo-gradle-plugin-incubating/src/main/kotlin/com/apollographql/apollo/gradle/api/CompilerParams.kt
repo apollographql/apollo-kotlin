@@ -104,4 +104,11 @@ interface CompilerParams {
    * You can override it from [ApolloExtension.onCompilationUnits] for more advanced use cases
    */
   val schemaFile: RegularFileProperty
+
+  /**
+   * Whether to generate Kotlin models with `internal` visibility modifier.
+   *
+   * false by default
+   */
+  val generateAsInternal: Property<Boolean>
 }

@@ -23,6 +23,7 @@ fun CompilerParams.withFallback(objects: ObjectFactory, other: CompilerParams): 
   merge.useJavaBeansSemanticNaming.set(this.useJavaBeansSemanticNaming.orElse(other.useJavaBeansSemanticNaming))
   merge.generateVisitorForPolymorphicDatatypes.set(this.generateVisitorForPolymorphicDatatypes.orElse(other.generateVisitorForPolymorphicDatatypes))
   merge.rootPackageName.set(this.rootPackageName.orElse(other.rootPackageName))
+  merge.generateAsInternal.set(this.generateAsInternal.orElse(other.generateAsInternal))
 
   return merge
 }

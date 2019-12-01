@@ -42,6 +42,7 @@ abstract class TaskConfigurator {
       generateKotlinModels = project.apollo.generateKotlinModels
       generateVisitorForPolymorphicDatatypes = project.apollo.generateVisitorForPolymorphicDatatypes
       transformedQueriesOutputDir.set(transformedQueriesOutputFolder)
+      generateAsInternal = project.apollo.generateAsInternal
     }
   }
 }

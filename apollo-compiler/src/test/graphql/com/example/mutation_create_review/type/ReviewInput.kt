@@ -21,7 +21,7 @@ import kotlin.collections.List
  */
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
-data class ReviewInput(
+internal data class ReviewInput(
   /**
    * 0-5 stars
    */
