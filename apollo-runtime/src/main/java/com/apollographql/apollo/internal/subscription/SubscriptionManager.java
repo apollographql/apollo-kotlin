@@ -1,6 +1,5 @@
 package com.apollographql.apollo.internal.subscription;
 
-import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeListener;
 import com.apollographql.apollo.subscription.SubscriptionManagerState;
@@ -57,7 +56,7 @@ public interface SubscriptionManager {
   void stop();
 
   interface Callback<T> {
-    void onResponse(@NotNull Response<T> response);
+    void onResponse(@NotNull SubscriptionResponse<T> response);
 
     void onError(@NotNull ApolloSubscriptionException error);
 

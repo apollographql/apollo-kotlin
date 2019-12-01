@@ -47,6 +47,8 @@ public final class OperationResponseParser<D extends Operation.Data, W> {
   public Response<W> parse(@NotNull Map<String, Object> payload) {
     checkNotNull(payload, "payload == null");
 
+    responseNormalizer.willResolveRootQuery(operation);
+
     D data = null;
     Map<String, Object> buffer = (Map<String, Object>) payload.get("data");
     if (buffer != null) {

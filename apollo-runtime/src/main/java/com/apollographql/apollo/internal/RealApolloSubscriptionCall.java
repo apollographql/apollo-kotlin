@@ -2,15 +2,27 @@ package com.apollographql.apollo.internal;
 
 import com.apollographql.apollo.ApolloSubscriptionCall;
 import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.Subscription;
+import com.apollographql.apollo.cache.CacheHeaders;
+import com.apollographql.apollo.cache.normalized.ApolloStore;
+import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
+import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
+import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
+import com.apollographql.apollo.internal.cache.normalized.Transaction;
+import com.apollographql.apollo.internal.cache.normalized.WriteableStore;
 import com.apollographql.apollo.internal.subscription.ApolloSubscriptionException;
 import com.apollographql.apollo.internal.subscription.SubscriptionManager;
 
+import java.util.Set;
+import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.apollographql.apollo.internal.subscription.SubscriptionResponse;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 import static com.apollographql.apollo.internal.CallState.ACTIVE;
@@ -21,21 +33,45 @@ import static com.apollographql.apollo.internal.CallState.TERMINATED;
 public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> {
   private final Subscription<?, T, ?> subscription;
   private final SubscriptionManager subscriptionManager;
+  private final ApolloStore apolloStore;
+  private final CachePolicy cachePolicy;
+  private final Executor dispatcher;
+  private final ResponseFieldMapperFactory responseFieldMapperFactory;
+  private final ApolloLogger logger;
   private final AtomicReference<CallState> state = new AtomicReference<>(IDLE);
   private SubscriptionManagerCallback<T> subscriptionCallback;
 
-  public RealApolloSubscriptionCall(Subscription<?, T, ?> subscription, SubscriptionManager subscriptionManager) {
+  public RealApolloSubscriptionCall(@NotNull Subscription<?, T, ?> subscription, @NotNull SubscriptionManager subscriptionManager,
+      @NotNull ApolloStore apolloStore, @NotNull CachePolicy cachePolicy, @NotNull Executor dispatcher,
+      @NotNull ResponseFieldMapperFactory responseFieldMapperFactory, @NotNull ApolloLogger logger) {
     this.subscription = subscription;
     this.subscriptionManager = subscriptionManager;
+    this.apolloStore = apolloStore;
+    this.cachePolicy = cachePolicy;
+    this.dispatcher = dispatcher;
+    this.responseFieldMapperFactory = responseFieldMapperFactory;
+    this.logger = logger;
   }
 
   @Override
-  public void execute(@NotNull Callback<T> callback) throws ApolloCanceledException {
+  public void execute(@NotNull final Callback<T> callback) throws ApolloCanceledException {
     checkNotNull(callback, "callback == null");
     synchronized (this) {
       switch (state.get()) {
         case IDLE: {
           state.set(ACTIVE);
+
+          if (cachePolicy == CachePolicy.CACHE_AND_NETWORK) {
+            dispatcher.execute(new Runnable() {
+              @Override public void run() {
+                final Response<T> cachedResponse = resolveFromCache();
+                if (cachedResponse != null) {
+                  callback.onResponse(cachedResponse);
+                }
+              }
+            });
+          }
+
           subscriptionCallback = new SubscriptionManagerCallback<>(callback, this);
           subscriptionManager.subscribe(subscription, subscriptionCallback);
           break;
@@ -87,11 +123,18 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
   @SuppressWarnings("MethodDoesntCallSuperMethod")
   @Override
   public ApolloSubscriptionCall<T> clone() {
-    return new RealApolloSubscriptionCall<>(subscription, subscriptionManager);
+    return new RealApolloSubscriptionCall<>(subscription, subscriptionManager, apolloStore, cachePolicy, dispatcher,
+        responseFieldMapperFactory, logger);
   }
 
   @Override public boolean isCanceled() {
     return state.get() == CANCELED;
+  }
+
+  @NotNull @Override public ApolloSubscriptionCall<T> cachePolicy(@NotNull CachePolicy cachePolicy) {
+    checkNotNull(cachePolicy, "cachePolicy is null");
+    return new RealApolloSubscriptionCall<>(subscription, subscriptionManager, apolloStore, cachePolicy, dispatcher,
+        responseFieldMapperFactory, logger);
   }
 
   private void terminate() {
@@ -117,6 +160,58 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
     }
   }
 
+  @SuppressWarnings("unchecked")
+  private Response<T> resolveFromCache() {
+    final ResponseNormalizer<Record> responseNormalizer = apolloStore.cacheResponseNormalizer();
+    final ResponseFieldMapper responseFieldMapper = responseFieldMapperFactory.create(subscription);
+
+    final ApolloStoreOperation<Response> apolloStoreOperation = apolloStore.read(subscription, responseFieldMapper, responseNormalizer,
+        CacheHeaders.NONE);
+
+    Response<T> cachedResponse = null;
+    try {
+      cachedResponse = apolloStoreOperation.execute();
+    } catch (Exception e) {
+      logger.e(e, "Failed to fetch subscription `%s` from the store", subscription);
+    }
+
+    if (cachedResponse != null && cachedResponse.data() != null) {
+      logger.d("Cache HIT for subscription `%s`", subscription);
+      return cachedResponse;
+    } else {
+      logger.d("Cache MISS for subscription `%s`", subscription);
+      return null;
+    }
+  }
+
+  private void cacheResponse(final SubscriptionResponse<T> networkResponse) {
+    if (networkResponse.cacheRecords.isEmpty() || cachePolicy == CachePolicy.NO_CACHE) {
+      return;
+    }
+
+    dispatcher.execute(new Runnable() {
+      @Override public void run() {
+        final Set<String> cacheKeys;
+        try {
+          cacheKeys = apolloStore.writeTransaction(new Transaction<WriteableStore, Set<String>>() {
+            @Nullable @Override public Set<String> execute(WriteableStore cache) {
+              return cache.merge(networkResponse.cacheRecords, CacheHeaders.NONE);
+            }
+          });
+        } catch (Exception e) {
+          logger.e(e, "Failed to cache response for subscription `%s`", subscription);
+          return;
+        }
+
+        try {
+          apolloStore.publish(cacheKeys);
+        } catch (Exception e) {
+          logger.e(e, "Failed to publish cache changes for subscription `%s`", subscription);
+        }
+      }
+    });
+  }
+
   private static final class SubscriptionManagerCallback<T> implements SubscriptionManager.Callback<T> {
     private Callback<T> originalCallback;
     private RealApolloSubscriptionCall<T> delegate;
@@ -127,10 +222,11 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
     }
 
     @Override
-    public void onResponse(@NotNull Response<T> response) {
+    public void onResponse(@NotNull SubscriptionResponse<T> response) {
       Callback<T> callback = this.originalCallback;
       if (callback != null) {
-        callback.onResponse(response);
+        delegate.cacheResponse(response);
+        callback.onResponse(response.response);
       }
     }
 
