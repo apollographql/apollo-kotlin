@@ -5,7 +5,7 @@
 set -e
 
 #
-# Deploy the snapshots to Sonatype's repo if the build happens on a tag
+# Deploy the snapshots to Sonatype's repo if the build happens on master
 #
 SLUG="apollographql/apollo-android"
 JDK="openjdk8"
@@ -26,7 +26,7 @@ else
 fi
 
 #
-# Deploy the release to Bintray if the build happens on master
+# Deploy the release to Bintray if the build happens on a tag
 #
 if [ "$TRAVIS_TAG" == "" ]; then
   echo "Skipping snapshot deployment: not a tag"
