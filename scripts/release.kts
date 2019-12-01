@@ -55,7 +55,6 @@ fun getCurrentVersion(): String {
     val regex = Regex("VERSION_NAME=(.*)-SNAPSHOT")
     val matchResult = regex.matchEntire(versionLines.first())
 
-
     require(matchResult != null) {
         "'${versionLines.first()}' doesn't match VERSION_NAME=(.*)-SNAPSHOT"
     }
@@ -100,7 +99,7 @@ while (tagVersion.isEmpty()) {
     when (answer) {
         "1" -> tagVersion = version
         "2" -> tagVersion = nextMinor
-        "3" -> tagVersion = nextMinor
+        "3" -> tagVersion = nextMajor
     }
 }
 
