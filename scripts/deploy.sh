@@ -32,8 +32,7 @@ if [ "$TRAVIS_TAG" == "" ]; then
   echo "Skipping snapshot deployment: not a tag"
 else
   echo "Deploy to bintray..."
-  ./gradlew bintrayUpload
+  ./gradlew bintrayUpload -Pbintray.user="${BINTRAY_USER}" -Pbintray.apiKey="${BINTRAY_APIKEY}"
   echo "Deployed to bintray!"
-
 fi
 

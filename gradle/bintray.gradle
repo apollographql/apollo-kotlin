@@ -10,6 +10,11 @@ bintray {
   user = properties.getProperty("bintray.user")
   key = properties.getProperty("bintray.apikey")
 
+  if (user == null || key == null) {
+    user = findProperty("bintray.user")
+    key = findProperty("bintray.apikey")
+  }
+
   configurations = ['archives']
   pkg {
     userOrg = POM_DEVELOPER_ID
