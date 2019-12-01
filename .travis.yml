@@ -28,7 +28,7 @@ before_script:
   - adb shell input keyevent 82
 
 after_success:
-  - ./scripts/deploy_snapshot.sh
+  - ./scripts/deploy.sh
 
 env:
   global:
