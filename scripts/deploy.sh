@@ -5,7 +5,7 @@
 set -e
 
 #
-# Deploy the snapshots to Sonatype's repo if the build happens on master
+# Deploy the snapshots to Sonatype's repo if the build happens on a tag
 #
 SLUG="apollographql/apollo-android"
 JDK="openjdk8"
