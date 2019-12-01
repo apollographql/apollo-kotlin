@@ -71,6 +71,7 @@ public final class SimpleOperationResponseParser {
     return Response.<W>builder(operation)
         .data(operation.wrapData(data))
         .errors(errors)
+        .extensions((Map<String, Object>) response.get("extensions"))
         .build();
   }
 

@@ -330,6 +330,24 @@ public class IntegrationTest {
     assertThat(payload).isEqualTo("{\"operationName\": EpisodeHeroName, \"query\": query EpisodeHeroName($episode: Episode) { hero(episode: $episode) { __typename name } }, \"variables\": {\"episode\":\"EMPIRE\"}}");
   }
 
+  @SuppressWarnings("ConstantConditions")
+  @Test public void operationResponseParserParseResponseWithExtensions() throws Exception {
+    final Buffer source = new Buffer().readFrom(getClass().getResourceAsStream("/HeroNameResponse.json"));
+
+    final HeroNameQuery query = new HeroNameQuery();
+    final Response<HeroNameQuery.Data> response = new OperationResponseParser<>(query, query.responseFieldMapper(),
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap())).parse(source);
+
+    assertThat(response.extensions().toString()).isEqualTo("{cost={requestedQueryCost=3, actualQueryCost=3, throttleStatus={maximumAvailable=1000, currentlyAvailable=997, restoreRate=50}}}");
+  }
+
+  @SuppressWarnings("ConstantConditions")
+  @Test public void operationParseResponseWithExtensions() throws Exception {
+    final Buffer source = new Buffer().readFrom(getClass().getResourceAsStream("/HeroNameResponse.json"));
+    final Response<HeroNameQuery.Data> response = new HeroNameQuery().parse(source);
+    assertThat(response.extensions().toString()).isEqualTo("{cost={requestedQueryCost=3, actualQueryCost=3, throttleStatus={maximumAvailable=1000, currentlyAvailable=997, restoreRate=50}}}");
+  }
+
   private MockResponse mockResponse(String fileName) throws IOException {
     return new MockResponse().setChunkedBody(Utils.INSTANCE.readFileToString(getClass(), "/" + fileName), 32);
   }

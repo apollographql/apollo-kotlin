@@ -1,23 +1,27 @@
 package com.apollographql.apollo.api;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableSet;
 
-/** Represents either a successful or failed response received from the GraphQL server. */
+/**
+ * Represents either a successful or failed response received from the GraphQL server.
+ */
 public final class Response<T> {
   private final Operation operation;
   private final T data;
   private final List<Error> errors;
   private Set<String> dependentKeys;
   private final boolean fromCache;
+  private final Map<String, Object> extensions;
 
   public static <T> Response.Builder<T> builder(@NotNull final Operation operation) {
     return new Builder<>(operation);
@@ -30,6 +34,7 @@ public final class Response<T> {
     dependentKeys = builder.dependentKeys != null ? unmodifiableSet(builder.dependentKeys)
         : Collections.<String>emptySet();
     fromCache = builder.fromCache;
+    extensions = builder.extensions;
   }
 
   public Operation operation() {
@@ -56,12 +61,17 @@ public final class Response<T> {
     return fromCache;
   }
 
+  @Nullable public Map<String, Object> extensions() {
+    return extensions;
+  }
+
   public Builder<T> toBuilder() {
     return new Builder<T>(operation)
         .data(data)
         .errors(errors)
         .dependentKeys(dependentKeys)
-        .fromCache(fromCache);
+        .fromCache(fromCache)
+        .extensions(extensions);
   }
 
   public static final class Builder<T> {
@@ -70,6 +80,7 @@ public final class Response<T> {
     List<Error> errors;
     Set<String> dependentKeys;
     boolean fromCache;
+    Map<String, Object> extensions;
 
     Builder(@NotNull final Operation operation) {
       this.operation = checkNotNull(operation, "operation == null");
@@ -92,6 +103,11 @@ public final class Response<T> {
 
     public Builder<T> fromCache(boolean fromCache) {
       this.fromCache = fromCache;
+      return this;
+    }
+
+    public Builder<T> extensions(Map<String, Object> extensions) {
+      this.extensions = extensions;
       return this;
     }
 
