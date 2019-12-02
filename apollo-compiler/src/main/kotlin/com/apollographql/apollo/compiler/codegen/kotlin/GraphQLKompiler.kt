@@ -14,7 +14,8 @@ class GraphQLKompiler(
     private val ir: CodeGenerationIR,
     private val customTypeMap: Map<String, String>,
     private val packageNameProvider: PackageNameProvider,
-    private val useSemanticNaming: Boolean
+    private val useSemanticNaming: Boolean,
+    private val generateAsInternal: Boolean = false
 ) {
   fun write(outputDir: File) {
     val customTypeMap = customTypeMap.supportedCustomTypes(ir.typesUsed)
@@ -31,7 +32,8 @@ class GraphQLKompiler(
     }
 
     val schemaCodegen = SchemaCodegen(
-        packageNameProvider = packageNameProvider
+        packageNameProvider = packageNameProvider,
+        generateAsInternal = generateAsInternal
     )
     schemaCodegen.apply(schema::accept).writeTo(outputDir)
   }

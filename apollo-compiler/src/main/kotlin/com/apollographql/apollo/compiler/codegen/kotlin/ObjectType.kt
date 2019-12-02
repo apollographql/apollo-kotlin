@@ -13,9 +13,10 @@ import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.toMapperFu
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 
-internal fun ObjectType.typeSpec(): TypeSpec = when (kind) {
+internal fun ObjectType.typeSpec(generateAsInternal: Boolean = false): TypeSpec = when (kind) {
   is ObjectType.Kind.Object -> TypeSpec
       .classBuilder(name)
+      .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .addModifiers(KModifier.DATA)
       .primaryConstructor(primaryConstructorSpec)
       .addProperties(fields.map { it.asPropertySpec(initializer = CodeBlock.of(it.name)) })
@@ -64,6 +65,7 @@ internal fun ObjectType.typeSpec(): TypeSpec = when (kind) {
 
   is ObjectType.Kind.Fragment -> TypeSpec
       .classBuilder(name)
+      .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .addModifiers(KModifier.DATA)
       .addSuperinterface(GraphqlFragment::class.java)
       .addAnnotation(KotlinCodeGen.suppressWarningsAnnotation)

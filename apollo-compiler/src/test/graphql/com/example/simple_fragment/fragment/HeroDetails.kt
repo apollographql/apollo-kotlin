@@ -15,7 +15,7 @@ import kotlin.Suppress
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
-data class HeroDetails(
+internal data class HeroDetails(
   val __typename: String,
   /**
    * The name of the character

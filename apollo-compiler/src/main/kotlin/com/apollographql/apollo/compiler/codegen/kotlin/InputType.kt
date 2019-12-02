@@ -13,10 +13,11 @@ import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.toDefaultV
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 
-internal fun InputType.typeSpec() =
+internal fun InputType.typeSpec(generateAsInternal: Boolean = false) =
     TypeSpec
         .classBuilder(name)
         .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }
+        .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
         .addAnnotation(suppressWarningsAnnotation)
         .addModifiers(KModifier.DATA)
         .addSuperinterface(com.apollographql.apollo.api.InputType::class)

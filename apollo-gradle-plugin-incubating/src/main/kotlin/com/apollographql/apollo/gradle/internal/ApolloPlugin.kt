@@ -187,6 +187,7 @@ open class ApolloPlugin : Plugin<Project> {
           }
           disallowChanges()
         }
+        it.generateAsInternal.set(compilerParams.generateAsInternal)
         Unit
       }
     }

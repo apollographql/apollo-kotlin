@@ -11,7 +11,7 @@ import kotlin.String
 /**
  * The episodes in the Star Wars trilogy
  */
-enum class Episode(
+internal enum class Episode(
   val rawValue: String
 ) {
   /**

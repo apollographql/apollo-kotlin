@@ -1,14 +1,16 @@
 package com.apollographql.apollo.compiler.codegen.kotlin
 
 import com.apollographql.apollo.api.ScalarType
+import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.ast.CustomTypes
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.normalizeGraphQLType
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 
-internal fun CustomTypes.typeSpec() =
+internal fun CustomTypes.typeSpec(generateAsInternal: Boolean = false) =
     TypeSpec
         .enumBuilder("CustomType")
+        .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
         .addSuperinterface(ScalarType::class.java)
         .apply {
           map { (schemaType, customType) ->

@@ -33,7 +33,7 @@ class CodeGenTest(val folder: File) {
     }
 
     val walk = folder.walkTopDown()
-    walk.forEach {file ->
+    walk.forEach { file ->
       if (!file.name.endsWith(extension)) {
         return@forEach
       }
@@ -73,34 +73,38 @@ class CodeGenTest(val folder: File) {
       } else {
         emptyMap()
       }
-      val nullableValueType = when {
-        folder.name == "hero_details_guava" -> NullableValueType.GUAVA_OPTIONAL
-        folder.name == "hero_details_java_optional" -> NullableValueType.JAVA_OPTIONAL
-        folder.name == "fragments_with_type_condition_nullable" -> NullableValueType.ANNOTATED
-        folder.name == "hero_details_nullable" -> NullableValueType.ANNOTATED
-        folder.name == "union_fragment" -> NullableValueType.ANNOTATED
+      val nullableValueType = when (folder.name) {
+        "hero_details_guava" -> NullableValueType.GUAVA_OPTIONAL
+        "hero_details_java_optional" -> NullableValueType.JAVA_OPTIONAL
+        "fragments_with_type_condition_nullable" -> NullableValueType.ANNOTATED
+        "hero_details_nullable" -> NullableValueType.ANNOTATED
+        "union_fragment" -> NullableValueType.ANNOTATED
         else -> NullableValueType.APOLLO_OPTIONAL
       }
-      val useSemanticNaming = when {
-        folder.name == "hero_details_semantic_naming" -> true
-        folder.name == "mutation_create_review_semantic_naming" -> true
+      val useSemanticNaming = when (folder.name) {
+        "hero_details_semantic_naming" -> true
+        "mutation_create_review_semantic_naming" -> true
         else -> false
       }
-      val generateModelBuilder = when {
-        folder.name == "fragment_with_inline_fragment" -> true
+      val generateModelBuilder = when (folder.name) {
+        "fragment_with_inline_fragment" -> true
         else -> false
       }
-      val useJavaBeansSemanticNaming = when {
-        folder.name == "java_beans_semantic_naming" -> true
+      val useJavaBeansSemanticNaming = when (folder.name) {
+        "java_beans_semantic_naming" -> true
         else -> false
       }
-      val suppressRawTypesWarning = when {
-        folder.name == "custom_scalar_type_warnings" -> true
+      val suppressRawTypesWarning = when (folder.name) {
+        "custom_scalar_type_warnings" -> true
         else -> false
       }
-      val generateVisitorForPolymorphicDatatypes = when {
-        folder.name == "java_beans_semantic_naming" -> false
+      val generateVisitorForPolymorphicDatatypes = when (folder.name) {
+        "java_beans_semantic_naming" -> false
         else -> true
+      }
+      val generateAsInternal = when (folder.name) {
+        "mutation_create_review", "simple_fragment" -> true
+        else -> false
       }
 
       val schemaJson = folder.listFiles()!!.find { it.isFile && it.name == "schema.json" }
@@ -127,7 +131,8 @@ class CodeGenTest(val folder: File) {
           useJavaBeansSemanticNaming = useJavaBeansSemanticNaming,
           suppressRawTypesWarning = suppressRawTypesWarning,
           generateVisitorForPolymorphicDatatypes = generateVisitorForPolymorphicDatatypes,
-          packageNameProvider = packageNameProvider
+          packageNameProvider = packageNameProvider,
+          generateAsInternal = generateAsInternal
       )
       return args
     }
@@ -150,7 +155,7 @@ fun checkTestFixture(actual: File, expected: File) {
 
   if (actualText != expectedText) {
     when (System.getProperty("updateTestFixtures")?.trim()) {
-      "on", "true", "1" ->{
+      "on", "true", "1" -> {
         expected.writeText(actualText)
       }
       else -> {

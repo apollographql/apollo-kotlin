@@ -253,7 +253,7 @@ class ConfigurationTests {
       assertTrue(dir.generatedChild("main/starwars/fragment/SpeciesInformation.java").isFile)
     }
   }
-  
+
   @Test
   fun `schemaPath can be absolute path`() {
     val schema = File(System.getProperty("user.dir"), "src/test/files/starwars/schema.json")

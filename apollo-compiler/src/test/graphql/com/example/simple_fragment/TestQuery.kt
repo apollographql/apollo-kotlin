@@ -28,7 +28,7 @@ import okio.BufferedSource
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
-class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
+internal class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   override fun operationId(): String = OPERATION_ID
   override fun queryDocument(): String = QUERY_DOCUMENT
   override fun wrapData(data: Data?): Data? = data

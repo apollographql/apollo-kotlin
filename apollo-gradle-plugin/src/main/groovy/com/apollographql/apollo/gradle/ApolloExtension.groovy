@@ -19,6 +19,7 @@ class ApolloExtension {
   final Property<String> outputPackageName
   final Property<Boolean> generateTransformedQueries
   final MapProperty<String, String> customTypeMapping
+  final Property<Boolean> generateAsInternal
 
   ApolloExtension(Project project) {
     nullableValueType = project.objects.property(String.class)
@@ -53,6 +54,9 @@ class ApolloExtension {
 
     customTypeMapping = project.objects.mapProperty(String.class, String.class)
     customTypeMapping.set(new LinkedHashMap())
+
+    generateAsInternal = project.objects.property(Boolean.class)
+    generateAsInternal.set(false)
   }
 
   void setNullableValueType(String nullableValueType) {
@@ -93,6 +97,10 @@ class ApolloExtension {
 
   void setGenerateTransformedQueries(Boolean generateTransformedQueries) {
     this.generateTransformedQueries.set(generateTransformedQueries)
+  }
+
+  void setGenerateAsInternal(Boolean generateAsInternal) {
+    this.generateAsInternal.set(generateAsInternal)
   }
 
   void setCustomTypeMapping(Map customTypeMapping) {

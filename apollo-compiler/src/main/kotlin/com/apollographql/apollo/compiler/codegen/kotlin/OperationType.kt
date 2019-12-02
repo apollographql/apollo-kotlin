@@ -20,10 +20,11 @@ import com.squareup.kotlinpoet.jvm.throws
 import okio.BufferedSource
 import java.io.IOException
 
-internal fun OperationType.typeSpec(targetPackage: String) = TypeSpec
+internal fun OperationType.typeSpec(targetPackage: String, generateAsInternal: Boolean = false) = TypeSpec
     .classBuilder(name)
     .addAnnotation(suppressWarningsAnnotation)
     .addSuperinterface(superInterfaceType(targetPackage))
+    .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
     .applyIf(variables.fields.isNotEmpty()) {
       addModifiers(KModifier.DATA)
       primaryConstructor(primaryConstructorSpec)
