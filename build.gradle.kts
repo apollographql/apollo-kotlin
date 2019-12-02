@@ -66,22 +66,20 @@ subprojects {
     resolutionStrategy.force(groovy.util.Eval.x(this@subprojects, "x.dep.errorProneCore"))
   }
 
-  if (name != "apollo-compiler" && name != "apollo-gradle-plugin-incubating" && name != "apollo-coroutines-support") {
-    // TODO: Make this lazy
-    this@subprojects.afterEvaluate {
-      val jarTask = this@subprojects.tasks.findByName("jar") as? org.gradle.jvm.tasks.Jar
-      if (jarTask != null) {
-        val japiCmp = this@subprojects.tasks.register("japicmp", me.champeau.gradle.japicmp.JapicmpTask::class.java) {
-          oldClasspath = this@subprojects.files(baselineJar(this@subprojects, "1.2.1"))
-          newClasspath = this@subprojects.files(jarTask.archiveFile)
-          ignoreMissingClasses = true
-          packageExcludes = listOf("*.internal*")
-          onlyModified = true
-          txtOutputFile = this@subprojects.file("$buildDir/reports/japi.txt")
-        }
-        rootJapiCmp.configure {
-          dependsOn(japiCmp)
-        }
+  // TODO: Make this lazy
+  this@subprojects.afterEvaluate {
+    val jarTask = this@subprojects.tasks.findByName("jar") as? org.gradle.jvm.tasks.Jar
+    if (jarTask != null) {
+      val japiCmp = this@subprojects.tasks.register("japicmp", me.champeau.gradle.japicmp.JapicmpTask::class.java) {
+        oldClasspath = this@subprojects.files(baselineJar(this@subprojects, "1.2.1"))
+        newClasspath = this@subprojects.files(jarTask.archiveFile)
+        ignoreMissingClasses = true
+        packageExcludes = listOf("*.internal*")
+        onlyModified = true
+        txtOutputFile = this@subprojects.file("$buildDir/reports/japi.txt")
+      }
+      rootJapiCmp.configure {
+        dependsOn(japiCmp)
       }
     }
   }
