@@ -4,5 +4,16 @@
       "__typename": "Droid",
       "name": "R2-D2"
     }
+  },
+  "extensions": {
+    "cost": {
+      "requestedQueryCost": 3,
+      "actualQueryCost": 3,
+      "throttleStatus": {
+        "maximumAvailable": 1000,
+        "currentlyAvailable": 997,
+        "restoreRate": 50
+      }
+    }
   }
 }

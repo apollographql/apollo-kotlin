@@ -72,6 +72,7 @@ public final class OperationResponseParser<D extends Operation.Data, W> {
         .data(operation.wrapData(data))
         .errors(errors)
         .dependentKeys(responseNormalizer.dependentKeys())
+        .extensions((Map<String, Object>) payload.get("extensions"))
         .build();
   }
 
@@ -84,6 +85,7 @@ public final class OperationResponseParser<D extends Operation.Data, W> {
 
       D data = null;
       List<Error> errors = null;
+      Map<String, Object> extensions = null;
       ResponseJsonStreamReader responseStreamReader = responseJsonStreamReader(jsonReader);
       while (responseStreamReader.hasNext()) {
         String name = responseStreamReader.nextName();
@@ -99,6 +101,12 @@ public final class OperationResponseParser<D extends Operation.Data, W> {
           });
         } else if ("errors".equals(name)) {
           errors = readResponseErrors(responseStreamReader);
+        } else if ("extensions".equals(name)) {
+          extensions = responseStreamReader.nextObject(true, new ResponseJsonStreamReader.ObjectReader<Map<String, Object>>() {
+            @Override public Map<String, Object> read(ResponseJsonStreamReader reader) throws IOException {
+              return reader.toMap();
+            }
+          });
         } else {
           responseStreamReader.skipNext();
         }
@@ -108,6 +116,7 @@ public final class OperationResponseParser<D extends Operation.Data, W> {
           .data(operation.wrapData(data))
           .errors(errors)
           .dependentKeys(responseNormalizer.dependentKeys())
+          .extensions(extensions)
           .build();
     } finally {
       if (jsonReader != null) {
