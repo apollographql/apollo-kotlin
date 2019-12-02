@@ -29,10 +29,10 @@ fi
 # Deploy the release to Bintray if the build happens on a tag
 #
 if [ "$TRAVIS_TAG" == "" ]; then
-  echo "Skipping snapshot deployment: not a tag"
+  echo "Skipping release deployment: not a tag"
 else
   echo "Deploy to bintray..."
-  ./gradlew bintrayUpload -Pbintray.user="${BINTRAY_USER}" -Pbintray.apiKey="${BINTRAY_APIKEY}"
+  ./gradlew bintrayUpload -Pbintray.user="${BINTRAY_USER}" -Pbintray.apiKey="${BINTRAY_API_KEY}"
   echo "Deployed to bintray!"
 fi
 
