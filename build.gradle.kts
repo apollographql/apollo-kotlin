@@ -185,7 +185,9 @@ fun Project.configurePublishing() {
           //
           // https://issuetracker.google.com/issues/37055147
           // https://github.com/gradle/gradle/pull/8399
-          artifact("build/outputs/aar/apollo-android-support-release.aar")
+          afterEvaluate {
+            artifact(tasks.named("bundleReleaseAar").get())
+          }
         }
 
         if (javadocJarTaskProvider != null) {
