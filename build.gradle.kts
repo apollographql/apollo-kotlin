@@ -14,6 +14,8 @@ buildscript {
     classpath(groovy.util.Eval.x(project, "x.dep.gradleErrorpronePlugin"))
     classpath(groovy.util.Eval.x(project, "x.dep.gradleJapiCmpPlugin"))
     classpath(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
+    classpath(groovy.util.Eval.x(project, "x.dep.bintrayGradlePlugin"))
+    classpath(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
   }
 }
 
@@ -45,11 +47,6 @@ subprojects {
       maven { url = uri("https://plugins.gradle.org/m2/") }
       maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
       google()
-    }
-
-    dependencies {
-      classpath(groovy.util.Eval.x(project, "x.dep.bintrayGradlePlugin"))
-      classpath(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
     }
   }
 
