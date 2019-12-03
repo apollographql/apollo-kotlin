@@ -1,3 +1,7 @@
+
+import org.gradle.api.plugins.internal.JavaConfigurationVariantMapping
+
+
 buildscript {
   project.apply {
     from(rootProject.file("gradle/dependencies.gradle"))
@@ -52,7 +56,7 @@ subprojects {
       google()
     }
   }
-  //this.apply(plugin = "com.jfrog.bintray")
+  this.apply(plugin = "com.jfrog.bintray")
   this.apply(plugin = "maven-publish")
 
   repositories {
@@ -118,11 +122,131 @@ subprojects {
     systemProperty("updateTestFixtures", System.getProperty("updateTestFixtures"))
   }
 
+  afterEvaluate {
+    configurePublishing()
+  }
+}
+
+fun Project.configurePublishing() {
+  val publicationName = "maven"
+  val android = extensions.findByType(com.android.build.gradle.BaseExtension::class.java)
+
+  /**
+   * Javadoc
+   */
+  var javadocTask = tasks.findByName("javadoc") as Javadoc?
+  var javadocJarTaskProvider: TaskProvider<org.gradle.jvm.tasks.Jar>? = null
+  if (javadocTask == null && android != null) {
+    javadocTask = tasks.create("javadoc", Javadoc::class.java) {
+      source = android.sourceSets["main"].java.sourceFiles
+      classpath += project.files(android.getBootClasspath().joinToString(File.pathSeparator))
+    }
+  }
+
+  if (javadocTask != null) {
+    javadocJarTaskProvider = tasks.register("javadocJar", org.gradle.jvm.tasks.Jar::class.java) {
+      archiveClassifier.set("javadoc")
+      dependsOn(javadocTask)
+      from(javadocTask.destinationDir)
+    }
+  }
+
+  var sourcesJarTaskProvider: TaskProvider<org.gradle.jvm.tasks.Jar>? = null
+  val javaPluginConvention = project.convention.findPlugin(JavaPluginConvention::class.java)
+  if (javaPluginConvention != null && android == null) {
+    sourcesJarTaskProvider = tasks.register("sourcesJar", org.gradle.jvm.tasks.Jar::class.java) {
+      archiveClassifier.set("sources")
+      from(javaPluginConvention.sourceSets.get("main").allSource)
+    }
+  } else if (android != null) {
+    sourcesJarTaskProvider = tasks.register("sourcesJar", org.gradle.jvm.tasks.Jar::class.java) {
+      archiveClassifier.set("sources")
+      from(android.sourceSets["main"].java.sourceFiles)
+    }
+  }
+
+  tasks.withType(Javadoc::class.java) {
+    // TODO: fix the javadoc warnings
+    (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
+  }
+
+  configure<PublishingExtension> {
+    publications {
+      create<MavenPublication>(publicationName) {
+        val javaComponent = components.findByName("java")
+        if (javaComponent != null) {
+          from(javaComponent)
+        } else if (android != null){
+          // this is a workaround while the below is fixed.
+          // dependency information in the pom file will most likely be wrong
+          // but it's been like that for some time now. As long as users still
+          // import apollo-runtime in addition to the android artifacts, it
+          // should be fine.
+          //
+          // https://issuetracker.google.com/issues/37055147
+          // https://github.com/gradle/gradle/pull/8399
+          artifact("build/outputs/aar/apollo-android-support-release.aar")
+        }
+
+        if (javadocJarTaskProvider != null) {
+          artifact(javadocJarTaskProvider.get())
+        }
+        if (sourcesJarTaskProvider != null) {
+          artifact(sourcesJarTaskProvider.get())
+        }
+
+        pom {
+          groupId = findProperty("GROUP") as String?
+          artifactId = findProperty("POM_ARTIFACT_ID") as String?
+          version = findProperty("VERSION_NAME") as String?
+
+          name.set(findProperty("POM_NAME") as String?)
+          packaging = findProperty("POM_PACKAGING") as String?
+          description.set(findProperty("POM_DESCRIPTION") as String?)
+          url.set(findProperty("POM_URL") as String?)
+
+          scm {
+            url.set(findProperty("POM_SCM_URL") as String?)
+            connection.set(findProperty("POM_SCM_CONNECTION") as String?)
+            developerConnection.set(findProperty("POM_SCM_DEV_CONNECTION") as String?)
+          }
+
+          licenses {
+            name.set(findProperty("POM_LICENCE_NAME") as String?)
+            url.set(findProperty("POM_LICENCE_URL") as String?)
+          }
+
+          developers {
+            developer {
+              id.set(findProperty("POM_DEVELOPER_ID") as String?)
+              name.set(findProperty("POM_DEVELOPER_NAME") as String?)
+            }
+          }
+        }
+      }
+    }
+
+    repositories {
+      maven {
+        name = "pluginTest"
+        url = uri("file://${rootProject.buildDir}/localMaven")
+      }
+      maven {
+        name = "oss"
+        url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
+        credentials {
+          username = findProperty("SONATYPE_NEXUS_USERNAME") as String?
+          password = findProperty("SONATYPE_NEXUS_PASSWORD") as String?
+        }
+      }
+    }
+  }
+
   configure<com.jfrog.bintray.gradle.BintrayExtension> {
     user = findProperty("bintray.user") as String?
     key = findProperty("bintray.apikey") as String?
 
-    setConfigurations("archives")
+    setPublications(publicationName)
 
     pkg.run {
       userOrg = findProperty("POM_DEVELOPER_ID") as String?
@@ -136,49 +260,6 @@ subprojects {
       publicDownloadNumbers = true
       version.run {
         desc = findProperty("POM_DESCRIPTION") as String?
-      }
-     }
-  }
-
-  afterEvaluate {
-    val javadocTask = tasks.findByName("javadoc") as Javadoc?
-    var javadocJarTaskProvider: TaskProvider<org.gradle.jvm.tasks.Jar>? = null
-    if (javadocTask != null) {
-      javadocJarTaskProvider = tasks.register("javadocJar", org.gradle.jvm.tasks.Jar::class.java) {
-        archiveClassifier.set("javadoc")
-        dependsOn(javadocTask)
-        from(javadocTask.destinationDir)
-      }
-    }
-
-    var sourcesJarTaskProvider: TaskProvider<org.gradle.jvm.tasks.Jar>? = null
-    val javaPluginConvention = project.convention.findPlugin(JavaPluginConvention::class.java)
-    if (javaPluginConvention != null) {
-      sourcesJarTaskProvider = tasks.register("sourcesJar", org.gradle.jvm.tasks.Jar::class.java) {
-        archiveClassifier.set("sources")
-        from(javaPluginConvention.sourceSets.get("main").allSource)
-      }
-    }
-
-    tasks.withType(Javadoc::class.java) {
-      // TODO: fix the javadoc warnings
-      (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
-    }
-
-    configure<PublishingExtension> {
-      publications {
-        create<MavenPublication>("publication") {
-          val java = components.findByName("java")
-          if (java != null) {
-            from(components["java"])
-            if (javadocJarTaskProvider != null) {
-              artifact(javadocJarTaskProvider.get())
-            }
-            if (sourcesJarTaskProvider != null) {
-              artifact(sourcesJarTaskProvider.get())
-            }
-          }
-        }
       }
     }
   }
