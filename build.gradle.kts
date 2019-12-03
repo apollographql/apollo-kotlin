@@ -52,7 +52,7 @@ subprojects {
       google()
     }
   }
-  this.apply(plugin = "com.jfrog.bintray")
+  //this.apply(plugin = "com.jfrog.bintray")
   this.apply(plugin = "maven-publish")
 
   repositories {
@@ -113,6 +113,7 @@ subprojects {
       tasks.findByName("check")?.dependsOn("checkstyle")
     }
   }
+
   tasks.withType<Test>().configureEach {
     systemProperty("updateTestFixtures", System.getProperty("updateTestFixtures"))
   }
@@ -122,6 +123,7 @@ subprojects {
     key = findProperty("bintray.apikey") as String?
 
     setConfigurations("archives")
+
     pkg.run {
       userOrg = findProperty("POM_DEVELOPER_ID") as String?
       repo = findProperty("BINTRAY_POM_REPO") as String?
@@ -134,6 +136,49 @@ subprojects {
       publicDownloadNumbers = true
       version.run {
         desc = findProperty("POM_DESCRIPTION") as String?
+      }
+     }
+  }
+
+  afterEvaluate {
+    val javadocTask = tasks.findByName("javadoc") as Javadoc?
+    var javadocJarTaskProvider: TaskProvider<org.gradle.jvm.tasks.Jar>? = null
+    if (javadocTask != null) {
+      javadocJarTaskProvider = tasks.register("javadocJar", org.gradle.jvm.tasks.Jar::class.java) {
+        archiveClassifier.set("javadoc")
+        dependsOn(javadocTask)
+        from(javadocTask.destinationDir)
+      }
+    }
+
+    var sourcesJarTaskProvider: TaskProvider<org.gradle.jvm.tasks.Jar>? = null
+    val javaPluginConvention = project.convention.findPlugin(JavaPluginConvention::class.java)
+    if (javaPluginConvention != null) {
+      sourcesJarTaskProvider = tasks.register("sourcesJar", org.gradle.jvm.tasks.Jar::class.java) {
+        archiveClassifier.set("sources")
+        from(javaPluginConvention.sourceSets.get("main").allSource)
+      }
+    }
+
+    tasks.withType(Javadoc::class.java) {
+      // TODO: fix the javadoc warnings
+      (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
+    }
+
+    configure<PublishingExtension> {
+      publications {
+        create<MavenPublication>("publication") {
+          val java = components.findByName("java")
+          if (java != null) {
+            from(components["java"])
+            if (javadocJarTaskProvider != null) {
+              artifact(javadocJarTaskProvider.get())
+            }
+            if (sourcesJarTaskProvider != null) {
+              artifact(sourcesJarTaskProvider.get())
+            }
+          }
+        }
       }
     }
   }
