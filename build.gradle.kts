@@ -18,6 +18,9 @@ buildscript {
     classpath(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
   }
 }
+plugins {
+  id("com.jfrog.bintray").version("1.8.4").apply(false)
+}
 
 fun baselineJar(project: Project, version: String): File {
   val group = project.property("GROUP")
@@ -49,6 +52,8 @@ subprojects {
       google()
     }
   }
+  this.apply(plugin = "com.jfrog.bintray")
+  this.apply(plugin = "maven-publish")
 
   repositories {
     maven { url = uri("https://plugins.gradle.org/m2/") }
@@ -110,5 +115,26 @@ subprojects {
   }
   tasks.withType<Test>().configureEach {
     systemProperty("updateTestFixtures", System.getProperty("updateTestFixtures"))
+  }
+
+  configure<com.jfrog.bintray.gradle.BintrayExtension> {
+    user = findProperty("bintray.user") as String?
+    key = findProperty("bintray.apikey") as String?
+
+    setConfigurations("archives")
+    pkg.run {
+      userOrg = findProperty("POM_DEVELOPER_ID") as String?
+      repo = findProperty("BINTRAY_POM_REPO") as String?
+      name = findProperty("POM_ARTIFACT_ID") as String?
+      desc = findProperty("POM_DESCRIPTION") as String?
+      websiteUrl = findProperty("POM_URL") as String?
+      vcsUrl = findProperty("POM_SCM_URL") as String?
+      setLicenses(findProperty("POM_LICENCE_NAME") as String?)
+      publish = true
+      publicDownloadNumbers = true
+      version.run {
+        desc = findProperty("POM_DESCRIPTION") as String?
+      }
+    }
   }
 }
