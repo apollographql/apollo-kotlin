@@ -44,10 +44,3 @@ dependencies {
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer"))
   add("testImplementation", project(":apollo-rx2-support"))
 }
-
-apply {
-  from(rootProject.file("gradle/gradle-mvn-push.gradle"))
-}
-apply {
-  from(rootProject.file("gradle/bintray.gradle"))
-}

@@ -18,14 +18,6 @@ dependencies {
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
 }
 
-apply {
-  from(rootProject.file("gradle/gradle-mvn-push.gradle"))
-}
-
-apply {
-  from(rootProject.file("gradle/bintray.gradle"))
-}
-
 tasks.withType<Checkstyle> {
   exclude("**/BufferedSourceJsonReader.java")
   exclude("**/JsonScope.java")
