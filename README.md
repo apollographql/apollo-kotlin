@@ -231,6 +231,7 @@ Advanced topics are available in the [doc folder](doc):
 * [doc/persisted-queries.md](doc/no-runtime.md)
 * [doc/no-runtime.md](doc/no-runtime.md) 
 * [doc/subscriptions.md](doc/subscriptions.md) 
+* [doc/incubating-plugin.md](doc/subscriptions.md)
 
 ## License
 
