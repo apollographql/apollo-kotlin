@@ -53,7 +53,7 @@ apollo {
 }
 ```
 
-### Specifying schema and graphql files location
+### Specifying schema and GraphQL files location
 
 The root `schemaFilePath`, `outputPackageName` and `sourceSets.graphql` are removed and will throw an error if you try to use them. Instead you can use [CompilationUnit] to control what files the compiler will use as inputs.
 
