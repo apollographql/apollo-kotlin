@@ -43,11 +43,11 @@ You will need to define 2 services:
 ```kotlin
 apollo {
   service("github") {
-    sourceFolder.set("com.github")
+    sourceFolder.set("com/github")
     rootPackageName.set("com.github")
   }
   service("starwars") {
-    sourceFolder.set("com.starwars")
+    sourceFolder.set("com/starwars")
     rootPackageName.set("com.starwars")
   }
 }
