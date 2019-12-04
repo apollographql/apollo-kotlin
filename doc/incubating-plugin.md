@@ -107,7 +107,7 @@ apollo {
 }
 ```
 
-Also, the classes of the plugin have been split between a [api](https://github.com/apollographql/apollo-android/tree/4692659508242d64882b8bff11efa7dcd555dbcc/apollo-gradle-plugin-incubating/src/main/kotlin/com/apollographql/apollo/gradle/api) part and an [internal](https://github.com/apollographql/apollo-android/tree/4692659508242d64882b8bff11efa7dcd555dbcc/apollo-gradle-plugin-incubating/src/main/kotlin/com/apollographql/apollo/gradle/internal) one. If you were relying on fully qualified class names from your `build.gradle.kts` files, you will have to tweak them:
+Also, the classes of the plugin have been split into an [api](https://github.com/apollographql/apollo-android/tree/4692659508242d64882b8bff11efa7dcd555dbcc/apollo-gradle-plugin-incubating/src/main/kotlin/com/apollographql/apollo/gradle/api) part and an [internal](https://github.com/apollographql/apollo-android/tree/4692659508242d64882b8bff11efa7dcd555dbcc/apollo-gradle-plugin-incubating/src/main/kotlin/com/apollographql/apollo/gradle/internal) one. If you were relying on fully qualified class names from your `build.gradle.kts` files, you will have to tweak them:
 
 ```kotlin
 // Replace:
