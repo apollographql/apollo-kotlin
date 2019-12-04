@@ -20,10 +20,10 @@ buildscript {
 We renamed the plugin's ID from `com.apollographql.android` to `com.apollographql.apollo` to make it clear that the plugin works also for non-Android projects. `com.apollographql.android` will be removed in a future revision.
 
 ```groovy
-// Instead of
-// apply plugin: 'com.apollographql.android'
+// Replace:
+apply plugin: 'com.apollographql.android'
 
-// Do this
+// With:
 apply plugin: 'com.apollographql.apollo'
 ```
 
