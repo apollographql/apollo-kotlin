@@ -93,7 +93,7 @@ Read [plugin-configuration](plugin-configuration.md) for a complete description 
 
 ### Kotlin DSL
 
-The plugin uses gradle [Properties](https://docs.gradle.org/current/javadoc/org/gradle/api/provider/Property.html) to support [lazy configuration](https://docs.gradle.org/current/userguide/lazy_configuration.html) and wiring tasks together.
+The plugin uses Gradle [Properties](https://docs.gradle.org/current/javadoc/org/gradle/api/provider/Property.html) to support [lazy configuration](https://docs.gradle.org/current/userguide/lazy_configuration.html) and wiring tasks together.
 
 If you're using Groovy `build.gradle` build scripts it should work transparently but Kotlin `build.gradle.kts` build scripts will require you to use the [Property.set](https://docs.gradle.org/current/javadoc/org/gradle/api/provider/Property.html#set-T-) API:
 
