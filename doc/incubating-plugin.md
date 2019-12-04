@@ -6,7 +6,7 @@ The incubating plugin is in the `apollo-gradle-plugin-incubating` artifact. It i
 ```
 buildscript {
     // Replace
-    // classpath("com.apollographql.apollo:apollo-gradle-plugin")
+    classpath("com.apollographql.apollo:apollo-gradle-plugin")
 
     // By
     classpath("com.apollographql.apollo:apollo-gradle-plugin-incubating")
@@ -59,9 +59,9 @@ The root `schemaFilePath`, `outputPackageName` and `sourceSets.graphql` are remo
 
 ```groovy
 // Instead of
-// sourceSets {
-//  main.graphql.srcDirs += "/path/to/your/graphql/queries/dir"
-//}
+sourceSets {
+  main.graphql.srcDirs += "/path/to/your/graphql/queries/dir"
+}
 
 // Do this
 apollo {
@@ -71,13 +71,13 @@ apollo {
 }
 
 // Instead of
-// apollo {
-//  sourceSet {
-//    schemaFilePath = "/path/to/your/schema.json"
-//    exclude = "**/*.gql"
-//  }
-//  outputPackageName = "com.example"
-//}
+apollo {
+  sourceSet {
+    schemaFilePath = "/path/to/your/schema.json"
+    exclude = "**/*.gql"
+  }
+  outputPackageName = "com.example"
+}
 
 // Do this
 apollo {
@@ -100,7 +100,7 @@ If you're using Groovy `build.gradle` build scripts it should work transparently
 ```kotlin
 apollo {
   // Instead of
-  // setGenerateKotlinModels(true)
+  setGenerateKotlinModels(true)
 
   // Do this
   generateKotlinModels.set(true)
@@ -111,10 +111,7 @@ Also, the classes of the plugin have been split between a [api](https://github.c
 
 ```kotlin
 // Instead of
-// import com.apollographql.apollo.gradle.ApolloExtension
-
-// Never rely on internal classes, they might change without warning
-// import com.apollographql.apollo.gradle.internal.DefaultApolloExtension
+import com.apollographql.apollo.gradle.ApolloExtension
 
 // Do this
 import com.apollographql.apollo.gradle.api.ApolloExtension
