@@ -5,10 +5,10 @@ The incubating plugin is in the `apollo-gradle-plugin-incubating` artifact. It i
 
 ```
 buildscript {
-    // Replace
+    // Replace:
     classpath("com.apollographql.apollo:apollo-gradle-plugin")
 
-    // By
+    // With:
     classpath("com.apollographql.apollo:apollo-gradle-plugin-incubating")
 }
 ```
@@ -58,19 +58,19 @@ apollo {
 The root `schemaFilePath`, `outputPackageName` and `sourceSets.graphql` are removed and will throw an error if you try to use them. Instead you can use [CompilationUnit] to control what files the compiler will use as inputs.
 
 ```groovy
-// Instead of
+// Replace:
 sourceSets {
   main.graphql.srcDirs += "/path/to/your/graphql/queries/dir"
 }
 
-// Do this
+// With:
 apollo {
   onCompilationUnits {
      graphqlSourceDirectorySet.srcDirs += "/path/to/your/graphql/queries/dir"
   }
 }
 
-// Instead of
+// Replace
 apollo {
   sourceSet {
     schemaFilePath = "/path/to/your/schema.json"
@@ -79,7 +79,7 @@ apollo {
   outputPackageName = "com.example"
 }
 
-// Do this
+// With:
 apollo {
   onCompilationUnits {
      schemaFile = "/path/to/your/schema.json"
@@ -99,10 +99,10 @@ If you're using Groovy `build.gradle` build scripts it should work transparently
 
 ```kotlin
 apollo {
-  // Instead of
+  // Replace:
   setGenerateKotlinModels(true)
 
-  // Do this
+  // With:
   generateKotlinModels.set(true)
 }
 ```
@@ -110,10 +110,10 @@ apollo {
 Also, the classes of the plugin have been split between a [api](https://github.com/apollographql/apollo-android/tree/4692659508242d64882b8bff11efa7dcd555dbcc/apollo-gradle-plugin-incubating/src/main/kotlin/com/apollographql/apollo/gradle/api) part and an [internal](https://github.com/apollographql/apollo-android/tree/4692659508242d64882b8bff11efa7dcd555dbcc/apollo-gradle-plugin-incubating/src/main/kotlin/com/apollographql/apollo/gradle/internal) one. If you were relying on fully qualified class names from your `build.gradle.kts` files, you will have to tweak them:
 
 ```kotlin
-// Instead of
+// Replace:
 import com.apollographql.apollo.gradle.ApolloExtension
 
-// Do this
+// With:
 import com.apollographql.apollo.gradle.api.ApolloExtension
 ```
 
