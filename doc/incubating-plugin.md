@@ -119,7 +119,7 @@ import com.apollographql.apollo.gradle.api.ApolloExtension
 
 #  Configuration reference
 
-Apollo-Android comes with logical defaults that will work for the majority of use cases, below you will find additional configuration.
+Apollo-Android comes with logical defaults that will work for the majority of use cases. Below you will find additional configuration.
 
 ## Service
 
