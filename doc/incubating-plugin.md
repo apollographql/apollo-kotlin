@@ -123,7 +123,7 @@ Apollo-Android comes with logical defaults that will work for the majority of us
 
 ## Service
 
-Apollo-Android can use several services for multiple schemas and endpoints. The schema and graphql files related to different services must be in different folders.
+Apollo-Android can use several services for multiple schemas and endpoints. The schema and GraphQL files related to different services must be in different folders.
 
 You can configure services by calling `ApolloExtension.service(String)`:
 
