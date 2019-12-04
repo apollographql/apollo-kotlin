@@ -31,7 +31,7 @@ apply plugin: 'com.apollographql.apollo'
 
 The plugin now requires that you specify multiple services explicitly. If you previously had the following layout:
 
-```bash
+```
 src/main/graphql/com/github/schema.json
 src/main/graphql/com/github/GetRepositories.graphql
 src/main/graphql/com/starwars/schema.json
