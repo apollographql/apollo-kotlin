@@ -140,7 +140,7 @@ apollo {
 }
 ```
 
-A service will compile all your graphql files for all variants in your project. For a simple JVM project it's usually just one variant but for android projects, you can define different queries for different variants.
+A service will compile all your GraphQL files for all variants in your project. For a simple JVM project it's usually just one variant but for Android projects, you can define different queries for different variants.
 
 ## CompilationUnit
 
