@@ -1,7 +1,7 @@
 
 # Using the incubating plugin
 
-The incubating plugin is in the `apollo-gradle-plugin-incubating`artifact. It is a rewrite of the plugin in Kotlin to make it more maintainable and have better support for multiple services.
+The incubating plugin is in the `apollo-gradle-plugin-incubating` artifact. It is a rewrite of the plugin in Kotlin to make it more maintainable and have better support for multiple services.
 
 ```
 buildscript {
