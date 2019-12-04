@@ -29,7 +29,7 @@ apply plugin: 'com.apollographql.apollo'
 
 ### Using multiple services
 
-The plugin now requires that you specify multiple services explicitely. If you previously had the following layout:
+The plugin now requires that you specify multiple services explicitly. If you previously had the following layout:
 
 ```bash
 src/main/graphql/com/github/schema.json
