@@ -89,7 +89,7 @@ apollo {
 }
 ```
 
-Read [plugin-configuration](plugin-configuration.md) for a complete description of what the different options do.
+Read [plugin-configuration](#configuration-reference) for a complete description of what the different options do.
 
 ### Kotlin DSL
 
