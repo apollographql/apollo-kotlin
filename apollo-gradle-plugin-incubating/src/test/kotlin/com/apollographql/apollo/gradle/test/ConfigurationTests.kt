@@ -27,6 +27,18 @@ class ConfigurationTests {
   }
 
   @Test
+  fun `customSingularizationRules is working`() {
+    withSimpleProject("""
+      apollo {
+        customSingularizationRules = ["F(ilm)s\$": "SingularF\$1"]
+      }
+    """.trimIndent()) { dir ->
+      TestUtils.executeTask("generateApolloSources", dir)
+      TestUtils.assertFileContains(dir, "main/service/com/example/FilmsQuery.java", "SingularFilm")
+    }
+  }
+
+  @Test
   fun `nullableValueType is working`() {
     for (pair in listOf(
         "annotated" to "@Nullable String name()",

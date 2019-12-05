@@ -2,6 +2,7 @@ package com.apollographql.apollo.compiler.codegen.kotlin
 
 import com.apollographql.apollo.compiler.DeprecatedPackageNameProvider
 import com.apollographql.apollo.compiler.PackageNameProvider
+import com.apollographql.apollo.compiler.ast.SingularizationRules
 import com.apollographql.apollo.compiler.ast.CustomTypes
 import com.apollographql.apollo.compiler.ast.builder.ast
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
@@ -13,14 +14,17 @@ import java.io.File
 class GraphQLKompiler(
     private val ir: CodeGenerationIR,
     private val customTypeMap: Map<String, String>,
+    private val customSingularizationRules: Set<Pair<String, String>>,
     private val packageNameProvider: PackageNameProvider,
     private val useSemanticNaming: Boolean,
     private val generateAsInternal: Boolean = false
 ) {
+
   fun write(outputDir: File) {
     val customTypeMap = customTypeMap.supportedCustomTypes(ir.typesUsed)
     val schema = ir.ast(
         customTypeMap = customTypeMap,
+        customSingularizationRules = SingularizationRules(customSingularizationRules),
         typesPackageName = packageNameProvider.typesPackageName,
         fragmentsPackage = packageNameProvider.fragmentsPackageName,
         useSemanticNaming = useSemanticNaming

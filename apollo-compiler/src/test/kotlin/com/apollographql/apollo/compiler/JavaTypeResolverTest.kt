@@ -19,6 +19,7 @@ class JavaTypeResolverTest {
       typeDeclarations = emptyList(),
       packageNameProvider = packageNameProvider,
       customTypeMap = emptyMap(),
+      customSingularizationRules = emptySet(),
       nullableValueType = NullableValueType.APOLLO_OPTIONAL,
       ir = CodeGenerationIR(emptyList(), emptyList(), emptyList()),
       useSemanticNaming = false,

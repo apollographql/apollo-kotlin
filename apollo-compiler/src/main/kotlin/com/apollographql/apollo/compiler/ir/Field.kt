@@ -25,7 +25,7 @@ data class Field(
   override fun toTypeSpec(context: CodeGenerationContext, abstract: Boolean): TypeSpec {
     val fields = if (isNonScalar()) fields else emptyList()
     return SchemaTypeSpecBuilder(
-        typeName = formatClassName(),
+        typeName = formatClassName(context),
         schemaType = type,
         fields = fields,
         fragmentSpreads = fragmentSpreads,
@@ -45,7 +45,7 @@ data class Field(
 
   fun accessorMethodSpec(context: CodeGenerationContext): MethodSpec {
     val respName = responseName.escapeJavaReservedWord()
-    val returnTypeName = toTypeName(methodResponseType(), context)
+    val returnTypeName = toTypeName(methodResponseType(context), context)
     val name = if (context.useJavaBeansSemanticNaming) {
       val isBooleanField = returnTypeName == TypeName.BOOLEAN || returnTypeName == TypeName.BOOLEAN.box()
       respName.toJavaBeansSemanticNaming(isBooleanField = isBooleanField)
@@ -68,7 +68,7 @@ data class Field(
   }
 
   fun fieldSpec(context: CodeGenerationContext): FieldSpec {
-    return FieldSpec.builder(toTypeName(methodResponseType(), context), responseName.escapeJavaReservedWord())
+    return FieldSpec.builder(toTypeName(methodResponseType(context), context), responseName.escapeJavaReservedWord())
         .addModifiers(Modifier.FINAL)
         .build()
   }
@@ -100,7 +100,7 @@ data class Field(
         .build()
   }
 
-  fun formatClassName() = responseName.let { if (isList()) it.singularize() else it }.let { originalClassName ->
+  fun formatClassName(context: CodeGenerationContext) = responseName.let { if (isList()) it.singularize(context.customSingularizationRules) else it }.let { originalClassName ->
     var className = originalClassName
     while (className.first() == '_') {
       className = className.removeRange(0, 1)
@@ -108,7 +108,7 @@ data class Field(
     "_".repeat(originalClassName.length - className.length) + className.capitalize()
   }
 
-  fun isOptional(): Boolean = isConditional || !methodResponseType().endsWith("!") || inlineFragments.isNotEmpty()
+  fun isOptional(context: CodeGenerationContext): Boolean = isConditional || !methodResponseType(context).endsWith("!") || inlineFragments.isNotEmpty()
 
   fun isNonScalar() = hasFragments() || fields.any()
 
@@ -135,15 +135,15 @@ data class Field(
 
   private fun toTypeName(responseType: String, context: CodeGenerationContext): TypeName {
     val packageName = if (isNonScalar()) "" else context.packageNameProvider.typesPackageName
-    return JavaTypeResolver(context, packageName, isDeprecated).resolve(responseType, isOptional())
+    return JavaTypeResolver(context, packageName, isDeprecated).resolve(responseType, isOptional(context))
   }
 
-  private fun methodResponseType(): String {
+  private fun methodResponseType(context: CodeGenerationContext): String {
     if (isNonScalar() || hasFragments()) {
       // For non scalar fields, we use the responseName as the method return type.
       // However, we need to also encode any extra information from the `type` field
       // eg, [lists], nonNulls!, [[nestedLists]], [nonNullLists]!, etc
-      val normalizedName = formatClassName()
+      val normalizedName = formatClassName(context)
       return when {
         type.startsWith("[") -> {// array type
           type.count { it == '[' }.let {

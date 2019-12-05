@@ -1,6 +1,7 @@
 package com.apollographql.apollo.compiler.ast.builder
 
 import com.apollographql.apollo.compiler.applyIf
+import com.apollographql.apollo.compiler.ast.SingularizationRules
 import com.apollographql.apollo.compiler.ast.CustomTypes
 import com.apollographql.apollo.compiler.ast.EnumType
 import com.apollographql.apollo.compiler.ast.ObjectType
@@ -14,6 +15,7 @@ import com.apollographql.apollo.compiler.singularize
 internal class Context(
     reservedObjectTypeRef: TypeRef?,
     val customTypeMap: CustomTypes,
+    val customSingularizationRules: SingularizationRules,
     val enums: List<EnumType>,
     val typesPackageName: String,
     val fragmentsPackage: String,
@@ -55,7 +57,7 @@ internal class Context(
     }
 
     val uniqueTypeRef = (reservedObjectTypeRefs).generateUniqueTypeRef(
-        typeName = normalizedClassName.let { if (singularize) it.singularize() else it }
+        typeName = normalizedClassName.let { if (singularize) it.singularize(customSingularizationRules) else it }
     )
     reservedObjectTypeRefs.add(uniqueTypeRef)
     objectTypeContainer[uniqueTypeRef] = ObjectType(

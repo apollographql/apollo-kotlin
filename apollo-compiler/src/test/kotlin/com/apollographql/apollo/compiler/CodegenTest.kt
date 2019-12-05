@@ -73,6 +73,10 @@ class CodeGenTest(val folder: File) {
       } else {
         emptyMap()
       }
+      val customSingularizationRules = when (folder.name) {
+        "custom_singularization_rules" -> mapOf("f(riend)s$" to "SingularF$1")
+        else -> mapOf()
+      }
       val nullableValueType = when (folder.name) {
         "hero_details_guava" -> NullableValueType.GUAVA_OPTIONAL
         "hero_details_java_optional" -> NullableValueType.JAVA_OPTIONAL
@@ -124,6 +128,7 @@ class CodeGenTest(val folder: File) {
           ir = ir,
           outputDir = File("build/generated/test/${folder.name}/$language"),
           customTypeMap = customTypeMap,
+          customSingularizationRules = customSingularizationRules,
           generateKotlinModels = generateKotlinModels,
           nullableValueType = nullableValueType,
           useSemanticNaming = useSemanticNaming,

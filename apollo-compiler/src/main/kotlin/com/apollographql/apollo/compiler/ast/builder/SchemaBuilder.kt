@@ -8,6 +8,7 @@ import com.apollographql.apollo.compiler.ir.TypeDeclaration
 
 internal fun CodeGenerationIR.ast(
     customTypeMap: CustomTypes,
+    customSingularizationRules: SingularizationRules,
     typesPackageName: String,
     fragmentsPackage: String,
     useSemanticNaming: Boolean
@@ -26,6 +27,7 @@ internal fun CodeGenerationIR.ast(
         Context(
             reservedObjectTypeRef = null,
             customTypeMap = customTypeMap,
+            customSingularizationRules = customSingularizationRules,
             enums = enums,
             typesPackageName = typesPackageName,
             fragmentsPackage = fragmentsPackage,
@@ -40,6 +42,7 @@ internal fun CodeGenerationIR.ast(
             reservedObjectTypeRef = TypeRef(
                 name = operation.normalizedOperationName(useSemanticNaming).capitalize()),
             customTypeMap = customTypeMap,
+            customSingularizationRules = customSingularizationRules,
             enums = enums,
             typesPackageName = typesPackageName,
             fragmentsPackage = fragmentsPackage,

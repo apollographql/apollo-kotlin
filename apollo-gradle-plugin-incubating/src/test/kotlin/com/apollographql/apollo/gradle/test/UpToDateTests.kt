@@ -72,6 +72,28 @@ class UpToDateTests {
     File(dir, "build.gradle").writeText(text.replace(apolloBlock, ""))
   }
 
+  //TODO: finish this!
+  fun `adding a custom singularization rule to the build script re-generates the CustomType class`(dir: File) {
+    val apolloBlock = """
+      apollo {
+        customSingularizationRules = ["f(riend)s\$": "SingularF\$1"]
+      }
+    """.trimIndent()
+
+    File(dir, "build.gradle").appendText(apolloBlock)
+
+    val result = TestUtils.executeTask("generateApolloSources", dir)
+
+    // modifying the customTypeMapping should cause the task to be out of date
+    // and the task should run again
+    assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
+
+    TestUtils.assertFileContains(dir, "main/service/com/example/type/CustomType.java", "SingularFriend")
+
+    val text = File(dir, "build.gradle").readText()
+    File(dir, "build.gradle").writeText(text.replace(apolloBlock, ""))
+  }
+
   @Test
   fun `change graphql file rebuilds the sources`() {
     withSimpleProject { dir ->

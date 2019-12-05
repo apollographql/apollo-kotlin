@@ -1,6 +1,5 @@
 package com.apollographql.apollo.compiler
 
-import java.io.File
 import java.util.regex.Pattern
 
 /**
@@ -9,7 +8,12 @@ import java.util.regex.Pattern
  * The singularization methods were heavily based off rogueweb <link> https://code.google.com/archive/p/rogueweb/source</link>
  */
 
-fun String.singularize(): String {
+fun String.singularize(customMappings: Set<Pair<String, String>>): String {
+  val customMapping = customMappings.lastOrNull { match(it.component1(), this) }
+  if (customMapping != null) {
+    return Pattern.compile(customMapping.component1(), Pattern.CASE_INSENSITIVE).matcher(this).replaceAll(customMapping.component2())
+  }
+
   if (uncountable.contains(this.toLowerCase())) return this
 
   if (exclude.contains(this.toLowerCase())) return this

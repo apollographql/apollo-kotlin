@@ -35,6 +35,15 @@ interface CompilerParams {
   val customTypeMapping: MapProperty<String, String>
 
   /**
+   * The Singularizer built into Apollo can't possibly know how to map every plural word in the English
+   * language to its singular form. customSingularizationRules allows you to provide a custom mapping for
+   * your project.
+   *
+   * empty by default.
+   */
+  val customSingularizationRules: MapProperty<String, String>
+
+  /**
    * The custom types code generate some warnings that might make the build fail.
    * suppressRawTypesWarning will add the appropriate SuppressWarning annotation
    *

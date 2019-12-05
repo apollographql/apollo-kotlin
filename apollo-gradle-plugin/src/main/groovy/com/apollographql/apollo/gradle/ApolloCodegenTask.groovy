@@ -23,6 +23,7 @@ class ApolloCodegenTask extends SourceTask {
   @Input @Optional Property<String> outputPackageName = project.objects.property(String.class)
   @OutputDirectory DirectoryProperty outputDir = project.objects.directoryProperty()
   @Input MapProperty<String, String> customTypeMapping = project.objects.mapProperty(String.class, String.class)
+  @Input MapProperty<String, String> customSingularizationRules = project.objects.mapProperty(String.class, String.class)
   @Optional @Input Property<String> nullableValueType = project.objects.property(String.class)
   @Input Property<Boolean> useSemanticNaming = project.objects.property(Boolean.class)
   @Input Property<Boolean> generateModelBuilder = project.objects.property(Boolean.class)
@@ -69,6 +70,7 @@ class ApolloCodegenTask extends SourceTask {
           codeGenerationIR,
           outputDir.get().asFile,
           customTypeMapping.get(),
+          customSingularizationRules.get(),
           useSemanticNaming.get(),
           packageNameProvider,
           generateKotlinModels.get(),

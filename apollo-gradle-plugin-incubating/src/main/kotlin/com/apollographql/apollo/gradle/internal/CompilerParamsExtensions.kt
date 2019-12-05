@@ -16,6 +16,7 @@ fun CompilerParams.withFallback(objects: ObjectFactory, other: CompilerParams): 
   merge.generateKotlinModels.set(this.generateKotlinModels.orElse(other.generateKotlinModels))
   merge.generateTransformedQueries.set(this.generateTransformedQueries.orElse(other.generateTransformedQueries))
   merge.customTypeMapping.set(this.customTypeMapping.orElse(other.customTypeMapping))
+  merge.customSingularizationRules.set(this.customSingularizationRules.orElse(other.customSingularizationRules))
   merge.suppressRawTypesWarning.set(this.suppressRawTypesWarning.orElse(other.suppressRawTypesWarning))
   merge.useSemanticNaming.set(this.useSemanticNaming.orElse(other.useSemanticNaming))
   merge.nullableValueType.set(this.nullableValueType.orElse(other.nullableValueType))

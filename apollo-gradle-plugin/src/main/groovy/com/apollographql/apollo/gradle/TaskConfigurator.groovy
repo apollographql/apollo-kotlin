@@ -34,6 +34,7 @@ abstract class TaskConfigurator {
       sourceSetNames = sourceSets.collect { it.name }
       outputDir.set(outputFolder)
       customTypeMapping = project.apollo.customTypeMapping
+      customSingularizationRules = project.apollo.customSingularizationRules
       nullableValueType = project.apollo.nullableValueType
       useSemanticNaming = project.apollo.useSemanticNaming
       generateModelBuilder = project.apollo.generateModelBuilder

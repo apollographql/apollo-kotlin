@@ -20,6 +20,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @get:Input
   @get:Optional
+  abstract val customSingularizationRules: MapProperty<String, String>
+
+  @get:Input
+  @get:Optional
   abstract val nullableValueType: Property<String>
 
   @get:Input
@@ -102,6 +106,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         ir = codeGenerationIR,
         outputDir = outputDir.get().asFile,
         customTypeMap = customTypeMapping.getOrElse(emptyMap()),
+        customSingularizationRules = customSingularizationRules.getOrElse(emptyMap()),
         nullableValueType = nullableValueTypeEnum,
         useSemanticNaming = useSemanticNaming.getOrElse(true),
         generateModelBuilder = generateModelBuilder.getOrElse(false),
