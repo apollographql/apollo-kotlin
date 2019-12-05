@@ -130,8 +130,9 @@ public final class ApolloServerInterceptor implements ApolloInterceptor {
     httpCall.enqueue(new Callback() {
       @Override
       public void onFailure(@NotNull Call call, @NotNull IOException e) {
-        if (httpCallRef.compareAndSet(call, null)) {
-          if (disposed) return;
+        if (disposed) return;
+
+        if (httpCallRef.compareAndSet(httpCall, null)) {
           logger.e(e, "Failed to execute http call for operation %s", request.operation.name().name());
           callBack.onFailure(new ApolloNetworkException("Failed to execute http call", e));
         }
@@ -139,8 +140,9 @@ public final class ApolloServerInterceptor implements ApolloInterceptor {
 
       @Override
       public void onResponse(@NotNull Call call, @NotNull Response response) {
-        if (httpCallRef.compareAndSet(call, null)) {
-          if (disposed) return;
+        if (disposed) return;
+
+        if (httpCallRef.compareAndSet(httpCall, null)) {
           callBack.onResponse(new ApolloInterceptor.InterceptorResponse(response));
           callBack.onCompleted();
         }
