@@ -194,7 +194,6 @@ class BasicAndroidSpec extends Specification {
       it.replace("apollo {", "apollo {\n customSingularizationRules=[\"F(ilm)s\\\$\" : \"SingularF\\\$1\"]\n")
     }
 
-    System.err.println(new File("$testProjectDir/build.gradle").getText('UTF-8'))
     when:
     def result = GradleRunner.create().withProjectDir(testProjectDir)
         .withPluginClasspath()

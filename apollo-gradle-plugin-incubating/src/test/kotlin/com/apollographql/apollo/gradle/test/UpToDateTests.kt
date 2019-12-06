@@ -72,7 +72,6 @@ class UpToDateTests {
     File(dir, "build.gradle").writeText(text.replace(apolloBlock, ""))
   }
 
-  //TODO: finish this!
   fun `adding a custom singularization rule to the build script re-generates the CustomType class`(dir: File) {
     val apolloBlock = """
       apollo {
