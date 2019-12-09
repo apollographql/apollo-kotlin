@@ -14,13 +14,6 @@ dependencies {
   add("compileOnly", project(":apollo-api"))
 }
 
-apply {
-  from(rootProject.file("gradle/gradle-mvn-push.gradle"))
-}
-apply {
-  from(rootProject.file("gradle/bintray.gradle"))
-}
-
 tasks.withType<Javadoc> {
   options.encoding = "UTF-8"
 }

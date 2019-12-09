@@ -57,10 +57,3 @@ tasks.getByName("compileKotlin").dependsOn("pluginVersion")
 tasks.withType<Checkstyle> {
     exclude("**com/apollographql/apollo/compiler/parser/antlr/**")
 }
-
-apply {
-  from(rootProject.file("gradle/gradle-mvn-push.gradle"))
-}
-apply {
-  from(rootProject.file("gradle/bintray.gradle"))
-}
