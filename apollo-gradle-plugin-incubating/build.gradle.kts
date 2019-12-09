@@ -34,9 +34,9 @@ tasks.withType<Test> {
   // for up to 60s. The heap dumps also show some process reaper threads but it might just as well be a temporary thing, not sure.
   // See https://github.com/gradle/gradle/issues/8354
   setForkEvery(8L)
-  dependsOn(":apollo-api:installLocally")
-  dependsOn(":apollo-compiler:installLocally")
-  dependsOn("installLocally")
+  dependsOn(":apollo-api:publishMavenPublicationToPluginTestRepository")
+  dependsOn(":apollo-compiler:publishMavenPublicationToPluginTestRepository")
+  dependsOn("publishMavenPublicationToPluginTestRepository")
 
   inputs.dir("src/test/files")
 }
@@ -57,6 +57,3 @@ gradlePlugin {
     }
   }
 }
-
-apply(rootProject.file("gradle/gradle-mvn-push.gradle"))
-apply(rootProject.file("gradle/bintray.gradle"))

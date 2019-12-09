@@ -38,13 +38,6 @@ tasks.withType<PluginUnderTestMetadata> {
   getPluginClasspath().from(configurations.named("fixtureClasspath"))
 }
 
-apply {
-  from(rootProject.file("gradle/gradle-mvn-push.gradle"))
-}
-apply {
-  from(rootProject.file("gradle/bintray.gradle"))
-}
-
 tasks.withType<Test> {
   jvmArgs("-Xmx512m")
 }

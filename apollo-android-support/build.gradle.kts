@@ -48,9 +48,3 @@ dependencies {
   add("androidTestImplementation", groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer"))
 }
 
-apply {
-  from(rootProject.file("gradle/gradle-mvn-push.gradle"))
-}
-apply {
-  from(rootProject.file("gradle/bintray.gradle"))
-}
