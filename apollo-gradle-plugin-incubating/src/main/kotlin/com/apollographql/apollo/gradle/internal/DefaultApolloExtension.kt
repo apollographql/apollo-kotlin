@@ -12,7 +12,7 @@ open class DefaultApolloExtension(val project: Project)
   /**
    * This is the input to the apollo plugin. Users will populate the services from their gradle files
    */
-  val services = mutableListOf<DefaultService>()
+  val services = project.objects.domainObjectContainer(DefaultService::class.java)
 
   /**
    * compilationUnits is meant to be consumed by other gradle plugin.

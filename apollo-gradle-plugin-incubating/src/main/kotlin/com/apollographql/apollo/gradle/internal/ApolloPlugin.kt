@@ -2,6 +2,7 @@ package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.gradle.api.ApolloExtension
 import com.apollographql.apollo.gradle.api.ApolloSourceSetExtension
+import com.apollographql.apollo.gradle.api.Service
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -192,22 +193,22 @@ open class ApolloPlugin : Plugin<Project> {
       }
     }
 
-    private fun registerDownloadSchemaTasks(project: Project, apolloExtension: DefaultApolloExtension) {
-      apolloExtension.services.forEach { service ->
-        val introspection = service.introspection
-        if (introspection != null) {
-          project.tasks.register("download${service.name.capitalize()}ApolloSchema", ApolloDownloadSchemaTask::class.java) { task ->
+    private fun registerDownloadSchemaTask(project: Project, service: DefaultService) {
+      val introspection = service.introspection
+      if (introspection != null) {
+        project.tasks.register("download${service.name.capitalize()}ApolloSchema", ApolloDownloadSchemaTask::class.java) { task ->
 
-            val sourceSetName = introspection.sourceSetName.orElse("main")
-            task.group = TASK_GROUP
-            task.schemaFilePath.set(service.schemaPath.map { "src/${sourceSetName.get()}/graphql/$it" })
-            task.endpointUrl.set(introspection.endpointUrl)
-            task.queryParameters.set(introspection.queryParameters)
-            task.headers.set(introspection.headers)
-          }
+          val sourceSetName = introspection.sourceSetName.orElse("main")
+          task.group = TASK_GROUP
+          task.schemaFilePath.set(service.schemaPath.map { "src/${sourceSetName.get()}/graphql/$it" })
+          task.endpointUrl.set(introspection.endpointUrl)
+          task.queryParameters.set(introspection.queryParameters)
+          task.headers.set(introspection.headers)
         }
       }
+    }
 
+    fun registerDownloadApolloSchemaTask(project: Project) {
       project.tasks.register("downloadApolloSchema", ApolloDownloadSchemaTask::class.java) { task ->
         task.group = TASK_GROUP
 
@@ -258,8 +259,6 @@ open class ApolloPlugin : Plugin<Project> {
       deprecationChecks(apolloExtension, apolloSourceSetExtension)
 
       registerCodegenTasks(project, apolloExtension)
-
-      registerDownloadSchemaTasks(project, apolloExtension)
     }
   }
 
@@ -275,6 +274,12 @@ open class ApolloPlugin : Plugin<Project> {
     // the extension block has not been evaluated yet, register a callback once the project has been evaluated
     project.afterEvaluate {
       afterEvaluate(it, apolloExtension, apolloSourceSetExtension)
+    }
+
+    registerDownloadApolloSchemaTask(project)
+
+    apolloExtension.services.all {
+      registerDownloadSchemaTask(project, it)
     }
   }
 }
