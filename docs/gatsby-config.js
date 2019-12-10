@@ -21,6 +21,7 @@ module.exports = {
             'essentials/mutations'
           ],
           'Gradle Plugin': [
+            'gradle/incubating-plugin',
             'gradle/plugin-configuration'
           ],
           Advanced: [
