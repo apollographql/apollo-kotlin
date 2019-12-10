@@ -228,7 +228,7 @@ Advanced topics are available in the [doc folder](doc):
 * [doc/file-upload.md](doc/file-upload.md)
 * [doc/rxjava2.md](doc/rxjava2.md)
 * [doc/coroutines.md](doc/coroutines.md) 
-* [doc/persisted-queries.md](doc/no-runtime.md)
+* [doc/persisted-queries.md](doc/persisted-queries.md)
 * [doc/no-runtime.md](doc/no-runtime.md) 
 * [doc/subscriptions.md](doc/subscriptions.md) 
 * [doc/incubating-plugin.md](doc/incubating-plugin.md)
