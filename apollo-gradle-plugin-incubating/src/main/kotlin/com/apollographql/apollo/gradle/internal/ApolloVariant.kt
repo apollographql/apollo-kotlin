@@ -1,6 +1,9 @@
 package com.apollographql.apollo.gradle.internal
 
-class ApolloVariant(
+import org.gradle.api.Project
+import org.gradle.api.tasks.TaskProvider
+
+abstract class ApolloVariant(
     /**
      * The full name of the variant
      *
@@ -29,4 +32,6 @@ class ApolloVariant(
      * to BaseVariant.
      */
     val androidVariant: Any?
-)
+) {
+    abstract fun registerGeneratedDirectory(project: Project, forKotlin: Boolean, codegenProvider: TaskProvider<ApolloGenerateSourcesTask>)
+}

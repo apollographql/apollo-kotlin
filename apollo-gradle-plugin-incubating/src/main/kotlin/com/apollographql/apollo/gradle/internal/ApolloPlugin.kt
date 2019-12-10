@@ -1,14 +1,17 @@
 package com.apollographql.apollo.gradle.internal
 
+import com.android.build.gradle.BasePlugin
 import com.apollographql.apollo.gradle.api.ApolloExtension
 import com.apollographql.apollo.gradle.api.ApolloSourceSetExtension
-import com.apollographql.apollo.gradle.api.Service
+import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.plugins.ExtensionAware
+import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.util.GradleVersion
+import org.jetbrains.kotlin.gradle.plugin.KotlinBasePluginWrapper
 import java.net.URLDecoder
 
 open class ApolloPlugin : Plugin<Project> {
@@ -70,84 +73,10 @@ open class ApolloPlugin : Plugin<Project> {
       }
     }
 
-
-    private fun registerCodegenTasks(project: Project, apolloExtension: DefaultApolloExtension) {
-      val androidExtension = project.extensions.findByName("android")
-
-      val apolloVariants = if (androidExtension == null) {
-        JvmTaskConfigurator.getVariants(project)
-      } else {
-        AndroidTaskConfigurator.getVariants(project, androidExtension)
-      }
-
-      val rootProvider = registerRootTask(project)
-
-      apolloVariants.all { apolloVariant ->
-        val variantProvider = registerVariantTask(project, apolloVariant.name)
-
-        val compilationUnits = if (apolloExtension.services.isEmpty()) {
-          listOf(DefaultCompilationUnit.fromFiles(project, apolloExtension, apolloVariant))
-        } else {
-          apolloExtension.services.map {
-            DefaultCompilationUnit.fromService(project, apolloExtension, apolloVariant, it)
-          }
-        }
-
-        compilationUnits.forEach { compilationUnit ->
-          val codegenProvider = registerCodeGenTask(project, compilationUnit)
-          variantProvider.configure {
-            it.dependsOn(codegenProvider)
-          }
-
-          if (androidExtension == null) {
-            JvmTaskConfigurator.registerGeneratedDirectory(project, compilationUnit, codegenProvider)
-          } else {
-            AndroidTaskConfigurator.registerGeneratedDirectory(project, androidExtension, compilationUnit, codegenProvider)
-          }
-
-          compilationUnit.outputDir.set(codegenProvider.flatMap { it.outputDir })
-          compilationUnit.transformedQueriesDir.set(codegenProvider.flatMap { it.transformedQueriesOutputDir })
-
-          apolloExtension.compilationUnits.add(compilationUnit)
-        }
-
-        rootProvider.configure {
-          it.dependsOn(variantProvider)
-        }
-
-      }
-    }
-
-    private fun registerVariantTask(project: Project, variantName: String): TaskProvider<Task> {
-      // for backward compatibility
-      val oldName = "generate${variantName.capitalize()}ApolloClasses"
-      project.tasks.register(oldName) {
-        it.group = TASK_GROUP
-        it.doLast {
-          throw IllegalArgumentException("$oldName is deprecated. Please use generateApolloSources instead.")
-        }
-      }
-
-      return project.tasks.register("generate${variantName.capitalize()}ApolloSources") {
-        it.group = TASK_GROUP
-      }
-    }
-
-    private fun registerRootTask(project: Project): TaskProvider<*> {
-      // for backward compatibility
-      project.tasks.register("generateApolloClasses") {
-        it.group = TASK_GROUP
-        it.doLast {
-          throw IllegalArgumentException("generateApolloClasses is deprecated. Please use generateApolloSources instead.")
-        }
-      }
-
-      return project.tasks.register("generateApolloSources") {
-        it.group = TASK_GROUP
-      }
-    }
-
-    fun registerCodeGenTask(project: Project, compilationUnit: DefaultCompilationUnit): TaskProvider<ApolloGenerateSourcesTask> {
+    fun registerCodeGenTask(project: Project,
+                            compilationUnit: DefaultCompilationUnit,
+                            hasUserDefinedServices: () -> Boolean
+    ): TaskProvider<ApolloGenerateSourcesTask> {
       val taskName = "generate${compilationUnit.name.capitalize()}ApolloSources"
 
       return project.tasks.register(taskName, ApolloGenerateSourcesTask::class.java) {
@@ -157,6 +86,18 @@ open class ApolloPlugin : Plugin<Project> {
         val compilerParams = compilationUnit
             .withFallback(project.objects, compilationUnit.service)
             .withFallback(project.objects, compilationUnit.apolloExtension)
+
+        val generateKotlinModels = compilerParams.generateKotlinModels.getOrElse(false)
+
+        var enabled = true
+        if (generateKotlinModels != compilationUnit.kotlin) {
+          enabled = false
+        }
+        if (!compilationUnit.service.isUserDefined && hasUserDefinedServices()) {
+          enabled = false
+        }
+
+        it.enabled = enabled
 
         compilationUnit.setSourcesIfNeeded(compilerParams.graphqlSourceDirectorySet, compilerParams.schemaFile)
 
@@ -170,7 +111,7 @@ open class ApolloPlugin : Plugin<Project> {
         it.generateModelBuilder.set(compilerParams.generateModelBuilder)
         it.useJavaBeansSemanticNaming.set(compilerParams.useJavaBeansSemanticNaming)
         it.suppressRawTypesWarning.set(compilerParams.suppressRawTypesWarning)
-        it.generateKotlinModels.set(compilationUnit.generateKotlinModels())
+        it.generateKotlinModels.set(generateKotlinModels)
         it.generateVisitorForPolymorphicDatatypes.set(compilerParams.generateVisitorForPolymorphicDatatypes)
         it.customTypeMapping.set(compilerParams.customTypeMapping)
         it.rootPackageName.set(compilerParams.rootPackageName)
@@ -255,15 +196,27 @@ open class ApolloPlugin : Plugin<Project> {
     }
 
     private fun afterEvaluate(project: Project, apolloExtension: DefaultApolloExtension, apolloSourceSetExtension: ApolloSourceSetExtension) {
-
       deprecationChecks(apolloExtension, apolloSourceSetExtension)
-
-      registerCodegenTasks(project, apolloExtension)
     }
   }
 
+  val services = mutableListOf<DefaultService>()
+  val variants = mutableListOf<ApolloVariant>()
+  val languages = mutableListOf<Language>()
+
+  enum class Language {
+    Java,
+    Kotlin
+  }
+
+  var hasUserDefinedServices = false
+
+  val variantTaskProvider = mutableMapOf<String, TaskProvider<Task>>()
+
+  lateinit var rootTaskProvider: TaskProvider<Task>
+
   override fun apply(project: Project) {
-    require (GradleVersion.current().compareTo(GradleVersion.version("5.6")) >= 0) {
+    require(GradleVersion.current().compareTo(GradleVersion.version("5.6")) >= 0) {
       "apollo-android requires Gradle version 5.6 or greater"
     }
 
@@ -278,8 +231,111 @@ open class ApolloPlugin : Plugin<Project> {
 
     registerDownloadApolloSchemaTask(project)
 
-    apolloExtension.services.all {
-      registerDownloadSchemaTask(project, it)
+    rootTaskProvider = project.tasks.register("generateApolloSources") {
+      it.group = TASK_GROUP
+    }
+
+    apolloExtension.services.all { service ->
+      onService(project, apolloExtension, service)
+    }
+
+    /**
+     * Add the default DefaultService.
+     */
+    apolloExtension.service("service", Action {
+      it.isUserDefined = false
+    })
+
+    project.plugins.withType(JavaPlugin::class.java) {
+      onLanguage(project, apolloExtension, Language.Java)
+
+      JvmTaskConfigurator.getVariants(project).all { variant ->
+        onVariant(project, apolloExtension, variant)
+      }
+    }
+
+    project.plugins.all {
+      val androidExtension = project.extensions.findByName("android")
+      if (!languages.contains(Language.Java) && androidExtension != null) {
+        onLanguage(project, apolloExtension, Language.Java)
+
+        AndroidTaskConfigurator.getVariants(project, androidExtension).all { variant ->
+          onVariant(project, apolloExtension, variant)
+        }
+      }
+
+      if (!languages.contains(Language.Kotlin) && project.extensions.findByName("kotlin") != null) {
+        onLanguage(project, apolloExtension, Language.Kotlin)
+      }
+    }
+  }
+
+  private fun onService(project: Project, apolloExtension: DefaultApolloExtension, service: DefaultService) {
+    println("onService: ${service.name} - isUserDefined=${service.isUserDefined}")
+
+    registerDownloadSchemaTask(project, service)
+
+    if (service.isUserDefined) {
+      hasUserDefinedServices = true
+    }
+
+    variants.forEach { variant ->
+      languages.forEach { language ->
+        registerCodeGenTask(project, apolloExtension, variant, service, language)
+      }
+    }
+    services.add(service)
+  }
+
+  private fun onVariant(project: Project, apolloExtension: DefaultApolloExtension, variant: ApolloVariant) {
+    println("onVariant: ${variant.name} - ${variant.androidVariant}")
+    val taskProvider = project.tasks.register("generate${variant.name.capitalize()}ApolloSources") {
+      it.group = TASK_GROUP
+    }
+    variantTaskProvider.put(variant.name, taskProvider)
+
+    services.forEach { service ->
+      languages.forEach { language ->
+        registerCodeGenTask(project, apolloExtension, variant, service, language)
+      }
+    }
+    variants.add(variant)
+  }
+
+  private fun onLanguage(project: Project, apolloExtension: DefaultApolloExtension, language: Language) {
+    println("onLanguage: ${language.name}")
+
+    services.forEach { service ->
+      variants.forEach { variant ->
+        registerCodeGenTask(project, apolloExtension, variant, service, language)
+      }
+    }
+    languages.add(language)
+  }
+
+  private fun registerCodeGenTask(project: Project,
+                                  apolloExtension: DefaultApolloExtension,
+                                  variant: ApolloVariant,
+                                  service: DefaultService,
+                                  language: Language) {
+
+    val kotlin = language == Language.Kotlin
+    val compilationUnit = DefaultCompilationUnit.createDefaultCompilationUnit(project, apolloExtension, variant, service, kotlin)
+    val taskProvider = registerCodeGenTask(project, compilationUnit, { hasUserDefinedServices })
+
+    variant.registerGeneratedDirectory(project, kotlin, taskProvider)
+
+    compilationUnit.outputDir.set(taskProvider.flatMap { it.outputDir })
+    compilationUnit.transformedQueriesDir.set(taskProvider.flatMap { it.transformedQueriesOutputDir })
+
+    apolloExtension.compilationUnits.add(compilationUnit)
+
+    rootTaskProvider.configure {
+      it.dependsOn(taskProvider)
+    }
+
+    variantTaskProvider.get(variant.name)?.configure {
+      it.dependsOn(taskProvider)
     }
   }
 }

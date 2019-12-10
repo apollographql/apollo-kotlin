@@ -11,7 +11,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 object AndroidTaskConfigurator {
   private fun apolloVariant(baseVariant: BaseVariant): ApolloVariant {
-    return ApolloVariant(
+    return AndroidApolloVariant(
         name = baseVariant.name,
         sourceSetNames = baseVariant.sourceSets.map { it.name }.distinct(),
         androidVariant = baseVariant
@@ -51,16 +51,17 @@ object AndroidTaskConfigurator {
     }
     return container
   }
+}
 
+class AndroidApolloVariant(name: String, sourceSetNames: List<String>, androidVariant: Any): ApolloVariant(name, sourceSetNames, androidVariant) {
   // TODO: make this lazy (https://github.com/apollographql/apollo-android/issues/1454)
-  fun registerGeneratedDirectory(
+  override fun registerGeneratedDirectory(
       project: Project,
-      androidExtension: Any,
-      compilationUnit: DefaultCompilationUnit,
+      forKotlin: Boolean,
       codegenProvider: TaskProvider<ApolloGenerateSourcesTask>
   ) {
-    val variant = compilationUnit.androidVariant as BaseVariant
-    if (compilationUnit.generateKotlinModels()) {
+    val variant = this.androidVariant as BaseVariant
+    if (forKotlin) {
       // This is apparently needed for intelliJ to find the generated files
       variant.addJavaSourceFoldersToModel(codegenProvider.get().outputDir.get().asFile)
       // Tell the kotlin compiler to compile our files

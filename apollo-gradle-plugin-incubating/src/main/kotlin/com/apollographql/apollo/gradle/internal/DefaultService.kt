@@ -18,6 +18,8 @@ open class DefaultService @Inject constructor(val objects: ObjectFactory, val na
 
   var introspection: DefaultIntrospection? = null
 
+  var isUserDefined = true
+
   override fun introspection(configure: Action<in Introspection>) {
     val introspection = objects.newInstance(DefaultIntrospection::class.java, objects)
 

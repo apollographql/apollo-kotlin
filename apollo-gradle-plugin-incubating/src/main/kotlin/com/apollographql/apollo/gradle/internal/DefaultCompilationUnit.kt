@@ -11,14 +11,15 @@ abstract class DefaultCompilationUnit @Inject constructor(
     val project: Project,
     val apolloExtension: DefaultApolloExtension,
     val apolloVariant: ApolloVariant,
-    val service: DefaultService
+    val service: DefaultService,
+    override val kotlin: Boolean
 ) : CompilationUnit, CompilerParams by project.objects.newInstance(DefaultCompilerParams::class.java) {
 
   final override val androidVariant = apolloVariant.androidVariant
   final override val variantName = apolloVariant.name
   final override val serviceName = service.name
 
-  override val name = "${variantName}${serviceName.capitalize()}"
+  override val name = "${variantName}${serviceName.capitalize()}${if (kotlin) "Kotlin" else "Java"}"
 
   abstract override val outputDir: DirectoryProperty
   abstract override val transformedQueriesDir: DirectoryProperty
@@ -90,34 +91,23 @@ abstract class DefaultCompilationUnit @Inject constructor(
     }
   }
 
-  fun generateKotlinModels(): Boolean {
-    return generateKotlinModels.orElse(service.generateKotlinModels).orElse(apolloExtension.generateKotlinModels).getOrElse(false)
-  }
-
   companion object {
     fun createDefaultCompilationUnit(
         project: Project,
         apolloExtension: DefaultApolloExtension,
         apolloVariant: ApolloVariant,
-        service: DefaultService
+        service: DefaultService,
+        kotlin: Boolean
     ): DefaultCompilationUnit {
       return project.objects.newInstance(DefaultCompilationUnit::class.java,
           project,
           apolloExtension,
           apolloVariant,
-          service
+          service,
+          kotlin
       ).apply {
         graphqlSourceDirectorySet.include("**/*.graphql", "**/*.gql")
       }
-    }
-
-    fun fromService(project: Project, apolloExtension: DefaultApolloExtension, apolloVariant: ApolloVariant, service: DefaultService): DefaultCompilationUnit {
-      return createDefaultCompilationUnit(project, apolloExtension, apolloVariant, service)
-    }
-
-    fun fromFiles(project: Project, apolloExtension: DefaultApolloExtension, apolloVariant: ApolloVariant): DefaultCompilationUnit{
-      val service = project.objects.newInstance(DefaultService::class.java, project.objects, "service")
-      return createDefaultCompilationUnit(project, apolloExtension, apolloVariant, service)
     }
 
     private fun multipleSchemaError(schemaList: List<File>): String {

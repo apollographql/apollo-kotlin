@@ -14,43 +14,43 @@ object JvmTaskConfigurator {
     val javaPlugin = project.convention.getPlugin(JavaPluginConvention::class.java)
     val sourceSets = javaPlugin.sourceSets
 
-    sourceSets.map { it.name }.forEach {name ->
-      val apolloVariant = ApolloVariant(
+    sourceSets.map { it.name }.forEach { name ->
+      val apolloVariant = JvmApolloVariant(
           name = name,
-          sourceSetNames = listOf(name),
-          androidVariant = null
+          sourceSetNames = listOf(name)
       )
-
       container.add(apolloVariant)
     }
 
     return container
   }
+}
 
-  fun registerGeneratedDirectory(project: Project, compilationUnit: DefaultCompilationUnit, codegenProvider: TaskProvider<ApolloGenerateSourcesTask>) {
+class JvmApolloVariant(name: String, sourceSetNames: List<String>) : ApolloVariant(name, sourceSetNames, null) {
+  override fun registerGeneratedDirectory(project: Project, forKotlin: Boolean, codegenProvider: TaskProvider<ApolloGenerateSourcesTask>) {
     val javaPlugin = project.convention.getPlugin(JavaPluginConvention::class.java)
     val sourceSets = javaPlugin.sourceSets
-    val sourceSetName = compilationUnit.variantName
+    val sourceSetName = name
 
-    var taskName = compilationUnit.variantName.capitalize()
+    var taskName = sourceSetName.capitalize()
     if (taskName == "Main") {
       // Special case: The main variant will use "compileJava" and not "compileMainJava"
       taskName = ""
     }
 
-    val sourceDirectorySet = if (!compilationUnit.generateKotlinModels()) {
+    val sourceDirectorySet = if (!forKotlin) {
       sourceSets.getByName(sourceSetName).java
     } else {
       sourceSets.getByName(sourceSetName).kotlin!!
     }
 
-    val compileTaskName = if (!compilationUnit.generateKotlinModels()) {
+    val compileTaskName = if (!forKotlin) {
       "compile${taskName}Java"
     } else {
       "compile${taskName}Kotlin"
     }
 
-    if (!compilationUnit.generateKotlinModels()) {
+    if (!forKotlin) {
       /**
        * By the time we come here, the KotlinCompile task has been configured by the kotlin plugin already.
        *
@@ -60,7 +60,7 @@ object JvmTaskConfigurator {
        */
       project.tasks.matching {
         it.name == "compileKotlin"
-      }.configureEach{
+      }.configureEach {
         (it as KotlinCompile).source(codegenProvider.get().outputDir.get().asFile)
       }
     }

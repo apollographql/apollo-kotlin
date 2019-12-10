@@ -15,7 +15,7 @@ open class DefaultApolloExtension(val project: Project)
   val services = project.objects.domainObjectContainer(DefaultService::class.java)
 
   /**
-   * compilationUnits is meant to be consumed by other gradle plugin.
+   * compilationUnits is meant to be consumed by other gradle plugins.
    * The apollo plugin will add the {@link CompilationUnit} as it creates them
    */
   internal val compilationUnits = project.container(CompilationUnit::class.java)

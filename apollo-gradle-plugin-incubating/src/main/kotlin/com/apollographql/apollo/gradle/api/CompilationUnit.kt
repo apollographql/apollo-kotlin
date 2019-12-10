@@ -23,6 +23,11 @@ interface CompilationUnit: CompilerParams {
    */
   val variantName: String
   /**
+   * Whether this compilation Unit is for Kotlin or Java
+   */
+  val kotlin: Boolean
+
+  /**
    * If on Android, this will contain the Android Variant. It is safe to cast it to [com.android.build.gradle.api.BaseVariant]
    */
   val androidVariant: Any?
