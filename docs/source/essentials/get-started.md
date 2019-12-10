@@ -74,7 +74,7 @@ ApolloClient apolloClient = ApolloClient.builder()
                                         .build();
 ```
 
-If you need to send header values with your GraphQL requests, you can add those to your `OkHttpClient` instance by means of an [Interceptor](https://github.com/square/okhttp/wiki/Interceptors).
+If you need to send header values with your GraphQL requests, you can add those to your `OkHttpClient` instance by means of an [Interceptor](https://square.github.io/okhttp/interceptors/).
 
 > Note: In the sample project you can find the client here => `apollo-sample/src/main/java/com/apollographql/apollo/sample/GitHuntApplication.java`.
 
