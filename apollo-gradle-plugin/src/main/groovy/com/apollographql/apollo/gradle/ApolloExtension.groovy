@@ -99,6 +99,10 @@ class ApolloExtension {
     this.generateTransformedQueries.set(generateTransformedQueries)
   }
 
+  void setGenerateOperationOutput(Boolean generateOperationOutput) {
+    this.generateOperationOutput.set(generateOperationOutput)
+  }
+
   void setGenerateAsInternal(Boolean generateAsInternal) {
     this.generateAsInternal.set(generateAsInternal)
   }

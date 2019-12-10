@@ -51,6 +51,7 @@ configure<ApolloExtension> {
       "Upload" to "com.apollographql.apollo.api.FileUpload"
   ))
   generateTransformedQueries.set(true)
+  generateOperationOutput.set(true)
   service("httpcache") {
     sourceFolder.set("com/apollographql/apollo/integration/httpcache")
     rootPackageName.set("com.apollographql.apollo.integration.httpcache")

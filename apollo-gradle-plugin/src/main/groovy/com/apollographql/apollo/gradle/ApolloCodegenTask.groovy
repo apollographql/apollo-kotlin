@@ -31,6 +31,7 @@ class ApolloCodegenTask extends SourceTask {
   @Input Property<Boolean> generateKotlinModels = project.objects.property(Boolean.class)
   @Input Property<Boolean> generateVisitorForPolymorphicDatatypes = project.objects.property(Boolean.class)
   @Optional @OutputDirectory DirectoryProperty transformedQueriesOutputDir = project.objects.directoryProperty()
+  @Optional @OutputDirectory DirectoryProperty operationOutputDir = project.objects.directoryProperty()
   @Input ListProperty<String> excludeFiles = project.objects.listProperty(String.class)
   @Input Property<Boolean> generateAsInternal = project.objects.property(Boolean.class)
 
@@ -73,6 +74,7 @@ class ApolloCodegenTask extends SourceTask {
           packageNameProvider,
           generateKotlinModels.get(),
           transformedQueriesOutputDir.getOrNull()?.asFile,
+          operationOutputDir.getOrNull()?.asFile,
           generateAsInternal.get(),
           nullableValueType != null ? nullableValueType : NullableValueType.ANNOTATED,
           generateModelBuilder.get(),

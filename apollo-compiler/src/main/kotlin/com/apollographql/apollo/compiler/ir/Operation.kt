@@ -15,6 +15,7 @@ data class Operation(
     val fields: List<Field>,
     val filePath: String,
     val fragmentsReferenced: List<String>,
+    // NOTE: this property is never correctly set!
     val operationId: String
 
 ) : CodeGenerator {
@@ -68,3 +69,6 @@ data class Operation(
     val TYPE_SUBSCRIPTION = "subscription"
   }
 }
+
+
+

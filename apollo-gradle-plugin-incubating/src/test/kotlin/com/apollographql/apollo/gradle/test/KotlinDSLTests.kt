@@ -60,6 +60,7 @@ class KotlinDSLTests {
         customTypeMapping.set(mapOf("DateTime" to "java.util.Date"))
         generateKotlinModels.set(false)
         generateTransformedQueries.set(false)
+        generateOperationOutput.set(false)
         
         service("starwars") {
           sourceFolder.set("com/example")
