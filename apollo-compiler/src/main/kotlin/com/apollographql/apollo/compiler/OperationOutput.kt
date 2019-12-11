@@ -17,6 +17,18 @@ internal class OperationOutput(val packageNameProvider: PackageNameProvider) {
   fun writeTo(outputDir: File) {
     if (operations.isEmpty()) return
 
+    operations.groupBy { it.filePath }.forEach { filePath, operations ->
+      val json = toJson(operations)
+      val filename = filePath.substringAfterLast(File.separator)
+      val name = filename.split('.').first()
+      val outputFile = outputDir.resolve("$name.json").also {
+        it.parentFile.mkdirs()
+      }
+      outputFile.writeText(json)
+    }
+  }
+
+  private fun toJson(operations: List<Operation>): String {
     val jsonMap = operations.fold(mapOf<String, Map<String, String>>()) { acc, it ->
       val operationId = QueryDocumentMinifier.minify(it.sourceWithFragments).sha256()
       val operationInfo = mapOf("name" to it.operationName, "source" to QueryDocumentMinifier.minify(it.sourceWithFragments))
@@ -29,13 +41,6 @@ internal class OperationOutput(val packageNameProvider: PackageNameProvider) {
     val type = Types.newParameterizedType(Map::class.java, String::class.java, nested)
     val moshi = Moshi.Builder().build()
     val adapter = moshi.adapter<Map<String, Map<String, String>>>(type).indent("    ")
-    val json = adapter.toJson(jsonMap)
-
-    val filename = operations.first().filePath.substringAfterLast(File.separator)
-    val name = filename.split('.').first()
-    val outputFile = outputDir.resolve("$name.json").also {
-      it.parentFile.mkdirs()
-    }
-    outputFile.writeText(json)
+    return adapter.toJson(jsonMap)
   }
 }
