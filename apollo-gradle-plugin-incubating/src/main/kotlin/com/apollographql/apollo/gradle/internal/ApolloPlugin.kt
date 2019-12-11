@@ -5,6 +5,8 @@ import com.apollographql.apollo.gradle.api.ApolloSourceSetExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.artifacts.Configuration
+import org.gradle.api.artifacts.ConfigurationContainer
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.util.GradleVersion
@@ -260,11 +262,35 @@ open class ApolloPlugin : Plugin<Project> {
       registerCodegenTasks(project, apolloExtension)
 
       registerDownloadSchemaTasks(project, apolloExtension)
+
+      checkVersions(project)
+    }
+
+    data class Dep(val name: String, val version: String?)
+
+    fun getDeps(configurations: ConfigurationContainer): List<Dep> {
+      return configurations.flatMap { configuration ->
+        configuration.incoming.dependencies
+            .filter {
+              it.group == "com.apollographql.apollo"
+            }.map { dependency ->
+              Dep(dependency.name, dependency.version)
+            }
+      }
+    }
+
+    fun checkVersions(project: Project) {
+      val allDeps = getDeps(project.buildscript.configurations) + getDeps(project.configurations)
+      check(allDeps.mapNotNull { it.version }.distinct().size <= 1) {
+        val found = allDeps.map { "${it.name}:${it.version}" }.distinct().joinToString("\n")
+        "All apollo version should be the same. Found:\n$found"
+      }
+
     }
   }
 
   override fun apply(project: Project) {
-    require (GradleVersion.current().compareTo(GradleVersion.version("5.6")) >= 0) {
+    require(GradleVersion.current().compareTo(GradleVersion.version("5.6")) >= 0) {
       "apollo-android requires Gradle version 5.6 or greater"
     }
 
