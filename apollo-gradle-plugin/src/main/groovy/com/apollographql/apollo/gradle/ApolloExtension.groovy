@@ -18,6 +18,7 @@ class ApolloExtension {
   final Property<String> schemaFilePath
   final Property<String> outputPackageName
   final Property<Boolean> generateTransformedQueries
+  final Property<Boolean> generateOperationOutput
   final MapProperty<String, String> customTypeMapping
   final Property<Boolean> generateAsInternal
 
@@ -51,6 +52,9 @@ class ApolloExtension {
 
     generateTransformedQueries = project.objects.property(Boolean.class)
     generateTransformedQueries.set(false)
+
+    generateOperationOutput = project.objects.property(Boolean.class)
+    generateOperationOutput.set(false)
 
     customTypeMapping = project.objects.mapProperty(String.class, String.class)
     customTypeMapping.set(new LinkedHashMap())

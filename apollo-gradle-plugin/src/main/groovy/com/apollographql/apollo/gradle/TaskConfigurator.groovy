@@ -23,9 +23,9 @@ abstract class TaskConfigurator {
           .join(GraphQLCompiler.TRANSFORMED_QUERIES_OUTPUT_DIRECTORY + sourceSetOrVariantName)) // TODO service?
     }
 
-    File operationOutputDir = null
+    File operationOutputFolder = null
     if (project.apollo.generateOperationOutput.get()) {
-      operationOutputDir = new File(project.buildDir, Joiner.on(File.separator)
+      operationOutputFolder = new File(project.buildDir, Joiner.on(File.separator)
           .join(GraphQLCompiler.OPERATION_OUTPUT_DIRECTORY + sourceSetOrVariantName)) // TODO service?
     }
     return project.tasks.create(taskName, ApolloCodegenTask) {
@@ -48,7 +48,7 @@ abstract class TaskConfigurator {
       generateKotlinModels = project.apollo.generateKotlinModels
       generateVisitorForPolymorphicDatatypes = project.apollo.generateVisitorForPolymorphicDatatypes
       transformedQueriesOutputDir.set(transformedQueriesOutputFolder)
-      operationOutputDir.set(operationOutputDir)
+      operationOutputDir.set(operationOutputFolder)
       generateAsInternal = project.apollo.generateAsInternal
     }
   }
