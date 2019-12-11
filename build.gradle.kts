@@ -1,4 +1,3 @@
-
 import org.gradle.api.plugins.internal.JavaConfigurationVariantMapping
 
 
@@ -14,6 +13,7 @@ buildscript {
   }
 
   dependencies {
+    classpath(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
     classpath(groovy.util.Eval.x(project, "x.dep.android.plugin"))
     classpath(groovy.util.Eval.x(project, "x.dep.gradleErrorpronePlugin"))
     classpath(groovy.util.Eval.x(project, "x.dep.gradleJapiCmpPlugin"))
@@ -26,23 +26,27 @@ plugins {
   id("com.jfrog.bintray").version("1.8.4").apply(false)
 }
 
-fun baselineJar(project: Project, version: String): File {
-  val group = project.property("GROUP")
-  val artifactId = project.property("POM_ARTIFACT_ID")
-  try {
-    val jarFile = "$artifactId-${version}.jar"
-    project.group = "virtual_group_for_japicmp" // Prevent it from resolving the current version.
-    // see https://github.com/apollographql/apollo-android/issues/1325
-    project.repositories.maven("https://dl.bintray.com/apollographql/android")
-    val dependency = project.dependencies.create("$group:$artifactId:$version@jar")
-    return project.configurations.detachedConfiguration(dependency).files
-        .first { (it.name == jarFile) }
-  } finally {
-    project.group = group!!
+val rootJapiCmp = tasks.register("japicmp")
+
+abstract class DownloadFileTask : DefaultTask() {
+  @get:Input
+  abstract val url: Property<String>
+
+  @get:org.gradle.api.tasks.OutputFile
+  abstract val output: RegularFileProperty
+
+  @TaskAction
+  fun taskAction() {
+    val client = okhttp3.OkHttpClient()
+    val request = okhttp3.Request.Builder().get().url(url.get()).build()
+
+    client.newCall(request).execute().body()!!.byteStream().use { body ->
+      output.asFile.get().outputStream().buffered().use { file ->
+        body.copyTo(file)
+      }
+    }
   }
 }
-
-val rootJapiCmp = tasks.register("japicmp")
 
 subprojects {
   apply {
@@ -72,12 +76,23 @@ subprojects {
     resolutionStrategy.force(groovy.util.Eval.x(this@subprojects, "x.dep.errorProneCore"))
   }
 
+  val downloadBaselineJarTaskProvider = tasks.register("downloadBaseLineJar", DownloadFileTask::class.java) {
+    val group = project.property("GROUP") as String
+    val artifact = project.property("POM_ARTIFACT_ID") as String
+    val version = "1.2.1"
+    val jar = "$artifact-$version.jar"
+
+    url.set("https://dl.bintray.com/apollographql/android/${group.replace(".", "/")}/$artifact/$version/$jar")
+    output.set(File(buildDir, "japicmp/cache/$jar"))
+  }
+
   // TODO: Make this lazy
   this@subprojects.afterEvaluate {
     val jarTask = this@subprojects.tasks.findByName("jar") as? org.gradle.jvm.tasks.Jar
     if (jarTask != null) {
       val japiCmp = this@subprojects.tasks.register("japicmp", me.champeau.gradle.japicmp.JapicmpTask::class.java) {
-        oldClasspath = this@subprojects.files(baselineJar(this@subprojects, "1.2.1"))
+        dependsOn(downloadBaselineJarTaskProvider)
+        oldClasspath = this@subprojects.files(downloadBaselineJarTaskProvider.get().output.asFile.get())
         newClasspath = this@subprojects.files(jarTask.archiveFile)
         ignoreMissingClasses = true
         packageExcludes = listOf("*.internal*")
@@ -176,7 +191,7 @@ fun Project.configurePublishing() {
         val javaComponent = components.findByName("java")
         if (javaComponent != null) {
           from(javaComponent)
-        } else if (android != null){
+        } else if (android != null) {
           // this is a workaround while the below is fixed.
           // dependency information in the pom file will most likely be wrong
           // but it's been like that for some time now. As long as users still
