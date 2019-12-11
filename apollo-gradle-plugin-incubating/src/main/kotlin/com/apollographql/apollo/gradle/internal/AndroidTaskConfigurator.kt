@@ -53,7 +53,7 @@ object AndroidTaskConfigurator {
   }
 }
 
-class AndroidApolloVariant(name: String, sourceSetNames: List<String>, androidVariant: Any): ApolloVariant(name, sourceSetNames, androidVariant) {
+class AndroidApolloVariant(name: String, sourceSetNames: List<String>, androidVariant: Any) : ApolloVariant(name, sourceSetNames, androidVariant) {
   // TODO: make this lazy (https://github.com/apollographql/apollo-android/issues/1454)
   override fun registerGeneratedDirectory(
       project: Project,
@@ -61,30 +61,20 @@ class AndroidApolloVariant(name: String, sourceSetNames: List<String>, androidVa
       codegenProvider: TaskProvider<ApolloGenerateSourcesTask>
   ) {
     val variant = this.androidVariant as BaseVariant
-    if (forKotlin) {
-      // This is apparently needed for intelliJ to find the generated files
-      variant.addJavaSourceFoldersToModel(codegenProvider.get().outputDir.get().asFile)
-      // Tell the kotlin compiler to compile our files
-      project.tasks.named("compile${variant.name.capitalize()}Kotlin").configure {
-        it.dependsOn(codegenProvider)
-        (it as KotlinCompile).source(codegenProvider.get().outputDir.asFile.get())
-      }
-    } else {
-      variant.registerJavaGeneratingTask(codegenProvider.get(), codegenProvider.get().outputDir.get().asFile)
+    variant.registerJavaGeneratingTask(codegenProvider.get(), codegenProvider.get().outputDir.get().asFile)
 
-      /**
-       * By the time we come here, the KotlinCompile task has been configured by the kotlin plugin already.
-       *
-       * Right now this is done in [org.jetbrains.kotlin.gradle.plugin.AbstractAndroidProjectHandler.configureSources].
-       *
-       * To workaround this, we're adding the java generated models folder here
-       */
-      project.tasks.matching {
-        it.name == "compile${variant.name.capitalize()}Kotlin"
-      }.configureEach{
-        it.dependsOn(codegenProvider)
-        (it as KotlinCompile).source(codegenProvider.get().outputDir.get().asFile)
-      }
+    /**
+     * By the time we come here, the KotlinCompile task has been configured by the kotlin plugin already.
+     *
+     * Right now this is done in [org.jetbrains.kotlin.gradle.plugin.AbstractAndroidProjectHandler.configureSources].
+     *
+     * To workaround this, we're adding the java generated models folder here
+     */
+    project.tasks.matching {
+      it.name == "compile${variant.name.capitalize()}Kotlin"
+    }.configureEach {
+      it.dependsOn(codegenProvider)
+      (it as KotlinCompile).source(codegenProvider.get().outputDir.get().asFile)
     }
   }
 }
