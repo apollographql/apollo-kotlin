@@ -90,6 +90,11 @@ open class ApolloPlugin : Plugin<Project> {
 
         val generateKotlinModels = compilerParams.generateKotlinModels.getOrElse(false)
 
+        /**
+         * To avoid project.afterEvaluate, all tasks are registered before we know if the user configured
+         * services or set generateKotlinModels. Here we disable the ones that do not make sense once we
+         * know the actual user configuration.
+         */
         var enabled = true
         if (generateKotlinModels != compilationUnit.kotlin) {
           enabled = false
