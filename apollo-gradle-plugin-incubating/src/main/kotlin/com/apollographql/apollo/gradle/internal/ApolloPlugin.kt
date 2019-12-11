@@ -95,15 +95,12 @@ open class ApolloPlugin : Plugin<Project> {
          * services or set generateKotlinModels. Here we disable the ones that do not make sense once we
          * know the actual user configuration.
          */
-        var enabled = true
-        if (generateKotlinModels != compilationUnit.kotlin) {
-          enabled = false
-        }
-        if (!compilationUnit.service.isUserDefined && hasUserDefinedServices()) {
-          enabled = false
-        }
 
-        it.enabled = enabled
+        it.enabled = when {
+          generateKotlinModels != compilationUnit.kotlin -> false
+          !compilationUnit.service.isUserDefined && hasUserDefinedServices() -> false
+          else -> true
+        }
 
         compilationUnit.setSourcesIfNeeded(compilerParams.graphqlSourceDirectorySet, compilerParams.schemaFile)
 
