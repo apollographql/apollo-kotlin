@@ -27,7 +27,12 @@ open class DefaultApolloExtension(val project: Project)
   override fun service(name: String, action: Action<DefaultService>) {
     val service = project.objects.newInstance(DefaultService::class.java, project.objects, name)
     action.execute(service)
-    services.add(service)
+    if (!services.add(service)) {
+      if (name == "service") {
+        throw IllegalArgumentException("\"service\" is a reserved service name, please use something else.")
+      }
+      throw IllegalArgumentException("a service with name \"$name\" was already registered, please use something else")
+    }
   }
 
   override val outputPackageName = project.objects.property(String::class.java)

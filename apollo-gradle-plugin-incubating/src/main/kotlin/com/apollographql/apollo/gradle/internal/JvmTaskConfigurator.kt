@@ -16,8 +16,7 @@ object JvmTaskConfigurator {
 
     sourceSets.map { it.name }.forEach { name ->
       val apolloVariant = JvmApolloVariant(
-          name = name,
-          sourceSetNames = listOf(name)
+          name = name
       )
       container.add(apolloVariant)
     }
@@ -26,7 +25,7 @@ object JvmTaskConfigurator {
   }
 }
 
-class JvmApolloVariant(name: String, sourceSetNames: List<String>) : ApolloVariant(name, sourceSetNames, null) {
+class JvmApolloVariant(name: String) : ApolloVariant(name, listOf(name), null) {
   override fun registerGeneratedDirectory(project: Project, forKotlin: Boolean, codegenProvider: TaskProvider<ApolloGenerateSourcesTask>) {
     val javaPlugin = project.convention.getPlugin(JavaPluginConvention::class.java)
     val sourceSets = javaPlugin.sourceSets

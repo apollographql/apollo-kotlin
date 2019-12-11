@@ -9,6 +9,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.plugins.JavaPlugin
+import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.gradle.plugin.KotlinBasePluginWrapper
@@ -246,12 +247,13 @@ open class ApolloPlugin : Plugin<Project> {
       it.isUserDefined = false
     })
 
-    project.plugins.withType(JavaPlugin::class.java) {
-      onLanguage(project, apolloExtension, Language.Java)
-
-      JvmTaskConfigurator.getVariants(project).all { variant ->
-        onVariant(project, apolloExtension, variant)
+    project.convention.getPlugin(JavaPluginConvention::class.java).sourceSets.all {
+      if (!languages.contains(Language.Java)) {
+        onLanguage(project, apolloExtension, Language.Java)
       }
+
+      val apolloVariant = JvmApolloVariant(it.name)
+      onVariant(project, apolloExtension, apolloVariant)
     }
 
     project.plugins.all {

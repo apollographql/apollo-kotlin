@@ -295,15 +295,15 @@ class ConfigurationTests {
     withSimpleProject("""
       apollo {
         rootPackageName = "com.something.else"
-        service("service") {
+        service("starwars") {
           rootPackageName = "com.starwars"
         }
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("main/service/com/starwars/com/example/DroidDetailsQuery.java").isFile)
-      assertTrue(dir.generatedChild("main/service/com/starwars/com/example/type/CustomType.java").isFile)
-      assertTrue(dir.generatedChild("main/service/com/starwars/com/example/fragment/SpeciesInformation.java").isFile)
+      assertTrue(dir.generatedChild("main/starwars/com/starwars/com/example/DroidDetailsQuery.java").isFile)
+      assertTrue(dir.generatedChild("main/starwars/com/starwars/com/example/type/CustomType.java").isFile)
+      assertTrue(dir.generatedChild("main/starwars/com/starwars/com/example/fragment/SpeciesInformation.java").isFile)
     }
   }
 
