@@ -2,6 +2,7 @@ package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.compiler.*
 import com.apollographql.apollo.compiler.DefaultPackageNameProvider
+import com.apollographql.apollo.compiler.CustomIdGenerator
 import com.apollographql.apollo.compiler.parser.GraphQLDocumentParser
 import com.apollographql.apollo.compiler.parser.Schema
 import org.gradle.api.DefaultTask
@@ -17,6 +18,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Input
   @get:Optional
   abstract val customTypeMapping: MapProperty<String, String>
+
+  @get:Input
+  @get:Optional
+  abstract val customIdGenerator: Property<String>
 
   @get:Input
   @get:Optional
@@ -97,11 +102,17 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
           NullableValueType.values().map { it.value }.joinToString("\n"))
     }
 
+    val customIDGeneratorClassName = customIdGenerator.getOrElse("")
+    val customIdGenerator: CustomIdGenerator? = if (customIDGeneratorClassName != "")
+      Class.forName(customIDGeneratorClassName).getDeclaredConstructor()?.newInstance() as CustomIdGenerator
+    else null
+
     val codeGenerationIR = GraphQLDocumentParser(schema, packageNameProvider).parse(files)
     val args = GraphQLCompiler.Arguments(
         ir = codeGenerationIR,
         outputDir = outputDir.get().asFile,
         customTypeMap = customTypeMapping.getOrElse(emptyMap()),
+        customIdGenerator = customIdGenerator,
         nullableValueType = nullableValueTypeEnum,
         useSemanticNaming = useSemanticNaming.getOrElse(true),
         generateModelBuilder = generateModelBuilder.getOrElse(false),
