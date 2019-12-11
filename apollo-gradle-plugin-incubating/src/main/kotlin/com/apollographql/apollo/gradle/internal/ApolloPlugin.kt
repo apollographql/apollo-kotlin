@@ -278,8 +278,6 @@ open class ApolloPlugin : Plugin<Project> {
   }
 
   private fun onService(project: Project, apolloExtension: DefaultApolloExtension, service: DefaultService) {
-    println("onService: ${service.name} - isUserDefined=${service.isUserDefined}")
-
     registerDownloadSchemaTask(project, service)
 
     if (service.isUserDefined) {
@@ -295,7 +293,6 @@ open class ApolloPlugin : Plugin<Project> {
   }
 
   private fun onVariant(project: Project, apolloExtension: DefaultApolloExtension, variant: ApolloVariant) {
-    println("onVariant: ${variant.name} - ${variant.androidVariant}")
     val taskProvider = project.tasks.register("generate${variant.name.capitalize()}ApolloSources") {
       it.group = TASK_GROUP
     }
@@ -310,8 +307,6 @@ open class ApolloPlugin : Plugin<Project> {
   }
 
   private fun onLanguage(project: Project, apolloExtension: DefaultApolloExtension, language: Language) {
-    println("onLanguage: ${language.name}")
-
     services.forEach { service ->
       variants.forEach { variant ->
         registerCodeGenTask(project, apolloExtension, variant, service, language)
