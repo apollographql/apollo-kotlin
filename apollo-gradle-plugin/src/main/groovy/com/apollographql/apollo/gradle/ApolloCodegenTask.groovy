@@ -24,7 +24,7 @@ class ApolloCodegenTask extends SourceTask {
   @Input @Optional Property<String> outputPackageName = project.objects.property(String.class)
   @OutputDirectory DirectoryProperty outputDir = project.objects.directoryProperty()
   @Input MapProperty<String, String> customTypeMapping = project.objects.mapProperty(String.class, String.class)
-  @Input Property<String> customIdGenerator = project.objects.property(String.class)
+  @Optional @Internal Property<CustomIdGenerator> customIdGenerator = project.objects.property(CustomIdGenerator.class)
   @Optional @Input Property<String> nullableValueType = project.objects.property(String.class)
   @Input Property<Boolean> useSemanticNaming = project.objects.property(Boolean.class)
   @Input Property<Boolean> generateModelBuilder = project.objects.property(Boolean.class)
@@ -67,15 +67,11 @@ class ApolloCodegenTask extends SourceTask {
       Schema schema = Schema.parse(codegenArg.schemaFile)
       CodeGenerationIR codeGenerationIR = new GraphQLDocumentParser(schema, packageNameProvider).parse(codegenArg.queryFilePaths.toList().collect { new File(it) })
 
-      CustomIdGenerator customIdGenerator = customIdGenerator.get() != ""
-              ? this.class.classLoader.loadClass(customIdGenerator.get(), true ).newInstance() as CustomIdGenerator
-              : null
-
       GraphQLCompiler.Arguments args = new GraphQLCompiler.Arguments(
           codeGenerationIR,
           outputDir.get().asFile,
           customTypeMapping.get(),
-          customIdGenerator,
+          customIdGenerator.orNull,
           useSemanticNaming.get(),
           packageNameProvider,
           generateKotlinModels.get(),

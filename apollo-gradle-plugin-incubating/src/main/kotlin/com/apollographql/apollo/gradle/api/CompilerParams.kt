@@ -1,5 +1,6 @@
 package com.apollographql.apollo.gradle.api
 
+import com.apollographql.apollo.compiler.CustomIdGenerator
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.provider.MapProperty
@@ -9,7 +10,7 @@ import org.gradle.api.provider.Provider
 /**
  * CompilerParams contains all the parameters needed to invoke the apollo compiler.
  *
- * The setters are present for backward compatibility with kotlin ubild scripts and will go away
+ * The setters are present for backward compatibility with kotlin build scripts and will go away
  * in a future release.
  */
 interface CompilerParams {
@@ -33,6 +34,13 @@ interface CompilerParams {
    * empty by default.
    */
   val customTypeMapping: MapProperty<String, String>
+
+  /**
+   * For custom persisted query Ids.
+   *
+   * null by default
+   */
+  val customIdGenerator: Property<CustomIdGenerator>
 
   /**
    * The custom types code generate some warnings that might make the build fail.

@@ -190,6 +190,7 @@ open class ApolloPlugin : Plugin<Project> {
           disallowChanges()
         }
         it.generateAsInternal.set(compilerParams.generateAsInternal)
+        it.customIdGenerator.set(compilationUnit.apolloExtension.customIdGenerator)
         Unit
       }
     }
