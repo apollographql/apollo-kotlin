@@ -54,12 +54,12 @@ class GraphQLCompiler {
       transformedQueryOutput.apply { visit(ir) }.writeTo(transformedQueriesOutputDir)
     }
 
-    args.operationOutputDir?.let { operationIdOutputDir ->
-      if (operationIdOutputDir.exists()) {
-        operationIdOutputDir.deleteRecursively()
+    args.operationOutputDir?.let { operationOutputDir ->
+      if (operationOutputDir.exists()) {
+        operationOutputDir.deleteRecursively()
       }
-      val operationIdOutput = OperationOutput(args.packageNameProvider)
-      operationIdOutput.apply { visit(ir) }.writeTo(operationIdOutputDir)
+      val operationOutput = OperationOutput(args.packageNameProvider)
+      operationOutput.apply { visit(ir) }.writeTo(operationOutputDir)
     }
   }
 
