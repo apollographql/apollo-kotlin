@@ -14,18 +14,11 @@ internal class OperationOutput(val packageNameProvider: PackageNameProvider) {
     operations = operations + ir.operations
   }
 
-  fun writeTo(outputDir: File) {
+  fun writeTo(outputJsonFile: File) {
     if (operations.isEmpty()) return
 
-    operations.groupBy { it.filePath }.forEach { filePath, operations ->
-      val json = toJson(operations)
-      val filename = filePath.substringAfterLast(File.separator)
-      val name = filename.split('.').first()
-      val outputFile = outputDir.resolve("$name.json").also {
-        it.parentFile.mkdirs()
-      }
-      outputFile.writeText(json)
-    }
+    val json = toJson(operations)
+    outputJsonFile.writeText(json)
   }
 
   private fun toJson(operations: List<Operation>): String {

@@ -66,6 +66,3 @@ data class Operation(
     val TYPE_SUBSCRIPTION = "subscription"
   }
 }
-
-
-

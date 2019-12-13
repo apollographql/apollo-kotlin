@@ -58,8 +58,11 @@ class GraphQLCompiler {
       if (operationOutputDir.exists()) {
         operationOutputDir.deleteRecursively()
       }
+      val outputJsonFile = operationOutputDir.resolve("OperationOutput.json").also {
+        it.parentFile.mkdirs()
+      }
       val operationOutput = OperationOutput(args.packageNameProvider)
-      operationOutput.apply { visit(ir) }.writeTo(operationOutputDir)
+      operationOutput.apply { visit(ir) }.writeTo(outputJsonFile)
     }
   }
 

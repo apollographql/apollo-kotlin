@@ -411,7 +411,7 @@ class ConfigurationTests {
       val result = TestUtils.executeTask("generateApolloSources", dir)
 
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
-      val operationOutput = dir.child("build", "generated", "operationOutput", "apollo", "main", "service", "DroidDetails.json")
+      val operationOutput = dir.child("build", "generated", "operationOutput", "apollo", "main", "service", "OperationOutput.json")
       assertThat(operationOutput.readText(), containsString("__typename"))
     }
   }
@@ -427,7 +427,7 @@ class ConfigurationTests {
 
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
       val expectedOperationId = "260dd8d889c94e78b975e435300929027d0ad10ea55b63695b13894eb8cd8578"
-      val operationOutput = dir.child("build", "generated", "operationOutput", "apollo", "main", "service", "DroidDetails.json")
+      val operationOutput = dir.child("build", "generated", "operationOutput", "apollo", "main", "service", "OperationOutput.json")
       assertThat(operationOutput.readText(), containsString(expectedOperationId))
 
       val queryJavaFile = dir.generatedChild("main/service/com/example/DroidDetailsQuery.java")
