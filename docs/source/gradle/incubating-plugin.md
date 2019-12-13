@@ -149,7 +149,7 @@ A CompilationUnit is a single invocation of the Apollo compiler. It's the combin
 
 ## CompilerParams
 
-You can configure the Apollo compiler using [CompilerParams](src/main/kotlin/com/apollographql/apollo/gradle/api/CompilerParams.kt). `ApolloExtension`, `Service` and `CompilationUnit` all implement `CompilerParams` so you can overrride values as needed.
+You can configure the Apollo compiler using [CompilerParams](https://github.com/apollographql/apollo-android/blob/master/apollo-gradle-plugin-incubating/src/main/kotlin/com/apollographql/apollo/gradle/api/CompilerParams.kt). `ApolloExtension`, `Service` and `CompilationUnit` all implement `CompilerParams` so you can overrride values as needed.
 
 * Default compiler parameters are taken from `ApolloExtension`
 * Compiler parameters from `Service` override the ones from `ApolloExtension`
@@ -174,7 +174,7 @@ apollo {
 }
 ```
 
-The complete list of parameters can be found in [CompilerParams](src/main/kotlin/com/apollographql/apollo/gradle/api/CompilerParams.kt):
+The complete list of parameters can be found in [CompilerParams](https://github.com/apollographql/apollo-android/blob/master/apollo-gradle-plugin-incubating/src/main/kotlin/com/apollographql/apollo/gradle/api/CompilerParams.kt):
 
 ```kotlin
   /**
