@@ -386,22 +386,6 @@ class ConfigurationTests {
     }
   }
 
-  @Test
-  fun `generateTransformedQueries generates queries with __typename`() {
-    withSimpleProject("""
-      apollo {
-        generateTransformedQueries = true
-      }
-    """.trimIndent()) { dir ->
-      val result = TestUtils.executeTask("generateApolloSources", dir)
-
-      assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
-      val transformedQuery = dir.child("build", "generated", "transformedQueries", "apollo", "main", "service", "com", "example", "DroidDetails.graphql")
-      assertThat(transformedQuery.readText(), containsString("__typename"))
-    }
-  }
-
-  @Test
   fun `generateOperationOutput generates queries with __typename`() {
     withSimpleProject("""
       apollo {
@@ -439,14 +423,11 @@ class ConfigurationTests {
   fun `compilation unit directory properties carry task dependencies`() {
     withSimpleProject("""
       apollo {
-        generateTransformedQueries = true
         generateOperationOutput = true
         
         onCompilationUnits { compilationUnit ->
           tasks.register("customTask" + compilationUnit.name.capitalize()) {
-            inputs.dir(compilationUnit.outputDir)
-            inputs.dir(compilationUnit.transformedQueriesDir)
-            inputs.dir(compilationUnit.operationOutputDir)
+            inputs.file(compilationUnit.operationOutputFile)
           }
         }
       }

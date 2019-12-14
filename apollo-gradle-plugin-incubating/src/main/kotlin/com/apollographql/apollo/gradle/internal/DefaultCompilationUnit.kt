@@ -22,8 +22,7 @@ abstract class DefaultCompilationUnit @Inject constructor(
   override val name = "${variantName}${serviceName.capitalize()}"
 
   abstract override val outputDir: DirectoryProperty
-  abstract override val transformedQueriesDir: DirectoryProperty
-  abstract override val operationOutputDir: DirectoryProperty
+  abstract override val operationOutputFile: RegularFileProperty
 
   private fun resolveSchema(graphqlSourceDirectorySet: SourceDirectorySet): File {
     if (service.schemaPath.isPresent) {

@@ -15,8 +15,6 @@ abstract class DefaultCompilerParams @Inject constructor(objects: ObjectFactory)
 
   abstract override val generateKotlinModels : Property<Boolean>
 
-  abstract override val generateTransformedQueries : Property<Boolean>
-
   abstract override val customTypeMapping: MapProperty<String, String>
 
   init {

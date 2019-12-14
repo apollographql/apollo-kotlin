@@ -14,7 +14,6 @@ fun CompilerParams.withFallback(objects: ObjectFactory, other: CompilerParams): 
   merge.schemaFile.set(this.schemaFile.orElse(other.schemaFile))
 
   merge.generateKotlinModels.set(this.generateKotlinModels.orElse(other.generateKotlinModels))
-  merge.generateTransformedQueries.set(this.generateTransformedQueries.orElse(other.generateTransformedQueries))
   merge.generateOperationOutput.set(this.generateOperationOutput.orElse(other.generateOperationOutput))
   merge.customTypeMapping.set(this.customTypeMapping.orElse(other.customTypeMapping))
   merge.suppressRawTypesWarning.set(this.suppressRawTypesWarning.orElse(other.suppressRawTypesWarning))
