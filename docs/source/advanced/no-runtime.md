@@ -1,4 +1,6 @@
-# Using apollo without `apollo-runtime`
+---
+title: Using apollo without `apollo-runtime` 
+---
 
 `apollo-runtime` and `ApolloClient` provides support for doing the network requests and interacting with the cache but you can use the generated queries withouth the runtime if you want.
 

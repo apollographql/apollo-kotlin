@@ -220,18 +220,18 @@ Latest development changes are available in Sonatype's snapshots repository:
 
 ## Advanced topics
 
-Advanced topics are available in the [doc folder](doc):
+Advanced topics are available in [the official docs](https://www.apollographql.com/docs/android/):
 
-* [doc/caching.md](doc/caching.md) 
-* [doc/plugin-configuration.md](doc/plugin-configuration.md) 
-* [doc/android.md](doc/android.md) 
-* [doc/file-upload.md](doc/file-upload.md)
-* [doc/rxjava2.md](doc/rxjava2.md)
-* [doc/coroutines.md](doc/coroutines.md) 
-* [doc/persisted-queries.md](doc/persisted-queries.md)
-* [doc/no-runtime.md](doc/no-runtime.md) 
-* [doc/subscriptions.md](doc/subscriptions.md) 
-* [doc/incubating-plugin.md](doc/incubating-plugin.md)
+* [caching.md](https://www.apollographql.com/docs/android/essentials/caching/)  
+* [plugin-configuration.md](https://www.apollographql.com/docs/android/gradle/plugin-configuration/) 
+* [incubating-plugin.md](https://www.apollographql.com/docs/android/gradle/incubating-plugin/)
+* [android.md](https://www.apollographql.com/docs/android/advanced/android/) 
+* [file-upload.md](https://www.apollographql.com/docs/android/advanced/file-upload/)
+* [coroutines.md](https://www.apollographql.com/docs/android/advanced/coroutines/) 
+* [rxjava2.md](https://www.apollographql.com/docs/android/advanced/rxjava2/)
+* [persisted-queries.md](https://www.apollographql.com/docs/android/advanced/persisted-queries/)
+* [no-runtime.md](https://www.apollographql.com/docs/android/advanced/no-runtime/) 
+* [subscriptions.md](https://www.apollographql.com/docs/android/advanced/subscriptions/)
 
 ## License
 

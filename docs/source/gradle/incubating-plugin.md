@@ -1,5 +1,6 @@
-
-# Using the incubating plugin
+---
+title: Incubating Gradle Plugin 
+---
 
 The incubating plugin is in the `apollo-gradle-plugin-incubating` artifact. It is a rewrite of the plugin in Kotlin to make it more maintainable and have better support for multiple services.
 
@@ -13,7 +14,7 @@ buildscript {
 }
 ```
 
-# Differences with the current plugin
+## Differences with the current plugin
 
 ### Plugin ID is now `com.apollographql.apollo`
 
@@ -117,11 +118,11 @@ import com.apollographql.apollo.gradle.ApolloExtension
 import com.apollographql.apollo.gradle.api.ApolloExtension
 ```
 
-#  Configuration reference
+##  Configuration reference
 
 Apollo-Android comes with logical defaults that will work for the majority of use cases. Below you will find additional configuration.
 
-## Service
+### Service
 
 Apollo-Android can use several services for multiple schemas and endpoints. The schema and GraphQL files related to different services must be in different folders.
 
@@ -142,13 +143,13 @@ apollo {
 
 A service will compile all your GraphQL files for all variants in your project. For a simple JVM project it's usually just one variant but for Android projects, you can define different queries for different variants.
 
-## CompilationUnit
+### CompilationUnit
 
 A CompilationUnit is a single invocation of the Apollo compiler. It's the combination of a service and a variant.
 
-## CompilerParams
+### CompilerParams
 
-You can configure the Apollo compiler using [CompilerParams](src/main/kotlin/com/apollographql/apollo/gradle/api/CompilerParams.kt). `ApolloExtension`, `Service` and `CompilationUnit` all implement `CompilerParams` so you can overrride values as needed.
+You can configure the Apollo compiler using [CompilerParams](https://github.com/apollographql/apollo-android/blob/master/apollo-gradle-plugin-incubating/src/main/kotlin/com/apollographql/apollo/gradle/api/CompilerParams.kt). `ApolloExtension`, `Service` and `CompilationUnit` all implement `CompilerParams` so you can overrride values as needed.
 
 * Default compiler parameters are taken from `ApolloExtension`
 * Compiler parameters from `Service` override the ones from `ApolloExtension`
@@ -173,7 +174,7 @@ apollo {
 }
 ```
 
-The complete list of parameters can be found in [CompilerParams](src/main/kotlin/com/apollographql/apollo/gradle/api/CompilerParams.kt):
+The complete list of parameters can be found in [CompilerParams](https://github.com/apollographql/apollo-android/blob/master/apollo-gradle-plugin-incubating/src/main/kotlin/com/apollographql/apollo/gradle/api/CompilerParams.kt):
 
 ```kotlin
   /**

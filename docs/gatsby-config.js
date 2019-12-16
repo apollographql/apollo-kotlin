@@ -19,6 +19,20 @@ module.exports = {
             'essentials/get-started',
             'essentials/queries',
             'essentials/mutations'
+          ],
+          'Gradle Plugin': [
+            'gradle/incubating-plugin',
+            'gradle/plugin-configuration'
+          ],
+          Advanced: [
+            'advanced/android',
+            'advanced/caching',
+            'advanced/coroutines',
+            'advanced/file-upload',
+            'advanced/no-runtime',
+            'advanced/persisted-queries',
+            'advanced/rxjava2',
+            'advanced/subscriptions'
           ]
         }
       }

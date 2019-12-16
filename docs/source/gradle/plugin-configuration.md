@@ -1,5 +1,7 @@
+---
+title: Gradle Configuration 
+---
 
-#  Gradle Configuration of Apollo Android
 Apollo Android comes with logical defaults that will work for the majority of use cases, below you will find additional configuration that will add Optional Support & Semantic Query Naming.
 
 ## Optional Support

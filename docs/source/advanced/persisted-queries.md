@@ -1,4 +1,6 @@
-# Persisted queries
+---
+title: Persisted queries 
+---
 
 ## Automatic persisted queries
 

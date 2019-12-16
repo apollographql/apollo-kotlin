@@ -1,4 +1,6 @@
-# Support For Cached Responses
+---
+title: Support For Cached Responses 
+---
 
 Apollo GraphQL client allows you to cache responses, making it suitable for use even while offline. The client can be configured with 3 levels of caching:
 
@@ -132,5 +134,5 @@ NormalizedCacheFactory memoryFirstThenSqlCacheFactory = new LruNormalizedCacheFa
 
 ```
 
-For concrete examples of using response caches, please see the following tests in the [`apollo-integration`](apollo-integration) module:
+For concrete examples of using response caches, please see the following tests in the [`apollo-integration`](https://github.com/apollographql/apollo-android/tree/master/apollo-integration) module:
 `CacheTest`, `SqlNormalizedCacheTest`, `LruNormalizedCacheTest`. 
