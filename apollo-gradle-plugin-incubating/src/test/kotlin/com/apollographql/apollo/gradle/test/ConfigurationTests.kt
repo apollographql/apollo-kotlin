@@ -4,6 +4,7 @@ import com.apollographql.apollo.gradle.internal.child
 import com.apollographql.apollo.gradle.util.TestUtils
 import com.apollographql.apollo.gradle.util.TestUtils.withSimpleProject
 import com.apollographql.apollo.gradle.util.generatedChild
+import com.apollographql.apollo.gradle.util.replaceInText
 import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.hamcrest.CoreMatchers.containsString
@@ -366,6 +367,22 @@ class ConfigurationTests {
       val result = TestUtils.executeTask("generateApolloSources", dir)
 
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
+    }
+  }
+
+  @Test
+  fun `versions are enforced`() {
+    withSimpleProject { dir ->
+      File(dir, "build.gradle").replaceInText("dep.apollo.api", "\"com.apollographql.apollo:apollo-api:1.2.0\"")
+
+      var exception: Exception? = null
+      try {
+        TestUtils.executeTask("generateApolloSources", dir)
+      } catch (e: UnexpectedBuildFailure) {
+        exception = e
+        assertThat(e.message, containsString("All apollo version should be the same"))
+      }
+      assertNotNull(exception)
     }
   }
 
