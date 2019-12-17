@@ -16,7 +16,8 @@ import javax.lang.model.element.Modifier
 class OperationTypeSpecBuilder(
     val operation: Operation,
     val fragments: List<Fragment>,
-    useSemanticNaming: Boolean
+    useSemanticNaming: Boolean,
+    private val hashingAlgorithm: HashingAlgorithms
 ) : CodeGenerator {
   private val operationTypeName = operation.normalizedOperationName(useSemanticNaming)
   private val dataVarType = ClassName.get("", "$operationTypeName.Data")
@@ -65,7 +66,7 @@ class OperationTypeSpecBuilder(
   private fun TypeSpec.Builder.addOperationId(operation: Operation): TypeSpec.Builder {
     addField(FieldSpec.builder(ClassNames.STRING, OPERATION_ID_FIELD_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-        .initializer("\$S", QueryDocumentMinifier.minify(operation.sourceWithFragments).sha256())
+        .initializer("\$S", hashingAlgorithm.applyHashing(QueryDocumentMinifier.minify(operation.sourceWithFragments)))
         .build()
     )
 

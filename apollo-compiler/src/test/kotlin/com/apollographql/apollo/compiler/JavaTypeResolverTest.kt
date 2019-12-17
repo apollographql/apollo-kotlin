@@ -25,7 +25,8 @@ class JavaTypeResolverTest {
       generateModelBuilder = false,
       useJavaBeansSemanticNaming = false,
       suppressRawTypesWarning = false,
-      generateVisitorForPolymorphicDatatypes = false
+      generateVisitorForPolymorphicDatatypes = false,
+      hashingAlgorithm = HashingAlgorithms("SHA256")
   )
   private val defaultResolver = JavaTypeResolver(defaultContext, packageName)
 

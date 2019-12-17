@@ -43,6 +43,7 @@ abstract class TaskConfigurator {
       generateVisitorForPolymorphicDatatypes = project.apollo.generateVisitorForPolymorphicDatatypes
       transformedQueriesOutputDir.set(transformedQueriesOutputFolder)
       generateAsInternal = project.apollo.generateAsInternal
+      hashingAlgorithm = project.apollo.hashingAlgorithm
     }
   }
 }

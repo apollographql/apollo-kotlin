@@ -3,6 +3,7 @@ package com.apollographql.apollo.gradle.internal
 import com.apollographql.apollo.compiler.*
 import com.apollographql.apollo.compiler.DefaultPackageNameProvider
 import com.apollographql.apollo.compiler.parser.GraphQLDocumentParser
+import com.apollographql.apollo.compiler.HashingAlgorithms
 import com.apollographql.apollo.compiler.parser.Schema
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.*
@@ -21,6 +22,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Input
   @get:Optional
   abstract val nullableValueType: Property<String>
+
+  @get:Input
+  @get:Optional
+  abstract val hashingAlgorithm: Property<String>
 
   @get:Input
   @get:Optional
@@ -111,7 +116,8 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         generateVisitorForPolymorphicDatatypes = generateVisitorForPolymorphicDatatypes.getOrElse(false),
         packageNameProvider = packageNameProvider,
         transformedQueriesOutputDir = transformedQueriesOutputDir.orNull?.asFile,
-        generateAsInternal = generateAsInternal.getOrElse(false)
+        generateAsInternal = generateAsInternal.getOrElse(false),
+        hashingAlgorithm =  HashingAlgorithms(hashingAlgorithm.getOrNull())
     )
 
     GraphQLCompiler().write(args)

@@ -507,13 +507,6 @@ fun Number.castTo(type: TypeName): Number {
   }
 }
 
-fun String.sha256(): String {
-  val bytes = toByteArray(charset = StandardCharsets.UTF_8)
-  val md = MessageDigest.getInstance("SHA-256")
-  val digest = md.digest(bytes)
-  return digest.fold("") { str, it -> str + "%02x".format(it) }
-}
-
 internal inline fun <T> T.applyIf(condition: Boolean, block: T.() -> Unit): T = if (condition) apply(block) else this
 
 object Util {

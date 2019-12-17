@@ -107,6 +107,8 @@ class CodeGenTest(val folder: File) {
         else -> false
       }
 
+      val hashingAlgorithm = HashingAlgorithms("SHA256")
+
       val schemaJson = folder.listFiles()!!.find { it.isFile && it.name == "schema.json" }
           ?: File("src/test/graphql/schema.json")
       val schema = Schema(schemaJson)
@@ -132,7 +134,8 @@ class CodeGenTest(val folder: File) {
           suppressRawTypesWarning = suppressRawTypesWarning,
           generateVisitorForPolymorphicDatatypes = generateVisitorForPolymorphicDatatypes,
           packageNameProvider = packageNameProvider,
-          generateAsInternal = generateAsInternal
+          generateAsInternal = generateAsInternal,
+          hashingAlgorithm = hashingAlgorithm
       )
       return args
     }

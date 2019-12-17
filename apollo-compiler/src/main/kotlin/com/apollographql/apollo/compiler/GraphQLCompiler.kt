@@ -23,7 +23,8 @@ class GraphQLCompiler {
         generateModelBuilder = args.generateModelBuilder,
         useJavaBeansSemanticNaming = args.useJavaBeansSemanticNaming,
         suppressRawTypesWarning = args.suppressRawTypesWarning,
-        generateVisitorForPolymorphicDatatypes = args.generateVisitorForPolymorphicDatatypes
+        generateVisitorForPolymorphicDatatypes = args.generateVisitorForPolymorphicDatatypes,
+        hashingAlgorithm = args.hashingAlgorithm
     )
 
     val schemaPackageName = (args.packageNameProvider as? DeprecatedPackageNameProvider)?.schemaPackageName
@@ -37,7 +38,8 @@ class GraphQLCompiler {
           customTypeMap = args.customTypeMap,
           useSemanticNaming = args.useSemanticNaming,
           packageNameProvider = args.packageNameProvider,
-          generateAsInternal = args.generateAsInternal
+          generateAsInternal = args.generateAsInternal,
+          hashingAlgorithm = args.hashingAlgorithm
       ).write(args.outputDir)
     } else {
       ir.writeJavaFiles(
@@ -83,7 +85,7 @@ class GraphQLCompiler {
           .writeTo(outputDir)
     }
 
-    operations.map { OperationTypeSpecBuilder(it, fragments, context.useSemanticNaming) }
+    operations.map { OperationTypeSpecBuilder(it, fragments, context.useSemanticNaming, context.hashingAlgorithm) }
         .forEach {
           val packageName = context.packageNameProvider.operationPackageName(it.operation.filePath)
           val typeSpec = it.toTypeSpec(context.copy())
@@ -134,6 +136,7 @@ class GraphQLCompiler {
       // only if generateKotlinModels = false
       val suppressRawTypesWarning: Boolean,
       // only if generateKotlinModels = false
-      val generateVisitorForPolymorphicDatatypes: Boolean = false
+      val generateVisitorForPolymorphicDatatypes: Boolean = false,
+      val hashingAlgorithm: HashingAlgorithms
   )
 }

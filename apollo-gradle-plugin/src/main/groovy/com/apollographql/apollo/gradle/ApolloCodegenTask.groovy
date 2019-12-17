@@ -2,6 +2,7 @@ package com.apollographql.apollo.gradle
 
 import com.apollographql.apollo.compiler.GraphQLCompiler
 import com.apollographql.apollo.compiler.DeprecatedPackageNameProviderKt
+import com.apollographql.apollo.compiler.HashingAlgorithms
 import com.apollographql.apollo.compiler.NullableValueType
 import com.apollographql.apollo.compiler.DeprecatedPackageNameProvider
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
@@ -33,6 +34,7 @@ class ApolloCodegenTask extends SourceTask {
   @Optional @OutputDirectory DirectoryProperty transformedQueriesOutputDir = project.objects.directoryProperty()
   @Input ListProperty<String> excludeFiles = project.objects.listProperty(String.class)
   @Input Property<Boolean> generateAsInternal = project.objects.property(Boolean.class)
+  @Input @Optional Property<String> hashingAlgorithm = project.objects.property(String.class)
 
   @TaskAction
   void generateClasses() {
@@ -64,7 +66,7 @@ class ApolloCodegenTask extends SourceTask {
 
       Schema schema = Schema.parse(codegenArg.schemaFile)
       CodeGenerationIR codeGenerationIR = new GraphQLDocumentParser(schema, packageNameProvider).parse(codegenArg.queryFilePaths.toList().collect { new File(it) })
-
+      HashingAlgorithms hashingAlgorithm = new HashingAlgorithms(this.hashingAlgorithm.getOrNull())
       GraphQLCompiler.Arguments args = new GraphQLCompiler.Arguments(
           codeGenerationIR,
           outputDir.get().asFile,
@@ -78,7 +80,8 @@ class ApolloCodegenTask extends SourceTask {
           generateModelBuilder.get(),
           useJavaBeansSemanticNaming.get(),
           suppressRawTypesWarning.get(),
-          generateVisitorForPolymorphicDatatypes.get()
+          generateVisitorForPolymorphicDatatypes.get(),
+          hashingAlgorithm
       )
       new GraphQLCompiler().write(args)
     }

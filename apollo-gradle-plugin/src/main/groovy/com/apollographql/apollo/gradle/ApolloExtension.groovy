@@ -20,6 +20,7 @@ class ApolloExtension {
   final Property<Boolean> generateTransformedQueries
   final MapProperty<String, String> customTypeMapping
   final Property<Boolean> generateAsInternal
+  final Property<String> hashingAlgorithm
 
   ApolloExtension(Project project) {
     nullableValueType = project.objects.property(String.class)
@@ -57,6 +58,9 @@ class ApolloExtension {
 
     generateAsInternal = project.objects.property(Boolean.class)
     generateAsInternal.set(false)
+
+    hashingAlgorithm = project.objects.property(String.class)
+    hashingAlgorithm.set("")
   }
 
   void setNullableValueType(String nullableValueType) {
@@ -81,6 +85,10 @@ class ApolloExtension {
 
   void setGenerateKotlinModels(Boolean generateKotlinModels) {
     this.generateKotlinModels.set(generateKotlinModels)
+  }
+
+  void setHashingAlgorithm(String hashingAlgorithm) {
+    this.hashingAlgorithm.set(hashingAlgorithm)
   }
 
   void setGenerateVisitorForPolymorphicDatatypes(Boolean generateVisitorForPolymorphicDatatypes) {
