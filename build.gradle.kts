@@ -82,7 +82,7 @@ subprojects {
     val version = "1.2.1"
     val jar = "$artifact-$version.jar"
 
-    url.set("https://jcenter.bintray.com/apollographql/android/${group.replace(".", "/")}/$artifact/$version/$jar")
+    url.set("https://jcenter.bintray.com/${group.replace(".", "/")}/$artifact/$version/$jar")
     output.set(File(buildDir, "japicmp/cache/$jar"))
   }
 
