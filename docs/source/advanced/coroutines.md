@@ -18,13 +18,5 @@ Add the following `dependency`:
 
 [ ![apollo-coroutines-support](https://img.shields.io/bintray/v/apollographql/android/apollo-coroutines-support.svg?label=apollo-coroutines-coroutines) ](https://bintray.com/apollographql/android/apollo-coroutines-support/_latestVersion)
 ```gradle
-repositories {
-    maven {
-        // The coroutines artifact is not deployed on jcenter yet
-        // See https://github.com/apollographql/apollo-android/issues/1325
-        url = uri("http://dl.bintray.com/apollographql/android")
-    }
-}
-
 implementation 'com.apollographql.apollo:apollo-coroutines-support:x.y.z'
 ```
