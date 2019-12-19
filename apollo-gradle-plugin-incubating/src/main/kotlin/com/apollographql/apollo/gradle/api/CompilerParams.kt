@@ -38,7 +38,7 @@ interface CompilerParams {
   /**
    * For custom persisted query Ids.
    *
-   * null by default
+   * If not provided, default hashing algorithm (sha256) will be used
    */
   val customIdGenerator: Property<CustomIdGenerator>
 

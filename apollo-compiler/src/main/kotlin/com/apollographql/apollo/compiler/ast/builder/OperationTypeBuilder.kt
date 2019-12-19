@@ -1,10 +1,10 @@
 package com.apollographql.apollo.compiler.ast.builder
 
 import com.apollographql.apollo.compiler.CustomIdGenerator
+import com.apollographql.apollo.compiler.Sha256IdGenerator
 import com.apollographql.apollo.compiler.ast.*
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo.compiler.ir.Operation
-import com.apollographql.apollo.compiler.sha256
 import com.apollographql.apollo.internal.QueryDocumentMinifier
 
 internal fun Operation.ast(
@@ -28,7 +28,8 @@ internal fun Operation.ast(
     else -> throw IllegalArgumentException("Unsupported GraphQL operation type: $operationType")
   }
 
-  val operationId = customIdGenerator?.apply(sourceWithFragments) ?: QueryDocumentMinifier.minify(sourceWithFragments).sha256()
+  val operationId = (customIdGenerator?:Sha256IdGenerator())
+      .apply(QueryDocumentMinifier.minify(sourceWithFragments))
 
   return OperationType(
       name = operationClassName,

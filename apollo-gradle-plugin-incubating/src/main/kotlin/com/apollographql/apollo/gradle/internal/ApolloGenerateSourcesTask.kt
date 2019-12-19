@@ -20,7 +20,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   abstract val customTypeMapping: MapProperty<String, String>
 
   @get:Internal
-  @get:Optional
   abstract val customIdGenerator: Property<CustomIdGenerator>
 
   @get:Input
