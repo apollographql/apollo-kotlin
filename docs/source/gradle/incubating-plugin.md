@@ -199,6 +199,13 @@ The complete list of parameters can be found in [CompilerParams](https://github.
   val customTypeMapping: MapProperty<String, String>
 
   /**
+   * For custom persisted query Ids.
+   *
+   * If not provided, default hashing algorithm (sha256) will be used
+   */
+  val customIdGenerator: Property<CustomIdGenerator>
+
+  /**
    * The custom types code generate some warnings that might make the build fail.
    * suppressRawTypesWarning will add the appropriate SuppressWarning annotation
    *
