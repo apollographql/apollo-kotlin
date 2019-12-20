@@ -66,7 +66,7 @@ class OperationTypeSpecBuilder(
   private fun TypeSpec.Builder.addOperationId(operation: Operation): TypeSpec.Builder {
     addField(FieldSpec.builder(ClassNames.STRING, OPERATION_ID_FIELD_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-        .initializer("\$S", hashingAlgorithm.applyHashing(QueryDocumentMinifier.minify(operation.sourceWithFragments)))
+        .initializer("\$S", hashingAlgorithm.encode(QueryDocumentMinifier.minify(operation.sourceWithFragments)))
         .build()
     )
 

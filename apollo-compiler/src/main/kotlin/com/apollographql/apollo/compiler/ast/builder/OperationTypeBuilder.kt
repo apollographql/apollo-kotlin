@@ -30,7 +30,7 @@ internal fun Operation.ast(
       name = operationClassName,
       type = operationType,
       operationName = operationName,
-      operationId = hashingAlgorithm.applyHashing(QueryDocumentMinifier.minify(sourceWithFragments)),
+      operationId = hashingAlgorithm.encode(QueryDocumentMinifier.minify(sourceWithFragments)),
       queryDocument = sourceWithFragments,
       variables = InputType(
           name = "Variables",
