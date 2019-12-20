@@ -66,7 +66,7 @@ class ApolloCodegenTask extends SourceTask {
 
       Schema schema = Schema.parse(codegenArg.schemaFile)
       CodeGenerationIR codeGenerationIR = new GraphQLDocumentParser(schema, packageNameProvider).parse(codegenArg.queryFilePaths.toList().collect { new File(it) })
-      HashingAlgorithms hashingAlgorithm = new HashingAlgorithms(this.hashingAlgorithm.getOrNull())
+      HashingAlgorithms hashingAlgorithm = new HashingAlgorithms(this.hashingAlgorithm.getOrElse(""))
       GraphQLCompiler.Arguments args = new GraphQLCompiler.Arguments(
           codeGenerationIR,
           outputDir.get().asFile,

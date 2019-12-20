@@ -117,7 +117,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         packageNameProvider = packageNameProvider,
         transformedQueriesOutputDir = transformedQueriesOutputDir.orNull?.asFile,
         generateAsInternal = generateAsInternal.getOrElse(false),
-        hashingAlgorithm =  HashingAlgorithms(hashingAlgorithm.getOrNull())
+        hashingAlgorithm =  HashingAlgorithms(hashingAlgorithm.getOrElse(""))
     )
 
     GraphQLCompiler().write(args)

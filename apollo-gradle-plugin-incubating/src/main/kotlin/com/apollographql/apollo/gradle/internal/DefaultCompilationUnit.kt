@@ -94,6 +94,10 @@ abstract class DefaultCompilationUnit @Inject constructor(
     return generateKotlinModels.orElse(service.generateKotlinModels).orElse(apolloExtension.generateKotlinModels).getOrElse(false)
   }
 
+  fun hashingAlgorithm(): String {
+    return hashingAlgorithm.orElse(service.hashingAlgorithm).orElse(apolloExtension.hashingAlgorithm).getOrElse("")
+  }
+
   companion object {
     fun createDefaultCompilationUnit(
         project: Project,

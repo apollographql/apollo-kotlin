@@ -7,11 +7,11 @@ import java.security.MessageDigest
 import java.util.Locale
 
 class HashingAlgorithms(
-    private val algorithm: String = SHA256
+    private val algorithm: String
 ) {
 
     fun encode(text: String): String {
-        return when ((algorithm ?: SHA256).toUpperCase(Locale.ENGLISH)) {
+        return when ((algorithm).toUpperCase(Locale.ENGLISH)) {
             SHA256 -> sha256(text)
             MD5 -> md5(text)
             else -> sha256(text)

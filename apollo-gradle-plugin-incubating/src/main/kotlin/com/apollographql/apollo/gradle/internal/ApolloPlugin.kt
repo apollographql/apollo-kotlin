@@ -172,6 +172,7 @@ open class ApolloPlugin : Plugin<Project> {
         it.useJavaBeansSemanticNaming.set(compilerParams.useJavaBeansSemanticNaming)
         it.suppressRawTypesWarning.set(compilerParams.suppressRawTypesWarning)
         it.generateKotlinModels.set(compilationUnit.generateKotlinModels())
+        it.hashingAlgorithm.set(compilationUnit.hashingAlgorithm())
         it.generateVisitorForPolymorphicDatatypes.set(compilerParams.generateVisitorForPolymorphicDatatypes)
         it.customTypeMapping.set(compilerParams.customTypeMapping)
         it.rootPackageName.set(compilerParams.rootPackageName)

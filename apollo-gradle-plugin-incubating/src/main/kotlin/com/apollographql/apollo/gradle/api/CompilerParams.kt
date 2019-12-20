@@ -19,6 +19,13 @@ interface CompilerParams {
   val generateKotlinModels: Property<Boolean>
 
   /**
+   * Hashing algorithm type to use while encoding queries.
+   * One of: SHA256, MD5
+   * Default is SHA256
+   */
+  val hashingAlgorithm: Property<String>
+
+  /**
    * Whether to generate the transformed queries. Transformed queries are the queries as sent to the
    * server. This can be useful if you need to upload a query's exact content to a server that doesn't
    * support automatic persisted queries.
