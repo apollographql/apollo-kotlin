@@ -18,7 +18,7 @@ public final class Input<V> {
   public final V value;
   public final boolean defined;
 
-  private Input(V value, boolean defined) {
+  private Input(@Nullable V value, boolean defined) {
     this.value = value;
     this.defined = defined;
   }
@@ -51,7 +51,6 @@ public final class Input<V> {
   /**
    * Creates a new {@link Input} instance that is always undefined.
    *
-   * @param value to be wrapped
    * @return a new {@link Input} instance
    */
   public static <V> Input<V> absent() {
