@@ -1,6 +1,5 @@
 package com.apollographql.apollo.compiler
 
-import java.io.File
 import java.util.regex.Pattern
 
 /**
@@ -14,8 +13,11 @@ fun String.singularize(): String {
 
   if (exclude.contains(this.toLowerCase())) return this
 
+  val capitalized = first().isUpperCase()
   val irregular = irregular().firstOrNull { this.toLowerCase() == it.component2() }
-  if (irregular != null) return irregular.component1()
+  if (irregular != null) return irregular.component1().let {
+    if (capitalized) it.capitalize() else it
+  }
 
   if (singularizationRules().find { match(it.component1(), this) } == null) return this
 
