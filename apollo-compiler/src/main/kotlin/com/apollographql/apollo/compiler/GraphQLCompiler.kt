@@ -53,6 +53,17 @@ class GraphQLCompiler {
       val transformedQueryOutput = TransformedQueryOutput(args.packageNameProvider)
       transformedQueryOutput.apply { visit(ir) }.writeTo(transformedQueriesOutputDir)
     }
+
+    args.operationOutputDir?.let { operationOutputDir ->
+      if (operationOutputDir.exists()) {
+        operationOutputDir.deleteRecursively()
+      }
+      val outputJsonFile = operationOutputDir.resolve("OperationOutput.json").also {
+        it.parentFile.mkdirs()
+      }
+      val operationOutput = OperationOutput(args.packageNameProvider)
+      operationOutput.apply { visit(ir) }.writeTo(outputJsonFile)
+    }
   }
 
   private fun CodeGenerationIR.writeJavaFiles(context: CodeGenerationContext, outputDir: File) {
@@ -113,6 +124,8 @@ class GraphQLCompiler {
     val OUTPUT_DIRECTORY = listOf("generated", "source", "apollo", "classes")
     @JvmField
     val TRANSFORMED_QUERIES_OUTPUT_DIRECTORY = listOf("generated", "apollo", "transformedQueries")
+    @JvmField
+    val OPERATION_OUTPUT_DIRECTORY = listOf("generated", "apollo", "operationOutput")
   }
 
   data class Arguments(
@@ -123,6 +136,7 @@ class GraphQLCompiler {
       val packageNameProvider: PackageNameProvider,
       val generateKotlinModels: Boolean = false,
       val transformedQueriesOutputDir: File? = null,
+      val operationOutputDir: File? = null,
       val generateAsInternal: Boolean = false,
 
       // only if generateKotlinModels = false

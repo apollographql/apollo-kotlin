@@ -138,8 +138,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
         sourceWithFragments = graphQLDocumentSource,
         fields = fields.result.filterNot { it.responseName == Field.TYPE_NAME_FIELD.responseName },
         fragmentsReferenced = emptyList(),
-        filePath = graphQLFilePath,
-        operationId = ""
+        filePath = graphQLFilePath
     ).also { it.checkVariableDefinitions() }
 
     return ParseResult(

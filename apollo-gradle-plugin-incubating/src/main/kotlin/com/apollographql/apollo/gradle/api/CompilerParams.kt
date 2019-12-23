@@ -28,6 +28,16 @@ interface CompilerParams {
   val generateTransformedQueries: Property<Boolean>
 
   /**
+   * Whether to generate the operation report. The report contains information such as
+   * operation id, name and transformed query. This can be useful if you need to upload
+   * a query's exact content to a server that doesn't support automatic persisted queries.
+   *
+   * The operation output is written in [CompilationUnit.operationOutputDir]
+   */
+  val generateOperationOutput: Property<Boolean>
+
+
+  /**
    * For custom scalar types like Date, map from the GraphQL type to the jvm/kotlin type.
    *
    * empty by default.

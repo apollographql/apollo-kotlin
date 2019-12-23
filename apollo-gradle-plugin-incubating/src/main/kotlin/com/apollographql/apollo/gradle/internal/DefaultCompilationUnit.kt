@@ -4,6 +4,7 @@ import com.apollographql.apollo.gradle.api.CompilationUnit
 import com.apollographql.apollo.gradle.api.CompilerParams
 import org.gradle.api.Project
 import org.gradle.api.file.*
+import org.gradle.api.provider.Provider
 import java.io.File
 import javax.inject.Inject
 
@@ -22,6 +23,7 @@ abstract class DefaultCompilationUnit @Inject constructor(
 
   abstract override val outputDir: DirectoryProperty
   abstract override val transformedQueriesDir: DirectoryProperty
+  abstract override val operationOutputDir: DirectoryProperty
 
   private fun resolveSchema(graphqlSourceDirectorySet: SourceDirectorySet): File {
     if (service.schemaPath.isPresent) {

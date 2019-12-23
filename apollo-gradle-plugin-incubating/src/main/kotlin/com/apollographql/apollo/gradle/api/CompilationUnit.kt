@@ -36,4 +36,9 @@ interface CompilationUnit: CompilerParams {
    * The directory where the transformed queries will be written
    */
   val transformedQueriesDir: Provider<Directory>
+
+  /**
+   * The directory where the operation generation report will be written
+   */
+  val operationOutputDir: Provider<Directory>
 }

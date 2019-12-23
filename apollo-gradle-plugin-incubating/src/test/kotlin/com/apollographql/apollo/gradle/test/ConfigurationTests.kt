@@ -402,15 +402,51 @@ class ConfigurationTests {
   }
 
   @Test
+  fun `generateOperationOutput generates queries with __typename`() {
+    withSimpleProject("""
+      apollo {
+        generateOperationOutput = true
+      }
+    """.trimIndent()) { dir ->
+      val result = TestUtils.executeTask("generateApolloSources", dir)
+
+      assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
+      val operationOutput = dir.child("build", "generated", "operationOutput", "apollo", "main", "service", "OperationOutput.json")
+      assertThat(operationOutput.readText(), containsString("__typename"))
+    }
+  }
+
+  @Test
+  fun `generateOperationOutput uses same id as the query`() {
+    withSimpleProject("""
+      apollo {
+        generateOperationOutput = true
+      }
+    """.trimIndent()) { dir ->
+      val result = TestUtils.executeTask("generateApolloSources", dir)
+
+      assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
+      val expectedOperationId = "260dd8d889c94e78b975e435300929027d0ad10ea55b63695b13894eb8cd8578"
+      val operationOutput = dir.child("build", "generated", "operationOutput", "apollo", "main", "service", "OperationOutput.json")
+      assertThat(operationOutput.readText(), containsString(expectedOperationId))
+
+      val queryJavaFile = dir.generatedChild("main/service/com/example/DroidDetailsQuery.java")
+      assertThat(queryJavaFile.readText(), containsString(expectedOperationId))
+    }
+  }
+
+  @Test
   fun `compilation unit directory properties carry task dependencies`() {
     withSimpleProject("""
       apollo {
         generateTransformedQueries = true
+        generateOperationOutput = true
         
         onCompilationUnits { compilationUnit ->
           tasks.register("customTask" + compilationUnit.name.capitalize()) {
             inputs.dir(compilationUnit.outputDir)
             inputs.dir(compilationUnit.transformedQueriesDir)
+            inputs.dir(compilationUnit.operationOutputDir)
           }
         }
       }

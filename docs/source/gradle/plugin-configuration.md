@@ -117,3 +117,12 @@ apollo {
   generateTransformedQueries = true
 }
 ```
+
+## Query operation output
+When Apollo-Android generates your queries, it generates transforms your query by providing type hint as part of the information sent to the server. It uses this transformed query to generate an id for this operation. If you want to access this information, Apollo Gradle plugin can save them in a build directory in Json format. This can be useful if you need to upload a query's exact content to a server that doesn't support automatic persisted queries.
+
+```groovy
+apollo {
+  generateOperationOutput = true
+}
+```
