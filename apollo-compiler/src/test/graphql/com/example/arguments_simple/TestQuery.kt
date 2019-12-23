@@ -37,7 +37,7 @@ import okio.BufferedSource
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
 data class TestQuery(
-  val episode: Input<Episode>,
+  val episode: Input<Episode> = Input.absent(),
   val includeName: Boolean,
   val friendsCount: Int,
   val listOfListOfStringArgs: List<List<String?>>

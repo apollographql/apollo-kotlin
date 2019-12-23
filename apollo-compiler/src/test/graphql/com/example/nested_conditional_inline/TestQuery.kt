@@ -35,7 +35,7 @@ import okio.BufferedSource
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
 data class TestQuery(
-  val episode: Input<Episode>
+  val episode: Input<Episode> = Input.absent()
 ) : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
