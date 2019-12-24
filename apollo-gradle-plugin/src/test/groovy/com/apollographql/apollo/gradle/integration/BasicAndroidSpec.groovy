@@ -350,7 +350,7 @@ class BasicAndroidSpec extends Specification {
   }
 
   def cleanupSpec() {
-    //FileUtils.deleteDirectory(testProjectDir)
+    FileUtils.deleteDirectory(testProjectDir)
   }
 
   private static File setupBasicAndroidProject() {
