@@ -26,7 +26,7 @@ class OperationTypeSpecBuilder(
     return TypeSpec.classBuilder(operationTypeName)
         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
         .addSuperinterface(operationSuperInterface(context))
-        .addOperationId(operation)
+        .addOperationId(operation, newContext)
         .addQueryDocumentDefinition()
         .addConstructor(context)
         .addMethod(wrapDataMethod(context))
@@ -62,10 +62,12 @@ class OperationTypeSpecBuilder(
     }
   }
 
-  private fun TypeSpec.Builder.addOperationId(operation: Operation): TypeSpec.Builder {
+  private fun TypeSpec.Builder.addOperationId(operation: Operation, context: CodeGenerationContext): TypeSpec.Builder {
+    val id = (context.customIdGenerator ?: Sha256IdGenerator()).apply(QueryDocumentMinifier.minify(operation.sourceWithFragments))
+
     addField(FieldSpec.builder(ClassNames.STRING, OPERATION_ID_FIELD_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-        .initializer("\$S", QueryDocumentMinifier.minify(operation.sourceWithFragments).sha256())
+        .initializer("\$S", id)
         .build()
     )
 
