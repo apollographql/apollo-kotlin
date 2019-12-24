@@ -49,10 +49,6 @@ class GraphQLCompiler {
 
     args.operationOutputFile?.let { operationOutputFile ->
       val dir = operationOutputFile.parentFile
-      if (dir.exists()) {
-        dir.deleteRecursively()
-      }
-
       dir.mkdirs()
 
       val operationOutput = OperationOutputWriter(args.packageNameProvider)
