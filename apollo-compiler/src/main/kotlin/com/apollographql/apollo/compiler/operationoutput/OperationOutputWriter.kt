@@ -17,8 +17,6 @@ internal class OperationOutputWriter(val packageNameProvider: PackageNameProvide
   }
 
   fun writeTo(outputJsonFile: File) {
-    if (operations.isEmpty()) return
-
     val operationOuput = operations.map {
       val minimizedSource = QueryDocumentMinifier.minify(it.sourceWithFragments)
       minimizedSource.sha256() to OperationDescriptor(it.operationName, minimizedSource)
