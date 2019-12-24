@@ -118,11 +118,21 @@ class CodeGenTest(val folder: File) {
           rootPackageName = "com.example.${folder.name}"
       )
 
+      val customIdGenerator = when (folder.name) {
+        "custom_id_generator" -> object : CustomIdGenerator {
+          override fun apply(queryString: String): String {
+            return "hash"
+          }
+        }
+        else -> null
+      }
+
       val ir = GraphQLDocumentParser(schema, packageNameProvider).parse(setOf(graphQLFile))
       val language = if (generateKotlinModels) "kotlin" else "java"
       val args = GraphQLCompiler.Arguments(
           ir = ir,
           outputDir = File("build/generated/test/${folder.name}/$language"),
+          customIdGenerator = customIdGenerator,
           customTypeMap = customTypeMap,
           generateKotlinModels = generateKotlinModels,
           nullableValueType = nullableValueType,
