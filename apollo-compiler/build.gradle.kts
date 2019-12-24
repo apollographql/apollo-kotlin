@@ -1,11 +1,13 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-apply(plugin = "antlr")
-apply(plugin = "java")
-apply(plugin = "kotlin")
-apply(plugin = "kotlin-kapt")
+plugins {
+  antlr
+  `java-library`
+  kotlin("jvm")
+  kotlin("kapt")
+}
 
-withConvention(JavaPluginConvention::class) {
+java {
   targetCompatibility = JavaVersion.VERSION_1_7
   sourceCompatibility = JavaVersion.VERSION_1_7
 
@@ -55,5 +57,5 @@ val VERSION = "${project.version}"
 tasks.getByName("compileKotlin").dependsOn("pluginVersion")
 
 tasks.withType<Checkstyle> {
-    exclude("**com/apollographql/apollo/compiler/parser/antlr/**")
+  exclude("**com/apollographql/apollo/compiler/parser/antlr/**")
 }

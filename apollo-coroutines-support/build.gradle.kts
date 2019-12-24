@@ -1,7 +1,9 @@
-apply(plugin = "java")
-apply(plugin = "kotlin")
+plugins {
+  `java-library`
+  kotlin("jvm")
+}
 
-withConvention(JavaPluginConvention::class) {
+java {
   targetCompatibility = JavaVersion.VERSION_1_7
   sourceCompatibility = JavaVersion.VERSION_1_7
 }
