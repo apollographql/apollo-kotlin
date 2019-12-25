@@ -1,4 +1,4 @@
-rootProject.name = "composite"
+rootProject.name = "apollo-composite"
 
 include(":java-sample")
 project(":java-sample").projectDir = file("../samples/java-sample")
