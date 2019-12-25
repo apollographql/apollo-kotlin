@@ -1,11 +1,15 @@
-apply(plugin = "groovy")
-apply(plugin = "idea")
-apply(plugin = "java-gradle-plugin")
+plugins {
+  groovy
+  idea
+  `java-gradle-plugin`
+}
 
-withConvention(JavaPluginConvention::class) {
-  sourceSets.named("main").get().java.srcDirs()
-  sourceSets.named("main").get().withConvention(GroovySourceSet::class) {
-    groovy.srcDirs("src/main/java", "src/main/groovy")
+java {
+  sourceSets.getByName("main") {
+    java.srcDirs()
+    withConvention(GroovySourceSet::class) {
+      groovy.srcDirs("src/main/java", "src/main/groovy")
+    }
   }
 }
 
@@ -25,7 +29,7 @@ dependencies {
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.android.plugin"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.junit"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.spock").toString()) {
-    exclude( module= "groovy-all")
+    exclude(module = "groovy-all")
   }
   add("fixtureClasspath", groovy.util.Eval.x(project, "x.dep.android.plugin"))
 }
