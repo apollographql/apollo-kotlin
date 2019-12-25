@@ -15,7 +15,6 @@ withConvention(JavaPluginConvention::class) {
 
 dependencies {
   add("antlr", groovy.util.Eval.x(project, "x.dep.antlr.antlr"))
-  add("compile", groovy.util.Eval.x(project, "x.dep.antlr.runtime"))
   add("implementation", groovy.util.Eval.x(project, "x.dep.kotlin.stdLib"))
   add("implementation", groovy.util.Eval.x(project, "x.dep.moshi.adapters"))
   add("implementation", groovy.util.Eval.x(project, "x.dep.moshi.kotlin"))

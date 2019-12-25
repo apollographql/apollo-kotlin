@@ -10,7 +10,7 @@ extensions.findByType(BaseExtension::class.java)!!.apply {
 
   defaultConfig {
     applicationId = "com.example.apollographql.integration"
-    minSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.minSdkVersion").toString())
+    minSdkVersion(21) // not using androidConfig.minSdkVersion to have multidex by default
     targetSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.targetSdkVersion").toString())
   }
 
