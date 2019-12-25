@@ -10,7 +10,7 @@ extensions.findByType(BaseExtension::class.java)!!.apply {
 
   defaultConfig {
     applicationId = "com.example.apollographql.integration"
-    minSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.minSdkVersion").toString())
+    minSdkVersion(21) // not using androidConfig.minSdkVersion to have multidex by default
     targetSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.targetSdkVersion").toString())
   }
 
@@ -36,6 +36,7 @@ dependencies {
   add("implementation", "com.apollographql.apollo:apollo-rx2-support")
   add("implementation", "com.apollographql.apollo:apollo-coroutines-support")
   add("implementation", "com.apollographql.apollo:apollo-http-cache")
+  add("implementation", "com.apollographql.apollo:apollo-compiler")
 
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.junit"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.truth"))
@@ -50,7 +51,6 @@ configure<ApolloExtension> {
       "Date" to "java.util.Date",
       "Upload" to "com.apollographql.apollo.api.FileUpload"
   ))
-  generateTransformedQueries.set(true)
   generateOperationOutput.set(true)
   service("httpcache") {
     sourceFolder.set("com/apollographql/apollo/integration/httpcache")

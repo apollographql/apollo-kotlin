@@ -19,20 +19,11 @@ interface CompilerParams {
   val generateKotlinModels: Property<Boolean>
 
   /**
-   * Whether to generate the transformed queries. Transformed queries are the queries as sent to the
-   * server. This can be useful if you need to upload a query's exact content to a server that doesn't
-   * support automatic persisted queries.
-   *
-   * The transformedQueries are written in [CompilationUnit.transformedQueriesDir]
-   */
-  val generateTransformedQueries: Property<Boolean>
-
-  /**
-   * Whether to generate the operation report. The report contains information such as
-   * operation id, name and transformed query. This can be useful if you need to upload
+   * Whether to generate the operation output json. The json contains information such as
+   * operation id, name and complete source sent to the server. This can be useful if you need to upload
    * a query's exact content to a server that doesn't support automatic persisted queries.
    *
-   * The operation output is written in [CompilationUnit.operationOutputDir]
+   * The operation output is written in [CompilationUnit.operationOutputFile]
    */
   val generateOperationOutput: Property<Boolean>
 

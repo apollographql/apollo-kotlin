@@ -17,7 +17,6 @@ class ApolloExtension {
   final Property<Boolean> generateVisitorForPolymorphicDatatypes
   final Property<String> schemaFilePath
   final Property<String> outputPackageName
-  final Property<Boolean> generateTransformedQueries
   final Property<Boolean> generateOperationOutput
   final MapProperty<String, String> customTypeMapping
   final Property<Boolean> generateAsInternal
@@ -49,9 +48,6 @@ class ApolloExtension {
 
     outputPackageName = project.objects.property(String.class)
     outputPackageName.set("")
-
-    generateTransformedQueries = project.objects.property(Boolean.class)
-    generateTransformedQueries.set(false)
 
     generateOperationOutput = project.objects.property(Boolean.class)
     generateOperationOutput.set(false)
@@ -97,10 +93,6 @@ class ApolloExtension {
 
   void setOutputPackageName(String outputPackageName) {
     this.outputPackageName.set(outputPackageName)
-  }
-
-  void setGenerateTransformedQueries(Boolean generateTransformedQueries) {
-    this.generateTransformedQueries.set(generateTransformedQueries)
   }
 
   void setGenerateOperationOutput(Boolean generateOperationOutput) {

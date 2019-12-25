@@ -1,6 +1,7 @@
 package com.apollographql.apollo.gradle.api
 
 import org.gradle.api.file.Directory
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Provider
 
 /**
@@ -33,12 +34,7 @@ interface CompilationUnit: CompilerParams {
   val outputDir: Provider<Directory>
 
   /**
-   * The directory where the transformed queries will be written
+   * The file where the operation output json will be written
    */
-  val transformedQueriesDir: Provider<Directory>
-
-  /**
-   * The directory where the operation generation report will be written
-   */
-  val operationOutputDir: Provider<Directory>
+  val operationOutputFile: RegularFileProperty
 }

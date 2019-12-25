@@ -17,16 +17,11 @@ abstract class TaskConfigurator {
   protected final ApolloCodegenTask createCodegenTask(String sourceSetOrVariantName, Collection sourceSets) {
     File outputFolder = new File(project.buildDir, Joiner.on(File.separator).join(GraphQLCompiler.OUTPUT_DIRECTORY + sourceSetOrVariantName))
     String taskName = String.format(ApolloCodegenTask.NAME, sourceSetOrVariantName.capitalize())
-    File transformedQueriesOutputFolder = null
-    if (project.apollo.generateTransformedQueries.get()) {
-      transformedQueriesOutputFolder = new File(project.buildDir, Joiner.on(File.separator)
-          .join(GraphQLCompiler.TRANSFORMED_QUERIES_OUTPUT_DIRECTORY + sourceSetOrVariantName)) // TODO service?
-    }
 
-    File operationOutputFolder = null
+    File ooFile = null
     if (project.apollo.generateOperationOutput.get()) {
-      operationOutputFolder = new File(project.buildDir, Joiner.on(File.separator)
-          .join(GraphQLCompiler.OPERATION_OUTPUT_DIRECTORY + sourceSetOrVariantName)) // TODO service?
+      ooFile = new File(project.buildDir, Joiner.on(File.separator)
+          .join(GraphQLCompiler.OPERATION_OUTPUT_DIRECTORY + sourceSetOrVariantName + "OperationOutput.json"))
     }
     return project.tasks.create(taskName, ApolloCodegenTask) {
       source(sourceSets.collect { it.graphql })
@@ -47,8 +42,7 @@ abstract class TaskConfigurator {
       suppressRawTypesWarning = project.apollo.suppressRawTypesWarning
       generateKotlinModels = project.apollo.generateKotlinModels
       generateVisitorForPolymorphicDatatypes = project.apollo.generateVisitorForPolymorphicDatatypes
-      transformedQueriesOutputDir.set(transformedQueriesOutputFolder)
-      operationOutputDir.set(operationOutputFolder)
+      operationOutputFile.set(ooFile)
       generateAsInternal = project.apollo.generateAsInternal
     }
   }

@@ -66,12 +66,8 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   abstract val outputDir: DirectoryProperty
 
   @get:Optional
-  @get:OutputDirectory
-  abstract val transformedQueriesOutputDir: DirectoryProperty
-
-  @get:Optional
-  @get:OutputDirectory
-  abstract val operationOutputDir: DirectoryProperty
+  @get:OutputFile
+  abstract val operationOutputFile: RegularFileProperty
 
   @get:Input
   @get:Optional
@@ -114,8 +110,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         generateKotlinModels = generateKotlinModels.getOrElse(false),
         generateVisitorForPolymorphicDatatypes = generateVisitorForPolymorphicDatatypes.getOrElse(false),
         packageNameProvider = packageNameProvider,
-        transformedQueriesOutputDir = transformedQueriesOutputDir.orNull?.asFile,
-        operationOutputDir = operationOutputDir.orNull?.asFile,
+        operationOutputFile = operationOutputFile.orNull?.asFile,
         generateAsInternal = generateAsInternal.getOrElse(false)
     )
 

@@ -29,10 +29,10 @@ ApolloClient.builder()
 
 ## Transformed queries
 
-If your backend uses custom persisted queries, Apollo-Android can generate transformed queries from your .graphql queries. They will match what the client is sending exactly so you can persist them on your server.
+If your backend uses custom persisted queries, Apollo-Android can generate an OperationOutput json from your .graphql queries. They will match what the client is sending exactly so you can persist them on your server.
 
 ```
 apollo {
-  generateTransformedQueries = true
+  generateOperationOutput = true
 }
 ```

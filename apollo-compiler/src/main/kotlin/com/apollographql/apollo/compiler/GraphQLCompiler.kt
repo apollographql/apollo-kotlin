@@ -5,6 +5,7 @@ import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.ir.ScalarType
 import com.apollographql.apollo.compiler.ir.TypeDeclaration
+import com.apollographql.apollo.compiler.operationoutput.OperationOutputWriter
 import com.squareup.javapoet.JavaFile
 import java.io.File
 
@@ -46,23 +47,12 @@ class GraphQLCompiler {
       )
     }
 
-    args.transformedQueriesOutputDir?.let { transformedQueriesOutputDir ->
-      if (transformedQueriesOutputDir.exists()) {
-        transformedQueriesOutputDir.deleteRecursively()
-      }
-      val transformedQueryOutput = TransformedQueryOutput(args.packageNameProvider)
-      transformedQueryOutput.apply { visit(ir) }.writeTo(transformedQueriesOutputDir)
-    }
+    args.operationOutputFile?.let { operationOutputFile ->
+      val dir = operationOutputFile.parentFile
+      dir.mkdirs()
 
-    args.operationOutputDir?.let { operationOutputDir ->
-      if (operationOutputDir.exists()) {
-        operationOutputDir.deleteRecursively()
-      }
-      val outputJsonFile = operationOutputDir.resolve("OperationOutput.json").also {
-        it.parentFile.mkdirs()
-      }
-      val operationOutput = OperationOutput(args.packageNameProvider)
-      operationOutput.apply { visit(ir) }.writeTo(outputJsonFile)
+      val operationOutput = OperationOutputWriter(args.packageNameProvider)
+      operationOutput.apply { visit(ir) }.writeTo(operationOutputFile)
     }
   }
 
@@ -123,8 +113,6 @@ class GraphQLCompiler {
     @JvmField
     val OUTPUT_DIRECTORY = listOf("generated", "source", "apollo", "classes")
     @JvmField
-    val TRANSFORMED_QUERIES_OUTPUT_DIRECTORY = listOf("generated", "apollo", "transformedQueries")
-    @JvmField
     val OPERATION_OUTPUT_DIRECTORY = listOf("generated", "apollo", "operationOutput")
   }
 
@@ -135,8 +123,7 @@ class GraphQLCompiler {
       val useSemanticNaming: Boolean,
       val packageNameProvider: PackageNameProvider,
       val generateKotlinModels: Boolean = false,
-      val transformedQueriesOutputDir: File? = null,
-      val operationOutputDir: File? = null,
+      val operationOutputFile: File? = null,
       val generateAsInternal: Boolean = false,
 
       // only if generateKotlinModels = false
