@@ -24,17 +24,40 @@ NormalizedCacheFactory cacheFactory = new SqlNormalizedCacheFactory(apolloSqlHel
 
 Add the following `dependency`:
 
-[ ![apollo-espresso-support](https://img.shields.io/bintray/v/apollographql/android/apollo-espresso-support.svg?label=apollo-espresso-support) ](https://bintray.com/apollographql/android/apollo-espresso-support/_latestVersion)
+[ ![apollo-idling-resource](https://img.shields.io/bintray/v/apollographql/android/apollo-idling-resource.svg?label=apollo-idling-resource) ](https://bintray.com/apollographql/android/apollo-idling-resource/_latestVersion)
 ```gradle
-implementation("com.apollographql.apollo:apollo-espresso-support:x.y.z")
+implementation("com.apollographql.apollo:apollo-idling-resource:x.y.z")
 ```
 
+The Apollo GraphQL client comes with a [IdlingResource](https://developer.android.com/training/testing/espresso/idling-resource) to use
+ during your Android Espresso UI tests. It needs to be created and registered per ApolloClient instance. Register several IdlingResources
+ with the same name will crash.
 
-The Apollo GraphQL client comes with a [IdlingResource](https://developer.android.com/training/testing/espresso/idling-resource) to use during your Android UI tests.
+- Example in Java:
+```java
+// Register the idlingResource before running your tests (once per client).
+IdlingResource idlingResource = ApolloIdlingResource.create("ApolloIdlingResource", apolloClient);
+IdlingRegistry.getInstance().register(idlingResource);
+```
 
+- Example in Kotlin:
 ```kotlin
-// Register the idlingResource before running your tests.
-// This should be done once per client. Register several IdlingResources with the same name will crash
-val idlingResource = ApolloIdlingResource.create("apolloClientIdlingResource", apolloClient)
+// Register the idlingResource before running your tests (once per client).
+val idlingResource = ApolloIdlingResource.create("ApolloIdlingResource", apolloClient)
 IdlingRegistry.getInstance().register(idlingResource)
+```
+
+Most frequently this code is put into a custom TestRunner as below. Please note that you need the ApolloClient instance you use in the app.
+
+```java
+public final class TestRunner extends AndroidJUnitRunner {
+  @Override
+  public void onStart() {
+    IdlingResource idlingResource = ApolloIdlingResource.create("ApolloIdlingResource", apolloClient);
+    IdlingRegistry.getInstance().register(idlingResource);
+    // etc...
+
+    super.onStart();
+  }
+}
 ```
