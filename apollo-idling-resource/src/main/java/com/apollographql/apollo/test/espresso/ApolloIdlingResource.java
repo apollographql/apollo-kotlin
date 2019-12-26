@@ -1,30 +1,32 @@
 package com.apollographql.apollo.test.espresso;
 
-
-import android.support.test.espresso.IdlingResource;
-
+import androidx.test.espresso.IdlingResource;
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.IdleResourceCallback;
-
 import org.jetbrains.annotations.NotNull;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 /**
- * An Espresso {@link IdlingResource} for {@link com.apollographql.apollo.ApolloClient}.
+ * An Espresso {@link IdlingResource} for {@link ApolloClient}.
  */
 public final class ApolloIdlingResource implements IdlingResource {
 
   private final String name;
   private final ApolloClient apolloClient;
-  ResourceCallback callback;
+  private ResourceCallback callback;
 
   /**
    * Creates a new {@link IdlingResource} from {@link ApolloClient} with a given name. Register this instance using
-   * Espresso class's registerIdlingResource in your test suite's setup method.
+   * {@link androidx.test.espresso.IdlingRegistry} in your test suite's setup method.
    *
-   * @param name name of this idlingResource instance.
-   * @param apolloClient the apolloClient for which idlingResource needs to be created.
+   * <pre>{@code
+   * IdlingResource idlingResource = ApolloIdlingResource.create("Apollo", apolloClient);
+   * IdlingRegistry.getInstance().register(idlingResource);
+   * }</pre>
+   *
+   * @param name <strong>unique</strong> name of this IdlingResource instance.
+   * @param apolloClient the apolloClient for which IdlingResource needs to be created.
    * @return a new ApolloIdlingResource.
    * @throws NullPointerException if name == null or apolloClient == null
    */

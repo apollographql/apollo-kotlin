@@ -1,53 +1,48 @@
 package com.apollographql.apollo.test.espresso;
 
-
-import android.support.test.espresso.IdlingResource;
-
+import androidx.test.espresso.IdlingResource;
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
-import com.apollographql.apollo.response.ScalarTypeAdapters;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.response.ScalarTypeAdapters;
 import com.apollographql.apollo.rx2.Rx2Apollo;
-
+import okhttp3.OkHttpClient;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
 import okio.BufferedSource;
+import org.jetbrains.annotations.NotNull;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.jetbrains.annotations.NotNull;
-
-import okhttp3.OkHttpClient;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.fail;
 
 public class ApolloIdlingResourceTest {
+  @Rule
+  public final MockWebServer server = new MockWebServer();
+
+  private final OkHttpClient okHttpClient = new OkHttpClient();
   private ApolloIdlingResource idlingResource;
   private ApolloClient apolloClient;
-  @Rule public final MockWebServer server = new MockWebServer();
-  private OkHttpClient okHttpClient;
 
   private static final long TIME_OUT_SECONDS = 3;
   private static final String IDLING_RESOURCE_NAME = "apolloIdlingResource";
 
-  private static final Query EMPTY_QUERY = new Query() {
+  private static final Query<Operation.Data, Object, Operation.Variables> EMPTY_QUERY = new Query<Operation.Data, Object, Operation.Variables>() {
 
     OperationName operationName = new OperationName() {
       @Override public String name() {
@@ -83,27 +78,21 @@ public class ApolloIdlingResourceTest {
       return "";
     }
 
-    @NotNull @Override public Response parse(@NotNull BufferedSource source) {
+    @NotNull @Override public Response<Object> parse(@NotNull BufferedSource source) {
       throw new UnsupportedOperationException();
     }
 
-    @NotNull @Override public Response parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+    @NotNull @Override public Response<Object> parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
       throw new UnsupportedOperationException();
     }
   };
-
-  @Before
-  public void setup() {
-    okHttpClient = new OkHttpClient.Builder()
-        .build();
-  }
 
   @After
   public void tearDown() {
     idlingResource = null;
   }
 
-  @Test
+  @SuppressWarnings("ConstantConditions") @Test
   public void onNullNamePassed_NullPointerExceptionIsThrown() {
     apolloClient = ApolloClient.builder()
         .okHttpClient(okHttpClient)
@@ -119,7 +108,7 @@ public class ApolloIdlingResourceTest {
     }
   }
 
-  @Test
+  @SuppressWarnings("ConstantConditions") @Test
   public void onNullApolloClientPassed_NullPointerExceptionIsThrown() {
     try {
       idlingResource = ApolloIdlingResource.create(IDLING_RESOURCE_NAME, null);
@@ -143,7 +132,7 @@ public class ApolloIdlingResourceTest {
   }
 
   @Test
-  public void checkIsIdleNow_whenCallIsQueued() throws IOException, TimeoutException, InterruptedException {
+  public void checkIsIdleNow_whenCallIsQueued() throws InterruptedException {
     server.enqueue(mockResponse());
 
     final CountDownLatch latch = new CountDownLatch(1);
@@ -178,15 +167,14 @@ public class ApolloIdlingResourceTest {
     assertThat(idlingResource.isIdleNow()).isTrue();
   }
 
-  @SuppressWarnings("CheckReturnValue")
   @Test
-  public void checkIdlingResourceTransition_whenCallIsQueued() throws IOException, ApolloException {
+  public void checkIdlingResourceTransition_whenCallIsQueued() throws ApolloException {
     server.enqueue(mockResponse());
 
     apolloClient = ApolloClient.builder()
         .okHttpClient(okHttpClient)
         .dispatcher(new Executor() {
-          @Override public void execute(Runnable command) {
+          @Override public void execute(@NotNull Runnable command) {
             command.run();
           }
         })
@@ -203,25 +191,23 @@ public class ApolloIdlingResourceTest {
     });
 
     assertThat(counter.get()).isEqualTo(1);
-    Rx2Apollo.from(apolloClient.query(EMPTY_QUERY)).blockingFirst();
+    Rx2Apollo.from(apolloClient.query(EMPTY_QUERY)).test().awaitTerminalEvent();
     assertThat(counter.get()).isEqualTo(0);
   }
 
-  private MockResponse mockResponse() throws IOException {
-    return new MockResponse().setResponseCode(200).setBody(new StringBuilder()
-        .append("{")
-        .append("  \"errors\": [")
-        .append("    {")
-        .append("      \"message\": \"Cannot query field \\\"names\\\" on type \\\"Species\\\".\",")
-        .append("      \"locations\": [")
-        .append("        {")
-        .append("          \"line\": 3,")
-        .append("          \"column\": 5")
-        .append("        }")
-        .append("      ]")
-        .append("    }")
-        .append("  ]")
-        .append("}")
-        .toString());
+  private MockResponse mockResponse() {
+    return new MockResponse().setResponseCode(200).setBody("{" +
+        "  \"errors\": [" +
+        "    {" +
+        "      \"message\": \"Cannot query field \\\"names\\\" on type \\\"Species\\\".\"," +
+        "      \"locations\": [" +
+        "        {" +
+        "          \"line\": 3," +
+        "          \"column\": 5" +
+        "        }" +
+        "      ]" +
+        "    }" +
+        "  ]" +
+        "}");
   }
 }

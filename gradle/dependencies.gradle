@@ -5,7 +5,7 @@ def versions = [
     bintray               : '1.8.4',
     cache                 : '2.0.2',
     compiletesting        : '0.15',
-    espressoIdlingResource: '2.2.2',
+    espressoIdlingResource: '3.2.0',
     guava                 : '28.0-jre',
     javaPoet              : '1.9.0',
     jetbrainsAnnotations  : '13.0',
@@ -33,7 +33,7 @@ ext.dep = [
         recyclerView          : "com.android.support:recyclerview-v7:$versions.supportLib",
         appcompat             : "com.android.support:appcompat-v7:$versions.supportLib",
         testRunner            : "com.android.support.test:runner:$versions.testRunner",
-        espressoIdlingResource: "com.android.support.test.espresso:espresso-idling-resource:$versions.espressoIdlingResource",
+        espressoIdlingResource: "androidx.test.espresso:espresso-idling-resource:$versions.espressoIdlingResource",
     ],
     antlr                 : [
         antlr  : "org.antlr:antlr4:$versions.antlr4",
