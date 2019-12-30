@@ -1,7 +1,7 @@
 package com.apollographql.apollo.compiler
 
 class Sha256IdGenerator: CustomIdGenerator {
-  override fun apply(queryString: String): String {
+  override fun apply(queryString: String, queryFilepath: String): String {
     return queryString.sha256()
   }
 

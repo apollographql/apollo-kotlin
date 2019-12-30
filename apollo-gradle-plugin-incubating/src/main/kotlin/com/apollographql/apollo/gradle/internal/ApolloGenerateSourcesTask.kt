@@ -22,6 +22,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Internal
   abstract val customIdGenerator: Property<CustomIdGenerator>
 
+  @Input
+  @Optional
+  fun customIdGeneratorVersion() = customIdGenerator.orNull?.version
+
   @get:Input
   @get:Optional
   abstract val nullableValueType: Property<String>

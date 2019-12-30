@@ -120,9 +120,11 @@ class CodeGenTest(val folder: File) {
 
       val customIdGenerator = when (folder.name) {
         "custom_id_generator" -> object : CustomIdGenerator {
-          override fun apply(queryString: String): String {
+          override fun apply(queryString: String, queryFilepath: String): String {
             return "hash"
           }
+
+          override val version: String = "1"
         }
         else -> null
       }

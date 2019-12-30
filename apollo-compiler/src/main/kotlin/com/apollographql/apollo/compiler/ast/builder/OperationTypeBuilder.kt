@@ -29,7 +29,7 @@ internal fun Operation.ast(
   }
 
   val operationId = (customIdGenerator?:Sha256IdGenerator())
-      .apply(QueryDocumentMinifier.minify(sourceWithFragments))
+      .apply(QueryDocumentMinifier.minify(sourceWithFragments), filePath)
 
   return OperationType(
       name = operationClassName,

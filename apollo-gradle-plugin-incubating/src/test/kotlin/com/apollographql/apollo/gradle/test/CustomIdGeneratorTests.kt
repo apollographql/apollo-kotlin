@@ -13,9 +13,10 @@ class CustomIdGeneratorTests {
   fun `up-to-date checks are working`() {
     val apolloConfiguration = """
       class MyIdGenerator implements CustomIdGenerator {
-          String apply(String queryString) {
+          String apply(String queryString, String queryFilepath) {
               return queryString.length().toString();
           }
+          String version = "1"
       }
       
       apollo {
@@ -42,9 +43,10 @@ class CustomIdGeneratorTests {
   fun `changing the customIdGenerator recompiles sources`() {
     val apolloConfiguration = """
       class MyIdGenerator implements CustomIdGenerator {
-          String apply(String queryString) {
+          String apply(String queryString, String queryFilepath) {
               return queryString.length().toString();
           }
+          String version = "1.0.0-SNAPSHOT"
       }
       
       apollo {
@@ -62,6 +64,7 @@ class CustomIdGeneratorTests {
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
 
       File(dir, "build.gradle").replaceInText("queryString.length()", "(queryString.length() * 2)")
+      File(dir, "build.gradle").replaceInText("1.0.0-SNAPSHOT", "2.0.0-SNAPSHOT")
 
       result = TestUtils.executeTask("generateApolloSources", dir)
 

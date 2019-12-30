@@ -25,6 +25,7 @@ class ApolloCodegenTask extends SourceTask {
   @OutputDirectory DirectoryProperty outputDir = project.objects.directoryProperty()
   @Input MapProperty<String, String> customTypeMapping = project.objects.mapProperty(String.class, String.class)
   @Optional @Internal Property<CustomIdGenerator> customIdGenerator = project.objects.property(CustomIdGenerator.class)
+  @Optional @Input String customIdGeneratorVersion = customIdGenerator.orNull?.version
   @Optional @Input Property<String> nullableValueType = project.objects.property(String.class)
   @Input Property<Boolean> useSemanticNaming = project.objects.property(Boolean.class)
   @Input Property<Boolean> generateModelBuilder = project.objects.property(Boolean.class)

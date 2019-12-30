@@ -1,7 +1,17 @@
 package com.apollographql.apollo.compiler
 
 interface CustomIdGenerator {
-  fun apply(queryString: String): String
+  fun apply(
+      /**
+       * The minified query string source with fragments
+       */
+      queryString: String,
+
+      /**
+       * The path of the query file
+       */
+      queryFilepath: String
+  ): String
 
   /**
    * The version of the CustomIdGenerator
