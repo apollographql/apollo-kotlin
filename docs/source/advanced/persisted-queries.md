@@ -51,7 +51,16 @@ apollo {
     String apply(String queryString, String queryFilepath) {
       return queryString.md5()
     }
+
+    /**
+     * Use this version override to indicate an update to the implementation.
+     * This invalidates the current cache.
+     */
     String version = "v1"
-  } 
+  }
 }
 ```
+
+### Versioning Id Generator
+
+The result of the ID generator is cached. The cache is not updated when the implementation of the ID Generator changes. To indicate an update to the implementation of the ID Generator, change the `version` override as shown in the above example.
