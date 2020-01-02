@@ -48,9 +48,10 @@ import com.apollographql.apollo.compiler.CustomIdGenerator
 
 apollo {
   customIdGenerator = new CustomIdGenerator() {
-    String apply(String queryString) {
+    String apply(String queryString, String queryFilepath) {
       return queryString.md5()
     }
+    String version = "v1"
   } 
 }
 ```
