@@ -73,6 +73,10 @@ class CodeGenTest(val folder: File) {
       } else {
         emptyMap()
       }
+      val singularizeTypes = when (folder.name) {
+        "singularize_types" -> false
+        else -> true
+      }
       val nullableValueType = when (folder.name) {
         "hero_details_guava" -> NullableValueType.GUAVA_OPTIONAL
         "hero_details_java_optional" -> NullableValueType.JAVA_OPTIONAL
@@ -124,6 +128,7 @@ class CodeGenTest(val folder: File) {
           ir = ir,
           outputDir = File("build/generated/test/${folder.name}/$language"),
           customTypeMap = customTypeMap,
+          singularizeTypes = singularizeTypes,
           generateKotlinModels = generateKotlinModels,
           nullableValueType = nullableValueType,
           useSemanticNaming = useSemanticNaming,

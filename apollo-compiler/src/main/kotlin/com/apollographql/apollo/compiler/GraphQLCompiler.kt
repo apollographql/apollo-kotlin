@@ -18,6 +18,7 @@ class GraphQLCompiler {
         typeDeclarations = ir.typesUsed,
         packageNameProvider = args.packageNameProvider,
         customTypeMap = customTypeMap,
+        singularizeTypes = args.singularizeTypes,
         nullableValueType = args.nullableValueType,
         ir = ir,
         useSemanticNaming = args.useSemanticNaming,
@@ -36,6 +37,7 @@ class GraphQLCompiler {
       GraphQLKompiler(
           ir = ir,
           customTypeMap = args.customTypeMap,
+          singularizeTypes = args.singularizeTypes,
           useSemanticNaming = args.useSemanticNaming,
           packageNameProvider = args.packageNameProvider,
           generateAsInternal = args.generateAsInternal
@@ -120,6 +122,7 @@ class GraphQLCompiler {
       val ir: CodeGenerationIR,
       val outputDir: File,
       val customTypeMap: Map<String, String>,
+      val singularizeTypes: Boolean = true,
       val useSemanticNaming: Boolean,
       val packageNameProvider: PackageNameProvider,
       val generateKotlinModels: Boolean = false,

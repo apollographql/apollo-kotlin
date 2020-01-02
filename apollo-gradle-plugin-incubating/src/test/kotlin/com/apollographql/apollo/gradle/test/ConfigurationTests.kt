@@ -28,6 +28,18 @@ class ConfigurationTests {
   }
 
   @Test
+  fun `singularizeTypes is working`() {
+    withSimpleProject("""
+      apollo {
+        singularizeTypes = false
+      }
+    """.trimIndent()) { dir ->
+      TestUtils.executeTask("generateApolloSources", dir)
+      TestUtils.assertFileContains(dir, "main/service/com/example/FilmsQuery.java", "Films")
+    }
+  }
+
+  @Test
   fun `nullableValueType is working`() {
     for (pair in listOf(
         "annotated" to "@Nullable String name()",

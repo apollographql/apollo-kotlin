@@ -188,6 +188,29 @@ class BasicAndroidSpec extends Specification {
         "return Currency.class;")
   }
 
+  def "setting singularizeTypes in the build script re-generates the CustomType class"() {
+    setup: "a testProject with a previous build and an apollo extension appended"
+    replaceTextInFile(new File("$testProjectDir/build.gradle")) {
+      it.replace("apollo {", "apollo {\n singularizeTypes=false\n")
+    }
+
+    when:
+    def result = GradleRunner.create().withProjectDir(testProjectDir)
+        .withPluginClasspath()
+        .withArguments("generateApolloClasses", "-Dapollographql.skipRuntimeDep=true", "--info")
+        .forwardStdError(new OutputStreamWriter(System.err))
+        .build()
+
+    then:
+    // modifying the customSingularizationRules should cause the task to be out of date
+    // and the task should run again
+    result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
+
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/release/com/example/FilmsQuery.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/release/com/example/FilmsQuery.java").getText('UTF-8').contains(
+        "Films")
+  }
+
   def "adding nullableValueType = `annotated` in Apollo Extension generates classes annotated with JSR"() {
     setup: "a testProject with a previous build and a modified build script"
     replaceTextInFile(new File("$testProjectDir/build.gradle")) {

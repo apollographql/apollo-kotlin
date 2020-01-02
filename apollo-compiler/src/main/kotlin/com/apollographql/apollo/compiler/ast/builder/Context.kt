@@ -14,6 +14,7 @@ import com.apollographql.apollo.compiler.singularize
 internal class Context(
     reservedObjectTypeRef: TypeRef?,
     val customTypeMap: CustomTypes,
+    val singularizeTypes: Boolean,
     val enums: List<EnumType>,
     val typesPackageName: String,
     val fragmentsPackage: String,
@@ -55,7 +56,7 @@ internal class Context(
     }
 
     val uniqueTypeRef = (reservedObjectTypeRefs).generateUniqueTypeRef(
-        typeName = normalizedClassName.let { if (singularize) it.singularize() else it }
+        typeName = normalizedClassName.let { if (singularize && singularizeTypes) it.singularize() else it }
     )
     reservedObjectTypeRefs.add(uniqueTypeRef)
     objectTypeContainer[uniqueTypeRef] = ObjectType(

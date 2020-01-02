@@ -58,6 +58,7 @@ class KotlinDSLTests {
         //schemaFilePath.set("")
         //outputPackageName.set("")
         customTypeMapping.set(mapOf("DateTime" to "java.util.Date"))
+        singularizeTypes.set(true)
         generateKotlinModels.set(false)
         generateOperationOutput.set(false)
         

@@ -174,6 +174,7 @@ open class ApolloPlugin : Plugin<Project> {
         it.generateKotlinModels.set(compilationUnit.generateKotlinModels())
         it.generateVisitorForPolymorphicDatatypes.set(compilerParams.generateVisitorForPolymorphicDatatypes)
         it.customTypeMapping.set(compilerParams.customTypeMapping)
+        it.singularizeTypes.set(compilerParams.singularizeTypes)
         it.rootPackageName.set(compilerParams.rootPackageName)
         it.outputDir.apply {
           set(project.layout.buildDirectory.map {

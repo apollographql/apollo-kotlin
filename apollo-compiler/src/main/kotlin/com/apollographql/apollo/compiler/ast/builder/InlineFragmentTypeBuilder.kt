@@ -11,8 +11,8 @@ internal fun List<InlineFragment>.inlineFragmentField(
     schemaType: String,
     context: Context
 ): ObjectType.Field {
-  val superInterfaceName = type.replace("[", "").replace("]", "").replace("!", "").singularize().capitalize() +
-      schemaType.replace("[", "").replace("]", "").replace("!", "").singularize().capitalize()
+  val superInterfaceName = type.replace("[", "").replace("]", "").replace("!", "").let { if (context.singularizeTypes) it.singularize() else it }.capitalize() +
+      schemaType.replace("[", "").replace("]", "").replace("!", "").let { if (context.singularizeTypes) it.singularize() else it }.capitalize()
   val superInterface = context.registerObjectType(
       name = superInterfaceName.escapeKotlinReservedWord(),
       schemaTypeName = "",

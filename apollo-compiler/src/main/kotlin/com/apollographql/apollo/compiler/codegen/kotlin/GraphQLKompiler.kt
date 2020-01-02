@@ -13,14 +13,17 @@ import java.io.File
 class GraphQLKompiler(
     private val ir: CodeGenerationIR,
     private val customTypeMap: Map<String, String>,
+    private val singularizeTypes: Boolean,
     private val packageNameProvider: PackageNameProvider,
     private val useSemanticNaming: Boolean,
     private val generateAsInternal: Boolean = false
 ) {
+
   fun write(outputDir: File) {
     val customTypeMap = customTypeMap.supportedCustomTypes(ir.typesUsed)
     val schema = ir.ast(
         customTypeMap = customTypeMap,
+        singularizeTypes = singularizeTypes,
         typesPackageName = packageNameProvider.typesPackageName,
         fragmentsPackage = packageNameProvider.fragmentsPackageName,
         useSemanticNaming = useSemanticNaming

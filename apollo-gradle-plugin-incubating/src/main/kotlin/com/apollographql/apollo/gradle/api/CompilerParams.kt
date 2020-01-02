@@ -36,6 +36,13 @@ interface CompilerParams {
   val customTypeMapping: MapProperty<String, String>
 
   /**
+   * Whether to singularize types in generated code
+   *
+   * true by default.
+   */
+  val singularizeTypes: Property<Boolean>
+
+  /**
    * The custom types code generate some warnings that might make the build fail.
    * suppressRawTypesWarning will add the appropriate SuppressWarning annotation
    *
