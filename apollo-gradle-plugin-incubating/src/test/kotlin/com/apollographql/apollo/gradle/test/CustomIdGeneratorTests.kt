@@ -46,7 +46,7 @@ class CustomIdGeneratorTests {
           String apply(String queryString, String queryFilepath) {
               return queryString.length().toString();
           }
-          String version = "1.0.0-SNAPSHOT"
+          String version = "MyIdGenerator-v1"
       }
       
       apollo {
@@ -64,7 +64,7 @@ class CustomIdGeneratorTests {
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
 
       File(dir, "build.gradle").replaceInText("queryString.length()", "(queryString.length() * 2)")
-      File(dir, "build.gradle").replaceInText("1.0.0-SNAPSHOT", "2.0.0-SNAPSHOT")
+      File(dir, "build.gradle").replaceInText("MyIdGenerator-v1", "MyIdGenerator-v2")
 
       result = TestUtils.executeTask("generateApolloSources", dir)
 

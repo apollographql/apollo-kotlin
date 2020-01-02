@@ -24,7 +24,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @Input
   @Optional
-  fun customIdGeneratorVersion() = customIdGenerator.orNull?.version
+  fun getCustomIdGeneratorVersion() = customIdGenerator.orNull?.version
 
   @get:Input
   @get:Optional
