@@ -8,15 +8,13 @@ import org.junit.Assert
 import org.junit.Test
 import java.io.File
 
-class OperationIdGeneratorTests {
-  @Test
-  fun `up-to-date checks are working`() {
-    val apolloConfiguration = """
-      class MyIdGenerator implements OperationIdGenerator {
-          String apply(String operationDocument, String operationFilepath) {
-              return operationDocument.length().toString();
+class CustomIdGeneratorTests {
+  val apolloConfiguration = """
+      class MyIdGenerator implements CustomIdGenerator {
+          String apply(String queryString, String queryFilepath) {
+              return queryString.length().toString();
           }
-          String version = "1"
+          String version = "MyIdGenerator-v1"
       }
       
       apollo {
@@ -24,6 +22,8 @@ class OperationIdGeneratorTests {
       }
     """.trimIndent()
 
+  @Test
+  fun `up-to-date checks are working`() {
     withSimpleProject(apolloConfiguration = apolloConfiguration) {dir ->
       val gradleFile = File(dir, "build.gradle").readText()
 
@@ -69,6 +69,36 @@ class OperationIdGeneratorTests {
       result = TestUtils.executeTask("generateApolloSources", dir)
 
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
+    }
+  }
+
+
+  @Test
+  fun `build cache is working as expected`() {
+    withSimpleProject(apolloConfiguration = apolloConfiguration) { dir ->
+      val buildCachePath = File(dir, "buildCache").absolutePath
+      File(dir, "settings.gradle").appendText("""
+        
+        buildCache {
+            local {
+                directory = new File("$buildCachePath")
+            }
+        }
+      """.trimIndent())
+
+      val gradleFile = File(dir, "build.gradle").readText()
+
+      File(dir, "build.gradle").writeText("import com.apollographql.apollo.compiler.CustomIdGenerator\n$gradleFile")
+
+      var result = TestUtils.executeTask("generateMainServiceApolloSources", dir, "--build-cache", "-i")
+
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainServiceApolloSources")!!.outcome)
+
+      File(dir, "build").deleteRecursively()
+
+      result = TestUtils.executeTask("generateMainServiceApolloSources", dir, "--build-cache", "-i")
+
+      Assert.assertEquals(TaskOutcome.FROM_CACHE, result.task(":generateMainServiceApolloSources")!!.outcome)
     }
   }
 }
