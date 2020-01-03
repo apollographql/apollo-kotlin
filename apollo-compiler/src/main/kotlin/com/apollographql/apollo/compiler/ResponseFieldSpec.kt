@@ -67,7 +67,7 @@ class ResponseFieldSpec(
     val customScalarEnumConst = normalizeGraphQlType(irField.type).toUpperCase(Locale.ENGLISH)
     return CodeBlock.of("\$T.\$L(\$S, \$S, \$L, \$L, \$T.\$L, \$L)", ResponseField::class.java,
         factoryMethod,
-        irField.responseName, irField.fieldName, irField.argumentCodeBlock(), irField.isOptional(context), customScalarEnum,
+        irField.responseName, irField.fieldName, irField.argumentCodeBlock(), irField.isOptional(context.singularizeTypes), customScalarEnum,
         customScalarEnumConst, conditionsCodeBlock(irField))
   }
 
@@ -87,7 +87,7 @@ class ResponseFieldSpec(
 
   private fun genericFactoryCode(irField: Field, factoryMethod: String): CodeBlock {
     return CodeBlock.of("\$T.\$L(\$S, \$S, \$L, \$L, \$L)", ResponseField::class.java, factoryMethod,
-        irField.responseName, irField.fieldName, irField.argumentCodeBlock(), irField.isOptional(context),
+        irField.responseName, irField.fieldName, irField.argumentCodeBlock(), irField.isOptional(context.singularizeTypes),
         conditionsCodeBlock(irField))
   }
 

@@ -134,7 +134,7 @@ class SchemaTypeSpecBuilder(
 
   private fun nestedTypeSpecs(): List<Pair<String, TypeSpec>> {
     return fields.filter(Field::isNonScalar).map {
-      it.formatClassName(context) to it.toTypeSpec(
+      it.formatClassName(context.singularizeTypes) to it.toTypeSpec(
           context = context,
           abstract = abstract || inlineFragments.isNotEmpty()
       )
