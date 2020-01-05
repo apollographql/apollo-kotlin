@@ -22,10 +22,6 @@ extensions.findByType(BaseExtension::class.java)!!.apply {
     ignore("InvalidPackage")
   }
 
-  dexOptions {
-    preDexLibraries = groovy.util.Eval.x(project, "x.isCi") as Boolean
-  }
-
   defaultConfig {
     minSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.minSdkVersion").toString())
     targetSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.targetSdkVersion").toString())
