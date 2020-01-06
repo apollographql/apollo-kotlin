@@ -203,7 +203,7 @@ The complete list of parameters can be found in [CompilerParams](https://github.
    *
    * If not provided, default hashing algorithm (sha256) will be used
    */
-  val customIdGenerator: Property<CustomIdGenerator>
+  val operationIdGenerator: Property<OperationIdGenerator>
 
   /**
    * The custom types code generate some warnings that might make the build fail.

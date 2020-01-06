@@ -1,6 +1,6 @@
 package com.apollographql.apollo.gradle.api
 
-import com.apollographql.apollo.compiler.CustomIdGenerator
+import com.apollographql.apollo.compiler.OperationIdGenerator
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.provider.MapProperty
@@ -40,7 +40,7 @@ interface CompilerParams {
    *
    * If not provided, default hashing algorithm (sha256) will be used
    */
-  val customIdGenerator: Property<CustomIdGenerator>
+  val operationIdGenerator: Property<OperationIdGenerator>
 
   /**
    * The custom types code generate some warnings that might make the build fail.

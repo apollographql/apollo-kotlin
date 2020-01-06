@@ -63,8 +63,7 @@ class OperationTypeSpecBuilder(
   }
 
   private fun TypeSpec.Builder.addOperationId(operation: Operation, context: CodeGenerationContext): TypeSpec.Builder {
-    val id = (context.customIdGenerator
-        ?: Sha256IdGenerator()).apply(QueryDocumentMinifier.minify(operation.sourceWithFragments), operation.filePath)
+    val id = context.operationIdGenerator.apply(QueryDocumentMinifier.minify(operation.sourceWithFragments), operation.filePath)
 
     addField(FieldSpec.builder(ClassNames.STRING, OPERATION_ID_FIELD_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)

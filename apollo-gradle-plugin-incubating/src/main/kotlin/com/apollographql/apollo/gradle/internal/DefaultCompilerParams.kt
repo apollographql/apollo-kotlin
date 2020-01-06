@@ -1,6 +1,6 @@
 package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo.compiler.CustomIdGenerator
+import com.apollographql.apollo.compiler.OperationIdGenerator
 import com.apollographql.apollo.gradle.api.CompilerParams
 import org.gradle.api.file.ProjectLayout
 import org.gradle.api.file.RegularFileProperty
@@ -20,7 +20,7 @@ abstract class DefaultCompilerParams @Inject constructor(objects: ObjectFactory)
 
   abstract override val customTypeMapping: MapProperty<String, String>
 
-  abstract override val customIdGenerator: Property<CustomIdGenerator>
+  abstract override val operationIdGenerator: Property<OperationIdGenerator>
 
   init {
     // see https://github.com/gradle/gradle/issues/7485

@@ -8,26 +8,26 @@ import org.junit.Assert
 import org.junit.Test
 import java.io.File
 
-class CustomIdGeneratorTests {
+class OperationIdGeneratorTests {
   @Test
   fun `up-to-date checks are working`() {
     val apolloConfiguration = """
-      class MyIdGenerator implements CustomIdGenerator {
-          String apply(String queryString, String queryFilepath) {
-              return queryString.length().toString();
+      class MyIdGenerator implements OperationIdGenerator {
+          String apply(String operationDocument, String operationFilepath) {
+              return operationDocument.length().toString();
           }
           String version = "1"
       }
       
       apollo {
-        customIdGenerator = new MyIdGenerator()
+        operationIdGenerator = new MyIdGenerator()
       }
     """.trimIndent()
 
     withSimpleProject(apolloConfiguration = apolloConfiguration) {dir ->
       val gradleFile = File(dir, "build.gradle").readText()
 
-      File(dir, "build.gradle").writeText("import com.apollographql.apollo.compiler.CustomIdGenerator\n$gradleFile")
+      File(dir, "build.gradle").writeText("import com.apollographql.apollo.compiler.OperationIdGenerator\n$gradleFile")
 
       var result = TestUtils.executeTask("generateApolloSources", dir)
 
@@ -40,30 +40,30 @@ class CustomIdGeneratorTests {
   }
 
   @Test
-  fun `changing the customIdGenerator recompiles sources`() {
+  fun `changing the operationIdGenerator recompiles sources`() {
     val apolloConfiguration = """
-      class MyIdGenerator implements CustomIdGenerator {
-          String apply(String queryString, String queryFilepath) {
-              return queryString.length().toString();
+      class MyIdGenerator implements OperationIdGenerator {
+          String apply(String operationDocument, String operationFilepath) {
+              return operationDocument.length().toString();
           }
           String version = "MyIdGenerator-v1"
       }
       
       apollo {
-        customIdGenerator = new MyIdGenerator()
+        operationIdGenerator = new MyIdGenerator()
       }
     """.trimIndent()
 
     withSimpleProject(apolloConfiguration = apolloConfiguration) {dir ->
       val gradleFile = File(dir, "build.gradle").readText()
 
-      File(dir, "build.gradle").writeText("import com.apollographql.apollo.compiler.CustomIdGenerator\n$gradleFile")
+      File(dir, "build.gradle").writeText("import com.apollographql.apollo.compiler.OperationIdGenerator\n$gradleFile")
 
       var result = TestUtils.executeTask("generateApolloSources", dir)
 
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
 
-      File(dir, "build.gradle").replaceInText("queryString.length()", "(queryString.length() * 2)")
+      File(dir, "build.gradle").replaceInText("operationDocument.length()", "(operationDocument.length() * 2)")
       File(dir, "build.gradle").replaceInText("MyIdGenerator-v1", "MyIdGenerator-v2")
 
       result = TestUtils.executeTask("generateApolloSources", dir)
