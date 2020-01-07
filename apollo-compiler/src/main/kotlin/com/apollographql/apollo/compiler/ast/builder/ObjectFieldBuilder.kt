@@ -84,6 +84,7 @@ private fun Field.`object`(context: Context): ObjectType.Field {
       fragmentSpreads = fragmentSpreads,
       inlineFragments = inlineFragments,
       fields = fields,
+      singularize = false,
       kind = ObjectType.Kind.Object
   )
   return ObjectType.Field(
