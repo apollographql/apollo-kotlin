@@ -117,7 +117,7 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
     }
   }
 
-  data class AllStarships1(
+  data class AllStarships(
     val __typename: String,
     /**
      * A list of edges.
@@ -139,7 +139,7 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
           ResponseField.forList("edges", "edges", null, true, null)
           )
 
-      operator fun invoke(reader: ResponseReader): AllStarships1 {
+      operator fun invoke(reader: ResponseReader): AllStarships {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
         val edges = reader.readList<Edge>(RESPONSE_FIELDS[1]) {
           it.readObject<Edge> { reader ->
@@ -147,7 +147,7 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
           }
 
         }
-        return AllStarships1(
+        return AllStarships(
           __typename = __typename,
           edges = edges
         )
@@ -156,7 +156,7 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
   }
 
   data class Data(
-    val allStarships: AllStarships1?
+    val allStarships: AllStarships?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeObject(RESPONSE_FIELDS[0], allStarships?.marshaller())
@@ -169,8 +169,8 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
           )
 
       operator fun invoke(reader: ResponseReader): Data {
-        val allStarships = reader.readObject<AllStarships1>(RESPONSE_FIELDS[0]) { reader ->
-          AllStarships1(reader)
+        val allStarships = reader.readObject<AllStarships>(RESPONSE_FIELDS[0]) { reader ->
+          AllStarships(reader)
         }
 
         return Data(
