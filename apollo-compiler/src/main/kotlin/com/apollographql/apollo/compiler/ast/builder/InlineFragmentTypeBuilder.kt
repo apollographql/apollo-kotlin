@@ -2,18 +2,16 @@ package com.apollographql.apollo.compiler.ast.builder
 
 import com.apollographql.apollo.compiler.ast.FieldType
 import com.apollographql.apollo.compiler.ast.ObjectType
+import com.apollographql.apollo.compiler.ast.TypeRef
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
+import com.apollographql.apollo.compiler.ir.Condition
 import com.apollographql.apollo.compiler.ir.InlineFragment
 import com.apollographql.apollo.compiler.singularize
 
-internal fun List<InlineFragment>.inlineFragmentField(
-    type: String,
-    schemaType: String,
-    context: Context
-): ObjectType.Field {
+internal fun Context.registerInlineFragmentSuper(type: String, schemaType: String): TypeRef {
   val superInterfaceName = type.replace("[", "").replace("]", "").replace("!", "").singularize().capitalize() +
       schemaType.replace("[", "").replace("]", "").replace("!", "").singularize().capitalize()
-  val superInterface = context.registerObjectType(
+  return registerObjectType(
       name = superInterfaceName.escapeKotlinReservedWord(),
       schemaTypeName = "",
       fragmentSpreads = emptyList(),
@@ -22,35 +20,37 @@ internal fun List<InlineFragment>.inlineFragmentField(
       kind = ObjectType.Kind.InlineFragmentSuper,
       singularize = false
   )
-  val inlineFragmentRefs = associate { fragment ->
-    val normalizedClassName = fragment.typeCondition.capitalize().escapeKotlinReservedWord()
-    val possibleTypes = fragment.possibleTypes
+}
 
-    context.registerObjectType(
-        name = "As$normalizedClassName",
-        schemaTypeName = fragment.typeCondition,
-        fragmentSpreads = fragment.fragmentSpreads,
-        inlineFragments = emptyList(),
-        fields = fragment.fields,
-        kind = ObjectType.Kind.InlineFragment(
-            superInterface = superInterface,
-            possibleTypes = possibleTypes
-        ),
-        singularize = false
-    ) to possibleTypes
-  }
+internal fun InlineFragment.inlineFragmentField(
+    context: Context,
+    fragmentSuper: TypeRef
+): ObjectType.Field {
+  val normalizedClassName = typeCondition.capitalize().escapeKotlinReservedWord()
+  val typeRef = context.registerObjectType(
+      name = "As$normalizedClassName",
+      schemaTypeName = typeCondition,
+      fragmentSpreads = fragmentSpreads,
+      inlineFragments = emptyList(),
+      fields = fields,
+      kind = ObjectType.Kind.InlineFragment(
+          superInterface = fragmentSuper,
+          possibleTypes = possibleTypes
+      ),
+      singularize = false
+  )
   return ObjectType.Field(
-      name = "inlineFragment",
+      name = typeRef.name.decapitalize(),
       responseName = "__typename",
       schemaName = "__typename",
-      type = FieldType.InlineFragment(superInterface, inlineFragmentRefs.keys.toList()),
+      type = FieldType.Fragment(typeRef),
       description = "",
       isOptional = true,
       isDeprecated = false,
       deprecationReason = "",
       arguments = emptyMap(),
-      conditions = inlineFragmentRefs.values.flatten().map {
-        ObjectType.Field.Condition.Type(it)
-      }
+      conditions = conditions.filter { it.kind == Condition.Kind.BOOLEAN.rawValue }.map { directive ->
+        ObjectType.Field.Condition.Directive(variableName = directive.variableName, inverted = directive.inverted)
+      } + listOf(ObjectType.Field.Condition.Type(possibleTypes))
   )
 }

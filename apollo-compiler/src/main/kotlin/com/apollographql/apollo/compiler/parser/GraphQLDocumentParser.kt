@@ -420,15 +420,14 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
       )
     }
 
-    val fragmentRefs = selectionSet().fragmentRefs()
-
     return ParseResult(
         result = InlineFragment(
             typeCondition = typeCondition,
             possibleTypes = possibleTypes,
             fields = fields.result,
-            fragmentRefs = fragmentRefs,
-            sourceLocation = SourceLocation(start)
+            fragmentRefs = selectionSet().fragmentRefs(),
+            sourceLocation = SourceLocation(start),
+            conditions = directives().parse()
         ),
         usedTypes = setOf(typeCondition).union(fields.usedTypes)
     )

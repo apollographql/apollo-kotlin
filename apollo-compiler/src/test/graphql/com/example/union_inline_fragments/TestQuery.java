@@ -28,7 +28,6 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.lang.SuppressWarnings;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import okio.BufferedSource;
@@ -266,22 +265,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public Search map(ResponseReader reader) {
-        final AsCharacter asCharacter = reader.readConditional(ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Human",
-        "Droid")), new ResponseReader.ConditionalTypeReader<AsCharacter>() {
-          @Override
-          public AsCharacter read(String conditionalType, ResponseReader reader) {
-            return asCharacterFieldMapper.map(reader);
-          }
-        });
+        final AsCharacter asCharacter = asCharacterFieldMapper.map(reader);
         if (asCharacter != null) {
           return asCharacter;
         }
-        final AsStarship asStarship = reader.readConditional(ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Starship")), new ResponseReader.ConditionalTypeReader<AsStarship>() {
-          @Override
-          public AsStarship read(String conditionalType, ResponseReader reader) {
-            return asStarshipFieldMapper.map(reader);
-          }
-        });
+        final AsStarship asStarship = asStarshipFieldMapper.map(reader);
         if (asStarship != null) {
           return asStarship;
         }
@@ -475,21 +463,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public Friend map(ResponseReader reader) {
-        final AsHuman asHuman = reader.readConditional(ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Human")), new ResponseReader.ConditionalTypeReader<AsHuman>() {
-          @Override
-          public AsHuman read(String conditionalType, ResponseReader reader) {
-            return asHumanFieldMapper.map(reader);
-          }
-        });
+        final AsHuman asHuman = asHumanFieldMapper.map(reader);
         if (asHuman != null) {
           return asHuman;
         }
-        final AsDroid asDroid = reader.readConditional(ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Droid")), new ResponseReader.ConditionalTypeReader<AsDroid>() {
-          @Override
-          public AsDroid read(String conditionalType, ResponseReader reader) {
-            return asDroidFieldMapper.map(reader);
-          }
-        });
+        final AsDroid asDroid = asDroidFieldMapper.map(reader);
         if (asDroid != null) {
           return asDroid;
         }

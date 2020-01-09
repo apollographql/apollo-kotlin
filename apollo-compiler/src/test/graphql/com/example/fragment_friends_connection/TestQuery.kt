@@ -55,19 +55,12 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("__typename", "__typename", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): Hero {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
-          val heroDetails = HeroDetails(reader)
-          Fragments(
-            heroDetails = heroDetails
-          )
-        }
-
+        val fragments = Fragments(reader)
         return Hero(
           __typename = __typename,
           fragments = fragments
@@ -79,7 +72,25 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       val heroDetails: HeroDetails
     ) {
       fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        heroDetails.marshaller().marshal(it)
+        it.writeFragment(RESPONSE_FIELDS[0], heroDetails.marshaller())
+      }
+
+      companion object {
+        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+            ResponseField.forFragment("__typename", "__typename", listOf(
+              ResponseField.Condition.typeCondition(arrayOf("Human")),
+              ResponseField.Condition.typeCondition(arrayOf("Droid"))
+            ))
+            )
+
+        operator fun invoke(reader: ResponseReader): Fragments {
+          val heroDetails = reader.readFragment<HeroDetails>(RESPONSE_FIELDS[0]) { reader ->
+            HeroDetails(reader)
+          }
+          return Fragments(
+            heroDetails = heroDetails
+          )
+        }
       }
     }
   }

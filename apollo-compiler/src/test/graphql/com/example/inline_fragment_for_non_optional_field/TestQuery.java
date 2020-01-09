@@ -25,7 +25,6 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.lang.SuppressWarnings;
-import java.util.Arrays;
 import java.util.Collections;
 import okio.BufferedSource;
 import org.jetbrains.annotations.NotNull;
@@ -217,12 +216,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public Hero map(ResponseReader reader) {
-        final AsHuman asHuman = reader.readConditional(ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Human")), new ResponseReader.ConditionalTypeReader<AsHuman>() {
-          @Override
-          public AsHuman read(String conditionalType, ResponseReader reader) {
-            return asHumanFieldMapper.map(reader);
-          }
-        });
+        final AsHuman asHuman = asHumanFieldMapper.map(reader);
         if (asHuman != null) {
           return asHuman;
         }

@@ -118,8 +118,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           ResponseField.forString("name", "name", null, false, null)
           )
 
-      val POSSIBLE_TYPES: Array<String> = arrayOf("Human")
-
       operator fun invoke(reader: ResponseReader): AsHuman {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
         val homePlanet = reader.readString(RESPONSE_FIELDS[1])
@@ -212,8 +210,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           ResponseField.forString("name", "name", null, false, null)
           )
 
-      val POSSIBLE_TYPES: Array<String> = arrayOf("Droid")
-
       operator fun invoke(reader: ResponseReader): AsDroid {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
         val primaryFunction = reader.readString(RESPONSE_FIELDS[1])
@@ -240,40 +236,42 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      * The name of the character
      */
     val name: String,
-    val inlineFragment: FriendCharacter?
+    val asHuman: AsHuman?,
+    val asDroid: AsDroid?
   ) {
-    val asHuman: AsHuman? = inlineFragment as? AsHuman
-
-    val asDroid: AsDroid? = inlineFragment as? AsDroid
-
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeString(RESPONSE_FIELDS[0], __typename)
       it.writeString(RESPONSE_FIELDS[1], name)
-      it.writeObject(RESPONSE_FIELDS[2], inlineFragment?.marshaller())
+      it.writeFragment(RESPONSE_FIELDS[2], asHuman?.marshaller())
+      it.writeFragment(RESPONSE_FIELDS[3], asDroid?.marshaller())
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, false, null),
-          ResponseField.forInlineFragment("__typename", "__typename", listOf("Human", "Droid"))
+          ResponseField.forFragment("__typename", "__typename", listOf(
+            ResponseField.Condition.typeCondition(arrayOf("Human"))
+          )),
+          ResponseField.forFragment("__typename", "__typename", listOf(
+            ResponseField.Condition.typeCondition(arrayOf("Droid"))
+          ))
           )
 
       operator fun invoke(reader: ResponseReader): Friend2 {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
         val name = reader.readString(RESPONSE_FIELDS[1])
-        val inlineFragment = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType, reader ->
-          when(conditionalType) {
-            in AsHuman.POSSIBLE_TYPES -> AsHuman(reader)
-            in AsDroid.POSSIBLE_TYPES -> AsDroid(reader)
-            else -> null
-          }
+        val asHuman = reader.readFragment<AsHuman>(RESPONSE_FIELDS[2]) { reader ->
+          AsHuman(reader)
         }
-
+        val asDroid = reader.readFragment<AsDroid>(RESPONSE_FIELDS[3]) { reader ->
+          AsDroid(reader)
+        }
         return Friend2(
           __typename = __typename,
           name = name,
-          inlineFragment = inlineFragment
+          asHuman = asHuman,
+          asDroid = asDroid
         )
       }
     }
@@ -313,8 +311,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           ResponseField.forList("friends", "friends", null, true, null)
           )
 
-      val POSSIBLE_TYPES: Array<String> = arrayOf("Human", "Droid")
-
       operator fun invoke(reader: ResponseReader): AsCharacter {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
         val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
@@ -353,8 +349,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           ResponseField.forString("name", "name", null, false, null)
           )
 
-      val POSSIBLE_TYPES: Array<String> = arrayOf("Starship")
-
       operator fun invoke(reader: ResponseReader): AsStarship {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
         val name = reader.readString(RESPONSE_FIELDS[1])
@@ -368,37 +362,38 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   data class Search(
     val __typename: String,
-    val inlineFragment: SearchSearchResult?
+    val asCharacter: AsCharacter?,
+    val asStarship: AsStarship?
   ) {
-    val asCharacter: AsCharacter? = inlineFragment as? AsCharacter
-
-    val asStarship: AsStarship? = inlineFragment as? AsStarship
-
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeObject(RESPONSE_FIELDS[1], inlineFragment?.marshaller())
+      it.writeFragment(RESPONSE_FIELDS[1], asCharacter?.marshaller())
+      it.writeFragment(RESPONSE_FIELDS[2], asStarship?.marshaller())
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forInlineFragment("__typename", "__typename", listOf("Human", "Droid",
-              "Starship"))
+          ResponseField.forFragment("__typename", "__typename", listOf(
+            ResponseField.Condition.typeCondition(arrayOf("Human", "Droid"))
+          )),
+          ResponseField.forFragment("__typename", "__typename", listOf(
+            ResponseField.Condition.typeCondition(arrayOf("Starship"))
+          ))
           )
 
       operator fun invoke(reader: ResponseReader): Search {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val inlineFragment = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
-          when(conditionalType) {
-            in AsCharacter.POSSIBLE_TYPES -> AsCharacter(reader)
-            in AsStarship.POSSIBLE_TYPES -> AsStarship(reader)
-            else -> null
-          }
+        val asCharacter = reader.readFragment<AsCharacter>(RESPONSE_FIELDS[1]) { reader ->
+          AsCharacter(reader)
         }
-
+        val asStarship = reader.readFragment<AsStarship>(RESPONSE_FIELDS[2]) { reader ->
+          AsStarship(reader)
+        }
         return Search(
           __typename = __typename,
-          inlineFragment = inlineFragment
+          asCharacter = asCharacter,
+          asStarship = asStarship
         )
       }
     }

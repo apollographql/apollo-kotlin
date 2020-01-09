@@ -5,7 +5,6 @@
 //
 package com.example.union_fragment;
 
-import com.apollographql.apollo.api.FragmentResponseFieldMapper;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
@@ -222,10 +221,7 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
 
   public static class Search {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forFragment("__typename", "__typename", Arrays.asList("Human",
-      "Droid",
-      "Starship"))
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @NotNull String __typename;
@@ -301,6 +297,15 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
     }
 
     public static class Fragments {
+      static final ResponseField[] $responseFields = {
+        ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+          ResponseField.Condition.typeCondition(new String[] {"Human", "Droid"})
+        )),
+        ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+          ResponseField.Condition.typeCondition(new String[] {"Starship"})
+        ))
+      };
+
       final @Nullable Character character;
 
       final @Nullable Starship starship;
@@ -378,21 +383,15 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
         return $hashCode;
       }
 
-      public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
+      public static final class Mapper implements ResponseFieldMapper<Fragments> {
         final Character.Mapper characterFieldMapper = new Character.Mapper();
 
         final Starship.Mapper starshipFieldMapper = new Starship.Mapper();
 
         @Override
-        public @NotNull Fragments map(ResponseReader reader, @NotNull String conditionalType) {
-          Character character = null;
-          Starship starship = null;
-          if (Character.POSSIBLE_TYPES.contains(conditionalType)) {
-            character = characterFieldMapper.map(reader);
-          }
-          if (Starship.POSSIBLE_TYPES.contains(conditionalType)) {
-            starship = starshipFieldMapper.map(reader);
-          }
+        public @NotNull Fragments map(ResponseReader reader) {
+          final Character character = characterFieldMapper.map(reader);
+          final Starship starship = starshipFieldMapper.map(reader);
           return new Fragments(character, starship);
         }
       }
@@ -404,12 +403,7 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
       @Override
       public Search map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
-        final Fragments fragments = reader.readConditional($responseFields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
-          @Override
-          public Fragments read(String conditionalType, ResponseReader reader) {
-            return fragmentsFieldMapper.map(reader, conditionalType);
-          }
-        });
+        final Fragments fragments = fragmentsFieldMapper.map(reader);
         return new Search(__typename, fragments);
       }
     }

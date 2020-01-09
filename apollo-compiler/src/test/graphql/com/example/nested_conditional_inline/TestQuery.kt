@@ -97,8 +97,6 @@ data class TestQuery(
             "unit" to "FOOT"), true, null)
           )
 
-      val POSSIBLE_TYPES: Array<String> = arrayOf("Human")
-
       operator fun invoke(reader: ResponseReader): AsHuman1 {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
         val name = reader.readString(RESPONSE_FIELDS[1])
@@ -118,37 +116,33 @@ data class TestQuery(
      * The name of the character
      */
     val name: String,
-    val inlineFragment: FriendCharacter?
+    val asHuman1: AsHuman1?
   ) {
-    val asHuman: AsHuman1? = inlineFragment as? AsHuman1
-
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeString(RESPONSE_FIELDS[0], __typename)
       it.writeString(RESPONSE_FIELDS[1], name)
-      it.writeObject(RESPONSE_FIELDS[2], inlineFragment?.marshaller())
+      it.writeFragment(RESPONSE_FIELDS[2], asHuman1?.marshaller())
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, false, null),
-          ResponseField.forInlineFragment("__typename", "__typename", listOf("Human"))
+          ResponseField.forFragment("__typename", "__typename", listOf(
+            ResponseField.Condition.typeCondition(arrayOf("Human"))
+          ))
           )
 
       operator fun invoke(reader: ResponseReader): Friend {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
         val name = reader.readString(RESPONSE_FIELDS[1])
-        val inlineFragment = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType, reader ->
-          when(conditionalType) {
-            in AsHuman1.POSSIBLE_TYPES -> AsHuman1(reader)
-            else -> null
-          }
+        val asHuman1 = reader.readFragment<AsHuman1>(RESPONSE_FIELDS[2]) { reader ->
+          AsHuman1(reader)
         }
-
         return Friend(
           __typename = __typename,
           name = name,
-          inlineFragment = inlineFragment
+          asHuman1 = asHuman1
         )
       }
     }
@@ -181,8 +175,6 @@ data class TestQuery(
           ResponseField.forString("name", "name", null, false, null),
           ResponseField.forList("friends", "friends", null, true, null)
           )
-
-      val POSSIBLE_TYPES: Array<String> = arrayOf("Human")
 
       operator fun invoke(reader: ResponseReader): AsHuman {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
@@ -231,8 +223,6 @@ data class TestQuery(
             "unit" to "METER"), true, null)
           )
 
-      val POSSIBLE_TYPES: Array<String> = arrayOf("Human")
-
       operator fun invoke(reader: ResponseReader): AsHuman2 {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
         val name = reader.readString(RESPONSE_FIELDS[1])
@@ -252,37 +242,33 @@ data class TestQuery(
      * The name of the character
      */
     val name: String,
-    val inlineFragment: FriendCharacter1?
+    val asHuman2: AsHuman2?
   ) {
-    val asHuman: AsHuman2? = inlineFragment as? AsHuman2
-
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeString(RESPONSE_FIELDS[0], __typename)
       it.writeString(RESPONSE_FIELDS[1], name)
-      it.writeObject(RESPONSE_FIELDS[2], inlineFragment?.marshaller())
+      it.writeFragment(RESPONSE_FIELDS[2], asHuman2?.marshaller())
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, false, null),
-          ResponseField.forInlineFragment("__typename", "__typename", listOf("Human"))
+          ResponseField.forFragment("__typename", "__typename", listOf(
+            ResponseField.Condition.typeCondition(arrayOf("Human"))
+          ))
           )
 
       operator fun invoke(reader: ResponseReader): Friend1 {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
         val name = reader.readString(RESPONSE_FIELDS[1])
-        val inlineFragment = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType, reader ->
-          when(conditionalType) {
-            in AsHuman2.POSSIBLE_TYPES -> AsHuman2(reader)
-            else -> null
-          }
+        val asHuman2 = reader.readFragment<AsHuman2>(RESPONSE_FIELDS[2]) { reader ->
+          AsHuman2(reader)
         }
-
         return Friend1(
           __typename = __typename,
           name = name,
-          inlineFragment = inlineFragment
+          asHuman2 = asHuman2
         )
       }
     }
@@ -316,8 +302,6 @@ data class TestQuery(
           ResponseField.forList("friends", "friends", null, true, null)
           )
 
-      val POSSIBLE_TYPES: Array<String> = arrayOf("Droid")
-
       operator fun invoke(reader: ResponseReader): AsDroid {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
         val name = reader.readString(RESPONSE_FIELDS[1])
@@ -342,40 +326,42 @@ data class TestQuery(
      * The name of the character
      */
     val name: String,
-    val inlineFragment: HeroCharacter?
+    val asHuman: AsHuman?,
+    val asDroid: AsDroid?
   ) {
-    val asHuman: AsHuman? = inlineFragment as? AsHuman
-
-    val asDroid: AsDroid? = inlineFragment as? AsDroid
-
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeString(RESPONSE_FIELDS[0], __typename)
       it.writeString(RESPONSE_FIELDS[1], name)
-      it.writeObject(RESPONSE_FIELDS[2], inlineFragment?.marshaller())
+      it.writeFragment(RESPONSE_FIELDS[2], asHuman?.marshaller())
+      it.writeFragment(RESPONSE_FIELDS[3], asDroid?.marshaller())
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, false, null),
-          ResponseField.forInlineFragment("__typename", "__typename", listOf("Human", "Droid"))
+          ResponseField.forFragment("__typename", "__typename", listOf(
+            ResponseField.Condition.typeCondition(arrayOf("Human"))
+          )),
+          ResponseField.forFragment("__typename", "__typename", listOf(
+            ResponseField.Condition.typeCondition(arrayOf("Droid"))
+          ))
           )
 
       operator fun invoke(reader: ResponseReader): Hero {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
         val name = reader.readString(RESPONSE_FIELDS[1])
-        val inlineFragment = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType, reader ->
-          when(conditionalType) {
-            in AsHuman.POSSIBLE_TYPES -> AsHuman(reader)
-            in AsDroid.POSSIBLE_TYPES -> AsDroid(reader)
-            else -> null
-          }
+        val asHuman = reader.readFragment<AsHuman>(RESPONSE_FIELDS[2]) { reader ->
+          AsHuman(reader)
         }
-
+        val asDroid = reader.readFragment<AsDroid>(RESPONSE_FIELDS[3]) { reader ->
+          AsDroid(reader)
+        }
         return Hero(
           __typename = __typename,
           name = name,
-          inlineFragment = inlineFragment
+          asHuman = asHuman,
+          asDroid = asDroid
         )
       }
     }

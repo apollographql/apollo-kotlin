@@ -114,10 +114,12 @@ data class TestQuery(
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("name", "name", null, true,
-              listOf(ResponseField.Condition.booleanCondition("includeName", false))),
-          ResponseField.forObject("friendsConnection", "friendsConnection", null, true,
-              listOf(ResponseField.Condition.booleanCondition("skipFriends", true)))
+          ResponseField.forString("name", "name", null, true, listOf(
+            ResponseField.Condition.booleanCondition("includeName", false)
+          )),
+          ResponseField.forObject("friendsConnection", "friendsConnection", null, true, listOf(
+            ResponseField.Condition.booleanCondition("skipFriends", true)
+          ))
           )
 
       operator fun invoke(reader: ResponseReader): Hero {

@@ -18,7 +18,6 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.lang.SuppressWarnings;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
@@ -50,8 +49,6 @@ public interface HeroDetails extends GraphqlFragment {
       + "  }\n"
       + "}";
 
-  List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Human", "Droid"));
-
   @NotNull String get__typename();
 
   /**
@@ -73,12 +70,7 @@ public interface HeroDetails extends GraphqlFragment {
 
     @Override
     public HeroDetails map(ResponseReader reader) {
-      final AsDroid asDroid = reader.readConditional(ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Droid")), new ResponseReader.ConditionalTypeReader<AsDroid>() {
-        @Override
-        public AsDroid read(String conditionalType, ResponseReader reader) {
-          return asDroidFieldMapper.map(reader);
-        }
-      });
+      final AsDroid asDroid = asDroidFieldMapper.map(reader);
       if (asDroid != null) {
         return asDroid;
       }

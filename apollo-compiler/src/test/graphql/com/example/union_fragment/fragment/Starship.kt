@@ -40,8 +40,6 @@ data class Starship(
         |}
         """.trimMargin()
 
-    val POSSIBLE_TYPES: Array<String> = arrayOf("Starship")
-
     operator fun invoke(reader: ResponseReader): Starship {
       val __typename = reader.readString(RESPONSE_FIELDS[0])
       val name = reader.readString(RESPONSE_FIELDS[1])

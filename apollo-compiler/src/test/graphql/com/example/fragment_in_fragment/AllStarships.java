@@ -5,7 +5,6 @@
 //
 package com.example.fragment_in_fragment;
 
-import com.apollographql.apollo.api.FragmentResponseFieldMapper;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
@@ -442,8 +441,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
   public static class Node {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forFragment("__typename", "__typename", Arrays.asList("Starship"))
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @NotNull String __typename;
@@ -519,6 +517,12 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     }
 
     public static class Fragments {
+      static final ResponseField[] $responseFields = {
+        ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+          ResponseField.Condition.typeCondition(new String[] {"Starship"})
+        ))
+      };
+
       final @NotNull StarshipFragment starshipFragment;
 
       private transient volatile String $toString;
@@ -581,13 +585,13 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
         return $hashCode;
       }
 
-      public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
+      public static final class Mapper implements ResponseFieldMapper<Fragments> {
         final StarshipFragment.Mapper starshipFragmentFieldMapper = new StarshipFragment.Mapper();
 
         @Override
-        public @NotNull Fragments map(ResponseReader reader, @NotNull String conditionalType) {
-          StarshipFragment starshipFragment = starshipFragmentFieldMapper.map(reader);
-          return new Fragments(Utils.checkNotNull(starshipFragment, "starshipFragment == null"));
+        public @NotNull Fragments map(ResponseReader reader) {
+          final StarshipFragment starshipFragment = starshipFragmentFieldMapper.map(reader);
+          return new Fragments(starshipFragment);
         }
       }
     }
@@ -598,12 +602,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       @Override
       public Node map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
-        final Fragments fragments = reader.readConditional($responseFields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
-          @Override
-          public Fragments read(String conditionalType, ResponseReader reader) {
-            return fragmentsFieldMapper.map(reader, conditionalType);
-          }
-        });
+        final Fragments fragments = fragmentsFieldMapper.map(reader);
         return new Node(__typename, fragments);
       }
     }

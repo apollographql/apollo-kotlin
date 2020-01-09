@@ -30,11 +30,19 @@ internal class Context(
       kind: ObjectType.Kind,
       singularize: Boolean = true
   ): TypeRef {
-    val inlineFragmentField = inlineFragments.takeIf { it.isNotEmpty() }?.inlineFragmentField(
-        type = name,
-        schemaType = schemaTypeName,
-        context = this
-    )
+    val inlineFragmentFields = if (inlineFragments.isNotEmpty()) {
+      val inlineFragmentSuper = registerInlineFragmentSuper(
+          type = name,
+          schemaType = schemaTypeName
+      )
+
+      inlineFragments.map {
+        it.inlineFragmentField(
+            context = this,
+            fragmentSuper = inlineFragmentSuper
+        )
+      }
+    } else emptyList()
     val (fragmentsField, fragmentsObjectType) = fragmentSpreads
         .map { fragments[it] ?: throw IllegalArgumentException("Unable to find fragment definition: $it") }
         .astFragmentsObjectFieldType(
@@ -59,7 +67,7 @@ internal class Context(
         schemaTypeName = schemaTypeName,
         fields = fields.map { it.ast(this) }
             .let { if (fragmentsField != null) it + fragmentsField else it }
-            .let { if (inlineFragmentField != null) it + inlineFragmentField else it },
+            + inlineFragmentFields,
         fragmentsType = fragmentsObjectType,
         kind = kind
     )

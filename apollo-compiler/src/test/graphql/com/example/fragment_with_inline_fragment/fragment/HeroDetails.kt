@@ -27,13 +27,13 @@ data class HeroDetails(
    * The friends of the character exposed as a connection with edges
    */
   val friendsConnection: FriendsConnection,
-  val inlineFragment: HeroDetailCharacter?
+  val asDroid: AsDroid?
 ) : GraphqlFragment {
   override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
     it.writeString(RESPONSE_FIELDS[0], __typename)
     it.writeString(RESPONSE_FIELDS[1], name)
     it.writeObject(RESPONSE_FIELDS[2], friendsConnection.marshaller())
-    it.writeObject(RESPONSE_FIELDS[3], inlineFragment?.marshaller())
+    it.writeFragment(RESPONSE_FIELDS[3], asDroid?.marshaller())
   }
 
   companion object {
@@ -41,7 +41,9 @@ data class HeroDetails(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null),
-        ResponseField.forInlineFragment("__typename", "__typename", listOf("Droid"))
+        ResponseField.forFragment("__typename", "__typename", listOf(
+          ResponseField.Condition.typeCondition(arrayOf("Droid"))
+        ))
         )
 
     val FRAGMENT_DEFINITION: String = """
@@ -65,8 +67,6 @@ data class HeroDetails(
         |}
         """.trimMargin()
 
-    val POSSIBLE_TYPES: Array<String> = arrayOf("Human", "Droid")
-
     operator fun invoke(reader: ResponseReader): HeroDetails {
       val __typename = reader.readString(RESPONSE_FIELDS[0])
       val name = reader.readString(RESPONSE_FIELDS[1])
@@ -74,18 +74,14 @@ data class HeroDetails(
         FriendsConnection(reader)
       }
 
-      val inlineFragment = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType, reader ->
-        when(conditionalType) {
-          in AsDroid.POSSIBLE_TYPES -> AsDroid(reader)
-          else -> null
-        }
+      val asDroid = reader.readFragment<AsDroid>(RESPONSE_FIELDS[3]) { reader ->
+        AsDroid(reader)
       }
-
       return HeroDetails(
         __typename = __typename,
         name = name,
         friendsConnection = friendsConnection,
-        inlineFragment = inlineFragment
+        asDroid = asDroid
       )
     }
   }
@@ -331,11 +327,8 @@ data class HeroDetails(
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, false, null),
-          ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null),
-          ResponseField.forString("__typename", "__typename", null, false, null)
+          ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
           )
-
-      val POSSIBLE_TYPES: Array<String> = arrayOf("Droid")
 
       operator fun invoke(reader: ResponseReader): AsDroid {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
@@ -345,13 +338,7 @@ data class HeroDetails(
           FriendsConnection1(reader)
         }
 
-        val fragments = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType, reader ->
-          val droidDetails = DroidDetails(reader)
-          Fragments(
-            droidDetails = droidDetails
-          )
-        }
-
+        val fragments = Fragments(reader)
         return AsDroid(
           __typename = __typename,
           name = name,
@@ -365,7 +352,24 @@ data class HeroDetails(
       val droidDetails: DroidDetails
     ) {
       fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        droidDetails.marshaller().marshal(it)
+        it.writeFragment(RESPONSE_FIELDS[0], droidDetails.marshaller())
+      }
+
+      companion object {
+        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+            ResponseField.forFragment("__typename", "__typename", listOf(
+              ResponseField.Condition.typeCondition(arrayOf("Droid"))
+            ))
+            )
+
+        operator fun invoke(reader: ResponseReader): Fragments {
+          val droidDetails = reader.readFragment<DroidDetails>(RESPONSE_FIELDS[0]) { reader ->
+            DroidDetails(reader)
+          }
+          return Fragments(
+            droidDetails = droidDetails
+          )
+        }
       }
     }
   }

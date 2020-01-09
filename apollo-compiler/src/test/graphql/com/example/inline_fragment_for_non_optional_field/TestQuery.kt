@@ -66,8 +66,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           ResponseField.forDouble("height", "height", null, true, null)
           )
 
-      val POSSIBLE_TYPES: Array<String> = arrayOf("Human")
-
       operator fun invoke(reader: ResponseReader): AsHuman {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
         val height = reader.readDouble(RESPONSE_FIELDS[1])
@@ -81,33 +79,29 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   data class Hero(
     val __typename: String,
-    val inlineFragment: HeroCharacter?
+    val asHuman: AsHuman?
   ) {
-    val asHuman: AsHuman? = inlineFragment as? AsHuman
-
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeObject(RESPONSE_FIELDS[1], inlineFragment?.marshaller())
+      it.writeFragment(RESPONSE_FIELDS[1], asHuman?.marshaller())
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forInlineFragment("__typename", "__typename", listOf("Human"))
+          ResponseField.forFragment("__typename", "__typename", listOf(
+            ResponseField.Condition.typeCondition(arrayOf("Human"))
+          ))
           )
 
       operator fun invoke(reader: ResponseReader): Hero {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val inlineFragment = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
-          when(conditionalType) {
-            in AsHuman.POSSIBLE_TYPES -> AsHuman(reader)
-            else -> null
-          }
+        val asHuman = reader.readFragment<AsHuman>(RESPONSE_FIELDS[1]) { reader ->
+          AsHuman(reader)
         }
-
         return Hero(
           __typename = __typename,
-          inlineFragment = inlineFragment
+          asHuman = asHuman
         )
       }
     }

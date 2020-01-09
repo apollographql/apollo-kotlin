@@ -12,27 +12,29 @@ data class InlineFragment(
     val possibleTypes: List<String> = emptyList(),
     val fields: List<Field>,
     val fragmentRefs: List<FragmentRef>,
-    val sourceLocation: SourceLocation
+    val sourceLocation: SourceLocation,
+    val conditions: List<Condition> = emptyList()
 ) : CodeGenerator {
   val fragmentSpreads: List<String> = fragmentRefs.map { it.name }
 
-  override fun toTypeSpec(context: CodeGenerationContext, abstract: Boolean): TypeSpec =
-      SchemaTypeSpecBuilder(
-          typeName = formatClassName(),
-          fields = fields,
-          fragmentSpreads = fragmentSpreads,
-          inlineFragments = emptyList(),
-          context = context,
-          abstract = abstract
-      )
-          .build(Modifier.PUBLIC, Modifier.STATIC)
-          .let {
-            if (context.generateModelBuilder) {
-              it.withBuilder()
-            } else {
-              it
-            }
+  override fun toTypeSpec(context: CodeGenerationContext, abstract: Boolean): TypeSpec {
+    return SchemaTypeSpecBuilder(
+        typeName = formatClassName(),
+        fields = fields,
+        fragmentSpreads = fragmentSpreads,
+        inlineFragments = emptyList(),
+        context = context,
+        abstract = abstract
+    )
+        .build(Modifier.PUBLIC, Modifier.STATIC)
+        .let {
+          if (context.generateModelBuilder) {
+            it.withBuilder()
+          } else {
+            it
           }
+        }
+  }
 
   fun fieldSpec(context: CodeGenerationContext, publicModifier: Boolean = false): FieldSpec =
       FieldSpec.builder(typeName(context), formatClassName().decapitalize())
@@ -40,11 +42,7 @@ data class InlineFragment(
           .addModifiers(Modifier.FINAL)
           .build()
 
-  fun formatClassName(): String = "$INTERFACE_PREFIX${typeCondition.capitalize()}"
+  fun formatClassName(): String = "As${typeCondition.capitalize()}"
 
   private fun typeName(context: CodeGenerationContext) = JavaTypeResolver(context, "").resolve(formatClassName(), true)
-
-  companion object {
-    private val INTERFACE_PREFIX = "As"
-  }
 }

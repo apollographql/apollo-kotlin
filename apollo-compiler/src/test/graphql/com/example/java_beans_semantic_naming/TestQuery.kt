@@ -73,8 +73,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, false, null),
-          ResponseField.forList("appearsIn", "appearsIn", null, false, null),
-          ResponseField.forString("__typename", "__typename", null, false, null)
+          ResponseField.forList("appearsIn", "appearsIn", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): Hero {
@@ -83,13 +82,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         val appearsIn = reader.readList<Episode>(RESPONSE_FIELDS[2]) {
           it.readString()?.let{ Episode.safeValueOf(it) }
         }
-        val fragments = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType, reader ->
-          val heroDetails = HeroDetails(reader)
-          Fragments(
-            heroDetails = heroDetails
-          )
-        }
-
+        val fragments = Fragments(reader)
         return Hero(
           __typename = __typename,
           name = name,
@@ -103,7 +96,25 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       val heroDetails: HeroDetails
     ) {
       fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        heroDetails.marshaller().marshal(it)
+        it.writeFragment(RESPONSE_FIELDS[0], heroDetails.marshaller())
+      }
+
+      companion object {
+        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+            ResponseField.forFragment("__typename", "__typename", listOf(
+              ResponseField.Condition.typeCondition(arrayOf("Human")),
+              ResponseField.Condition.typeCondition(arrayOf("Droid"))
+            ))
+            )
+
+        operator fun invoke(reader: ResponseReader): Fragments {
+          val heroDetails = reader.readFragment<HeroDetails>(RESPONSE_FIELDS[0]) { reader ->
+            HeroDetails(reader)
+          }
+          return Fragments(
+            heroDetails = heroDetails
+          )
+        }
       }
     }
   }

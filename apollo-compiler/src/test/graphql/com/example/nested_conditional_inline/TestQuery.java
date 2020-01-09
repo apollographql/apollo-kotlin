@@ -30,7 +30,6 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.lang.SuppressWarnings;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -302,21 +301,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public Hero map(ResponseReader reader) {
-        final AsHuman asHuman = reader.readConditional(ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Human")), new ResponseReader.ConditionalTypeReader<AsHuman>() {
-          @Override
-          public AsHuman read(String conditionalType, ResponseReader reader) {
-            return asHumanFieldMapper.map(reader);
-          }
-        });
+        final AsHuman asHuman = asHumanFieldMapper.map(reader);
         if (asHuman != null) {
           return asHuman;
         }
-        final AsDroid asDroid = reader.readConditional(ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Droid")), new ResponseReader.ConditionalTypeReader<AsDroid>() {
-          @Override
-          public AsDroid read(String conditionalType, ResponseReader reader) {
-            return asDroidFieldMapper.map(reader);
-          }
-        });
+        final AsDroid asDroid = asDroidFieldMapper.map(reader);
         if (asDroid != null) {
           return asDroid;
         }
@@ -489,12 +478,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public Friend map(ResponseReader reader) {
-        final AsHuman1 asHuman = reader.readConditional(ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Human")), new ResponseReader.ConditionalTypeReader<AsHuman1>() {
-          @Override
-          public AsHuman1 read(String conditionalType, ResponseReader reader) {
-            return asHuman1FieldMapper.map(reader);
-          }
-        });
+        final AsHuman1 asHuman = asHuman1FieldMapper.map(reader);
         if (asHuman != null) {
           return asHuman;
         }
@@ -866,12 +850,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public Friend1 map(ResponseReader reader) {
-        final AsHuman2 asHuman = reader.readConditional(ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Human")), new ResponseReader.ConditionalTypeReader<AsHuman2>() {
-          @Override
-          public AsHuman2 read(String conditionalType, ResponseReader reader) {
-            return asHuman2FieldMapper.map(reader);
-          }
-        });
+        final AsHuman2 asHuman = asHuman2FieldMapper.map(reader);
         if (asHuman != null) {
           return asHuman;
         }

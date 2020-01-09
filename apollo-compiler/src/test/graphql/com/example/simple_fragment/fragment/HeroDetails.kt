@@ -32,8 +32,7 @@ internal data class HeroDetails(
   companion object {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forString("__typename", "__typename", null, false, null)
+        ResponseField.forString("name", "name", null, false, null)
         )
 
     val FRAGMENT_DEFINITION: String = """
@@ -44,19 +43,10 @@ internal data class HeroDetails(
         |}
         """.trimMargin()
 
-    val POSSIBLE_TYPES: Array<String> = arrayOf("Human", "Droid")
-
     operator fun invoke(reader: ResponseReader): HeroDetails {
       val __typename = reader.readString(RESPONSE_FIELDS[0])
       val name = reader.readString(RESPONSE_FIELDS[1])
-      val fragments = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType, reader ->
-        val humanDetails = if (HumanDetails.POSSIBLE_TYPES.contains(conditionalType))
-            HumanDetails(reader) else null
-        Fragments(
-          humanDetails = humanDetails
-        )
-      }
-
+      val fragments = Fragments(reader)
       return HeroDetails(
         __typename = __typename,
         name = name,
@@ -65,11 +55,28 @@ internal data class HeroDetails(
     }
   }
 
-  data class Fragments(
+  internal data class Fragments(
     val humanDetails: HumanDetails?
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      humanDetails?.marshaller()?.marshal(it)
+      it.writeFragment(RESPONSE_FIELDS[0], humanDetails?.marshaller())
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forFragment("__typename", "__typename", listOf(
+            ResponseField.Condition.typeCondition(arrayOf("Human"))
+          ))
+          )
+
+      operator fun invoke(reader: ResponseReader): Fragments {
+        val humanDetails = reader.readFragment<HumanDetails>(RESPONSE_FIELDS[0]) { reader ->
+          HumanDetails(reader)
+        }
+        return Fragments(
+          humanDetails = humanDetails
+        )
+      }
     }
   }
 }

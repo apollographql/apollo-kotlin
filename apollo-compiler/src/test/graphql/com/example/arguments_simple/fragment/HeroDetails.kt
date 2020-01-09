@@ -55,8 +55,6 @@ data class HeroDetails(
         |}
         """.trimMargin()
 
-    val POSSIBLE_TYPES: Array<String> = arrayOf("Human", "Droid")
-
     operator fun invoke(reader: ResponseReader): HeroDetails {
       val __typename = reader.readString(RESPONSE_FIELDS[0])
       val friendsConnection = reader.readObject<FriendsConnection>(RESPONSE_FIELDS[1]) { reader ->
@@ -85,8 +83,9 @@ data class HeroDetails(
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("name", "name", null, true,
-              listOf(ResponseField.Condition.booleanCondition("IncludeName", false)))
+          ResponseField.forString("name", "name", null, true, listOf(
+            ResponseField.Condition.booleanCondition("IncludeName", false)
+          ))
           )
 
       operator fun invoke(reader: ResponseReader): Node {

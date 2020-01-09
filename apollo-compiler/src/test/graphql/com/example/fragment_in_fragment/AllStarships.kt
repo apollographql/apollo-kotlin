@@ -56,19 +56,12 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("__typename", "__typename", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): Node {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
-          val starshipFragment = StarshipFragment(reader)
-          Fragments(
-            starshipFragment = starshipFragment
-          )
-        }
-
+        val fragments = Fragments(reader)
         return Node(
           __typename = __typename,
           fragments = fragments
@@ -80,7 +73,25 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
       val starshipFragment: StarshipFragment
     ) {
       fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        starshipFragment.marshaller().marshal(it)
+        it.writeFragment(RESPONSE_FIELDS[0], starshipFragment.marshaller())
+      }
+
+      companion object {
+        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+            ResponseField.forFragment("__typename", "__typename", listOf(
+              ResponseField.Condition.typeCondition(arrayOf("Starship"))
+            ))
+            )
+
+        operator fun invoke(reader: ResponseReader): Fragments {
+          val starshipFragment = reader.readFragment<StarshipFragment>(RESPONSE_FIELDS[0]) {
+              reader ->
+            StarshipFragment(reader)
+          }
+          return Fragments(
+            starshipFragment = starshipFragment
+          )
+        }
       }
     }
   }

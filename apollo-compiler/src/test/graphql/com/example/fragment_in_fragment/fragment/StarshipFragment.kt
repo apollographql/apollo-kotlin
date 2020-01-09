@@ -62,8 +62,6 @@ data class StarshipFragment(
         |}
         """.trimMargin()
 
-    val POSSIBLE_TYPES: Array<String> = arrayOf("Starship")
-
     operator fun invoke(reader: ResponseReader): StarshipFragment {
       val __typename = reader.readString(RESPONSE_FIELDS[0])
       val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
@@ -92,19 +90,12 @@ data class StarshipFragment(
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("__typename", "__typename", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): Node {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
-          val pilotFragment = PilotFragment(reader)
-          Fragments(
-            pilotFragment = pilotFragment
-          )
-        }
-
+        val fragments = Fragments(reader)
         return Node(
           __typename = __typename,
           fragments = fragments
@@ -116,7 +107,24 @@ data class StarshipFragment(
       val pilotFragment: PilotFragment
     ) {
       fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        pilotFragment.marshaller().marshal(it)
+        it.writeFragment(RESPONSE_FIELDS[0], pilotFragment.marshaller())
+      }
+
+      companion object {
+        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+            ResponseField.forFragment("__typename", "__typename", listOf(
+              ResponseField.Condition.typeCondition(arrayOf("Person"))
+            ))
+            )
+
+        operator fun invoke(reader: ResponseReader): Fragments {
+          val pilotFragment = reader.readFragment<PilotFragment>(RESPONSE_FIELDS[0]) { reader ->
+            PilotFragment(reader)
+          }
+          return Fragments(
+            pilotFragment = pilotFragment
+          )
+        }
       }
     }
   }

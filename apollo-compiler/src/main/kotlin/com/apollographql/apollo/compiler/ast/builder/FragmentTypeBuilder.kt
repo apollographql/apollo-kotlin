@@ -19,15 +19,22 @@ internal fun Fragment.ast(context: Context): ObjectType {
           possibleTypes = possibleTypes
       )
   )
-  val inlineFragmentField = inlineFragments.takeIf { it.isNotEmpty() }?.inlineFragmentField(
-      type = fragmentName,
-      schemaType = typeCondition,
-      context = context
-  )
+  val inlineFragmentFields = if (inlineFragments.isNotEmpty()) {
+    val inlineFragmentSuper = context.registerInlineFragmentSuper(
+        type = fragmentName,
+        schemaType = typeCondition
+    )
+    inlineFragments.map {
+      it.inlineFragmentField(
+          context = context,
+          fragmentSuper = inlineFragmentSuper
+      )
+    }
+  } else emptyList()
   val nestedObjects = context.minus(typeRef)
   return context[typeRef]!!.run {
     copy(
-        fields = fields.let { if (inlineFragmentField != null) it + inlineFragmentField else it },
+        fields = fields + inlineFragmentFields,
         nestedObjects = nestedObjects
     )
   }
@@ -46,9 +53,9 @@ internal fun List<Fragment>.astFragmentsObjectFieldType(
       fields = map { fragment ->
         ObjectType.Field(
             name = fragment.fragmentName.decapitalize().escapeKotlinReservedWord(),
-            responseName = fragment.fragmentName,
-            schemaName = fragment.fragmentName,
-            type = FieldType.Object(TypeRef(
+            responseName = "__typename",
+            schemaName = "__typename",
+            type = FieldType.Fragment(TypeRef(
                 name = fragment.fragmentName.capitalize(),
                 packageName = fragmentsPackage
             )),
@@ -58,7 +65,7 @@ internal fun List<Fragment>.astFragmentsObjectFieldType(
             deprecationReason = "",
             arguments = emptyMap(),
             conditions = fragment.possibleTypes.map {
-              ObjectType.Field.Condition.Type(it)
+              ObjectType.Field.Condition.Type(listOf(it))
             }
         )
       },
@@ -74,7 +81,7 @@ internal fun List<Fragment>.astFragmentsObjectFieldType(
           fields = type.fields.map { field ->
             FieldType.Fragments.Field(
                 name = field.name,
-                type = (field.type as FieldType.Object).typeRef,
+                type = (field.type as FieldType.Fragment).typeRef,
                 isOptional = field.isOptional
             )
           }

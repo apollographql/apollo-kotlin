@@ -1,9 +1,7 @@
 package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.api.*
-import com.apollographql.apollo.compiler.ir.CodeGenerationContext
-import com.apollographql.apollo.compiler.ir.Field
-import com.apollographql.apollo.compiler.ir.InlineFragment
+import com.apollographql.apollo.compiler.ir.*
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
@@ -174,15 +172,26 @@ class SchemaTypeSpecBuilder(
           .let { it.typeCondition != normalizeGraphQlType(schemaType) }
     }
 
-    fun fragmentFields(): List<FieldSpec> {
-      return fragmentSpreads.map { fragmentName ->
-        val optional = isOptional(fragmentName)
-        FieldSpec.builder(
-            JavaTypeResolver(context = context, packageName = context.packageNameProvider.fragmentsPackageName)
-                .resolve(typeName = fragmentName.capitalize(), isOptional = optional), fragmentName.decapitalize())
-            .addModifiers(Modifier.FINAL)
-            .build()
-      }
+    fun responseFieldSpecs(): List<ResponseFieldSpec> {
+      return fragmentSpreads
+          .mapNotNull { fragmentName -> context.ir.fragments.find { it.fragmentName == fragmentName } }
+          .map { fragment ->
+            val optional = isOptional(fragment.fragmentName)
+            val fieldSpec = FieldSpec.builder(
+                JavaTypeResolver(context = context, packageName = context.packageNameProvider.fragmentsPackageName)
+                    .resolve(typeName = fragment.fragmentName.capitalize(), isOptional = optional), fragment.fragmentName.decapitalize())
+                .addModifiers(Modifier.FINAL)
+                .build()
+            val normalizedFieldSpec = FieldSpec.builder(fieldSpec.type.unwrapOptionalType().withoutAnnotations(), fieldSpec.name).build()
+            ResponseFieldSpec(
+                irField = Field.TYPE_NAME_FIELD.copy(type = if (optional) "String" else "String!"),
+                fieldSpec = fieldSpec,
+                normalizedFieldSpec = normalizedFieldSpec,
+                responseFieldType = ResponseField.Type.FRAGMENT,
+                context = context,
+                typeConditions = fragment.possibleTypes
+            )
+          }
     }
 
     fun TypeSpec.Builder.addFragmentAccessorMethods(): TypeSpec.Builder {
@@ -234,14 +243,15 @@ class SchemaTypeSpecBuilder(
           .build()
     }
 
-    val fragmentFields = fragmentFields()
+    val fragmentFields = responseFieldSpecs()
     val mapper = FragmentsResponseMapperBuilder(fragmentFields, context).build()
     return TypeSpec.classBuilder(FRAGMENTS_FIELD.name.capitalize())
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-        .addFields(fragmentFields)
+        .addField(fieldArray(fragmentFields))
+        .addFields(fragmentFields.map { it.fieldSpec })
         .addFragmentAccessorMethods()
         .addType(mapper)
-        .addMethod(responseMarshallerSpec(fragmentFields))
+        .addMethod(responseMarshallerSpec(fragmentFields.map { it.fieldSpec }))
         .build()
         .withValueInitConstructor(context.nullableValueType)
         .withToStringImplementation()
@@ -316,10 +326,6 @@ class SchemaTypeSpecBuilder(
           fieldSpec = FRAGMENTS_FIELD,
           normalizedFieldSpec = normalizedFieldSpec,
           responseFieldType = ResponseField.Type.FRAGMENT,
-          typeConditions = context.ir.fragments
-              .filter { it.fragmentName in fragmentSpreads }
-              .flatMap { it.possibleTypes }
-              .distinct(),
           context = context
       ))
     } else {
@@ -337,6 +343,7 @@ class SchemaTypeSpecBuilder(
             .add("{\n")
             .indent()
             .add(responseFieldSpecs
+                .filter { it.fieldSpec.name != FRAGMENTS_FIELD.name }
                 .map { it.factoryCode() }
                 .foldIndexed(CodeBlock.builder()) { i, builder, code ->
                   builder.add(if (i > 0) ",\n" else "").add(code)
@@ -408,21 +415,21 @@ class SchemaTypeSpecBuilder(
   }
 
   private fun inlineFragmentsVisitorInterfaceSpec(
-    nameOverrideMap: Map<String, String>,
-    surrogateInlineFragmentType: TypeSpec
+      nameOverrideMap: Map<String, String>,
+      surrogateInlineFragmentType: TypeSpec
   ): TypeSpec {
     val typeClassName = ClassName.get("", uniqueTypeName)
     val implementations = inlineFragments.map { inlineFragment ->
       val fieldSpec = inlineFragment.fieldSpec(context).overrideType(nameOverrideMap)
       val inlineFragmentResponseFieldType = fieldSpec.type.rawType() as ClassName
-       ClassName.get("", inlineFragmentResponseFieldType.simpleName())
+      ClassName.get("", inlineFragmentResponseFieldType.simpleName())
     } + ClassName.get("", surrogateInlineFragmentType.name)
     return VisitorInterfaceSpec(typeClassName, implementations).createVisitorInterface()
   }
 
   private fun inlineFragmentsVisitorMethodSpec(
-    nameOverrideMap: Map<String, String>,
-    surrogateInlineFragmentType: TypeSpec
+      nameOverrideMap: Map<String, String>,
+      surrogateInlineFragmentType: TypeSpec
   ): MethodSpec {
     val implementations = inlineFragments.map { inlineFragment ->
       val fieldSpec = inlineFragment.fieldSpec(context).overrideType(nameOverrideMap)
@@ -433,7 +440,7 @@ class SchemaTypeSpecBuilder(
   }
 
   private fun inlineFragmentsResponseMapperSpec(nameOverrideMap: Map<String, String>,
-      surrogateInlineFragmentType: TypeSpec): TypeSpec {
+                                                surrogateInlineFragmentType: TypeSpec): TypeSpec {
     val inlineFragments = inlineFragments.map { inlineFragment ->
       val fieldSpec = inlineFragment.fieldSpec(context).overrideType(nameOverrideMap)
       val normalizedFieldSpec = FieldSpec.builder(
@@ -441,10 +448,10 @@ class SchemaTypeSpecBuilder(
           fieldSpec.name
       ).build()
       ResponseFieldSpec(
-          irField = Field.TYPE_NAME_FIELD,
+          irField = Field.TYPE_NAME_FIELD.copy(conditions = inlineFragment.conditions),
           fieldSpec = fieldSpec,
           normalizedFieldSpec = normalizedFieldSpec,
-          responseFieldType = ResponseField.Type.INLINE_FRAGMENT,
+          responseFieldType = ResponseField.Type.FRAGMENT,
           typeConditions = if (inlineFragment.possibleTypes.isNotEmpty())
             inlineFragment.possibleTypes
           else
