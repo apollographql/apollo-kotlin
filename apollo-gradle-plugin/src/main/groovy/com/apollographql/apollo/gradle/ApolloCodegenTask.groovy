@@ -4,6 +4,7 @@ import com.apollographql.apollo.compiler.GraphQLCompiler
 import com.apollographql.apollo.compiler.DeprecatedPackageNameProviderKt
 import com.apollographql.apollo.compiler.NullableValueType
 import com.apollographql.apollo.compiler.DeprecatedPackageNameProvider
+import com.apollographql.apollo.compiler.OperationIdGenerator
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.parser.GraphQLDocumentParser
 import com.apollographql.apollo.compiler.parser.Schema
@@ -24,6 +25,8 @@ class ApolloCodegenTask extends SourceTask {
   @Input @Optional Property<String> outputPackageName = project.objects.property(String.class)
   @OutputDirectory DirectoryProperty outputDir = project.objects.directoryProperty()
   @Input MapProperty<String, String> customTypeMapping = project.objects.mapProperty(String.class, String.class)
+  @Optional @Internal Property<OperationIdGenerator> operationIdGenerator = project.objects.property(OperationIdGenerator.class)
+  @Optional @Input String operationIdGeneratorVersion = operationIdGenerator.orNull?.version
   @Optional @Input Property<String> nullableValueType = project.objects.property(String.class)
   @Input Property<Boolean> useSemanticNaming = project.objects.property(Boolean.class)
   @Input Property<Boolean> generateModelBuilder = project.objects.property(Boolean.class)
@@ -70,6 +73,7 @@ class ApolloCodegenTask extends SourceTask {
           codeGenerationIR,
           outputDir.get().asFile,
           customTypeMapping.get(),
+          operationIdGenerator.getOrElse(new OperationIdGenerator.Sha256()),
           useSemanticNaming.get(),
           packageNameProvider,
           generateKotlinModels.get(),

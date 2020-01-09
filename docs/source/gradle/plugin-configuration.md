@@ -117,3 +117,31 @@ apollo {
   generateOperationOutput = true
 }
 ```
+
+## Custom ID for Persisted Queries
+
+By default, Apollo uses `Sha256` hashing algorithm to generate an ID for the query. To provide a custom ID generation logic, use the option - `operationIdGenerator` which accepts an `instance` that implements the `OperationIdGenerator` interface (`com.apollographql.apollo.compiler.OperationIdGenerator`) as the input. This option can be used to either specify a different Hashing Algorithm or to fetch the persisted query id from a different place - e.g. a service or a CLI.
+
+Example Md5 hash generator:
+
+```groovy
+import com.apollographql.apollo.compiler.OperationIdGenerator
+
+apollo {
+  operationIdGenerator = new OperationIdGenerator() {
+    String apply(String operationDocument, String operationFilepath) {
+      return operationDocument.md5()
+    }
+
+    /**
+     * Use this version override to indicate an update to the implementation.
+     * This invalidates the current cache.
+     */
+    String version = "v1"
+  }
+}
+```
+
+### Versioning Id Generator
+
+The result of the ID generator is cached. The cache is not updated when the implementation of the ID Generator changes. To indicate an update to the implementation of the ID Generator, change the `version` override as shown in the above example.

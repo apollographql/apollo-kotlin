@@ -13,11 +13,13 @@ class GraphQLCompiler {
   fun write(args: Arguments) {
     val ir = args.ir
     val customTypeMap = args.customTypeMap.supportedTypeMap(ir.typesUsed)
+    val operationIdGenerator = args.operationIdGenerator
     val context = CodeGenerationContext(
         reservedTypeNames = emptyList(),
         typeDeclarations = ir.typesUsed,
         packageNameProvider = args.packageNameProvider,
         customTypeMap = customTypeMap,
+        operationIdGenerator = operationIdGenerator,
         nullableValueType = args.nullableValueType,
         ir = ir,
         useSemanticNaming = args.useSemanticNaming,
@@ -36,6 +38,7 @@ class GraphQLCompiler {
       GraphQLKompiler(
           ir = ir,
           customTypeMap = args.customTypeMap,
+          operationIdGenerator = args.operationIdGenerator,
           useSemanticNaming = args.useSemanticNaming,
           packageNameProvider = args.packageNameProvider,
           generateAsInternal = args.generateAsInternal
@@ -120,6 +123,7 @@ class GraphQLCompiler {
       val ir: CodeGenerationIR,
       val outputDir: File,
       val customTypeMap: Map<String, String>,
+      val operationIdGenerator: OperationIdGenerator = OperationIdGenerator.Sha256(),
       val useSemanticNaming: Boolean,
       val packageNameProvider: PackageNameProvider,
       val generateKotlinModels: Boolean = false,

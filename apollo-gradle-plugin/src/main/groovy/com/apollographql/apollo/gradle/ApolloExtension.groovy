@@ -1,5 +1,6 @@
 package com.apollographql.apollo.gradle
 
+import com.apollographql.apollo.compiler.OperationIdGenerator
 import com.apollographql.apollo.compiler.NullableValueType
 import org.gradle.api.Project
 import org.gradle.api.provider.MapProperty
@@ -19,6 +20,7 @@ class ApolloExtension {
   final Property<String> outputPackageName
   final Property<Boolean> generateOperationOutput
   final MapProperty<String, String> customTypeMapping
+  final Property<OperationIdGenerator> operationIdGenerator
   final Property<Boolean> generateAsInternal
 
   ApolloExtension(Project project) {
@@ -54,6 +56,9 @@ class ApolloExtension {
 
     customTypeMapping = project.objects.mapProperty(String.class, String.class)
     customTypeMapping.set(new LinkedHashMap())
+
+    operationIdGenerator = project.objects.property(OperationIdGenerator.class)
+    operationIdGenerator.set(null)
 
     generateAsInternal = project.objects.property(Boolean.class)
     generateAsInternal.set(false)
@@ -107,5 +112,9 @@ class ApolloExtension {
     LinkedHashMap tmp = new LinkedHashMap()
     tmp.putAll(customTypeMapping)
     this.customTypeMapping.set(tmp)
+  }
+
+  void setOperationIdGenerator(OperationIdGenerator operationIdGenerator) {
+    this.operationIdGenerator.set(operationIdGenerator)
   }
 }

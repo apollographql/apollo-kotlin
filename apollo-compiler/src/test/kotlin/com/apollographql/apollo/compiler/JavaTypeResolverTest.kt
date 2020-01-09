@@ -19,6 +19,7 @@ class JavaTypeResolverTest {
       typeDeclarations = emptyList(),
       packageNameProvider = packageNameProvider,
       customTypeMap = emptyMap(),
+      operationIdGenerator = OperationIdGenerator.Sha256(),
       nullableValueType = NullableValueType.APOLLO_OPTIONAL,
       ir = CodeGenerationIR(emptyList(), emptyList(), emptyList()),
       useSemanticNaming = false,

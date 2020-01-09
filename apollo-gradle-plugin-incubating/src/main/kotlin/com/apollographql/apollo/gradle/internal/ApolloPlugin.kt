@@ -189,6 +189,7 @@ open class ApolloPlugin : Plugin<Project> {
         }
 
         it.generateAsInternal.set(compilerParams.generateAsInternal)
+        it.operationIdGenerator.set(compilationUnit.apolloExtension.operationIdGenerator)
         Unit
       }
     }

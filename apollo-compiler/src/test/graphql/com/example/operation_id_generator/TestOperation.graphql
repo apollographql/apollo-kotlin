@@ -1,0 +1,9 @@
+query TestQuery {
+  hero {
+    name
+  }
+  hero {
+    id
+    name
+  }
+}

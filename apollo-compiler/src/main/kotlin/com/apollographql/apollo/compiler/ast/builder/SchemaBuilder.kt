@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler.ast.builder
 
+import com.apollographql.apollo.compiler.OperationIdGenerator
 import com.apollographql.apollo.compiler.ast.*
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
@@ -10,7 +11,8 @@ internal fun CodeGenerationIR.ast(
     customTypeMap: CustomTypes,
     typesPackageName: String,
     fragmentsPackage: String,
-    useSemanticNaming: Boolean
+    useSemanticNaming: Boolean,
+    operationIdGenerator: OperationIdGenerator
 ): Schema {
   val enums = typesUsed.filter { it.kind == TypeDeclaration.KIND_ENUM }.map { it.ast() }
   val inputTypes = typesUsed.filter { it.kind == TypeDeclaration.KIND_INPUT_OBJECT_TYPE }.map {
@@ -44,7 +46,8 @@ internal fun CodeGenerationIR.ast(
             typesPackageName = typesPackageName,
             fragmentsPackage = fragmentsPackage,
             fragments = irFragments
-        )
+        ),
+        operationIdGenerator = operationIdGenerator
     )
   }
   return Schema(

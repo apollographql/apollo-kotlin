@@ -2,6 +2,7 @@ package com.apollographql.apollo.compiler.codegen.kotlin
 
 import com.apollographql.apollo.compiler.DeprecatedPackageNameProvider
 import com.apollographql.apollo.compiler.PackageNameProvider
+import com.apollographql.apollo.compiler.OperationIdGenerator
 import com.apollographql.apollo.compiler.ast.CustomTypes
 import com.apollographql.apollo.compiler.ast.builder.ast
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
@@ -15,7 +16,8 @@ class GraphQLKompiler(
     private val customTypeMap: Map<String, String>,
     private val packageNameProvider: PackageNameProvider,
     private val useSemanticNaming: Boolean,
-    private val generateAsInternal: Boolean = false
+    private val generateAsInternal: Boolean = false,
+    private val operationIdGenerator: OperationIdGenerator
 ) {
   fun write(outputDir: File) {
     val customTypeMap = customTypeMap.supportedCustomTypes(ir.typesUsed)
@@ -23,7 +25,8 @@ class GraphQLKompiler(
         customTypeMap = customTypeMap,
         typesPackageName = packageNameProvider.typesPackageName,
         fragmentsPackage = packageNameProvider.fragmentsPackageName,
-        useSemanticNaming = useSemanticNaming
+        useSemanticNaming = useSemanticNaming,
+        operationIdGenerator = operationIdGenerator
     )
 
     val irPackageName = (packageNameProvider as? DeprecatedPackageNameProvider)?.schemaPackageName ?: ""
