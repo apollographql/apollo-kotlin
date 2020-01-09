@@ -371,7 +371,7 @@ public class HeroDetails implements GraphqlFragment {
   public static class Node {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forString("name", "name", null, true, Arrays.asList(
+      ResponseField.forString("name", "name", null, true, Arrays.<ResponseField.Condition>asList(
         ResponseField.Condition.booleanCondition("IncludeName", false)
       ))
     };

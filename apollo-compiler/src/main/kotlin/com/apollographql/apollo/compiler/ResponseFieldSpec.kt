@@ -365,7 +365,7 @@ class ResponseFieldSpec(
             CodeBlock.of("\$T.<\$T>emptyList()", Collections::class.java, ResponseField.Condition::class.java)
           } else {
             CodeBlock.builder()
-                .add("\$T.asList(\n", Arrays::class.java)
+                .add("\$T.<\$T>asList(\n", Arrays::class.java, ResponseField.Condition::class.java)
                 .indent().add(code).unindent()
                 .add("\n)")
                 .build()
