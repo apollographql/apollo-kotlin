@@ -1,6 +1,5 @@
 package com.apollographql.apollo.compiler.ast.builder
 
-import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.ast.CustomTypes
 import com.apollographql.apollo.compiler.ast.EnumType
 import com.apollographql.apollo.compiler.ast.ObjectType
@@ -12,7 +11,6 @@ import com.apollographql.apollo.compiler.ir.InlineFragment
 import com.apollographql.apollo.compiler.singularize
 
 internal class Context(
-    reservedObjectTypeRef: TypeRef?,
     val customTypeMap: CustomTypes,
     val enums: List<EnumType>,
     val typesPackageName: String,
@@ -21,9 +19,7 @@ internal class Context(
     private val objectTypeContainer: MutableMap<TypeRef, ObjectType> = LinkedHashMap()
 ) : Map<TypeRef, ObjectType> by objectTypeContainer {
 
-  private val reservedObjectTypeRefs = HashSet<TypeRef>().applyIf(reservedObjectTypeRef != null) {
-    add(reservedObjectTypeRef!!)
-  }
+  private val reservedObjectTypeRefs = HashSet<TypeRef>()
 
   fun registerObjectType(
       name: String,
