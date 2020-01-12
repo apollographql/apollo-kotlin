@@ -401,8 +401,18 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
 
         @Override
         public @NotNull Fragments map(ResponseReader reader) {
-          final HumanDetails humanDetails = humanDetailsFieldMapper.map(reader);
-          final DroidDetails droidDetails = droidDetailsFieldMapper.map(reader);
+          final HumanDetails humanDetails = reader.readFragment($responseFields[0], new ResponseReader.ObjectReader<HumanDetails>() {
+            @Override
+            public HumanDetails read(ResponseReader reader) {
+              return humanDetailsFieldMapper.map(reader);
+            }
+          });
+          final DroidDetails droidDetails = reader.readFragment($responseFields[1], new ResponseReader.ObjectReader<DroidDetails>() {
+            @Override
+            public DroidDetails read(ResponseReader reader) {
+              return droidDetailsFieldMapper.map(reader);
+            }
+          });
           return new Fragments(humanDetails, droidDetails);
         }
       }
@@ -591,8 +601,18 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
 
         @Override
         public @NotNull Fragments map(ResponseReader reader) {
-          final HumanDetails humanDetails = humanDetailsFieldMapper.map(reader);
-          final DroidDetails droidDetails = droidDetailsFieldMapper.map(reader);
+          final HumanDetails humanDetails = reader.readFragment($responseFields[0], new ResponseReader.ObjectReader<HumanDetails>() {
+            @Override
+            public HumanDetails read(ResponseReader reader) {
+              return humanDetailsFieldMapper.map(reader);
+            }
+          });
+          final DroidDetails droidDetails = reader.readFragment($responseFields[1], new ResponseReader.ObjectReader<DroidDetails>() {
+            @Override
+            public DroidDetails read(ResponseReader reader) {
+              return droidDetailsFieldMapper.map(reader);
+            }
+          });
           return new Fragments(humanDetails, droidDetails);
         }
       }

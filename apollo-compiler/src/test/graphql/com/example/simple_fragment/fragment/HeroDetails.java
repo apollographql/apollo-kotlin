@@ -196,7 +196,12 @@ public class HeroDetails implements GraphqlFragment {
 
       @Override
       public @NotNull Fragments map(ResponseReader reader) {
-        final HumanDetails humanDetails = humanDetailsFieldMapper.map(reader);
+        final HumanDetails humanDetails = reader.readFragment($responseFields[0], new ResponseReader.ObjectReader<HumanDetails>() {
+          @Override
+          public HumanDetails read(ResponseReader reader) {
+            return humanDetailsFieldMapper.map(reader);
+          }
+        });
         return new Fragments(humanDetails);
       }
     }

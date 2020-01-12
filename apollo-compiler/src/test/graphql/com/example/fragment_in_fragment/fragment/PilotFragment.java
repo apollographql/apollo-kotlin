@@ -297,7 +297,12 @@ public class PilotFragment implements GraphqlFragment {
 
         @Override
         public @NotNull Fragments map(ResponseReader reader) {
-          final PlanetFragment planetFragment = planetFragmentFieldMapper.map(reader);
+          final PlanetFragment planetFragment = reader.readFragment($responseFields[0], new ResponseReader.ObjectReader<PlanetFragment>() {
+            @Override
+            public PlanetFragment read(ResponseReader reader) {
+              return planetFragmentFieldMapper.map(reader);
+            }
+          });
           return new Fragments(planetFragment);
         }
       }

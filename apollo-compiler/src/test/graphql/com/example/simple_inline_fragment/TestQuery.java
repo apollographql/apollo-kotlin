@@ -25,6 +25,7 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.lang.SuppressWarnings;
+import java.util.Arrays;
 import java.util.Collections;
 import okio.BufferedSource;
 import org.jetbrains.annotations.NotNull;
@@ -221,6 +222,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     final class Mapper implements ResponseFieldMapper<Hero> {
+      static final ResponseField[] $responseFields = {
+        ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+          ResponseField.Condition.typeCondition(new String[] {"Human"})
+        )),
+        ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+          ResponseField.Condition.typeCondition(new String[] {"Droid"})
+        ))
+      };
+
       final AsHuman.Mapper asHumanFieldMapper = new AsHuman.Mapper();
 
       final AsDroid.Mapper asDroidFieldMapper = new AsDroid.Mapper();
@@ -229,11 +239,21 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public Hero map(ResponseReader reader) {
-        final AsHuman asHuman = asHumanFieldMapper.map(reader);
+        final AsHuman asHuman = reader.readFragment($responseFields[0], new ResponseReader.ObjectReader<AsHuman>() {
+          @Override
+          public AsHuman read(ResponseReader reader) {
+            return asHumanFieldMapper.map(reader);
+          }
+        });
         if (asHuman != null) {
           return asHuman;
         }
-        final AsDroid asDroid = asDroidFieldMapper.map(reader);
+        final AsDroid asDroid = reader.readFragment($responseFields[1], new ResponseReader.ObjectReader<AsDroid>() {
+          @Override
+          public AsDroid read(ResponseReader reader) {
+            return asDroidFieldMapper.map(reader);
+          }
+        });
         if (asDroid != null) {
           return asDroid;
         }

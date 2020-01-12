@@ -70,13 +70,24 @@ public interface HeroDetails extends GraphqlFragment {
   }
 
   final class Mapper implements ResponseFieldMapper<HeroDetails> {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+        ResponseField.Condition.typeCondition(new String[] {"Droid"})
+      ))
+    };
+
     final AsDroid.Mapper asDroidFieldMapper = new AsDroid.Mapper();
 
     final AsCharacter.Mapper asCharacterFieldMapper = new AsCharacter.Mapper();
 
     @Override
     public HeroDetails map(ResponseReader reader) {
-      final AsDroid asDroid = asDroidFieldMapper.map(reader);
+      final AsDroid asDroid = reader.readFragment($responseFields[0], new ResponseReader.ObjectReader<AsDroid>() {
+        @Override
+        public AsDroid read(ResponseReader reader) {
+          return asDroidFieldMapper.map(reader);
+        }
+      });
       if (asDroid != null) {
         return asDroid;
       }
@@ -337,7 +348,12 @@ public interface HeroDetails extends GraphqlFragment {
 
         @Override
         public @NotNull Fragments map(ResponseReader reader) {
-          final DroidDetails droidDetails = droidDetailsFieldMapper.map(reader);
+          final DroidDetails droidDetails = reader.readFragment($responseFields[0], new ResponseReader.ObjectReader<DroidDetails>() {
+            @Override
+            public DroidDetails read(ResponseReader reader) {
+              return droidDetailsFieldMapper.map(reader);
+            }
+          });
           return new Fragments(droidDetails);
         }
       }

@@ -18,6 +18,7 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.lang.SuppressWarnings;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
@@ -64,13 +65,24 @@ public interface HeroDetails extends GraphqlFragment {
   ResponseFieldMarshaller marshaller();
 
   final class Mapper implements ResponseFieldMapper<HeroDetails> {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+        ResponseField.Condition.typeCondition(new String[] {"Droid"})
+      ))
+    };
+
     final AsDroid.Mapper asDroidFieldMapper = new AsDroid.Mapper();
 
     final AsCharacter.Mapper asCharacterFieldMapper = new AsCharacter.Mapper();
 
     @Override
     public HeroDetails map(ResponseReader reader) {
-      final AsDroid asDroid = asDroidFieldMapper.map(reader);
+      final AsDroid asDroid = reader.readFragment($responseFields[0], new ResponseReader.ObjectReader<AsDroid>() {
+        @Override
+        public AsDroid read(ResponseReader reader) {
+          return asDroidFieldMapper.map(reader);
+        }
+      });
       if (asDroid != null) {
         return asDroid;
       }

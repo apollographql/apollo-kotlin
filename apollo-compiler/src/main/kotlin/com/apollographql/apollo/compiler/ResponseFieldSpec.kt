@@ -39,7 +39,8 @@ class ResponseFieldSpec(
       ResponseField.Type.ENUM -> readEnumCode(readerParam, fieldParam)
       ResponseField.Type.OBJECT -> readObjectCode(readerParam, fieldParam)
       ResponseField.Type.LIST -> readListCode(readerParam, fieldParam)
-      ResponseField.Type.FRAGMENT -> readFragmentsCode()
+      ResponseField.Type.FRAGMENT -> readObjectCode(readerParam, fieldParam)
+      ResponseField.Type.FRAGMENTS -> readFragmentsCode()
     }
   }
 
@@ -54,8 +55,8 @@ class ResponseFieldSpec(
       ResponseField.Type.CUSTOM -> writeCustomCode(writerParam, fieldParam)
       ResponseField.Type.OBJECT -> writeObjectCode(writerParam, fieldParam, marshaller)
       ResponseField.Type.LIST -> writeListCode(writerParam, fieldParam, marshaller)
-      ResponseField.Type.FRAGMENT -> writeFragmentsCode(writerParam, marshaller)
-      else -> CodeBlock.of("")
+      ResponseField.Type.FRAGMENT -> writeFragmentCode(writerParam, marshaller)
+      ResponseField.Type.FRAGMENTS -> writeFragmentsCode(writerParam, marshaller)
     }
   }
 
@@ -76,7 +77,7 @@ class ResponseFieldSpec(
       builder.applyIf(index > 0) { add(", ") }.add(CodeBlock.of("\$S", type))
     }.build().let { code ->
       if (code.isEmpty) {
-         CodeBlock.of("")
+        CodeBlock.of("")
       } else {
         CodeBlock.builder()
             .add("\$T.typeCondition(new \$T[] {", ResponseField.Condition::class.java, ClassNames.STRING)
@@ -229,6 +230,23 @@ class ResponseFieldSpec(
         READ_METHODS[responseFieldType], fieldParam, readerTypeSpec)
   }
 
+//  private fun readFragmentCode(readerParam: CodeBlock, fieldParam: CodeBlock): CodeBlock {
+//    val readerTypeSpec = TypeSpec.anonymousClassBuilder("")
+//        .superclass(responseFieldObjectReaderType(normalizedFieldSpec.type))
+//        .addMethod(MethodSpec
+//            .methodBuilder("read")
+//            .addModifiers(Modifier.PUBLIC)
+//            .addAnnotation(Override::class.java)
+//            .returns(normalizedFieldSpec.type)
+//            .addParameter(RESPONSE_READER_PARAM)
+//            .addStatement("return \$L.map(\$L)", (normalizedFieldSpec.type as ClassName).mapperFieldName(),
+//                RESPONSE_READER_PARAM.name)
+//            .build())
+//        .build()
+//    return CodeBlock.of("final \$T \$L = \$L.\$L(\$L, \$L);\n", normalizedFieldSpec.type, fieldSpec.name, readerParam,
+//        READ_METHODS[responseFieldType], fieldParam, readerTypeSpec)
+//  }
+
   private fun readFragmentsCode(): CodeBlock {
     return CodeBlock.of("final \$T \$L = \$L.map(\$L);\n", normalizedFieldSpec.type, fieldSpec.name,
         (normalizedFieldSpec.type as ClassName).mapperFieldName(), RESPONSE_READER_PARAM.name)
@@ -342,6 +360,10 @@ class ResponseFieldSpec(
         .build()
     return CodeBlock.of("\$L.\$L(\$L, \$L, \$L);\n", writerParam, WRITE_METHODS[responseFieldType], fieldParam,
         fieldSpec.type.unwrapOptionalValue(fieldSpec.name), listWriterType)
+  }
+
+  private fun writeFragmentCode(writerParam: CodeBlock, marshaller: CodeBlock): CodeBlock {
+    return CodeBlock.of("\$L.\$L.marshal(\$L);\n", fieldSpec.name, marshaller, writerParam)
   }
 
   private fun writeFragmentsCode(writerParam: CodeBlock, marshaller: CodeBlock): CodeBlock {

@@ -528,7 +528,12 @@ public class StarshipFragment implements GraphqlFragment {
 
         @Override
         public @NotNull Fragments map(ResponseReader reader) {
-          final PilotFragment pilotFragment = pilotFragmentFieldMapper.map(reader);
+          final PilotFragment pilotFragment = reader.readFragment($responseFields[0], new ResponseReader.ObjectReader<PilotFragment>() {
+            @Override
+            public PilotFragment read(ResponseReader reader) {
+              return pilotFragmentFieldMapper.map(reader);
+            }
+          });
           return new Fragments(pilotFragment);
         }
       }

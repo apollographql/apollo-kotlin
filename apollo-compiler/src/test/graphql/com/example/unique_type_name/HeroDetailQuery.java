@@ -252,13 +252,24 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     }
 
     final class Mapper implements ResponseFieldMapper<HeroDetailQuery1> {
+      static final ResponseField[] $responseFields = {
+        ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+          ResponseField.Condition.typeCondition(new String[] {"Human"})
+        ))
+      };
+
       final AsHuman.Mapper asHumanFieldMapper = new AsHuman.Mapper();
 
       final AsCharacter.Mapper asCharacterFieldMapper = new AsCharacter.Mapper();
 
       @Override
       public HeroDetailQuery1 map(ResponseReader reader) {
-        final AsHuman asHuman = asHumanFieldMapper.map(reader);
+        final AsHuman asHuman = reader.readFragment($responseFields[0], new ResponseReader.ObjectReader<AsHuman>() {
+          @Override
+          public AsHuman read(ResponseReader reader) {
+            return asHumanFieldMapper.map(reader);
+          }
+        });
         if (asHuman != null) {
           return asHuman;
         }
@@ -739,7 +750,12 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
         @Override
         public @NotNull Fragments map(ResponseReader reader) {
-          final HeroDetails heroDetails = heroDetailsFieldMapper.map(reader);
+          final HeroDetails heroDetails = reader.readFragment($responseFields[0], new ResponseReader.ObjectReader<HeroDetails>() {
+            @Override
+            public HeroDetails read(ResponseReader reader) {
+              return heroDetailsFieldMapper.map(reader);
+            }
+          });
           return new Fragments(heroDetails);
         }
       }

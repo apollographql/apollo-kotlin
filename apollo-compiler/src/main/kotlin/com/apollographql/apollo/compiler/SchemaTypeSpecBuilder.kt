@@ -1,7 +1,9 @@
 package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.api.*
-import com.apollographql.apollo.compiler.ir.*
+import com.apollographql.apollo.compiler.ir.CodeGenerationContext
+import com.apollographql.apollo.compiler.ir.Field
+import com.apollographql.apollo.compiler.ir.InlineFragment
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
@@ -184,7 +186,7 @@ class SchemaTypeSpecBuilder(
                 .build()
             val normalizedFieldSpec = FieldSpec.builder(fieldSpec.type.unwrapOptionalType().withoutAnnotations(), fieldSpec.name).build()
             ResponseFieldSpec(
-                irField = Field.TYPE_NAME_FIELD.copy(type = if (optional) "String" else "String!"),
+                irField = Field.TYPE_NAME_FIELD,
                 fieldSpec = fieldSpec,
                 normalizedFieldSpec = normalizedFieldSpec,
                 responseFieldType = ResponseField.Type.FRAGMENT,
@@ -325,7 +327,7 @@ class SchemaTypeSpecBuilder(
           irField = Field.TYPE_NAME_FIELD,
           fieldSpec = FRAGMENTS_FIELD,
           normalizedFieldSpec = normalizedFieldSpec,
-          responseFieldType = ResponseField.Type.FRAGMENT,
+          responseFieldType = ResponseField.Type.FRAGMENTS,
           context = context
       ))
     } else {
@@ -474,25 +476,25 @@ class SchemaTypeSpecBuilder(
           .initializer(CodeBlock.of("new \$L()", mapperClassName))
           .build()
     } + surrogateInlineFragmentFieldMapper
-    val typeClassName = ClassName.get("", uniqueTypeName)
-    val code = CodeBlock.builder()
-        .apply {
-          inlineFragments.forEach { responseFieldSpec ->
-            val readValueCode = responseFieldSpec.readValueCode(
-                readerParam = CodeBlock.of("\$L", RESPONSE_READER_PARAM.name),
-                fieldParam = responseFieldSpec.factoryCode()
-            )
-            add(readValueCode)
-            add(CodeBlock.builder()
-                .beginControlFlow("if (\$L != null)", responseFieldSpec.fieldSpec.name)
-                .addStatement("return \$L", responseFieldSpec.fieldSpec.name)
-                .endControlFlow()
-                .build()
-            )
-          }
+
+    val code = inlineFragments
+        .foldIndexed(CodeBlock.builder()) { index, builder, responseFieldSpec ->
+          val readValueCode = responseFieldSpec.readValueCode(
+              readerParam = CodeBlock.of("\$L", RESPONSE_READER_PARAM.name),
+              fieldParam = CodeBlock.of("\$L[\$L]", RESPONSE_FIELDS_PARAM.name, index)
+          )
+          builder
+              .add(readValueCode)
+              .add(CodeBlock.builder()
+                  .beginControlFlow("if (\$L != null)", responseFieldSpec.fieldSpec.name)
+                  .addStatement("return \$L", responseFieldSpec.fieldSpec.name)
+                  .endControlFlow()
+                  .build()
+              )
         }
         .addStatement("return \$L.map(reader)", surrogateInlineFragmentFieldMapper.name)
         .build()
+    val typeClassName = ClassName.get("", uniqueTypeName)
     val methodSpec = MethodSpec.methodBuilder("map")
         .addModifiers(Modifier.PUBLIC)
         .addAnnotation(Override::class.java)
@@ -503,6 +505,7 @@ class SchemaTypeSpecBuilder(
     return TypeSpec.classBuilder(Util.RESPONSE_FIELD_MAPPER_TYPE_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
         .addSuperinterface(ParameterizedTypeName.get(ClassName.get(ResponseFieldMapper::class.java), typeClassName))
+        .addField(fieldArray(inlineFragments))
         .addFields(mapperFields)
         .addMethod(methodSpec)
         .build()

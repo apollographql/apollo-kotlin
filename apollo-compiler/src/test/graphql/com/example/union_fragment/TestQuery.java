@@ -390,8 +390,18 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
 
         @Override
         public @NotNull Fragments map(ResponseReader reader) {
-          final Character character = characterFieldMapper.map(reader);
-          final Starship starship = starshipFieldMapper.map(reader);
+          final Character character = reader.readFragment($responseFields[0], new ResponseReader.ObjectReader<Character>() {
+            @Override
+            public Character read(ResponseReader reader) {
+              return characterFieldMapper.map(reader);
+            }
+          });
+          final Starship starship = reader.readFragment($responseFields[1], new ResponseReader.ObjectReader<Starship>() {
+            @Override
+            public Starship read(ResponseReader reader) {
+              return starshipFieldMapper.map(reader);
+            }
+          });
           return new Fragments(character, starship);
         }
       }

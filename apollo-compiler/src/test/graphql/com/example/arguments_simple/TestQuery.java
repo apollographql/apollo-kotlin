@@ -541,7 +541,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
         @Override
         public @NotNull Fragments map(ResponseReader reader) {
-          final HeroDetails heroDetails = heroDetailsFieldMapper.map(reader);
+          final HeroDetails heroDetails = reader.readFragment($responseFields[0], new ResponseReader.ObjectReader<HeroDetails>() {
+            @Override
+            public HeroDetails read(ResponseReader reader) {
+              return heroDetailsFieldMapper.map(reader);
+            }
+          });
           return new Fragments(heroDetails);
         }
       }

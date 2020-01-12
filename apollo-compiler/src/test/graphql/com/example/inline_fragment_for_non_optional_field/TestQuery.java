@@ -25,6 +25,7 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.lang.SuppressWarnings;
+import java.util.Arrays;
 import java.util.Collections;
 import okio.BufferedSource;
 import org.jetbrains.annotations.NotNull;
@@ -210,13 +211,24 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     final class Mapper implements ResponseFieldMapper<Hero> {
+      static final ResponseField[] $responseFields = {
+        ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+          ResponseField.Condition.typeCondition(new String[] {"Human"})
+        ))
+      };
+
       final AsHuman.Mapper asHumanFieldMapper = new AsHuman.Mapper();
 
       final AsCharacter.Mapper asCharacterFieldMapper = new AsCharacter.Mapper();
 
       @Override
       public Hero map(ResponseReader reader) {
-        final AsHuman asHuman = asHumanFieldMapper.map(reader);
+        final AsHuman asHuman = reader.readFragment($responseFields[0], new ResponseReader.ObjectReader<AsHuman>() {
+          @Override
+          public AsHuman read(ResponseReader reader) {
+            return asHumanFieldMapper.map(reader);
+          }
+        });
         if (asHuman != null) {
           return asHuman;
         }

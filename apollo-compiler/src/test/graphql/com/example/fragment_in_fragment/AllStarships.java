@@ -590,7 +590,12 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
         @Override
         public @NotNull Fragments map(ResponseReader reader) {
-          final StarshipFragment starshipFragment = starshipFragmentFieldMapper.map(reader);
+          final StarshipFragment starshipFragment = reader.readFragment($responseFields[0], new ResponseReader.ObjectReader<StarshipFragment>() {
+            @Override
+            public StarshipFragment read(ResponseReader reader) {
+              return starshipFragmentFieldMapper.map(reader);
+            }
+          });
           return new Fragments(starshipFragment);
         }
       }

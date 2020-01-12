@@ -254,7 +254,8 @@ public class ResponseField {
     OBJECT,
     LIST,
     CUSTOM,
-    FRAGMENT
+    FRAGMENT,
+    FRAGMENTS
   }
 
   /**
