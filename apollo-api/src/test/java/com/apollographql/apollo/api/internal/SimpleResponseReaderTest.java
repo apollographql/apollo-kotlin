@@ -1,7 +1,5 @@
 package com.apollographql.apollo.api.internal;
 
-import com.apollographql.apollo.response.CustomTypeAdapter;
-import com.apollographql.apollo.response.CustomTypeValue;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Response;
@@ -9,6 +7,8 @@ import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.response.CustomTypeAdapter;
+import com.apollographql.apollo.response.CustomTypeValue;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
 import okio.BufferedSource;
 import org.jetbrains.annotations.NotNull;
@@ -168,35 +168,30 @@ public class SimpleResponseReaderTest {
     }
   }
 
-    @Test public void readFragment() {
+  @Test public void readFragment() {
     final Object responseObject = new Object();
-    final ResponseField successField = ResponseField.forObject("successFieldResponseName", "successFieldName", null, false, NO_CONDITIONS);
-    final ResponseField classCastExceptionField = ResponseField.forObject("classCastExceptionField", "classCastExceptionField", null, false,
-        NO_CONDITIONS);
+    final ResponseField successFragmentField = ResponseField.forFragment("__typename", "__typename",
+        Collections.<ResponseField.Condition>singletonList(ResponseField.Condition.typeCondition(new String[]{"Fragment1"})));
+
+    final ResponseField skipFragmentField = ResponseField.forFragment("__typename", "__typename",
+        Collections.<ResponseField.Condition>singletonList(ResponseField.Condition.typeCondition(new String[]{"Fragment2"})));
 
     final Map<String, Object> recordSet = new HashMap<>();
-    recordSet.put("successFieldResponseName", Collections.emptyMap());
-    recordSet.put("successFieldName", Collections.emptyMap());
-    recordSet.put("classCastExceptionField", "anything");
+    recordSet.put("__typename", "Fragment1");
 
     final SimpleResponseReader responseReader = responseReader(recordSet);
 
-    assertThat(responseReader.readFragment(successField, new ResponseReader.ObjectReader<Object>() {
+    assertThat(responseReader.readFragment(successFragmentField, new ResponseReader.ObjectReader<Object>() {
       @Override public Object read(ResponseReader reader) {
         return responseObject;
       }
     })).isEqualTo(responseObject);
 
-    try {
-      responseReader.readObject(classCastExceptionField, new ResponseReader.ObjectReader<Object>() {
-        @Override public Object read(ResponseReader reader) {
-          return reader.readString(ResponseField.forString("anything", "anything", null, true, NO_CONDITIONS));
-        }
-      });
-      fail("expected ClassCastException");
-    } catch (ClassCastException expected) {
-      // expected
-    }
+    assertThat(responseReader.readFragment(skipFragmentField, new ResponseReader.ObjectReader<Object>() {
+      @Override public Object read(ResponseReader reader) {
+        return responseObject;
+      }
+    })).isNull();
   }
 
   @Test public void readCustom() throws ParseException {
@@ -831,7 +826,7 @@ public class SimpleResponseReaderTest {
     }
 
     @NotNull @Override public Response parse(@NotNull BufferedSource source) throws IOException {
-       throw new UnsupportedOperationException();
+      throw new UnsupportedOperationException();
     }
 
     @NotNull @Override public Response parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
