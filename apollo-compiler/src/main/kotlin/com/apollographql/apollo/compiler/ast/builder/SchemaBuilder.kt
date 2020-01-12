@@ -24,7 +24,6 @@ internal fun CodeGenerationIR.ast(
   val fragments = fragments.map {
     it.ast(
         Context(
-            reservedObjectTypeRef = null,
             customTypeMap = customTypeMap,
             enums = enums,
             typesPackageName = typesPackageName,
@@ -37,8 +36,6 @@ internal fun CodeGenerationIR.ast(
     operation.ast(
         operationClassName = operation.normalizedOperationName(useSemanticNaming).capitalize(),
         context = Context(
-            reservedObjectTypeRef = TypeRef(
-                name = operation.normalizedOperationName(useSemanticNaming).capitalize()),
             customTypeMap = customTypeMap,
             enums = enums,
             typesPackageName = typesPackageName,
