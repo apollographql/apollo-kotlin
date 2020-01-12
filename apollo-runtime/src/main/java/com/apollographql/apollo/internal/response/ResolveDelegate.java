@@ -10,7 +10,7 @@ public interface ResolveDelegate<R> {
 
   void willResolveRootQuery(Operation operation);
 
-  void willResolve(ResponseField field, Operation.Variables variables);
+  void willResolve(ResponseField field, Operation.Variables variables, Optional value);
 
   void didResolve(ResponseField field, Operation.Variables variables);
 

@@ -43,7 +43,7 @@ public abstract class ResponseNormalizer<R> implements ResolveDelegate<R> {
     willResolveRecord(CacheKeyResolver.rootKeyForOperation(operation));
   }
 
-  @Override public void willResolve(ResponseField field, Operation.Variables variables) {
+  @Override public void willResolve(ResponseField field, Operation.Variables variables, Optional value) {
     String key = cacheKeyBuilder().build(field, variables);
     path.add(key);
   }
@@ -142,7 +142,7 @@ public abstract class ResponseNormalizer<R> implements ResolveDelegate<R> {
     @Override public void willResolveRootQuery(Operation operation) {
     }
 
-    @Override public void willResolve(ResponseField field, Operation.Variables variables) {
+    @Override public void willResolve(ResponseField field, Operation.Variables variables, Optional value) {
     }
 
     @Override public void didResolve(ResponseField field, Operation.Variables variables) {

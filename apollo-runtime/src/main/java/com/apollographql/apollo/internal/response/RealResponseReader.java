@@ -40,9 +40,10 @@ import java.util.Map;
       return null;
     }
 
-    willResolve(field);
     String value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(field, value);
+
+    willResolve(field, value);
     if (value == null) {
       resolveDelegate.didResolveNull();
     } else {
@@ -57,9 +58,10 @@ import java.util.Map;
       return null;
     }
 
-    willResolve(field);
     BigDecimal value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(field, value);
+
+    willResolve(field, value);
     if (value == null) {
       resolveDelegate.didResolveNull();
     } else {
@@ -74,9 +76,10 @@ import java.util.Map;
       return null;
     }
 
-    willResolve(field);
     BigDecimal value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(field, value);
+
+    willResolve(field, value);
     if (value == null) {
       resolveDelegate.didResolveNull();
     } else {
@@ -91,9 +94,10 @@ import java.util.Map;
       return null;
     }
 
-    willResolve(field);
     BigDecimal value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(field, value);
+
+    willResolve(field, value);
     if (value == null) {
       resolveDelegate.didResolveNull();
     } else {
@@ -108,9 +112,10 @@ import java.util.Map;
       return null;
     }
 
-    willResolve(field);
     Boolean value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(field, value);
+
+    willResolve(field, value);
     if (value == null) {
       resolveDelegate.didResolveNull();
     } else {
@@ -126,9 +131,10 @@ import java.util.Map;
       return null;
     }
 
-    willResolve(field);
     R value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(field, value);
+
+    willResolve(field, value);
     resolveDelegate.willResolveObject(field, Optional.fromNullable(value));
     final T parsedValue;
     if (value == null) {
@@ -149,9 +155,10 @@ import java.util.Map;
       return null;
     }
 
-    willResolve(field);
     List values = fieldValueResolver.valueFor(recordSet, field);
     checkValue(field, values);
+
+    willResolve(field, values);
     final List<T> result;
     if (values == null) {
       resolveDelegate.didResolveNull();
@@ -182,9 +189,10 @@ import java.util.Map;
       return null;
     }
 
-    willResolve(field);
     Object value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(field, value);
+
+    willResolve(field, value);
     final T result;
     if (value == null) {
       resolveDelegate.didResolveNull();
@@ -205,9 +213,10 @@ import java.util.Map;
       return null;
     }
 
-    willResolve(field);
     String value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(field, value);
+
+    willResolve(field, value);
     if (value == null) {
       resolveDelegate.didResolveNull();
       didResolve(field);
@@ -251,8 +260,8 @@ import java.util.Map;
     return false;
   }
 
-  private void willResolve(ResponseField field) {
-    resolveDelegate.willResolve(field, operationVariables);
+  private void willResolve(ResponseField field, Object value) {
+    resolveDelegate.willResolve(field, operationVariables, Optional.fromNullable(value));
   }
 
   private void didResolve(ResponseField field) {
