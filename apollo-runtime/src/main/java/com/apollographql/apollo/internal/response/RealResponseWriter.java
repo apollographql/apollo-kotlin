@@ -131,7 +131,7 @@ public final class RealResponseWriter implements ResponseWriter {
     for (String fieldResponseName : buffer.keySet()) {
       FieldDescriptor fieldDescriptor = buffer.get(fieldResponseName);
       Object rawFieldValue = rawFieldValues.get(fieldResponseName);
-      delegate.willResolve(fieldDescriptor.field, operationVariables);
+      delegate.willResolve(fieldDescriptor.field, operationVariables, Optional.fromNullable(fieldDescriptor.value));
 
       switch (fieldDescriptor.field.type()) {
         case OBJECT: {
@@ -181,11 +181,9 @@ public final class RealResponseWriter implements ResponseWriter {
 
       Object fieldValue = fieldValues.get(i);
       if (fieldValue instanceof Map) {
-        delegate.willResolveObject(listResponseField,
-            Optional.fromNullable((Map<String, Object>) rawFieldValues.get(i)));
+        delegate.willResolveObject(listResponseField, Optional.fromNullable((Map<String, Object>) rawFieldValues.get(i)));
         resolveFields(operationVariables, delegate, (Map<String, FieldDescriptor>) fieldValue);
-        delegate.didResolveObject(listResponseField,
-            Optional.fromNullable((Map<String, Object>) rawFieldValues.get(i)));
+        delegate.didResolveObject(listResponseField, Optional.fromNullable((Map<String, Object>) rawFieldValues.get(i)));
       } else if (fieldValue instanceof List) {
         resolveListField(listResponseField, (List) fieldValue, (List) rawFieldValues.get(i), delegate);
       } else {

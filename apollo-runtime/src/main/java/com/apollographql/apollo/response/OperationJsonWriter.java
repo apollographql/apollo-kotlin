@@ -58,10 +58,10 @@ public class OperationJsonWriter {
     @Override public void willResolveRootQuery(Operation operation) {
     }
 
-    @Override public void willResolve(ResponseField field, Operation.Variables variables) {
+    @Override public void willResolve(ResponseField field, Operation.Variables variables, Optional value) {
       try {
         jsonWriter.name(field.responseName());
-        if (field.type() == ResponseField.Type.LIST) {
+        if (field.type() == ResponseField.Type.LIST && value.isPresent()) {
           jsonWriter.beginArray();
         }
       } catch (IOException e) {
@@ -88,7 +88,9 @@ public class OperationJsonWriter {
 
     @Override public void willResolveObject(ResponseField field, Optional<Map<String, Object>> objectSource) {
       try {
-        jsonWriter.beginObject();
+        if (objectSource.isPresent()) {
+          jsonWriter.beginObject();
+        }
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
@@ -96,7 +98,9 @@ public class OperationJsonWriter {
 
     @Override public void didResolveObject(ResponseField field, Optional<Map<String, Object>> objectSource) {
       try {
-        jsonWriter.endObject();
+        if (objectSource.isPresent()) {
+          jsonWriter.endObject();
+        }
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
@@ -104,7 +108,9 @@ public class OperationJsonWriter {
 
     @Override public void didResolveList(List array) {
       try {
-        jsonWriter.endArray();
+        if (array != null) {
+          jsonWriter.endArray();
+        }
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
