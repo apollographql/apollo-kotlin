@@ -91,10 +91,12 @@ public class InputFieldJsonWriter implements InputFieldWriter {
         writeBoolean(fieldName, ((CustomTypeValue.GraphQLBoolean) customTypeValue).value);
       } else if (customTypeValue instanceof CustomTypeValue.GraphQLNumber) {
         writeNumber(fieldName, ((CustomTypeValue.GraphQLNumber) customTypeValue).value);
-      } else if (customTypeValue instanceof CustomTypeValue.GraphQLJsonObject
-          || customTypeValue instanceof CustomTypeValue.GraphQLJsonList) {
+      } else if (customTypeValue instanceof CustomTypeValue.GraphQLJsonObject) {
         jsonWriter.name(fieldName);
-        Utils.writeToJson(value, jsonWriter);
+        Utils.writeToJson(((CustomTypeValue.GraphQLJsonObject) customTypeValue).value, jsonWriter);
+      } else if (customTypeValue instanceof CustomTypeValue.GraphQLJsonList) {
+        jsonWriter.name(fieldName);
+        Utils.writeToJson(((CustomTypeValue.GraphQLJsonList) customTypeValue).value, jsonWriter);
       } else {
         throw new IllegalArgumentException("Unsupported custom value type: " + customTypeValue);
       }
@@ -210,9 +212,10 @@ public class InputFieldJsonWriter implements InputFieldWriter {
           writeBoolean(((CustomTypeValue.GraphQLBoolean) customTypeValue).value);
         } else if (customTypeValue instanceof CustomTypeValue.GraphQLNumber) {
           writeNumber(((CustomTypeValue.GraphQLNumber) customTypeValue).value);
-        } else if (customTypeValue instanceof CustomTypeValue.GraphQLJsonObject
-            || customTypeValue instanceof CustomTypeValue.GraphQLJsonList) {
-          Utils.writeToJson(value, jsonWriter);
+        } else if (customTypeValue instanceof CustomTypeValue.GraphQLJsonObject) {
+          Utils.writeToJson(((CustomTypeValue.GraphQLJsonObject) customTypeValue).value, jsonWriter);
+        } else if (customTypeValue instanceof CustomTypeValue.GraphQLJsonList) {
+          Utils.writeToJson(((CustomTypeValue.GraphQLJsonList) customTypeValue).value, jsonWriter);
         } else {
           throw new IllegalArgumentException("Unsupported custom value type: " + customTypeValue);
         }
