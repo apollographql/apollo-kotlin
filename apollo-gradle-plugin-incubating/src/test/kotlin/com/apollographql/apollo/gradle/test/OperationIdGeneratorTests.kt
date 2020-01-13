@@ -41,19 +41,6 @@ class CustomIdGeneratorTests {
 
   @Test
   fun `changing the operationIdGenerator recompiles sources`() {
-    val apolloConfiguration = """
-      class MyIdGenerator implements OperationIdGenerator {
-          String apply(String operationDocument, String operationFilepath) {
-              return operationDocument.length().toString();
-          }
-          String version = "MyIdGenerator-v1"
-      }
-      
-      apollo {
-        operationIdGenerator = new MyIdGenerator()
-      }
-    """.trimIndent()
-
     withSimpleProject(apolloConfiguration = apolloConfiguration) {dir ->
       val gradleFile = File(dir, "build.gradle").readText()
 
