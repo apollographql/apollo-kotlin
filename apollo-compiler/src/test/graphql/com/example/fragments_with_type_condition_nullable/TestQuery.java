@@ -308,15 +308,6 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
     }
 
     public static class Fragments {
-      static final ResponseField[] $responseFields = {
-        ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
-          ResponseField.Condition.typeCondition(new String[] {"Human"})
-        )),
-        ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
-          ResponseField.Condition.typeCondition(new String[] {"Droid"})
-        ))
-      };
-
       final @Nullable HumanDetails humanDetails;
 
       final @Nullable DroidDetails droidDetails;
@@ -344,14 +335,8 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
         return new ResponseFieldMarshaller() {
           @Override
           public void marshal(ResponseWriter writer) {
-            final HumanDetails $humanDetails = humanDetails;
-            if ($humanDetails != null) {
-              $humanDetails.marshaller().marshal(writer);
-            }
-            final DroidDetails $droidDetails = droidDetails;
-            if ($droidDetails != null) {
-              $droidDetails.marshaller().marshal(writer);
-            }
+            writer.writeFragment(humanDetails.marshaller());
+            writer.writeFragment(droidDetails.marshaller());
           }
         };
       }
@@ -395,6 +380,15 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
       }
 
       public static final class Mapper implements ResponseFieldMapper<Fragments> {
+        static final ResponseField[] $responseFields = {
+          ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+            ResponseField.Condition.typeCondition(new String[] {"Human"})
+          )),
+          ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+            ResponseField.Condition.typeCondition(new String[] {"Droid"})
+          ))
+        };
+
         final HumanDetails.Mapper humanDetailsFieldMapper = new HumanDetails.Mapper();
 
         final DroidDetails.Mapper droidDetailsFieldMapper = new DroidDetails.Mapper();
@@ -508,15 +502,6 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
     }
 
     public static class Fragments {
-      static final ResponseField[] $responseFields = {
-        ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
-          ResponseField.Condition.typeCondition(new String[] {"Human"})
-        )),
-        ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
-          ResponseField.Condition.typeCondition(new String[] {"Droid"})
-        ))
-      };
-
       final @Nullable HumanDetails humanDetails;
 
       final @Nullable DroidDetails droidDetails;
@@ -544,14 +529,8 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
         return new ResponseFieldMarshaller() {
           @Override
           public void marshal(ResponseWriter writer) {
-            final HumanDetails $humanDetails = humanDetails;
-            if ($humanDetails != null) {
-              $humanDetails.marshaller().marshal(writer);
-            }
-            final DroidDetails $droidDetails = droidDetails;
-            if ($droidDetails != null) {
-              $droidDetails.marshaller().marshal(writer);
-            }
+            writer.writeFragment(humanDetails.marshaller());
+            writer.writeFragment(droidDetails.marshaller());
           }
         };
       }
@@ -595,6 +574,15 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
       }
 
       public static final class Mapper implements ResponseFieldMapper<Fragments> {
+        static final ResponseField[] $responseFields = {
+          ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+            ResponseField.Condition.typeCondition(new String[] {"Human"})
+          )),
+          ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+            ResponseField.Condition.typeCondition(new String[] {"Droid"})
+          ))
+        };
+
         final HumanDetails.Mapper humanDetailsFieldMapper = new HumanDetails.Mapper();
 
         final DroidDetails.Mapper droidDetailsFieldMapper = new DroidDetails.Mapper();

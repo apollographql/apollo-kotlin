@@ -107,7 +107,7 @@ data class StarshipFragment(
       val pilotFragment: PilotFragment
     ) {
       fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        it.writeFragment(RESPONSE_FIELDS[0], pilotFragment.marshaller())
+        it.writeFragment(pilotFragment.marshaller())
       }
 
       companion object {

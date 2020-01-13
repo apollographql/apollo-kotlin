@@ -75,8 +75,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       val starship: Starship?
     ) {
       fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        it.writeFragment(RESPONSE_FIELDS[0], character?.marshaller())
-        it.writeFragment(RESPONSE_FIELDS[1], starship?.marshaller())
+        it.writeFragment(character?.marshaller())
+        it.writeFragment(starship?.marshaller())
       }
 
       companion object {

@@ -297,15 +297,6 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
     }
 
     public static class Fragments {
-      static final ResponseField[] $responseFields = {
-        ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
-          ResponseField.Condition.typeCondition(new String[] {"Human", "Droid"})
-        )),
-        ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
-          ResponseField.Condition.typeCondition(new String[] {"Starship"})
-        ))
-      };
-
       final @Nullable Character character;
 
       final @Nullable Starship starship;
@@ -333,14 +324,8 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
         return new ResponseFieldMarshaller() {
           @Override
           public void marshal(ResponseWriter writer) {
-            final Character $character = character;
-            if ($character != null) {
-              $character.marshaller().marshal(writer);
-            }
-            final Starship $starship = starship;
-            if ($starship != null) {
-              $starship.marshaller().marshal(writer);
-            }
+            writer.writeFragment(character.marshaller());
+            writer.writeFragment(starship.marshaller());
           }
         };
       }
@@ -384,6 +369,15 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
       }
 
       public static final class Mapper implements ResponseFieldMapper<Fragments> {
+        static final ResponseField[] $responseFields = {
+          ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+            ResponseField.Condition.typeCondition(new String[] {"Human", "Droid"})
+          )),
+          ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+            ResponseField.Condition.typeCondition(new String[] {"Starship"})
+          ))
+        };
+
         final Character.Mapper characterFieldMapper = new Character.Mapper();
 
         final Starship.Mapper starshipFieldMapper = new Starship.Mapper();

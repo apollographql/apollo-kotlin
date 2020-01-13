@@ -73,7 +73,7 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
       val starshipFragment: StarshipFragment
     ) {
       fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        it.writeFragment(RESPONSE_FIELDS[0], starshipFragment.marshaller())
+        it.writeFragment(starshipFragment.marshaller())
       }
 
       companion object {

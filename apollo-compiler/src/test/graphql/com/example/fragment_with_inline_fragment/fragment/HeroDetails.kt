@@ -33,7 +33,7 @@ data class HeroDetails(
     it.writeString(RESPONSE_FIELDS[0], __typename)
     it.writeString(RESPONSE_FIELDS[1], name)
     it.writeObject(RESPONSE_FIELDS[2], friendsConnection.marshaller())
-    it.writeFragment(RESPONSE_FIELDS[3], asDroid?.marshaller())
+    it.writeFragment(asDroid?.marshaller())
   }
 
   companion object {
@@ -352,7 +352,7 @@ data class HeroDetails(
       val droidDetails: DroidDetails
     ) {
       fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        it.writeFragment(RESPONSE_FIELDS[0], droidDetails.marshaller())
+        it.writeFragment(droidDetails.marshaller())
       }
 
       companion object {

@@ -171,8 +171,8 @@ data class TestQuery(
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeString(RESPONSE_FIELDS[0], __typename)
       it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
-      it.writeFragment(RESPONSE_FIELDS[2], asHuman?.marshaller())
-      it.writeFragment(RESPONSE_FIELDS[3], asDroid?.marshaller())
+      it.writeFragment(asHuman?.marshaller())
+      it.writeFragment(asDroid?.marshaller())
     }
 
     companion object {

@@ -123,12 +123,6 @@ public class HumanDetails implements GraphqlFragment {
   }
 
   public static class Fragments {
-    static final ResponseField[] $responseFields = {
-      ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
-        ResponseField.Condition.typeCondition(new String[] {"Human", "Droid"})
-      ))
-    };
-
     final Optional<CharacterDetails> characterDetails;
 
     private transient volatile String $toString;
@@ -151,7 +145,7 @@ public class HumanDetails implements GraphqlFragment {
         public void marshal(ResponseWriter writer) {
           final CharacterDetails $characterDetails = characterDetails.isPresent() ? characterDetails.get() : null;
           if ($characterDetails != null) {
-            $characterDetails.marshaller().marshal(writer);
+            writer.writeFragment($characterDetails.marshaller());
           }
         }
       };
@@ -192,6 +186,12 @@ public class HumanDetails implements GraphqlFragment {
     }
 
     public static final class Mapper implements ResponseFieldMapper<Fragments> {
+      static final ResponseField[] $responseFields = {
+        ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+          ResponseField.Condition.typeCondition(new String[] {"Human", "Droid"})
+        ))
+      };
+
       final CharacterDetails.Mapper characterDetailsFieldMapper = new CharacterDetails.Mapper();
 
       @Override

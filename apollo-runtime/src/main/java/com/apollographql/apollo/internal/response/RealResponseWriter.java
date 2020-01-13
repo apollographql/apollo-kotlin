@@ -67,7 +67,7 @@ public final class RealResponseWriter implements ResponseWriter {
     buffer.put(field.responseName(), new FieldDescriptor(field, nestedResponseWriter.buffer));
   }
 
-  @Override public void writeFragment(@NotNull ResponseField field, @Nullable ResponseFieldMarshaller marshaller) {
+  @Override public void writeFragment(@Nullable ResponseFieldMarshaller marshaller) {
     if (marshaller != null) {
       marshaller.marshal(this);
     }

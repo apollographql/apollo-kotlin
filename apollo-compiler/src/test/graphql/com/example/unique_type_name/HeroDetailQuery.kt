@@ -79,7 +79,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
       val heroDetails: HeroDetails
     ) {
       fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        it.writeFragment(RESPONSE_FIELDS[0], heroDetails.marshaller())
+        it.writeFragment(heroDetails.marshaller())
       }
 
       companion object {
@@ -265,7 +265,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
           listItemWriter.writeObject(value?.marshaller())
         }
       }
-      it.writeFragment(RESPONSE_FIELDS[3], asHuman?.marshaller())
+      it.writeFragment(asHuman?.marshaller())
     }
 
     companion object {

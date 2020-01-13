@@ -20,7 +20,7 @@ public interface ResponseWriter {
 
   void writeObject(@NotNull ResponseField field, @Nullable ResponseFieldMarshaller marshaller);
 
-  void writeFragment(@NotNull ResponseField field, @Nullable ResponseFieldMarshaller marshaller);
+  void writeFragment(@Nullable ResponseFieldMarshaller marshaller);
 
   <T> void writeList(@NotNull ResponseField field, @Nullable List<T> values, @NotNull ListWriter<T> listWriter);
 

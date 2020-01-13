@@ -217,14 +217,18 @@ class SchemaTypeSpecBuilder(
     fun responseMarshallerSpec(fieldSpecs: List<FieldSpec>): MethodSpec {
       val code = fieldSpecs
           .map { fieldSpec ->
-            CodeBlock.builder()
-                .addStatement("final \$T \$L = \$L", fieldSpec.type.unwrapOptionalType().withoutAnnotations(),
-                    "\$${fieldSpec.name}", fieldSpec.type.unwrapOptionalValue(fieldSpec.name))
-                .beginControlFlow("if (\$L != null)", "\$${fieldSpec.name}")
-                .addStatement("\$L.\$L().marshal(\$L)", "\$${fieldSpec.name}", RESPONSE_MARSHALLER_PARAM_NAME,
-                    RESPONSE_WRITER_PARAM.name)
-                .endControlFlow()
-                .build()
+            if (fieldSpec.type.isOptional()) {
+              CodeBlock.builder()
+                  .addStatement("final \$T \$L = \$L", fieldSpec.type.unwrapOptionalType().withoutAnnotations(),
+                      "\$${fieldSpec.name}", fieldSpec.type.unwrapOptionalValue(fieldSpec.name))
+                  .beginControlFlow("if (\$L != null)", "\$${fieldSpec.name}")
+                  .addStatement("\$L.writeFragment(\$L.\$L())", RESPONSE_WRITER_PARAM.name, "\$${fieldSpec.name}",
+                      RESPONSE_MARSHALLER_PARAM_NAME)
+                  .endControlFlow()
+                  .build()
+            } else {
+              CodeBlock.of("\$L.writeFragment(\$L.\$L());\n", RESPONSE_WRITER_PARAM.name, fieldSpec.name, RESPONSE_MARSHALLER_PARAM_NAME)
+            }
           }
           .fold(CodeBlock.builder(), CodeBlock.Builder::add)
           .build()
@@ -246,10 +250,13 @@ class SchemaTypeSpecBuilder(
     }
 
     val fragmentFields = responseFieldSpecs()
-    val mapper = FragmentsResponseMapperBuilder(fragmentFields, context).build()
+    val mapper = FragmentsResponseMapperBuilder(fragmentFields, context)
+        .build()
+        .toBuilder()
+        .addField(fieldArray(fragmentFields))
+        .build()
     return TypeSpec.classBuilder(FRAGMENTS_FIELD.name.capitalize())
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-        .addField(fieldArray(fragmentFields))
         .addFields(fragmentFields.map { it.fieldSpec })
         .addFragmentAccessorMethods()
         .addType(mapper)

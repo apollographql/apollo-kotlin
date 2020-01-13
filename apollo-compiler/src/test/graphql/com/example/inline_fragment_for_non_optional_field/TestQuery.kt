@@ -83,7 +83,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeFragment(RESPONSE_FIELDS[1], asHuman?.marshaller())
+      it.writeFragment(asHuman?.marshaller())
     }
 
     companion object {

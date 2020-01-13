@@ -268,9 +268,9 @@ internal object KotlinCodeGen {
       }
       is FieldType.Fragment -> {
         if (isOptional) {
-          CodeBlock.of("it.writeFragment(%L, %L?.marshaller())", field, name)
+          CodeBlock.of("it.writeFragment(%L?.marshaller())", name)
         } else {
-          CodeBlock.of("it.writeFragment(%L, %L.marshaller())", field, name)
+          CodeBlock.of("it.writeFragment(%L.marshaller())", name)
         }
       }
       is FieldType.Array -> {

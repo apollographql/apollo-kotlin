@@ -387,12 +387,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static class Fragments {
-      static final ResponseField[] $responseFields = {
-        ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
-          ResponseField.Condition.typeCondition(new String[] {"Human", "Droid"})
-        ))
-      };
-
       final @NotNull HeroDetails heroDetails;
 
       private transient volatile String $toString;
@@ -413,10 +407,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         return new ResponseFieldMarshaller() {
           @Override
           public void marshal(ResponseWriter writer) {
-            final HeroDetails $heroDetails = heroDetails;
-            if ($heroDetails != null) {
-              $heroDetails.marshaller().marshal(writer);
-            }
+            writer.writeFragment(heroDetails.marshaller());
           }
         };
       }
@@ -466,6 +457,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
 
       public static final class Mapper implements ResponseFieldMapper<Fragments> {
+        static final ResponseField[] $responseFields = {
+          ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+            ResponseField.Condition.typeCondition(new String[] {"Human", "Droid"})
+          ))
+        };
+
         final HeroDetails.Mapper heroDetailsFieldMapper = new HeroDetails.Mapper();
 
         @Override

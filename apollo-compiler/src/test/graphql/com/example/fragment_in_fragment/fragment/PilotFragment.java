@@ -224,12 +224,6 @@ public class PilotFragment implements GraphqlFragment {
     }
 
     public static class Fragments {
-      static final ResponseField[] $responseFields = {
-        ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
-          ResponseField.Condition.typeCondition(new String[] {"Planet"})
-        ))
-      };
-
       final @NotNull PlanetFragment planetFragment;
 
       private transient volatile String $toString;
@@ -250,10 +244,7 @@ public class PilotFragment implements GraphqlFragment {
         return new ResponseFieldMarshaller() {
           @Override
           public void marshal(ResponseWriter writer) {
-            final PlanetFragment $planetFragment = planetFragment;
-            if ($planetFragment != null) {
-              $planetFragment.marshaller().marshal(writer);
-            }
+            writer.writeFragment(planetFragment.marshaller());
           }
         };
       }
@@ -293,6 +284,12 @@ public class PilotFragment implements GraphqlFragment {
       }
 
       public static final class Mapper implements ResponseFieldMapper<Fragments> {
+        static final ResponseField[] $responseFields = {
+          ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+            ResponseField.Condition.typeCondition(new String[] {"Planet"})
+          ))
+        };
+
         final PlanetFragment.Mapper planetFragmentFieldMapper = new PlanetFragment.Mapper();
 
         @Override

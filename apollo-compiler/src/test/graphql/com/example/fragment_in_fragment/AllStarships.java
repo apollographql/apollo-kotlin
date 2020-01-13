@@ -517,12 +517,6 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     }
 
     public static class Fragments {
-      static final ResponseField[] $responseFields = {
-        ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
-          ResponseField.Condition.typeCondition(new String[] {"Starship"})
-        ))
-      };
-
       final @NotNull StarshipFragment starshipFragment;
 
       private transient volatile String $toString;
@@ -543,10 +537,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
         return new ResponseFieldMarshaller() {
           @Override
           public void marshal(ResponseWriter writer) {
-            final StarshipFragment $starshipFragment = starshipFragment;
-            if ($starshipFragment != null) {
-              $starshipFragment.marshaller().marshal(writer);
-            }
+            writer.writeFragment(starshipFragment.marshaller());
           }
         };
       }
@@ -586,6 +577,12 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       }
 
       public static final class Mapper implements ResponseFieldMapper<Fragments> {
+        static final ResponseField[] $responseFields = {
+          ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+            ResponseField.Condition.typeCondition(new String[] {"Starship"})
+          ))
+        };
+
         final StarshipFragment.Mapper starshipFragmentFieldMapper = new StarshipFragment.Mapper();
 
         @Override

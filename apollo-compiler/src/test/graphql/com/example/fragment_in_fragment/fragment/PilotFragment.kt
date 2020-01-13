@@ -93,7 +93,7 @@ data class PilotFragment(
       val planetFragment: PlanetFragment
     ) {
       fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        it.writeFragment(RESPONSE_FIELDS[0], planetFragment.marshaller())
+        it.writeFragment(planetFragment.marshaller())
       }
 
       companion object {

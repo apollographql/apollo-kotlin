@@ -265,12 +265,6 @@ public interface HeroDetails extends GraphqlFragment {
     }
 
     public static class Fragments {
-      static final ResponseField[] $responseFields = {
-        ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
-          ResponseField.Condition.typeCondition(new String[] {"Droid"})
-        ))
-      };
-
       final Optional<DroidDetails> droidDetails;
 
       private transient volatile String $toString;
@@ -293,7 +287,7 @@ public interface HeroDetails extends GraphqlFragment {
           public void marshal(ResponseWriter writer) {
             final DroidDetails $droidDetails = droidDetails.isPresent() ? droidDetails.get() : null;
             if ($droidDetails != null) {
-              $droidDetails.marshaller().marshal(writer);
+              writer.writeFragment($droidDetails.marshaller());
             }
           }
         };
@@ -344,6 +338,12 @@ public interface HeroDetails extends GraphqlFragment {
       }
 
       public static final class Mapper implements ResponseFieldMapper<Fragments> {
+        static final ResponseField[] $responseFields = {
+          ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+            ResponseField.Condition.typeCondition(new String[] {"Droid"})
+          ))
+        };
+
         final DroidDetails.Mapper droidDetailsFieldMapper = new DroidDetails.Mapper();
 
         @Override

@@ -59,7 +59,7 @@ data class HumanDetails(
     val characterDetails: CharacterDetails?
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeFragment(RESPONSE_FIELDS[0], characterDetails?.marshaller())
+      it.writeFragment(characterDetails?.marshaller())
     }
 
     companion object {

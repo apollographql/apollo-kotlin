@@ -74,8 +74,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       val droidDetails: DroidDetails?
     ) {
       fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        it.writeFragment(RESPONSE_FIELDS[0], humanDetails?.marshaller())
-        it.writeFragment(RESPONSE_FIELDS[1], droidDetails?.marshaller())
+        it.writeFragment(humanDetails?.marshaller())
+        it.writeFragment(droidDetails?.marshaller())
       }
 
       companion object {
@@ -133,8 +133,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       val droidDetails: DroidDetails?
     ) {
       fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        it.writeFragment(RESPONSE_FIELDS[0], humanDetails?.marshaller())
-        it.writeFragment(RESPONSE_FIELDS[1], droidDetails?.marshaller())
+        it.writeFragment(humanDetails?.marshaller())
+        it.writeFragment(droidDetails?.marshaller())
       }
 
       companion object {

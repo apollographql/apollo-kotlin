@@ -121,7 +121,7 @@ data class TestQuery(
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeString(RESPONSE_FIELDS[0], __typename)
       it.writeString(RESPONSE_FIELDS[1], name)
-      it.writeFragment(RESPONSE_FIELDS[2], asHuman1?.marshaller())
+      it.writeFragment(asHuman1?.marshaller())
     }
 
     companion object {
@@ -247,7 +247,7 @@ data class TestQuery(
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeString(RESPONSE_FIELDS[0], __typename)
       it.writeString(RESPONSE_FIELDS[1], name)
-      it.writeFragment(RESPONSE_FIELDS[2], asHuman2?.marshaller())
+      it.writeFragment(asHuman2?.marshaller())
     }
 
     companion object {
@@ -332,8 +332,8 @@ data class TestQuery(
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeString(RESPONSE_FIELDS[0], __typename)
       it.writeString(RESPONSE_FIELDS[1], name)
-      it.writeFragment(RESPONSE_FIELDS[2], asHuman?.marshaller())
-      it.writeFragment(RESPONSE_FIELDS[3], asDroid?.marshaller())
+      it.writeFragment(asHuman?.marshaller())
+      it.writeFragment(asDroid?.marshaller())
     }
 
     companion object {

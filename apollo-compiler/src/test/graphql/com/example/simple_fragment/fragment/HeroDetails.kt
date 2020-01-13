@@ -59,7 +59,7 @@ internal data class HeroDetails(
     val humanDetails: HumanDetails?
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeFragment(RESPONSE_FIELDS[0], humanDetails?.marshaller())
+      it.writeFragment(humanDetails?.marshaller())
     }
 
     companion object {

@@ -121,7 +121,7 @@ data class TestQuery(
       val heroDetails: HeroDetails
     ) {
       fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        it.writeFragment(RESPONSE_FIELDS[0], heroDetails.marshaller())
+        it.writeFragment(heroDetails.marshaller())
       }
 
       companion object {
