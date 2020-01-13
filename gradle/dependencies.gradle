@@ -41,7 +41,7 @@ ext.dep = [
     ],
     apollo                : [
         plugin          : "com.apollographql.apollo:apollo-gradle-plugin:$versions.apollo",
-        pluginIncubating: "com.apollographql.apollo:apollo-gradle-plugin-incubating:$versions.apollo",
+        pluginDeprecated: "com.apollographql.apollo:apollo-gradle-plugin-deprecated:$versions.apollo",
         runtime         : "com.apollographql.apollo:apollo-runtime:$versions.apollo",
         rx2             : "com.apollographql.apollo:apollo-rx2-support:$versions.apollo",
         httpCache       : "com.apollographql.apollo:apollo-http-cache:$versions.apollo",

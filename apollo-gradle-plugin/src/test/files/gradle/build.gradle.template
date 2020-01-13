@@ -11,7 +11,7 @@ buildscript {
   dependencies {
     // ADD BUILDSCRIPT DEPENDENCIES HERE
     // classpath(dep.androidPlugin)
-    // classpath(dep.apolloPluginIncubating)
+    // classpath(dep.apolloPlugin)
   }
 }
 

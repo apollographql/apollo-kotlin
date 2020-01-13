@@ -2,7 +2,7 @@ rootProject.name = "apollo-android"
 
 include("apollo-compiler")
 include("apollo-gradle-plugin")
-include("apollo-gradle-plugin-incubating")
+include("apollo-gradle-plugin-deprecated")
 include("apollo-runtime")
 include("apollo-api")
 include("apollo-android-support")
