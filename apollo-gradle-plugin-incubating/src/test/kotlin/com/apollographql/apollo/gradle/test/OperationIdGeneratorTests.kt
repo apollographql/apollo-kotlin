@@ -10,7 +10,7 @@ import java.io.File
 
 class CustomIdGeneratorTests {
   val apolloConfiguration = """
-      class MyIdGenerator implements CustomIdGenerator {
+      class MyIdGenerator implements OperationIdGenerator {
           String apply(String queryString, String queryFilepath) {
               return queryString.length().toString();
           }
