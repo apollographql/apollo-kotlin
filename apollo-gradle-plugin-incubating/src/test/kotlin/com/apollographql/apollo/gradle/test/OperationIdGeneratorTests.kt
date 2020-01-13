@@ -75,7 +75,7 @@ class CustomIdGeneratorTests {
 
       val gradleFile = File(dir, "build.gradle").readText()
 
-      File(dir, "build.gradle").writeText("import com.apollographql.apollo.compiler.CustomIdGenerator\n$gradleFile")
+      File(dir, "build.gradle").writeText("import com.apollographql.apollo.compiler.OperationIdGenerator\n$gradleFile")
 
       var result = TestUtils.executeTask("generateMainServiceApolloSources", dir, "--build-cache", "-i")
 
