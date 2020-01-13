@@ -1,4 +1,5 @@
 .gradle
+**/.idea/.name
 **/.idea/*.xml
 **/.idea/caches/
 **/.idea/copyright/
