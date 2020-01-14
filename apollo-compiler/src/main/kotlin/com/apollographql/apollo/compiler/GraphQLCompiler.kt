@@ -54,7 +54,7 @@ class GraphQLCompiler {
       val dir = operationOutputFile.parentFile
       dir.mkdirs()
 
-      val operationOutput = OperationOutputWriter(args.packageNameProvider)
+      val operationOutput = OperationOutputWriter(args.operationIdGenerator)
       operationOutput.apply { visit(ir) }.writeTo(operationOutputFile)
     }
   }
