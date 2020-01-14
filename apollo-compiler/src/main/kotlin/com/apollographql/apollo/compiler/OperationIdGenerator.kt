@@ -30,7 +30,7 @@ interface OperationIdGenerator {
       return operationDocument.sha256()
     }
 
-    override val version = "1.0"
+    override val version = "sha256-1.0"
 
     private fun String.sha256(): String {
       val bytes = toByteArray(charset = StandardCharsets.UTF_8)
