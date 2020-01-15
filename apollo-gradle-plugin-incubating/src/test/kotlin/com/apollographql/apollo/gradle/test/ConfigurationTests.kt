@@ -329,7 +329,7 @@ class ConfigurationTests {
   }
 
   @Test
-  fun `sources can be overridden in compilationUnits`() {
+  fun `sources with a service can be overridden in compilationUnits`() {
     withSimpleProject("""
       apollo {
         service("starwars") {
@@ -348,6 +348,58 @@ class ConfigurationTests {
       assertTrue(dir.generatedChild("main/starwars/com/example/DroidDetailsQuery.java").isFile)
       assertTrue(dir.generatedChild("main/starwars/com/example/type/CustomType.java").isFile)
       assertTrue(dir.generatedChild("main/starwars/com/example/fragment/SpeciesInformation.java").isFile)
+    }
+  }
+
+  @Test
+  fun `sources can be overridden in compilationUnits`() {
+    withSimpleProject("""
+      apollo {
+        schemaFile = file("com/some/other/schema.json")
+
+        onCompilationUnits {
+          schemaFile = file("src/main/graphql/com/example/schema.json")
+          graphqlSourceDirectorySet.srcDir(file("src/main/graphql/"))
+          graphqlSourceDirectorySet.include("**/*.graphql")
+        }
+      }
+    """.trimIndent()) { dir ->
+      TestUtils.executeTask("generateApolloSources", dir)
+      assertTrue(dir.generatedChild("main/service/com/example/DroidDetailsQuery.java").isFile)
+    }
+  }
+
+  @Test
+  fun `onCompilationUnits can configure sources alone`() {
+    withSimpleProject("""
+      apollo {
+        onCompilationUnits {
+          schemaFile = file("src/main/graphql/com/example/schema.json")
+          graphqlSourceDirectorySet.srcDir(file("src/main/graphql/"))
+          graphqlSourceDirectorySet.include("**/*.graphql")
+        }
+      }
+    """.trimIndent()) { dir ->
+      TestUtils.executeTask("generateApolloSources", dir)
+      assertTrue(dir.generatedChild("main/service/com/example/DroidDetailsQuery.java").isFile)
+    }
+  }
+
+  @Test
+  fun `onCompilationUnits for main sourceSet should not generate for test`() {
+    withSimpleProject("""
+      apollo {
+        onCompilationUnits {
+          if (variantName == "main") {
+            schemaFile = file("src/main/graphql/com/example/schema.json")
+            graphqlSourceDirectorySet.srcDir(file("src/main/graphql/"))
+            graphqlSourceDirectorySet.include("**/*.graphql")
+          }
+        }
+      }
+    """.trimIndent()) { dir ->
+      TestUtils.executeTask("generateApolloSources", dir)
+      assertTrue(dir.generatedChild("test/service/com/example/DroidDetailsQuery.java").exists().not())
     }
   }
 
