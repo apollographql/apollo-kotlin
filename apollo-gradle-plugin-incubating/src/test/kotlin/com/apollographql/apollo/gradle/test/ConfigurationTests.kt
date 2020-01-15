@@ -355,8 +355,7 @@ class ConfigurationTests {
   fun `sources can be overridden in compilationUnits`() {
     withSimpleProject("""
       apollo {
-        schemaPath = "com/some/other/schema.json"
-        sourceFolder = "com/some/other"
+        schemaFile = file("com/some/other/schema.json")
 
         onCompilationUnits {
           schemaFile = file("src/main/graphql/com/example/schema.json")
