@@ -159,7 +159,12 @@ open class ApolloPlugin : Plugin<Project> {
             .withFallback(project.objects, compilationUnit.service)
             .withFallback(project.objects, compilationUnit.apolloExtension)
 
-        compilationUnit.setSourcesIfNeeded(compilerParams.graphqlSourceDirectorySet, compilerParams.schemaFile)
+        val graphqlSourceDirectorySet = if (compilationUnit.apolloVariant.isTest) {
+          compilationUnit.graphqlSourceDirectorySet
+        } else {
+          compilerParams.graphqlSourceDirectorySet
+        }
+        compilationUnit.setSourcesIfNeeded(graphqlSourceDirectorySet, compilerParams.schemaFile)
 
         it.graphqlFiles.setFrom(compilerParams.graphqlSourceDirectorySet)
         // I'm not sure if gradle is sensitive to the order of the rootFolders. Sort them just in case.

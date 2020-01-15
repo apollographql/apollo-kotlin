@@ -1,5 +1,6 @@
 package com.apollographql.apollo.gradle.test
 
+import com.apollographql.apollo.gradle.internal.ApolloPlugin
 import com.apollographql.apollo.gradle.internal.child
 import com.apollographql.apollo.gradle.util.TestUtils
 import com.apollographql.apollo.gradle.util.TestUtils.withSimpleProject
@@ -523,6 +524,40 @@ class ConfigurationTests {
       TestUtils.executeTask("generateApolloSources", dir)
 
       assertTrue(dir.generatedChild("main/service/example/fragment/SpeciesInformation.java").isFile)
+    }
+  }
+
+  @Test
+  fun `test variants do not create duplicate classes`() {
+    withSimpleProject("""
+      apollo {
+        schemaFile = file("src/main/graphql/com/example/schema.json")
+        graphqlSourceDirectorySet.srcDir("src/main/graphql/")
+        graphqlSourceDirectorySet.include("**/*.graphql")
+      }
+    """.trimIndent()) { dir ->
+
+      File(dir, "build.gradle").replaceInText(
+          "implementation dep.apollo.api",
+          "implementation dep.apollo.api\nimplementation \"junit:junit:4.12\""
+      )
+      File(dir, "src/test/java/com/example/").mkdirs()
+      File(dir, "src/test/java/com/example/MainTest.java").writeText("""
+        package com.example;
+        
+        import com.example.DroidDetailsQuery;
+        import org.junit.Test;
+        
+        public class MainTest {
+            @Test
+            public void aMethodThatReferencesAGeneratedQuery() {
+                new DroidDetailsQuery();
+            }
+        }
+""".trimIndent())
+      val result = TestUtils.executeTask("build", dir)
+
+      assertEquals(TaskOutcome.SUCCESS, result.task(":build")!!.outcome)
     }
   }
 }
