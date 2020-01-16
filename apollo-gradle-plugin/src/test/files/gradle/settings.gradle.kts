@@ -18,7 +18,7 @@ pluginManagement {
       }
 
       if (requested.id.id == "com.apollographql.apollo") {
-        useModule(groovy.util.Eval.x(extra, "x.dep.apollo.pluginIncubating"))
+        useModule(groovy.util.Eval.x(extra, "x.dep.apollo.plugin"))
       }
     }
   }

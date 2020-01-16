@@ -1,47 +1,59 @@
 plugins {
-  groovy
-  idea
-  `java-gradle-plugin`
+  id("java")
+  id("org.jetbrains.kotlin.jvm")
+  id("java-gradle-plugin")
+  id("com.gradle.plugin-publish") version "0.10.1"
 }
 
-java {
-  sourceSets.getByName("main") {
-    java.srcDirs()
-    withConvention(GroovySourceSet::class) {
-      groovy.srcDirs("src/main/java", "src/main/groovy")
-    }
-  }
-}
+// groovy strings with double quotes are GString.
+// groovy strings with single quotes are java.lang.String
+// In all cases, gradle APIs take Any so just feed them whatever is returned
+fun dep(key: String) = (extra["dep"] as Map<*, *>)[key]!!
 
-configurations {
-  create("fixtureClasspath")
+fun Any.dot(key: String): Any {
+  return (this as Map<String, *>)[key]!!
 }
 
 dependencies {
-  add("compileOnly", groovy.util.Eval.x(project, "x.dep.android.plugin"))
-  add("compileOnly", gradleApi())
+  compileOnly(gradleApi())
+  compileOnly(dep("kotlin").dot("plugin"))
+  compileOnly(dep("android").dot("plugin"))
 
-  add("implementation", localGroovy())
-  add("implementation", project(":apollo-compiler"))
-  add("implementation", groovy.util.Eval.x(project, "x.dep.guavaJre"))
-  add("implementation", groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
-
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.android.plugin"))
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.junit"))
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.spock").toString()) {
-    exclude(module = "groovy-all")
-  }
-  add("fixtureClasspath", groovy.util.Eval.x(project, "x.dep.android.plugin"))
-}
-
-// Inspired by: https://github.com/square/sqldelight/blob/83145b28cbdd949e98e87819299638074bd21147/sqldelight-gradle-plugin/build.gradle#L18
-// Append any extra dependencies to the test fixtures via a custom configuration classpath. This
-// allows us to apply additional plugins in a fixture while still leveraging dependency resolution
-// and de-duplication semantics.
-tasks.withType<PluginUnderTestMetadata> {
-  getPluginClasspath().from(configurations.named("fixtureClasspath"))
+  implementation(project(":apollo-compiler"))
+  implementation(dep("kotlin").dot("stdLib"))
+  implementation(dep("okHttp").dot("okHttp"))
+  implementation(dep("moshi").dot("moshi"))
+  
+  testImplementation(dep("junit"))
+  testImplementation(dep("okHttp").dot("mockWebServer"))
 }
 
 tasks.withType<Test> {
-  jvmArgs("-Xmx512m")
+  // Restart the daemon once in a while or we end up running out of MetaSpace
+  // It's not clear if it's a real ClassLoader leak or something else. The okio timeout thread does hold some ClassLoaders
+  // for up to 60s. The heap dumps also show some process reaper threads but it might just as well be a temporary thing, not sure.
+  // See https://github.com/gradle/gradle/issues/8354
+  setForkEvery(8L)
+  dependsOn(":apollo-api:publishMavenPublicationToPluginTestRepository")
+  dependsOn(":apollo-compiler:publishMavenPublicationToPluginTestRepository")
+  dependsOn("publishMavenPublicationToPluginTestRepository")
+
+  inputs.dir("src/test/files")
+}
+
+pluginBundle {
+  website = "https://github.com/apollographql/apollo-android"
+  vcsUrl = "https://github.com/apollographql/apollo-android"
+  tags = listOf("graphql", "apollo", "apollographql", "kotlin", "java", "jvm", "android", "graphql-client")
+}
+
+gradlePlugin {
+  plugins {
+    create("apolloGradlePlugin") {
+      id = "com.apollographql.apollo"
+      displayName = "Apollo-Android GraphQL client plugin."
+      description = "Automatically generates typesafe java and kotlin models from your GraphQL files."
+      implementationClass = "com.apollographql.apollo.gradle.internal.ApolloPlugin"
+    }
+  }
 }
