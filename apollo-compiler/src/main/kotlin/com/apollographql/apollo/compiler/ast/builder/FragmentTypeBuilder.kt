@@ -4,13 +4,15 @@ import com.apollographql.apollo.compiler.ast.FieldType
 import com.apollographql.apollo.compiler.ast.ObjectType
 import com.apollographql.apollo.compiler.ast.TypeRef
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
+import com.apollographql.apollo.compiler.ir.Condition
 import com.apollographql.apollo.compiler.ir.Fragment
+import com.apollographql.apollo.compiler.ir.FragmentRef
 
 internal fun Fragment.ast(context: Context): ObjectType {
   val typeRef = context.registerObjectType(
       name = fragmentName.capitalize().escapeKotlinReservedWord(),
       schemaTypeName = "",
-      fragmentSpreads = fragmentSpreads,
+      fragmentRefs = fragmentRefs,
       inlineFragments = emptyList(),
       fields = fields,
       singularize = false,
@@ -40,7 +42,7 @@ internal fun Fragment.ast(context: Context): ObjectType {
   }
 }
 
-internal fun List<Fragment>.astFragmentsObjectFieldType(
+internal fun Map<FragmentRef, Fragment>.astFragmentsObjectFieldType(
     fragmentsPackage: String,
     isOptional: Fragment.() -> Boolean
 ): Pair<ObjectType.Field?, ObjectType?> {
@@ -50,7 +52,7 @@ internal fun List<Fragment>.astFragmentsObjectFieldType(
   val type = ObjectType(
       name = "Fragments",
       schemaTypeName = "",
-      fields = map { fragment ->
+      fields = map { (fragmentRef, fragment) ->
         ObjectType.Field(
             name = fragment.fragmentName.decapitalize().escapeKotlinReservedWord(),
             responseName = "__typename",
@@ -60,13 +62,18 @@ internal fun List<Fragment>.astFragmentsObjectFieldType(
                 packageName = fragmentsPackage
             )),
             description = "",
-            isOptional = fragment.isOptional(),
+            isOptional = fragmentRef.conditions.isNotEmpty() || fragment.isOptional(),
             isDeprecated = false,
             deprecationReason = "",
             arguments = emptyMap(),
-            conditions = fragment.possibleTypes.map {
-              ObjectType.Field.Condition.Type(listOf(it))
-            }
+            conditions = fragmentRef.conditions
+                .filter { condition -> condition.kind == Condition.Kind.BOOLEAN.rawValue }
+                .map { condition ->
+                  ObjectType.Field.Condition.Directive(
+                      variableName = condition.variableName,
+                      inverted = condition.inverted
+                  )
+                } + ObjectType.Field.Condition.Type(fragment.possibleTypes)
         )
       },
       fragmentsType = null,

@@ -2,6 +2,7 @@ package com.apollographql.apollo.compiler.ir
 
 data class FragmentRef(
     val name: String,
+    val conditions: List<Condition>,
     val sourceLocation: SourceLocation
 ) {
   override fun equals(other: Any?): Boolean {

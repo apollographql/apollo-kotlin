@@ -326,11 +326,12 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
   private fun GraphQLParser.SelectionSetContext?.fragmentRefs(): List<FragmentRef> {
     return this
         ?.selection()
-        ?.mapNotNull { ctx -> ctx.fragmentSpread()?.fragmentName() }
-        ?.map { fragmentName ->
+        ?.mapNotNull { ctx -> ctx.fragmentSpread() }
+        ?.map { fragmentSpread ->
           FragmentRef(
-              name = fragmentName.NAME().text,
-              sourceLocation = SourceLocation(fragmentName.NAME().symbol)
+              name = fragmentSpread.fragmentName().NAME().text,
+              conditions = fragmentSpread.directives().parse(),
+              sourceLocation = SourceLocation(fragmentSpread.fragmentName().NAME().symbol)
           )
         }
         ?: emptyList()

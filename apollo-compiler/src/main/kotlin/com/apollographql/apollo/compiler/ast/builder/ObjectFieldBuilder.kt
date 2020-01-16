@@ -40,7 +40,7 @@ private fun Field.array(context: Context): ObjectType.Field {
         context.registerObjectType(
             name = responseName.replace("[", "").replace("]", "").replace("!", ""),
             schemaTypeName = type.replace("[", "").replace("]", "").replace("!", ""),
-            fragmentSpreads = fragmentSpreads,
+            fragmentRefs = fragmentRefs,
             inlineFragments = inlineFragments,
             fields = fields,
             kind = ObjectType.Kind.Object
@@ -81,7 +81,7 @@ private fun Field.`object`(context: Context): ObjectType.Field {
   val typeRef = context.registerObjectType(
       name = responseName.replace("[", "").replace("[", "").replace("!", ""),
       schemaTypeName = type.replace("[", "").replace("[", "").replace("!", ""),
-      fragmentSpreads = fragmentSpreads,
+      fragmentRefs = fragmentRefs,
       inlineFragments = inlineFragments,
       fields = fields,
       singularize = false,

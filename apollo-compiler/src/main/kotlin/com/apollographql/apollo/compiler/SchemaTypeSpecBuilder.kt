@@ -1,9 +1,7 @@
 package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.api.*
-import com.apollographql.apollo.compiler.ir.CodeGenerationContext
-import com.apollographql.apollo.compiler.ir.Field
-import com.apollographql.apollo.compiler.ir.InlineFragment
+import com.apollographql.apollo.compiler.ir.*
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
@@ -11,7 +9,7 @@ class SchemaTypeSpecBuilder(
     typeName: String,
     private val schemaType: String = "",
     private val fields: List<Field>,
-    private val fragmentSpreads: List<String>,
+    private val fragmentRefs: List<FragmentRef>,
     private val inlineFragments: List<InlineFragment>,
     private val context: CodeGenerationContext,
     private val abstract: Boolean = false
@@ -54,7 +52,7 @@ class SchemaTypeSpecBuilder(
               context.reservedTypeNames),
           schemaType = schemaType,
           fields = fields,
-          fragmentSpreads = fragmentSpreads,
+          fragmentRefs = fragmentRefs,
           inlineFragments = emptyList(),
           context = context
       )
@@ -124,7 +122,7 @@ class SchemaTypeSpecBuilder(
   }
 
   private fun TypeSpec.Builder.addFragments(): TypeSpec.Builder {
-    if (fragmentSpreads.isNotEmpty()) {
+    if (fragmentRefs.isNotEmpty()) {
       addType(fragmentsTypeSpec())
       addField(fragmentsFieldSpec())
       addMethod(fragmentsAccessorMethodSpec())
@@ -168,17 +166,17 @@ class SchemaTypeSpecBuilder(
   /** Returns a generic `Fragments` interface with methods for each of the provided fragments */
   private fun fragmentsTypeSpec(): TypeSpec {
 
-    fun isOptional(fragmentName: String): Boolean {
-      return context.ir.fragments
-          .first { it.fragmentName == fragmentName }
+    fun FragmentRef.isOptional(): Boolean {
+      return conditions.isNotEmpty() || context.ir.fragments
+          .first { it.fragmentName == name }
           .let { it.typeCondition != normalizeGraphQlType(schemaType) }
     }
 
     fun responseFieldSpecs(): List<ResponseFieldSpec> {
-      return fragmentSpreads
-          .mapNotNull { fragmentName -> context.ir.fragments.find { it.fragmentName == fragmentName } }
-          .map { fragment ->
-            val optional = isOptional(fragment.fragmentName)
+      return fragmentRefs
+          .mapNotNull { fragmentRef -> context.ir.fragments.find { it.fragmentName == fragmentRef.name }?.let { fragmentRef to it } }
+          .map { (fragmentRef, fragment) ->
+            val optional = fragmentRef.isOptional()
             val fieldSpec = FieldSpec.builder(
                 JavaTypeResolver(context = context, packageName = context.packageNameProvider.fragmentsPackageName)
                     .resolve(typeName = fragment.fragmentName.capitalize(), isOptional = optional), fragment.fragmentName.decapitalize())
@@ -186,7 +184,7 @@ class SchemaTypeSpecBuilder(
                 .build()
             val normalizedFieldSpec = FieldSpec.builder(fieldSpec.type.unwrapOptionalType().withoutAnnotations(), fieldSpec.name).build()
             ResponseFieldSpec(
-                irField = Field.TYPE_NAME_FIELD,
+                irField = Field.TYPE_NAME_FIELD.copy(conditions = fragmentRef.conditions),
                 fieldSpec = fieldSpec,
                 normalizedFieldSpec = normalizedFieldSpec,
                 responseFieldType = ResponseField.Type.FRAGMENT,
@@ -196,22 +194,17 @@ class SchemaTypeSpecBuilder(
           }
     }
 
-    fun TypeSpec.Builder.addFragmentAccessorMethods(): TypeSpec.Builder {
-      addMethods(fragmentSpreads.map { fragmentName ->
-        val optional = isOptional(fragmentName)
-        val methodName = if (context.useJavaBeansSemanticNaming) {
-          fragmentName.toJavaBeansSemanticNaming(isBooleanField = false)
-        } else {
-          fragmentName.decapitalize()
-        }
-        MethodSpec.methodBuilder(methodName)
-            .returns(JavaTypeResolver(context = context, packageName = context.packageNameProvider.fragmentsPackageName)
-                .resolve(typeName = fragmentName.capitalize(), isOptional = optional))
-            .addModifiers(Modifier.PUBLIC)
-            .addStatement("return this.\$L", fragmentName.decapitalize())
-            .build()
-      })
-      return this
+    fun FieldSpec.accessorMethod(): MethodSpec {
+      val methodName = if (context.useJavaBeansSemanticNaming) {
+        name.toJavaBeansSemanticNaming(isBooleanField = false)
+      } else {
+        name.decapitalize()
+      }
+      return MethodSpec.methodBuilder(methodName)
+          .returns(type)
+          .addModifiers(Modifier.PUBLIC)
+          .addStatement("return this.\$L", name)
+          .build()
     }
 
     fun responseMarshallerSpec(fieldSpecs: List<FieldSpec>): MethodSpec {
@@ -250,6 +243,7 @@ class SchemaTypeSpecBuilder(
     }
 
     val fragmentFields = responseFieldSpecs()
+    val fragmentFieldSpecs = fragmentFields.map { it.fieldSpec }
     val mapper = FragmentsResponseMapperBuilder(fragmentFields, context)
         .build()
         .toBuilder()
@@ -257,8 +251,8 @@ class SchemaTypeSpecBuilder(
         .build()
     return TypeSpec.classBuilder(FRAGMENTS_FIELD.name.capitalize())
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-        .addFields(fragmentFields.map { it.fieldSpec })
-        .addFragmentAccessorMethods()
+        .addFields(fragmentFieldSpecs)
+        .addMethods(fragmentFieldSpecs.map { it.accessorMethod() })
         .addType(mapper)
         .addMethod(responseMarshallerSpec(fragmentFields.map { it.fieldSpec }))
         .build()
@@ -325,7 +319,7 @@ class SchemaTypeSpecBuilder(
           context = context
       )
     }
-    val fragments = if (fragmentSpreads.isNotEmpty()) {
+    val fragments = if (fragmentRefs.isNotEmpty()) {
       val normalizedFieldSpec = FieldSpec.builder(
           FRAGMENTS_FIELD.type.withoutAnnotations(),
           FRAGMENTS_FIELD.name

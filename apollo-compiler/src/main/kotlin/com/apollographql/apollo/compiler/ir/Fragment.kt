@@ -19,15 +19,13 @@ data class Fragment(
     val sourceLocation: SourceLocation
 ) : CodeGenerator {
 
-  val fragmentSpreads: List<String> = fragmentRefs.map { it.name }
-
   /** Returns the Java interface that represents this Fragment object. */
   override fun toTypeSpec(context: CodeGenerationContext, abstract: Boolean): TypeSpec {
     return SchemaTypeSpecBuilder(
         typeName = fragmentName.capitalize(),
         schemaType = typeCondition,
         fields = fields,
-        fragmentSpreads = fragmentSpreads,
+        fragmentRefs = fragmentRefs,
         inlineFragments = inlineFragments,
         context = context,
         abstract = abstract
