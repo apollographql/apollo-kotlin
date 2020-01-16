@@ -27,7 +27,7 @@ ApolloClient.builder()
 ```
 
 
-## Transformed queries
+## OperationOutput.json
 
 If your backend uses custom persisted queries, Apollo-Android can generate an OperationOutput json from your .graphql queries. They will match what the client is sending exactly so you can persist them on your server.
 
@@ -54,9 +54,9 @@ apollo {
 
     /**
      * Use this version override to indicate an update to the implementation.
-     * This invalidates the current cache.
+     * This forces gradle to recompile models.
      */
-    String version = "v1"
+    String version = "my-md5-v1"
   }
 }
 ```

@@ -97,6 +97,7 @@ fragment FeedCommentFragment on Comment {
 4) Decide if you want to generate Kotlin or Java models:
 
 ```groovy
+// build.gradle or build.gradle.kts
 apollo {
   generateKotlinModels.set(true) // false for Java models
 }
