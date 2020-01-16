@@ -174,15 +174,26 @@ class SchemaTypeSpecBuilder(
           .let { it.typeCondition != normalizeGraphQlType(schemaType) }
     }
 
-    fun fragmentFields(): List<FieldSpec> {
-      return fragmentSpreads.map { fragmentName ->
-        val optional = isOptional(fragmentName)
-        FieldSpec.builder(
-            JavaTypeResolver(context = context, packageName = context.packageNameProvider.fragmentsPackageName)
-                .resolve(typeName = fragmentName.capitalize(), isOptional = optional), fragmentName.decapitalize())
-            .addModifiers(Modifier.FINAL)
-            .build()
-      }
+    fun responseFieldSpecs(): List<ResponseFieldSpec> {
+      return fragmentSpreads
+          .mapNotNull { fragmentName -> context.ir.fragments.find { it.fragmentName == fragmentName } }
+          .map { fragment ->
+            val optional = isOptional(fragment.fragmentName)
+            val fieldSpec = FieldSpec.builder(
+                JavaTypeResolver(context = context, packageName = context.packageNameProvider.fragmentsPackageName)
+                    .resolve(typeName = fragment.fragmentName.capitalize(), isOptional = optional), fragment.fragmentName.decapitalize())
+                .addModifiers(Modifier.FINAL)
+                .build()
+            val normalizedFieldSpec = FieldSpec.builder(fieldSpec.type.unwrapOptionalType().withoutAnnotations(), fieldSpec.name).build()
+            ResponseFieldSpec(
+                irField = Field.TYPE_NAME_FIELD,
+                fieldSpec = fieldSpec,
+                normalizedFieldSpec = normalizedFieldSpec,
+                responseFieldType = ResponseField.Type.FRAGMENT,
+                context = context,
+                typeConditions = fragment.possibleTypes
+            )
+          }
     }
 
     fun TypeSpec.Builder.addFragmentAccessorMethods(): TypeSpec.Builder {
@@ -206,14 +217,18 @@ class SchemaTypeSpecBuilder(
     fun responseMarshallerSpec(fieldSpecs: List<FieldSpec>): MethodSpec {
       val code = fieldSpecs
           .map { fieldSpec ->
-            CodeBlock.builder()
-                .addStatement("final \$T \$L = \$L", fieldSpec.type.unwrapOptionalType().withoutAnnotations(),
-                    "\$${fieldSpec.name}", fieldSpec.type.unwrapOptionalValue(fieldSpec.name))
-                .beginControlFlow("if (\$L != null)", "\$${fieldSpec.name}")
-                .addStatement("\$L.\$L().marshal(\$L)", "\$${fieldSpec.name}", RESPONSE_MARSHALLER_PARAM_NAME,
-                    RESPONSE_WRITER_PARAM.name)
-                .endControlFlow()
-                .build()
+            if (fieldSpec.type.isOptional()) {
+              CodeBlock.builder()
+                  .addStatement("final \$T \$L = \$L", fieldSpec.type.unwrapOptionalType().withoutAnnotations(),
+                      "\$${fieldSpec.name}", fieldSpec.type.unwrapOptionalValue(fieldSpec.name))
+                  .beginControlFlow("if (\$L != null)", "\$${fieldSpec.name}")
+                  .addStatement("\$L.writeFragment(\$L.\$L())", RESPONSE_WRITER_PARAM.name, "\$${fieldSpec.name}",
+                      RESPONSE_MARSHALLER_PARAM_NAME)
+                  .endControlFlow()
+                  .build()
+            } else {
+              CodeBlock.of("\$L.writeFragment(\$L.\$L());\n", RESPONSE_WRITER_PARAM.name, fieldSpec.name, RESPONSE_MARSHALLER_PARAM_NAME)
+            }
           }
           .fold(CodeBlock.builder(), CodeBlock.Builder::add)
           .build()
@@ -234,14 +249,18 @@ class SchemaTypeSpecBuilder(
           .build()
     }
 
-    val fragmentFields = fragmentFields()
-    val mapper = FragmentsResponseMapperBuilder(fragmentFields, context).build()
+    val fragmentFields = responseFieldSpecs()
+    val mapper = FragmentsResponseMapperBuilder(fragmentFields, context)
+        .build()
+        .toBuilder()
+        .addField(fieldArray(fragmentFields))
+        .build()
     return TypeSpec.classBuilder(FRAGMENTS_FIELD.name.capitalize())
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-        .addFields(fragmentFields)
+        .addFields(fragmentFields.map { it.fieldSpec })
         .addFragmentAccessorMethods()
         .addType(mapper)
-        .addMethod(responseMarshallerSpec(fragmentFields))
+        .addMethod(responseMarshallerSpec(fragmentFields.map { it.fieldSpec }))
         .build()
         .withValueInitConstructor(context.nullableValueType)
         .withToStringImplementation()
@@ -315,11 +334,7 @@ class SchemaTypeSpecBuilder(
           irField = Field.TYPE_NAME_FIELD,
           fieldSpec = FRAGMENTS_FIELD,
           normalizedFieldSpec = normalizedFieldSpec,
-          responseFieldType = ResponseField.Type.FRAGMENT,
-          typeConditions = context.ir.fragments
-              .filter { it.fragmentName in fragmentSpreads }
-              .flatMap { it.possibleTypes }
-              .distinct(),
+          responseFieldType = ResponseField.Type.FRAGMENTS,
           context = context
       ))
     } else {
@@ -337,6 +352,7 @@ class SchemaTypeSpecBuilder(
             .add("{\n")
             .indent()
             .add(responseFieldSpecs
+                .filter { it.fieldSpec.name != FRAGMENTS_FIELD.name }
                 .map { it.factoryCode() }
                 .foldIndexed(CodeBlock.builder()) { i, builder, code ->
                   builder.add(if (i > 0) ",\n" else "").add(code)
@@ -408,21 +424,21 @@ class SchemaTypeSpecBuilder(
   }
 
   private fun inlineFragmentsVisitorInterfaceSpec(
-    nameOverrideMap: Map<String, String>,
-    surrogateInlineFragmentType: TypeSpec
+      nameOverrideMap: Map<String, String>,
+      surrogateInlineFragmentType: TypeSpec
   ): TypeSpec {
     val typeClassName = ClassName.get("", uniqueTypeName)
     val implementations = inlineFragments.map { inlineFragment ->
       val fieldSpec = inlineFragment.fieldSpec(context).overrideType(nameOverrideMap)
       val inlineFragmentResponseFieldType = fieldSpec.type.rawType() as ClassName
-       ClassName.get("", inlineFragmentResponseFieldType.simpleName())
+      ClassName.get("", inlineFragmentResponseFieldType.simpleName())
     } + ClassName.get("", surrogateInlineFragmentType.name)
     return VisitorInterfaceSpec(typeClassName, implementations).createVisitorInterface()
   }
 
   private fun inlineFragmentsVisitorMethodSpec(
-    nameOverrideMap: Map<String, String>,
-    surrogateInlineFragmentType: TypeSpec
+      nameOverrideMap: Map<String, String>,
+      surrogateInlineFragmentType: TypeSpec
   ): MethodSpec {
     val implementations = inlineFragments.map { inlineFragment ->
       val fieldSpec = inlineFragment.fieldSpec(context).overrideType(nameOverrideMap)
@@ -432,8 +448,10 @@ class SchemaTypeSpecBuilder(
     return VisitorMethodSpec(implementations).createVisitorMethod()
   }
 
-  private fun inlineFragmentsResponseMapperSpec(nameOverrideMap: Map<String, String>,
-      surrogateInlineFragmentType: TypeSpec): TypeSpec {
+  private fun inlineFragmentsResponseMapperSpec(
+      nameOverrideMap: Map<String, String>,
+      surrogateInlineFragmentType: TypeSpec
+  ): TypeSpec {
     val inlineFragments = inlineFragments.map { inlineFragment ->
       val fieldSpec = inlineFragment.fieldSpec(context).overrideType(nameOverrideMap)
       val normalizedFieldSpec = FieldSpec.builder(
@@ -441,10 +459,10 @@ class SchemaTypeSpecBuilder(
           fieldSpec.name
       ).build()
       ResponseFieldSpec(
-          irField = Field.TYPE_NAME_FIELD,
+          irField = Field.TYPE_NAME_FIELD.copy(conditions = inlineFragment.conditions),
           fieldSpec = fieldSpec,
           normalizedFieldSpec = normalizedFieldSpec,
-          responseFieldType = ResponseField.Type.INLINE_FRAGMENT,
+          responseFieldType = ResponseField.Type.FRAGMENT,
           typeConditions = if (inlineFragment.possibleTypes.isNotEmpty())
             inlineFragment.possibleTypes
           else
@@ -467,25 +485,25 @@ class SchemaTypeSpecBuilder(
           .initializer(CodeBlock.of("new \$L()", mapperClassName))
           .build()
     } + surrogateInlineFragmentFieldMapper
-    val typeClassName = ClassName.get("", uniqueTypeName)
-    val code = CodeBlock.builder()
-        .apply {
-          inlineFragments.forEach { responseFieldSpec ->
-            val readValueCode = responseFieldSpec.readValueCode(
-                readerParam = CodeBlock.of("\$L", RESPONSE_READER_PARAM.name),
-                fieldParam = responseFieldSpec.factoryCode()
-            )
-            add(readValueCode)
-            add(CodeBlock.builder()
-                .beginControlFlow("if (\$L != null)", responseFieldSpec.fieldSpec.name)
-                .addStatement("return \$L", responseFieldSpec.fieldSpec.name)
-                .endControlFlow()
-                .build()
-            )
-          }
+
+    val code = inlineFragments
+        .foldIndexed(CodeBlock.builder()) { index, builder, responseFieldSpec ->
+          val readValueCode = responseFieldSpec.readValueCode(
+              readerParam = CodeBlock.of("\$L", RESPONSE_READER_PARAM.name),
+              fieldParam = CodeBlock.of("\$L[\$L]", RESPONSE_FIELDS_PARAM.name, index)
+          )
+          builder
+              .add(readValueCode)
+              .add(CodeBlock.builder()
+                  .beginControlFlow("if (\$L != null)", responseFieldSpec.fieldSpec.name)
+                  .addStatement("return \$L", responseFieldSpec.fieldSpec.name)
+                  .endControlFlow()
+                  .build()
+              )
         }
         .addStatement("return \$L.map(reader)", surrogateInlineFragmentFieldMapper.name)
         .build()
+    val typeClassName = ClassName.get("", uniqueTypeName)
     val methodSpec = MethodSpec.methodBuilder("map")
         .addModifiers(Modifier.PUBLIC)
         .addAnnotation(Override::class.java)
@@ -496,6 +514,7 @@ class SchemaTypeSpecBuilder(
     return TypeSpec.classBuilder(Util.RESPONSE_FIELD_MAPPER_TYPE_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
         .addSuperinterface(ParameterizedTypeName.get(ClassName.get(ResponseFieldMapper::class.java), typeClassName))
+        .addField(fieldArray(inlineFragments))
         .addFields(mapperFields)
         .addMethod(methodSpec)
         .build()

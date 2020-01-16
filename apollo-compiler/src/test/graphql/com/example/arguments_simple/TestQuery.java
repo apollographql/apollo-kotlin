@@ -5,7 +5,6 @@
 //
 package com.example.arguments_simple;
 
-import com.apollographql.apollo.api.FragmentResponseFieldMapper;
 import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.InputFieldMarshaller;
 import com.apollographql.apollo.api.InputFieldWriter;
@@ -376,9 +375,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static class Hero {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forString("name", "name", null, true, Arrays.<ResponseField.Condition>asList(ResponseField.Condition.booleanCondition("IncludeName", false))),
-      ResponseField.forFragment("__typename", "__typename", Arrays.asList("Human",
-      "Droid"))
+      ResponseField.forString("name", "name", null, true, Arrays.<ResponseField.Condition>asList(
+        ResponseField.Condition.booleanCondition("IncludeName", false)
+      ))
     };
 
     final @NotNull String __typename;
@@ -489,10 +488,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         return new ResponseFieldMarshaller() {
           @Override
           public void marshal(ResponseWriter writer) {
-            final HeroDetails $heroDetails = heroDetails;
-            if ($heroDetails != null) {
-              $heroDetails.marshaller().marshal(writer);
-            }
+            writer.writeFragment(heroDetails.marshaller());
           }
         };
       }
@@ -531,13 +527,24 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         return $hashCode;
       }
 
-      public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
+      public static final class Mapper implements ResponseFieldMapper<Fragments> {
+        static final ResponseField[] $responseFields = {
+          ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+            ResponseField.Condition.typeCondition(new String[] {"Human", "Droid"})
+          ))
+        };
+
         final HeroDetails.Mapper heroDetailsFieldMapper = new HeroDetails.Mapper();
 
         @Override
-        public @NotNull Fragments map(ResponseReader reader, @NotNull String conditionalType) {
-          HeroDetails heroDetails = heroDetailsFieldMapper.map(reader);
-          return new Fragments(Utils.checkNotNull(heroDetails, "heroDetails == null"));
+        public @NotNull Fragments map(ResponseReader reader) {
+          final HeroDetails heroDetails = reader.readFragment($responseFields[0], new ResponseReader.ObjectReader<HeroDetails>() {
+            @Override
+            public HeroDetails read(ResponseReader reader) {
+              return heroDetailsFieldMapper.map(reader);
+            }
+          });
+          return new Fragments(heroDetails);
         }
       }
     }
@@ -549,12 +556,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       public Hero map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String name = reader.readString($responseFields[1]);
-        final Fragments fragments = reader.readConditional($responseFields[2], new ResponseReader.ConditionalTypeReader<Fragments>() {
-          @Override
-          public Fragments read(String conditionalType, ResponseReader reader) {
-            return fragmentsFieldMapper.map(reader, conditionalType);
-          }
-        });
+        final Fragments fragments = fragmentsFieldMapper.map(reader);
         return new Hero(__typename, name, fragments);
       }
     }

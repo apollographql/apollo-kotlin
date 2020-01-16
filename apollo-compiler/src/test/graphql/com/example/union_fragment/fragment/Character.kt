@@ -48,8 +48,6 @@ data class Character(
         |}
         """.trimMargin()
 
-    val POSSIBLE_TYPES: Array<String> = arrayOf("Human", "Droid")
-
     operator fun invoke(reader: ResponseReader): Character {
       val __typename = reader.readString(RESPONSE_FIELDS[0])
       val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)

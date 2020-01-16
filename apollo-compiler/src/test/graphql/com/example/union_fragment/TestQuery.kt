@@ -57,23 +57,12 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("__typename", "__typename", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): Search {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
-          val character = if (Character.POSSIBLE_TYPES.contains(conditionalType)) Character(reader)
-              else null
-          val starship = if (Starship.POSSIBLE_TYPES.contains(conditionalType)) Starship(reader)
-              else null
-          Fragments(
-            character = character,
-            starship = starship
-          )
-        }
-
+        val fragments = Fragments(reader)
         return Search(
           __typename = __typename,
           fragments = fragments
@@ -86,8 +75,33 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       val starship: Starship?
     ) {
       fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        character?.marshaller()?.marshal(it)
-        starship?.marshaller()?.marshal(it)
+        it.writeFragment(character?.marshaller())
+        it.writeFragment(starship?.marshaller())
+      }
+
+      companion object {
+        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+            ResponseField.forFragment("__typename", "__typename", listOf(
+              ResponseField.Condition.typeCondition(arrayOf("Human")),
+              ResponseField.Condition.typeCondition(arrayOf("Droid"))
+            )),
+            ResponseField.forFragment("__typename", "__typename", listOf(
+              ResponseField.Condition.typeCondition(arrayOf("Starship"))
+            ))
+            )
+
+        operator fun invoke(reader: ResponseReader): Fragments {
+          val character = reader.readFragment<Character>(RESPONSE_FIELDS[0]) { reader ->
+            Character(reader)
+          }
+          val starship = reader.readFragment<Starship>(RESPONSE_FIELDS[1]) { reader ->
+            Starship(reader)
+          }
+          return Fragments(
+            character = character,
+            starship = starship
+          )
+        }
       }
     }
   }

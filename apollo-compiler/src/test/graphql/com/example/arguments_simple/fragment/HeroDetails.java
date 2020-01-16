@@ -51,8 +51,6 @@ public class HeroDetails implements GraphqlFragment {
       + "  }\n"
       + "}";
 
-  public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Human", "Droid"));
-
   final @NotNull String __typename;
 
   final @NotNull FriendsConnection friendsConnection;
@@ -373,7 +371,9 @@ public class HeroDetails implements GraphqlFragment {
   public static class Node {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forString("name", "name", null, true, Arrays.<ResponseField.Condition>asList(ResponseField.Condition.booleanCondition("IncludeName", false)))
+      ResponseField.forString("name", "name", null, true, Arrays.<ResponseField.Condition>asList(
+        ResponseField.Condition.booleanCondition("IncludeName", false)
+      ))
     };
 
     final @NotNull String __typename;

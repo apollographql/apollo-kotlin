@@ -50,8 +50,6 @@ public interface HeroDetails extends GraphqlFragment {
       + "  }\n"
       + "}";
 
-  List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Human", "Droid"));
-
   @NotNull String get__typename();
 
   /**
@@ -67,15 +65,21 @@ public interface HeroDetails extends GraphqlFragment {
   ResponseFieldMarshaller marshaller();
 
   final class Mapper implements ResponseFieldMapper<HeroDetails> {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+        ResponseField.Condition.typeCondition(new String[] {"Droid"})
+      ))
+    };
+
     final AsDroid.Mapper asDroidFieldMapper = new AsDroid.Mapper();
 
     final AsCharacter.Mapper asCharacterFieldMapper = new AsCharacter.Mapper();
 
     @Override
     public HeroDetails map(ResponseReader reader) {
-      final AsDroid asDroid = reader.readConditional(ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Droid")), new ResponseReader.ConditionalTypeReader<AsDroid>() {
+      final AsDroid asDroid = reader.readFragment($responseFields[0], new ResponseReader.ObjectReader<AsDroid>() {
         @Override
-        public AsDroid read(String conditionalType, ResponseReader reader) {
+        public AsDroid read(ResponseReader reader) {
           return asDroidFieldMapper.map(reader);
         }
       });

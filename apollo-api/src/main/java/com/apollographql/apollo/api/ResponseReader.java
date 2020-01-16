@@ -19,12 +19,12 @@ public interface ResponseReader {
 
   <T> T readObject(ResponseField field, ObjectReader<T> objectReader);
 
+  <T> T readFragment(ResponseField field, ObjectReader<T> objectReader);
+
   <T> List<T> readList(ResponseField field, ListReader<T> listReader);
 
   @SuppressWarnings("TypeParameterUnusedInFormals")
   <T> T readCustomType(ResponseField.CustomTypeField field);
-
-  <T> T readConditional(ResponseField field, ConditionalTypeReader<T> conditionalTypeReader);
 
   interface ObjectReader<T> {
     T read(ResponseReader reader);
@@ -32,10 +32,6 @@ public interface ResponseReader {
 
   interface ListReader<T> {
     T read(ListItemReader reader);
-  }
-
-  interface ConditionalTypeReader<T> {
-    T read(String conditionalType, ResponseReader reader);
   }
 
   interface ListItemReader {

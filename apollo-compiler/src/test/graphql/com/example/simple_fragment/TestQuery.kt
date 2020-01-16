@@ -56,22 +56,12 @@ internal class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Varia
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("__typename", "__typename", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): Hero {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
-          val heroDetails = HeroDetails(reader)
-          val humanDetails = if (HumanDetails.POSSIBLE_TYPES.contains(conditionalType))
-              HumanDetails(reader) else null
-          Fragments(
-            heroDetails = heroDetails,
-            humanDetails = humanDetails
-          )
-        }
-
+        val fragments = Fragments(reader)
         return Hero(
           __typename = __typename,
           fragments = fragments
@@ -84,8 +74,33 @@ internal class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Varia
       val humanDetails: HumanDetails?
     ) {
       fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        heroDetails.marshaller().marshal(it)
-        humanDetails?.marshaller()?.marshal(it)
+        it.writeFragment(heroDetails.marshaller())
+        it.writeFragment(humanDetails?.marshaller())
+      }
+
+      companion object {
+        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+            ResponseField.forFragment("__typename", "__typename", listOf(
+              ResponseField.Condition.typeCondition(arrayOf("Human")),
+              ResponseField.Condition.typeCondition(arrayOf("Droid"))
+            )),
+            ResponseField.forFragment("__typename", "__typename", listOf(
+              ResponseField.Condition.typeCondition(arrayOf("Human"))
+            ))
+            )
+
+        operator fun invoke(reader: ResponseReader): Fragments {
+          val heroDetails = reader.readFragment<HeroDetails>(RESPONSE_FIELDS[0]) { reader ->
+            HeroDetails(reader)
+          }
+          val humanDetails = reader.readFragment<HumanDetails>(RESPONSE_FIELDS[1]) { reader ->
+            HumanDetails(reader)
+          }
+          return Fragments(
+            heroDetails = heroDetails,
+            humanDetails = humanDetails
+          )
+        }
       }
     }
   }

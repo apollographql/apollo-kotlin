@@ -294,6 +294,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     final class Mapper implements ResponseFieldMapper<Hero> {
+      static final ResponseField[] $responseFields = {
+        ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+          ResponseField.Condition.typeCondition(new String[] {"Human"})
+        )),
+        ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+          ResponseField.Condition.typeCondition(new String[] {"Droid"})
+        ))
+      };
+
       final AsHuman.Mapper asHumanFieldMapper = new AsHuman.Mapper();
 
       final AsDroid.Mapper asDroidFieldMapper = new AsDroid.Mapper();
@@ -302,18 +311,18 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public Hero map(ResponseReader reader) {
-        final AsHuman asHuman = reader.readConditional(ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Human")), new ResponseReader.ConditionalTypeReader<AsHuman>() {
+        final AsHuman asHuman = reader.readFragment($responseFields[0], new ResponseReader.ObjectReader<AsHuman>() {
           @Override
-          public AsHuman read(String conditionalType, ResponseReader reader) {
+          public AsHuman read(ResponseReader reader) {
             return asHumanFieldMapper.map(reader);
           }
         });
         if (asHuman != null) {
           return asHuman;
         }
-        final AsDroid asDroid = reader.readConditional(ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Droid")), new ResponseReader.ConditionalTypeReader<AsDroid>() {
+        final AsDroid asDroid = reader.readFragment($responseFields[1], new ResponseReader.ObjectReader<AsDroid>() {
           @Override
-          public AsDroid read(String conditionalType, ResponseReader reader) {
+          public AsDroid read(ResponseReader reader) {
             return asDroidFieldMapper.map(reader);
           }
         });
@@ -483,15 +492,21 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     final class Mapper implements ResponseFieldMapper<Friend> {
+      static final ResponseField[] $responseFields = {
+        ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+          ResponseField.Condition.typeCondition(new String[] {"Human"})
+        ))
+      };
+
       final AsHuman1.Mapper asHuman1FieldMapper = new AsHuman1.Mapper();
 
       final AsCharacter.Mapper asCharacterFieldMapper = new AsCharacter.Mapper();
 
       @Override
       public Friend map(ResponseReader reader) {
-        final AsHuman1 asHuman = reader.readConditional(ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Human")), new ResponseReader.ConditionalTypeReader<AsHuman1>() {
+        final AsHuman1 asHuman = reader.readFragment($responseFields[0], new ResponseReader.ObjectReader<AsHuman1>() {
           @Override
-          public AsHuman1 read(String conditionalType, ResponseReader reader) {
+          public AsHuman1 read(ResponseReader reader) {
             return asHuman1FieldMapper.map(reader);
           }
         });
@@ -860,15 +875,21 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     final class Mapper implements ResponseFieldMapper<Friend1> {
+      static final ResponseField[] $responseFields = {
+        ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+          ResponseField.Condition.typeCondition(new String[] {"Human"})
+        ))
+      };
+
       final AsHuman2.Mapper asHuman2FieldMapper = new AsHuman2.Mapper();
 
       final AsCharacter1.Mapper asCharacter1FieldMapper = new AsCharacter1.Mapper();
 
       @Override
       public Friend1 map(ResponseReader reader) {
-        final AsHuman2 asHuman = reader.readConditional(ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Human")), new ResponseReader.ConditionalTypeReader<AsHuman2>() {
+        final AsHuman2 asHuman = reader.readFragment($responseFields[0], new ResponseReader.ObjectReader<AsHuman2>() {
           @Override
-          public AsHuman2 read(String conditionalType, ResponseReader reader) {
+          public AsHuman2 read(ResponseReader reader) {
             return asHuman2FieldMapper.map(reader);
           }
         });

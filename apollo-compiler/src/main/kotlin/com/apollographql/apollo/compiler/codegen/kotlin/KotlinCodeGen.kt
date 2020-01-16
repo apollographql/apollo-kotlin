@@ -46,7 +46,7 @@ internal object KotlinCodeGen {
         packageName = typeRef.packageName,
         simpleName = typeRef.name
     )
-    is FieldType.InlineFragment -> ClassName(
+    is FieldType.Fragment -> ClassName(
         packageName = typeRef.packageName,
         simpleName = typeRef.name
     )
@@ -69,13 +69,12 @@ internal object KotlinCodeGen {
   fun responseFieldsPropertySpec(fields: List<ObjectType.Field>): PropertySpec {
     val initializer = fields
         .map { field -> field.responseFieldInitializerCode }
+        .filterNot { it.isEmpty() }
         .joinToCode(prefix = "arrayOf(\n", separator = ",\n", suffix = "\n)")
     return PropertySpec
         .builder(
             name = "RESPONSE_FIELDS",
-            type = Array<ResponseField>::
-            class.asClassName().parameterizedBy(ResponseField::
-            class.asClassName()),
+            type = Array<ResponseField>::class.asClassName().parameterizedBy(ResponseField::class.asClassName()),
             modifiers = *arrayOf(KModifier.PRIVATE)
         )
         .initializer(initializer)
@@ -84,7 +83,7 @@ internal object KotlinCodeGen {
 
   private val ObjectType.Field.responseFieldInitializerCode: CodeBlock
     get() {
-      val builder = CodeBlock.builder().add("%T.%L", ResponseField::class, when (type) {
+      val factoryMethod = when (type) {
         is FieldType.Scalar -> when (type) {
           is FieldType.Scalar.String -> "forString"
           is FieldType.Scalar.Int -> "forInt"
@@ -93,18 +92,19 @@ internal object KotlinCodeGen {
           is FieldType.Scalar.Enum -> "forEnum"
           is FieldType.Scalar.Custom -> "forCustomType"
         }
-        is FieldType.Fragments -> "forString"
         is FieldType.Object -> "forObject"
-        is FieldType.InlineFragment -> "forInlineFragment"
+        is FieldType.Fragment -> "forFragment"
+        is FieldType.Fragments -> null
         is FieldType.Array -> "forList"
-      })
+      } ?: return CodeBlock.of("")
 
+      val builder = CodeBlock.builder().add("%T.%L", ResponseField::class, factoryMethod)
       when {
         type is FieldType.Scalar && type is FieldType.Scalar.Custom -> {
           builder.add("(%S, %S, %L, %L, %T.%L, %L)", responseName, schemaName, arguments.takeIf { it.isNotEmpty() }.toCode(), isOptional,
               type.customEnumType.asTypeName(), type.customEnumConst, conditionsListCode(conditions))
         }
-        type is FieldType.InlineFragment -> {
+        type is FieldType.Fragment -> {
           builder.add("(%S, %S, %L)", responseName, schemaName, conditionsListCode(conditions))
         }
         else -> {
@@ -112,20 +112,33 @@ internal object KotlinCodeGen {
               conditionsListCode(conditions))
         }
       }
-
       return builder.build()
     }
 
-  private fun conditionsListCode(conditions: List<ObjectType.Field.Condition>): CodeBlock? {
-    return conditions.takeIf { conditions.isNotEmpty() }
-        ?.map { condition ->
+  private fun conditionsListCode(conditions: List<ObjectType.Field.Condition>): CodeBlock {
+    return conditions
+        .map { condition ->
           when (condition) {
-            is ObjectType.Field.Condition.Type -> CodeBlock.of("%S", condition.type)
+            is ObjectType.Field.Condition.Type -> {
+              val possibleTypes = condition.types.map { CodeBlock.of("%S", it) }.joinToCode(separator = ", ")
+              CodeBlock.of("%T.typeCondition(arrayOf(%L))", ResponseField.Condition::class, possibleTypes)
+            }
             is ObjectType.Field.Condition.Directive -> CodeBlock.of("%T.booleanCondition(%S, %L)",
                 ResponseField.Condition::class, condition.variableName, condition.inverted)
           }
         }
-        ?.joinToCode(prefix = "listOf(", separator = ", ", suffix = ")")
+        .joinToCode(separator = ",\n")
+        .let {
+          if (conditions.isEmpty()) {
+            CodeBlock.of("null")
+          } else {
+            CodeBlock.builder()
+                .add("listOf(\n")
+                .indent().add(it).unindent()
+                .add("\n)")
+                .build()
+          }
+        }
   }
 
   fun List<ObjectType.Field>.toMapperFun(responseTypeName: TypeName): FunSpec {
@@ -202,47 +215,15 @@ internal object KotlinCodeGen {
             .build()
       }
       is FieldType.Fragments -> {
-        CodeBlock.builder()
-            .beginControlFlow("%L.readConditional(%L) { conditionalType, reader ->", reader, field)
-            .add(
-                fields.map { fragmentField ->
-                  if (fragmentField.isOptional) {
-                    CodeBlock.of("val %L = if (%T.POSSIBLE_TYPES.contains(conditionalType)) %T(reader) else null",
-                        fragmentField.name, fragmentField.type.asTypeName(), fragmentField.type.asTypeName())
-                  } else {
-                    CodeBlock.of("val %L = %T(reader)", fragmentField.name, fragmentField.type.asTypeName())
-                  }
-                }.joinToCode(separator = "\n", suffix = "\n")
-            )
-            .addStatement("%L(", name)
-            .indent()
-            .add(
-                fields.map { fragmentField ->
-                  if (fragmentField.isOptional) {
-                    CodeBlock.of("%L = %L", fragmentField.name, fragmentField.name)
-                  } else {
-                    CodeBlock.of("%L = %L", fragmentField.name, fragmentField.name)
-                  }
-
-                }.joinToCode(separator = ",\n", suffix = "\n")
-            )
-            .unindent()
-            .addStatement(")")
-            .endControlFlow()
-            .build()
+        CodeBlock.of("%L(reader)", name)
       }
-      is FieldType.InlineFragment -> {
-        val conditionalBranches = fragmentRefs.map { typeRef ->
-          CodeBlock.of("in %T.POSSIBLE_TYPES -> %T(reader)", typeRef.asTypeName(), typeRef.asTypeName())
-        }
+      is FieldType.Fragment -> {
         CodeBlock.builder()
-            .beginControlFlow("%L.readConditional(%L) { conditionalType, reader ->", reader, field)
-            .beginControlFlow("when(conditionalType)")
-            .add(conditionalBranches.joinToCode("\n"))
-            .addStatement("")
-            .addStatement("else -> null")
-            .endControlFlow()
-            .endControlFlow()
+            .add("%L.readFragment<%T>(%L) { reader ->\n", reader, typeRef.asTypeName(), field)
+            .indent()
+            .addStatement("%T(reader)", typeRef.asTypeName())
+            .unindent()
+            .add("}")
             .build()
       }
     }
@@ -278,11 +259,18 @@ internal object KotlinCodeGen {
         is FieldType.Scalar.Custom -> CodeBlock.of("it.writeCustom(%L as %T, %L)", field,
             ResponseField.CustomTypeField::class, name)
       }
-      is FieldType.Object, is FieldType.InlineFragment -> {
+      is FieldType.Object -> {
         if (isOptional) {
           CodeBlock.of("it.writeObject(%L, %L?.marshaller())", field, name)
         } else {
           CodeBlock.of("it.writeObject(%L, %L.marshaller())", field, name)
+        }
+      }
+      is FieldType.Fragment -> {
+        if (isOptional) {
+          CodeBlock.of("it.writeFragment(%L?.marshaller())", name)
+        } else {
+          CodeBlock.of("it.writeFragment(%L.marshaller())", name)
         }
       }
       is FieldType.Array -> {

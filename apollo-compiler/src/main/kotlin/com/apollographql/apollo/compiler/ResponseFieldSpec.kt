@@ -23,8 +23,7 @@ class ResponseFieldSpec(
     val factoryMethod = FACTORY_METHODS[responseFieldType] ?: error("Unrecognized responseFieldType: $responseFieldType")
     return when (responseFieldType) {
       ResponseField.Type.CUSTOM -> customTypeFactoryCode(irField, factoryMethod)
-      ResponseField.Type.INLINE_FRAGMENT, ResponseField.Type.FRAGMENT ->
-        fragmentFactoryCode(irField, factoryMethod, typeConditions)
+      ResponseField.Type.FRAGMENT -> fragmentFactoryCode(irField, factoryMethod, typeConditions)
       else -> genericFactoryCode(irField, factoryMethod)
     }
   }
@@ -40,8 +39,8 @@ class ResponseFieldSpec(
       ResponseField.Type.ENUM -> readEnumCode(readerParam, fieldParam)
       ResponseField.Type.OBJECT -> readObjectCode(readerParam, fieldParam)
       ResponseField.Type.LIST -> readListCode(readerParam, fieldParam)
-      ResponseField.Type.INLINE_FRAGMENT -> readInlineFragmentCode(readerParam, fieldParam)
-      ResponseField.Type.FRAGMENT -> readFragmentsCode(readerParam, fieldParam)
+      ResponseField.Type.FRAGMENT -> readObjectCode(readerParam, fieldParam)
+      ResponseField.Type.FRAGMENTS -> readFragmentsCode()
     }
   }
 
@@ -56,9 +55,8 @@ class ResponseFieldSpec(
       ResponseField.Type.CUSTOM -> writeCustomCode(writerParam, fieldParam)
       ResponseField.Type.OBJECT -> writeObjectCode(writerParam, fieldParam, marshaller)
       ResponseField.Type.LIST -> writeListCode(writerParam, fieldParam, marshaller)
-      ResponseField.Type.INLINE_FRAGMENT -> writeInlineFragmentCode(writerParam, marshaller)
-      ResponseField.Type.FRAGMENT -> writeFragmentsCode(writerParam, marshaller)
-      else -> CodeBlock.of("")
+      ResponseField.Type.FRAGMENT -> writeFragmentCode(writerParam, marshaller)
+      ResponseField.Type.FRAGMENTS -> writeFragmentsCode(writerParam, marshaller)
     }
   }
 
@@ -68,27 +66,47 @@ class ResponseFieldSpec(
     return CodeBlock.of("\$T.\$L(\$S, \$S, \$L, \$L, \$T.\$L, \$L)", ResponseField::class.java,
         factoryMethod,
         irField.responseName, irField.fieldName, irField.argumentCodeBlock(), irField.isOptional(), customScalarEnum,
-        customScalarEnumConst, conditionsCodeBlock(irField))
+        customScalarEnumConst, booleanConditionsCode(irField.conditions))
   }
 
-  private fun fragmentFactoryCode(irField: Field, factoryMethod: String, typeConditions: List<String>): CodeBlock {
-    val typeConditionListCode = typeConditions.foldIndexed(CodeBlock.builder()) { i, builder, typeCondition ->
-      builder.add(if (i > 0) ",\n" else "").add("\$S", typeCondition)
-    }.let {
-      CodeBlock.builder()
-          .add("\$T.asList(", Arrays::class.java)
-          .add(it.build())
-          .add(")")
-          .build()
+  private fun fragmentFactoryCode(irField: Field, factoryMethod: String, possibleTypes: List<String>): CodeBlock {
+    val booleanConditions = irField.conditions.filter { it.kind == Condition.Kind.BOOLEAN.rawValue }.map { condition ->
+      CodeBlock.of("\$T.booleanCondition(\$S, \$L)", ResponseField.Condition::class.java, condition.variableName, condition.inverted)
     }
-    return CodeBlock.of("\$T.\$L(\$S, \$S, \$L)", ResponseField::class.java, factoryMethod, irField.responseName,
-        irField.fieldName, typeConditionListCode)
+    val typeCondition = possibleTypes.foldIndexed(CodeBlock.builder()) { index, builder, type ->
+      builder.applyIf(index > 0) { add(", ") }.add(CodeBlock.of("\$S", type))
+    }.build().let { code ->
+      if (code.isEmpty) {
+        CodeBlock.of("")
+      } else {
+        CodeBlock.builder()
+            .add("\$T.typeCondition(new \$T[] {", ResponseField.Condition::class.java, ClassNames.STRING)
+            .add(code)
+            .add("})")
+            .build()
+      }
+    }
+    val conditions = (booleanConditions + typeCondition).foldIndexed(CodeBlock.builder()) { index, builder, code ->
+      builder.applyIf(index > 0) { add(",\n") }.add(code)
+    }.build().let { code ->
+      if (code.isEmpty) {
+        CodeBlock.of("\$T.<\$T>emptyList()", Collections::class.java, ResponseField.Condition::class.java)
+      } else {
+        CodeBlock.builder()
+            .add("\$T.<\$T>asList(\n", Arrays::class.java, ResponseField.Condition::class.java)
+            .indent().add(code).unindent()
+            .add("\n)")
+            .build()
+      }
+    }
+    return CodeBlock.of("\$T.\$L(\$S, \$S, \$L)", ResponseField::class.java, factoryMethod, irField.responseName, irField.fieldName,
+        conditions)
   }
 
   private fun genericFactoryCode(irField: Field, factoryMethod: String): CodeBlock {
     return CodeBlock.of("\$T.\$L(\$S, \$S, \$L, \$L, \$L)", ResponseField::class.java, factoryMethod,
         irField.responseName, irField.fieldName, irField.argumentCodeBlock(), irField.isOptional(),
-        conditionsCodeBlock(irField))
+        booleanConditionsCode(irField.conditions))
   }
 
   private fun readEnumCode(readerParam: CodeBlock, fieldParam: CodeBlock): CodeBlock {
@@ -212,40 +230,9 @@ class ResponseFieldSpec(
         READ_METHODS[responseFieldType], fieldParam, readerTypeSpec)
   }
 
-  private fun readInlineFragmentCode(readerParam: CodeBlock, fieldParam: CodeBlock): CodeBlock {
-    val readerTypeSpec = TypeSpec.anonymousClassBuilder("")
-        .superclass(conditionalResponseFieldReaderType(normalizedFieldSpec.type))
-        .addMethod(MethodSpec
-            .methodBuilder("read")
-            .addModifiers(Modifier.PUBLIC)
-            .addAnnotation(Override::class.java)
-            .returns(normalizedFieldSpec.type)
-            .addParameter(ParameterSpec.builder(String::class.java, CONDITIONAL_TYPE_VAR).build())
-            .addParameter(RESPONSE_READER_PARAM)
-            .addStatement("return \$L.map(\$L)", (normalizedFieldSpec.type as ClassName).mapperFieldName(),
-                RESPONSE_READER_PARAM.name)
-            .build())
-        .build()
-    return CodeBlock.of("final \$T \$L = \$L.\$L(\$L, \$L);\n", normalizedFieldSpec.type, fieldSpec.name,
-        readerParam, READ_METHODS[responseFieldType], fieldParam, readerTypeSpec)
-  }
-
-  private fun readFragmentsCode(readerParam: CodeBlock, fieldParam: CodeBlock): CodeBlock {
-    val readerTypeSpec = TypeSpec.anonymousClassBuilder("")
-        .superclass(conditionalResponseFieldReaderType(FRAGMENTS_CLASS))
-        .addMethod(MethodSpec
-            .methodBuilder("read")
-            .addModifiers(Modifier.PUBLIC)
-            .addAnnotation(Override::class.java)
-            .returns(FRAGMENTS_CLASS)
-            .addParameter(ParameterSpec.builder(String::class.java, CONDITIONAL_TYPE_VAR).build())
-            .addParameter(RESPONSE_READER_PARAM)
-            .addStatement("return \$L.map(\$L, \$L)", FRAGMENTS_CLASS.mapperFieldName(),
-                RESPONSE_READER_PARAM.name, CONDITIONAL_TYPE_VAR)
-            .build())
-        .build()
-    return CodeBlock.of("final \$T \$L = \$L.\$L(\$L, \$L);\n", normalizedFieldSpec.type, fieldSpec.name,
-        readerParam, READ_METHODS[responseFieldType], fieldParam, readerTypeSpec)
+  private fun readFragmentsCode(): CodeBlock {
+    return CodeBlock.of("final \$T \$L = \$L.map(\$L);\n", normalizedFieldSpec.type, fieldSpec.name,
+        (normalizedFieldSpec.type as ClassName).mapperFieldName(), RESPONSE_READER_PARAM.name)
   }
 
   private fun writeScalarCode(writerParam: CodeBlock, fieldParam: CodeBlock): CodeBlock {
@@ -358,14 +345,8 @@ class ResponseFieldSpec(
         fieldSpec.type.unwrapOptionalValue(fieldSpec.name), listWriterType)
   }
 
-  private fun writeInlineFragmentCode(writerParam: CodeBlock, marshaller: CodeBlock): CodeBlock {
-    return CodeBlock.builder()
-        .addStatement("final \$T \$L = \$L", fieldSpec.type.unwrapOptionalType().withoutAnnotations(),
-            "\$${fieldSpec.name}", fieldSpec.type.unwrapOptionalValue(fieldSpec.name))
-        .beginControlFlow("if (\$L != null)", "\$${fieldSpec.name}")
-        .addStatement("\$L.\$L.marshal(\$L)", "\$${fieldSpec.name}", marshaller, writerParam)
-        .endControlFlow()
-        .build()
+  private fun writeFragmentCode(writerParam: CodeBlock, marshaller: CodeBlock): CodeBlock {
+    return CodeBlock.of("\$L.\$L.marshal(\$L);\n", fieldSpec.name, marshaller, writerParam)
   }
 
   private fun writeFragmentsCode(writerParam: CodeBlock, marshaller: CodeBlock): CodeBlock {
@@ -375,32 +356,26 @@ class ResponseFieldSpec(
   private fun responseFieldObjectReaderType(type: TypeName) =
       ParameterizedTypeName.get(ClassName.get(ResponseReader.ObjectReader::class.java), type)
 
-  private fun conditionalResponseFieldReaderType(type: TypeName) =
-      ParameterizedTypeName.get(ClassName.get(ResponseReader.ConditionalTypeReader::class.java), type)
-
   private fun responseFieldListItemReaderType(type: TypeName) =
       ParameterizedTypeName.get(ClassName.get(ResponseReader.ListReader::class.java), type)
 
-  private fun conditionsCodeBlock(irField: Field): CodeBlock {
-    val conditions = irField.conditions.let {
-      if (irField.isConditional) it else emptyList()
-    }.filter { it.kind == Condition.Kind.BOOLEAN.rawValue }
-
-    if (conditions.isEmpty()) {
-      return CodeBlock.of("\$T.<\$T>emptyList()", Collections::class.java, ResponseField.Condition::class.java)
-    }
-
-    return conditions.map {
-      CodeBlock.of("\$T.booleanCondition(\$S, \$L)", ResponseField.Condition::class.java, it.variableName, it.inverted)
-    }.foldIndexed(CodeBlock.builder()) { index, builder, codeBlock ->
-      builder.add("\$L", if (index > 0) ", " else "").add(codeBlock)
-    }.let {
-      CodeBlock.builder()
-          .add("\$T.<\$T>asList(", Arrays::class.java, ResponseField.Condition::class.java)
-          .add(it.build())
-          .add(")")
-          .build()
-    }
+  private fun booleanConditionsCode(conditions: List<Condition>): CodeBlock {
+    return conditions.filter { it.kind == Condition.Kind.BOOLEAN.rawValue }
+        .foldIndexed(CodeBlock.builder()) { index, builder, condition ->
+          builder.applyIf(index > 0) { add(",\n") }.add(
+              "\$T.booleanCondition(\$S, \$L)", ResponseField.Condition::class.java, condition.variableName, condition.inverted
+          )
+        }.build().let { code ->
+          if (code.isEmpty) {
+            CodeBlock.of("\$T.<\$T>emptyList()", Collections::class.java, ResponseField.Condition::class.java)
+          } else {
+            CodeBlock.builder()
+                .add("\$T.<\$T>asList(\n", Arrays::class.java, ResponseField.Condition::class.java)
+                .indent().add(code).unindent()
+                .add("\n)")
+                .build()
+          }
+        }
   }
 
   companion object {
@@ -414,8 +389,7 @@ class ResponseFieldSpec(
         ResponseField.Type.OBJECT to "forObject",
         ResponseField.Type.LIST to "forList",
         ResponseField.Type.CUSTOM to "forCustomType",
-        ResponseField.Type.FRAGMENT to "forFragment",
-        ResponseField.Type.INLINE_FRAGMENT to "forInlineFragment"
+        ResponseField.Type.FRAGMENT to "forFragment"
     )
     private val READ_METHODS = mapOf(
         ResponseField.Type.STRING to "readString",
@@ -427,8 +401,7 @@ class ResponseFieldSpec(
         ResponseField.Type.OBJECT to "readObject",
         ResponseField.Type.LIST to "readList",
         ResponseField.Type.CUSTOM to "readCustomType",
-        ResponseField.Type.FRAGMENT to "readConditional",
-        ResponseField.Type.INLINE_FRAGMENT to "readConditional"
+        ResponseField.Type.FRAGMENT to "readFragment"
     )
     private val WRITE_METHODS = mapOf(
         ResponseField.Type.STRING to "writeString",
@@ -471,8 +444,5 @@ class ResponseFieldSpec(
     private val ITEM_VALUE_PARAM = ParameterSpec.builder(TypeName.OBJECT, "item").build()
     private val RESPONSE_LIST_ITEM_WRITER_PARAM =
         ParameterSpec.builder(ResponseWriter.ListItemWriter::class.java, "listItemWriter").build()
-
-    private val FRAGMENTS_CLASS = ClassName.get("", "Fragments")
-    private val CONDITIONAL_TYPE_VAR = "conditionalType"
   }
 }

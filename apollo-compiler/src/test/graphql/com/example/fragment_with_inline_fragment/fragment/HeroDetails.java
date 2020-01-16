@@ -5,7 +5,6 @@
 //
 package com.example.fragment_with_inline_fragment.fragment;
 
-import com.apollographql.apollo.api.FragmentResponseFieldMapper;
 import com.apollographql.apollo.api.GraphqlFragment;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
@@ -47,8 +46,6 @@ public interface HeroDetails extends GraphqlFragment {
       + "  }\n"
       + "}";
 
-  List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Human", "Droid"));
-
   @NotNull String __typename();
 
   /**
@@ -73,15 +70,21 @@ public interface HeroDetails extends GraphqlFragment {
   }
 
   final class Mapper implements ResponseFieldMapper<HeroDetails> {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+        ResponseField.Condition.typeCondition(new String[] {"Droid"})
+      ))
+    };
+
     final AsDroid.Mapper asDroidFieldMapper = new AsDroid.Mapper();
 
     final AsCharacter.Mapper asCharacterFieldMapper = new AsCharacter.Mapper();
 
     @Override
     public HeroDetails map(ResponseReader reader) {
-      final AsDroid asDroid = reader.readConditional(ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Droid")), new ResponseReader.ConditionalTypeReader<AsDroid>() {
+      final AsDroid asDroid = reader.readFragment($responseFields[0], new ResponseReader.ObjectReader<AsDroid>() {
         @Override
-        public AsDroid read(String conditionalType, ResponseReader reader) {
+        public AsDroid read(ResponseReader reader) {
           return asDroidFieldMapper.map(reader);
         }
       });
@@ -142,8 +145,7 @@ public interface HeroDetails extends GraphqlFragment {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forObject("friendsConnection", "friendsConnection", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forFragment("__typename", "__typename", Arrays.asList("Droid"))
+      ResponseField.forObject("friendsConnection", "friendsConnection", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @NotNull String __typename;
@@ -285,7 +287,7 @@ public interface HeroDetails extends GraphqlFragment {
           public void marshal(ResponseWriter writer) {
             final DroidDetails $droidDetails = droidDetails.isPresent() ? droidDetails.get() : null;
             if ($droidDetails != null) {
-              $droidDetails.marshaller().marshal(writer);
+              writer.writeFragment($droidDetails.marshaller());
             }
           }
         };
@@ -335,15 +337,23 @@ public interface HeroDetails extends GraphqlFragment {
         return new Builder();
       }
 
-      public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
+      public static final class Mapper implements ResponseFieldMapper<Fragments> {
+        static final ResponseField[] $responseFields = {
+          ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+            ResponseField.Condition.typeCondition(new String[] {"Droid"})
+          ))
+        };
+
         final DroidDetails.Mapper droidDetailsFieldMapper = new DroidDetails.Mapper();
 
         @Override
-        public @NotNull Fragments map(ResponseReader reader, @NotNull String conditionalType) {
-          DroidDetails droidDetails = null;
-          if (DroidDetails.POSSIBLE_TYPES.contains(conditionalType)) {
-            droidDetails = droidDetailsFieldMapper.map(reader);
-          }
+        public @NotNull Fragments map(ResponseReader reader) {
+          final DroidDetails droidDetails = reader.readFragment($responseFields[0], new ResponseReader.ObjectReader<DroidDetails>() {
+            @Override
+            public DroidDetails read(ResponseReader reader) {
+              return droidDetailsFieldMapper.map(reader);
+            }
+          });
           return new Fragments(droidDetails);
         }
       }
@@ -380,12 +390,7 @@ public interface HeroDetails extends GraphqlFragment {
             return friendsConnection1FieldMapper.map(reader);
           }
         });
-        final Fragments fragments = reader.readConditional($responseFields[3], new ResponseReader.ConditionalTypeReader<Fragments>() {
-          @Override
-          public Fragments read(String conditionalType, ResponseReader reader) {
-            return fragmentsFieldMapper.map(reader, conditionalType);
-          }
-        });
+        final Fragments fragments = fragmentsFieldMapper.map(reader);
         return new AsDroid(__typename, name, friendsConnection, fragments);
       }
     }

@@ -1,7 +1,5 @@
 package com.apollographql.apollo.api.internal;
 
-import com.apollographql.apollo.response.CustomTypeAdapter;
-import com.apollographql.apollo.response.CustomTypeValue;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Response;
@@ -9,6 +7,8 @@ import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.response.CustomTypeAdapter;
+import com.apollographql.apollo.response.CustomTypeValue;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
 import okio.BufferedSource;
 import org.jetbrains.annotations.NotNull;
@@ -168,6 +168,32 @@ public class SimpleResponseReaderTest {
     }
   }
 
+  @Test public void readFragment() {
+    final Object responseObject = new Object();
+    final ResponseField successFragmentField = ResponseField.forFragment("__typename", "__typename",
+        Collections.<ResponseField.Condition>singletonList(ResponseField.Condition.typeCondition(new String[]{"Fragment1"})));
+
+    final ResponseField skipFragmentField = ResponseField.forFragment("__typename", "__typename",
+        Collections.<ResponseField.Condition>singletonList(ResponseField.Condition.typeCondition(new String[]{"Fragment2"})));
+
+    final Map<String, Object> recordSet = new HashMap<>();
+    recordSet.put("__typename", "Fragment1");
+
+    final SimpleResponseReader responseReader = responseReader(recordSet);
+
+    assertThat(responseReader.readFragment(successFragmentField, new ResponseReader.ObjectReader<Object>() {
+      @Override public Object read(ResponseReader reader) {
+        return responseObject;
+      }
+    })).isEqualTo(responseObject);
+
+    assertThat(responseReader.readFragment(skipFragmentField, new ResponseReader.ObjectReader<Object>() {
+      @Override public Object read(ResponseReader reader) {
+        return responseObject;
+      }
+    })).isNull();
+  }
+
   @Test public void readCustom() throws ParseException {
     final ResponseField.CustomTypeField successField = ResponseField.forCustomType("successFieldResponseName", "successFieldName", null,
         false, DATE_CUSTOM_TYPE, NO_CONDITIONS);
@@ -292,44 +318,6 @@ public class SimpleResponseReaderTest {
       responseReader.readCustomType(unsupportedField);
       fail("Expect IllegalArgumentException");
     } catch (IllegalArgumentException expected) {
-      // expected
-    }
-  }
-
-  @Test public void readConditional() {
-    final Object responseObject1 = new Object();
-    final Object responseObject2 = new Object();
-
-    final ResponseField successField = ResponseField.forFragment("successFieldResponseName", "successFieldName",
-        Collections.<String>emptyList());
-    final ResponseField classCastExceptionField = ResponseField.forFragment("classCastExceptionField", "classCastExceptionField",
-        Collections.<String>emptyList());
-
-    final Map<String, Object> recordSet = new HashMap<>();
-    recordSet.put("successFieldResponseName", "responseObject1");
-    recordSet.put("successFieldName", "responseObject2");
-    recordSet.put("classCastExceptionField", 1);
-
-    final SimpleResponseReader responseReader = responseReader(recordSet);
-
-    assertThat(responseReader.readConditional(successField, new ResponseReader.ConditionalTypeReader<Object>() {
-      @Override public Object read(String conditionalType, ResponseReader reader) {
-        if (conditionalType.equals("responseObject1")) {
-          return responseObject1;
-        } else {
-          return responseObject2;
-        }
-      }
-    })).isEqualTo(responseObject1);
-
-    try {
-      responseReader.readConditional(classCastExceptionField, new ResponseReader.ConditionalTypeReader<Object>() {
-        @Override public Object read(String conditionalType, ResponseReader reader) {
-          return null;
-        }
-      });
-      fail("expected ClassCastException");
-    } catch (ClassCastException expected) {
       // expected
     }
   }
@@ -680,19 +668,6 @@ public class SimpleResponseReaderTest {
     } catch (NullPointerException expected) {
       //expected
     }
-
-    try {
-      responseReader.readConditional(ResponseField.forFragment("__typename", "__typename", Collections.<String>emptyList()),
-          new ResponseReader.ConditionalTypeReader<Object>() {
-            @Override public Object read(String conditionalType, ResponseReader reader) {
-              return null;
-            }
-          }
-      );
-      fail("expected NullPointerException");
-    } catch (NullPointerException expected) {
-      //expected
-    }
   }
 
   @Test public void readScalarListWithNulls() {
@@ -851,7 +826,7 @@ public class SimpleResponseReaderTest {
     }
 
     @NotNull @Override public Response parse(@NotNull BufferedSource source) throws IOException {
-       throw new UnsupportedOperationException();
+      throw new UnsupportedOperationException();
     }
 
     @NotNull @Override public Response parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) {

@@ -5,7 +5,6 @@
 //
 package com.example.unique_type_name;
 
-import com.apollographql.apollo.api.FragmentResponseFieldMapper;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
@@ -253,15 +252,21 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     }
 
     final class Mapper implements ResponseFieldMapper<HeroDetailQuery1> {
+      static final ResponseField[] $responseFields = {
+        ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+          ResponseField.Condition.typeCondition(new String[] {"Human"})
+        ))
+      };
+
       final AsHuman.Mapper asHumanFieldMapper = new AsHuman.Mapper();
 
       final AsCharacter.Mapper asCharacterFieldMapper = new AsCharacter.Mapper();
 
       @Override
       public HeroDetailQuery1 map(ResponseReader reader) {
-        final AsHuman asHuman = reader.readConditional(ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Human")), new ResponseReader.ConditionalTypeReader<AsHuman>() {
+        final AsHuman asHuman = reader.readFragment($responseFields[0], new ResponseReader.ObjectReader<AsHuman>() {
           @Override
-          public AsHuman read(String conditionalType, ResponseReader reader) {
+          public AsHuman read(ResponseReader reader) {
             return asHumanFieldMapper.map(reader);
           }
         });
@@ -596,9 +601,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
   public static class Friend2 {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forFragment("__typename", "__typename", Arrays.asList("Human",
-      "Droid"))
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @NotNull String __typename;
@@ -694,10 +697,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
         return new ResponseFieldMarshaller() {
           @Override
           public void marshal(ResponseWriter writer) {
-            final HeroDetails $heroDetails = heroDetails;
-            if ($heroDetails != null) {
-              $heroDetails.marshaller().marshal(writer);
-            }
+            writer.writeFragment(heroDetails.marshaller());
           }
         };
       }
@@ -736,13 +736,24 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
         return $hashCode;
       }
 
-      public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
+      public static final class Mapper implements ResponseFieldMapper<Fragments> {
+        static final ResponseField[] $responseFields = {
+          ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+            ResponseField.Condition.typeCondition(new String[] {"Human", "Droid"})
+          ))
+        };
+
         final HeroDetails.Mapper heroDetailsFieldMapper = new HeroDetails.Mapper();
 
         @Override
-        public @NotNull Fragments map(ResponseReader reader, @NotNull String conditionalType) {
-          HeroDetails heroDetails = heroDetailsFieldMapper.map(reader);
-          return new Fragments(Utils.checkNotNull(heroDetails, "heroDetails == null"));
+        public @NotNull Fragments map(ResponseReader reader) {
+          final HeroDetails heroDetails = reader.readFragment($responseFields[0], new ResponseReader.ObjectReader<HeroDetails>() {
+            @Override
+            public HeroDetails read(ResponseReader reader) {
+              return heroDetailsFieldMapper.map(reader);
+            }
+          });
+          return new Fragments(heroDetails);
         }
       }
     }
@@ -753,12 +764,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       @Override
       public Friend2 map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
-        final Fragments fragments = reader.readConditional($responseFields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
-          @Override
-          public Fragments read(String conditionalType, ResponseReader reader) {
-            return fragmentsFieldMapper.map(reader, conditionalType);
-          }
-        });
+        final Fragments fragments = fragmentsFieldMapper.map(reader);
         return new Friend2(__typename, fragments);
       }
     }

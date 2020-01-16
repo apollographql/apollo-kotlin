@@ -5,7 +5,6 @@
 //
 package com.example.fragment_used_twice.fragment;
 
-import com.apollographql.apollo.api.FragmentResponseFieldMapper;
 import com.apollographql.apollo.api.GraphqlFragment;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
@@ -20,16 +19,13 @@ import java.lang.String;
 import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class HumanDetails implements GraphqlFragment {
   static final ResponseField[] $responseFields = {
     ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-    ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
-    ResponseField.forFragment("__typename", "__typename", Arrays.asList("Human",
-    "Droid"))
+    ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList())
   };
 
   public static final String FRAGMENT_DEFINITION = "fragment HumanDetails on Human {\n"
@@ -37,8 +33,6 @@ public class HumanDetails implements GraphqlFragment {
       + "  name\n"
       + "  ...CharacterDetails\n"
       + "}";
-
-  public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Human"));
 
   final @NotNull String __typename;
 
@@ -151,7 +145,7 @@ public class HumanDetails implements GraphqlFragment {
         public void marshal(ResponseWriter writer) {
           final CharacterDetails $characterDetails = characterDetails.isPresent() ? characterDetails.get() : null;
           if ($characterDetails != null) {
-            $characterDetails.marshaller().marshal(writer);
+            writer.writeFragment($characterDetails.marshaller());
           }
         }
       };
@@ -191,15 +185,23 @@ public class HumanDetails implements GraphqlFragment {
       return $hashCode;
     }
 
-    public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
+    public static final class Mapper implements ResponseFieldMapper<Fragments> {
+      static final ResponseField[] $responseFields = {
+        ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+          ResponseField.Condition.typeCondition(new String[] {"Human", "Droid"})
+        ))
+      };
+
       final CharacterDetails.Mapper characterDetailsFieldMapper = new CharacterDetails.Mapper();
 
       @Override
-      public @NotNull Fragments map(ResponseReader reader, @NotNull String conditionalType) {
-        CharacterDetails characterDetails = null;
-        if (CharacterDetails.POSSIBLE_TYPES.contains(conditionalType)) {
-          characterDetails = characterDetailsFieldMapper.map(reader);
-        }
+      public @NotNull Fragments map(ResponseReader reader) {
+        final CharacterDetails characterDetails = reader.readFragment($responseFields[0], new ResponseReader.ObjectReader<CharacterDetails>() {
+          @Override
+          public CharacterDetails read(ResponseReader reader) {
+            return characterDetailsFieldMapper.map(reader);
+          }
+        });
         return new Fragments(characterDetails);
       }
     }
@@ -212,12 +214,7 @@ public class HumanDetails implements GraphqlFragment {
     public HumanDetails map(ResponseReader reader) {
       final String __typename = reader.readString($responseFields[0]);
       final String name = reader.readString($responseFields[1]);
-      final Fragments fragments = reader.readConditional($responseFields[2], new ResponseReader.ConditionalTypeReader<Fragments>() {
-        @Override
-        public Fragments read(String conditionalType, ResponseReader reader) {
-          return fragmentsFieldMapper.map(reader, conditionalType);
-        }
-      });
+      final Fragments fragments = fragmentsFieldMapper.map(reader);
       return new HumanDetails(__typename, name, fragments);
     }
   }

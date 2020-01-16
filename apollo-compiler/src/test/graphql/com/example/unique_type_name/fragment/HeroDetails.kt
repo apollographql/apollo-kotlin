@@ -59,8 +59,6 @@ data class HeroDetails(
         |}
         """.trimMargin()
 
-    val POSSIBLE_TYPES: Array<String> = arrayOf("Human", "Droid")
-
     operator fun invoke(reader: ResponseReader): HeroDetails {
       val __typename = reader.readString(RESPONSE_FIELDS[0])
       val name = reader.readString(RESPONSE_FIELDS[1])

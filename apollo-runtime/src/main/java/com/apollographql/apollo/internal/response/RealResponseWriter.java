@@ -61,11 +61,16 @@ public final class RealResponseWriter implements ResponseWriter {
       return;
     }
 
-
     RealResponseWriter nestedResponseWriter = new RealResponseWriter(operationVariables, scalarTypeAdapters);
     marshaller.marshal(nestedResponseWriter);
 
     buffer.put(field.responseName(), new FieldDescriptor(field, nestedResponseWriter.buffer));
+  }
+
+  @Override public void writeFragment(@Nullable ResponseFieldMarshaller marshaller) {
+    if (marshaller != null) {
+      marshaller.marshal(this);
+    }
   }
 
   @Override

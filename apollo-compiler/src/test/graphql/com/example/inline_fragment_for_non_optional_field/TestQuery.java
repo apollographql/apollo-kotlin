@@ -211,15 +211,21 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     final class Mapper implements ResponseFieldMapper<Hero> {
+      static final ResponseField[] $responseFields = {
+        ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+          ResponseField.Condition.typeCondition(new String[] {"Human"})
+        ))
+      };
+
       final AsHuman.Mapper asHumanFieldMapper = new AsHuman.Mapper();
 
       final AsCharacter.Mapper asCharacterFieldMapper = new AsCharacter.Mapper();
 
       @Override
       public Hero map(ResponseReader reader) {
-        final AsHuman asHuman = reader.readConditional(ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Human")), new ResponseReader.ConditionalTypeReader<AsHuman>() {
+        final AsHuman asHuman = reader.readFragment($responseFields[0], new ResponseReader.ObjectReader<AsHuman>() {
           @Override
-          public AsHuman read(String conditionalType, ResponseReader reader) {
+          public AsHuman read(ResponseReader reader) {
             return asHumanFieldMapper.map(reader);
           }
         });

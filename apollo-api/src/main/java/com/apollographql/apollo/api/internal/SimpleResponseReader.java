@@ -1,11 +1,11 @@
 package com.apollographql.apollo.api.internal;
 
-import com.apollographql.apollo.response.CustomTypeAdapter;
-import com.apollographql.apollo.response.CustomTypeValue;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.response.CustomTypeAdapter;
+import com.apollographql.apollo.response.CustomTypeValue;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
 
 import java.math.BigDecimal;
@@ -129,7 +129,7 @@ public final class SimpleResponseReader implements ResponseReader {
     return checkValue(field, result);
   }
 
-  @Override public <T> T readConditional(ResponseField field, ConditionalTypeReader<T> conditionalTypeReader) {
+  @Override public <T> T readFragment(ResponseField field, ObjectReader<T> objectReader) {
     if (shouldSkip(field)) {
       return null;
     }
@@ -139,18 +139,14 @@ public final class SimpleResponseReader implements ResponseReader {
     if (value == null) {
       return null;
     } else {
-      if (field.type() == ResponseField.Type.INLINE_FRAGMENT) {
-        for (ResponseField.Condition condition : field.conditions()) {
-          if (condition instanceof ResponseField.TypeNameCondition) {
-            if (((ResponseField.TypeNameCondition) condition).typeName().equals(value)) {
-              return conditionalTypeReader.read(value, this);
-            }
+      for (ResponseField.Condition condition : field.conditions()) {
+        if (condition instanceof ResponseField.TypeNameCondition) {
+          if (((ResponseField.TypeNameCondition) condition).typeNames().contains(value)) {
+            return objectReader.read(this);
           }
         }
-        return null;
-      } else {
-        return conditionalTypeReader.read(value, this);
       }
+      return null;
     }
   }
 

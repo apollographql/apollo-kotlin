@@ -155,8 +155,6 @@ class CodeGenTest(val folder: File) {
       return File("src/test/graphql/com/example/")
           .listFiles()!!
           .filter { it.isDirectory }
-          // TODO figure out what to do with these cases
-          .filter { it.name != "nested_inline_fragment" && it.name != "reserved_words" && it.name != "scalar_types" }
     }
   }
 }

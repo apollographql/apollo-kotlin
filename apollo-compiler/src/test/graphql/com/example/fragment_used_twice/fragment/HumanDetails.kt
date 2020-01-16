@@ -32,8 +32,7 @@ data class HumanDetails(
   companion object {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forString("__typename", "__typename", null, false, null)
+        ResponseField.forString("name", "name", null, false, null)
         )
 
     val FRAGMENT_DEFINITION: String = """
@@ -44,19 +43,10 @@ data class HumanDetails(
         |}
         """.trimMargin()
 
-    val POSSIBLE_TYPES: Array<String> = arrayOf("Human")
-
     operator fun invoke(reader: ResponseReader): HumanDetails {
       val __typename = reader.readString(RESPONSE_FIELDS[0])
       val name = reader.readString(RESPONSE_FIELDS[1])
-      val fragments = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType, reader ->
-        val characterDetails = if (CharacterDetails.POSSIBLE_TYPES.contains(conditionalType))
-            CharacterDetails(reader) else null
-        Fragments(
-          characterDetails = characterDetails
-        )
-      }
-
+      val fragments = Fragments(reader)
       return HumanDetails(
         __typename = __typename,
         name = name,
@@ -69,7 +59,25 @@ data class HumanDetails(
     val characterDetails: CharacterDetails?
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      characterDetails?.marshaller()?.marshal(it)
+      it.writeFragment(characterDetails?.marshaller())
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forFragment("__typename", "__typename", listOf(
+            ResponseField.Condition.typeCondition(arrayOf("Human")),
+            ResponseField.Condition.typeCondition(arrayOf("Droid"))
+          ))
+          )
+
+      operator fun invoke(reader: ResponseReader): Fragments {
+        val characterDetails = reader.readFragment<CharacterDetails>(RESPONSE_FIELDS[0]) { reader ->
+          CharacterDetails(reader)
+        }
+        return Fragments(
+          characterDetails = characterDetails
+        )
+      }
     }
   }
 }

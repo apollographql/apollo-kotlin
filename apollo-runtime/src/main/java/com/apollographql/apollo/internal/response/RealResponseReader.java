@@ -16,7 +16,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings("WeakerAccess") public final class RealResponseReader<R> implements ResponseReader {
+@SuppressWarnings("WeakerAccess")
+public final class RealResponseReader<R> implements ResponseReader {
   final Operation.Variables operationVariables;
   private final R recordSet;
   final ScalarTypeAdapters scalarTypeAdapters;
@@ -207,8 +208,7 @@ import java.util.Map;
     return result;
   }
 
-  @Override
-  public <T> T readConditional(ResponseField field, ConditionalTypeReader<T> conditionalTypeReader) {
+  @Override public <T> T readFragment(ResponseField field, ObjectReader<T> objectReader) {
     if (shouldSkip(field)) {
       return null;
     }
@@ -224,18 +224,16 @@ import java.util.Map;
     } else {
       resolveDelegate.didResolveScalar(value);
       didResolve(field);
-      if (field.type() == ResponseField.Type.INLINE_FRAGMENT) {
+      if (field.type() == ResponseField.Type.FRAGMENT) {
         for (ResponseField.Condition condition : field.conditions()) {
           if (condition instanceof ResponseField.TypeNameCondition) {
-            if (((ResponseField.TypeNameCondition) condition).typeName().equals(value)) {
-              return conditionalTypeReader.read(value, this);
+            if (((ResponseField.TypeNameCondition) condition).typeNames().contains(value)) {
+              return objectReader.read(this);
             }
           }
         }
-        return null;
-      } else {
-        return conditionalTypeReader.read(value, this);
       }
+      return null;
     }
   }
 

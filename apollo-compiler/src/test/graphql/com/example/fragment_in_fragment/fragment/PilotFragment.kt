@@ -50,8 +50,6 @@ data class PilotFragment(
         |}
         """.trimMargin()
 
-    val POSSIBLE_TYPES: Array<String> = arrayOf("Person")
-
     operator fun invoke(reader: ResponseReader): PilotFragment {
       val __typename = reader.readString(RESPONSE_FIELDS[0])
       val name = reader.readString(RESPONSE_FIELDS[1])
@@ -78,19 +76,12 @@ data class PilotFragment(
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("__typename", "__typename", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): Homeworld {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
-          val planetFragment = PlanetFragment(reader)
-          Fragments(
-            planetFragment = planetFragment
-          )
-        }
-
+        val fragments = Fragments(reader)
         return Homeworld(
           __typename = __typename,
           fragments = fragments
@@ -102,7 +93,24 @@ data class PilotFragment(
       val planetFragment: PlanetFragment
     ) {
       fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        planetFragment.marshaller().marshal(it)
+        it.writeFragment(planetFragment.marshaller())
+      }
+
+      companion object {
+        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+            ResponseField.forFragment("__typename", "__typename", listOf(
+              ResponseField.Condition.typeCondition(arrayOf("Planet"))
+            ))
+            )
+
+        operator fun invoke(reader: ResponseReader): Fragments {
+          val planetFragment = reader.readFragment<PlanetFragment>(RESPONSE_FIELDS[0]) { reader ->
+            PlanetFragment(reader)
+          }
+          return Fragments(
+            planetFragment = planetFragment
+          )
+        }
       }
     }
   }

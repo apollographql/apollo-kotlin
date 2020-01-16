@@ -40,8 +40,6 @@ internal data class HumanDetails(
         |}
         """.trimMargin()
 
-    val POSSIBLE_TYPES: Array<String> = arrayOf("Human")
-
     operator fun invoke(reader: ResponseReader): HumanDetails {
       val __typename = reader.readString(RESPONSE_FIELDS[0])
       val name = reader.readString(RESPONSE_FIELDS[1])
