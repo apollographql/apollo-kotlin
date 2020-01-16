@@ -209,7 +209,7 @@ If your endpoint requires authentication, you can pass query parameters and/or c
 ./gradlew :shared:downloadApolloSchema -Pcom.apollographql.apollo.endpoint=https://your.graphql.endpoint -Pcom.apollographql.apollo.schema=src/main/graphql/com/example/schema.json  "-Pcom.apollographql.apollo.headers=Authorization=Bearer YOUR_TOKEN" "-Pcom.apollographql.apollo.query_params=key1=value1&key2=value2"
 ```
 
-The `headers` and `query_params` properties both take a query string where key and values should be URL encoded.
+The `com.apollographql.apollo.headers` and `com.apollographql.apollo.query_params` properties both take a query string where key and values should be URL encoded.
 
 ## Intellij Plugin
 
@@ -231,7 +231,7 @@ Latest development changes are available in Sonatype's snapshots repository:
 
 ## Migrating to 1.3.x
 
-Apollo-Android version 1.3.0 introduces several fixes and improvements that are incompatible with 1.2.x
+Apollo-Android version 1.3.0 introduces several fixes and improvements that are incompatible with 1.2.x:
 
 ### Gradle plugin changes
 
