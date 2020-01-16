@@ -56,8 +56,6 @@ dependencies {
 }
 ```
 
-**NOTE: Apollo Gradle plugin requires Gradle 5.1.1 or higher.**
-
 ## Generating models from your queries
 
 1) Create a directory for your GraphQL files like you would do for Java/Kotlin: `src/main/graphql/com/example/`. Apollo-Android will generate models in the `com.apollographql.apollo.sample` package.
