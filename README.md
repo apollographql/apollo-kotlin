@@ -339,7 +339,7 @@ import com.apollographql.apollo.gradle.api.ApolloExtension
 
 #### Reverting to the 1.2.x plugin
 
-If, despite the above, you can't make it work, you can keep the 1.2.x plugin. It is available in the `apollo-gradle-plugin-deprecated` artifact. Make sure to open an [issue](https://github.com/apollographql/apollo-android/issues) as the 1.2.x will be removed in a future version.
+If, despite the above, you can't make it work, you can keep the 1.2.x plugin. It is available in the `apollo-gradle-plugin-deprecated` artifact. Make sure to open an [issue](https://github.com/apollographql/apollo-android/issues) as the 1.2.x plugin will be removed in a future version.
 
 ### Singularization
 
@@ -347,11 +347,11 @@ Singularization rules have been improved (see [1888](https://github.com/apollogr
 
 ### Nested class names
 
-Nested classes are now allowed to have the same name than their parent (see [1893](https://github.com/apollographql/apollo-android/pull/1893)). If you were previously using such a class, the numbered suffix will be removed.
+Nested classes are now allowed to have the same name as their parent (see [1893](https://github.com/apollographql/apollo-android/pull/1893)). If you were previously using such a class, the numbered suffix will be removed.
 
 ### Transformed queries removal
 
-Version 1.3.0 can now optionally generate a `OperationOutput.json` file. This file will contain the generated queries source indexed by their operation ID. You can use them to whitelist the operation on your server or any other use case. See [1841](https://github.com/apollographql/apollo-android/pull/1841) for details.
+Version 1.3.0 can now optionally generate a `OperationOutput.json` file. This file will contain the generated queries source, operation name and operation ID. You can use them to whitelist the operation on your server or any other use case. See [1841](https://github.com/apollographql/apollo-android/pull/1841) for details.
 
 Since OperationOutput.json is a superset of the transformed queries, transformed queries have been removed. If you were using transformed queries, you will now have to use OperationOutput.json.
 
