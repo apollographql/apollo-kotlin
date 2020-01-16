@@ -99,7 +99,7 @@ fragment FeedCommentFragment on Comment {
 ```groovy
 // build.gradle or build.gradle.kts
 apollo {
-  generateKotlinModels.set(true) // false for Java models
+  generateKotlinModels.set(true) // or false for Java models
 }
 ```
 
