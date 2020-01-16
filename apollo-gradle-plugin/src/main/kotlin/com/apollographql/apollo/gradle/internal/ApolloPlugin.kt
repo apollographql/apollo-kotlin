@@ -293,6 +293,9 @@ open class ApolloPlugin : Plugin<Project> {
       "apollo-android requires Gradle version 5.6 or greater"
     }
 
+    project.logger.lifecycle("You are using apollo-android version 1.3.0 or higher. If you're migrating from 1.2.x and encounter " +
+        "any issue, please read https://github.com/apollographql/apollo-android#migrating-to-13x")
+
     val apolloExtension = project.extensions.create(ApolloExtension::class.java, "apollo", DefaultApolloExtension::class.java, project) as DefaultApolloExtension
     // for backward compatibility
     val apolloSourceSetExtension = (apolloExtension as ExtensionAware).extensions.create("sourceSet", ApolloSourceSetExtension::class.java, project.objects)
