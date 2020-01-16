@@ -448,8 +448,10 @@ class SchemaTypeSpecBuilder(
     return VisitorMethodSpec(implementations).createVisitorMethod()
   }
 
-  private fun inlineFragmentsResponseMapperSpec(nameOverrideMap: Map<String, String>,
-                                                surrogateInlineFragmentType: TypeSpec): TypeSpec {
+  private fun inlineFragmentsResponseMapperSpec(
+      nameOverrideMap: Map<String, String>,
+      surrogateInlineFragmentType: TypeSpec
+  ): TypeSpec {
     val inlineFragments = inlineFragments.map { inlineFragment ->
       val fieldSpec = inlineFragment.fieldSpec(context).overrideType(nameOverrideMap)
       val normalizedFieldSpec = FieldSpec.builder(

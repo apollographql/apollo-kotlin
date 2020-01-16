@@ -95,7 +95,7 @@ public class SimpleResponseReaderTest {
     }
   }
 
-  @Test public void readD1ouble() {
+  @Test public void readDouble() {
     final ResponseField successField = ResponseField.forDouble("successFieldResponseName", "successFieldName", null, false, NO_CONDITIONS);
     final ResponseField classCastExceptionField = ResponseField.forDouble("classCastExceptionField", "classCastExceptionField", null, false,
         NO_CONDITIONS);

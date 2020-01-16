@@ -230,23 +230,6 @@ class ResponseFieldSpec(
         READ_METHODS[responseFieldType], fieldParam, readerTypeSpec)
   }
 
-//  private fun readFragmentCode(readerParam: CodeBlock, fieldParam: CodeBlock): CodeBlock {
-//    val readerTypeSpec = TypeSpec.anonymousClassBuilder("")
-//        .superclass(responseFieldObjectReaderType(normalizedFieldSpec.type))
-//        .addMethod(MethodSpec
-//            .methodBuilder("read")
-//            .addModifiers(Modifier.PUBLIC)
-//            .addAnnotation(Override::class.java)
-//            .returns(normalizedFieldSpec.type)
-//            .addParameter(RESPONSE_READER_PARAM)
-//            .addStatement("return \$L.map(\$L)", (normalizedFieldSpec.type as ClassName).mapperFieldName(),
-//                RESPONSE_READER_PARAM.name)
-//            .build())
-//        .build()
-//    return CodeBlock.of("final \$T \$L = \$L.\$L(\$L, \$L);\n", normalizedFieldSpec.type, fieldSpec.name, readerParam,
-//        READ_METHODS[responseFieldType], fieldParam, readerTypeSpec)
-//  }
-
   private fun readFragmentsCode(): CodeBlock {
     return CodeBlock.of("final \$T \$L = \$L.map(\$L);\n", normalizedFieldSpec.type, fieldSpec.name,
         (normalizedFieldSpec.type as ClassName).mapperFieldName(), RESPONSE_READER_PARAM.name)
