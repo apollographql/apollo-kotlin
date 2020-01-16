@@ -5,7 +5,7 @@
 [![Build status](https://travis-ci.org/apollographql/apollo-android.svg?branch=master)](https://travis-ci.org/apollographql/apollo-android)
 [![GitHub release](https://img.shields.io/github/release/apollographql/apollo-android.svg)](https://github.com/apollographql/apollo-android/releases/latest)
 
-Apollo-Android is a GraphQL compliant client that generates Java and Kotlin models from standard GraphQL queries.  These models give you a typesafe API to work with GraphQL servers.  Apollo will help you keep your GraphQL query statements together, organized, and easy to access. Change a query and recompile your project - Apollo code gen will rebuild your data model.  Code generation also allows Apollo to read and unmarshal responses from the network without the need of any reflection.
+Apollo-Android is a GraphQL compliant client that generates Java and Kotlin models from standard GraphQL queries. These models give you a typesafe API to work with GraphQL servers.  Apollo will help you keep your GraphQL query statements together, organized, and easy to access. Change a query and recompile your project - Apollo code gen will rebuild your data model.  Code generation also allows Apollo to read and unmarshal responses from the network without the need of any reflection.
 
 Apollo-Android is designed primarily with Android in mind but you can use it in any Java/Kotlin app. The android-only parts are in `apollo-android-support` and are only needed to use SQLite as a cache or the android main thread for callbacks.
 
@@ -98,7 +98,7 @@ fragment FeedCommentFragment on Comment {
 
 ```groovy
 apollo {
-  generateKotlinModels = true // or false
+  generateKotlinModels.set(true) // false for Java models
 }
 ```
 
@@ -196,7 +196,19 @@ apollo {
 
 ## Downloading a schema.json file
 
-You can get a schema.json file by running an introspection query on your endpoint. Else, you can use the apollo CLI. See [here](https://github.com/apollographql/apollo-tooling#apollo-clientdownload-schema-output) for instructions.
+You can get a schema.json file by running an introspection query on your endpoint. The Apollo Gradle plugin exposes a `downloadApolloSchema` task to help with this. You can download a schema by specifying your endpoint and the location where you want the schema to be downloaded:
+
+```
+./gradlew :shared:downloadApolloSchema -Pcom.apollographql.apollo.endpoint=https://your.graphql.endpoint -Pcom.apollographql.apollo.schema=src/main/graphql/com/example/schema.json
+```
+
+If your endpoint requires authentication, you can pass query parameters and/or custom HTTP headers:
+
+```
+./gradlew :shared:downloadApolloSchema -Pcom.apollographql.apollo.endpoint=https://your.graphql.endpoint -Pcom.apollographql.apollo.schema=src/main/graphql/com/example/schema.json  "-Pcom.apollographql.apollo.headers=Authorization=Bearer YOUR_TOKEN" "-Pcom.apollographql.apollo.query_params=key1=value1&key2=value2"
+```
+
+The `headers` and `query_params` properties both take a query string where key and values should be URL encoded.
 
 ## Intellij Plugin
 
@@ -236,5 +248,5 @@ Advanced topics are available in [the official docs](https://www.apollographql.c
 ```
 The MIT License (MIT)
 
-Copyright (c) 2017 Meteor Development Group, Inc.
+Copyright (c) 2019 Meteor Development Group, Inc.
 ```
