@@ -228,6 +228,118 @@ Latest development changes are available in Sonatype's snapshots repository:
   }
 ```
 
+## Migrating to 1.3.x
+
+Apollo-Android version 1.3.0 introduces several fixes and improvements that are incompatible with 1.2.x
+
+### Gradle plugin changes
+
+The plugin has been rewritten in Kotlin to make it more maintainable and have better support for multiple GraphQL endpoints.  Below are the main changes. Read [plugin-configuration](#configuration-reference) for a reference of the different options.
+
+#### New plugin ID
+
+The plugin ID has been changed from `com.apollographql.android` to `com.apollographql.apollo` to make it clear that the plugin works also for non-Android projects. `com.apollographql.android` will be removed in a future revision.
+
+```groovy
+// Replace:
+apply plugin: 'com.apollographql.android'
+
+// With:
+apply plugin: 'com.apollographql.apollo'
+```
+
+#### Using multiple services
+
+The plugin now requires that you specify multiple services explicitly. If you previously had the following layout:
+
+```
+src/main/graphql/com/github/schema.json
+src/main/graphql/com/github/GetRepositories.graphql
+src/main/graphql/com/starwars/schema.json
+src/main/graphql/com/starwars/GetHeroes.graphql
+```
+
+You will need to define 2 services:
+
+```kotlin
+apollo {
+  service("github") {
+    sourceFolder.set("com/github")
+    rootPackageName.set("com.github")
+  }
+  service("starwars") {
+    sourceFolder.set("com/starwars")
+    rootPackageName.set("com.starwars")
+  }
+}
+```
+
+#### Specifying schema and GraphQL files location
+
+The root `schemaFilePath`, `outputPackageName` and `sourceSets.graphql` are removed and will throw an error if you try to use them. Instead you can use [CompilationUnit] to control what files the compiler will use as inputs.
+
+```groovy
+// Replace:
+sourceSets {
+  main.graphql.srcDirs += "/path/to/your/graphql/queries/dir"
+}
+
+// With:
+apollo {
+  onCompilationUnits {
+     graphqlSourceDirectorySet.srcDirs += "/path/to/your/graphql/queries/dir"
+  }
+}
+
+// Replace
+apollo {
+  sourceSet {
+    schemaFilePath = "/path/to/your/schema.json"
+    exclude = "**/*.gql"
+  }
+  outputPackageName = "com.example"
+}
+
+// With:
+apollo {
+  onCompilationUnits {
+     schemaFile = "/path/to/your/schema.json"
+     graphqlSourceDirectorySet.exclude("**/*.gql")
+     rootPackageName = "com.example"
+  }
+}
+```
+
+#### Kotlin DSL
+
+The plugin uses Gradle [Properties](https://docs.gradle.org/current/javadoc/org/gradle/api/provider/Property.html) to support [lazy configuration](https://docs.gradle.org/current/userguide/lazy_configuration.html) and wiring tasks together.
+
+If you're using Groovy `build.gradle` build scripts it should work transparently but Kotlin `build.gradle.kts` build scripts will require you to use the [Property.set](https://docs.gradle.org/current/javadoc/org/gradle/api/provider/Property.html#set-T-) API:
+
+```kotlin
+apollo {
+  // Replace:
+  setGenerateKotlinModels(true)
+
+  // With:
+  generateKotlinModels.set(true)
+}
+```
+
+Also, the classes of the plugin have been split into an [api](https://github.com/apollographql/apollo-android/tree/4692659508242d64882b8bff11efa7dcd555dbcc/apollo-gradle-plugin-incubating/src/main/kotlin/com/apollographql/apollo/gradle/api) part and an [internal](https://github.com/apollographql/apollo-android/tree/4692659508242d64882b8bff11efa7dcd555dbcc/apollo-gradle-plugin-incubating/src/main/kotlin/com/apollographql/apollo/gradle/internal) one. If you were relying on fully qualified class names from your `build.gradle.kts` files, you will have to tweak them:
+
+```kotlin
+// Replace:
+import com.apollographql.apollo.gradle.ApolloExtension
+
+// With:
+import com.apollographql.apollo.gradle.api.ApolloExtension
+```
+
+#### Reverting to the 1.2.x plugin
+
+If, despite the above, you can't make it work, you can keep the 1.2.x plugin. It is available in the `apollo-gradle-plugin-deprecated` artifact. Make sure to open an [issue](https://github.com/apollographql/apollo-android/issues) as the 1.2.x will be removed in a future version.
+
 ## Advanced topics
 
 Advanced topics are available in [the official docs](https://www.apollographql.com/docs/android/):
