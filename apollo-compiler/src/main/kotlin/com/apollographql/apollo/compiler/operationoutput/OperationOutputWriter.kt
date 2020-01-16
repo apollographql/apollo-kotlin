@@ -1,15 +1,12 @@
 package com.apollographql.apollo.compiler.operationoutput
 
-import com.apollographql.apollo.compiler.PackageNameProvider
+import com.apollographql.apollo.compiler.OperationIdGenerator
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.ir.Operation
-import com.apollographql.apollo.compiler.sha256
 import com.apollographql.apollo.internal.QueryDocumentMinifier
 import java.io.File
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.Types
 
-internal class OperationOutputWriter(val packageNameProvider: PackageNameProvider) {
+internal class OperationOutputWriter(private val operationIdGenerator: OperationIdGenerator) {
   private var operations: List<Operation> = emptyList()
 
   fun visit(ir: CodeGenerationIR) {
@@ -17,11 +14,11 @@ internal class OperationOutputWriter(val packageNameProvider: PackageNameProvide
   }
 
   fun writeTo(outputJsonFile: File) {
-    val operationOuput = operations.map {
+    val operationOutput = operations.associate {
       val minimizedSource = QueryDocumentMinifier.minify(it.sourceWithFragments)
-      minimizedSource.sha256() to OperationDescriptor(it.operationName, minimizedSource)
-    }.toMap()
+      operationIdGenerator.apply(minimizedSource, it.filePath) to OperationDescriptor(it.operationName, minimizedSource)
+    }
 
-    outputJsonFile.writeText(operationOuput.toJson("    "))
+    outputJsonFile.writeText(operationOutput.toJson("    "))
   }
 }
