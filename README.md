@@ -38,10 +38,10 @@ buildscript {
 }
 ```
 
-Then add the dependencies to your app's build.gradle and apply file and apply the `com.apollographql.android` plugin:
+Then add the dependencies to your app's build.gradle and apply file and apply the `com.apollographql.apollo` plugin:
 
 ```groovy
-apply plugin: 'com.apollographql.android'
+apply plugin: 'com.apollographql.apollo'
 
 repositories {
     jcenter()

@@ -27,7 +27,7 @@ buildscript {
 The plugin can then be applied as follows within your app module's `build.gradle` file:
 
 ```
-apply plugin: 'com.apollographql.android'
+apply plugin: 'com.apollographql.apollo'
 
 dependencies {
   ...
