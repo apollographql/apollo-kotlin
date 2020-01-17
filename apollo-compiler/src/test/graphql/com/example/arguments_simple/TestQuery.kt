@@ -127,8 +127,7 @@ data class TestQuery(
       companion object {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField.forFragment("__typename", "__typename", listOf(
-              ResponseField.Condition.typeCondition(arrayOf("Human")),
-              ResponseField.Condition.typeCondition(arrayOf("Droid"))
+              ResponseField.Condition.typeCondition(arrayOf("Human", "Droid"))
             ))
             )
 

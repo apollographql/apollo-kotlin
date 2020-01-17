@@ -14,7 +14,7 @@ internal fun Operation.ast(
   val dataTypeRef = context.registerObjectType(
       name = "Data",
       schemaTypeName = "",
-      fragmentSpreads = emptyList(),
+      fragmentRefs = emptyList(),
       inlineFragments = emptyList(),
       fields = fields,
       singularize = false,

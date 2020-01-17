@@ -21,7 +21,7 @@ data class Operation(
       SchemaTypeSpecBuilder(
           typeName = DATA_TYPE_NAME,
           fields = fields,
-          fragmentSpreads = emptyList(),
+          fragmentRefs = emptyList(),
           inlineFragments = emptyList(),
           context = context,
           abstract = abstract

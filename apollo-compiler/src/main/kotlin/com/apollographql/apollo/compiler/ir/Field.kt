@@ -20,15 +20,13 @@ data class Field(
     val sourceLocation: SourceLocation
 ) : CodeGenerator {
 
-  val fragmentSpreads: List<String> = fragmentRefs.map { it.name }
-
   override fun toTypeSpec(context: CodeGenerationContext, abstract: Boolean): TypeSpec {
     val fields = if (isNonScalar()) fields else emptyList()
     return SchemaTypeSpecBuilder(
         typeName = formatClassName(),
         schemaType = type,
         fields = fields,
-        fragmentSpreads = fragmentSpreads,
+        fragmentRefs = fragmentRefs,
         inlineFragments = inlineFragments,
         context = context,
         abstract = abstract
@@ -112,7 +110,7 @@ data class Field(
 
   fun isNonScalar() = hasFragments() || fields.any()
 
-  private fun hasFragments() = fragmentSpreads.any() || inlineFragments.any()
+  private fun hasFragments() = fragmentRefs.any() || inlineFragments.any()
 
   private fun isList(): Boolean = type.removeSuffix("!").let { it.startsWith('[') && it.endsWith(']') }
 

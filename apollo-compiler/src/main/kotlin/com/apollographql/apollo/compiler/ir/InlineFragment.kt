@@ -15,13 +15,12 @@ data class InlineFragment(
     val sourceLocation: SourceLocation,
     val conditions: List<Condition> = emptyList()
 ) : CodeGenerator {
-  val fragmentSpreads: List<String> = fragmentRefs.map { it.name }
 
   override fun toTypeSpec(context: CodeGenerationContext, abstract: Boolean): TypeSpec {
     return SchemaTypeSpecBuilder(
         typeName = formatClassName(),
         fields = fields,
-        fragmentSpreads = fragmentSpreads,
+        fragmentRefs = fragmentRefs,
         inlineFragments = emptyList(),
         context = context,
         abstract = abstract

@@ -14,7 +14,7 @@ internal fun Context.registerInlineFragmentSuper(type: String, schemaType: Strin
   return registerObjectType(
       name = superInterfaceName.escapeKotlinReservedWord(),
       schemaTypeName = "",
-      fragmentSpreads = emptyList(),
+      fragmentRefs = emptyList(),
       inlineFragments = emptyList(),
       fields = emptyList(),
       kind = ObjectType.Kind.InlineFragmentSuper,
@@ -30,7 +30,7 @@ internal fun InlineFragment.inlineFragmentField(
   val typeRef = context.registerObjectType(
       name = "As$normalizedClassName",
       schemaTypeName = typeCondition,
-      fragmentSpreads = fragmentSpreads,
+      fragmentRefs = fragmentRefs,
       inlineFragments = emptyList(),
       fields = fields,
       kind = ObjectType.Kind.InlineFragment(

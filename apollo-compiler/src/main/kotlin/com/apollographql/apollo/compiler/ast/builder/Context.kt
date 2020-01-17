@@ -7,6 +7,7 @@ import com.apollographql.apollo.compiler.ast.TypeRef
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo.compiler.ir.Field
 import com.apollographql.apollo.compiler.ir.Fragment
+import com.apollographql.apollo.compiler.ir.FragmentRef
 import com.apollographql.apollo.compiler.ir.InlineFragment
 import com.apollographql.apollo.compiler.singularize
 
@@ -24,7 +25,7 @@ internal class Context(
   fun registerObjectType(
       name: String,
       schemaTypeName: String,
-      fragmentSpreads: List<String>,
+      fragmentRefs: List<FragmentRef>,
       inlineFragments: List<InlineFragment>,
       fields: List<Field>,
       kind: ObjectType.Kind,
@@ -43,8 +44,10 @@ internal class Context(
         )
       }
     } else emptyList()
-    val (fragmentsField, fragmentsObjectType) = fragmentSpreads
-        .map { fragments[it] ?: throw IllegalArgumentException("Unable to find fragment definition: $it") }
+    val (fragmentsField, fragmentsObjectType) = fragmentRefs
+        .associateWith { fragmentRef ->
+          fragments[fragmentRef.name] ?: throw IllegalArgumentException("Unable to find fragment definition: ${fragmentRef.name}")
+        }
         .astFragmentsObjectFieldType(
             fragmentsPackage = fragmentsPackage,
             isOptional = { typeCondition != schemaTypeName }
