@@ -19,6 +19,7 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser;
+import com.apollographql.apollo.api.internal.SimpleResponseWriter;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.api.internal.Utils;
 import com.apollographql.apollo.internal.QueryDocumentMinifier;
@@ -28,6 +29,7 @@ import java.io.IOException;
 import java.lang.Double;
 import java.lang.Object;
 import java.lang.Override;
+import java.lang.RuntimeException;
 import java.lang.String;
 import java.lang.SuppressWarnings;
 import java.util.Collections;
@@ -283,6 +285,22 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         $hashCodeMemoized = true;
       }
       return $hashCode;
+    }
+
+    @Override
+    public String toJson(@NotNull String indent) {
+      return toJson(indent, ScalarTypeAdapters.DEFAULT);
+    }
+
+    @Override
+    public String toJson(@NotNull String indent, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+      try {
+        final SimpleResponseWriter responseWriter = new SimpleResponseWriter(scalarTypeAdapters);
+        marshaller().marshal(responseWriter);
+        return responseWriter.toJson(indent);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {

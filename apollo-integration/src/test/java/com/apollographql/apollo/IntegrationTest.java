@@ -274,7 +274,6 @@ public class IntegrationTest {
         .parse(new Buffer().writeUtf8(expected));
 
     String actual = response.data().toJson("  ");
-    System.out.println(actual);
     assertThat(actual).isEqualTo(expected);
   }
 
