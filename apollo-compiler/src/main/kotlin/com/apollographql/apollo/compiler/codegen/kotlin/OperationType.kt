@@ -2,6 +2,10 @@ package com.apollographql.apollo.compiler.codegen.kotlin
 
 import com.apollographql.apollo.api.*
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
+import com.apollographql.apollo.api.internal.SimpleResponseWriter
+import com.apollographql.apollo.api.internal.json.JsonWriter
+import com.apollographql.apollo.compiler.Annotations
+import com.apollographql.apollo.compiler.ClassNames
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.ast.InputType
 import com.apollographql.apollo.compiler.ast.ObjectType
@@ -14,11 +18,15 @@ import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.suppressWa
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.toMapperFun
 import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.apollographql.apollo.response.ScalarTypeAdapters
+import com.squareup.javapoet.MethodSpec
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.jvm.throws
+import okio.Buffer
 import okio.BufferedSource
 import java.io.IOException
+import java.lang.RuntimeException
+import javax.lang.model.element.Modifier
 
 internal fun OperationType.typeSpec(targetPackage: String, generateAsInternal: Boolean = false) = TypeSpec
     .classBuilder(name)
@@ -215,26 +223,58 @@ private val InputType.variablesMarshallerSpec: FunSpec
         .build()
   }
 
-private fun ObjectType.toOperationDataTypeSpec(name: String) =
-    TypeSpec
-        .classBuilder(name)
-        .addModifiers(KModifier.DATA)
-        .addSuperinterface(Operation.Data::class)
-        .primaryConstructor(FunSpec.constructorBuilder()
-            .addParameters(fields.map { field ->
-              val typeName = field.type.asTypeName()
-              ParameterSpec.builder(
-                  name = field.name,
-                  type = if (field.isOptional) typeName.copy(nullable = true) else typeName
-              ).build()
-            })
-            .build()
-        )
-        .addProperties(fields.map { field -> field.asPropertySpec(initializer = CodeBlock.of(field.name)) })
-        .addType(TypeSpec.companionObjectBuilder()
-            .addProperty(responseFieldsPropertySpec(fields))
-            .addFunction(fields.toMapperFun(ClassName.bestGuess(name)))
-            .build()
-        )
-        .addFunction(marshallerFunSpec(fields, true))
-        .build()
+private fun ObjectType.toOperationDataTypeSpec(name: String): TypeSpec {
+  val toJsonWithDefaultScalarTypesFunSpec = FunSpec
+      .builder("toJson")
+      .addModifiers(KModifier.OVERRIDE)
+      .returns(String::class)
+      .addParameter(ParameterSpec
+          .builder("indent", String::class)
+          .build()
+      )
+      .addStatement("return toJson(indent, %M)", MemberName(ScalarTypeAdapters::class.asClassName(), "DEFAULT"))
+      .build()
+  val toJsonFunSpec = FunSpec
+      .builder("toJson")
+      .addModifiers(KModifier.OVERRIDE)
+      .returns(String::class)
+      .addParameter(ParameterSpec
+          .builder("indent", String::class)
+          .build()
+      )
+      .addParameter(ParameterSpec
+          .builder("scalarTypeAdapters", ScalarTypeAdapters::class)
+          .build()
+      )
+      .addCode("""
+            val responseWriter = %T(scalarTypeAdapters)
+            marshaller().marshal(responseWriter)
+            return responseWriter.toJson(indent)
+            
+        """.trimIndent(), SimpleResponseWriter::class)
+      .build()
+  return TypeSpec
+      .classBuilder(name)
+      .addModifiers(KModifier.DATA)
+      .addSuperinterface(Operation.Data::class)
+      .primaryConstructor(FunSpec.constructorBuilder()
+          .addParameters(fields.map { field ->
+            val typeName = field.type.asTypeName()
+            ParameterSpec.builder(
+                name = field.name,
+                type = if (field.isOptional) typeName.copy(nullable = true) else typeName
+            ).build()
+          })
+          .build()
+      )
+      .addProperties(fields.map { field -> field.asPropertySpec(initializer = CodeBlock.of(field.name)) })
+      .addType(TypeSpec.companionObjectBuilder()
+          .addProperty(responseFieldsPropertySpec(fields))
+          .addFunction(fields.toMapperFun(ClassName.bestGuess(name)))
+          .build()
+      )
+      .addFunction(marshallerFunSpec(fields, true))
+      .addFunction(toJsonWithDefaultScalarTypesFunSpec)
+      .addFunction(toJsonFunSpec)
+      .build()
+}
