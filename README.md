@@ -5,7 +5,7 @@
 [![Build status](https://travis-ci.org/apollographql/apollo-android.svg?branch=master)](https://travis-ci.org/apollographql/apollo-android)
 [![GitHub release](https://img.shields.io/github/release/apollographql/apollo-android.svg)](https://github.com/apollographql/apollo-android/releases/latest)
 
-Apollo-Android is a GraphQL compliant client that generates Java and Kotlin models from standard GraphQL queries.  These models give you a typesafe API to work with GraphQL servers.  Apollo will help you keep your GraphQL query statements together, organized, and easy to access. Change a query and recompile your project - Apollo code gen will rebuild your data model.  Code generation also allows Apollo to read and unmarshal responses from the network without the need of any reflection.
+Apollo-Android is a GraphQL compliant client that generates Java and Kotlin models from standard GraphQL queries. These models give you a typesafe API to work with GraphQL servers.  Apollo will help you keep your GraphQL query statements together, organized, and easy to access. Change a query and recompile your project - Apollo code gen will rebuild your data model.  Code generation also allows Apollo to read and unmarshal responses from the network without the need of any reflection.
 
 Apollo-Android is designed primarily with Android in mind but you can use it in any Java/Kotlin app. The android-only parts are in `apollo-android-support` and are only needed to use SQLite as a cache or the android main thread for callbacks.
 
@@ -38,10 +38,10 @@ buildscript {
 }
 ```
 
-Then add the dependencies to your app's build.gradle and apply file and apply the `com.apollographql.android` plugin:
+Then add the dependencies to your app's build.gradle and apply file and apply the `com.apollographql.apollo` plugin:
 
 ```groovy
-apply plugin: 'com.apollographql.android'
+apply plugin: 'com.apollographql.apollo'
 
 repositories {
     jcenter()
@@ -55,8 +55,6 @@ dependencies {
   testCompileOnly("org.jetbrains:annotations:13.0")
 }
 ```
-
-**NOTE: Apollo Gradle plugin requires Gradle 5.1.1 or higher.**
 
 ## Generating models from your queries
 
@@ -99,8 +97,9 @@ fragment FeedCommentFragment on Comment {
 4) Decide if you want to generate Kotlin or Java models:
 
 ```groovy
+// build.gradle or build.gradle.kts
 apollo {
-  generateKotlinModels = true // or false
+  generateKotlinModels.set(true) // or false for Java models
 }
 ```
 
@@ -198,7 +197,19 @@ apollo {
 
 ## Downloading a schema.json file
 
-You can get a schema.json file by running an introspection query on your endpoint. Else, you can use the apollo CLI. See [here](https://github.com/apollographql/apollo-tooling#apollo-clientdownload-schema-output) for instructions.
+You can get a schema.json file by running an introspection query on your endpoint. The Apollo Gradle plugin exposes a `downloadApolloSchema` task to help with this. You can download a schema by specifying your endpoint and the location where you want the schema to be downloaded:
+
+```
+./gradlew :shared:downloadApolloSchema -Pcom.apollographql.apollo.endpoint=https://your.graphql.endpoint -Pcom.apollographql.apollo.schema=src/main/graphql/com/example/schema.json
+```
+
+If your endpoint requires authentication, you can pass query parameters and/or custom HTTP headers:
+
+```
+./gradlew :shared:downloadApolloSchema -Pcom.apollographql.apollo.endpoint=https://your.graphql.endpoint -Pcom.apollographql.apollo.schema=src/main/graphql/com/example/schema.json  "-Pcom.apollographql.apollo.headers=Authorization=Bearer YOUR_TOKEN" "-Pcom.apollographql.apollo.query_params=key1=value1&key2=value2"
+```
+
+The `com.apollographql.apollo.headers` and `com.apollographql.apollo.query_params` properties both take a query string where key and values should be URL encoded.
 
 ## Intellij Plugin
 
@@ -217,6 +228,132 @@ Latest development changes are available in Sonatype's snapshots repository:
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
   }
 ```
+
+## Migrating to 1.3.x
+
+Apollo-Android version 1.3.0 introduces some fixes and improvements that are incompatible with 1.2.x. Updating should be transparent for simple use cases and your project should compile fine. If you're using more advanced features such as custom schema/graphql files location, Kotlin Gradle scripts and/or transformed queries, or if you encounter a build error after updating, read on for details about the changes.
+
+### Gradle plugin changes
+
+The plugin has been rewritten in Kotlin to make it more maintainable and have better support for multiple GraphQL endpoints.  Below are the main changes. Read [plugin-configuration](#configuration-reference) for a reference of the different options.
+
+#### New plugin ID
+
+The plugin ID has been changed from `com.apollographql.android` to `com.apollographql.apollo` to make it clear that the plugin works also for non-Android projects. `com.apollographql.android` will be removed in a future revision.
+
+```groovy
+// Replace:
+apply plugin: 'com.apollographql.android'
+
+// With:
+apply plugin: 'com.apollographql.apollo'
+```
+
+#### Using multiple services
+
+The plugin now requires that you specify multiple services explicitly. If you previously had the following layout:
+
+```
+src/main/graphql/com/github/schema.json
+src/main/graphql/com/github/GetRepositories.graphql
+src/main/graphql/com/starwars/schema.json
+src/main/graphql/com/starwars/GetHeroes.graphql
+```
+
+You will need to define 2 services:
+
+```kotlin
+apollo {
+  service("github") {
+    sourceFolder.set("com/github")
+    rootPackageName.set("com.github")
+  }
+  service("starwars") {
+    sourceFolder.set("com/starwars")
+    rootPackageName.set("com.starwars")
+  }
+}
+```
+
+#### Specifying schema and GraphQL files location
+
+The root `schemaFilePath`, `outputPackageName` and `sourceSets.graphql` are removed and will throw an error if you try to use them. Instead you can use [CompilationUnit] to control what files the compiler will use as inputs.
+
+```groovy
+// Replace:
+sourceSets {
+  main.graphql.srcDirs += "/path/to/your/graphql/queries/dir"
+}
+
+// With:
+apollo {
+  onCompilationUnits {
+     graphqlSourceDirectorySet.srcDirs += "/path/to/your/graphql/queries/dir"
+  }
+}
+
+// Replace
+apollo {
+  sourceSet {
+    schemaFilePath = "/path/to/your/schema.json"
+    exclude = "**/*.gql"
+  }
+  outputPackageName = "com.example"
+}
+
+// With:
+apollo {
+  onCompilationUnits {
+     schemaFile = "/path/to/your/schema.json"
+     graphqlSourceDirectorySet.exclude("**/*.gql")
+     rootPackageName = "com.example"
+  }
+}
+```
+
+#### Kotlin DSL
+
+The plugin uses Gradle [Properties](https://docs.gradle.org/current/javadoc/org/gradle/api/provider/Property.html) to support [lazy configuration](https://docs.gradle.org/current/userguide/lazy_configuration.html) and wiring tasks together.
+
+If you're using Groovy `build.gradle` build scripts it should work transparently but Kotlin `build.gradle.kts` build scripts will require you to use the [Property.set](https://docs.gradle.org/current/javadoc/org/gradle/api/provider/Property.html#set-T-) API:
+
+```kotlin
+apollo {
+  // Replace:
+  setGenerateKotlinModels(true)
+
+  // With:
+  generateKotlinModels.set(true)
+}
+```
+
+Also, the classes of the plugin have been split into an [api](https://github.com/apollographql/apollo-android/tree/4692659508242d64882b8bff11efa7dcd555dbcc/apollo-gradle-plugin-incubating/src/main/kotlin/com/apollographql/apollo/gradle/api) part and an [internal](https://github.com/apollographql/apollo-android/tree/4692659508242d64882b8bff11efa7dcd555dbcc/apollo-gradle-plugin-incubating/src/main/kotlin/com/apollographql/apollo/gradle/internal) one. If you were relying on fully qualified class names from your `build.gradle.kts` files, you will have to tweak them:
+
+```kotlin
+// Replace:
+import com.apollographql.apollo.gradle.ApolloExtension
+
+// With:
+import com.apollographql.apollo.gradle.api.ApolloExtension
+```
+
+#### Reverting to the 1.2.x plugin
+
+If, despite the above, you can't make it work, you can keep the 1.2.x plugin. It is available in the `apollo-gradle-plugin-deprecated` artifact. Make sure to open an [issue](https://github.com/apollographql/apollo-android/issues) as the 1.2.x plugin will be removed in a future version.
+
+### Singularization
+
+Singularization rules have been improved (see [1888](https://github.com/apollographql/apollo-android/pull/1888)). That means the name of some classes that were previously wrongly or badly singularized might have changed. Check for a generated class with a similar name if that happens.
+
+### Nested class names
+
+Nested classes are now allowed to have the same name as their parent (see [1893](https://github.com/apollographql/apollo-android/pull/1893)). If you were previously using such a class, the numbered suffix will be removed.
+
+### Transformed queries removal
+
+Version 1.3.0 can now optionally generate a `OperationOutput.json` file. This file will contain the generated queries source, operation name and operation ID. You can use them to whitelist the operation on your server or any other use case. See [1841](https://github.com/apollographql/apollo-android/pull/1841) for details.
+
+Since OperationOutput.json is a superset of the transformed queries, transformed queries have been removed. If you were using transformed queries, you will now have to use OperationOutput.json.
 
 ## Advanced topics
 
@@ -238,5 +375,5 @@ Advanced topics are available in [the official docs](https://www.apollographql.c
 ```
 The MIT License (MIT)
 
-Copyright (c) 2017 Meteor Development Group, Inc.
+Copyright (c) 2019 Meteor Development Group, Inc.
 ```
