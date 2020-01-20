@@ -1,13 +1,10 @@
 package com.apollographql.apollo;
 
-import com.apollographql.apollo.response.CustomTypeAdapter;
-import com.apollographql.apollo.response.CustomTypeValue;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Input;
+import com.apollographql.apollo.api.OperationDataJsonSerializer;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ScalarType;
-import com.apollographql.apollo.response.ScalarTypeAdapters;
-import com.apollographql.apollo.api.internal.json.JsonWriter;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
 import com.apollographql.apollo.exception.ApolloException;
@@ -17,8 +14,10 @@ import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery;
 import com.apollographql.apollo.integration.httpcache.type.CustomType;
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.HeroNameQuery;
-import com.apollographql.apollo.response.OperationJsonWriter;
+import com.apollographql.apollo.response.CustomTypeAdapter;
+import com.apollographql.apollo.response.CustomTypeValue;
 import com.apollographql.apollo.response.OperationResponseParser;
+import com.apollographql.apollo.response.ScalarTypeAdapters;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
@@ -270,20 +269,13 @@ public class IntegrationTest {
   }
 
   @Test public void operationJsonWriter() throws Exception {
-    String json = Utils.INSTANCE.readFileToString(getClass(), "/OperationJsonWriter.json");
-
+    String expected = Utils.INSTANCE.readFileToString(getClass(), "/OperationJsonWriter.json");
     AllPlanetsQuery query = new AllPlanetsQuery();
-    Response<AllPlanetsQuery.Data> response = new OperationResponseParser<>(query, query.responseFieldMapper(), new ScalarTypeAdapters(Collections.EMPTY_MAP))
-        .parse(new Buffer().writeUtf8(json));
+    Response<AllPlanetsQuery.Data> response = new OperationResponseParser<>(query, query.responseFieldMapper(), ScalarTypeAdapters.DEFAULT)
+        .parse(new Buffer().writeUtf8(expected));
 
-    Buffer buffer = new Buffer();
-    OperationJsonWriter writer = new OperationJsonWriter(response.data(), new ScalarTypeAdapters(Collections.EMPTY_MAP));
-
-    JsonWriter jsonWriter = JsonWriter.of(buffer);
-    jsonWriter.setIndent("  ");
-    writer.write(jsonWriter);
-
-    assertThat(buffer.readUtf8()).isEqualTo(json);
+    String actual = OperationDataJsonSerializer.serialize(response.data(), "  ");
+    assertThat(actual).isEqualTo(expected);
   }
 
   @Test public void parseSuccessOperationRawResponse() throws Exception {

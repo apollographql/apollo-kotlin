@@ -7,6 +7,7 @@ import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.response.CustomTypeAdapter;
 import com.apollographql.apollo.response.CustomTypeValue;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
+import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -14,19 +15,23 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+
 public final class SimpleResponseReader implements ResponseReader {
   private final Map<String, Object> recordSet;
   private final ScalarTypeAdapters scalarTypeAdapters;
   private final Map<String, Object> variableValues;
 
-  public SimpleResponseReader(Map<String, Object> recordSet, Operation.Variables variables, ScalarTypeAdapters scalarTypeAdapters) {
+  public SimpleResponseReader(@NotNull Map<String, Object> recordSet, Operation.Variables variables,
+      @NotNull ScalarTypeAdapters scalarTypeAdapters) {
     this(recordSet, variables.valueMap(), scalarTypeAdapters);
   }
 
-  private SimpleResponseReader(Map<String, Object> recordSet, Map<String, Object> variableValues, ScalarTypeAdapters scalarTypeAdapters) {
-    this.recordSet = recordSet;
-    this.variableValues = variableValues;
-    this.scalarTypeAdapters = scalarTypeAdapters;
+  private SimpleResponseReader(@NotNull Map<String, Object> recordSet,
+      @NotNull Map<String, Object> variableValues, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+    this.recordSet = checkNotNull(recordSet, "recordSet == null");
+    this.variableValues = checkNotNull(variableValues, "variableValues == null");
+    this.scalarTypeAdapters = checkNotNull(scalarTypeAdapters, "scalarTypeAdapters == null");
   }
 
   @Override public String readString(ResponseField field) {

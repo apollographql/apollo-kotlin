@@ -60,9 +60,9 @@ data class Operation(
   fun isSubscription() = operationType == TYPE_SUBSCRIPTION
 
   companion object {
-    val DATA_TYPE_NAME = "Data"
-    val TYPE_MUTATION = "mutation"
-    val TYPE_QUERY = "query"
-    val TYPE_SUBSCRIPTION = "subscription"
+    const val DATA_TYPE_NAME = "Data"
+    const val TYPE_MUTATION = "mutation"
+    const val TYPE_QUERY = "query"
+    const val TYPE_SUBSCRIPTION = "subscription"
   }
 }
