@@ -78,59 +78,6 @@ public interface Operation<D extends Operation.Data, T, V extends Operation.Vari
      * @return {@link ResponseFieldMarshaller} to serialize operation data
      */
     ResponseFieldMarshaller marshaller();
-
-    /**
-     * Serializes GraphQL operation response data into its equivalent Json representation.
-     * For example:
-     * <pre>{@code
-     *    {
-     *      "data": {
-     *        "allPlanets": {
-     *          "__typename": "PlanetsConnection",
-     *          "planets": [
-     *            {
-     *              "__typename": "Planet",
-     *              "name": "Tatooine",
-     *              "surfaceWater": 1.0
-     *            }
-     *          ]
-     *        }
-     *      }
-     *    }
-     * }</pre>
-     *
-     * @param indent the indentation string to be repeated for each level of indentation in the encoded document. Must be a string
-     * containing only whitespace,
-     * @param scalarTypeAdapters configured instance of custom GraphQL scalar type adapters
-     * @return json representation of GraphQL operation response
-     */
-    String toJson(@NotNull String indent, @NotNull ScalarTypeAdapters scalarTypeAdapters);
-
-    /**
-     * Serializes GraphQL operation response data into its equivalent Json representation.
-     * For example:
-     * <pre>{@code
-     *    {
-     *      "data": {
-     *        "allPlanets": {
-     *          "__typename": "PlanetsConnection",
-     *          "planets": [
-     *            {
-     *              "__typename": "Planet",
-     *              "name": "Tatooine",
-     *              "surfaceWater": 1.0
-     *            }
-     *          ]
-     *        }
-     *      }
-     *    }
-     * }</pre>
-     *
-     * @param indent the indentation string to be repeated for each level of indentation in the encoded document. Must be a string
-     * containing only whitespace,
-     * @return json representation of GraphQL operation response
-     */
-    String toJson(@NotNull String indent);
   }
 
   /**

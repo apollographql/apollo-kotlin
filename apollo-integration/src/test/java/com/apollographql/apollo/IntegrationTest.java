@@ -2,6 +2,7 @@ package com.apollographql.apollo;
 
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Input;
+import com.apollographql.apollo.api.OperationDataJsonSerializer;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
@@ -273,7 +274,7 @@ public class IntegrationTest {
     Response<AllPlanetsQuery.Data> response = new OperationResponseParser<>(query, query.responseFieldMapper(), ScalarTypeAdapters.DEFAULT)
         .parse(new Buffer().writeUtf8(expected));
 
-    String actual = response.data().toJson("  ");
+    String actual = OperationDataJsonSerializer.serialize(response.data(), "  ");
     assertThat(actual).isEqualTo(expected);
   }
 
