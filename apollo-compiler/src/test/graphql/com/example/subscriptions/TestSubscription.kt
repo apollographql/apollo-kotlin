@@ -15,7 +15,6 @@ import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
-import com.apollographql.apollo.api.internal.SimpleResponseWriter
 import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.apollographql.apollo.response.ScalarTypeAdapters
 import com.apollographql.apollo.response.ScalarTypeAdapters.DEFAULT
@@ -107,14 +106,6 @@ data class TestSubscription(
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeObject(RESPONSE_FIELDS[0], commentAdded?.marshaller())
-    }
-
-    override fun toJson(indent: String): String = toJson(indent, DEFAULT)
-
-    override fun toJson(indent: String, scalarTypeAdapters: ScalarTypeAdapters): String {
-      val responseWriter = SimpleResponseWriter(scalarTypeAdapters)
-      marshaller().marshal(responseWriter)
-      return responseWriter.toJson(indent)
     }
 
     companion object {
