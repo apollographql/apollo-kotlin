@@ -28,5 +28,10 @@ class ApolloVariant(
      * This is Any so that it does not pull a dependency on the gradle plugin but can be safely cast
      * to BaseVariant.
      */
-    val androidVariant: Any?
+    val androidVariant: Any?,
+
+    /**
+     * True if this variant is a test variant.
+     */
+    val isTest: Boolean
 )

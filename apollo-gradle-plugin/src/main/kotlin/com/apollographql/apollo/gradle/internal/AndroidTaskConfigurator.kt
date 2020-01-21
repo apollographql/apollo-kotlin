@@ -10,11 +10,12 @@ import org.gradle.api.tasks.TaskProvider
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 object AndroidTaskConfigurator {
-  private fun apolloVariant(baseVariant: BaseVariant): ApolloVariant {
+  private fun apolloVariant(baseVariant: BaseVariant, isTest: Boolean): ApolloVariant {
     return ApolloVariant(
         name = baseVariant.name,
         sourceSetNames = baseVariant.sourceSets.map { it.name }.distinct(),
-        androidVariant = baseVariant
+        androidVariant = baseVariant,
+        isTest = isTest
     )
   }
 
@@ -24,24 +25,24 @@ object AndroidTaskConfigurator {
     when (androidExtension) {
       is LibraryExtension -> {
         androidExtension.libraryVariants.all { variant ->
-          container.add(apolloVariant(variant))
+          container.add(apolloVariant(variant, false))
         }
         androidExtension.testVariants.all { variant ->
-          container.add(apolloVariant(variant))
+          container.add(apolloVariant(variant, true))
         }
         androidExtension.unitTestVariants.all { variant ->
-          container.add(apolloVariant(variant))
+          container.add(apolloVariant(variant, true))
         }
       }
       is AppExtension -> {
         androidExtension.applicationVariants.all { variant ->
-          container.add(apolloVariant(variant))
+          container.add(apolloVariant(variant, false))
         }
         androidExtension.testVariants.all { variant ->
-          container.add(apolloVariant(variant))
+          container.add(apolloVariant(variant, true))
         }
         androidExtension.unitTestVariants.all { variant ->
-          container.add(apolloVariant(variant))
+          container.add(apolloVariant(variant, true))
         }
       }
       else -> {

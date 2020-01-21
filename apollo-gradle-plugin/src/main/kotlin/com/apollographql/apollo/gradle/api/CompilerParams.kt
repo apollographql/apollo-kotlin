@@ -129,10 +129,14 @@ interface CompilerParams {
   /**
    * The graphql files containing the queries.
    *
-   * This SourceDirectorySet includes .graphql and .gql files by default.
+   * By default, the plugin will use [Service.sourceFolder] to populate the graphqlSourceDirectorySet.
    *
-   * By default, it will use [Service.sourceFolder] to populate the SourceDirectorySet.
-   * You can override it from [ApolloExtension.onCompilationUnits] for more advanced use cases
+   * You can override the default behaviour in either [ApolloExtension], [Service] or [CompilationUnit] by adding directories to graphqlSourceDirectorySet.
+   * If you override the default behaviour, you're responsible of setting the includes and excludes accordingly. Typically, you would
+   * set graphqlSourceDirectorySet.include("**&#47;*.graphql")
+   *
+   * Directories set on [ApolloExtension.graphqlSourceDirectorySet] or [Service.graphqlSourceDirectorySet] will not be used for test
+   * variants as that would produce duplicate classes since the exact same files would be compiled for the main variants.
    */
   val graphqlSourceDirectorySet: SourceDirectorySet
 

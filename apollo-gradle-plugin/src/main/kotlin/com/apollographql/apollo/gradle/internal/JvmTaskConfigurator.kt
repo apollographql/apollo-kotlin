@@ -14,11 +14,12 @@ object JvmTaskConfigurator {
     val javaPlugin = project.convention.getPlugin(JavaPluginConvention::class.java)
     val sourceSets = javaPlugin.sourceSets
 
-    sourceSets.map { it.name }.forEach {name ->
+    sourceSets.map { it.name }.forEach { name ->
       val apolloVariant = ApolloVariant(
           name = name,
           sourceSetNames = listOf(name),
-          androidVariant = null
+          androidVariant = null,
+          isTest = name == "test"
       )
 
       container.add(apolloVariant)
@@ -60,7 +61,7 @@ object JvmTaskConfigurator {
        */
       project.tasks.matching {
         it.name == "compileKotlin"
-      }.configureEach{
+      }.configureEach {
         (it as KotlinCompile).source(codegenProvider.get().outputDir.get().asFile)
       }
     }
