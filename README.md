@@ -355,6 +355,20 @@ Version 1.3.0 can now optionally generate a `OperationOutput.json` file. This fi
 
 Since OperationOutput.json is a superset of the transformed queries, transformed queries have been removed. If you were using transformed queries, you will now have to use OperationOutput.json.
 
+### Espresso Idling Resources
+
+Idling Resources integration is moved to AndroidX! This is a potential breaking change for users who has not migrated to AndroidX yet. If you haven't you can still use the 1.2.x version in your test code.
+
+The artifact is also renamed to make its intention more obvious. Documentation for idling resource can be found [here](https://www.apollographql.com/docs/android/advanced/android/#apolloidlingresource)
+
+```groovy
+  // Replace:
+  androidTestImplementation("com.apollographql.apollo:apollo-espresso-support:x.y.z")
+
+  // With:
+  androidTestImplementation("com.apollographql.apollo:apollo-idling-resource:x.y.z")
+```
+
 ## Advanced topics
 
 Advanced topics are available in [the official docs](https://www.apollographql.com/docs/android/):
