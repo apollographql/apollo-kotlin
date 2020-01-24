@@ -18,12 +18,8 @@ buildscript {
     classpath(groovy.util.Eval.x(project, "x.dep.gradleErrorpronePlugin"))
     classpath(groovy.util.Eval.x(project, "x.dep.gradleJapiCmpPlugin"))
     classpath(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
-    classpath(groovy.util.Eval.x(project, "x.dep.bintrayGradlePlugin"))
     classpath(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
   }
-}
-plugins {
-  id("com.jfrog.bintray").version("1.8.4").apply(false)
 }
 
 val rootJapiCmp = tasks.register("japicmp")
@@ -60,7 +56,6 @@ subprojects {
       google()
     }
   }
-  this.apply(plugin = "com.jfrog.bintray")
   this.apply(plugin = "maven-publish")
 
   repositories {
@@ -143,7 +138,7 @@ subprojects {
 }
 
 fun Project.configurePublishing() {
-  val publicationName = "maven"
+  val publicationName = "default"
   val android = extensions.findByType(com.android.build.gradle.BaseExtension::class.java)
 
   /**
@@ -248,6 +243,16 @@ fun Project.configurePublishing() {
         name = "pluginTest"
         url = uri("file://${rootProject.buildDir}/localMaven")
       }
+
+      maven {
+        name = "bintray"
+        url = uri("https://api.bintray.com/maven/apollographql/android/${project.property("POM_ARTIFACT_ID")}/;publish=1;override=1")
+        credentials {
+          username = findProperty("bintray.user") as String?
+          password = findProperty("bintray.apikey") as String?
+        }
+      }
+
       maven {
         name = "oss"
         url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
@@ -255,28 +260,6 @@ fun Project.configurePublishing() {
           username = findProperty("SONATYPE_NEXUS_USERNAME") as String?
           password = findProperty("SONATYPE_NEXUS_PASSWORD") as String?
         }
-      }
-    }
-  }
-
-  configure<com.jfrog.bintray.gradle.BintrayExtension> {
-    user = findProperty("bintray.user") as String?
-    key = findProperty("bintray.apikey") as String?
-
-    setPublications(publicationName)
-
-    pkg.run {
-      userOrg = findProperty("POM_DEVELOPER_ID") as String?
-      repo = findProperty("BINTRAY_POM_REPO") as String?
-      name = findProperty("POM_ARTIFACT_ID") as String?
-      desc = findProperty("POM_DESCRIPTION") as String?
-      websiteUrl = findProperty("POM_URL") as String?
-      vcsUrl = findProperty("POM_SCM_URL") as String?
-      setLicenses(findProperty("POM_LICENCE_NAME") as String?)
-      publish = true
-      publicDownloadNumbers = true
-      version.run {
-        desc = findProperty("POM_DESCRIPTION") as String?
       }
     }
   }
