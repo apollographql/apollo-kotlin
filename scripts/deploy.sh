@@ -37,5 +37,9 @@ else
   echo "Deploy to Gradle portal..."
   ./gradlew :apollo-gradle-plugin:publishPlugin -Pgradle.publish.key=$GRADLE_PUBLISH_KEY -Pgradle.publish.secret=$GRADLE_PUBLISH_SECRET
   echo "Deployed to Gradle portal!"
+  echo "Deploy Gradle plugin marker to bintray..."
+  # We override the artifact_id for the marker else it is uploaded at the same coordinates as apollo-gradle-plugin
+  ./gradlew publishApolloGradlePluginPluginMarkerMavenPublicationToBintrayRepository -Pbintray.user="${BINTRAY_USER}" -Pbintray.apikey="${BINTRAY_API_KEY}" -PPOM_ARTIFACT_ID=com.apollographql.apollo.gradle.plugin
+  echo "Deployed Gradle plugin marker to bintray!"
 fi
 
