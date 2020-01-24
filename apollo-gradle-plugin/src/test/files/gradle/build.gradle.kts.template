@@ -15,11 +15,11 @@ buildscript {
   }
 
   repositories {
-    google()
-    mavenCentral()
     maven {
       url = uri("../../../build/localMaven")
     }
+    google()
+    mavenCentral()
   }
   dependencies {
     // ADD BUILDSCRIPT DEPENDENCIES HERE
@@ -42,12 +42,12 @@ fun kotlinDep(artifact: String): Any {
 // apply plugin: 'com.apollographql.apollo'
 
 repositories {
-  google() // for aapt2
-  mavenCentral() // for jetbrainsAnnotations, depended on by apolloApi
-  jcenter() // for org.jetbrains.trove4j, depended on by lint
   maven {
     url = uri("../../../build/localMaven")
   }
+  google() // for aapt2
+  mavenCentral() // for jetbrainsAnnotations, depended on by apolloApi
+  jcenter() // for org.jetbrains.trove4j, depended on by lint
 }
 
 dependencies {
