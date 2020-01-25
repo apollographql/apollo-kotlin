@@ -337,6 +337,82 @@ import com.apollographql.apollo.gradle.ApolloExtension
 import com.apollographql.apollo.gradle.api.ApolloExtension
 ```
 
+#### Breaking changes in generated Kotlin models with inline fragments:
+
+Field `inlineFragment` is no longer generated with a new Apollo **1.3.0** release for Kotlin models. 
+
+For example:
+
+[previous version of model with inline fragments](https://github.com/apollographql/apollo-android/blob/hotfix/1.2.3/apollo-compiler/src/test/graphql/com/example/simple_inline_fragment/TestQuery.kt#L129)
+
+```
+data class Hero(
+    val __typename: String,
+    /**
+     * The name of the character
+     */
+    val name: String,
+    val inlineFragment: HeroCharacter?
+  ) {
+    val asHuman: AsHuman? = inlineFragment as? AsHuman
+
+    val asDroid: AsDroid? = inlineFragment as? AsDroid
+...
+```
+
+[new version of generated model with inline fragments](https://github.com/apollographql/apollo-android/blob/v1.3.0/apollo-compiler/src/test/graphql/com/example/simple_inline_fragment/TestQuery.kt#L125)
+
+```
+  data class Hero(
+    val __typename: String,
+    /**
+     * The name of the character
+     */
+    val name: String,
+    val asHuman: AsHuman?,
+    val asDroid: AsDroid?
+  )
+```
+
+***Motivation***: there is an issue with previous version of generated model, there are cases when specified multiple inline fragments should be resolved for the same GraphQL type. For example imagine that GraphQL schema defines this hierarchy of types `Character <- Hero <- Human`. Having this GraphQL query:
+
+```
+query {
+  character {
+    name
+    ... on Hero { ... }
+    ... on Human { ... }
+   }
+}
+```
+
+both inline fragments `on Hero` and `on Human` should be resolved for character type `Human` as `Hero` is super type of `Human`. 
+
+Previous version of generated model for `Character` didn't resolve both inline fragments but rather first declared `... on Hero`. New version resolves both fragments `on Hero` and `on Human`.
+
+***Migration***:
+
+If you have this code to get access to the resolved inline fragment:
+
+```
+when (hero.inlineFragment) {
+    is Hero.AsHuman -> ...
+    is Hero.AsDroid -> ...
+}
+```
+
+you should change it to check all declared inline fragments for nullability, as it's possible now to have multiple resolved fragments:
+
+```
+if (hero.asHuman != null) {
+  ...
+}
+
+if (hero.asDroid != null) {
+  ...
+}
+```
+
 #### Reverting to the 1.2.x plugin
 
 If, despite the above, you can't make it work, you can keep the 1.2.x plugin. It is available in the `apollo-gradle-plugin-deprecated` artifact. Make sure to open an [issue](https://github.com/apollographql/apollo-android/issues) as the 1.2.x plugin will be removed in a future version.
