@@ -229,8 +229,10 @@ fun Project.configurePublishing() {
           }
 
           licenses {
-            name.set(findProperty("POM_LICENCE_NAME") as String?)
-            url.set(findProperty("POM_LICENCE_URL") as String?)
+            license {
+              name.set(findProperty("POM_LICENCE_NAME") as String?)
+              url.set(findProperty("POM_LICENCE_URL") as String?)
+            }
           }
 
           developers {
