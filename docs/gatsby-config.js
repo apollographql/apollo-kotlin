@@ -19,11 +19,8 @@ module.exports = {
             'essentials/get-started',
             'essentials/queries',
             'essentials/mutations',
+            'gradle/plugin-configuration',
             'essentials/caching',
-          ],
-          'Gradle Plugin': [
-            'gradle/incubating-plugin',
-            'gradle/plugin-configuration'
           ],
           Advanced: [
             'advanced/android',
