@@ -217,7 +217,7 @@ The [JS Graphql Intellij Plugin](https://jimkyndemeyer.github.io/js-graphql-inte
 
 ## Releases
 
-Our [change log](CHANGELOG.md) has the release history. 
+Our [release history](https://github.com/apollographql/apollo-android/releases) has the release history. 
 
 Releases are hosted on [jcenter](https://jcenter.bintray.com/com/apollographql/apollo/).
 
