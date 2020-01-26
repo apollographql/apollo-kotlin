@@ -1,5 +1,6 @@
 package com.apollographql.apollo.internal.subscription;
 
+import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.Subscription;
@@ -39,6 +40,8 @@ public final class RealSubscriptionManager implements SubscriptionManager {
   static final int CONNECTION_KEEP_ALIVE_TIMEOUT_TIMER_TASK_ID = 3;
   static final long CONNECTION_ACKNOWLEDGE_TIMEOUT = TimeUnit.SECONDS.toMillis(5);
   static final long INACTIVITY_TIMEOUT = TimeUnit.SECONDS.toMillis(10);
+  static final String PROTOCOL_NEGOTIATION_ERROR_NOT_FOUND = "PersistedQueryNotFound";
+  static final String PROTOCOL_NEGOTIATION_ERROR_NOT_SUPPORTED = "PersistedQueryNotSupported";
 
   Map<UUID, SubscriptionRecord> subscriptions = new LinkedHashMap<>();
   volatile SubscriptionManagerState state = SubscriptionManagerState.DISCONNECTED;
@@ -70,11 +73,12 @@ public final class RealSubscriptionManager implements SubscriptionManager {
     }
   };
   private final List<OnSubscriptionManagerStateChangeListener> onStateChangeListeners = new CopyOnWriteArrayList<>();
+  private final boolean autoPersistSubscription;
 
   public RealSubscriptionManager(@NotNull ScalarTypeAdapters scalarTypeAdapters,
       @NotNull final SubscriptionTransport.Factory transportFactory, @NotNull SubscriptionConnectionParamsProvider connectionParams,
       @NotNull final Executor dispatcher, long connectionHeartbeatTimeoutMs,
-      @NotNull Supplier<ResponseNormalizer<Map<String, Object>>> responseNormalizer) {
+      @NotNull Supplier<ResponseNormalizer<Map<String, Object>>> responseNormalizer, boolean autoPersistSubscription) {
     checkNotNull(scalarTypeAdapters, "scalarTypeAdapters == null");
     checkNotNull(transportFactory, "transportFactory == null");
     checkNotNull(dispatcher, "dispatcher == null");
@@ -86,6 +90,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
     this.dispatcher = dispatcher;
     this.connectionHeartbeatTimeoutMs = connectionHeartbeatTimeoutMs;
     this.responseNormalizer = responseNormalizer;
+    this.autoPersistSubscription = autoPersistSubscription;
   }
 
   @Override
@@ -165,13 +170,16 @@ public final class RealSubscriptionManager implements SubscriptionManager {
         timer.cancelTask(INACTIVITY_TIMEOUT_TIMER_TASK_ID);
 
         final UUID subscriptionId = UUID.randomUUID();
-
         subscriptions.put(subscriptionId, new SubscriptionRecord(subscriptionId, subscription, callback));
+
         if (state == SubscriptionManagerState.DISCONNECTED) {
           state = SubscriptionManagerState.CONNECTING;
           transport.connect();
         } else if (state == SubscriptionManagerState.ACTIVE) {
-          transport.send(new OperationClientMessage.Start(subscriptionId.toString(), subscription, scalarTypeAdapters));
+          transport.send(
+              new OperationClientMessage.Start(subscriptionId.toString(), subscription, scalarTypeAdapters, autoPersistSubscription,
+                  false)
+          );
         }
       }
     }
@@ -422,8 +430,10 @@ public final class RealSubscriptionManager implements SubscriptionManager {
       if (state == SubscriptionManagerState.CONNECTED) {
         state = SubscriptionManagerState.ACTIVE;
         for (SubscriptionRecord subscriptionRecord : subscriptions.values()) {
-          transport.send(new OperationClientMessage.Start(subscriptionRecord.id.toString(), subscriptionRecord.subscription,
-              scalarTypeAdapters));
+          transport.send(
+              new OperationClientMessage.Start(subscriptionRecord.id.toString(), subscriptionRecord.subscription, scalarTypeAdapters,
+                  autoPersistSubscription, false)
+          );
         }
       }
     }
@@ -432,9 +442,29 @@ public final class RealSubscriptionManager implements SubscriptionManager {
   }
 
   private void onErrorServerMessage(OperationServerMessage.Error message) {
-    String subscriptionId = message.id != null ? message.id : "";
-    SubscriptionRecord subscriptionRecord = removeSubscriptionById(subscriptionId);
-    if (subscriptionRecord != null) {
+    final String subscriptionId = message.id != null ? message.id : "";
+    final SubscriptionRecord subscriptionRecord = removeSubscriptionById(subscriptionId);
+    if (subscriptionRecord == null) {
+      return;
+    }
+
+    final boolean resendSubscriptionWithDocument;
+    if (autoPersistSubscription) {
+      Error error = OperationResponseParser.parseError(message.payload);
+      resendSubscriptionWithDocument = PROTOCOL_NEGOTIATION_ERROR_NOT_FOUND.equalsIgnoreCase(error.message()) ||
+          PROTOCOL_NEGOTIATION_ERROR_NOT_SUPPORTED.equalsIgnoreCase(error.message());
+    } else {
+      resendSubscriptionWithDocument = false;
+    }
+
+    if (resendSubscriptionWithDocument) {
+      synchronized (this) {
+        subscriptions.put(subscriptionRecord.id, subscriptionRecord);
+        transport.send(new OperationClientMessage.Start(
+            subscriptionRecord.id.toString(), subscriptionRecord.subscription, scalarTypeAdapters, true, true
+        ));
+      }
+    } else {
       subscriptionRecord.notifyOnError(new ApolloSubscriptionServerException(message.payload));
     }
   }

@@ -328,6 +328,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     Optional<Logger> logger = Optional.absent();
     final List<ApolloInterceptor> applicationInterceptors = new ArrayList<>();
     boolean enableAutoPersistedQueries;
+    boolean enableAutoPersistedSubscriptions;
     Optional<SubscriptionTransport.Factory> subscriptionTransportFactory = Optional.absent();
     SubscriptionConnectionParamsProvider subscriptionConnectionParams = new SubscriptionConnectionParamsProvider.Const(
         new SubscriptionConnectionParams());
@@ -559,6 +560,15 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     }
 
     /**
+     * @param enableAutoPersistedSubscriptions True if ApolloClient should enable Automatic Persisted Subscriptions support. Default: false.
+     * @return The {@link Builder} object to be used for chaining method calls
+     */
+    public Builder enableAutoPersistedSubscriptions(boolean enableAutoPersistedSubscriptions) {
+      this.enableAutoPersistedSubscriptions = enableAutoPersistedSubscriptions;
+      return this;
+    }
+
+    /**
      * Sets flag whether GraphQL queries should be sent via HTTP GET requests.
      *
      * @param useHttpGetMethodForQueries {@code true} if HTTP GET requests should be used, {@code false} otherwise.
@@ -623,13 +633,14 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       Optional<SubscriptionTransport.Factory> subscriptionTransportFactory = this.subscriptionTransportFactory;
       if (subscriptionTransportFactory.isPresent()) {
         final ApolloStore finalApolloStore = apolloStore;
-        subscriptionManager = new RealSubscriptionManager(scalarTypeAdapters, subscriptionTransportFactory.get(),
-            subscriptionConnectionParams, dispatcher, subscriptionHeartbeatTimeout,
+        final Supplier<ResponseNormalizer<Map<String, Object>>> responseNormalizer =
             new Supplier<ResponseNormalizer<Map<String, Object>>>() {
               @Override public ResponseNormalizer<Map<String, Object>> get() {
                 return finalApolloStore.networkResponseNormalizer();
               }
-            });
+            };
+        subscriptionManager = new RealSubscriptionManager(scalarTypeAdapters, subscriptionTransportFactory.get(),
+            subscriptionConnectionParams, dispatcher, subscriptionHeartbeatTimeout, responseNormalizer, enableAutoPersistedSubscriptions);
       }
 
       return new ApolloClient(serverUrl,

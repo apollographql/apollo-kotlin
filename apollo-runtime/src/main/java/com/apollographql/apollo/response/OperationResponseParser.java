@@ -63,7 +63,7 @@ public final class OperationResponseParser<D extends Operation.Data, W> {
       if (errorPayloads != null) {
         errors = new ArrayList<>();
         for (Map<String, Object> errorPayload : errorPayloads) {
-          errors.add(readError(errorPayload));
+          errors.add(parseError(errorPayload));
         }
       }
     }
@@ -130,7 +130,7 @@ public final class OperationResponseParser<D extends Operation.Data, W> {
       @Override public Error read(ResponseJsonStreamReader reader) throws IOException {
         return reader.nextObject(true, new ResponseJsonStreamReader.ObjectReader<Error>() {
           @Override public Error read(ResponseJsonStreamReader reader) throws IOException {
-            return readError(reader.toMap());
+            return parseError(reader.toMap());
           }
         });
       }
@@ -138,7 +138,7 @@ public final class OperationResponseParser<D extends Operation.Data, W> {
   }
 
   @SuppressWarnings("unchecked")
-  private Error readError(Map<String, Object> payload) {
+  public static Error parseError(Map<String, Object> payload) {
     String message = null;
     final List<Error.Location> locations = new ArrayList<>();
     final Map<String, Object> customAttributes = new HashMap<>();
@@ -150,7 +150,7 @@ public final class OperationResponseParser<D extends Operation.Data, W> {
         List<Map<String, Object>> locationItems = (List<Map<String, Object>>) entry.getValue();
         if (locationItems != null) {
           for (Map<String, Object> item : locationItems) {
-            locations.add(readErrorLocation(item));
+            locations.add(parseErrorLocation(item));
           }
         }
       } else {
@@ -163,7 +163,7 @@ public final class OperationResponseParser<D extends Operation.Data, W> {
   }
 
   @SuppressWarnings("ConstantConditions")
-  private Error.Location readErrorLocation(Map<String, Object> data) {
+  private static Error.Location parseErrorLocation(Map<String, Object> data) {
     long line = -1;
     long column = -1;
     if (data != null) {

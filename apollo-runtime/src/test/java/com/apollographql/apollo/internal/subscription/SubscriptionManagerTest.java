@@ -52,7 +52,7 @@ public class SubscriptionManagerTest {
       @Override public ResponseNormalizer<Map<String, Object>> get() {
         return ApolloStore.NO_APOLLO_STORE.networkResponseNormalizer();
       }
-    });
+    }, false);
     subscriptionManager.addOnStateChangeListener(onStateChangeListener);
     assertThat(subscriptionTransportFactory.subscriptionTransport).isNotNull();
     assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.DISCONNECTED);
