@@ -49,7 +49,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class AsHuman(
-    val __typename: String,
+    val __typename: String = "Human",
     /**
      * Height in the preferred unit, default is meters
      */
@@ -78,7 +78,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class Hero(
-    val __typename: String,
+    val __typename: String = "Character",
     val asHuman: AsHuman?
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {

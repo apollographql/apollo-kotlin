@@ -67,7 +67,7 @@ data class TestQuery(
   override fun parse(source: BufferedSource): Response<Data> = parse(source, DEFAULT)
 
   data class CreateReview(
-    val __typename: String,
+    val __typename: String = "Review",
     /**
      * The number of stars this review gave, 1-5
      */

@@ -46,7 +46,7 @@ internal class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Varia
   override fun parse(source: BufferedSource): Response<Data> = parse(source, DEFAULT)
 
   data class Hero(
-    val __typename: String,
+    val __typename: String = "Character",
     val fragments: Fragments
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {

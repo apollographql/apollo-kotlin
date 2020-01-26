@@ -47,7 +47,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   override fun parse(source: BufferedSource): Response<Data> = parse(source, DEFAULT)
 
   data class Search(
-    val __typename: String,
+    val __typename: String = "SearchResult",
     val fragments: Fragments
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {

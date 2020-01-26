@@ -16,7 +16,7 @@ import kotlin.Suppress
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
 data class HumanDetails(
-  val __typename: String,
+  val __typename: String = "Human",
   /**
    * The home planet of the human, or null if unknown
    */

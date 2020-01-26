@@ -18,7 +18,7 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
 data class HeroDetails(
-  val __typename: String,
+  val __typename: String = "Character",
   /**
    * The friends of the character exposed as a connection with edges
    */
@@ -69,7 +69,7 @@ data class HeroDetails(
   }
 
   data class Node(
-    val __typename: String,
+    val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -100,7 +100,7 @@ data class HeroDetails(
   }
 
   data class Edge(
-    val __typename: String,
+    val __typename: String = "FriendsEdge",
     /**
      * The character represented by this friendship edge
      */
@@ -132,7 +132,7 @@ data class HeroDetails(
   }
 
   data class FriendsConnection(
-    val __typename: String,
+    val __typename: String = "FriendsConnection",
     /**
      * The total number of friends
      */

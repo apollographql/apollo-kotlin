@@ -52,7 +52,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
   }
 
   data class Friend1(
-    val __typename: String,
+    val __typename: String = "Character",
     val fragments: Fragments
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -102,7 +102,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
   }
 
   data class Friend(
-    val __typename: String,
+    val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -162,7 +162,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
   }
 
   data class AsHuman(
-    val __typename: String,
+    val __typename: String = "Human",
     /**
      * What this human calls themselves
      */
@@ -216,7 +216,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
   }
 
   data class Friend2(
-    val __typename: String,
+    val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -245,7 +245,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
   }
 
   data class HeroDetailQuery(
-    val __typename: String,
+    val __typename: String = "Character",
     /**
      * The name of the character
      */

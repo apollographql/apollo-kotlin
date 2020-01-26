@@ -70,7 +70,7 @@ internal data class CreateReviewForEpisode(
   override fun parse(source: BufferedSource): Response<Data> = parse(source, DEFAULT)
 
   data class ListOfListOfObject(
-    val __typename: String,
+    val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -99,7 +99,7 @@ internal data class CreateReviewForEpisode(
   }
 
   data class CreateReview(
-    val __typename: String,
+    val __typename: String = "Review",
     /**
      * The number of stars this review gave, 1-5
      */

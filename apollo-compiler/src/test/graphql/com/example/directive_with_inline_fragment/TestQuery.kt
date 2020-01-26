@@ -70,7 +70,7 @@ data class TestQuery(
   }
 
   data class AsHuman(
-    val __typename: String,
+    val __typename: String = "Human",
     /**
      * The ID of the human
      */
@@ -115,7 +115,7 @@ data class TestQuery(
   }
 
   data class AsDroid(
-    val __typename: String,
+    val __typename: String = "Droid",
     /**
      * The ID of the droid
      */
@@ -160,7 +160,7 @@ data class TestQuery(
   }
 
   data class Hero(
-    val __typename: String,
+    val __typename: String = "Character",
     /**
      * The ID of the character
      */

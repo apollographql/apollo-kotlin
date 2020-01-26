@@ -73,7 +73,7 @@ data class TestQuery(
   }
 
   data class AsHuman1(
-    val __typename: String,
+    val __typename: String = "Human",
     /**
      * What this human calls themselves
      */
@@ -111,7 +111,7 @@ data class TestQuery(
   }
 
   data class Friend(
-    val __typename: String,
+    val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -149,7 +149,7 @@ data class TestQuery(
   }
 
   data class AsHuman(
-    val __typename: String,
+    val __typename: String = "Human",
     /**
      * What this human calls themselves
      */
@@ -199,7 +199,7 @@ data class TestQuery(
   }
 
   data class AsHuman2(
-    val __typename: String,
+    val __typename: String = "Human",
     /**
      * What this human calls themselves
      */
@@ -237,7 +237,7 @@ data class TestQuery(
   }
 
   data class Friend1(
-    val __typename: String,
+    val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -275,7 +275,7 @@ data class TestQuery(
   }
 
   data class AsDroid(
-    val __typename: String,
+    val __typename: String = "Droid",
     /**
      * What others call this droid
      */
@@ -321,7 +321,7 @@ data class TestQuery(
   }
 
   data class Hero(
-    val __typename: String,
+    val __typename: String = "Character",
     /**
      * The name of the character
      */

@@ -84,7 +84,7 @@ data class TestQuery(
   override fun parse(source: BufferedSource): Response<Data> = parse(source, DEFAULT)
 
   data class Hero(
-    val __typename: String,
+    val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -144,7 +144,7 @@ data class TestQuery(
   }
 
   data class HeroWithReview(
-    val __typename: String,
+    val __typename: String = "Human",
     /**
      * What this human calls themselves
      */

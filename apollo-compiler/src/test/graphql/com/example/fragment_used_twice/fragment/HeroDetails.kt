@@ -16,7 +16,7 @@ import kotlin.Suppress
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
 data class HeroDetails(
-  val __typename: String,
+  val __typename: String = "Character",
   /**
    * The name of the character
    */
@@ -56,10 +56,10 @@ data class HeroDetails(
   }
 
   data class Fragments(
-    val characterDetails: CharacterDetails?
+    val characterDetails: CharacterDetails
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeFragment(characterDetails?.marshaller())
+      it.writeFragment(characterDetails.marshaller())
     }
 
     companion object {

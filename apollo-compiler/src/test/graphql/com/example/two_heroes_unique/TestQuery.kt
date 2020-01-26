@@ -45,7 +45,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   override fun parse(source: BufferedSource): Response<Data> = parse(source, DEFAULT)
 
   data class R2(
-    val __typename: String,
+    val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -74,7 +74,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class Luke(
-    val __typename: String,
+    val __typename: String = "Character",
     /**
      * The ID of the character
      */

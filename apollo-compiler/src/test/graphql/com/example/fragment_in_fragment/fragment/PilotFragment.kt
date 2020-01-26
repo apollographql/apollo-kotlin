@@ -16,7 +16,7 @@ import kotlin.Suppress
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
 data class PilotFragment(
-  val __typename: String,
+  val __typename: String = "Person",
   /**
    * The name of this person.
    */
@@ -66,7 +66,7 @@ data class PilotFragment(
   }
 
   data class Homeworld(
-    val __typename: String,
+    val __typename: String = "Planet",
     val fragments: Fragments
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
