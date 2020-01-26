@@ -21,7 +21,7 @@ elif [ "$TRAVIS_BRANCH" != "$SNAPSHOT_BRANCH" ]; then
   echo "Skipping snapshot deployment: wrong branch. Expected '$SNAPSHOT_BRANCH' but was '$TRAVIS_BRANCH'."
 else
   echo "Deploying snapshot..."
-  ./gradlew publishMavenPublicationToOssRepository -PSONATYPE_NEXUS_USERNAME="${SONATYPE_NEXUS_USERNAME}" -PSONATYPE_NEXUS_PASSWORD="${SONATYPE_NEXUS_PASSWORD}"
+  ./gradlew publishDefaultPublicationToOssRepository -PSONATYPE_NEXUS_USERNAME="${SONATYPE_NEXUS_USERNAME}" -PSONATYPE_NEXUS_PASSWORD="${SONATYPE_NEXUS_PASSWORD}"
   echo "Snapshot deployed!"
 fi
 
@@ -32,10 +32,14 @@ if [ "$TRAVIS_TAG" == "" ]; then
   echo "Skipping release deployment: not a tag"
 else
   echo "Deploy to bintray..."
-  ./gradlew bintrayUpload -Pbintray.user="${BINTRAY_USER}" -Pbintray.apikey="${BINTRAY_API_KEY}"
+  ./gradlew publishDefaultPublicationToBintrayRepository -Pbintray.user="${BINTRAY_USER}" -Pbintray.apikey="${BINTRAY_API_KEY}"
   echo "Deployed to bintray!"
   echo "Deploy to Gradle portal..."
   ./gradlew :apollo-gradle-plugin:publishPlugin -Pgradle.publish.key=$GRADLE_PUBLISH_KEY -Pgradle.publish.secret=$GRADLE_PUBLISH_SECRET
   echo "Deployed to Gradle portal!"
+  echo "Deploy Gradle plugin marker to bintray..."
+  # We override the artifact_id for the marker else it is uploaded at the same coordinates as apollo-gradle-plugin
+  ./gradlew publishApolloGradlePluginPluginMarkerMavenPublicationToBintrayRepository -Pbintray.user="${BINTRAY_USER}" -Pbintray.apikey="${BINTRAY_API_KEY}" -PPOM_ARTIFACT_ID=com.apollographql.apollo.gradle.plugin
+  echo "Deployed Gradle plugin marker to bintray!"
 fi
 
