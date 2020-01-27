@@ -42,7 +42,7 @@ class CustomIdGeneratorTests {
   }
 
   @Test
-  fun `operationIdGenerator can be set from onCompilationUnits`() {
+  fun `operationIdGenerator can be set from onCompilationUnit`() {
     val apolloConfiguration = """
       class MyIdGenerator implements OperationIdGenerator {
           String apply(String queryString, String queryFilepath) {
@@ -52,7 +52,7 @@ class CustomIdGeneratorTests {
       }
       
       apollo {
-        onCompilationUnits {
+        onCompilationUnit {
           operationIdGenerator = new MyIdGenerator()
         }
       }

@@ -15,13 +15,13 @@ open class DefaultApolloExtension(val project: Project)
   val services = mutableListOf<DefaultService>()
 
   /**
-   * compilationUnits is meant to be consumed by other gradle plugin.
+   * compilationUnit is meant to be consumed by other gradle plugin.
    * The apollo plugin will add the {@link CompilationUnit} as it creates them
    */
-  internal val compilationUnits = project.container(CompilationUnit::class.java)
+  internal val compilationUnit = project.container(CompilationUnit::class.java)
 
-  override fun onCompilationUnits(action: Action<CompilationUnit>) {
-    compilationUnits.all(action)
+  override fun onCompilationUnit(action: Action<CompilationUnit>) {
+    compilationUnit.all(action)
   }
 
   override fun service(name: String, action: Action<DefaultService>) {

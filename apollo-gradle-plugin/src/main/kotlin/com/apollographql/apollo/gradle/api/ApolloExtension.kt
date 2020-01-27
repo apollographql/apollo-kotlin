@@ -33,11 +33,11 @@ interface ApolloExtension: CompilerParams {
 
   /**
    * [CompilationUnit] are created by the plugin based on the registered [Service]s and variants.
-   * [onCompilationUnits] allows to retrieve and configure them.
+   * [onCompilationUnit] allows to retrieve and configure them.
    *
    * @param action: the configure action for the [CompilationUnit]
    */
-  fun onCompilationUnits(action: Action<CompilationUnit>)
+  fun onCompilationUnit(action: Action<CompilationUnit>)
 
   /**
    * @Deprecated

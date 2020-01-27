@@ -144,7 +144,7 @@ interface CompilerParams {
    * The schema file
    *
    * By default, it will use [Service.schemaPath] to set schemaFile.
-   * You can override it from [ApolloExtension.onCompilationUnits] for more advanced use cases
+   * You can override it from [ApolloExtension.onCompilationUnit] for more advanced use cases
    */
   val schemaFile: RegularFileProperty
 

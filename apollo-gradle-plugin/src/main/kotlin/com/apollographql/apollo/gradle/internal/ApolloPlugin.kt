@@ -108,7 +108,7 @@ open class ApolloPlugin : Plugin<Project> {
           compilationUnit.outputDir.set(codegenProvider.flatMap { it.outputDir })
           compilationUnit.operationOutputFile.set(codegenProvider.flatMap { it.operationOutputFile })
 
-          apolloExtension.compilationUnits.add(compilationUnit)
+          apolloExtension.compilationUnit.add(compilationUnit)
         }
 
         rootProvider.configure {
