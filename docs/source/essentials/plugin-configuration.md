@@ -36,7 +36,7 @@ apollo {
     rootPackageName = "com.starwars"
   }
 
-  onCompilationUnit {
+  onCompilationUnits {
     // Overwrite some options here for single CompilationUnit if needed
   }
 }
