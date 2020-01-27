@@ -2,8 +2,10 @@ package com.apollographql.apollo.gradle.test
 
 import com.apollographql.apollo.gradle.util.TestUtils
 import com.apollographql.apollo.gradle.util.TestUtils.withSimpleProject
+import com.apollographql.apollo.gradle.util.generatedChild
 import com.apollographql.apollo.gradle.util.replaceInText
 import org.gradle.testkit.runner.TaskOutcome
+import org.hamcrest.CoreMatchers
 import org.junit.Assert
 import org.junit.Test
 import java.io.File
@@ -40,8 +42,39 @@ class CustomIdGeneratorTests {
   }
 
   @Test
-  fun `changing the operationIdGenerator recompiles sources`() {
+  fun `operationIdGenerator can be set from onCompilationUnits`() {
+    val apolloConfiguration = """
+      class MyIdGenerator implements OperationIdGenerator {
+          String apply(String queryString, String queryFilepath) {
+              return "someQueryId";
+          }
+          String version = "MyIdGenerator-v1"
+      }
+      
+      apollo {
+        onCompilationUnits {
+          operationIdGenerator = new MyIdGenerator()
+        }
+      }
+    """.trimIndent()
+
     withSimpleProject(apolloConfiguration = apolloConfiguration) {dir ->
+      val gradleFile = File(dir, "build.gradle").readText()
+
+      File(dir, "build.gradle").writeText("import com.apollographql.apollo.compiler.OperationIdGenerator\n$gradleFile")
+
+      val result = TestUtils.executeTask("generateApolloSources", dir)
+
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
+
+      val queryJavaFile = dir.generatedChild("main/service/com/example/DroidDetailsQuery.java")
+      Assert.assertThat(queryJavaFile.readText(), CoreMatchers.containsString("someQueryId"))
+    }
+  }
+
+  @Test
+  fun `changing the operationIdGenerator recompiles sources`() {
+    withSimpleProject(apolloConfiguration = apolloConfiguration) { dir ->
       val gradleFile = File(dir, "build.gradle").readText()
 
       File(dir, "build.gradle").writeText("import com.apollographql.apollo.compiler.OperationIdGenerator\n$gradleFile")
@@ -58,7 +91,6 @@ class CustomIdGeneratorTests {
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
     }
   }
-
 
   @Test
   fun `build cache is working as expected`() {
