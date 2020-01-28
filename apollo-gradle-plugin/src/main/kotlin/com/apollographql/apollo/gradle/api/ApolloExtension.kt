@@ -42,6 +42,14 @@ interface ApolloExtension: CompilerParams {
   /**
    * @Deprecated
    *
+   * Please see [onCompilationUnit]
+   */
+  @Deprecated("There is a typo. Please use onCompilationUnit instead", replaceWith = ReplaceWith("onCompilationUnit"))
+  fun onCompilationUnits(action: Action<CompilationUnit>)
+
+  /**
+   * @Deprecated
+   *
    * Used for backward compatibility reasons with the old groovy plugin
    */
   @Deprecated("please use services instead")
