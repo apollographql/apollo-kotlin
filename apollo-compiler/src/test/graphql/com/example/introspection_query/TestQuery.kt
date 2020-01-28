@@ -45,7 +45,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   override fun parse(source: BufferedSource): Response<Data> = parse(source, DEFAULT)
 
   data class QueryType(
-    val __typename: String,
+    val __typename: String = "__Type",
     val name: String?
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -71,7 +71,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class Type(
-    val __typename: String,
+    val __typename: String = "__Type",
     val name: String?
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -97,7 +97,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class __Schema(
-    val __typename: String,
+    val __typename: String = "__Schema",
     /**
      * The type that query operations will be rooted at.
      */
@@ -146,7 +146,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class __Type(
-    val __typename: String,
+    val __typename: String = "__Type",
     val name: String?
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {

@@ -11,7 +11,7 @@ import com.apollographql.apollo.compiler.ir.FragmentRef
 internal fun Fragment.ast(context: Context): ObjectType {
   val typeRef = context.registerObjectType(
       name = fragmentName.capitalize().escapeKotlinReservedWord(),
-      schemaTypeName = "",
+      schemaTypeName = typeCondition,
       fragmentRefs = fragmentRefs,
       inlineFragments = emptyList(),
       fields = fields,

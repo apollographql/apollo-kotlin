@@ -46,7 +46,7 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data, HeroDetailsQuery.Data, Ope
   override fun parse(source: BufferedSource): Response<Data> = parse(source, DEFAULT)
 
   data class Node(
-    val __typename: String,
+    val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -75,7 +75,7 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data, HeroDetailsQuery.Data, Ope
   }
 
   data class Edge(
-    val __typename: String,
+    val __typename: String = "FriendsEdge",
     /**
      * The character represented by this friendship edge
      */
@@ -107,7 +107,7 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data, HeroDetailsQuery.Data, Ope
   }
 
   data class FriendsConnection(
-    val __typename: String,
+    val __typename: String = "FriendsConnection",
     /**
      * The total number of friends
      */
@@ -153,7 +153,7 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data, HeroDetailsQuery.Data, Ope
   }
 
   data class Hero(
-    val __typename: String,
+    val __typename: String = "Character",
     /**
      * The name of the character
      */

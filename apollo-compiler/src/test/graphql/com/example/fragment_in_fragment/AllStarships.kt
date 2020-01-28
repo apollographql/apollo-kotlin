@@ -46,7 +46,7 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
   override fun parse(source: BufferedSource): Response<Data> = parse(source, DEFAULT)
 
   data class Node(
-    val __typename: String,
+    val __typename: String = "Starship",
     val fragments: Fragments
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -97,7 +97,7 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
   }
 
   data class Edge(
-    val __typename: String,
+    val __typename: String = "StarshipsEdge",
     /**
      * The item at the end of the edge
      */
@@ -129,7 +129,7 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
   }
 
   data class AllStarships(
-    val __typename: String,
+    val __typename: String = "StarshipsConnection",
     /**
      * A list of edges.
      */

@@ -62,7 +62,7 @@ data class TestSubscription(
   override fun parse(source: BufferedSource): Response<Data> = parse(source, DEFAULT)
 
   data class CommentAdded(
-    val __typename: String,
+    val __typename: String = "Comment",
     /**
      * The SQL ID of this entry
      */

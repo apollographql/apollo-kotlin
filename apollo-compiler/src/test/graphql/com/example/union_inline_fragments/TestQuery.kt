@@ -56,7 +56,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class Friend(
-    val __typename: String,
+    val __typename: String = "Character",
     /**
      * The movie this character first appears in
      */
@@ -85,7 +85,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class AsHuman(
-    val __typename: String,
+    val __typename: String = "Human",
     /**
      * The home planet of the human, or null if unknown
      */
@@ -139,7 +139,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class Friend1(
-    val __typename: String,
+    val __typename: String = "Character",
     /**
      * The ID of the character
      */
@@ -177,7 +177,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class AsDroid(
-    val __typename: String,
+    val __typename: String = "Droid",
     /**
      * This droid's primary function
      */
@@ -231,7 +231,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class Friend2(
-    val __typename: String,
+    val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -278,7 +278,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class AsCharacter(
-    val __typename: String,
+    val __typename: String = "Character",
     /**
      * The ID of the character
      */
@@ -332,7 +332,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class AsStarship(
-    val __typename: String,
+    val __typename: String = "Starship",
     /**
      * The name of the starship
      */
@@ -361,7 +361,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class Search(
-    val __typename: String,
+    val __typename: String = "SearchResult",
     val asCharacter: AsCharacter?,
     val asStarship: AsStarship?
   ) {

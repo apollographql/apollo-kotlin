@@ -64,7 +64,7 @@ data class TestQuery(
   override fun parse(source: BufferedSource): Response<Data> = parse(source, DEFAULT)
 
   data class Starship(
-    val __typename: String,
+    val __typename: String = "Starship",
     /**
      * The ID of the starship
      */

@@ -16,7 +16,7 @@ import kotlin.Suppress
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
 internal data class HumanDetails(
-  val __typename: String,
+  val __typename: String = "Human",
   /**
    * What this human calls themselves
    */

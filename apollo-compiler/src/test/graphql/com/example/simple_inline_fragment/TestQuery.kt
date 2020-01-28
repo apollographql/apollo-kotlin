@@ -49,7 +49,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class AsHuman(
-    val __typename: String,
+    val __typename: String = "Human",
     /**
      * What this human calls themselves
      */
@@ -86,7 +86,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class AsDroid(
-    val __typename: String,
+    val __typename: String = "Droid",
     /**
      * What others call this droid
      */
@@ -123,7 +123,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class Hero(
-    val __typename: String,
+    val __typename: String = "Character",
     /**
      * The name of the character
      */

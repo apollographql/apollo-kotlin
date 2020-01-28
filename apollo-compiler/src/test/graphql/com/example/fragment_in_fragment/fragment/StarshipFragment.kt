@@ -18,7 +18,7 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
 data class StarshipFragment(
-  val __typename: String,
+  val __typename: String = "Starship",
   /**
    * The ID of an object
    */
@@ -80,7 +80,7 @@ data class StarshipFragment(
   }
 
   data class Node(
-    val __typename: String,
+    val __typename: String = "Person",
     val fragments: Fragments
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -130,7 +130,7 @@ data class StarshipFragment(
   }
 
   data class Edge(
-    val __typename: String,
+    val __typename: String = "StarshipPilotsEdge",
     /**
      * The item at the end of the edge
      */
@@ -162,7 +162,7 @@ data class StarshipFragment(
   }
 
   data class PilotConnection(
-    val __typename: String,
+    val __typename: String = "StarshipPilotsConnection",
     /**
      * A list of edges.
      */

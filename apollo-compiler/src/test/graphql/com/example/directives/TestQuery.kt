@@ -66,7 +66,7 @@ data class TestQuery(
   override fun parse(source: BufferedSource): Response<Data> = parse(source, DEFAULT)
 
   data class FriendsConnection(
-    val __typename: String,
+    val __typename: String = "FriendsConnection",
     /**
      * The total number of friends
      */
@@ -95,7 +95,7 @@ data class TestQuery(
   }
 
   data class Hero(
-    val __typename: String,
+    val __typename: String = "Character",
     /**
      * The name of the character
      */
