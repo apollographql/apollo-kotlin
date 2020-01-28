@@ -103,7 +103,7 @@ apollo {
 }
 ```
 
-5) Execute `./gradlew :generateApolloClasses` to generate the models from your queries. This will create a generated `FeedQuery` Java or Kotlin source file for your query.
+5) Execute `./gradlew generateApolloClasses` to generate the models from your queries. This will create a generated `FeedQuery` Java or Kotlin source file for your query.
 
 ## Consuming Code
 
