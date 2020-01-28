@@ -287,7 +287,7 @@ sourceSets {
 
 // With:
 apollo {
-  onCompilationUnits {
+  onCompilationUnit {
      graphqlSourceDirectorySet.srcDirs += "/path/to/your/graphql/queries/dir"
   }
 }
@@ -303,7 +303,7 @@ apollo {
 
 // With:
 apollo {
-  onCompilationUnits {
+  onCompilationUnit {
      schemaFile = "/path/to/your/schema.json"
      graphqlSourceDirectorySet.exclude("**/*.gql")
      rootPackageName = "com.example"

@@ -4,7 +4,7 @@ title: Gradle Configuration
 
 Apollo Android comes with logical defaults that will work for the majority of use cases. If you're getting started, please read the main [README.md](https://github.com/apollographql/apollo-android/blob/master/README.md) for an overview of the most common options. This page describes the different options individually.
  
-## ApolloExtension, Services and CompilationUnits
+## ApolloExtension, Services and CompilationUnit
 
 The Gradle DSL exposes three types of objects:
 
@@ -36,7 +36,7 @@ apollo {
     rootPackageName = "com.starwars"
   }
 
-  onCompilationUnits {
+  onCompilationUnit {
     // Overwrite some options here for single CompilationUnit if needed
   }
 }
@@ -163,7 +163,7 @@ The up-to-date list of options can be found in [CompilerParams](https://github.c
    * This SourceDirectorySet includes .graphql and .gql files by default.
    *
    * By default, it will use [Service.sourceFolder] to populate the SourceDirectorySet.
-   * You can override it from [ApolloExtension.onCompilationUnits] for more advanced use cases
+   * You can override it from [ApolloExtension.onCompilationUnit] for more advanced use cases
    */
   val graphqlSourceDirectorySet: SourceDirectorySet
 
@@ -171,7 +171,7 @@ The up-to-date list of options can be found in [CompilerParams](https://github.c
    * The schema file
    *
    * By default, it will use [Service.schemaPath] to set schemaFile.
-   * You can override it from [ApolloExtension.onCompilationUnits] for more advanced use cases
+   * You can override it from [ApolloExtension.onCompilationUnit] for more advanced use cases
    */
   val schemaFile: RegularFileProperty
 

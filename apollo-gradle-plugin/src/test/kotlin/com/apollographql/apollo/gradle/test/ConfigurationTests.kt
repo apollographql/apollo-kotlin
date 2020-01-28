@@ -310,14 +310,14 @@ class ConfigurationTests {
   }
 
   @Test
-  fun `rootPackageName can be overridden in compilationUnits`() {
+  fun `rootPackageName can be overridden in compilationUnit`() {
     withSimpleProject("""
       apollo {
         rootPackageName = "com.default"
         service("starwars") {
           rootPackageName = "com.starwars"
         }
-        onCompilationUnits {
+        onCompilationUnit {
           rootPackageName = "com.overrides"
         }
       }
@@ -330,7 +330,7 @@ class ConfigurationTests {
   }
 
   @Test
-  fun `sources with a service can be overridden in compilationUnits`() {
+  fun `sources with a service can be overridden in compilationUnit`() {
     withSimpleProject("""
       apollo {
         service("starwars") {
@@ -338,7 +338,7 @@ class ConfigurationTests {
           sourceFolder = "com/some/other"
         }
         
-        onCompilationUnits {
+        onCompilationUnit {
           schemaFile = file("src/main/graphql/com/example/schema.json")
           graphqlSourceDirectorySet.srcDir(file("src/main/graphql/"))
           graphqlSourceDirectorySet.include("**/*.graphql")
@@ -353,12 +353,12 @@ class ConfigurationTests {
   }
 
   @Test
-  fun `sources can be overridden in compilationUnits`() {
+  fun `sources can be overridden in compilationUnit`() {
     withSimpleProject("""
       apollo {
         schemaFile = file("com/some/other/schema.json")
 
-        onCompilationUnits {
+        onCompilationUnit {
           schemaFile = file("src/main/graphql/com/example/schema.json")
           graphqlSourceDirectorySet.srcDir(file("src/main/graphql/"))
           graphqlSourceDirectorySet.include("**/*.graphql")
@@ -371,10 +371,10 @@ class ConfigurationTests {
   }
 
   @Test
-  fun `onCompilationUnits can configure sources alone`() {
+  fun `onCompilationUnit can configure sources alone`() {
     withSimpleProject("""
       apollo {
-        onCompilationUnits {
+        onCompilationUnit {
           schemaFile = file("src/main/graphql/com/example/schema.json")
           graphqlSourceDirectorySet.srcDir(file("src/main/graphql/"))
           graphqlSourceDirectorySet.include("**/*.graphql")
@@ -390,7 +390,7 @@ class ConfigurationTests {
   fun `onCompilationUnits for main sourceSet should not generate for test`() {
     withSimpleProject("""
       apollo {
-        onCompilationUnits {
+        onCompilationUnit {
           if (variantName == "main") {
             schemaFile = file("src/main/graphql/com/example/schema.json")
             graphqlSourceDirectorySet.srcDir(file("src/main/graphql/"))
@@ -478,7 +478,7 @@ class ConfigurationTests {
       apollo {
         generateOperationOutput = true
         
-        onCompilationUnits { compilationUnit ->
+        onCompilationUnit { compilationUnit ->
           tasks.register("customTask" + compilationUnit.name.capitalize()) {
             inputs.file(compilationUnit.operationOutputFile)
           }

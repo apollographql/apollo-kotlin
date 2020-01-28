@@ -20,8 +20,12 @@ open class DefaultApolloExtension(val project: Project)
    */
   internal val compilationUnits = project.container(CompilationUnit::class.java)
 
-  override fun onCompilationUnits(action: Action<CompilationUnit>) {
+  override fun onCompilationUnit(action: Action<CompilationUnit>) {
     compilationUnits.all(action)
+  }
+
+  override fun onCompilationUnits(action: Action<CompilationUnit>) {
+    throw Exception("please use 'onCompilationUnit'(singular) instead")
   }
 
   override fun service(name: String, action: Action<DefaultService>) {
