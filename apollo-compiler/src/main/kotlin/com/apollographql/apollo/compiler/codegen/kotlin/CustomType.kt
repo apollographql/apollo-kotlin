@@ -13,12 +13,14 @@ internal fun CustomTypes.typeSpec(generateAsInternal: Boolean = false) =
         .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
         .addSuperinterface(ScalarType::class.java)
         .apply {
-          map { (schemaType, customType) ->
-            addEnumConstant(
-                name = schemaType.normalizeGraphQLType().toUpperCase(),
-                typeSpec = enumConstantTypeSpec(schemaType = schemaType, customType = customType)
-            )
-          }
+          toSortedMap()
+              .toSortedMap(Comparator { left, right -> left.compareTo(right) })
+              .map { (schemaType, customType) ->
+                addEnumConstant(
+                    name = schemaType.normalizeGraphQLType().toUpperCase(),
+                    typeSpec = enumConstantTypeSpec(schemaType = schemaType, customType = customType)
+                )
+              }
         }
         .build()
 

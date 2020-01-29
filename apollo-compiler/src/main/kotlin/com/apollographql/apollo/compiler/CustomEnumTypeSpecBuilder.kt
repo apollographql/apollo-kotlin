@@ -19,11 +19,13 @@ class CustomEnumTypeSpecBuilder(
           .build()
 
   private fun TypeSpec.Builder.addEnumConstants(): TypeSpec.Builder {
-    context.customTypeMap.forEach { mapping ->
-      val constantName = mapping.key.removeSuffix("!").toUpperCase(Locale.ENGLISH)
-      val javaTypeName = mapping.value
-      addEnumConstant(constantName, scalarMappingTypeSpec(mapping.key, javaTypeName))
-    }
+    context.customTypeMap
+        .toSortedMap(Comparator { left, right -> left.compareTo(right) })
+        .forEach { mapping ->
+          val constantName = mapping.key.removeSuffix("!").toUpperCase(Locale.ENGLISH)
+          val javaTypeName = mapping.value
+          addEnumConstant(constantName, scalarMappingTypeSpec(mapping.key, javaTypeName))
+        }
     return this
   }
 

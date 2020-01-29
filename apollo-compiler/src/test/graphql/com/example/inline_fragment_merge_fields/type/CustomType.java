@@ -12,18 +12,6 @@ import java.lang.Override;
 import java.lang.String;
 
 public enum CustomType implements ScalarType {
-  URL {
-    @Override
-    public String typeName() {
-      return "URL";
-    }
-
-    @Override
-    public Class javaType() {
-      return Object.class;
-    }
-  },
-
   ID {
     @Override
     public String typeName() {
@@ -33,6 +21,18 @@ public enum CustomType implements ScalarType {
     @Override
     public Class javaType() {
       return String.class;
+    }
+  },
+
+  URL {
+    @Override
+    public String typeName() {
+      return "URL";
+    }
+
+    @Override
+    public Class javaType() {
+      return Object.class;
     }
   }
 }
