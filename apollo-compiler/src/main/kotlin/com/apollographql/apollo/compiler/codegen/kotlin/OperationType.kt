@@ -168,35 +168,31 @@ private val OperationType.variablePropertySpec: PropertySpec
         .addAnnotation(Transient::class)
         .initializer("%L", TypeSpec.anonymousClassBuilder()
             .superclass(Operation.Variables::class)
-            .addFunction(variables.variablesValueMapSpec)
+            .addFunction(variables.variablesValueMapSpec(this))
             .addFunction(variables.variablesMarshallerSpec)
             .build()
         )
         .build()
   }
 
-private val InputType.variablesValueMapSpec: FunSpec
-  get() {
-    return FunSpec
-        .builder("valueMap")
-        .addModifiers(KModifier.OVERRIDE)
-        .returns(Map::class.asClassName().parameterizedBy(String::class.asClassName(),
-            Any::class.asClassName().copy(nullable = true)))
-        .beginControlFlow("return mutableMapOf<%T, %T>().apply", String::class,
-            Any::class.asClassName().copy(nullable = true))
-        .addCode(
-            fields.map { field ->
-              if (field.isOptional) {
-                CodeBlock.of("if (%L.defined) this[%S] = %L.value", field.name, field.schemaName,
-                    field.name)
-              } else {
-                CodeBlock.of("this[%S] = %L", field.schemaName, field.name)
-              }
-            }.joinToCode(separator = "\n", suffix = "\n")
-        )
-        .endControlFlow()
-        .build()
-  }
+private fun InputType.variablesValueMapSpec(operationType: OperationType): FunSpec {
+  return FunSpec
+      .builder("valueMap")
+      .addModifiers(KModifier.OVERRIDE)
+      .returns(Map::class.asClassName().parameterizedBy(String::class.asClassName(), Any::class.asClassName().copy(nullable = true)))
+      .beginControlFlow("return mutableMapOf<%T, %T>().apply", String::class, Any::class.asClassName().copy(nullable = true))
+      .addCode(
+          fields.map { field ->
+            if (field.isOptional) {
+              CodeBlock.of("if (%L.defined) this[%S] = this@%L.%L.value", field.name, field.schemaName, operationType.name, field.name)
+            } else {
+              CodeBlock.of("this[%S] = this@%L.%L", field.schemaName, operationType.name, field.name)
+            }
+          }.joinToCode(separator = "\n", suffix = "\n")
+      )
+      .endControlFlow()
+      .build()
+}
 
 private val InputType.variablesMarshallerSpec: FunSpec
   get() {
@@ -205,7 +201,7 @@ private val InputType.variablesMarshallerSpec: FunSpec
         .returns(InputFieldMarshaller::class)
         .addModifiers(KModifier.OVERRIDE)
         .addCode(CodeBlock.builder()
-            .add("return %T { writer ->\n", InputFieldMarshaller::class)
+            .add("return %T { _writer ->\n", InputFieldMarshaller::class)
             .indent()
             .apply { fields.forEach { field -> add(field.writeCodeBlock) } }
             .unindent()

@@ -63,7 +63,7 @@ private val InputType.marshallerFunSpec: FunSpec
         .addModifiers(KModifier.OVERRIDE)
         .addCode(
             CodeBlock.builder()
-                .add("return %T { writer ->\n", InputFieldMarshaller::class)
+                .add("return %T { _writer ->\n", InputFieldMarshaller::class)
                 .indent()
                 .apply { fields.forEach { field -> add(field.writeCodeBlock) } }
                 .unindent()
@@ -78,55 +78,54 @@ internal val InputType.Field.writeCodeBlock: CodeBlock
       is FieldType.Scalar -> when (type) {
         is FieldType.Scalar.String -> {
           if (isOptional) {
-            CodeBlock.of("if (%L.defined) writer.writeString(%S, %L.value)\n", name, schemaName, name)
+            CodeBlock.of("if (%L.defined) _writer.writeString(%S, %L.value)\n", name, schemaName, name)
           } else {
-            CodeBlock.of("writer.writeString(%S, %L)\n", schemaName, name)
+            CodeBlock.of("_writer.writeString(%S, %L)\n", schemaName, name)
           }
         }
         is FieldType.Scalar.Int -> {
           if (isOptional) {
-            CodeBlock.of("if (%L.defined) writer.writeInt(%S, %L.value)\n", schemaName, name, name)
+            CodeBlock.of("if (%L.defined) _writer.writeInt(%S, %L.value)\n", schemaName, name, name)
           } else {
-            CodeBlock.of("writer.writeInt(%S, %L)\n", schemaName, name)
+            CodeBlock.of("_writer.writeInt(%S, %L)\n", schemaName, name)
           }
         }
         is FieldType.Scalar.Boolean -> {
           if (isOptional) {
-            CodeBlock.of("if (%L.defined) writer.writeBoolean(%S, %L.value)\n", name, schemaName, name)
+            CodeBlock.of("if (%L.defined) _writer.writeBoolean(%S, %L.value)\n", name, schemaName, name)
           } else {
-            CodeBlock.of("writer.writeBoolean(%S, %L)\n", schemaName, name)
+            CodeBlock.of("_writer.writeBoolean(%S, %L)\n", schemaName, name)
           }
         }
         is FieldType.Scalar.Float -> {
           if (isOptional) {
-            CodeBlock.of("if (%L.defined) writer.writeDouble(%S, %L.value)\n", name, schemaName, name)
+            CodeBlock.of("if (%L.defined) _writer.writeDouble(%S, %L.value)\n", name, schemaName, name)
           } else {
-            CodeBlock.of("writer.writeDouble(%S, %L)\n", schemaName, name)
+            CodeBlock.of("_writer.writeDouble(%S, %L)\n", schemaName, name)
           }
         }
         is FieldType.Scalar.Enum -> {
           if (isOptional) {
-            CodeBlock.of("if (%L.defined) writer.writeString(%S, %L.value?.rawValue)\n", name, schemaName, name)
+            CodeBlock.of("if (%L.defined) _writer.writeString(%S, %L.value?.rawValue)\n", name, schemaName, name)
           } else {
-            CodeBlock.of("writer.writeString(%S, %L.rawValue)\n", schemaName, name)
+            CodeBlock.of("_writer.writeString(%S, %L.rawValue)\n", schemaName, name)
           }
         }
         is FieldType.Scalar.Custom -> {
           if (isOptional) {
-            CodeBlock.of("if (%L.defined) writer.writeCustom(%S, %T.%L, %L.value)\n", name, schemaName,
+            CodeBlock.of("if (%L.defined) _writer.writeCustom(%S, %T.%L, %L.value)\n", name, schemaName,
                 type.customEnumType.asTypeName(),
                 type.customEnumConst, name)
           } else {
-            CodeBlock.of("writer.writeCustom(%S, %T.%L, %L)\n", schemaName, type.customEnumType.asTypeName(),
-                type.customEnumConst, name)
+            CodeBlock.of("_writer.writeCustom(%S, %T.%L, %L)\n", schemaName, type.customEnumType.asTypeName(), type.customEnumConst, name)
           }
         }
       }
       is FieldType.Object -> {
         if (isOptional) {
-          CodeBlock.of("if (%L.defined) writer.writeObject(%S, %L.value?.marshaller())\n", name, schemaName, name)
+          CodeBlock.of("if (%L.defined) _writer.writeObject(%S, %L.value?.marshaller())\n", name, schemaName, name)
         } else {
-          CodeBlock.of("writer.writeObject(%S, %L.marshaller())\n", schemaName, name)
+          CodeBlock.of("_writer.writeObject(%S, %L.marshaller())\n", schemaName, name)
         }
       }
       is FieldType.Array -> {
@@ -134,10 +133,10 @@ internal val InputType.Field.writeCodeBlock: CodeBlock
         if (isOptional) {
           codeBlockBuilder
               .beginControlFlow("if (%L.defined)", name)
-              .add("writer.writeList(%S, %L.value?.let { value ->\n", schemaName, name)
+              .add("_writer.writeList(%S, %L.value?.let { _value ->\n", schemaName, name)
               .indent()
-              .beginControlFlow("%T { listItemWriter ->", InputFieldWriter.ListWriter::class)
-              .beginControlFlow("value.forEach { value ->")
+              .beginControlFlow("%T { _listItemWriter ->", InputFieldWriter.ListWriter::class)
+              .beginControlFlow("_value.forEach { _value ->")
               .add(type.rawType.writeListItem(type.isOptional))
               .endControlFlow()
               .endControlFlow()
@@ -146,9 +145,9 @@ internal val InputType.Field.writeCodeBlock: CodeBlock
               .endControlFlow()
         } else {
           codeBlockBuilder
-              .beginControlFlow("writer.writeList(%S) { listItemWriter ->", schemaName)
-              .applyIf(isOptional) { beginControlFlow("%L?.forEach { value ->", name) }
-              .applyIf(!isOptional) { beginControlFlow("%L.forEach { value ->", name) }
+              .beginControlFlow("_writer.writeList(%S) { _listItemWriter ->", schemaName)
+              .applyIf(isOptional) { beginControlFlow("%L?.forEach { _value ->", name) }
+              .applyIf(!isOptional) { beginControlFlow("%L.forEach { _value ->", name) }
               .add(type.rawType.writeListItem(type.isOptional))
               .endControlFlow()
               .endControlFlow()
@@ -163,21 +162,20 @@ internal val InputType.Field.writeCodeBlock: CodeBlock
 private fun FieldType.writeListItem(isOptional: Boolean): CodeBlock {
   return when (this) {
     is FieldType.Scalar -> when (this) {
-      is FieldType.Scalar.String -> CodeBlock.of("listItemWriter.writeString(value)\n")
-      is FieldType.Scalar.Int -> CodeBlock.of("listItemWriter.writeInt(value)\n")
-      is FieldType.Scalar.Boolean -> CodeBlock.of("listItemWriter.writeBoolean(value)\n")
-      is FieldType.Scalar.Float -> CodeBlock.of("listItemWriter.writeDouble(value)\n")
-      is FieldType.Scalar.Enum -> CodeBlock.of("listItemWriter.writeString(value%L.rawValue)\n",
-          if (isOptional) "?" else "")
-      is FieldType.Scalar.Custom -> CodeBlock.of("listItemWriter.writeCustom(%T.%L, value)\n",
-          customEnumType.asTypeName(), customEnumConst)
+      is FieldType.Scalar.String -> CodeBlock.of("_listItemWriter.writeString(_value)\n")
+      is FieldType.Scalar.Int -> CodeBlock.of("_listItemWriter.writeInt(_value)\n")
+      is FieldType.Scalar.Boolean -> CodeBlock.of("_listItemWriter.writeBoolean(_value)\n")
+      is FieldType.Scalar.Float -> CodeBlock.of("_listItemWriter.writeDouble(_value)\n")
+      is FieldType.Scalar.Enum -> CodeBlock.of("_listItemWriter.writeString(_value%L.rawValue)\n", if (isOptional) "?" else "")
+      is FieldType.Scalar.Custom -> CodeBlock.of("_listItemWriter.writeCustom(%T.%L, _value)\n", customEnumType.asTypeName(),
+          customEnumConst)
     }
     is FieldType.Object -> {
-      CodeBlock.of("listItemWriter.writeObject(value%L.marshaller())\n", if (isOptional) "?" else "")
+      CodeBlock.of("_listItemWriter.writeObject(_value%L.marshaller())\n", if (isOptional) "?" else "")
     }
     is FieldType.Array -> CodeBlock.builder()
-        .beginControlFlow("listItemWriter.writeList { listItemWriter ->")
-        .beginControlFlow("value%L.forEach { value ->", if (isOptional) "?" else "")
+        .beginControlFlow("_listItemWriter.writeList { _listItemWriter ->")
+        .beginControlFlow("_value%L.forEach { _value ->", if (isOptional) "?" else "")
         .add(rawType.writeListItem(this.isOptional))
         .endControlFlow()
         .endControlFlow()
