@@ -58,11 +58,35 @@ public class WebSocketSubscriptionTransportMessageTest {
     assertThat(webSocketFactory.webSocket.lastSentMessage).isEqualTo("{\"type\":\"connection_init\",\"payload\":{\"param1\":true,\"param2\":\"value\"}}");
   }
 
-  @Test public void startSubscription() {
+  @Test public void startSubscriptionAutoPersistSubscriptionDisabled() {
     subscriptionTransport.send(new OperationClientMessage.Start("subscriptionId", new MockSubscription(),
-        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap())));
-    assertThat(webSocketFactory.webSocket.lastSentMessage)
-        .isEqualTo("{\"id\":\"subscriptionId\",\"type\":\"start\",\"payload\":{\"query\":\"subscription{commentAdded{id  name}\",\"variables\":{},\"operationName\":\"SomeSubscription\"}}");
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()), false, false));
+
+    String expected = "{\"id\":\"subscriptionId\",\"type\":\"start\",\"payload\":{\"variables\":{}," +
+        "\"operationName\":\"SomeSubscription\",\"query\":\"subscription{commentAdded{id  name}\"}}";
+
+    assertThat(webSocketFactory.webSocket.lastSentMessage).isEqualTo(expected);
+  }
+
+  @Test public void startSubscriptionAutoPersistSubscriptionEnabledSendDocumentEnabled() {
+    subscriptionTransport.send(new OperationClientMessage.Start("subscriptionId", new MockSubscription(),
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()), true, true));
+
+    String expected = "{\"id\":\"subscriptionId\",\"type\":\"start\",\"payload\":{\"variables\":{}," +
+        "\"operationName\":\"SomeSubscription\",\"query\":\"subscription{commentAdded{id  name}\"," +
+        "\"extensions\":{\"persistedQuery\":{\"version\":1,\"sha256Hash\":\"someId\"}}}}";
+
+    assertThat(webSocketFactory.webSocket.lastSentMessage).isEqualTo(expected);
+  }
+
+    @Test public void startSubscriptionAutoPersistSubscriptionEnabledSendDocumentDisabled() {
+    subscriptionTransport.send(new OperationClientMessage.Start("subscriptionId", new MockSubscription(),
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()), true, false));
+
+    String expected = "{\"id\":\"subscriptionId\",\"type\":\"start\",\"payload\":{\"variables\":{}," +
+        "\"operationName\":\"SomeSubscription\",\"extensions\":{\"persistedQuery\":{\"version\":1,\"sha256Hash\":\"someId\"}}}}";
+
+    assertThat(webSocketFactory.webSocket.lastSentMessage).isEqualTo(expected);
   }
 
   @Test public void stopSubscription() {
