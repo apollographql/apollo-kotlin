@@ -53,11 +53,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val links: List<Any>
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeList(RESPONSE_FIELDS[1], links) { value, listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeCustom(CustomType.URL, value)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeList(RESPONSE_FIELDS[1], links) { _value, _listItemWriter ->
+        _value?.forEach { _value ->
+          _listItemWriter.writeCustom(CustomType.URL, _value)
         }
       }
     }
@@ -84,8 +84,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   data class Data(
     val hero: Hero?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeObject(RESPONSE_FIELDS[0], hero?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeObject(RESPONSE_FIELDS[0], hero?.marshaller())
     }
 
     companion object {

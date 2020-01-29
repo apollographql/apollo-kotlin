@@ -55,9 +55,9 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
     val __typename: String = "Character",
     val fragments: Fragments
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      fragments.marshaller().marshal(it)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      fragments.marshaller().marshal(_writer)
     }
 
     companion object {
@@ -78,8 +78,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
     data class Fragments(
       val heroDetails: HeroDetails
     ) {
-      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        it.writeFragment(heroDetails.marshaller())
+      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+        _writer.writeFragment(heroDetails.marshaller())
       }
 
       companion object {
@@ -116,17 +116,17 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
      */
     val friends: List<Friend1?>?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
-      it.writeList(RESPONSE_FIELDS[2], appearsIn) { value, listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeString(value?.rawValue)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeString(RESPONSE_FIELDS[1], name)
+      _writer.writeList(RESPONSE_FIELDS[2], appearsIn) { _value, _listItemWriter ->
+        _value?.forEach { _value ->
+          _listItemWriter.writeString(_value?.rawValue)
         }
       }
-      it.writeList(RESPONSE_FIELDS[3], friends) { value, listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeObject(value?.marshaller())
+      _writer.writeList(RESPONSE_FIELDS[3], friends) { _value, _listItemWriter ->
+        _value?.forEach { _value ->
+          _listItemWriter.writeObject(_value?.marshaller())
         }
       }
     }
@@ -176,15 +176,15 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
      */
     val height: Double?
   ) : HeroDetailQueryCharacter {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
-      it.writeList(RESPONSE_FIELDS[2], friends) { value, listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeObject(value?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeString(RESPONSE_FIELDS[1], name)
+      _writer.writeList(RESPONSE_FIELDS[2], friends) { _value, _listItemWriter ->
+        _value?.forEach { _value ->
+          _listItemWriter.writeObject(_value?.marshaller())
         }
       }
-      it.writeDouble(RESPONSE_FIELDS[3], height)
+      _writer.writeDouble(RESPONSE_FIELDS[3], height)
     }
 
     companion object {
@@ -222,9 +222,9 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
      */
     val name: String
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeString(RESPONSE_FIELDS[1], name)
     }
 
     companion object {
@@ -256,15 +256,15 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
     val friends: List<Friend2?>?,
     val asHuman: AsHuman?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
-      it.writeList(RESPONSE_FIELDS[2], friends) { value, listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeObject(value?.marshaller())
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeString(RESPONSE_FIELDS[1], name)
+      _writer.writeList(RESPONSE_FIELDS[2], friends) { _value, _listItemWriter ->
+        _value?.forEach { _value ->
+          _listItemWriter.writeObject(_value?.marshaller())
         }
       }
-      it.writeFragment(asHuman?.marshaller())
+      _writer.writeFragment(asHuman?.marshaller())
     }
 
     companion object {
@@ -302,8 +302,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
   data class Data(
     val heroDetailQuery: HeroDetailQuery?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeObject(RESPONSE_FIELDS[0], heroDetailQuery?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeObject(RESPONSE_FIELDS[0], heroDetailQuery?.marshaller())
     }
 
     companion object {

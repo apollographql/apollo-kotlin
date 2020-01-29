@@ -38,11 +38,11 @@ data class TestQuery(
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
-      this["ep"] = ep
+      this["ep"] = this@TestQuery.ep
     }
 
-    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
-      writer.writeString("ep", ep.rawValue)
+    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { _writer ->
+      _writer.writeString("ep", ep.rawValue)
     }
   }
 
@@ -73,10 +73,10 @@ data class TestQuery(
      */
     val commentary: String?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeInt(RESPONSE_FIELDS[1], stars)
-      it.writeString(RESPONSE_FIELDS[2], commentary)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeInt(RESPONSE_FIELDS[1], stars)
+      _writer.writeString(RESPONSE_FIELDS[2], commentary)
     }
 
     companion object {
@@ -102,8 +102,8 @@ data class TestQuery(
   data class Data(
     val createReview: CreateReview?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeObject(RESPONSE_FIELDS[0], createReview?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeObject(RESPONSE_FIELDS[0], createReview?.marshaller())
     }
 
     companion object {

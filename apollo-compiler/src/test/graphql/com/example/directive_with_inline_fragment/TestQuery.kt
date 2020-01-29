@@ -39,13 +39,13 @@ data class TestQuery(
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
-      this["withDetails"] = withDetails
-      this["skipHumanDetails"] = skipHumanDetails
+      this["withDetails"] = this@TestQuery.withDetails
+      this["skipHumanDetails"] = this@TestQuery.skipHumanDetails
     }
 
-    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
-      writer.writeBoolean("withDetails", withDetails)
-      writer.writeBoolean("skipHumanDetails", skipHumanDetails)
+    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { _writer ->
+      _writer.writeBoolean("withDetails", withDetails)
+      _writer.writeBoolean("skipHumanDetails", skipHumanDetails)
     }
   }
 
@@ -84,11 +84,11 @@ data class TestQuery(
      */
     val homePlanet: String?
   ) : HeroCharacter {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
-      it.writeString(RESPONSE_FIELDS[2], name)
-      it.writeString(RESPONSE_FIELDS[3], homePlanet)
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
+      _writer.writeString(RESPONSE_FIELDS[2], name)
+      _writer.writeString(RESPONSE_FIELDS[3], homePlanet)
     }
 
     companion object {
@@ -129,11 +129,11 @@ data class TestQuery(
      */
     val primaryFunction: String?
   ) : HeroCharacter {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
-      it.writeString(RESPONSE_FIELDS[2], name)
-      it.writeString(RESPONSE_FIELDS[3], primaryFunction)
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
+      _writer.writeString(RESPONSE_FIELDS[2], name)
+      _writer.writeString(RESPONSE_FIELDS[3], primaryFunction)
     }
 
     companion object {
@@ -168,11 +168,11 @@ data class TestQuery(
     val asHuman: AsHuman?,
     val asDroid: AsDroid?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
-      it.writeFragment(asHuman?.marshaller())
-      it.writeFragment(asDroid?.marshaller())
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
+      _writer.writeFragment(asHuman?.marshaller())
+      _writer.writeFragment(asDroid?.marshaller())
     }
 
     companion object {
@@ -212,8 +212,8 @@ data class TestQuery(
   data class Data(
     val hero: Hero?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeObject(RESPONSE_FIELDS[0], hero?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeObject(RESPONSE_FIELDS[0], hero?.marshaller())
     }
 
     companion object {

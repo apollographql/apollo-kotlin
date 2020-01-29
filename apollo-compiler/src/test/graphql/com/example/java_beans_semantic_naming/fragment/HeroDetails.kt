@@ -30,11 +30,11 @@ data class HeroDetails(
   val friendsConnection: FriendsConnection,
   val asDroid: AsDroid?
 ) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-    it.writeString(RESPONSE_FIELDS[0], __typename)
-    it.writeString(RESPONSE_FIELDS[1], name)
-    it.writeObject(RESPONSE_FIELDS[2], friendsConnection.marshaller())
-    it.writeFragment(asDroid?.marshaller())
+  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+    _writer.writeString(RESPONSE_FIELDS[0], __typename)
+    _writer.writeString(RESPONSE_FIELDS[1], name)
+    _writer.writeObject(RESPONSE_FIELDS[2], friendsConnection.marshaller())
+    _writer.writeFragment(asDroid?.marshaller())
   }
 
   companion object {
@@ -100,9 +100,9 @@ data class HeroDetails(
      */
     val name: String
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeString(RESPONSE_FIELDS[1], name)
     }
 
     companion object {
@@ -129,9 +129,9 @@ data class HeroDetails(
      */
     val node: Node?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeObject(RESPONSE_FIELDS[1], node?.marshaller())
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeObject(RESPONSE_FIELDS[1], node?.marshaller())
     }
 
     companion object {
@@ -158,9 +158,9 @@ data class HeroDetails(
     val __typename: String = "PageInfo",
     val hasNextPage: Boolean
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeBoolean(RESPONSE_FIELDS[1], hasNextPage)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeBoolean(RESPONSE_FIELDS[1], hasNextPage)
     }
 
     companion object {
@@ -199,16 +199,16 @@ data class HeroDetails(
      */
     val isEmpty: Boolean
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeInt(RESPONSE_FIELDS[1], totalCount)
-      it.writeList(RESPONSE_FIELDS[2], edges) { value, listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeObject(value?.marshaller())
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeInt(RESPONSE_FIELDS[1], totalCount)
+      _writer.writeList(RESPONSE_FIELDS[2], edges) { _value, _listItemWriter ->
+        _value?.forEach { _value ->
+          _listItemWriter.writeObject(_value?.marshaller())
         }
       }
-      it.writeObject(RESPONSE_FIELDS[3], pageInfo.marshaller())
-      it.writeBoolean(RESPONSE_FIELDS[4], isEmpty)
+      _writer.writeObject(RESPONSE_FIELDS[3], pageInfo.marshaller())
+      _writer.writeBoolean(RESPONSE_FIELDS[4], isEmpty)
     }
 
     companion object {
@@ -256,9 +256,9 @@ data class HeroDetails(
      */
     val name: String
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeString(RESPONSE_FIELDS[1], name)
     }
 
     companion object {
@@ -285,9 +285,9 @@ data class HeroDetails(
      */
     val node: Node1?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeObject(RESPONSE_FIELDS[1], node?.marshaller())
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeObject(RESPONSE_FIELDS[1], node?.marshaller())
     }
 
     companion object {
@@ -314,9 +314,9 @@ data class HeroDetails(
     val __typename: String = "PageInfo",
     val hasNextPage: Boolean
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeBoolean(RESPONSE_FIELDS[1], hasNextPage)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeBoolean(RESPONSE_FIELDS[1], hasNextPage)
     }
 
     companion object {
@@ -355,16 +355,16 @@ data class HeroDetails(
      */
     val isEmpty: Boolean
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeInt(RESPONSE_FIELDS[1], totalCount)
-      it.writeList(RESPONSE_FIELDS[2], edges) { value, listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeObject(value?.marshaller())
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeInt(RESPONSE_FIELDS[1], totalCount)
+      _writer.writeList(RESPONSE_FIELDS[2], edges) { _value, _listItemWriter ->
+        _value?.forEach { _value ->
+          _listItemWriter.writeObject(_value?.marshaller())
         }
       }
-      it.writeObject(RESPONSE_FIELDS[3], pageInfo.marshaller())
-      it.writeBoolean(RESPONSE_FIELDS[4], isEmpty)
+      _writer.writeObject(RESPONSE_FIELDS[3], pageInfo.marshaller())
+      _writer.writeBoolean(RESPONSE_FIELDS[4], isEmpty)
     }
 
     companion object {
@@ -416,11 +416,11 @@ data class HeroDetails(
      */
     val primaryFunction: String?
   ) : HeroDetailCharacter {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
-      it.writeObject(RESPONSE_FIELDS[2], friendsConnection.marshaller())
-      it.writeString(RESPONSE_FIELDS[3], primaryFunction)
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeString(RESPONSE_FIELDS[1], name)
+      _writer.writeObject(RESPONSE_FIELDS[2], friendsConnection.marshaller())
+      _writer.writeString(RESPONSE_FIELDS[3], primaryFunction)
     }
 
     companion object {

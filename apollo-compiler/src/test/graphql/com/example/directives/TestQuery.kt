@@ -39,13 +39,13 @@ data class TestQuery(
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
-      this["includeName"] = includeName
-      this["skipFriends"] = skipFriends
+      this["includeName"] = this@TestQuery.includeName
+      this["skipFriends"] = this@TestQuery.skipFriends
     }
 
-    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
-      writer.writeBoolean("includeName", includeName)
-      writer.writeBoolean("skipFriends", skipFriends)
+    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { _writer ->
+      _writer.writeBoolean("includeName", includeName)
+      _writer.writeBoolean("skipFriends", skipFriends)
     }
   }
 
@@ -72,9 +72,9 @@ data class TestQuery(
      */
     val totalCount: Int?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeInt(RESPONSE_FIELDS[1], totalCount)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeInt(RESPONSE_FIELDS[1], totalCount)
     }
 
     companion object {
@@ -105,10 +105,10 @@ data class TestQuery(
      */
     val friendsConnection: FriendsConnection?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
-      it.writeObject(RESPONSE_FIELDS[2], friendsConnection?.marshaller())
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeString(RESPONSE_FIELDS[1], name)
+      _writer.writeObject(RESPONSE_FIELDS[2], friendsConnection?.marshaller())
     }
 
     companion object {
@@ -141,8 +141,8 @@ data class TestQuery(
   data class Data(
     val hero: Hero?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeObject(RESPONSE_FIELDS[0], hero?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeObject(RESPONSE_FIELDS[0], hero?.marshaller())
     }
 
     companion object {

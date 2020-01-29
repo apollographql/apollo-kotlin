@@ -27,10 +27,10 @@ data class Character(
    */
   val name: String
 ) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-    it.writeString(RESPONSE_FIELDS[0], __typename)
-    it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
-    it.writeString(RESPONSE_FIELDS[2], name)
+  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+    _writer.writeString(RESPONSE_FIELDS[0], __typename)
+    _writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
+    _writer.writeString(RESPONSE_FIELDS[2], name)
   }
 
   companion object {

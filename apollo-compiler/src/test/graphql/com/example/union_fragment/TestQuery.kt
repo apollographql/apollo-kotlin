@@ -50,9 +50,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val __typename: String = "SearchResult",
     val fragments: Fragments
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      fragments.marshaller().marshal(it)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      fragments.marshaller().marshal(_writer)
     }
 
     companion object {
@@ -74,9 +74,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       val character: Character?,
       val starship: Starship?
     ) {
-      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        it.writeFragment(character?.marshaller())
-        it.writeFragment(starship?.marshaller())
+      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+        _writer.writeFragment(character?.marshaller())
+        _writer.writeFragment(starship?.marshaller())
       }
 
       companion object {
@@ -108,10 +108,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   data class Data(
     val search: List<Search?>?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeList(RESPONSE_FIELDS[0], search) { value, listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeObject(value?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeList(RESPONSE_FIELDS[0], search) { _value, _listItemWriter ->
+        _value?.forEach { _value ->
+          _listItemWriter.writeObject(_value?.marshaller())
         }
       }
     }

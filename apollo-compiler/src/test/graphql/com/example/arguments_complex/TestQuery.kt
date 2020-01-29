@@ -42,15 +42,15 @@ data class TestQuery(
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
-      if (episode.defined) this["episode"] = episode.value
-      this["stars"] = stars
-      this["greenValue"] = greenValue
+      if (episode.defined) this["episode"] = this@TestQuery.episode.value
+      this["stars"] = this@TestQuery.stars
+      this["greenValue"] = this@TestQuery.greenValue
     }
 
-    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
-      if (episode.defined) writer.writeString("episode", episode.value?.rawValue)
-      writer.writeInt("stars", stars)
-      writer.writeDouble("greenValue", greenValue)
+    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { _writer ->
+      if (episode.defined) _writer.writeString("episode", episode.value?.rawValue)
+      _writer.writeInt("stars", stars)
+      _writer.writeDouble("greenValue", greenValue)
     }
   }
 
@@ -81,10 +81,10 @@ data class TestQuery(
      */
     val height: Double?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
-      it.writeDouble(RESPONSE_FIELDS[2], height)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeString(RESPONSE_FIELDS[1], name)
+      _writer.writeDouble(RESPONSE_FIELDS[2], height)
     }
 
     companion object {
@@ -111,8 +111,8 @@ data class TestQuery(
   data class Data(
     val heroWithReview: HeroWithReview?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeObject(RESPONSE_FIELDS[0], heroWithReview?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeObject(RESPONSE_FIELDS[0], heroWithReview?.marshaller())
     }
 
     companion object {

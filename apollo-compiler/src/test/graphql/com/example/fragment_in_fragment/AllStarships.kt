@@ -49,9 +49,9 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
     val __typename: String = "Starship",
     val fragments: Fragments
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      fragments.marshaller().marshal(it)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      fragments.marshaller().marshal(_writer)
     }
 
     companion object {
@@ -72,8 +72,8 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
     data class Fragments(
       val starshipFragment: StarshipFragment
     ) {
-      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        it.writeFragment(starshipFragment.marshaller())
+      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+        _writer.writeFragment(starshipFragment.marshaller())
       }
 
       companion object {
@@ -103,9 +103,9 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
      */
     val node: Node?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeObject(RESPONSE_FIELDS[1], node?.marshaller())
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeObject(RESPONSE_FIELDS[1], node?.marshaller())
     }
 
     companion object {
@@ -135,11 +135,11 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
      */
     val edges: List<Edge?>?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeList(RESPONSE_FIELDS[1], edges) { value, listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeObject(value?.marshaller())
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeList(RESPONSE_FIELDS[1], edges) { _value, _listItemWriter ->
+        _value?.forEach { _value ->
+          _listItemWriter.writeObject(_value?.marshaller())
         }
       }
     }
@@ -169,8 +169,8 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
   data class Data(
     val allStarships: AllStarships?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeObject(RESPONSE_FIELDS[0], allStarships?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeObject(RESPONSE_FIELDS[0], allStarships?.marshaller())
     }
 
     companion object {

@@ -45,21 +45,21 @@ data class TestQuery(
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
-      if (episode.defined) this["episode"] = episode.value
-      this["IncludeName"] = includeName
-      this["friendsCount"] = friendsCount
-      this["listOfListOfStringArgs"] = listOfListOfStringArgs
+      if (episode.defined) this["episode"] = this@TestQuery.episode.value
+      this["IncludeName"] = this@TestQuery.includeName
+      this["friendsCount"] = this@TestQuery.friendsCount
+      this["listOfListOfStringArgs"] = this@TestQuery.listOfListOfStringArgs
     }
 
-    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
-      if (episode.defined) writer.writeString("episode", episode.value?.rawValue)
-      writer.writeBoolean("IncludeName", includeName)
-      writer.writeInt("friendsCount", friendsCount)
-      writer.writeList("listOfListOfStringArgs") { listItemWriter ->
-        listOfListOfStringArgs.forEach { value ->
-          listItemWriter.writeList { listItemWriter ->
-            value.forEach { value ->
-              listItemWriter.writeString(value)
+    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { _writer ->
+      if (episode.defined) _writer.writeString("episode", episode.value?.rawValue)
+      _writer.writeBoolean("IncludeName", includeName)
+      _writer.writeInt("friendsCount", friendsCount)
+      _writer.writeList("listOfListOfStringArgs") { _listItemWriter ->
+        listOfListOfStringArgs.forEach { _value ->
+          _listItemWriter.writeList { _listItemWriter ->
+            _value.forEach { _value ->
+              _listItemWriter.writeString(_value)
             }
           }
         }
@@ -91,10 +91,10 @@ data class TestQuery(
     val name: String?,
     val fragments: Fragments
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
-      fragments.marshaller().marshal(it)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeString(RESPONSE_FIELDS[1], name)
+      fragments.marshaller().marshal(_writer)
     }
 
     companion object {
@@ -120,8 +120,8 @@ data class TestQuery(
     data class Fragments(
       val heroDetails: HeroDetails
     ) {
-      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        it.writeFragment(heroDetails.marshaller())
+      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+        _writer.writeFragment(heroDetails.marshaller())
       }
 
       companion object {
@@ -150,9 +150,9 @@ data class TestQuery(
      */
     val name: String
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeString(RESPONSE_FIELDS[1], name)
     }
 
     companion object {
@@ -176,9 +176,9 @@ data class TestQuery(
     val hero: Hero?,
     val heroWithReview: HeroWithReview?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeObject(RESPONSE_FIELDS[0], hero?.marshaller())
-      it.writeObject(RESPONSE_FIELDS[1], heroWithReview?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeObject(RESPONSE_FIELDS[0], hero?.marshaller())
+      _writer.writeObject(RESPONSE_FIELDS[1], heroWithReview?.marshaller())
     }
 
     companion object {

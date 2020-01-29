@@ -29,11 +29,11 @@ data class StarshipFragment(
   val name: String?,
   val pilotConnection: PilotConnection?
 ) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-    it.writeString(RESPONSE_FIELDS[0], __typename)
-    it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
-    it.writeString(RESPONSE_FIELDS[2], name)
-    it.writeObject(RESPONSE_FIELDS[3], pilotConnection?.marshaller())
+  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+    _writer.writeString(RESPONSE_FIELDS[0], __typename)
+    _writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
+    _writer.writeString(RESPONSE_FIELDS[2], name)
+    _writer.writeObject(RESPONSE_FIELDS[3], pilotConnection?.marshaller())
   }
 
   companion object {
@@ -83,9 +83,9 @@ data class StarshipFragment(
     val __typename: String = "Person",
     val fragments: Fragments
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      fragments.marshaller().marshal(it)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      fragments.marshaller().marshal(_writer)
     }
 
     companion object {
@@ -106,8 +106,8 @@ data class StarshipFragment(
     data class Fragments(
       val pilotFragment: PilotFragment
     ) {
-      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        it.writeFragment(pilotFragment.marshaller())
+      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+        _writer.writeFragment(pilotFragment.marshaller())
       }
 
       companion object {
@@ -136,9 +136,9 @@ data class StarshipFragment(
      */
     val node: Node?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeObject(RESPONSE_FIELDS[1], node?.marshaller())
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeObject(RESPONSE_FIELDS[1], node?.marshaller())
     }
 
     companion object {
@@ -168,11 +168,11 @@ data class StarshipFragment(
      */
     val edges: List<Edge?>?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeList(RESPONSE_FIELDS[1], edges) { value, listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeObject(value?.marshaller())
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeList(RESPONSE_FIELDS[1], edges) { _value, _listItemWriter ->
+        _value?.forEach { _value ->
+          _listItemWriter.writeObject(_value?.marshaller())
         }
       }
     }

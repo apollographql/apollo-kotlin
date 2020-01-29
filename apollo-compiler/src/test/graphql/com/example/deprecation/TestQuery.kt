@@ -40,11 +40,11 @@ data class TestQuery(
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
-      if (episode.defined) this["episode"] = episode.value
+      if (episode.defined) this["episode"] = this@TestQuery.episode.value
     }
 
-    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
-      if (episode.defined) writer.writeString("episode", episode.value?.rawValue)
+    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { _writer ->
+      if (episode.defined) _writer.writeString("episode", episode.value?.rawValue)
     }
   }
 
@@ -81,11 +81,11 @@ data class TestQuery(
     @Deprecated(message = "For test purpose only")
     val deprecatedBool: Boolean
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
-      it.writeString(RESPONSE_FIELDS[2], deprecated)
-      it.writeBoolean(RESPONSE_FIELDS[3], deprecatedBool)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeString(RESPONSE_FIELDS[1], name)
+      _writer.writeString(RESPONSE_FIELDS[2], deprecated)
+      _writer.writeBoolean(RESPONSE_FIELDS[3], deprecatedBool)
     }
 
     companion object {
@@ -114,8 +114,8 @@ data class TestQuery(
   data class Data(
     val hero: Hero?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeObject(RESPONSE_FIELDS[0], hero?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeObject(RESPONSE_FIELDS[0], hero?.marshaller())
     }
 
     companion object {

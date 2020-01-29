@@ -37,11 +37,11 @@ data class TestSubscription(
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
-      this["repo"] = repo
+      this["repo"] = this@TestSubscription.repo
     }
 
-    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
-      writer.writeString("repo", repo)
+    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { _writer ->
+      _writer.writeString("repo", repo)
     }
   }
 
@@ -72,10 +72,10 @@ data class TestSubscription(
      */
     val content: String
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeInt(RESPONSE_FIELDS[1], id)
-      it.writeString(RESPONSE_FIELDS[2], content)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeInt(RESPONSE_FIELDS[1], id)
+      _writer.writeString(RESPONSE_FIELDS[2], content)
     }
 
     companion object {
@@ -104,8 +104,8 @@ data class TestSubscription(
      */
     val commentAdded: CommentAdded?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeObject(RESPONSE_FIELDS[0], commentAdded?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeObject(RESPONSE_FIELDS[0], commentAdded?.marshaller())
     }
 
     companion object {

@@ -28,10 +28,10 @@ data class CharacterDetails(
    */
   val birthDate: Any
 ) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-    it.writeString(RESPONSE_FIELDS[0], __typename)
-    it.writeString(RESPONSE_FIELDS[1], name)
-    it.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, birthDate)
+  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+    _writer.writeString(RESPONSE_FIELDS[0], __typename)
+    _writer.writeString(RESPONSE_FIELDS[1], name)
+    _writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, birthDate)
   }
 
   companion object {

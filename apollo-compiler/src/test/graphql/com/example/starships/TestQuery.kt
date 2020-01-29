@@ -39,11 +39,11 @@ data class TestQuery(
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
-      this["id"] = id
+      this["id"] = this@TestQuery.id
     }
 
-    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
-      writer.writeCustom("id", CustomType.ID, id)
+    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { _writer ->
+      _writer.writeCustom("id", CustomType.ID, id)
     }
   }
 
@@ -75,15 +75,15 @@ data class TestQuery(
     val name: String,
     val coordinates: List<List<Double>>?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
-      it.writeString(RESPONSE_FIELDS[2], name)
-      it.writeList(RESPONSE_FIELDS[3], coordinates) { value, listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeList(value) { value, listItemWriter ->
-            value?.forEach { value ->
-              listItemWriter.writeDouble(value)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
+      _writer.writeString(RESPONSE_FIELDS[2], name)
+      _writer.writeList(RESPONSE_FIELDS[3], coordinates) { _value, _listItemWriter ->
+        _value?.forEach { _value ->
+          _listItemWriter.writeList(_value) { _value, _listItemWriter ->
+            _value?.forEach { _value ->
+              _listItemWriter.writeDouble(_value)
             }
           }
         }
@@ -120,8 +120,8 @@ data class TestQuery(
   data class Data(
     val starship: Starship?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeObject(RESPONSE_FIELDS[0], starship?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeObject(RESPONSE_FIELDS[0], starship?.marshaller())
     }
 
     companion object {

@@ -26,10 +26,10 @@ data class PilotFragment(
    */
   val homeworld: Homeworld?
 ) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-    it.writeString(RESPONSE_FIELDS[0], __typename)
-    it.writeString(RESPONSE_FIELDS[1], name)
-    it.writeObject(RESPONSE_FIELDS[2], homeworld?.marshaller())
+  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+    _writer.writeString(RESPONSE_FIELDS[0], __typename)
+    _writer.writeString(RESPONSE_FIELDS[1], name)
+    _writer.writeObject(RESPONSE_FIELDS[2], homeworld?.marshaller())
   }
 
   companion object {
@@ -69,9 +69,9 @@ data class PilotFragment(
     val __typename: String = "Planet",
     val fragments: Fragments
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      fragments.marshaller().marshal(it)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      fragments.marshaller().marshal(_writer)
     }
 
     companion object {
@@ -92,8 +92,8 @@ data class PilotFragment(
     data class Fragments(
       val planetFragment: PlanetFragment
     ) {
-      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        it.writeFragment(planetFragment.marshaller())
+      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+        _writer.writeFragment(planetFragment.marshaller())
       }
 
       companion object {

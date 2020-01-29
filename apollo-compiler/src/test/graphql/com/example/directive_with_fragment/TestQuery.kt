@@ -41,13 +41,13 @@ data class TestQuery(
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
-      this["withDetails"] = withDetails
-      this["skipHumanDetails"] = skipHumanDetails
+      this["withDetails"] = this@TestQuery.withDetails
+      this["skipHumanDetails"] = this@TestQuery.skipHumanDetails
     }
 
-    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
-      writer.writeBoolean("withDetails", withDetails)
-      writer.writeBoolean("skipHumanDetails", skipHumanDetails)
+    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { _writer ->
+      _writer.writeBoolean("withDetails", withDetails)
+      _writer.writeBoolean("skipHumanDetails", skipHumanDetails)
     }
   }
 
@@ -75,10 +75,10 @@ data class TestQuery(
     val id: String,
     val fragments: Fragments
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
-      fragments.marshaller().marshal(it)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
+      fragments.marshaller().marshal(_writer)
     }
 
     companion object {
@@ -103,9 +103,9 @@ data class TestQuery(
       val heroDetails: HeroDetails?,
       val humanDetails: HumanDetails?
     ) {
-      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        it.writeFragment(heroDetails?.marshaller())
-        it.writeFragment(humanDetails?.marshaller())
+      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+        _writer.writeFragment(heroDetails?.marshaller())
+        _writer.writeFragment(humanDetails?.marshaller())
       }
 
       companion object {
@@ -140,8 +140,8 @@ data class TestQuery(
   data class Data(
     val hero: Hero?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeObject(RESPONSE_FIELDS[0], hero?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeObject(RESPONSE_FIELDS[0], hero?.marshaller())
     }
 
     companion object {

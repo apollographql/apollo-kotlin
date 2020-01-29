@@ -74,20 +74,21 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val links: List<java.lang.String>
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
-      it.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, birthDate)
-      it.writeList(RESPONSE_FIELDS[3], appearanceDates) { value, listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeCustom(CustomType.DATE, value)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeString(RESPONSE_FIELDS[1], name)
+      _writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, birthDate)
+      _writer.writeList(RESPONSE_FIELDS[3], appearanceDates) { _value, _listItemWriter ->
+        _value?.forEach { _value ->
+          _listItemWriter.writeCustom(CustomType.DATE, _value)
         }
       }
-      it.writeCustom(RESPONSE_FIELDS[4] as ResponseField.CustomTypeField, fieldWithUnsupportedType)
-      it.writeCustom(RESPONSE_FIELDS[5] as ResponseField.CustomTypeField, profileLink)
-      it.writeList(RESPONSE_FIELDS[6], links) { value, listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeCustom(CustomType.URL, value)
+      _writer.writeCustom(RESPONSE_FIELDS[4] as ResponseField.CustomTypeField,
+          fieldWithUnsupportedType)
+      _writer.writeCustom(RESPONSE_FIELDS[5] as ResponseField.CustomTypeField, profileLink)
+      _writer.writeList(RESPONSE_FIELDS[6], links) { _value, _listItemWriter ->
+        _value?.forEach { _value ->
+          _listItemWriter.writeCustom(CustomType.URL, _value)
         }
       }
     }
@@ -136,8 +137,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   data class Data(
     val hero: Hero?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeObject(RESPONSE_FIELDS[0], hero?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeObject(RESPONSE_FIELDS[0], hero?.marshaller())
     }
 
     companion object {

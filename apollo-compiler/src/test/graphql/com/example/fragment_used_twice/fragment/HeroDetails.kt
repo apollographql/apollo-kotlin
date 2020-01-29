@@ -23,10 +23,10 @@ data class HeroDetails(
   val name: String,
   val fragments: Fragments
 ) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-    it.writeString(RESPONSE_FIELDS[0], __typename)
-    it.writeString(RESPONSE_FIELDS[1], name)
-    fragments.marshaller().marshal(it)
+  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+    _writer.writeString(RESPONSE_FIELDS[0], __typename)
+    _writer.writeString(RESPONSE_FIELDS[1], name)
+    fragments.marshaller().marshal(_writer)
   }
 
   companion object {
@@ -58,8 +58,8 @@ data class HeroDetails(
   data class Fragments(
     val characterDetails: CharacterDetails
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeFragment(characterDetails.marshaller())
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeFragment(characterDetails.marshaller())
     }
 
     companion object {

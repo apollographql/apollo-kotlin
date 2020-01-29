@@ -39,13 +39,13 @@ internal data class ColorInput(
    */
   val reviewRefInput: Input<ReviewRefInput> = Input.absent()
 ) : InputType {
-  override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
-    writer.writeInt("red", red)
-    if (green.defined) writer.writeDouble("green", green.value)
-    writer.writeDouble("blue", blue)
-    if (enumWithDefaultValue.defined) writer.writeString("enumWithDefaultValue",
+  override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { _writer ->
+    _writer.writeInt("red", red)
+    if (green.defined) _writer.writeDouble("green", green.value)
+    _writer.writeDouble("blue", blue)
+    if (enumWithDefaultValue.defined) _writer.writeString("enumWithDefaultValue",
         enumWithDefaultValue.value?.rawValue)
-    if (reviewRefInput.defined) writer.writeObject("reviewRefInput",
+    if (reviewRefInput.defined) _writer.writeObject("reviewRefInput",
         reviewRefInput.value?.marshaller())
   }
 }

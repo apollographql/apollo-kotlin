@@ -27,10 +27,10 @@ data class HumanDetails(
    */
   val height: Double?
 ) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-    it.writeString(RESPONSE_FIELDS[0], __typename)
-    it.writeString(RESPONSE_FIELDS[1], name)
-    it.writeDouble(RESPONSE_FIELDS[2], height)
+  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+    _writer.writeString(RESPONSE_FIELDS[0], __typename)
+    _writer.writeString(RESPONSE_FIELDS[1], name)
+    _writer.writeDouble(RESPONSE_FIELDS[2], height)
   }
 
   companion object {

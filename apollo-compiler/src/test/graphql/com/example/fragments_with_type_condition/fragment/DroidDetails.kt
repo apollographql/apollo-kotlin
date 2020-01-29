@@ -26,10 +26,10 @@ data class DroidDetails(
    */
   val primaryFunction: String?
 ) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-    it.writeString(RESPONSE_FIELDS[0], __typename)
-    it.writeString(RESPONSE_FIELDS[1], name)
-    it.writeString(RESPONSE_FIELDS[2], primaryFunction)
+  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+    _writer.writeString(RESPONSE_FIELDS[0], __typename)
+    _writer.writeString(RESPONSE_FIELDS[1], name)
+    _writer.writeString(RESPONSE_FIELDS[2], primaryFunction)
   }
 
   companion object {

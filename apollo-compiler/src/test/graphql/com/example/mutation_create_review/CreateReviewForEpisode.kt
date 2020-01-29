@@ -43,13 +43,13 @@ internal data class CreateReviewForEpisode(
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
-      this["ep"] = ep
-      this["review"] = review
+      this["ep"] = this@CreateReviewForEpisode.ep
+      this["review"] = this@CreateReviewForEpisode.review
     }
 
-    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
-      writer.writeString("ep", ep.rawValue)
-      writer.writeObject("review", review.marshaller())
+    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { _writer ->
+      _writer.writeString("ep", ep.rawValue)
+      _writer.writeObject("review", review.marshaller())
     }
   }
 
@@ -76,9 +76,9 @@ internal data class CreateReviewForEpisode(
      */
     val name: String
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeString(RESPONSE_FIELDS[1], name)
     }
 
     companion object {
@@ -125,42 +125,42 @@ internal data class CreateReviewForEpisode(
      */
     val listOfListOfObject: List<List<ListOfListOfObject>>?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeInt(RESPONSE_FIELDS[1], stars)
-      it.writeString(RESPONSE_FIELDS[2], commentary)
-      it.writeList(RESPONSE_FIELDS[3], listOfListOfString) { value, listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeList(value) { value, listItemWriter ->
-            value?.forEach { value ->
-              listItemWriter.writeString(value)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeString(RESPONSE_FIELDS[0], __typename)
+      _writer.writeInt(RESPONSE_FIELDS[1], stars)
+      _writer.writeString(RESPONSE_FIELDS[2], commentary)
+      _writer.writeList(RESPONSE_FIELDS[3], listOfListOfString) { _value, _listItemWriter ->
+        _value?.forEach { _value ->
+          _listItemWriter.writeList(_value) { _value, _listItemWriter ->
+            _value?.forEach { _value ->
+              _listItemWriter.writeString(_value)
             }
           }
         }
       }
-      it.writeList(RESPONSE_FIELDS[4], listOfListOfEnum) { value, listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeList(value) { value, listItemWriter ->
-            value?.forEach { value ->
-              listItemWriter.writeString(value?.rawValue)
+      _writer.writeList(RESPONSE_FIELDS[4], listOfListOfEnum) { _value, _listItemWriter ->
+        _value?.forEach { _value ->
+          _listItemWriter.writeList(_value) { _value, _listItemWriter ->
+            _value?.forEach { _value ->
+              _listItemWriter.writeString(_value?.rawValue)
             }
           }
         }
       }
-      it.writeList(RESPONSE_FIELDS[5], listOfListOfCustom) { value, listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeList(value) { value, listItemWriter ->
-            value?.forEach { value ->
-              listItemWriter.writeCustom(CustomType.DATE, value)
+      _writer.writeList(RESPONSE_FIELDS[5], listOfListOfCustom) { _value, _listItemWriter ->
+        _value?.forEach { _value ->
+          _listItemWriter.writeList(_value) { _value, _listItemWriter ->
+            _value?.forEach { _value ->
+              _listItemWriter.writeCustom(CustomType.DATE, _value)
             }
           }
         }
       }
-      it.writeList(RESPONSE_FIELDS[6], listOfListOfObject) { value, listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeList(value) { value, listItemWriter ->
-            value?.forEach { value ->
-              listItemWriter.writeObject(value?.marshaller())
+      _writer.writeList(RESPONSE_FIELDS[6], listOfListOfObject) { _value, _listItemWriter ->
+        _value?.forEach { _value ->
+          _listItemWriter.writeList(_value) { _value, _listItemWriter ->
+            _value?.forEach { _value ->
+              _listItemWriter.writeObject(_value?.marshaller())
             }
           }
         }
@@ -221,8 +221,8 @@ internal data class CreateReviewForEpisode(
   data class Data(
     val createReview: CreateReview?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeObject(RESPONSE_FIELDS[0], createReview?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
+      _writer.writeObject(RESPONSE_FIELDS[0], createReview?.marshaller())
     }
 
     companion object {
