@@ -177,8 +177,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
           transport.connect();
         } else if (state == SubscriptionManagerState.ACTIVE) {
           transport.send(
-              new OperationClientMessage.Start(subscriptionId.toString(), subscription, scalarTypeAdapters, autoPersistSubscription,
-                  false)
+              new OperationClientMessage.Start(subscriptionId.toString(), subscription, scalarTypeAdapters, autoPersistSubscription, false)
           );
         }
       }
