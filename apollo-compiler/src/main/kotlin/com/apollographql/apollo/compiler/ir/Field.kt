@@ -106,7 +106,7 @@ data class Field(
     "_".repeat(originalClassName.length - className.length) + className.capitalize()
   }
 
-  fun isOptional(): Boolean = isConditional || !methodResponseType().endsWith("!") || inlineFragments.isNotEmpty()
+  fun isOptional(): Boolean = isConditional || !methodResponseType().endsWith("!")
 
   fun isNonScalar() = hasFragments() || fields.any()
 

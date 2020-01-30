@@ -44,63 +44,79 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   @Throws(IOException::class)
   override fun parse(source: BufferedSource): Response<Data> = parse(source, DEFAULT)
 
-  interface HeroCharacter {
+  interface NonOptionalHeroCharacter {
     fun marshaller(): ResponseFieldMarshaller
   }
 
   data class AsHuman(
     val __typename: String = "Human",
     /**
+     * What this human calls themselves
+     */
+    val name: String,
+    /**
      * Height in the preferred unit, default is meters
      */
     val height: Double?
-  ) : HeroCharacter {
+  ) : NonOptionalHeroCharacter {
     override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeDouble(RESPONSE_FIELDS[1], height)
+      it.writeString(RESPONSE_FIELDS[1], name)
+      it.writeDouble(RESPONSE_FIELDS[2], height)
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forString("name", "name", null, false, null),
           ResponseField.forDouble("height", "height", null, true, null)
           )
 
       operator fun invoke(reader: ResponseReader): AsHuman {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val height = reader.readDouble(RESPONSE_FIELDS[1])
+        val name = reader.readString(RESPONSE_FIELDS[1])
+        val height = reader.readDouble(RESPONSE_FIELDS[2])
         return AsHuman(
           __typename = __typename,
+          name = name,
           height = height
         )
       }
     }
   }
 
-  data class Hero(
+  data class NonOptionalHero(
     val __typename: String = "Character",
+    /**
+     * The name of the character
+     */
+    val name: String,
     val asHuman: AsHuman?
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeString(RESPONSE_FIELDS[1], name)
       it.writeFragment(asHuman?.marshaller())
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forString("name", "name", null, false, null),
           ResponseField.forFragment("__typename", "__typename", listOf(
             ResponseField.Condition.typeCondition(arrayOf("Human"))
           ))
           )
 
-      operator fun invoke(reader: ResponseReader): Hero {
+      operator fun invoke(reader: ResponseReader): NonOptionalHero {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val asHuman = reader.readFragment<AsHuman>(RESPONSE_FIELDS[1]) { reader ->
+        val name = reader.readString(RESPONSE_FIELDS[1])
+        val asHuman = reader.readFragment<AsHuman>(RESPONSE_FIELDS[2]) { reader ->
           AsHuman(reader)
         }
-        return Hero(
+        return NonOptionalHero(
           __typename = __typename,
+          name = name,
           asHuman = asHuman
         )
       }
@@ -108,24 +124,25 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class Data(
-    val hero: Hero?
+    val nonOptionalHero: NonOptionalHero
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeObject(RESPONSE_FIELDS[0], hero?.marshaller())
+      it.writeObject(RESPONSE_FIELDS[0], nonOptionalHero.marshaller())
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forObject("hero", "hero", null, true, null)
+          ResponseField.forObject("nonOptionalHero", "nonOptionalHero", mapOf<String, Any>(
+            "episode" to "EMPIRE"), false, null)
           )
 
       operator fun invoke(reader: ResponseReader): Data {
-        val hero = reader.readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
-          Hero(reader)
+        val nonOptionalHero = reader.readObject<NonOptionalHero>(RESPONSE_FIELDS[0]) { reader ->
+          NonOptionalHero(reader)
         }
 
         return Data(
-          hero = hero
+          nonOptionalHero = nonOptionalHero
         )
       }
     }
@@ -133,13 +150,14 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "5438a5b2731bc2f21c90dcc4bff5628dd91f65534a3f5cab0dbbbfdd3b4bf19b"
+        "e33ec8a463abf6b32191d1f07aa6c7e4d038a493cace83a45a64632eb65b1ced"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery {
-          |  hero {
+          |  nonOptionalHero(episode: EMPIRE) {
           |    __typename
+          |    name
           |    ... on Human {
           |      height
           |    }
