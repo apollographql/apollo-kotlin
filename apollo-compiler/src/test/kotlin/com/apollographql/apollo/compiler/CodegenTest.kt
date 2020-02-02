@@ -3,8 +3,11 @@ package com.apollographql.apollo.compiler
 import com.apollographql.apollo.compiler.parser.GraphQLDocumentParser
 import com.apollographql.apollo.compiler.parser.Schema
 import com.google.common.truth.Truth.assertAbout
+import com.google.common.truth.Truth.assertThat
 import com.google.testing.compile.JavaFileObjects
 import com.google.testing.compile.JavaSourcesSubjectFactory.javaSources
+import com.tschuchort.compiletesting.KotlinCompilation
+import com.tschuchort.compiletesting.SourceFile
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -20,9 +23,9 @@ class CodeGenTest(val folder: File) {
     generateExpectedClasses(arguments(folder = folder, generateKotlinModels = true))
   }
 
-  private fun generateExpectedClasses(args: GraphQLCompiler.Arguments) {
-    val sourceFileObjects = mutableListOf<JavaFileObject>()
+  data class GeneratedFile(val expected: File, val actual: File, val relativePath: String)
 
+  private fun generateExpectedClasses(args: GraphQLCompiler.Arguments) {
     args.outputDir.deleteRecursively()
     GraphQLCompiler().write(args)
 
@@ -33,35 +36,51 @@ class CodeGenTest(val folder: File) {
     }
 
     val walk = folder.walkTopDown()
-    walk.forEach { file ->
+    val files = walk.mapNotNull { file ->
       if (!file.name.endsWith(extension)) {
-        return@forEach
+        return@mapNotNull null
       }
 
-      val expected = file.relativeTo(folder)
-      val relativePath = "com/example/${folder.name}/${expected.path}"
+      val relativePath = "com/example/${folder.name}/${file.relativeTo(folder).path}"
       val actual = File(args.outputDir, relativePath)
 
       if (!actual.isFile) {
         throw AssertionError("Couldn't find actual file: $actual")
       }
 
-      checkTestFixture(actual = actual, expected = file)
+      GeneratedFile(expected = file, actual = actual, relativePath = relativePath)
+    }.toList()
 
-      // XXX also test kotlin compilation
-      if (!args.generateKotlinModels) {
-        val qualifiedName = relativePath
+    // Check that files match
+    files.forEach {
+      checkTestFixture(actual = it.actual, expected = it.expected)
+    }
+
+    // And that they compile
+    if (!args.generateKotlinModels) {
+      val javaFileObjects = files.map {
+        val qualifiedName = it.relativePath
             .substringBeforeLast(".")
             .split(File.separator)
             .joinToString(".")
 
-        sourceFileObjects.add(JavaFileObjects.forSourceLines(qualifiedName,
-            actual.readLines()))
+        JavaFileObjects.forSourceLines(qualifiedName,
+            it.actual.readLines())
       }
-    }
 
-    if (!args.generateKotlinModels) {
-      assertAbout(javaSources()).that(sourceFileObjects).compilesWithoutError()
+      assertAbout(javaSources()).that(javaFileObjects).compilesWithoutError()
+    } else {
+      val kotlinFiles = files.map {
+        SourceFile.kotlin(it.actual.name, it.actual.readText())
+      }
+      val result = KotlinCompilation().apply {
+        sources = kotlinFiles
+
+        inheritClassPath = true
+        messageOutputStream = System.out // see diagnostics in real time
+      }.compile()
+
+      assertThat(result.exitCode).isEqualTo(KotlinCompilation.ExitCode.OK)
     }
   }
 
@@ -160,6 +179,13 @@ class CodeGenTest(val folder: File) {
 }
 
 fun checkTestFixture(actual: File, expected: File) {
+  check (actual.exists()) {
+    "actual=$actual not found (expected=$expected)"
+  }
+  check (expected.exists()) {
+    "expected=$expected not found (actual=$actual)"
+  }
+
   val actualText = actual.readText()
   val expectedText = expected.readText()
 
