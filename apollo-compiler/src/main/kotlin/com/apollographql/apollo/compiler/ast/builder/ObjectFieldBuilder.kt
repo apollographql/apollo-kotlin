@@ -93,7 +93,7 @@ private fun Field.`object`(context: Context): ObjectType.Field {
       schemaName = fieldName,
       type = FieldType.Object(typeRef),
       description = description,
-      isOptional = !type.endsWith("!") || isConditional || inlineFragments.isNotEmpty(),
+      isOptional = !type.endsWith("!") || isConditional,
       isDeprecated = isDeprecated,
       deprecationReason = deprecationReason,
       arguments = args.associate { it.name to it.value },
