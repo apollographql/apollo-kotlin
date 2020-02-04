@@ -20,7 +20,7 @@ class CustomEnumTypeSpecBuilder(
 
   private fun TypeSpec.Builder.addEnumConstants(): TypeSpec.Builder {
     context.customTypeMap
-        .toSortedMap(Comparator { left, right -> left.compareTo(right) })
+        .toSortedMap()
         .forEach { mapping ->
           val constantName = mapping.key.removeSuffix("!").toUpperCase(Locale.ENGLISH)
           val javaTypeName = mapping.value

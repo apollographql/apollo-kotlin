@@ -14,7 +14,6 @@ internal fun CustomTypes.typeSpec(generateAsInternal: Boolean = false) =
         .addSuperinterface(ScalarType::class.java)
         .apply {
           toSortedMap()
-              .toSortedMap(Comparator { left, right -> left.compareTo(right) })
               .map { (schemaType, customType) ->
                 addEnumConstant(
                     name = schemaType.normalizeGraphQLType().toUpperCase(),
