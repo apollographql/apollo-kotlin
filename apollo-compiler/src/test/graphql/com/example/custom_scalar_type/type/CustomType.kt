@@ -16,10 +16,10 @@ enum class CustomType : ScalarType {
     override fun javaType(): Class<*> = java.util.Date::class.java
   },
 
-  UNSUPPORTEDTYPE {
-    override fun typeName(): String = "UnsupportedType"
+  ID {
+    override fun typeName(): String = "ID"
 
-    override fun javaType(): Class<*> = kotlin.Any::class.java
+    override fun javaType(): Class<*> = java.lang.Integer::class.java
   },
 
   URL {
@@ -28,9 +28,9 @@ enum class CustomType : ScalarType {
     override fun javaType(): Class<*> = java.lang.String::class.java
   },
 
-  ID {
-    override fun typeName(): String = "ID"
+  UNSUPPORTEDTYPE {
+    override fun typeName(): String = "UnsupportedType"
 
-    override fun javaType(): Class<*> = java.lang.Integer::class.java
+    override fun javaType(): Class<*> = kotlin.Any::class.java
   }
 }

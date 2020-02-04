@@ -13,19 +13,6 @@ import java.lang.String;
 import java.lang.SuppressWarnings;
 
 public enum CustomType implements ScalarType {
-  URL {
-    @Override
-    public String typeName() {
-      return "URL";
-    }
-
-    @SuppressWarnings("rawtypes")
-    @Override
-    public Class javaType() {
-      return Object.class;
-    }
-  },
-
   ID {
     @Override
     public String typeName() {
@@ -36,6 +23,19 @@ public enum CustomType implements ScalarType {
     @Override
     public Class javaType() {
       return String.class;
+    }
+  },
+
+  URL {
+    @Override
+    public String typeName() {
+      return "URL";
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Override
+    public Class javaType() {
+      return Object.class;
     }
   }
 }

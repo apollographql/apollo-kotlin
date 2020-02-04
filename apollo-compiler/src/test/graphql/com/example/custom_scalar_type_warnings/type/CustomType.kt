@@ -10,15 +10,15 @@ import java.lang.Class
 import kotlin.String
 
 enum class CustomType : ScalarType {
-  URL {
-    override fun typeName(): String = "URL"
-
-    override fun javaType(): Class<*> = kotlin.Any::class.java
-  },
-
   ID {
     override fun typeName(): String = "ID"
 
     override fun javaType(): Class<*> = kotlin.String::class.java
+  },
+
+  URL {
+    override fun typeName(): String = "URL"
+
+    override fun javaType(): Class<*> = kotlin.Any::class.java
   }
 }

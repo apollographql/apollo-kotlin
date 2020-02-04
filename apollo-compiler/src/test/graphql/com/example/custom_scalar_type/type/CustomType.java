@@ -26,15 +26,15 @@ public enum CustomType implements ScalarType {
     }
   },
 
-  UNSUPPORTEDTYPE {
+  ID {
     @Override
     public String typeName() {
-      return "UnsupportedType";
+      return "ID";
     }
 
     @Override
     public Class javaType() {
-      return Object.class;
+      return Integer.class;
     }
   },
 
@@ -50,15 +50,15 @@ public enum CustomType implements ScalarType {
     }
   },
 
-  ID {
+  UNSUPPORTEDTYPE {
     @Override
     public String typeName() {
-      return "ID";
+      return "UnsupportedType";
     }
 
     @Override
     public Class javaType() {
-      return Integer.class;
+      return Object.class;
     }
   }
 }
