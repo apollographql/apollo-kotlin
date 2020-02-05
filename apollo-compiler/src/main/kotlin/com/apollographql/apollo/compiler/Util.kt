@@ -16,13 +16,12 @@ private val JAVA_RESERVED_WORDS = arrayOf(
 
 private val KOTLIN_RESERVED_WORDS = arrayOf(
     "as", "break", "class", "continue", "do", "else", "false", "for", "fun", "if", "in", "interface", "is", "null", "object", "package",
-    "return", "super", "this", "throw", "true", "try", "typealias", "typeof", "val", "var", "when", "while"
+    "return", "super", "this", "throw", "true", "try", "typealias", "typeof", "val", "var", "when", "while", "yield"
 )
 
-fun String.escapeJavaReservedWord() = if (JAVA_RESERVED_WORDS.contains(this)) "${this}_" else this
+fun String.escapeJavaReservedWord() = if (this in JAVA_RESERVED_WORDS) "${this}_" else this
 
-fun String.escapeKotlinReservedWord() = if ((JAVA_RESERVED_WORDS + KOTLIN_RESERVED_WORDS).contains(
-        this)) "${this}_" else this
+fun String.escapeKotlinReservedWord() = if (this in (JAVA_RESERVED_WORDS + KOTLIN_RESERVED_WORDS)) "${this}_" else this
 
 fun String.toJavaBeansSemanticNaming(isBooleanField: Boolean): String {
   val prefix = if (isBooleanField) "is" else "get"
