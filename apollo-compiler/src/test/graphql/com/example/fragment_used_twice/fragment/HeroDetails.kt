@@ -23,10 +23,10 @@ data class HeroDetails(
   val name: String,
   val fragments: Fragments
 ) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-    _writer.writeString(RESPONSE_FIELDS[0], __typename)
-    _writer.writeString(RESPONSE_FIELDS[1], name)
-    fragments.marshaller().marshal(_writer)
+  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    writer.writeString(RESPONSE_FIELDS[0], this@HeroDetails.__typename)
+    writer.writeString(RESPONSE_FIELDS[1], this@HeroDetails.name)
+    this@HeroDetails.fragments.marshaller().marshal(writer)
   }
 
   companion object {
@@ -43,11 +43,11 @@ data class HeroDetails(
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader): HeroDetails {
-      val __typename = reader.readString(RESPONSE_FIELDS[0])
-      val name = reader.readString(RESPONSE_FIELDS[1])
+    operator fun invoke(reader: ResponseReader): HeroDetails = reader.run {
+      val __typename = readString(RESPONSE_FIELDS[0])
+      val name = readString(RESPONSE_FIELDS[1])
       val fragments = Fragments(reader)
-      return HeroDetails(
+      HeroDetails(
         __typename = __typename,
         name = name,
         fragments = fragments
@@ -58,8 +58,8 @@ data class HeroDetails(
   data class Fragments(
     val characterDetails: CharacterDetails
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeFragment(characterDetails.marshaller())
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeFragment(this@Fragments.characterDetails.marshaller())
     }
 
     companion object {
@@ -69,11 +69,11 @@ data class HeroDetails(
           ))
           )
 
-      operator fun invoke(reader: ResponseReader): Fragments {
-        val characterDetails = reader.readFragment<CharacterDetails>(RESPONSE_FIELDS[0]) { reader ->
+      operator fun invoke(reader: ResponseReader): Fragments = reader.run {
+        val characterDetails = readFragment<CharacterDetails>(RESPONSE_FIELDS[0]) { reader ->
           CharacterDetails(reader)
         }
-        return Fragments(
+        Fragments(
           characterDetails = characterDetails
         )
       }

@@ -43,8 +43,10 @@ data class TestQuery(
       if (episode.defined) this["episode"] = this@TestQuery.episode.value
     }
 
-    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { _writer ->
-      if (episode.defined) _writer.writeString("episode", episode.value?.rawValue)
+    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
+      if (this@TestQuery.episode.defined) {
+        writer.writeString("episode", this@TestQuery.episode.value?.rawValue)
+      }
     }
   }
 
@@ -81,11 +83,11 @@ data class TestQuery(
     @Deprecated(message = "For test purpose only")
     val deprecatedBool: Boolean
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      _writer.writeString(RESPONSE_FIELDS[1], name)
-      _writer.writeString(RESPONSE_FIELDS[2], deprecated)
-      _writer.writeBoolean(RESPONSE_FIELDS[3], deprecatedBool)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@Hero.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], this@Hero.name)
+      writer.writeString(RESPONSE_FIELDS[2], this@Hero.deprecated)
+      writer.writeBoolean(RESPONSE_FIELDS[3], this@Hero.deprecatedBool)
     }
 
     companion object {
@@ -96,12 +98,12 @@ data class TestQuery(
           ResponseField.forBoolean("deprecatedBool", "deprecatedBool", null, false, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Hero {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
-        val deprecated = reader.readString(RESPONSE_FIELDS[2])
-        val deprecatedBool = reader.readBoolean(RESPONSE_FIELDS[3])
-        return Hero(
+      operator fun invoke(reader: ResponseReader): Hero = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val name = readString(RESPONSE_FIELDS[1])
+        val deprecated = readString(RESPONSE_FIELDS[2])
+        val deprecatedBool = readBoolean(RESPONSE_FIELDS[3])
+        Hero(
           __typename = __typename,
           name = name,
           deprecated = deprecated,
@@ -114,8 +116,8 @@ data class TestQuery(
   data class Data(
     val hero: Hero?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeObject(RESPONSE_FIELDS[0], hero?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeObject(RESPONSE_FIELDS[0], this@Data.hero?.marshaller())
     }
 
     companion object {
@@ -126,12 +128,11 @@ data class TestQuery(
               "variableName" to "episode")), true, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Data {
-        val hero = reader.readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
+      operator fun invoke(reader: ResponseReader): Data = reader.run {
+        val hero = readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
           Hero(reader)
         }
-
-        return Data(
+        Data(
           hero = hero
         )
       }

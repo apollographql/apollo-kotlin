@@ -30,11 +30,11 @@ data class HeroDetails(
   val friendsConnection: FriendsConnection,
   val asDroid: AsDroid?
 ) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-    _writer.writeString(RESPONSE_FIELDS[0], __typename)
-    _writer.writeString(RESPONSE_FIELDS[1], name)
-    _writer.writeObject(RESPONSE_FIELDS[2], friendsConnection.marshaller())
-    _writer.writeFragment(asDroid?.marshaller())
+  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    writer.writeString(RESPONSE_FIELDS[0], this@HeroDetails.__typename)
+    writer.writeString(RESPONSE_FIELDS[1], this@HeroDetails.name)
+    writer.writeObject(RESPONSE_FIELDS[2], this@HeroDetails.friendsConnection.marshaller())
+    writer.writeFragment(this@HeroDetails.asDroid?.marshaller())
   }
 
   companion object {
@@ -74,17 +74,16 @@ data class HeroDetails(
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader): HeroDetails {
-      val __typename = reader.readString(RESPONSE_FIELDS[0])
-      val name = reader.readString(RESPONSE_FIELDS[1])
-      val friendsConnection = reader.readObject<FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
+    operator fun invoke(reader: ResponseReader): HeroDetails = reader.run {
+      val __typename = readString(RESPONSE_FIELDS[0])
+      val name = readString(RESPONSE_FIELDS[1])
+      val friendsConnection = readObject<FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
         FriendsConnection(reader)
       }
-
-      val asDroid = reader.readFragment<AsDroid>(RESPONSE_FIELDS[3]) { reader ->
+      val asDroid = readFragment<AsDroid>(RESPONSE_FIELDS[3]) { reader ->
         AsDroid(reader)
       }
-      return HeroDetails(
+      HeroDetails(
         __typename = __typename,
         name = name,
         friendsConnection = friendsConnection,
@@ -100,9 +99,9 @@ data class HeroDetails(
      */
     val name: String
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      _writer.writeString(RESPONSE_FIELDS[1], name)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@Node.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], this@Node.name)
     }
 
     companion object {
@@ -111,10 +110,10 @@ data class HeroDetails(
           ResponseField.forString("name", "name", null, false, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Node {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
-        return Node(
+      operator fun invoke(reader: ResponseReader): Node = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val name = readString(RESPONSE_FIELDS[1])
+        Node(
           __typename = __typename,
           name = name
         )
@@ -129,9 +128,9 @@ data class HeroDetails(
      */
     val node: Node?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      _writer.writeObject(RESPONSE_FIELDS[1], node?.marshaller())
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@Edge.__typename)
+      writer.writeObject(RESPONSE_FIELDS[1], this@Edge.node?.marshaller())
     }
 
     companion object {
@@ -140,13 +139,12 @@ data class HeroDetails(
           ResponseField.forObject("node", "node", null, true, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Edge {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val node = reader.readObject<Node>(RESPONSE_FIELDS[1]) { reader ->
+      operator fun invoke(reader: ResponseReader): Edge = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val node = readObject<Node>(RESPONSE_FIELDS[1]) { reader ->
           Node(reader)
         }
-
-        return Edge(
+        Edge(
           __typename = __typename,
           node = node
         )
@@ -158,9 +156,9 @@ data class HeroDetails(
     val __typename: String = "PageInfo",
     val hasNextPage: Boolean
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      _writer.writeBoolean(RESPONSE_FIELDS[1], hasNextPage)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@PageInfo.__typename)
+      writer.writeBoolean(RESPONSE_FIELDS[1], this@PageInfo.hasNextPage)
     }
 
     companion object {
@@ -169,10 +167,10 @@ data class HeroDetails(
           ResponseField.forBoolean("hasNextPage", "hasNextPage", null, false, null)
           )
 
-      operator fun invoke(reader: ResponseReader): PageInfo {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val hasNextPage = reader.readBoolean(RESPONSE_FIELDS[1])
-        return PageInfo(
+      operator fun invoke(reader: ResponseReader): PageInfo = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val hasNextPage = readBoolean(RESPONSE_FIELDS[1])
+        PageInfo(
           __typename = __typename,
           hasNextPage = hasNextPage
         )
@@ -199,16 +197,15 @@ data class HeroDetails(
      */
     val isEmpty: Boolean
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      _writer.writeInt(RESPONSE_FIELDS[1], totalCount)
-      _writer.writeList(RESPONSE_FIELDS[2], edges) { _value, _listItemWriter ->
-        _value?.forEach { _value ->
-          _listItemWriter.writeObject(_value?.marshaller())
-        }
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@FriendsConnection.__typename)
+      writer.writeInt(RESPONSE_FIELDS[1], this@FriendsConnection.totalCount)
+      writer.writeList(RESPONSE_FIELDS[2], this@FriendsConnection.edges) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeObject(value?.marshaller())}
       }
-      _writer.writeObject(RESPONSE_FIELDS[3], pageInfo.marshaller())
-      _writer.writeBoolean(RESPONSE_FIELDS[4], isEmpty)
+      writer.writeObject(RESPONSE_FIELDS[3], this@FriendsConnection.pageInfo.marshaller())
+      writer.writeBoolean(RESPONSE_FIELDS[4], this@FriendsConnection.isEmpty)
     }
 
     companion object {
@@ -220,21 +217,19 @@ data class HeroDetails(
           ResponseField.forBoolean("isEmpty", "isEmpty", null, false, null)
           )
 
-      operator fun invoke(reader: ResponseReader): FriendsConnection {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val totalCount = reader.readInt(RESPONSE_FIELDS[1])
-        val edges = reader.readList<Edge>(RESPONSE_FIELDS[2]) {
-          it.readObject<Edge> { reader ->
+      operator fun invoke(reader: ResponseReader): FriendsConnection = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val totalCount = readInt(RESPONSE_FIELDS[1])
+        val edges = readList<Edge>(RESPONSE_FIELDS[2]) { reader ->
+          reader.readObject<Edge> { reader ->
             Edge(reader)
           }
-
         }
-        val pageInfo = reader.readObject<PageInfo>(RESPONSE_FIELDS[3]) { reader ->
+        val pageInfo = readObject<PageInfo>(RESPONSE_FIELDS[3]) { reader ->
           PageInfo(reader)
         }
-
-        val isEmpty = reader.readBoolean(RESPONSE_FIELDS[4])
-        return FriendsConnection(
+        val isEmpty = readBoolean(RESPONSE_FIELDS[4])
+        FriendsConnection(
           __typename = __typename,
           totalCount = totalCount,
           edges = edges,
@@ -256,9 +251,9 @@ data class HeroDetails(
      */
     val name: String
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      _writer.writeString(RESPONSE_FIELDS[1], name)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@Node1.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], this@Node1.name)
     }
 
     companion object {
@@ -267,10 +262,10 @@ data class HeroDetails(
           ResponseField.forString("name", "name", null, false, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Node1 {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
-        return Node1(
+      operator fun invoke(reader: ResponseReader): Node1 = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val name = readString(RESPONSE_FIELDS[1])
+        Node1(
           __typename = __typename,
           name = name
         )
@@ -285,9 +280,9 @@ data class HeroDetails(
      */
     val node: Node1?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      _writer.writeObject(RESPONSE_FIELDS[1], node?.marshaller())
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@Edge1.__typename)
+      writer.writeObject(RESPONSE_FIELDS[1], this@Edge1.node?.marshaller())
     }
 
     companion object {
@@ -296,13 +291,12 @@ data class HeroDetails(
           ResponseField.forObject("node", "node", null, true, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Edge1 {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val node = reader.readObject<Node1>(RESPONSE_FIELDS[1]) { reader ->
+      operator fun invoke(reader: ResponseReader): Edge1 = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val node = readObject<Node1>(RESPONSE_FIELDS[1]) { reader ->
           Node1(reader)
         }
-
-        return Edge1(
+        Edge1(
           __typename = __typename,
           node = node
         )
@@ -314,9 +308,9 @@ data class HeroDetails(
     val __typename: String = "PageInfo",
     val hasNextPage: Boolean
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      _writer.writeBoolean(RESPONSE_FIELDS[1], hasNextPage)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@PageInfo1.__typename)
+      writer.writeBoolean(RESPONSE_FIELDS[1], this@PageInfo1.hasNextPage)
     }
 
     companion object {
@@ -325,10 +319,10 @@ data class HeroDetails(
           ResponseField.forBoolean("hasNextPage", "hasNextPage", null, false, null)
           )
 
-      operator fun invoke(reader: ResponseReader): PageInfo1 {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val hasNextPage = reader.readBoolean(RESPONSE_FIELDS[1])
-        return PageInfo1(
+      operator fun invoke(reader: ResponseReader): PageInfo1 = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val hasNextPage = readBoolean(RESPONSE_FIELDS[1])
+        PageInfo1(
           __typename = __typename,
           hasNextPage = hasNextPage
         )
@@ -355,16 +349,15 @@ data class HeroDetails(
      */
     val isEmpty: Boolean
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      _writer.writeInt(RESPONSE_FIELDS[1], totalCount)
-      _writer.writeList(RESPONSE_FIELDS[2], edges) { _value, _listItemWriter ->
-        _value?.forEach { _value ->
-          _listItemWriter.writeObject(_value?.marshaller())
-        }
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@FriendsConnection1.__typename)
+      writer.writeInt(RESPONSE_FIELDS[1], this@FriendsConnection1.totalCount)
+      writer.writeList(RESPONSE_FIELDS[2], this@FriendsConnection1.edges) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeObject(value?.marshaller())}
       }
-      _writer.writeObject(RESPONSE_FIELDS[3], pageInfo.marshaller())
-      _writer.writeBoolean(RESPONSE_FIELDS[4], isEmpty)
+      writer.writeObject(RESPONSE_FIELDS[3], this@FriendsConnection1.pageInfo.marshaller())
+      writer.writeBoolean(RESPONSE_FIELDS[4], this@FriendsConnection1.isEmpty)
     }
 
     companion object {
@@ -376,21 +369,19 @@ data class HeroDetails(
           ResponseField.forBoolean("isEmpty", "isEmpty", null, false, null)
           )
 
-      operator fun invoke(reader: ResponseReader): FriendsConnection1 {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val totalCount = reader.readInt(RESPONSE_FIELDS[1])
-        val edges = reader.readList<Edge1>(RESPONSE_FIELDS[2]) {
-          it.readObject<Edge1> { reader ->
+      operator fun invoke(reader: ResponseReader): FriendsConnection1 = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val totalCount = readInt(RESPONSE_FIELDS[1])
+        val edges = readList<Edge1>(RESPONSE_FIELDS[2]) { reader ->
+          reader.readObject<Edge1> { reader ->
             Edge1(reader)
           }
-
         }
-        val pageInfo = reader.readObject<PageInfo1>(RESPONSE_FIELDS[3]) { reader ->
+        val pageInfo = readObject<PageInfo1>(RESPONSE_FIELDS[3]) { reader ->
           PageInfo1(reader)
         }
-
-        val isEmpty = reader.readBoolean(RESPONSE_FIELDS[4])
-        return FriendsConnection1(
+        val isEmpty = readBoolean(RESPONSE_FIELDS[4])
+        FriendsConnection1(
           __typename = __typename,
           totalCount = totalCount,
           edges = edges,
@@ -416,11 +407,11 @@ data class HeroDetails(
      */
     val primaryFunction: String?
   ) : HeroDetailCharacter {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      _writer.writeString(RESPONSE_FIELDS[1], name)
-      _writer.writeObject(RESPONSE_FIELDS[2], friendsConnection.marshaller())
-      _writer.writeString(RESPONSE_FIELDS[3], primaryFunction)
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@AsDroid.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], this@AsDroid.name)
+      writer.writeObject(RESPONSE_FIELDS[2], this@AsDroid.friendsConnection.marshaller())
+      writer.writeString(RESPONSE_FIELDS[3], this@AsDroid.primaryFunction)
     }
 
     companion object {
@@ -431,16 +422,14 @@ data class HeroDetails(
           ResponseField.forString("primaryFunction", "primaryFunction", null, true, null)
           )
 
-      operator fun invoke(reader: ResponseReader): AsDroid {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
-        val friendsConnection = reader.readObject<FriendsConnection1>(RESPONSE_FIELDS[2]) {
-            reader ->
+      operator fun invoke(reader: ResponseReader): AsDroid = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val name = readString(RESPONSE_FIELDS[1])
+        val friendsConnection = readObject<FriendsConnection1>(RESPONSE_FIELDS[2]) { reader ->
           FriendsConnection1(reader)
         }
-
-        val primaryFunction = reader.readString(RESPONSE_FIELDS[3])
-        return AsDroid(
+        val primaryFunction = readString(RESPONSE_FIELDS[3])
+        AsDroid(
           __typename = __typename,
           name = name,
           friendsConnection = friendsConnection,

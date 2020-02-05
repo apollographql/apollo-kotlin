@@ -144,11 +144,10 @@ internal object KotlinCodeGen {
   fun List<ObjectType.Field>.toMapperFun(responseTypeName: TypeName): FunSpec {
     val readFieldsCode = mapIndexed { index, field ->
       CodeBlock.of("val %L = %L", field.name, field.type.readCode(
-          reader = "reader",
           field = "RESPONSE_FIELDS[$index]",
           optional = field.isOptional
       ))
-    }.joinToCode(separator = "\n", suffix = "\n")
+    }.joinToCode(separator = "")
     val mapFieldsCode = map { field ->
       CodeBlock.of("%L = %L", field.name, field.name)
     }.joinToCode(separator = ",\n", suffix = "\n")
@@ -156,139 +155,155 @@ internal object KotlinCodeGen {
         .addModifiers(KModifier.OPERATOR)
         .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
         .returns(responseTypeName)
-        .addCode(CodeBlock.builder()
+        .addCode(CodeBlock
+            .builder()
+            .beginControlFlow("return reader.run")
             .add(readFieldsCode)
-            .addStatement("return %T(", responseTypeName)
+            .addStatement("%T(", responseTypeName)
             .indent()
             .add(mapFieldsCode)
             .unindent()
             .addStatement(")")
+            .endControlFlow()
             .build()
         )
         .build()
   }
 
-  private fun FieldType.readCode(reader: String, field: String, optional: Boolean): CodeBlock {
+  private fun FieldType.readCode(field: String, optional: Boolean): CodeBlock {
     return when (this) {
       is FieldType.Scalar -> when (this) {
-        is FieldType.Scalar.String -> CodeBlock.of("%L.readString(%L)", reader, field)
-        is FieldType.Scalar.Int -> CodeBlock.of("%L.readInt(%L)", reader, field)
-        is FieldType.Scalar.Boolean -> CodeBlock.of("%L.readBoolean(%L)", reader, field)
-        is FieldType.Scalar.Float -> CodeBlock.of("%L.readDouble(%L)", reader, field)
+        is FieldType.Scalar.String -> CodeBlock.of("readString(%L)\n", field)
+        is FieldType.Scalar.Int -> CodeBlock.of("readInt(%L)\n", field)
+        is FieldType.Scalar.Boolean -> CodeBlock.of("readBoolean(%L)\n", field)
+        is FieldType.Scalar.Float -> CodeBlock.of("readDouble(%L)\n", field)
         is FieldType.Scalar.Enum -> if (optional) {
-          CodeBlock.of("%L.readString(%L)?.let{ %T.safeValueOf(it) }", reader, field, typeRef.asTypeName())
+          CodeBlock.of("readString(%L)?.let{ %T.safeValueOf(it) }\n", field, typeRef.asTypeName())
         } else {
-          CodeBlock.of("%T.safeValueOf(%L.readString(%L))", typeRef.asTypeName(), reader, field)
+          CodeBlock.of("%T.safeValueOf(readString(%L))\n", typeRef.asTypeName(), field)
         }
         is FieldType.Scalar.Custom -> if (field.isNotEmpty()) {
-          CodeBlock.of("%L.readCustomType<%T>(%L as %T)", reader, ClassName.bestGuess(mappedType),
-              field, ResponseField.CustomTypeField::class)
+          CodeBlock.of("readCustomType<%T>(%L as %T)\n", ClassName.bestGuess(mappedType), field, ResponseField.CustomTypeField::class)
         } else {
-          CodeBlock.of("%L.readCustomType<%T>(%T.%L)", reader, ClassName.bestGuess(mappedType),
-              customEnumType.asTypeName(), customEnumConst)
+          CodeBlock.of("readCustomType<%T>(%T.%L)\n", ClassName.bestGuess(mappedType), customEnumType.asTypeName(), customEnumConst)
         }
       }
       is FieldType.Object -> {
         val fieldCode = field.takeIf { it.isNotEmpty() }?.let { CodeBlock.of("(%L)", it) } ?: CodeBlock.of("")
         CodeBlock.builder()
-            .add("%L.readObject<%T>%L { reader ->\n", reader, typeRef.asTypeName(), fieldCode)
-            .indent()
+            .beginControlFlow("readObject<%T>%L { reader ->", typeRef.asTypeName(), fieldCode)
             .addStatement("%T(reader)", typeRef.asTypeName())
-            .unindent()
-            .add("}\n")
+            .endControlFlow()
             .build()
       }
       is FieldType.Array -> {
         CodeBlock.builder()
-            .apply {
-              if (field.isBlank()) {
-                add("%L.readList<%T> {\n", reader, rawType.asTypeName())
-              } else {
-                add("%L.readList<%T>(%L) {\n", reader, rawType.asTypeName(), field)
-              }
-            }
-            .indent()
-            .add(rawType.readCode(reader = "it", field = "", optional = isOptional))
-            .add("\n")
-            .unindent()
-            .add("}")
+            .beginControlFlow("readList<%T>(%L) { reader ->", rawType.asTypeName(), field)
+            .add(rawType.readListItemCode(optional = isOptional))
+            .endControlFlow()
             .build()
       }
       is FieldType.Fragments -> {
-        CodeBlock.of("%L(reader)", name)
+        CodeBlock.of("%L(reader)\n", name)
       }
       is FieldType.Fragment -> {
         CodeBlock.builder()
-            .add("%L.readFragment<%T>(%L) { reader ->\n", reader, typeRef.asTypeName(), field)
-            .indent()
+            .beginControlFlow("readFragment<%T>(%L) { reader ->", typeRef.asTypeName(), field)
             .addStatement("%T(reader)", typeRef.asTypeName())
-            .unindent()
-            .add("}")
+            .endControlFlow()
             .build()
       }
     }
   }
 
-  fun marshallerFunSpec(fields: List<ObjectType.Field>, override: Boolean = false): FunSpec {
+  private fun FieldType.readListItemCode(optional: Boolean): CodeBlock {
+    return when (this) {
+      is FieldType.Scalar -> when (this) {
+        is FieldType.Scalar.String -> CodeBlock.of("reader.readString()")
+        is FieldType.Scalar.Int -> CodeBlock.of("reader.readInt()")
+        is FieldType.Scalar.Boolean -> CodeBlock.of("reader.readBoolean()")
+        is FieldType.Scalar.Float -> CodeBlock.of("reader.readDouble()")
+        is FieldType.Scalar.Enum -> if (optional) {
+          CodeBlock.of("reader.readString()?.let{ %T.safeValueOf(it) }", typeRef.asTypeName())
+        } else {
+          CodeBlock.of("%T.safeValueOf(reader.readString())", typeRef.asTypeName())
+        }
+        is FieldType.Scalar.Custom -> CodeBlock.of("reader.readCustomType<%T>(%T.%L)", ClassName.bestGuess(mappedType),
+            customEnumType.asTypeName(), customEnumConst)
+      }
+      is FieldType.Object -> {
+        CodeBlock.builder()
+            .beginControlFlow("reader.readObject<%T> { reader ->", typeRef.asTypeName())
+            .addStatement("%T(reader)", typeRef.asTypeName())
+            .endControlFlow()
+            .build()
+      }
+      is FieldType.Array -> {
+        CodeBlock.builder()
+            .beginControlFlow("reader.readList<%T> { reader ->", rawType.asTypeName())
+            .add(rawType.readListItemCode(optional = isOptional))
+            .endControlFlow()
+            .build()
+      }
+      is FieldType.Fragments -> CodeBlock.of("%L(reader)", name)
+      else -> throw IllegalArgumentException("Unsupported list item type $this")
+    }
+  }
+
+  fun marshallerFunSpec(fields: List<ObjectType.Field>, override: Boolean = false, thisRef: String): FunSpec {
     val writeFieldsCode = fields.mapIndexed { index, field ->
-      field.writeCode(field = "RESPONSE_FIELDS[$index]")
-    }.joinToCode(separator = "\n", suffix = "\n")
+      field.writeCode(field = "RESPONSE_FIELDS[$index]", thisRef = thisRef)
+    }.joinToCode(separator = "")
     return FunSpec.builder("marshaller")
         .applyIf(override) { addModifiers(KModifier.OVERRIDE) }
         .returns(ResponseFieldMarshaller::class)
-        .beginControlFlow("return %T { _writer ->", ResponseFieldMarshaller::class)
+        .beginControlFlow("return %T { writer ->", ResponseFieldMarshaller::class)
         .addCode(writeFieldsCode)
         .endControlFlow()
         .build()
   }
 
-  private fun ObjectType.Field.writeCode(field: String): CodeBlock {
+  private fun ObjectType.Field.writeCode(field: String, thisRef: String): CodeBlock {
     return when (type) {
       is FieldType.Scalar -> when (type) {
-        is FieldType.Scalar.String -> CodeBlock.of("_writer.writeString(%L, %L)", field, name)
-        is FieldType.Scalar.Int -> CodeBlock.of("_writer.writeInt(%L, %L)", field, name)
-        is FieldType.Scalar.Boolean -> CodeBlock.of("_writer.writeBoolean(%L, %L)", field, name)
-        is FieldType.Scalar.Float -> CodeBlock.of("_writer.writeDouble(%L, %L)", field, name)
+        is FieldType.Scalar.String -> CodeBlock.of("writer.writeString(%L, this@%L.%L)\n", field, thisRef, name)
+        is FieldType.Scalar.Int -> CodeBlock.of("writer.writeInt(%L, this@%L.%L)\n", field, thisRef, name)
+        is FieldType.Scalar.Boolean -> CodeBlock.of("writer.writeBoolean(%L, this@%L.%L)\n", field, thisRef, name)
+        is FieldType.Scalar.Float -> CodeBlock.of("writer.writeDouble(%L, this@%L.%L)\n", field, thisRef, name)
         is FieldType.Scalar.Enum -> {
           if (isOptional) {
-            CodeBlock.of("_writer.writeString(%L, %L?.rawValue)", field, name)
+            CodeBlock.of("writer.writeString(%L, this@%L.%L?.rawValue)\n", field, thisRef, name)
           } else {
-            CodeBlock.of("_writer.writeString(%L, %L.rawValue)", field, name)
+            CodeBlock.of("writer.writeString(%L, this@%L.%L.rawValue)\n", field, thisRef, name)
           }
         }
-        is FieldType.Scalar.Custom -> CodeBlock.of("_writer.writeCustom(%L as %T, %L)", field,
-            ResponseField.CustomTypeField::class, name)
+        is FieldType.Scalar.Custom -> CodeBlock.of("writer.writeCustom(%L as %T, this@%L.%L)\n", field,
+            ResponseField.CustomTypeField::class, thisRef, name)
       }
       is FieldType.Object -> {
         if (isOptional) {
-          CodeBlock.of("_writer.writeObject(%L, %L?.marshaller())", field, name)
+          CodeBlock.of("writer.writeObject(%L, this@%L.%L?.marshaller())\n", field, thisRef, name)
         } else {
-          CodeBlock.of("_writer.writeObject(%L, %L.marshaller())", field, name)
+          CodeBlock.of("writer.writeObject(%L, this@%L.%L.marshaller())\n", field, thisRef, name)
         }
       }
       is FieldType.Fragment -> {
         if (isOptional) {
-          CodeBlock.of("_writer.writeFragment(%L?.marshaller())", name)
+          CodeBlock.of("writer.writeFragment(this@%L.%L?.marshaller())\n", thisRef, name)
         } else {
-          CodeBlock.of("_writer.writeFragment(%L.marshaller())", name)
+          CodeBlock.of("writer.writeFragment(this@%L.%L.marshaller())\n", thisRef, name)
         }
       }
       is FieldType.Array -> {
         CodeBlock.builder()
-            .add("_writer.writeList(%L, %L) { _value, _listItemWriter ->\n", field, name)
-            .indent()
-            .add("_value?.forEach { _value ->\n")
-            .indent()
+            .beginControlFlow("writer.writeList(%L, this@%L.%L) { value, listItemWriter ->", field, thisRef, name)
+            .beginControlFlow("value?.forEach { value ->")
             .add(type.rawType.writeListItemCode)
-            .add("\n")
-            .unindent()
-            .add("}")
-            .add("\n")
-            .unindent()
-            .add("}")
+            .endControlFlow()
+            .endControlFlow()
             .build()
       }
-      is FieldType.Fragments -> CodeBlock.of("%L.marshaller().marshal(_writer)", name)
+      is FieldType.Fragments -> CodeBlock.of("this@%L.%L.marshaller().marshal(writer)\n", thisRef, name)
     }
   }
 
@@ -296,32 +311,24 @@ internal object KotlinCodeGen {
     get() {
       return when (this) {
         is FieldType.Scalar -> when (this) {
-          is FieldType.Scalar.String -> CodeBlock.of("_listItemWriter.writeString(_value)")
-          is FieldType.Scalar.Int -> CodeBlock.of("_listItemWriter.writeInt(_value)")
-          is FieldType.Scalar.Boolean -> CodeBlock.of("_listItemWriter.writeBoolean(_value)")
-          is FieldType.Scalar.Float -> CodeBlock.of("_listItemWriter.writeDouble(_value)")
-          is FieldType.Scalar.Enum -> CodeBlock.of("_listItemWriter.writeString(_value?.rawValue)")
-          is FieldType.Scalar.Custom -> CodeBlock.of("_listItemWriter.writeCustom(%T.%L, _value)", customEnumType.asTypeName(),
+          is FieldType.Scalar.String -> CodeBlock.of("listItemWriter.writeString(value)")
+          is FieldType.Scalar.Int -> CodeBlock.of("listItemWriter.writeInt(value)")
+          is FieldType.Scalar.Boolean -> CodeBlock.of("listItemWriter.writeBoolean(value)")
+          is FieldType.Scalar.Float -> CodeBlock.of("listItemWriter.writeDouble(value)")
+          is FieldType.Scalar.Enum -> CodeBlock.of("listItemWriter.writeString(value?.rawValue)")
+          is FieldType.Scalar.Custom -> CodeBlock.of("listItemWriter.writeCustom(%T.%L, value)", customEnumType.asTypeName(),
               customEnumConst)
         }
-        is FieldType.Object -> CodeBlock.of("_listItemWriter.writeObject(_value?.marshaller())",
-            asTypeName())
+        is FieldType.Object -> CodeBlock.of("listItemWriter.writeObject(value?.marshaller())", asTypeName())
         is FieldType.Array -> {
           CodeBlock.builder()
-              .add(
-                  "_listItemWriter.writeList(_value) { _value, _listItemWriter ->\n",
-                  List::class.asClassName().parameterizedBy(rawType.asTypeName())
-              )
-              .indent()
-              .add("_value?.forEach { _value ->\n", List::class.asClassName().parameterizedBy(rawType.asTypeName()))
-              .indent()
+              .beginControlFlow(
+                  "listItemWriter.writeList(value) { value, listItemWriter ->",
+                  List::class.asClassName().parameterizedBy(rawType.asTypeName()))
+              .beginControlFlow("value?.forEach { value ->", List::class.asClassName().parameterizedBy(rawType.asTypeName()))
               .add(rawType.writeListItemCode)
-              .add("\n")
-              .unindent()
-              .add("}")
-              .add("\n")
-              .unindent()
-              .add("}")
+              .endControlFlow()
+              .endControlFlow()
               .build()
         }
         else -> throw IllegalArgumentException("Unsupported field type: $this")

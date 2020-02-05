@@ -49,9 +49,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val __typename: String = "Character",
     val fragments: Fragments
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      fragments.marshaller().marshal(_writer)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@R2.__typename)
+      this@R2.fragments.marshaller().marshal(writer)
     }
 
     companion object {
@@ -59,10 +59,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           ResponseField.forString("__typename", "__typename", null, false, null)
           )
 
-      operator fun invoke(reader: ResponseReader): R2 {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
+      operator fun invoke(reader: ResponseReader): R2 = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
         val fragments = Fragments(reader)
-        return R2(
+        R2(
           __typename = __typename,
           fragments = fragments
         )
@@ -73,9 +73,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       val humanDetails: HumanDetails?,
       val droidDetails: DroidDetails?
     ) {
-      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-        _writer.writeFragment(humanDetails?.marshaller())
-        _writer.writeFragment(droidDetails?.marshaller())
+      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+        writer.writeFragment(this@Fragments.humanDetails?.marshaller())
+        writer.writeFragment(this@Fragments.droidDetails?.marshaller())
       }
 
       companion object {
@@ -88,14 +88,14 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
             ))
             )
 
-        operator fun invoke(reader: ResponseReader): Fragments {
-          val humanDetails = reader.readFragment<HumanDetails>(RESPONSE_FIELDS[0]) { reader ->
+        operator fun invoke(reader: ResponseReader): Fragments = reader.run {
+          val humanDetails = readFragment<HumanDetails>(RESPONSE_FIELDS[0]) { reader ->
             HumanDetails(reader)
           }
-          val droidDetails = reader.readFragment<DroidDetails>(RESPONSE_FIELDS[1]) { reader ->
+          val droidDetails = readFragment<DroidDetails>(RESPONSE_FIELDS[1]) { reader ->
             DroidDetails(reader)
           }
-          return Fragments(
+          Fragments(
             humanDetails = humanDetails,
             droidDetails = droidDetails
           )
@@ -108,9 +108,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val __typename: String = "Character",
     val fragments: Fragments
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      fragments.marshaller().marshal(_writer)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@Luke.__typename)
+      this@Luke.fragments.marshaller().marshal(writer)
     }
 
     companion object {
@@ -118,10 +118,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           ResponseField.forString("__typename", "__typename", null, false, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Luke {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
+      operator fun invoke(reader: ResponseReader): Luke = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
         val fragments = Fragments(reader)
-        return Luke(
+        Luke(
           __typename = __typename,
           fragments = fragments
         )
@@ -132,9 +132,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       val humanDetails: HumanDetails?,
       val droidDetails: DroidDetails?
     ) {
-      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-        _writer.writeFragment(humanDetails?.marshaller())
-        _writer.writeFragment(droidDetails?.marshaller())
+      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+        writer.writeFragment(this@Fragments.humanDetails?.marshaller())
+        writer.writeFragment(this@Fragments.droidDetails?.marshaller())
       }
 
       companion object {
@@ -147,14 +147,14 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
             ))
             )
 
-        operator fun invoke(reader: ResponseReader): Fragments {
-          val humanDetails = reader.readFragment<HumanDetails>(RESPONSE_FIELDS[0]) { reader ->
+        operator fun invoke(reader: ResponseReader): Fragments = reader.run {
+          val humanDetails = readFragment<HumanDetails>(RESPONSE_FIELDS[0]) { reader ->
             HumanDetails(reader)
           }
-          val droidDetails = reader.readFragment<DroidDetails>(RESPONSE_FIELDS[1]) { reader ->
+          val droidDetails = readFragment<DroidDetails>(RESPONSE_FIELDS[1]) { reader ->
             DroidDetails(reader)
           }
-          return Fragments(
+          Fragments(
             humanDetails = humanDetails,
             droidDetails = droidDetails
           )
@@ -167,9 +167,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val r2: R2?,
     val luke: Luke?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeObject(RESPONSE_FIELDS[0], r2?.marshaller())
-      _writer.writeObject(RESPONSE_FIELDS[1], luke?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeObject(RESPONSE_FIELDS[0], this@Data.r2?.marshaller())
+      writer.writeObject(RESPONSE_FIELDS[1], this@Data.luke?.marshaller())
     }
 
     companion object {
@@ -178,16 +178,14 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           ResponseField.forObject("luke", "hero", null, true, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Data {
-        val r2 = reader.readObject<R2>(RESPONSE_FIELDS[0]) { reader ->
+      operator fun invoke(reader: ResponseReader): Data = reader.run {
+        val r2 = readObject<R2>(RESPONSE_FIELDS[0]) { reader ->
           R2(reader)
         }
-
-        val luke = reader.readObject<Luke>(RESPONSE_FIELDS[1]) { reader ->
+        val luke = readObject<Luke>(RESPONSE_FIELDS[1]) { reader ->
           Luke(reader)
         }
-
-        return Data(
+        Data(
           r2 = r2,
           luke = luke
         )

@@ -28,10 +28,11 @@ data class CharacterDetails(
    */
   val birthDate: Any
 ) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-    _writer.writeString(RESPONSE_FIELDS[0], __typename)
-    _writer.writeString(RESPONSE_FIELDS[1], name)
-    _writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, birthDate)
+  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    writer.writeString(RESPONSE_FIELDS[0], this@CharacterDetails.__typename)
+    writer.writeString(RESPONSE_FIELDS[1], this@CharacterDetails.name)
+    writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField,
+        this@CharacterDetails.birthDate)
   }
 
   companion object {
@@ -49,12 +50,11 @@ data class CharacterDetails(
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader): CharacterDetails {
-      val __typename = reader.readString(RESPONSE_FIELDS[0])
-      val name = reader.readString(RESPONSE_FIELDS[1])
-      val birthDate = reader.readCustomType<Any>(RESPONSE_FIELDS[2] as
-          ResponseField.CustomTypeField)
-      return CharacterDetails(
+    operator fun invoke(reader: ResponseReader): CharacterDetails = reader.run {
+      val __typename = readString(RESPONSE_FIELDS[0])
+      val name = readString(RESPONSE_FIELDS[1])
+      val birthDate = readCustomType<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)
+      CharacterDetails(
         __typename = __typename,
         name = name,
         birthDate = birthDate

@@ -50,9 +50,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val __typename: String = "SearchResult",
     val fragments: Fragments
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      fragments.marshaller().marshal(_writer)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@Search.__typename)
+      this@Search.fragments.marshaller().marshal(writer)
     }
 
     companion object {
@@ -60,10 +60,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           ResponseField.forString("__typename", "__typename", null, false, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Search {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
+      operator fun invoke(reader: ResponseReader): Search = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
         val fragments = Fragments(reader)
-        return Search(
+        Search(
           __typename = __typename,
           fragments = fragments
         )
@@ -74,9 +74,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       val character: Character?,
       val starship: Starship?
     ) {
-      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-        _writer.writeFragment(character?.marshaller())
-        _writer.writeFragment(starship?.marshaller())
+      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+        writer.writeFragment(this@Fragments.character?.marshaller())
+        writer.writeFragment(this@Fragments.starship?.marshaller())
       }
 
       companion object {
@@ -89,14 +89,14 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
             ))
             )
 
-        operator fun invoke(reader: ResponseReader): Fragments {
-          val character = reader.readFragment<Character>(RESPONSE_FIELDS[0]) { reader ->
+        operator fun invoke(reader: ResponseReader): Fragments = reader.run {
+          val character = readFragment<Character>(RESPONSE_FIELDS[0]) { reader ->
             Character(reader)
           }
-          val starship = reader.readFragment<Starship>(RESPONSE_FIELDS[1]) { reader ->
+          val starship = readFragment<Starship>(RESPONSE_FIELDS[1]) { reader ->
             Starship(reader)
           }
-          return Fragments(
+          Fragments(
             character = character,
             starship = starship
           )
@@ -108,11 +108,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   data class Data(
     val search: List<Search?>?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeList(RESPONSE_FIELDS[0], search) { _value, _listItemWriter ->
-        _value?.forEach { _value ->
-          _listItemWriter.writeObject(_value?.marshaller())
-        }
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeList(RESPONSE_FIELDS[0], this@Data.search) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeObject(value?.marshaller())}
       }
     }
 
@@ -122,14 +121,13 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
             "text" to "test"), true, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Data {
-        val search = reader.readList<Search>(RESPONSE_FIELDS[0]) {
-          it.readObject<Search> { reader ->
+      operator fun invoke(reader: ResponseReader): Data = reader.run {
+        val search = readList<Search>(RESPONSE_FIELDS[0]) { reader ->
+          reader.readObject<Search> { reader ->
             Search(reader)
           }
-
         }
-        return Data(
+        Data(
           search = search
         )
       }

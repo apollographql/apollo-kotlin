@@ -56,10 +56,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val commentary: String?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      _writer.writeInt(RESPONSE_FIELDS[1], stars)
-      _writer.writeString(RESPONSE_FIELDS[2], commentary)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@Review.__typename)
+      writer.writeInt(RESPONSE_FIELDS[1], this@Review.stars)
+      writer.writeString(RESPONSE_FIELDS[2], this@Review.commentary)
     }
 
     companion object {
@@ -69,11 +69,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           ResponseField.forString("commentary", "commentary", null, true, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Review {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val stars = reader.readInt(RESPONSE_FIELDS[1])
-        val commentary = reader.readString(RESPONSE_FIELDS[2])
-        return Review(
+      operator fun invoke(reader: ResponseReader): Review = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val stars = readInt(RESPONSE_FIELDS[1])
+        val commentary = readString(RESPONSE_FIELDS[2])
+        Review(
           __typename = __typename,
           stars = stars,
           commentary = commentary
@@ -85,11 +85,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   data class Data(
     val reviews: List<Review?>?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeList(RESPONSE_FIELDS[0], reviews) { _value, _listItemWriter ->
-        _value?.forEach { _value ->
-          _listItemWriter.writeObject(_value?.marshaller())
-        }
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeList(RESPONSE_FIELDS[0], this@Data.reviews) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeObject(value?.marshaller())}
       }
     }
 
@@ -101,14 +100,13 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
             "starsFloat" to "9.9"), true, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Data {
-        val reviews = reader.readList<Review>(RESPONSE_FIELDS[0]) {
-          it.readObject<Review> { reader ->
+      operator fun invoke(reader: ResponseReader): Data = reader.run {
+        val reviews = readList<Review>(RESPONSE_FIELDS[0]) { reader ->
+          reader.readObject<Review> { reader ->
             Review(reader)
           }
-
         }
-        return Data(
+        Data(
           reviews = reviews
         )
       }

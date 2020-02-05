@@ -62,9 +62,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val firstAppearsIn: Episode
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      _writer.writeString(RESPONSE_FIELDS[1], firstAppearsIn.rawValue)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@Friend.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], this@Friend.firstAppearsIn.rawValue)
     }
 
     companion object {
@@ -73,10 +73,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           ResponseField.forEnum("firstAppearsIn", "firstAppearsIn", null, false, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Friend {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val firstAppearsIn = Episode.safeValueOf(reader.readString(RESPONSE_FIELDS[1]))
-        return Friend(
+      operator fun invoke(reader: ResponseReader): Friend = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val firstAppearsIn = Episode.safeValueOf(readString(RESPONSE_FIELDS[1]))
+        Friend(
           __typename = __typename,
           firstAppearsIn = firstAppearsIn
         )
@@ -99,15 +99,14 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val name: String
   ) : FriendCharacter {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      _writer.writeString(RESPONSE_FIELDS[1], homePlanet)
-      _writer.writeList(RESPONSE_FIELDS[2], friends) { _value, _listItemWriter ->
-        _value?.forEach { _value ->
-          _listItemWriter.writeObject(_value?.marshaller())
-        }
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@AsHuman.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], this@AsHuman.homePlanet)
+      writer.writeList(RESPONSE_FIELDS[2], this@AsHuman.friends) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeObject(value?.marshaller())}
       }
-      _writer.writeString(RESPONSE_FIELDS[3], name)
+      writer.writeString(RESPONSE_FIELDS[3], this@AsHuman.name)
     }
 
     companion object {
@@ -118,17 +117,16 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           ResponseField.forString("name", "name", null, false, null)
           )
 
-      operator fun invoke(reader: ResponseReader): AsHuman {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val homePlanet = reader.readString(RESPONSE_FIELDS[1])
-        val friends = reader.readList<Friend>(RESPONSE_FIELDS[2]) {
-          it.readObject<Friend> { reader ->
+      operator fun invoke(reader: ResponseReader): AsHuman = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val homePlanet = readString(RESPONSE_FIELDS[1])
+        val friends = readList<Friend>(RESPONSE_FIELDS[2]) { reader ->
+          reader.readObject<Friend> { reader ->
             Friend(reader)
           }
-
         }
-        val name = reader.readString(RESPONSE_FIELDS[3])
-        return AsHuman(
+        val name = readString(RESPONSE_FIELDS[3])
+        AsHuman(
           __typename = __typename,
           homePlanet = homePlanet,
           friends = friends,
@@ -150,10 +148,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     @Deprecated(message = "For test purpose only")
     val deprecated: String
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      _writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
-      _writer.writeString(RESPONSE_FIELDS[2], deprecated)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@Friend1.__typename)
+      writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, this@Friend1.id)
+      writer.writeString(RESPONSE_FIELDS[2], this@Friend1.deprecated)
     }
 
     companion object {
@@ -163,11 +161,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           ResponseField.forString("deprecated", "deprecated", null, false, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Friend1 {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
-        val deprecated = reader.readString(RESPONSE_FIELDS[2])
-        return Friend1(
+      operator fun invoke(reader: ResponseReader): Friend1 = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+        val deprecated = readString(RESPONSE_FIELDS[2])
+        Friend1(
           __typename = __typename,
           id = id,
           deprecated = deprecated
@@ -191,15 +189,14 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val name: String
   ) : FriendCharacter {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      _writer.writeString(RESPONSE_FIELDS[1], primaryFunction)
-      _writer.writeList(RESPONSE_FIELDS[2], friends) { _value, _listItemWriter ->
-        _value?.forEach { _value ->
-          _listItemWriter.writeObject(_value?.marshaller())
-        }
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@AsDroid.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], this@AsDroid.primaryFunction)
+      writer.writeList(RESPONSE_FIELDS[2], this@AsDroid.friends) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeObject(value?.marshaller())}
       }
-      _writer.writeString(RESPONSE_FIELDS[3], name)
+      writer.writeString(RESPONSE_FIELDS[3], this@AsDroid.name)
     }
 
     companion object {
@@ -210,17 +207,16 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           ResponseField.forString("name", "name", null, false, null)
           )
 
-      operator fun invoke(reader: ResponseReader): AsDroid {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val primaryFunction = reader.readString(RESPONSE_FIELDS[1])
-        val friends = reader.readList<Friend1>(RESPONSE_FIELDS[2]) {
-          it.readObject<Friend1> { reader ->
+      operator fun invoke(reader: ResponseReader): AsDroid = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val primaryFunction = readString(RESPONSE_FIELDS[1])
+        val friends = readList<Friend1>(RESPONSE_FIELDS[2]) { reader ->
+          reader.readObject<Friend1> { reader ->
             Friend1(reader)
           }
-
         }
-        val name = reader.readString(RESPONSE_FIELDS[3])
-        return AsDroid(
+        val name = readString(RESPONSE_FIELDS[3])
+        AsDroid(
           __typename = __typename,
           primaryFunction = primaryFunction,
           friends = friends,
@@ -239,11 +235,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val asHuman: AsHuman?,
     val asDroid: AsDroid?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      _writer.writeString(RESPONSE_FIELDS[1], name)
-      _writer.writeFragment(asHuman?.marshaller())
-      _writer.writeFragment(asDroid?.marshaller())
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@Friend2.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], this@Friend2.name)
+      writer.writeFragment(this@Friend2.asHuman?.marshaller())
+      writer.writeFragment(this@Friend2.asDroid?.marshaller())
     }
 
     companion object {
@@ -258,16 +254,16 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           ))
           )
 
-      operator fun invoke(reader: ResponseReader): Friend2 {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
-        val asHuman = reader.readFragment<AsHuman>(RESPONSE_FIELDS[2]) { reader ->
+      operator fun invoke(reader: ResponseReader): Friend2 = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val name = readString(RESPONSE_FIELDS[1])
+        val asHuman = readFragment<AsHuman>(RESPONSE_FIELDS[2]) { reader ->
           AsHuman(reader)
         }
-        val asDroid = reader.readFragment<AsDroid>(RESPONSE_FIELDS[3]) { reader ->
+        val asDroid = readFragment<AsDroid>(RESPONSE_FIELDS[3]) { reader ->
           AsDroid(reader)
         }
-        return Friend2(
+        Friend2(
           __typename = __typename,
           name = name,
           asHuman = asHuman,
@@ -292,14 +288,13 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val friends: List<Friend2?>?
   ) : SearchSearchResult {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      _writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
-      _writer.writeString(RESPONSE_FIELDS[2], name)
-      _writer.writeList(RESPONSE_FIELDS[3], friends) { _value, _listItemWriter ->
-        _value?.forEach { _value ->
-          _listItemWriter.writeObject(_value?.marshaller())
-        }
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@AsCharacter.__typename)
+      writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, this@AsCharacter.id)
+      writer.writeString(RESPONSE_FIELDS[2], this@AsCharacter.name)
+      writer.writeList(RESPONSE_FIELDS[3], this@AsCharacter.friends) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeObject(value?.marshaller())}
       }
     }
 
@@ -311,17 +306,16 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           ResponseField.forList("friends", "friends", null, true, null)
           )
 
-      operator fun invoke(reader: ResponseReader): AsCharacter {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
-        val name = reader.readString(RESPONSE_FIELDS[2])
-        val friends = reader.readList<Friend2>(RESPONSE_FIELDS[3]) {
-          it.readObject<Friend2> { reader ->
+      operator fun invoke(reader: ResponseReader): AsCharacter = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+        val name = readString(RESPONSE_FIELDS[2])
+        val friends = readList<Friend2>(RESPONSE_FIELDS[3]) { reader ->
+          reader.readObject<Friend2> { reader ->
             Friend2(reader)
           }
-
         }
-        return AsCharacter(
+        AsCharacter(
           __typename = __typename,
           id = id,
           name = name,
@@ -338,9 +332,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val name: String
   ) : SearchSearchResult {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      _writer.writeString(RESPONSE_FIELDS[1], name)
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@AsStarship.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], this@AsStarship.name)
     }
 
     companion object {
@@ -349,10 +343,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           ResponseField.forString("name", "name", null, false, null)
           )
 
-      operator fun invoke(reader: ResponseReader): AsStarship {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
-        return AsStarship(
+      operator fun invoke(reader: ResponseReader): AsStarship = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val name = readString(RESPONSE_FIELDS[1])
+        AsStarship(
           __typename = __typename,
           name = name
         )
@@ -365,10 +359,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val asCharacter: AsCharacter?,
     val asStarship: AsStarship?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      _writer.writeFragment(asCharacter?.marshaller())
-      _writer.writeFragment(asStarship?.marshaller())
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@Search.__typename)
+      writer.writeFragment(this@Search.asCharacter?.marshaller())
+      writer.writeFragment(this@Search.asStarship?.marshaller())
     }
 
     companion object {
@@ -382,15 +376,15 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           ))
           )
 
-      operator fun invoke(reader: ResponseReader): Search {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val asCharacter = reader.readFragment<AsCharacter>(RESPONSE_FIELDS[1]) { reader ->
+      operator fun invoke(reader: ResponseReader): Search = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val asCharacter = readFragment<AsCharacter>(RESPONSE_FIELDS[1]) { reader ->
           AsCharacter(reader)
         }
-        val asStarship = reader.readFragment<AsStarship>(RESPONSE_FIELDS[2]) { reader ->
+        val asStarship = readFragment<AsStarship>(RESPONSE_FIELDS[2]) { reader ->
           AsStarship(reader)
         }
-        return Search(
+        Search(
           __typename = __typename,
           asCharacter = asCharacter,
           asStarship = asStarship
@@ -402,11 +396,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   data class Data(
     val search: List<Search?>?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeList(RESPONSE_FIELDS[0], search) { _value, _listItemWriter ->
-        _value?.forEach { _value ->
-          _listItemWriter.writeObject(_value?.marshaller())
-        }
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeList(RESPONSE_FIELDS[0], this@Data.search) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeObject(value?.marshaller())}
       }
     }
 
@@ -416,14 +409,13 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
             "text" to "test"), true, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Data {
-        val search = reader.readList<Search>(RESPONSE_FIELDS[0]) {
-          it.readObject<Search> { reader ->
+      operator fun invoke(reader: ResponseReader): Data = reader.run {
+        val search = readList<Search>(RESPONSE_FIELDS[0]) { reader ->
+          reader.readObject<Search> { reader ->
             Search(reader)
           }
-
         }
-        return Data(
+        Data(
           search = search
         )
       }

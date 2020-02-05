@@ -47,10 +47,12 @@ data class TestQuery(
       this["greenValue"] = this@TestQuery.greenValue
     }
 
-    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { _writer ->
-      if (episode.defined) _writer.writeString("episode", episode.value?.rawValue)
-      _writer.writeInt("stars", stars)
-      _writer.writeDouble("greenValue", greenValue)
+    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
+      if (this@TestQuery.episode.defined) {
+        writer.writeString("episode", this@TestQuery.episode.value?.rawValue)
+      }
+      writer.writeInt("stars", this@TestQuery.stars)
+      writer.writeDouble("greenValue", this@TestQuery.greenValue)
     }
   }
 
@@ -81,10 +83,10 @@ data class TestQuery(
      */
     val height: Double?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      _writer.writeString(RESPONSE_FIELDS[1], name)
-      _writer.writeDouble(RESPONSE_FIELDS[2], height)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@HeroWithReview.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], this@HeroWithReview.name)
+      writer.writeDouble(RESPONSE_FIELDS[2], this@HeroWithReview.height)
     }
 
     companion object {
@@ -95,11 +97,11 @@ data class TestQuery(
             "unit" to "FOOT"), true, null)
           )
 
-      operator fun invoke(reader: ResponseReader): HeroWithReview {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
-        val height = reader.readDouble(RESPONSE_FIELDS[2])
-        return HeroWithReview(
+      operator fun invoke(reader: ResponseReader): HeroWithReview = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val name = readString(RESPONSE_FIELDS[1])
+        val height = readDouble(RESPONSE_FIELDS[2])
+        HeroWithReview(
           __typename = __typename,
           name = name,
           height = height
@@ -111,8 +113,8 @@ data class TestQuery(
   data class Data(
     val heroWithReview: HeroWithReview?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeObject(RESPONSE_FIELDS[0], heroWithReview?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeObject(RESPONSE_FIELDS[0], this@Data.heroWithReview?.marshaller())
     }
 
     companion object {
@@ -137,12 +139,11 @@ data class TestQuery(
               null)
           )
 
-      operator fun invoke(reader: ResponseReader): Data {
-        val heroWithReview = reader.readObject<HeroWithReview>(RESPONSE_FIELDS[0]) { reader ->
+      operator fun invoke(reader: ResponseReader): Data = reader.run {
+        val heroWithReview = readObject<HeroWithReview>(RESPONSE_FIELDS[0]) { reader ->
           HeroWithReview(reader)
         }
-
-        return Data(
+        Data(
           heroWithReview = heroWithReview
         )
       }

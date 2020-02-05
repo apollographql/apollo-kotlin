@@ -45,9 +45,9 @@ data class CreateReviewForEpisodeMutation(
       this["review"] = this@CreateReviewForEpisodeMutation.review
     }
 
-    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { _writer ->
-      _writer.writeString("ep", ep.rawValue)
-      _writer.writeObject("review", review.marshaller())
+    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
+      writer.writeString("ep", this@CreateReviewForEpisodeMutation.ep.rawValue)
+      writer.writeObject("review", this@CreateReviewForEpisodeMutation.review.marshaller())
     }
   }
 
@@ -78,10 +78,10 @@ data class CreateReviewForEpisodeMutation(
      */
     val commentary: String?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      _writer.writeInt(RESPONSE_FIELDS[1], stars)
-      _writer.writeString(RESPONSE_FIELDS[2], commentary)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@CreateReview.__typename)
+      writer.writeInt(RESPONSE_FIELDS[1], this@CreateReview.stars)
+      writer.writeString(RESPONSE_FIELDS[2], this@CreateReview.commentary)
     }
 
     companion object {
@@ -91,11 +91,11 @@ data class CreateReviewForEpisodeMutation(
           ResponseField.forString("commentary", "commentary", null, true, null)
           )
 
-      operator fun invoke(reader: ResponseReader): CreateReview {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val stars = reader.readInt(RESPONSE_FIELDS[1])
-        val commentary = reader.readString(RESPONSE_FIELDS[2])
-        return CreateReview(
+      operator fun invoke(reader: ResponseReader): CreateReview = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val stars = readInt(RESPONSE_FIELDS[1])
+        val commentary = readString(RESPONSE_FIELDS[2])
+        CreateReview(
           __typename = __typename,
           stars = stars,
           commentary = commentary
@@ -107,8 +107,8 @@ data class CreateReviewForEpisodeMutation(
   data class Data(
     val createReview: CreateReview?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeObject(RESPONSE_FIELDS[0], createReview?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeObject(RESPONSE_FIELDS[0], this@Data.createReview?.marshaller())
     }
 
     companion object {
@@ -122,12 +122,11 @@ data class CreateReviewForEpisodeMutation(
               "variableName" to "review")), true, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Data {
-        val createReview = reader.readObject<CreateReview>(RESPONSE_FIELDS[0]) { reader ->
+      operator fun invoke(reader: ResponseReader): Data = reader.run {
+        val createReview = readObject<CreateReview>(RESPONSE_FIELDS[0]) { reader ->
           CreateReview(reader)
         }
-
-        return Data(
+        Data(
           createReview = createReview
         )
       }

@@ -169,7 +169,7 @@ private val OperationType.variablePropertySpec: PropertySpec
         .initializer("%L", TypeSpec.anonymousClassBuilder()
             .superclass(Operation.Variables::class)
             .addFunction(variables.variablesValueMapSpec(this))
-            .addFunction(variables.variablesMarshallerSpec)
+            .addFunction(variables.variablesMarshallerSpec(name))
             .build()
         )
         .build()
@@ -194,22 +194,20 @@ private fun InputType.variablesValueMapSpec(operationType: OperationType): FunSp
       .build()
 }
 
-private val InputType.variablesMarshallerSpec: FunSpec
-  get() {
-    return FunSpec
-        .builder("marshaller")
-        .returns(InputFieldMarshaller::class)
-        .addModifiers(KModifier.OVERRIDE)
-        .addCode(CodeBlock.builder()
-            .add("return %T { _writer ->\n", InputFieldMarshaller::class)
-            .indent()
-            .apply { fields.forEach { field -> add(field.writeCodeBlock) } }
-            .unindent()
-            .add("}\n")
-            .build()
-        )
-        .build()
-  }
+private fun InputType.variablesMarshallerSpec(thisRef: String): FunSpec {
+  return FunSpec
+      .builder("marshaller")
+      .returns(InputFieldMarshaller::class)
+      .addModifiers(KModifier.OVERRIDE)
+      .addCode(CodeBlock
+          .builder()
+          .beginControlFlow("return %T { writer ->", InputFieldMarshaller::class)
+          .apply { fields.forEach { field -> add(field.writeCodeBlock(thisRef)) } }
+          .endControlFlow()
+          .build()
+      )
+      .build()
+}
 
 private fun ObjectType.toOperationDataTypeSpec(name: String) =
     TypeSpec
@@ -232,5 +230,5 @@ private fun ObjectType.toOperationDataTypeSpec(name: String) =
             .addFunction(fields.toMapperFun(ClassName.bestGuess(name)))
             .build()
         )
-        .addFunction(marshallerFunSpec(fields, true))
+        .addFunction(marshallerFunSpec(fields = fields, override = true, thisRef = name))
         .build()

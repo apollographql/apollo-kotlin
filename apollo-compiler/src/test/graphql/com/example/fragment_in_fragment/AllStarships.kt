@@ -49,9 +49,9 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
     val __typename: String = "Starship",
     val fragments: Fragments
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      fragments.marshaller().marshal(_writer)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@Node.__typename)
+      this@Node.fragments.marshaller().marshal(writer)
     }
 
     companion object {
@@ -59,10 +59,10 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
           ResponseField.forString("__typename", "__typename", null, false, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Node {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
+      operator fun invoke(reader: ResponseReader): Node = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
         val fragments = Fragments(reader)
-        return Node(
+        Node(
           __typename = __typename,
           fragments = fragments
         )
@@ -72,8 +72,8 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
     data class Fragments(
       val starshipFragment: StarshipFragment
     ) {
-      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-        _writer.writeFragment(starshipFragment.marshaller())
+      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+        writer.writeFragment(this@Fragments.starshipFragment.marshaller())
       }
 
       companion object {
@@ -83,12 +83,11 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
             ))
             )
 
-        operator fun invoke(reader: ResponseReader): Fragments {
-          val starshipFragment = reader.readFragment<StarshipFragment>(RESPONSE_FIELDS[0]) {
-              reader ->
+        operator fun invoke(reader: ResponseReader): Fragments = reader.run {
+          val starshipFragment = readFragment<StarshipFragment>(RESPONSE_FIELDS[0]) { reader ->
             StarshipFragment(reader)
           }
-          return Fragments(
+          Fragments(
             starshipFragment = starshipFragment
           )
         }
@@ -103,9 +102,9 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
      */
     val node: Node?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      _writer.writeObject(RESPONSE_FIELDS[1], node?.marshaller())
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@Edge.__typename)
+      writer.writeObject(RESPONSE_FIELDS[1], this@Edge.node?.marshaller())
     }
 
     companion object {
@@ -114,13 +113,12 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
           ResponseField.forObject("node", "node", null, true, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Edge {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val node = reader.readObject<Node>(RESPONSE_FIELDS[1]) { reader ->
+      operator fun invoke(reader: ResponseReader): Edge = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val node = readObject<Node>(RESPONSE_FIELDS[1]) { reader ->
           Node(reader)
         }
-
-        return Edge(
+        Edge(
           __typename = __typename,
           node = node
         )
@@ -135,12 +133,11 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
      */
     val edges: List<Edge?>?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      _writer.writeList(RESPONSE_FIELDS[1], edges) { _value, _listItemWriter ->
-        _value?.forEach { _value ->
-          _listItemWriter.writeObject(_value?.marshaller())
-        }
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@AllStarships.__typename)
+      writer.writeList(RESPONSE_FIELDS[1], this@AllStarships.edges) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeObject(value?.marshaller())}
       }
     }
 
@@ -150,15 +147,14 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
           ResponseField.forList("edges", "edges", null, true, null)
           )
 
-      operator fun invoke(reader: ResponseReader): AllStarships {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val edges = reader.readList<Edge>(RESPONSE_FIELDS[1]) {
-          it.readObject<Edge> { reader ->
+      operator fun invoke(reader: ResponseReader): AllStarships = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val edges = readList<Edge>(RESPONSE_FIELDS[1]) { reader ->
+          reader.readObject<Edge> { reader ->
             Edge(reader)
           }
-
         }
-        return AllStarships(
+        AllStarships(
           __typename = __typename,
           edges = edges
         )
@@ -169,8 +165,8 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
   data class Data(
     val allStarships: AllStarships?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeObject(RESPONSE_FIELDS[0], allStarships?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeObject(RESPONSE_FIELDS[0], this@Data.allStarships?.marshaller())
     }
 
     companion object {
@@ -179,12 +175,11 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
             "first" to "7"), true, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Data {
-        val allStarships = reader.readObject<AllStarships>(RESPONSE_FIELDS[0]) { reader ->
+      operator fun invoke(reader: ResponseReader): Data = reader.run {
+        val allStarships = readObject<AllStarships>(RESPONSE_FIELDS[0]) { reader ->
           AllStarships(reader)
         }
-
-        return Data(
+        Data(
           allStarships = allStarships
         )
       }

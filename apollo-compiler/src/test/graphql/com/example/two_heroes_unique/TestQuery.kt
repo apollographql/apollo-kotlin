@@ -51,9 +51,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val name: String
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      _writer.writeString(RESPONSE_FIELDS[1], name)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@R2.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], this@R2.name)
     }
 
     companion object {
@@ -62,10 +62,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           ResponseField.forString("name", "name", null, false, null)
           )
 
-      operator fun invoke(reader: ResponseReader): R2 {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
-        return R2(
+      operator fun invoke(reader: ResponseReader): R2 = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val name = readString(RESPONSE_FIELDS[1])
+        R2(
           __typename = __typename,
           name = name
         )
@@ -84,10 +84,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val name: String
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      _writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
-      _writer.writeString(RESPONSE_FIELDS[2], name)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@Luke.__typename)
+      writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, this@Luke.id)
+      writer.writeString(RESPONSE_FIELDS[2], this@Luke.name)
     }
 
     companion object {
@@ -97,11 +97,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           ResponseField.forString("name", "name", null, false, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Luke {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
-        val name = reader.readString(RESPONSE_FIELDS[2])
-        return Luke(
+      operator fun invoke(reader: ResponseReader): Luke = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+        val name = readString(RESPONSE_FIELDS[2])
+        Luke(
           __typename = __typename,
           id = id,
           name = name
@@ -114,9 +114,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val r2: R2?,
     val luke: Luke?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeObject(RESPONSE_FIELDS[0], r2?.marshaller())
-      _writer.writeObject(RESPONSE_FIELDS[1], luke?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeObject(RESPONSE_FIELDS[0], this@Data.r2?.marshaller())
+      writer.writeObject(RESPONSE_FIELDS[1], this@Data.luke?.marshaller())
     }
 
     companion object {
@@ -126,16 +126,14 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
             "episode" to "EMPIRE"), true, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Data {
-        val r2 = reader.readObject<R2>(RESPONSE_FIELDS[0]) { reader ->
+      operator fun invoke(reader: ResponseReader): Data = reader.run {
+        val r2 = readObject<R2>(RESPONSE_FIELDS[0]) { reader ->
           R2(reader)
         }
-
-        val luke = reader.readObject<Luke>(RESPONSE_FIELDS[1]) { reader ->
+        val luke = readObject<Luke>(RESPONSE_FIELDS[1]) { reader ->
           Luke(reader)
         }
-
-        return Data(
+        Data(
           r2 = r2,
           luke = luke
         )

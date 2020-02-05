@@ -22,9 +22,9 @@ data class PlanetFragment(
    */
   val name: String?
 ) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-    _writer.writeString(RESPONSE_FIELDS[0], __typename)
-    _writer.writeString(RESPONSE_FIELDS[1], name)
+  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    writer.writeString(RESPONSE_FIELDS[0], this@PlanetFragment.__typename)
+    writer.writeString(RESPONSE_FIELDS[1], this@PlanetFragment.name)
   }
 
   companion object {
@@ -40,10 +40,10 @@ data class PlanetFragment(
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader): PlanetFragment {
-      val __typename = reader.readString(RESPONSE_FIELDS[0])
-      val name = reader.readString(RESPONSE_FIELDS[1])
-      return PlanetFragment(
+    operator fun invoke(reader: ResponseReader): PlanetFragment = reader.run {
+      val __typename = readString(RESPONSE_FIELDS[0])
+      val name = readString(RESPONSE_FIELDS[1])
+      PlanetFragment(
         __typename = __typename,
         name = name
       )

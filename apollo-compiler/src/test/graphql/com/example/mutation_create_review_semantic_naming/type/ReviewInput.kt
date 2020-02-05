@@ -104,122 +104,139 @@ data class ReviewInput(
    */
   val capitalizedField: Input<String> = Input.absent()
 ) : InputType {
-  override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { _writer ->
-    _writer.writeInt("stars", stars)
-    if (nullableIntFieldWithDefaultValue.defined)
-        _writer.writeInt("nullableIntFieldWithDefaultValue", nullableIntFieldWithDefaultValue.value)
-    if (commentary.defined) _writer.writeString("commentary", commentary.value)
-    _writer.writeObject("favoriteColor", favoriteColor.marshaller())
-    if (enumWithDefaultValue.defined) _writer.writeString("enumWithDefaultValue",
-        enumWithDefaultValue.value?.rawValue)
-    _writer.writeString("nonNullableEnumWithDefaultValue", nonNullableEnumWithDefaultValue.rawValue)
-    if (nullableEnum.defined) _writer.writeString("nullableEnum", nullableEnum.value?.rawValue)
-    if (listOfCustomScalar.defined) {
-      _writer.writeList("listOfCustomScalar", listOfCustomScalar.value?.let { _value ->
-        InputFieldWriter.ListWriter { _listItemWriter ->
-          _value.forEach { _value ->
-            _listItemWriter.writeCustom(CustomType.DATE, _value)
+  override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
+    writer.writeInt("stars", this@ReviewInput.stars)
+    if (this@ReviewInput.nullableIntFieldWithDefaultValue.defined) {
+      writer.writeInt("nullableIntFieldWithDefaultValue",
+        this@ReviewInput.nullableIntFieldWithDefaultValue.value)
+    }
+    if (this@ReviewInput.commentary.defined) {
+      writer.writeString("commentary", this@ReviewInput.commentary.value)
+    }
+    writer.writeObject("favoriteColor", this@ReviewInput.favoriteColor.marshaller())
+    if (this@ReviewInput.enumWithDefaultValue.defined) {
+      writer.writeString("enumWithDefaultValue",
+        this@ReviewInput.enumWithDefaultValue.value?.rawValue)
+    }
+    writer.writeString("nonNullableEnumWithDefaultValue",
+        this@ReviewInput.nonNullableEnumWithDefaultValue.rawValue)
+    if (this@ReviewInput.nullableEnum.defined) {
+      writer.writeString("nullableEnum", this@ReviewInput.nullableEnum.value?.rawValue)
+    }
+    if (this@ReviewInput.listOfCustomScalar.defined) {
+      writer.writeList("listOfCustomScalar", this@ReviewInput.listOfCustomScalar.value?.let {
+          value ->
+        InputFieldWriter.ListWriter { listItemWriter ->
+          value.forEach { value ->
+            listItemWriter.writeCustom(CustomType.DATE, value)
           }
         }
       })
     }
-    if (customScalar.defined) _writer.writeCustom("customScalar", CustomType.DATE,
-        customScalar.value)
-    if (listOfEnums.defined) {
-      _writer.writeList("listOfEnums", listOfEnums.value?.let { _value ->
-        InputFieldWriter.ListWriter { _listItemWriter ->
-          _value.forEach { _value ->
-            _listItemWriter.writeString(_value?.rawValue)
+    if (this@ReviewInput.customScalar.defined) {
+      writer.writeCustom("customScalar", CustomType.DATE, this@ReviewInput.customScalar.value)
+    }
+    if (this@ReviewInput.listOfEnums.defined) {
+      writer.writeList("listOfEnums", this@ReviewInput.listOfEnums.value?.let { value ->
+        InputFieldWriter.ListWriter { listItemWriter ->
+          value.forEach { value ->
+            listItemWriter.writeString(value?.rawValue)
           }
         }
       })
     }
-    if (listOfInt.defined) {
-      _writer.writeList("listOfInt", listOfInt.value?.let { _value ->
-        InputFieldWriter.ListWriter { _listItemWriter ->
-          _value.forEach { _value ->
-            _listItemWriter.writeInt(_value)
+    if (this@ReviewInput.listOfInt.defined) {
+      writer.writeList("listOfInt", this@ReviewInput.listOfInt.value?.let { value ->
+        InputFieldWriter.ListWriter { listItemWriter ->
+          value.forEach { value ->
+            listItemWriter.writeInt(value)
           }
         }
       })
     }
-    if (listOfString.defined) {
-      _writer.writeList("listOfString", listOfString.value?.let { _value ->
-        InputFieldWriter.ListWriter { _listItemWriter ->
-          _value.forEach { _value ->
-            _listItemWriter.writeString(_value)
+    if (this@ReviewInput.listOfString.defined) {
+      writer.writeList("listOfString", this@ReviewInput.listOfString.value?.let { value ->
+        InputFieldWriter.ListWriter { listItemWriter ->
+          value.forEach { value ->
+            listItemWriter.writeString(value)
           }
         }
       })
     }
-    _writer.writeList("listOfStringNonOptional") { _listItemWriter ->
-      listOfStringNonOptional.forEach { _value ->
-        _listItemWriter.writeString(_value)
+    writer.writeList("listOfStringNonOptional") { listItemWriter ->
+      this@ReviewInput.listOfStringNonOptional.forEach { value ->
+        listItemWriter.writeString(value)
       }
     }
-    if (listOfInputTypes.defined) {
-      _writer.writeList("listOfInputTypes", listOfInputTypes.value?.let { _value ->
-        InputFieldWriter.ListWriter { _listItemWriter ->
-          _value.forEach { _value ->
-            _listItemWriter.writeObject(_value?.marshaller())
+    if (this@ReviewInput.listOfInputTypes.defined) {
+      writer.writeList("listOfInputTypes", this@ReviewInput.listOfInputTypes.value?.let { value ->
+        InputFieldWriter.ListWriter { listItemWriter ->
+          value.forEach { value ->
+            listItemWriter.writeObject(value?.marshaller())
           }
         }
       })
     }
-    if (booleanWithDefaultValue.defined) _writer.writeBoolean("booleanWithDefaultValue",
-        booleanWithDefaultValue.value)
-    if (listOfListOfString.defined) {
-      _writer.writeList("listOfListOfString", listOfListOfString.value?.let { _value ->
-        InputFieldWriter.ListWriter { _listItemWriter ->
-          _value.forEach { _value ->
-            _listItemWriter.writeList { _listItemWriter ->
-              _value.forEach { _value ->
-                _listItemWriter.writeString(_value)
+    if (this@ReviewInput.booleanWithDefaultValue.defined) {
+      writer.writeBoolean("booleanWithDefaultValue", this@ReviewInput.booleanWithDefaultValue.value)
+    }
+    if (this@ReviewInput.listOfListOfString.defined) {
+      writer.writeList("listOfListOfString", this@ReviewInput.listOfListOfString.value?.let {
+          value ->
+        InputFieldWriter.ListWriter { listItemWriter ->
+          value.forEach { value ->
+            listItemWriter.writeList { listItemWriter ->
+              value.forEach { value ->
+                listItemWriter.writeString(value)
               }
             }
           }
         }
       })
     }
-    if (listOfListOfEnum.defined) {
-      _writer.writeList("listOfListOfEnum", listOfListOfEnum.value?.let { _value ->
-        InputFieldWriter.ListWriter { _listItemWriter ->
-          _value.forEach { _value ->
-            _listItemWriter.writeList { _listItemWriter ->
-              _value.forEach { _value ->
-                _listItemWriter.writeString(_value.rawValue)
+    if (this@ReviewInput.listOfListOfEnum.defined) {
+      writer.writeList("listOfListOfEnum", this@ReviewInput.listOfListOfEnum.value?.let { value ->
+        InputFieldWriter.ListWriter { listItemWriter ->
+          value.forEach { value ->
+            listItemWriter.writeList { listItemWriter ->
+              value.forEach { value ->
+                listItemWriter.writeString(value.rawValue)
               }
             }
           }
         }
       })
     }
-    if (listOfListOfCustom.defined) {
-      _writer.writeList("listOfListOfCustom", listOfListOfCustom.value?.let { _value ->
-        InputFieldWriter.ListWriter { _listItemWriter ->
-          _value.forEach { _value ->
-            _listItemWriter.writeList { _listItemWriter ->
-              _value.forEach { _value ->
-                _listItemWriter.writeCustom(CustomType.DATE, _value)
+    if (this@ReviewInput.listOfListOfCustom.defined) {
+      writer.writeList("listOfListOfCustom", this@ReviewInput.listOfListOfCustom.value?.let {
+          value ->
+        InputFieldWriter.ListWriter { listItemWriter ->
+          value.forEach { value ->
+            listItemWriter.writeList { listItemWriter ->
+              value.forEach { value ->
+                listItemWriter.writeCustom(CustomType.DATE, value)
               }
             }
           }
         }
       })
     }
-    if (listOfListOfObject.defined) {
-      _writer.writeList("listOfListOfObject", listOfListOfObject.value?.let { _value ->
-        InputFieldWriter.ListWriter { _listItemWriter ->
-          _value.forEach { _value ->
-            _listItemWriter.writeList { _listItemWriter ->
-              _value.forEach { _value ->
-                _listItemWriter.writeObject(_value.marshaller())
+    if (this@ReviewInput.listOfListOfObject.defined) {
+      writer.writeList("listOfListOfObject", this@ReviewInput.listOfListOfObject.value?.let {
+          value ->
+        InputFieldWriter.ListWriter { listItemWriter ->
+          value.forEach { value ->
+            listItemWriter.writeList { listItemWriter ->
+              value.forEach { value ->
+                listItemWriter.writeObject(value.marshaller())
               }
             }
           }
         }
       })
     }
-    if (capitalizedField.defined) _writer.writeString("CapitalizedField", capitalizedField.value)
+    if (this@ReviewInput.capitalizedField.defined) {
+      writer.writeString("CapitalizedField", this@ReviewInput.capitalizedField.value)
+    }
   }
 }

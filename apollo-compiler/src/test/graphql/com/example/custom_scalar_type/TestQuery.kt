@@ -74,22 +74,20 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val links: List<java.lang.String>
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeString(RESPONSE_FIELDS[0], __typename)
-      _writer.writeString(RESPONSE_FIELDS[1], name)
-      _writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, birthDate)
-      _writer.writeList(RESPONSE_FIELDS[3], appearanceDates) { _value, _listItemWriter ->
-        _value?.forEach { _value ->
-          _listItemWriter.writeCustom(CustomType.DATE, _value)
-        }
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@Hero.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], this@Hero.name)
+      writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, this@Hero.birthDate)
+      writer.writeList(RESPONSE_FIELDS[3], this@Hero.appearanceDates) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeCustom(CustomType.DATE, value)}
       }
-      _writer.writeCustom(RESPONSE_FIELDS[4] as ResponseField.CustomTypeField,
-          fieldWithUnsupportedType)
-      _writer.writeCustom(RESPONSE_FIELDS[5] as ResponseField.CustomTypeField, profileLink)
-      _writer.writeList(RESPONSE_FIELDS[6], links) { _value, _listItemWriter ->
-        _value?.forEach { _value ->
-          _listItemWriter.writeCustom(CustomType.URL, _value)
-        }
+      writer.writeCustom(RESPONSE_FIELDS[4] as ResponseField.CustomTypeField,
+          this@Hero.fieldWithUnsupportedType)
+      writer.writeCustom(RESPONSE_FIELDS[5] as ResponseField.CustomTypeField, this@Hero.profileLink)
+      writer.writeList(RESPONSE_FIELDS[6], this@Hero.links) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeCustom(CustomType.URL, value)}
       }
     }
 
@@ -106,22 +104,19 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           ResponseField.forList("links", "links", null, false, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Hero {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
-        val birthDate = reader.readCustomType<Date>(RESPONSE_FIELDS[2] as
+      operator fun invoke(reader: ResponseReader): Hero = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val name = readString(RESPONSE_FIELDS[1])
+        val birthDate = readCustomType<Date>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)
+        val appearanceDates = readList<Date>(RESPONSE_FIELDS[3]) { reader ->
+          reader.readCustomType<Date>(CustomType.DATE)}
+        val fieldWithUnsupportedType = readCustomType<Any>(RESPONSE_FIELDS[4] as
             ResponseField.CustomTypeField)
-        val appearanceDates = reader.readList<Date>(RESPONSE_FIELDS[3]) {
-          it.readCustomType<Date>(CustomType.DATE)
-        }
-        val fieldWithUnsupportedType = reader.readCustomType<Any>(RESPONSE_FIELDS[4] as
+        val profileLink = readCustomType<java.lang.String>(RESPONSE_FIELDS[5] as
             ResponseField.CustomTypeField)
-        val profileLink = reader.readCustomType<java.lang.String>(RESPONSE_FIELDS[5] as
-            ResponseField.CustomTypeField)
-        val links = reader.readList<java.lang.String>(RESPONSE_FIELDS[6]) {
-          it.readCustomType<java.lang.String>(CustomType.URL)
-        }
-        return Hero(
+        val links = readList<java.lang.String>(RESPONSE_FIELDS[6]) { reader ->
+          reader.readCustomType<java.lang.String>(CustomType.URL)}
+        Hero(
           __typename = __typename,
           name = name,
           birthDate = birthDate,
@@ -137,8 +132,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   data class Data(
     val hero: Hero?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { _writer ->
-      _writer.writeObject(RESPONSE_FIELDS[0], hero?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeObject(RESPONSE_FIELDS[0], this@Data.hero?.marshaller())
     }
 
     companion object {
@@ -146,12 +141,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           ResponseField.forObject("hero", "hero", null, true, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Data {
-        val hero = reader.readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
+      operator fun invoke(reader: ResponseReader): Data = reader.run {
+        val hero = readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
           Hero(reader)
         }
-
-        return Data(
+        Data(
           hero = hero
         )
       }
