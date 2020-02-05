@@ -49,7 +49,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     /**
      * The ID of the character
      */
-    val id: String,
+    val it_: String,
     /**
      * The name of the character
      */
@@ -57,24 +57,24 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
+      it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, it_)
       it.writeString(RESPONSE_FIELDS[2], name)
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
+          ResponseField.forCustomType("it", "id", null, false, CustomType.ID, null),
           ResponseField.forString("name", "name", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): Yield_ {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+        val it_ = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
         val name = reader.readString(RESPONSE_FIELDS[2])
         return Yield_(
           __typename = __typename,
-          id = id,
+          it_ = it_,
           name = name
         )
       }
@@ -107,14 +107,14 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "68a6e5bd4c5213e326deea5dcfb43c8858ce3b89d583d9dea2a8b4ee2f04e0b8"
+        "82ff5dc7f725cd4d34236b38371f620bad05c29b92edbfef6c830879a09a3c16"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery {
           |  yield: hero {
           |    __typename
-          |    id
+          |    it: id
           |    name
           |  }
           |}

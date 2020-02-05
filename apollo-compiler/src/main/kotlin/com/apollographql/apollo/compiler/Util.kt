@@ -16,7 +16,7 @@ private val JAVA_RESERVED_WORDS = arrayOf(
 
 private val KOTLIN_RESERVED_WORDS = arrayOf(
     "as", "break", "class", "continue", "do", "else", "false", "for", "fun", "if", "in", "interface", "is", "null", "object", "package",
-    "return", "super", "this", "throw", "true", "try", "typealias", "typeof", "val", "var", "when", "while", "yield"
+    "return", "super", "this", "throw", "true", "try", "typealias", "typeof", "val", "var", "when", "while", "yield", "it", "field"
 )
 
 fun String.escapeJavaReservedWord() = if (this in JAVA_RESERVED_WORDS) "${this}_" else this

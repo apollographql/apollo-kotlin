@@ -31,13 +31,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "68a6e5bd4c5213e326deea5dcfb43c8858ce3b89d583d9dea2a8b4ee2f04e0b8";
+  public static final String OPERATION_ID = "82ff5dc7f725cd4d34236b38371f620bad05c29b92edbfef6c830879a09a3c16";
 
   public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
     "query TestQuery {\n"
         + "  yield: hero {\n"
         + "    __typename\n"
-        + "    id\n"
+        + "    it: id\n"
         + "    name\n"
         + "  }\n"
         + "}"
@@ -197,13 +197,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static class Yield {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forCustomType("id", "id", null, false, CustomType.ID, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forCustomType("it", "id", null, false, CustomType.ID, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @NotNull String __typename;
 
-    final @NotNull String id;
+    final @NotNull String it;
 
     final @NotNull String name;
 
@@ -213,9 +213,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Yield(@NotNull String __typename, @NotNull String id, @NotNull String name) {
+    public Yield(@NotNull String __typename, @NotNull String it, @NotNull String name) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
-      this.id = Utils.checkNotNull(id, "id == null");
+      this.it = Utils.checkNotNull(it, "it == null");
       this.name = Utils.checkNotNull(name, "name == null");
     }
 
@@ -226,8 +226,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     /**
      * The ID of the character
      */
-    public @NotNull String id() {
-      return this.id;
+    public @NotNull String it() {
+      return this.it;
     }
 
     /**
@@ -243,7 +243,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         @Override
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
-          writer.writeCustom((ResponseField.CustomTypeField) $responseFields[1], id);
+          writer.writeCustom((ResponseField.CustomTypeField) $responseFields[1], it);
           writer.writeString($responseFields[2], name);
         }
       };
@@ -254,7 +254,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if ($toString == null) {
         $toString = "Yield{"
           + "__typename=" + __typename + ", "
-          + "id=" + id + ", "
+          + "it=" + it + ", "
           + "name=" + name
           + "}";
       }
@@ -269,7 +269,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (o instanceof Yield) {
         Yield that = (Yield) o;
         return this.__typename.equals(that.__typename)
-         && this.id.equals(that.id)
+         && this.it.equals(that.it)
          && this.name.equals(that.name);
       }
       return false;
@@ -282,7 +282,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         h *= 1000003;
         h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= id.hashCode();
+        h ^= it.hashCode();
         h *= 1000003;
         h ^= name.hashCode();
         $hashCode = h;
@@ -295,9 +295,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       @Override
       public Yield map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
-        final String id = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[1]);
+        final String it = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[1]);
         final String name = reader.readString($responseFields[2]);
-        return new Yield(__typename, id, name);
+        return new Yield(__typename, it, name);
       }
     }
   }
