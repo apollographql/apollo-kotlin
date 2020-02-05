@@ -10,9 +10,6 @@ plugins {
 java {
   targetCompatibility = JavaVersion.VERSION_1_7
   sourceCompatibility = JavaVersion.VERSION_1_7
-
-  // As temporary solution enable this to verify if generated kotlin test fixtures compiles
-  sourceSets["test"].java.srcDir("src/test/graphql").exclude("**/*.java")
 }
 
 dependencies {
@@ -29,6 +26,7 @@ dependencies {
 
 
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.compiletesting"))
+  add("testImplementation", groovy.util.Eval.x(project, "x.dep.kotlinCompileTesting"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.junit"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.truth"))
 }
