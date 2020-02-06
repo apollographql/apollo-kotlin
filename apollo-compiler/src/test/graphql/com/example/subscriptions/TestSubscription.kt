@@ -37,11 +37,11 @@ data class TestSubscription(
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
-      this["repo"] = repo
+      this["repo"] = this@TestSubscription.repo
     }
 
     override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
-      writer.writeString("repo", repo)
+      writer.writeString("repo", this@TestSubscription.repo)
     }
   }
 
@@ -72,10 +72,10 @@ data class TestSubscription(
      */
     val content: String
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeInt(RESPONSE_FIELDS[1], id)
-      it.writeString(RESPONSE_FIELDS[2], content)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@CommentAdded.__typename)
+      writer.writeInt(RESPONSE_FIELDS[1], this@CommentAdded.id)
+      writer.writeString(RESPONSE_FIELDS[2], this@CommentAdded.content)
     }
 
     companion object {
@@ -85,11 +85,11 @@ data class TestSubscription(
           ResponseField.forString("content", "content", null, false, null)
           )
 
-      operator fun invoke(reader: ResponseReader): CommentAdded {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val id = reader.readInt(RESPONSE_FIELDS[1])
-        val content = reader.readString(RESPONSE_FIELDS[2])
-        return CommentAdded(
+      operator fun invoke(reader: ResponseReader): CommentAdded = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val id = readInt(RESPONSE_FIELDS[1])
+        val content = readString(RESPONSE_FIELDS[2])
+        CommentAdded(
           __typename = __typename,
           id = id,
           content = content
@@ -104,8 +104,8 @@ data class TestSubscription(
      */
     val commentAdded: CommentAdded?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeObject(RESPONSE_FIELDS[0], commentAdded?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeObject(RESPONSE_FIELDS[0], this@Data.commentAdded?.marshaller())
     }
 
     companion object {
@@ -116,12 +116,11 @@ data class TestSubscription(
               "variableName" to "repo")), true, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Data {
-        val commentAdded = reader.readObject<CommentAdded>(RESPONSE_FIELDS[0]) { reader ->
+      operator fun invoke(reader: ResponseReader): Data = reader.run {
+        val commentAdded = readObject<CommentAdded>(RESPONSE_FIELDS[0]) { reader ->
           CommentAdded(reader)
         }
-
-        return Data(
+        Data(
           commentAdded = commentAdded
         )
       }

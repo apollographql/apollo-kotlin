@@ -45,18 +45,20 @@ data class TestQuery(
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
-      if (episode.defined) this["episode"] = episode.value
-      this["IncludeName"] = includeName
-      this["friendsCount"] = friendsCount
-      this["listOfListOfStringArgs"] = listOfListOfStringArgs
+      if (episode.defined) this["episode"] = this@TestQuery.episode.value
+      this["IncludeName"] = this@TestQuery.includeName
+      this["friendsCount"] = this@TestQuery.friendsCount
+      this["listOfListOfStringArgs"] = this@TestQuery.listOfListOfStringArgs
     }
 
     override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
-      if (episode.defined) writer.writeString("episode", episode.value?.rawValue)
-      writer.writeBoolean("IncludeName", includeName)
-      writer.writeInt("friendsCount", friendsCount)
+      if (this@TestQuery.episode.defined) {
+        writer.writeString("episode", this@TestQuery.episode.value?.rawValue)
+      }
+      writer.writeBoolean("IncludeName", this@TestQuery.includeName)
+      writer.writeInt("friendsCount", this@TestQuery.friendsCount)
       writer.writeList("listOfListOfStringArgs") { listItemWriter ->
-        listOfListOfStringArgs.forEach { value ->
+        this@TestQuery.listOfListOfStringArgs.forEach { value ->
           listItemWriter.writeList { listItemWriter ->
             value.forEach { value ->
               listItemWriter.writeString(value)
@@ -91,10 +93,10 @@ data class TestQuery(
     val name: String?,
     val fragments: Fragments
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
-      fragments.marshaller().marshal(it)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@Hero.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], this@Hero.name)
+      this@Hero.fragments.marshaller().marshal(writer)
     }
 
     companion object {
@@ -105,11 +107,11 @@ data class TestQuery(
           ))
           )
 
-      operator fun invoke(reader: ResponseReader): Hero {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
+      operator fun invoke(reader: ResponseReader): Hero = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val name = readString(RESPONSE_FIELDS[1])
         val fragments = Fragments(reader)
-        return Hero(
+        Hero(
           __typename = __typename,
           name = name,
           fragments = fragments
@@ -120,8 +122,8 @@ data class TestQuery(
     data class Fragments(
       val heroDetails: HeroDetails
     ) {
-      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        it.writeFragment(heroDetails.marshaller())
+      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+        writer.writeFragment(this@Fragments.heroDetails.marshaller())
       }
 
       companion object {
@@ -131,11 +133,11 @@ data class TestQuery(
             ))
             )
 
-        operator fun invoke(reader: ResponseReader): Fragments {
-          val heroDetails = reader.readFragment<HeroDetails>(RESPONSE_FIELDS[0]) { reader ->
+        operator fun invoke(reader: ResponseReader): Fragments = reader.run {
+          val heroDetails = readFragment<HeroDetails>(RESPONSE_FIELDS[0]) { reader ->
             HeroDetails(reader)
           }
-          return Fragments(
+          Fragments(
             heroDetails = heroDetails
           )
         }
@@ -150,9 +152,9 @@ data class TestQuery(
      */
     val name: String
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@HeroWithReview.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], this@HeroWithReview.name)
     }
 
     companion object {
@@ -161,10 +163,10 @@ data class TestQuery(
           ResponseField.forString("name", "name", null, false, null)
           )
 
-      operator fun invoke(reader: ResponseReader): HeroWithReview {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
-        return HeroWithReview(
+      operator fun invoke(reader: ResponseReader): HeroWithReview = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val name = readString(RESPONSE_FIELDS[1])
+        HeroWithReview(
           __typename = __typename,
           name = name
         )
@@ -176,9 +178,9 @@ data class TestQuery(
     val hero: Hero?,
     val heroWithReview: HeroWithReview?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeObject(RESPONSE_FIELDS[0], hero?.marshaller())
-      it.writeObject(RESPONSE_FIELDS[1], heroWithReview?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeObject(RESPONSE_FIELDS[0], this@Data.hero?.marshaller())
+      writer.writeObject(RESPONSE_FIELDS[1], this@Data.heroWithReview?.marshaller())
     }
 
     companion object {
@@ -197,16 +199,14 @@ data class TestQuery(
             "review" to emptyMap<String, Any>()), true, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Data {
-        val hero = reader.readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
+      operator fun invoke(reader: ResponseReader): Data = reader.run {
+        val hero = readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
           Hero(reader)
         }
-
-        val heroWithReview = reader.readObject<HeroWithReview>(RESPONSE_FIELDS[1]) { reader ->
+        val heroWithReview = readObject<HeroWithReview>(RESPONSE_FIELDS[1]) { reader ->
           HeroWithReview(reader)
         }
-
-        return Data(
+        Data(
           hero = hero,
           heroWithReview = heroWithReview
         )

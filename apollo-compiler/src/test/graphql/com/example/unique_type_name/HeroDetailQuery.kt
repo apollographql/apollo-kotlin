@@ -55,9 +55,9 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
     val __typename: String = "Character",
     val fragments: Fragments
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      fragments.marshaller().marshal(it)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@Friend1.__typename)
+      this@Friend1.fragments.marshaller().marshal(writer)
     }
 
     companion object {
@@ -65,10 +65,10 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
           ResponseField.forString("__typename", "__typename", null, false, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Friend1 {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
+      operator fun invoke(reader: ResponseReader): Friend1 = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
         val fragments = Fragments(reader)
-        return Friend1(
+        Friend1(
           __typename = __typename,
           fragments = fragments
         )
@@ -78,8 +78,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
     data class Fragments(
       val heroDetails: HeroDetails
     ) {
-      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        it.writeFragment(heroDetails.marshaller())
+      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+        writer.writeFragment(this@Fragments.heroDetails.marshaller())
       }
 
       companion object {
@@ -89,11 +89,11 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
             ))
             )
 
-        operator fun invoke(reader: ResponseReader): Fragments {
-          val heroDetails = reader.readFragment<HeroDetails>(RESPONSE_FIELDS[0]) { reader ->
+        operator fun invoke(reader: ResponseReader): Fragments = reader.run {
+          val heroDetails = readFragment<HeroDetails>(RESPONSE_FIELDS[0]) { reader ->
             HeroDetails(reader)
           }
-          return Fragments(
+          Fragments(
             heroDetails = heroDetails
           )
         }
@@ -116,18 +116,16 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
      */
     val friends: List<Friend1?>?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
-      it.writeList(RESPONSE_FIELDS[2], appearsIn) { value, listItemWriter ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@Friend.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], this@Friend.name)
+      writer.writeList(RESPONSE_FIELDS[2], this@Friend.appearsIn) { value, listItemWriter ->
         value?.forEach { value ->
-          listItemWriter.writeString(value?.rawValue)
-        }
+          listItemWriter.writeString(value?.rawValue)}
       }
-      it.writeList(RESPONSE_FIELDS[3], friends) { value, listItemWriter ->
+      writer.writeList(RESPONSE_FIELDS[3], this@Friend.friends) { value, listItemWriter ->
         value?.forEach { value ->
-          listItemWriter.writeObject(value?.marshaller())
-        }
+          listItemWriter.writeObject(value?.marshaller())}
       }
     }
 
@@ -139,19 +137,17 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
           ResponseField.forList("friends", "friends", null, true, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Friend {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
-        val appearsIn = reader.readList<Episode>(RESPONSE_FIELDS[2]) {
-          it.readString()?.let{ Episode.safeValueOf(it) }
-        }
-        val friends = reader.readList<Friend1>(RESPONSE_FIELDS[3]) {
-          it.readObject<Friend1> { reader ->
+      operator fun invoke(reader: ResponseReader): Friend = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val name = readString(RESPONSE_FIELDS[1])
+        val appearsIn = readList<Episode>(RESPONSE_FIELDS[2]) { reader ->
+          reader.readString()?.let{ Episode.safeValueOf(it) }}
+        val friends = readList<Friend1>(RESPONSE_FIELDS[3]) { reader ->
+          reader.readObject<Friend1> { reader ->
             Friend1(reader)
           }
-
         }
-        return Friend(
+        Friend(
           __typename = __typename,
           name = name,
           appearsIn = appearsIn,
@@ -176,15 +172,14 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
      */
     val height: Double?
   ) : HeroDetailQueryCharacter {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
-      it.writeList(RESPONSE_FIELDS[2], friends) { value, listItemWriter ->
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@AsHuman.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], this@AsHuman.name)
+      writer.writeList(RESPONSE_FIELDS[2], this@AsHuman.friends) { value, listItemWriter ->
         value?.forEach { value ->
-          listItemWriter.writeObject(value?.marshaller())
-        }
+          listItemWriter.writeObject(value?.marshaller())}
       }
-      it.writeDouble(RESPONSE_FIELDS[3], height)
+      writer.writeDouble(RESPONSE_FIELDS[3], this@AsHuman.height)
     }
 
     companion object {
@@ -195,17 +190,16 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
           ResponseField.forDouble("height", "height", null, true, null)
           )
 
-      operator fun invoke(reader: ResponseReader): AsHuman {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
-        val friends = reader.readList<Friend>(RESPONSE_FIELDS[2]) {
-          it.readObject<Friend> { reader ->
+      operator fun invoke(reader: ResponseReader): AsHuman = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val name = readString(RESPONSE_FIELDS[1])
+        val friends = readList<Friend>(RESPONSE_FIELDS[2]) { reader ->
+          reader.readObject<Friend> { reader ->
             Friend(reader)
           }
-
         }
-        val height = reader.readDouble(RESPONSE_FIELDS[3])
-        return AsHuman(
+        val height = readDouble(RESPONSE_FIELDS[3])
+        AsHuman(
           __typename = __typename,
           name = name,
           friends = friends,
@@ -222,9 +216,9 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
      */
     val name: String
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@Friend2.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], this@Friend2.name)
     }
 
     companion object {
@@ -233,10 +227,10 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
           ResponseField.forString("name", "name", null, false, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Friend2 {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
-        return Friend2(
+      operator fun invoke(reader: ResponseReader): Friend2 = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val name = readString(RESPONSE_FIELDS[1])
+        Friend2(
           __typename = __typename,
           name = name
         )
@@ -256,15 +250,14 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
     val friends: List<Friend2?>?,
     val asHuman: AsHuman?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeString(RESPONSE_FIELDS[1], name)
-      it.writeList(RESPONSE_FIELDS[2], friends) { value, listItemWriter ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@HeroDetailQuery.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], this@HeroDetailQuery.name)
+      writer.writeList(RESPONSE_FIELDS[2], this@HeroDetailQuery.friends) { value, listItemWriter ->
         value?.forEach { value ->
-          listItemWriter.writeObject(value?.marshaller())
-        }
+          listItemWriter.writeObject(value?.marshaller())}
       }
-      it.writeFragment(asHuman?.marshaller())
+      writer.writeFragment(this@HeroDetailQuery.asHuman?.marshaller())
     }
 
     companion object {
@@ -277,19 +270,18 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
           ))
           )
 
-      operator fun invoke(reader: ResponseReader): HeroDetailQuery {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val name = reader.readString(RESPONSE_FIELDS[1])
-        val friends = reader.readList<Friend2>(RESPONSE_FIELDS[2]) {
-          it.readObject<Friend2> { reader ->
+      operator fun invoke(reader: ResponseReader): HeroDetailQuery = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val name = readString(RESPONSE_FIELDS[1])
+        val friends = readList<Friend2>(RESPONSE_FIELDS[2]) { reader ->
+          reader.readObject<Friend2> { reader ->
             Friend2(reader)
           }
-
         }
-        val asHuman = reader.readFragment<AsHuman>(RESPONSE_FIELDS[3]) { reader ->
+        val asHuman = readFragment<AsHuman>(RESPONSE_FIELDS[3]) { reader ->
           AsHuman(reader)
         }
-        return HeroDetailQuery(
+        HeroDetailQuery(
           __typename = __typename,
           name = name,
           friends = friends,
@@ -302,8 +294,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
   data class Data(
     val heroDetailQuery: HeroDetailQuery?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeObject(RESPONSE_FIELDS[0], heroDetailQuery?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeObject(RESPONSE_FIELDS[0], this@Data.heroDetailQuery?.marshaller())
     }
 
     companion object {
@@ -311,12 +303,11 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
           ResponseField.forObject("heroDetailQuery", "heroDetailQuery", null, true, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Data {
-        val heroDetailQuery = reader.readObject<HeroDetailQuery>(RESPONSE_FIELDS[0]) { reader ->
+      operator fun invoke(reader: ResponseReader): Data = reader.run {
+        val heroDetailQuery = readObject<HeroDetailQuery>(RESPONSE_FIELDS[0]) { reader ->
           HeroDetailQuery(reader)
         }
-
-        return Data(
+        Data(
           heroDetailQuery = heroDetailQuery
         )
       }

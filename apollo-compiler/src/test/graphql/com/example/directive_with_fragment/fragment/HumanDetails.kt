@@ -22,9 +22,9 @@ data class HumanDetails(
    */
   val homePlanet: String?
 ) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-    it.writeString(RESPONSE_FIELDS[0], __typename)
-    it.writeString(RESPONSE_FIELDS[1], homePlanet)
+  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    writer.writeString(RESPONSE_FIELDS[0], this@HumanDetails.__typename)
+    writer.writeString(RESPONSE_FIELDS[1], this@HumanDetails.homePlanet)
   }
 
   companion object {
@@ -40,10 +40,10 @@ data class HumanDetails(
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader): HumanDetails {
-      val __typename = reader.readString(RESPONSE_FIELDS[0])
-      val homePlanet = reader.readString(RESPONSE_FIELDS[1])
-      return HumanDetails(
+    operator fun invoke(reader: ResponseReader): HumanDetails = reader.run {
+      val __typename = readString(RESPONSE_FIELDS[0])
+      val homePlanet = readString(RESPONSE_FIELDS[1])
+      HumanDetails(
         __typename = __typename,
         homePlanet = homePlanet
       )

@@ -26,10 +26,10 @@ data class PilotFragment(
    */
   val homeworld: Homeworld?
 ) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-    it.writeString(RESPONSE_FIELDS[0], __typename)
-    it.writeString(RESPONSE_FIELDS[1], name)
-    it.writeObject(RESPONSE_FIELDS[2], homeworld?.marshaller())
+  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    writer.writeString(RESPONSE_FIELDS[0], this@PilotFragment.__typename)
+    writer.writeString(RESPONSE_FIELDS[1], this@PilotFragment.name)
+    writer.writeObject(RESPONSE_FIELDS[2], this@PilotFragment.homeworld?.marshaller())
   }
 
   companion object {
@@ -50,14 +50,13 @@ data class PilotFragment(
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader): PilotFragment {
-      val __typename = reader.readString(RESPONSE_FIELDS[0])
-      val name = reader.readString(RESPONSE_FIELDS[1])
-      val homeworld = reader.readObject<Homeworld>(RESPONSE_FIELDS[2]) { reader ->
+    operator fun invoke(reader: ResponseReader): PilotFragment = reader.run {
+      val __typename = readString(RESPONSE_FIELDS[0])
+      val name = readString(RESPONSE_FIELDS[1])
+      val homeworld = readObject<Homeworld>(RESPONSE_FIELDS[2]) { reader ->
         Homeworld(reader)
       }
-
-      return PilotFragment(
+      PilotFragment(
         __typename = __typename,
         name = name,
         homeworld = homeworld
@@ -69,9 +68,9 @@ data class PilotFragment(
     val __typename: String = "Planet",
     val fragments: Fragments
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      fragments.marshaller().marshal(it)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@Homeworld.__typename)
+      this@Homeworld.fragments.marshaller().marshal(writer)
     }
 
     companion object {
@@ -79,10 +78,10 @@ data class PilotFragment(
           ResponseField.forString("__typename", "__typename", null, false, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Homeworld {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
+      operator fun invoke(reader: ResponseReader): Homeworld = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
         val fragments = Fragments(reader)
-        return Homeworld(
+        Homeworld(
           __typename = __typename,
           fragments = fragments
         )
@@ -92,8 +91,8 @@ data class PilotFragment(
     data class Fragments(
       val planetFragment: PlanetFragment
     ) {
-      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        it.writeFragment(planetFragment.marshaller())
+      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+        writer.writeFragment(this@Fragments.planetFragment.marshaller())
       }
 
       companion object {
@@ -103,11 +102,11 @@ data class PilotFragment(
             ))
             )
 
-        operator fun invoke(reader: ResponseReader): Fragments {
-          val planetFragment = reader.readFragment<PlanetFragment>(RESPONSE_FIELDS[0]) { reader ->
+        operator fun invoke(reader: ResponseReader): Fragments = reader.run {
+          val planetFragment = readFragment<PlanetFragment>(RESPONSE_FIELDS[0]) { reader ->
             PlanetFragment(reader)
           }
-          return Fragments(
+          Fragments(
             planetFragment = planetFragment
           )
         }

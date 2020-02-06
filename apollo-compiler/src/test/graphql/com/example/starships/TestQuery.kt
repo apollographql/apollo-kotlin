@@ -39,11 +39,11 @@ data class TestQuery(
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
-      this["id"] = id
+      this["id"] = this@TestQuery.id
     }
 
     override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
-      writer.writeCustom("id", CustomType.ID, id)
+      writer.writeCustom("id", CustomType.ID, this@TestQuery.id)
     }
   }
 
@@ -75,16 +75,15 @@ data class TestQuery(
     val name: String,
     val coordinates: List<List<Double>>?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
-      it.writeString(RESPONSE_FIELDS[2], name)
-      it.writeList(RESPONSE_FIELDS[3], coordinates) { value, listItemWriter ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@Starship.__typename)
+      writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, this@Starship.id)
+      writer.writeString(RESPONSE_FIELDS[2], this@Starship.name)
+      writer.writeList(RESPONSE_FIELDS[3], this@Starship.coordinates) { value, listItemWriter ->
         value?.forEach { value ->
           listItemWriter.writeList(value) { value, listItemWriter ->
             value?.forEach { value ->
-              listItemWriter.writeDouble(value)
-            }
+              listItemWriter.writeDouble(value)}
           }
         }
       }
@@ -98,16 +97,15 @@ data class TestQuery(
           ResponseField.forList("coordinates", "coordinates", null, true, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Starship {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
-        val name = reader.readString(RESPONSE_FIELDS[2])
-        val coordinates = reader.readList<List<Double>>(RESPONSE_FIELDS[3]) {
-          it.readList<Double> {
-            it.readDouble()
-          }
+      operator fun invoke(reader: ResponseReader): Starship = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+        val name = readString(RESPONSE_FIELDS[2])
+        val coordinates = readList<List<Double>>(RESPONSE_FIELDS[3]) { reader ->
+          reader.readList<Double> { reader ->
+            reader.readDouble()}
         }
-        return Starship(
+        Starship(
           __typename = __typename,
           id = id,
           name = name,
@@ -120,8 +118,8 @@ data class TestQuery(
   data class Data(
     val starship: Starship?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeObject(RESPONSE_FIELDS[0], starship?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeObject(RESPONSE_FIELDS[0], this@Data.starship?.marshaller())
     }
 
     companion object {
@@ -132,12 +130,11 @@ data class TestQuery(
               "variableName" to "id")), true, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Data {
-        val starship = reader.readObject<Starship>(RESPONSE_FIELDS[0]) { reader ->
+      operator fun invoke(reader: ResponseReader): Data = reader.run {
+        val starship = readObject<Starship>(RESPONSE_FIELDS[0]) { reader ->
           Starship(reader)
         }
-
-        return Data(
+        Data(
           starship = starship
         )
       }
