@@ -1,0 +1,12 @@
+query TestQuery {
+  yield: hero {
+    it: id
+    name
+  }
+
+  objects: search(text: "abc") {
+    ... on Character {
+      name
+    }
+  }
+}
