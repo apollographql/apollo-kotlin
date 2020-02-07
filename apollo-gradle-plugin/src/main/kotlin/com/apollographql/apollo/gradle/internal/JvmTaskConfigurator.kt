@@ -4,6 +4,7 @@ import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.TaskProvider
+import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 object JvmTaskConfigurator {
@@ -29,8 +30,6 @@ object JvmTaskConfigurator {
   }
 
   fun registerGeneratedDirectory(project: Project, compilationUnit: DefaultCompilationUnit, codegenProvider: TaskProvider<ApolloGenerateSourcesTask>) {
-    val javaPlugin = project.convention.getPlugin(JavaPluginConvention::class.java)
-    val sourceSets = javaPlugin.sourceSets
     val sourceSetName = compilationUnit.variantName
 
     var taskName = compilationUnit.variantName.capitalize()
@@ -40,9 +39,9 @@ object JvmTaskConfigurator {
     }
 
     val sourceDirectorySet = if (!compilationUnit.generateKotlinModels()) {
-      sourceSets.getByName(sourceSetName).java
+      project.convention.getPlugin(JavaPluginConvention::class.java).sourceSets.getByName(sourceSetName).java
     } else {
-      sourceSets.getByName(sourceSetName).kotlin!!
+      (project.extensions.getByName("kotlin") as KotlinProjectExtension).sourceSets.getByName(sourceSetName).kotlin
     }
 
     val compileTaskName = if (!compilationUnit.generateKotlinModels()) {
