@@ -38,16 +38,16 @@ object JvmTaskConfigurator {
       taskName = ""
     }
 
-    val sourceDirectorySet = if (!compilationUnit.generateKotlinModels()) {
-      project.convention.getPlugin(JavaPluginConvention::class.java).sourceSets.getByName(sourceSetName).java
-    } else {
+    val sourceDirectorySet = if (compilationUnit.generateKotlinModels()) {
       (project.extensions.getByName("kotlin") as KotlinProjectExtension).sourceSets.getByName(sourceSetName).kotlin
+    } else {
+      project.convention.getPlugin(JavaPluginConvention::class.java).sourceSets.getByName(sourceSetName).java
     }
 
-    val compileTaskName = if (!compilationUnit.generateKotlinModels()) {
-      "compile${taskName}Java"
-    } else {
+    val compileTaskName = if (compilationUnit.generateKotlinModels()) {
       "compile${taskName}Kotlin"
+    } else {
+      "compile${taskName}Java"
     }
 
     if (!compilationUnit.generateKotlinModels()) {
