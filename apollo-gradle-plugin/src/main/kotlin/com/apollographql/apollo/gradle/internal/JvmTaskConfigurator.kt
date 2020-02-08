@@ -2,6 +2,7 @@ package com.apollographql.apollo.gradle.internal
 
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
+import org.gradle.api.internal.jvm.ClassDirectoryBinaryNamingScheme
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.TaskProvider
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
@@ -32,23 +33,19 @@ object JvmTaskConfigurator {
   fun registerGeneratedDirectory(project: Project, compilationUnit: DefaultCompilationUnit, codegenProvider: TaskProvider<ApolloGenerateSourcesTask>) {
     val sourceSetName = compilationUnit.variantName
 
-    var taskName = compilationUnit.variantName.capitalize()
-    if (taskName == "Main") {
-      // Special case: The main variant will use "compileJava" and not "compileMainJava"
-      taskName = ""
-    }
-
     val sourceDirectorySet = if (compilationUnit.generateKotlinModels()) {
       (project.extensions.getByName("kotlin") as KotlinProjectExtension).sourceSets.getByName(sourceSetName).kotlin
     } else {
       project.convention.getPlugin(JavaPluginConvention::class.java).sourceSets.getByName(sourceSetName).java
     }
 
-    val compileTaskName = if (compilationUnit.generateKotlinModels()) {
-      "compile${taskName}Kotlin"
-    } else {
-      "compile${taskName}Java"
-    }
+    val language = if (compilationUnit.generateKotlinModels()) "kotlin" else "java"
+
+    // This is taken from the Java plugin to try and match their naming.
+    // Hopefully the Kotlin plugin uses similar code.
+    // ClassDirectoryBinaryNamingScheme will replace "main" with ""
+    // See https://github.com/gradle/gradle/blob/v6.1.1/subprojects/plugins/src/main/java/org/gradle/api/internal/tasks/DefaultSourceSet.java#L136
+    val compileTaskName = ClassDirectoryBinaryNamingScheme(sourceSetName).getTaskName("compile", language)
 
     if (!compilationUnit.generateKotlinModels()) {
       /**
