@@ -211,6 +211,23 @@ class SourceDirectorySetTests {
   }
 
   @Test
+  fun `custom sourceSets with dash does not make configuration fail`() {
+    val apolloConfiguration = """
+      sourceSets {
+        'native-test' {
+        }
+      }
+    """.trimIndent()
+    TestUtils.withProject(apolloConfiguration = apolloConfiguration,
+        plugins = listOf(TestUtils.javaPlugin, TestUtils.apolloPlugin),
+        usesKotlinDsl = false) { dir ->
+
+      val result = TestUtils.executeTask("compileNativeTestJava", dir)
+      Assert.assertEquals(TaskOutcome.NO_SOURCE, result.task(":compileNativeTestJava")!!.outcome)
+    }
+  }
+
+  @Test
   fun `android can add queries to the test variant`() {
     val apolloConfiguration = """
       apollo {
