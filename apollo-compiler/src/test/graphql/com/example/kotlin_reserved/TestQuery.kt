@@ -55,10 +55,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val name: String
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeString(RESPONSE_FIELDS[0], __typename)
-      it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, it_)
-      it.writeString(RESPONSE_FIELDS[2], name)
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@Yield_.__typename)
+      writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, this@Yield_.it_)
+      writer.writeString(RESPONSE_FIELDS[2], this@Yield_.name)
     }
 
     companion object {
@@ -68,11 +68,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           ResponseField.forString("name", "name", null, false, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Yield_ {
-        val __typename = reader.readString(RESPONSE_FIELDS[0])
-        val it_ = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
-        val name = reader.readString(RESPONSE_FIELDS[2])
-        return Yield_(
+      operator fun invoke(reader: ResponseReader): Yield_ = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val it_ = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+        val name = readString(RESPONSE_FIELDS[2])
+        Yield_(
           __typename = __typename,
           it_ = it_,
           name = name
@@ -84,8 +84,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   data class Data(
     val yield_: Yield_?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-      it.writeObject(RESPONSE_FIELDS[0], yield_?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeObject(RESPONSE_FIELDS[0], this@Data.yield_?.marshaller())
     }
 
     companion object {
@@ -93,12 +93,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           ResponseField.forObject("yield", "hero", null, true, null)
           )
 
-      operator fun invoke(reader: ResponseReader): Data {
-        val yield_ = reader.readObject<Yield_>(RESPONSE_FIELDS[0]) { reader ->
+      operator fun invoke(reader: ResponseReader): Data = reader.run {
+        val yield_ = readObject<Yield_>(RESPONSE_FIELDS[0]) { reader ->
           Yield_(reader)
         }
-
-        return Data(
+        Data(
           yield_ = yield_
         )
       }
