@@ -321,7 +321,7 @@ class ResponseFieldSpec(
       else -> writeObject()
     }.let {
       CodeBlock.builder()
-          .beginControlFlow("for (Object \$L : \$L)", ITEM_VALUE_PARAM.name, ITEMS_VALUE_PARAM.name)
+          .beginControlFlow("for (\$T \$L : \$L)", TypeName.OBJECT, ITEM_VALUE_PARAM.name, ITEMS_VALUE_PARAM.name)
           .add(it)
           .endControlFlow()
           .build()
