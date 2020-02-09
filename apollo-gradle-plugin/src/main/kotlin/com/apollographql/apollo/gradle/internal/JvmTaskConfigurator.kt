@@ -2,7 +2,6 @@ package com.apollographql.apollo.gradle.internal
 
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
-import org.gradle.api.internal.jvm.ClassDirectoryBinaryNamingScheme
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.TaskProvider
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
@@ -40,12 +39,16 @@ object JvmTaskConfigurator {
     }
 
     val language = if (compilationUnit.generateKotlinModels()) "kotlin" else "java"
+    val baseName = if (sourceSetName == "main") {
+      ""
+    } else {
+      sourceSetName
+    }
 
     // This is taken from the Java plugin to try and match their naming.
     // Hopefully the Kotlin plugin uses similar code.
-    // ClassDirectoryBinaryNamingScheme will replace "main" with ""
     // See https://github.com/gradle/gradle/blob/v6.1.1/subprojects/plugins/src/main/java/org/gradle/api/internal/tasks/DefaultSourceSet.java#L136
-    val compileTaskName = ClassDirectoryBinaryNamingScheme(sourceSetName).getTaskName("compile", language)
+    val compileTaskName = GUtil.toCamelCase("compile $baseName $language", true)
 
     if (!compilationUnit.generateKotlinModels()) {
       /**
