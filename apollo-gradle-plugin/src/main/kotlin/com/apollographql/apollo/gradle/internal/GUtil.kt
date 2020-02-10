@@ -22,9 +22,6 @@ import java.util.regex.Pattern
 object GUtil {
   private val WORD_SEPARATOR: Pattern = Pattern.compile("\\W+")
 
-  fun String.uncapitalize(): String {
-    return if (isNotEmpty() && this[0].isUpperCase()) substring(0, 1).toLowerCase() + substring(1) else this
-  }
   fun toCamelCase(string: CharSequence?, lower: Boolean): String? {
     if (string == null) {
       return null
@@ -40,7 +37,7 @@ object GUtil {
         continue
       }
       if (lower && first) {
-        chunk = chunk.uncapitalize()
+        chunk = chunk.decapitalize()
         first = false
       } else {
         chunk = chunk.capitalize()
@@ -49,7 +46,7 @@ object GUtil {
     }
     var rest = string.subSequence(pos, string.length).toString()
     rest = if (lower && first) {
-      rest.uncapitalize()
+      rest.decapitalize()
     } else {
       rest.capitalize()
     }
