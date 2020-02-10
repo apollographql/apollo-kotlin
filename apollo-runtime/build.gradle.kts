@@ -9,6 +9,7 @@ java {
 
 dependencies {
   add("api", project(":apollo-api")) // apollo-espresso-support uses some apollo-api internals
+  add("api", project(":apollo-http-cache-api"))
   add("api", groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
   add("compileOnly", groovy.util.Eval.x(project, "x.dep.jetbrainsAnnotations"))
   add("implementation", groovy.util.Eval.x(project, "x.dep.cache"))

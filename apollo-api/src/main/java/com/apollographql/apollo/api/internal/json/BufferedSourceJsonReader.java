@@ -15,15 +15,12 @@
  */
 package com.apollographql.apollo.api.internal.json;
 
-import com.apollographql.apollo.json.JsonDataException;
-import com.apollographql.apollo.json.JsonEncodingException;
-
-import java.io.EOFException;
-import java.io.IOException;
-
 import okio.Buffer;
 import okio.BufferedSource;
 import okio.ByteString;
+
+import java.io.EOFException;
+import java.io.IOException;
 
 /** TODO add Modifications copyright **/
 public final class BufferedSourceJsonReader extends JsonReader {

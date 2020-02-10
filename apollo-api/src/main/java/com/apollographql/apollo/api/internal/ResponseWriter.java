@@ -1,9 +1,11 @@
-package com.apollographql.apollo.api;
+package com.apollographql.apollo.api.internal;
 
-import java.util.List;
-
+import com.apollographql.apollo.api.ResponseField;
+import com.apollographql.apollo.api.ScalarType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public interface ResponseWriter {
   void writeString(@NotNull ResponseField field, @Nullable String value);

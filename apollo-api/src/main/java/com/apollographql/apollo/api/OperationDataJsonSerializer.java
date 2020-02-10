@@ -1,7 +1,6 @@
 package com.apollographql.apollo.api;
 
 import com.apollographql.apollo.api.internal.SimpleResponseWriter;
-import com.apollographql.apollo.response.ScalarTypeAdapters;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;

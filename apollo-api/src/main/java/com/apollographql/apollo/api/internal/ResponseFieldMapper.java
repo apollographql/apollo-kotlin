@@ -1,4 +1,4 @@
-package com.apollographql.apollo.api;
+package com.apollographql.apollo.api.internal;
 
 /**
  * ResponseFieldMapper is an abstraction for mapping the response data returned by

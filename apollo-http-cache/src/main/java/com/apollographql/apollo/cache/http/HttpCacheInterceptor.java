@@ -1,25 +1,15 @@
 package com.apollographql.apollo.cache.http;
 
-import com.apollographql.apollo.internal.ApolloLogger;
-
-import java.io.IOException;
-
+import com.apollographql.apollo.api.internal.ApolloLogger;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import java.io.IOException;
+
 import static com.apollographql.apollo.api.cache.http.HttpCache.CACHE_KEY_HEADER;
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
-import static com.apollographql.apollo.cache.http.Utils.isNetworkFirst;
-import static com.apollographql.apollo.cache.http.Utils.isNetworkOnly;
-import static com.apollographql.apollo.cache.http.Utils.isPrefetchResponse;
-import static com.apollographql.apollo.cache.http.Utils.isStale;
-import static com.apollographql.apollo.cache.http.Utils.shouldExpireAfterRead;
-import static com.apollographql.apollo.cache.http.Utils.shouldSkipCache;
-import static com.apollographql.apollo.cache.http.Utils.shouldSkipNetwork;
-import static com.apollographql.apollo.cache.http.Utils.strip;
-import static com.apollographql.apollo.cache.http.Utils.unsatisfiableCacheRequest;
-import static com.apollographql.apollo.cache.http.Utils.withServedDateHeader;
+import static com.apollographql.apollo.cache.http.Utils.*;
 
 final class HttpCacheInterceptor implements Interceptor {
   private final ApolloHttpCache cache;

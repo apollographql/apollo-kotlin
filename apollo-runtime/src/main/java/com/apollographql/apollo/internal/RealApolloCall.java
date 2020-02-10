@@ -5,12 +5,14 @@ import com.apollographql.apollo.ApolloQueryCall;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
-import com.apollographql.apollo.api.ResponseFieldMapper;
-import com.apollographql.apollo.api.internal.Action;
-import com.apollographql.apollo.api.internal.Optional;
-import com.apollographql.apollo.cache.CacheHeaders;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.cache.http.HttpCache;
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
+import com.apollographql.apollo.api.internal.Action;
+import com.apollographql.apollo.api.internal.ApolloLogger;
+import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.api.internal.ResponseFieldMapper;
+import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
@@ -26,7 +28,10 @@ import com.apollographql.apollo.internal.interceptor.ApolloParseInterceptor;
 import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor;
 import com.apollographql.apollo.internal.interceptor.RealApolloInterceptorChain;
 import com.apollographql.apollo.request.RequestHeaders;
-import com.apollographql.apollo.response.ScalarTypeAdapters;
+import okhttp3.Call;
+import okhttp3.HttpUrl;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,17 +40,8 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import okhttp3.Call;
-import okhttp3.HttpUrl;
-
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
-import static com.apollographql.apollo.internal.CallState.ACTIVE;
-import static com.apollographql.apollo.internal.CallState.CANCELED;
-import static com.apollographql.apollo.internal.CallState.IDLE;
-import static com.apollographql.apollo.internal.CallState.TERMINATED;
+import static com.apollographql.apollo.internal.CallState.*;
 import static java.util.Collections.emptyList;
 
 @SuppressWarnings("WeakerAccess")

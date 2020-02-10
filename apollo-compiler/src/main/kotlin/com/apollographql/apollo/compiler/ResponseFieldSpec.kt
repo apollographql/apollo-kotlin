@@ -1,8 +1,8 @@
 package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.ResponseReader
-import com.apollographql.apollo.api.ResponseWriter
+import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.apollographql.apollo.compiler.ir.Condition
 import com.apollographql.apollo.compiler.ir.Field

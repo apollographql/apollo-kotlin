@@ -1,10 +1,9 @@
 package com.apollographql.apollo.api.cache.http;
 
-import java.io.IOException;
-
+import okio.Sink;
 import org.jetbrains.annotations.NotNull;
 
-import okio.Sink;
+import java.io.IOException;
 
 public interface HttpCacheRecordEditor {
   @NotNull Sink headerSink();

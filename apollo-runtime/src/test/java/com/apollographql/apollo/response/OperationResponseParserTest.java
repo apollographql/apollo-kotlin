@@ -1,9 +1,10 @@
 package com.apollographql.apollo.response;
 
+import com.apollographql.apollo.api.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
-import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarType;
-
+import com.apollographql.apollo.api.ScalarTypeAdapters;
+import com.apollographql.apollo.api.internal.ResponseFieldMapper;
 import org.junit.Test;
 
 import java.util.HashMap;
