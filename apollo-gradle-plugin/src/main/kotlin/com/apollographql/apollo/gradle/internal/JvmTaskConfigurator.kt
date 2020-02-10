@@ -32,23 +32,23 @@ object JvmTaskConfigurator {
   fun registerGeneratedDirectory(project: Project, compilationUnit: DefaultCompilationUnit, codegenProvider: TaskProvider<ApolloGenerateSourcesTask>) {
     val sourceSetName = compilationUnit.variantName
 
-    var taskName = compilationUnit.variantName.capitalize()
-    if (taskName == "Main") {
-      // Special case: The main variant will use "compileJava" and not "compileMainJava"
-      taskName = ""
-    }
-
     val sourceDirectorySet = if (compilationUnit.generateKotlinModels()) {
       (project.extensions.getByName("kotlin") as KotlinProjectExtension).sourceSets.getByName(sourceSetName).kotlin
     } else {
       project.convention.getPlugin(JavaPluginConvention::class.java).sourceSets.getByName(sourceSetName).java
     }
 
-    val compileTaskName = if (compilationUnit.generateKotlinModels()) {
-      "compile${taskName}Kotlin"
+    val language = if (compilationUnit.generateKotlinModels()) "kotlin" else "java"
+    val baseName = if (sourceSetName == "main") {
+      ""
     } else {
-      "compile${taskName}Java"
+      sourceSetName
     }
+
+    // This is taken from the Java plugin to try and match their naming.
+    // Hopefully the Kotlin plugin uses similar code.
+    // See https://github.com/gradle/gradle/blob/v6.1.1/subprojects/plugins/src/main/java/org/gradle/api/internal/tasks/DefaultSourceSet.java#L136
+    val compileTaskName = GUtil.toCamelCase("compile $baseName $language", true)
 
     if (!compilationUnit.generateKotlinModels()) {
       /**
