@@ -29,6 +29,24 @@ class ConfigurationTests {
   }
 
   @Test
+  fun `customTypeMapping can be applied from a service block`() {
+    withSimpleProject("""
+      apollo {
+        service("other") {
+          schemaPath = "com/example/schema.json"
+        }
+        service("api") {
+          customTypeMapping = ["DateTime": "java.util.Date"]
+          schemaPath = "com/example/schema.json"
+        }
+      }
+    """.trimIndent()) { dir ->
+      TestUtils.executeTask("generateApolloSources", dir)
+      TestUtils.assertFileContains(dir, "main/api/com/example/type/CustomType.java", "return Date.class;")
+    }
+  }
+
+  @Test
   fun `nullableValueType is working`() {
     for (pair in listOf(
         "annotated" to "@Nullable String name()",
