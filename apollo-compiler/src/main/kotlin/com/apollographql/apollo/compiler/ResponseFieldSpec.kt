@@ -389,7 +389,8 @@ class ResponseFieldSpec(
         ResponseField.Type.OBJECT to "forObject",
         ResponseField.Type.LIST to "forList",
         ResponseField.Type.CUSTOM to "forCustomType",
-        ResponseField.Type.FRAGMENT to "forFragment"
+        ResponseField.Type.FRAGMENT to "forFragment",
+        ResponseField.Type.FRAGMENTS to "forString"
     )
     private val READ_METHODS = mapOf(
         ResponseField.Type.STRING to "readString",

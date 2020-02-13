@@ -72,7 +72,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, false, null),
-          ResponseField.forList("appearsIn", "appearsIn", null, false, null)
+          ResponseField.forList("appearsIn", "appearsIn", null, false, null),
+          ResponseField.forString("__typename", "__typename", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): Hero = reader.run {
@@ -141,7 +142,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "bde12a64d113bd023a2b00439b07af505f314359f662a0bf2ab5a330c8baa494"
+        "cf2801bb0424f62ecf3504cedcf40d0fc0f5b5b75bdaf1a9febb5e63bea91306"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -155,6 +156,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           |}
           |fragment HeroDetails on Character {
           |  __typename
+          |  ... HumanDetails
           |  ... on Droid {
           |    ...DroidDetails
           |  }
@@ -170,6 +172,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           |      }
           |    }
           |  }
+          |}
+          |fragment HumanDetails on Human {
+          |  __typename
+          |  name
           |}
           |fragment DroidDetails on Droid {
           |  __typename

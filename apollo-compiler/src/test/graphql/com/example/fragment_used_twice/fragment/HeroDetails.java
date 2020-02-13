@@ -23,7 +23,8 @@ import org.jetbrains.annotations.NotNull;
 public class HeroDetails implements GraphqlFragment {
   static final ResponseField[] $responseFields = {
     ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-    ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList())
+    ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
+    ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList())
   };
 
   public static final String FRAGMENT_DEFINITION = "fragment HeroDetails on Character {\n"

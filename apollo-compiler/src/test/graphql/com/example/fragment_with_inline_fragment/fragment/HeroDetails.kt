@@ -27,12 +27,14 @@ data class HeroDetails(
    * The friends of the character exposed as a connection with edges
    */
   val friendsConnection: FriendsConnection,
+  val fragments: Fragments,
   val asDroid: AsDroid?
 ) : GraphqlFragment {
   override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
     writer.writeString(RESPONSE_FIELDS[0], this@HeroDetails.__typename)
     writer.writeString(RESPONSE_FIELDS[1], this@HeroDetails.name)
     writer.writeObject(RESPONSE_FIELDS[2], this@HeroDetails.friendsConnection.marshaller())
+    this@HeroDetails.fragments.marshaller().marshal(writer)
     writer.writeFragment(this@HeroDetails.asDroid?.marshaller())
   }
 
@@ -41,6 +43,7 @@ data class HeroDetails(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null),
+        ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forFragment("__typename", "__typename", listOf(
           ResponseField.Condition.typeCondition(arrayOf("Droid"))
         ))
@@ -49,6 +52,7 @@ data class HeroDetails(
     val FRAGMENT_DEFINITION: String = """
         |fragment HeroDetails on Character {
         |  __typename
+        |  ... HumanDetails
         |  ... on Droid {
         |    ...DroidDetails
         |  }
@@ -73,15 +77,42 @@ data class HeroDetails(
       val friendsConnection = readObject<FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
         FriendsConnection(reader)
       }
-      val asDroid = readFragment<AsDroid>(RESPONSE_FIELDS[3]) { reader ->
+      val fragments = Fragments(reader)
+      val asDroid = readFragment<AsDroid>(RESPONSE_FIELDS[4]) { reader ->
         AsDroid(reader)
       }
       HeroDetails(
         __typename = __typename,
         name = name,
         friendsConnection = friendsConnection,
+        fragments = fragments,
         asDroid = asDroid
       )
+    }
+  }
+
+  data class Fragments(
+    val humanDetails: HumanDetails?
+  ) {
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      writer.writeFragment(this@Fragments.humanDetails?.marshaller())
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forFragment("__typename", "__typename", listOf(
+            ResponseField.Condition.typeCondition(arrayOf("Human"))
+          ))
+          )
+
+      operator fun invoke(reader: ResponseReader): Fragments = reader.run {
+        val humanDetails = readFragment<HumanDetails>(RESPONSE_FIELDS[0]) { reader ->
+          HumanDetails(reader)
+        }
+        Fragments(
+          humanDetails = humanDetails
+        )
+      }
     }
   }
 
@@ -320,7 +351,8 @@ data class HeroDetails(
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, false, null),
-          ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
+          ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null),
+          ResponseField.forString("__typename", "__typename", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): AsDroid = reader.run {

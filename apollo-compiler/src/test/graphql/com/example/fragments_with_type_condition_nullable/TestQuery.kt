@@ -56,6 +56,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("__typename", "__typename", null, false, null)
           )
 
@@ -115,6 +116,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("__typename", "__typename", null, false, null)
           )
 

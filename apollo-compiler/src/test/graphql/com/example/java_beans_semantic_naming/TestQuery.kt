@@ -72,7 +72,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, false, null),
-          ResponseField.forList("appearsIn", "appearsIn", null, false, null)
+          ResponseField.forList("appearsIn", "appearsIn", null, false, null),
+          ResponseField.forString("__typename", "__typename", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): Hero = reader.run {

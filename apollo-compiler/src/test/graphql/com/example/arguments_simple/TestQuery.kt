@@ -104,7 +104,8 @@ data class TestQuery(
           ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, true, listOf(
             ResponseField.Condition.booleanCondition("IncludeName", false)
-          ))
+          )),
+          ResponseField.forString("__typename", "__typename", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): Hero = reader.run {

@@ -377,7 +377,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, true, Arrays.<ResponseField.Condition>asList(
         ResponseField.Condition.booleanCondition("IncludeName", false)
-      ))
+      )),
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @NotNull String __typename;

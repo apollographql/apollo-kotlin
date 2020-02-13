@@ -226,7 +226,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forList("appearsIn", "appearsIn", null, false, Collections.<ResponseField.Condition>emptyList())
+      ResponseField.forList("appearsIn", "appearsIn", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @NotNull String __typename;

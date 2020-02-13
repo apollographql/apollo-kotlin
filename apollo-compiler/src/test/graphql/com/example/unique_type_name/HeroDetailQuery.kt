@@ -62,6 +62,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("__typename", "__typename", null, false, null)
           )
 
