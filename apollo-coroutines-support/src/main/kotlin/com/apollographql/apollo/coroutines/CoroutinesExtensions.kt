@@ -108,6 +108,7 @@ fun <T> ApolloQueryWatcher<T>.toFlow() = callbackFlow {
  * @return a channel which emits [Responses<T>]
  */
 @ExperimentalCoroutinesApi
+@Deprecated(message = "Use toFlow instead", replaceWith = ReplaceWith("toFlow()"))
 fun <T> ApolloCall<T>.toChannel(capacity: Int = Channel.UNLIMITED): Channel<Response<T>> {
   checkCapacity(capacity)
   val channel = Channel<Response<T>>(capacity)
@@ -161,6 +162,7 @@ fun <T> ApolloCall<T>.toDeferred(): Deferred<Response<T>> {
  * @return a channel which emits [Responses<T>]
  */
 @ExperimentalCoroutinesApi
+@Deprecated(message = "Use toFlow instead", replaceWith = ReplaceWith("toFlow()"))
 fun <T> ApolloQueryWatcher<T>.toChannel(capacity: Int = Channel.UNLIMITED): Channel<Response<T>> {
   checkCapacity(capacity)
   val channel = Channel<Response<T>>(capacity)
@@ -182,6 +184,7 @@ fun <T> ApolloQueryWatcher<T>.toChannel(capacity: Int = Channel.UNLIMITED): Chan
  * @return a channel which emits [Responses<T>]
  */
 @ExperimentalCoroutinesApi
+@Deprecated(message = "Use toFlow instead", replaceWith = ReplaceWith("toFlow()"))
 fun <T> ApolloSubscriptionCall<T>.toChannel(capacity: Int = Channel.UNLIMITED): Channel<Response<T>> {
   checkCapacity(capacity)
   val channel = Channel<Response<T>>(capacity)
