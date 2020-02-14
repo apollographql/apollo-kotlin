@@ -52,7 +52,7 @@ fun <T> ApolloCall<T>.toFlow(capacity: Int = Channel.UNLIMITED) = flow {
     checkCapacity(capacity)
     val channel = Channel<Response<T>>(capacity)
 
-    enqueue(ChannelCallback(channel = channel))
+    clone().enqueue(ChannelCallback(channel = channel))
     try {
         for (item in channel) {
             emit(item)
@@ -76,7 +76,7 @@ fun <T> ApolloQueryWatcher<T>.toFlow(capacity: Int = Channel.UNLIMITED) = flow {
     checkCapacity(capacity)
     val channel = Channel<Response<T>>(capacity)
 
-    enqueueAndWatch(ChannelCallback(channel = channel))
+    clone().enqueueAndWatch(ChannelCallback(channel = channel))
     try {
         for (item in channel) {
             emit(item)

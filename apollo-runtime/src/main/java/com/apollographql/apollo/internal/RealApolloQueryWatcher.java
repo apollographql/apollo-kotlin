@@ -126,7 +126,10 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
         throw new IllegalStateException("Unknown state");
 
     }
+  }
 
+  @NotNull @Override public ApolloQueryWatcher<T> clone() {
+    return new RealApolloQueryWatcher<>(activeCall.clone(), apolloStore, logger, tracker);
   }
 
   private ApolloCall.Callback<T> callbackProxy() {
