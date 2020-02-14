@@ -441,6 +441,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
   public static class Node {
     static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 

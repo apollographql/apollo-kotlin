@@ -266,7 +266,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static class Hero {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forCustomType("id", "id", null, false, CustomType.ID, Collections.<ResponseField.Condition>emptyList())
+      ResponseField.forCustomType("id", "id", null, false, CustomType.ID, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @NotNull String __typename;

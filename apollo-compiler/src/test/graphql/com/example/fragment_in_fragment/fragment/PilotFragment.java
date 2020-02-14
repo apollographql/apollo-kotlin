@@ -148,6 +148,7 @@ public class PilotFragment implements GraphqlFragment {
 
   public static class Homeworld {
     static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 

@@ -601,6 +601,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
   public static class Friend2 {
     static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 

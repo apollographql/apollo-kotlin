@@ -25,7 +25,7 @@ internal fun ObjectType.typeSpec(generateAsInternal: Boolean = false): TypeSpec 
           .addFunction(fields.toMapperFun(ClassName(packageName = "", simpleName = name)))
           .build())
       .applyIf(fragmentsType != null) { addType(fragmentsType!!.fragmentsTypeSpec(generateAsInternal)) }
-      .addFunction(marshallerFunSpec(fields = fields, thisRef = name))
+      .addFunction(fields.marshallerFunSpec(thisRef = name))
       .addTypes(nestedObjects.map { (_, type) -> type.typeSpec() })
       .build()
 
@@ -49,7 +49,7 @@ internal fun ObjectType.typeSpec(generateAsInternal: Boolean = false): TypeSpec 
           .addProperty(responseFieldsPropertySpec(fields))
           .addFunction(fields.toMapperFun(ClassName.bestGuess(name)))
           .build())
-      .addFunction(marshallerFunSpec(fields = fields, override = true, thisRef = name))
+      .addFunction(fields.marshallerFunSpec(override = true, thisRef = name))
       .applyIf(fragmentsType != null) { addType(fragmentsType!!.fragmentsTypeSpec(generateAsInternal)) }
       .addTypes(nestedObjects.map { (_, type) -> type.typeSpec() })
       .build()
@@ -72,7 +72,7 @@ internal fun ObjectType.typeSpec(generateAsInternal: Boolean = false): TypeSpec 
           .addFunction(fields.toMapperFun(ClassName.bestGuess(name)))
           .build())
       .applyIf(fragmentsType != null) { addType(fragmentsType!!.fragmentsTypeSpec(generateAsInternal)) }
-      .addFunction(marshallerFunSpec(fields = fields, override = true, thisRef = name))
+      .addFunction(fields.marshallerFunSpec(override = true, thisRef = name))
       .addTypes(nestedObjects.map { (_, type) -> type.typeSpec() })
       .build()
 
@@ -89,7 +89,7 @@ private fun ObjectType.fragmentsTypeSpec(generateAsInternal: Boolean = false): T
           .addProperty(responseFieldsPropertySpec(fields))
           .addFunction(fields.toMapperFun(ClassName(packageName = "", simpleName = name)))
           .build())
-      .addFunction(marshallerFunSpec(fields = fields, thisRef = name))
+      .addFunction(fields.marshallerFunSpec(thisRef = name))
       .addTypes(nestedObjects.map { (_, type) -> type.typeSpec() })
       .build()
 }

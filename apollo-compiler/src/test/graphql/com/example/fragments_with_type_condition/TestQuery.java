@@ -234,6 +234,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class R2 {
     static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
@@ -434,6 +435,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class Luke {
     static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 

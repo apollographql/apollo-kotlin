@@ -35,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "bde12a64d113bd023a2b00439b07af505f314359f662a0bf2ab5a330c8baa494";
+  public static final String OPERATION_ID = "cf2801bb0424f62ecf3504cedcf40d0fc0f5b5b75bdaf1a9febb5e63bea91306";
 
   public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
     "query TestQuery {\n"
@@ -48,6 +48,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         + "}\n"
         + "fragment HeroDetails on Character {\n"
         + "  __typename\n"
+        + "  ... HumanDetails\n"
         + "  ... on Droid {\n"
         + "    ...DroidDetails\n"
         + "  }\n"
@@ -63,6 +64,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         + "      }\n"
         + "    }\n"
         + "  }\n"
+        + "}\n"
+        + "fragment HumanDetails on Human {\n"
+        + "  __typename\n"
+        + "  name\n"
         + "}\n"
         + "fragment DroidDetails on Droid {\n"
         + "  __typename\n"
@@ -260,7 +265,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forList("appearsIn", "appearsIn", null, false, Collections.<ResponseField.Condition>emptyList())
+      ResponseField.forList("appearsIn", "appearsIn", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @NotNull String __typename;

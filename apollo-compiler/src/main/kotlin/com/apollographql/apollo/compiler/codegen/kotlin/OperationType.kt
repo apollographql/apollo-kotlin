@@ -230,5 +230,5 @@ private fun ObjectType.toOperationDataTypeSpec(name: String) =
             .addFunction(fields.toMapperFun(ClassName.bestGuess(name)))
             .build()
         )
-        .addFunction(marshallerFunSpec(fields = fields, override = true, thisRef = name))
+        .addFunction(fields.marshallerFunSpec(override = true, thisRef = name))
         .build()

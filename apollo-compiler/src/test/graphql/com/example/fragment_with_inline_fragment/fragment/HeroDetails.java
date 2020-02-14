@@ -29,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 public interface HeroDetails extends GraphqlFragment {
   String FRAGMENT_DEFINITION = "fragment HeroDetails on Character {\n"
       + "  __typename\n"
+      + "  ... HumanDetails\n"
       + "  ... on Droid {\n"
       + "    ...DroidDetails\n"
       + "  }\n"
@@ -145,7 +146,8 @@ public interface HeroDetails extends GraphqlFragment {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forObject("friendsConnection", "friendsConnection", null, false, Collections.<ResponseField.Condition>emptyList())
+      ResponseField.forObject("friendsConnection", "friendsConnection", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @NotNull String __typename;
@@ -913,7 +915,8 @@ public interface HeroDetails extends GraphqlFragment {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forObject("friendsConnection", "friendsConnection", null, false, Collections.<ResponseField.Condition>emptyList())
+      ResponseField.forObject("friendsConnection", "friendsConnection", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @NotNull String __typename;
@@ -922,6 +925,8 @@ public interface HeroDetails extends GraphqlFragment {
 
     final @NotNull FriendsConnection2 friendsConnection;
 
+    private final @NotNull Fragments fragments;
+
     private transient volatile String $toString;
 
     private transient volatile int $hashCode;
@@ -929,10 +934,11 @@ public interface HeroDetails extends GraphqlFragment {
     private transient volatile boolean $hashCodeMemoized;
 
     public AsCharacter(@NotNull String __typename, @NotNull String name,
-        @NotNull FriendsConnection2 friendsConnection) {
+        @NotNull FriendsConnection2 friendsConnection, @NotNull Fragments fragments) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.name = Utils.checkNotNull(name, "name == null");
       this.friendsConnection = Utils.checkNotNull(friendsConnection, "friendsConnection == null");
+      this.fragments = Utils.checkNotNull(fragments, "fragments == null");
     }
 
     public @NotNull String __typename() {
@@ -953,6 +959,10 @@ public interface HeroDetails extends GraphqlFragment {
       return this.friendsConnection;
     }
 
+    public @NotNull Fragments fragments() {
+      return this.fragments;
+    }
+
     @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
@@ -961,6 +971,7 @@ public interface HeroDetails extends GraphqlFragment {
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], name);
           writer.writeObject($responseFields[2], friendsConnection.marshaller());
+          fragments.marshaller().marshal(writer);
         }
       };
     }
@@ -971,7 +982,8 @@ public interface HeroDetails extends GraphqlFragment {
         $toString = "AsCharacter{"
           + "__typename=" + __typename + ", "
           + "name=" + name + ", "
-          + "friendsConnection=" + friendsConnection
+          + "friendsConnection=" + friendsConnection + ", "
+          + "fragments=" + fragments
           + "}";
       }
       return $toString;
@@ -986,7 +998,8 @@ public interface HeroDetails extends GraphqlFragment {
         AsCharacter that = (AsCharacter) o;
         return this.__typename.equals(that.__typename)
          && this.name.equals(that.name)
-         && this.friendsConnection.equals(that.friendsConnection);
+         && this.friendsConnection.equals(that.friendsConnection)
+         && this.fragments.equals(that.fragments);
       }
       return false;
     }
@@ -1001,6 +1014,8 @@ public interface HeroDetails extends GraphqlFragment {
         h ^= name.hashCode();
         h *= 1000003;
         h ^= friendsConnection.hashCode();
+        h *= 1000003;
+        h ^= fragments.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -1012,6 +1027,7 @@ public interface HeroDetails extends GraphqlFragment {
       builder.__typename = __typename;
       builder.name = name;
       builder.friendsConnection = friendsConnection;
+      builder.fragments = fragments;
       return builder;
     }
 
@@ -1019,8 +1035,121 @@ public interface HeroDetails extends GraphqlFragment {
       return new Builder();
     }
 
+    public static class Fragments {
+      final Optional<HumanDetails> humanDetails;
+
+      private transient volatile String $toString;
+
+      private transient volatile int $hashCode;
+
+      private transient volatile boolean $hashCodeMemoized;
+
+      public Fragments(@Nullable HumanDetails humanDetails) {
+        this.humanDetails = Optional.fromNullable(humanDetails);
+      }
+
+      public Optional<HumanDetails> humanDetails() {
+        return this.humanDetails;
+      }
+
+      public ResponseFieldMarshaller marshaller() {
+        return new ResponseFieldMarshaller() {
+          @Override
+          public void marshal(ResponseWriter writer) {
+            final HumanDetails $humanDetails = humanDetails.isPresent() ? humanDetails.get() : null;
+            if ($humanDetails != null) {
+              writer.writeFragment($humanDetails.marshaller());
+            }
+          }
+        };
+      }
+
+      @Override
+      public String toString() {
+        if ($toString == null) {
+          $toString = "Fragments{"
+            + "humanDetails=" + humanDetails
+            + "}";
+        }
+        return $toString;
+      }
+
+      @Override
+      public boolean equals(Object o) {
+        if (o == this) {
+          return true;
+        }
+        if (o instanceof Fragments) {
+          Fragments that = (Fragments) o;
+          return this.humanDetails.equals(that.humanDetails);
+        }
+        return false;
+      }
+
+      @Override
+      public int hashCode() {
+        if (!$hashCodeMemoized) {
+          int h = 1;
+          h *= 1000003;
+          h ^= humanDetails.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
+        }
+        return $hashCode;
+      }
+
+      public Builder toBuilder() {
+        Builder builder = new Builder();
+        builder.humanDetails = humanDetails.isPresent() ? humanDetails.get() : null;
+        return builder;
+      }
+
+      public static Builder builder() {
+        return new Builder();
+      }
+
+      public static final class Mapper implements ResponseFieldMapper<Fragments> {
+        static final ResponseField[] $responseFields = {
+          ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+            ResponseField.Condition.typeCondition(new String[] {"Human"})
+          ))
+        };
+
+        final HumanDetails.Mapper humanDetailsFieldMapper = new HumanDetails.Mapper();
+
+        @Override
+        public @NotNull Fragments map(ResponseReader reader) {
+          final HumanDetails humanDetails = reader.readFragment($responseFields[0], new ResponseReader.ObjectReader<HumanDetails>() {
+            @Override
+            public HumanDetails read(ResponseReader reader) {
+              return humanDetailsFieldMapper.map(reader);
+            }
+          });
+          return new Fragments(humanDetails);
+        }
+      }
+
+      public static final class Builder {
+        private @Nullable HumanDetails humanDetails;
+
+        Builder() {
+        }
+
+        public Builder humanDetails(@Nullable HumanDetails humanDetails) {
+          this.humanDetails = humanDetails;
+          return this;
+        }
+
+        public Fragments build() {
+          return new Fragments(humanDetails);
+        }
+      }
+    }
+
     public static final class Mapper implements ResponseFieldMapper<AsCharacter> {
       final FriendsConnection2.Mapper friendsConnection2FieldMapper = new FriendsConnection2.Mapper();
+
+      final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
 
       @Override
       public AsCharacter map(ResponseReader reader) {
@@ -1032,7 +1161,8 @@ public interface HeroDetails extends GraphqlFragment {
             return friendsConnection2FieldMapper.map(reader);
           }
         });
-        return new AsCharacter(__typename, name, friendsConnection);
+        final Fragments fragments = fragmentsFieldMapper.map(reader);
+        return new AsCharacter(__typename, name, friendsConnection, fragments);
       }
     }
 
@@ -1042,6 +1172,8 @@ public interface HeroDetails extends GraphqlFragment {
       private @NotNull String name;
 
       private @NotNull FriendsConnection2 friendsConnection;
+
+      private @NotNull Fragments fragments;
 
       Builder() {
       }
@@ -1061,6 +1193,11 @@ public interface HeroDetails extends GraphqlFragment {
         return this;
       }
 
+      public Builder fragments(@NotNull Fragments fragments) {
+        this.fragments = fragments;
+        return this;
+      }
+
       public Builder friendsConnection(@NotNull Mutator<FriendsConnection2.Builder> mutator) {
         Utils.checkNotNull(mutator, "mutator == null");
         FriendsConnection2.Builder builder = this.friendsConnection != null ? this.friendsConnection.toBuilder() : FriendsConnection2.builder();
@@ -1069,11 +1206,20 @@ public interface HeroDetails extends GraphqlFragment {
         return this;
       }
 
+      public Builder fragments(@NotNull Mutator<Fragments.Builder> mutator) {
+        Utils.checkNotNull(mutator, "mutator == null");
+        Fragments.Builder builder = this.fragments != null ? this.fragments.toBuilder() : Fragments.builder();
+        mutator.accept(builder);
+        this.fragments = builder.build();
+        return this;
+      }
+
       public AsCharacter build() {
         Utils.checkNotNull(__typename, "__typename == null");
         Utils.checkNotNull(name, "name == null");
         Utils.checkNotNull(friendsConnection, "friendsConnection == null");
-        return new AsCharacter(__typename, name, friendsConnection);
+        Utils.checkNotNull(fragments, "fragments == null");
+        return new AsCharacter(__typename, name, friendsConnection, fragments);
       }
     }
   }

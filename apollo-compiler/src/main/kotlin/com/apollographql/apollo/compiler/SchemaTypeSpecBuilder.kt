@@ -346,7 +346,6 @@ class SchemaTypeSpecBuilder(
             .add("{\n")
             .indent()
             .add(responseFieldSpecs
-                .filter { it.fieldSpec.name != FRAGMENTS_FIELD.name }
                 .map { it.factoryCode() }
                 .foldIndexed(CodeBlock.builder()) { i, builder, code ->
                   builder.add(if (i > 0) ",\n" else "").add(code)

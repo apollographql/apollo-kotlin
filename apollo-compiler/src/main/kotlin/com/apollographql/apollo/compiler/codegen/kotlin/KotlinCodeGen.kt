@@ -69,7 +69,6 @@ internal object KotlinCodeGen {
   fun responseFieldsPropertySpec(fields: List<ObjectType.Field>): PropertySpec {
     val initializer = fields
         .map { field -> field.responseFieldInitializerCode }
-        .filterNot { it.isEmpty() }
         .joinToCode(prefix = "arrayOf(\n", separator = ",\n", suffix = "\n)")
     return PropertySpec
         .builder(
@@ -94,9 +93,9 @@ internal object KotlinCodeGen {
         }
         is FieldType.Object -> "forObject"
         is FieldType.Fragment -> "forFragment"
-        is FieldType.Fragments -> null
+        is FieldType.Fragments -> "forString"
         is FieldType.Array -> "forList"
-      } ?: return CodeBlock.of("")
+      }
 
       val builder = CodeBlock.builder().add("%T.%L", ResponseField::class, factoryMethod)
       when {
@@ -250,8 +249,8 @@ internal object KotlinCodeGen {
     }
   }
 
-  fun marshallerFunSpec(fields: List<ObjectType.Field>, override: Boolean = false, thisRef: String): FunSpec {
-    val writeFieldsCode = fields.mapIndexed { index, field ->
+  fun List<ObjectType.Field>.marshallerFunSpec(override: Boolean = false, thisRef: String): FunSpec {
+    val writeFieldsCode = mapIndexed { index, field ->
       field.writeCode(field = "RESPONSE_FIELDS[$index]", thisRef = thisRef)
     }.joinToCode(separator = "")
     return FunSpec.builder("marshaller")
