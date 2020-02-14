@@ -13,7 +13,7 @@ public interface ApolloQueryWatcher<T> extends Cancelable {
 
   /**
    * @param fetcher The {@link ResponseFetcher} to use when the call is refetched due to a field changing in the
-   *                     cache.
+   * cache.
    */
   @NotNull ApolloQueryWatcher<T> refetchResponseFetcher(@NotNull ResponseFetcher fetcher);
 
@@ -36,4 +36,10 @@ public interface ApolloQueryWatcher<T> extends Cancelable {
    */
   @Override void cancel();
 
+  /**
+   * Creates a new, identical call to this one which can be enqueued or executed even if this call has already been.
+   *
+   * @return The cloned ApolloQueryWatcher object.
+   */
+  @NotNull ApolloQueryWatcher<T> clone();
 }

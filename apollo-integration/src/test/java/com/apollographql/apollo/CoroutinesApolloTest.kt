@@ -18,12 +18,12 @@ import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
 import com.apollographql.apollo.integration.normalizer.type.Episode
 import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.retry
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
@@ -31,7 +31,6 @@ import okhttp3.mockwebserver.MockWebServer
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-
 
 class CoroutinesApolloTest {
   private lateinit var apolloClient: ApolloClient
@@ -197,37 +196,72 @@ class CoroutinesApolloTest {
     assertThat(channel.isClosedForReceive).isEqualTo(true)
   }
 
-    @Test
-    fun flowCanBeRead() {
-        server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
+  @Test
+  fun flowCanBeRead() {
+    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
-        val flow = apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toFlow()
+    val flow = apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toFlow()
 
-        runBlocking {
-            val result = mutableListOf<Response<EpisodeHeroNameQuery.Data>>()
-            flow.toList(result)
-            assertThat(result.size).isEqualTo(1)
-            assertThat(result[0].data()?.hero()?.name()).isEqualTo("R2-D2")
-        }
+    runBlocking {
+      val result = mutableListOf<Response<EpisodeHeroNameQuery.Data>>()
+      flow.toList(result)
+      assertThat(result.size).isEqualTo(1)
+      assertThat(result[0].data()?.hero()?.name()).isEqualTo("R2-D2")
+    }
+  }
+
+  @Test
+  fun flowError() {
+    server.enqueue(MockResponse().setResponseCode(200).setBody("nonsense"))
+
+    val flow = apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toFlow()
+
+    runBlocking {
+      val result = mutableListOf<Response<EpisodeHeroNameQuery.Data>>()
+      try {
+        flow.toList(result)
+      } catch (e: ApolloException) {
+        return@runBlocking
+      }
+
+      throw Exception("exception has not been thrown")
+    }
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun callFlowRetry() {
+    server.enqueue(MockResponse().setResponseCode(200).setBody("nonsense"))
+    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
+
+    val response = runBlocking {
+      apolloClient
+          .query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
+          .toFlow()
+          .retry(retries = 1)
+          .single()
     }
 
-    @Test
-    fun flowError() {
-        server.enqueue(MockResponse().setResponseCode(200).setBody("nonsense"))
+    assertThat(response.data()!!.hero()!!.name()).isEqualTo("R2-D2")
+  }
 
-        val flow = apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toFlow()
+  @Test
+  @ExperimentalCoroutinesApi
+  fun watcherFlowRetry() {
+    server.enqueue(MockResponse().setResponseCode(200).setBody("nonsense"))
+    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
-        runBlocking {
-            val result = mutableListOf<Response<EpisodeHeroNameQuery.Data>>()
-            try {
-                flow.toList(result)
-            } catch (e: ApolloException) {
-                return@runBlocking
-            }
-
-            throw Exception("exception has not been thrown")
-        }
+    val response = runBlocking {
+      apolloClient
+          .query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
+          .watcher()
+          .toFlow()
+          .retry(retries = 1)
+          .first()
     }
+
+    assertThat(response.data()!!.hero()!!.name()).isEqualTo("R2-D2")
+  }
 
   companion object {
 
