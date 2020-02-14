@@ -137,11 +137,15 @@ fun <T> ApolloCall<T>.toDeferred(): Deferred<Response<T>> {
   }
   enqueue(object : ApolloCall.Callback<T>() {
     override fun onResponse(response: Response<T>) {
-      deferred.complete(response)
+      if (deferred.isActive) {
+        deferred.complete(response)
+      }
     }
 
     override fun onFailure(e: ApolloException) {
-      deferred.completeExceptionally(e)
+      if (deferred.isActive) {
+        deferred.completeExceptionally(e)
+      }
     }
   })
 
@@ -258,11 +262,15 @@ fun ApolloPrefetch.toJob(): Job {
 
   enqueue(object : ApolloPrefetch.Callback() {
     override fun onSuccess() {
-      deferred.complete(Unit)
+      if (deferred.isActive) {
+        deferred.complete(Unit)
+      }
     }
 
     override fun onFailure(e: ApolloException) {
-      deferred.completeExceptionally(e)
+      if (deferred.isActive) {
+        deferred.completeExceptionally(e)
+      }
     }
   })
 
