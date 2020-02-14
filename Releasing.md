@@ -5,6 +5,7 @@ Run `./gradlew japicmp` and check what API may have changed. We ideally want 100
 
 # Releasing
 
+0. Make sure that you have `kscript` installed - https://github.com/holgerbrandl/kscript#installation
 1. Run `./scripts/release.kts` from your local dev machine.
 2. The script removes the `-SNAPSHOT` suffix, commits and tags version `v1.x.y`
 3. The script bumps version to the next patch version and commits
