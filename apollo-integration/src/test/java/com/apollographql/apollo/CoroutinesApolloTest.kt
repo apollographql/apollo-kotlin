@@ -22,6 +22,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.retry
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.toList
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
@@ -30,7 +31,6 @@ import okhttp3.mockwebserver.MockWebServer
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-
 
 class CoroutinesApolloTest {
   private lateinit var apolloClient: ApolloClient
@@ -239,7 +239,7 @@ class CoroutinesApolloTest {
           .query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
           .toFlow()
           .retry(retries = 1)
-          .first()
+          .single()
     }
 
     assertThat(response.data()!!.hero()!!.name()).isEqualTo("R2-D2")
