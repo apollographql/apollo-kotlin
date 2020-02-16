@@ -1,3 +1,7 @@
+---
+title: Get started
+description: Learn how to quickly set up Apollo Client in your Android app
+---
 
 # Apollo GraphQL Client for Android and the JVM
 
