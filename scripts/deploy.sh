@@ -25,6 +25,9 @@ else
   echo "Snapshot deployed!"
 fi
 
+
+cat README.md | grep -v 'the official docs' > docs/source/essentials/get-started.md
+
 #
 # Deploy the release to Bintray if the build happens on a tag
 #
