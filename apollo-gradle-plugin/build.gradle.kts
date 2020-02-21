@@ -57,3 +57,22 @@ gradlePlugin {
     }
   }
 }
+
+/**
+ * This is so that the plugin marker pom contains a <scm> tag
+ * It was recommended by the Gradle support team.
+ */
+configure<PublishingExtension> {
+  publications.configureEach {
+    if (name == "apolloGradlePluginPluginMarkerMaven") {
+      this as MavenPublication
+      pom {
+        scm {
+          url.set(findProperty("POM_SCM_URL") as String?)
+          connection.set(findProperty("POM_SCM_CONNECTION") as String?)
+          developerConnection.set(findProperty("POM_SCM_DEV_CONNECTION") as String?)
+        }
+      }
+    }
+  }
+}
