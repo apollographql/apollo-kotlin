@@ -19,7 +19,7 @@ dependencies {
   compileOnly(dep("kotlin").dot("plugin"))
   compileOnly(dep("android").dot("plugin"))
 
-  implementation(project(":apollo-compiler"))
+  api(project(":apollo-compiler"))
   implementation(dep("kotlin").dot("stdLib"))
   implementation(dep("okHttp").dot("okHttp"))
   implementation(dep("moshi").dot("moshi"))
