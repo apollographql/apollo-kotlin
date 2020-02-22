@@ -24,7 +24,10 @@ import java.util.Collections;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.apollographql.apollo.internal.CallState.*;
+import static com.apollographql.apollo.internal.CallState.ACTIVE;
+import static com.apollographql.apollo.internal.CallState.CANCELED;
+import static com.apollographql.apollo.internal.CallState.IDLE;
+import static com.apollographql.apollo.internal.CallState.TERMINATED;
 
 @SuppressWarnings("WeakerAccess") public final class RealApolloPrefetch implements ApolloPrefetch {
   final Operation operation;

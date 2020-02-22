@@ -9,7 +9,16 @@ import java.io.IOException;
 
 import static com.apollographql.apollo.api.cache.http.HttpCache.CACHE_KEY_HEADER;
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
-import static com.apollographql.apollo.cache.http.Utils.*;
+import static com.apollographql.apollo.cache.http.Utils.isNetworkFirst;
+import static com.apollographql.apollo.cache.http.Utils.isNetworkOnly;
+import static com.apollographql.apollo.cache.http.Utils.isPrefetchResponse;
+import static com.apollographql.apollo.cache.http.Utils.isStale;
+import static com.apollographql.apollo.cache.http.Utils.shouldExpireAfterRead;
+import static com.apollographql.apollo.cache.http.Utils.shouldSkipCache;
+import static com.apollographql.apollo.cache.http.Utils.shouldSkipNetwork;
+import static com.apollographql.apollo.cache.http.Utils.strip;
+import static com.apollographql.apollo.cache.http.Utils.unsatisfiableCacheRequest;
+import static com.apollographql.apollo.cache.http.Utils.withServedDateHeader;
 
 final class HttpCacheInterceptor implements Interceptor {
   private final ApolloHttpCache cache;

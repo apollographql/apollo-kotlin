@@ -41,7 +41,10 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
-import static com.apollographql.apollo.internal.CallState.*;
+import static com.apollographql.apollo.internal.CallState.ACTIVE;
+import static com.apollographql.apollo.internal.CallState.CANCELED;
+import static com.apollographql.apollo.internal.CallState.IDLE;
+import static com.apollographql.apollo.internal.CallState.TERMINATED;
 import static java.util.Collections.emptyList;
 
 @SuppressWarnings("WeakerAccess")
