@@ -15,15 +15,12 @@
  */
 package com.apollographql.apollo.api.internal.json;
 
-import com.apollographql.apollo.json.JsonDataException;
+import okio.BufferedSink;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Closeable;
 import java.io.Flushable;
 import java.io.IOException;
-
-import org.jetbrains.annotations.Nullable;
-
-import okio.BufferedSink;
 
 import static com.apollographql.apollo.api.internal.json.JsonScope.EMPTY_OBJECT;
 import static com.apollographql.apollo.api.internal.json.JsonScope.NONEMPTY_OBJECT;

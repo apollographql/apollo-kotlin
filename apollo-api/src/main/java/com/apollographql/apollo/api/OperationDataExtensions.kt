@@ -4,8 +4,6 @@
 
 package com.apollographql.apollo.api
 
-import com.apollographql.apollo.response.ScalarTypeAdapters
-
 /**
  * Serializes GraphQL operation response data into its equivalent Json representation.
  * For example:

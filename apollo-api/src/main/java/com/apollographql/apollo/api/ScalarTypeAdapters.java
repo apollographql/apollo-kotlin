@@ -1,4 +1,6 @@
-package com.apollographql.apollo.response;
+package com.apollographql.apollo.api;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -7,8 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.apollographql.apollo.api.FileUpload;
-import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.json.JsonWriter;
 import com.apollographql.apollo.api.internal.json.Utils;
 import okio.Buffer;

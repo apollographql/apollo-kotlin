@@ -1,7 +1,14 @@
 package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo.api.*
-import com.apollographql.apollo.compiler.ir.*
+import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
+import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
+import com.apollographql.apollo.compiler.ir.CodeGenerationContext
+import com.apollographql.apollo.compiler.ir.Field
+import com.apollographql.apollo.compiler.ir.FragmentRef
+import com.apollographql.apollo.compiler.ir.InlineFragment
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 

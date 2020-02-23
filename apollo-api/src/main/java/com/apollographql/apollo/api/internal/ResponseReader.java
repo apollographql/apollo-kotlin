@@ -1,4 +1,7 @@
-package com.apollographql.apollo.api;
+package com.apollographql.apollo.api.internal;
+
+import com.apollographql.apollo.api.ResponseField;
+import com.apollographql.apollo.api.ScalarType;
 
 import java.util.List;
 

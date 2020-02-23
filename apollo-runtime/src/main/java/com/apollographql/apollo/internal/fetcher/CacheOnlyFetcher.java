@@ -2,15 +2,14 @@ package com.apollographql.apollo.internal.fetcher;
 
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.api.internal.ApolloLogger;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
-import com.apollographql.apollo.internal.ApolloLogger;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.Executor;
-
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Signals the apollo client to <b>only</b> fetch the data from the normalized cache. If it's not present in the

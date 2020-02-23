@@ -1,9 +1,9 @@
 package com.apollographql.apollo.api.cache.http;
 
-import java.io.IOException;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.IOException;
 
 /**
  * CacheStore is an abstraction for a cache store that is used to read, modify or delete http responses.

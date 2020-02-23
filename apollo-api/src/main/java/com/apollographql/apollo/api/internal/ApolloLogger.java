@@ -1,8 +1,6 @@
-package com.apollographql.apollo.internal;
+package com.apollographql.apollo.api.internal;
 
 import com.apollographql.apollo.Logger;
-import com.apollographql.apollo.api.internal.Optional;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

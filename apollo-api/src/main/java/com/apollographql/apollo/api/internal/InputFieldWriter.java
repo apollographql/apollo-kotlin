@@ -1,10 +1,11 @@
-package com.apollographql.apollo.api;
+package com.apollographql.apollo.api.internal;
+
+import com.apollographql.apollo.api.ScalarType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.Map;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public interface InputFieldWriter {
   void writeString(@NotNull String fieldName, @Nullable String value) throws IOException;

@@ -1,4 +1,4 @@
-package com.apollographql.apollo.response;
+package com.apollographql.apollo.api;
 
 import org.jetbrains.annotations.NotNull;
 
