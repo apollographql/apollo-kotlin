@@ -1,8 +1,11 @@
 package com.apollographql.apollo.api;
 
+import com.apollographql.apollo.api.internal.InputFieldMarshaller;
+import com.apollographql.apollo.api.internal.InputFieldWriter;
+import com.apollographql.apollo.api.internal.ResponseFieldMapper;
+import com.apollographql.apollo.api.internal.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.internal.json.InputFieldJsonWriter;
 import com.apollographql.apollo.api.internal.json.JsonWriter;
-import com.apollographql.apollo.response.ScalarTypeAdapters;
 import okio.Buffer;
 import okio.BufferedSource;
 import org.jetbrains.annotations.NotNull;
@@ -77,7 +80,7 @@ public interface Operation<D extends Operation.Data, T, V extends Operation.Vari
      *
      * @return {@link ResponseFieldMarshaller} to serialize operation data
      */
-    ResponseFieldMarshaller marshaller();
+    com.apollographql.apollo.api.internal.ResponseFieldMarshaller marshaller();
   }
 
   /**
@@ -107,7 +110,7 @@ public interface Operation<D extends Operation.Data, T, V extends Operation.Vari
     }
 
     @NotNull public InputFieldMarshaller marshaller() {
-      return new InputFieldMarshaller() {
+      return new com.apollographql.apollo.api.internal.InputFieldMarshaller() {
         @Override public void marshal(InputFieldWriter writer) {
         }
       };

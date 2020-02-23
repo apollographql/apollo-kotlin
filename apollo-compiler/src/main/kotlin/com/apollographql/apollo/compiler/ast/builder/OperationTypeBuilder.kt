@@ -1,10 +1,12 @@
 package com.apollographql.apollo.compiler.ast.builder
 
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.compiler.OperationIdGenerator
-import com.apollographql.apollo.compiler.ast.*
+import com.apollographql.apollo.compiler.ast.InputType
+import com.apollographql.apollo.compiler.ast.ObjectType
+import com.apollographql.apollo.compiler.ast.OperationType
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo.compiler.ir.Operation
-import com.apollographql.apollo.internal.QueryDocumentMinifier
 
 internal fun Operation.ast(
     operationClassName: String,

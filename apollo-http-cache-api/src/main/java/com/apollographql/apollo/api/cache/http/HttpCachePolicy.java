@@ -1,10 +1,8 @@
 package com.apollographql.apollo.api.cache.http;
 
-import java.util.concurrent.TimeUnit;
-
 import org.jetbrains.annotations.NotNull;
 
-import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Http cache policy factory
@@ -85,7 +83,7 @@ public final class HttpCachePolicy {
      * @return new cache policy
      */
     public ExpirePolicy expireAfter(long expireTimeout, @NotNull TimeUnit expireTimeUnit) {
-      return new ExpirePolicy(fetchStrategy, expireTimeout, checkNotNull(expireTimeUnit), expireAfterRead);
+      return new ExpirePolicy(fetchStrategy, expireTimeout, expireTimeUnit, expireAfterRead);
     }
 
     /**

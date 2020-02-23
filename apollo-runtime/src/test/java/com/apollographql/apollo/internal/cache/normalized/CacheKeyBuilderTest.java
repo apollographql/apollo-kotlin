@@ -1,13 +1,12 @@
 package com.apollographql.apollo.internal.cache.normalized;
 
-import com.apollographql.apollo.api.InputFieldMarshaller;
-import com.apollographql.apollo.api.InputFieldWriter;
 import com.apollographql.apollo.api.InputType;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.api.internal.InputFieldMarshaller;
+import com.apollographql.apollo.api.internal.InputFieldWriter;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
-
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 

@@ -7,11 +7,11 @@ package com.example.fragment_in_fragment.fragment;
 
 import com.apollographql.apollo.api.GraphqlFragment;
 import com.apollographql.apollo.api.ResponseField;
-import com.apollographql.apollo.api.ResponseFieldMapper;
-import com.apollographql.apollo.api.ResponseFieldMarshaller;
-import com.apollographql.apollo.api.ResponseReader;
-import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.api.internal.ResponseFieldMapper;
+import com.apollographql.apollo.api.internal.ResponseFieldMarshaller;
+import com.apollographql.apollo.api.internal.ResponseReader;
+import com.apollographql.apollo.api.internal.ResponseWriter;
 import com.apollographql.apollo.api.internal.Utils;
 import com.example.fragment_in_fragment.type.CustomType;
 import java.lang.Object;

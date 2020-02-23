@@ -1,10 +1,9 @@
 package com.apollographql.apollo.cache.normalized;
 
-import com.apollographql.apollo.response.CustomTypeAdapter;
+import com.apollographql.apollo.api.CustomTypeAdapter;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.Function;
 import com.apollographql.apollo.api.internal.Optional;
-
 import org.jetbrains.annotations.NotNull;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;

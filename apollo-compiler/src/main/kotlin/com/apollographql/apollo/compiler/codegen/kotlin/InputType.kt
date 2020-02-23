@@ -1,8 +1,8 @@
 package com.apollographql.apollo.compiler.codegen.kotlin
 
 import com.apollographql.apollo.api.Input
-import com.apollographql.apollo.api.InputFieldMarshaller
-import com.apollographql.apollo.api.InputFieldWriter
+import com.apollographql.apollo.api.internal.InputFieldMarshaller
+import com.apollographql.apollo.api.internal.InputFieldWriter
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.ast.FieldType
 import com.apollographql.apollo.compiler.ast.InputType

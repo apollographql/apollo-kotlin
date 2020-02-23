@@ -1,4 +1,4 @@
-package com.apollographql.apollo.internal;
+package com.apollographql.apollo.api.internal;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -3,22 +3,21 @@ package com.apollographql.apollo.response;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.api.ResponseFieldMapper;
-import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
-import com.apollographql.apollo.internal.field.MapFieldValueResolver;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
+import com.apollographql.apollo.api.internal.ResponseFieldMapper;
 import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader;
 import com.apollographql.apollo.api.internal.json.ResponseJsonStreamReader;
+import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
+import com.apollographql.apollo.internal.field.MapFieldValueResolver;
 import com.apollographql.apollo.internal.response.RealResponseReader;
+import okio.BufferedSource;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.jetbrains.annotations.NotNull;
-
-import okio.BufferedSource;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 import static com.apollographql.apollo.internal.json.ApolloJsonReader.responseJsonStreamReader;
