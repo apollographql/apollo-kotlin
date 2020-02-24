@@ -13,9 +13,8 @@ import kotlinx.coroutines.flow.*
 
 private class ChannelCallback<T>(val channel: Channel<Response<T>>) : ApolloCall.Callback<T>() {
 
-  @ExperimentalCoroutinesApi
   override fun onResponse(response: Response<T>) {
-    if (!channel.isClosedForSend) {
+    runCatching {
       channel.offer(response)
     }
   }
@@ -196,7 +195,9 @@ fun <T> ApolloSubscriptionCall<T>.toChannel(capacity: Int = Channel.UNLIMITED): 
     }
 
     override fun onResponse(response: Response<T>) {
-      channel.offer(response)
+      runCatching {
+        channel.offer(response)
+      }
     }
 
     override fun onFailure(e: ApolloException) {
