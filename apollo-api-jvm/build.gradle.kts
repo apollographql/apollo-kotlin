@@ -1,5 +1,6 @@
 plugins {
   `java-library`
+  kotlin("jvm")
 }
 
 java {
@@ -8,17 +9,10 @@ java {
 }
 
 dependencies {
-  add("compileOnly", groovy.util.Eval.x(project, "x.dep.jetbrainsAnnotations"))
+  add("api", project(":apollo-api"))
 
-  add("api", groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
-  add("api", project(":apollo-api-jvm"))
-  add("api", project(":apollo-http-cache-api"))
+  add("implementation", groovy.util.Eval.x(project, "x.dep.jetbrainsAnnotations"))
 
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.junit"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.truth"))
 }
-
-tasks.withType<Javadoc> {
-  options.encoding = "UTF-8"
-}
-

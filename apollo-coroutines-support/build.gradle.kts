@@ -10,7 +10,7 @@ java {
 
 dependencies {
   add("compileOnly", project(":apollo-runtime"))
-  add("compileOnly", project(":apollo-api"))
+  add("compileOnly", project(":apollo-api-jvm"))
   add("implementation", groovy.util.Eval.x(project, "x.dep.kotlin.coroutines.core"))
   add("implementation", groovy.util.Eval.x(project, "x.dep.kotlin.stdLib"))
 

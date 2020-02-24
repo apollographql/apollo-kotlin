@@ -19,6 +19,7 @@ dependencies {
   compileOnly(dep("kotlin").dot("plugin"))
   compileOnly(dep("android").dot("plugin"))
 
+  api(project(":apollo-api-jvm"))
   api(project(":apollo-compiler"))
   implementation(dep("kotlin").dot("stdLib"))
   implementation(dep("okHttp").dot("okHttp"))
@@ -34,7 +35,7 @@ tasks.withType<Test> {
   // for up to 60s. The heap dumps also show some process reaper threads but it might just as well be a temporary thing, not sure.
   // See https://github.com/gradle/gradle/issues/8354
   setForkEvery(8L)
-  dependsOn(":apollo-api:publishDefaultPublicationToPluginTestRepository")
+  dependsOn(":apollo-api-jvm:publishDefaultPublicationToPluginTestRepository")
   dependsOn(":apollo-compiler:publishDefaultPublicationToPluginTestRepository")
   dependsOn("publishDefaultPublicationToPluginTestRepository")
 

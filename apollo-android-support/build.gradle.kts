@@ -35,7 +35,7 @@ extensions.findByType(BaseExtension::class.java)!!.apply {
 dependencies {
   add("compileOnly", groovy.util.Eval.x(project, "x.dep.jetbrainsAnnotations"))
   add("compileOnly", project(":apollo-runtime"))
-  add("compileOnly", project(":apollo-api"))
+  add("compileOnly", project(":apollo-api-jvm"))
 
   add("androidTestCompileOnly", groovy.util.Eval.x(project, "x.dep.jetbrainsAnnotations"))
 
@@ -43,7 +43,7 @@ dependencies {
     exclude(module = "support-annotations")
   }
   add("androidTestImplementation", project(":apollo-runtime"))
-  add("androidTestImplementation", project(":apollo-api"))
+  add("androidTestImplementation", project(":apollo-api-jvm"))
   add("androidTestImplementation", groovy.util.Eval.x(project, "x.dep.truth"))
   add("androidTestImplementation", groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer"))
 }

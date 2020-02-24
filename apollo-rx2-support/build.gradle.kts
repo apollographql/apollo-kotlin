@@ -13,7 +13,7 @@ dependencies {
   add("api", groovy.util.Eval.x(project, "x.dep.rx.java"))
   add("compileOnly", groovy.util.Eval.x(project, "x.dep.jetbrainsAnnotations"))
   add("compileOnly", project(":apollo-runtime"))
-  add("compileOnly", project(":apollo-api"))
+  add("compileOnly", project(":apollo-api-jvm"))
 }
 
 tasks.withType<Javadoc> {

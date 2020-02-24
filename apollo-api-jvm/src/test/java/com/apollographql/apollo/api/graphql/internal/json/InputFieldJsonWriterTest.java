@@ -1,4 +1,4 @@
-package com.apollographql.apollo.api.internal.json;
+package com.apollographql.apollo.api.graphql.internal.json;
 
 import com.apollographql.apollo.api.CustomTypeAdapter;
 import com.apollographql.apollo.api.CustomTypeValue;
@@ -7,6 +7,8 @@ import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.internal.InputFieldMarshaller;
 import com.apollographql.apollo.api.internal.InputFieldWriter;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
+import com.apollographql.apollo.api.internal.json.InputFieldJsonWriter;
+import com.apollographql.apollo.api.internal.json.JsonWriter;
 import okio.Buffer;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;

@@ -14,21 +14,23 @@ java {
 
 dependencies {
   add("antlr", groovy.util.Eval.x(project, "x.dep.antlr.antlr"))
+
+  add("compileOnly", project(":apollo-api-jvm"))
+
   add("implementation", groovy.util.Eval.x(project, "x.dep.kotlin.stdLib"))
   add("implementation", groovy.util.Eval.x(project, "x.dep.moshi.adapters"))
   add("implementation", groovy.util.Eval.x(project, "x.dep.moshi.kotlin"))
   add("implementation", groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
   add("implementation", groovy.util.Eval.x(project, "x.dep.poet.java"))
   add("implementation", groovy.util.Eval.x(project, "x.dep.poet.kotlin"))
-  add("implementation", project(":apollo-api"))
 
   add("kapt", groovy.util.Eval.x(project, "x.dep.moshi.kotlinCodegen"))
-
 
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.compiletesting"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.kotlinCompileTesting"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.junit"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.truth"))
+  add("testImplementation", project(":apollo-api-jvm"))
 }
 
 tasks.withType<KotlinCompile> {
