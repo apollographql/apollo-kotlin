@@ -29,9 +29,54 @@ class ScalarTypeAdapters(customAdapters: Map<ScalarType, CustomTypeAdapter<*>>) 
     val DEFAULT = ScalarTypeAdapters(emptyMap())
 
     private val DEFAULT_ADAPTERS = mapOf(
-        String::class.java to object : DefaultCustomTypeAdapter<String>() {
+        String::class to object : DefaultCustomTypeAdapter<String>() {
           override fun decode(value: CustomTypeValue<*>): String {
             return value.value.toString()
+          }
+        },
+        java.lang.Boolean::class.java to object : DefaultCustomTypeAdapter<Boolean>() {
+          override fun decode(value: CustomTypeValue<*>): Boolean {
+            return when (value) {
+              is GraphQLBoolean -> value.value
+              is GraphQLString -> java.lang.Boolean.parseBoolean(value.value)
+              else -> throw IllegalArgumentException("Can't decode: $value into Boolean")
+            }
+          }
+        },
+        java.lang.Integer::class.java to object : DefaultCustomTypeAdapter<Int>() {
+          override fun decode(value: CustomTypeValue<*>): Int {
+            return when (value) {
+              is GraphQLNumber -> value.value.toInt()
+              is GraphQLString -> value.value.toInt()
+              else -> throw IllegalArgumentException("Can't decode: $value into Integer")
+            }
+          }
+        },
+        java.lang.Long::class.java to object : DefaultCustomTypeAdapter<Long>() {
+          override fun decode(value: CustomTypeValue<*>): Long {
+            return when (value) {
+              is GraphQLNumber -> value.value.toLong()
+              is GraphQLString -> value.value.toLong()
+              else -> throw IllegalArgumentException("Can't decode: $value into Long")
+            }
+          }
+        },
+        java.lang.Float::class.java to object : DefaultCustomTypeAdapter<Float>() {
+          override fun decode(value: CustomTypeValue<*>): Float {
+            return when (value) {
+              is GraphQLNumber -> value.value.toFloat()
+              is GraphQLString -> value.value.toFloat()
+              else -> throw IllegalArgumentException("Can't decode: $value into Float")
+            }
+          }
+        },
+        java.lang.Double::class.java to object : DefaultCustomTypeAdapter<Double>() {
+          override fun decode(value: CustomTypeValue<*>): Double {
+            return when (value) {
+              is GraphQLNumber -> value.value.toDouble()
+              is GraphQLString -> value.value.toDouble()
+              else -> throw IllegalArgumentException("Can't decode: $value into Double")
+            }
           }
         },
         Boolean::class.java to object : DefaultCustomTypeAdapter<Boolean>() {
