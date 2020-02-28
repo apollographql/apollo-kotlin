@@ -25,7 +25,7 @@ class ScalarTypeAdapters(customAdapters: Map<ScalarType, CustomTypeAdapter<*>>) 
   }
 
   companion object {
-    @JvmStatic
+    @JvmField
     val DEFAULT = ScalarTypeAdapters(emptyMap())
 
     private val DEFAULT_ADAPTERS = mapOf(

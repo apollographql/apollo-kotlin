@@ -28,13 +28,19 @@ data class Response<T>(
      * Used by normalized cache implementation.
      */
     @JvmField
-    val dependentKeys: Set<String>,
+    val dependentKeys: Set<String> = emptySet(),
 
     /**
      * Indicates if response is resolved from the cache.
      */
     @JvmField
-    val fromCache: Boolean
+    val fromCache: Boolean,
+
+    /**
+     * Extensions of GraphQL protocol, arbitrary map of key [String] / value [Any] sent by server along with the response.
+     */
+    @JvmField
+    val extensions: Map<String, Any?> = emptyMap()
 ) {
 
   constructor(builder: Builder<T>) : this(
@@ -68,17 +74,24 @@ data class Response<T>(
     return fromCache
   }
 
+  @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "extensions"))
+  fun extensions(): Map<String, Any?> {
+    return extensions
+  }
+
   fun toBuilder(): Builder<T> = Builder<T>(operation)
       .data(data)
       .errors(errors)
       .dependentKeys(dependentKeys)
       .fromCache(fromCache)
+      .extensions(extensions)
 
   class Builder<T> internal constructor(internal val operation: Operation<*, *, *>) {
     internal var data: T? = null
     internal var errors: List<Error>? = null
     internal var dependentKeys: Set<String>? = null
     internal var fromCache: Boolean = false
+    internal var extensions: Map<String, Any?> = emptyMap()
 
     fun data(data: T?) = apply {
       this.data = data
@@ -94,6 +107,10 @@ data class Response<T>(
 
     fun fromCache(fromCache: Boolean) = apply {
       this.fromCache = fromCache
+    }
+
+    fun extensions(extensions: Map<String, Any?>) = apply {
+      this.extensions = extensions
     }
 
     fun build(): Response<T> = Response(this)
