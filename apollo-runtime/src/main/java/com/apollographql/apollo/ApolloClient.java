@@ -323,7 +323,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     HttpCachePolicy.Policy defaultHttpCachePolicy = HttpCachePolicy.NETWORK_ONLY;
     ResponseFetcher defaultResponseFetcher = ApolloResponseFetchers.CACHE_FIRST;
     CacheHeaders defaultCacheHeaders = CacheHeaders.NONE;
-    final Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new LinkedHashMap<>();
+    final Map<ScalarType, CustomTypeAdapter<?>> customTypeAdapters = new LinkedHashMap<>();
     Executor dispatcher;
     Optional<Logger> logger = Optional.absent();
     final List<ApolloInterceptor> applicationInterceptors = new ArrayList<>();

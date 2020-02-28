@@ -10,7 +10,7 @@ package com.apollographql.apollo.api
  * It provides a convenience way to distinguish the case when [value] is provided explicitly and should be
  * serialized (even if it's null) and the case when [value] is undefined (means it won't be serialized).
  */
-class Input<V> private constructor(
+data class Input<V> internal constructor(
     @JvmField val value: V?,
     @JvmField val defined: Boolean
 ) {

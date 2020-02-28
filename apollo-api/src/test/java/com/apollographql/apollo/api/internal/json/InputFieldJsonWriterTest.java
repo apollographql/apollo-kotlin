@@ -35,7 +35,7 @@ public class InputFieldJsonWriterTest {
     jsonWriter.beginObject();
 
     inputFieldJsonWriter = new InputFieldJsonWriter(jsonWriter,
-        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()));
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap()));
   }
 
   @Test
@@ -104,7 +104,7 @@ public class InputFieldJsonWriterTest {
 
   @Test
   public void writeCustomBoolean() throws IOException {
-    Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new HashMap<>();
+    Map<ScalarType, CustomTypeAdapter<?>> customTypeAdapters = new HashMap<>();
     customTypeAdapters.put(new MockCustomScalarType(CustomTypeValue.GraphQLBoolean.class), new MockCustomTypeAdapter() {
       @NotNull @Override public CustomTypeValue encode(@NotNull Object value) {
         return new CustomTypeValue.GraphQLBoolean((Boolean) value);
@@ -118,7 +118,7 @@ public class InputFieldJsonWriterTest {
 
   @Test
   public void writeCustomNumber() throws IOException {
-    Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new HashMap<>();
+    Map<ScalarType, CustomTypeAdapter<?>> customTypeAdapters = new HashMap<>();
     customTypeAdapters.put(new MockCustomScalarType(CustomTypeValue.GraphQLNumber.class), new MockCustomTypeAdapter() {
       @NotNull @Override public CustomTypeValue encode(@NotNull Object value) {
         return new CustomTypeValue.GraphQLNumber((Number) value);
@@ -132,7 +132,7 @@ public class InputFieldJsonWriterTest {
 
   @Test
   public void writeCustomString() throws IOException {
-    Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new HashMap<>();
+    Map<ScalarType, CustomTypeAdapter<?>> customTypeAdapters = new HashMap<>();
     customTypeAdapters.put(new MockCustomScalarType(CustomTypeValue.GraphQLString.class), new MockCustomTypeAdapter() {
       @NotNull @Override public CustomTypeValue encode(@NotNull Object value) {
         return new CustomTypeValue.GraphQLString((String) value);

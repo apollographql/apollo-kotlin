@@ -715,7 +715,7 @@ public class SimpleResponseReaderTest {
   }
 
   private static SimpleResponseReader responseReader(Map<String, Object> recordSet) {
-    Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new HashMap<>();
+    Map<ScalarType, CustomTypeAdapter<?>> customTypeAdapters = new HashMap<>();
     customTypeAdapters.put(DATE_CUSTOM_TYPE, new CustomTypeAdapter() {
       @Override public Object decode(@NotNull CustomTypeValue value) {
         try {
@@ -823,7 +823,7 @@ public class SimpleResponseReaderTest {
       return "";
     }
 
-    @NotNull @Override public Response parse(@NotNull BufferedSource source) throws IOException {
+    @NotNull @Override public Response parse(@NotNull BufferedSource source) {
       throw new UnsupportedOperationException();
     }
 
