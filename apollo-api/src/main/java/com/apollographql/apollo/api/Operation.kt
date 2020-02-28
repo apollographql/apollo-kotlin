@@ -7,6 +7,7 @@ import com.apollographql.apollo.api.internal.json.InputFieldJsonWriter
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import okio.Buffer
 import okio.BufferedSource
+import java.io.IOException
 
 /**
  * Represents a GraphQL operation (mutation or query).
@@ -46,11 +47,13 @@ interface Operation<D : Operation.Data, T, V : Operation.Variables> {
   /**
    * Parses GraphQL operation raw response from the [source] with provided [scalarTypeAdapters] and returns result [Response]
    */
+  @Throws(IOException::class)
   fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters): Response<T>
 
   /**
    * Parses GraphQL operation raw response from the [source] and returns result [Response]
    */
+  @Throws(IOException::class)
   fun parse(source: BufferedSource): Response<T>
 
   /**

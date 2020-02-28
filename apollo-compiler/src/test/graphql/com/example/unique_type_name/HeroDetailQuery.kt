@@ -11,7 +11,7 @@ import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ScalarTypeAdapters
-import com.apollographql.apollo.api.ScalarTypeAdapters.DEFAULT
+import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
@@ -360,6 +360,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
           """.trimMargin()
         )
 
-    val OPERATION_NAME: OperationName = OperationName { "HeroDetailQuery" }
+    val OPERATION_NAME: OperationName = object : OperationName {
+      override fun name(): String = "HeroDetailQuery"
+    }
   }
 }
