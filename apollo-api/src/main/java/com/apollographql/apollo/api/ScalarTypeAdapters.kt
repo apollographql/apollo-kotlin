@@ -29,7 +29,7 @@ class ScalarTypeAdapters(customAdapters: Map<ScalarType, CustomTypeAdapter<*>>) 
     val DEFAULT = ScalarTypeAdapters(emptyMap())
 
     private val DEFAULT_ADAPTERS = mapOf(
-        String::class.java to object : DefaultCustomTypeAdapter<String>() {
+        String::class to object : DefaultCustomTypeAdapter<String>() {
           override fun decode(value: CustomTypeValue<*>): String {
             return value.value.toString()
           }
