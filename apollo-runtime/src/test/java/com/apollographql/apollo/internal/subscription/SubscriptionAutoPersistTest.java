@@ -41,7 +41,7 @@ public class SubscriptionAutoPersistTest {
 
   @Before public void setUp() {
     subscriptionTransportFactory = new MockSubscriptionTransportFactory();
-    subscriptionManager = new RealSubscriptionManager(new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
+    subscriptionManager = new RealSubscriptionManager(new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap()),
         subscriptionTransportFactory, new SubscriptionConnectionParamsProvider.Const(new SubscriptionConnectionParams()),
         new MockExecutor(), -1, new Supplier<ResponseNormalizer<Map<String, Object>>>() {
       @Override public ResponseNormalizer<Map<String, Object>> get() {

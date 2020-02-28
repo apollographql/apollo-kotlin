@@ -8,7 +8,7 @@ data class Error(
      * Server error message
      */
     @JvmField
-    val message: String?,
+    val message: String,
 
     /**
      * Locations of the errors in the GraphQL operation

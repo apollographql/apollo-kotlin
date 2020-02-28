@@ -21,7 +21,7 @@ data class Response<T>(
      * GraphQL [operation] execution errors returned by the server to let client know that something has gone wrong.
      */
     @JvmField
-    val errors: List<Error>,
+    val errors: List<Error>? = null,
 
     /**
      * Set of request object keys to identify cache records to invalidate.
@@ -46,9 +46,10 @@ data class Response<T>(
   constructor(builder: Builder<T>) : this(
       operation = builder.operation,
       data = builder.data,
-      errors = builder.errors.orEmpty(),
+      errors = builder.errors,
       dependentKeys = builder.dependentKeys.orEmpty(),
-      fromCache = builder.fromCache
+      fromCache = builder.fromCache,
+      extensions = builder.extensions.orEmpty()
   )
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "operation"))
@@ -60,14 +61,14 @@ data class Response<T>(
   fun data(): T? = data
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "errors"))
-  fun errors(): List<Error> = errors
+  fun errors(): List<Error>? = errors
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "dependentKeys"))
   fun dependentKeys(): Set<String> {
     return dependentKeys
   }
 
-  fun hasErrors(): Boolean = errors.isNotEmpty()
+  fun hasErrors(): Boolean = !errors.isNullOrEmpty()
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "fromCache"))
   fun fromCache(): Boolean {
@@ -91,7 +92,7 @@ data class Response<T>(
     internal var errors: List<Error>? = null
     internal var dependentKeys: Set<String>? = null
     internal var fromCache: Boolean = false
-    internal var extensions: Map<String, Any?> = emptyMap()
+    internal var extensions: Map<String, Any?>? = null
 
     fun data(data: T?) = apply {
       this.data = data
@@ -109,7 +110,7 @@ data class Response<T>(
       this.fromCache = fromCache
     }
 
-    fun extensions(extensions: Map<String, Any?>) = apply {
+    fun extensions(extensions: Map<String, Any?>?) = apply {
       this.extensions = extensions
     }
 
