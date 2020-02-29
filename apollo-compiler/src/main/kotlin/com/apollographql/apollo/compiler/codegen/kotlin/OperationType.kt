@@ -148,7 +148,7 @@ internal fun OperationType.typeSpec(targetPackage: String, generateAsInternal: B
     .build()
 
 private fun OperationType.superInterfaceType(targetPackage: String): TypeName {
-  val dataTypeName = ClassName(packageName = targetPackage, simpleName = name, simpleNames = *arrayOf("Data"))
+  val dataTypeName = ClassName(targetPackage, name, "Data")
   return when (type) {
     OperationType.Type.QUERY -> Query::class.asClassName()
     OperationType.Type.MUTATION -> Mutation::class.asClassName()
