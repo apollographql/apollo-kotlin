@@ -38,6 +38,24 @@ class Error(
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "customAttributes"))
   fun customAttributes(): Map<String, Any?> = customAttributes
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is Error) return false
+
+    if (message != other.message) return false
+    if (locations != other.locations) return false
+    if (customAttributes != other.customAttributes) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = message.hashCode()
+    result = 31 * result + locations.hashCode()
+    result = 31 * result + customAttributes.hashCode()
+    return result
+  }
+
   /**
    * Represents the location of the error in the GraphQL operation sent to the server. This location is represented in
    * terms of the line and column number.
@@ -65,5 +83,21 @@ class Error(
      */
     @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "column"))
     fun column(): Long = column
+
+    override fun equals(other: Any?): Boolean {
+      if (this === other) return true
+      if (other !is Location) return false
+
+      if (line != other.line) return false
+      if (column != other.column) return false
+
+      return true
+    }
+
+    override fun hashCode(): Int {
+      var result = line.hashCode()
+      result = 31 * result + column.hashCode()
+      return result
+    }
   }
 }

@@ -81,6 +81,30 @@ class Response<T>(
       .fromCache(fromCache)
       .extensions(extensions)
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is Response<*>) return false
+
+    if (operation != other.operation) return false
+    if (data != other.data) return false
+    if (errors != other.errors) return false
+    if (dependentKeys != other.dependentKeys) return false
+    if (fromCache != other.fromCache) return false
+    if (extensions != other.extensions) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = operation.hashCode()
+    result = 31 * result + (data?.hashCode() ?: 0)
+    result = 31 * result + (errors?.hashCode() ?: 0)
+    result = 31 * result + dependentKeys.hashCode()
+    result = 31 * result + fromCache.hashCode()
+    result = 31 * result + extensions.hashCode()
+    return result
+  }
+
   class Builder<T> internal constructor(internal val operation: Operation<*, *, *>) {
     internal var data: T? = null
     internal var errors: List<Error>? = null

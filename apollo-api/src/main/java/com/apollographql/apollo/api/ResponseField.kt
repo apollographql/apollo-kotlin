@@ -73,6 +73,30 @@ open class ResponseField internal constructor(
     }
   }
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is ResponseField) return false
+
+    if (type != other.type) return false
+    if (responseName != other.responseName) return false
+    if (fieldName != other.fieldName) return false
+    if (arguments != other.arguments) return false
+    if (optional != other.optional) return false
+    if (conditions != other.conditions) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = type.hashCode()
+    result = 31 * result + responseName.hashCode()
+    result = 31 * result + fieldName.hashCode()
+    result = 31 * result + arguments.hashCode()
+    result = 31 * result + optional.hashCode()
+    result = 31 * result + conditions.hashCode()
+    return result
+  }
+
   /**
    * An abstraction for the field types
    */
@@ -102,6 +126,22 @@ open class ResponseField internal constructor(
     @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "scalarType"))
     fun scalarType(): ScalarType {
       return scalarType
+    }
+
+    override fun equals(other: Any?): Boolean {
+      if (this === other) return true
+      if (other !is CustomTypeField) return false
+      if (!super.equals(other)) return false
+
+      if (scalarType != other.scalarType) return false
+
+      return true
+    }
+
+    override fun hashCode(): Int {
+      var result = super.hashCode()
+      result = 31 * result + scalarType.hashCode()
+      return result
     }
   }
 
@@ -138,6 +178,19 @@ open class ResponseField internal constructor(
     fun typeNames(): List<String> {
       return typeNames
     }
+
+    override fun equals(other: Any?): Boolean {
+      if (this === other) return true
+      if (other !is TypeNameCondition) return false
+
+      if (typeNames != other.typeNames) return false
+
+      return true
+    }
+
+    override fun hashCode(): Int {
+      return typeNames.hashCode()
+    }
   }
 
   /**
@@ -155,6 +208,22 @@ open class ResponseField internal constructor(
     @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "inverted"))
     fun inverted(): Boolean {
       return inverted
+    }
+
+    override fun equals(other: Any?): Boolean {
+      if (this === other) return true
+      if (other !is BooleanCondition) return false
+
+      if (variableName != other.variableName) return false
+      if (inverted != other.inverted) return false
+
+      return true
+    }
+
+    override fun hashCode(): Int {
+      var result = variableName.hashCode()
+      result = 31 * result + inverted.hashCode()
+      return result
     }
   }
 

@@ -15,6 +15,22 @@ class Input<V> internal constructor(
     @JvmField val defined: Boolean
 ) {
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is Input<*>) return false
+
+    if (value != other.value) return false
+    if (defined != other.defined) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = value?.hashCode() ?: 0
+    result = 31 * result + defined.hashCode()
+    return result
+  }
+
   companion object {
 
     /**
