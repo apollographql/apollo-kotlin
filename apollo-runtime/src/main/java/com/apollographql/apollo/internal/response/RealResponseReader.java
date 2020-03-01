@@ -286,22 +286,22 @@ public final class RealResponseReader<R> implements ResponseReader {
       return (String) value;
     }
 
-    @Override public Integer readInt() {
+    @Override public int readInt() {
       resolveDelegate.didResolveScalar(value);
       return ((BigDecimal) value).intValue();
     }
 
-    @Override public Long readLong() {
+    @Override public long readLong() {
       resolveDelegate.didResolveScalar(value);
       return ((BigDecimal) value).longValue();
     }
 
-    @Override public Double readDouble() {
+    @Override public double readDouble() {
       resolveDelegate.didResolveScalar(value);
       return ((BigDecimal) value).doubleValue();
     }
 
-    @Override public Boolean readBoolean() {
+    @Override public boolean readBoolean() {
       resolveDelegate.didResolveScalar(value);
       return (Boolean) value;
     }

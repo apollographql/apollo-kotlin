@@ -16,8 +16,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class SortedInputFieldMapWriter implements InputFieldWriter {
-  final Comparator<String> fieldNameComparator;
-  final Map<String, Object> buffer;
+  private final Comparator<String> fieldNameComparator;
+  private final Map<String, Object> buffer;
 
   public SortedInputFieldMapWriter(@NotNull Comparator<String> fieldNameComparator) {
     this.fieldNameComparator = Utils.checkNotNull(fieldNameComparator, "fieldNameComparator == null");
@@ -28,27 +28,27 @@ public class SortedInputFieldMapWriter implements InputFieldWriter {
     return Collections.unmodifiableMap(buffer);
   }
 
-  @Override public void writeString(@NotNull String fieldName, @Nullable String value) throws IOException {
+  @Override public void writeString(@NotNull String fieldName, @Nullable String value) {
     buffer.put(fieldName, value);
   }
 
-  @Override public void writeInt(@NotNull String fieldName, @Nullable Integer value) throws IOException {
+  @Override public void writeInt(@NotNull String fieldName, @Nullable Integer value) {
     buffer.put(fieldName, value);
   }
 
-  @Override public void writeLong(@NotNull String fieldName, @Nullable Long value) throws IOException {
+  @Override public void writeLong(@NotNull String fieldName, @Nullable Long value) {
     buffer.put(fieldName, value);
   }
 
-  @Override public void writeDouble(@NotNull String fieldName, @Nullable Double value) throws IOException {
+  @Override public void writeDouble(@NotNull String fieldName, @Nullable Double value) {
     buffer.put(fieldName, value);
   }
 
-  @Override public void writeNumber(@NotNull String fieldName, @Nullable Number value) throws IOException {
+  @Override public void writeNumber(@NotNull String fieldName, @Nullable Number value) {
     buffer.put(fieldName, value);
   }
 
-  @Override public void writeBoolean(@NotNull String fieldName, @Nullable Boolean value) throws IOException {
+  @Override public void writeBoolean(@NotNull String fieldName, @Nullable Boolean value) {
     buffer.put(fieldName, value);
   }
 
@@ -57,8 +57,7 @@ public class SortedInputFieldMapWriter implements InputFieldWriter {
     buffer.put(fieldName, value);
   }
 
-  @Override public void writeObject(@NotNull String fieldName, @Nullable InputFieldMarshaller marshaller)
-      throws IOException {
+  @Override public void writeObject(@NotNull String fieldName, @Nullable InputFieldMarshaller marshaller) throws IOException {
     if (marshaller == null) {
       buffer.put(fieldName, null);
     } else {
@@ -79,7 +78,7 @@ public class SortedInputFieldMapWriter implements InputFieldWriter {
     }
   }
 
-  @Override public void writeMap(@NotNull String fieldName, @Nullable Map<String, Object> value) throws IOException {
+  @Override public void writeMap(@NotNull String fieldName, @Nullable Map<String, ?> value) {
     buffer.put(fieldName, value);
   }
 
@@ -92,43 +91,43 @@ public class SortedInputFieldMapWriter implements InputFieldWriter {
       this.fieldNameComparator = fieldNameComparator;
     }
 
-    @Override public void writeString(@Nullable String value) throws IOException {
+    @Override public void writeString(@Nullable String value) {
       if (value != null) {
         list.add(value);
       }
     }
 
-    @Override public void writeInt(@Nullable Integer value) throws IOException {
+    @Override public void writeInt(@Nullable Integer value) {
       if (value != null) {
         list.add(value);
       }
     }
 
-    @Override public void writeLong(@Nullable Long value) throws IOException {
+    @Override public void writeLong(@Nullable Long value) {
       if (value != null) {
         list.add(value);
       }
     }
 
-    @Override public void writeDouble(@Nullable Double value) throws IOException {
+    @Override public void writeDouble(@Nullable Double value) {
       if (value != null) {
         list.add(value);
       }
     }
 
-    @Override public void writeNumber(@Nullable Number value) throws IOException {
+    @Override public void writeNumber(@Nullable Number value) {
       if (value != null) {
         list.add(value);
       }
     }
 
-    @Override public void writeBoolean(@Nullable Boolean value) throws IOException {
+    @Override public void writeBoolean(@Nullable Boolean value) {
       if (value != null) {
         list.add(value);
       }
     }
 
-    @Override public void writeCustom(@NotNull ScalarType scalarType, @Nullable Object value) throws IOException {
+    @Override public void writeCustom(@NotNull ScalarType scalarType, @Nullable Object value) {
       if (value != null) {
         list.add(value);
       }
@@ -150,7 +149,7 @@ public class SortedInputFieldMapWriter implements InputFieldWriter {
       }
     }
 
-    @Override public void writeMap(@Nullable Map<String, Object> value) throws IOException {
+    @Override public void writeMap(@Nullable Map<String, ?> value) {
       if (value != null) {
         list.add(value);
       }
