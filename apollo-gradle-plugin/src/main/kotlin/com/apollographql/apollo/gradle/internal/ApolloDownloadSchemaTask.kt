@@ -10,6 +10,7 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import java.io.ByteArrayOutputStream
+import java.util.concurrent.TimeUnit
 
 abstract class ApolloDownloadSchemaTask : DefaultTask() {
   @get:Input
@@ -66,7 +67,11 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
         .url(urlBuilder.build())
         .build()
 
-    val response = OkHttpClient().newCall(requestBuilder.build()).execute()
+    val response = OkHttpClient.Builder()
+        .connectTimeout(System.getProperty("okHttp.connectTimeout","10").toLong(), TimeUnit.SECONDS)
+        .readTimeout(System.getProperty("okHttp.readTimeout","10").toLong(), TimeUnit.SECONDS)
+        .build()
+        .newCall(requestBuilder.build()).execute()
 
     if (!response.isSuccessful) {
       throw Exception("cannot get schema: ${response.code()}:\n${response.body()?.string()}")
