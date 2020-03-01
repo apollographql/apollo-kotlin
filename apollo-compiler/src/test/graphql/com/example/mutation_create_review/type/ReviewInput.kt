@@ -104,7 +104,7 @@ internal data class ReviewInput(
    */
   val capitalizedField: Input<String> = Input.absent()
 ) : InputType {
-  override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
+  override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
     writer.writeInt("stars", this@ReviewInput.stars)
     if (this@ReviewInput.nullableIntFieldWithDefaultValue.defined) {
       writer.writeInt("nullableIntFieldWithDefaultValue",

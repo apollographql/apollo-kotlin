@@ -27,7 +27,7 @@ data class Character(
    */
   val name: String
 ) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
     writer.writeString(RESPONSE_FIELDS[0], this@Character.__typename)
     writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, this@Character.id)
     writer.writeString(RESPONSE_FIELDS[2], this@Character.name)
@@ -49,9 +49,9 @@ data class Character(
         """.trimMargin()
 
     operator fun invoke(reader: ResponseReader): Character = reader.run {
-      val __typename = readString(RESPONSE_FIELDS[0])
-      val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
-      val name = readString(RESPONSE_FIELDS[2])
+      val __typename = readString(RESPONSE_FIELDS[0])!!
+      val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)!!
+      val name = readString(RESPONSE_FIELDS[2])!!
       Character(
         __typename = __typename,
         id = id,

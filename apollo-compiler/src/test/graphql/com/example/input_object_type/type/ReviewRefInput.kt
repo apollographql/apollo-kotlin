@@ -18,7 +18,7 @@ import kotlin.Suppress
 data class ReviewRefInput(
   val reviewInput: Input<ReviewInput> = Input.absent()
 ) : InputType {
-  override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
+  override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
     if (this@ReviewRefInput.reviewInput.defined) {
       writer.writeObject("reviewInput", this@ReviewRefInput.reviewInput.value?.marshaller())
     }

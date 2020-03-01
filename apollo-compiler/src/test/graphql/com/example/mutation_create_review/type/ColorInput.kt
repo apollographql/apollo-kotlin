@@ -39,7 +39,7 @@ internal data class ColorInput(
    */
   val reviewRefInput: Input<ReviewRefInput> = Input.absent()
 ) : InputType {
-  override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
+  override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
     writer.writeInt("red", this@ColorInput.red)
     if (this@ColorInput.green.defined) {
       writer.writeDouble("green", this@ColorInput.green.value)

@@ -36,7 +36,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   override fun wrapData(data: Data?): Data? = data
   override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
   override fun name(): OperationName = OPERATION_NAME
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper.invoke {
     Data(it)
   }
 
@@ -74,7 +74,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val links: List<java.lang.String>
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@Hero.__typename)
       writer.writeString(RESPONSE_FIELDS[1], this@Hero.name)
       writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, this@Hero.birthDate)
@@ -105,17 +105,19 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): Hero = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
-        val name = readString(RESPONSE_FIELDS[1])
-        val birthDate = readCustomType<Date>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
+        val birthDate = readCustomType<Date>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)!!
         val appearanceDates = readList<Date>(RESPONSE_FIELDS[3]) { reader ->
-          reader.readCustomType<Date>(CustomType.DATE)}
+          reader.readCustomType<Date>(CustomType.DATE)
+        }!!.map { it!! }
         val fieldWithUnsupportedType = readCustomType<Any>(RESPONSE_FIELDS[4] as
-            ResponseField.CustomTypeField)
+            ResponseField.CustomTypeField)!!
         val profileLink = readCustomType<java.lang.String>(RESPONSE_FIELDS[5] as
-            ResponseField.CustomTypeField)
+            ResponseField.CustomTypeField)!!
         val links = readList<java.lang.String>(RESPONSE_FIELDS[6]) { reader ->
-          reader.readCustomType<java.lang.String>(CustomType.URL)}
+          reader.readCustomType<java.lang.String>(CustomType.URL)
+        }!!.map { it!! }
         Hero(
           __typename = __typename,
           name = name,
@@ -132,7 +134,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   data class Data(
     val hero: Hero?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeObject(RESPONSE_FIELDS[0], this@Data.hero?.marshaller())
     }
 

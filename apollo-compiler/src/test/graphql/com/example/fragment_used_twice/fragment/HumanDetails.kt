@@ -23,7 +23,7 @@ data class HumanDetails(
   val name: String,
   val fragments: Fragments
 ) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
     writer.writeString(RESPONSE_FIELDS[0], this@HumanDetails.__typename)
     writer.writeString(RESPONSE_FIELDS[1], this@HumanDetails.name)
     this@HumanDetails.fragments.marshaller().marshal(writer)
@@ -45,8 +45,8 @@ data class HumanDetails(
         """.trimMargin()
 
     operator fun invoke(reader: ResponseReader): HumanDetails = reader.run {
-      val __typename = readString(RESPONSE_FIELDS[0])
-      val name = readString(RESPONSE_FIELDS[1])
+      val __typename = readString(RESPONSE_FIELDS[0])!!
+      val name = readString(RESPONSE_FIELDS[1])!!
       val fragments = Fragments(reader)
       HumanDetails(
         __typename = __typename,
@@ -59,7 +59,7 @@ data class HumanDetails(
   data class Fragments(
     val characterDetails: CharacterDetails?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeFragment(this@Fragments.characterDetails?.marshaller())
     }
 

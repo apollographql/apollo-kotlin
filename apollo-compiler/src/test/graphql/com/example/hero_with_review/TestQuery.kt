@@ -41,7 +41,7 @@ data class TestQuery(
       this["ep"] = this@TestQuery.ep
     }
 
-    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
+    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
       writer.writeString("ep", this@TestQuery.ep.rawValue)
     }
   }
@@ -51,7 +51,7 @@ data class TestQuery(
   override fun wrapData(data: Data?): Data? = data
   override fun variables(): Operation.Variables = variables
   override fun name(): OperationName = OPERATION_NAME
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper.invoke {
     Data(it)
   }
 
@@ -73,7 +73,7 @@ data class TestQuery(
      */
     val commentary: String?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@CreateReview.__typename)
       writer.writeInt(RESPONSE_FIELDS[1], this@CreateReview.stars)
       writer.writeString(RESPONSE_FIELDS[2], this@CreateReview.commentary)
@@ -87,8 +87,8 @@ data class TestQuery(
           )
 
       operator fun invoke(reader: ResponseReader): CreateReview = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
-        val stars = readInt(RESPONSE_FIELDS[1])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val stars = readInt(RESPONSE_FIELDS[1])!!
         val commentary = readString(RESPONSE_FIELDS[2])
         CreateReview(
           __typename = __typename,
@@ -102,7 +102,7 @@ data class TestQuery(
   data class Data(
     val createReview: CreateReview?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeObject(RESPONSE_FIELDS[0], this@Data.createReview?.marshaller())
     }
 
