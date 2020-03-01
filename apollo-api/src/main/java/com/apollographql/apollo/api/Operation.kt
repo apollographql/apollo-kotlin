@@ -98,6 +98,7 @@ interface Operation<D : Operation.Data, T, V : Operation.Variables> {
     /**
      * Serializes variables as JSON string to be sent to the GraphQL server.
      */
+    @Throws(IOException::class)
     fun marshal(): String {
       return marshal(ScalarTypeAdapters.DEFAULT)
     }
@@ -105,15 +106,16 @@ interface Operation<D : Operation.Data, T, V : Operation.Variables> {
     /**
      * Serializes variables with provided scalarTypeAdapters [scalarTypeAdapters] as JSON string to be sent to the GraphQL server.
      */
+    @Throws(IOException::class)
     fun marshal(scalarTypeAdapters: ScalarTypeAdapters): String {
-      val buffer = Buffer()
-      JsonWriter.of(buffer)
-          .apply { serializeNulls = true }
-          .beginObject()
-          .also { jsonWriter -> marshaller().marshal(InputFieldJsonWriter(jsonWriter, scalarTypeAdapters)) }
-          .endObject()
-          .close()
-      return buffer.readUtf8()
+      return Buffer().apply {
+        JsonWriter.of(this).use { jsonWriter ->
+          jsonWriter.serializeNulls = true
+          jsonWriter.beginObject()
+          marshaller().marshal(InputFieldJsonWriter(jsonWriter, scalarTypeAdapters))
+          jsonWriter.endObject()
+        }
+      }.readUtf8()
     }
   }
 

@@ -11,12 +11,12 @@ package com.apollographql.apollo.api
  * For a complete list of types that a Field object can refer to see [ResponseField.Type] class.
  */
 open class ResponseField internal constructor(
-    @JvmField val type: Type,
-    @JvmField val responseName: String,
-    @JvmField val fieldName: String,
-    @JvmField val arguments: Map<String, Any?>,
-    @JvmField val optional: Boolean,
-    @JvmField val conditions: List<Condition>
+    val type: Type,
+    val responseName: String,
+    val fieldName: String,
+    val arguments: Map<String, Any?>,
+    val optional: Boolean,
+    val conditions: List<Condition>
 ) {
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "type"))
@@ -89,7 +89,7 @@ open class ResponseField internal constructor(
       arguments: Map<String, Any?>?,
       optional: Boolean,
       conditions: List<Condition>?,
-      @JvmField val scalarType: ScalarType
+      val scalarType: ScalarType
   ) : ResponseField(
       type = Type.CUSTOM,
       responseName = responseName,
@@ -132,7 +132,7 @@ open class ResponseField internal constructor(
    * Abstraction for type name condition
    */
   class TypeNameCondition internal constructor(
-      @JvmField val typeNames: List<String>
+      val typeNames: List<String>
   ) : Condition() {
     @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "typeNames"))
     fun typeNames(): List<String> {
@@ -144,8 +144,8 @@ open class ResponseField internal constructor(
    * Abstraction for boolean condition
    */
   class BooleanCondition internal constructor(
-      @JvmField val variableName: String,
-      @JvmField val inverted: Boolean
+      val variableName: String,
+      val inverted: Boolean
   ) : Condition() {
     @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "variableName"))
     fun variableName(): String {

@@ -3,23 +3,20 @@ package com.apollographql.apollo.api
 /**
  * Represents an error response returned from the GraphQL server
  */
-data class Error(
+class Error(
     /**
      * Server error message
      */
-    @JvmField
     val message: String,
 
     /**
      * Locations of the errors in the GraphQL operation
      */
-    @JvmField
     val locations: List<Location> = emptyList(),
 
     /**
      * Custom attributes associated with this error
      */
-    @JvmField
     val customAttributes: Map<String, Any?> = emptyMap()
 ) {
 
@@ -45,17 +42,15 @@ data class Error(
    * Represents the location of the error in the GraphQL operation sent to the server. This location is represented in
    * terms of the line and column number.
    */
-  data class Location(
+  class Location(
       /**
        * Line number of the error location
        */
-      @JvmField
       val line: Long,
 
       /**
        * Column number of the error location.
        */
-      @JvmField
       val column: Long
   ) {
 

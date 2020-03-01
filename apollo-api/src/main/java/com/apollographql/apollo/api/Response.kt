@@ -3,43 +3,37 @@ package com.apollographql.apollo.api
 /**
  * Represents either a successful or failed response received from the GraphQL server.
  */
-data class Response<T>(
+class Response<T>(
     /**
      * GraphQL operation this response represents of
      */
-    @JvmField
     val operation: Operation<*, *, *>,
 
     /**
      * Parsed response of GraphQL [operation] execution.
      * Can be `null` in case if [operation] execution failed.
      */
-    @JvmField
     val data: T?,
 
     /**
      * GraphQL [operation] execution errors returned by the server to let client know that something has gone wrong.
      */
-    @JvmField
     val errors: List<Error>? = null,
 
     /**
      * Set of request object keys to identify cache records to invalidate.
      * Used by normalized cache implementation.
      */
-    @JvmField
     val dependentKeys: Set<String> = emptySet(),
 
     /**
      * Indicates if response is resolved from the cache.
      */
-    @JvmField
     val fromCache: Boolean,
 
     /**
      * Extensions of GraphQL protocol, arbitrary map of key [String] / value [Any] sent by server along with the response.
      */
-    @JvmField
     val extensions: Map<String, Any?> = emptyMap()
 ) {
 
