@@ -121,7 +121,7 @@ public class ApolloServerInterceptorFileUploadTest {
 
     ApolloServerInterceptor interceptor = new ApolloServerInterceptor(serverUrl,
         new AssertHttpCallFactory(requestAssertPredicate), null, false,
-        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap()),
         new ApolloLogger(Optional.<Logger>absent()));
 
     interceptor.httpPostCall(mutationSingle, CacheHeaders.NONE, RequestHeaders.NONE, true, false);
@@ -144,7 +144,7 @@ public class ApolloServerInterceptorFileUploadTest {
 
     ApolloServerInterceptor interceptor = new ApolloServerInterceptor(serverUrl,
         new AssertHttpCallFactory(requestAssertPredicate), null, false,
-        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap()),
         new ApolloLogger(Optional.<Logger>absent()));
 
     interceptor.httpPostCall(mutationTwice, CacheHeaders.NONE, RequestHeaders.NONE, true, false);
@@ -167,7 +167,7 @@ public class ApolloServerInterceptorFileUploadTest {
 
     ApolloServerInterceptor interceptor = new ApolloServerInterceptor(serverUrl,
         new AssertHttpCallFactory(requestAssertPredicate), null, false,
-        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap()),
         new ApolloLogger(Optional.<Logger>absent()));
 
     interceptor.httpPostCall(mutationMultiple, CacheHeaders.NONE, RequestHeaders.NONE, true, false);
@@ -187,7 +187,7 @@ public class ApolloServerInterceptorFileUploadTest {
 
     ApolloServerInterceptor interceptor = new ApolloServerInterceptor(serverUrl,
         new AssertHttpCallFactory(requestAssertPredicate), null, false,
-        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap()),
         new ApolloLogger(Optional.<Logger>absent()));
 
     interceptor.httpPostCall(mutationNested, CacheHeaders.NONE, RequestHeaders.NONE,true, false);
@@ -226,7 +226,7 @@ public class ApolloServerInterceptorFileUploadTest {
 
     ApolloServerInterceptor interceptor = new ApolloServerInterceptor(serverUrl,
         new AssertHttpCallFactory(requestAssertPredicate), null, false,
-        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap()),
         new ApolloLogger(Optional.<Logger>absent()));
 
     interceptor.httpPostCall(mutationSingle, CacheHeaders.NONE, requestHeaders, true, false);

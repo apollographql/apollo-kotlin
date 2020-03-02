@@ -77,13 +77,13 @@ public final class SimpleOperationResponseParser {
 
   @SuppressWarnings("unchecked")
   private static Error readError(final Map<String, Object> payload) {
-    String message = null;
+    String message = "";
     final List<Error.Location> locations = new ArrayList<>();
     final Map<String, Object> customAttributes = new HashMap<>();
     for (Map.Entry<String, Object> entry : payload.entrySet()) {
       if ("message".equals(entry.getKey())) {
         Object value = entry.getValue();
-        message = value != null ? value.toString() : null;
+        message = value != null ? value.toString() : "";
       } else if ("locations".equals(entry.getKey())) {
         List<Map<String, Object>> locationItems = (List<Map<String, Object>>) entry.getValue();
         if (locationItems != null) {

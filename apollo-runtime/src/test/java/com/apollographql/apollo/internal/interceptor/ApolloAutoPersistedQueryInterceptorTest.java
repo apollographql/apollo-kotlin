@@ -41,11 +41,11 @@ public class ApolloAutoPersistedQueryInterceptorTest {
       new ApolloAutoPersistedQueryInterceptor(new ApolloLogger(Optional.<Logger>absent()), false);
 
   private ApolloAutoPersistedQueryInterceptor interceptorWithGetMethod =
-          new ApolloAutoPersistedQueryInterceptor(new ApolloLogger(Optional.<Logger>absent()), true);
+      new ApolloAutoPersistedQueryInterceptor(new ApolloLogger(Optional.<Logger>absent()), true);
 
   private ApolloInterceptor.InterceptorRequest request = ApolloInterceptor.InterceptorRequest.builder(new MockOperation())
-          .autoPersistQueries(true)
-          .build();
+      .autoPersistQueries(true)
+      .build();
 
   @Test
   public void initialRequestWithoutQueryDocument() {
@@ -70,9 +70,9 @@ public class ApolloAutoPersistedQueryInterceptorTest {
     interceptorWithGetMethod.interceptAsync(request, chain, new TrampolineExecutor(), mock(ApolloInterceptor.CallBack.class));
 
     ArgumentCaptor<ApolloInterceptor.InterceptorRequest> requestArgumentCaptor =
-            ArgumentCaptor.forClass(ApolloInterceptor.InterceptorRequest.class);
+        ArgumentCaptor.forClass(ApolloInterceptor.InterceptorRequest.class);
     verify(chain).proceedAsync(requestArgumentCaptor.capture(), any(Executor.class),
-            any(ApolloInterceptor.CallBack.class));
+        any(ApolloInterceptor.CallBack.class));
 
     assertThat(requestArgumentCaptor.getValue().sendQueryDocument).isFalse();
     assertThat(requestArgumentCaptor.getValue().useHttpGetMethodForQueries).isTrue();
@@ -93,7 +93,11 @@ public class ApolloAutoPersistedQueryInterceptorTest {
               new ApolloInterceptor.InterceptorResponse(
                   mockHttpResponse(),
                   com.apollographql.apollo.api.Response.<MockOperation.Data>builder(new MockOperation())
-                      .errors(Collections.singletonList(new Error("PersistedQueryNotFound", null, null)))
+                      .errors(
+                          Collections.singletonList(
+                              new Error("PersistedQueryNotFound", Collections.<Error.Location>emptyList(), Collections.<String, Object>emptyMap())
+                          )
+                      )
                       .build(),
                   Collections.<Record>emptyList()
               )
@@ -142,7 +146,11 @@ public class ApolloAutoPersistedQueryInterceptorTest {
               new ApolloInterceptor.InterceptorResponse(
                   mockHttpResponse(),
                   com.apollographql.apollo.api.Response.<MockOperation.Data>builder(new MockOperation())
-                      .errors(Collections.singletonList(new Error("PersistedQueryNotSupported", null, null)))
+                      .errors(
+                          Collections.singletonList(
+                              new Error("PersistedQueryNotSupported", Collections.<Error.Location>emptyList(), Collections.<String, Object>emptyMap())
+                          )
+                      )
                       .build(),
                   Collections.<Record>emptyList()
               )
@@ -186,7 +194,11 @@ public class ApolloAutoPersistedQueryInterceptorTest {
             new ApolloInterceptor.InterceptorResponse(
                 mockHttpResponse(),
                 com.apollographql.apollo.api.Response.<MockOperation.Data>builder(new MockOperation())
-                    .errors(Collections.singletonList(new Error("SomeOtherError", null, null)))
+                    .errors(
+                        Collections.singletonList(
+                            new Error("SomeOtherError", Collections.<Error.Location>emptyList(), Collections.<String, Object>emptyMap())
+                        )
+                    )
                     .build(),
                 Collections.<Record>emptyList()
             )

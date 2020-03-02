@@ -11,7 +11,7 @@ import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ScalarTypeAdapters
-import com.apollographql.apollo.api.ScalarTypeAdapters.DEFAULT
+import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
@@ -266,6 +266,8 @@ internal data class CreateReviewForEpisode(
           """.trimMargin()
         )
 
-    val OPERATION_NAME: OperationName = OperationName { "CreateReviewForEpisode" }
+    val OPERATION_NAME: OperationName = object : OperationName {
+      override fun name(): String = "CreateReviewForEpisode"
+    }
   }
 }

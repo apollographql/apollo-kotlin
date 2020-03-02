@@ -7,7 +7,6 @@ import static org.junit.Assert.assertNotEquals;
 
 public final class InputTest {
 
-
     @Test
     public void testInputEqualsOnNotNullValue() {
         String value = "Hello world!";

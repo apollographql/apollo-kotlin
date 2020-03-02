@@ -62,7 +62,7 @@ public class ApolloServerInterceptorTest {
 
     ApolloServerInterceptor interceptor = new ApolloServerInterceptor(serverUrl,
         new AssertHttpCallFactory(requestAssertPredicate), null, false,
-        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap()),
         new ApolloLogger(Optional.<Logger>absent()));
 
     interceptor.httpPostCall(query, CacheHeaders.NONE, RequestHeaders.NONE, true, false);
@@ -70,7 +70,7 @@ public class ApolloServerInterceptorTest {
 
   @Test public void testCachedHttpCall() throws Exception {
     ScalarTypeAdapters scalarTypeAdapters =
-        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap());
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap());
     final String cacheKey = ApolloServerInterceptor.cacheKey(query, scalarTypeAdapters);
     Predicate<Request> requestAssertPredicate = new Predicate<Request>() {
       @Override public boolean apply(@Nullable Request request) {
@@ -135,7 +135,7 @@ public class ApolloServerInterceptorTest {
 
     ApolloServerInterceptor interceptor = new ApolloServerInterceptor(serverUrl,
         new AssertHttpCallFactory(requestAssertPredicate), null, false,
-        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap()),
         new ApolloLogger(Optional.<Logger>absent()));
 
     interceptor.httpPostCall(query, CacheHeaders.NONE, requestHeaders, true, false);
@@ -164,7 +164,7 @@ public class ApolloServerInterceptorTest {
 
     ApolloServerInterceptor interceptor = new ApolloServerInterceptor(serverUrl,
         new AssertHttpCallFactory(requestAssertPredicate), null, false,
-        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap()),
         new ApolloLogger(Optional.<Logger>absent()));
 
     interceptor.httpGetCall(query, CacheHeaders.NONE, RequestHeaders.NONE, true, true);

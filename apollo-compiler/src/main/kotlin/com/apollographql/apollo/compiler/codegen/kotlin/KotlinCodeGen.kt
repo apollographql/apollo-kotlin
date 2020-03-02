@@ -35,21 +35,12 @@ internal object KotlinCodeGen {
       FieldType.Scalar.Int -> INT
       FieldType.Scalar.Boolean -> BOOLEAN
       FieldType.Scalar.Float -> DOUBLE
-      is FieldType.Scalar.Enum -> ClassName(
-          packageName = typeRef.packageName,
-          simpleName = typeRef.name
-      )
+      is FieldType.Scalar.Enum -> ClassName(typeRef.packageName, typeRef.name)
       is FieldType.Scalar.Custom -> ClassName.bestGuess(mappedType)
     }
     is FieldType.Fragments -> ClassName.bestGuess(name)
-    is FieldType.Object -> ClassName(
-        packageName = typeRef.packageName,
-        simpleName = typeRef.name
-    )
-    is FieldType.Fragment -> ClassName(
-        packageName = typeRef.packageName,
-        simpleName = typeRef.name
-    )
+    is FieldType.Object -> ClassName(typeRef.packageName, typeRef.name)
+    is FieldType.Fragment -> ClassName(typeRef.packageName, typeRef.name)
     is FieldType.Array -> List::class.asClassName().parameterizedBy(rawType.asTypeName(optional = isOptional))
   }.let {
     if (optional) it.copy(nullable = true) else it.copy(nullable = false)
@@ -385,7 +376,7 @@ internal object KotlinCodeGen {
     else -> this
   }
 
-  fun TypeRef.asTypeName() = ClassName(packageName = packageName, simpleName = name.capitalize())
+  fun TypeRef.asTypeName() = ClassName(packageName, name.capitalize())
 
   private fun Map<String, Any?>?.toCode(): CodeBlock? {
     return when {

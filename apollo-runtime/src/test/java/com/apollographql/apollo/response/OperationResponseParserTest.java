@@ -22,7 +22,7 @@ public class OperationResponseParserTest {
         OperationResponseParser<Operation.Data, String> parser = new OperationResponseParser<>(
                 mock(TestOperation.class),
                 mock(ResponseFieldMapper.class),
-                new ScalarTypeAdapters(new HashMap<ScalarType, CustomTypeAdapter>())
+                new ScalarTypeAdapters(new HashMap<ScalarType, CustomTypeAdapter<?>>())
         );
 
         Map<String, Object> payload = new HashMap<>();

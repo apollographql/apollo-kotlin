@@ -150,7 +150,7 @@ public class IntegrationTest {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
             assertThat(response.hasErrors()).isTrue();
             assertThat(response.errors()).hasSize(1);
-            assertThat(response.errors().get(0).message()).isNull();
+            assertThat(response.errors().get(0).message()).isEqualTo("");
             assertThat(response.errors().get(0).customAttributes()).hasSize(2);
             assertThat(response.errors().get(0).customAttributes().get("code")).isEqualTo("userNotFound");
             assertThat(response.errors().get(0).customAttributes().get("path")).isEqualTo("loginWithPassword");
@@ -282,7 +282,7 @@ public class IntegrationTest {
     final AllPlanetsQuery query = new AllPlanetsQuery();
     final Response<AllPlanetsQuery.Data> response = query.parse(
         new Buffer().readFrom(getClass().getResourceAsStream("/AllPlanetsNullableField.json")),
-        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap())
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap())
     );
 
     assertThat(response.operation()).isEqualTo(query);
@@ -295,7 +295,7 @@ public class IntegrationTest {
     final EpisodeHeroNameQuery query = new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE));
     final Response<EpisodeHeroNameQuery.Data> response = query.parse(
         new Buffer().readFrom(getClass().getResourceAsStream("/ResponseErrorWithData.json")),
-        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap())
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap())
     );
 
     assertThat(response.data()).isNotNull();
@@ -328,7 +328,7 @@ public class IntegrationTest {
 
     final HeroNameQuery query = new HeroNameQuery();
     final Response<HeroNameQuery.Data> response = new OperationResponseParser<>(query, query.responseFieldMapper(),
-        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap())).parse(source);
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap())).parse(source);
 
     assertThat(response.extensions().toString()).isEqualTo("{cost={requestedQueryCost=3, actualQueryCost=3, throttleStatus={maximumAvailable=1000, currentlyAvailable=997, restoreRate=50}}}");
   }
