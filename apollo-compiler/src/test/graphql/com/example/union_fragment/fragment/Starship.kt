@@ -22,7 +22,7 @@ data class Starship(
    */
   val name: String
 ) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
     writer.writeString(RESPONSE_FIELDS[0], this@Starship.__typename)
     writer.writeString(RESPONSE_FIELDS[1], this@Starship.name)
   }
@@ -41,8 +41,8 @@ data class Starship(
         """.trimMargin()
 
     operator fun invoke(reader: ResponseReader): Starship = reader.run {
-      val __typename = readString(RESPONSE_FIELDS[0])
-      val name = readString(RESPONSE_FIELDS[1])
+      val __typename = readString(RESPONSE_FIELDS[0])!!
+      val name = readString(RESPONSE_FIELDS[1])!!
       Starship(
         __typename = __typename,
         name = name

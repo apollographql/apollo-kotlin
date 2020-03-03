@@ -29,7 +29,7 @@ class Response<T>(
     /**
      * Indicates if response is resolved from the cache.
      */
-    val fromCache: Boolean,
+    val fromCache: Boolean = false,
 
     /**
      * Extensions of GraphQL protocol, arbitrary map of key [String] / value [Any] sent by server along with the response.

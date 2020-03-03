@@ -26,7 +26,7 @@ data class DroidDetails(
    */
   val primaryFunction: String?
 ) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
     writer.writeString(RESPONSE_FIELDS[0], this@DroidDetails.__typename)
     writer.writeString(RESPONSE_FIELDS[1], this@DroidDetails.name)
     writer.writeString(RESPONSE_FIELDS[2], this@DroidDetails.primaryFunction)
@@ -48,8 +48,8 @@ data class DroidDetails(
         """.trimMargin()
 
     operator fun invoke(reader: ResponseReader): DroidDetails = reader.run {
-      val __typename = readString(RESPONSE_FIELDS[0])
-      val name = readString(RESPONSE_FIELDS[1])
+      val __typename = readString(RESPONSE_FIELDS[0])!!
+      val name = readString(RESPONSE_FIELDS[1])!!
       val primaryFunction = readString(RESPONSE_FIELDS[2])
       DroidDetails(
         __typename = __typename,

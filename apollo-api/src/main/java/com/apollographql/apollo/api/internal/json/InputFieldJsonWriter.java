@@ -127,7 +127,7 @@ public class InputFieldJsonWriter implements InputFieldWriter {
     }
   }
 
-  @Override public void writeMap(@NotNull String fieldName, @Nullable Map<String, Object> value) throws IOException {
+  @Override public void writeMap(@NotNull String fieldName, @Nullable Map<String, ?> value) throws IOException {
     checkNotNull(fieldName, "fieldName == null");
     if (value == null) {
       jsonWriter.name(fieldName).nullValue();
@@ -194,7 +194,7 @@ public class InputFieldJsonWriter implements InputFieldWriter {
       }
     }
 
-    @Override public void writeMap(@Nullable Map<String, Object> value) throws IOException {
+    @Override public void writeMap(@Nullable Map<String, ?> value) throws IOException {
       Utils.writeToJson(value, jsonWriter);
     }
 

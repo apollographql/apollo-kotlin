@@ -27,7 +27,7 @@ data class HumanDetails(
    */
   val height: Double?
 ) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
     writer.writeString(RESPONSE_FIELDS[0], this@HumanDetails.__typename)
     writer.writeString(RESPONSE_FIELDS[1], this@HumanDetails.name)
     writer.writeDouble(RESPONSE_FIELDS[2], this@HumanDetails.height)
@@ -49,8 +49,8 @@ data class HumanDetails(
         """.trimMargin()
 
     operator fun invoke(reader: ResponseReader): HumanDetails = reader.run {
-      val __typename = readString(RESPONSE_FIELDS[0])
-      val name = readString(RESPONSE_FIELDS[1])
+      val __typename = readString(RESPONSE_FIELDS[0])!!
+      val name = readString(RESPONSE_FIELDS[1])!!
       val height = readDouble(RESPONSE_FIELDS[2])
       HumanDetails(
         __typename = __typename,

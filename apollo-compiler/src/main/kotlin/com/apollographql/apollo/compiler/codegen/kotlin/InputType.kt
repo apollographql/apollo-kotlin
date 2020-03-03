@@ -63,7 +63,7 @@ private val InputType.marshallerFunSpec: FunSpec
         .addModifiers(KModifier.OVERRIDE)
         .addCode(CodeBlock
             .builder()
-            .beginControlFlow("return %T { writer ->", InputFieldMarshaller::class)
+            .beginControlFlow("return %T.invoke { writer ->", InputFieldMarshaller::class)
             .apply { fields.forEach { field -> add(field.writeCodeBlock(name)) } }
             .endControlFlow()
             .build()

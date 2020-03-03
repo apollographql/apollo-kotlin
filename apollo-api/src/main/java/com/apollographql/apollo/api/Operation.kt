@@ -1,6 +1,7 @@
 package com.apollographql.apollo.api
 
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
+import com.apollographql.apollo.api.internal.InputFieldWriter
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.json.InputFieldJsonWriter
@@ -92,7 +93,11 @@ interface Operation<D : Operation.Data, T, V : Operation.Variables> {
     }
 
     open fun marshaller(): InputFieldMarshaller {
-      return InputFieldMarshaller { }
+      return object : InputFieldMarshaller {
+        override fun marshal(writer: InputFieldWriter) {
+          // noop
+        }
+      }
     }
 
     /**

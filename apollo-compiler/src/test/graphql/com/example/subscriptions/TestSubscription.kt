@@ -40,7 +40,7 @@ data class TestSubscription(
       this["repo"] = this@TestSubscription.repo
     }
 
-    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
+    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
       writer.writeString("repo", this@TestSubscription.repo)
     }
   }
@@ -50,7 +50,7 @@ data class TestSubscription(
   override fun wrapData(data: Data?): Data? = data
   override fun variables(): Operation.Variables = variables
   override fun name(): OperationName = OPERATION_NAME
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper.invoke {
     Data(it)
   }
 
@@ -72,7 +72,7 @@ data class TestSubscription(
      */
     val content: String
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@CommentAdded.__typename)
       writer.writeInt(RESPONSE_FIELDS[1], this@CommentAdded.id)
       writer.writeString(RESPONSE_FIELDS[2], this@CommentAdded.content)
@@ -86,9 +86,9 @@ data class TestSubscription(
           )
 
       operator fun invoke(reader: ResponseReader): CommentAdded = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
-        val id = readInt(RESPONSE_FIELDS[1])
-        val content = readString(RESPONSE_FIELDS[2])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val id = readInt(RESPONSE_FIELDS[1])!!
+        val content = readString(RESPONSE_FIELDS[2])!!
         CommentAdded(
           __typename = __typename,
           id = id,
@@ -104,7 +104,7 @@ data class TestSubscription(
      */
     val commentAdded: CommentAdded?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeObject(RESPONSE_FIELDS[0], this@Data.commentAdded?.marshaller())
     }
 
