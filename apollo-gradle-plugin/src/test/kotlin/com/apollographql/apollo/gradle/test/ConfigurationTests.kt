@@ -405,6 +405,23 @@ class ConfigurationTests {
   }
 
   @Test
+  fun `onCompilationUnit can point to a schema file outside the module`() {
+    withSimpleProject("""
+      apollo {
+        onCompilationUnit {
+          schemaFile = file("../schema.json")
+        }
+      }
+    """.trimIndent()) { dir ->
+      val dest = File(dir, "../schema.json")
+      File(dir, "src/main/graphql/com/example/schema.json").copyTo(dest, true)
+      TestUtils.executeTask("generateApolloSources", dir)
+      dest.delete()
+      assertTrue(dir.generatedChild("main/service/testProject/src/main/graphql/com/example/DroidDetailsQuery.java").isFile)
+    }
+  }
+
+  @Test
   fun `onCompilationUnits for main sourceSet should not generate for test`() {
     withSimpleProject("""
       apollo {
