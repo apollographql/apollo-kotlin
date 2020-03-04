@@ -304,7 +304,7 @@ apollo {
 // With:
 apollo {
   onCompilationUnit {
-     schemaFile.set("/path/to/your/schema.json")
+     schemaFile.set(file("/path/to/your/schema.json"))
      graphqlSourceDirectorySet.exclude("**/*.gql")
      rootPackageName.set("com.example")
   }
