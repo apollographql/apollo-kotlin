@@ -235,7 +235,7 @@ Apollo-Android version 1.3.0 introduces some fixes and improvements that are inc
 
 ### Gradle plugin changes
 
-The plugin has been rewritten in Kotlin to make it more maintainable and have better support for multiple GraphQL endpoints.  Below are the main changes. Read [plugin-configuration](#configuration-reference) for a reference of the different options.
+The plugin has been rewritten in Kotlin to make it more maintainable and have better support for multiple GraphQL endpoints.  Below are the main changes. Read [plugin-configuration.md](https://www.apollographql.com/docs/android/gradle/plugin-configuration/) for a reference of the different options.
 
 #### New plugin ID
 
