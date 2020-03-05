@@ -1,5 +1,6 @@
 package com.apollographql.apollo.response;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -8,6 +9,9 @@ import java.util.Map;
 
 import com.apollographql.apollo.api.FileUpload;
 import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.api.internal.json.JsonWriter;
+import com.apollographql.apollo.api.internal.json.Utils;
+import okio.Buffer;
 import org.jetbrains.annotations.NotNull;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
@@ -45,7 +49,25 @@ public final class ScalarTypeAdapters {
     Map<Class, CustomTypeAdapter> adapters = new LinkedHashMap<>();
     adapters.put(String.class, new DefaultCustomTypeAdapter<String>() {
       @NotNull @Override public String decode(@NotNull CustomTypeValue value) {
-        return value.value.toString();
+        if (value instanceof CustomTypeValue.GraphQLJsonList ||
+            value instanceof CustomTypeValue.GraphQLJsonObject) {
+          final Buffer buffer = new Buffer();
+          final JsonWriter writer = JsonWriter.of(buffer);
+          try {
+            Utils.writeToJson(value.value, writer);
+          } catch (IOException e) {
+            throw new IllegalArgumentException("Failed to decode custom scalar type value into JSON string");
+          } finally {
+            try {
+              writer.close();
+            } catch (IOException e) {
+              // ignore
+            }
+          }
+          return buffer.readUtf8();
+        } else {
+          return value.value.toString();
+        }
       }
     });
     adapters.put(Boolean.class, new DefaultCustomTypeAdapter<Boolean>() {

@@ -133,6 +133,24 @@ public class ScalarTypeAdaptersTest {
     assertThat(adapter.encode(value).value).isEqualTo(value);
   }
 
+  @Test
+  public void defaultJsonString() {
+    final CustomTypeValue.GraphQLJsonObject actualObject = new CustomTypeValue.GraphQLJsonObject(
+        new UnmodifiableMapBuilder<String, Object>()
+            .put("key", "scalar")
+            .put("object", new UnmodifiableMapBuilder<String, Object>()
+                .put("nestedKey", "nestedScalar")
+                .build()
+            )
+            .put("list", Arrays.asList("1", "2", "3"))
+            .build()
+    );
+    final String expectedJsonString = "{\"key\":\"scalar\",\"object\":{\"nestedKey\":\"nestedScalar\"},\"list\":[\"1\",\"2\",\"3\"]}";
+
+    final CustomTypeAdapter<String> adapter = defaultAdapter(String.class);
+    assertThat(adapter.decode(actualObject)).isEqualTo(expectedJsonString);
+  }
+
   private <T> CustomTypeAdapter<T> defaultAdapter(final Class<T> clazz) {
     return new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap())
         .adapterFor(
