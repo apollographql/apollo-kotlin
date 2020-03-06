@@ -13,26 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apollographql.apollo.api.internal.json;
+package com.apollographql.apollo.api.internal.json
 
-import java.io.IOException;
+import okio.BufferedSink
+import java.io.IOException
 
-import org.jetbrains.annotations.Nullable;
-
-import okio.BufferedSink;
-import okio.Sink;
-
-import static com.apollographql.apollo.api.internal.json.JsonScope.DANGLING_NAME;
-import static com.apollographql.apollo.api.internal.json.JsonScope.EMPTY_ARRAY;
-import static com.apollographql.apollo.api.internal.json.JsonScope.EMPTY_DOCUMENT;
-import static com.apollographql.apollo.api.internal.json.JsonScope.EMPTY_OBJECT;
-import static com.apollographql.apollo.api.internal.json.JsonScope.NONEMPTY_ARRAY;
-import static com.apollographql.apollo.api.internal.json.JsonScope.NONEMPTY_DOCUMENT;
-import static com.apollographql.apollo.api.internal.json.JsonScope.NONEMPTY_OBJECT;
-
-final class JsonUtf8Writer extends JsonWriter {
-
-  /*
+internal class JsonUtf8Writer(private val sink: BufferedSink) : JsonWriter() {
+  companion object {
+    /*
    * From RFC 7159, "All Unicode characters may be placed within the
    * quotation marks except for the characters that must be escaped:
    * quotation mark, reverse solidus, and the control characters
@@ -42,293 +30,260 @@ final class JsonUtf8Writer extends JsonWriter {
    * newline characters. This prevents eval() from failing with a syntax
    * error. http://code.google.com/p/google-gson/issues/detail?id=341
    */
-  private static final String[] REPLACEMENT_CHARS;
-  static {
-    REPLACEMENT_CHARS = new String[128];
-    for (int i = 0; i <= 0x1f; i++) {
-      REPLACEMENT_CHARS[i] = String.format("\\u%04x", (int) i);
+    private val REPLACEMENT_CHARS: Array<String?> = arrayOfNulls<String?>(128).apply {
+      for (i in 0..0x1f) {
+        this[i] = String.format("\\u%04x", i)
+      }
+      this['"'.toInt()] = "\\\""
+      this['\\'.toInt()] = "\\\\"
+      this['\t'.toInt()] = "\\t"
+      this['\b'.toInt()] = "\\b"
+      this['\n'.toInt()] = "\\n"
+      this['\r'.toInt()] = "\\r"
     }
-    REPLACEMENT_CHARS['"'] = "\\\"";
-    REPLACEMENT_CHARS['\\'] = "\\\\";
-    REPLACEMENT_CHARS['\t'] = "\\t";
-    REPLACEMENT_CHARS['\b'] = "\\b";
-    REPLACEMENT_CHARS['\n'] = "\\n";
-    REPLACEMENT_CHARS['\r'] = "\\r";
-    REPLACEMENT_CHARS['\f'] = "\\f";
-  }
 
-  /** The output data, containing at most one top-level array or object. */
-  private final BufferedSink sink;
-
-  /** The name/value separator; either ":" or ": ". */
-  private String separator = ":";
-
-  private String deferredName;
-
-  JsonUtf8Writer(BufferedSink sink) {
-    if (sink == null) {
-      throw new NullPointerException("sink == null");
+    /**
+     * Writes `value` as a string literal to `sink`. This wraps the value in double quotes
+     * and escapes those characters that require it.
+     */
+    @Throws(IOException::class)
+    fun string(sink: BufferedSink, value: String) {
+      val replacements = REPLACEMENT_CHARS
+      sink.writeByte('"'.toInt())
+      var last = 0
+      val length = value.length
+      for (i in 0 until length) {
+        val c = value[i]
+        var replacement: String?
+        if (c.toInt() < 128) {
+          replacement = replacements[c.toInt()]
+          if (replacement == null) {
+            continue
+          }
+        } else if (c == '\u2028') {
+          replacement = "\\u2028"
+        } else if (c == '\u2029') {
+          replacement = "\\u2029"
+        } else {
+          continue
+        }
+        if (last < i) {
+          sink.writeUtf8(value, last, i)
+        }
+        sink.writeUtf8(replacement)
+        last = i + 1
+      }
+      if (last < length) {
+        sink.writeUtf8(value, last, length)
+      }
+      sink.writeByte('"'.toInt())
     }
-    this.sink = sink;
-    pushScope(EMPTY_DOCUMENT);
   }
 
-  @Override public void setIndent(String indent) {
-    super.setIndent(indent);
-    this.separator = !indent.isEmpty() ? ": " : ":";
+  /** The name/value separator; either ":" or ": ".  */
+  val separator: String
+    get() = if (indent.isNullOrEmpty()) ":" else ": "
+
+  private var deferredName: String? = null
+
+  @Throws(IOException::class)
+  override fun beginArray(): JsonWriter {
+    writeDeferredName()
+    return open(JsonScope.EMPTY_ARRAY, "[")
   }
 
-  @Override public JsonWriter beginArray() throws IOException {
-    writeDeferredName();
-    return open(EMPTY_ARRAY, "[");
+  @Throws(IOException::class)
+  override fun endArray(): JsonWriter {
+    return close(JsonScope.EMPTY_ARRAY, JsonScope.NONEMPTY_ARRAY, "]")
   }
 
-  @Override public JsonWriter endArray() throws IOException {
-    return close(EMPTY_ARRAY, NONEMPTY_ARRAY, "]");
+  @Throws(IOException::class)
+  override fun beginObject(): JsonWriter {
+    writeDeferredName()
+    return open(JsonScope.EMPTY_OBJECT, "{")
   }
 
-  @Override public JsonWriter beginObject() throws IOException {
-    writeDeferredName();
-    return open(EMPTY_OBJECT, "{");
-  }
-
-  @Override public JsonWriter endObject() throws IOException {
-    promoteValueToName = false;
-    return close(EMPTY_OBJECT, NONEMPTY_OBJECT, "}");
+  @Throws(IOException::class)
+  override fun endObject(): JsonWriter {
+    return close(JsonScope.EMPTY_OBJECT, JsonScope.NONEMPTY_OBJECT, "}")
   }
 
   /**
    * Enters a new scope by appending any necessary whitespace and the given
    * bracket.
    */
-  private JsonWriter open(int empty, String openBracket) throws IOException {
-    beforeValue();
-    pushScope(empty);
-    pathIndices[stackSize - 1] = 0;
-    sink.writeUtf8(openBracket);
-    return this;
+  @Throws(IOException::class)
+  private fun open(empty: Int, openBracket: String): JsonWriter {
+    beforeValue()
+    pushScope(empty)
+    pathIndices[stackSize - 1] = 0
+    sink.writeUtf8(openBracket)
+    return this
   }
 
   /**
    * Closes the current scope by appending any necessary whitespace and the
    * given bracket.
    */
-  private JsonWriter close(int empty, int nonempty, String closeBracket) throws IOException {
-    int context = peekScope();
-    if (context != nonempty && context != empty) {
-      throw new IllegalStateException("Nesting problem.");
-    }
-    if (deferredName != null) {
-      throw new IllegalStateException("Dangling name: " + deferredName);
-    }
-
-    stackSize--;
-    pathNames[stackSize] = null; // Free the last path name so that it can be garbage collected!
-    pathIndices[stackSize - 1]++;
+  @Throws(IOException::class)
+  private fun close(empty: Int, nonempty: Int, closeBracket: String): JsonWriter {
+    val context = peekScope()
+    check(!(context != nonempty && context != empty)) { "Nesting problem." }
+    check(deferredName == null) { "Dangling name: $deferredName" }
+    stackSize--
+    pathNames[stackSize] = null // Free the last path name so that it can be garbage collected!
+    pathIndices[stackSize - 1]++
     if (context == nonempty) {
-      newline();
+      newline()
     }
-    sink.writeUtf8(closeBracket);
-    return this;
+    sink.writeUtf8(closeBracket)
+    return this
   }
 
-  @Override public JsonWriter name(String name) throws IOException {
-    if (name == null) {
-      throw new NullPointerException("name == null");
-    }
-    if (stackSize == 0) {
-      throw new IllegalStateException("JsonWriter is closed.");
-    }
+  @Throws(IOException::class)
+  override fun name(name: String): JsonWriter {
+    check(stackSize != 0) { "JsonWriter is closed." }
+    check(deferredName == null) { "Nesting problem." }
+    deferredName = name
+    pathNames[stackSize - 1] = name
+    return this
+  }
+
+  @Throws(IOException::class)
+  private fun writeDeferredName() {
     if (deferredName != null) {
-      throw new IllegalStateException("Nesting problem.");
-    }
-    deferredName = name;
-    pathNames[stackSize - 1] = name;
-    promoteValueToName = false;
-    return this;
-  }
-
-  private void writeDeferredName() throws IOException {
-    if (deferredName != null) {
-      beforeName();
-      string(sink, deferredName);
-      deferredName = null;
+      beforeName()
+      string(sink, deferredName!!)
+      deferredName = null
     }
   }
 
-  @Override public JsonWriter value(String value) throws IOException {
+  @Throws(IOException::class)
+  override fun value(value: String?): JsonWriter {
     if (value == null) {
-      return nullValue();
+      return nullValue()
     }
-    if (promoteValueToName) {
-      return name(value);
-    }
-    writeDeferredName();
-    beforeValue();
-    string(sink, value);
-    pathIndices[stackSize - 1]++;
-    return this;
+    writeDeferredName()
+    beforeValue()
+    string(sink, value)
+    pathIndices[stackSize - 1]++
+    return this
   }
 
-  @Override public JsonWriter jsonValue(String value) throws IOException {
+  @Throws(IOException::class)
+  override fun jsonValue(value: String?): JsonWriter {
     if (value == null) {
-      return nullValue();
+      return nullValue()
     }
-    if (promoteValueToName) {
-      return name(value);
-    }
-    writeDeferredName();
-    beforeValue();
-    sink.writeUtf8(value);
-    pathIndices[stackSize - 1]++;
-    return this;
+    writeDeferredName()
+    beforeValue()
+    sink.writeUtf8(value)
+    pathIndices[stackSize - 1]++
+    return this
   }
 
-  @Override public JsonWriter nullValue() throws IOException {
+  @Throws(IOException::class)
+  override fun nullValue(): JsonWriter {
     if (deferredName != null) {
       if (serializeNulls) {
-        writeDeferredName();
+        writeDeferredName()
       } else {
-        deferredName = null;
-        return this; // skip the name and the value
+        deferredName = null
+        return this // skip the name and the value
       }
     }
-    beforeValue();
-    sink.writeUtf8("null");
-    pathIndices[stackSize - 1]++;
-    return this;
+    beforeValue()
+    sink.writeUtf8("null")
+    pathIndices[stackSize - 1]++
+    return this
   }
 
-  @Override public JsonWriter value(boolean value) throws IOException {
-    writeDeferredName();
-    beforeValue();
-    sink.writeUtf8(value ? "true" : "false");
-    pathIndices[stackSize - 1]++;
-    return this;
+  @Throws(IOException::class)
+  override fun value(value: Boolean?): JsonWriter {
+    return if (value == null) {
+      nullValue()
+    } else {
+      writeDeferredName()
+      beforeValue()
+      sink.writeUtf8(if (value) "true" else "false")
+      pathIndices[stackSize - 1]++
+      this
+    }
   }
 
-  @Override public JsonWriter value(Boolean value) throws IOException {
+  @Throws(IOException::class)
+  override fun value(value: Double): JsonWriter {
+    require(!(!isLenient && (java.lang.Double.isNaN(value) || java.lang.Double.isInfinite(value)))) {
+      "Numeric values must be finite, but was $value"
+    }
+    writeDeferredName()
+    beforeValue()
+    sink.writeUtf8(value.toString())
+    pathIndices[stackSize - 1]++
+    return this
+  }
+
+  @Throws(IOException::class)
+  override fun value(value: Long): JsonWriter {
+    writeDeferredName()
+    beforeValue()
+    sink.writeUtf8(value.toString())
+    pathIndices[stackSize - 1]++
+    return this
+  }
+
+  @Throws(IOException::class)
+  override fun value(value: Number?): JsonWriter {
     if (value == null) {
-      return nullValue();
+      return nullValue()
     }
-    return value(value.booleanValue());
-  }
-
-  @Override public JsonWriter value(double value) throws IOException {
-    if (!lenient && (Double.isNaN(value) || Double.isInfinite(value))) {
-      throw new IllegalArgumentException("Numeric values must be finite, but was " + value);
+    val string = value.toString()
+    require(!(!isLenient && (string == "-Infinity" || string == "Infinity" || string == "NaN"))) {
+      "Numeric values must be finite, but was $value"
     }
-    if (promoteValueToName) {
-      return name(Double.toString(value));
-    }
-    writeDeferredName();
-    beforeValue();
-    sink.writeUtf8(Double.toString(value));
-    pathIndices[stackSize - 1]++;
-    return this;
-  }
-
-  @Override public JsonWriter value(long value) throws IOException {
-    if (promoteValueToName) {
-      return name(Long.toString(value));
-    }
-    writeDeferredName();
-    beforeValue();
-    sink.writeUtf8(Long.toString(value));
-    pathIndices[stackSize - 1]++;
-    return this;
-  }
-
-  @Override public JsonWriter value(@Nullable Number value) throws IOException {
-    if (value == null) {
-      return nullValue();
-    }
-
-    String string = value.toString();
-    if (!lenient
-        && (string.equals("-Infinity") || string.equals("Infinity") || string.equals("NaN"))) {
-      throw new IllegalArgumentException("Numeric values must be finite, but was " + value);
-    }
-    if (promoteValueToName) {
-      return name(string);
-    }
-    writeDeferredName();
-    beforeValue();
-    sink.writeUtf8(string);
-    pathIndices[stackSize - 1]++;
-    return this;
+    writeDeferredName()
+    beforeValue()
+    sink.writeUtf8(string)
+    pathIndices[stackSize - 1]++
+    return this
   }
 
   /**
-   * Ensures all buffered data is written to the underlying {@link Sink}
+   * Ensures all buffered data is written to the underlying [Sink]
    * and flushes that writer.
    */
-  @Override public void flush() throws IOException {
-    if (stackSize == 0) {
-      throw new IllegalStateException("JsonWriter is closed.");
-    }
-    sink.flush();
+  @Throws(IOException::class)
+  override fun flush() {
+    check(stackSize != 0) { "JsonWriter is closed." }
+    sink.flush()
   }
 
   /**
-   * Flushes and closes this writer and the underlying {@link Sink}.
+   * Flushes and closes this writer and the underlying [Sink].
    *
    * @throws IOException if the JSON document is incomplete.
    */
-  @Override public void close() throws IOException {
-    sink.close();
-
-    int size = stackSize;
-    if (size > 1 || (size == 1 && scopes[size - 1] != NONEMPTY_DOCUMENT)) {
-      throw new IOException("Incomplete document");
+  @Throws(IOException::class)
+  override fun close() {
+    sink.close()
+    val size = stackSize
+    if (size > 1 || size == 1 && scopes[size - 1] != JsonScope.NONEMPTY_DOCUMENT) {
+      throw IOException("Incomplete document")
     }
-    stackSize = 0;
+    stackSize = 0
   }
 
-  /**
-   * Writes {@code value} as a string literal to {@code sink}. This wraps the value in double quotes
-   * and escapes those characters that require it.
-   */
-  static void string(BufferedSink sink, String value) throws IOException {
-    String[] replacements = REPLACEMENT_CHARS;
-    sink.writeByte('"');
-    int last = 0;
-    int length = value.length();
-    for (int i = 0; i < length; i++) {
-      char c = value.charAt(i);
-      String replacement;
-      if (c < 128) {
-        replacement = replacements[c];
-        if (replacement == null) {
-          continue;
-        }
-      } else if (c == '\u2028') {
-        replacement = "\\u2028";
-      } else if (c == '\u2029') {
-        replacement = "\\u2029";
-      } else {
-        continue;
-      }
-      if (last < i) {
-        sink.writeUtf8(value, last, i);
-      }
-      sink.writeUtf8(replacement);
-      last = i + 1;
-    }
-    if (last < length) {
-      sink.writeUtf8(value, last, length);
-    }
-    sink.writeByte('"');
-  }
-
-  private void newline() throws IOException {
+  @Throws(IOException::class)
+  private fun newline() {
     if (indent == null) {
-      return;
+      return
     }
-
-    sink.writeByte('\n');
-    for (int i = 1, size = stackSize; i < size; i++) {
-      sink.writeUtf8(indent);
+    sink.writeByte('\n'.toInt())
+    var i = 1
+    val size = stackSize
+    while (i < size) {
+      sink.writeUtf8(indent ?: "")
+      i++
     }
   }
 
@@ -336,15 +291,17 @@ final class JsonUtf8Writer extends JsonWriter {
    * Inserts any necessary separators and whitespace before a name. Also
    * adjusts the stack to expect the name's value.
    */
-  private void beforeName() throws IOException {
-    int context = peekScope();
-    if (context == NONEMPTY_OBJECT) { // first in object
-      sink.writeByte(',');
-    } else if (context != EMPTY_OBJECT) { // not in an object!
-      throw new IllegalStateException("Nesting problem.");
+  @Throws(IOException::class)
+  private fun beforeName() {
+    val context = peekScope()
+    if (context == JsonScope.NONEMPTY_OBJECT) { // first in object
+      sink.writeByte(','.toInt())
+    } else check(context == JsonScope.EMPTY_OBJECT) {
+      // not in an object!
+      "Nesting problem."
     }
-    newline();
-    replaceTop(DANGLING_NAME);
+    newline()
+    replaceTop(JsonScope.DANGLING_NAME)
   }
 
   /**
@@ -352,36 +309,31 @@ final class JsonUtf8Writer extends JsonWriter {
    * inline array, or inline object. Also adjusts the stack to expect either a
    * closing bracket or another element.
    */
-  @SuppressWarnings("fallthrough")
-  private void beforeValue() throws IOException {
-    switch (peekScope()) {
-      case NONEMPTY_DOCUMENT:
-        if (!lenient) {
-          throw new IllegalStateException(
-              "JSON must have only one top-level value.");
-        }
-        // fall-through
-      case EMPTY_DOCUMENT: // first in document
-        replaceTop(NONEMPTY_DOCUMENT);
-        break;
-
-      case EMPTY_ARRAY: // first in array
-        replaceTop(NONEMPTY_ARRAY);
-        newline();
-        break;
-
-      case NONEMPTY_ARRAY: // another in array
-        sink.writeByte(',');
-        newline();
-        break;
-
-      case DANGLING_NAME: // value for name
-        sink.writeUtf8(separator);
-        replaceTop(NONEMPTY_OBJECT);
-        break;
-
-      default:
-        throw new IllegalStateException("Nesting problem.");
+  @Throws(IOException::class)
+  private fun beforeValue() {
+    when (peekScope()) {
+      JsonScope.NONEMPTY_DOCUMENT -> {
+        check(isLenient) { "JSON must have only one top-level value." }
+        replaceTop(JsonScope.NONEMPTY_DOCUMENT)
+      }
+      JsonScope.EMPTY_DOCUMENT -> replaceTop(JsonScope.NONEMPTY_DOCUMENT)
+      JsonScope.EMPTY_ARRAY -> {
+        replaceTop(JsonScope.NONEMPTY_ARRAY)
+        newline()
+      }
+      JsonScope.NONEMPTY_ARRAY -> {
+        sink.writeByte(','.toInt())
+        newline()
+      }
+      JsonScope.DANGLING_NAME -> {
+        sink.writeUtf8(separator)
+        replaceTop(JsonScope.NONEMPTY_OBJECT)
+      }
+      else -> throw IllegalStateException("Nesting problem.")
     }
+  }
+
+  init {
+    pushScope(JsonScope.EMPTY_DOCUMENT)
   }
 }
