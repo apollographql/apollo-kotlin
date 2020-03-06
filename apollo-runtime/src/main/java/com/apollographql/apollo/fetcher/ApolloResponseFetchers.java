@@ -39,9 +39,9 @@ public final class ApolloResponseFetchers {
   /**
    * Signal the apollo client to fetch the data from both the network and the cache. If cached data is not
    * present, only network data will be returned. If cached data is available, but network experiences an error,
-   * cached data is returned. If cache data is not available, and network data is not available, the error
-   * of the network request will be propagated. If both network and cache are available, both will be returned.
-   * Cache data is guaranteed to be returned first.
+   * cached data is first returned, followed by the network error. If cache data is not available, and network
+   * data is not available, the error of the network request will be propagated. If both network and cache
+   * are available, both will be returned. Cache data is guaranteed to be returned first.
    */
   public static final ResponseFetcher CACHE_AND_NETWORK = new CacheAndNetworkFetcher();
 }
