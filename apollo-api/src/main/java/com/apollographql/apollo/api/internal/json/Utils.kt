@@ -1,38 +1,35 @@
-package com.apollographql.apollo.api.internal.json;
+package com.apollographql.apollo.api.internal.json
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException
 
-public final class Utils {
+object Utils {
 
-  @SuppressWarnings("unchecked")
-  public static void writeToJson(Object value, JsonWriter jsonWriter) throws IOException {
-    if (value == null) {
-      jsonWriter.nullValue();
-    } else if (value instanceof Map) {
-      jsonWriter.beginObject();
-      for (Map.Entry<Object, Object> entry : ((Map<Object, Object>) value).entrySet()) {
-        String key = entry.getKey().toString();
-        jsonWriter.name(key);
-        writeToJson(entry.getValue(), jsonWriter);
+  @JvmStatic
+  @Throws(IOException::class)
+  fun writeToJson(value: Any?, jsonWriter: JsonWriter) {
+    when (value) {
+      null -> jsonWriter.nullValue()
+
+      is Map<*, *> -> {
+        jsonWriter.beginObject().apply {
+          value.forEach { (key, value) ->
+            jsonWriter.name(key.toString())
+            writeToJson(value, this)
+          }
+        }.endObject()
       }
-      jsonWriter.endObject();
-    } else if (value instanceof List) {
-      jsonWriter.beginArray();
-      for (Object item : (List) value) {
-        writeToJson(item, jsonWriter);
+
+      is List<*> -> {
+        jsonWriter.beginArray().apply {
+          value.forEach {
+            writeToJson(it, this)
+          }
+        }.endArray()
       }
-      jsonWriter.endArray();
-    } else if (value instanceof Boolean) {
-      jsonWriter.value((Boolean) value);
-    } else if (value instanceof Number) {
-      jsonWriter.value((Number) value);
-    } else {
-      jsonWriter.value(value.toString());
+
+      is Boolean -> jsonWriter.value(value as Boolean?)
+      is Number -> jsonWriter.value(value as Number?)
+      else -> jsonWriter.value(value.toString())
     }
-  }
-
-  private Utils() {
   }
 }

@@ -55,7 +55,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   override var failOnUnknown = false
 
   @Throws(IOException::class)
-  override fun beginArray() {
+  override fun beginArray(): JsonReader {
     val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
     if (p == PEEKED_BEGIN_ARRAY) {
       push(JsonScope.EMPTY_ARRAY)
@@ -64,10 +64,11 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     } else {
       throw JsonDataException("Expected BEGIN_ARRAY but was ${peek()} at path ${getPath()}")
     }
+    return this
   }
 
   @Throws(IOException::class)
-  override fun endArray() {
+  override fun endArray(): JsonReader {
     val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
     if (p == PEEKED_END_ARRAY) {
       stackSize--
@@ -76,10 +77,11 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     } else {
       throw JsonDataException("Expected END_ARRAY but was ${peek()} at path ${getPath()}")
     }
+    return this
   }
 
   @Throws(IOException::class)
-  override fun beginObject() {
+  override fun beginObject(): JsonReader {
     val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
     if (p == PEEKED_BEGIN_OBJECT) {
       push(JsonScope.EMPTY_OBJECT)
@@ -87,10 +89,11 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     } else {
       throw JsonDataException("Expected BEGIN_OBJECT but was ${peek()} at path ${getPath()}")
     }
+    return this
   }
 
   @Throws(IOException::class)
-  override fun endObject() {
+  override fun endObject(): JsonReader {
     val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
     if (p == PEEKED_END_OBJECT) {
       stackSize--
@@ -100,6 +103,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     } else {
       throw JsonDataException("Expected END_OBJECT but was ${peek()} at path ${getPath()}")
     }
+    return this
   }
 
   @Throws(IOException::class)
@@ -894,13 +898,10 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   }
 
   /**
-   * Throws a new IO exception with the given message and a context snippet
-   * with this reader's content.
+   * Returns a new exception with the given message and a context snippet with this reader's content.
    */
-  @Throws(JsonEncodingException::class)
-  private fun syntaxError(message: String): JsonEncodingException {
-    throw JsonEncodingException(message + " at path " + getPath())
-  }
+  private fun syntaxError(message: String): JsonEncodingException =
+      JsonEncodingException(message + " at path " + getPath())
 
   @Throws(IOException::class)
   override fun promoteNameToValue() {
@@ -927,15 +928,18 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     private const val PEEKED_SINGLE_QUOTED = 8
     private const val PEEKED_DOUBLE_QUOTED = 9
     private const val PEEKED_UNQUOTED = 10
+
     /** When this is returned, the string value is stored in peekedString.  */
     private const val PEEKED_BUFFERED = 11
     private const val PEEKED_SINGLE_QUOTED_NAME = 12
     private const val PEEKED_DOUBLE_QUOTED_NAME = 13
     private const val PEEKED_UNQUOTED_NAME = 14
+
     /** When this is returned, the integer value is stored in peekedLong.  */
     private const val PEEKED_LONG = 15
     private const val PEEKED_NUMBER = 16
     private const val PEEKED_EOF = 17
+
     /* State machine when parsing numbers */
     private const val NUMBER_CHAR_NONE = 0
     private const val NUMBER_CHAR_SIGN = 1

@@ -1,243 +1,221 @@
-package com.apollographql.apollo.api.internal.json;
+package com.apollographql.apollo.api.internal.json
 
-import com.apollographql.apollo.api.CustomTypeAdapter;
-import com.apollographql.apollo.api.CustomTypeValue;
-import com.apollographql.apollo.api.ScalarType;
-import com.apollographql.apollo.api.ScalarTypeAdapters;
-import com.apollographql.apollo.api.internal.InputFieldMarshaller;
-import com.apollographql.apollo.api.internal.InputFieldWriter;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.apollographql.apollo.api.CustomTypeValue.*
+import com.apollographql.apollo.api.ScalarType
+import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.internal.InputFieldMarshaller
+import com.apollographql.apollo.api.internal.InputFieldWriter
+import com.apollographql.apollo.api.internal.json.Utils.writeToJson
+import java.io.IOException
 
-import java.io.IOException;
-import java.util.Map;
+class InputFieldJsonWriter(
+    private val jsonWriter: JsonWriter,
+    private val scalarTypeAdapters: ScalarTypeAdapters
+) : InputFieldWriter {
 
-import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
-
-public class InputFieldJsonWriter implements InputFieldWriter {
-  private final JsonWriter jsonWriter;
-  private final ScalarTypeAdapters scalarTypeAdapters;
-
-  public InputFieldJsonWriter(JsonWriter jsonWriter, ScalarTypeAdapters scalarTypeAdapters) {
-    this.jsonWriter = jsonWriter;
-    this.scalarTypeAdapters = scalarTypeAdapters;
-  }
-
-  @Override public void writeString(@NotNull String fieldName, @Nullable String value) throws IOException {
-    checkNotNull(fieldName, "fieldName == null");
+  @Throws(IOException::class)
+  override fun writeString(fieldName: String, value: String?) {
     if (value != null) {
-      jsonWriter.name(fieldName).value(value);
+      jsonWriter.name(fieldName).value(value)
     } else {
-      jsonWriter.name(fieldName).nullValue();
+      jsonWriter.name(fieldName).nullValue()
     }
   }
 
-  @Override public void writeInt(@NotNull String fieldName, @Nullable Integer value) throws IOException {
-    checkNotNull(fieldName, "fieldName == null");
+  @Throws(IOException::class)
+  override fun writeInt(fieldName: String, value: Int?) {
     if (value != null) {
-      jsonWriter.name(fieldName).value(value);
+      jsonWriter.name(fieldName).value(value)
     } else {
-      jsonWriter.name(fieldName).nullValue();
+      jsonWriter.name(fieldName).nullValue()
     }
   }
 
-  @Override public void writeLong(@NotNull String fieldName, @Nullable Long value) throws IOException {
-    checkNotNull(fieldName, "fieldName == null");
+  @Throws(IOException::class)
+  override fun writeLong(fieldName: String, value: Long?) {
     if (value != null) {
-      jsonWriter.name(fieldName).value(value);
+      jsonWriter.name(fieldName).value(value)
     } else {
-      jsonWriter.name(fieldName).nullValue();
+      jsonWriter.name(fieldName).nullValue()
     }
   }
 
-  @Override public void writeDouble(@NotNull String fieldName, @Nullable Double value) throws IOException {
-    checkNotNull(fieldName, "fieldName == null");
+  @Throws(IOException::class)
+  override fun writeDouble(fieldName: String, value: Double?) {
     if (value != null) {
-      jsonWriter.name(fieldName).value(value);
+      jsonWriter.name(fieldName).value(value)
     } else {
-      jsonWriter.name(fieldName).nullValue();
+      jsonWriter.name(fieldName).nullValue()
     }
   }
 
-  @Override public void writeNumber(@NotNull String fieldName, @Nullable Number value) throws IOException {
-    checkNotNull(fieldName, "fieldName == null");
+  @Throws(IOException::class)
+  override fun writeNumber(fieldName: String, value: Number?) {
     if (value != null) {
-      jsonWriter.name(fieldName).value(value);
+      jsonWriter.name(fieldName).value(value)
     } else {
-      jsonWriter.name(fieldName).nullValue();
+      jsonWriter.name(fieldName).nullValue()
     }
   }
 
-  @Override public void writeBoolean(@NotNull String fieldName, @Nullable Boolean value) throws IOException {
-    checkNotNull(fieldName, "fieldName == null");
+  @Throws(IOException::class)
+  override fun writeBoolean(fieldName: String, value: Boolean?) {
     if (value != null) {
-      jsonWriter.name(fieldName).value(value);
+      jsonWriter.name(fieldName).value(value)
     } else {
-      jsonWriter.name(fieldName).nullValue();
+      jsonWriter.name(fieldName).nullValue()
     }
   }
 
-  @SuppressWarnings("unchecked")
-  @Override public void writeCustom(@NotNull String fieldName, @NotNull ScalarType scalarType, @Nullable Object value)
-      throws IOException {
-    checkNotNull(fieldName, "fieldName == null");
-    if (value != null) {
-      CustomTypeAdapter customTypeAdapter = scalarTypeAdapters.adapterFor(scalarType);
-      CustomTypeValue customTypeValue = customTypeAdapter.encode(value);
-      if (customTypeValue instanceof CustomTypeValue.GraphQLString) {
-        writeString(fieldName, ((CustomTypeValue.GraphQLString) customTypeValue).value);
-      } else if (customTypeValue instanceof CustomTypeValue.GraphQLBoolean) {
-        writeBoolean(fieldName, ((CustomTypeValue.GraphQLBoolean) customTypeValue).value);
-      } else if (customTypeValue instanceof CustomTypeValue.GraphQLNumber) {
-        writeNumber(fieldName, ((CustomTypeValue.GraphQLNumber) customTypeValue).value);
-      } else if (customTypeValue instanceof CustomTypeValue.GraphQLJsonObject) {
-        jsonWriter.name(fieldName);
-        Utils.writeToJson(((CustomTypeValue.GraphQLJsonObject) customTypeValue).value, jsonWriter);
-      } else if (customTypeValue instanceof CustomTypeValue.GraphQLJsonList) {
-        jsonWriter.name(fieldName);
-        Utils.writeToJson(((CustomTypeValue.GraphQLJsonList) customTypeValue).value, jsonWriter);
-      } else {
-        throw new IllegalArgumentException("Unsupported custom value type: " + customTypeValue);
-      }
-    } else {
-      jsonWriter.name(fieldName).nullValue();
-    }
-  }
-
-  @Override public void writeObject(@NotNull String fieldName, @Nullable InputFieldMarshaller marshaller)
-      throws IOException {
-    checkNotNull(fieldName, "fieldName == null");
-    if (marshaller != null) {
-      jsonWriter.name(fieldName).beginObject();
-      marshaller.marshal(this);
-      jsonWriter.endObject();
-    } else {
-      jsonWriter.name(fieldName).nullValue();
-    }
-  }
-
-  @Override public void writeList(@NotNull String fieldName, @Nullable ListWriter listWriter) throws IOException {
-    checkNotNull(fieldName, "fieldName == null");
-    if (listWriter != null) {
-      jsonWriter.name(fieldName).beginArray();
-      listWriter.write(new JsonListItemWriter(jsonWriter, scalarTypeAdapters));
-      jsonWriter.endArray();
-    } else {
-      jsonWriter.name(fieldName).nullValue();
-    }
-  }
-
-  @Override public void writeMap(@NotNull String fieldName, @Nullable Map<String, ?> value) throws IOException {
-    checkNotNull(fieldName, "fieldName == null");
+  @Throws(IOException::class)
+  override fun writeCustom(fieldName: String, scalarType: ScalarType, value: Any?) {
     if (value == null) {
-      jsonWriter.name(fieldName).nullValue();
-    } else {
-      jsonWriter.name(fieldName);
-      Utils.writeToJson(value, jsonWriter);
+      jsonWriter.name(fieldName).nullValue()
+      return
+    }
+
+    val customTypeAdapter = scalarTypeAdapters.adapterFor<Any>(scalarType)
+    when (val customTypeValue = customTypeAdapter.encode(value)) {
+      is GraphQLString -> writeString(fieldName, customTypeValue.value)
+      is GraphQLBoolean -> writeBoolean(fieldName, customTypeValue.value)
+      is GraphQLNumber -> writeNumber(fieldName, customTypeValue.value)
+      is GraphQLJsonObject -> jsonWriter.name(fieldName).apply { writeToJson(customTypeValue.value, this) }
+      is GraphQLJsonList -> jsonWriter.name(fieldName).apply { writeToJson(customTypeValue.value, this) }
     }
   }
 
-  private static final class JsonListItemWriter implements ListItemWriter {
-    private final JsonWriter jsonWriter;
-    private final ScalarTypeAdapters scalarTypeAdapters;
-
-    JsonListItemWriter(JsonWriter jsonWriter, ScalarTypeAdapters scalarTypeAdapters) {
-      this.jsonWriter = jsonWriter;
-      this.scalarTypeAdapters = scalarTypeAdapters;
+  @Throws(IOException::class)
+  override fun writeObject(fieldName: String, marshaller: InputFieldMarshaller?) {
+    if (marshaller != null) {
+      jsonWriter.name(fieldName).beginObject()
+      marshaller.marshal(this)
+      jsonWriter.endObject()
+    } else {
+      jsonWriter.name(fieldName).nullValue()
     }
+  }
 
-    @Override public void writeString(@Nullable String value) throws IOException {
+  @Throws(IOException::class)
+  override fun writeList(fieldName: String, listWriter: InputFieldWriter.ListWriter?) {
+    if (listWriter != null) {
+      jsonWriter.name(fieldName).beginArray()
+      listWriter.write(JsonListItemWriter(jsonWriter, scalarTypeAdapters))
+      jsonWriter.endArray()
+    } else {
+      jsonWriter.name(fieldName).nullValue()
+    }
+  }
+
+  @Throws(IOException::class)
+  override fun writeMap(fieldName: String, value: Map<String, *>?) {
+    if (value == null) {
+      jsonWriter.name(fieldName).nullValue()
+    } else {
+      jsonWriter.name(fieldName)
+      writeToJson(value, jsonWriter)
+    }
+  }
+
+  private class JsonListItemWriter(
+      private val jsonWriter: JsonWriter,
+      private val scalarTypeAdapters: ScalarTypeAdapters
+  ) : InputFieldWriter.ListItemWriter {
+
+    @Throws(IOException::class)
+    override fun writeString(value: String?) {
       if (value == null) {
-        jsonWriter.nullValue();
+        jsonWriter.nullValue()
       } else {
-        jsonWriter.value(value);
+        jsonWriter.value(value)
       }
     }
 
-    @Override public void writeInt(@Nullable Integer value) throws IOException {
+    @Throws(IOException::class)
+    override fun writeInt(value: Int?) {
       if (value == null) {
-        jsonWriter.nullValue();
+        jsonWriter.nullValue()
       } else {
-        jsonWriter.value(value);
+        jsonWriter.value(value)
       }
     }
 
-    @Override public void writeLong(@Nullable Long value) throws IOException {
+    @Throws(IOException::class)
+    override fun writeLong(value: Long?) {
       if (value == null) {
-        jsonWriter.nullValue();
+        jsonWriter.nullValue()
       } else {
-        jsonWriter.value(value);
+        jsonWriter.value(value)
       }
     }
 
-    @Override public void writeDouble(@Nullable Double value) throws IOException {
+    @Throws(IOException::class)
+    override fun writeDouble(value: Double?) {
       if (value == null) {
-        jsonWriter.nullValue();
+        jsonWriter.nullValue()
       } else {
-        jsonWriter.value(value);
+        jsonWriter.value(value)
       }
     }
 
-    @Override public void writeNumber(@Nullable Number value) throws IOException {
+    @Throws(IOException::class)
+    override fun writeNumber(value: Number?) {
       if (value == null) {
-        jsonWriter.nullValue();
+        jsonWriter.nullValue()
       } else {
-        jsonWriter.value(value);
+        jsonWriter.value(value)
       }
     }
 
-    @Override public void writeBoolean(@Nullable Boolean value) throws IOException {
+    @Throws(IOException::class)
+    override fun writeBoolean(value: Boolean?) {
       if (value == null) {
-        jsonWriter.nullValue();
+        jsonWriter.nullValue()
       } else {
-        jsonWriter.value(value);
+        jsonWriter.value(value)
       }
     }
 
-    @Override public void writeMap(@Nullable Map<String, ?> value) throws IOException {
-      Utils.writeToJson(value, jsonWriter);
+    @Throws(IOException::class)
+    override fun writeMap(value: Map<String, *>?) {
+      writeToJson(value, jsonWriter)
     }
 
-    @SuppressWarnings("unchecked")
-    @Override public void writeCustom(@NotNull ScalarType scalarType, @Nullable Object value) throws IOException {
+    @Throws(IOException::class)
+    override fun writeCustom(scalarType: ScalarType, value: Any?) {
       if (value == null) {
-        jsonWriter.nullValue();
-      } else {
-        CustomTypeAdapter customTypeAdapter = scalarTypeAdapters.adapterFor(scalarType);
-        CustomTypeValue customTypeValue = customTypeAdapter.encode(value);
-        if (customTypeValue instanceof CustomTypeValue.GraphQLString) {
-          writeString(((CustomTypeValue.GraphQLString) customTypeValue).value);
-        } else if (customTypeValue instanceof CustomTypeValue.GraphQLBoolean) {
-          writeBoolean(((CustomTypeValue.GraphQLBoolean) customTypeValue).value);
-        } else if (customTypeValue instanceof CustomTypeValue.GraphQLNumber) {
-          writeNumber(((CustomTypeValue.GraphQLNumber) customTypeValue).value);
-        } else if (customTypeValue instanceof CustomTypeValue.GraphQLJsonObject) {
-          Utils.writeToJson(((CustomTypeValue.GraphQLJsonObject) customTypeValue).value, jsonWriter);
-        } else if (customTypeValue instanceof CustomTypeValue.GraphQLJsonList) {
-          Utils.writeToJson(((CustomTypeValue.GraphQLJsonList) customTypeValue).value, jsonWriter);
-        } else {
-          throw new IllegalArgumentException("Unsupported custom value type: " + customTypeValue);
-        }
+        jsonWriter.nullValue()
+        return
+      }
+
+      val customTypeAdapter = scalarTypeAdapters.adapterFor<Any>(scalarType)
+      when (val customTypeValue = customTypeAdapter.encode(value)) {
+        is GraphQLString -> writeString(customTypeValue.value)
+        is GraphQLBoolean -> writeBoolean(customTypeValue.value)
+        is GraphQLNumber -> writeNumber(customTypeValue.value)
+        is GraphQLJsonObject -> writeToJson(customTypeValue.value, jsonWriter)
+        is GraphQLJsonList -> writeToJson(customTypeValue.value, jsonWriter)
       }
     }
 
-    @Override public void writeObject(@Nullable InputFieldMarshaller marshaller) throws IOException {
+    @Throws(IOException::class)
+    override fun writeObject(marshaller: InputFieldMarshaller?) {
       if (marshaller == null) {
-        jsonWriter.nullValue();
+        jsonWriter.nullValue()
       } else {
-        jsonWriter.beginObject();
-        marshaller.marshal(new InputFieldJsonWriter(jsonWriter, scalarTypeAdapters));
-        jsonWriter.endObject();
+        jsonWriter.beginObject()
+        marshaller.marshal(InputFieldJsonWriter(jsonWriter, scalarTypeAdapters))
+        jsonWriter.endObject()
       }
     }
 
-    @Override public void writeList(@Nullable ListWriter listWriter) throws IOException {
+    @Throws(IOException::class)
+    override fun writeList(listWriter: InputFieldWriter.ListWriter?) {
       if (listWriter == null) {
-        jsonWriter.nullValue();
+        jsonWriter.nullValue()
       } else {
-        jsonWriter.beginArray();
-        listWriter.write(new JsonListItemWriter(jsonWriter, scalarTypeAdapters));
-        jsonWriter.endArray();
+        jsonWriter.beginArray()
+        listWriter.write(JsonListItemWriter(jsonWriter, scalarTypeAdapters))
+        jsonWriter.endArray()
       }
     }
   }
