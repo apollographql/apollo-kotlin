@@ -49,8 +49,8 @@ public final class ScalarTypeAdapters {
     Map<Class, CustomTypeAdapter> adapters = new LinkedHashMap<>();
     adapters.put(String.class, new DefaultCustomTypeAdapter<String>() {
       @NotNull @Override public String decode(@NotNull CustomTypeValue value) {
-        if (value instanceof CustomTypeValue.GraphQLJsonList ||
-            value instanceof CustomTypeValue.GraphQLJsonObject) {
+        if (value instanceof CustomTypeValue.GraphQLJsonList
+            || value instanceof CustomTypeValue.GraphQLJsonObject) {
           final Buffer buffer = new Buffer();
           final JsonWriter writer = JsonWriter.of(buffer);
           try {
