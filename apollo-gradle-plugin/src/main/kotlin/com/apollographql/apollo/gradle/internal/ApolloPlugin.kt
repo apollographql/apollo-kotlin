@@ -159,6 +159,8 @@ open class ApolloPlugin : Plugin<Project> {
             .withFallback(project.objects, compilationUnit.apolloExtension)
 
         val graphqlSourceDirectorySet = if (compilationUnit.apolloVariant.isTest) {
+          // For tests, reusing sourceDirectorySet from the Service or Extension will
+          // generate duplicate classes so we just skip them
           compilationUnit.graphqlSourceDirectorySet
         } else {
           compilerParams.graphqlSourceDirectorySet
