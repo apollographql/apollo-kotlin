@@ -19,7 +19,7 @@ module.exports = {
             'essentials/get-started',
             'essentials/queries',
             'essentials/mutations',
-            'gradle/plugin-configuration',
+            'essentials/plugin-configuration',
             'essentials/caching',
           ],
           Advanced: [
