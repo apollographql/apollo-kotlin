@@ -68,8 +68,8 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
         .build()
 
     val response = OkHttpClient.Builder()
-        .connectTimeout(System.getProperty("okHttp.connectTimeout","10").toLong(), TimeUnit.SECONDS)
-        .readTimeout(System.getProperty("okHttp.readTimeout","10").toLong(), TimeUnit.SECONDS)
+        .connectTimeout(System.getProperty("okHttp.connectTimeout", "60").toLong(), TimeUnit.SECONDS)
+        .readTimeout(System.getProperty("okHttp.readTimeout", "60").toLong(), TimeUnit.SECONDS)
         .build()
         .newCall(requestBuilder.build()).execute()
 
