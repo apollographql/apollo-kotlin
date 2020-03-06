@@ -35,10 +35,13 @@ object JsonScope {
   const val CLOSED = 8
 
   /**
-   * Renders the path in a JSON document to a string. The `pathNames` and `pathIndices`
-   * parameters corresponds directly to stack: At indices where the stack contains an object
-   * (EMPTY_OBJECT, DANGLING_NAME or NONEMPTY_OBJECT), pathNames contains the name at this scope.
-   * Where it contains an array (EMPTY_ARRAY, NONEMPTY_ARRAY) pathIndices contains the current index
+   * Renders the path in a JSON document to a string.
+   *
+   * The [pathNames] and [pathIndices] parameters corresponds directly to stack:
+   *  - [pathIndices] where the stack contains an object (EMPTY_OBJECT, DANGLING_NAME or NONEMPTY_OBJECT),
+   *  - [pathNames] contains the name at this scope.
+   *
+   * Where it contains an array (EMPTY_ARRAY, NONEMPTY_ARRAY) [pathIndices] contains the current index
    * in that array. Otherwise the value is undefined, and we take advantage of that by incrementing
    * pathIndices when doing so isn't useful.
    */
@@ -53,8 +56,7 @@ object JsonScope {
             result.append(pathNames[i])
           }
         }
-        NONEMPTY_DOCUMENT, EMPTY_DOCUMENT, CLOSED -> {
-        }
+        NONEMPTY_DOCUMENT, EMPTY_DOCUMENT, CLOSED -> Unit
       }
     }
     return result.toString()

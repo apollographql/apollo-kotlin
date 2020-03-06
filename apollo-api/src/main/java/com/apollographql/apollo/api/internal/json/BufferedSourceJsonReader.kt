@@ -25,25 +25,24 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   private val buffer: Buffer = source.buffer()
   private var peeked = PEEKED_NONE
   /**
-   * A peeked value that was composed entirely of digits with an optional
-   * leading dash. Positive values may not have a leading 0.
+   * A peeked value that was composed entirely of digits with an optional leading dash. Positive values may not have a leading 0.
    */
   private var peekedLong: Long = 0
   /**
-   * The number of characters in a peeked number literal. Increment 'pos' by
-   * this after reading a number.
+   * The number of characters in a peeked number literal. Increment 'pos' by this after reading a number.
    */
   private var peekedNumberLength = 0
   /**
    * A peeked string that should be parsed on the next double, long or string.
-   * This is populated before a numeric value is parsed and used if that parsing
-   * fails.
+   * This is populated before a numeric value is parsed and used if that parsing fails.
    */
   private var peekedString: String? = null
 
-  // The nesting stack. Using a manual array rather than an ArrayList saves 20%. This stack permits
-  // up to 32 levels of nesting including the top-level document. Deeper nesting is prone to trigger
-  // StackOverflowErrors.
+  /**
+   * The nesting stack. Using a manual array rather than an ArrayList saves 20%.
+   * This stack permits up to 32 levels of nesting including the top-level document.
+   * Deeper nesting is prone to trigger StackOverflowErrors.
+   */
   private val stack = IntArray(32).apply {
     this[0] = JsonScope.EMPTY_DOCUMENT
   }
@@ -142,8 +141,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
         when (c.toChar()) {
           ']' -> return PEEKED_END_ARRAY.also { peeked = it }
           ';' -> checkLenient() // fall-through
-          ',' -> {
-          }
+          ',' -> Unit
           else -> throw syntaxError("Unterminated array")
         }
       }
@@ -157,8 +155,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
           when (c.toChar()) {
             '}' -> return PEEKED_END_OBJECT.also { peeked = it }
             ';' -> checkLenient() // fall-through
-            ',' -> {
-            }
+            ',' -> Unit
             else -> throw syntaxError("Unterminated object")
           }
         }
@@ -263,8 +260,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
         buffer.readByte() // Consume '{'.
         return PEEKED_BEGIN_OBJECT.also { peeked = it }
       }
-      else -> {
-      }
     }
 
     var result = peekKeyword()
@@ -287,39 +282,45 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
 
   @Throws(IOException::class)
   private fun peekKeyword(): Int { // Figure out which keyword we're matching against by its first character.
-    var c = buffer.getByte(0)
     val keyword: String
     val keywordUpper: String
     val peeking: Int
-    if (c == 't'.toByte() || c == 'T'.toByte()) {
-      keyword = "true"
-      keywordUpper = "TRUE"
-      peeking = PEEKED_TRUE
-    } else if (c == 'f'.toByte() || c == 'F'.toByte()) {
-      keyword = "false"
-      keywordUpper = "FALSE"
-      peeking = PEEKED_FALSE
-    } else if (c == 'n'.toByte() || c == 'N'.toByte()) {
-      keyword = "null"
-      keywordUpper = "NULL"
-      peeking = PEEKED_NULL
-    } else {
-      return PEEKED_NONE
+    when (buffer.getByte(0)) {
+      't'.toByte(), 'T'.toByte() -> {
+        keyword = "true"
+        keywordUpper = "TRUE"
+        peeking = PEEKED_TRUE
+      }
+      'f'.toByte(), 'F'.toByte() -> {
+        keyword = "false"
+        keywordUpper = "FALSE"
+        peeking = PEEKED_FALSE
+      }
+      'n'.toByte(), 'N'.toByte() -> {
+        keyword = "null"
+        keywordUpper = "NULL"
+        peeking = PEEKED_NULL
+      }
+
+      else -> return PEEKED_NONE
     }
+
     // Confirm that chars [1..length) match the keyword.
     val length = keyword.length
     for (i in 1 until length) {
       if (!source.request(i + 1.toLong())) {
         return PEEKED_NONE
       }
-      c = buffer.getByte(i.toLong())
+      val c = buffer.getByte(i.toLong())
       if (c != keyword[i].toByte() && c != keywordUpper[i].toByte()) {
         return PEEKED_NONE
       }
     }
+
     if (source.request(length + 1.toLong()) && isLiteral(buffer.getByte(length.toLong()).toChar())) {
       return PEEKED_NONE // Don't match trues, falsey or nullsoft!
     }
+
     // We've found the keyword followed either by EOF or by a non-literal character.
     buffer.skip(length.toLong())
     return peeking.also { peeked = it }
@@ -336,13 +337,17 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
       val c = buffer.getByte(i.toLong())
       when (c.toChar()) {
         '-' -> {
-          if (last == NUMBER_CHAR_NONE) {
-            negative = true
-            last = NUMBER_CHAR_SIGN
-          } else if (last == NUMBER_CHAR_EXP_E) {
-            last = NUMBER_CHAR_EXP_SIGN
-          } else {
-            return PEEKED_NONE
+          when (last) {
+            NUMBER_CHAR_NONE -> {
+              negative = true
+              last = NUMBER_CHAR_SIGN
+            }
+            NUMBER_CHAR_EXP_E -> {
+              last = NUMBER_CHAR_EXP_SIGN
+            }
+            else -> {
+              return PEEKED_NONE
+            }
           }
         }
         '+' -> {
@@ -430,24 +435,11 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
 
   @Throws(IOException::class)
   override fun nextName(): String {
-    val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
-    val result: String
-    result = when (p) {
-      PEEKED_UNQUOTED_NAME -> {
-        nextUnquotedValue()
-      }
-
-      PEEKED_DOUBLE_QUOTED_NAME -> {
-        nextQuotedValue(DOUBLE_QUOTE_OR_SLASH)
-      }
-
-      PEEKED_SINGLE_QUOTED_NAME -> {
-        nextQuotedValue(SINGLE_QUOTE_OR_SLASH)
-      }
-
-      else -> {
-        throw JsonDataException("Expected a name but was ${peek()} at path ${getPath()}")
-      }
+    val result = when (peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()) {
+      PEEKED_UNQUOTED_NAME -> nextUnquotedValue()
+      PEEKED_DOUBLE_QUOTED_NAME -> nextQuotedValue(DOUBLE_QUOTE_OR_SLASH)
+      PEEKED_SINGLE_QUOTED_NAME -> nextQuotedValue(SINGLE_QUOTE_OR_SLASH)
+      else -> throw JsonDataException("Expected a name but was ${peek()} at path ${getPath()}")
     }
     peeked = PEEKED_NONE
     pathNames[stackSize - 1] = result
@@ -456,37 +448,14 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
 
   @Throws(IOException::class)
   override fun nextString(): String? {
-    val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
-    val result: String?
-    when (p) {
-      PEEKED_UNQUOTED -> {
-        result = nextUnquotedValue()
-      }
-
-      PEEKED_DOUBLE_QUOTED -> {
-        result = nextQuotedValue(DOUBLE_QUOTE_OR_SLASH)
-      }
-
-      PEEKED_SINGLE_QUOTED -> {
-        result = nextQuotedValue(SINGLE_QUOTE_OR_SLASH)
-      }
-
-      PEEKED_BUFFERED -> {
-        result = peekedString
-        peekedString = null
-      }
-
-      PEEKED_LONG -> {
-        result = java.lang.Long.toString(peekedLong)
-      }
-
-      PEEKED_NUMBER -> {
-        result = buffer.readUtf8(peekedNumberLength.toLong())
-      }
-
-      else -> {
-        throw JsonDataException("Expected a string but was ${peek()} at path ${getPath()}")
-      }
+    val result = when (peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()) {
+      PEEKED_UNQUOTED -> nextUnquotedValue()
+      PEEKED_DOUBLE_QUOTED -> nextQuotedValue(DOUBLE_QUOTE_OR_SLASH)
+      PEEKED_SINGLE_QUOTED -> nextQuotedValue(SINGLE_QUOTE_OR_SLASH)
+      PEEKED_BUFFERED -> peekedString?.also { peekedString = null }
+      PEEKED_LONG -> peekedLong.toString()
+      PEEKED_NUMBER -> buffer.readUtf8(peekedNumberLength.toLong())
+      else -> throw JsonDataException("Expected a string but was ${peek()} at path ${getPath()}")
     }
     peeked = PEEKED_NONE
     pathIndices[stackSize - 1]++
@@ -514,13 +483,14 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
 
   @Throws(IOException::class)
   override fun <T> nextNull(): T? {
-    val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
-    return if (p == PEEKED_NULL) {
-      peeked = PEEKED_NONE
-      pathIndices[stackSize - 1]++
-      null
-    } else {
-      throw JsonDataException("Expected null but was ${peek()} at path ${getPath()}")
+    return when (peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()) {
+      PEEKED_NULL -> {
+        peeked = PEEKED_NONE
+        pathIndices[stackSize - 1]++
+        null
+      }
+
+      else -> throw JsonDataException("Expected null but was ${peek()} at path ${getPath()}")
     }
   }
 
@@ -533,26 +503,19 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
         pathIndices[stackSize - 1]++
         return peekedLong.toDouble()
       }
-
       p == PEEKED_NUMBER -> {
         peekedString = buffer.readUtf8(peekedNumberLength.toLong())
       }
-
       p == PEEKED_DOUBLE_QUOTED -> {
         peekedString = nextQuotedValue(DOUBLE_QUOTE_OR_SLASH)
       }
-
       p == PEEKED_SINGLE_QUOTED -> {
         peekedString = nextQuotedValue(SINGLE_QUOTE_OR_SLASH)
       }
-
       p == PEEKED_UNQUOTED -> {
         peekedString = nextUnquotedValue()
       }
-
-      p != PEEKED_BUFFERED -> {
-        throw JsonDataException("Expected a double but was ${peek()} at path ${getPath()}")
-      }
+      p != PEEKED_BUFFERED -> throw JsonDataException("Expected a double but was ${peek()} at path ${getPath()}")
     }
 
     peeked = PEEKED_BUFFERED
@@ -585,7 +548,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
       p == PEEKED_NUMBER -> {
         peekedString = buffer.readUtf8(peekedNumberLength.toLong())
       }
-
       p == PEEKED_DOUBLE_QUOTED || p == PEEKED_SINGLE_QUOTED -> {
         peekedString = if (p == PEEKED_DOUBLE_QUOTED) nextQuotedValue(DOUBLE_QUOTE_OR_SLASH) else nextQuotedValue(SINGLE_QUOTE_OR_SLASH)
         try {
@@ -596,9 +558,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
         } catch (ignored: NumberFormatException) { // Fall back to parse as a double below.
         }
       }
-      p != PEEKED_BUFFERED -> {
-        throw JsonDataException("Expected a long but was ${peek()} at path ${getPath()}")
-      }
+      p != PEEKED_BUFFERED -> throw JsonDataException("Expected a long but was ${peek()} at path ${getPath()}")
     }
 
     peeked = PEEKED_BUFFERED
@@ -684,12 +644,9 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   @Throws(IOException::class)
   override fun nextInt(): Int {
     val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
-
-    var result: Int
-
     when {
       p == PEEKED_LONG -> {
-        result = peekedLong.toInt()
+        val result = peekedLong.toInt()
         if (peekedLong != result.toLong()) { // Make sure no precision was lost casting to 'int'.
           throw JsonDataException("Expected an int but was " + peekedLong
               + " at path " + getPath())
@@ -701,18 +658,16 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
       p == PEEKED_NUMBER -> {
         peekedString = buffer.readUtf8(peekedNumberLength.toLong())
       }
-
       p == PEEKED_DOUBLE_QUOTED || p == PEEKED_SINGLE_QUOTED -> {
         peekedString = if (p == PEEKED_DOUBLE_QUOTED) nextQuotedValue(DOUBLE_QUOTE_OR_SLASH) else nextQuotedValue(SINGLE_QUOTE_OR_SLASH)
         try {
-          result = peekedString!!.toInt()
+          val result = peekedString!!.toInt()
           peeked = PEEKED_NONE
           pathIndices[stackSize - 1]++
           return result
         } catch (ignored: NumberFormatException) { // Fall back to parse as a double below.
         }
       }
-
       p != PEEKED_BUFFERED -> {
         throw JsonDataException("Expected an int but was ${peek()} at path ${getPath()}")
       }
@@ -726,7 +681,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
       throw JsonDataException("Expected an int but was $peekedString at path ${getPath()}")
     }
 
-    result = asDouble.toInt()
+    val result = asDouble.toInt()
     if (result.toDouble() != asDouble) { // Make sure no precision was lost casting to 'int'.
       throw JsonDataException("Expected an int but was $peekedString at path ${getPath()}")
     }
@@ -748,35 +703,39 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
 
   @Throws(IOException::class)
   override fun skipValue() {
-    if (failOnUnknown) {
-      throw JsonDataException("Cannot skip unexpected " + peek() + " at " + getPath())
-    }
+    if (failOnUnknown) throw JsonDataException("Cannot skip unexpected ${peek()} at ${getPath()}")
+
     var count = 0
     do {
-      var p = peeked
-      if (p == PEEKED_NONE) {
-        p = doPeek()
-      }
-      if (p == PEEKED_BEGIN_ARRAY) {
-        push(JsonScope.EMPTY_ARRAY)
-        count++
-      } else if (p == PEEKED_BEGIN_OBJECT) {
-        push(JsonScope.EMPTY_OBJECT)
-        count++
-      } else if (p == PEEKED_END_ARRAY) {
-        stackSize--
-        count--
-      } else if (p == PEEKED_END_OBJECT) {
-        stackSize--
-        count--
-      } else if (p == PEEKED_UNQUOTED_NAME || p == PEEKED_UNQUOTED) {
-        skipUnquotedValue()
-      } else if (p == PEEKED_DOUBLE_QUOTED || p == PEEKED_DOUBLE_QUOTED_NAME) {
-        skipQuotedValue(DOUBLE_QUOTE_OR_SLASH)
-      } else if (p == PEEKED_SINGLE_QUOTED || p == PEEKED_SINGLE_QUOTED_NAME) {
-        skipQuotedValue(SINGLE_QUOTE_OR_SLASH)
-      } else if (p == PEEKED_NUMBER) {
-        buffer.skip(peekedNumberLength.toLong())
+      when (peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()) {
+        PEEKED_BEGIN_ARRAY -> {
+          push(JsonScope.EMPTY_ARRAY)
+          count++
+        }
+        PEEKED_BEGIN_OBJECT -> {
+          push(JsonScope.EMPTY_OBJECT)
+          count++
+        }
+        PEEKED_END_ARRAY -> {
+          stackSize--
+          count--
+        }
+        PEEKED_END_OBJECT -> {
+          stackSize--
+          count--
+        }
+        PEEKED_UNQUOTED_NAME, PEEKED_UNQUOTED -> {
+          skipUnquotedValue()
+        }
+        PEEKED_DOUBLE_QUOTED, PEEKED_DOUBLE_QUOTED_NAME -> {
+          skipQuotedValue(DOUBLE_QUOTE_OR_SLASH)
+        }
+        PEEKED_SINGLE_QUOTED, PEEKED_SINGLE_QUOTED_NAME -> {
+          skipQuotedValue(SINGLE_QUOTE_OR_SLASH)
+        }
+        PEEKED_NUMBER -> {
+          buffer.skip(peekedNumberLength.toLong())
+        }
       }
       peeked = PEEKED_NONE
     } while (count != 0)
@@ -785,26 +744,22 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   }
 
   private fun push(newTop: Int) {
-    if (stackSize == stack.size) {
-      throw JsonDataException("Nesting too deep at " + getPath())
-    }
+    if (stackSize == stack.size) throw JsonDataException("Nesting too deep at " + getPath())
     stack[stackSize++] = newTop
   }
 
   /**
-   * Returns the next character in the stream that is neither whitespace nor a
-   * part of a comment. When this returns, the returned character is always at
-   * `buffer[pos-1]`; this means the caller can always push back the
-   * returned character by decrementing `pos`.
+   * Returns the next character in the stream that is neither whitespace nor a part of a comment.
+   * When this returns, the returned character is always at `buffer[pos-1]`; this means the caller can always push back the returned
+   * character by decrementing `pos`.
    */
   @Throws(IOException::class)
-  private fun nextNonWhitespace(throwOnEof: Boolean): Int { /*
-     * This code uses ugly local variables 'p' and 'l' representing the 'pos'
-     * and 'limit' fields respectively. Using locals rather than fields saves
-     * a few field reads for each whitespace character in a pretty-printed
-     * document, resulting in a 5% speedup. We need to flush 'p' to its field
-     * before any (potentially indirect) call to fillBuffer() and reread both
-     * 'p' and 'l' after any (potentially indirect) call to the same method.
+  private fun nextNonWhitespace(throwOnEof: Boolean): Int {
+    /**
+     * This code uses ugly local variables 'p' and 'l' representing the 'pos' and 'limit' fields respectively. Using locals rather than
+     * fields saves a few field reads for each whitespace character in a pretty-printed document, resulting in a 5% speedup.
+     * We need to flush 'p' to its field before any (potentially indirect) call to fillBuffer() and reread both 'p' and 'l' after any
+     * (potentially indirect) call to the same method.
      */
     var p = 0
     loop@ while (source.request(p + 1.toLong())) {
@@ -860,9 +815,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
 
   @Throws(IOException::class)
   private fun checkLenient() {
-    if (!lenient) {
-      throw syntaxError("Use JsonReader.setLenient(true) to accept malformed JSON")
-    }
+    if (!lenient) throw syntaxError("Use JsonReader.setLenient(true) to accept malformed JSON")
   }
 
   /**
@@ -882,7 +835,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   @Throws(IOException::class)
   private fun skipTo(toFind: String): Boolean {
     outer@ while (source.request(toFind.length.toLong())) {
-      for (c in 0 until toFind.length) {
+      for (c in toFind.indices) {
         if (buffer.getByte(c.toLong()) != toFind[c].toByte()) {
           buffer.readByte()
           continue@outer
@@ -893,22 +846,18 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     return false
   }
 
-  override fun getPath(): String {
-    return JsonScope.getPath(stackSize, stack, pathNames, pathIndices)
-  }
+  override fun getPath(): String = JsonScope.getPath(stackSize, stack, pathNames, pathIndices)
 
   /**
-   * Unescapes the character identified by the character or characters that immediately follow a
-   * backslash. The backslash '\' should have already been read. This supports both unicode escapes
-   * "u000A" and two-character escapes "\n".
+   * Unescapes the character identified by the character or characters that immediately follow a backslash. The backslash '\' should have
+   * already been read. This supports both unicode escapes "u000A" and two-character escapes "\n".
    *
    * @throws IOException if any unicode escape sequences are malformed.
    */
   @Throws(IOException::class)
   private fun readEscapeCharacter(): Char {
-    if (!source.request(1)) {
-      throw syntaxError("Unterminated escape sequence")
-    }
+    if (!source.request(1)) throw syntaxError("Unterminated escape sequence")
+
     return when (val escaped = buffer.readByte().toChar()) {
       'u' -> {
         if (!source.request(4)) {
@@ -921,14 +870,11 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
         while (i < end) {
           val c = buffer.getByte(i.toLong())
           result = (result.toInt() shl 4).toChar()
-          if (c >= '0'.toByte() && c <= '9'.toByte()) {
-            result += (c - '0'.toByte())
-          } else if (c >= 'a'.toByte() && c <= 'f'.toByte()) {
-            result += (c - 'a'.toByte() + 10)
-          } else if (c >= 'A'.toByte() && c <= 'F'.toByte()) {
-            result += (c - 'A'.toByte() + 10)
-          } else {
-            throw syntaxError("\\u" + buffer.readUtf8(4))
+          result += when {
+            c >= '0'.toByte() && c <= '9'.toByte() -> (c - '0'.toByte())
+            c >= 'a'.toByte() && c <= 'f'.toByte() -> (c - 'a'.toByte() + 10)
+            c >= 'A'.toByte() && c <= 'F'.toByte() -> (c - 'A'.toByte() + 10)
+            else -> throw syntaxError("\\u" + buffer.readUtf8(4))
           }
           i++
         }

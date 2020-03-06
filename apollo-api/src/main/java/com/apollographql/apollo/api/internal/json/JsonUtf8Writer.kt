@@ -20,16 +20,13 @@ import java.io.IOException
 
 internal class JsonUtf8Writer(private val sink: BufferedSink) : JsonWriter() {
   companion object {
-    /*
-   * From RFC 7159, "All Unicode characters may be placed within the
-   * quotation marks except for the characters that must be escaped:
-   * quotation mark, reverse solidus, and the control characters
-   * (U+0000 through U+001F)."
-   *
-   * We also escape '\u2028' and '\u2029', which JavaScript interprets as
-   * newline characters. This prevents eval() from failing with a syntax
-   * error. http://code.google.com/p/google-gson/issues/detail?id=341
-   */
+    /**
+     * From RFC 7159, "All Unicode characters may be placed within the quotation marks except for the characters that must be escaped:
+     * quotation mark, reverse solidus, and the control characters (U+0000 through U+001F)."
+     *
+     * We also escape '\u2028' and '\u2029', which JavaScript interprets as newline characters. This prevents eval() from failing with a
+     * syntax error. http://code.google.com/p/google-gson/issues/detail?id=341
+     */
     private val REPLACEMENT_CHARS: Array<String?> = arrayOfNulls<String?>(128).apply {
       for (i in 0..0x1f) {
         this[i] = String.format("\\u%04x", i)
@@ -43,8 +40,7 @@ internal class JsonUtf8Writer(private val sink: BufferedSink) : JsonWriter() {
     }
 
     /**
-     * Writes `value` as a string literal to `sink`. This wraps the value in double quotes
-     * and escapes those characters that require it.
+     * Writes `value` as a string literal to `sink`. This wraps the value in double quotes and escapes those characters that require it.
      */
     @Throws(IOException::class)
     fun string(sink: BufferedSink, value: String) {
@@ -109,8 +105,7 @@ internal class JsonUtf8Writer(private val sink: BufferedSink) : JsonWriter() {
   }
 
   /**
-   * Enters a new scope by appending any necessary whitespace and the given
-   * bracket.
+   * Enters a new scope by appending any necessary whitespace and the given bracket.
    */
   @Throws(IOException::class)
   private fun open(empty: Int, openBracket: String): JsonWriter {
@@ -122,8 +117,7 @@ internal class JsonUtf8Writer(private val sink: BufferedSink) : JsonWriter() {
   }
 
   /**
-   * Closes the current scope by appending any necessary whitespace and the
-   * given bracket.
+   * Closes the current scope by appending any necessary whitespace and the given bracket.
    */
   @Throws(IOException::class)
   private fun close(empty: Int, nonempty: Int, closeBracket: String): JsonWriter {
@@ -259,7 +253,7 @@ internal class JsonUtf8Writer(private val sink: BufferedSink) : JsonWriter() {
   }
 
   /**
-   * Flushes and closes this writer and the underlying [Sink].
+   * Flushes and closes this writer and the underlying [okio.Sink].
    *
    * @throws IOException if the JSON document is incomplete.
    */
@@ -288,8 +282,7 @@ internal class JsonUtf8Writer(private val sink: BufferedSink) : JsonWriter() {
   }
 
   /**
-   * Inserts any necessary separators and whitespace before a name. Also
-   * adjusts the stack to expect the name's value.
+   * Inserts any necessary separators and whitespace before a name. Also adjusts the stack to expect the name's value.
    */
   @Throws(IOException::class)
   private fun beforeName() {
@@ -305,9 +298,8 @@ internal class JsonUtf8Writer(private val sink: BufferedSink) : JsonWriter() {
   }
 
   /**
-   * Inserts any necessary separators and whitespace before a literal value,
-   * inline array, or inline object. Also adjusts the stack to expect either a
-   * closing bracket or another element.
+   * Inserts any necessary separators and whitespace before a literal value, inline array, or inline object. Also adjusts the stack to
+   * expect either a closing bracket or another element.
    */
   @Throws(IOException::class)
   private fun beforeValue() {

@@ -28,18 +28,7 @@ package com.apollographql.apollo.api.internal.json;
  * {@link StackOverflowError}.
  */
 public final class JsonDataException extends RuntimeException {
-  public JsonDataException() {
-  }
-
   public JsonDataException(String message) {
     super(message);
-  }
-
-  public JsonDataException(Throwable cause) {
-    super(cause);
-  }
-
-  public JsonDataException(String message, Throwable cause) {
-    super(message, cause);
   }
 }
