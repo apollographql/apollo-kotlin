@@ -14,7 +14,6 @@ dependencies {
 
   add("api", groovy.util.Eval.x(project, "x.dep.kotlin.stdLib"))
   add("api", groovy.util.Eval.x(project, "x.dep.okio"))
-  add("implementation", groovy.util.Eval.x(project, "x.dep.jetbrainsAnnotations"))
 
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.junit"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.truth"))
