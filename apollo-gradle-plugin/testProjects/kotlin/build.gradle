@@ -10,7 +10,7 @@ buildscript {
   }
   dependencies {
     classpath(dep.kotlin.plugin)
-classpath(dep.apollo.plugin)
+    classpath(dep.apollo.plugin)
     // classpath(dep.androidPlugin)
     // classpath(dep.apolloPlugin)
   }
@@ -19,8 +19,6 @@ classpath(dep.apollo.plugin)
 apply plugin: "java"
 apply plugin: "org.jetbrains.kotlin.jvm"
 apply plugin: "com.apollographql.apollo"
-// apply plugin: 'com.android.library'
-// apply plugin: 'com.apollographql.apollo'
 
 repositories {
   maven {
@@ -37,11 +35,6 @@ dependencies {
   implementation dep.apollo.api
 }
 
-// ADD ANDROID CONFIGURATION HERE
-// android {
-//   compileSdkVersion androidConfig.compileSdkVersion
-// }
-
 apollo {
-  generateKotlinModels = true
+  setGenerateKotlinModels(true)
 }
