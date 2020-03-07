@@ -99,16 +99,22 @@ open class ApolloPlugin : Plugin<Project> {
             it.dependsOn(codegenProvider)
           }
 
+          compilationUnit.outputDir.set(codegenProvider.flatMap { it.outputDir })
+          compilationUnit.operationOutputFile.set(codegenProvider.flatMap { it.operationOutputFile })
+
+          /**
+           * Order matters here. See https://github.com/apollographql/apollo-android/issues/1970
+           * We want to expose the `CompilationUnit` to users before the task is configured by
+           * AndroidTaskConfigurator.registerGeneratedDirectory so that schemaFile and sourceDirectorySet are
+           * correctly set
+           */
+          apolloExtension.compilationUnits.add(compilationUnit)
+
           if (androidExtension == null) {
             JvmTaskConfigurator.registerGeneratedDirectory(project, compilationUnit, codegenProvider)
           } else {
             AndroidTaskConfigurator.registerGeneratedDirectory(project, androidExtension, compilationUnit, codegenProvider)
           }
-
-          compilationUnit.outputDir.set(codegenProvider.flatMap { it.outputDir })
-          compilationUnit.operationOutputFile.set(codegenProvider.flatMap { it.operationOutputFile })
-
-          apolloExtension.compilationUnits.add(compilationUnit)
         }
 
         rootProvider.configure {

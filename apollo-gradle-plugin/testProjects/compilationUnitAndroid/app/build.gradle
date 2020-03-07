@@ -9,7 +9,6 @@ apollo {
   onCompilationUnit {
     schemaFile = file("../schema.json")
     rootPackageName = "com.company.module"
-    generateKotlinModels = true
   }
 }
 
