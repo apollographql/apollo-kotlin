@@ -6,7 +6,6 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.internal.ApolloLogger;
 import com.apollographql.apollo.api.internal.Optional;
-import com.apollographql.apollo.api.internal.Utils;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
@@ -37,7 +36,7 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
   private final ApolloCallTracker tracker;
   final ApolloStore.RecordChangeSubscriber recordChangeSubscriber = new ApolloStore.RecordChangeSubscriber() {
     @Override public void onCacheRecordsChanged(Set<String> changedRecordKeys) {
-      if (dependentKeys.isEmpty() || !Utils.areDisjoint(dependentKeys, changedRecordKeys)) {
+      if (dependentKeys.isEmpty() || !areDisjoint(dependentKeys, changedRecordKeys)) {
         refetch();
       }
     }
@@ -211,5 +210,33 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
         throw new IllegalStateException("Unknown state");
     }
   }
+
+  /**
+   * Checks if two {@link Set} are disjoint. Returns true if the sets don't have a single common element. Also returns
+   * true if either of the sets is null.
+   *
+   * @param setOne the first set
+   * @param setTwo the second set
+   * @param <E> the value type contained within the sets
+   * @return True if the sets don't have a single common element or if either of the sets is null.
+   */
+  private static <E> boolean areDisjoint(Set<E> setOne, Set<E> setTwo) {
+    if (setOne == null || setTwo == null) {
+      return true;
+    }
+    Set<E> smallerSet = setOne;
+    Set<E> largerSet = setTwo;
+    if (setOne.size() > setTwo.size()) {
+      smallerSet = setTwo;
+      largerSet = setOne;
+    }
+    for (E el : smallerSet) {
+      if (largerSet.contains(el)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
 
 }

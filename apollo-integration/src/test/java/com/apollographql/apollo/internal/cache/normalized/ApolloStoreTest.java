@@ -1,10 +1,8 @@
 package com.apollographql.apollo.internal.cache.normalized;
 
-import com.apollographql.apollo.Logger;
 import com.apollographql.apollo.NamedCountDownLatch;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.internal.ApolloLogger;
-import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
@@ -25,29 +23,34 @@ public class ApolloStoreTest {
 
   @Test public void storeClearAllCallsNormalizedCacheClearAll() throws Exception {
     final NamedCountDownLatch latch = new NamedCountDownLatch("storeClearAllCallsNormalizedCacheClearAll", 1);
-    final RealApolloStore realApolloStore = new RealApolloStore(new NormalizedCache() {
-      @Nullable @Override public Record loadRecord(@NotNull String key, @NotNull CacheHeaders cacheHeaders) {
-        return null;
-      }
+    final RealApolloStore realApolloStore = new RealApolloStore(
+        new NormalizedCache() {
+          @Nullable @Override public Record loadRecord(@NotNull String key, @NotNull CacheHeaders cacheHeaders) {
+            return null;
+          }
 
-      @NotNull @Override public Set<String> merge(@NotNull Record record, @NotNull CacheHeaders cacheHeaders) {
-        return emptySet();
-      }
+          @NotNull @Override public Set<String> merge(@NotNull Record record, @NotNull CacheHeaders cacheHeaders) {
+            return emptySet();
+          }
 
-      @Override public void clearAll() {
-        latch.countDown();
-      }
+          @Override public void clearAll() {
+            latch.countDown();
+          }
 
-      @Override public boolean remove(@NotNull CacheKey cacheKey, boolean cascade) {
-        return false;
-      }
+          @Override public boolean remove(@NotNull CacheKey cacheKey, boolean cascade) {
+            return false;
+          }
 
-      @NotNull @Override
-      protected Set<String> performMerge(@NotNull Record apolloRecord, @NotNull CacheHeaders cacheHeaders) {
-        return emptySet();
-      }
-    }, CacheKeyResolver.DEFAULT, new ScalarTypeAdapters(Collections.EMPTY_MAP), Executors.newSingleThreadExecutor(),
-        new ApolloLogger(Optional.<Logger>absent()));
+          @NotNull @Override
+          protected Set<String> performMerge(@NotNull Record apolloRecord, @NotNull CacheHeaders cacheHeaders) {
+            return emptySet();
+          }
+        },
+        CacheKeyResolver.DEFAULT,
+        new ScalarTypeAdapters(Collections.EMPTY_MAP),
+        Executors.newSingleThreadExecutor(),
+        new ApolloLogger(null)
+    );
     realApolloStore.clearAll().execute();
     latch.awaitOrThrowWithTimeout(3, TimeUnit.SECONDS);
   }

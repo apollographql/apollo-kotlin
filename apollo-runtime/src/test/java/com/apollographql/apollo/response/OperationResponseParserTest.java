@@ -14,7 +14,7 @@ import static org.mockito.Mockito.mock;
 
 public class OperationResponseParserTest {
 
-    abstract class TestOperation implements Operation<Operation.Data, String, Operation.Variables> {
+    abstract static class TestOperation implements Operation<Operation.Data, String, Operation.Variables> {
     }
 
     @Test

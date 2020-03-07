@@ -63,7 +63,7 @@ public class ApolloServerInterceptorTest {
     ApolloServerInterceptor interceptor = new ApolloServerInterceptor(serverUrl,
         new AssertHttpCallFactory(requestAssertPredicate), null, false,
         new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap()),
-        new ApolloLogger(Optional.<Logger>absent()));
+        new ApolloLogger(null));
 
     interceptor.httpPostCall(query, CacheHeaders.NONE, RequestHeaders.NONE, true, false);
   }
@@ -93,7 +93,7 @@ public class ApolloServerInterceptorTest {
     ApolloServerInterceptor interceptor = new ApolloServerInterceptor(serverUrl,
         new AssertHttpCallFactory(requestAssertPredicate),
         HttpCachePolicy.NETWORK_FIRST.expireAfter(10, TimeUnit.SECONDS), false,
-        scalarTypeAdapters, new ApolloLogger(Optional.<Logger>absent()));
+        scalarTypeAdapters, new ApolloLogger(null));
 
     interceptor.httpPostCall(query, CacheHeaders.builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "true").build(),
         RequestHeaders.NONE, true, false);
@@ -136,7 +136,7 @@ public class ApolloServerInterceptorTest {
     ApolloServerInterceptor interceptor = new ApolloServerInterceptor(serverUrl,
         new AssertHttpCallFactory(requestAssertPredicate), null, false,
         new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap()),
-        new ApolloLogger(Optional.<Logger>absent()));
+        new ApolloLogger(null));
 
     interceptor.httpPostCall(query, CacheHeaders.NONE, requestHeaders, true, false);
   }
@@ -165,7 +165,7 @@ public class ApolloServerInterceptorTest {
     ApolloServerInterceptor interceptor = new ApolloServerInterceptor(serverUrl,
         new AssertHttpCallFactory(requestAssertPredicate), null, false,
         new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap()),
-        new ApolloLogger(Optional.<Logger>absent()));
+        new ApolloLogger(null));
 
     interceptor.httpGetCall(query, CacheHeaders.NONE, RequestHeaders.NONE, true, true);
   }
