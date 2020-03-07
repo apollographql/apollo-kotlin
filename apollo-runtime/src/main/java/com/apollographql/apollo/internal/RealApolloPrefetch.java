@@ -2,7 +2,9 @@ package com.apollographql.apollo.internal;
 
 import com.apollographql.apollo.ApolloPrefetch;
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
+import com.apollographql.apollo.api.internal.ApolloLogger;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
@@ -12,18 +14,15 @@ import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor;
 import com.apollographql.apollo.internal.interceptor.RealApolloInterceptorChain;
-import com.apollographql.apollo.response.ScalarTypeAdapters;
+import okhttp3.Call;
+import okhttp3.HttpUrl;
+import okhttp3.Response;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicReference;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import okhttp3.Call;
-import okhttp3.HttpUrl;
-import okhttp3.Response;
 
 import static com.apollographql.apollo.internal.CallState.ACTIVE;
 import static com.apollographql.apollo.internal.CallState.CANCELED;

@@ -10,13 +10,13 @@ import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.ResponseFieldMapper
-import com.apollographql.apollo.api.ResponseFieldMarshaller
-import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
+import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
-import com.apollographql.apollo.internal.QueryDocumentMinifier
-import com.apollographql.apollo.response.ScalarTypeAdapters
-import com.apollographql.apollo.response.ScalarTypeAdapters.DEFAULT
 import com.example.unique_type_name.fragment.HeroDetails
 import com.example.unique_type_name.type.Episode
 import java.io.IOException
@@ -36,7 +36,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
   override fun wrapData(data: Data?): Data? = data
   override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
   override fun name(): OperationName = OPERATION_NAME
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper.invoke {
     Data(it)
   }
 
@@ -55,7 +55,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
     val __typename: String = "Character",
     val fragments: Fragments
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@Friend1.__typename)
       this@Friend1.fragments.marshaller().marshal(writer)
     }
@@ -67,7 +67,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
           )
 
       operator fun invoke(reader: ResponseReader): Friend1 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
         val fragments = Fragments(reader)
         Friend1(
           __typename = __typename,
@@ -79,7 +79,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
     data class Fragments(
       val heroDetails: HeroDetails
     ) {
-      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
         writer.writeFragment(this@Fragments.heroDetails.marshaller())
       }
 
@@ -93,7 +93,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
         operator fun invoke(reader: ResponseReader): Fragments = reader.run {
           val heroDetails = readFragment<HeroDetails>(RESPONSE_FIELDS[0]) { reader ->
             HeroDetails(reader)
-          }
+          }!!
           Fragments(
             heroDetails = heroDetails
           )
@@ -117,7 +117,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
      */
     val friends: List<Friend1?>?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@Friend.__typename)
       writer.writeString(RESPONSE_FIELDS[1], this@Friend.name)
       writer.writeList(RESPONSE_FIELDS[2], this@Friend.appearsIn) { value, listItemWriter ->
@@ -139,10 +139,11 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
           )
 
       operator fun invoke(reader: ResponseReader): Friend = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
-        val name = readString(RESPONSE_FIELDS[1])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
         val appearsIn = readList<Episode>(RESPONSE_FIELDS[2]) { reader ->
-          reader.readString()?.let{ Episode.safeValueOf(it) }}
+          reader.readString()?.let{ Episode.safeValueOf(it) }
+        }!!
         val friends = readList<Friend1>(RESPONSE_FIELDS[3]) { reader ->
           reader.readObject<Friend1> { reader ->
             Friend1(reader)
@@ -173,7 +174,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
      */
     val height: Double?
   ) : HeroDetailQueryCharacter {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@AsHuman.__typename)
       writer.writeString(RESPONSE_FIELDS[1], this@AsHuman.name)
       writer.writeList(RESPONSE_FIELDS[2], this@AsHuman.friends) { value, listItemWriter ->
@@ -192,8 +193,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
           )
 
       operator fun invoke(reader: ResponseReader): AsHuman = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
-        val name = readString(RESPONSE_FIELDS[1])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
         val friends = readList<Friend>(RESPONSE_FIELDS[2]) { reader ->
           reader.readObject<Friend> { reader ->
             Friend(reader)
@@ -217,7 +218,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
      */
     val name: String
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@Friend2.__typename)
       writer.writeString(RESPONSE_FIELDS[1], this@Friend2.name)
     }
@@ -229,8 +230,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
           )
 
       operator fun invoke(reader: ResponseReader): Friend2 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
-        val name = readString(RESPONSE_FIELDS[1])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
         Friend2(
           __typename = __typename,
           name = name
@@ -251,7 +252,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
     val friends: List<Friend2?>?,
     val asHuman: AsHuman?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@HeroDetailQuery.__typename)
       writer.writeString(RESPONSE_FIELDS[1], this@HeroDetailQuery.name)
       writer.writeList(RESPONSE_FIELDS[2], this@HeroDetailQuery.friends) { value, listItemWriter ->
@@ -272,8 +273,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
           )
 
       operator fun invoke(reader: ResponseReader): HeroDetailQuery = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
-        val name = readString(RESPONSE_FIELDS[1])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
         val friends = readList<Friend2>(RESPONSE_FIELDS[2]) { reader ->
           reader.readObject<Friend2> { reader ->
             Friend2(reader)
@@ -295,7 +296,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
   data class Data(
     val heroDetailQuery: HeroDetailQuery?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeObject(RESPONSE_FIELDS[0], this@Data.heroDetailQuery?.marshaller())
     }
 
@@ -360,6 +361,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
           """.trimMargin()
         )
 
-    val OPERATION_NAME: OperationName = OperationName { "HeroDetailQuery" }
+    val OPERATION_NAME: OperationName = object : OperationName {
+      override fun name(): String = "HeroDetailQuery"
+    }
   }
 }

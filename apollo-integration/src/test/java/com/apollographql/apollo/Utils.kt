@@ -124,7 +124,7 @@ object Utils {
   fun checkTestFixture(actualText: String, expectedPath: String) {
     val expected = File("src/test/fixtures/$expectedPath")
     val expectedText = try {
-      expected.readText()
+      expected.readText().removeSuffix("\n")
     } catch (e: FileNotFoundException) {
       ""
     }

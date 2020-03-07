@@ -1,12 +1,7 @@
 package com.apollographql.apollo.cache.http;
 
 import com.apollographql.apollo.api.cache.http.HttpCacheRecordEditor;
-import com.apollographql.apollo.internal.ApolloLogger;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
-
+import com.apollographql.apollo.api.internal.ApolloLogger;
 import okhttp3.MediaType;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -15,6 +10,9 @@ import okio.BufferedSource;
 import okio.Okio;
 import okio.Source;
 import okio.Timeout;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 import static com.apollographql.apollo.cache.http.Utils.closeQuietly;

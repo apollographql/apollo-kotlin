@@ -2,8 +2,9 @@ package com.apollographql.apollo.internal;
 
 import com.apollographql.apollo.ApolloSubscriptionCall;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.Subscription;
+import com.apollographql.apollo.api.internal.ApolloLogger;
+import com.apollographql.apollo.api.internal.ResponseFieldMapper;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
@@ -15,14 +16,13 @@ import com.apollographql.apollo.internal.cache.normalized.Transaction;
 import com.apollographql.apollo.internal.cache.normalized.WriteableStore;
 import com.apollographql.apollo.internal.subscription.ApolloSubscriptionException;
 import com.apollographql.apollo.internal.subscription.SubscriptionManager;
+import com.apollographql.apollo.internal.subscription.SubscriptionResponse;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicReference;
-
-import com.apollographql.apollo.internal.subscription.SubscriptionResponse;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 import static com.apollographql.apollo.internal.CallState.ACTIVE;

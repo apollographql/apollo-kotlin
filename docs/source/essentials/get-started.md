@@ -59,6 +59,11 @@ apollo schema:download --endpoint=http://localhost:8080/graphql --header="Author
 
 > Note: In the sample project you can find the schema here => `apollo-sample/src/main/graphql/com/apollographql/apollo/sample/schema.json`.
 
+> Note: The default timeout for download operation is 1 minute. If you have a large `schema.json`, you may want to increase the timeout. Do that by adding the following into `gradle.properties`:
+```
+org.gradle.jvmargs=-DokHttp.connectTimeout=60 -DokHttp.readTimeout=60
+```
+
 ## Creating a Client
 
 With the installation complete and schema downloaded, let's create your Apollo Client. In most cases, you’ll want to create a single shared instance of `ApolloClient` and point it at your GraphQL server. `ApolloClient` uses `OkHttp` under the hood for handling network requests. So you will need to create an instance of the `OkHttpClient` and pass it to the `ApolloClient` builder.

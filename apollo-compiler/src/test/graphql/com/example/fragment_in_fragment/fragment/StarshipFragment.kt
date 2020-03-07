@@ -7,8 +7,8 @@ package com.example.fragment_in_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.ResponseFieldMarshaller
-import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseReader
 import com.example.fragment_in_fragment.type.CustomType
 import kotlin.Array
 import kotlin.String
@@ -29,7 +29,7 @@ data class StarshipFragment(
   val name: String?,
   val pilotConnection: PilotConnection?
 ) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
     writer.writeString(RESPONSE_FIELDS[0], this@StarshipFragment.__typename)
     writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField,
         this@StarshipFragment.id)
@@ -64,8 +64,8 @@ data class StarshipFragment(
         """.trimMargin()
 
     operator fun invoke(reader: ResponseReader): StarshipFragment = reader.run {
-      val __typename = readString(RESPONSE_FIELDS[0])
-      val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+      val __typename = readString(RESPONSE_FIELDS[0])!!
+      val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)!!
       val name = readString(RESPONSE_FIELDS[2])
       val pilotConnection = readObject<PilotConnection>(RESPONSE_FIELDS[3]) { reader ->
         PilotConnection(reader)
@@ -83,7 +83,7 @@ data class StarshipFragment(
     val __typename: String = "Person",
     val fragments: Fragments
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@Node.__typename)
       this@Node.fragments.marshaller().marshal(writer)
     }
@@ -95,7 +95,7 @@ data class StarshipFragment(
           )
 
       operator fun invoke(reader: ResponseReader): Node = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
         val fragments = Fragments(reader)
         Node(
           __typename = __typename,
@@ -107,7 +107,7 @@ data class StarshipFragment(
     data class Fragments(
       val pilotFragment: PilotFragment
     ) {
-      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
         writer.writeFragment(this@Fragments.pilotFragment.marshaller())
       }
 
@@ -121,7 +121,7 @@ data class StarshipFragment(
         operator fun invoke(reader: ResponseReader): Fragments = reader.run {
           val pilotFragment = readFragment<PilotFragment>(RESPONSE_FIELDS[0]) { reader ->
             PilotFragment(reader)
-          }
+          }!!
           Fragments(
             pilotFragment = pilotFragment
           )
@@ -137,7 +137,7 @@ data class StarshipFragment(
      */
     val node: Node?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@Edge.__typename)
       writer.writeObject(RESPONSE_FIELDS[1], this@Edge.node?.marshaller())
     }
@@ -149,7 +149,7 @@ data class StarshipFragment(
           )
 
       operator fun invoke(reader: ResponseReader): Edge = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
         val node = readObject<Node>(RESPONSE_FIELDS[1]) { reader ->
           Node(reader)
         }
@@ -168,7 +168,7 @@ data class StarshipFragment(
      */
     val edges: List<Edge?>?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@PilotConnection.__typename)
       writer.writeList(RESPONSE_FIELDS[1], this@PilotConnection.edges) { value, listItemWriter ->
         value?.forEach { value ->
@@ -183,7 +183,7 @@ data class StarshipFragment(
           )
 
       operator fun invoke(reader: ResponseReader): PilotConnection = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
         val edges = readList<Edge>(RESPONSE_FIELDS[1]) { reader ->
           reader.readObject<Edge> { reader ->
             Edge(reader)

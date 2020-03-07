@@ -6,8 +6,8 @@
 package com.example.input_object_type.type
 
 import com.apollographql.apollo.api.Input
-import com.apollographql.apollo.api.InputFieldMarshaller
 import com.apollographql.apollo.api.InputType
+import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import kotlin.Double
 import kotlin.Int
 import kotlin.Suppress
@@ -39,7 +39,7 @@ data class ColorInput(
    */
   val reviewRefInput: Input<ReviewRefInput> = Input.absent()
 ) : InputType {
-  override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
+  override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
     writer.writeInt("red", this@ColorInput.red)
     if (this@ColorInput.green.defined) {
       writer.writeDouble("green", this@ColorInput.green.value)

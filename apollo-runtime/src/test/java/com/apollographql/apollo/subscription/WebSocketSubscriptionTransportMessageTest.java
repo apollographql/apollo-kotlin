@@ -1,13 +1,13 @@
 package com.apollographql.apollo.subscription;
 
-import com.apollographql.apollo.response.CustomTypeAdapter;
+import com.apollographql.apollo.api.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarType;
-import com.apollographql.apollo.response.ScalarTypeAdapters;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.Subscription;
+import com.apollographql.apollo.api.internal.ResponseFieldMapper;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import okhttp3.Protocol;
 import okhttp3.Request;
@@ -60,7 +60,7 @@ public class WebSocketSubscriptionTransportMessageTest {
 
   @Test public void startSubscriptionAutoPersistSubscriptionDisabled() {
     subscriptionTransport.send(new OperationClientMessage.Start("subscriptionId", new MockSubscription(),
-        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()), false, false));
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap()), false, false));
 
     String expected = "{\"id\":\"subscriptionId\",\"type\":\"start\",\"payload\":{\"variables\":{}," +
         "\"operationName\":\"SomeSubscription\",\"query\":\"subscription{commentAdded{id  name}\"}}";
@@ -70,7 +70,7 @@ public class WebSocketSubscriptionTransportMessageTest {
 
   @Test public void startSubscriptionAutoPersistSubscriptionEnabledSendDocumentEnabled() {
     subscriptionTransport.send(new OperationClientMessage.Start("subscriptionId", new MockSubscription(),
-        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()), true, true));
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap()), true, true));
 
     String expected = "{\"id\":\"subscriptionId\",\"type\":\"start\",\"payload\":{\"variables\":{}," +
         "\"operationName\":\"SomeSubscription\",\"query\":\"subscription{commentAdded{id  name}\"," +
@@ -81,7 +81,7 @@ public class WebSocketSubscriptionTransportMessageTest {
 
     @Test public void startSubscriptionAutoPersistSubscriptionEnabledSendDocumentDisabled() {
     subscriptionTransport.send(new OperationClientMessage.Start("subscriptionId", new MockSubscription(),
-        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()), true, false));
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap()), true, false));
 
     String expected = "{\"id\":\"subscriptionId\",\"type\":\"start\",\"payload\":{\"variables\":{}," +
         "\"operationName\":\"SomeSubscription\",\"extensions\":{\"persistedQuery\":{\"version\":1,\"sha256Hash\":\"someId\"}}}}";

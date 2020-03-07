@@ -2,12 +2,12 @@ package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.ResponseFieldMapper
-import com.apollographql.apollo.response.ScalarTypeAdapters
+import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.compiler.VisitorSpec.VISITOR_CLASSNAME
 import com.apollographql.apollo.compiler.ir.*
-import com.apollographql.apollo.internal.QueryDocumentMinifier
 import com.squareup.javapoet.*
 import okio.BufferedSource
 import java.io.IOException

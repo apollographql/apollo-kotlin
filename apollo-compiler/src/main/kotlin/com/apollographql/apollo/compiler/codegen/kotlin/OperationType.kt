@@ -1,6 +1,9 @@
 package com.apollographql.apollo.compiler.codegen.kotlin
 
 import com.apollographql.apollo.api.*
+import com.apollographql.apollo.api.internal.InputFieldMarshaller
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.ast.InputType
@@ -12,8 +15,6 @@ import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.marshaller
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.responseFieldsPropertySpec
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.suppressWarningsAnnotation
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.toMapperFun
-import com.apollographql.apollo.internal.QueryDocumentMinifier
-import com.apollographql.apollo.response.ScalarTypeAdapters
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.jvm.throws
@@ -71,7 +72,7 @@ internal fun OperationType.typeSpec(targetPackage: String, generateAsInternal: B
     .addFunction(FunSpec.builder("responseFieldMapper")
         .addModifiers(KModifier.OVERRIDE)
         .returns(ResponseFieldMapper::class.asClassName().parameterizedBy(data.asTypeName()))
-        .beginControlFlow("return %T {", ResponseFieldMapper::class)
+        .beginControlFlow("return %T.invoke {", ResponseFieldMapper::class)
         .addStatement("%T(it)", data.asTypeName())
         .endControlFlow()
         .build()
@@ -99,7 +100,7 @@ internal fun OperationType.typeSpec(targetPackage: String, generateAsInternal: B
         )
         .throws(IOException::class)
         .returns(Response::class.asClassName().parameterizedBy(data.asTypeName()))
-        .addStatement("return parse(source, %M)", MemberName(ScalarTypeAdapters::class.asClassName(), "DEFAULT"))
+        .addStatement("return parse(source, %M)", MemberName(ScalarTypeAdapters.Companion::class.asClassName(), "DEFAULT"))
         .build()
     )
     .addTypes(nestedObjects.map { (ref, type) ->
@@ -127,15 +128,27 @@ internal fun OperationType.typeSpec(targetPackage: String, generateAsInternal: B
             )
             .build()
         )
-        .addProperty(PropertySpec.builder("OPERATION_NAME", OperationName::class)
-            .initializer("%T { %S }", OperationName::class, operationName)
-            .build())
+        .addProperty(PropertySpec
+            .builder("OPERATION_NAME", OperationName::class)
+            .initializer("%L", TypeSpec.anonymousClassBuilder()
+                .addSuperinterface(OperationName::class)
+                .addFunction(FunSpec
+                    .builder("name")
+                    .addModifiers(KModifier.OVERRIDE)
+                    .returns(String::class)
+                    .addStatement("return %S", operationName)
+                    .build()
+                )
+                .build()
+            )
+            .build()
+        )
         .build()
     )
     .build()
 
 private fun OperationType.superInterfaceType(targetPackage: String): TypeName {
-  val dataTypeName = ClassName(packageName = targetPackage, simpleName = name, simpleNames = *arrayOf("Data"))
+  val dataTypeName = ClassName(targetPackage, name, "Data")
   return when (type) {
     OperationType.Type.QUERY -> Query::class.asClassName()
     OperationType.Type.MUTATION -> Mutation::class.asClassName()
@@ -201,7 +214,7 @@ private fun InputType.variablesMarshallerSpec(thisRef: String): FunSpec {
       .addModifiers(KModifier.OVERRIDE)
       .addCode(CodeBlock
           .builder()
-          .beginControlFlow("return %T { writer ->", InputFieldMarshaller::class)
+          .beginControlFlow("return %T.invoke { writer ->", InputFieldMarshaller::class)
           .apply { fields.forEach { field -> add(field.writeCodeBlock(thisRef)) } }
           .endControlFlow()
           .build()

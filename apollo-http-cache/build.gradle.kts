@@ -12,6 +12,7 @@ dependencies {
 
   add("api", groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
   add("api", project(":apollo-api"))
+  add("api", project(":apollo-http-cache-api"))
 
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.junit"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.truth"))

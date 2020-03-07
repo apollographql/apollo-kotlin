@@ -1,15 +1,14 @@
 package com.apollographql.apollo.internal.fetcher;
 
+import com.apollographql.apollo.api.internal.ApolloLogger;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
-import com.apollographql.apollo.internal.ApolloLogger;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.Executor;
-
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Signal the apollo client to fetch the data from both the network and the cache. If cached data is not present, only

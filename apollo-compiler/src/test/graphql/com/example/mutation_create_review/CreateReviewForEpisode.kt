@@ -5,19 +5,19 @@
 //
 package com.example.mutation_create_review
 
-import com.apollographql.apollo.api.InputFieldMarshaller
 import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.ResponseFieldMapper
-import com.apollographql.apollo.api.ResponseFieldMarshaller
-import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
+import com.apollographql.apollo.api.internal.InputFieldMarshaller
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
+import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
-import com.apollographql.apollo.internal.QueryDocumentMinifier
-import com.apollographql.apollo.response.ScalarTypeAdapters
-import com.apollographql.apollo.response.ScalarTypeAdapters.DEFAULT
 import com.example.mutation_create_review.type.CustomType
 import com.example.mutation_create_review.type.Episode
 import com.example.mutation_create_review.type.ReviewInput
@@ -47,7 +47,7 @@ internal data class CreateReviewForEpisode(
       this["review"] = this@CreateReviewForEpisode.review
     }
 
-    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
+    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
       writer.writeString("ep", this@CreateReviewForEpisode.ep.rawValue)
       writer.writeObject("review", this@CreateReviewForEpisode.review.marshaller())
     }
@@ -58,7 +58,7 @@ internal data class CreateReviewForEpisode(
   override fun wrapData(data: Data?): Data? = data
   override fun variables(): Operation.Variables = variables
   override fun name(): OperationName = OPERATION_NAME
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper.invoke {
     Data(it)
   }
 
@@ -76,7 +76,7 @@ internal data class CreateReviewForEpisode(
      */
     val name: String
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@ListOfListOfObject.__typename)
       writer.writeString(RESPONSE_FIELDS[1], this@ListOfListOfObject.name)
     }
@@ -88,8 +88,8 @@ internal data class CreateReviewForEpisode(
           )
 
       operator fun invoke(reader: ResponseReader): ListOfListOfObject = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
-        val name = readString(RESPONSE_FIELDS[1])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
         ListOfListOfObject(
           __typename = __typename,
           name = name
@@ -125,7 +125,7 @@ internal data class CreateReviewForEpisode(
      */
     val listOfListOfObject: List<List<ListOfListOfObject>>?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@CreateReview.__typename)
       writer.writeInt(RESPONSE_FIELDS[1], this@CreateReview.stars)
       writer.writeString(RESPONSE_FIELDS[2], this@CreateReview.commentary)
@@ -179,28 +179,31 @@ internal data class CreateReviewForEpisode(
           )
 
       operator fun invoke(reader: ResponseReader): CreateReview = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
-        val stars = readInt(RESPONSE_FIELDS[1])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val stars = readInt(RESPONSE_FIELDS[1])!!
         val commentary = readString(RESPONSE_FIELDS[2])
         val listOfListOfString = readList<List<String>>(RESPONSE_FIELDS[3]) { reader ->
           reader.readList<String> { reader ->
-            reader.readString()}
-        }
+            reader.readString()
+          }.map { it!! }
+        }?.map { it!! }
         val listOfListOfEnum = readList<List<Episode>>(RESPONSE_FIELDS[4]) { reader ->
           reader.readList<Episode> { reader ->
-            Episode.safeValueOf(reader.readString())}
-        }
+            Episode.safeValueOf(reader.readString())
+          }.map { it!! }
+        }?.map { it!! }
         val listOfListOfCustom = readList<List<Date>>(RESPONSE_FIELDS[5]) { reader ->
           reader.readList<Date> { reader ->
-            reader.readCustomType<Date>(CustomType.DATE)}
-        }
+            reader.readCustomType<Date>(CustomType.DATE)
+          }.map { it!! }
+        }?.map { it!! }
         val listOfListOfObject = readList<List<ListOfListOfObject>>(RESPONSE_FIELDS[6]) { reader ->
           reader.readList<ListOfListOfObject> { reader ->
             reader.readObject<ListOfListOfObject> { reader ->
               ListOfListOfObject(reader)
             }
-          }
-        }
+          }.map { it!! }
+        }?.map { it!! }
         CreateReview(
           __typename = __typename,
           stars = stars,
@@ -217,7 +220,7 @@ internal data class CreateReviewForEpisode(
   data class Data(
     val createReview: CreateReview?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeObject(RESPONSE_FIELDS[0], this@Data.createReview?.marshaller())
     }
 
@@ -266,6 +269,8 @@ internal data class CreateReviewForEpisode(
           """.trimMargin()
         )
 
-    val OPERATION_NAME: OperationName = OperationName { "CreateReviewForEpisode" }
+    val OPERATION_NAME: OperationName = object : OperationName {
+      override fun name(): String = "CreateReviewForEpisode"
+    }
   }
 }

@@ -10,13 +10,13 @@ import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.ResponseFieldMapper
-import com.apollographql.apollo.api.ResponseFieldMarshaller
-import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
+import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
-import com.apollographql.apollo.internal.QueryDocumentMinifier
-import com.apollographql.apollo.response.ScalarTypeAdapters
-import com.apollographql.apollo.response.ScalarTypeAdapters.DEFAULT
 import com.example.fragment_in_fragment.fragment.StarshipFragment
 import java.io.IOException
 import kotlin.Array
@@ -34,7 +34,7 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
   override fun wrapData(data: Data?): Data? = data
   override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
   override fun name(): OperationName = OPERATION_NAME
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper.invoke {
     Data(it)
   }
 
@@ -49,7 +49,7 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
     val __typename: String = "Starship",
     val fragments: Fragments
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@Node.__typename)
       this@Node.fragments.marshaller().marshal(writer)
     }
@@ -61,7 +61,7 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
           )
 
       operator fun invoke(reader: ResponseReader): Node = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
         val fragments = Fragments(reader)
         Node(
           __typename = __typename,
@@ -73,7 +73,7 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
     data class Fragments(
       val starshipFragment: StarshipFragment
     ) {
-      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
         writer.writeFragment(this@Fragments.starshipFragment.marshaller())
       }
 
@@ -87,7 +87,7 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
         operator fun invoke(reader: ResponseReader): Fragments = reader.run {
           val starshipFragment = readFragment<StarshipFragment>(RESPONSE_FIELDS[0]) { reader ->
             StarshipFragment(reader)
-          }
+          }!!
           Fragments(
             starshipFragment = starshipFragment
           )
@@ -103,7 +103,7 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
      */
     val node: Node?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@Edge.__typename)
       writer.writeObject(RESPONSE_FIELDS[1], this@Edge.node?.marshaller())
     }
@@ -115,7 +115,7 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
           )
 
       operator fun invoke(reader: ResponseReader): Edge = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
         val node = readObject<Node>(RESPONSE_FIELDS[1]) { reader ->
           Node(reader)
         }
@@ -134,7 +134,7 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
      */
     val edges: List<Edge?>?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@AllStarships.__typename)
       writer.writeList(RESPONSE_FIELDS[1], this@AllStarships.edges) { value, listItemWriter ->
         value?.forEach { value ->
@@ -149,7 +149,7 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
           )
 
       operator fun invoke(reader: ResponseReader): AllStarships = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
         val edges = readList<Edge>(RESPONSE_FIELDS[1]) { reader ->
           reader.readObject<Edge> { reader ->
             Edge(reader)
@@ -166,7 +166,7 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
   data class Data(
     val allStarships: AllStarships?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeObject(RESPONSE_FIELDS[0], this@Data.allStarships?.marshaller())
     }
 
@@ -235,6 +235,8 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
           """.trimMargin()
         )
 
-    val OPERATION_NAME: OperationName = OperationName { "AllStarships" }
+    val OPERATION_NAME: OperationName = object : OperationName {
+      override fun name(): String = "AllStarships"
+    }
   }
 }

@@ -1,31 +1,20 @@
 package com.apollographql.apollo.internal.interceptor;
 
-import com.apollographql.apollo.Utils;
-import com.google.common.base.Predicate;
-
-import com.apollographql.apollo.cache.ApolloCacheHeaders;
-import com.apollographql.apollo.cache.CacheHeaders;
-import com.apollographql.apollo.response.CustomTypeAdapter;
 import com.apollographql.apollo.Logger;
+import com.apollographql.apollo.Utils;
+import com.apollographql.apollo.api.CustomTypeAdapter;
 import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.cache.http.HttpCache;
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
+import com.apollographql.apollo.api.internal.ApolloLogger;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.cache.ApolloCacheHeaders;
+import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.integration.interceptor.AllFilmsQuery;
-import com.apollographql.apollo.internal.ApolloLogger;
 import com.apollographql.apollo.request.RequestHeaders;
-import com.apollographql.apollo.response.ScalarTypeAdapters;
-
-import org.junit.Test;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.concurrent.TimeUnit;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
+import com.google.common.base.Predicate;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.HttpUrl;
@@ -33,6 +22,13 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okio.Buffer;
 import okio.Timeout;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.Assert.fail;
@@ -66,7 +62,7 @@ public class ApolloServerInterceptorTest {
 
     ApolloServerInterceptor interceptor = new ApolloServerInterceptor(serverUrl,
         new AssertHttpCallFactory(requestAssertPredicate), null, false,
-        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap()),
         new ApolloLogger(Optional.<Logger>absent()));
 
     interceptor.httpPostCall(query, CacheHeaders.NONE, RequestHeaders.NONE, true, false);
@@ -74,7 +70,7 @@ public class ApolloServerInterceptorTest {
 
   @Test public void testCachedHttpCall() throws Exception {
     ScalarTypeAdapters scalarTypeAdapters =
-        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap());
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap());
     final String cacheKey = ApolloServerInterceptor.cacheKey(query, scalarTypeAdapters);
     Predicate<Request> requestAssertPredicate = new Predicate<Request>() {
       @Override public boolean apply(@Nullable Request request) {
@@ -139,7 +135,7 @@ public class ApolloServerInterceptorTest {
 
     ApolloServerInterceptor interceptor = new ApolloServerInterceptor(serverUrl,
         new AssertHttpCallFactory(requestAssertPredicate), null, false,
-        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap()),
         new ApolloLogger(Optional.<Logger>absent()));
 
     interceptor.httpPostCall(query, CacheHeaders.NONE, requestHeaders, true, false);
@@ -168,7 +164,7 @@ public class ApolloServerInterceptorTest {
 
     ApolloServerInterceptor interceptor = new ApolloServerInterceptor(serverUrl,
         new AssertHttpCallFactory(requestAssertPredicate), null, false,
-        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap()),
         new ApolloLogger(Optional.<Logger>absent()));
 
     interceptor.httpGetCall(query, CacheHeaders.NONE, RequestHeaders.NONE, true, true);

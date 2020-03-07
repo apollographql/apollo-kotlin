@@ -1,7 +1,7 @@
 package com.apollographql.apollo.compiler.codegen.kotlin
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.ast.FieldType
 import com.apollographql.apollo.compiler.ast.ObjectType
@@ -22,7 +22,7 @@ internal fun ObjectType.typeSpec(generateAsInternal: Boolean = false): TypeSpec 
       .addProperties(fields.map { it.asPropertySpec(initializer = CodeBlock.of(it.name)) })
       .addType(TypeSpec.companionObjectBuilder()
           .addProperty(responseFieldsPropertySpec(fields))
-          .addFunction(fields.toMapperFun(ClassName(packageName = "", simpleName = name)))
+          .addFunction(fields.toMapperFun(ClassName("", name)))
           .build())
       .applyIf(fragmentsType != null) { addType(fragmentsType!!.fragmentsTypeSpec(generateAsInternal)) }
       .addFunction(fields.marshallerFunSpec(thisRef = name))
@@ -87,7 +87,7 @@ private fun ObjectType.fragmentsTypeSpec(generateAsInternal: Boolean = false): T
       .addProperties(fields.map { it.asPropertySpec(initializer = CodeBlock.of(it.name)) })
       .addType(TypeSpec.companionObjectBuilder()
           .addProperty(responseFieldsPropertySpec(fields))
-          .addFunction(fields.toMapperFun(ClassName(packageName = "", simpleName = name)))
+          .addFunction(fields.toMapperFun(ClassName("", name)))
           .build())
       .addFunction(fields.marshallerFunSpec(thisRef = name))
       .addTypes(nestedObjects.map { (_, type) -> type.typeSpec() })

@@ -7,8 +7,8 @@ package com.example.fragment_with_inline_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.ResponseFieldMarshaller
-import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseReader
 import kotlin.Array
 import kotlin.Int
 import kotlin.String
@@ -30,7 +30,7 @@ data class HeroDetails(
   val fragments: Fragments,
   val asDroid: AsDroid?
 ) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
     writer.writeString(RESPONSE_FIELDS[0], this@HeroDetails.__typename)
     writer.writeString(RESPONSE_FIELDS[1], this@HeroDetails.name)
     writer.writeObject(RESPONSE_FIELDS[2], this@HeroDetails.friendsConnection.marshaller())
@@ -72,11 +72,11 @@ data class HeroDetails(
         """.trimMargin()
 
     operator fun invoke(reader: ResponseReader): HeroDetails = reader.run {
-      val __typename = readString(RESPONSE_FIELDS[0])
-      val name = readString(RESPONSE_FIELDS[1])
+      val __typename = readString(RESPONSE_FIELDS[0])!!
+      val name = readString(RESPONSE_FIELDS[1])!!
       val friendsConnection = readObject<FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
         FriendsConnection(reader)
-      }
+      }!!
       val fragments = Fragments(reader)
       val asDroid = readFragment<AsDroid>(RESPONSE_FIELDS[4]) { reader ->
         AsDroid(reader)
@@ -94,7 +94,7 @@ data class HeroDetails(
   data class Fragments(
     val humanDetails: HumanDetails?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeFragment(this@Fragments.humanDetails?.marshaller())
     }
 
@@ -123,7 +123,7 @@ data class HeroDetails(
      */
     val name: String
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@Node.__typename)
       writer.writeString(RESPONSE_FIELDS[1], this@Node.name)
     }
@@ -135,8 +135,8 @@ data class HeroDetails(
           )
 
       operator fun invoke(reader: ResponseReader): Node = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
-        val name = readString(RESPONSE_FIELDS[1])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
         Node(
           __typename = __typename,
           name = name
@@ -152,7 +152,7 @@ data class HeroDetails(
      */
     val node: Node?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@Edge.__typename)
       writer.writeObject(RESPONSE_FIELDS[1], this@Edge.node?.marshaller())
     }
@@ -164,7 +164,7 @@ data class HeroDetails(
           )
 
       operator fun invoke(reader: ResponseReader): Edge = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
         val node = readObject<Node>(RESPONSE_FIELDS[1]) { reader ->
           Node(reader)
         }
@@ -187,7 +187,7 @@ data class HeroDetails(
      */
     val edges: List<Edge?>?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@FriendsConnection.__typename)
       writer.writeInt(RESPONSE_FIELDS[1], this@FriendsConnection.totalCount)
       writer.writeList(RESPONSE_FIELDS[2], this@FriendsConnection.edges) { value, listItemWriter ->
@@ -204,7 +204,7 @@ data class HeroDetails(
           )
 
       operator fun invoke(reader: ResponseReader): FriendsConnection = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
         val totalCount = readInt(RESPONSE_FIELDS[1])
         val edges = readList<Edge>(RESPONSE_FIELDS[2]) { reader ->
           reader.readObject<Edge> { reader ->
@@ -231,7 +231,7 @@ data class HeroDetails(
      */
     val name: String
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@Node1.__typename)
       writer.writeString(RESPONSE_FIELDS[1], this@Node1.name)
     }
@@ -243,8 +243,8 @@ data class HeroDetails(
           )
 
       operator fun invoke(reader: ResponseReader): Node1 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
-        val name = readString(RESPONSE_FIELDS[1])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
         Node1(
           __typename = __typename,
           name = name
@@ -260,7 +260,7 @@ data class HeroDetails(
      */
     val node: Node1?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@Edge1.__typename)
       writer.writeObject(RESPONSE_FIELDS[1], this@Edge1.node?.marshaller())
     }
@@ -272,7 +272,7 @@ data class HeroDetails(
           )
 
       operator fun invoke(reader: ResponseReader): Edge1 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
         val node = readObject<Node1>(RESPONSE_FIELDS[1]) { reader ->
           Node1(reader)
         }
@@ -295,7 +295,7 @@ data class HeroDetails(
      */
     val edges: List<Edge1?>?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@FriendsConnection1.__typename)
       writer.writeInt(RESPONSE_FIELDS[1], this@FriendsConnection1.totalCount)
       writer.writeList(RESPONSE_FIELDS[2], this@FriendsConnection1.edges) { value, listItemWriter ->
@@ -312,7 +312,7 @@ data class HeroDetails(
           )
 
       operator fun invoke(reader: ResponseReader): FriendsConnection1 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
         val totalCount = readInt(RESPONSE_FIELDS[1])
         val edges = readList<Edge1>(RESPONSE_FIELDS[2]) { reader ->
           reader.readObject<Edge1> { reader ->
@@ -340,7 +340,7 @@ data class HeroDetails(
     val friendsConnection: FriendsConnection1,
     val fragments: Fragments
   ) : HeroDetailCharacter {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@AsDroid.__typename)
       writer.writeString(RESPONSE_FIELDS[1], this@AsDroid.name)
       writer.writeObject(RESPONSE_FIELDS[2], this@AsDroid.friendsConnection.marshaller())
@@ -356,11 +356,11 @@ data class HeroDetails(
           )
 
       operator fun invoke(reader: ResponseReader): AsDroid = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
-        val name = readString(RESPONSE_FIELDS[1])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
         val friendsConnection = readObject<FriendsConnection1>(RESPONSE_FIELDS[2]) { reader ->
           FriendsConnection1(reader)
-        }
+        }!!
         val fragments = Fragments(reader)
         AsDroid(
           __typename = __typename,
@@ -374,7 +374,7 @@ data class HeroDetails(
     data class Fragments(
       val droidDetails: DroidDetails
     ) {
-      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
         writer.writeFragment(this@Fragments.droidDetails.marshaller())
       }
 
@@ -388,7 +388,7 @@ data class HeroDetails(
         operator fun invoke(reader: ResponseReader): Fragments = reader.run {
           val droidDetails = readFragment<DroidDetails>(RESPONSE_FIELDS[0]) { reader ->
             DroidDetails(reader)
-          }
+          }!!
           Fragments(
             droidDetails = droidDetails
           )

@@ -4,7 +4,9 @@ import com.apollographql.apollo.api.GraphqlFragment;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseField;
-import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
+import com.apollographql.apollo.api.internal.ApolloLogger;
+import com.apollographql.apollo.api.internal.ResponseFieldMapper;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
@@ -13,12 +15,9 @@ import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.OptimisticNormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
-import com.apollographql.apollo.internal.ApolloLogger;
 import com.apollographql.apollo.internal.field.CacheFieldValueResolver;
 import com.apollographql.apollo.internal.response.RealResponseReader;
 import com.apollographql.apollo.internal.response.RealResponseWriter;
-import com.apollographql.apollo.response.ScalarTypeAdapters;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

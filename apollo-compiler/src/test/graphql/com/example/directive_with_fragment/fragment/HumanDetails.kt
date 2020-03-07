@@ -7,8 +7,8 @@ package com.example.directive_with_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.ResponseFieldMarshaller
-import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseReader
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
@@ -22,7 +22,7 @@ data class HumanDetails(
    */
   val homePlanet: String?
 ) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
     writer.writeString(RESPONSE_FIELDS[0], this@HumanDetails.__typename)
     writer.writeString(RESPONSE_FIELDS[1], this@HumanDetails.homePlanet)
   }
@@ -41,7 +41,7 @@ data class HumanDetails(
         """.trimMargin()
 
     operator fun invoke(reader: ResponseReader): HumanDetails = reader.run {
-      val __typename = readString(RESPONSE_FIELDS[0])
+      val __typename = readString(RESPONSE_FIELDS[0])!!
       val homePlanet = readString(RESPONSE_FIELDS[1])
       HumanDetails(
         __typename = __typename,
