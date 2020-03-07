@@ -5,19 +5,19 @@
 //
 package com.example.starships
 
-import com.apollographql.apollo.api.InputFieldMarshaller
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.ResponseFieldMapper
-import com.apollographql.apollo.api.ResponseFieldMarshaller
-import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
+import com.apollographql.apollo.api.internal.InputFieldMarshaller
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
+import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
-import com.apollographql.apollo.internal.QueryDocumentMinifier
-import com.apollographql.apollo.response.ScalarTypeAdapters
-import com.apollographql.apollo.response.ScalarTypeAdapters.DEFAULT
 import com.example.starships.type.CustomType
 import java.io.IOException
 import kotlin.Any
@@ -42,7 +42,7 @@ data class TestQuery(
       this["id"] = this@TestQuery.id
     }
 
-    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
+    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
       writer.writeCustom("id", CustomType.ID, this@TestQuery.id)
     }
   }
@@ -52,7 +52,7 @@ data class TestQuery(
   override fun wrapData(data: Data?): Data? = data
   override fun variables(): Operation.Variables = variables
   override fun name(): OperationName = OPERATION_NAME
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper.invoke {
     Data(it)
   }
 
@@ -75,7 +75,7 @@ data class TestQuery(
     val name: String,
     val coordinates: List<List<Double>>?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@Starship.__typename)
       writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, this@Starship.id)
       writer.writeString(RESPONSE_FIELDS[2], this@Starship.name)
@@ -98,13 +98,14 @@ data class TestQuery(
           )
 
       operator fun invoke(reader: ResponseReader): Starship = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
-        val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
-        val name = readString(RESPONSE_FIELDS[2])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)!!
+        val name = readString(RESPONSE_FIELDS[2])!!
         val coordinates = readList<List<Double>>(RESPONSE_FIELDS[3]) { reader ->
           reader.readList<Double> { reader ->
-            reader.readDouble()}
-        }
+            reader.readDouble()
+          }.map { it!! }
+        }?.map { it!! }
         Starship(
           __typename = __typename,
           id = id,
@@ -118,7 +119,7 @@ data class TestQuery(
   data class Data(
     val starship: Starship?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeObject(RESPONSE_FIELDS[0], this@Data.starship?.marshaller())
     }
 
@@ -158,6 +159,8 @@ data class TestQuery(
           """.trimMargin()
         )
 
-    val OPERATION_NAME: OperationName = OperationName { "TestQuery" }
+    val OPERATION_NAME: OperationName = object : OperationName {
+      override fun name(): String = "TestQuery"
+    }
   }
 }

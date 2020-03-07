@@ -1,11 +1,10 @@
 package com.apollographql.apollo.internal;
 
 import com.apollographql.apollo.api.Operation;
-import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.internal.ResponseFieldMapper;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.jetbrains.annotations.NotNull;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 

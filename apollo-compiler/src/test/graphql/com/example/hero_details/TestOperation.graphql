@@ -1,5 +1,6 @@
 query HeroDetails {
   hero {
+    type
     name
     friendsConnection {
       totalCount

@@ -1,17 +1,16 @@
 package com.apollographql.apollo.api.internal.json;
 
-import com.apollographql.apollo.api.InputFieldMarshaller;
-import com.apollographql.apollo.api.InputFieldWriter;
+import com.apollographql.apollo.api.CustomTypeAdapter;
+import com.apollographql.apollo.api.CustomTypeValue;
 import com.apollographql.apollo.api.ScalarType;
-import com.apollographql.apollo.response.CustomTypeAdapter;
-import com.apollographql.apollo.response.CustomTypeValue;
-import com.apollographql.apollo.response.ScalarTypeAdapters;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
+import com.apollographql.apollo.api.internal.InputFieldMarshaller;
+import com.apollographql.apollo.api.internal.InputFieldWriter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.Map;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
@@ -128,7 +127,7 @@ public class InputFieldJsonWriter implements InputFieldWriter {
     }
   }
 
-  @Override public void writeMap(@NotNull String fieldName, @Nullable Map<String, Object> value) throws IOException {
+  @Override public void writeMap(@NotNull String fieldName, @Nullable Map<String, ?> value) throws IOException {
     checkNotNull(fieldName, "fieldName == null");
     if (value == null) {
       jsonWriter.name(fieldName).nullValue();
@@ -195,7 +194,7 @@ public class InputFieldJsonWriter implements InputFieldWriter {
       }
     }
 
-    @Override public void writeMap(@Nullable Map<String, Object> value) throws IOException {
+    @Override public void writeMap(@Nullable Map<String, ?> value) throws IOException {
       Utils.writeToJson(value, jsonWriter);
     }
 

@@ -5,12 +5,16 @@ import com.apollographql.apollo.IdleResourceCallback;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.api.ResponseFieldMapper;
-import com.apollographql.apollo.api.ResponseReader;
-import com.apollographql.apollo.response.ScalarTypeAdapters;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
+import com.apollographql.apollo.api.internal.ResponseFieldMapper;
+import com.apollographql.apollo.api.internal.ResponseReader;
 import com.apollographql.apollo.rx2.Rx2Apollo;
-
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
 import okio.BufferedSource;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -22,13 +26,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.jetbrains.annotations.NotNull;
-
-import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
 
 import static com.google.common.truth.Truth.assertThat;
 

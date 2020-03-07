@@ -1,14 +1,14 @@
 package com.apollographql.apollo.internal.response;
 
+import com.apollographql.apollo.api.CustomTypeAdapter;
+import com.apollographql.apollo.api.CustomTypeValue;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.ResponseField;
-import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.api.internal.ResponseReader;
 import com.apollographql.apollo.internal.field.FieldValueResolver;
-import com.apollographql.apollo.response.CustomTypeAdapter;
-import com.apollographql.apollo.response.CustomTypeValue;
-import com.apollographql.apollo.response.ScalarTypeAdapters;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -286,22 +286,22 @@ public final class RealResponseReader<R> implements ResponseReader {
       return (String) value;
     }
 
-    @Override public Integer readInt() {
+    @Override public int readInt() {
       resolveDelegate.didResolveScalar(value);
       return ((BigDecimal) value).intValue();
     }
 
-    @Override public Long readLong() {
+    @Override public long readLong() {
       resolveDelegate.didResolveScalar(value);
       return ((BigDecimal) value).longValue();
     }
 
-    @Override public Double readDouble() {
+    @Override public double readDouble() {
       resolveDelegate.didResolveScalar(value);
       return ((BigDecimal) value).doubleValue();
     }
 
-    @Override public Boolean readBoolean() {
+    @Override public boolean readBoolean() {
       resolveDelegate.didResolveScalar(value);
       return (Boolean) value;
     }

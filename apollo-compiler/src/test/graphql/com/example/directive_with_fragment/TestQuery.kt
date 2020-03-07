@@ -5,19 +5,19 @@
 //
 package com.example.directive_with_fragment
 
-import com.apollographql.apollo.api.InputFieldMarshaller
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.ResponseFieldMapper
-import com.apollographql.apollo.api.ResponseFieldMarshaller
-import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
+import com.apollographql.apollo.api.internal.InputFieldMarshaller
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
+import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
-import com.apollographql.apollo.internal.QueryDocumentMinifier
-import com.apollographql.apollo.response.ScalarTypeAdapters
-import com.apollographql.apollo.response.ScalarTypeAdapters.DEFAULT
 import com.example.directive_with_fragment.fragment.HeroDetails
 import com.example.directive_with_fragment.fragment.HumanDetails
 import com.example.directive_with_fragment.type.CustomType
@@ -45,7 +45,7 @@ data class TestQuery(
       this["skipHumanDetails"] = this@TestQuery.skipHumanDetails
     }
 
-    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
+    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
       writer.writeBoolean("withDetails", this@TestQuery.withDetails)
       writer.writeBoolean("skipHumanDetails", this@TestQuery.skipHumanDetails)
     }
@@ -56,7 +56,7 @@ data class TestQuery(
   override fun wrapData(data: Data?): Data? = data
   override fun variables(): Operation.Variables = variables
   override fun name(): OperationName = OPERATION_NAME
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper.invoke {
     Data(it)
   }
 
@@ -75,7 +75,7 @@ data class TestQuery(
     val id: String,
     val fragments: Fragments
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@Hero.__typename)
       writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, this@Hero.id)
       this@Hero.fragments.marshaller().marshal(writer)
@@ -89,8 +89,8 @@ data class TestQuery(
           )
 
       operator fun invoke(reader: ResponseReader): Hero = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
-        val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)!!
         val fragments = Fragments(reader)
         Hero(
           __typename = __typename,
@@ -104,7 +104,7 @@ data class TestQuery(
       val heroDetails: HeroDetails?,
       val humanDetails: HumanDetails?
     ) {
-      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
         writer.writeFragment(this@Fragments.heroDetails?.marshaller())
         writer.writeFragment(this@Fragments.humanDetails?.marshaller())
       }
@@ -141,7 +141,7 @@ data class TestQuery(
   data class Data(
     val hero: Hero?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeObject(RESPONSE_FIELDS[0], this@Data.hero?.marshaller())
     }
 
@@ -186,6 +186,8 @@ data class TestQuery(
           """.trimMargin()
         )
 
-    val OPERATION_NAME: OperationName = OperationName { "TestQuery" }
+    val OPERATION_NAME: OperationName = object : OperationName {
+      override fun name(): String = "TestQuery"
+    }
   }
 }

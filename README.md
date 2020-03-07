@@ -337,10 +337,6 @@ import com.apollographql.apollo.gradle.ApolloExtension
 import com.apollographql.apollo.gradle.api.ApolloExtension
 ```
 
-#### Reverting to the 1.2.x plugin
-
-If, despite the above, you can't make it work, you can keep the 1.2.x plugin. It is available in the `apollo-gradle-plugin-deprecated` artifact. Make sure to open an [issue](https://github.com/apollographql/apollo-android/issues) as the 1.2.x plugin will be removed in a future version.
-
 ### Breaking changes in generated Kotlin models with inline fragments:
 
 Field `inlineFragment` is no longer generated with a new Apollo **1.3.0** release for Kotlin models. 

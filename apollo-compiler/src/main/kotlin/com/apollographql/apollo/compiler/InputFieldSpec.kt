@@ -1,6 +1,6 @@
 package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo.api.InputFieldWriter
+import com.apollographql.apollo.api.internal.InputFieldWriter
 import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.squareup.javapoet.*
 import java.io.IOException

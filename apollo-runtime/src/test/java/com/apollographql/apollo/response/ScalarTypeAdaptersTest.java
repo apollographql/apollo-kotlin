@@ -1,6 +1,9 @@
 package com.apollographql.apollo.response;
 
+import com.apollographql.apollo.api.CustomTypeAdapter;
+import com.apollographql.apollo.api.CustomTypeValue;
 import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -17,7 +20,7 @@ public class ScalarTypeAdaptersTest {
 
   @Test
   public void customAdapterTakePrecedentOverDefault() {
-    final Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new HashMap<>();
+    final Map<ScalarType, CustomTypeAdapter<?>> customTypeAdapters = new HashMap<>();
     final CustomTypeAdapter expectedAdapter = Mockito.mock(CustomTypeAdapter.class);
     customTypeAdapters.put(new ScalarType() {
       @Override
@@ -48,7 +51,7 @@ public class ScalarTypeAdaptersTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void missingAdapter() {
-    new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap())
+    new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap())
         .adapterFor(
             new ScalarType() {
               @Override
@@ -133,20 +136,37 @@ public class ScalarTypeAdaptersTest {
     assertThat(adapter.encode(value).value).isEqualTo(value);
   }
 
-  private <T> CustomTypeAdapter<T> defaultAdapter(final Class<T> clazz) {
-    return new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap())
-        .adapterFor(
-            new ScalarType() {
-              @Override
-              public String typeName() {
-                return clazz.getSimpleName();
-              }
+  @Test
+  public void defaultJsonString() {
+    final CustomTypeValue.GraphQLJsonObject actualObject = new CustomTypeValue.GraphQLJsonObject(
+        new UnmodifiableMapBuilder<String, Object>()
+            .put("key", "scalar")
+            .put("object", new UnmodifiableMapBuilder<String, Object>()
+                .put("nestedKey", "nestedScalar")
+                .build()
+            )
+            .put("list", Arrays.asList("1", "2", "3"))
+            .build()
+    );
+    final String expectedJsonString = "{\"key\":\"scalar\",\"object\":{\"nestedKey\":\"nestedScalar\"},\"list\":[\"1\",\"2\",\"3\"]}";
 
-              @Override
-              public Class javaType() {
-                return clazz;
-              }
-            }
-        );
+    final CustomTypeAdapter<String> adapter = defaultAdapter(String.class);
+    assertThat(adapter.decode(actualObject)).isEqualTo(expectedJsonString);
+  }
+
+  private <T> CustomTypeAdapter<T> defaultAdapter(final Class<T> clazz) {
+    return new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap()).adapterFor(
+        new ScalarType() {
+          @Override
+          public String typeName() {
+            return clazz.getSimpleName();
+          }
+
+          @Override
+          public Class javaType() {
+            return clazz;
+          }
+        }
+    );
   }
 }

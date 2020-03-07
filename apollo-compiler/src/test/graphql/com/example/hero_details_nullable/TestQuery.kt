@@ -10,13 +10,13 @@ import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.ResponseFieldMapper
-import com.apollographql.apollo.api.ResponseFieldMarshaller
-import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
+import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
-import com.apollographql.apollo.internal.QueryDocumentMinifier
-import com.apollographql.apollo.response.ScalarTypeAdapters
-import com.apollographql.apollo.response.ScalarTypeAdapters.DEFAULT
 import java.io.IOException
 import kotlin.Array
 import kotlin.Int
@@ -34,7 +34,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   override fun wrapData(data: Data?): Data? = data
   override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
   override fun name(): OperationName = OPERATION_NAME
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper.invoke {
     Data(it)
   }
 
@@ -52,7 +52,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val name: String
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@Node.__typename)
       writer.writeString(RESPONSE_FIELDS[1], this@Node.name)
     }
@@ -64,8 +64,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): Node = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
-        val name = readString(RESPONSE_FIELDS[1])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
         Node(
           __typename = __typename,
           name = name
@@ -81,7 +81,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val node: Node?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@Edge.__typename)
       writer.writeObject(RESPONSE_FIELDS[1], this@Edge.node?.marshaller())
     }
@@ -93,7 +93,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): Edge = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
         val node = readObject<Node>(RESPONSE_FIELDS[1]) { reader ->
           Node(reader)
         }
@@ -116,7 +116,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val edges: List<Edge?>?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@FriendsConnection.__typename)
       writer.writeInt(RESPONSE_FIELDS[1], this@FriendsConnection.totalCount)
       writer.writeList(RESPONSE_FIELDS[2], this@FriendsConnection.edges) { value, listItemWriter ->
@@ -133,7 +133,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): FriendsConnection = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
         val totalCount = readInt(RESPONSE_FIELDS[1])
         val edges = readList<Edge>(RESPONSE_FIELDS[2]) { reader ->
           reader.readObject<Edge> { reader ->
@@ -160,7 +160,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val friendsConnection: FriendsConnection
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@Hero.__typename)
       writer.writeString(RESPONSE_FIELDS[1], this@Hero.name)
       writer.writeObject(RESPONSE_FIELDS[2], this@Hero.friendsConnection.marshaller())
@@ -174,11 +174,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): Hero = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
-        val name = readString(RESPONSE_FIELDS[1])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
         val friendsConnection = readObject<FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
           FriendsConnection(reader)
-        }
+        }!!
         Hero(
           __typename = __typename,
           name = name,
@@ -191,7 +191,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   data class Data(
     val hero: Hero?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeObject(RESPONSE_FIELDS[0], this@Data.hero?.marshaller())
     }
 
@@ -237,6 +237,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           """.trimMargin()
         )
 
-    val OPERATION_NAME: OperationName = OperationName { "TestQuery" }
+    val OPERATION_NAME: OperationName = object : OperationName {
+      override fun name(): String = "TestQuery"
+    }
   }
 }

@@ -10,13 +10,13 @@ import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.ResponseFieldMapper
-import com.apollographql.apollo.api.ResponseFieldMarshaller
-import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
+import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
-import com.apollographql.apollo.internal.QueryDocumentMinifier
-import com.apollographql.apollo.response.ScalarTypeAdapters
-import com.apollographql.apollo.response.ScalarTypeAdapters.DEFAULT
 import java.io.IOException
 import kotlin.Array
 import kotlin.String
@@ -33,7 +33,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   override fun wrapData(data: Data?): Data? = data
   override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
   override fun name(): OperationName = OPERATION_NAME
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper.invoke {
     Data(it)
   }
 
@@ -48,7 +48,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val __typename: String = "__Type",
     val name: String?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@QueryType.__typename)
       writer.writeString(RESPONSE_FIELDS[1], this@QueryType.name)
     }
@@ -60,7 +60,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): QueryType = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
         val name = readString(RESPONSE_FIELDS[1])
         QueryType(
           __typename = __typename,
@@ -74,7 +74,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val __typename: String = "__Type",
     val name: String?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@Type.__typename)
       writer.writeString(RESPONSE_FIELDS[1], this@Type.name)
     }
@@ -86,7 +86,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): Type = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
         val name = readString(RESPONSE_FIELDS[1])
         Type(
           __typename = __typename,
@@ -107,7 +107,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val types: List<Type>
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@__Schema.__typename)
       writer.writeObject(RESPONSE_FIELDS[1], this@__Schema.queryType.marshaller())
       writer.writeList(RESPONSE_FIELDS[2], this@__Schema.types) { value, listItemWriter ->
@@ -124,15 +124,15 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): __Schema = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
         val queryType = readObject<QueryType>(RESPONSE_FIELDS[1]) { reader ->
           QueryType(reader)
-        }
+        }!!
         val types = readList<Type>(RESPONSE_FIELDS[2]) { reader ->
           reader.readObject<Type> { reader ->
             Type(reader)
           }
-        }
+        }!!.map { it!! }
         __Schema(
           __typename = __typename,
           queryType = queryType,
@@ -146,7 +146,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val __typename: String = "__Type",
     val name: String?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@__Type.__typename)
       writer.writeString(RESPONSE_FIELDS[1], this@__Type.name)
     }
@@ -158,7 +158,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): __Type = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
         val name = readString(RESPONSE_FIELDS[1])
         __Type(
           __typename = __typename,
@@ -172,7 +172,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val __schema: __Schema,
     val __type: __Type?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeObject(RESPONSE_FIELDS[0], this@Data.__schema.marshaller())
       writer.writeObject(RESPONSE_FIELDS[1], this@Data.__type?.marshaller())
     }
@@ -187,7 +187,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       operator fun invoke(reader: ResponseReader): Data = reader.run {
         val __schema = readObject<__Schema>(RESPONSE_FIELDS[0]) { reader ->
           __Schema(reader)
-        }
+        }!!
         val __type = readObject<__Type>(RESPONSE_FIELDS[1]) { reader ->
           __Type(reader)
         }
@@ -225,6 +225,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           """.trimMargin()
         )
 
-    val OPERATION_NAME: OperationName = OperationName { "TestQuery" }
+    val OPERATION_NAME: OperationName = object : OperationName {
+      override fun name(): String = "TestQuery"
+    }
   }
 }

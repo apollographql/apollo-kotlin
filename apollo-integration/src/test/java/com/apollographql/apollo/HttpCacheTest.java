@@ -1,5 +1,7 @@
 package com.apollographql.apollo;
 
+import com.apollographql.apollo.api.CustomTypeAdapter;
+import com.apollographql.apollo.api.CustomTypeValue;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.cache.http.HttpCache;
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
@@ -14,17 +16,8 @@ import com.apollographql.apollo.integration.httpcache.AllFilmsQuery;
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery;
 import com.apollographql.apollo.integration.httpcache.DroidDetailsQuery;
 import com.apollographql.apollo.integration.httpcache.type.CustomType;
-import com.apollographql.apollo.response.CustomTypeAdapter;
-import com.apollographql.apollo.response.CustomTypeValue;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 import io.reactivex.functions.Predicate;
-import java.io.File;
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 import okhttp3.Dispatcher;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -35,6 +28,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import static com.google.common.truth.Truth.assertThat;
 

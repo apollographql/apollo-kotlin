@@ -1,22 +1,21 @@
 package com.apollographql.apollo.internal.response;
 
-import com.apollographql.apollo.response.CustomTypeAdapter;
+import com.apollographql.apollo.api.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.ResponseField;
-import com.apollographql.apollo.api.ResponseFieldMarshaller;
-import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.internal.Optional;
-import com.apollographql.apollo.response.ScalarTypeAdapters;
+import com.apollographql.apollo.api.internal.ResponseFieldMarshaller;
+import com.apollographql.apollo.api.internal.ResponseWriter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public final class RealResponseWriter implements ResponseWriter {
   private final Operation.Variables operationVariables;

@@ -102,30 +102,28 @@ subprojects {
 
   group = property("GROUP")!!
   version = property("VERSION_NAME")!!
-  
-  if (project.name != "apollo-gradle-plugin-deprecated") {
-    apply(plugin = "checkstyle")
 
-    extensions.findByType(CheckstyleExtension::class.java)!!.apply {
-      configFile = rootProject.file("checkstyle.xml")
-      configProperties = mapOf(
-          "checkstyle.cache.file" to rootProject.file("build/checkstyle.cache")
-      )
-    }
+  apply(plugin = "checkstyle")
 
-    tasks.register("checkstyle", Checkstyle::class.java) {
-      source("src/main/java")
-      include("**/*.java")
-      classpath = files()
-    }
+  extensions.findByType(CheckstyleExtension::class.java)!!.apply {
+    configFile = rootProject.file("checkstyle.xml")
+    configProperties = mapOf(
+        "checkstyle.cache.file" to rootProject.file("build/checkstyle.cache")
+    )
+  }
 
-    tasks.withType<JavaCompile>().configureEach {
-      options.compilerArgs.add("-XepDisableWarningsInGeneratedCode")
-    }
+  tasks.register("checkstyle", Checkstyle::class.java) {
+    source("src/main/java")
+    include("**/*.java")
+    classpath = files()
+  }
 
-    afterEvaluate {
-      tasks.findByName("check")?.dependsOn("checkstyle")
-    }
+  tasks.withType<JavaCompile>().configureEach {
+    options.compilerArgs.add("-XepDisableWarningsInGeneratedCode")
+  }
+
+  afterEvaluate {
+    tasks.findByName("check")?.dependsOn("checkstyle")
   }
 
   tasks.withType<Test>().configureEach {

@@ -6,9 +6,9 @@
 package com.example.input_object_type.type
 
 import com.apollographql.apollo.api.Input
-import com.apollographql.apollo.api.InputFieldMarshaller
-import com.apollographql.apollo.api.InputFieldWriter
 import com.apollographql.apollo.api.InputType
+import com.apollographql.apollo.api.internal.InputFieldMarshaller
+import com.apollographql.apollo.api.internal.InputFieldWriter
 import java.util.Date
 import kotlin.Boolean
 import kotlin.Int
@@ -104,7 +104,7 @@ data class ReviewInput(
    */
   val capitalizedField: Input<String> = Input.absent()
 ) : InputType {
-  override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
+  override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
     writer.writeInt("stars", this@ReviewInput.stars)
     if (this@ReviewInput.nullableIntFieldWithDefaultValue.defined) {
       writer.writeInt("nullableIntFieldWithDefaultValue",

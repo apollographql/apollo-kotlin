@@ -10,15 +10,16 @@ import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseField;
-import com.apollographql.apollo.api.ResponseFieldMapper;
-import com.apollographql.apollo.api.ResponseFieldMarshaller;
-import com.apollographql.apollo.api.ResponseReader;
-import com.apollographql.apollo.api.ResponseWriter;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier;
+import com.apollographql.apollo.api.internal.ResponseFieldMapper;
+import com.apollographql.apollo.api.internal.ResponseFieldMarshaller;
+import com.apollographql.apollo.api.internal.ResponseReader;
+import com.apollographql.apollo.api.internal.ResponseWriter;
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser;
 import com.apollographql.apollo.api.internal.Utils;
-import com.apollographql.apollo.internal.QueryDocumentMinifier;
-import com.apollographql.apollo.response.ScalarTypeAdapters;
+import com.example.hero_details.type.Hero_type;
 import java.io.IOException;
 import java.lang.Integer;
 import java.lang.Object;
@@ -32,12 +33,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class HeroDetails implements Query<HeroDetails.Data, Optional<HeroDetails.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "257332d822c9bcd5dabeff3f3dda46875a47846f6eeae88f9042c94e3effeee7";
+  public static final String OPERATION_ID = "e9e881883e577da3a4dc0ea9eedbdbc8a05f65fe08bd6f1ae6c1e993b75dfbe4";
 
   public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
     "query HeroDetails {\n"
         + "  hero {\n"
         + "    __typename\n"
+        + "    type\n"
         + "    name\n"
         + "    friendsConnection {\n"
         + "      __typename\n"
@@ -208,11 +210,14 @@ public final class HeroDetails implements Query<HeroDetails.Data, Optional<HeroD
   public static class Hero {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("type", "type", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forObject("friendsConnection", "friendsConnection", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @NotNull String __typename;
+
+    final @NotNull Hero_type type;
 
     final @NotNull String name;
 
@@ -224,15 +229,23 @@ public final class HeroDetails implements Query<HeroDetails.Data, Optional<HeroD
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Hero(@NotNull String __typename, @NotNull String name,
+    public Hero(@NotNull String __typename, @NotNull Hero_type type, @NotNull String name,
         @NotNull FriendsConnection friendsConnection) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.type = Utils.checkNotNull(type, "type == null");
       this.name = Utils.checkNotNull(name, "name == null");
       this.friendsConnection = Utils.checkNotNull(friendsConnection, "friendsConnection == null");
     }
 
     public @NotNull String __typename() {
       return this.__typename;
+    }
+
+    /**
+     * Hero type
+     */
+    public @NotNull Hero_type type() {
+      return this.type;
     }
 
     /**
@@ -255,8 +268,9 @@ public final class HeroDetails implements Query<HeroDetails.Data, Optional<HeroD
         @Override
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
-          writer.writeString($responseFields[1], name);
-          writer.writeObject($responseFields[2], friendsConnection.marshaller());
+          writer.writeString($responseFields[1], type.rawValue());
+          writer.writeString($responseFields[2], name);
+          writer.writeObject($responseFields[3], friendsConnection.marshaller());
         }
       };
     }
@@ -266,6 +280,7 @@ public final class HeroDetails implements Query<HeroDetails.Data, Optional<HeroD
       if ($toString == null) {
         $toString = "Hero{"
           + "__typename=" + __typename + ", "
+          + "type=" + type + ", "
           + "name=" + name + ", "
           + "friendsConnection=" + friendsConnection
           + "}";
@@ -281,6 +296,7 @@ public final class HeroDetails implements Query<HeroDetails.Data, Optional<HeroD
       if (o instanceof Hero) {
         Hero that = (Hero) o;
         return this.__typename.equals(that.__typename)
+         && this.type.equals(that.type)
          && this.name.equals(that.name)
          && this.friendsConnection.equals(that.friendsConnection);
       }
@@ -293,6 +309,8 @@ public final class HeroDetails implements Query<HeroDetails.Data, Optional<HeroD
         int h = 1;
         h *= 1000003;
         h ^= __typename.hashCode();
+        h *= 1000003;
+        h ^= type.hashCode();
         h *= 1000003;
         h ^= name.hashCode();
         h *= 1000003;
@@ -309,14 +327,21 @@ public final class HeroDetails implements Query<HeroDetails.Data, Optional<HeroD
       @Override
       public Hero map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
-        final String name = reader.readString($responseFields[1]);
-        final FriendsConnection friendsConnection = reader.readObject($responseFields[2], new ResponseReader.ObjectReader<FriendsConnection>() {
+        final String typeStr = reader.readString($responseFields[1]);
+        final Hero_type type;
+        if (typeStr != null) {
+          type = Hero_type.safeValueOf(typeStr);
+        } else {
+          type = null;
+        }
+        final String name = reader.readString($responseFields[2]);
+        final FriendsConnection friendsConnection = reader.readObject($responseFields[3], new ResponseReader.ObjectReader<FriendsConnection>() {
           @Override
           public FriendsConnection read(ResponseReader reader) {
             return friendsConnectionFieldMapper.map(reader);
           }
         });
-        return new Hero(__typename, name, friendsConnection);
+        return new Hero(__typename, type, name, friendsConnection);
       }
     }
   }

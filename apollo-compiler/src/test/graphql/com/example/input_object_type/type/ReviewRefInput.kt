@@ -6,8 +6,8 @@
 package com.example.input_object_type.type
 
 import com.apollographql.apollo.api.Input
-import com.apollographql.apollo.api.InputFieldMarshaller
 import com.apollographql.apollo.api.InputType
+import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import kotlin.Suppress
 
 /**
@@ -18,7 +18,7 @@ import kotlin.Suppress
 data class ReviewRefInput(
   val reviewInput: Input<ReviewInput> = Input.absent()
 ) : InputType {
-  override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
+  override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
     if (this@ReviewRefInput.reviewInput.defined) {
       writer.writeObject("reviewInput", this@ReviewRefInput.reviewInput.value?.marshaller())
     }

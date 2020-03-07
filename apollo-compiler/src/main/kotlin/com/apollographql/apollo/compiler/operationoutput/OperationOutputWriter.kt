@@ -1,9 +1,9 @@
 package com.apollographql.apollo.compiler.operationoutput
 
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.compiler.OperationIdGenerator
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.ir.Operation
-import com.apollographql.apollo.internal.QueryDocumentMinifier
 import java.io.File
 
 internal class OperationOutputWriter(private val operationIdGenerator: OperationIdGenerator) {

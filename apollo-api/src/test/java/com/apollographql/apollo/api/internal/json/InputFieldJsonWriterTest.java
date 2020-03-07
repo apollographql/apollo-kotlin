@@ -1,13 +1,14 @@
 package com.apollographql.apollo.api.internal.json;
 
-import com.apollographql.apollo.api.InputFieldMarshaller;
-import com.apollographql.apollo.api.InputFieldWriter;
+import com.apollographql.apollo.api.CustomTypeAdapter;
+import com.apollographql.apollo.api.CustomTypeValue;
 import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
+import com.apollographql.apollo.api.internal.InputFieldMarshaller;
+import com.apollographql.apollo.api.internal.InputFieldWriter;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
-import com.apollographql.apollo.response.CustomTypeAdapter;
-import com.apollographql.apollo.response.CustomTypeValue;
-import com.apollographql.apollo.response.ScalarTypeAdapters;
-
+import okio.Buffer;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,10 +19,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.jetbrains.annotations.NotNull;
-
-import okio.Buffer;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -38,7 +35,7 @@ public class InputFieldJsonWriterTest {
     jsonWriter.beginObject();
 
     inputFieldJsonWriter = new InputFieldJsonWriter(jsonWriter,
-        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()));
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap()));
   }
 
   @Test
@@ -107,7 +104,7 @@ public class InputFieldJsonWriterTest {
 
   @Test
   public void writeCustomBoolean() throws IOException {
-    Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new HashMap<>();
+    Map<ScalarType, CustomTypeAdapter<?>> customTypeAdapters = new HashMap<>();
     customTypeAdapters.put(new MockCustomScalarType(CustomTypeValue.GraphQLBoolean.class), new MockCustomTypeAdapter() {
       @NotNull @Override public CustomTypeValue encode(@NotNull Object value) {
         return new CustomTypeValue.GraphQLBoolean((Boolean) value);
@@ -121,7 +118,7 @@ public class InputFieldJsonWriterTest {
 
   @Test
   public void writeCustomNumber() throws IOException {
-    Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new HashMap<>();
+    Map<ScalarType, CustomTypeAdapter<?>> customTypeAdapters = new HashMap<>();
     customTypeAdapters.put(new MockCustomScalarType(CustomTypeValue.GraphQLNumber.class), new MockCustomTypeAdapter() {
       @NotNull @Override public CustomTypeValue encode(@NotNull Object value) {
         return new CustomTypeValue.GraphQLNumber((Number) value);
@@ -135,7 +132,7 @@ public class InputFieldJsonWriterTest {
 
   @Test
   public void writeCustomString() throws IOException {
-    Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new HashMap<>();
+    Map<ScalarType, CustomTypeAdapter<?>> customTypeAdapters = new HashMap<>();
     customTypeAdapters.put(new MockCustomScalarType(CustomTypeValue.GraphQLString.class), new MockCustomTypeAdapter() {
       @NotNull @Override public CustomTypeValue encode(@NotNull Object value) {
         return new CustomTypeValue.GraphQLString((String) value);
@@ -176,7 +173,7 @@ public class InputFieldJsonWriterTest {
 
     inputFieldJsonWriter.writeCustom("someField", new MockCustomScalarType(Map.class), value);
     inputFieldJsonWriter.writeCustom("someNullField", new MockCustomScalarType(Map.class), null);
-    assertThat(jsonBuffer.readUtf8()).isEqualTo("{\"someField\":{\"objectField\":{\"numberField\":100,\"booleanField\":true,\"listField\":[1,2,3],\"stringField\":\"string\"},\"numberField\":100,\"booleanField\":true,\"listField\":[\"string\",true,100,{\"numberField\":100,\"booleanField\":true,\"listField\":[1,2,3],\"stringField\":\"string\"}],\"stringField\":\"string\"},\"someNullField\":null");
+    assertThat(jsonBuffer.readUtf8()).isEqualTo("{\"someField\":{\"stringField\":\"string\",\"booleanField\":true,\"numberField\":100,\"listField\":[\"string\",true,100,{\"stringField\":\"string\",\"numberField\":100,\"booleanField\":true,\"listField\":[1,2,3]}],\"objectField\":{\"stringField\":\"string\",\"numberField\":100,\"booleanField\":true,\"listField\":[1,2,3]}},\"someNullField\":null");
   }
 
   @Test
@@ -195,7 +192,7 @@ public class InputFieldJsonWriterTest {
 
     inputFieldJsonWriter.writeCustom("someField", new MockCustomScalarType(List.class), value);
     inputFieldJsonWriter.writeCustom("someNullField", new MockCustomScalarType(List.class), null);
-    assertThat(jsonBuffer.readUtf8()).isEqualTo("{\"someField\":[\"string\",true,100,{\"numberField\":100,\"booleanField\":true,\"listField\":[1,2,3],\"stringField\":\"string\"}],\"someNullField\":null");
+    assertThat(jsonBuffer.readUtf8()).isEqualTo("{\"someField\":[\"string\",true,100,{\"stringField\":\"string\",\"numberField\":100,\"booleanField\":true,\"listField\":[1,2,3]}],\"someNullField\":null");
   }
 
   @Test

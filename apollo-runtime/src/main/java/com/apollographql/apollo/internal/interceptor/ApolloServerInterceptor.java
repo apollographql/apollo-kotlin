@@ -5,19 +5,19 @@ import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.InputType;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Query;
+import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.cache.http.HttpCache;
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
+import com.apollographql.apollo.api.internal.ApolloLogger;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.api.internal.json.InputFieldJsonWriter;
+import com.apollographql.apollo.api.internal.json.JsonWriter;
 import com.apollographql.apollo.cache.ApolloCacheHeaders;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
-import com.apollographql.apollo.internal.ApolloLogger;
-import com.apollographql.apollo.api.internal.json.InputFieldJsonWriter;
-import com.apollographql.apollo.api.internal.json.JsonWriter;
 import com.apollographql.apollo.request.RequestHeaders;
-import com.apollographql.apollo.response.ScalarTypeAdapters;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.HttpUrl;
@@ -296,14 +296,14 @@ public final class ApolloServerInterceptor implements ApolloInterceptor {
     } else if (value instanceof FileUpload) {
       FileUpload upload = (FileUpload) value;
       String key = variableName;
-      allUploads.add(new FileUploadMeta(key, upload.mimetype, upload.file));
+      allUploads.add(new FileUploadMeta(key, upload.getMimetype(), upload.getFile()));
       System.out.println(key);
     } else if (value instanceof FileUpload[]) {
       int varFileIndex = 0;
       FileUpload[] uploads = (FileUpload[]) value;
       for (FileUpload upload : uploads) {
         String key = variableName + "." + varFileIndex;
-        allUploads.add(new FileUploadMeta(key, upload.mimetype, upload.file));
+        allUploads.add(new FileUploadMeta(key, upload.getMimetype(), upload.getFile()));
         System.out.println(key);
         varFileIndex++;
       }

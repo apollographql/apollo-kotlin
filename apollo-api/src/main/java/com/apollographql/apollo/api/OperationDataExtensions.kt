@@ -1,10 +1,10 @@
-@file:Suppress("NOTHING_TO_INLINE")
-@file:JvmMultifileClass
-@file:JvmName("KotlinExtensions")
+@file:JvmName("OperationDataJsonSerializer")
 
 package com.apollographql.apollo.api
 
-import com.apollographql.apollo.response.ScalarTypeAdapters
+import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
+import com.apollographql.apollo.api.internal.SimpleResponseWriter
+import java.io.IOException
 
 /**
  * Serializes GraphQL operation response data into its equivalent Json representation.
@@ -29,8 +29,19 @@ import com.apollographql.apollo.response.ScalarTypeAdapters
  * @param indent the indentation string to be repeated for each level of indentation in the encoded document. Must be a string
  * containing only whitespace. If [indent] is an empty String the encoded document will be compact. Otherwise the encoded
  * document will be more human-readable.
- * @param scalarTypeAdapters configured instance of custom GraphQL scalar type adapters.
+ * @param scalarTypeAdapters configured instance of custom GraphQL scalar type adapters. Default adapters are used if this
+ * param is not provided.
  */
-@JvmSynthetic
-inline fun Operation.Data.toJson(indent: String = "", scalarTypeAdapters: ScalarTypeAdapters = ScalarTypeAdapters.DEFAULT): String =
-    OperationDataJsonSerializer.serialize(this, indent, scalarTypeAdapters)
+@JvmName("serialize")
+@JvmOverloads
+fun Operation.Data.toJson(indent: String = "", scalarTypeAdapters: ScalarTypeAdapters = DEFAULT): String {
+  return try {
+    SimpleResponseWriter(scalarTypeAdapters).let { writer ->
+      marshaller().marshal(writer)
+      writer.toJson(indent)
+    }
+  } catch (e: IOException) {
+    throw IllegalStateException(e)
+  }
+}
+

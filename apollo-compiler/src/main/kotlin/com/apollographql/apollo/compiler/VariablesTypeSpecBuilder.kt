@@ -1,7 +1,7 @@
 package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo.api.InputFieldMarshaller
-import com.apollographql.apollo.api.InputFieldWriter
+import com.apollographql.apollo.api.internal.InputFieldMarshaller
+import com.apollographql.apollo.api.internal.InputFieldWriter
 import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.apollographql.apollo.compiler.ir.Variable
 import com.squareup.javapoet.*

@@ -1,16 +1,14 @@
 package com.apollographql.apollo.subscription;
 
+import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.api.internal.json.JsonWriter;
 import com.apollographql.apollo.api.internal.json.Utils;
-import com.apollographql.apollo.response.ScalarTypeAdapters;
+import okio.Buffer;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.Map;
-
-import org.jetbrains.annotations.NotNull;
-
-import okio.Buffer;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 

@@ -3,7 +3,7 @@ package com.apollographql.apollo.internal.cache.normalized;
 import com.apollographql.apollo.api.GraphqlFragment;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.internal.ResponseFieldMapper;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
@@ -11,6 +11,8 @@ import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -18,9 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * An alternative to {@link RealApolloStore} for when a no-operation cache is needed.

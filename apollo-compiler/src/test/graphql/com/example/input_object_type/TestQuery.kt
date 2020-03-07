@@ -5,19 +5,19 @@
 //
 package com.example.input_object_type
 
-import com.apollographql.apollo.api.InputFieldMarshaller
 import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.ResponseFieldMapper
-import com.apollographql.apollo.api.ResponseFieldMarshaller
-import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
+import com.apollographql.apollo.api.internal.InputFieldMarshaller
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
+import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
-import com.apollographql.apollo.internal.QueryDocumentMinifier
-import com.apollographql.apollo.response.ScalarTypeAdapters
-import com.apollographql.apollo.response.ScalarTypeAdapters.DEFAULT
 import com.example.input_object_type.type.Episode
 import com.example.input_object_type.type.ReviewInput
 import java.io.IOException
@@ -44,7 +44,7 @@ data class TestQuery(
       this["review"] = this@TestQuery.review
     }
 
-    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
+    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
       writer.writeString("ep", this@TestQuery.ep.rawValue)
       writer.writeObject("review", this@TestQuery.review.marshaller())
     }
@@ -55,7 +55,7 @@ data class TestQuery(
   override fun wrapData(data: Data?): Data? = data
   override fun variables(): Operation.Variables = variables
   override fun name(): OperationName = OPERATION_NAME
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper.invoke {
     Data(it)
   }
 
@@ -77,7 +77,7 @@ data class TestQuery(
      */
     val commentary: String?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@CreateReview.__typename)
       writer.writeInt(RESPONSE_FIELDS[1], this@CreateReview.stars)
       writer.writeString(RESPONSE_FIELDS[2], this@CreateReview.commentary)
@@ -91,8 +91,8 @@ data class TestQuery(
           )
 
       operator fun invoke(reader: ResponseReader): CreateReview = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
-        val stars = readInt(RESPONSE_FIELDS[1])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val stars = readInt(RESPONSE_FIELDS[1])!!
         val commentary = readString(RESPONSE_FIELDS[2])
         CreateReview(
           __typename = __typename,
@@ -106,7 +106,7 @@ data class TestQuery(
   data class Data(
     val createReview: CreateReview?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeObject(RESPONSE_FIELDS[0], this@Data.createReview?.marshaller())
     }
 
@@ -148,6 +148,8 @@ data class TestQuery(
           """.trimMargin()
         )
 
-    val OPERATION_NAME: OperationName = OperationName { "TestQuery" }
+    val OPERATION_NAME: OperationName = object : OperationName {
+      override fun name(): String = "TestQuery"
+    }
   }
 }

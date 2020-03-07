@@ -7,8 +7,8 @@ package com.example.fragment_used_twice.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.ResponseFieldMarshaller
-import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseReader
 import com.example.fragment_used_twice.type.CustomType
 import kotlin.Any
 import kotlin.Array
@@ -28,7 +28,7 @@ data class CharacterDetails(
    */
   val birthDate: Any
 ) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
     writer.writeString(RESPONSE_FIELDS[0], this@CharacterDetails.__typename)
     writer.writeString(RESPONSE_FIELDS[1], this@CharacterDetails.name)
     writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField,
@@ -51,9 +51,9 @@ data class CharacterDetails(
         """.trimMargin()
 
     operator fun invoke(reader: ResponseReader): CharacterDetails = reader.run {
-      val __typename = readString(RESPONSE_FIELDS[0])
-      val name = readString(RESPONSE_FIELDS[1])
-      val birthDate = readCustomType<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)
+      val __typename = readString(RESPONSE_FIELDS[0])!!
+      val name = readString(RESPONSE_FIELDS[1])!!
+      val birthDate = readCustomType<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)!!
       CharacterDetails(
         __typename = __typename,
         name = name,

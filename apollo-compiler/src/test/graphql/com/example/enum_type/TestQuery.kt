@@ -10,13 +10,13 @@ import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.ResponseFieldMapper
-import com.apollographql.apollo.api.ResponseFieldMarshaller
-import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
+import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
-import com.apollographql.apollo.internal.QueryDocumentMinifier
-import com.apollographql.apollo.response.ScalarTypeAdapters
-import com.apollographql.apollo.response.ScalarTypeAdapters.DEFAULT
 import com.example.enum_type.type.Episode
 import java.io.IOException
 import kotlin.Array
@@ -34,7 +34,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   override fun wrapData(data: Data?): Data? = data
   override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
   override fun name(): OperationName = OPERATION_NAME
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper.invoke {
     Data(it)
   }
 
@@ -60,7 +60,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val firstAppearsIn: Episode
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@Hero.__typename)
       writer.writeString(RESPONSE_FIELDS[1], this@Hero.name)
       writer.writeList(RESPONSE_FIELDS[2], this@Hero.appearsIn) { value, listItemWriter ->
@@ -79,11 +79,12 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): Hero = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])
-        val name = readString(RESPONSE_FIELDS[1])
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
         val appearsIn = readList<Episode>(RESPONSE_FIELDS[2]) { reader ->
-          reader.readString()?.let{ Episode.safeValueOf(it) }}
-        val firstAppearsIn = Episode.safeValueOf(readString(RESPONSE_FIELDS[3]))
+          reader.readString()?.let{ Episode.safeValueOf(it) }
+        }!!
+        val firstAppearsIn = Episode.safeValueOf(readString(RESPONSE_FIELDS[3])!!)
         Hero(
           __typename = __typename,
           name = name,
@@ -97,7 +98,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   data class Data(
     val hero: Hero?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeObject(RESPONSE_FIELDS[0], this@Data.hero?.marshaller())
     }
 
@@ -134,6 +135,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           """.trimMargin()
         )
 
-    val OPERATION_NAME: OperationName = OperationName { "TestQuery" }
+    val OPERATION_NAME: OperationName = object : OperationName {
+      override fun name(): String = "TestQuery"
+    }
   }
 }

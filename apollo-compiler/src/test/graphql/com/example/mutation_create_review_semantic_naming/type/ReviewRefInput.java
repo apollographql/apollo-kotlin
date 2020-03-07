@@ -6,9 +6,9 @@
 package com.example.mutation_create_review_semantic_naming.type;
 
 import com.apollographql.apollo.api.Input;
-import com.apollographql.apollo.api.InputFieldMarshaller;
-import com.apollographql.apollo.api.InputFieldWriter;
 import com.apollographql.apollo.api.InputType;
+import com.apollographql.apollo.api.internal.InputFieldMarshaller;
+import com.apollographql.apollo.api.internal.InputFieldWriter;
 import com.apollographql.apollo.api.internal.Utils;
 import java.io.IOException;
 import java.lang.Object;

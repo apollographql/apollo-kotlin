@@ -6,9 +6,9 @@
 package com.example.input_object_type.type;
 
 import com.apollographql.apollo.api.Input;
-import com.apollographql.apollo.api.InputFieldMarshaller;
-import com.apollographql.apollo.api.InputFieldWriter;
 import com.apollographql.apollo.api.InputType;
+import com.apollographql.apollo.api.internal.InputFieldMarshaller;
+import com.apollographql.apollo.api.internal.InputFieldWriter;
 import com.apollographql.apollo.api.internal.Utils;
 import java.io.IOException;
 import java.lang.Double;
