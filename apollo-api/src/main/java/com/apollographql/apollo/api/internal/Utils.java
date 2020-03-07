@@ -1,9 +1,9 @@
 package com.apollographql.apollo.api.internal;
 
-import java.util.Set;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Set;
 
 /**
  * Contains utility methods for checking Preconditions

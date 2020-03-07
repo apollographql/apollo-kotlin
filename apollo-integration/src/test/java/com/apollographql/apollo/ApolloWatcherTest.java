@@ -2,7 +2,6 @@ package com.apollographql.apollo;
 
 import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
@@ -13,9 +12,13 @@ import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithID
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.internal.cache.normalized.Transaction;
 import com.apollographql.apollo.internal.cache.normalized.WriteableStore;
-
+import io.reactivex.functions.Predicate;
 import junit.framework.Assert;
-
+import okhttp3.Dispatcher;
+import okhttp3.OkHttpClient;
+import okhttp3.mockwebserver.MockWebServer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -26,14 +29,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import io.reactivex.functions.Predicate;
-import okhttp3.Dispatcher;
-import okhttp3.OkHttpClient;
-import okhttp3.mockwebserver.MockWebServer;
 
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY;
@@ -55,12 +50,11 @@ public class ApolloWatcherTest {
         .okHttpClient(okHttpClient)
         .logger(new Logger() {
           @Override
-          public void log(int priority, @NotNull String message, @NotNull Optional<Throwable> t, @NotNull Object... args) {
-            String throwableTrace = "";
-            if (t.isPresent()) {
-              throwableTrace = t.get().getMessage();
+          public void log(int priority, @NotNull String message, @Nullable Throwable t, @NotNull Object... args) {
+            System.out.println(String.format(message, args));
+            if (t != null) {
+              t.printStackTrace();
             }
-            System.out.println(String.format(message, args) + " " + throwableTrace);
           }
         })
         .normalizedCache(new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), new IdFieldCacheKeyResolver())

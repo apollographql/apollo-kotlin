@@ -325,7 +325,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     CacheHeaders defaultCacheHeaders = CacheHeaders.NONE;
     final Map<ScalarType, CustomTypeAdapter<?>> customTypeAdapters = new LinkedHashMap<>();
     Executor dispatcher;
-    Optional<Logger> logger = Optional.absent();
+    @Nullable Logger logger = null;
     final List<ApolloInterceptor> applicationInterceptors = new ArrayList<>();
     boolean enableAutoPersistedQueries;
     boolean enableAutoPersistedSubscriptions;
@@ -477,7 +477,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
      * @return The {@link Builder} object to be used for chaining method calls
      */
     public Builder logger(@Nullable Logger logger) {
-      this.logger = Optional.fromNullable(logger);
+      this.logger = logger;
       return this;
     }
 

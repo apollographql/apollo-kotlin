@@ -6,7 +6,6 @@ import com.apollographql.apollo.api.cache.http.HttpCacheRecord;
 import com.apollographql.apollo.api.cache.http.HttpCacheRecordEditor;
 import com.apollographql.apollo.api.cache.http.HttpCacheStore;
 import com.apollographql.apollo.api.internal.ApolloLogger;
-import com.apollographql.apollo.api.internal.Optional;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 import okio.ForwardingSource;
@@ -33,7 +32,7 @@ public final class ApolloHttpCache implements HttpCache {
 
   public ApolloHttpCache(@NotNull final HttpCacheStore cacheStore, @Nullable final Logger logger) {
     this.cacheStore = checkNotNull(cacheStore, "cacheStore == null");
-    this.logger = new ApolloLogger(Optional.fromNullable(logger));
+    this.logger = new ApolloLogger(logger);
   }
 
   @Override public void clear() {
