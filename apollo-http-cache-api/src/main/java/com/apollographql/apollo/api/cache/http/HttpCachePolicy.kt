@@ -1,78 +1,61 @@
-package com.apollographql.apollo.api.cache.http;
+package com.apollographql.apollo.api.cache.http
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeUnit
 
 /**
  * Http cache policy factory
  */
-public final class HttpCachePolicy {
+object HttpCachePolicy {
+  /**
+   * Signals the apollo client to fetch the GraphQL query response from the http cache **only**.
+   */
+  @JvmField
+  val CACHE_ONLY = ExpirePolicy(FetchStrategy.CACHE_ONLY)
 
   /**
-   * Signals the apollo client to fetch the GraphQL query response from the http cache <b>only</b>.
+   * Signals the apollo client to fetch the GraphQL query response from the network **only**.
    */
-  public static final ExpirePolicy CACHE_ONLY = new ExpirePolicy(FetchStrategy.CACHE_ONLY);
-
-  /**
-   * Signals the apollo client to fetch the GraphQL query response from the network <b>only</b>.
-   */
-  public static final Policy NETWORK_ONLY = new Policy(FetchStrategy.NETWORK_ONLY, 0, null, false);
+  @JvmField
+  val NETWORK_ONLY = Policy(FetchStrategy.NETWORK_ONLY, expireTimeout = 0, expireTimeUnit = null, expireAfterRead = false)
 
   /**
    * Signals the apollo client to first fetch the GraphQL query response from the http cache. If it's not present in the
    * cache response is fetched from the network.
    */
-  public static final ExpirePolicy CACHE_FIRST = new ExpirePolicy(FetchStrategy.CACHE_FIRST);
+  @JvmField
+  val CACHE_FIRST = ExpirePolicy(FetchStrategy.CACHE_FIRST)
 
   /**
    * Signals the apollo client to first fetch the GraphQL query response from the network. If it fails then fetch the
    * response from the http cache.
    */
-  public static final ExpirePolicy NETWORK_FIRST = new ExpirePolicy(FetchStrategy.NETWORK_FIRST);
-
-  private HttpCachePolicy() {
-  }
+  @JvmField
+  val NETWORK_FIRST = ExpirePolicy(FetchStrategy.NETWORK_FIRST)
 
   /**
    * Abstraction for http cache policy configurations
    */
-  public static class Policy {
+  open class Policy internal constructor(
+      val fetchStrategy: FetchStrategy,
+      val expireTimeout: Long,
+      val expireTimeUnit: TimeUnit?,
+      val expireAfterRead: Boolean) {
 
-    public final FetchStrategy fetchStrategy;
-    public final long expireTimeout;
-    public final TimeUnit expireTimeUnit;
-    public final boolean expireAfterRead;
-
-    Policy(FetchStrategy fetchStrategy, long expireTimeout, TimeUnit expireTimeUnit,
-           boolean expireAfterRead) {
-      this.fetchStrategy = fetchStrategy;
-      this.expireTimeout = expireTimeout;
-      this.expireTimeUnit = expireTimeUnit;
-      this.expireAfterRead = expireAfterRead;
-    }
-
-    public long expireTimeoutMs() {
-      if (expireTimeUnit == null) {
-        return 0;
-      }
-      return expireTimeUnit.toMillis(expireTimeout);
-    }
+    fun expireTimeoutMs(): Long = expireTimeUnit?.toMillis(expireTimeout) ?: 0
   }
 
   /**
    * Cache policy with provided expiration configuration
    */
-  public static final class ExpirePolicy extends Policy {
+  class ExpirePolicy : Policy {
+    internal constructor(fetchStrategy: FetchStrategy) : super(fetchStrategy, 0, null, false)
 
-    ExpirePolicy(FetchStrategy fetchStrategy) {
-      super(fetchStrategy, 0, null, false);
-    }
-
-    private ExpirePolicy(FetchStrategy fetchStrategy, long expireTimeout, TimeUnit expireTimeUnit,
-                         boolean expireAfterRead) {
-      super(fetchStrategy, expireTimeout, expireTimeUnit, expireAfterRead);
-    }
+    private constructor(
+        fetchStrategy: FetchStrategy,
+        expireTimeout: Long,
+        expireTimeUnit: TimeUnit?,
+        expireAfterRead: Boolean
+    ) : super(fetchStrategy, expireTimeout, expireTimeUnit, expireAfterRead)
 
     /**
      * Create new cache policy with expire after timeout configuration. Cached response is treated as expired if it's
@@ -82,36 +65,39 @@ public final class HttpCachePolicy {
      * @param expireTimeUnit time unit
      * @return new cache policy
      */
-    public ExpirePolicy expireAfter(long expireTimeout, @NotNull TimeUnit expireTimeUnit) {
-      return new ExpirePolicy(fetchStrategy, expireTimeout, expireTimeUnit, expireAfterRead);
+    fun expireAfter(expireTimeout: Long, expireTimeUnit: TimeUnit): ExpirePolicy {
+      return ExpirePolicy(fetchStrategy, expireTimeout, expireTimeUnit, expireAfterRead)
     }
 
     /**
      * Create new cache policy with expire after read configuration. Cached response will be evicted from the cache
      * after it's been read.
      */
-    public ExpirePolicy expireAfterRead() {
-      return new ExpirePolicy(fetchStrategy, expireTimeout, expireTimeUnit, true);
+    fun expireAfterRead(): ExpirePolicy {
+      return ExpirePolicy(fetchStrategy, expireTimeout, expireTimeUnit, true)
     }
   }
 
   /**
    * Represents different fetch strategies for http request / response cache
    */
-  public enum FetchStrategy {
+  enum class FetchStrategy {
     /**
-     * Signals the apollo client to fetch the GraphQL query response from the http cache <b>only</b>.
+     * Signals the apollo client to fetch the GraphQL query response from the http cache **only**.
      */
     CACHE_ONLY,
+
     /**
-     * Signals the apollo client to fetch the GraphQL query response from the network <b>only</b>.
+     * Signals the apollo client to fetch the GraphQL query response from the network **only**.
      */
     NETWORK_ONLY,
+
     /**
      * Signals the apollo client to first fetch the GraphQL query response from the http cache. If it's not present in
      * the cache response is fetched from the network.
      */
     CACHE_FIRST,
+
     /**
      * Signals the apollo client to first fetch the GraphQL query response from the network. If it fails then fetch the
      * response from the http cache.

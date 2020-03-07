@@ -26,8 +26,6 @@ extensions.findByType(BaseExtension::class.java)!!.apply {
 }
 
 dependencies {
-  add("implementation", groovy.util.Eval.x(project, "x.dep.jetbrainsAnnotations"))
-
   add("implementation", groovy.util.Eval.x(project, "x.dep.android.appcompat"))
   add("implementation", groovy.util.Eval.x(project, "x.dep.kotlin.coroutines.core"))
   add("implementation", groovy.util.Eval.x(project, "x.dep.kotlin.stdLib"))
