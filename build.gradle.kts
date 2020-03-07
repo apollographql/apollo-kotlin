@@ -36,7 +36,7 @@ abstract class DownloadFileTask : DefaultTask() {
     val client = okhttp3.OkHttpClient()
     val request = okhttp3.Request.Builder().get().url(url.get()).build()
 
-    client.newCall(request).execute().body()!!.byteStream().use { body ->
+    client.newCall(request).execute().body!!.byteStream().use { body ->
       output.asFile.get().outputStream().buffered().use { file ->
         body.copyTo(file)
       }

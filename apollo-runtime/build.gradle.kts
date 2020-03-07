@@ -3,8 +3,8 @@ plugins {
 }
 
 java {
-  targetCompatibility = JavaVersion.VERSION_1_7
-  sourceCompatibility = JavaVersion.VERSION_1_7
+  targetCompatibility = JavaVersion.VERSION_1_8
+  sourceCompatibility = JavaVersion.VERSION_1_8
 }
 
 dependencies {
@@ -19,7 +19,6 @@ dependencies {
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.junit"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.truth"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer"))
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.okHttp.testSupport"))
   add("testImplementation", project(":apollo-rx2-support"))
 }
 

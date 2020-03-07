@@ -18,11 +18,12 @@ package com.apollographql.apollo.api.internal.json
 import okio.Buffer
 import okio.BufferedSource
 import okio.ByteString
+import okio.ByteString.Companion.encodeUtf8
 import java.io.EOFException
 import java.io.IOException
 
 class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader {
-  private val buffer: Buffer = source.buffer()
+  private val buffer: Buffer = source.buffer
   private var peeked = PEEKED_NONE
   /**
    * A peeked value that was composed entirely of digits with an optional leading dash. Positive values may not have a leading 0.
@@ -198,7 +199,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
           }
           '=' -> {
             checkLenient()
-            if (source.request(1) && buffer.getByte(0) == '>'.toByte()) {
+            if (source.request(1) && buffer[0] == '>'.toByte()) {
               buffer.readByte() // Consume '>'.
             }
           }
@@ -272,7 +273,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
       return result
     }
 
-    if (!isLiteral(buffer.getByte(0).toChar())) {
+    if (!isLiteral(buffer[0].toChar())) {
       throw syntaxError("Expected value")
     }
 
@@ -285,7 +286,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     val keyword: String
     val keywordUpper: String
     val peeking: Int
-    when (buffer.getByte(0)) {
+    when (buffer[0]) {
       't'.toByte(), 'T'.toByte() -> {
         keyword = "true"
         keywordUpper = "TRUE"
@@ -311,13 +312,13 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
       if (!source.request(i + 1.toLong())) {
         return PEEKED_NONE
       }
-      val c = buffer.getByte(i.toLong())
+      val c = buffer[i.toLong()]
       if (c != keyword[i].toByte() && c != keywordUpper[i].toByte()) {
         return PEEKED_NONE
       }
     }
 
-    if (source.request(length + 1.toLong()) && isLiteral(buffer.getByte(length.toLong()).toChar())) {
+    if (source.request(length + 1.toLong()) && isLiteral(buffer[length.toLong()].toChar())) {
       return PEEKED_NONE // Don't match trues, falsey or nullsoft!
     }
 
@@ -334,7 +335,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     var last = NUMBER_CHAR_NONE
     var i = 0
     loop@ while (source.request(i + 1.toLong())) {
-      val c = buffer.getByte(i.toLong())
+      val c = buffer[i.toLong()]
       when (c.toChar()) {
         '-' -> {
           when (last) {
@@ -593,7 +594,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
       val index = source.indexOfElement(runTerminator)
       if (index == -1L) throw syntaxError("Unterminated string")
       // If we've got an escape character, we're going to need a string builder.
-      if (buffer.getByte(index) == '\\'.toByte()) {
+      if (buffer[index] == '\\'.toByte()) {
         if (builder == null) builder = StringBuilder()
         builder.append(buffer.readUtf8(index))
         buffer.readByte() // '\'
@@ -625,7 +626,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     while (true) {
       val index = source.indexOfElement(runTerminator)
       if (index == -1L) throw syntaxError("Unterminated string")
-      if (buffer.getByte(index) == '\\'.toByte()) {
+      if (buffer[index] == '\\'.toByte()) {
         buffer.skip(index + 1)
         readEscapeCharacter()
       } else {
@@ -638,7 +639,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   @Throws(IOException::class)
   private fun skipUnquotedValue() {
     val i = source.indexOfElement(UNQUOTED_STRING_TERMINALS)
-    buffer.skip(if (i != -1L) i else buffer.size())
+    buffer.skip(if (i != -1L) i else buffer.size)
   }
 
   @Throws(IOException::class)
@@ -763,7 +764,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
      */
     var p = 0
     loop@ while (source.request(p + 1.toLong())) {
-      val c = buffer.getByte(p++.toLong()).toInt()
+      val c = buffer[p++.toLong()].toInt()
       if (c == '\n'.toInt() || c == ' '.toInt() || c == '\r'.toInt() || c == '\t'.toInt()) {
         continue
       }
@@ -773,7 +774,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
           return c
         }
         checkLenient()
-        val peek = buffer.getByte(1)
+        val peek = buffer[1]
         return when (peek.toChar()) {
           '*' -> {
             // skip a /* c-style comment */
@@ -826,7 +827,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   @Throws(IOException::class)
   private fun skipToEndOfLine() {
     val index = source.indexOfElement(LINEFEED_OR_CARRIAGE_RETURN)
-    buffer.skip(if (index != -1L) index + 1 else buffer.size())
+    buffer.skip(if (index != -1L) index + 1 else buffer.size)
   }
 
   /**
@@ -836,7 +837,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   private fun skipTo(toFind: String): Boolean {
     outer@ while (source.request(toFind.length.toLong())) {
       for (c in toFind.indices) {
-        if (buffer.getByte(c.toLong()) != toFind[c].toByte()) {
+        if (buffer[c.toLong()] != toFind[c].toByte()) {
           buffer.readByte()
           continue@outer
         }
@@ -868,7 +869,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
         var i = 0
         val end = i + 4
         while (i < end) {
-          val c = buffer.getByte(i.toLong())
+          val c = buffer[i.toLong()]
           result = (result.toInt() shl 4).toChar()
           result += when {
             c >= '0'.toByte() && c <= '9'.toByte() -> (c - '0'.toByte())
@@ -912,10 +913,10 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
 
   companion object {
     private const val MIN_INCOMPLETE_INTEGER = Long.MIN_VALUE / 10
-    private val SINGLE_QUOTE_OR_SLASH = ByteString.encodeUtf8("'\\")
-    private val DOUBLE_QUOTE_OR_SLASH = ByteString.encodeUtf8("\"\\")
-    private val UNQUOTED_STRING_TERMINALS = ByteString.encodeUtf8("{}[]:, \n\t\r/\\;#=")
-    private val LINEFEED_OR_CARRIAGE_RETURN = ByteString.encodeUtf8("\n\r")
+    private val SINGLE_QUOTE_OR_SLASH = "'\\".encodeUtf8()
+    private val DOUBLE_QUOTE_OR_SLASH = "\"\\".encodeUtf8()
+    private val UNQUOTED_STRING_TERMINALS = "{}[]:, \n\t\r/\\;#=".encodeUtf8()
+    private val LINEFEED_OR_CARRIAGE_RETURN = "\n\r".encodeUtf8()
     private const val PEEKED_NONE = 0
     private const val PEEKED_BEGIN_OBJECT = 1
     private const val PEEKED_END_OBJECT = 2

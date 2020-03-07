@@ -6,6 +6,8 @@ import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import okio.Okio
+import okio.buffer
+import okio.source
 import java.io.File
 
 @JsonClass(generateAdapter = true)
@@ -25,7 +27,7 @@ fun adapter(indent: String? = null): JsonAdapter<OperationOutput>  {
 }
 
 fun OperationOutput(file: File): OperationOutput {
-  return Okio.buffer(Okio.source(file)).use {
+  return file.source().buffer().use {
     adapter().fromJson(it)!!
   }
 }
