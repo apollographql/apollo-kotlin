@@ -35,11 +35,12 @@ object HttpCachePolicy {
   /**
    * Abstraction for http cache policy configurations
    */
-  open class Policy internal constructor(
-      val fetchStrategy: FetchStrategy,
-      val expireTimeout: Long,
-      val expireTimeUnit: TimeUnit?,
-      val expireAfterRead: Boolean) {
+  open class Policy(
+      @JvmField val fetchStrategy: FetchStrategy,
+      @JvmField val expireTimeout: Long,
+      @JvmField val expireTimeUnit: TimeUnit?,
+      @JvmField val expireAfterRead: Boolean
+  ) {
 
     fun expireTimeoutMs(): Long = expireTimeUnit?.toMillis(expireTimeout) ?: 0
   }
