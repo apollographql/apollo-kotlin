@@ -200,16 +200,21 @@ apollo {
 You can get a schema.json file by running an introspection query on your endpoint. The Apollo Gradle plugin exposes a `downloadApolloSchema` task to help with this. You can download a schema by specifying your endpoint and the location where you want the schema to be downloaded:
 
 ```
-./gradlew :shared:downloadApolloSchema -Pcom.apollographql.apollo.endpoint=https://your.graphql.endpoint -Pcom.apollographql.apollo.schema=src/main/graphql/com/example/schema.json
+./gradlew :module:downloadApolloSchema -Pcom.apollographql.apollo.endpoint=https://your.graphql.endpoint -Pcom.apollographql.apollo.schema=src/main/graphql/com/example/schema.json
 ```
 
 If your endpoint requires authentication, you can pass query parameters and/or custom HTTP headers:
 
 ```
-./gradlew :shared:downloadApolloSchema -Pcom.apollographql.apollo.endpoint=https://your.graphql.endpoint -Pcom.apollographql.apollo.schema=src/main/graphql/com/example/schema.json  "-Pcom.apollographql.apollo.headers=Authorization=Bearer YOUR_TOKEN" "-Pcom.apollographql.apollo.query_params=key1=value1&key2=value2"
+./gradlew :module:downloadApolloSchema -Pcom.apollographql.apollo.endpoint=https://your.graphql.endpoint -Pcom.apollographql.apollo.schema=src/main/graphql/com/example/schema.json  "-Pcom.apollographql.apollo.headers=Authorization=Bearer YOUR_TOKEN" "-Pcom.apollographql.apollo.query_params=key1=value1&key2=value2"
 ```
 
 The `com.apollographql.apollo.headers` and `com.apollographql.apollo.query_params` properties both take a query string where key and values should be URL encoded.
+
+The default timeout for download operation is 1 minute. If you have a large `schema.json`, you may want to increase the timeout. Do that by adding the following into `gradle.properties`:
+```
+org.gradle.jvmargs=-DokHttp.connectTimeout=60 -DokHttp.readTimeout=60
+```
 
 ## Intellij Plugin
 
