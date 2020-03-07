@@ -79,28 +79,31 @@ internal fun resolveFieldType(
       is ScalarType.INT -> FieldType.Scalar.Int
       is ScalarType.BOOLEAN -> FieldType.Scalar.Boolean
       is ScalarType.FLOAT -> FieldType.Scalar.Float
-      else -> when {
-        enums.find { it.name == graphQLType.removeSuffix("!") } != null -> FieldType.Scalar.Enum(
-            TypeRef(
-                name = graphQLType.removeSuffix("!").capitalize().escapeKotlinReservedWord(),
-                packageName = typesPackageName
-            )
-        )
-        customTypeMap.containsKey(graphQLType.removeSuffix("!")) -> FieldType.Scalar.Custom(
-            schemaType = graphQLType.removeSuffix("!"),
-            mappedType = customTypeMap.getValue(graphQLType.removeSuffix("!")),
-            customEnumConst = graphQLType.removeSuffix("!").toUpperCase().escapeKotlinReservedWord(),
-            customEnumType = TypeRef(
-                name = "CustomType",
-                packageName = typesPackageName
-            )
-        )
-        else -> FieldType.Object(
-            TypeRef(
-                name = graphQLType.removeSuffix("!").capitalize().escapeKotlinReservedWord(),
-                packageName = typesPackageName
-            )
-        )
+      else -> {
+        val normalizedName = graphQLType.removeSuffix("!").capitalize().escapeKotlinReservedWord()
+        when {
+          enums.find { it.name == normalizedName } != null -> FieldType.Scalar.Enum(
+              TypeRef(
+                  name =  normalizedName,
+                  packageName = typesPackageName
+              )
+          )
+          customTypeMap.containsKey(graphQLType.removeSuffix("!")) -> FieldType.Scalar.Custom(
+              schemaType = graphQLType.removeSuffix("!"),
+              mappedType = customTypeMap.getValue(graphQLType.removeSuffix("!")),
+              customEnumConst = normalizedName.toUpperCase(),
+              customEnumType = TypeRef(
+                  name = "CustomType",
+                  packageName = typesPackageName
+              )
+          )
+          else -> FieldType.Object(
+              TypeRef(
+                  name = normalizedName,
+                  packageName = typesPackageName
+              )
+          )
+        }
       }
     }
   }

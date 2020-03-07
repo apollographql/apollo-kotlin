@@ -17,6 +17,7 @@ import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
+import com.example.hero_details.type.Hero_type
 import java.io.IOException
 import kotlin.Array
 import kotlin.Int
@@ -152,6 +153,10 @@ class HeroDetails : Query<HeroDetails.Data, HeroDetails.Data, Operation.Variable
   data class Hero(
     val __typename: String = "Character",
     /**
+     * Hero type
+     */
+    val type: Hero_type,
+    /**
      * The name of the character
      */
     val name: String,
@@ -162,25 +167,29 @@ class HeroDetails : Query<HeroDetails.Data, HeroDetails.Data, Operation.Variable
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@Hero.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], this@Hero.name)
-      writer.writeObject(RESPONSE_FIELDS[2], this@Hero.friendsConnection.marshaller())
+      writer.writeString(RESPONSE_FIELDS[1], this@Hero.type.rawValue)
+      writer.writeString(RESPONSE_FIELDS[2], this@Hero.name)
+      writer.writeObject(RESPONSE_FIELDS[3], this@Hero.friendsConnection.marshaller())
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forEnum("type", "type", null, false, null),
           ResponseField.forString("name", "name", null, false, null),
           ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): Hero = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        val friendsConnection = readObject<FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
+        val type = Hero_type.safeValueOf(readString(RESPONSE_FIELDS[1])!!)
+        val name = readString(RESPONSE_FIELDS[2])!!
+        val friendsConnection = readObject<FriendsConnection>(RESPONSE_FIELDS[3]) { reader ->
           FriendsConnection(reader)
         }!!
         Hero(
           __typename = __typename,
+          type = type,
           name = name,
           friendsConnection = friendsConnection
         )
@@ -213,13 +222,14 @@ class HeroDetails : Query<HeroDetails.Data, HeroDetails.Data, Operation.Variable
 
   companion object {
     const val OPERATION_ID: String =
-        "257332d822c9bcd5dabeff3f3dda46875a47846f6eeae88f9042c94e3effeee7"
+        "e9e881883e577da3a4dc0ea9eedbdbc8a05f65fe08bd6f1ae6c1e993b75dfbe4"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query HeroDetails {
           |  hero {
           |    __typename
+          |    type
           |    name
           |    friendsConnection {
           |      __typename

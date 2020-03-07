@@ -2,7 +2,11 @@ package com.apollographql.apollo.api
 
 import com.apollographql.apollo.api.CustomTypeValue.*
 import com.apollographql.apollo.api.CustomTypeValue.Companion.fromRawValue
+import com.apollographql.apollo.api.internal.json.JsonWriter
+import com.apollographql.apollo.api.internal.json.Utils
+import okio.Buffer
 import java.io.File
+import java.io.IOException
 
 class ScalarTypeAdapters(customAdapters: Map<ScalarType, CustomTypeAdapter<*>>) {
   private val customAdapters = customAdapters.mapKeys { it.key.typeName() }
@@ -31,7 +35,19 @@ class ScalarTypeAdapters(customAdapters: Map<ScalarType, CustomTypeAdapter<*>>) 
     private val DEFAULT_ADAPTERS = mapOf(
         String::class.java to object : DefaultCustomTypeAdapter<String>() {
           override fun decode(value: CustomTypeValue<*>): String {
-            return value.value.toString()
+            return if (value is GraphQLJsonList || value is GraphQLJsonObject) {
+              val buffer = Buffer()
+              JsonWriter.of(buffer).use { writer ->
+                try {
+                  Utils.writeToJson(value.value, writer)
+                } catch (e: IOException) {
+                  throw IllegalArgumentException("Failed to decode custom scalar type value into JSON string")
+                }
+              }
+              buffer.readUtf8()
+            } else {
+              value.value.toString()
+            }
           }
         },
         java.lang.Boolean::class.java to object : DefaultCustomTypeAdapter<Boolean>() {
