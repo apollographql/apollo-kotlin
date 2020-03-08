@@ -188,8 +188,8 @@ class SubscriptionNormalizedCacheTest {
   private fun Response<NewRepoCommentSubscription.Data>?.assertResponse(expectedFromCache: Boolean, expectedContent: String) {
     assertThat(this).isNotNull()
     assertThat(this!!.fromCache()).isEqualTo(expectedFromCache)
-    assertThat(data()).isNotNull()
-    with(data()!!) {
+    assertThat(data).isNotNull()
+    with(data!!) {
       assertThat(commentAdded()!!.id()).isEqualTo(100)
       assertThat(commentAdded()!!.content()).isEqualTo(expectedContent)
       assertThat(commentAdded()!!.postedBy()!!.login()).isEqualTo("user@user.com")
