@@ -242,7 +242,7 @@ class CoroutinesApolloTest {
           .single()
     }
 
-    assertThat(response.data()!!.hero()!!.name()).isEqualTo("R2-D2")
+    assertThat(response.data!!.hero()!!.name()).isEqualTo("R2-D2")
   }
 
   @Test
@@ -260,7 +260,7 @@ class CoroutinesApolloTest {
           .first()
     }
 
-    assertThat(response.data()!!.hero()!!.name()).isEqualTo("R2-D2")
+    assertThat(response.data!!.hero()!!.name()).isEqualTo("R2-D2")
   }
 
   companion object {
