@@ -14,6 +14,11 @@ extensions.findByType(BaseExtension::class.java)!!.apply {
     targetSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.targetSdkVersion").toString())
   }
 
+  compileOptions {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+  }
+
   lintOptions {
     textReport = true
     textOutput("stdout")
