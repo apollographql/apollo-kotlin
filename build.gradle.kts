@@ -1,6 +1,3 @@
-import org.gradle.api.plugins.internal.JavaConfigurationVariantMapping
-
-
 buildscript {
   project.apply {
     from(rootProject.file("gradle/dependencies.gradle"))
@@ -36,7 +33,7 @@ abstract class DownloadFileTask : DefaultTask() {
     val client = okhttp3.OkHttpClient()
     val request = okhttp3.Request.Builder().get().url(url.get()).build()
 
-    client.newCall(request).execute().body()!!.byteStream().use { body ->
+    client.newCall(request).execute().body!!.byteStream().use { body ->
       output.asFile.get().outputStream().buffered().use { file ->
         body.copyTo(file)
       }
@@ -56,6 +53,21 @@ subprojects {
       google()
     }
   }
+
+  plugins.withType(com.android.build.gradle.BasePlugin::class.java) {
+    extension.compileOptions {
+      sourceCompatibility = JavaVersion.VERSION_1_8
+      targetCompatibility = JavaVersion.VERSION_1_8
+    }
+  }
+
+  plugins.withType(org.gradle.api.plugins.JavaPlugin::class.java) {
+    extensions.configure(JavaPluginExtension::class.java) {
+      sourceCompatibility = JavaVersion.VERSION_1_8
+      targetCompatibility = JavaVersion.VERSION_1_8
+    }
+  }
+
   this.apply(plugin = "maven-publish")
 
   repositories {

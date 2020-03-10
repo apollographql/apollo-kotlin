@@ -2,11 +2,6 @@ plugins {
   `java-library`
 }
 
-java {
-  targetCompatibility = JavaVersion.VERSION_1_7
-  sourceCompatibility = JavaVersion.VERSION_1_7
-}
-
 dependencies {
   add("api", project(":apollo-api")) // apollo-espresso-support uses some apollo-api internals
   add("api", project(":apollo-http-cache-api"))
@@ -19,7 +14,6 @@ dependencies {
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.junit"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.truth"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer"))
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.okHttp.testSupport"))
   add("testImplementation", project(":apollo-rx2-support"))
 }
 

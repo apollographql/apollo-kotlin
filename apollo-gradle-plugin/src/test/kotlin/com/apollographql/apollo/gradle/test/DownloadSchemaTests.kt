@@ -18,7 +18,7 @@ class DownloadSchemaTests {
         service("mock") {
           schemaPath = "com/example/schema.json"
           introspection {
-            endpointUrl = "${mockServer.url("/").url()}"
+            endpointUrl = "${mockServer.url("/").toUrl()}"
           }
         }
       }

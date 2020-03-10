@@ -4,8 +4,9 @@ import com.squareup.moshi.JsonClass
 import com.squareup.moshi.JsonReader
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
-import okio.ByteString
-import okio.Okio
+import okio.ByteString.Companion.decodeHex
+import okio.buffer
+import okio.source
 import java.io.File
 
 @JsonClass(generateAdapter = true)
@@ -116,7 +117,7 @@ class Schema(
   }
 
   companion object {
-    private val UTF8_BOM = ByteString.decodeHex("EFBBBF")
+    private val UTF8_BOM = "EFBBBF".decodeHex()
 
     @JvmStatic
     @JvmName("parse")
@@ -134,13 +135,13 @@ class Schema(
           .build()
 
       val source = try {
-        Okio.buffer(Okio.source(schemaFile.inputStream()))
+        schemaFile.inputStream().source().buffer()
       } catch (e: Exception) {
         throw RuntimeException("Failed to parse GraphQL schema introspection query from `$schemaFile`", e)
       }
 
       if (source.rangeEquals(0, UTF8_BOM)) {
-        source.skip(UTF8_BOM.size().toLong());
+        source.skip(UTF8_BOM.size.toLong())
       }
 
       val jsonReader = JsonReader.of(source)

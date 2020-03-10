@@ -79,7 +79,7 @@ class RepositoryDetailActivity : AppCompatActivity() {
 
   @SuppressLint("SetTextI18n")
   private fun updateUI(response: Response<GithubRepositoryDetailQuery.Data>) {
-    response.data()?.viewer()?.repository()?.fragments()?.repositoryDetail()?.run {
+    response.data?.viewer()?.repository()?.fragments()?.repositoryDetail()?.run {
       tvRepositoryName.text = name()
       tvRepositoryDescription.text = description()
       tvRepositoryForks.text = "${forkCount()} Forks"

@@ -5,6 +5,11 @@ apply(plugin = "com.apollographql.apollo")
 extensions.findByType(BaseExtension::class.java)!!.apply {
   compileSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt())
 
+  compileOptions {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+  }
+  
   defaultConfig {
     applicationId = "com.example.apollographql.sample"
     minSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.minSdkVersion").toString())

@@ -31,7 +31,9 @@ class DecoratedCallTest {
 
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
-        .callFactory { request -> DecoratedCall(okHttpClient.newCall(request)) }
+        .callFactory(object : Call.Factory {
+          override fun newCall(request: Request) = DecoratedCall(okHttpClient.newCall(request))
+        })
         .dispatcher(immediateExecutor())
         .build()
 
@@ -71,9 +73,9 @@ class DecoratedCallTest {
 
     override fun cancel() = call.cancel()
 
-    override fun isExecuted() = call.isExecuted
+    override fun isExecuted() = call.isExecuted()
 
-    override fun isCanceled() = call.isCanceled
+    override fun isCanceled() = call.isCanceled()
 
     override fun timeout(): Timeout = call.timeout()
 

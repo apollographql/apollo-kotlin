@@ -1,8 +1,13 @@
 package com.apollographql.apollo.gradle.internal
 
 import com.squareup.moshi.JsonWriter
-import okhttp3.*
-import okio.Okio
+import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import okio.buffer
+import okio.sink
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
@@ -43,14 +48,14 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
     }
 
     val byteArrayOutputStream = ByteArrayOutputStream()
-    val writer = JsonWriter.of(Okio.buffer(Okio.sink(byteArrayOutputStream)))
+    val writer = JsonWriter.of(byteArrayOutputStream.sink().buffer())
     writer.beginObject()
     writer.name("query")
     writer.value(introspectionQuery)
     writer.endObject()
     writer.flush()
 
-    val body = RequestBody.create(MediaType.parse("application/json"), byteArrayOutputStream.toByteArray())
+    val body = byteArrayOutputStream.toByteArray().toRequestBody("application/json".toMediaTypeOrNull())
     val requestBuilder = Request.Builder()
         .post(body)
 
@@ -58,7 +63,7 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
       requestBuilder.addHeader(it.key, it.value)
     }
 
-    val urlBuilder = HttpUrl.get(endpointUrl.get()).newBuilder()
+    val urlBuilder = endpointUrl.get().toHttpUrl().newBuilder()
     queryParameters.get().entries.forEach {
       urlBuilder.addQueryParameter(it.key, it.value)
     }
@@ -74,10 +79,10 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
         .newCall(requestBuilder.build()).execute()
 
     if (!response.isSuccessful) {
-      throw Exception("cannot get schema: ${response.code()}:\n${response.body()?.string()}")
+      throw Exception("cannot get schema: ${response.code}:\n${response.body?.string()}")
     }
 
-    project.projectDir.child(schemaFilePath.get()).writeText(response.body()!!.string())
+    project.projectDir.child(schemaFilePath.get()).writeText(response.body!!.string())
   }
 
   companion object {

@@ -10,19 +10,10 @@ apply(plugin = "com.android.library")
 extensions.findByType(BaseExtension::class.java)!!.apply {
   compileSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt())
 
-  compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_1_7
-    targetCompatibility = JavaVersion.VERSION_1_7
-  }
-
   lintOptions {
     textReport = true
     textOutput("stdout")
     ignore("InvalidPackage")
-  }
-
-  dexOptions {
-    preDexLibraries = groovy.util.Eval.x(project, "x.isCi") as Boolean
   }
 
   defaultConfig {

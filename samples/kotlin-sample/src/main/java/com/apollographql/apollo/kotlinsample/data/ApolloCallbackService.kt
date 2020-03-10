@@ -72,7 +72,7 @@ class ApolloCallbackService(apolloClient: ApolloClient) : GitHubDataSource(apoll
       }
 
       override fun onResponse(response: Response<GithubRepositoryCommitsQuery.Data>) {
-        val headCommit = response.data()?.viewer()?.repository()?.ref()?.target() as? GithubRepositoryCommitsQuery.AsCommit
+        val headCommit = response.data?.viewer()?.repository()?.ref()?.target() as? GithubRepositoryCommitsQuery.AsCommit
         val commits = headCommit?.history()?.edges().orEmpty()
         commitsSubject.onNext(commits)
       }
