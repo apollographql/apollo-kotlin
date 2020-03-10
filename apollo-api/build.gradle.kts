@@ -37,5 +37,4 @@ tasks.withType<Checkstyle> {
   exclude("**/BufferedSourceJsonReader.java")
   exclude("**/JsonScope.java")
   exclude("**/JsonUtf8Writer.java")
-  exclude("**/jvmTest/**/*.java")
 }
