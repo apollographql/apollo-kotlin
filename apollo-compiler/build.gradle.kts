@@ -16,7 +16,6 @@ dependencies {
   add("antlr", groovy.util.Eval.x(project, "x.dep.antlr.antlr"))
   add("implementation", groovy.util.Eval.x(project, "x.dep.kotlin.stdLib"))
   add("implementation", groovy.util.Eval.x(project, "x.dep.moshi.adapters"))
-  add("implementation", groovy.util.Eval.x(project, "x.dep.moshi.kotlin"))
   add("implementation", groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
   add("implementation", groovy.util.Eval.x(project, "x.dep.poet.java"))
   add("implementation", groovy.util.Eval.x(project, "x.dep.poet.kotlin"))
