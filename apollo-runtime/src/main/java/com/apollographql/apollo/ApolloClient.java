@@ -12,7 +12,6 @@ import com.apollographql.apollo.api.cache.http.HttpCache;
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.api.internal.ApolloLogger;
 import com.apollographql.apollo.api.internal.Optional;
-import com.apollographql.apollo.api.internal.Supplier;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
@@ -38,6 +37,7 @@ import com.apollographql.apollo.subscription.SubscriptionConnectionParams;
 import com.apollographql.apollo.subscription.SubscriptionConnectionParamsProvider;
 import com.apollographql.apollo.subscription.SubscriptionManagerState;
 import com.apollographql.apollo.subscription.SubscriptionTransport;
+import kotlin.jvm.functions.Function0;
 import okhttp3.Call;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
@@ -633,9 +633,9 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       Optional<SubscriptionTransport.Factory> subscriptionTransportFactory = this.subscriptionTransportFactory;
       if (subscriptionTransportFactory.isPresent()) {
         final ApolloStore finalApolloStore = apolloStore;
-        final Supplier<ResponseNormalizer<Map<String, Object>>> responseNormalizer =
-            new Supplier<ResponseNormalizer<Map<String, Object>>>() {
-              @Override public ResponseNormalizer<Map<String, Object>> get() {
+        final Function0<ResponseNormalizer<Map<String, Object>>> responseNormalizer =
+            new Function0<ResponseNormalizer<Map<String, Object>>>() {
+              @Override public ResponseNormalizer<Map<String, Object>> invoke() {
                 return finalApolloStore.networkResponseNormalizer();
               }
             };
