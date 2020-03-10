@@ -3,11 +3,6 @@ plugins {
   kotlin("jvm")
 }
 
-java {
-  targetCompatibility = JavaVersion.VERSION_1_8
-  sourceCompatibility = JavaVersion.VERSION_1_8
-}
-
 dependencies {
   add("compileOnly", project(":apollo-runtime"))
   add("compileOnly", project(":apollo-api"))

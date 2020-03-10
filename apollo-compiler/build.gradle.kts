@@ -7,11 +7,6 @@ plugins {
   kotlin("kapt")
 }
 
-java {
-  targetCompatibility = JavaVersion.VERSION_1_8
-  sourceCompatibility = JavaVersion.VERSION_1_8
-}
-
 dependencies {
   add("antlr", groovy.util.Eval.x(project, "x.dep.antlr.antlr"))
   add("implementation", groovy.util.Eval.x(project, "x.dep.kotlin.stdLib"))

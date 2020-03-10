@@ -1,6 +1,3 @@
-import org.gradle.api.plugins.internal.JavaConfigurationVariantMapping
-
-
 buildscript {
   project.apply {
     from(rootProject.file("gradle/dependencies.gradle"))
@@ -56,6 +53,21 @@ subprojects {
       google()
     }
   }
+
+  plugins.withType(com.android.build.gradle.BasePlugin::class.java) {
+    extension.compileOptions {
+      sourceCompatibility = JavaVersion.VERSION_1_8
+      targetCompatibility = JavaVersion.VERSION_1_8
+    }
+  }
+
+  plugins.withType(org.gradle.api.plugins.JavaPlugin::class.java) {
+    extensions.configure(JavaPluginExtension::class.java) {
+      sourceCompatibility = JavaVersion.VERSION_1_8
+      targetCompatibility = JavaVersion.VERSION_1_8
+    }
+  }
+
   this.apply(plugin = "maven-publish")
 
   repositories {
