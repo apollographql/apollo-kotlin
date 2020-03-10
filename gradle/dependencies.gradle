@@ -66,7 +66,6 @@ ext.dep = [
     mockito               : "org.mockito:mockito-all:$versions.mockito",
     moshi                 : [
         adapters     : "com.squareup.moshi:moshi-adapters:$versions.moshi",
-        kotlin       : "com.squareup.moshi:moshi-kotlin:$versions.moshi",
         kotlinCodegen: "com.squareup.moshi:moshi-kotlin-codegen:$versions.moshi",
         moshi        : "com.squareup.moshi:moshi:$versions.moshi",
     ],
