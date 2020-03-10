@@ -200,16 +200,21 @@ apollo {
 You can get a schema.json file by running an introspection query on your endpoint. The Apollo Gradle plugin exposes a `downloadApolloSchema` task to help with this. You can download a schema by specifying your endpoint and the location where you want the schema to be downloaded:
 
 ```
-./gradlew :shared:downloadApolloSchema -Pcom.apollographql.apollo.endpoint=https://your.graphql.endpoint -Pcom.apollographql.apollo.schema=src/main/graphql/com/example/schema.json
+./gradlew :module:downloadApolloSchema -Pcom.apollographql.apollo.endpoint=https://your.graphql.endpoint -Pcom.apollographql.apollo.schema=src/main/graphql/com/example/schema.json
 ```
 
 If your endpoint requires authentication, you can pass query parameters and/or custom HTTP headers:
 
 ```
-./gradlew :shared:downloadApolloSchema -Pcom.apollographql.apollo.endpoint=https://your.graphql.endpoint -Pcom.apollographql.apollo.schema=src/main/graphql/com/example/schema.json  "-Pcom.apollographql.apollo.headers=Authorization=Bearer YOUR_TOKEN" "-Pcom.apollographql.apollo.query_params=key1=value1&key2=value2"
+./gradlew :module:downloadApolloSchema -Pcom.apollographql.apollo.endpoint=https://your.graphql.endpoint -Pcom.apollographql.apollo.schema=src/main/graphql/com/example/schema.json  "-Pcom.apollographql.apollo.headers=Authorization=Bearer YOUR_TOKEN" "-Pcom.apollographql.apollo.query_params=key1=value1&key2=value2"
 ```
 
 The `com.apollographql.apollo.headers` and `com.apollographql.apollo.query_params` properties both take a query string where key and values should be URL encoded.
+
+The default timeout for download operation is 1 minute. If you have a large `schema.json`, you may want to increase the timeout. Do that by adding the following into `gradle.properties`:
+```
+org.gradle.jvmargs=-DokHttp.connectTimeout=60 -DokHttp.readTimeout=60
+```
 
 ## Intellij Plugin
 
@@ -235,7 +240,7 @@ Apollo-Android version 1.3.0 introduces some fixes and improvements that are inc
 
 ### Gradle plugin changes
 
-The plugin has been rewritten in Kotlin to make it more maintainable and have better support for multiple GraphQL endpoints.  Below are the main changes. Read [plugin-configuration](#configuration-reference) for a reference of the different options.
+The plugin has been rewritten in Kotlin to make it more maintainable and have better support for multiple GraphQL endpoints.  Below are the main changes. Read [plugin-configuration.md](https://www.apollographql.com/docs/android/gradle/plugin-configuration/) for a reference of the different options.
 
 #### New plugin ID
 
@@ -304,9 +309,9 @@ apollo {
 // With:
 apollo {
   onCompilationUnit {
-     schemaFile = "/path/to/your/schema.json"
+     schemaFile.set(file("/path/to/your/schema.json"))
      graphqlSourceDirectorySet.exclude("**/*.gql")
-     rootPackageName = "com.example"
+     rootPackageName.set("com.example")
   }
 }
 ```
@@ -446,8 +451,7 @@ The artifact is also renamed to make its intention more obvious. Documentation f
 Advanced topics are available in [the official docs](https://www.apollographql.com/docs/android/):
 
 * [caching.md](https://www.apollographql.com/docs/android/essentials/caching/)  
-* [plugin-configuration.md](https://www.apollographql.com/docs/android/gradle/plugin-configuration/) 
-* [incubating-plugin.md](https://www.apollographql.com/docs/android/gradle/incubating-plugin/)
+* [plugin-configuration.md](https://www.apollographql.com/docs/android/essentials/plugin-configuration/) 
 * [android.md](https://www.apollographql.com/docs/android/advanced/android/) 
 * [file-upload.md](https://www.apollographql.com/docs/android/advanced/file-upload/)
 * [coroutines.md](https://www.apollographql.com/docs/android/advanced/coroutines/) 

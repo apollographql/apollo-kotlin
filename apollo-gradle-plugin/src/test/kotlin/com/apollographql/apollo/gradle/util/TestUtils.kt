@@ -3,8 +3,10 @@ package com.apollographql.apollo.gradle.util
 import com.apollographql.apollo.gradle.internal.child
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
+import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
+import org.junit.Assert
 import org.junit.Assert.assertThat
 import java.io.File
 
@@ -140,6 +142,10 @@ object TestUtils {
     block(dir)
   }
 
+  fun withTestProject(name: String, block: (File) -> Unit) = withDirectory {dir ->
+    File(System.getProperty("user.dir"), "testProjects/$name").copyRecursively(dir, overwrite = true)
+    block(dir)
+  }
   /**
    * creates a simple java non-android non-kotlin-gradle project
    */
@@ -190,6 +196,11 @@ object TestUtils {
   }
 
   fun fixturesDirectory() = File(System.getProperty("user.dir")).child("src", "test", "files")
+
+  fun executeTaskAndAssertSuccess(task: String, dir: File) {
+    val result = executeTask(task, dir)
+    Assert.assertEquals(TaskOutcome.SUCCESS, result.task(task)?.outcome)
+  }
 }
 
 fun File.generatedChild(path: String) = child("build", "generated", "source", "apollo", path)

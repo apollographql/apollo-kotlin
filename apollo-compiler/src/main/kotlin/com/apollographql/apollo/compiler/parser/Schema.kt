@@ -4,7 +4,6 @@ import com.squareup.moshi.JsonClass
 import com.squareup.moshi.JsonReader
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okio.ByteString.Companion.decodeHex
 import okio.buffer
 import okio.source
@@ -133,7 +132,6 @@ class Schema(
                   .withSubtype(Type.Enum::class.java, Kind.ENUM.name)
                   .withSubtype(Type.InputObject::class.java, Kind.INPUT_OBJECT.name)
           )
-          .add(KotlinJsonAdapterFactory())
           .build()
 
       val source = try {

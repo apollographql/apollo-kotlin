@@ -53,25 +53,25 @@ interface JsonReader : Closeable {
    * Consumes the next token from the JSON stream and asserts that it is the beginning of a new array.
    */
   @Throws(IOException::class)
-  fun beginArray()
+  fun beginArray(): JsonReader
 
   /**
    * Consumes the next token from the JSON stream and asserts that it is the end of the current array.
    */
   @Throws(IOException::class)
-  fun endArray()
+  fun endArray(): JsonReader
 
   /**
    * Consumes the next token from the JSON stream and asserts that it is the beginning of a new object.
    */
   @Throws(IOException::class)
-  fun beginObject()
+  fun beginObject(): JsonReader
 
   /**
    * Consumes the next token from the JSON stream and asserts that it is the end of the current object.
    */
   @Throws(IOException::class)
-  fun endObject()
+  fun endObject(): JsonReader
 
   /**
    * Returns true if the current array or object has another element.
