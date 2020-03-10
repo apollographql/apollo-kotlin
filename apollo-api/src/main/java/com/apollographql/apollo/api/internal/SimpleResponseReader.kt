@@ -10,7 +10,7 @@ class SimpleResponseReader private constructor(
 ) : ResponseReader {
 
   constructor(
-      recordSet: Map<String, Any>,
+      recordSet: Map<String, Any?>,
       variables: Operation.Variables,
       scalarTypeAdapters: ScalarTypeAdapters
   ) : this(recordSet, variables.valueMap(), scalarTypeAdapters)

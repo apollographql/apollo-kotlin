@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apollographql.apollo.api.internal.json;
+package com.apollographql.apollo.api.internal.json
 
-import java.io.IOException;
+import java.io.IOException
 
-/** Thrown when the data being parsed is not encoded as valid JSON. */
-public final class JsonEncodingException extends IOException {
-  public JsonEncodingException(String message) {
-    super(message);
-  }
-}
+/**
+ * Thrown when the data being parsed is not encoded as valid JSON.
+ */
+class JsonEncodingException(message: String) : IOException(message)
