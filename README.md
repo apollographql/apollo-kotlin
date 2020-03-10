@@ -451,8 +451,7 @@ The artifact is also renamed to make its intention more obvious. Documentation f
 Advanced topics are available in [the official docs](https://www.apollographql.com/docs/android/):
 
 * [caching.md](https://www.apollographql.com/docs/android/essentials/caching/)  
-* [plugin-configuration.md](https://www.apollographql.com/docs/android/gradle/plugin-configuration/) 
-* [incubating-plugin.md](https://www.apollographql.com/docs/android/gradle/incubating-plugin/)
+* [plugin-configuration.md](https://www.apollographql.com/docs/android/essentials/plugin-configuration/) 
 * [android.md](https://www.apollographql.com/docs/android/advanced/android/) 
 * [file-upload.md](https://www.apollographql.com/docs/android/advanced/file-upload/)
 * [coroutines.md](https://www.apollographql.com/docs/android/advanced/coroutines/) 
