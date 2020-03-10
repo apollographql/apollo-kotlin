@@ -15,7 +15,9 @@
  */
 package com.apollographql.apollo.api.internal.json
 
+import java.io.IOException
+
 /**
  * Thrown when the data being parsed is not encoded as valid JSON.
  */
-class JsonEncodingException(message: String) : RuntimeException(message)
+class JsonEncodingException(message: String) : IOException(message)

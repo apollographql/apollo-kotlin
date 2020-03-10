@@ -15,55 +15,55 @@ class InputFieldJsonWriter(
 
   @Throws(IOException::class)
   override fun writeString(fieldName: String, value: String?) {
-    if (value != null) {
-      jsonWriter.name(fieldName).value(value)
-    } else {
+    if (value == null) {
       jsonWriter.name(fieldName).nullValue()
+    } else {
+      jsonWriter.name(fieldName).value(value)
     }
   }
 
   @Throws(IOException::class)
   override fun writeInt(fieldName: String, value: Int?) {
-    if (value != null) {
-      jsonWriter.name(fieldName).value(value)
-    } else {
+    if (value == null) {
       jsonWriter.name(fieldName).nullValue()
+    } else {
+      jsonWriter.name(fieldName).value(value)
     }
   }
 
   @Throws(IOException::class)
   override fun writeLong(fieldName: String, value: Long?) {
-    if (value != null) {
-      jsonWriter.name(fieldName).value(value)
-    } else {
+    if (value == null) {
       jsonWriter.name(fieldName).nullValue()
+    } else {
+      jsonWriter.name(fieldName).value(value)
     }
   }
 
   @Throws(IOException::class)
   override fun writeDouble(fieldName: String, value: Double?) {
-    if (value != null) {
-      jsonWriter.name(fieldName).value(value)
-    } else {
+    if (value == null) {
       jsonWriter.name(fieldName).nullValue()
+    } else {
+      jsonWriter.name(fieldName).value(value)
     }
   }
 
   @Throws(IOException::class)
   override fun writeNumber(fieldName: String, value: Number?) {
-    if (value != null) {
-      jsonWriter.name(fieldName).value(value)
-    } else {
+    if (value == null) {
       jsonWriter.name(fieldName).nullValue()
+    } else {
+      jsonWriter.name(fieldName).value(value)
     }
   }
 
   @Throws(IOException::class)
   override fun writeBoolean(fieldName: String, value: Boolean?) {
-    if (value != null) {
-      jsonWriter.name(fieldName).value(value)
-    } else {
+    if (value == null) {
       jsonWriter.name(fieldName).nullValue()
+    } else {
+      jsonWriter.name(fieldName).value(value)
     }
   }
 
@@ -86,23 +86,23 @@ class InputFieldJsonWriter(
 
   @Throws(IOException::class)
   override fun writeObject(fieldName: String, marshaller: InputFieldMarshaller?) {
-    if (marshaller != null) {
+    if (marshaller == null) {
+      jsonWriter.name(fieldName).nullValue()
+    } else {
       jsonWriter.name(fieldName).beginObject()
       marshaller.marshal(this)
       jsonWriter.endObject()
-    } else {
-      jsonWriter.name(fieldName).nullValue()
     }
   }
 
   @Throws(IOException::class)
   override fun writeList(fieldName: String, listWriter: InputFieldWriter.ListWriter?) {
-    if (listWriter != null) {
+    if (listWriter == null) {
+      jsonWriter.name(fieldName).nullValue()
+    } else {
       jsonWriter.name(fieldName).beginArray()
       listWriter.write(JsonListItemWriter(jsonWriter, scalarTypeAdapters))
       jsonWriter.endArray()
-    } else {
-      jsonWriter.name(fieldName).nullValue()
     }
   }
 

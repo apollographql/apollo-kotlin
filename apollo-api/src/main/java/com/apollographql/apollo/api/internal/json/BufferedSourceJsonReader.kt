@@ -24,14 +24,17 @@ import java.io.IOException
 class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader {
   private val buffer: Buffer = source.buffer()
   private var peeked = PEEKED_NONE
+
   /**
    * A peeked value that was composed entirely of digits with an optional leading dash. Positive values may not have a leading 0.
    */
   private var peekedLong: Long = 0
+
   /**
    * The number of characters in a peeked number literal. Increment 'pos' by this after reading a number.
    */
   private var peekedNumberLength = 0
+
   /**
    * A peeked string that should be parsed on the next double, long or string.
    * This is populated before a numeric value is parsed and used if that parsing fails.
@@ -55,7 +58,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   override var failOnUnknown = false
 
   @Throws(IOException::class)
-  override fun beginArray(): JsonReader {
+  override fun beginArray(): JsonReader = apply {
     val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
     if (p == PEEKED_BEGIN_ARRAY) {
       push(JsonScope.EMPTY_ARRAY)
@@ -64,11 +67,10 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     } else {
       throw JsonDataException("Expected BEGIN_ARRAY but was ${peek()} at path ${getPath()}")
     }
-    return this
   }
 
   @Throws(IOException::class)
-  override fun endArray(): JsonReader {
+  override fun endArray(): JsonReader = apply {
     val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
     if (p == PEEKED_END_ARRAY) {
       stackSize--
@@ -77,11 +79,10 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     } else {
       throw JsonDataException("Expected END_ARRAY but was ${peek()} at path ${getPath()}")
     }
-    return this
   }
 
   @Throws(IOException::class)
-  override fun beginObject(): JsonReader {
+  override fun beginObject(): JsonReader = apply {
     val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
     if (p == PEEKED_BEGIN_OBJECT) {
       push(JsonScope.EMPTY_OBJECT)
@@ -89,11 +90,10 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     } else {
       throw JsonDataException("Expected BEGIN_OBJECT but was ${peek()} at path ${getPath()}")
     }
-    return this
   }
 
   @Throws(IOException::class)
-  override fun endObject(): JsonReader {
+  override fun endObject(): JsonReader = apply {
     val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
     if (p == PEEKED_END_OBJECT) {
       stackSize--
@@ -103,7 +103,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     } else {
       throw JsonDataException("Expected END_OBJECT but was ${peek()} at path ${getPath()}")
     }
-    return this
   }
 
   @Throws(IOException::class)
