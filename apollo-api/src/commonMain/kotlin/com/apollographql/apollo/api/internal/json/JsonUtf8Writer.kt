@@ -30,8 +30,7 @@ internal class JsonUtf8Writer(private val sink: BufferedSink) : JsonWriter() {
      */
     private val REPLACEMENT_CHARS: Array<String?> = arrayOfNulls<String?>(128).apply {
       for (i in 0..0x1f) {
-        // TODO
-//        this[i] = String.format("\\u%04x", i)
+        this[i] = String.format("\\u%04x", i)
       }
       this['"'.toInt()] = "\\\""
       this['\\'.toInt()] = "\\\\"
