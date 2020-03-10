@@ -5,7 +5,6 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.api.internal.ResponseFieldMapper;
-import com.apollographql.apollo.api.internal.Supplier;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.internal.ResponseFieldMapperFactory;
@@ -17,6 +16,7 @@ import com.apollographql.apollo.subscription.OperationServerMessage;
 import com.apollographql.apollo.subscription.SubscriptionConnectionParamsProvider;
 import com.apollographql.apollo.subscription.SubscriptionManagerState;
 import com.apollographql.apollo.subscription.SubscriptionTransport;
+import kotlin.jvm.functions.Function0;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -52,7 +52,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
   private final SubscriptionConnectionParamsProvider connectionParams;
   private final Executor dispatcher;
   private final long connectionHeartbeatTimeoutMs;
-  private final Supplier<ResponseNormalizer<Map<String, Object>>> responseNormalizer;
+  private final Function0<ResponseNormalizer<Map<String, Object>>> responseNormalizer;
   private final ResponseFieldMapperFactory responseFieldMapperFactory = new ResponseFieldMapperFactory();
   private final Runnable connectionAcknowledgeTimeoutTimerTask = new Runnable() {
     @Override
@@ -78,7 +78,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
   public RealSubscriptionManager(@NotNull ScalarTypeAdapters scalarTypeAdapters,
       @NotNull final SubscriptionTransport.Factory transportFactory, @NotNull SubscriptionConnectionParamsProvider connectionParams,
       @NotNull final Executor dispatcher, long connectionHeartbeatTimeoutMs,
-      @NotNull Supplier<ResponseNormalizer<Map<String, Object>>> responseNormalizer, boolean autoPersistSubscription) {
+      @NotNull Function0<ResponseNormalizer<Map<String, Object>>> responseNormalizer, boolean autoPersistSubscription) {
     checkNotNull(scalarTypeAdapters, "scalarTypeAdapters == null");
     checkNotNull(transportFactory, "transportFactory == null");
     checkNotNull(dispatcher, "dispatcher == null");
@@ -399,7 +399,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
     }
 
     if (subscriptionRecord != null) {
-      ResponseNormalizer<Map<String, Object>> normalizer = responseNormalizer.get();
+      ResponseNormalizer<Map<String, Object>> normalizer = responseNormalizer.invoke();
       ResponseFieldMapper responseFieldMapper = responseFieldMapperFactory.create(subscriptionRecord.subscription);
       OperationResponseParser parser = new OperationResponseParser(subscriptionRecord.subscription, responseFieldMapper,
           scalarTypeAdapters, normalizer);
