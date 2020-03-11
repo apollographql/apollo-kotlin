@@ -33,6 +33,17 @@ kotlin {
   }
 }
 
+publishing {
+  publications.withType<MavenPublication>().apply {
+    val kotlinMultiplatform by getting {
+      artifactId = "apollo-api-multiplatform"
+    }
+    val jvm by getting {
+      artifactId = "apollo-api"
+    }
+  }
+}
+
 tasks.withType<Checkstyle> {
   exclude("**/BufferedSourceJsonReader.java")
   exclude("**/JsonScope.java")
