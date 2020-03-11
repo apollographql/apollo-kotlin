@@ -5,7 +5,8 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
-import okio.Okio
+import okio.buffer
+import okio.source
 import java.io.File
 
 @JsonClass(generateAdapter = true)
@@ -16,7 +17,7 @@ class OperationDescriptor(
 
 typealias OperationOutput = Map<String, OperationDescriptor>
 
-fun adapter(indent: String? = null): JsonAdapter<OperationOutput>  {
+fun adapter(indent: String? = null): JsonAdapter<OperationOutput> {
   val moshi = Moshi.Builder().build()
   val type = Types.newParameterizedType(Map::class.java, String::class.java, OperationDescriptor::class.java)
   return moshi.adapter<OperationOutput>(type).applyIf(indent != null) {
@@ -25,7 +26,7 @@ fun adapter(indent: String? = null): JsonAdapter<OperationOutput>  {
 }
 
 fun OperationOutput(file: File): OperationOutput {
-  return Okio.buffer(Okio.source(file)).use {
+  return file.source().buffer().use {
     adapter().fromJson(it)!!
   }
 }

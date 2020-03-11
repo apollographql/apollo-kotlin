@@ -20,24 +20,24 @@ object SimpleOperationResponseParser {
   ): Response<W> {
     return BufferedSourceJsonReader(source).use { jsonReader ->
       jsonReader.beginObject()
-      val response = ResponseJsonStreamReader(jsonReader).toMap()
+      val response = ResponseJsonStreamReader(jsonReader).toMap().orEmpty()
       parse(response, operation, scalarTypeAdapters)
     }
   }
 
   @Suppress("UNCHECKED_CAST")
   private fun <D : Operation.Data, W> parse(
-      response: Map<String, Any>,
+      response: Map<String, Any?>,
       operation: Operation<D, W, *>,
       scalarTypeAdapters: ScalarTypeAdapters
   ): Response<W> {
-    val responseData = response["data"] as? Map<String, Any>
+    val responseData = response["data"] as? Map<String, Any?>
     val data = responseData?.let {
       val responseReader = SimpleResponseReader(it, operation.variables(), scalarTypeAdapters)
       operation.responseFieldMapper().map(responseReader)
     }
 
-    val responseErrors = response["errors"] as? List<Map<String, Any>>
+    val responseErrors = response["errors"] as? List<Map<String, Any?>>
     val errors = responseErrors?.let {
       it.map { errorPayload -> errorPayload.readError() }
     }
@@ -59,7 +59,7 @@ object SimpleOperationResponseParser {
       when (key) {
         "message" -> message = value?.toString() ?: ""
         "locations" -> {
-          val locationItems = value as? List<Map<String, Any>>
+          val locationItems = value as? List<Map<String, Any?>>
           locations = locationItems?.map { it.readErrorLocation() } ?: emptyList()
         }
         else -> customAttributes[key] = value
@@ -68,7 +68,7 @@ object SimpleOperationResponseParser {
     return Error(message, locations, customAttributes)
   }
 
-  private fun Map<String, Any>?.readErrorLocation(): Error.Location {
+  private fun Map<String, Any?>?.readErrorLocation(): Error.Location {
     var line: Long = -1
     var column: Long = -1
     if (this != null) {

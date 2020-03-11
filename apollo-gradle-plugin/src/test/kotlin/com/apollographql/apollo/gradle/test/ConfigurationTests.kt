@@ -4,6 +4,7 @@ import com.apollographql.apollo.gradle.internal.ApolloPlugin
 import com.apollographql.apollo.gradle.internal.child
 import com.apollographql.apollo.gradle.util.TestUtils
 import com.apollographql.apollo.gradle.util.TestUtils.withSimpleProject
+import com.apollographql.apollo.gradle.util.TestUtils.withTestProject
 import com.apollographql.apollo.gradle.util.generatedChild
 import com.apollographql.apollo.gradle.util.replaceInText
 import org.gradle.testkit.runner.TaskOutcome
@@ -401,6 +402,30 @@ class ConfigurationTests {
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
       assertTrue(dir.generatedChild("main/service/com/example/DroidDetailsQuery.java").isFile)
+    }
+  }
+
+  @Test
+  fun `onCompilationUnit can point to a schema file outside the module`() {
+    withSimpleProject("""
+      apollo {
+        onCompilationUnit {
+          schemaFile = file("../schema.json")
+        }
+      }
+    """.trimIndent()) { dir ->
+      val dest = File(dir, "../schema.json")
+      File(dir, "src/main/graphql/com/example/schema.json").copyTo(dest, true)
+      TestUtils.executeTask("generateApolloSources", dir)
+      dest.delete()
+      assertTrue(dir.generatedChild("main/service/testProject/src/main/graphql/com/example/DroidDetailsQuery.java").isFile)
+    }
+  }
+
+  @Test
+  fun `onCompilationUnit can override schemaFile for Android Projects`() {
+    withTestProject("compilationUnitAndroid") { dir ->
+      TestUtils.executeTaskAndAssertSuccess(":app:generateApolloSources", dir)
     }
   }
 

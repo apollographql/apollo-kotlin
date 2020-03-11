@@ -12,7 +12,6 @@ import okio.BufferedSource;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.text.ParseException;
@@ -205,7 +204,7 @@ public class SimpleResponseReaderTest {
 
     final SimpleResponseReader responseReader = responseReader(recordSet);
 
-    assertThat(responseReader.readCustomType(successField)).isEqualTo(DATE_TIME_FORMAT.parse("2017-04-16"));
+    assertThat(responseReader.<Date>readCustomType(successField)).isEqualTo(DATE_TIME_FORMAT.parse("2017-04-16"));
     try {
       responseReader.readCustomType(classCastExceptionField);
       fail("expected ClassCastException");
@@ -305,12 +304,12 @@ public class SimpleResponseReaderTest {
     recordSet.put(unsupportedField.responseName(), "smth");
 
     final SimpleResponseReader responseReader = responseReader(recordSet);
-    assertThat(responseReader.readCustomType(stringField)).isEqualTo("string");
-    assertThat(responseReader.readCustomType(booleanField)).isEqualTo(true);
-    assertThat(responseReader.readCustomType(integerField)).isEqualTo(1);
-    assertThat(responseReader.readCustomType(longField)).isEqualTo(2);
-    assertThat(responseReader.readCustomType(floatField)).isEqualTo(3.99f);
-    assertThat(responseReader.readCustomType(doubleField)).isEqualTo(4.99d);
+    assertThat(responseReader.<String>readCustomType(stringField)).isEqualTo("string");
+    assertThat(responseReader.<Boolean>readCustomType(booleanField)).isEqualTo(true);
+    assertThat(responseReader.<Integer>readCustomType(integerField)).isEqualTo(1);
+    assertThat(responseReader.<Long>readCustomType(longField)).isEqualTo(2);
+    assertThat(responseReader.<Float>readCustomType(floatField)).isWithin(0.0f).of(3.99f);
+    assertThat(responseReader.<Double>readCustomType(doubleField)).isWithin(0.0d).of(4.99d);
 
     try {
       responseReader.readCustomType(unsupportedField);

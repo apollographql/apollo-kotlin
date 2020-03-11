@@ -3,11 +3,6 @@ plugins {
   kotlin("jvm")
 }
 
-java {
-  targetCompatibility = JavaVersion.VERSION_1_7
-  sourceCompatibility = JavaVersion.VERSION_1_7
-}
-
 dependencies {
   add("compileOnly", project(":apollo-runtime"))
   add("compileOnly", project(":apollo-api"))
@@ -17,7 +12,6 @@ dependencies {
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.junit"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.truth"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer"))
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.okHttp.testSupport"))
 }
 
 tasks.withType<Javadoc> {

@@ -4,9 +4,7 @@ package com.apollographql.apollo.api
  * A wrapper class for representation of custom GraphQL type value, used in user provided [CustomTypeAdapter]
  * encoding / decoding functions.
  **/
-abstract class CustomTypeValue<T> private constructor(
-    @JvmField val value: T
-) {
+sealed class CustomTypeValue<T>(@JvmField val value: T) {
 
   /**
    * Represents a `String` value

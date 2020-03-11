@@ -10,7 +10,6 @@ import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.api.internal.ResponseFieldMapper;
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.internal.ResponseReader;
-import com.apollographql.apollo.api.internal.Supplier;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
@@ -20,6 +19,7 @@ import com.apollographql.apollo.subscription.SubscriptionConnectionParams;
 import com.apollographql.apollo.subscription.SubscriptionConnectionParamsProvider;
 import com.apollographql.apollo.subscription.SubscriptionManagerState;
 import com.apollographql.apollo.subscription.SubscriptionTransport;
+import kotlin.jvm.functions.Function0;
 import okio.BufferedSource;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
@@ -43,8 +43,8 @@ public class SubscriptionAutoPersistTest {
     subscriptionTransportFactory = new MockSubscriptionTransportFactory();
     subscriptionManager = new RealSubscriptionManager(new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap()),
         subscriptionTransportFactory, new SubscriptionConnectionParamsProvider.Const(new SubscriptionConnectionParams()),
-        new MockExecutor(), -1, new Supplier<ResponseNormalizer<Map<String, Object>>>() {
-      @Override public ResponseNormalizer<Map<String, Object>> get() {
+        new MockExecutor(), -1, new Function0<ResponseNormalizer<Map<String, Object>>>() {
+      @Override public ResponseNormalizer<Map<String, Object>> invoke() {
         return ApolloStore.NO_APOLLO_STORE.networkResponseNormalizer();
       }
     }, true);

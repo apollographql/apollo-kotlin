@@ -1,0 +1,18 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.apollographql.apollo'
+
+android {
+   compileSdkVersion androidConfig.compileSdkVersion
+}
+
+apollo {
+  onCompilationUnit {
+    schemaFile = file("../schema.json")
+    rootPackageName = "com.company.module"
+  }
+}
+
+dependencies {
+  implementation dep.jetbrainsAnnotations
+  implementation dep.apollo.api
+}
