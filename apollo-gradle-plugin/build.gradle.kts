@@ -35,7 +35,7 @@ tasks.withType<Test> {
   // See https://github.com/gradle/gradle/issues/8354
   setForkEvery(8L)
   dependsOn(":apollo-api:publishJvmPublicationToPluginTestRepository")
-  dependsOn(":apollo-api:publishDefaultPublicationToPluginTestRepository")
+  dependsOn(":apollo-api:publishKotlinMultiplatformPublicationToPluginTestRepository")
   dependsOn(":apollo-compiler:publishDefaultPublicationToPluginTestRepository")
   dependsOn("publishDefaultPublicationToPluginTestRepository")
 

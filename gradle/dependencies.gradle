@@ -40,7 +40,7 @@ ext.dep = [
     apollo                : [
         plugin : "com.apollographql.apollo:apollo-gradle-plugin:$versions.apollo",
         runtime: "com.apollographql.apollo:apollo-runtime:$versions.apollo",
-        api    : "com.apollographql.apollo:apollo-api:$versions.apollo",
+        api    : "com.apollographql.apollo:apollo-api-jvm:$versions.apollo",
     ],
     compiletesting        : "com.google.testing.compile:compile-testing:$versions.compiletesting",
     kotlinCompileTesting  : "com.github.tschuchortdev:kotlin-compile-testing:1.2.5",
