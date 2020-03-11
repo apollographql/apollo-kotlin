@@ -174,10 +174,7 @@ public class InputFieldJsonWriterTest {
 
     inputFieldJsonWriter.writeCustom("someField", new MockCustomScalarType(Map.class), value);
     inputFieldJsonWriter.writeCustom("someNullField", new MockCustomScalarType(Map.class), null);
-    assertThat(jsonBuffer.readUtf8()).isEqualTo("{\"someField\":{\"stringField\":\"string\",\"booleanField\":true,"
-        + "\"numberField\":100,\"listField\":[\"string\",true,100,{\"stringField\":\"string\",\"numberField\":100,\"booleanField\":true,"
-        + "\"listField\":[1,2,3]}],\"objectField\":{\"stringField\":\"string\",\"numberField\":100,\"booleanField\":true,"
-        + "\"listField\":[1,2,3]}},\"someNullField\":null");
+    assertThat(jsonBuffer.readUtf8()).isEqualTo("{\"someField\":{\"stringField\":\"string\",\"booleanField\":true,\"numberField\":100,\"listField\":[\"string\",true,100,{\"stringField\":\"string\",\"numberField\":100,\"booleanField\":true,\"listField\":[1,2,3]}],\"objectField\":{\"stringField\":\"string\",\"numberField\":100,\"booleanField\":true,\"listField\":[1,2,3]}},\"someNullField\":null");
   }
 
   @Test
@@ -196,8 +193,7 @@ public class InputFieldJsonWriterTest {
 
     inputFieldJsonWriter.writeCustom("someField", new MockCustomScalarType(List.class), value);
     inputFieldJsonWriter.writeCustom("someNullField", new MockCustomScalarType(List.class), null);
-    assertThat(jsonBuffer.readUtf8()).isEqualTo("{\"someField\":[\"string\",true,100,{\"stringField\":\"string\","
-        + "\"numberField\":100,\"booleanField\":true,\"listField\":[1,2,3]}],\"someNullField\":null");
+    assertThat(jsonBuffer.readUtf8()).isEqualTo("{\"someField\":[\"string\",true,100,{\"stringField\":\"string\",\"numberField\":100,\"booleanField\":true,\"listField\":[1,2,3]}],\"someNullField\":null");
   }
 
   @Test
