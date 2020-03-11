@@ -7,7 +7,6 @@ import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
-import com.apollographql.apollo.coroutines.toChannel
 import com.apollographql.apollo.coroutines.toDeferred
 import com.apollographql.apollo.coroutines.toFlow
 import com.apollographql.apollo.coroutines.toJob
@@ -52,40 +51,12 @@ class CoroutinesApolloTest {
   }
 
   @Test
-  fun callChannelProducesValue() {
-    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
-
-    val channel = apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toChannel()
-    runBlocking {
-      val response = channel.receive()
-
-      assertThat(response.data!!.hero()!!.name()).isEqualTo("R2-D2")
-    }
-  }
-
-  @Test
   fun callDeferredProducesValue() {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
     val deferred = apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toDeferred()
     runBlocking {
       assertThat(deferred.await().data!!.hero()!!.name()).isEqualTo("R2-D2")
-    }
-  }
-
-  @Test
-  fun errorIsTriggered() {
-    server.enqueue(MockResponse().setResponseCode(200).setBody("nonsense"))
-
-    val channel = apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toChannel()
-    runBlocking {
-      var exception: java.lang.Exception? = null
-      try {
-        channel.receive()
-      } catch (e: Exception) {
-        exception = e
-      }
-      assertThat(exception is ApolloParseException).isTrue()
     }
   }
 
@@ -109,91 +80,6 @@ class CoroutinesApolloTest {
           .toJob()
       job.cancel()
     }
-  }
-
-  @Test
-  fun queryWatcherUpdatedSameQueryDifferentResults() {
-    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
-
-    val channel = apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).watcher().toChannel()
-
-    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE))
-    apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
-        .responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
-        .enqueue(null)
-
-    runBlocking {
-      val response0 = channel.receive()
-      assertThat(response0.data!!.hero()!!.name()).isEqualTo("R2-D2")
-
-      val response1 = channel.receive()
-      assertThat(response1.data!!.hero()!!.name()).isEqualTo("Artoo")
-    }
-  }
-
-  @Test
-  fun queryWatcherNotUpdatedSameQuerySameResults() {
-    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
-
-    val channel = apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).watcher().toChannel()
-
-    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
-    apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
-        .responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
-        .enqueue(null)
-
-    runBlocking {
-      val response0 = channel.receive()
-      assertThat(response0.data!!.hero()!!.name()).isEqualTo("R2-D2")
-
-      assertThat(channel.isEmpty).isEqualTo(true)
-    }
-  }
-
-  @Test
-  fun queryWatcherUpdatedDifferentQueryDifferentResults() {
-    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
-
-    val channel = apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).watcher().toChannel()
-
-    server.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"))
-    apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(Episode.NEWHOPE)))
-        .enqueue(null)
-
-    runBlocking {
-      val response0 = channel.receive()
-      assertThat(response0.data!!.hero()!!.name()).isEqualTo("R2-D2")
-
-      val response1 = channel.receive()
-      assertThat(response1.data!!.hero()!!.name()).isEqualTo("Artoo")
-    }
-  }
-
-  @Test
-  fun queryWatcherUpdatedConflatedOnlyReturnsLastResult() {
-    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
-
-    val channel = apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).watcher().toChannel(Channel.CONFLATED)
-
-    server.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"))
-    apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(Episode.NEWHOPE)))
-        .enqueue(null)
-
-    runBlocking {
-      delay(500)
-      val response1 = channel.receive()
-      assertThat(response1.data!!.hero()!!.name()).isEqualTo("Artoo")
-    }
-  }
-
-  @Test
-  fun queryWatcherCancelClosesChannel() {
-    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
-
-    val channel = apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).watcher().toChannel()
-
-    channel.cancel()
-    assertThat(channel.isClosedForReceive).isEqualTo(true)
   }
 
   @Test
