@@ -12,7 +12,7 @@ kotlin {
     val commonMain by getting {
       dependencies {
         implementation(kotlin("stdlib-common"))
-        api("com.squareup.okio:okio-multiplatform:2.4.3")
+        api(groovy.util.Eval.x(project, "x.dep.okio.okioMultiplatform"))
       }
     }
 
