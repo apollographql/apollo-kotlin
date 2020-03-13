@@ -6,19 +6,18 @@
 package com.example.input_object_type.type
 
 import com.apollographql.apollo.api.ScalarType
-import java.lang.Class
 import kotlin.String
 
 enum class CustomType : ScalarType {
   DATE {
     override fun typeName(): String = "Date"
 
-    override fun javaType(): Class<*> = java.util.Date::class.java
+    override fun className(): String = "java.util.Date"
   },
 
   ID {
     override fun typeName(): String = "ID"
 
-    override fun javaType(): Class<*> = java.lang.Integer::class.java
+    override fun className(): String = "java.lang.Integer"
   }
 }

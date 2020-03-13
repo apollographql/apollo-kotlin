@@ -29,8 +29,8 @@ public class ScalarTypeAdaptersTest {
       }
 
       @Override
-      public Class javaType() {
-        return String.class;
+      public String className() {
+        return String.class.getName();
       }
     }, expectedAdapter);
 
@@ -41,8 +41,8 @@ public class ScalarTypeAdaptersTest {
       }
 
       @Override
-      public Class javaType() {
-        return String.class;
+      public String className() {
+        return String.class.getName();
       }
     });
 
@@ -60,8 +60,8 @@ public class ScalarTypeAdaptersTest {
               }
 
               @Override
-              public Class javaType() {
-                return RuntimeException.class;
+              public String className() {
+                return RuntimeException.class.getName();
               }
             }
         );
@@ -163,8 +163,8 @@ public class ScalarTypeAdaptersTest {
           }
 
           @Override
-          public Class javaType() {
-            return clazz;
+          public String className() {
+            return clazz.getName();
           }
         }
     );

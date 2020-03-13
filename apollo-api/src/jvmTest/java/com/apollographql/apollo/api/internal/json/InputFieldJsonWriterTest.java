@@ -222,8 +222,8 @@ public class InputFieldJsonWriterTest {
       return clazz.getSimpleName();
     }
 
-    @Override public Class javaType() {
-      return clazz;
+    @Override public String className() {
+      return clazz.getName();
     }
 
     @Override public boolean equals(Object o) {

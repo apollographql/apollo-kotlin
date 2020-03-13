@@ -255,8 +255,8 @@ public class CacheKeyBuilderTest {
                 return "EPISODE";
               }
 
-              @Override public Class javaType() {
-                return String.class;
+              @Override public String className() {
+                return String.class.getName();
               }
             }, "JEDI");
             writer.writeObject("object", new InputFieldMarshaller() {
@@ -279,8 +279,8 @@ public class CacheKeyBuilderTest {
                     return "EPISODE";
                   }
 
-                  @Override public Class javaType() {
-                    return String.class;
+                  @Override public String className() {
+                    return String.class.getName();
                   }
                 }, "JEDI");
                 listItemWriter.writeObject(new InputFieldMarshaller() {
@@ -344,8 +344,8 @@ public class CacheKeyBuilderTest {
                 return "EPISODE";
               }
 
-              @Override public Class javaType() {
-                return String.class;
+              @Override public String className() {
+                return String.class.getName();
               }
             }, null);
             writer.writeObject("object", null);
@@ -364,8 +364,8 @@ public class CacheKeyBuilderTest {
                     return "EPISODE";
                   }
 
-                  @Override public Class javaType() {
-                    return String.class;
+                  @Override public String className() {
+                    return String.class.getName();
                   }
                 }, null);
                 listItemWriter.writeObject(null);

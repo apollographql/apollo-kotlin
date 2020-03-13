@@ -37,7 +37,7 @@ class CustomEnumTypeSpecBuilder(
               .returns(java.lang.String::class.java)
               .addStatement("return \$S", scalarType)
               .build())
-          .addMethod(MethodSpec.methodBuilder("javaType")
+          .addMethod(MethodSpec.methodBuilder("className")
               .addModifiers(Modifier.PUBLIC)
               .apply {
                 if (context.suppressRawTypesWarning) {
@@ -45,8 +45,8 @@ class CustomEnumTypeSpecBuilder(
                 }
               }
               .addAnnotation(Override::class.java)
-              .returns(Class::class.java)
-              .addStatement("return \$T.class", javaTypeName.toJavaType())
+              .returns(String::class.java)
+              .addStatement("return \$S", javaTypeName)
               .build())
           .build()
 

@@ -219,8 +219,8 @@ public class SimpleResponseReaderTest {
         return Map.class.getName();
       }
 
-      @Override public Class javaType() {
-        return Map.class;
+      @Override public String className() {
+        return Map.class.getName();
       }
     };
 
@@ -257,8 +257,8 @@ public class SimpleResponseReaderTest {
         return List.class.getName();
       }
 
-      @Override public Class javaType() {
-        return List.class;
+      @Override public String className() {
+        return List.class.getName();
       }
     };
     final ResponseField.CustomTypeField successField = ResponseField.forCustomType("successFieldResponseName", "successFieldName", null,
@@ -755,8 +755,8 @@ public class SimpleResponseReaderTest {
         return clazz.getName();
       }
 
-      @Override public Class javaType() {
-        return clazz;
+      @Override public String className() {
+        return clazz.getName();
       }
     };
   }
@@ -766,8 +766,8 @@ public class SimpleResponseReaderTest {
       return String.class.getName();
     }
 
-    @Override public Class javaType() {
-      return String.class;
+    @Override public String className() {
+      return String.class.getName();
     }
   };
 
@@ -776,8 +776,8 @@ public class SimpleResponseReaderTest {
       return Date.class.getName();
     }
 
-    @Override public Class javaType() {
-      return Date.class;
+    @Override public String className() {
+      return Date.class.getName();
     }
   };
 
@@ -786,8 +786,8 @@ public class SimpleResponseReaderTest {
       return URL.class.getName();
     }
 
-    @Override public Class javaType() {
-      return URL.class;
+    @Override public String className() {
+      return URL.class.getName();
     }
   };
 
