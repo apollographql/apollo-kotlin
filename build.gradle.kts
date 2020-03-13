@@ -194,7 +194,7 @@ fun Project.configurePublishing() {
     publications {
       create<MavenPublication>(publicationName) {
         val javaComponent = components.findByName("java")
-        if (javaComponent != null) {
+        if (this@configurePublishing.name != "apollo-api" && javaComponent != null) {
           from(javaComponent)
         } else if (android != null) {
           // this is a workaround while the below is fixed.

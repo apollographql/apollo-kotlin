@@ -1,18 +1,47 @@
 plugins {
   `java-library`
-  kotlin("jvm")
+  kotlin("multiplatform")
 }
 
-dependencies {
-  add("compileOnly", groovy.util.Eval.x(project, "x.dep.kotlin.stdLib"))
-  add("compileOnly", groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
+kotlin {
+  jvm {
+    withJava()
+  }
 
-  add("api", groovy.util.Eval.x(project, "x.dep.kotlin.stdLib"))
-  add("api", groovy.util.Eval.x(project, "x.dep.okio"))
+  sourceSets {
+    val commonMain by getting {
+      dependencies {
+        implementation(kotlin("stdlib-common"))
+        api(groovy.util.Eval.x(project, "x.dep.okio.okioMultiplatform"))
+      }
+    }
 
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.junit"))
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.truth"))
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
+    val jvmMain by getting {
+      dependsOn(commonMain)
+      dependencies {
+        implementation(kotlin("stdlib"))
+      }
+    }
+    val jvmTest by getting {
+      dependsOn(jvmMain)
+      dependencies {
+        implementation(groovy.util.Eval.x(project, "x.dep.junit"))
+        implementation(groovy.util.Eval.x(project, "x.dep.truth"))
+        implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
+      }
+    }
+  }
+}
+
+publishing {
+  publications.withType<MavenPublication>().apply {
+    val kotlinMultiplatform by getting {
+      artifactId = "apollo-api-multiplatform"
+    }
+    val jvm by getting {
+      artifactId = "apollo-api"
+    }
+  }
 }
 
 tasks.withType<Checkstyle> {
