@@ -25,7 +25,7 @@ class ConfigurationTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "main/service/com/example/type/CustomType.java", "return Date.class;")
+      TestUtils.assertFileContains(dir, "main/service/com/example/type/CustomType.java", "return \"java.util.Date\";")
     }
   }
 
@@ -43,7 +43,7 @@ class ConfigurationTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "main/api/com/example/type/CustomType.java", "return Date.class;")
+      TestUtils.assertFileContains(dir, "main/api/com/example/type/CustomType.java", "return \"java.util.Date\";")
     }
   }
 
