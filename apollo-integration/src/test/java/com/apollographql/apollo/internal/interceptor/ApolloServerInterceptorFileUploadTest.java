@@ -1,6 +1,5 @@
 package com.apollographql.apollo.internal.interceptor;
 
-import com.apollographql.apollo.Logger;
 import com.apollographql.apollo.Utils;
 import com.apollographql.apollo.api.CustomTypeAdapter;
 import com.apollographql.apollo.api.FileUpload;
@@ -9,7 +8,6 @@ import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.cache.http.HttpCache;
 import com.apollographql.apollo.api.internal.ApolloLogger;
-import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.integration.upload.MultipleUploadMutation;
 import com.apollographql.apollo.integration.upload.NestedUploadMutation;

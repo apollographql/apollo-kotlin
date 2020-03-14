@@ -6,7 +6,6 @@
 package com.example.fragment_with_inline_fragment.type;
 
 import com.apollographql.apollo.api.ScalarType;
-import java.lang.Class;
 import java.lang.Override;
 import java.lang.String;
 
@@ -18,8 +17,8 @@ public enum CustomType implements ScalarType {
     }
 
     @Override
-    public Class javaType() {
-      return String.class;
+    public String className() {
+      return "java.lang.String";
     }
   }
 }

@@ -6,13 +6,12 @@
 package com.example.hero_details_java_optional.type
 
 import com.apollographql.apollo.api.ScalarType
-import java.lang.Class
 import kotlin.String
 
 enum class CustomType : ScalarType {
   ID {
     override fun typeName(): String = "ID"
 
-    override fun javaType(): Class<*> = kotlin.String::class.java
+    override fun className(): String = "kotlin.String"
   }
 }

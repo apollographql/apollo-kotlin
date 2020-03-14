@@ -6,8 +6,6 @@
 package com.example.mutation_create_review_semantic_naming.type;
 
 import com.apollographql.apollo.api.ScalarType;
-import java.lang.Class;
-import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 
@@ -19,8 +17,8 @@ public enum CustomType implements ScalarType {
     }
 
     @Override
-    public Class javaType() {
-      return Object.class;
+    public String className() {
+      return "java.lang.Object";
     }
   },
 
@@ -31,8 +29,8 @@ public enum CustomType implements ScalarType {
     }
 
     @Override
-    public Class javaType() {
-      return String.class;
+    public String className() {
+      return "java.lang.String";
     }
   }
 }
