@@ -21,7 +21,7 @@ elif [ "$TRAVIS_BRANCH" != "$SNAPSHOT_BRANCH" ]; then
   echo "Skipping snapshot deployment: wrong branch. Expected '$SNAPSHOT_BRANCH' but was '$TRAVIS_BRANCH'."
 else
   echo "Deploying snapshot..."
-  ./gradlew publishAllPublicationToOssRepository -PSONATYPE_NEXUS_USERNAME="${SONATYPE_NEXUS_USERNAME}" -PSONATYPE_NEXUS_PASSWORD="${SONATYPE_NEXUS_PASSWORD}"
+  ./gradlew publishAllPublicationsToOssRepository -PSONATYPE_NEXUS_USERNAME="${SONATYPE_NEXUS_USERNAME}" -PSONATYPE_NEXUS_PASSWORD="${SONATYPE_NEXUS_PASSWORD}"
   echo "Snapshot deployed!"
 fi
 
@@ -32,7 +32,7 @@ if [ "$TRAVIS_TAG" == "" ]; then
   echo "Skipping release deployment: not a tag"
 else
   echo "Deploy to bintray..."
-  ./gradlew publishAllPublicationToBintrayRepository -Pbintray.user="${BINTRAY_USER}" -Pbintray.apikey="${BINTRAY_API_KEY}"
+  ./gradlew publishAllPublicationsToBintrayRepository -Pbintray.user="${BINTRAY_USER}" -Pbintray.apikey="${BINTRAY_API_KEY}"
   echo "Deployed to bintray!"
   echo "Deploy to Gradle portal..."
   ./gradlew :apollo-gradle-plugin:publishPlugin -Pgradle.publish.key=$GRADLE_PUBLISH_KEY -Pgradle.publish.secret=$GRADLE_PUBLISH_SECRET
