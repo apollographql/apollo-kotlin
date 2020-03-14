@@ -1,8 +1,6 @@
 package com.apollographql.apollo.api
 
-import java.io.File
-
-actual class FileUpload(val mimetype: String, val file: File) {
+actual class FileUpload actual constructor(actual val mimetype: String, val file: File) {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other !is FileUpload) return false

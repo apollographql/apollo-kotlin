@@ -73,13 +73,15 @@ class ScalarTypeAdapters(customAdapters: Map<ScalarType, CustomTypeAdapter<*>>) 
             else -> throw IllegalArgumentException("Can't decode: $value into Double")
           }
         } +
-        createDefaultScalarTypeAdapter(FileUpload::class.qualifiedName!!) { value ->
-          when (value) {
-            is GraphQLNumber -> value.value.toDouble()
-            is GraphQLString -> value.value.toDouble()
-            else -> throw IllegalArgumentException("Can't decode: $value into Double")
+        mapOf("com.apollographql.apollo.api.FileUpload" to object : CustomTypeAdapter<FileUpload> {
+          override fun decode(value: CustomTypeValue<*>): FileUpload {
+            return FileUpload("", File(""));
           }
-        } +
+
+          override fun encode(value: FileUpload): CustomTypeValue<*> {
+            return GraphQLString(value.mimetype)
+          }
+        }) +
         createDefaultScalarTypeAdapter("java.util.Map", "kotlin.collections.Map") { value ->
           if (value is GraphQLJsonObject) {
             value.value
