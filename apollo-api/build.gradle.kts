@@ -4,6 +4,21 @@ plugins {
 }
 
 kotlin {
+  data class IosTarget(val name: String, val preset: String, val id: String)
+
+  val iosTargets = listOf(
+      IosTarget("ios", "iosArm64", "ios-arm64"),
+      IosTarget("iosSim", "iosX64", "ios-x64")
+  )
+
+  for ((targetName, presetName, id) in iosTargets) {
+    targetFromPreset(presets.getByName(presetName), targetName) {
+      mavenPublication {
+        artifactId = "${project.name}-$id"
+      }
+    }
+  }
+
   jvm {
     withJava()
   }
@@ -22,6 +37,15 @@ kotlin {
         implementation(kotlin("stdlib"))
       }
     }
+
+    val iosMain by getting {
+      dependsOn(commonMain)
+    }
+
+    val iosSimMain by getting {
+      dependsOn(iosMain)
+    }
+
     val jvmTest by getting {
       dependsOn(jvmMain)
       dependencies {

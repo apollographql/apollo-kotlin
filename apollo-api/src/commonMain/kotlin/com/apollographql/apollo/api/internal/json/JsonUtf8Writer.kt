@@ -17,10 +17,18 @@ package com.apollographql.apollo.api.internal.json
 
 import com.apollographql.apollo.api.internal.Throws
 import okio.BufferedSink
+import okio.ByteString
 import okio.IOException
 
 internal class JsonUtf8Writer(private val sink: BufferedSink) : JsonWriter() {
   companion object {
+    private const val HEX_ARRAY = "0123456789abcdef"
+
+    private fun Byte.hexString(): String {
+      val value = toInt()
+      return "${HEX_ARRAY[value.ushr(4)]}${HEX_ARRAY[value and 0x0F]}"
+    }
+
     /**
      * From RFC 7159, "All Unicode characters may be placed within the quotation marks except for the characters that must be escaped:
      * quotation mark, reverse solidus, and the control characters (U+0000 through U+001F)."
@@ -30,7 +38,7 @@ internal class JsonUtf8Writer(private val sink: BufferedSink) : JsonWriter() {
      */
     private val REPLACEMENT_CHARS: Array<String?> = arrayOfNulls<String?>(128).apply {
       for (i in 0..0x1f) {
-        this[i] = String.format("\\u%04x", i)
+        this[i] = "\\u00${i.toByte().hexString()}"
       }
       this['"'.toInt()] = "\\\""
       this['\\'.toInt()] = "\\\\"
