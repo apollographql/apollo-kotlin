@@ -264,6 +264,15 @@ fun Project.configurePublishing() {
           password = findProperty("bintray.apikey") as String?
         }
       }
+      maven {
+        // Same as the regular bintray repository with the plugin marker hardcoded
+        name = "bintrayMarker"
+        url = uri("https://api.bintray.com/maven/apollographql/android/com.apollographql.apollo.gradle.plugin/;publish=1;override=1")
+        credentials {
+          username = findProperty("bintray.user") as String?
+          password = findProperty("bintray.apikey") as String?
+        }
+      }
 
       maven {
         name = "oss"
@@ -274,5 +283,50 @@ fun Project.configurePublishing() {
         }
       }
     }
+  }
+}
+
+fun publishTasks(repository: String): List<Task> {
+  val name = repository.capitalize()
+  return subprojects.flatMap {
+    if (it.name == "apollo-api") {
+      // apollo-api is a MPP project
+      tasks.matching {
+        it.name == "publishKotlinMultiplatformPublicationTo${name}Repository"
+            || it.name == "publishJvmPublicationTo${name}Repository"
+      }
+    } else {
+      tasks.matching {
+        it.name == "publishDefaultPublicationTo${name}Repository"
+      }
+    }
+  }
+}
+
+tasks.register("publishToBintrayOrOssIfRequired") {
+  val pullRequest = System.getenv("TRAVIS_PULL_REQUEST")
+  val branch = System.getenv("TRAVIS_BRANCH")
+  val tag = System.getenv("TRAVIS_TAG")
+
+  if (pullRequest == "false" && branch == "master") {
+    println("Deploying snapshot to OSS...")
+    dependsOn(publishTasks("oss"))
+    doLast {
+      println("Snapshot deployed on OSS!")
+    }
+  } else {
+    println("Skipping snapshot (branch=$branch pullRequest=$pullRequest)")
+  }
+
+  if (tag.isNullOrBlank().not()) {
+    println("Deploying release to Bintray and Gradle Plugin Portal...")
+    dependsOn(publishTasks("bintray"))
+    dependsOn(":apollo-gradle-plugin:publishApolloGradlePluginPluginMarkerMavenPublicationToBintrayMarkerRepository")
+    dependsOn(":apollo-gradle-plugin:publishPlugin")
+    doLast {
+      println("Release deployed to Bintray and Gradle Plugin Portal!")
+    }
+  } else {
+    println("Skipping release deployment: not a tag")
   }
 }
