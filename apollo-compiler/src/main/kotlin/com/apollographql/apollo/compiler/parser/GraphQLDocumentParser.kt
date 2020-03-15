@@ -21,7 +21,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
       )
     }
 
-    operations.checkMultipleOperationDefinitions()
+    operations.checkMultipleOperationDefinitions(packageNameProvider)
     fragments.checkMultipleFragmentDefinitions()
 
     val typeDeclarations = usedTypes.usedTypeDeclarations()
@@ -30,7 +30,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
         operations = operations.map { operation ->
           val referencedFragmentNames = operation.fields.referencedFragmentNames(fragments = fragments, filePath = operation.filePath)
           val referencedFragments = referencedFragmentNames.mapNotNull { fragmentName -> fragments.find { it.fragmentName == fragmentName } }
-          referencedFragments.forEach { it.checkVariableDefinitions(operation) }
+          referencedFragments.forEach { it.checkVariableReferences(operation) }
 
           val fragmentSource = referencedFragments.joinToString(separator = "\n") { it.source }
           operation.copy(
@@ -103,9 +103,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
   private fun GraphQLParser.DocumentContext.parse(graphQLFilePath: String): DocumentParseResult {
     val fragments = definition().mapNotNull { it.fragmentDefinition()?.parse(graphQLFilePath) }
     val operations = definition().mapNotNull { ctx ->
-      ctx.operationDefinition()?.parse(graphQLFilePath)?.also {
-        it.result.checkVariableDefinitions()
-      }
+      ctx.operationDefinition()?.parse(graphQLFilePath)
     }
     return DocumentParseResult(
         operations = operations.map { it.result },
@@ -139,7 +137,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
         fields = fields.result.filterNot { it.responseName == Field.TYPE_NAME_FIELD.responseName },
         fragmentsReferenced = emptyList(),
         filePath = graphQLFilePath
-    ).also { it.checkVariableDefinitions() }
+    ).also { it.checkVariableReferences() }
 
     return ParseResult(
         result = operation,
@@ -398,7 +396,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
         token = typeCondition().typeName().start
     )
 
-    if (!parentSchemaType.isAssignableFrom(schemaType)) {
+    if (!parentSchemaType.isAssignableFrom(schema = schema, other = schemaType)) {
       throw ParseException(
           message = "Fragment cannot be spread here as objects of type `${parentSchemaType.name}` can never be of type `$typeCondition`",
           token = typeCondition().typeName().start
@@ -687,24 +685,6 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
       usedTypes = flatMap { (_, usedTypes) -> usedTypes }.toSet()
   )
 
-  private fun List<Operation>.checkMultipleOperationDefinitions() {
-    groupBy { packageNameProvider.operationPackageName(it.filePath) + it.operationName }
-        .values
-        .find { it.size > 1 }
-        ?.last()
-        ?.run {
-          throw GraphQLParseException("$filePath: There can be only one operation named `$operationName`")
-        }
-  }
-
-  private fun List<Fragment>.checkMultipleFragmentDefinitions() {
-    groupBy { it.fragmentName }
-        .values
-        .find { it.size > 1 }
-        ?.last()
-        ?.run { throw GraphQLParseException("$filePath: There can be only one fragment named `$fragmentName`") }
-  }
-
   private fun List<Field>.referencedFragmentNames(fragments: List<Fragment>, filePath: String): Set<String> {
     return flatMap { it.referencedFragmentNames(fragments = fragments, filePath = filePath) }
         .union(flatMap { it.fields.referencedFragmentNames(fragments = fragments, filePath = filePath) })
@@ -755,9 +735,9 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
           )
 
       when (val schemaType = schema[typeCondition]) {
-        is Schema.Type.Object -> schemaType.possibleTypes()
-        is Schema.Type.Interface -> schemaType.possibleTypes()
-        is Schema.Type.Union -> schemaType.possibleTypes()
+        is Schema.Type.Object -> schemaType.possibleTypes(schema)
+        is Schema.Type.Interface -> schemaType.possibleTypes(schema)
+        is Schema.Type.Union -> schemaType.possibleTypes(schema)
         else -> emptySet()
       }.also { possibleTypes ->
         if (fragment.possibleTypes.intersect(possibleTypes).isEmpty()) {
@@ -772,123 +752,6 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
 
       fragment
     }
-  }
-
-  private fun Operation.checkVariableDefinitions() {
-    fields.forEach { field ->
-      field.checkVariableDefinitions(operation = this, filePath = filePath)
-      field.fields.forEach { it.checkVariableDefinitions(operation = this, filePath = filePath) }
-    }
-  }
-
-  private fun Fragment.checkVariableDefinitions(operation: Operation) {
-    try {
-      fields.forEach { field ->
-        field.checkVariableDefinitions(operation = operation, filePath = filePath)
-        field.fields.forEach { it.checkVariableDefinitions(operation = operation, filePath = filePath) }
-      }
-    } catch (e: ParseException) {
-      throw GraphQLParseException("$filePath: ${e.message}[${operation.filePath}]")
-    }
-  }
-
-  private fun Field.checkVariableDefinitions(operation: Operation, filePath: String) {
-    args.forEach { arg ->
-      if (arg.value is Map<*, *> && arg.value["kind"] == "Variable") {
-        val variableName = arg.value["variableName"]
-        val variable = operation.variables.find { it.name == variableName } ?: throw ParseException(
-            message = "Variable `$variableName` is not defined by operation `${operation.operationName}`",
-            sourceLocation = arg.sourceLocation
-        )
-
-        if (!arg.type.isGraphQLTypeAssignableFrom(variable.type)) {
-          throw ParseException(
-              message = "Variable `$variableName` of type `${variable.type}` used in position expecting type `${arg.type}`",
-              sourceLocation = arg.sourceLocation
-          )
-        }
-      }
-    }
-
-    inlineFragments.forEach { fragment ->
-      fragment.fields.forEach { field ->
-        field.checkVariableDefinitions(operation = operation, filePath = filePath)
-      }
-    }
-
-    conditions.forEach { condition ->
-      val variable = operation.variables.find { it.name == condition.variableName } ?: throw ParseException(
-          message = "Variable `${condition.variableName}` is not defined by operation `${operation.operationName}`",
-          sourceLocation = condition.sourceLocation
-      )
-
-      val scalarType = ScalarType.forName(variable.type.removeSuffix("!"))
-      if (scalarType != ScalarType.BOOLEAN) {
-        throw ParseException(
-            message = "Variable `${variable.name}` of type `${variable.type}` used in position expecting type `Boolean!`",
-            sourceLocation = condition.sourceLocation
-        )
-      }
-    }
-
-    fields.forEach { it.checkVariableDefinitions(operation = operation, filePath = filePath) }
-  }
-
-  private fun Schema.Type.isAssignableFrom(other: Schema.Type): Boolean {
-    if (name == other.name) {
-      return true
-    }
-    return when (this) {
-      is Schema.Type.Union -> possibleTypes().intersect(other.possibleTypes()).isNotEmpty()
-      is Schema.Type.Interface -> {
-        val possibleTypes = (possibleTypes ?: emptyList()).mapNotNull { it.rawType.name }
-        possibleTypes.contains(other.name) || possibleTypes.any { typeName ->
-          val schemaType = schema[typeName] ?: throw throw GraphQLParseException(
-              message = "Unknown possible type `$typeName` for INTERFACE `$name`"
-          )
-          schemaType.isAssignableFrom(other)
-        }
-      }
-      else -> false
-    }
-  }
-
-  private fun Schema.Type.possibleTypes(): Set<String> {
-    return when (this) {
-      is Schema.Type.Union -> (possibleTypes ?: emptyList()).flatMap { typeRef ->
-        val typeName = typeRef.rawType.name!!
-        val schemaType = schema[typeName] ?: throw throw GraphQLParseException(
-            message = "Unknown possible type `$typeName` for UNION `$name`"
-        )
-        schemaType.possibleTypes()
-      }.toSet()
-
-      is Schema.Type.Interface -> (possibleTypes ?: emptyList()).flatMap { typeRef ->
-        val typeName = typeRef.rawType.name!!
-        val schemaType = schema[typeName] ?: throw throw GraphQLParseException(
-            message = "Unknown possible type `$typeName` for INTERFACE `$name`"
-        )
-        schemaType.possibleTypes()
-      }.toSet()
-
-      else -> setOf(name)
-    }
-  }
-
-  private fun String.isGraphQLTypeAssignableFrom(otherType: String): Boolean {
-    var i = 0
-    var j = 0
-    do {
-      when {
-        this[i] == otherType[j] -> {
-          i++; j++
-        }
-        otherType[j] == '!' -> j++
-        else -> return false
-      }
-    } while (i < length && j < otherType.length)
-
-    return i == length && (j == otherType.length || (otherType[j] == '!' && j == otherType.length - 1))
   }
 }
 
@@ -906,85 +769,4 @@ private data class ParseResult<T>(
       result = combine(result, other.result),
       usedTypes = usedTypes + other.usedTypes
   )
-}
-
-private operator fun SourceLocation.Companion.invoke(token: Token) = SourceLocation(
-    line = token.line,
-    position = token.charPositionInLine
-)
-
-class ParseException(message: String, val sourceLocation: SourceLocation) : RuntimeException(message) {
-  companion object {
-    operator fun invoke(message: String, token: Token) = ParseException(
-        message = message,
-        sourceLocation = SourceLocation(token)
-    )
-  }
-}
-
-class GraphQLParseException(message: String) : RuntimeException(message) {
-  override fun fillInStackTrace(): Throwable = this
-}
-
-class GraphQLDocumentParseException(
-    message: String,
-    sourceLocation: SourceLocation,
-    graphQLFilePath: String
-) : RuntimeException(preview(
-    message = message,
-    sourceLocation = sourceLocation,
-    graphQLFilePath = graphQLFilePath
-)) {
-
-  override fun fillInStackTrace(): Throwable = this
-
-  companion object {
-    operator fun invoke(
-        message: String,
-        token: Token,
-        graphQLFilePath: String
-    ) = GraphQLDocumentParseException(
-        message = message,
-        sourceLocation = SourceLocation(token),
-        graphQLFilePath = graphQLFilePath
-    )
-
-    operator fun invoke(
-        parseException: ParseException,
-        graphQLFilePath: String
-    ) = GraphQLDocumentParseException(
-        message = parseException.message!!,
-        sourceLocation = parseException.sourceLocation,
-        graphQLFilePath = graphQLFilePath
-    )
-
-    private fun preview(message: String, sourceLocation: SourceLocation, graphQLFilePath: String): String {
-      val document = try {
-        File(graphQLFilePath).readText()
-      } catch (e: IOException) {
-        throw RuntimeException("Failed to read GraphQL file `$this`", e)
-      }
-
-      if (sourceLocation == SourceLocation.UNKNOWN) {
-        return "\nFailed to parse GraphQL file $graphQLFilePath:\n$message"
-      }
-
-      val documentLines = document.lines()
-      return "\nFailed to parse GraphQL file $graphQLFilePath ${sourceLocation}\n$message" +
-          "\n----------------------------------------------------\n" +
-          kotlin.run {
-            val prefix = if (sourceLocation.line - 2 >= 0) {
-              "[${sourceLocation.line - 1}]:" + documentLines[sourceLocation.line - 2]
-            } else ""
-            val body = if (sourceLocation.line - 1 >= 0) {
-              "\n[${sourceLocation.line}]:${documentLines[sourceLocation.line - 1]}\n"
-            } else ""
-            val postfix = if (sourceLocation.line < documentLines.size) {
-              "[${sourceLocation.line + 1}]:" + documentLines[sourceLocation.line]
-            } else ""
-            "$prefix$body$postfix"
-          } +
-          "\n----------------------------------------------------"
-    }
-  }
 }
