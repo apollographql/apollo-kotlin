@@ -7,7 +7,7 @@ internal fun Schema.Type.possibleTypes(schema: Schema): Set<String> {
   return when (this) {
     is Schema.Type.Union -> (possibleTypes ?: emptyList()).flatMap { typeRef ->
       val typeName = typeRef.rawType.name!!
-      val schemaType = schema[typeName] ?: throw throw GraphQLParseException(
+      val schemaType = schema[typeName] ?: throw GraphQLParseException(
           message = "Unknown possible type `$typeName` for UNION `$name`"
       )
       schemaType.possibleTypes(schema)
@@ -15,7 +15,7 @@ internal fun Schema.Type.possibleTypes(schema: Schema): Set<String> {
 
     is Schema.Type.Interface -> (possibleTypes ?: emptyList()).flatMap { typeRef ->
       val typeName = typeRef.rawType.name!!
-      val schemaType = schema[typeName] ?: throw throw GraphQLParseException(
+      val schemaType = schema[typeName] ?: throw GraphQLParseException(
           message = "Unknown possible type `$typeName` for INTERFACE `$name`"
       )
       schemaType.possibleTypes(schema)
@@ -34,7 +34,7 @@ internal fun Schema.Type.isAssignableFrom(schema: Schema, other: Schema.Type): B
     is Schema.Type.Interface -> {
       val possibleTypes = (possibleTypes ?: emptyList()).mapNotNull { it.rawType.name }
       possibleTypes.contains(other.name) || possibleTypes.any { typeName ->
-        val schemaType = schema[typeName] ?: throw throw GraphQLParseException(
+        val schemaType = schema[typeName] ?: throw GraphQLParseException(
             message = "Unknown possible type `$typeName` for INTERFACE `$name`"
         )
         schemaType.isAssignableFrom(schema = schema, other = other)
