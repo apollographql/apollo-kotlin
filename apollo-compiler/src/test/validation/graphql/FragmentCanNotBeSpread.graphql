@@ -1,0 +1,7 @@
+query TestQuery($episode: Episode!) {
+  hero(episode: $episode) {
+    ... on Mutation {
+
+    }
+  }
+}

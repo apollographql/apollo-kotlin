@@ -1,0 +1,13 @@
+query TestQuery($episode: Episode!) {
+  hero(episode: $episode) {
+    name
+  }
+}
+
+fragment HeroFragment on Character {
+  name
+}
+
+fragment HeroFragment on Character {
+  name
+}

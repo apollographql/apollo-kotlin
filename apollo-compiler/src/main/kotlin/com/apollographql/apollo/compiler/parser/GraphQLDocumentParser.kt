@@ -75,7 +75,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
     try {
       return parser.document()
           .also { ctx -> parser.checkEOF(ctx) }
-          .parse(path)
+          .parse(absolutePath)
     } catch (e: ParseException) {
       throw GraphQLDocumentParseException(
           parseException = e,
