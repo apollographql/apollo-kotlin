@@ -43,9 +43,9 @@ import static junit.framework.Assert.fail;
 
 public class ApolloServerInterceptorFileUploadTest {
   private final HttpUrl serverUrl = HttpUrl.parse("http://google.com");
-  private final File file0 = createFile("file0.txt", "content_file0");
-  private final File file1 = createFile("file1.jpg", "content_file1");
-  private final File file2 = createFile("file2.png", "content_file2");
+  private final String file0 = createFile("file0.txt", "content_file0");
+  private final String file1 = createFile("file1.jpg", "content_file1");
+  private final String file2 = createFile("file2.png", "content_file2");
   private final FileUpload upload0 = new FileUpload("plain/txt", file0);
   private final FileUpload upload1 = new FileUpload("image/jpg", file1);
   private final FileUpload upload2 = new FileUpload("image/png", file2);
@@ -80,7 +80,7 @@ public class ApolloServerInterceptorFileUploadTest {
       .topFileList(new ArrayList<>(Arrays.asList(upload1, upload0)))
       .build();
 
-  private File createFile(String fileName, String content) {
+  private String createFile(String fileName, String content) {
     String tempDir = System.getProperty("java.io.tmpdir");
     String filePath = tempDir + "/" + fileName;
     File f = new File(filePath);
@@ -90,7 +90,7 @@ public class ApolloServerInterceptorFileUploadTest {
       bw.close();
     } catch (Exception e) {
     }
-    return f;
+    return f.getPath();
   }
 
   @Before public void prepare() {

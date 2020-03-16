@@ -75,7 +75,7 @@ class ScalarTypeAdapters(customAdapters: Map<ScalarType, CustomTypeAdapter<*>>) 
         } +
         mapOf("com.apollographql.apollo.api.FileUpload" to object : CustomTypeAdapter<FileUpload> {
           override fun decode(value: CustomTypeValue<*>): FileUpload {
-            return FileUpload("", File(""));
+            return FileUpload("", value.value?.toString() ?: "")
           }
 
           override fun encode(value: FileUpload): CustomTypeValue<*> {

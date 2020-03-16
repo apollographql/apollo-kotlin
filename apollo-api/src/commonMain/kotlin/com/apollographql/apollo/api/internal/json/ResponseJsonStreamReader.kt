@@ -104,7 +104,7 @@ open class ResponseJsonStreamReader(
     return when {
       isNextNull -> skipNext().let { null }
       isNextBoolean -> nextBoolean(false)
-      isNextNumber -> BigDecimal(nextString(false))
+      isNextNumber -> BigDecimal(nextString(false)!!)
       else -> nextString(false)
     }
   }
