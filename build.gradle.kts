@@ -192,31 +192,35 @@ fun Project.configurePublishing() {
 
   configure<PublishingExtension> {
     publications {
-      create<MavenPublication>(publicationName) {
-        val javaComponent = components.findByName("java")
-        if (this@configurePublishing.name != "apollo-api" && javaComponent != null) {
-          from(javaComponent)
-        } else if (android != null) {
-          // this is a workaround while the below is fixed.
-          // dependency information in the pom file will most likely be wrong
-          // but it's been like that for some time now. As long as users still
-          // import apollo-runtime in addition to the android artifacts, it
-          // should be fine.
-          //
-          // https://issuetracker.google.com/issues/37055147
-          // https://github.com/gradle/gradle/pull/8399
-          afterEvaluate {
-            artifact(tasks.named("bundleReleaseAar").get())
+      if (!plugins.hasPlugin("org.jetbrains.kotlin.multiplatform")) {
+        create<MavenPublication>(publicationName) {
+          val javaComponent = components.findByName("java")
+          if (javaComponent != null) {
+            from(javaComponent)
+          } else if (android != null) {
+            // this is a workaround while the below is fixed.
+            // dependency information in the pom file will most likely be wrong
+            // but it's been like that for some time now. As long as users still
+            // import apollo-runtime in addition to the android artifacts, it
+            // should be fine.
+            //
+            // https://issuetracker.google.com/issues/37055147
+            // https://github.com/gradle/gradle/pull/8399
+            afterEvaluate {
+              artifact(tasks.named("bundleReleaseAar").get())
+            }
+          }
+
+          if (javadocJarTaskProvider != null) {
+            artifact(javadocJarTaskProvider.get())
+          }
+          if (sourcesJarTaskProvider != null) {
+            artifact(sourcesJarTaskProvider.get())
           }
         }
+      }
 
-        if (javadocJarTaskProvider != null) {
-          artifact(javadocJarTaskProvider.get())
-        }
-        if (sourcesJarTaskProvider != null) {
-          artifact(sourcesJarTaskProvider.get())
-        }
-
+      withType<MavenPublication>().all {
         pom {
           groupId = findProperty("GROUP") as String?
           artifactId = findProperty("POM_ARTIFACT_ID") as String?
