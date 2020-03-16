@@ -4,11 +4,12 @@ plugins {
 }
 
 kotlin {
-  data class IosTarget(val name: String, val preset: String, val id: String)
+  @Suppress("ClassName")
+  data class iOSTarget(val name: String, val preset: String, val id: String)
 
   val iosTargets = listOf(
-      IosTarget("ios", "iosArm64", "ios-arm64"),
-      IosTarget("iosSim", "iosX64", "ios-x64")
+      iOSTarget("ios", "iosArm64", "ios-arm64"),
+      iOSTarget("iosSim", "iosX64", "ios-x64")
   )
 
   for ((targetName, presetName, id) in iosTargets) {
