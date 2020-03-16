@@ -192,7 +192,13 @@ fun Project.configurePublishing() {
 
   configure<PublishingExtension> {
     publications {
-      if (!plugins.hasPlugin("org.jetbrains.kotlin.multiplatform")) {
+      if (plugins.hasPlugin("org.jetbrains.kotlin.multiplatform")) {
+        withType<MavenPublication>().getByName("jvm") {
+          if (javadocJarTaskProvider != null) {
+            artifact(javadocJarTaskProvider.get())
+          }
+        }
+      } else {
         create<MavenPublication>(publicationName) {
           val javaComponent = components.findByName("java")
           if (javaComponent != null) {
