@@ -222,8 +222,18 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
 
   /**
    * @return The default {@link CacheHeaders} which this instance of {@link ApolloClient} was configured.
+   *
+   * @deprecated Use getDefaultCacheHeaders() instead
    */
+  @Deprecated
   public CacheHeaders defaultCacheHeaders() {
+    return defaultCacheHeaders;
+  }
+
+  /**
+   * @return The default {@link CacheHeaders} which this instance of {@link ApolloClient} was configured.
+   */
+  public CacheHeaders getDefaultCacheHeaders() {
     return defaultCacheHeaders;
   }
 
@@ -260,9 +270,47 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   /**
    * @return The {@link ApolloStore} managing access to the normalized cache created by {@link
    * Builder#normalizedCache(NormalizedCacheFactory, CacheKeyResolver)}  }
+   * @deprecated Use getApolloStore() instead.
    */
+  @Deprecated
   public ApolloStore apolloStore() {
     return apolloStore;
+  }
+
+  /**
+   * @return The {@link ApolloStore} managing access to the normalized cache created by {@link
+   * Builder#normalizedCache(NormalizedCacheFactory, CacheKeyResolver)}  }
+   */
+  public ApolloStore getApolloStore() {
+    return apolloStore;
+  }
+
+  /**
+   * @return The {@link HttpUrl} serverUrl
+   */
+  public HttpUrl getServerUrl() {
+    return serverUrl;
+  }
+
+  /**
+   * @return The {@link HttpCache} httpCache
+   */
+  public HttpCache getHttpCache() {
+    return httpCache;
+  }
+
+  /**
+   * @return The {@link ScalarTypeAdapters} scalarTypeAdapters
+   */
+  public ScalarTypeAdapters getScalarTypeAdapters() {
+    return scalarTypeAdapters;
+  }
+
+  /**
+   * @return The list of {@link ApolloInterceptor}s
+   */
+  public List<ApolloInterceptor> getApplicationInterceptors() {
+    return Collections.unmodifiableList(applicationInterceptors);
   }
 
   /**
@@ -325,7 +373,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     CacheHeaders defaultCacheHeaders = CacheHeaders.NONE;
     final Map<ScalarType, CustomTypeAdapter<?>> customTypeAdapters = new LinkedHashMap<>();
     Executor dispatcher;
-    @Nullable Logger logger = null;
+    @Nullable
+    Logger logger = null;
     final List<ApolloInterceptor> applicationInterceptors = new ArrayList<>();
     boolean enableAutoPersistedQueries;
     boolean enableAutoPersistedSubscriptions;
@@ -405,7 +454,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
      * Set the configuration to be used for normalized cache.
      *
      * @param normalizedCacheFactory the {@link NormalizedCacheFactory} used to construct a {@link NormalizedCache}.
-     * @param keyResolver            the {@link CacheKeyResolver} to use to normalize records
+     * @param keyResolver the {@link CacheKeyResolver} to use to normalize records
      * @return The {@link Builder} object to be used for chaining method calls
      */
     public Builder normalizedCache(@NotNull NormalizedCacheFactory normalizedCacheFactory,
@@ -418,9 +467,9 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     /**
      * Set the type adapter to use for serializing and de-serializing custom GraphQL scalar types.
      *
-     * @param scalarType        the scalar type to serialize/deserialize
+     * @param scalarType the scalar type to serialize/deserialize
      * @param customTypeAdapter the type adapter to use
-     * @param <T>               the value type
+     * @param <T> the value type
      * @return The {@link Builder} object to be used for chaining method calls
      */
     public <T> Builder addCustomTypeAdapter(@NotNull ScalarType scalarType,
@@ -500,7 +549,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
 
     /**
      * @param enableAutoPersistedQueries True if ApolloClient should enable Automatic Persisted Queries support.
-     *                                   Default: false.
+     * Default: false.
      * @return The {@link Builder} object to be used for chaining method calls
      */
     public Builder enableAutoPersistedQueries(boolean enableAutoPersistedQueries) {
@@ -549,7 +598,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
      * keep-alive message from the subscription server before reconnect. <b>NOTE: will be ignored if server doesn't send
      * keep-alive messages.<b/></p>. By default heartbeat timeout is disabled.
      *
-     * @param timeout  connection keep alive timeout. Min value is 10 secs.
+     * @param timeout connection keep alive timeout. Min value is 10 secs.
      * @param timeUnit time unit
      * @return The {@link Builder} object to be used for chaining method calls
      */
@@ -582,8 +631,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     /**
      * Sets flag whether GraphQL Persisted queries should be sent via HTTP GET requests.
      *
-     * @param useHttpGetMethodForPersistedQueries {@code true} if HTTP GET requests should be used,
-     *                                            {@code false} otherwise.
+     * @param useHttpGetMethodForPersistedQueries {@code true} if HTTP GET requests should be used, {@code false} otherwise.
      * @return The {@link Builder} object to be used for chaining method calls
      */
     public Builder useHttpGetMethodForPersistedQueries(boolean useHttpGetMethodForPersistedQueries) {
