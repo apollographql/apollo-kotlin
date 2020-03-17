@@ -5,6 +5,8 @@ import com.apollographql.apollo.compiler.parser.GraphQLDocumentParser
 import com.apollographql.apollo.compiler.parser.GraphQLParseException
 import com.apollographql.apollo.compiler.parser.Schema
 import com.google.common.truth.Truth.assertThat
+import org.junit.Assert
+import org.junit.Assert.fail
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -26,6 +28,7 @@ class ValidationTest(name: String, private val graphQLFile: File) {
 
     try {
       GraphQLDocumentParser(schema, packageNameProvider).parse(setOf(graphQLFile))
+      fail("parse expected to fail but was successful")
     } catch (e: Exception) {
       if (e is GraphQLDocumentParseException || e is GraphQLParseException) {
         val expected = File(graphQLFile.parent, graphQLFile.nameWithoutExtension + ".error").readText().removeSuffix("\n")

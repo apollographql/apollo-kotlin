@@ -1,5 +1,5 @@
-query TestQuery($episode: Episode!) {
-  hero(episode: $episode) {
+query TestQuery {
+  hero {
     name
   }
 }
