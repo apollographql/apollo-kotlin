@@ -222,7 +222,6 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
 
   /**
    * @return The default {@link CacheHeaders} which this instance of {@link ApolloClient} was configured.
-   *
    * @deprecated Use getDefaultCacheHeaders() instead
    */
   @Deprecated
@@ -327,6 +326,13 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     return tracker.activeCallsCount();
   }
 
+  /**
+   * @return a new instance of {@link Builder} to customize an existing {@link ApolloClient}
+   */
+  public Builder newBuilder() {
+    return new Builder(this);
+  }
+
   Response cachedHttpResponse(String cacheKey) throws IOException {
     if (httpCache != null) {
       return httpCache.read(cacheKey);
@@ -377,6 +383,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     Logger logger = null;
     final List<ApolloInterceptor> applicationInterceptors = new ArrayList<>();
     boolean enableAutoPersistedQueries;
+    SubscriptionManager subscriptionManager = new NoOpSubscriptionManager();
     boolean enableAutoPersistedSubscriptions;
     Optional<SubscriptionTransport.Factory> subscriptionTransportFactory = Optional.absent();
     SubscriptionConnectionParamsProvider subscriptionConnectionParams = new SubscriptionConnectionParamsProvider.Const(
@@ -386,6 +393,24 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     boolean useHttpGetMethodForPersistedQueries;
 
     Builder() {
+    }
+
+    Builder(ApolloClient apolloClient) {
+      callFactory = apolloClient.httpCallFactory;
+      serverUrl = apolloClient.serverUrl;
+      httpCache = apolloClient.httpCache;
+      apolloStore = apolloClient.apolloStore;
+      defaultHttpCachePolicy = apolloClient.defaultHttpCachePolicy;
+      defaultResponseFetcher = apolloClient.defaultResponseFetcher;
+      defaultCacheHeaders = apolloClient.defaultCacheHeaders;
+      customTypeAdapters.putAll(apolloClient.scalarTypeAdapters.getCustomAdapters());
+      dispatcher = apolloClient.dispatcher;
+      logger = apolloClient.logger.getLogger();
+      applicationInterceptors.addAll(apolloClient.applicationInterceptors);
+      enableAutoPersistedQueries = apolloClient.enableAutoPersistedQueries;
+      subscriptionManager = apolloClient.subscriptionManager;
+      useHttpGetMethodForQueries = apolloClient.useHttpGetMethodForQueries;
+      useHttpGetMethodForPersistedQueries = apolloClient.useHttpGetMethodForPersistedQueries;
     }
 
     /**
@@ -666,18 +691,17 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         dispatcher = defaultDispatcher();
       }
 
-      ScalarTypeAdapters scalarTypeAdapters = new ScalarTypeAdapters(customTypeAdapters);
+      ScalarTypeAdapters scalarTypeAdapters = new ScalarTypeAdapters(Collections.unmodifiableMap(customTypeAdapters));
 
       ApolloStore apolloStore = this.apolloStore;
       Optional<NormalizedCacheFactory> cacheFactory = this.cacheFactory;
       Optional<CacheKeyResolver> cacheKeyResolver = this.cacheKeyResolver;
       if (cacheFactory.isPresent() && cacheKeyResolver.isPresent()) {
         final NormalizedCache normalizedCache = cacheFactory.get().createChain(RecordFieldJsonAdapter.create());
-        apolloStore = new RealApolloStore(normalizedCache, cacheKeyResolver.get(), scalarTypeAdapters, dispatcher,
-            apolloLogger);
+        apolloStore = new RealApolloStore(normalizedCache, cacheKeyResolver.get(), scalarTypeAdapters, dispatcher, apolloLogger);
       }
 
-      SubscriptionManager subscriptionManager = new NoOpSubscriptionManager();
+      SubscriptionManager subscriptionManager = this.subscriptionManager;
       Optional<SubscriptionTransport.Factory> subscriptionTransportFactory = this.subscriptionTransportFactory;
       if (subscriptionTransportFactory.isPresent()) {
         final ApolloStore finalApolloStore = apolloStore;
@@ -701,7 +725,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
           defaultResponseFetcher,
           defaultCacheHeaders,
           apolloLogger,
-          applicationInterceptors,
+          Collections.unmodifiableList(applicationInterceptors),
           enableAutoPersistedQueries,
           subscriptionManager,
           useHttpGetMethodForQueries,
