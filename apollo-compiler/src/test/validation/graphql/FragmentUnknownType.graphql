@@ -1,0 +1,9 @@
+query TestQuery {
+  hero {
+    name
+  }
+}
+
+fragment HeroFragment on Banana {
+  name
+}
