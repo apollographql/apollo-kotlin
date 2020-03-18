@@ -1,4 +1,4 @@
-Failed to parse GraphQL file /FragmentUnknowType.graphql (7:25)
+Failed to parse GraphQL file /FragmentUnknownType.graphql (7:25)
 Unknown type `Banana`
 ----------------------------------------------------
 [6]:
