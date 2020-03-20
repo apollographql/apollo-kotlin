@@ -30,7 +30,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
         operations = operations.map { operation ->
           val referencedFragmentNames = operation.fields.referencedFragmentNames(fragments = fragments, filePath = operation.filePath)
           val referencedFragments = referencedFragmentNames.mapNotNull { fragmentName -> fragments.find { it.fragmentName == fragmentName } }
-          referencedFragments.forEach { it.checkVariableReferences(operation) }
+          referencedFragments.forEach { it.validateArguments(operation = operation, schema = schema) }
 
           val fragmentSource = referencedFragments.joinToString(separator = "\n") { it.source }
           operation.copy(
@@ -137,7 +137,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
         fields = fields.result.filterNot { it.responseName == Field.TYPE_NAME_FIELD.responseName },
         fragmentsReferenced = emptyList(),
         filePath = graphQLFilePath
-    ).also { it.checkVariableReferences() }
+    ).also { it.validateArguments(schema = schema) }
 
     return ParseResult(
         result = operation,
@@ -298,7 +298,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
         result = Field(
             responseName = responseName,
             fieldName = fieldName,
-            type = schemaField.type.asIrType(),
+            type = schemaField.type.asGraphQLType(),
             args = arguments.result,
             isConditional = conditions.isNotEmpty(),
             fields = mergedFields,
@@ -368,7 +368,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
         token = NAME().symbol
     )
 
-    val type = schemaArgument.type.asIrType()
+    val type = schemaArgument.type.asGraphQLType()
     val value = valueOrVariable().variable()?.let { ctx ->
       mapOf(
           "kind" to "Variable",
@@ -495,15 +495,23 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
     )
   }
 
-  private fun GraphQLParser.ValueContext.parse(schemaTypeRef: Schema.TypeRef): Any {
+  private fun GraphQLParser.ValueContext.parse(schemaTypeRef: Schema.TypeRef): Any? {
     return when (schemaTypeRef.kind) {
       Schema.Kind.ENUM -> text.toString().trim()
       Schema.Kind.INTERFACE, Schema.Kind.OBJECT, Schema.Kind.INPUT_OBJECT, Schema.Kind.UNION -> {
-        val inlineInputType = (this as? GraphQLParser.InlineInputTypeValueContext)?.inlineInputType() ?: throw ParseException(
-            message = "Can't parse `Object` value, expected map",
-            token = start
-        )
+        val inlineInputType = when (this) {
+          is GraphQLParser.InlineInputTypeValueContext -> inlineInputType()
+          is GraphQLParser.LiteralValueContext -> if (text.toLowerCase() == "null") null else throw ParseException(
+              message = "Can't parse `Object` value `${this.text}`",
+              token = start
+          )
+          else -> throw throw ParseException(
+              message = "Can't parse `Object` value `${this.text}`",
+              token = start
+          )
+        }
         when {
+          inlineInputType == null -> null
           inlineInputType.emptyMap() != null -> emptyMap<String, Any?>()
           else -> inlineInputType.inlineInputTypeField().map { field ->
             val name = field.NAME().text
@@ -581,12 +589,6 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
     )
   }
 
-  private fun Schema.TypeRef.asIrType(): String = when (kind) {
-    Schema.Kind.LIST -> "[${ofType!!.asIrType()}]"
-    Schema.Kind.NON_NULL -> "${ofType!!.asIrType()}!"
-    else -> name!!
-  }
-
   private fun Set<String>.usedTypeDeclarations(): List<TypeDeclaration> {
     return usedSchemaTypes().map { type ->
       TypeDeclaration(
@@ -610,7 +612,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
             TypeDeclarationField(
                 name = field.name,
                 description = field.description?.trim() ?: "",
-                type = field.type.asIrType(),
+                type = field.type.asGraphQLType(),
                 defaultValue = field.defaultValue.normalizeValue(field.type)
             )
           } ?: emptyList()
