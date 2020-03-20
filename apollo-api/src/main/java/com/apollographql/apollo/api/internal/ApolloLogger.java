@@ -14,6 +14,10 @@ public final class ApolloLogger {
     this.logger = checkNotNull(logger, "logger == null");
   }
 
+  public Optional<Logger> getLogger() {
+    return logger;
+  }
+
   public void d(@NotNull String message, Object... args) {
     log(Logger.DEBUG, message, null, args);
   }
