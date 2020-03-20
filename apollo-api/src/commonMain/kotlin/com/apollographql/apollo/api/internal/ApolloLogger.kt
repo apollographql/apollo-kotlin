@@ -5,7 +5,7 @@ import com.apollographql.apollo.Logger.Companion.DEBUG
 import com.apollographql.apollo.Logger.Companion.ERROR
 import com.apollographql.apollo.Logger.Companion.WARN
 
-class ApolloLogger(private val logger: Logger?) {
+class ApolloLogger(val logger: Logger?) {
 
   fun d(message: String, vararg args: Any) =
       log(DEBUG, message, null, *args)

@@ -8,12 +8,13 @@ import com.apollographql.apollo.api.internal.json.use
 import okio.Buffer
 import kotlin.jvm.JvmField
 
-class ScalarTypeAdapters(customAdapters: Map<ScalarType, CustomTypeAdapter<*>>) {
-  private val customAdapters = customAdapters.mapKeys { it.key.typeName() }
+class ScalarTypeAdapters(val customAdapters: Map<ScalarType, CustomTypeAdapter<*>>) {
+
+  private val customTypeAdapters = customAdapters.mapKeys { it.key.typeName() }
 
   @Suppress("UNCHECKED_CAST")
   fun <T : Any> adapterFor(scalarType: ScalarType): CustomTypeAdapter<T> {
-    var customTypeAdapter: CustomTypeAdapter<*>? = customAdapters[scalarType.typeName()]
+    var customTypeAdapter: CustomTypeAdapter<*>? = customTypeAdapters[scalarType.typeName()]
     if (customTypeAdapter == null) {
       customTypeAdapter = DEFAULT_ADAPTERS[scalarType.className()]
     }
