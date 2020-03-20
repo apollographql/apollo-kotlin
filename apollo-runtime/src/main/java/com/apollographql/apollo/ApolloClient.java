@@ -395,7 +395,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     Builder() {
     }
 
-    Builder(ApolloClient apolloClient) {
+    private Builder(@NotNull ApolloClient apolloClient) {
       callFactory = apolloClient.httpCallFactory;
       serverUrl = apolloClient.serverUrl;
       httpCache = apolloClient.httpCache;
