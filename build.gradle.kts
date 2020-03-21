@@ -197,12 +197,6 @@ fun Project.configurePublishing() {
           if (javadocJarTaskProvider != null) {
             artifact(javadocJarTaskProvider.get())
           }
-          // Keep backward compatibility for JVM users
-          artifactId = artifactId.replace("-jvm", "")
-        }
-        withType<MavenPublication>().getByName("kotlinMultiplatform") {
-          // Do not clash with the JVM artifact
-          artifactId = "${artifactId}-multiplatform"
         }
       } else {
         create<MavenPublication>(publicationName) {
