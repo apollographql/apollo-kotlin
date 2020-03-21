@@ -14,8 +14,12 @@
     <property name="message" value="Line has trailing spaces."/>
   </module>
 
+  <property name="cacheFile" value="${checkstyle.cache.file}"/>
+  <module name="LineLength">
+    <property name="max" value="140"/>
+  </module>
+
   <module name="TreeWalker">
-    <property name="cacheFile" value="${checkstyle.cache.file}"/>
 
     <!-- Checks for Javadoc comments.                     -->
     <!-- See http://checkstyle.sf.net/config_javadoc.html -->
@@ -47,12 +51,6 @@
       <property name="processJavadoc" value="true"/>
     </module>
 
-
-    <!-- Checks for Size Violations.                    -->
-    <!-- See http://checkstyle.sf.net/config_sizes.html -->
-    <module name="LineLength">
-      <property name="max" value="140"/>
-    </module>
     <!--<module name="MethodLength"/>-->
     <!--module name="ParameterNumber"/-->
 
