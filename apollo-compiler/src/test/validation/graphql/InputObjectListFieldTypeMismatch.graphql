@@ -1,0 +1,8 @@
+mutation TestQuery($item: Int) {
+  createReview(review: {
+    listOfStringNonOptional: [$item]
+  }) {
+    commentary
+  }
+}
+

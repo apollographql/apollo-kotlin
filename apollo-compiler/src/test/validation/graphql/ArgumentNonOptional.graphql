@@ -1,0 +1,5 @@
+mutation TestQuery {
+  createReview(review: null) {
+    commentary
+  }
+}

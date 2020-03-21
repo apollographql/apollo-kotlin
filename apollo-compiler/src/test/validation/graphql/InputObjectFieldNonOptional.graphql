@@ -1,0 +1,8 @@
+mutation TestQuery($stars: Int) {
+  createReview(review: {
+    stars: $stars
+  }) {
+    commentary
+  }
+}
+
