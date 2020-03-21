@@ -1,5 +1,6 @@
 def versions = [
-    androidPlugin         : '3.4.2',
+    minAndroidPlugin      : '3.4.2',
+    androidPlugin         : '3.6.0',
     apollo                : '1.4.0-SNAPSHOT', // This should only be used by apollo-gradle-plugin-incubating:test to get the artifacts locally
     antlr4                : '4.5.3',
     cache                 : '2.0.2',
@@ -29,6 +30,7 @@ ext.isCi = "true" == System.getenv('CI')
 ext.dep = [
     android               : [
         plugin                : "com.android.tools.build:gradle:$versions.androidPlugin",
+        minPlugin             : "com.android.tools.build:gradle:$versions.minAndroidPlugin",
         recyclerView          : "com.android.support:recyclerview-v7:$versions.supportLib",
         appcompat             : "com.android.support:appcompat-v7:$versions.supportLib",
         testRunner            : "com.android.support.test:runner:$versions.testRunner",
