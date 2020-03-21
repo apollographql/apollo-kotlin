@@ -18,7 +18,7 @@ class AndroidTests {
     withProject(apolloConfiguration = "",
         usesKotlinDsl = false,
         plugins = listOf(TestUtils.androidLibraryPlugin, TestUtils.apolloPlugin)) { dir ->
-      val result = TestUtils.executeGradleWithVersion(dir, "5.6", "build")
+      val result = TestUtils.executeTask("build", dir)
 
       assertEquals(TaskOutcome.SUCCESS, result.task(":build")!!.outcome)
 
