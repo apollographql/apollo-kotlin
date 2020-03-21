@@ -197,6 +197,12 @@ fun Project.configurePublishing() {
           if (javadocJarTaskProvider != null) {
             artifact(javadocJarTaskProvider.get())
           }
+          // Keep backward compatibility for JVM users
+          artifactId = artifactId.replace("-jvm", "")
+        }
+        withType<MavenPublication>().getByName("kotlinMultiplatform") {
+          // Do not clash with the JVM artifact
+          artifactId = "${artifactId}-multiplatform"
         }
       } else {
         create<MavenPublication>(publicationName) {
@@ -223,38 +229,9 @@ fun Project.configurePublishing() {
           if (sourcesJarTaskProvider != null) {
             artifact(sourcesJarTaskProvider.get())
           }
-        }
-      }
 
-      withType<MavenPublication>().all {
-        pom {
-          groupId = findProperty("GROUP") as String?
-          artifactId = findProperty("POM_ARTIFACT_ID") as String?
-          version = findProperty("VERSION_NAME") as String?
-
-          name.set(findProperty("POM_NAME") as String?)
-          packaging = findProperty("POM_PACKAGING") as String?
-          description.set(findProperty("POM_DESCRIPTION") as String?)
-          url.set(findProperty("POM_URL") as String?)
-
-          scm {
-            url.set(findProperty("POM_SCM_URL") as String?)
-            connection.set(findProperty("POM_SCM_CONNECTION") as String?)
-            developerConnection.set(findProperty("POM_SCM_DEV_CONNECTION") as String?)
-          }
-
-          licenses {
-            license {
-              name.set(findProperty("POM_LICENCE_NAME") as String?)
-              url.set(findProperty("POM_LICENCE_URL") as String?)
-            }
-          }
-
-          developers {
-            developer {
-              id.set(findProperty("POM_DEVELOPER_ID") as String?)
-              name.set(findProperty("POM_DEVELOPER_NAME") as String?)
-            }
+          pom {
+            artifactId = findProperty("POM_ARTIFACT_ID") as String?
           }
         }
       }
@@ -281,6 +258,44 @@ fun Project.configurePublishing() {
         credentials {
           username = findProperty("SONATYPE_NEXUS_USERNAME") as String?
           password = findProperty("SONATYPE_NEXUS_PASSWORD") as String?
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Set fields which are common to all project, either KMP or non-KMP
+ */
+fun PublicationContainer.setDefaultPomFields() {
+  withType<MavenPublication>().all {
+    pom {
+      groupId = findProperty("GROUP") as String?
+
+      version = findProperty("VERSION_NAME") as String?
+      name.set(findProperty("POM_NAME") as String?)
+      packaging = findProperty("POM_PACKAGING") as String?
+
+      description.set(findProperty("POM_DESCRIPTION") as String?)
+      url.set(findProperty("POM_URL") as String?)
+
+      scm {
+        url.set(findProperty("POM_SCM_URL") as String?)
+        connection.set(findProperty("POM_SCM_CONNECTION") as String?)
+        developerConnection.set(findProperty("POM_SCM_DEV_CONNECTION") as String?)
+      }
+
+      licenses {
+        license {
+          name.set(findProperty("POM_LICENCE_NAME") as String?)
+          url.set(findProperty("POM_LICENCE_URL") as String?)
+        }
+      }
+
+      developers {
+        developer {
+          id.set(findProperty("POM_DEVELOPER_ID") as String?)
+          name.set(findProperty("POM_DEVELOPER_NAME") as String?)
         }
       }
     }
