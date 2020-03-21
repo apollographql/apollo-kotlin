@@ -1,17 +1,6 @@
 os: osx
 
-android:
-  components:
-    - tools
-    - platform-tools
-    - build-tools-28.0.3
-    - android-28
-    - android-22 # needed for the emulator
-    - sys-img-armeabi-v7a-android-22 # as of now, travis doesn't support x86 so we stick with armeabi
-  licenses:
-    - android-sdk-preview-license-.+
-    - android-sdk-license-.+
-    - google-gdk-license-.+
+osx_image: xcode11.3
 
 script:
   - curl -s "https://get.sdkman.io" | bash
