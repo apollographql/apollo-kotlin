@@ -1,7 +1,19 @@
-language: android
+os:
+  - osx
 
-jdk:
-  - openjdk8
+osx_image: xcode11.2
+
+before_install:
+  - curl -s "https://get.sdkman.io" | bash
+  - source "$HOME/.sdkman/bin/sdkman-init.sh"
+  - sdk install java 8.0.242.hs-adpt
+  - sdk install gradle
+  - wget https://dl.google.com/android/repository/commandlinetools-mac-6200805_latest.zip -O tools.zip
+  - export ANDROID_SDK_ROOT=~/.android
+  - mkdir ANDROID_SDK_ROOT
+  - unzip tools.zip -d ANDROID_SDK_ROOT
+  - export PATH=$ANDROID_SDK_ROOT/tools/bin:$PATH
+  - avdmanager --list
 
 android:
   components:
