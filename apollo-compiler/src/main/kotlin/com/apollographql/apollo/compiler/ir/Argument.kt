@@ -2,7 +2,7 @@ package com.apollographql.apollo.compiler.ir
 
 data class Argument(
     val name: String,
-    val value: Any,
+    val value: Any?,
     val type: String,
     val sourceLocation: SourceLocation
 ) {
@@ -19,7 +19,7 @@ data class Argument(
 
   override fun hashCode(): Int {
     var result = name.hashCode()
-    result = 31 * result + value.hashCode()
+    result = 31 * result + (value?.hashCode() ?: 0)
     result = 31 * result + type.hashCode()
     return result
   }

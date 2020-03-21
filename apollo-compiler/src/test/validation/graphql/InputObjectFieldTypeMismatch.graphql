@@ -1,0 +1,9 @@
+mutation TestQuery($red: String!) {
+  createReview(review: {
+    favoriteColor: {
+      red: $red
+    }
+  }) {
+    commentary
+  }
+}
