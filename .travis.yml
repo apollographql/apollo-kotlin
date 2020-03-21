@@ -16,8 +16,6 @@ script:
   - sdkmanager --install 'platforms;android-28' 'system-images;android-22;default;armeabi-v7a'
   - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
   - emulator -avd test -no-audio -no-window &
-  # don't wait for the emulator. Hopefully, it'll start while while we build.
-  # if not, we might add some checks here
   - ./gradlew clean build connectedCheck -x checkstyleTest --stacktrace --max-workers=2
   - ./gradlew -p composite build
 
