@@ -94,7 +94,7 @@ class SourceDirectorySetTests {
 
       TestUtils.executeTask("assembleDebug", dir)
 
-      Assert.assertTrue(File(dir, "build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/example/DroidDetailsQuery.class").isFile)
+      Assert.assertTrue(File(dir, "build/intermediates/javac/debug/classes/com/example/DroidDetailsQuery.class").isFile)
       Assert.assertTrue(File(dir, "build/tmp/kotlin-classes/debug/com/example/Main.class").isFile)
       Assert.assertTrue(File(dir, "build/outputs/apk/debug/testProject-debug.apk").isFile)
       Assert.assertTrue(dir.generatedChild("debug/service/com/example/DroidDetailsQuery.java").isFile)
@@ -117,8 +117,8 @@ class SourceDirectorySetTests {
 
       TestUtils.executeTask("assembleDebug", dir)
 
-      Assert.assertTrue(File(dir, "build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/example/DroidDetailsQuery.class").isFile)
-      Assert.assertTrue(File(dir, "build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/example/Main.class").isFile)
+      Assert.assertTrue(File(dir, "build/intermediates/javac/debug/classes/com/example/DroidDetailsQuery.class").isFile)
+      Assert.assertTrue(File(dir, "build/intermediates/javac/debug/classes/com/example/Main.class").isFile)
       Assert.assertTrue(File(dir, "build/outputs/apk/debug/testProject-debug.apk").isFile)
       Assert.assertTrue(dir.generatedChild("debug/service/com/example/DroidDetailsQuery.java").isFile)
     }
