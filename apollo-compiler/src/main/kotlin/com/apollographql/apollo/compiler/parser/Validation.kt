@@ -55,7 +55,7 @@ private fun List<Field>.validateArguments(operation: Operation, schema: Schema) 
 private fun Field.validateArguments(operation: Operation, schema: Schema) {
   args.forEach { arg ->
     try {
-      val argumentTypeRef = schema.resolveType(type)
+      val argumentTypeRef = schema.resolveType(arg.type)
       argumentTypeRef.validateArgumentValue(
           fieldName = arg.name,
           value = arg.value to true,
