@@ -6,7 +6,6 @@ script:
   - curl -s "https://get.sdkman.io" | bash
   - source "$HOME/.sdkman/bin/sdkman-init.sh"
   - sdk install java 8.0.242.hs-adpt
-  - sdk install gradle
   - wget https://dl.google.com/android/repository/commandlinetools-mac-6200805_latest.zip -O tools.zip
   - export ANDROID_SDK_ROOT=~/.android
   - mkdir ANDROID_SDK_ROOT
