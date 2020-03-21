@@ -10,5 +10,3 @@ include("apollo-coroutines-support")
 include("apollo-idling-resource")
 include("apollo-http-cache")
 include("apollo-http-cache-api")
-
-enableFeaturePreview("GRADLE_METADATA")
