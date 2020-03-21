@@ -48,3 +48,54 @@ internal operator fun SourceLocation.Companion.invoke(token: Token) = SourceLoca
     line = token.line,
     position = token.charPositionInLine
 )
+
+internal fun Schema.TypeRef.asGraphQLType(): String {
+  return when (kind) {
+    Schema.Kind.NON_NULL -> "${ofType!!.asGraphQLType()}!"
+    Schema.Kind.LIST -> "[${ofType!!.asGraphQLType()}]"
+    else -> name!!
+  }
+}
+
+internal fun Schema.TypeRef.isAssignableFrom(other: Schema.TypeRef): Boolean {
+  return when (kind) {
+    Schema.Kind.NON_NULL -> {
+      other.kind == Schema.Kind.NON_NULL && ofType!!.isAssignableFrom(other.ofType!!)
+    }
+
+    Schema.Kind.LIST -> {
+      if (other.kind == Schema.Kind.NON_NULL) {
+        isAssignableFrom(other.ofType!!)
+      } else {
+        other.kind == Schema.Kind.LIST && ofType!!.isAssignableFrom(other.ofType!!)
+      }
+    }
+
+    else -> {
+      if (other.kind == Schema.Kind.NON_NULL) {
+        isAssignableFrom(other.ofType!!)
+      } else {
+        kind == other.kind && name == other.name
+      }
+    }
+  }
+}
+
+internal fun Schema.resolveType(graphqlType: String): Schema.TypeRef = when {
+  graphqlType.startsWith("[") && graphqlType.endsWith("]") -> Schema.TypeRef(
+      kind = Schema.Kind.LIST,
+      ofType = resolveType(graphqlType.removeSurrounding(prefix = "[", suffix = "]"))
+  )
+
+  graphqlType.endsWith("!") -> Schema.TypeRef(
+      kind = Schema.Kind.NON_NULL,
+      ofType = resolveType(graphqlType.removeSuffix("!"))
+  )
+
+  else -> this[graphqlType]?.let {
+    Schema.TypeRef(
+        kind = it.kind,
+        name = it.name
+    )
+  }
+} ?: throw GraphQLParseException("Unknown type `$graphqlType`")
