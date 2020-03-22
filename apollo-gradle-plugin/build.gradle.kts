@@ -17,7 +17,7 @@ fun Any.dot(key: String): Any {
 dependencies {
   compileOnly(gradleApi())
   compileOnly(dep("kotlin").dot("plugin"))
-  compileOnly(dep("android").dot("plugin"))
+  compileOnly(dep("android").dot("minPlugin"))
 
   api(project(":apollo-compiler"))
   implementation(dep("kotlin").dot("stdLib"))
