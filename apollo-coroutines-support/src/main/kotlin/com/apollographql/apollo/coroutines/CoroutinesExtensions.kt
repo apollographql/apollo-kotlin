@@ -75,7 +75,7 @@ fun <T> ApolloQueryWatcher<T>.toFlow() = callbackFlow {
 
 /**
  * Converts an [ApolloCall] to an [Deferred]. This is a convenience method that will only return the first value emitted.
- * If the more than one response is required, for an example to retrieve cached and network response, use [toChannel] instead.
+ * If the more than one response is required, for an example to retrieve cached and network response, use [toFlow] instead.
  *
  * @param <T>  the value type.
  * @return the deferred
