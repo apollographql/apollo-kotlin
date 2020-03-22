@@ -321,23 +321,6 @@ fun PublicationContainer.setDefaultPomFields() {
   }
 }
 
-fun publishTasks(repository: String): List<Task> {
-  val name = repository.capitalize()
-  return subprojects.flatMap {
-    if (it.name == "apollo-gradle-plugin") {
-      // apollo-gradle-plugin is a special case as it contains 2 publications and 2 repositories
-      tasks.matching {
-        it.name == "publishKotlinMultiplatformPublicationTo${name}Repository"
-            || it.name == "publishJvmPublicationTo${name}Repository"
-      }
-    } else {
-      tasks.matching {
-        it.name == "publishDefaultPublicationTo${name}Repository"
-      }
-    }
-  }
-}
-
 tasks.register("publishIfNeeded") {
   val eventName = System.getenv("GITHUB_EVENT_NAME")
   val ref = System.getenv("GITHUB_REF")
