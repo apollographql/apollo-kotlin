@@ -280,7 +280,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
     val fields = selectionSet().parse(schemaFieldType)
     val fragmentRefs = selectionSet().fragmentRefs()
     val inlineFragments = selectionSet()?.selection()?.mapNotNull { ctx ->
-      ctx.inlineFragment()?.parse(parentSelectionSet = selectionSet(), parentSchemaType = schemaFieldType)
+      ctx.inlineFragment()?.parse(parentSchemaType = schemaFieldType, parentFields = fields)
     }?.flatten() ?: ParseResult(result = emptyList())
 
     val inlineFragmentFieldsToMerge = inlineFragments.result
@@ -387,8 +387,9 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
   }
 
   private fun GraphQLParser.InlineFragmentContext.parse(
-      parentSelectionSet: GraphQLParser.SelectionSetContext,
-      parentSchemaType: Schema.Type
+      parentSchemaType: Schema.Type,
+      parentFields: ParseResult<List<Field>>
+
   ): ParseResult<InlineFragment> {
     val typeCondition = typeCondition().typeName().NAME().text
     val schemaType = schema[typeCondition] ?: throw ParseException(
@@ -396,22 +397,37 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
         token = typeCondition().typeName().start
     )
 
-    if (!parentSchemaType.isAssignableFrom(schema = schema, other = schemaType)) {
+    if (!parentSchemaType.isAssignableFrom(other = schemaType, schema = schema)) {
       throw ParseException(
-          message = "Fragment cannot be spread here as objects of type `${parentSchemaType.name}` can never be of type `$typeCondition`",
+          message = "Fragment cannot be spread here as result can never be of type `$typeCondition`",
           token = typeCondition().typeName().start
       )
     }
 
-    val possibleTypes = when (schemaType) {
-      is Schema.Type.Interface -> schemaType.possibleTypes?.map { it.rawType.name!! } ?: emptyList()
-      is Schema.Type.Union -> schemaType.possibleTypes?.map { it.rawType.name!! } ?: emptyList()
-      else -> listOf(typeCondition)
-    }.distinct()
+    val decoratedParentFields = parentFields.let { (parentFields, usedTypes) ->
+      // if inline fragment conditional type contains the same field as parent type
+      // carry over meta info such as: `description`, `isDeprecated`, `deprecationReason`
+      val decoratedFields = parentFields.map { parentField ->
+        when (schemaType) {
+          is Schema.Type.Interface -> schemaType.fields?.find { it.name == parentField.fieldName }
+          is Schema.Type.Object -> schemaType.fields?.find { it.name == parentField.fieldName }
+          is Schema.Type.Union -> schemaType.fields?.find { it.name == parentField.fieldName }
+          else -> null
+        }?.let { field ->
+          parentField.copy(
+              description = field.description ?: "",
+              isDeprecated = field.isDeprecated,
+              deprecationReason = field.deprecationReason ?: ""
+          )
+        } ?: parentField
+      }
+      ParseResult(
+          result = decoratedFields,
+          usedTypes = usedTypes
+      )
+    }
 
-    val fields = parentSelectionSet.parse(schemaType).plus(
-        selectionSet().parse(schemaType)
-    ) { left, right -> left.union(right) }
+    val fields = decoratedParentFields.plus(selectionSet().parse(schemaType)) { left, right -> left.union(right) }
     if (fields.result.isEmpty()) {
       throw ParseException(
           message = "Inline fragment `$typeCondition` must have a selection of sub-fields",
@@ -419,6 +435,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
       )
     }
 
+    val possibleTypes = schemaType.possibleTypes(schema).toList()
     return ParseResult(
         result = InlineFragment(
             typeCondition = typeCondition,
@@ -449,12 +466,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
         token = typeCondition().typeName().NAME().symbol
     )
 
-    val possibleTypes = when (schemaType) {
-      is Schema.Type.Interface -> schemaType.possibleTypes?.map { it.rawType.name!! } ?: emptyList()
-      is Schema.Type.Union -> schemaType.possibleTypes?.map { it.rawType.name!! } ?: emptyList()
-      else -> listOf(typeCondition)
-    }.distinct()
-
+    val possibleTypes = schemaType.possibleTypes(schema)
     val fields = selectionSet().parse(schemaType)
     if (fields.result.isEmpty()) {
       throw ParseException(
@@ -466,7 +478,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
     val fragmentRefs = selectionSet().fragmentRefs()
 
     val inlineFragments = selectionSet()?.selection()?.mapNotNull { ctx ->
-      ctx.inlineFragment()?.parse(parentSelectionSet = selectionSet(), parentSchemaType = schemaType)
+      ctx.inlineFragment()?.parse(parentSchemaType = schemaType, parentFields = fields)
     }?.flatten() ?: ParseResult(result = emptyList())
 
     val mergeInlineFragmentFields = inlineFragments.result
@@ -482,7 +494,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
             fragmentName = fragmentName,
             typeCondition = typeCondition,
             source = graphQLDocumentSource,
-            possibleTypes = possibleTypes,
+            possibleTypes = possibleTypes.toList(),
             fields = fields.result.mergeFields(mergeInlineFragmentFields),
             fragmentRefs = fragmentRefs.union(mergeInlineFragmentRefs).toList(),
             inlineFragments = inlineFragments.result.filter { it.typeCondition != typeCondition },
@@ -744,8 +756,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
       }.also { possibleTypes ->
         if (fragment.possibleTypes.intersect(possibleTypes).isEmpty()) {
           throw GraphQLDocumentParseException(
-              message = "Fragment `${ref.name}` can't be spread here as objects of type `$typeCondition` can never be of " +
-                  "type `${fragment.typeCondition}`",
+              message = "Fragment `${ref.name}` can't be spread here as result can never be of type `${fragment.typeCondition}`",
               sourceLocation = ref.sourceLocation,
               graphQLFilePath = filePath
           )
