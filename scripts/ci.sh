@@ -5,9 +5,13 @@ set -x
 
 export PATH="$ANDROID_HOME"/tools/bin:$PATH
 
-sdkmanager --install 'system-images;android-28;default;x86' 'emulator'
-echo "no" |avdmanager create avd --force -n test -k 'system-images;android-28;default;x86'
-emulator -avd test -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim &
+which emulator
+
+sdkmanager --install 'system-images;android-28;default;x86_64' 'emulator'
+echo "no" |avdmanager create avd --force -n test -k 'system-images;android-28;default;x86_64'
+
+"$ANDROID_HOME"/emulator/emulator -avd test -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim &
+
 # theorically, we should wait here for the emulator to boot but compilation is slow enough
 # that the emulator will be up by the time we reach the connectedTests. This saves writing
 # some bash code and a few seconds of total build time.
