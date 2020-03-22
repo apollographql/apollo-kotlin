@@ -4,7 +4,9 @@ set -e
 set -x
 
 env
-find $ANDROID_HOME
+find "$ANDROID_HOME"/tools
+
+export PATH="$ANDROID_HOME"/tools/bin:$PATH
 
 avdmanager create avd --force -n test -k 'system-images;android-22;default;armeabi-v7a'
 emulator -avd test -no-audio -no-window &
