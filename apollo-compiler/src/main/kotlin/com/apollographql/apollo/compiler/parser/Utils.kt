@@ -25,23 +25,12 @@ internal fun Schema.Type.possibleTypes(schema: Schema): Set<String> {
   }
 }
 
-internal fun Schema.Type.isAssignableFrom(schema: Schema, other: Schema.Type): Boolean {
-  if (name == other.name) {
-    return true
-  }
-  return when (this) {
-    is Schema.Type.Union -> possibleTypes(schema).intersect(other.possibleTypes(schema)).isNotEmpty()
-    is Schema.Type.Interface -> {
-      val possibleTypes = (possibleTypes ?: emptyList()).mapNotNull { it.rawType.name }
-      possibleTypes.contains(other.name) || possibleTypes.any { typeName ->
-        val schemaType = schema[typeName] ?: throw GraphQLParseException(
-            message = "Unknown possible type `$typeName` for INTERFACE `$name`"
-        )
-        schemaType.isAssignableFrom(schema = schema, other = other)
-      }
-    }
-    else -> false
-  }
+internal fun Schema.Type.isAssignableFrom(other: Schema.Type, schema: Schema): Boolean {
+  return Schema.TypeRef(kind = kind, name = name)
+      .isAssignableFrom(
+          other = Schema.TypeRef(kind = other.kind, name = other.name),
+          schema = schema
+      )
 }
 
 internal operator fun SourceLocation.Companion.invoke(token: Token) = SourceLocation(
@@ -57,25 +46,27 @@ internal fun Schema.TypeRef.asGraphQLType(): String {
   }
 }
 
-internal fun Schema.TypeRef.isAssignableFrom(other: Schema.TypeRef): Boolean {
+internal fun Schema.TypeRef.isAssignableFrom(other: Schema.TypeRef, schema: Schema): Boolean {
   return when (kind) {
     Schema.Kind.NON_NULL -> {
-      other.kind == Schema.Kind.NON_NULL && ofType!!.isAssignableFrom(other.ofType!!)
+      other.kind == Schema.Kind.NON_NULL && ofType!!.isAssignableFrom(other = other.ofType!!, schema = schema)
     }
 
     Schema.Kind.LIST -> {
       if (other.kind == Schema.Kind.NON_NULL) {
-        isAssignableFrom(other.ofType!!)
+        isAssignableFrom(other = other.ofType!!, schema = schema)
       } else {
-        other.kind == Schema.Kind.LIST && ofType!!.isAssignableFrom(other.ofType!!)
+        other.kind == Schema.Kind.LIST && ofType!!.isAssignableFrom(other = other.ofType!!, schema = schema)
       }
     }
 
     else -> {
       if (other.kind == Schema.Kind.NON_NULL) {
-        isAssignableFrom(other.ofType!!)
+        isAssignableFrom(other = other.ofType!!, schema = schema)
       } else {
-        kind == other.kind && name == other.name
+        val possibleTypes = schema.resolveType(this).possibleTypes(schema)
+        val otherPossibleTypes = schema.resolveType(other).possibleTypes(schema)
+        possibleTypes.intersect(otherPossibleTypes).isNotEmpty()
       }
     }
   }
@@ -99,3 +90,7 @@ internal fun Schema.resolveType(graphqlType: String): Schema.TypeRef = when {
     )
   }
 } ?: throw GraphQLParseException("Unknown type `$graphqlType`")
+
+internal fun Schema.resolveType(typeRef: Schema.TypeRef): Schema.Type {
+  return this[typeRef.name] ?: throw GraphQLParseException("Unknown type `${typeRef.name}`")
+}
