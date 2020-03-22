@@ -5,8 +5,8 @@ set -x
 
 export PATH="$ANDROID_HOME"/tools/bin:$PATH
 
-sdkmanager --install 'system-images;android-22;default;armeabi-v7a' 'emulator'
-echo "no" |avdmanager create avd --force -n test -k 'system-images;android-22;default;armeabi-v7a'
+sdkmanager --install 'system-images;android-28;default;x86_64' 'emulator'
+echo "no" |avdmanager create avd --force -n test -k 'system-images;android-28;default;x86_64'
 emulator -avd test -no-audio -no-window &
 
 ./gradlew clean build connectedCheck -x checkstyleTest --stacktrace --max-workers=2
