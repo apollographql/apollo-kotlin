@@ -241,8 +241,27 @@ fun Project.configurePublishing() {
         name = "bintray"
         url = uri("https://api.bintray.com/maven/apollographql/android/${project.property("POM_ARTIFACT_ID")}/;publish=1;override=1")
         credentials {
-          username = findProperty("bintray.user") as String?
-          password = findProperty("bintray.apikey") as String?
+          username = System.getenv("BINTRAY_USER")
+          password = System.getenv("BINTRAY_API_KEY")
+        }
+      }
+
+      maven {
+        name = "ojo"
+        url = uri("https://oss.jfrog.org/artifactory/oss-snapshot-local/")
+        credentials {
+          username = System.getenv("BINTRAY_USER")
+          password = System.getenv("BINTRAY_API_KEY")
+        }
+      }
+
+      maven {
+        // Same as the regular bintray repository with the plugin marker hardcoded
+        name = "bintrayMarker"
+        url = uri("https://api.bintray.com/maven/apollographql/android/com.apollographql.apollo.gradle.plugin/;publish=1;override=1")
+        credentials {
+          username = System.getenv("BINTRAY_USER")
+          password = System.getenv("BINTRAY_API_KEY")
         }
       }
 
@@ -250,8 +269,8 @@ fun Project.configurePublishing() {
         name = "oss"
         url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
         credentials {
-          username = findProperty("SONATYPE_NEXUS_USERNAME") as String?
-          password = findProperty("SONATYPE_NEXUS_PASSWORD") as String?
+          username = System.getenv("SONATYPE_NEXUS_USERNAME")
+          password = System.getenv("SONATYPE_NEXUS_PASSWORD")
         }
       }
     }
@@ -292,6 +311,49 @@ fun PublicationContainer.setDefaultPomFields() {
           name.set(findProperty("POM_DEVELOPER_NAME") as String?)
         }
       }
+    }
+  }
+}
+
+tasks.register("publishIfNeeded") {
+  val eventName = System.getenv("GITHUB_EVENT_NAME")
+  val ref = System.getenv("GITHUB_REF")
+  project.logger.log(LogLevel.LIFECYCLE, "publishIfNeeded eventName=$eventName ref=$ref")
+
+  if (eventName == "push" && ref == "ref/heads/master") {
+    project.logger.log(LogLevel.LIFECYCLE, "Deploying snapshot to OSS...")
+    dependsOn(subprojects.flatMap {
+      tasks.matching {
+        if (it.name == "apollo-gradle-plugin") {
+          it.name in arrayOf("publishDefaultPublicationToOjoRepository",
+              "publishApolloGradlePluginPluginMarkerMavenPublicationToOjoRepository")
+        } else {
+          it.name == "publishAllPublicationsToOjoRepository"
+        }
+      }
+    })
+    doLast {
+      project.logger.log(LogLevel.LIFECYCLE, "Snapshot deployed on OJO!")
+    }
+  }
+
+  if (ref.startsWith("ref/tags/")) {
+    project.logger.log(LogLevel.LIFECYCLE, "Deploying release to Bintray...")
+    dependsOn(subprojects.flatMap {
+      tasks.matching {
+        if (it.name == "apollo-gradle-plugin") {
+          it.name in arrayOf("publishDefaultPublicationToBintrayRepository",
+              "publishApolloGradlePluginPluginMarkerMavenPublicationToBintrayMarkerRepository")
+        } else {
+          it.name == "publishAllPublicationsToBintrayRepository"
+        }
+      }
+    })
+
+    project.logger.log(LogLevel.LIFECYCLE, "Deploying release to Gradle Portal...")
+    dependsOn(":apollo-gradle-plugin:publishPlugin")
+    doLast {
+      project.logger.log(LogLevel.LIFECYCLE, "Release deployed to Bintray and Gradle Plugin Portal!")
     }
   }
 }
