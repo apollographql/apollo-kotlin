@@ -8,7 +8,7 @@
 Apollo-Android is a GraphQL compliant client that generates Java and Kotlin models from standard GraphQL queries. These models give you a typesafe API to work with GraphQL servers.  Apollo will help you keep your GraphQL query statements together, organized, and easy to access. Change a query and recompile your project - Apollo code gen will rebuild your data model.  Code generation also allows Apollo to read and unmarshal responses from the network without the need of any reflection.
 
 Apollo-Android is designed primarily with Android in mind but you can use it in any Java/Kotlin app. The android-only parts are in `apollo-android-support` and are only needed to use SQLite as a cache or the android main thread for callbacks.
- 
+
 Apollo-android features:
 
 * Automatic generation of typesafe models.
