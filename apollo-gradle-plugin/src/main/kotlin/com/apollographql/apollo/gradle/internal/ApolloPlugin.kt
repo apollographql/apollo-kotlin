@@ -14,6 +14,7 @@ import java.net.URLDecoder
 open class ApolloPlugin : Plugin<Project> {
   companion object {
     const val TASK_GROUP = "apollo"
+    const val MIN_GRADLE_VERSION = "6.0"
 
     fun useService(project: Project, schemaFilePath: String?, outputPackageName: String? = null, exclude: String? = null): String {
 
@@ -302,8 +303,8 @@ open class ApolloPlugin : Plugin<Project> {
   }
 
   override fun apply(project: Project) {
-    require(GradleVersion.current().compareTo(GradleVersion.version("5.6")) >= 0) {
-      "apollo-android requires Gradle version 5.6 or greater"
+    require(GradleVersion.current().compareTo(GradleVersion.version(MIN_GRADLE_VERSION)) >= 0) {
+      "apollo-android requires Gradle version $MIN_GRADLE_VERSION or greater"
     }
 
     val apolloExtension = project.extensions.create(ApolloExtension::class.java, "apollo", DefaultApolloExtension::class.java, project) as DefaultApolloExtension
