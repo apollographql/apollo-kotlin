@@ -328,6 +328,18 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "foo",
+              "description": "For testing fragment type coercion",
+              "args": [],
+              "type": {
+                "kind": "INTERFACE",
+                "name": "Foo",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "inputFields": null,
@@ -3164,6 +3176,202 @@
             }
           ],
           "possibleTypes": null
+        },
+        {
+          "kind": "INTERFACE",
+          "name": "Foo",
+          "description": "For testing fragment type coercion",
+          "fields": [
+            {
+              "name": "foo",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": [
+            {
+              "kind": "OBJECT",
+              "name": "FooObject",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "FooBar",
+              "ofType": null
+            }
+          ]
+        },
+        {
+          "kind": "OBJECT",
+          "name": "FooObject",
+          "description": "For testing fragment type coercion",
+          "fields": [
+            {
+              "name": "foo",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "Foo",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": []
+        },
+        {
+          "kind": "INTERFACE",
+          "name": "Bar",
+          "description": "For testing fragment type coercion",
+          "fields": [
+            {
+              "name": "bar",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": [
+            {
+              "kind": "OBJECT",
+              "name": "BarObject",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "FooBar",
+              "ofType": null
+            }
+          ]
+        },
+        {
+          "kind": "OBJECT",
+          "name": "BarObject",
+          "description": "",
+          "fields": [
+            {
+              "name": "bar",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "Bar",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "FooBar",
+          "description": "For testing fragment type coercion",
+          "fields": [
+            {
+              "name": "foo",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "bar",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "Foo",
+              "ofType": null
+            },
+            {
+              "kind": "INTERFACE",
+              "name": "Bar",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": []
         }
       ],
       "directives": [

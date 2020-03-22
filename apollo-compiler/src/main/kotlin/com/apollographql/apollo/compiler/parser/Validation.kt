@@ -224,7 +224,7 @@ private fun Operation.validateVariableType(name: String, expectedType: Schema.Ty
       "Variable `$name` is not defined by operation `${operationName}`"
   )
   val variableType = schema.resolveType(variable.type)
-  if (!expectedType.isAssignableFrom(variableType)) {
+  if (!expectedType.isAssignableFrom(other = variableType, schema = schema)) {
     throw GraphQLParseException(
         "Variable `$name` of type `${variableType.asGraphQLType()}` used in position expecting type `${expectedType.asGraphQLType()}`"
     )
