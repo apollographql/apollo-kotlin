@@ -5,7 +5,7 @@ set -x
 
 env
 
-android create avd --force -n test -t android-22 --abi armeabi-v7a
+avdmanager create avd --force -n test -k 'system-images;android-22;default;armeabi-v7a'
 emulator -avd test -no-audio -no-window &
 
 ./gradlew clean build connectedCheck -x checkstyleTest --stacktrace --max-workers=2
