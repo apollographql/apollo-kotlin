@@ -324,10 +324,10 @@ fun PublicationContainer.setDefaultPomFields() {
 tasks.register("publishIfNeeded") {
   val eventName = System.getenv("GITHUB_EVENT_NAME")
   val ref = System.getenv("GITHUB_REF")
-  println("publishIfNeeded eventName=$eventName ref=$ref")
+  project.logger.log(LogLevel.LIFECYCLE, "publishIfNeeded eventName=$eventName ref=$ref")
 
   if (eventName == "push" && ref == "ref/heads/master") {
-    println("Deploying snapshot to OSS...")
+    project.logger.log(LogLevel.LIFECYCLE, "Deploying snapshot to OSS...")
     dependsOn(subprojects.flatMap {
       tasks.matching {
         if (it.name == "apollo-gradle-plugin") {
@@ -339,12 +339,12 @@ tasks.register("publishIfNeeded") {
       }
     })
     doLast {
-      println("Snapshot deployed on OJO!")
+      project.logger.log(LogLevel.LIFECYCLE, "Snapshot deployed on OJO!")
     }
   }
 
   if (ref.startsWith("ref/tags/")) {
-    println("Deploying release to Bintray...")
+    project.logger.log(LogLevel.LIFECYCLE, "Deploying release to Bintray...")
     dependsOn(subprojects.flatMap {
       tasks.matching {
         if (it.name == "apollo-gradle-plugin") {
@@ -356,10 +356,10 @@ tasks.register("publishIfNeeded") {
       }
     })
 
-    println("Deploying release to Gradle Portal...")
+    project.logger.log(LogLevel.LIFECYCLE, "Deploying release to Gradle Portal...")
     dependsOn(":apollo-gradle-plugin:publishPlugin")
     doLast {
-      println("Release deployed to Bintray and Gradle Plugin Portal!")
+      project.logger.log(LogLevel.LIFECYCLE, "Release deployed to Bintray and Gradle Plugin Portal!")
     }
   }
 }
