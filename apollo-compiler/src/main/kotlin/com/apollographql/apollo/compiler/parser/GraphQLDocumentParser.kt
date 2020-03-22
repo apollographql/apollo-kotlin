@@ -415,7 +415,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
           else -> null
         }?.let { field ->
           parentField.copy(
-              description = field.description ?: "",
+              description = field.description ?: parentField.description,
               isDeprecated = field.isDeprecated,
               deprecationReason = field.deprecationReason ?: ""
           )
