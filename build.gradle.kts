@@ -315,6 +315,58 @@ fun PublicationContainer.setDefaultPomFields() {
   }
 }
 
+val publishToOjo = tasks.register("publishToOjo") {
+  dependsOn(subprojects.flatMap {subproject ->
+    subproject.tasks.matching {
+      if (it.name == "apollo-gradle-plugin") {
+        it.name in arrayOf("publishDefaultPublicationToOjoRepository",
+            "publishApolloGradlePluginPluginMarkerMavenPublicationToOjoRepository")
+      } else {
+        it.name == "publishAllPublicationsToOjoRepository"
+      }
+    }
+  })
+  doLast {
+    project.logger.log(LogLevel.LIFECYCLE, "Snapshot deployed on OJO!")
+  }
+}
+
+val publishToBintray = tasks.register("publishToBintray") {
+  dependsOn(subprojects.flatMap {subproject ->
+    subproject.tasks.matching {
+      if (it.name == "apollo-gradle-plugin") {
+        it.name in arrayOf("publishDefaultPublicationToBintrayRepository",
+            "publishApolloGradlePluginPluginMarkerMavenPublicationToBintrayMarkerRepository")
+      } else {
+        it.name == "publishAllPublicationsToBintrayRepository"
+      }
+    }
+  })
+}
+
+val publishToOss = tasks.register("publishToOss") {
+  dependsOn(subprojects.flatMap {subproject ->
+    subproject.tasks.matching {
+      if (it.name == "apollo-gradle-plugin") {
+        it.name in arrayOf("publishDefaultPublicationToOssRepository",
+            "publishApolloGradlePluginPluginMarkerMavenPublicationToOssRepository")
+      } else {
+        it.name == "publishAllPublicationsToOssRepository"
+      }
+    }
+  })
+  doLast {
+    project.logger.log(LogLevel.LIFECYCLE, "Snapshot deployed on OSS!")
+  }
+}
+
+val publishToGradlePortal = tasks.register("publishToGradlePortal") {
+  dependsOn(":apollo-gradle-plugin:publishPlugin")
+  doLast {
+    project.logger.log(LogLevel.LIFECYCLE, "Plugin deployed Gradle Plugin Portal!")
+  }
+}
+
 tasks.register("publishIfNeeded") {
   val eventName = System.getenv("GITHUB_EVENT_NAME")
   val ref = System.getenv("GITHUB_REF")
@@ -322,38 +374,14 @@ tasks.register("publishIfNeeded") {
 
   if (eventName == "push" && ref == "ref/heads/master") {
     project.logger.log(LogLevel.LIFECYCLE, "Deploying snapshot to OSS...")
-    dependsOn(subprojects.flatMap {
-      tasks.matching {
-        if (it.name == "apollo-gradle-plugin") {
-          it.name in arrayOf("publishDefaultPublicationToOjoRepository",
-              "publishApolloGradlePluginPluginMarkerMavenPublicationToOjoRepository")
-        } else {
-          it.name == "publishAllPublicationsToOjoRepository"
-        }
-      }
-    })
-    doLast {
-      project.logger.log(LogLevel.LIFECYCLE, "Snapshot deployed on OJO!")
-    }
+    dependsOn(publishToOjo)
   }
 
-  if (ref.startsWith("ref/tags/")) {
+  if (ref?.startsWith("ref/tags/") == true) {
     project.logger.log(LogLevel.LIFECYCLE, "Deploying release to Bintray...")
-    dependsOn(subprojects.flatMap {
-      tasks.matching {
-        if (it.name == "apollo-gradle-plugin") {
-          it.name in arrayOf("publishDefaultPublicationToBintrayRepository",
-              "publishApolloGradlePluginPluginMarkerMavenPublicationToBintrayMarkerRepository")
-        } else {
-          it.name == "publishAllPublicationsToBintrayRepository"
-        }
-      }
-    })
+    dependsOn(publishToBintray)
 
     project.logger.log(LogLevel.LIFECYCLE, "Deploying release to Gradle Portal...")
-    dependsOn(":apollo-gradle-plugin:publishPlugin")
-    doLast {
-      project.logger.log(LogLevel.LIFECYCLE, "Release deployed to Bintray and Gradle Plugin Portal!")
-    }
+    dependsOn(publishToGradlePortal)
   }
 }
