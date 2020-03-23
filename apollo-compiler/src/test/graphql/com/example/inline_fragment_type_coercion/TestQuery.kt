@@ -11,7 +11,7 @@ import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ScalarTypeAdapters
-import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
+import com.apollographql.apollo.api.ScalarTypeAdapters.DEFAULT
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
@@ -32,7 +32,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   override fun wrapData(data: Data?): Data? = data
   override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
   override fun name(): OperationName = OPERATION_NAME
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper.invoke {
+  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
     Data(it)
   }
 
@@ -52,7 +52,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val foo: String,
     val bar: String
   ) : FooFoo {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@AsBar.__typename)
       writer.writeString(RESPONSE_FIELDS[1], this@AsBar.foo)
       writer.writeString(RESPONSE_FIELDS[2], this@AsBar.bar)
@@ -66,9 +66,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): AsBar = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val foo = readString(RESPONSE_FIELDS[1])!!
-        val bar = readString(RESPONSE_FIELDS[2])!!
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val foo = readString(RESPONSE_FIELDS[1])
+        val bar = readString(RESPONSE_FIELDS[2])
         AsBar(
           __typename = __typename,
           foo = foo,
@@ -83,7 +83,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val foo: String,
     val asBar: AsBar?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@Foo.__typename)
       writer.writeString(RESPONSE_FIELDS[1], this@Foo.foo)
       writer.writeFragment(this@Foo.asBar?.marshaller())
@@ -99,8 +99,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
 
       operator fun invoke(reader: ResponseReader): Foo = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val foo = readString(RESPONSE_FIELDS[1])!!
+        val __typename = readString(RESPONSE_FIELDS[0])
+        val foo = readString(RESPONSE_FIELDS[1])
         val asBar = readFragment<AsBar>(RESPONSE_FIELDS[2]) { reader ->
           AsBar(reader)
         }
@@ -119,7 +119,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val foo: Foo?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
       writer.writeObject(RESPONSE_FIELDS[0], this@Data.foo?.marshaller())
     }
 
@@ -157,8 +157,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           """.trimMargin()
         )
 
-    val OPERATION_NAME: OperationName = object : OperationName {
-      override fun name(): String = "TestQuery"
-    }
+    val OPERATION_NAME: OperationName = OperationName { "TestQuery" }
   }
 }

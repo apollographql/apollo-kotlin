@@ -1,5 +1,8 @@
 package com.apollographql.apollo.api;
 
+import com.apollographql.apollo.api.internal.json.JsonWriter;
+import com.apollographql.apollo.api.internal.json.Utils;
+import okio.Buffer;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -9,24 +12,25 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.apollographql.apollo.api.internal.json.JsonWriter;
-import com.apollographql.apollo.api.internal.json.Utils;
-import okio.Buffer;
-import org.jetbrains.annotations.NotNull;
-
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 public final class ScalarTypeAdapters {
   public static final ScalarTypeAdapters DEFAULT = new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap());
   private static final Map<Class, CustomTypeAdapter> DEFAULT_ADAPTERS = defaultAdapters();
+  private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   private final Map<String, CustomTypeAdapter> customAdapters;
 
   public ScalarTypeAdapters(@NotNull Map<ScalarType, CustomTypeAdapter> customAdapters) {
+    customTypeAdapters = customAdapters;
     Map<ScalarType, CustomTypeAdapter> nonNullcustomAdapters = checkNotNull(customAdapters, "customAdapters == null");
     this.customAdapters = new HashMap<>();
     for (Map.Entry<ScalarType, CustomTypeAdapter> entry : nonNullcustomAdapters.entrySet()) {
       this.customAdapters.put(entry.getKey().typeName(), entry.getValue());
     }
+  }
+
+  public Map<ScalarType, CustomTypeAdapter> getCustomAdapters() {
+    return customTypeAdapters;
   }
 
   @SuppressWarnings("unchecked") @NotNull public <T> CustomTypeAdapter<T> adapterFor(@NotNull ScalarType scalarType) {
