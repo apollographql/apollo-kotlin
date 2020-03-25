@@ -43,7 +43,6 @@ class KotlinDSLTests {
     }
   }
 
-
   @Test
   fun `parameters do not throw`() {
     val apolloConfiguration = """
