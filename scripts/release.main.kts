@@ -1,12 +1,10 @@
-#!/usr/bin/env kscript
+#!/usr/bin/env kotlin
 import java.io.File
 
 /**
  * A script to run locally in order to make a release.
  *
- * You need kscript installed on your machine: https://github.com/holgerbrandl/kscript
- *
- * To edit, run `kscript --idea misc/release.kts`
+ * You need kotlin 1.3.70+ installed on your machine
  */
 
 fun runCommand(vararg args: String): String {
