@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static com.apollographql.apollo.ApolloCall.StatusEvent.COMPLETED;
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 import static com.apollographql.apollo.internal.CallState.ACTIVE;
 import static com.apollographql.apollo.internal.CallState.CANCELED;
@@ -162,6 +163,9 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
       }
 
       @Override public void onStatusEvent(@NotNull ApolloCall.StatusEvent event) {
+        if (event == COMPLETED) {
+          tracker.unregisterQueryWatcher(RealApolloQueryWatcher.this);
+        }
         ApolloCall.Callback<T> callback = originalCallback.get();
         if (callback == null) {
           logger.d("onStatusEvent for operation: %s. No callback present.", operation().name().name());
