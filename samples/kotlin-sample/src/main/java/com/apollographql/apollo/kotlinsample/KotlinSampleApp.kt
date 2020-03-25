@@ -11,6 +11,7 @@ import com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo.kotlinsample.data.ApolloCallbackService
 import com.apollographql.apollo.kotlinsample.data.ApolloCoroutinesService
 import com.apollographql.apollo.kotlinsample.data.ApolloRxService
+import com.apollographql.apollo.kotlinsample.data.ApolloWatcherService
 import com.apollographql.apollo.kotlinsample.data.GitHubDataSource
 import okhttp3.OkHttpClient
 
@@ -63,12 +64,14 @@ class KotlinSampleApp : Application() {
       ServiceTypes.CALLBACK -> ApolloCallbackService(apolloClient)
       ServiceTypes.RX_JAVA -> ApolloRxService(apolloClient)
       ServiceTypes.COROUTINES -> ApolloCoroutinesService(apolloClient)
+      ServiceTypes.WATCHER -> ApolloWatcherService(apolloClient)
     }
   }
 
   enum class ServiceTypes {
     CALLBACK,
     RX_JAVA,
-    COROUTINES
+    COROUTINES,
+    WATCHER
   }
 }
