@@ -372,7 +372,7 @@ tasks.register("publishIfNeeded") {
   val ref = System.getenv("GITHUB_REF")
   project.logger.log(LogLevel.LIFECYCLE, "publishIfNeeded eventName=$eventName ref=$ref")
 
-  if (eventName == "push" && ref == "ref/heads/master") {
+  if (eventName == "push" && ref == "refs/heads/master") {
     project.logger.log(LogLevel.LIFECYCLE, "Deploying snapshot to OSS...")
     dependsOn(publishToOjo)
   }
