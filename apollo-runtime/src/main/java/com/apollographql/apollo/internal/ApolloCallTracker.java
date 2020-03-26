@@ -10,6 +10,7 @@ import com.apollographql.apollo.api.Mutation;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,15 +19,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.jetbrains.annotations.NotNull;
-
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 /**
  * ApolloCallTracker is responsible for keeping track of running {@link ApolloPrefetch} & {@link ApolloQueryCall}
  * & {@link ApolloMutationCall} & {@link ApolloQueryWatcher} calls.
  */
-@SuppressWarnings("WeakerAccess") public final class ApolloCallTracker {
+@SuppressWarnings("WeakerAccess")
+public final class ApolloCallTracker {
   private final Map<OperationName, Set<ApolloPrefetch>> activePrefetchCalls = new HashMap<>();
   private final Map<OperationName, Set<ApolloQueryCall>> activeQueryCalls = new HashMap<>();
   private final Map<OperationName, Set<ApolloMutationCall>> activeMutationCalls = new HashMap<>();
@@ -58,7 +58,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   /**
    * <p>Removes provided {@link ApolloCall} that finished his execution, if it is found, else throws an
    * {@link AssertionError}.</p>
-   *
+   * <p>
    * If the removal operation is successful and no active running calls are found, then the registered
    * {@link ApolloCallTracker#idleResourceCallback} is invoked.
    *
@@ -86,12 +86,13 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     checkNotNull(apolloPrefetch, "apolloPrefetch == null");
     OperationName operationName = apolloPrefetch.operation().name();
     registerCall(activePrefetchCalls, operationName, apolloPrefetch);
+    activeCallCount.incrementAndGet();
   }
 
   /**
    * <p>Removes provided {@link ApolloPrefetch} that finished his execution, if it is found, else throws an
    * {@link AssertionError}.</p>
-   *
+   * <p>
    * If the removal operation is successful and no active running calls are found, then the registered
    * {@link ApolloCallTracker#idleResourceCallback} is invoked.
    *
@@ -102,6 +103,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     checkNotNull(apolloPrefetch, "apolloPrefetch == null");
     OperationName operationName = apolloPrefetch.operation().name();
     unregisterCall(activePrefetchCalls, operationName, apolloPrefetch);
+    decrementActiveCallCountAndNotify();
   }
 
   /**
@@ -123,12 +125,13 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     checkNotNull(apolloQueryCall, "apolloQueryCall == null");
     OperationName operationName = apolloQueryCall.operation().name();
     registerCall(activeQueryCalls, operationName, apolloQueryCall);
+    activeCallCount.incrementAndGet();
   }
 
   /**
    * <p>Removes provided {@link ApolloQueryCall} that finished his execution, if it is found, else throws an
    * {@link AssertionError}.</p>
-   *
+   * <p>
    * If the removal operation is successful and no active running calls are found, then the registered
    * {@link ApolloCallTracker#idleResourceCallback} is invoked.
    *
@@ -139,6 +142,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     checkNotNull(apolloQueryCall, "apolloQueryCall == null");
     OperationName operationName = apolloQueryCall.operation().name();
     unregisterCall(activeQueryCalls, operationName, apolloQueryCall);
+    decrementActiveCallCountAndNotify();
   }
 
   /**
@@ -160,12 +164,13 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     checkNotNull(apolloMutationCall, "apolloMutationCall == null");
     OperationName operationName = apolloMutationCall.operation().name();
     registerCall(activeMutationCalls, operationName, apolloMutationCall);
+    activeCallCount.incrementAndGet();
   }
 
   /**
    * <p>Removes provided {@link ApolloMutationCall} that finished his execution, if it is found, else throws an
    * {@link AssertionError}.</p>
-   *
+   * <p>
    * If the removal operation is successful and no active running calls are found, then the registered
    * {@link ApolloCallTracker#idleResourceCallback} is invoked.
    *
@@ -176,6 +181,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     checkNotNull(apolloMutationCall, "apolloMutationCall == null");
     OperationName operationName = apolloMutationCall.operation().name();
     unregisterCall(activeMutationCalls, operationName, apolloMutationCall);
+    decrementActiveCallCountAndNotify();
   }
 
   /**
@@ -203,7 +209,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   /**
    * <p>Removes provided {@link ApolloQueryWatcher} that finished his execution, if it is found, else throws an
    * {@link AssertionError}.</p>
-   *
+   * <p>
    * If the removal operation is successful and no active running calls are found, then the registered
    * {@link ApolloCallTracker#idleResourceCallback} is invoked.
    *
@@ -250,7 +256,6 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
       }
       calls.add(call);
     }
-    activeCallCount.incrementAndGet();
   }
 
   private <CALL> void unregisterCall(Map<OperationName, Set<CALL>> registry, OperationName operationName, CALL call) {
@@ -265,10 +270,6 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
         registry.remove(operationName);
       }
     }
-
-    if (activeCallCount.decrementAndGet() == 0) {
-      notifyIdleResource();
-    }
   }
 
   private <CALL> Set<CALL> activeCalls(Map<OperationName, Set<CALL>> registry, @NotNull OperationName operationName) {
@@ -281,10 +282,12 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     }
   }
 
-  private void notifyIdleResource() {
-    IdleResourceCallback callback = idleResourceCallback;
-    if (callback != null) {
-      callback.onIdle();
+  private void decrementActiveCallCountAndNotify() {
+    if (activeCallCount.decrementAndGet() == 0) {
+      IdleResourceCallback callback = idleResourceCallback;
+      if (callback != null) {
+        callback.onIdle();
+      }
     }
   }
 }
