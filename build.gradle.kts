@@ -373,8 +373,10 @@ tasks.register("publishIfNeeded") {
   project.logger.log(LogLevel.LIFECYCLE, "publishIfNeeded eventName=$eventName ref=$ref")
 
   if (eventName == "push" && ref == "refs/heads/master") {
-    project.logger.log(LogLevel.LIFECYCLE, "Deploying snapshot to OSS...")
+    project.logger.log(LogLevel.LIFECYCLE, "Deploying snapshot to OJO...")
     dependsOn(publishToOjo)
+    project.logger.log(LogLevel.LIFECYCLE, "Deploying snapshot to OSS...")
+    dependsOn(publishToOss)
   }
 
   if (ref?.startsWith("ref/tags/") == true) {
