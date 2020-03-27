@@ -5,10 +5,11 @@ title: Coroutines Support
 The Apollo GraphQL client comes with coroutines support with the following extensions:
 
 ```kotlin
-fun <T> ApolloCall<T>.toChannel(capacity: Int = Channel.UNLIMITED): Channel<Response<T>>
+fun <T> ApolloSubscriptionCall<T>.toFlow(): Flow<Response<T>>
+fun <T> ApolloCall<T>.toFlow()
+fun <T> ApolloQueryWatcher<T>.toFlow()
+fun <T> ApolloSubscriptionCall<T>.toFlow(): Flow<Response<T>>
 fun <T> ApolloCall<T>.toDeferred(): Deferred<Response<T>>
-fun <T> ApolloSubscriptionCall<T>.toChannel(capacity: Int = Channel.UNLIMITED): Channel<Response<T>>
-fun <T> ApolloQueryWatcher<T>.toChannel(capacity: Int = Channel.UNLIMITED): Channel<Response<T>>
 fun ApolloPrefetch.toJob(): Job
 ```
 
