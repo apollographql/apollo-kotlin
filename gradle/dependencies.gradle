@@ -71,6 +71,7 @@ ext.dep = [
     okHttp                : [
         mockWebServer: "com.squareup.okhttp3:mockwebserver:$versions.okHttp",
         okHttp       : "com.squareup.okhttp3:okhttp:$versions.okHttp",
+        logging      : "com.squareup.okhttp3:logging-interceptor:$versions.okHttp",
     ],
     okio                  : [
         okio             : "com.squareup.okio:okio:$versions.okio",
