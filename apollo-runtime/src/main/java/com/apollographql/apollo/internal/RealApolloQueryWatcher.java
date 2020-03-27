@@ -161,6 +161,15 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
           callback.get().onFailure(e);
         }
       }
+
+      @Override public void onStatusEvent(@NotNull ApolloCall.StatusEvent event) {
+        ApolloCall.Callback<T> callback = originalCallback.get();
+        if (callback == null) {
+          logger.d("onStatusEvent for operation: %s. No callback present.", operation().name().name());
+          return;
+        }
+        callback.onStatusEvent(event);
+      }
     };
   }
 

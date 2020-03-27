@@ -13,12 +13,17 @@ import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithID
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.internal.cache.normalized.Transaction;
 import com.apollographql.apollo.internal.cache.normalized.WriteableStore;
-
+import io.reactivex.functions.Predicate;
 import junit.framework.Assert;
-
+import okhttp3.Dispatcher;
+import okhttp3.OkHttpClient;
+import okhttp3.mockwebserver.MockWebServer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.InOrder;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,18 +32,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import io.reactivex.functions.Predicate;
-import okhttp3.Dispatcher;
-import okhttp3.OkHttpClient;
-import okhttp3.mockwebserver.MockWebServer;
-
+import static com.apollographql.apollo.ApolloCall.StatusEvent.COMPLETED;
+import static com.apollographql.apollo.ApolloCall.StatusEvent.FETCH_CACHE;
+import static com.apollographql.apollo.ApolloCall.StatusEvent.FETCH_NETWORK;
+import static com.apollographql.apollo.ApolloCall.StatusEvent.SCHEDULED;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.Assert.fail;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
 
 public class ApolloWatcherTest {
   private ApolloClient apolloClient;
@@ -371,5 +374,22 @@ public class ApolloWatcherTest {
 
     assertThat(watchedHeroes).hasSize(1);
     assertThat(watchedHeroes.get(0).name()).isEqualTo("R2-D2");
+  }
+
+  @SuppressWarnings("unchecked") @Test
+  public void queryWatcher_onStatusEvent_properlyCalled() throws Exception {
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
+    server.enqueue(Utils.INSTANCE.mockResponse("EpisodeHeroNameResponseWithId.json"));
+
+    ApolloQueryWatcher<EpisodeHeroNameQuery.Data> watcher = apolloClient.query(query).watcher();
+
+    ApolloCall.Callback<EpisodeHeroNameQuery.Data> callback = mock(ApolloCall.Callback.class);
+    watcher.enqueueAndWatch(callback);
+
+    InOrder inOrder = inOrder(callback);
+    inOrder.verify(callback).onStatusEvent(SCHEDULED);
+    inOrder.verify(callback).onStatusEvent(FETCH_CACHE);
+    inOrder.verify(callback).onStatusEvent(FETCH_NETWORK);
+    inOrder.verify(callback).onStatusEvent(COMPLETED);
   }
 }
