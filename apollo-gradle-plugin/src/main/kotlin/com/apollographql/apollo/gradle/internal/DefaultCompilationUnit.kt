@@ -78,14 +78,18 @@ abstract class DefaultCompilationUnit @Inject constructor(
 
   private fun SourceDirectorySet.findSources(schemaFile: RegularFileProperty) {
     when {
-      apolloVariant.isTest -> srcDirFromVariant(apolloVariant)
+      apolloVariant.isTest -> {
+        // Tests only search files under its folder else it adds duplicated models
+        // Main variant's generated code is already available in test code
+        srcDirFromVariant(apolloVariant, ".")
+      }
       schemaFile.isPresent -> srcDir(schemaFile.asFile.get().parent)
       else -> {
         val sourceFolder = service.sourceFolder.orElse(".").get()
         when {
           sourceFolder.startsWith(File.separator) -> srcDir(sourceFolder)
           sourceFolder.startsWith("..") -> srcDir(project.file("src/main/graphql/$sourceFolder").normalize())
-          else -> srcDirFromVariant(apolloVariant)
+          else -> srcDirFromVariant(apolloVariant, sourceFolder)
         }
       }
     }
@@ -94,8 +98,7 @@ abstract class DefaultCompilationUnit @Inject constructor(
     exclude(service.exclude.getOrElse(emptyList()))
   }
 
-  private fun SourceDirectorySet.srcDirFromVariant(apolloVariant: ApolloVariant) {
-    val sourceFolder = service.sourceFolder.orElse(".").get()
+  private fun SourceDirectorySet.srcDirFromVariant(apolloVariant: ApolloVariant, sourceFolder: String) {
     apolloVariant.sourceSetNames.forEach {
       srcDir("src/$it/graphql/$sourceFolder")
     }
