@@ -3,8 +3,9 @@ package com.apollographql.apollo.gradle.internal
 import com.apollographql.apollo.gradle.api.CompilationUnit
 import com.apollographql.apollo.gradle.api.CompilerParams
 import org.gradle.api.Project
-import org.gradle.api.file.*
-import org.gradle.api.provider.Provider
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.file.SourceDirectorySet
 import java.io.File
 import javax.inject.Inject
 
@@ -50,8 +51,8 @@ abstract class DefaultCompilationUnit @Inject constructor(
         return candidates.first()
       }
     } else {
-      val candidates = graphqlSourceDirectorySet.srcDirs.flatMap {
-        it.walkTopDown().filter { it.name == "schema.json" }.toList()
+      val candidates = graphqlSourceDirectorySet.srcDirs.flatMap { srcDir ->
+        srcDir.walkTopDown().filter { it.name == "schema.json" }.toList()
       }
 
       require(candidates.size <= 1) {
@@ -65,29 +66,38 @@ abstract class DefaultCompilationUnit @Inject constructor(
     }
   }
 
-  fun setSourcesIfNeeded(graphqlSourceDirectorySet: SourceDirectorySet, schemaFile: RegularFileProperty) {
-    if (graphqlSourceDirectorySet.srcDirs.isEmpty()) {
-      if (schemaFile.isPresent) {
-        graphqlSourceDirectorySet.srcDir(schemaFile.asFile.get().parent)
-      } else {
-        val sourceFolder = service.sourceFolder.orElse(".").get()
-        if (sourceFolder.startsWith(File.separator)) {
-          graphqlSourceDirectorySet.srcDir(sourceFolder)
-        } else if (sourceFolder.startsWith("..")) {
-          graphqlSourceDirectorySet.srcDir(project.file("src/main/graphql/$sourceFolder").normalize())
-        } else {
-          apolloVariant.sourceSetNames.forEach {
-            graphqlSourceDirectorySet.srcDir("src/$it/graphql/$sourceFolder")
-          }
-        }
-      }
-
-      graphqlSourceDirectorySet.include("**/*.graphql", "**/*.gql")
-      graphqlSourceDirectorySet.exclude(service.exclude.getOrElse(emptyList()))
+  fun setSourcesIfNeeded(sourceDirectorySet: SourceDirectorySet, schemaFile: RegularFileProperty) {
+    if (sourceDirectorySet.srcDirs.isEmpty()) {
+      sourceDirectorySet.findSources(schemaFile)
     }
 
     if (!schemaFile.isPresent) {
-      schemaFile.set { resolveSchema(graphqlSourceDirectorySet) }
+      schemaFile.set { resolveSchema(sourceDirectorySet) }
+    }
+  }
+
+  private fun SourceDirectorySet.findSources(schemaFile: RegularFileProperty) {
+    when {
+      apolloVariant.isTest -> srcDirFromVariant(apolloVariant)
+      schemaFile.isPresent -> srcDir(schemaFile.asFile.get().parent)
+      else -> {
+        val sourceFolder = service.sourceFolder.orElse(".").get()
+        when {
+          sourceFolder.startsWith(File.separator) -> srcDir(sourceFolder)
+          sourceFolder.startsWith("..") -> srcDir(project.file("src/main/graphql/$sourceFolder").normalize())
+          else -> srcDirFromVariant(apolloVariant)
+        }
+      }
+    }
+
+    include("**/*.graphql", "**/*.gql")
+    exclude(service.exclude.getOrElse(emptyList()))
+  }
+
+  private fun SourceDirectorySet.srcDirFromVariant(apolloVariant: ApolloVariant) {
+    val sourceFolder = service.sourceFolder.orElse(".").get()
+    apolloVariant.sourceSetNames.forEach {
+      srcDir("src/$it/graphql/$sourceFolder")
     }
   }
 
@@ -116,7 +126,7 @@ abstract class DefaultCompilationUnit @Inject constructor(
       return createDefaultCompilationUnit(project, apolloExtension, apolloVariant, service)
     }
 
-    fun fromFiles(project: Project, apolloExtension: DefaultApolloExtension, apolloVariant: ApolloVariant): DefaultCompilationUnit{
+    fun fromFiles(project: Project, apolloExtension: DefaultApolloExtension, apolloVariant: ApolloVariant): DefaultCompilationUnit {
       val service = project.objects.newInstance(DefaultService::class.java, project.objects, "service")
       return createDefaultCompilationUnit(project, apolloExtension, apolloVariant, service)
     }

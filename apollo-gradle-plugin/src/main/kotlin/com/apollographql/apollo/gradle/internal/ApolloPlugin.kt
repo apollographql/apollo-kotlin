@@ -170,9 +170,9 @@ open class ApolloPlugin : Plugin<Project> {
           // generate duplicate classes so we just skip them
           compilationUnit.graphqlSourceDirectorySet
         } else {
-          compilationUnit.setSourcesIfNeeded(compilerParams.graphqlSourceDirectorySet, compilerParams.schemaFile)
           compilerParams.graphqlSourceDirectorySet
         }
+        compilationUnit.setSourcesIfNeeded(graphqlSourceDirectorySet, compilerParams.schemaFile)
 
         it.graphqlFiles.setFrom(graphqlSourceDirectorySet)
         // I'm not sure if gradle is sensitive to the order of the rootFolders. Sort them just in case.
