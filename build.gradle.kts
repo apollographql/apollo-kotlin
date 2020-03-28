@@ -55,7 +55,7 @@ subprojects {
   }
 
   plugins.withType(com.android.build.gradle.BasePlugin::class.java) {
-    extension.compileOptions {
+    (project.extensions.getByName("android") as com.android.build.gradle.BaseExtension).compileOptions {
       sourceCompatibility = JavaVersion.VERSION_1_8
       targetCompatibility = JavaVersion.VERSION_1_8
     }
