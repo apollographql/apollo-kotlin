@@ -1,10 +1,11 @@
 package com.apollographql.apollo.cache.normalized;
 
-import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.api.internal.Function;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.ApolloCacheHeaders;
 import com.apollographql.apollo.cache.CacheHeaders;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,16 +15,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 /**
  * A provider of {@link Record} for reading requests from cache.
  *
  * To serialize a {@link Record} to a standardized form use {@link #recordAdapter()} which handles call custom scalar
- * types registered on the {@link ApolloClient}.
+ * types registered on the ApolloClient
  *
  * If a {@link NormalizedCache} cannot return all the records needed to read a response, it will be considered a cache
  * miss.
@@ -131,7 +129,7 @@ public abstract class NormalizedCache {
   /**
    * Clears all records from the cache.
    *
-   * Clients should call {@link ApolloClient#clearNormalizedCache()} for a thread-safe access to this method.
+   * Clients should call ApolloClient#clearNormalizedCache() for a thread-safe access to this method.
    */
   public abstract void clearAll();
 

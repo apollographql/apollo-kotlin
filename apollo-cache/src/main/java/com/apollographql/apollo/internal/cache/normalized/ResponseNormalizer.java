@@ -1,15 +1,16 @@
 package com.apollographql.apollo.internal.cache.normalized;
 
-import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.Operation;
-import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.api.ResponseField;
+import com.apollographql.apollo.api.internal.ResolveDelegate;
 import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.CacheReference;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.cache.normalized.RecordSet;
-import com.apollographql.apollo.internal.response.ResolveDelegate;
-import com.apollographql.apollo.internal.util.SimpleStack;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,9 +18,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public abstract class ResponseNormalizer<R> implements ResolveDelegate<R> {
   private SimpleStack<List<String>> pathStack;
@@ -43,7 +41,7 @@ public abstract class ResponseNormalizer<R> implements ResolveDelegate<R> {
     willResolveRecord(CacheKeyResolver.rootKeyForOperation(operation));
   }
 
-  @Override public void willResolve(ResponseField field, Operation.Variables variables, Optional value) {
+  @Override public void willResolve(ResponseField field, Operation.Variables variables, @Nullable Object value) {
     String key = cacheKeyBuilder().build(field, variables);
     path.add(key);
   }
@@ -65,10 +63,10 @@ public abstract class ResponseNormalizer<R> implements ResolveDelegate<R> {
     valueStack.push(value);
   }
 
-  @Override public void willResolveObject(ResponseField field, Optional<R> objectSource) {
+  @Override public void willResolveObject(ResponseField field, @Nullable R objectSource) {
     pathStack.push(path);
 
-    CacheKey cacheKey = objectSource.isPresent() ? resolveCacheKey(field, objectSource.get()) : CacheKey.NO_KEY;
+    CacheKey cacheKey = objectSource != null ? resolveCacheKey(field, objectSource) : CacheKey.NO_KEY;
     String cacheKeyValue = cacheKey.key();
     if (cacheKey.equals(CacheKey.NO_KEY)) {
       cacheKeyValue = pathToString();
@@ -80,9 +78,9 @@ public abstract class ResponseNormalizer<R> implements ResolveDelegate<R> {
     currentRecordBuilder = Record.builder(cacheKeyValue);
   }
 
-  @Override public void didResolveObject(ResponseField field, Optional<R> objectSource) {
+  @Override public void didResolveObject(ResponseField field, @Nullable R objectSource) {
     path = pathStack.pop();
-    if (objectSource.isPresent()) {
+    if (objectSource != null) {
       Record completedRecord = currentRecordBuilder.build();
       valueStack.push(new CacheReference(completedRecord.key()));
       dependentKeys.add(completedRecord.key());
@@ -142,7 +140,7 @@ public abstract class ResponseNormalizer<R> implements ResolveDelegate<R> {
     @Override public void willResolveRootQuery(Operation operation) {
     }
 
-    @Override public void willResolve(ResponseField field, Operation.Variables variables, Optional value) {
+    @Override public void willResolve(ResponseField field, Operation.Variables variables, @Nullable Object value) {
     }
 
     @Override public void didResolve(ResponseField field, Operation.Variables variables) {
@@ -151,10 +149,10 @@ public abstract class ResponseNormalizer<R> implements ResolveDelegate<R> {
     @Override public void didResolveScalar(Object value) {
     }
 
-    @Override public void willResolveObject(ResponseField field, Optional objectSource) {
+    @Override public void willResolveObject(ResponseField field, @Nullable Object objectSource) {
     }
 
-    @Override public void didResolveObject(ResponseField field, Optional objectSource) {
+    @Override public void didResolveObject(ResponseField field, @Nullable Object objectSource) {
     }
 
     @Override public void didResolveList(List array) {

@@ -6,9 +6,9 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
-import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.api.internal.FieldValueResolver;
+import com.apollographql.apollo.api.internal.ResolveDelegate;
 import com.apollographql.apollo.api.internal.ResponseReader;
-import com.apollographql.apollo.internal.field.FieldValueResolver;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -136,7 +136,7 @@ public final class RealResponseReader<R> implements ResponseReader {
     checkValue(field, value);
 
     willResolve(field, value);
-    resolveDelegate.willResolveObject(field, Optional.fromNullable(value));
+    resolveDelegate.willResolveObject(field, value);
     final T parsedValue;
     if (value == null) {
       resolveDelegate.didResolveNull();
@@ -145,7 +145,7 @@ public final class RealResponseReader<R> implements ResponseReader {
       parsedValue = (T) objectReader.read(new RealResponseReader(operationVariables, value, fieldValueResolver,
           scalarTypeAdapters, resolveDelegate));
     }
-    resolveDelegate.didResolveObject(field, Optional.fromNullable(value));
+    resolveDelegate.didResolveObject(field, value);
     didResolve(field);
     return parsedValue;
   }
@@ -259,7 +259,7 @@ public final class RealResponseReader<R> implements ResponseReader {
   }
 
   private void willResolve(ResponseField field, Object value) {
-    resolveDelegate.willResolve(field, operationVariables, Optional.fromNullable(value));
+    resolveDelegate.willResolve(field, operationVariables, value);
   }
 
   private void didResolve(ResponseField field) {
@@ -267,8 +267,8 @@ public final class RealResponseReader<R> implements ResponseReader {
   }
 
   private void checkValue(ResponseField field, Object value) {
-    if (!field.optional() && value == null) {
-      throw new NullPointerException("corrupted response reader, expected non null value for " + field.fieldName());
+    if (!field.getOptional() && value == null) {
+      throw new NullPointerException("corrupted response reader, expected non null value for " + field.getFieldName());
     }
   }
 
@@ -316,10 +316,10 @@ public final class RealResponseReader<R> implements ResponseReader {
     @SuppressWarnings("unchecked")
     @Override public <T> T readObject(ObjectReader<T> objectReader) {
       R value = (R) this.value;
-      resolveDelegate.willResolveObject(field, Optional.fromNullable(value));
+      resolveDelegate.willResolveObject(field, value);
       T item = (T) objectReader.read(new RealResponseReader<R>(operationVariables, value, fieldValueResolver,
           scalarTypeAdapters, resolveDelegate));
-      resolveDelegate.didResolveObject(field, Optional.fromNullable(value));
+      resolveDelegate.didResolveObject(field, value);
       return item;
     }
 

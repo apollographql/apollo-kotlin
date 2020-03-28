@@ -15,7 +15,6 @@ import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.OptimisticNormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
-import com.apollographql.apollo.internal.field.CacheFieldValueResolver;
 import com.apollographql.apollo.internal.response.RealResponseReader;
 import com.apollographql.apollo.internal.response.RealResponseWriter;
 import org.jetbrains.annotations.NotNull;

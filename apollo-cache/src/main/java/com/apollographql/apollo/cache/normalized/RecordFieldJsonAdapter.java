@@ -1,6 +1,7 @@
 package com.apollographql.apollo.cache.normalized;
 
-import com.apollographql.apollo.internal.json.CacheJsonStreamReader;
+import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader;
+import com.apollographql.apollo.internal.cache.normalized.CacheJsonStreamReader;
 import com.apollographql.apollo.api.internal.json.JsonWriter;
 
 import org.jetbrains.annotations.NotNull;
@@ -16,8 +17,6 @@ import okio.BufferedSource;
 import okio.Okio;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
-import static com.apollographql.apollo.internal.json.ApolloJsonReader.bufferedSourceJsonReader;
-import static com.apollographql.apollo.internal.json.ApolloJsonReader.cacheJsonStreamReader;
 
 /**
  * An adapter used to serialize and deserialize Record fields. Record object types will be serialized to
@@ -57,7 +56,7 @@ public final class RecordFieldJsonAdapter {
 
   private Map<String, Object> fromBufferSource(BufferedSource bufferedFieldSource) throws IOException {
     final CacheJsonStreamReader cacheJsonStreamReader =
-        cacheJsonStreamReader(bufferedSourceJsonReader(bufferedFieldSource));
+        new CacheJsonStreamReader(new BufferedSourceJsonReader(bufferedFieldSource));
     return cacheJsonStreamReader.toMap();
   }
 

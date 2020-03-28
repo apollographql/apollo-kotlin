@@ -12,6 +12,8 @@ import com.apollographql.apollo.cache.normalized.Record;
 import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.cache.CacheBuilder;
 import com.nytimes.android.external.cache.Weigher;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.charset.Charset;
 import java.util.Collections;
@@ -20,15 +22,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 /**
- * A {@link NormalizedCache} backed by an in memory {@link Cache}. Can be configured with an optional secondaryCache
- * {@link NormalizedCache}, which will be used as a backup if a {@link Record} is not present in the primary cache.
- *
+ * A {@link NormalizedCache} backed by an in memory {@link Cache}. Can be configured with an optional secondaryCache {@link
+ * NormalizedCache}, which will be used as a backup if a {@link Record} is not present in the primary cache.
+ * <p>
  * A common configuration is to have secondary SQL cache.
  */
 public final class LruNormalizedCache extends NormalizedCache {
@@ -121,7 +120,7 @@ public final class LruNormalizedCache extends NormalizedCache {
   }
 
   @NotNull
-  protected Set<String> performMerge(@NotNull final Record apolloRecord, @NotNull final CacheHeaders cacheHeaders) {
+  @Override protected Set<String> performMerge(@NotNull final Record apolloRecord, @NotNull final CacheHeaders cacheHeaders) {
     final Record oldRecord = lruCache.getIfPresent(apolloRecord.key());
     if (oldRecord == null) {
       lruCache.put(apolloRecord.key(), apolloRecord);

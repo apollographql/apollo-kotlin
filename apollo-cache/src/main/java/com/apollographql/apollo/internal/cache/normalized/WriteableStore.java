@@ -3,10 +3,10 @@ package com.apollographql.apollo.internal.cache.normalized;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.Record;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Collection;
 import java.util.Set;
-
-import org.jetbrains.annotations.NotNull;
 
 public interface WriteableStore extends ReadableStore {
 
