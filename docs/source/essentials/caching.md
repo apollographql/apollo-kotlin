@@ -70,7 +70,7 @@ For `CACHE_ONLY`, `CACHE_FIRST` and `NETWORK_FIRST` policies you can define the 
 
 ## Normalized Disk Cache:
 ```java
-//Create the ApolloSqlHelper. Please note that if null is passed in as the name, you will get an in-memory SqlLite database that 
+// Create the ApolloSqlHelper. Please note that if null is passed in as the name, you will get an in-memory SqlLite database that 
 // will not persist across restarts of the app.
 ApolloSqlHelper apolloSqlHelper = ApolloSqlHelper.create(context, "db_name");
 
