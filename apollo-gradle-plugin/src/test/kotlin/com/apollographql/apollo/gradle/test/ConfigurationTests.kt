@@ -1,8 +1,8 @@
 package com.apollographql.apollo.gradle.test
 
-import com.apollographql.apollo.gradle.internal.ApolloPlugin
 import com.apollographql.apollo.gradle.internal.child
 import com.apollographql.apollo.gradle.util.TestUtils
+import com.apollographql.apollo.gradle.util.TestUtils.fixturesDirectory
 import com.apollographql.apollo.gradle.util.TestUtils.withSimpleProject
 import com.apollographql.apollo.gradle.util.TestUtils.withTestProject
 import com.apollographql.apollo.gradle.util.generatedChild
@@ -443,7 +443,54 @@ class ConfigurationTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
+      assertTrue(dir.generatedChild("main/service/com/example/DroidDetailsQuery.java").exists())
       assertTrue(dir.generatedChild("test/service/com/example/DroidDetailsQuery.java").exists().not())
+    }
+  }
+
+  @Test
+  fun `explicit schemaFile and graphqlSourceDirectorySet should not generate for test`() {
+    withSimpleProject("""
+      apollo {
+        schemaFile = file("src/main/graphql/com/example/schema.json")
+        graphqlSourceDirectorySet.srcDir(file("src/main/graphql/"))
+        graphqlSourceDirectorySet.include("**/*.graphql")
+      }
+    """.trimIndent()) { dir ->
+      TestUtils.executeTask("generateApolloSources", dir)
+      assertTrue(dir.generatedChild("main/service/com/example/DroidDetailsQuery.java").exists())
+      assertTrue(dir.generatedChild("test/service/com/example/DroidDetailsQuery.java").exists().not())
+    }
+  }
+
+  @Test
+  fun `graphql queries under test sources should still generate for test`() {
+    withSimpleProject("""
+      apollo {
+        schemaFile = file("src/main/graphql/com/example/schema.json")
+      }
+    """.trimIndent()) { dir ->
+      // Move AllFilms into test sources
+      dir.child("src/main/graphql/com/example/AllFilms.graphql").delete()
+      fixturesDirectory().child("starwars/AllFilms.graphql").copyTo(target = dir.child("src/test/graphql/com/example/AllFilms.graphql"))
+
+      TestUtils.executeTask("generateApolloSources", dir)
+      assertTrue(dir.generatedChild("test/service/com/example/FilmsQuery.java").exists())
+    }
+  }
+
+  @Test
+  fun `explicit schemaFile outside the module should not generate for test`() {
+    withSimpleProject("""
+      apollo {
+        schemaFile = file("../schema.json")
+      }
+    """.trimIndent()) { dir ->
+      val dest = File(dir, "../schema.json")
+      File(dir, "src/main/graphql/com/example/schema.json").copyTo(dest, true)
+      TestUtils.executeTask("generateApolloSources", dir)
+      assertTrue(dir.generatedChild("main/service/testProject/src/main/graphql/com/example/DroidDetailsQuery.java").exists())
+      assertTrue(dir.generatedChild("test/service/").exists().not())
     }
   }
 
