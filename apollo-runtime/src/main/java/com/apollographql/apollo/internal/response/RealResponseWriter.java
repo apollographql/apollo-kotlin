@@ -5,7 +5,7 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
-import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.api.internal.ResolveDelegate;
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.internal.ResponseWriter;
 import org.jetbrains.annotations.NotNull;
@@ -135,7 +135,7 @@ public final class RealResponseWriter implements ResponseWriter {
     for (String fieldResponseName : buffer.keySet()) {
       FieldDescriptor fieldDescriptor = buffer.get(fieldResponseName);
       Object rawFieldValue = rawFieldValues.get(fieldResponseName);
-      delegate.willResolve(fieldDescriptor.field, operationVariables, Optional.fromNullable(fieldDescriptor.value));
+      delegate.willResolve(fieldDescriptor.field, operationVariables, fieldDescriptor.value);
 
       switch (fieldDescriptor.field.type()) {
         case OBJECT: {
@@ -164,13 +164,13 @@ public final class RealResponseWriter implements ResponseWriter {
 
   @SuppressWarnings("unchecked") private void resolveObjectFields(FieldDescriptor fieldDescriptor,
       Map<String, Object> rawFieldValues, ResolveDelegate<Map<String, Object>> delegate) {
-    delegate.willResolveObject(fieldDescriptor.field, Optional.fromNullable(rawFieldValues));
+    delegate.willResolveObject(fieldDescriptor.field, rawFieldValues);
     if (fieldDescriptor.value == null) {
       delegate.didResolveNull();
     } else {
       resolveFields(operationVariables, delegate, (Map<String, FieldDescriptor>) fieldDescriptor.value);
     }
-    delegate.didResolveObject(fieldDescriptor.field, Optional.fromNullable(rawFieldValues));
+    delegate.didResolveObject(fieldDescriptor.field, rawFieldValues);
   }
 
   @SuppressWarnings("unchecked") private void resolveListField(ResponseField listResponseField, List fieldValues,
@@ -185,9 +185,9 @@ public final class RealResponseWriter implements ResponseWriter {
 
       Object fieldValue = fieldValues.get(i);
       if (fieldValue instanceof Map) {
-        delegate.willResolveObject(listResponseField, Optional.fromNullable((Map<String, Object>) rawFieldValues.get(i)));
+        delegate.willResolveObject(listResponseField, (Map<String, Object>) rawFieldValues.get(i));
         resolveFields(operationVariables, delegate, (Map<String, FieldDescriptor>) fieldValue);
-        delegate.didResolveObject(listResponseField, Optional.fromNullable((Map<String, Object>) rawFieldValues.get(i)));
+        delegate.didResolveObject(listResponseField, (Map<String, Object>) rawFieldValues.get(i));
       } else if (fieldValue instanceof List) {
         resolveListField(listResponseField, (List) fieldValue, (List) rawFieldValues.get(i), delegate);
       } else {

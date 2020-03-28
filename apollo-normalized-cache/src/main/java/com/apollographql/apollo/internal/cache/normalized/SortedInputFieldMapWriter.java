@@ -1,4 +1,4 @@
-package com.apollographql.apollo.internal.json;
+package com.apollographql.apollo.internal.cache.normalized;
 
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.InputFieldMarshaller;

@@ -78,7 +78,7 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
         }
 
         case CANCELED:
-          throw new ApolloCanceledException("Call is cancelled.");
+          throw new ApolloCanceledException();
 
         case TERMINATED:
         case ACTIVE:

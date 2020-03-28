@@ -178,7 +178,7 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
         tracker.registerQueryWatcher(this);
         break;
       case CANCELED:
-        throw new ApolloCanceledException("Call is cancelled.");
+        throw new ApolloCanceledException();
       case TERMINATED:
       case ACTIVE:
         throw new IllegalStateException("Already Executed");

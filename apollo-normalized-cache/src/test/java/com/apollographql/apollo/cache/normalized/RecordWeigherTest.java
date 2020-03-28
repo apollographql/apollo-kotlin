@@ -1,14 +1,10 @@
 package com.apollographql.apollo.cache.normalized;
 
-import com.apollographql.apollo.cache.normalized.CacheReference;
-import com.apollographql.apollo.cache.normalized.Record;
-
 import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-
 
 import static com.google.common.truth.Truth.assertThat;
 

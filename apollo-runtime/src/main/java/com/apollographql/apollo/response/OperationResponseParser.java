@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
-import static com.apollographql.apollo.internal.json.ApolloJsonReader.responseJsonStreamReader;
 
 @SuppressWarnings("WeakerAccess")
 public final class OperationResponseParser<D extends Operation.Data, W> {
@@ -85,7 +84,7 @@ public final class OperationResponseParser<D extends Operation.Data, W> {
       D data = null;
       List<Error> errors = null;
       Map<String, Object> extensions = null;
-      ResponseJsonStreamReader responseStreamReader = responseJsonStreamReader(jsonReader);
+      ResponseJsonStreamReader responseStreamReader = new ResponseJsonStreamReader(jsonReader);
       while (responseStreamReader.hasNext()) {
         String name = responseStreamReader.nextName();
         if ("data".equals(name)) {
