@@ -13,7 +13,8 @@ module.exports = {
         githubRepo: 'apollographql/apollo-android',
         sidebarCategories: {
           null: [
-            'index'
+            'index',
+            'essentials/get-started',
           ],
           Essentials: [
             'essentials/get-started',
