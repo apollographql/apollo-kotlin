@@ -17,13 +17,13 @@ import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
-import java.io.IOException
+import com.apollographql.apollo.api.internal.Throws
 import kotlin.Array
 import kotlin.Double
 import kotlin.String
 import kotlin.Suppress
-import kotlin.jvm.Throws
 import okio.BufferedSource
+import okio.IOException
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
