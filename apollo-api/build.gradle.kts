@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
   `java-library`
   kotlin("multiplatform")
@@ -56,6 +58,10 @@ kotlin {
       }
     }
   }
+}
+
+tasks.withType<KotlinCompile> {
+  kotlinOptions.jvmTarget = "1.8"
 }
 
 tasks.withType<Checkstyle> {
