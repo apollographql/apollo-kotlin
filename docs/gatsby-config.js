@@ -21,6 +21,7 @@ module.exports = {
             'essentials/mutations',
             'essentials/plugin-configuration',
             'essentials/caching',
+            'essentials/migration',
           ],
           Advanced: [
             'advanced/android',
