@@ -16,7 +16,9 @@ open class ApolloPlugin : Plugin<Project> {
     const val TASK_GROUP = "apollo"
     const val MIN_GRADLE_VERSION = "6.0"
 
-    fun useService(project: Project, schemaFilePath: String?, outputPackageName: String? = null, exclude: String? = null): String {
+    val Project.isKotlinMultiplatform get() = pluginManager.hasPlugin("org.jetbrains.kotlin.multiplatform")
+
+    private fun useService(project: Project, schemaFilePath: String?, outputPackageName: String? = null, exclude: String? = null): String {
 
       var ret = """
       |Please use a service instead:
@@ -71,14 +73,13 @@ open class ApolloPlugin : Plugin<Project> {
       }
     }
 
-
-    private fun registerCodegenTasks(project: Project, apolloExtension: DefaultApolloExtension) {
+    private fun registerCodeGenTasks(project: Project, apolloExtension: DefaultApolloExtension) {
       val androidExtension = project.extensions.findByName("android")
 
-      val apolloVariants = if (androidExtension == null) {
-        JvmTaskConfigurator.getVariants(project)
-      } else {
-        AndroidTaskConfigurator.getVariants(project, androidExtension)
+      val apolloVariants = when {
+        project.isKotlinMultiplatform -> KotlinMultiplatformTaskConfigurator.getVariants(project)
+        androidExtension != null -> AndroidTaskConfigurator.getVariants(project, androidExtension)
+        else -> JvmTaskConfigurator.getVariants(project)
       }
 
       val rootProvider = registerRootTask(project)
@@ -111,10 +112,14 @@ open class ApolloPlugin : Plugin<Project> {
            */
           apolloExtension.compilationUnits.add(compilationUnit)
 
-          if (androidExtension == null) {
-            JvmTaskConfigurator.registerGeneratedDirectory(project, compilationUnit, codegenProvider)
-          } else {
-            AndroidTaskConfigurator.registerGeneratedDirectory(project, androidExtension, compilationUnit, codegenProvider)
+          when {
+            project.isKotlinMultiplatform -> {
+              KotlinMultiplatformTaskConfigurator.registerGeneratedDirectory(project, compilationUnit, codegenProvider)
+            }
+            androidExtension != null -> {
+              AndroidTaskConfigurator.registerGeneratedDirectory(project, androidExtension, compilationUnit, codegenProvider)
+            }
+            else -> JvmTaskConfigurator.registerGeneratedDirectory(project, compilationUnit, codegenProvider)
           }
         }
 
@@ -154,7 +159,7 @@ open class ApolloPlugin : Plugin<Project> {
       }
     }
 
-    fun registerCodeGenTask(project: Project, compilationUnit: DefaultCompilationUnit): TaskProvider<ApolloGenerateSourcesTask> {
+    private fun registerCodeGenTask(project: Project, compilationUnit: DefaultCompilationUnit): TaskProvider<ApolloGenerateSourcesTask> {
       val taskName = "generate${compilationUnit.name.capitalize()}ApolloSources"
 
       return project.tasks.register(taskName, ApolloGenerateSourcesTask::class.java) {
@@ -272,7 +277,7 @@ open class ApolloPlugin : Plugin<Project> {
 
       deprecationChecks(apolloExtension, apolloSourceSetExtension)
 
-      registerCodegenTasks(project, apolloExtension)
+      registerCodeGenTasks(project, apolloExtension)
 
       registerDownloadSchemaTasks(project, apolloExtension)
 
