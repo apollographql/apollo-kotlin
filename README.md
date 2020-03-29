@@ -253,6 +253,16 @@ Advanced topics are available in [the official docs](https://www.apollographql.c
 * [no-runtime.md](https://www.apollographql.com/docs/android/advanced/no-runtime/) 
 * [subscriptions.md](https://www.apollographql.com/docs/android/advanced/subscriptions/)
 
+
+## Changelog
+[Read about the latest changes to the library](https://github.com/apollographql/apollo-android/releases)
+
+## Contributing
+
+If you'd like to contribute, please refer to the [Apollo Contributor Guide](https://github.com/apollographql/apollo-android/blob/master/Contributing.md).
+
+*Note:* Running samples require importing `composite` folder instead of root.
+
 ## License
 
 ```

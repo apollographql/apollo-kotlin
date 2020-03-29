@@ -1,10 +1,19 @@
 Contributing to Apollo Android GraphQL 
-=======================
+======================================
 
 The Apollo team welcomes contributions of all kinds, from simple bug reports through documentation, test cases,
 bugfixes, and features.
 
-If you instead have a usage question kindly ask on Stackoverflow.com using the tag [apollo-android] 
+If you instead have a usage question kindly ask on Stackoverflow.com using the tag [apollo-android]
+
+Project Setup
+-------------
+
+This project is being developed using IntelliJ IDEA or Android Studio. With [introduction of Kotlin Multiplatform](https://github.com/apollographql/apollo-android/blob/master/apollo-api/build.gradle.kts#L10-L21),
+build may require installation of xcodebuild tools and Xcode 11.
+ 
+It is recommended to import/open `composite` instead of root folder since that includes `apollo-integration` tests
+and all sample projects under `samples` folder by using Gradle Composite builds.
 
 DOs and DON'Ts
 --------------
