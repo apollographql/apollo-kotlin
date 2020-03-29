@@ -66,9 +66,7 @@ sourceSets {
 
 // With:
 apollo {
-  onCompilationUnit {
-     graphqlSourceDirectorySet.srcDirs += "/path/to/your/graphql/queries/dir"
-  }
+  graphqlSourceDirectorySet.srcDirs += "/path/to/your/graphql/queries/dir"
 }
 
 // Replace
@@ -82,11 +80,9 @@ apollo {
 
 // With:
 apollo {
-  onCompilationUnit {
-     schemaFile.set(file("/path/to/your/schema.json"))
-     graphqlSourceDirectorySet.exclude("**/*.gql")
-     rootPackageName.set("com.example")
-  }
+  schemaFile.set(file("/path/to/your/schema.json"))
+  graphqlSourceDirectorySet.exclude("**/*.gql")
+  rootPackageName.set("com.example")
 }
 ```
 
