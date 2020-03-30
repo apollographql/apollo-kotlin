@@ -76,5 +76,10 @@ interface HttpCache {
      * Do not store the http response
      */
     const val CACHE_DO_NOT_STORE = "X-APOLLO-CACHE-DO-NOT-STORE"
+
+    /**
+     * Signals that HTTP response comes from the local cache
+     */
+    const val FROM_CACHE = "X-APOLLO-FROM-CACHE"
   }
 }

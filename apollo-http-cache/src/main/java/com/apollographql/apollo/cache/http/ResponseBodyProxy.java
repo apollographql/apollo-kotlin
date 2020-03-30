@@ -22,7 +22,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 final class ResponseBodyProxy extends ResponseBody {
   private final String contentType;
   private final String contentLength;
-  private final Source responseBodySource;
+  private final BufferedSource responseBodySource;
 
   ResponseBodyProxy(@NotNull HttpCacheRecordEditor cacheRecordEditor, @NotNull Response sourceResponse,
       @NotNull ApolloLogger logger) {
@@ -31,7 +31,7 @@ final class ResponseBodyProxy extends ResponseBody {
     checkNotNull(logger, "logger == null");
     this.contentType = sourceResponse.header("Content-Type");
     this.contentLength = sourceResponse.header("Content-Length");
-    this.responseBodySource = new ProxySource(cacheRecordEditor, sourceResponse.body().source(), logger);
+    this.responseBodySource = Okio.buffer(new ProxySource(cacheRecordEditor, sourceResponse.body().source(), logger));
   }
 
   @Override public MediaType contentType() {
@@ -46,18 +46,18 @@ final class ResponseBodyProxy extends ResponseBody {
     }
   }
 
-  @Override public BufferedSource source() {
-    return Okio.buffer(responseBodySource);
+  @NotNull @Override public BufferedSource source() {
+    return responseBodySource;
   }
 
   private static class ProxySource implements Source {
-    final HttpCacheRecordEditor cacheRecordEditor;
-    final ResponseBodyCacheSink responseBodyCacheSink;
-    final Source responseBodySource;
-    final ApolloLogger logger;
-    boolean closed;
+    private final HttpCacheRecordEditor cacheRecordEditor;
+    private final ResponseBodyCacheSink responseBodyCacheSink;
+    private final BufferedSource responseBodySource;
+    private final ApolloLogger logger;
+    private boolean closed;
 
-    ProxySource(HttpCacheRecordEditor cacheRecordEditor, Source responseBodySource, final ApolloLogger logger) {
+    ProxySource(HttpCacheRecordEditor cacheRecordEditor, BufferedSource responseBodySource, final ApolloLogger logger) {
       this.cacheRecordEditor = cacheRecordEditor;
       this.responseBodySource = responseBodySource;
       this.logger = logger;
@@ -95,24 +95,23 @@ final class ResponseBodyProxy extends ResponseBody {
       return bytesRead;
     }
 
-    @Override public Timeout timeout() {
+    @NotNull @Override public Timeout timeout() {
       return responseBodySource.timeout();
     }
 
-    @Override public void close() throws IOException {
+    @Override public void close() {
       if (closed) return;
       closed = true;
 
       if (discard(this, 100, MILLISECONDS)) {
-        responseBodySource.close();
         commitCache();
       } else {
-        responseBodySource.close();
         abortCacheQuietly();
       }
     }
 
     private void commitCache() {
+      closeQuietly(responseBodySource);
       try {
         responseBodyCacheSink.close();
         cacheRecordEditor.commit();
@@ -124,11 +123,12 @@ final class ResponseBodyProxy extends ResponseBody {
     }
 
     void abortCacheQuietly() {
+      closeQuietly(responseBodySource);
       closeQuietly(responseBodyCacheSink);
       try {
         cacheRecordEditor.abort();
-      } catch (Exception ignore) {
-        logger.w(ignore, "Failed to abort cache edit");
+      } catch (Exception e) {
+        logger.w(e, "Failed to abort cache edit");
       }
     }
   }

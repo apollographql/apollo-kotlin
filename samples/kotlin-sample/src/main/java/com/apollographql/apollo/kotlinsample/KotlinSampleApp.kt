@@ -1,9 +1,13 @@
 package com.apollographql.apollo.kotlinsample
 
 import android.app.Application
+import android.util.Log
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.cache.http.HttpCachePolicy
+import com.apollographql.apollo.cache.http.ApolloHttpCache
+import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore
 import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper
@@ -14,11 +18,21 @@ import com.apollographql.apollo.kotlinsample.data.ApolloRxService
 import com.apollographql.apollo.kotlinsample.data.ApolloWatcherService
 import com.apollographql.apollo.kotlinsample.data.GitHubDataSource
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import java.io.File
 
 @Suppress("unused")
 class KotlinSampleApp : Application() {
   private val baseUrl = "https://api.github.com/graphql"
   private val apolloClient: ApolloClient by lazy {
+    val logInterceptor = HttpLoggingInterceptor(
+        object : HttpLoggingInterceptor.Logger {
+          override fun log(message: String) {
+            Log.d("OkHttp", message)
+          }
+        }
+    ).apply { level = HttpLoggingInterceptor.Level.BODY }
+
     val okHttpClient = OkHttpClient.Builder()
         .addNetworkInterceptor { chain ->
           val request = chain.request().newBuilder()
@@ -27,6 +41,7 @@ class KotlinSampleApp : Application() {
 
           chain.proceed(request)
         }
+        .addInterceptor(logInterceptor)
         .build()
 
     val apolloSqlHelper = ApolloSqlHelper.create(this, "github_cache")
@@ -45,9 +60,14 @@ class KotlinSampleApp : Application() {
       }
     }
 
+    // Create the http response cache store
+    val cacheStore = DiskLruHttpCacheStore(File(cacheDir, "apolloCache"), 1024 * 1024)
+
     ApolloClient.builder()
         .serverUrl(baseUrl)
         .normalizedCache(sqlNormalizedCacheFactory, cacheKeyResolver)
+        .httpCache(ApolloHttpCache(cacheStore))
+        .defaultHttpCachePolicy(HttpCachePolicy.CACHE_FIRST)
         .okHttpClient(okHttpClient)
         .build()
   }
