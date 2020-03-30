@@ -168,6 +168,44 @@ public class ApolloIdlingResourceTest {
   }
 
   @Test
+  public void checkIsIdleNow_whenCallIsWatched() throws InterruptedException {
+    server.enqueue(mockResponse());
+
+    final CountDownLatch latch = new CountDownLatch(1);
+
+    ExecutorService executorService = Executors.newFixedThreadPool(1);
+
+    apolloClient = ApolloClient.builder()
+        .okHttpClient(okHttpClient)
+        .dispatcher(executorService)
+        .serverUrl(server.url("/"))
+        .build();
+
+    idlingResource = ApolloIdlingResource.create(IDLING_RESOURCE_NAME, apolloClient);
+    assertThat(idlingResource.isIdleNow()).isTrue();
+
+    apolloClient.query(EMPTY_QUERY).watcher().enqueueAndWatch(new ApolloCall.Callback<Object>() {
+      @Override public void onResponse(@NotNull Response<Object> response) {
+        latch.countDown();
+      }
+
+      @Override public void onFailure(@NotNull ApolloException e) {
+        throw new AssertionError("This callback can't be called.");
+      }
+    });
+
+    assertThat(idlingResource.isIdleNow()).isFalse();
+
+    latch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+
+    executorService.shutdown();
+    executorService.awaitTermination(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    Thread.sleep(100);
+    assertThat(idlingResource.isIdleNow()).isTrue();
+  }
+
+
+  @Test
   public void checkIdlingResourceTransition_whenCallIsQueued() throws ApolloException {
     server.enqueue(mockResponse());
 
