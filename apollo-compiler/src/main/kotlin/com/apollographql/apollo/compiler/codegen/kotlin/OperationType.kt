@@ -185,7 +185,7 @@ private fun InputType.variablesValueMapSpec(operationType: OperationType): FunSp
       .addCode(
           fields.map { field ->
             if (field.isOptional) {
-              CodeBlock.of("if (%L.defined) this[%S] = this@%L.%L.value", field.name, field.schemaName, operationType.name, field.name)
+              CodeBlock.of("if (this@%L.%L.defined) this[%S] = this@%L.%L.value", operationType.name, field.name, field.schemaName, operationType.name, field.name)
             } else {
               CodeBlock.of("this[%S] = this@%L.%L", field.schemaName, operationType.name, field.name)
             }
