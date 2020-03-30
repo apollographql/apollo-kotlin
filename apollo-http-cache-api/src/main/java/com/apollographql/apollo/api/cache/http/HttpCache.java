@@ -40,6 +40,11 @@ public interface HttpCache {
   String CACHE_DO_NOT_STORE = "X-APOLLO-CACHE-DO-NOT-STORE";
 
   /**
+   * Signals that HTTP response comes from the local cache
+   */
+  String FROM_CACHE = "X-APOLLO-FROM-CACHE";
+
+  /**
    * Clear cached http responses
    */
   void clear();

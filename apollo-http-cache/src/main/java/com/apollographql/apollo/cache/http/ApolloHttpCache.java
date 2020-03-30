@@ -84,6 +84,7 @@ public final class ApolloHttpCache implements HttpCache {
       String contentType = response.header("Content-Type");
       String contentLength = response.header("Content-Length");
       return response.newBuilder()
+          .addHeader(FROM_CACHE, "true")
           .body(new CacheResponseBody(cacheResponseSource, contentType, contentLength))
           .build();
     } catch (Exception e) {
