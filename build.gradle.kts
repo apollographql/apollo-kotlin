@@ -379,7 +379,7 @@ tasks.register("publishIfNeeded") {
     dependsOn(publishToOss)
   }
 
-  if (ref?.startsWith("ref/tags/") == true) {
+  if (ref?.startsWith("refs/tags/") == true) {
     project.logger.log(LogLevel.LIFECYCLE, "Deploying release to Bintray...")
     dependsOn(publishToBintray)
 
