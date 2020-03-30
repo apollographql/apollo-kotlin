@@ -45,8 +45,7 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
   private final AtomicReference<CallState> state = new AtomicReference<>(IDLE);
   private final AtomicReference<ApolloCall.Callback<T>> originalCallback = new AtomicReference<>();
 
-  RealApolloQueryWatcher(RealApolloCall<T> originalCall, ApolloStore apolloStore, ApolloLogger logger,
-      ApolloCallTracker tracker) {
+  RealApolloQueryWatcher(RealApolloCall<T> originalCall, ApolloStore apolloStore, ApolloLogger logger, ApolloCallTracker tracker) {
     this.activeCall = originalCall;
     this.apolloStore = apolloStore;
     this.logger = logger;
