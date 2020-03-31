@@ -59,7 +59,7 @@ class ApolloWatcherService(apolloClient: ApolloClient) : GitHubDataSource(apollo
         .build()
 
     val callback = createCallback<GithubRepositoryCommitsQuery.Data> { response ->
-      val headCommit = response.data?.viewer()?.repository()?.ref()?.target() as? GithubRepositoryCommitsQuery.AsCommit
+      val headCommit = response.data()?.viewer()?.repository()?.ref()?.target() as? GithubRepositoryCommitsQuery.AsCommit
       val commits = headCommit?.history()?.edges().orEmpty()
       commitsSubject.onNext(commits)
     }
