@@ -113,8 +113,11 @@ class SimpleResponseReader private constructor(
 
     return value?.let { typename ->
       field.conditions
-          .firstOrNull { condition -> condition is ResponseField.TypeNameCondition && condition.typeNames.contains(typename) }
-          ?.let { objectReader.read(this) }
+          .mapNotNull { condition -> condition as? ResponseField.TypeNameCondition }
+          .all { condition -> condition.typeNames.contains(typename) }
+          .let { matchAllTypeConditions ->
+            if (matchAllTypeConditions) objectReader.read(this) else null
+          }
     }
   }
 

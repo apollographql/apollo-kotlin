@@ -25,7 +25,6 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.lang.SuppressWarnings;
-import java.util.Arrays;
 import java.util.Collections;
 import okio.BufferedSource;
 import org.jetbrains.annotations.NotNull;
@@ -349,9 +348,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       public static final class Mapper implements ResponseFieldMapper<Fragments> {
         static final ResponseField[] $responseFields = {
-          ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
-            ResponseField.Condition.typeCondition(new String[] {"Human", "Droid"})
-          ))
+          ResponseField.forFragment("__typename", "__typename", Collections.<ResponseField.Condition>emptyList())
         };
 
         final HeroDetails.Mapper heroDetailsFieldMapper = new HeroDetails.Mapper();

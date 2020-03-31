@@ -9,6 +9,7 @@ import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.ResponseReader;
 import com.apollographql.apollo.internal.field.FieldValueResolver;
+import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public final class RealResponseReader<R> implements ResponseReader {
     this.variableValues = operationVariables.valueMap();
   }
 
-  @Override public String readString(ResponseField field) {
+  @Override public String readString(@NotNull ResponseField field) {
     if (shouldSkip(field)) {
       return null;
     }
@@ -54,7 +55,7 @@ public final class RealResponseReader<R> implements ResponseReader {
     return value;
   }
 
-  @Override public Integer readInt(ResponseField field) {
+  @Override public Integer readInt(@NotNull ResponseField field) {
     if (shouldSkip(field)) {
       return null;
     }
@@ -72,7 +73,7 @@ public final class RealResponseReader<R> implements ResponseReader {
     return value != null ? value.intValue() : null;
   }
 
-  @Override public Long readLong(ResponseField field) {
+  @Override public Long readLong(@NotNull ResponseField field) {
     if (shouldSkip(field)) {
       return null;
     }
@@ -90,7 +91,7 @@ public final class RealResponseReader<R> implements ResponseReader {
     return value != null ? value.longValue() : null;
   }
 
-  @Override public Double readDouble(ResponseField field) {
+  @Override public Double readDouble(@NotNull ResponseField field) {
     if (shouldSkip(field)) {
       return null;
     }
@@ -108,7 +109,7 @@ public final class RealResponseReader<R> implements ResponseReader {
     return value != null ? value.doubleValue() : null;
   }
 
-  @Override public Boolean readBoolean(ResponseField field) {
+  @Override public Boolean readBoolean(@NotNull ResponseField field) {
     if (shouldSkip(field)) {
       return null;
     }
@@ -127,7 +128,7 @@ public final class RealResponseReader<R> implements ResponseReader {
   }
 
   @SuppressWarnings("unchecked") @Override
-  public <T> T readObject(ResponseField field, ResponseReader.ObjectReader<T> objectReader) {
+  public <T> T readObject(@NotNull ResponseField field, @NotNull ResponseReader.ObjectReader<T> objectReader) {
     if (shouldSkip(field)) {
       return null;
     }
@@ -142,16 +143,15 @@ public final class RealResponseReader<R> implements ResponseReader {
       resolveDelegate.didResolveNull();
       parsedValue = null;
     } else {
-      parsedValue = (T) objectReader.read(new RealResponseReader(operationVariables, value, fieldValueResolver,
-          scalarTypeAdapters, resolveDelegate));
+      parsedValue = objectReader.read(new RealResponseReader(operationVariables, value, fieldValueResolver, scalarTypeAdapters,
+          resolveDelegate));
     }
     resolveDelegate.didResolveObject(field, Optional.fromNullable(value));
     didResolve(field);
     return parsedValue;
   }
 
-  @SuppressWarnings("unchecked")
-  @Override public <T> List<T> readList(ResponseField field, ListReader<T> listReader) {
+  @Override public <T> List<T> readList(@NotNull ResponseField field, @NotNull ListReader<T> listReader) {
     if (shouldSkip(field)) {
       return null;
     }
@@ -173,7 +173,7 @@ public final class RealResponseReader<R> implements ResponseReader {
           result.add(null);
           resolveDelegate.didResolveNull();
         } else {
-          T item = (T) listReader.read(new ListItemReader(field, value));
+          T item = listReader.read(new ListItemReader(field, value));
           result.add(item);
         }
         resolveDelegate.didResolveElement(i);
@@ -184,8 +184,8 @@ public final class RealResponseReader<R> implements ResponseReader {
     return result != null ? Collections.unmodifiableList(result) : null;
   }
 
-  @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
-  @Override public <T> T readCustomType(ResponseField.CustomTypeField field) {
+  @SuppressWarnings("TypeParameterUnusedInFormals")
+  @Override public <T> T readCustomType(@NotNull ResponseField.CustomTypeField field) {
     if (shouldSkip(field)) {
       return null;
     }
@@ -199,7 +199,7 @@ public final class RealResponseReader<R> implements ResponseReader {
       resolveDelegate.didResolveNull();
       result = null;
     } else {
-      CustomTypeAdapter<T> typeAdapter = scalarTypeAdapters.adapterFor(field.scalarType());
+      CustomTypeAdapter<T> typeAdapter = scalarTypeAdapters.adapterFor(field.getScalarType());
       result = typeAdapter.decode(CustomTypeValue.fromRawValue(value));
       checkValue(field, result);
       resolveDelegate.didResolveScalar(value);
@@ -208,7 +208,7 @@ public final class RealResponseReader<R> implements ResponseReader {
     return result;
   }
 
-  @Override public <T> T readFragment(ResponseField field, ObjectReader<T> objectReader) {
+  @Override public <T> T readFragment(@NotNull ResponseField field, @NotNull ObjectReader<T> objectReader) {
     if (shouldSkip(field)) {
       return null;
     }
@@ -224,25 +224,28 @@ public final class RealResponseReader<R> implements ResponseReader {
     } else {
       resolveDelegate.didResolveScalar(value);
       didResolve(field);
-      if (field.type() == ResponseField.Type.FRAGMENT) {
-        for (ResponseField.Condition condition : field.conditions()) {
+
+      if (field.getType() == ResponseField.Type.FRAGMENT) {
+        for (ResponseField.Condition condition : field.getConditions()) {
           if (condition instanceof ResponseField.TypeNameCondition) {
-            if (((ResponseField.TypeNameCondition) condition).typeNames().contains(value)) {
-              return objectReader.read(this);
+            if (!((ResponseField.TypeNameCondition) condition).getTypeNames().contains(value)) {
+              return null;
             }
           }
         }
+        return objectReader.read(this);
+      } else {
+        return null;
       }
-      return null;
     }
   }
 
   private boolean shouldSkip(ResponseField field) {
-    for (ResponseField.Condition condition : field.conditions()) {
+    for (ResponseField.Condition condition : field.getConditions()) {
       if (condition instanceof ResponseField.BooleanCondition) {
         ResponseField.BooleanCondition booleanCondition = (ResponseField.BooleanCondition) condition;
-        Boolean conditionValue = (Boolean) variableValues.get(booleanCondition.variableName());
-        if (booleanCondition.inverted()) {
+        Boolean conditionValue = (Boolean) variableValues.get(booleanCondition.getVariableName());
+        if (booleanCondition.getInverted()) {
           // means it's a skip directive
           if (Boolean.TRUE.equals(conditionValue)) {
             return true;
@@ -267,8 +270,8 @@ public final class RealResponseReader<R> implements ResponseReader {
   }
 
   private void checkValue(ResponseField field, Object value) {
-    if (!field.optional() && value == null) {
-      throw new NullPointerException("corrupted response reader, expected non null value for " + field.fieldName());
+    if (!field.getOptional() && value == null) {
+      throw new NullPointerException("corrupted response reader, expected non null value for " + field.getFieldName());
     }
   }
 
@@ -281,7 +284,7 @@ public final class RealResponseReader<R> implements ResponseReader {
       this.value = value;
     }
 
-    @Override public String readString() {
+    @NotNull @Override public String readString() {
       resolveDelegate.didResolveScalar(value);
       return (String) value;
     }
@@ -306,29 +309,25 @@ public final class RealResponseReader<R> implements ResponseReader {
       return (Boolean) value;
     }
 
-    @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
-    @Override public <T> T readCustomType(ScalarType scalarType) {
+    @SuppressWarnings("TypeParameterUnusedInFormals")
+    @NotNull @Override public <T> T readCustomType(@NotNull ScalarType scalarType) {
       CustomTypeAdapter<T> typeAdapter = scalarTypeAdapters.adapterFor(scalarType);
       resolveDelegate.didResolveScalar(value);
       return typeAdapter.decode(CustomTypeValue.fromRawValue(value));
     }
 
     @SuppressWarnings("unchecked")
-    @Override public <T> T readObject(ObjectReader<T> objectReader) {
+    @NotNull @Override public <T> T readObject(ObjectReader<T> objectReader) {
       R value = (R) this.value;
       resolveDelegate.willResolveObject(field, Optional.fromNullable(value));
-      T item = (T) objectReader.read(new RealResponseReader<R>(operationVariables, value, fieldValueResolver,
-          scalarTypeAdapters, resolveDelegate));
+      T item = objectReader.read(new RealResponseReader<R>(operationVariables, value, fieldValueResolver, scalarTypeAdapters,
+          resolveDelegate));
       resolveDelegate.didResolveObject(field, Optional.fromNullable(value));
       return item;
     }
 
-    @Override public <T> List<T> readList(ListReader<T> listReader) {
+    @NotNull @Override public <T> List<T> readList(@NotNull ListReader<T> listReader) {
       List values = (List) value;
-      if (values == null) {
-        return null;
-      }
-
       List<T> result = new ArrayList<>();
       for (int i = 0; i < values.size(); i++) {
         resolveDelegate.willResolveElement(i);
@@ -337,7 +336,7 @@ public final class RealResponseReader<R> implements ResponseReader {
           result.add(null);
           resolveDelegate.didResolveNull();
         } else {
-          T item = (T) listReader.read(new ListItemReader(field, value));
+          T item = listReader.read(new ListItemReader(field, value));
           result.add(item);
         }
         resolveDelegate.didResolveElement(i);

@@ -184,6 +184,7 @@ class SchemaTypeSpecBuilder(
           .mapNotNull { fragmentRef -> context.ir.fragments.find { it.fragmentName == fragmentRef.name }?.let { fragmentRef to it } }
           .map { (fragmentRef, fragment) ->
             val optional = fragmentRef.isOptional()
+            val possibleTypes = fragment.takeIf { fragment.typeCondition != normalizeGraphQlType(schemaType) }?.possibleTypes ?: emptyList()
             val fieldSpec = FieldSpec.builder(
                 JavaTypeResolver(context = context, packageName = context.packageNameProvider.fragmentsPackageName)
                     .resolve(typeName = fragment.fragmentName.capitalize(), isOptional = optional), fragment.fragmentName.decapitalize())
@@ -196,7 +197,7 @@ class SchemaTypeSpecBuilder(
                 normalizedFieldSpec = normalizedFieldSpec,
                 responseFieldType = ResponseField.Type.FRAGMENT,
                 context = context,
-                typeConditions = fragment.possibleTypes
+                typeConditions = possibleTypes
             )
           }
     }

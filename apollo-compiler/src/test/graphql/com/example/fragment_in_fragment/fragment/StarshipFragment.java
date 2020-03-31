@@ -18,7 +18,6 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.lang.SuppressWarnings;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
@@ -517,9 +516,7 @@ public class StarshipFragment implements GraphqlFragment {
 
       public static final class Mapper implements ResponseFieldMapper<Fragments> {
         static final ResponseField[] $responseFields = {
-          ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
-            ResponseField.Condition.typeCondition(new String[] {"Person"})
-          ))
+          ResponseField.forFragment("__typename", "__typename", Collections.<ResponseField.Condition>emptyList())
         };
 
         final PilotFragment.Mapper pilotFragmentFieldMapper = new PilotFragment.Mapper();
