@@ -68,6 +68,9 @@ internal class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Varia
           fragments = fragments
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Hero> = ResponseFieldMapper { invoke(it) }
     }
 
     data class Fragments(
@@ -101,6 +104,9 @@ internal class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Varia
             humanDetails = humanDetails
           )
         }
+
+        @Suppress("FunctionName")
+        fun Mapper(): ResponseFieldMapper<Fragments> = ResponseFieldMapper { invoke(it) }
       }
     }
   }
@@ -125,6 +131,9 @@ internal class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Varia
           hero = hero
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 

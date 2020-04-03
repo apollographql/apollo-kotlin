@@ -7,6 +7,7 @@ import com.apollographql.apollo.compiler.ast.FieldType
 import com.apollographql.apollo.compiler.ast.ObjectType
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.asPropertySpec
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.asTypeName
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.createMapperFun
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.marshallerFunSpec
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.responseFieldsPropertySpec
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.toMapperFun
@@ -23,6 +24,7 @@ internal fun ObjectType.typeSpec(generateAsInternal: Boolean = false): TypeSpec 
       .addType(TypeSpec.companionObjectBuilder()
           .addProperty(responseFieldsPropertySpec(fields))
           .addFunction(fields.toMapperFun(ClassName("", name)))
+          .addFunction(ClassName("", name).createMapperFun())
           .build())
       .applyIf(fragmentsType != null) { addType(fragmentsType!!.fragmentsTypeSpec(generateAsInternal)) }
       .addFunction(fields.marshallerFunSpec(thisRef = name))
@@ -47,7 +49,8 @@ internal fun ObjectType.typeSpec(generateAsInternal: Boolean = false): TypeSpec 
       .addSuperinterface(kind.superInterface.asTypeName())
       .addType(TypeSpec.companionObjectBuilder()
           .addProperty(responseFieldsPropertySpec(fields))
-          .addFunction(fields.toMapperFun(ClassName.bestGuess(name)))
+          .addFunction(fields.toMapperFun(ClassName("", name)))
+          .addFunction(ClassName("", name).createMapperFun())
           .build())
       .addFunction(fields.marshallerFunSpec(override = true, thisRef = name))
       .applyIf(fragmentsType != null) { addType(fragmentsType!!.fragmentsTypeSpec(generateAsInternal)) }
@@ -69,7 +72,8 @@ internal fun ObjectType.typeSpec(generateAsInternal: Boolean = false): TypeSpec 
               .initializer("%S", kind.definition)
               .build()
           )
-          .addFunction(fields.toMapperFun(ClassName.bestGuess(name)))
+          .addFunction(fields.toMapperFun(ClassName("", name)))
+          .addFunction(ClassName("", name).createMapperFun())
           .build())
       .applyIf(fragmentsType != null) { addType(fragmentsType!!.fragmentsTypeSpec(generateAsInternal)) }
       .addFunction(fields.marshallerFunSpec(override = true, thisRef = name))
@@ -88,6 +92,7 @@ private fun ObjectType.fragmentsTypeSpec(generateAsInternal: Boolean = false): T
       .addType(TypeSpec.companionObjectBuilder()
           .addProperty(responseFieldsPropertySpec(fields))
           .addFunction(fields.toMapperFun(ClassName("", name)))
+          .addFunction(ClassName("", name).createMapperFun())
           .build())
       .addFunction(fields.marshallerFunSpec(thisRef = name))
       .addTypes(nestedObjects.map { (_, type) -> type.typeSpec() })

@@ -7,6 +7,7 @@ package com.example.fragment_in_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.example.fragment_in_fragment.type.CustomType
@@ -77,6 +78,9 @@ data class StarshipFragment(
         pilotConnection = pilotConnection
       )
     }
+
+    @Suppress("FunctionName")
+    fun Mapper(): ResponseFieldMapper<StarshipFragment> = ResponseFieldMapper { invoke(it) }
   }
 
   data class Node(
@@ -102,6 +106,9 @@ data class StarshipFragment(
           fragments = fragments
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Node> = ResponseFieldMapper { invoke(it) }
     }
 
     data class Fragments(
@@ -126,6 +133,9 @@ data class StarshipFragment(
             pilotFragment = pilotFragment
           )
         }
+
+        @Suppress("FunctionName")
+        fun Mapper(): ResponseFieldMapper<Fragments> = ResponseFieldMapper { invoke(it) }
       }
     }
   }
@@ -158,6 +168,9 @@ data class StarshipFragment(
           node = node
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Edge> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -194,6 +207,9 @@ data class StarshipFragment(
           edges = edges
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<PilotConnection> = ResponseFieldMapper { invoke(it) }
     }
   }
 }
