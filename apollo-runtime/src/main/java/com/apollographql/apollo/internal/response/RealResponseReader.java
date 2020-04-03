@@ -199,7 +199,7 @@ public final class RealResponseReader<R> implements ResponseReader {
       resolveDelegate.didResolveNull();
       result = null;
     } else {
-      CustomTypeAdapter<T> typeAdapter = scalarTypeAdapters.adapterFor(field.getScalarType());
+      CustomTypeAdapter<T> typeAdapter = scalarTypeAdapters.adapterFor(field.scalarType());
       result = typeAdapter.decode(CustomTypeValue.fromRawValue(value));
       checkValue(field, result);
       resolveDelegate.didResolveScalar(value);
@@ -228,7 +228,7 @@ public final class RealResponseReader<R> implements ResponseReader {
       if (field.getType() == ResponseField.Type.FRAGMENT) {
         for (ResponseField.Condition condition : field.getConditions()) {
           if (condition instanceof ResponseField.TypeNameCondition) {
-            if (!((ResponseField.TypeNameCondition) condition).getTypeNames().contains(value)) {
+            if (!((ResponseField.TypeNameCondition) condition).typeNames().contains(value)) {
               return null;
             }
           }
@@ -241,11 +241,11 @@ public final class RealResponseReader<R> implements ResponseReader {
   }
 
   private boolean shouldSkip(ResponseField field) {
-    for (ResponseField.Condition condition : field.getConditions()) {
+    for (ResponseField.Condition condition : field.conditions()) {
       if (condition instanceof ResponseField.BooleanCondition) {
         ResponseField.BooleanCondition booleanCondition = (ResponseField.BooleanCondition) condition;
-        Boolean conditionValue = (Boolean) variableValues.get(booleanCondition.getVariableName());
-        if (booleanCondition.getInverted()) {
+        Boolean conditionValue = (Boolean) variableValues.get(booleanCondition.variableName());
+        if (booleanCondition.inverted()) {
           // means it's a skip directive
           if (Boolean.TRUE.equals(conditionValue)) {
             return true;
@@ -270,8 +270,8 @@ public final class RealResponseReader<R> implements ResponseReader {
   }
 
   private void checkValue(ResponseField field, Object value) {
-    if (!field.getOptional() && value == null) {
-      throw new NullPointerException("corrupted response reader, expected non null value for " + field.getFieldName());
+    if (!field.optional() && value == null) {
+      throw new NullPointerException("corrupted response reader, expected non null value for " + field.fieldName());
     }
   }
 
