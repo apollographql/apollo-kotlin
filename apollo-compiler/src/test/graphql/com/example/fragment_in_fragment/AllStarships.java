@@ -26,7 +26,6 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.lang.SuppressWarnings;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import okio.BufferedSource;
@@ -579,9 +578,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
       public static final class Mapper implements ResponseFieldMapper<Fragments> {
         static final ResponseField[] $responseFields = {
-          ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
-            ResponseField.Condition.typeCondition(new String[] {"Starship"})
-          ))
+          ResponseField.forFragment("__typename", "__typename", Collections.<ResponseField.Condition>emptyList())
         };
 
         final StarshipFragment.Mapper starshipFragmentFieldMapper = new StarshipFragment.Mapper();

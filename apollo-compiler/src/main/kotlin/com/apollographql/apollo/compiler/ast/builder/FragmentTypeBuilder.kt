@@ -44,7 +44,7 @@ internal fun Fragment.ast(context: Context): ObjectType {
 
 internal fun Map<FragmentRef, Fragment>.astFragmentsObjectFieldType(
     fragmentsPackage: String,
-    isOptional: Fragment.() -> Boolean
+    parentFieldSchemaTypeName: String
 ): Pair<ObjectType.Field?, ObjectType?> {
   if (isEmpty()) {
     return null to null
@@ -53,6 +53,8 @@ internal fun Map<FragmentRef, Fragment>.astFragmentsObjectFieldType(
       name = "Fragments",
       schemaTypeName = "",
       fields = map { (fragmentRef, fragment) ->
+        val isOptional = fragmentRef.conditions.isNotEmpty() || fragment.typeCondition != parentFieldSchemaTypeName
+        val possibleTypes = fragment.takeIf { fragment.typeCondition != parentFieldSchemaTypeName }?.possibleTypes ?: emptyList()
         ObjectType.Field(
             name = fragment.fragmentName.decapitalize().escapeKotlinReservedWord(),
             responseName = "__typename",
@@ -62,7 +64,7 @@ internal fun Map<FragmentRef, Fragment>.astFragmentsObjectFieldType(
                 packageName = fragmentsPackage
             )),
             description = "",
-            isOptional = fragmentRef.conditions.isNotEmpty() || fragment.isOptional(),
+            isOptional = isOptional,
             isDeprecated = false,
             deprecationReason = "",
             arguments = emptyMap(),
@@ -73,7 +75,13 @@ internal fun Map<FragmentRef, Fragment>.astFragmentsObjectFieldType(
                       variableName = condition.variableName,
                       inverted = condition.inverted
                   )
-                } + ObjectType.Field.Condition.Type(fragment.possibleTypes)
+                }.let { conditions ->
+                  if (possibleTypes.isNotEmpty()) {
+                    conditions + ObjectType.Field.Condition.Type(possibleTypes)
+                  } else {
+                    conditions
+                  }
+                }
         )
       },
       fragmentsType = null,

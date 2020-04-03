@@ -86,19 +86,23 @@ class ResponseFieldSpec(
             .build()
       }
     }
-    val conditions = (booleanConditions + typeCondition).foldIndexed(CodeBlock.builder()) { index, builder, code ->
-      builder.applyIf(index > 0) { add(",\n") }.add(code)
-    }.build().let { code ->
-      if (code.isEmpty) {
-        CodeBlock.of("\$T.<\$T>emptyList()", Collections::class.java, ResponseField.Condition::class.java)
-      } else {
-        CodeBlock.builder()
-            .add("\$T.<\$T>asList(\n", Arrays::class.java, ResponseField.Condition::class.java)
-            .indent().add(code).unindent()
-            .add("\n)")
-            .build()
-      }
-    }
+    val conditions = (booleanConditions + typeCondition)
+        .filter { code -> !code.isEmpty }
+        .foldIndexed(CodeBlock.builder()) { index, builder, code ->
+          builder.applyIf(index > 0) { add(",\n") }.add(code)
+        }
+        .build()
+        .let { code ->
+          if (code.isEmpty) {
+            CodeBlock.of("\$T.<\$T>emptyList()", Collections::class.java, ResponseField.Condition::class.java)
+          } else {
+            CodeBlock.builder()
+                .add("\$T.<\$T>asList(\n", Arrays::class.java, ResponseField.Condition::class.java)
+                .indent().add(code).unindent()
+                .add("\n)")
+                .build()
+          }
+        }
     return CodeBlock.of("\$T.\$L(\$S, \$S, \$L)", ResponseField::class.java, factoryMethod, irField.responseName, irField.fieldName,
         conditions)
   }

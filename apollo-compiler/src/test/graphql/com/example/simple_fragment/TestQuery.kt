@@ -81,9 +81,7 @@ internal class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Varia
 
       companion object {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField.forFragment("__typename", "__typename", listOf(
-              ResponseField.Condition.typeCondition(arrayOf("Human", "Droid"))
-            )),
+            ResponseField.forFragment("__typename", "__typename", null),
             ResponseField.forFragment("__typename", "__typename", listOf(
               ResponseField.Condition.typeCondition(arrayOf("Human"))
             ))
