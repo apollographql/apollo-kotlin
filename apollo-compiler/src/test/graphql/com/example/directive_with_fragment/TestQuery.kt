@@ -113,8 +113,7 @@ data class TestQuery(
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField.forFragment("__typename", "__typename", listOf(
               ResponseField.Condition.booleanCondition("withDetails", false),
-              ResponseField.Condition.booleanCondition("skipHumanDetails", true),
-              ResponseField.Condition.typeCondition(arrayOf("Human", "Droid"))
+              ResponseField.Condition.booleanCondition("skipHumanDetails", true)
             )),
             ResponseField.forFragment("__typename", "__typename", listOf(
               ResponseField.Condition.booleanCondition("withDetails", false),

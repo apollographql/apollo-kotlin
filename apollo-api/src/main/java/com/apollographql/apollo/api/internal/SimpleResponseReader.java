@@ -140,18 +140,21 @@ public final class SimpleResponseReader implements ResponseReader {
 
     final String value = valueFor(recordSet, field);
     checkValue(field, value);
-    if (value == null) {
-      return null;
-    } else {
+    if (value != null) {
+      boolean matchAllTypeConditions = true;
       for (ResponseField.Condition condition : field.conditions()) {
         if (condition instanceof ResponseField.TypeNameCondition) {
-          if (((ResponseField.TypeNameCondition) condition).typeNames().contains(value)) {
-            return objectReader.read(this);
+          if (!((ResponseField.TypeNameCondition) condition).typeNames().contains(value)) {
+            matchAllTypeConditions = false;
+            break;
           }
         }
       }
-      return null;
+      if (matchAllTypeConditions) {
+        return objectReader.read(this);
+      }
     }
+    return null;
   }
 
   private boolean shouldSkip(ResponseField field) {

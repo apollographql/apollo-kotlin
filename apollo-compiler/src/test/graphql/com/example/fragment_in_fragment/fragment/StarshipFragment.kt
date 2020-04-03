@@ -113,9 +113,7 @@ data class StarshipFragment(
 
       companion object {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField.forFragment("__typename", "__typename", listOf(
-              ResponseField.Condition.typeCondition(arrayOf("Person"))
-            ))
+            ResponseField.forFragment("__typename", "__typename", null)
             )
 
         operator fun invoke(reader: ResponseReader): Fragments = reader.run {

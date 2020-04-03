@@ -439,8 +439,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         static final ResponseField[] $responseFields = {
           ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
             ResponseField.Condition.booleanCondition("withDetails", false),
-            ResponseField.Condition.booleanCondition("skipHumanDetails", true),
-            ResponseField.Condition.typeCondition(new String[] {"Human", "Droid"})
+            ResponseField.Condition.booleanCondition("skipHumanDetails", true)
           )),
           ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
             ResponseField.Condition.booleanCondition("withDetails", false),

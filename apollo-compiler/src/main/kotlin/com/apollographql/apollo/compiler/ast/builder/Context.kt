@@ -50,7 +50,7 @@ internal class Context(
         }
         .astFragmentsObjectFieldType(
             fragmentsPackage = fragmentsPackage,
-            isOptional = { typeCondition != schemaTypeName }
+            parentFieldSchemaTypeName = schemaTypeName
         )
 
     val normalizedClassName = name.escapeKotlinReservedWord().let { originalClassName ->
