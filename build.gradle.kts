@@ -316,7 +316,7 @@ fun PublicationContainer.setDefaultPomFields() {
 }
 
 val publishToOjo = tasks.register("publishToOjo") {
-  dependsOn(subprojects.flatMap {subproject ->
+  dependsOn(subprojects.flatMap { subproject ->
     subproject.tasks.matching {
       if (it.name == "apollo-gradle-plugin") {
         it.name in arrayOf("publishDefaultPublicationToOjoRepository",
@@ -332,7 +332,7 @@ val publishToOjo = tasks.register("publishToOjo") {
 }
 
 val publishToBintray = tasks.register("publishToBintray") {
-  dependsOn(subprojects.flatMap {subproject ->
+  dependsOn(subprojects.flatMap { subproject ->
     subproject.tasks.matching {
       if (it.name == "apollo-gradle-plugin") {
         it.name in arrayOf("publishDefaultPublicationToBintrayRepository",
@@ -345,7 +345,7 @@ val publishToBintray = tasks.register("publishToBintray") {
 }
 
 val publishToOss = tasks.register("publishToOss") {
-  dependsOn(subprojects.flatMap {subproject ->
+  dependsOn(subprojects.flatMap { subproject ->
     subproject.tasks.matching {
       if (it.name == "apollo-gradle-plugin") {
         it.name in arrayOf("publishDefaultPublicationToOssRepository",
@@ -370,7 +370,10 @@ val publishToGradlePortal = tasks.register("publishToGradlePortal") {
 tasks.register("publishIfNeeded") {
   val eventName = System.getenv("GITHUB_EVENT_NAME")
   val ref = System.getenv("GITHUB_REF")
-  project.logger.log(LogLevel.LIFECYCLE, "publishIfNeeded eventName=$eventName ref=$ref")
+
+  doFirst {
+    project.logger.log(LogLevel.LIFECYCLE, "publishIfNeeded eventName=$eventName ref=$ref")
+  }
 
   if (eventName == "push" && ref == "refs/heads/master") {
     project.logger.log(LogLevel.LIFECYCLE, "Deploying snapshot to OJO...")
