@@ -1,348 +1,294 @@
-package com.apollographql.apollo.internal.response;
+package com.apollographql.apollo.internal.response
 
-import com.apollographql.apollo.api.CustomTypeAdapter;
-import com.apollographql.apollo.api.CustomTypeValue;
-import com.apollographql.apollo.api.Operation;
-import com.apollographql.apollo.api.ResponseField;
-import com.apollographql.apollo.api.ScalarType;
-import com.apollographql.apollo.api.ScalarTypeAdapters;
-import com.apollographql.apollo.api.internal.Optional;
-import com.apollographql.apollo.api.internal.ResponseReader;
-import com.apollographql.apollo.internal.field.FieldValueResolver;
-import org.jetbrains.annotations.NotNull;
+import com.apollographql.apollo.api.BigDecimal
+import com.apollographql.apollo.api.CustomTypeAdapter
+import com.apollographql.apollo.api.CustomTypeValue.Companion.fromRawValue
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.ScalarType
+import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.internal.Optional
+import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.internal.field.FieldValueResolver
+import java.util.Collections
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+class RealResponseReader<R>(
+    val operationVariables: Operation.Variables,
+    private val recordSet: R,
+    internal val fieldValueResolver: FieldValueResolver<R>,
+    internal val scalarTypeAdapters: ScalarTypeAdapters,
+    internal val resolveDelegate: ResolveDelegate<R>
+) : ResponseReader {
 
-@SuppressWarnings("WeakerAccess")
-public final class RealResponseReader<R> implements ResponseReader {
-  final Operation.Variables operationVariables;
-  private final R recordSet;
-  final ScalarTypeAdapters scalarTypeAdapters;
-  final FieldValueResolver<R> fieldValueResolver;
-  final ResolveDelegate<R> resolveDelegate;
-  private final Map<String, Object> variableValues;
+  private val variableValues: Map<String, Any?> = operationVariables.valueMap()
 
-  public RealResponseReader(Operation.Variables operationVariables, R recordSet,
-      FieldValueResolver<R> fieldValueResolver, ScalarTypeAdapters scalarTypeAdapters,
-      ResolveDelegate<R> resolveDelegate) {
-    this.operationVariables = operationVariables;
-    this.recordSet = recordSet;
-    this.fieldValueResolver = fieldValueResolver;
-    this.scalarTypeAdapters = scalarTypeAdapters;
-    this.resolveDelegate = resolveDelegate;
-    this.variableValues = operationVariables.valueMap();
-  }
-
-  @Override public String readString(@NotNull ResponseField field) {
+  override fun readString(field: ResponseField): String? {
     if (shouldSkip(field)) {
-      return null;
+      return null
     }
-
-    String value = fieldValueResolver.valueFor(recordSet, field);
-    checkValue(field, value);
-
-    willResolve(field, value);
+    val value = fieldValueResolver.valueFor<String>(recordSet, field)
+    checkValue(field, value)
+    willResolve(field, value)
     if (value == null) {
-      resolveDelegate.didResolveNull();
+      resolveDelegate.didResolveNull()
     } else {
-      resolveDelegate.didResolveScalar(value);
+      resolveDelegate.didResolveScalar(value)
     }
-    didResolve(field);
-    return value;
+    didResolve(field)
+    return value
   }
 
-  @Override public Integer readInt(@NotNull ResponseField field) {
+  override fun readInt(field: ResponseField): Int? {
     if (shouldSkip(field)) {
-      return null;
+      return null
     }
-
-    BigDecimal value = fieldValueResolver.valueFor(recordSet, field);
-    checkValue(field, value);
-
-    willResolve(field, value);
+    val value = fieldValueResolver.valueFor<BigDecimal>(recordSet, field)
+    checkValue(field, value)
+    willResolve(field, value)
     if (value == null) {
-      resolveDelegate.didResolveNull();
+      resolveDelegate.didResolveNull()
     } else {
-      resolveDelegate.didResolveScalar(value);
+      resolveDelegate.didResolveScalar(value)
     }
-    didResolve(field);
-    return value != null ? value.intValue() : null;
+    didResolve(field)
+    return value?.toInt()
   }
 
-  @Override public Long readLong(@NotNull ResponseField field) {
+  override fun readLong(field: ResponseField): Long? {
     if (shouldSkip(field)) {
-      return null;
+      return null
     }
-
-    BigDecimal value = fieldValueResolver.valueFor(recordSet, field);
-    checkValue(field, value);
-
-    willResolve(field, value);
+    val value = fieldValueResolver.valueFor<BigDecimal>(recordSet, field)
+    checkValue(field, value)
+    willResolve(field, value)
     if (value == null) {
-      resolveDelegate.didResolveNull();
+      resolveDelegate.didResolveNull()
     } else {
-      resolveDelegate.didResolveScalar(value);
+      resolveDelegate.didResolveScalar(value)
     }
-    didResolve(field);
-    return value != null ? value.longValue() : null;
+    didResolve(field)
+    return value?.toLong()
   }
 
-  @Override public Double readDouble(@NotNull ResponseField field) {
+  override fun readDouble(field: ResponseField): Double? {
     if (shouldSkip(field)) {
-      return null;
+      return null
     }
-
-    BigDecimal value = fieldValueResolver.valueFor(recordSet, field);
-    checkValue(field, value);
-
-    willResolve(field, value);
+    val value = fieldValueResolver.valueFor<BigDecimal>(recordSet, field)
+    checkValue(field, value)
+    willResolve(field, value)
     if (value == null) {
-      resolveDelegate.didResolveNull();
+      resolveDelegate.didResolveNull()
     } else {
-      resolveDelegate.didResolveScalar(value);
+      resolveDelegate.didResolveScalar(value)
     }
-    didResolve(field);
-    return value != null ? value.doubleValue() : null;
+    didResolve(field)
+    return value?.toDouble()
   }
 
-  @Override public Boolean readBoolean(@NotNull ResponseField field) {
+  override fun readBoolean(field: ResponseField): Boolean? {
     if (shouldSkip(field)) {
-      return null;
+      return null
     }
-
-    Boolean value = fieldValueResolver.valueFor(recordSet, field);
-    checkValue(field, value);
-
-    willResolve(field, value);
+    val value = fieldValueResolver.valueFor<Boolean>(recordSet, field)
+    checkValue(field, value)
+    willResolve(field, value)
     if (value == null) {
-      resolveDelegate.didResolveNull();
+      resolveDelegate.didResolveNull()
     } else {
-      resolveDelegate.didResolveScalar(value);
+      resolveDelegate.didResolveScalar(value)
     }
-    didResolve(field);
-    return value;
+    didResolve(field)
+    return value
   }
 
-  @SuppressWarnings("unchecked") @Override
-  public <T> T readObject(@NotNull ResponseField field, @NotNull ResponseReader.ObjectReader<T> objectReader) {
+  override fun <T : Any> readObject(field: ResponseField, objectReader: ResponseReader.ObjectReader<T>): T? {
     if (shouldSkip(field)) {
-      return null;
+      return null
     }
-
-    R value = fieldValueResolver.valueFor(recordSet, field);
-    checkValue(field, value);
-
-    willResolve(field, value);
-    resolveDelegate.willResolveObject(field, Optional.fromNullable(value));
-    final T parsedValue;
-    if (value == null) {
-      resolveDelegate.didResolveNull();
-      parsedValue = null;
+    val value: R = fieldValueResolver.valueFor(recordSet, field)
+    checkValue(field, value)
+    willResolve(field, value)
+    resolveDelegate.willResolveObject(field, Optional.fromNullable(value))
+    val parsedValue: T?
+    parsedValue = if (value == null) {
+      resolveDelegate.didResolveNull()
+      null
     } else {
-      parsedValue = objectReader.read(new RealResponseReader(operationVariables, value, fieldValueResolver, scalarTypeAdapters,
-          resolveDelegate));
+      objectReader.read(RealResponseReader(operationVariables, value, fieldValueResolver, scalarTypeAdapters, resolveDelegate))
     }
-    resolveDelegate.didResolveObject(field, Optional.fromNullable(value));
-    didResolve(field);
-    return parsedValue;
+    resolveDelegate.didResolveObject(field, Optional.fromNullable(value))
+    didResolve(field)
+    return parsedValue
   }
 
-  @Override public <T> List<T> readList(@NotNull ResponseField field, @NotNull ListReader<T> listReader) {
+  override fun <T : Any> readList(field: ResponseField, listReader: ResponseReader.ListReader<T>): List<T?>? {
     if (shouldSkip(field)) {
-      return null;
+      return null
     }
-
-    List values = fieldValueResolver.valueFor(recordSet, field);
-    checkValue(field, values);
-
-    willResolve(field, values);
-    final List<T> result;
-    if (values == null) {
-      resolveDelegate.didResolveNull();
-      result = null;
+    val values = fieldValueResolver.valueFor<List<*>>(recordSet, field)
+    checkValue(field, values)
+    willResolve(field, values)
+    val result = if (values == null) {
+      resolveDelegate.didResolveNull()
+      null
     } else {
-      result = new ArrayList<>();
-      for (int i = 0; i < values.size(); i++) {
-        resolveDelegate.willResolveElement(i);
-        Object value = values.get(i);
+      values.mapIndexed { index, value ->
+        resolveDelegate.willResolveElement(index)
         if (value == null) {
-          result.add(null);
-          resolveDelegate.didResolveNull();
+          resolveDelegate.didResolveNull()
+          null
         } else {
-          T item = listReader.read(new ListItemReader(field, value));
-          result.add(item);
-        }
-        resolveDelegate.didResolveElement(i);
-      }
-      resolveDelegate.didResolveList(values);
+          listReader.read(ListItemReader(field, value))
+        }.also { resolveDelegate.didResolveElement(index) }
+      }.also { resolveDelegate.didResolveList(values) }
     }
-    didResolve(field);
-    return result != null ? Collections.unmodifiableList(result) : null;
+    didResolve(field)
+    return if (result != null) Collections.unmodifiableList(result) else null
   }
 
-  @SuppressWarnings("TypeParameterUnusedInFormals")
-  @Override public <T> T readCustomType(@NotNull ResponseField.CustomTypeField field) {
+  override fun <T : Any> readCustomType(field: ResponseField.CustomTypeField): T? {
     if (shouldSkip(field)) {
-      return null;
+      return null
     }
-
-    Object value = fieldValueResolver.valueFor(recordSet, field);
-    checkValue(field, value);
-
-    willResolve(field, value);
-    final T result;
+    val value = fieldValueResolver.valueFor<Any>(recordSet, field)
+    checkValue(field, value)
+    willResolve(field, value)
+    val result: T?
     if (value == null) {
-      resolveDelegate.didResolveNull();
-      result = null;
+      resolveDelegate.didResolveNull()
+      result = null
     } else {
-      CustomTypeAdapter<T> typeAdapter = scalarTypeAdapters.adapterFor(field.scalarType());
-      result = typeAdapter.decode(CustomTypeValue.fromRawValue(value));
-      checkValue(field, result);
-      resolveDelegate.didResolveScalar(value);
+      val typeAdapter: CustomTypeAdapter<T> = scalarTypeAdapters.adapterFor(field.scalarType)
+      result = typeAdapter.decode(fromRawValue(value))
+      checkValue(field, result)
+      resolveDelegate.didResolveScalar(value)
     }
-    didResolve(field);
-    return result;
+    didResolve(field)
+    return result
   }
 
-  @Override public <T> T readFragment(@NotNull ResponseField field, @NotNull ObjectReader<T> objectReader) {
+  override fun <T : Any> readFragment(field: ResponseField, objectReader: ResponseReader.ObjectReader<T>): T? {
     if (shouldSkip(field)) {
-      return null;
+      return null
     }
-
-    String value = fieldValueResolver.valueFor(recordSet, field);
-    checkValue(field, value);
-
-    willResolve(field, value);
-    if (value == null) {
-      resolveDelegate.didResolveNull();
-      didResolve(field);
-      return null;
+    val value = fieldValueResolver.valueFor<String>(recordSet, field)
+    checkValue(field, value)
+    willResolve(field, value)
+    return if (value == null) {
+      resolveDelegate.didResolveNull()
+      didResolve(field)
+      null
     } else {
-      resolveDelegate.didResolveScalar(value);
-      didResolve(field);
-
-      if (field.getType() == ResponseField.Type.FRAGMENT) {
-        for (ResponseField.Condition condition : field.getConditions()) {
-          if (condition instanceof ResponseField.TypeNameCondition) {
-            if (!((ResponseField.TypeNameCondition) condition).typeNames().contains(value)) {
-              return null;
+      resolveDelegate.didResolveScalar(value)
+      didResolve(field)
+      if (field.type === ResponseField.Type.FRAGMENT) {
+        for (condition in field.conditions) {
+          if (condition is ResponseField.TypeNameCondition) {
+            if (!condition.typeNames.contains(value)) {
+              return null
             }
           }
         }
-        return objectReader.read(this);
+        objectReader.read(this)
       } else {
-        return null;
+        null
       }
     }
   }
 
-  private boolean shouldSkip(ResponseField field) {
-    for (ResponseField.Condition condition : field.conditions()) {
-      if (condition instanceof ResponseField.BooleanCondition) {
-        ResponseField.BooleanCondition booleanCondition = (ResponseField.BooleanCondition) condition;
-        Boolean conditionValue = (Boolean) variableValues.get(booleanCondition.variableName());
-        if (booleanCondition.inverted()) {
+  private fun shouldSkip(field: ResponseField): Boolean {
+    for (condition in field.conditions) {
+      if (condition is ResponseField.BooleanCondition) {
+        val conditionValue = variableValues[condition.variableName] as Boolean?
+        if (condition.inverted) {
           // means it's a skip directive
-          if (Boolean.TRUE.equals(conditionValue)) {
-            return true;
+          if (conditionValue == true) {
+            return true
           }
         } else {
           // means it's an include directive
-          if (Boolean.FALSE.equals(conditionValue)) {
-            return true;
+          if (conditionValue == false) {
+            return true
           }
         }
       }
     }
-    return false;
+    return false
   }
 
-  private void willResolve(ResponseField field, Object value) {
-    resolveDelegate.willResolve(field, operationVariables, Optional.fromNullable(value));
+  private fun willResolve(field: ResponseField, value: Any?) {
+    resolveDelegate.willResolve(field, operationVariables, Optional.fromNullable(value))
   }
 
-  private void didResolve(ResponseField field) {
-    resolveDelegate.didResolve(field, operationVariables);
+  private fun didResolve(field: ResponseField) {
+    resolveDelegate.didResolve(field, operationVariables)
   }
 
-  private void checkValue(ResponseField field, Object value) {
-    if (!field.optional() && value == null) {
-      throw new NullPointerException("corrupted response reader, expected non null value for " + field.fieldName());
+  private fun checkValue(field: ResponseField, value: Any?) {
+    check(field.optional || value != null) {
+      "corrupted response reader, expected non null value for ${field.fieldName}"
     }
   }
 
-  private class ListItemReader implements ResponseReader.ListItemReader {
-    private final ResponseField field;
-    private final Object value;
+  private inner class ListItemReader(
+      private val field: ResponseField,
+      private val value: Any
+  ) : ResponseReader.ListItemReader {
 
-    ListItemReader(ResponseField field, Object value) {
-      this.field = field;
-      this.value = value;
+    override fun readString(): String {
+      resolveDelegate.didResolveScalar(value)
+      return value as String
     }
 
-    @NotNull @Override public String readString() {
-      resolveDelegate.didResolveScalar(value);
-      return (String) value;
+    override fun readInt(): Int {
+      resolveDelegate.didResolveScalar(value)
+      return (value as BigDecimal).toInt()
     }
 
-    @Override public int readInt() {
-      resolveDelegate.didResolveScalar(value);
-      return ((BigDecimal) value).intValue();
+    override fun readLong(): Long {
+      resolveDelegate.didResolveScalar(value)
+      return (value as BigDecimal).toLong()
     }
 
-    @Override public long readLong() {
-      resolveDelegate.didResolveScalar(value);
-      return ((BigDecimal) value).longValue();
+    override fun readDouble(): Double {
+      resolveDelegate.didResolveScalar(value)
+      return (value as BigDecimal).toDouble()
     }
 
-    @Override public double readDouble() {
-      resolveDelegate.didResolveScalar(value);
-      return ((BigDecimal) value).doubleValue();
+    override fun readBoolean(): Boolean {
+      resolveDelegate.didResolveScalar(value)
+      return value as Boolean
     }
 
-    @Override public boolean readBoolean() {
-      resolveDelegate.didResolveScalar(value);
-      return (Boolean) value;
+    override fun <T : Any> readCustomType(scalarType: ScalarType): T {
+      val typeAdapter: CustomTypeAdapter<T> = scalarTypeAdapters.adapterFor(scalarType)
+      resolveDelegate.didResolveScalar(value)
+      return typeAdapter.decode(fromRawValue(value))
     }
 
-    @SuppressWarnings("TypeParameterUnusedInFormals")
-    @NotNull @Override public <T> T readCustomType(@NotNull ScalarType scalarType) {
-      CustomTypeAdapter<T> typeAdapter = scalarTypeAdapters.adapterFor(scalarType);
-      resolveDelegate.didResolveScalar(value);
-      return typeAdapter.decode(CustomTypeValue.fromRawValue(value));
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : Any> readObject(objectReader: ResponseReader.ObjectReader<T>): T {
+      val value = value as R
+      resolveDelegate.willResolveObject(field, Optional.fromNullable(value))
+      val item = objectReader.read(RealResponseReader(operationVariables, value, fieldValueResolver, scalarTypeAdapters, resolveDelegate))
+      resolveDelegate.didResolveObject(field, Optional.fromNullable(value))
+      return item
     }
 
-    @SuppressWarnings("unchecked")
-    @NotNull @Override public <T> T readObject(ObjectReader<T> objectReader) {
-      R value = (R) this.value;
-      resolveDelegate.willResolveObject(field, Optional.fromNullable(value));
-      T item = objectReader.read(new RealResponseReader<R>(operationVariables, value, fieldValueResolver, scalarTypeAdapters,
-          resolveDelegate));
-      resolveDelegate.didResolveObject(field, Optional.fromNullable(value));
-      return item;
-    }
-
-    @NotNull @Override public <T> List<T> readList(@NotNull ListReader<T> listReader) {
-      List values = (List) value;
-      List<T> result = new ArrayList<>();
-      for (int i = 0; i < values.size(); i++) {
-        resolveDelegate.willResolveElement(i);
-        Object value = values.get(i);
+    override fun <T : Any> readList(listReader: ResponseReader.ListReader<T>): List<T?> {
+      val values = value as List<*>
+      val result = values.mapIndexed { index, value ->
+        resolveDelegate.willResolveElement(index)
         if (value == null) {
-          result.add(null);
-          resolveDelegate.didResolveNull();
+          resolveDelegate.didResolveNull()
+          null
         } else {
-          T item = listReader.read(new ListItemReader(field, value));
-          result.add(item);
-        }
-        resolveDelegate.didResolveElement(i);
+          listReader.read(ListItemReader(field, value))
+        }.also { resolveDelegate.didResolveElement(index) }
       }
-      resolveDelegate.didResolveList(values);
-      return Collections.unmodifiableList(result);
+      resolveDelegate.didResolveList(values)
+      return Collections.unmodifiableList(result)
     }
   }
 }

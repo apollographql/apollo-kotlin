@@ -1,13 +1,14 @@
 plugins {
   `java-library`
+  kotlin("jvm")
 }
 
 dependencies {
-  add("api", project(":apollo-api")) // apollo-espresso-support uses some apollo-api internals
-  add("api", project(":apollo-http-cache-api"))
-  add("api", groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
-  add("compileOnly", groovy.util.Eval.x(project, "x.dep.jetbrainsAnnotations"))
-  add("implementation", groovy.util.Eval.x(project, "x.dep.cache"))
+  api(project(":apollo-api"))
+  api(project(":apollo-http-cache-api"))
+  api(groovy.util.Eval.x(project, "x.dep.kotlin.stdLib"))
+  api(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
+  implementation(groovy.util.Eval.x(project, "x.dep.cache"))
 
   add("testCompileOnly", groovy.util.Eval.x(project, "x.dep.jetbrainsAnnotations"))
   add("testCompile", groovy.util.Eval.x(project, "x.dep.mockito"))
