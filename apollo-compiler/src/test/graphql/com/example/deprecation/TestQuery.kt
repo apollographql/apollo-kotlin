@@ -110,6 +110,9 @@ data class TestQuery(
           deprecatedBool = deprecatedBool
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Hero> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -136,6 +139,9 @@ data class TestQuery(
           hero = hero
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 

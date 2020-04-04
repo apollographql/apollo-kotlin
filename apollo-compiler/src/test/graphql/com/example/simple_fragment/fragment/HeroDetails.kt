@@ -7,6 +7,7 @@ package com.example.simple_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import kotlin.Array
@@ -54,6 +55,9 @@ internal data class HeroDetails(
         fragments = fragments
       )
     }
+
+    @Suppress("FunctionName")
+    fun Mapper(): ResponseFieldMapper<HeroDetails> = ResponseFieldMapper { invoke(it) }
   }
 
   internal data class Fragments(
@@ -78,6 +82,9 @@ internal data class HeroDetails(
           humanDetails = humanDetails
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Fragments> = ResponseFieldMapper { invoke(it) }
     }
   }
 }

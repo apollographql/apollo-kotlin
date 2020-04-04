@@ -7,6 +7,7 @@ package com.example.directive_with_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import kotlin.Array
@@ -48,5 +49,8 @@ data class HumanDetails(
         homePlanet = homePlanet
       )
     }
+
+    @Suppress("FunctionName")
+    fun Mapper(): ResponseFieldMapper<HumanDetails> = ResponseFieldMapper { invoke(it) }
   }
 }

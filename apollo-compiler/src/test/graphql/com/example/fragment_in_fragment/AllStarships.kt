@@ -68,6 +68,9 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
           fragments = fragments
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Node> = ResponseFieldMapper { invoke(it) }
     }
 
     data class Fragments(
@@ -90,6 +93,9 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
             starshipFragment = starshipFragment
           )
         }
+
+        @Suppress("FunctionName")
+        fun Mapper(): ResponseFieldMapper<Fragments> = ResponseFieldMapper { invoke(it) }
       }
     }
   }
@@ -122,6 +128,9 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
           node = node
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Edge> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -158,6 +167,9 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
           edges = edges
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<AllStarships> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -182,6 +194,9 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
           allStarships = allStarships
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 

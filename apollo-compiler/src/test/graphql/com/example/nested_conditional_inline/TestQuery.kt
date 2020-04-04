@@ -109,6 +109,9 @@ data class TestQuery(
           height = height
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<AsHuman1> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -147,6 +150,9 @@ data class TestQuery(
           asHuman1 = asHuman1
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Friend> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -191,6 +197,9 @@ data class TestQuery(
           friends = friends
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<AsHuman> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -233,6 +242,9 @@ data class TestQuery(
           height = height
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<AsHuman2> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -271,6 +283,9 @@ data class TestQuery(
           asHuman2 = asHuman2
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Friend1> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -315,6 +330,9 @@ data class TestQuery(
           friends = friends
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<AsDroid> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -362,6 +380,9 @@ data class TestQuery(
           asDroid = asDroid
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Hero> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -388,6 +409,9 @@ data class TestQuery(
           hero = hero
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 

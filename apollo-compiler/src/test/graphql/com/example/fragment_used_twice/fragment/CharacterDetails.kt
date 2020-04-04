@@ -7,6 +7,7 @@ package com.example.fragment_used_twice.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.example.fragment_used_twice.type.CustomType
@@ -60,5 +61,8 @@ data class CharacterDetails(
         birthDate = birthDate
       )
     }
+
+    @Suppress("FunctionName")
+    fun Mapper(): ResponseFieldMapper<CharacterDetails> = ResponseFieldMapper { invoke(it) }
   }
 }

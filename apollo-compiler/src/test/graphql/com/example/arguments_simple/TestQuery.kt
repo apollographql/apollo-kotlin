@@ -118,6 +118,9 @@ data class TestQuery(
           fragments = fragments
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Hero> = ResponseFieldMapper { invoke(it) }
     }
 
     data class Fragments(
@@ -140,6 +143,9 @@ data class TestQuery(
             heroDetails = heroDetails
           )
         }
+
+        @Suppress("FunctionName")
+        fun Mapper(): ResponseFieldMapper<Fragments> = ResponseFieldMapper { invoke(it) }
       }
     }
   }
@@ -170,6 +176,9 @@ data class TestQuery(
           name = name
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<HeroWithReview> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -210,6 +219,9 @@ data class TestQuery(
           heroWithReview = heroWithReview
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 

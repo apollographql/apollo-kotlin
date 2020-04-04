@@ -112,6 +112,9 @@ data class TestQuery(
           coordinates = coordinates
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Starship> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -138,6 +141,9 @@ data class TestQuery(
           starship = starship
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 

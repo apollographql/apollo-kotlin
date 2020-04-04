@@ -101,6 +101,9 @@ data class CreateReviewForEpisodeMutation(
           commentary = commentary
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<CreateReview> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -130,6 +133,9 @@ data class CreateReviewForEpisodeMutation(
           createReview = createReview
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 
