@@ -19,8 +19,8 @@ import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
+import com.apollographql.apollo.api.internal.Throws
 import com.example.arguments_complex.type.Episode
-import java.io.IOException
 import kotlin.Any
 import kotlin.Array
 import kotlin.Double
@@ -28,9 +28,9 @@ import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.Map
-import kotlin.jvm.Throws
 import kotlin.jvm.Transient
 import okio.BufferedSource
+import okio.IOException
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")

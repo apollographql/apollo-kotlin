@@ -1,6 +1,13 @@
 package com.apollographql.apollo.compiler.codegen.kotlin
 
-import com.apollographql.apollo.api.*
+import com.apollographql.apollo.api.Input
+import com.apollographql.apollo.api.Mutation
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.OperationName
+import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
@@ -15,11 +22,19 @@ import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.marshaller
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.responseFieldsPropertySpec
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.suppressWarningsAnnotation
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.toMapperFun
-import com.squareup.kotlinpoet.*
+import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
+import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.MemberName
+import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
-import com.squareup.kotlinpoet.jvm.throws
+import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeName
+import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.asClassName
+import com.squareup.kotlinpoet.joinToCode
 import okio.BufferedSource
-import java.io.IOException
 
 internal fun OperationType.typeSpec(targetPackage: String, generateAsInternal: Boolean = false) = TypeSpec
     .classBuilder(name)
@@ -87,7 +102,7 @@ internal fun OperationType.typeSpec(targetPackage: String, generateAsInternal: B
             .builder("scalarTypeAdapters", ScalarTypeAdapters::class)
             .build()
         )
-        .throws(IOException::class)
+        .throwsMultiplatformIOException()
         .returns(Response::class.asClassName().parameterizedBy(data.asTypeName()))
         .addStatement("return %T.parse(source, this, scalarTypeAdapters)", SimpleOperationResponseParser::class)
         .build()
@@ -98,7 +113,7 @@ internal fun OperationType.typeSpec(targetPackage: String, generateAsInternal: B
             .builder("source", BufferedSource::class)
             .build()
         )
-        .throws(IOException::class)
+        .throwsMultiplatformIOException()
         .returns(Response::class.asClassName().parameterizedBy(data.asTypeName()))
         .addStatement("return parse(source, %M)", MemberName(ScalarTypeAdapters.Companion::class.asClassName(), "DEFAULT"))
         .build()

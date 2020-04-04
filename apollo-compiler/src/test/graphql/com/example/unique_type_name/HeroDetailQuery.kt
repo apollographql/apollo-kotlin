@@ -17,16 +17,16 @@ import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
+import com.apollographql.apollo.api.internal.Throws
 import com.example.unique_type_name.fragment.HeroDetails
 import com.example.unique_type_name.type.Episode
-import java.io.IOException
 import kotlin.Array
 import kotlin.Double
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
-import kotlin.jvm.Throws
 import okio.BufferedSource
+import okio.IOException
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
