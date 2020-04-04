@@ -82,6 +82,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           appearsIn = appearsIn
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Friend> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -134,6 +137,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           friends = friends
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<AsHuman> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -163,6 +169,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           id = id
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Friend1> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -215,6 +224,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           friends = friends
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<AsDroid> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -262,6 +274,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           asDroid = asDroid
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Hero> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -285,6 +300,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           hero = hero
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 

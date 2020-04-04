@@ -67,6 +67,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           name = name
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<QueryType> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -93,6 +96,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           name = name
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Type> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -139,6 +145,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           types = types
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<__Schema> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -165,6 +174,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           name = name
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<__Type> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -196,6 +208,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           __type = __type
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 

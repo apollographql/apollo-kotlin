@@ -68,6 +68,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           fragments = fragments
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<R2> = ResponseFieldMapper { invoke(it) }
     }
 
     data class Fragments(
@@ -101,6 +104,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
             droidDetails = droidDetails
           )
         }
+
+        @Suppress("FunctionName")
+        fun Mapper(): ResponseFieldMapper<Fragments> = ResponseFieldMapper { invoke(it) }
       }
     }
   }
@@ -128,6 +134,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           fragments = fragments
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Luke> = ResponseFieldMapper { invoke(it) }
     }
 
     data class Fragments(
@@ -161,6 +170,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
             droidDetails = droidDetails
           )
         }
+
+        @Suppress("FunctionName")
+        fun Mapper(): ResponseFieldMapper<Fragments> = ResponseFieldMapper { invoke(it) }
       }
     }
   }
@@ -192,6 +204,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           luke = luke
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 

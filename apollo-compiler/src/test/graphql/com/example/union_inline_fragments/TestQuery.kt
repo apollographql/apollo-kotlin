@@ -81,6 +81,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           firstAppearsIn = firstAppearsIn
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Friend> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -133,6 +136,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           name = name
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<AsHuman> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -171,6 +177,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           deprecated = deprecated
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Friend1> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -223,6 +232,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           name = name
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<AsDroid> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -270,6 +282,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           asDroid = asDroid
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Friend2> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -322,6 +337,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           friends = friends
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<AsCharacter> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -351,6 +369,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           name = name
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<AsStarship> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -390,6 +411,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           asStarship = asStarship
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Search> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -419,6 +443,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           search = search
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 

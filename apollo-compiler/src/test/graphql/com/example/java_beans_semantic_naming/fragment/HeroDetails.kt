@@ -7,6 +7,7 @@ package com.example.java_beans_semantic_naming.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import kotlin.Array
@@ -90,6 +91,9 @@ data class HeroDetails(
         asDroid = asDroid
       )
     }
+
+    @Suppress("FunctionName")
+    fun Mapper(): ResponseFieldMapper<HeroDetails> = ResponseFieldMapper { invoke(it) }
   }
 
   data class Node(
@@ -118,6 +122,9 @@ data class HeroDetails(
           name = name
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Node> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -149,6 +156,9 @@ data class HeroDetails(
           node = node
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Edge> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -175,6 +185,9 @@ data class HeroDetails(
           hasNextPage = hasNextPage
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<PageInfo> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -237,6 +250,9 @@ data class HeroDetails(
           isEmpty = isEmpty
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<FriendsConnection> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -270,6 +286,9 @@ data class HeroDetails(
           name = name
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Node1> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -301,6 +320,9 @@ data class HeroDetails(
           node = node
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Edge1> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -327,6 +349,9 @@ data class HeroDetails(
           hasNextPage = hasNextPage
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<PageInfo1> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -389,6 +414,9 @@ data class HeroDetails(
           isEmpty = isEmpty
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<FriendsConnection1> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -436,6 +464,9 @@ data class HeroDetails(
           primaryFunction = primaryFunction
         )
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<AsDroid> = ResponseFieldMapper { invoke(it) }
     }
   }
 }

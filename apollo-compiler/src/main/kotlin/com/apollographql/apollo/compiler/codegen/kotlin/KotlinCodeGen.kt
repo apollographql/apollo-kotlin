@@ -2,6 +2,7 @@ package com.apollographql.apollo.compiler.codegen.kotlin
 
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.compiler.applyIf
@@ -157,6 +158,18 @@ internal object KotlinCodeGen {
             .endControlFlow()
             .build()
         )
+        .build()
+  }
+
+  fun TypeName.createMapperFun(): FunSpec {
+    return FunSpec.builder("Mapper")
+        .addAnnotation(
+            AnnotationSpec.builder(Suppress::class)
+                .addMember("%S", "FunctionName")
+                .build()
+        )
+        .returns(ResponseFieldMapper::class.asClassName().parameterizedBy(this))
+        .addStatement("return %T { invoke(it) }", ResponseFieldMapper::class)
         .build()
   }
 

@@ -18,6 +18,7 @@ import com.apollographql.apollo.compiler.ast.ObjectType
 import com.apollographql.apollo.compiler.ast.OperationType
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.asPropertySpec
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.asTypeName
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.createMapperFun
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.marshallerFunSpec
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.responseFieldsPropertySpec
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.suppressWarningsAnnotation
@@ -255,7 +256,8 @@ private fun ObjectType.toOperationDataTypeSpec(name: String) =
         .addProperties(fields.map { field -> field.asPropertySpec(initializer = CodeBlock.of(field.name)) })
         .addType(TypeSpec.companionObjectBuilder()
             .addProperty(responseFieldsPropertySpec(fields))
-            .addFunction(fields.toMapperFun(ClassName.bestGuess(name)))
+            .addFunction(fields.toMapperFun(ClassName("", name)))
+            .addFunction(ClassName("", name).createMapperFun())
             .build()
         )
         .addFunction(fields.marshallerFunSpec(override = true, thisRef = name))
