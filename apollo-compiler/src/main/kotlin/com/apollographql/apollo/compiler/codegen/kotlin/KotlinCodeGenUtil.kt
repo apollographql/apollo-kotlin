@@ -4,8 +4,8 @@ import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 
-val MULTIPLATFORM_THROWS = ClassName.bestGuess("com.apollographql.apollo.api.internal.Throws")
-val MULTIPLATFORM_IO_EXCEPTION = ClassName.bestGuess("okio.IOException")
+private val MULTIPLATFORM_THROWS = ClassName("com.apollographql.apollo.api.internal", "Throws")
+private val MULTIPLATFORM_IO_EXCEPTION = ClassName("okio", "IOException")
 
 fun FunSpec.Builder.throwsMultiplatformIOException() = throws(MULTIPLATFORM_IO_EXCEPTION)
 
