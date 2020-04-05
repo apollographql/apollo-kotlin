@@ -25,10 +25,6 @@ dependencies {
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.truth"))
 }
 
-tasks.withType<KotlinCompile> {
-  dependsOn("generateGrammarSource")
-}
-
 tasks.register("pluginVersion") {
   val outputDir = file("src/generated/kotlin")
 

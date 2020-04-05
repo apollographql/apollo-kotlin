@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 buildscript {
   project.apply {
     from(rootProject.file("gradle/dependencies.gradle"))
@@ -66,6 +68,10 @@ subprojects {
       sourceCompatibility = JavaVersion.VERSION_1_8
       targetCompatibility = JavaVersion.VERSION_1_8
     }
+  }
+
+  tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
   }
 
   this.apply(plugin = "maven-publish")
