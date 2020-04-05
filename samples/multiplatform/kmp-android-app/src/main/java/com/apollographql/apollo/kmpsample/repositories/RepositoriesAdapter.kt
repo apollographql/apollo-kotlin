@@ -4,19 +4,16 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.apollographql.apollo.kmpsample.R
+import com.apollographql.apollo.kmpsample.databinding.ItemRepositoryBinding
 import com.apollographql.apollo.kmpsample.fragment.RepositoryFragment
-import kotlinx.android.synthetic.main.item_repository.view.*
-import java.util.*
 
 class RepositoriesAdapter(private val onClick: (RepositoryFragment) -> Unit) : RecyclerView.Adapter<RepositoriesAdapter.ViewHolder>() {
 
   private var data: List<RepositoryFragment> = ArrayList()
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-    return ViewHolder(
-      LayoutInflater.from(parent.context).inflate(R.layout.item_repository, parent, false)
-    )
+    val inflater = LayoutInflater.from(parent.context)
+    return ViewHolder(ItemRepositoryBinding.inflate(inflater, parent, false))
   }
 
   override fun getItemCount() = data.size
@@ -30,9 +27,9 @@ class RepositoriesAdapter(private val onClick: (RepositoryFragment) -> Unit) : R
     notifyDataSetChanged()
   }
 
-  class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+  class ViewHolder(private val binding: ItemRepositoryBinding) : RecyclerView.ViewHolder(binding.root) {
     fun bind(repositoryFragment: RepositoryFragment, onClick: (RepositoryFragment) -> Unit) {
-      itemView.run {
+      binding.run {
         tvRepositoryName.text = repositoryFragment.name
         if (repositoryFragment.description == null) {
           tvRepositoryDescription.visibility = View.GONE

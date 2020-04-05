@@ -8,12 +8,9 @@ import android.view.View
 import android.widget.LinearLayout
 import com.apollographql.apollo.kmpsample.BuildConfig
 import com.apollographql.apollo.kmpsample.KotlinSampleApp
-import com.apollographql.apollo.kmpsample.R
 import com.apollographql.apollo.kmpsample.data.ApolloCoroutinesService
+import com.apollographql.apollo.kmpsample.databinding.ActivityMainBinding
 import com.apollographql.apollo.kmpsample.repositoryDetail.RepositoryDetailActivity
-import kotlinx.android.synthetic.main.activity_main.progressBar
-import kotlinx.android.synthetic.main.activity_main.rvRepositories
-import kotlinx.android.synthetic.main.activity_main.tvError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -23,30 +20,33 @@ import kotlinx.coroutines.withContext
 class MainActivity : AppCompatActivity() {
 
   private val dataSource by lazy { ApolloCoroutinesService((application as KotlinSampleApp).apolloClient) }
+
+  private lateinit var binding: ActivityMainBinding
   private lateinit var repositoriesAdapter: RepositoriesAdapter
   private lateinit var job: Job
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_main)
+    binding = ActivityMainBinding.inflate(layoutInflater)
 
     if (BuildConfig.GITHUB_OAUTH_TOKEN == "your_token") {
-      tvError.visibility = View.VISIBLE
-      tvError.text = "Please replace \"your_token\" in apollo-kotlin-samples/github_token with an actual token.\n\nhttps://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/"
-      rvRepositories.visibility = View.GONE
-      progressBar.visibility = View.GONE
+      binding.tvError.visibility = View.VISIBLE
+      binding.tvError.text = "Please replace \"your_token\" in apollo-kotlin-samples/github_token with an actual token.\n\nhttps://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/"
+      binding.rvRepositories.visibility = View.GONE
+      binding.progressBar.visibility = View.GONE
       return
     }
 
-    tvError.visibility = View.GONE
+    binding.tvError.visibility = View.GONE
 
-    rvRepositories.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
-    rvRepositories.addItemDecoration(DividerItemDecoration(this, LinearLayout.VERTICAL))
+    binding.rvRepositories.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
+    binding.rvRepositories.addItemDecoration(DividerItemDecoration(this, LinearLayout.VERTICAL))
     repositoriesAdapter = RepositoriesAdapter { repositoryFragment ->
       RepositoryDetailActivity.start(this@MainActivity, repositoryFragment.name)
     }
-    rvRepositories.adapter = repositoriesAdapter
+    binding.rvRepositories.adapter = repositoriesAdapter
 
+    setContentView(binding.root)
     fetchRepositories()
   }
 
@@ -56,8 +56,8 @@ class MainActivity : AppCompatActivity() {
         val repos = dataSource.fetchRepositories()
 
         withContext(Dispatchers.Main) {
-          progressBar.visibility = View.GONE
-          rvRepositories.visibility = View.VISIBLE
+          binding.progressBar.visibility = View.GONE
+          binding.rvRepositories.visibility = View.VISIBLE
           repositoriesAdapter.setItems(repos)
         }
       } catch (e: Exception) {
@@ -69,9 +69,9 @@ class MainActivity : AppCompatActivity() {
   }
 
   private fun handleError(error: Throwable?) {
-    tvError.text = error?.localizedMessage
-    tvError.visibility = View.VISIBLE
-    progressBar.visibility = View.GONE
+    binding.tvError.text = error?.localizedMessage
+    binding.tvError.visibility = View.VISIBLE
+    binding.progressBar.visibility = View.GONE
     error?.printStackTrace()
   }
 

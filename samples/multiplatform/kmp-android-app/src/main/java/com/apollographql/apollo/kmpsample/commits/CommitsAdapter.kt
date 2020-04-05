@@ -2,22 +2,18 @@ package com.apollographql.apollo.kmpsample.commits
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import com.apollographql.apollo.kmpsample.GithubRepositoryCommitsQuery
-import com.apollographql.apollo.kmpsample.R
-import kotlinx.android.synthetic.main.item_commit.view.tvCommitMessage
-import kotlinx.android.synthetic.main.item_commit.view.tvCommitSha1
+import com.apollographql.apollo.kmpsample.databinding.ItemCommitBinding
 
 class CommitsAdapter : RecyclerView.Adapter<CommitsAdapter.ViewHolder>() {
 
   private var data: List<GithubRepositoryCommitsQuery.Edge?>? = null
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-    return ViewHolder(
-        LayoutInflater.from(parent.context).inflate(R.layout.item_commit, parent, false)
-    )
+    val inflater = LayoutInflater.from(parent.context)
+    return ViewHolder(ItemCommitBinding.inflate(inflater, parent, false))
   }
 
   override fun getItemCount() = data?.size ?: 0
@@ -31,9 +27,9 @@ class CommitsAdapter : RecyclerView.Adapter<CommitsAdapter.ViewHolder>() {
     notifyDataSetChanged()
   }
 
-  class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+  class ViewHolder(private val binding: ItemCommitBinding) : RecyclerView.ViewHolder(binding.root) {
     fun bind(commit: GithubRepositoryCommitsQuery.Edge?) {
-      itemView.run {
+      binding.run {
         tvCommitSha1.text = commit?.node?.abbreviatedOid
         val headline = "${commit?.node?.author?.email}: ${commit?.node?.messageHeadline}"
         tvCommitMessage.visibility = VISIBLE

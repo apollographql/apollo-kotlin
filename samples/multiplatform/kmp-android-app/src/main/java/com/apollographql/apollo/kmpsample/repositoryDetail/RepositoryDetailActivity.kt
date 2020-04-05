@@ -7,20 +7,10 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.apollographql.apollo.kmpsample.KotlinSampleApp
-import com.apollographql.apollo.kmpsample.R
 import com.apollographql.apollo.kmpsample.commits.CommitsActivity
 import com.apollographql.apollo.kmpsample.data.ApolloCoroutinesService
+import com.apollographql.apollo.kmpsample.databinding.ActivityRepositoryDetailBinding
 import com.apollographql.apollo.kmpsample.fragment.RepositoryDetail
-import kotlinx.android.synthetic.main.activity_repository_detail.buttonCommits
-import kotlinx.android.synthetic.main.activity_repository_detail.progressBar
-import kotlinx.android.synthetic.main.activity_repository_detail.tvError
-import kotlinx.android.synthetic.main.activity_repository_detail.tvRepositoryDescription
-import kotlinx.android.synthetic.main.activity_repository_detail.tvRepositoryForks
-import kotlinx.android.synthetic.main.activity_repository_detail.tvRepositoryIssues
-import kotlinx.android.synthetic.main.activity_repository_detail.tvRepositoryName
-import kotlinx.android.synthetic.main.activity_repository_detail.tvRepositoryPullRequests
-import kotlinx.android.synthetic.main.activity_repository_detail.tvRepositoryReleases
-import kotlinx.android.synthetic.main.activity_repository_detail.tvRepositoryStars
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -30,11 +20,13 @@ import kotlinx.coroutines.withContext
 class RepositoryDetailActivity : AppCompatActivity() {
 
   private val dataSource by lazy { ApolloCoroutinesService((application as KotlinSampleApp).apolloClient) }
+
+  private lateinit var binding: ActivityRepositoryDetailBinding
   private lateinit var job: Job
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_repository_detail)
+    binding = ActivityRepositoryDetailBinding.inflate(layoutInflater)
     val repoName = intent.getStringExtra(REPO_NAME_KEY)
     supportActionBar?.title = repoName
 
@@ -42,7 +34,7 @@ class RepositoryDetailActivity : AppCompatActivity() {
   }
 
   private fun fetchRepository(repoName: String) {
-    buttonCommits.visibility = View.GONE
+    binding.buttonCommits.visibility = View.GONE
 
     job = CoroutineScope(Dispatchers.IO).launch {
       try {
@@ -60,30 +52,30 @@ class RepositoryDetailActivity : AppCompatActivity() {
   }
 
   private fun handleDetailResponse(repositoryDetail: RepositoryDetail?) {
-    progressBar.visibility = View.GONE
-    tvError.visibility = View.GONE
-    buttonCommits.visibility = View.VISIBLE
+    binding.progressBar.visibility = View.GONE
+    binding.tvError.visibility = View.GONE
+    binding.buttonCommits.visibility = View.VISIBLE
     updateUI(repositoryDetail)
   }
 
   private fun handleError(error: Throwable?) {
-    tvError.text = error?.localizedMessage
-    tvError.visibility = View.VISIBLE
-    progressBar.visibility = View.GONE
+    binding.tvError.text = error?.localizedMessage
+    binding.tvError.visibility = View.VISIBLE
+    binding.progressBar.visibility = View.GONE
     error?.printStackTrace()
   }
 
   @SuppressLint("SetTextI18n")
   private fun updateUI(repositoryDetail: RepositoryDetail?) {
     repositoryDetail?.run {
-      tvRepositoryName.text = name
-      tvRepositoryDescription.text = description
-      tvRepositoryForks.text = "$forkCount Forks"
-      tvRepositoryIssues.text = "${issues.totalCount} Issues"
-      tvRepositoryPullRequests.text = "${pullRequests.totalCount} Pull requests"
-      tvRepositoryReleases.text = "${releases.totalCount} Releases"
-      tvRepositoryStars.text = "${stargazers.totalCount} Stars"
-      buttonCommits.setOnClickListener {
+      binding.tvRepositoryName.text = name
+      binding.tvRepositoryDescription.text = description
+      binding.tvRepositoryForks.text = "$forkCount Forks"
+      binding.tvRepositoryIssues.text = "${issues.totalCount} Issues"
+      binding.tvRepositoryPullRequests.text = "${pullRequests.totalCount} Pull requests"
+      binding.tvRepositoryReleases.text = "${releases.totalCount} Releases"
+      binding.tvRepositoryStars.text = "${stargazers.totalCount} Stars"
+      binding.buttonCommits.setOnClickListener {
         CommitsActivity.start(this@RepositoryDetailActivity, name)
       }
     }

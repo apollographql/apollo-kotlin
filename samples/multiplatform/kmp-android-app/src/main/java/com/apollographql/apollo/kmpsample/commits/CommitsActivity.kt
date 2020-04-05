@@ -9,11 +9,8 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import com.apollographql.apollo.kmpsample.GithubRepositoryCommitsQuery
 import com.apollographql.apollo.kmpsample.KotlinSampleApp
-import com.apollographql.apollo.kmpsample.R
 import com.apollographql.apollo.kmpsample.data.ApolloCoroutinesService
-import kotlinx.android.synthetic.main.activity_commits.recyclerView
-import kotlinx.android.synthetic.main.activity_commits.tvError
-import kotlinx.android.synthetic.main.activity_main.progressBar
+import com.apollographql.apollo.kmpsample.databinding.ActivityCommitsBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -26,19 +23,22 @@ class CommitsActivity : AppCompatActivity() {
   private val dataSource by lazy { ApolloCoroutinesService((application as KotlinSampleApp).apolloClient) }
   private lateinit var job: Job
 
+  private lateinit var binding: ActivityCommitsBinding
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_commits)
+    binding = ActivityCommitsBinding.inflate(layoutInflater)
 
     val repoName = intent.getStringExtra(REPO_NAME_KEY)
     supportActionBar?.title = repoName
 
-    recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-    recyclerView.adapter = adapter
+    binding.recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+    binding.recyclerView.adapter = adapter
 
-    tvError.visibility = GONE
-    progressBar.visibility = VISIBLE
+    binding.tvError.visibility = GONE
+    binding.progressBar.visibility = VISIBLE
 
+    setContentView(binding.root)
     fetchCommits(repoName)
   }
 
@@ -64,14 +64,14 @@ class CommitsActivity : AppCompatActivity() {
   }
 
   private fun handleCommits(commits: List<GithubRepositoryCommitsQuery.Edge?>) {
-    progressBar.visibility = GONE
+    binding.progressBar.visibility = GONE
     adapter.setItems(commits)
   }
 
   private fun handleError(error: Throwable?) {
-    progressBar.visibility = GONE
-    tvError.visibility = VISIBLE
-    tvError.text = error?.localizedMessage
+    binding.progressBar.visibility = GONE
+    binding.tvError.visibility = VISIBLE
+    binding.tvError.text = error?.localizedMessage
   }
 
   companion object {

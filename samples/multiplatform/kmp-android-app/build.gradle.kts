@@ -2,9 +2,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.multiplatform")
+    kotlin("android")
 }
-apply(plugin = "kotlin-android-extensions")
 
 android {
     compileSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt())
@@ -21,6 +20,10 @@ android {
         buildConfigField("String", "GITHUB_OAUTH_TOKEN", "\"${f.readText().trim()}\"")
     }
 
+    viewBinding {
+        isEnabled = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -29,10 +32,6 @@ android {
     packagingOptions {
         exclude("META-INF/main.kotlin_module")
     }
-}
-
-kotlin {
-    android()
 }
 
 tasks.withType<KotlinCompile> {
