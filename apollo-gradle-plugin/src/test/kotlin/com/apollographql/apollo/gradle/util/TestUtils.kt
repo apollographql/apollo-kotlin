@@ -75,6 +75,12 @@ object TestUtils {
         buildscript = buildscript.replace(
             "// ADD DEPENDENCIES HERE",
             "add(\"implementation\", kotlinDep(\"kotlin.stdlib\"))")
+
+        buildscript += """
+          tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+              kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
+          }
+        """.trimIndent()
       }
 
       File(dest, "build.gradle.kts").writeText(buildscript)
@@ -120,6 +126,12 @@ object TestUtils {
 
       if (hasKotlin) {
         buildscript = buildscript.replace("// ADD DEPENDENCIES HERE", "implementation dep.kotlin.stdLib")
+
+        buildscript += """
+          tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+              kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8
+          }
+        """.trimIndent()
       }
 
       File(dest, "build.gradle").writeText(buildscript)
