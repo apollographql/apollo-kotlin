@@ -2,7 +2,6 @@ package com.apollographql.apollo.api.internal
 
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ScalarType
-import kotlin.jvm.JvmSynthetic
 
 /*
  * ResponseReader is an abstraction for reading GraphQL fields.
@@ -21,7 +20,6 @@ interface ResponseReader {
 
   fun <T : Any> readObject(field: ResponseField, objectReader: ObjectReader<T>): T?
 
-  @JvmSynthetic
   fun <T : Any> readObject(field: ResponseField, block: (ResponseReader) -> T): T? {
     return readObject(field, object : ObjectReader<T> {
       override fun read(reader: ResponseReader): T {
@@ -32,7 +30,6 @@ interface ResponseReader {
 
   fun <T : Any> readFragment(field: ResponseField, objectReader: ObjectReader<T>): T?
 
-  @JvmSynthetic
   fun <T : Any> readFragment(field: ResponseField, block: (ResponseReader) -> T): T? {
     return readFragment(field, object : ObjectReader<T> {
       override fun read(reader: ResponseReader): T {
@@ -43,7 +40,6 @@ interface ResponseReader {
 
   fun <T : Any> readList(field: ResponseField, listReader: ListReader<T>): List<T?>?
 
-  @JvmSynthetic
   fun <T : Any> readList(field: ResponseField, block: (ListItemReader) -> T): List<T?>? {
     return readList(field, object : ListReader<T> {
       override fun read(reader: ListItemReader): T {
@@ -78,7 +74,6 @@ interface ResponseReader {
 
     fun <T : Any> readObject(objectReader: ObjectReader<T>): T
 
-    @JvmSynthetic
     fun <T : Any> readObject(block: (ResponseReader) -> T): T {
       return readObject(object : ObjectReader<T> {
         override fun read(reader: ResponseReader): T {
@@ -89,7 +84,6 @@ interface ResponseReader {
 
     fun <T : Any> readList(listReader: ListReader<T>): List<T?>
 
-    @JvmSynthetic
     fun <T : Any> readList(block: (ListItemReader) -> T): List<T?> {
       return readList(object : ListReader<T> {
         override fun read(reader: ListItemReader): T {
