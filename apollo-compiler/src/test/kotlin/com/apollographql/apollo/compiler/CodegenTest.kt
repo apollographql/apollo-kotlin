@@ -74,6 +74,7 @@ class CodeGenTest(val folder: File) {
         SourceFile.kotlin(it.actual.name, it.actual.readText())
       }
       val result = KotlinCompilation().apply {
+        jvmTarget = "1.8"
         sources = kotlinFiles
 
         inheritClassPath = true
