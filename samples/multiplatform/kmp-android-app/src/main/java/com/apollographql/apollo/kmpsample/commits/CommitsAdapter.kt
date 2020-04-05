@@ -1,9 +1,9 @@
 package com.apollographql.apollo.kmpsample.commits
 
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.apollographql.apollo.kmpsample.GithubRepositoryCommitsQuery
 import com.apollographql.apollo.kmpsample.databinding.ItemCommitBinding
 

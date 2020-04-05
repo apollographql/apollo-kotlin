@@ -1,11 +1,12 @@
 package com.apollographql.apollo.kmpsample.repositories
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.apollographql.apollo.kmpsample.BuildConfig
 import com.apollographql.apollo.kmpsample.KotlinSampleApp
 import com.apollographql.apollo.kmpsample.data.ApolloCoroutinesService
@@ -39,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 
     binding.tvError.visibility = View.GONE
 
-    binding.rvRepositories.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
+    binding.rvRepositories.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
     binding.rvRepositories.addItemDecoration(DividerItemDecoration(this, LinearLayout.VERTICAL))
     repositoriesAdapter = RepositoriesAdapter { repositoryFragment ->
       RepositoryDetailActivity.start(this@MainActivity, repositoryFragment.name)

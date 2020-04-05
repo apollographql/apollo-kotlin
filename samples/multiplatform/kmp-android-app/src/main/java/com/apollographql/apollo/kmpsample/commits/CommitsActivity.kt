@@ -3,10 +3,11 @@ package com.apollographql.apollo.kmpsample.commits
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.apollographql.apollo.kmpsample.GithubRepositoryCommitsQuery
 import com.apollographql.apollo.kmpsample.KotlinSampleApp
 import com.apollographql.apollo.kmpsample.data.ApolloCoroutinesService
@@ -32,7 +33,7 @@ class CommitsActivity : AppCompatActivity() {
     val repoName = intent.getStringExtra(REPO_NAME_KEY)
     supportActionBar?.title = repoName
 
-    binding.recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+    binding.recyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
     binding.recyclerView.adapter = adapter
 
     binding.tvError.visibility = GONE

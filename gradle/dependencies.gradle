@@ -36,6 +36,10 @@ ext.dep = [
         testRunner            : "com.android.support.test:runner:$versions.testRunner",
         espressoIdlingResource: "androidx.test.espresso:espresso-idling-resource:$versions.espressoIdlingResource",
     ],
+    androidx : [
+        recyclerView: "androidx.recyclerview:recyclerview:1.1.0",
+        appcompat   : "androidx.appcompat:appcompat:1.1.0",
+    ],
     antlr                 : [
         antlr  : "org.antlr:antlr4:$versions.antlr4",
         runtime: "org.antlr:antlr4-runtime:$versions.antlr4",
