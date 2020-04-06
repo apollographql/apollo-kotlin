@@ -1,4 +1,4 @@
-package com.apollographql.apollo.internal.cache.normalized;
+package com.apollographql.apollo.internal;
 
 import com.apollographql.apollo.NamedCountDownLatch;
 import com.apollographql.apollo.api.ScalarTypeAdapters;

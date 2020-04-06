@@ -106,7 +106,7 @@ class RealResponseReader<R>(
     if (shouldSkip(field)) {
       return null
     }
-    val value: R = fieldValueResolver.valueFor(recordSet, field)
+    val value: R? = fieldValueResolver.valueFor(recordSet, field)
     checkValue(field, value)
     willResolve(field, value)
     resolveDelegate.willResolveObject(field, value)
