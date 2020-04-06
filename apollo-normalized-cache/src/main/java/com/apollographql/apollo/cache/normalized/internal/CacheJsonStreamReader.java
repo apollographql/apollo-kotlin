@@ -1,4 +1,4 @@
-package com.apollographql.apollo.internal.cache.normalized;
+package com.apollographql.apollo.cache.normalized.internal;
 
 import com.apollographql.apollo.api.internal.json.JsonReader;
 import com.apollographql.apollo.api.internal.json.ResponseJsonStreamReader;

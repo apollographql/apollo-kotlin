@@ -5,11 +5,11 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.internal.ResponseFieldMapper;
 import com.apollographql.apollo.cache.CacheHeaders;
-import com.apollographql.apollo.internal.cache.normalized.NoOpApolloStore;
-import com.apollographql.apollo.internal.cache.normalized.ReadableStore;
-import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
-import com.apollographql.apollo.internal.cache.normalized.Transaction;
-import com.apollographql.apollo.internal.cache.normalized.WriteableStore;
+import com.apollographql.apollo.cache.normalized.internal.NoOpApolloStore;
+import com.apollographql.apollo.cache.normalized.internal.ReadableStore;
+import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer;
+import com.apollographql.apollo.cache.normalized.internal.Transaction;
+import com.apollographql.apollo.cache.normalized.internal.WriteableStore;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

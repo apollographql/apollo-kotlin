@@ -1,4 +1,4 @@
-package com.apollographql.apollo.internal.cache.normalized;
+package com.apollographql.apollo.internal;
 
 import com.apollographql.apollo.api.GraphqlFragment;
 import com.apollographql.apollo.api.Operation;
@@ -15,6 +15,13 @@ import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.OptimisticNormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
+import com.apollographql.apollo.cache.normalized.internal.CacheFieldValueResolver;
+import com.apollographql.apollo.cache.normalized.internal.CacheKeyBuilder;
+import com.apollographql.apollo.cache.normalized.internal.ReadableStore;
+import com.apollographql.apollo.cache.normalized.internal.RealCacheKeyBuilder;
+import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer;
+import com.apollographql.apollo.cache.normalized.internal.Transaction;
+import com.apollographql.apollo.cache.normalized.internal.WriteableStore;
 import com.apollographql.apollo.internal.response.RealResponseReader;
 import com.apollographql.apollo.internal.response.RealResponseWriter;
 import org.jetbrains.annotations.NotNull;
@@ -439,8 +446,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     });
   }
 
-  Set<String> doWrite(final GraphqlFragment fragment, final CacheKey cacheKey,
-      final Operation.Variables variables) {
+  Set<String> doWrite(final GraphqlFragment fragment, final CacheKey cacheKey, final Operation.Variables variables) {
     return writeTransaction(new Transaction<WriteableStore, Set<String>>() {
       @Override public Set<String> execute(WriteableStore cache) {
         RealResponseWriter responseWriter = new RealResponseWriter(variables, scalarTypeAdapters);

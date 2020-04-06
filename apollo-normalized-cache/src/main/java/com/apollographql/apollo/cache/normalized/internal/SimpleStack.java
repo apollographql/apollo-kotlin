@@ -1,4 +1,4 @@
-package com.apollographql.apollo.internal.cache.normalized;
+package com.apollographql.apollo.cache.normalized.internal;
 
 import java.util.ArrayList;
 import java.util.List;

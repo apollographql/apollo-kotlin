@@ -1,6 +1,6 @@
 package com.apollographql.apollo.cache.normalized;
 
-import com.apollographql.apollo.internal.cache.normalized.RecordWeigher;
+import com.apollographql.apollo.cache.normalized.internal.RecordWeigher;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

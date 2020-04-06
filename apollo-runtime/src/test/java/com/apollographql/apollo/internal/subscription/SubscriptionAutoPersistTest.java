@@ -12,7 +12,7 @@ import com.apollographql.apollo.api.internal.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.internal.ResponseReader;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
-import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
+import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer;
 import com.apollographql.apollo.subscription.OperationClientMessage;
 import com.apollographql.apollo.subscription.OperationServerMessage;
 import com.apollographql.apollo.subscription.SubscriptionConnectionParams;

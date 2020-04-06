@@ -1,4 +1,4 @@
-package com.apollographql.apollo.internal.cache.normalized;
+package com.apollographql.apollo.cache.normalized.internal;
 
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.ResponseField;
@@ -113,7 +113,7 @@ public abstract class ResponseNormalizer<R> implements ResolveDelegate<R> {
 
   @NotNull public abstract CacheKeyBuilder cacheKeyBuilder();
 
-  void willResolveRecord(CacheKey cacheKey) {
+  public void willResolveRecord(CacheKey cacheKey) {
     pathStack = new SimpleStack<>();
     recordStack = new SimpleStack<>();
     valueStack = new SimpleStack<>();
