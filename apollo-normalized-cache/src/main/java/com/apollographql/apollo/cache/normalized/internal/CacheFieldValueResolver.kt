@@ -1,104 +1,71 @@
-package com.apollographql.apollo.cache.normalized.internal;
+package com.apollographql.apollo.cache.normalized.internal
 
-import com.apollographql.apollo.api.Operation;
-import com.apollographql.apollo.api.ResponseField;
-import com.apollographql.apollo.api.internal.FieldValueResolver;
-import com.apollographql.apollo.cache.CacheHeaders;
-import com.apollographql.apollo.cache.normalized.CacheKey;
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
-import com.apollographql.apollo.cache.normalized.CacheReference;
-import com.apollographql.apollo.cache.normalized.Record;
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.ResponseField.Type.LIST
+import com.apollographql.apollo.api.ResponseField.Type.OBJECT
+import com.apollographql.apollo.api.internal.FieldValueResolver
+import com.apollographql.apollo.cache.CacheHeaders
+import com.apollographql.apollo.cache.normalized.CacheKey.Companion.NO_KEY
+import com.apollographql.apollo.cache.normalized.CacheKeyResolver
+import com.apollographql.apollo.cache.normalized.CacheReference
+import com.apollographql.apollo.cache.normalized.Record
 
-import java.util.ArrayList;
-import java.util.List;
+class CacheFieldValueResolver(
+    private val readableCache: ReadableStore,
+    private val variables: Operation.Variables,
+    private val cacheKeyResolver: CacheKeyResolver,
+    private val cacheHeaders: CacheHeaders,
+    private val cacheKeyBuilder: CacheKeyBuilder
+) : FieldValueResolver<Record> {
 
-public final class CacheFieldValueResolver implements FieldValueResolver<Record> {
-  private final ReadableStore readableCache;
-  private final Operation.Variables variables;
-  private final CacheKeyResolver cacheKeyResolver;
-  private final CacheHeaders cacheHeaders;
-  private final CacheKeyBuilder cacheKeyBuilder;
-
-  public CacheFieldValueResolver(ReadableStore readableCache, Operation.Variables variables,
-      CacheKeyResolver cacheKeyResolver, CacheHeaders cacheHeaders, CacheKeyBuilder cacheKeyBuilder) {
-    this.readableCache = readableCache;
-    this.variables = variables;
-    this.cacheKeyResolver = cacheKeyResolver;
-    this.cacheHeaders = cacheHeaders;
-    this.cacheKeyBuilder = cacheKeyBuilder;
-  }
-
-  @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
-  @Override public <T> T valueFor(Record record, ResponseField field) {
-    switch (field.getType()) {
-      case OBJECT:
-        return (T) valueForObject(record, field);
-
-      case LIST: {
-        return (T) valueForList((List) fieldValue(record, field));
-      }
-
-      default:
-        return fieldValue(record, field);
+  @Suppress("UNCHECKED_CAST")
+  override fun <T> valueFor(recordSet: Record, field: ResponseField): T? {
+    return when (field.type) {
+      OBJECT -> valueForObject(recordSet, field) as T?
+      LIST -> valueForList(fieldValue(recordSet, field)) as T?
+      else -> fieldValue(recordSet, field)
     }
   }
 
-  private Record valueForObject(Record record, ResponseField field) {
-    CacheReference cacheReference;
-    CacheKey fieldCacheKey = cacheKeyResolver.fromFieldArguments(field, variables);
-    if (!fieldCacheKey.equals(CacheKey.NO_KEY)) {
-      cacheReference = new CacheReference(fieldCacheKey.key());
-    } else {
-      cacheReference = fieldValue(record, field);
-    }
-
-    if (cacheReference != null) {
-      Record referencedRecord = readableCache.read(cacheReference.key(), cacheHeaders);
-      if (referencedRecord == null) {
-        // we are unable to find record in the cache by reference,
-        // means it was removed intentionally by using imperative store API or
-        // evicted from LRU cache, we must prevent of further resolving cache response as it's broken
-        throw new IllegalStateException("Cache MISS: failed to find record in cache by reference");
-      }
-      return referencedRecord;
-    }
-
-    return null;
-  }
-
-  @SuppressWarnings("unchecked") private List valueForList(List values) {
-    if (values == null) {
-      return null;
-    }
-
-    List result = new ArrayList();
-    for (Object value : values) {
-      if (value instanceof CacheReference) {
-        CacheReference reference = (CacheReference) value;
-        Record referencedRecord = readableCache.read(reference.key(), cacheHeaders);
-        if (referencedRecord == null) {
-          // we are unable to find record in the cache by reference,
+  private fun valueForObject(record: Record, field: ResponseField): Record? {
+    val cacheReference: CacheReference? =
+        when (val fieldCacheKey = cacheKeyResolver.fromFieldArguments(field, variables)) {
+          NO_KEY -> fieldValue(record, field)
+          else -> CacheReference(fieldCacheKey.key)
+        }
+    return cacheReference?.let {
+      readableCache.read(cacheReference.key(), cacheHeaders)
+          ?: // we are unable to find record in the cache by reference,
           // means it was removed intentionally by using imperative store API or
           // evicted from LRU cache, we must prevent of further resolving cache response as it's broken
-          throw new IllegalStateException("Cache MISS: failed to find record in cache by reference");
+          error("Cache MISS: failed to find record in cache by reference")
+    }
+  }
+
+  private fun valueForList(values: List<*>?): List<*>? {
+    return values?.map { value ->
+      when (value) {
+        is CacheReference -> {
+          readableCache.read(value.key(), cacheHeaders)
+              ?: // we are unable to find record in the cache by reference,
+              // means it was removed intentionally by using imperative store API or
+              // evicted from LRU cache, we must prevent of further resolving cache response as it's broken
+              error("Cache MISS: failed to find record in cache by reference")
         }
-        result.add(referencedRecord);
-      } else if (value instanceof List) {
-        result.add(valueForList((List) value));
-      } else {
-        result.add(value);
+        is List<*> -> valueForList(value)
+        else -> value
       }
     }
-    return result;
   }
 
-
-  @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
-  private <T> T fieldValue(Record record, ResponseField field) {
-    String fieldKey = cacheKeyBuilder.build(field, variables);
-    if (!record.hasField(fieldKey)) {
-      throw new NullPointerException("Missing value: " + field.getFieldName());
+  @Suppress("UNCHECKED_CAST")
+  private fun <T> fieldValue(record: Record, field: ResponseField): T? {
+    val fieldKey = cacheKeyBuilder.build(field, variables)
+    check(record.hasField(fieldKey)) {
+      "Missing value: ${field.fieldName}"
     }
-    return (T) record.field(fieldKey);
+    return record.field(fieldKey) as T?
   }
+
 }

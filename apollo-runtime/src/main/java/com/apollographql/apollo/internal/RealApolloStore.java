@@ -83,7 +83,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
   @Override public ResponseNormalizer<Record> cacheResponseNormalizer() {
     return new ResponseNormalizer<Record>() {
       @NotNull @Override public CacheKey resolveCacheKey(@NotNull ResponseField field, @NotNull Record record) {
-        return CacheKey.from(record.key());
+        return new CacheKey(record.key());
       }
 
       @NotNull @Override public CacheKeyBuilder cacheKeyBuilder() {

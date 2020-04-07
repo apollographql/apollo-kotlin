@@ -1,46 +1,31 @@
-package com.apollographql.apollo.cache.normalized;
-
-import org.jetbrains.annotations.NotNull;
-
-import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+package com.apollographql.apollo.cache.normalized
 
 /**
- * A key for a {@link Record} used for normalization in a {@link NormalizedCache}.
- * If the json object which the {@link Record} corresponds to does not have a suitable
- * key, return use {@link #NO_KEY}.
+ * A key for a [Record] used for normalization in a [NormalizedCache].
+ * If the json object which the [Record] corresponds to does not have a suitable
+ * key, return use [NO_KEY].
  */
-public final class CacheKey {
+class CacheKey(val key: String) {
 
-  public static final CacheKey NO_KEY = new CacheKey("");
+  @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "key"))
+  fun key(): String = key
 
-  public static CacheKey from(@NotNull String key) {
-    return new CacheKey(checkNotNull(key, "key == null"));
+  override fun equals(other: Any?): Boolean {
+    return key == (other as? CacheKey)?.key
   }
 
-  private final String key;
+  override fun hashCode(): Int = key.hashCode()
 
-  private CacheKey(@NotNull String key) {
-    this.key = key;
+  override fun toString(): String = key
+
+  companion object {
+
+    @JvmField
+    val NO_KEY = CacheKey("")
+
+    @JvmStatic
+    @Deprecated("Use constructor to instantiate CacheKey", replaceWith = ReplaceWith(expression = "CacheKey(key)"))
+    fun from(key: String): CacheKey = CacheKey(key)
   }
 
-  public String key() {
-    return key;
-  }
-
-  @Override public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof CacheKey)) return false;
-
-    CacheKey cacheKey = (CacheKey) o;
-
-    return key.equals(cacheKey.key);
-  }
-
-  @Override public int hashCode() {
-    return key.hashCode();
-  }
-
-  @Override public String toString() {
-    return key;
-  }
 }

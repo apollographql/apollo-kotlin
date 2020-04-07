@@ -1,67 +1,45 @@
-package com.apollographql.apollo.cache;
+package com.apollographql.apollo.cache
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import org.jetbrains.annotations.Nullable;
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.cache.normalized.NormalizedCache
+import com.apollographql.apollo.cache.normalized.Record
 
 /**
- * A key/value collection which is sent with {@link com.apollographql.apollo.cache.normalized.Record}
- * from a {@link com.apollographql.apollo.api.Operation} to the
- * {@link com.apollographql.apollo.cache.normalized.NormalizedCache}.
+ * A key/value collection which is sent with [Record] from a [Operation] to the [NormalizedCache].
  *
- * For headers which the default {@link com.apollographql.apollo.cache.normalized.NormalizedCache} respect, see
- * {@link ApolloCacheHeaders}.
+ * For headers which the default [NormalizedCache] respect, see [ApolloCacheHeaders].
  */
-public final class CacheHeaders {
+class CacheHeaders internal constructor(private val headerMap: Map<String, String>) {
 
-  private final Map<String, String> headerMap;
+  class Builder {
+    private val headerMap = mutableMapOf<String, String>()
 
-  public static CacheHeaders.Builder builder() {
-    return new Builder();
-  }
-
-  public static final CacheHeaders NONE = new CacheHeaders(Collections.<String, String>emptyMap());
-
-  public static final class Builder {
-
-    private final Map<String, String> headerMap = new LinkedHashMap<>();
-
-    public Builder addHeader(String headerName, String headerValue) {
-      headerMap.put(headerName, headerValue);
-      return this;
+    fun addHeader(headerName: String, headerValue: String) = apply {
+      headerMap[headerName] = headerValue
     }
 
-    public Builder addHeaders(Map<String, String> headerMap) {
-      this.headerMap.putAll(headerMap);
-      return this;
+    fun addHeaders(headerMap: Map<String, String>) = apply {
+      this.headerMap.putAll(headerMap)
     }
 
-    public CacheHeaders build() {
-      return new CacheHeaders(headerMap);
-    }
+    fun build() = CacheHeaders(headerMap)
   }
 
   /**
-   * @return A {@link CacheHeaders.Builder} with a copy of this {@link CacheHeaders} values.
+   * @return A [CacheHeaders.Builder] with a copy of this [CacheHeaders] values.
    */
-  public CacheHeaders.Builder toBuilder() {
-    CacheHeaders.Builder builder = builder();
-    builder.addHeaders(headerMap);
-    return builder;
+  fun toBuilder(): Builder = builder().addHeaders(headerMap)
+
+  fun headerValue(header: String): String? = headerMap[header]
+
+  fun hasHeader(headerName: String): Boolean = headerMap.containsKey(headerName)
+
+  companion object {
+    @JvmStatic
+    fun builder() = Builder()
+
+    @JvmField
+    val NONE = CacheHeaders(emptyMap())
   }
 
-  CacheHeaders(Map<String, String> headerMap) {
-    this.headerMap = headerMap;
-  }
-
-  @Nullable
-  public String headerValue(String header) {
-    return headerMap.get(header);
-  }
-
-  public boolean hasHeader(String headerName) {
-    return headerMap.containsKey(headerName);
-  }
 }

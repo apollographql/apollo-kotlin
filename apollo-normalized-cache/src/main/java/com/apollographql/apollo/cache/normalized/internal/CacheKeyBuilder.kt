@@ -1,10 +1,8 @@
-package com.apollographql.apollo.cache.normalized.internal;
+package com.apollographql.apollo.cache.normalized.internal
 
-import com.apollographql.apollo.api.Operation;
-import com.apollographql.apollo.api.ResponseField;
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.ResponseField
 
-import org.jetbrains.annotations.NotNull;
-
-public interface CacheKeyBuilder {
-  @NotNull String build(@NotNull ResponseField field, @NotNull Operation.Variables variables);
+interface CacheKeyBuilder {
+  fun build(field: ResponseField, variables: Operation.Variables): String
 }

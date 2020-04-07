@@ -1,88 +1,62 @@
-package com.apollographql.apollo.cache.normalized.internal;
+package com.apollographql.apollo.cache.normalized.internal
 
-import com.apollographql.apollo.api.InputType;
-import com.apollographql.apollo.api.Operation;
-import com.apollographql.apollo.api.ResponseField;
-import com.apollographql.apollo.api.internal.json.JsonWriter;
-import com.apollographql.apollo.api.internal.json.Utils;
+import com.apollographql.apollo.api.InputType
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.ResponseField.Companion.isArgumentValueVariableType
+import com.apollographql.apollo.api.internal.json.JsonWriter
+import com.apollographql.apollo.api.internal.json.Utils
+import okio.Buffer
+import java.io.IOException
 
-import org.jetbrains.annotations.NotNull;
+class RealCacheKeyBuilder : CacheKeyBuilder {
 
-import java.io.IOException;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.TreeMap;
-
-import okio.Buffer;
-
-import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
-
-public class RealCacheKeyBuilder implements CacheKeyBuilder {
-  private final Comparator<String> argumentNameComparator = new Comparator<String>() {
-    @Override public int compare(String first, String second) {
-      return first.compareTo(second);
+  override fun build(field: ResponseField, variables: Operation.Variables): String {
+    if (field.arguments.isEmpty()) {
+      return field.fieldName
     }
-  };
-
-  @NotNull @Override
-  public String build(@NotNull ResponseField field, @NotNull Operation.Variables variables) {
-    checkNotNull(field, "field == null");
-    checkNotNull(variables, "variables == null");
-
-    if (field.arguments().isEmpty()) {
-      return field.fieldName();
-    }
-
-    Object resolvedArguments = resolveArguments(field.arguments(), variables);
-    try {
-      Buffer buffer = new Buffer();
-      JsonWriter jsonWriter = JsonWriter.of(buffer);
-      jsonWriter.setSerializeNulls(true);
-      Utils.writeToJson(resolvedArguments, jsonWriter);
-      jsonWriter.close();
-      return String.format("%s(%s)", field.fieldName(), buffer.readUtf8());
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    val resolvedArguments: Any = resolveArguments(field.arguments, variables)
+    return try {
+      val buffer = Buffer()
+      val jsonWriter = JsonWriter.of(buffer)
+      jsonWriter.serializeNulls = true
+      Utils.writeToJson(resolvedArguments, jsonWriter)
+      jsonWriter.close()
+      String.format("%s(%s)", field.fieldName, buffer.readUtf8())
+    } catch (e: IOException) {
+      throw RuntimeException(e)
     }
   }
 
-  private Map<String, Object> resolveArguments(Map<String, Object> objectMap, Operation.Variables variables) {
-    Map<String, Object> result = new TreeMap<>(argumentNameComparator);
-    for (Map.Entry<String, Object> entry : objectMap.entrySet()) {
-      if (entry.getValue() instanceof Map) {
-        Map<String, Object> nestedObjectMap = (Map<String, Object>) entry.getValue();
-        if (ResponseField.isArgumentValueVariableType(nestedObjectMap)) {
-          result.put(entry.getKey(), resolveVariableArgument(nestedObjectMap, variables));
+  @Suppress("UNCHECKED_CAST")
+  private fun resolveArguments(objectMap: Map<String, Any?>, variables: Operation.Variables): Map<String, Any?> {
+    return objectMap.mapValues { (_, value) ->
+      if (value is Map<*, *>) {
+        val nestedObjectMap = value as Map<String, Any?>
+        if (isArgumentValueVariableType(nestedObjectMap)) {
+          resolveVariableArgument(nestedObjectMap, variables)
         } else {
-          result.put(entry.getKey(), resolveArguments(nestedObjectMap, variables));
+          resolveArguments(nestedObjectMap, variables)
         }
       } else {
-        result.put(entry.getKey(), entry.getValue());
+        value
       }
-    }
-    return result;
+    }.toSortedMap()
   }
 
-  private Object resolveVariableArgument(Map<String, Object> objectMap, Operation.Variables variables) {
-    Object variable = objectMap.get(ResponseField.VARIABLE_NAME_KEY);
-    //noinspection SuspiciousMethodCalls
-    Object resolvedVariable = variables.valueMap().get(variable);
-    if (resolvedVariable == null) {
-      return null;
-    } else if (resolvedVariable instanceof Map) {
-      //noinspection unchecked
-      return resolveArguments((Map<String, Object>) resolvedVariable, variables);
-    } else if (resolvedVariable instanceof InputType) {
-      try {
-        SortedInputFieldMapWriter inputFieldMapWriter = new SortedInputFieldMapWriter(argumentNameComparator);
-        ((InputType) resolvedVariable).marshaller().marshal(inputFieldMapWriter);
-        return resolveArguments(inputFieldMapWriter.map(), variables);
-      } catch (IOException e) {
-        // should never happen
-        throw new RuntimeException(e);
+  @Suppress("UNCHECKED_CAST")
+  private fun resolveVariableArgument(objectMap: Map<String, Any?>, variables: Operation.Variables): Any? {
+    val variable = objectMap[ResponseField.VARIABLE_NAME_KEY]
+
+    return when (val resolvedVariable = variables.valueMap()[variable]) {
+      null -> null
+      is Map<*, *> -> resolveArguments(resolvedVariable as Map<String, Any?>, variables)
+      is InputType -> {
+        val inputFieldMapWriter = SortedInputFieldMapWriter(String::compareTo)
+        resolvedVariable.marshaller().marshal(inputFieldMapWriter)
+        resolveArguments(inputFieldMapWriter.map(), variables)
       }
-    } else {
-      return resolvedVariable;
+      else -> resolvedVariable
     }
   }
 }

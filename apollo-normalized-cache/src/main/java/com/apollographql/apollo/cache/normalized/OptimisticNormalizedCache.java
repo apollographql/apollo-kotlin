@@ -6,6 +6,8 @@ import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.cache.CacheBuilder;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,9 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
@@ -81,7 +80,7 @@ public final class OptimisticNormalizedCache extends NormalizedCache {
 
       if (cascade) {
         for (CacheReference cacheReference : recordJournal.snapshot.referencedFields()) {
-          result = result & remove(CacheKey.from(cacheReference.key()), true);
+          result = result & remove(new CacheKey(cacheReference.key()), true);
         }
       }
     }

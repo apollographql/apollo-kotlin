@@ -1,38 +1,36 @@
-package com.apollographql.apollo.cache.normalized;
+package com.apollographql.apollo.cache.normalized
 
-import com.apollographql.apollo.api.Operation;
-import com.apollographql.apollo.api.ResponseField;
-
-import java.util.Map;
-
-import org.jetbrains.annotations.NotNull;
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.ResponseField
 
 /**
  * Resolves a cache key for a JSON object.
  */
-public abstract class CacheKeyResolver {
-  private static final CacheKey ROOT_CACHE_KEY = CacheKey.from("QUERY_ROOT");
+abstract class CacheKeyResolver {
+  abstract fun fromFieldRecordSet(
+      field: ResponseField,
+      recordSet: Map<String, Any?>
+  ): CacheKey
 
-  public static final CacheKeyResolver DEFAULT = new CacheKeyResolver() {
-    @NotNull @Override
-    public CacheKey fromFieldRecordSet(@NotNull ResponseField field, @NotNull Map<String, Object> recordSet) {
-      return CacheKey.NO_KEY;
+  abstract fun fromFieldArguments(
+      field: ResponseField,
+      variables: Operation.Variables
+  ): CacheKey
+
+  companion object {
+    private val ROOT_CACHE_KEY = CacheKey("QUERY_ROOT")
+
+    @JvmField
+    val DEFAULT: CacheKeyResolver = object : CacheKeyResolver() {
+      override fun fromFieldRecordSet(field: ResponseField, recordSet: Map<String, Any?>) = CacheKey.NO_KEY
+
+      override fun fromFieldArguments(field: ResponseField, variables: Operation.Variables) = CacheKey.NO_KEY
     }
 
-    @NotNull @Override
-    public CacheKey fromFieldArguments(@NotNull ResponseField field, @NotNull Operation.Variables variables) {
-      return CacheKey.NO_KEY;
+    @JvmStatic
+    @Suppress("UNUSED_PARAMETER")
+    fun rootKeyForOperation(operation: Operation<*, *, *>): CacheKey {
+      return ROOT_CACHE_KEY
     }
-  };
-
-  @SuppressWarnings("unused")
-  public static CacheKey rootKeyForOperation(@NotNull Operation operation) {
-    return ROOT_CACHE_KEY;
   }
-
-  @NotNull public abstract CacheKey fromFieldRecordSet(@NotNull ResponseField field,
-      @NotNull Map<String, Object> recordSet);
-
-  @NotNull public abstract CacheKey fromFieldArguments(@NotNull ResponseField field,
-      @NotNull Operation.Variables variables);
 }

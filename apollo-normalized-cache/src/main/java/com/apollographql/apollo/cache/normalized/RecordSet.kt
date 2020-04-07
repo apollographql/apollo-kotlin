@@ -1,30 +1,19 @@
-package com.apollographql.apollo.cache.normalized;
+package com.apollographql.apollo.cache.normalized
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+class RecordSet {
+  private val recordMap = mutableMapOf<String, Record>()
 
-public final class RecordSet {
+  operator fun get(key: String): Record? = recordMap[key]
 
-  private final Map<String, Record> recordMap = new LinkedHashMap<>();
-
-  public Record get(String key) {
-    return recordMap.get(key);
-  }
-
-  public Set<String> merge(Record apolloRecord) {
-    final Record oldRecord = recordMap.get(apolloRecord.key());
-    if (oldRecord == null) {
-      recordMap.put(apolloRecord.key(), apolloRecord);
-      return Collections.emptySet();
+  fun merge(apolloRecord: Record): Set<String> {
+    val oldRecord = recordMap[apolloRecord.key()]
+    return if (oldRecord == null) {
+      recordMap[apolloRecord.key()] = apolloRecord
+      emptySet()
     } else {
-      return oldRecord.mergeWith(apolloRecord);
+      oldRecord.mergeWith(apolloRecord)
     }
   }
 
-  public Collection<Record> allRecords() {
-    return recordMap.values();
-  }
+  fun allRecords(): Collection<Record> = recordMap.values.toList()
 }

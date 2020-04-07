@@ -1,17 +1,9 @@
-package com.apollographql.apollo.cache.normalized.internal;
+package com.apollographql.apollo.cache.normalized.internal
 
-import com.apollographql.apollo.cache.CacheHeaders;
-import com.apollographql.apollo.cache.normalized.Record;
+import com.apollographql.apollo.cache.CacheHeaders
+import com.apollographql.apollo.cache.normalized.Record
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Collection;
-
-public interface ReadableStore {
-
-  @Nullable Record read(@NotNull String key, @NotNull CacheHeaders cacheHeaders);
-
-  Collection<Record> read(@NotNull Collection<String> keys, @NotNull CacheHeaders cacheHeaders);
-
+interface ReadableStore {
+  fun read(key: String, cacheHeaders: CacheHeaders): Record?
+  fun read(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record>
 }
