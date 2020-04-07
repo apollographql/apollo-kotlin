@@ -11,9 +11,9 @@ import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
-import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
-import com.apollographql.apollo.internal.cache.normalized.Transaction;
-import com.apollographql.apollo.internal.cache.normalized.WriteableStore;
+import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer;
+import com.apollographql.apollo.cache.normalized.internal.Transaction;
+import com.apollographql.apollo.cache.normalized.internal.WriteableStore;
 import com.apollographql.apollo.internal.subscription.ApolloSubscriptionException;
 import com.apollographql.apollo.internal.subscription.SubscriptionManager;
 import com.apollographql.apollo.internal.subscription.SubscriptionResponse;
@@ -78,7 +78,7 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
         }
 
         case CANCELED:
-          throw new ApolloCanceledException("Call is cancelled.");
+          throw new ApolloCanceledException();
 
         case TERMINATED:
         case ACTIVE:

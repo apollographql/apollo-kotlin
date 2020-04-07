@@ -8,7 +8,7 @@ import com.apollographql.apollo.api.internal.ResponseFieldMapper;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.internal.ResponseFieldMapperFactory;
-import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
+import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer;
 import com.apollographql.apollo.response.OperationResponseParser;
 import com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeListener;
 import com.apollographql.apollo.subscription.OperationClientMessage;

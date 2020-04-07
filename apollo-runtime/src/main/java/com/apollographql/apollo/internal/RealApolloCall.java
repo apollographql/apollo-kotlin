@@ -330,7 +330,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         });
         break;
       case CANCELED:
-        throw new ApolloCanceledException("Call is cancelled.");
+        throw new ApolloCanceledException();
       case TERMINATED:
       case ACTIVE:
         throw new IllegalStateException("Already Executed");

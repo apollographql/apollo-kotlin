@@ -7,9 +7,9 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ScalarType
 import com.apollographql.apollo.api.ScalarTypeAdapters
-import com.apollographql.apollo.api.internal.Optional
+import com.apollographql.apollo.api.internal.FieldValueResolver
+import com.apollographql.apollo.api.internal.ResolveDelegate
 import com.apollographql.apollo.api.internal.ResponseReader
-import com.apollographql.apollo.internal.field.FieldValueResolver
 import java.util.Collections
 
 class RealResponseReader<R>(
@@ -106,10 +106,10 @@ class RealResponseReader<R>(
     if (shouldSkip(field)) {
       return null
     }
-    val value: R = fieldValueResolver.valueFor(recordSet, field)
+    val value: R? = fieldValueResolver.valueFor(recordSet, field)
     checkValue(field, value)
     willResolve(field, value)
-    resolveDelegate.willResolveObject(field, Optional.fromNullable(value))
+    resolveDelegate.willResolveObject(field, value)
     val parsedValue: T?
     parsedValue = if (value == null) {
       resolveDelegate.didResolveNull()
@@ -117,7 +117,7 @@ class RealResponseReader<R>(
     } else {
       objectReader.read(RealResponseReader(operationVariables, value, fieldValueResolver, scalarTypeAdapters, resolveDelegate))
     }
-    resolveDelegate.didResolveObject(field, Optional.fromNullable(value))
+    resolveDelegate.didResolveObject(field, value)
     didResolve(field)
     return parsedValue
   }
@@ -218,7 +218,7 @@ class RealResponseReader<R>(
   }
 
   private fun willResolve(field: ResponseField, value: Any?) {
-    resolveDelegate.willResolve(field, operationVariables, Optional.fromNullable(value))
+    resolveDelegate.willResolve(field, operationVariables, value)
   }
 
   private fun didResolve(field: ResponseField) {
@@ -270,9 +270,9 @@ class RealResponseReader<R>(
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> readObject(objectReader: ResponseReader.ObjectReader<T>): T {
       val value = value as R
-      resolveDelegate.willResolveObject(field, Optional.fromNullable(value))
+      resolveDelegate.willResolveObject(field, value)
       val item = objectReader.read(RealResponseReader(operationVariables, value, fieldValueResolver, scalarTypeAdapters, resolveDelegate))
-      resolveDelegate.didResolveObject(field, Optional.fromNullable(value))
+      resolveDelegate.didResolveObject(field, value)
       return item
     }
 

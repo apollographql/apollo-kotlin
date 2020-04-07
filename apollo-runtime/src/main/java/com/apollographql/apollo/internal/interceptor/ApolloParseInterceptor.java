@@ -11,7 +11,7 @@ import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.exception.ApolloParseException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
-import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
+import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer;
 import com.apollographql.apollo.response.OperationResponseParser;
 import org.jetbrains.annotations.NotNull;
 

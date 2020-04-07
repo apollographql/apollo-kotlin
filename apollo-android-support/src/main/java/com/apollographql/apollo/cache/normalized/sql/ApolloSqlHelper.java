@@ -3,6 +3,7 @@ package com.apollographql.apollo.cache.normalized.sql;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import org.jetbrains.annotations.Nullable;
 
 public class ApolloSqlHelper extends SQLiteOpenHelper {
 
@@ -27,7 +28,7 @@ public class ApolloSqlHelper extends SQLiteOpenHelper {
     super(context, DATABASE_NAME, null, DATABASE_VERSION);
   }
 
-  public ApolloSqlHelper(Context context, String name) {
+  public ApolloSqlHelper(Context context, @Nullable String name) {
     super(context, name, null, DATABASE_VERSION);
   }
 
@@ -35,7 +36,7 @@ public class ApolloSqlHelper extends SQLiteOpenHelper {
     return new ApolloSqlHelper(context);
   }
 
-  public static ApolloSqlHelper create(Context context, String name) {
+  public static ApolloSqlHelper create(Context context, @Nullable String name) {
     return new ApolloSqlHelper(context, name);
   }
 

@@ -161,7 +161,7 @@ import static com.apollographql.apollo.internal.CallState.TERMINATED;
         tracker.registerPrefetchCall(this);
         break;
       case CANCELED:
-        throw new ApolloCanceledException("Call is cancelled.");
+        throw new ApolloCanceledException();
       case TERMINATED:
       case ACTIVE:
         throw new IllegalStateException("Already Executed");

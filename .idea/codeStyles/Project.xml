@@ -31,6 +31,7 @@
     </codeStyleSettings>
     <codeStyleSettings language="JAVA">
       <option name="ALIGN_MULTILINE_PARAMETERS" value="false" />
+      <option name="WRAP_COMMENTS" value="true" />
       <option name="METHOD_ANNOTATION_WRAP" value="0" />
       <indentOptions>
         <option name="INDENT_SIZE" value="2" />

@@ -12,9 +12,9 @@ import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
-import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
-import com.apollographql.apollo.internal.cache.normalized.Transaction;
-import com.apollographql.apollo.internal.cache.normalized.WriteableStore;
+import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer;
+import com.apollographql.apollo.cache.normalized.internal.Transaction;
+import com.apollographql.apollo.cache.normalized.internal.WriteableStore;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
