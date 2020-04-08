@@ -9,7 +9,7 @@ import com.apollographql.apollo.api.ResponseField
 abstract class CacheKeyResolver {
   abstract fun fromFieldRecordSet(
       field: ResponseField,
-      recordSet: Map<String, Any?>
+      recordSet: @JvmSuppressWildcards Map<String, Any?>
   ): CacheKey
 
   abstract fun fromFieldArguments(
