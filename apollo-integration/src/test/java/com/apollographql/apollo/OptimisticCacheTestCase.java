@@ -16,7 +16,12 @@ import com.apollographql.apollo.integration.normalizer.UpdateReviewMutation;
 import com.apollographql.apollo.integration.normalizer.type.ColorInput;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.integration.normalizer.type.ReviewInput;
-
+import io.reactivex.functions.Predicate;
+import okhttp3.Dispatcher;
+import okhttp3.OkHttpClient;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -26,14 +31,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-
-import org.jetbrains.annotations.NotNull;
-
-import io.reactivex.functions.Predicate;
-import okhttp3.Dispatcher;
-import okhttp3.OkHttpClient;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
 
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY;
 import static com.google.common.truth.Truth.assertThat;
@@ -88,7 +85,7 @@ public class OptimisticCacheTestCase {
             )
         )
     ));
-    apolloClient.apolloStore().writeOptimisticUpdatesAndPublish(query, data, mutationId).execute();
+    apolloClient.getApolloStore().writeOptimisticUpdatesAndPublish(query, data, mutationId).execute();
 
     Utils.INSTANCE.assertResponse(
         apolloClient.query(query).responseFetcher(CACHE_ONLY),
@@ -103,7 +100,7 @@ public class OptimisticCacheTestCase {
         }
     );
 
-    apolloClient.apolloStore().rollbackOptimisticUpdates(mutationId).execute();
+    apolloClient.getApolloStore().rollbackOptimisticUpdates(mutationId).execute();
 
     Utils.INSTANCE.assertResponse(
         apolloClient.query(query).responseFetcher(CACHE_ONLY),
@@ -157,7 +154,7 @@ public class OptimisticCacheTestCase {
             )
         )
     );
-    apolloClient.apolloStore().writeOptimisticUpdatesAndPublish(query1, data1, mutationId1).execute();
+    apolloClient.getApolloStore().writeOptimisticUpdatesAndPublish(query1, data1, mutationId1).execute();
 
     // check if query1 see optimistic updates
     Utils.INSTANCE.assertResponse(
@@ -192,7 +189,7 @@ public class OptimisticCacheTestCase {
         "1000",
         "Beast"
     ));
-    apolloClient.apolloStore().writeOptimisticUpdatesAndPublish(query2, data2, mutationId2).execute();
+    apolloClient.getApolloStore().writeOptimisticUpdatesAndPublish(query2, data2, mutationId2).execute();
 
     // check if query1 see the latest optimistic updates
     Utils.INSTANCE.assertResponse(
@@ -224,7 +221,7 @@ public class OptimisticCacheTestCase {
     );
 
     // rollback query1 optimistic updates
-    apolloClient.apolloStore().rollbackOptimisticUpdates(mutationId1).execute();
+    apolloClient.getApolloStore().rollbackOptimisticUpdates(mutationId1).execute();
 
     // check if query1 see the latest optimistic updates
     Utils.INSTANCE.assertResponse(
@@ -258,7 +255,7 @@ public class OptimisticCacheTestCase {
     );
 
     // rollback query2 optimistic updates
-    apolloClient.apolloStore().rollbackOptimisticUpdates(mutationId2).execute();
+    apolloClient.getApolloStore().rollbackOptimisticUpdates(mutationId2).execute();
 
     // check if query2 see the latest optimistic updates
     Utils.INSTANCE.assertResponse(
@@ -286,7 +283,7 @@ public class OptimisticCacheTestCase {
     );
 
     UUID mutationId = UUID.randomUUID();
-    apolloClient.apolloStore().writeOptimisticUpdates(
+    apolloClient.getApolloStore().writeOptimisticUpdates(
         new HeroNameQuery(),
         new HeroNameQuery.Data(new HeroNameQuery.Hero("Droid", "R22-D22")),
         mutationId
@@ -304,7 +301,7 @@ public class OptimisticCacheTestCase {
         }
     );
 
-    apolloClient.apolloStore().rollbackOptimisticUpdates(mutationId).execute();
+    apolloClient.getApolloStore().rollbackOptimisticUpdates(mutationId).execute();
 
     Utils.INSTANCE.assertResponse(
         apolloClient.query(new HeroNameWithEnumsQuery()).responseFetcher(CACHE_ONLY),
@@ -441,14 +438,14 @@ public class OptimisticCacheTestCase {
             )
         )
     );
-    apolloClient.apolloStore().writeOptimisticUpdatesAndPublish(query1, data1, mutationId1).execute();
+    apolloClient.getApolloStore().writeOptimisticUpdatesAndPublish(query1, data1, mutationId1).execute();
 
     HeroNameWithIdQuery.Data data2 = new HeroNameWithIdQuery.Data(new HeroNameWithIdQuery.Hero(
         "Human",
         "1000",
         "Spiderman"
     ));
-    apolloClient.apolloStore().writeOptimisticUpdatesAndPublish(query2, data2, mutationId2).execute();
+    apolloClient.getApolloStore().writeOptimisticUpdatesAndPublish(query2, data2, mutationId2).execute();
 
     // check if query1 see optimistic updates
     Utils.INSTANCE.assertResponse(
@@ -480,7 +477,7 @@ public class OptimisticCacheTestCase {
     );
 
     // rollback query2 optimistic updates
-    apolloClient.apolloStore().rollbackOptimisticUpdates(mutationId2).execute();
+    apolloClient.getApolloStore().rollbackOptimisticUpdates(mutationId2).execute();
 
     // check if query1 see the latest optimistic updates
     Utils.INSTANCE.assertResponse(
@@ -512,7 +509,7 @@ public class OptimisticCacheTestCase {
     );
 
     // rollback query1 optimistic updates
-    apolloClient.apolloStore().rollbackOptimisticUpdates(mutationId1).execute();
+    apolloClient.getApolloStore().rollbackOptimisticUpdates(mutationId1).execute();
 
     // check if query1 see the latest non-optimistic updates
     Utils.INSTANCE.assertResponse(

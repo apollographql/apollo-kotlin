@@ -127,7 +127,7 @@ public class ApolloWatcherTest {
     assertThat(heroNameList.get(0)).isEqualTo("R2-D2");
 
     // Someone writes to the store directly
-    Set<String> changedKeys = apolloClient.apolloStore().writeTransaction(new Transaction<WriteableStore, Set<String>>() {
+    Set<String> changedKeys = apolloClient.getApolloStore().writeTransaction(new Transaction<WriteableStore, Set<String>>() {
       @Nullable @Override public Set<String> execute(WriteableStore cache) {
         Record record = Record.builder("2001")
             .addField("name", "Artoo")
@@ -135,7 +135,7 @@ public class ApolloWatcherTest {
         return cache.merge(Collections.singletonList(record), CacheHeaders.NONE);
       }
     });
-    apolloClient.apolloStore().publish(changedKeys);
+    apolloClient.getApolloStore().publish(changedKeys);
 
     assertThat(heroNameList.get(1)).isEqualTo("Artoo");
 

@@ -107,7 +107,7 @@ public final class LruNormalizedCache extends NormalizedCache {
 
       if (cascade) {
         for (CacheReference cacheReference : record.referencedFields()) {
-          result = result & remove(CacheKey.from(cacheReference.key()), true);
+          result = result & remove(new CacheKey(cacheReference.key()), true);
         }
       }
     }

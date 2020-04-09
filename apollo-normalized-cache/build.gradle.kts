@@ -1,12 +1,12 @@
 plugins {
   `java-library`
+  kotlin("jvm")
 }
 
 dependencies {
-  compileOnly(groovy.util.Eval.x(project, "x.dep.jetbrainsAnnotations"))
-
   api(project(":apollo-api"))
   implementation(groovy.util.Eval.x(project, "x.dep.cache"))
+  implementation(groovy.util.Eval.x(project, "x.dep.kotlin.stdLib"))
 
   testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))

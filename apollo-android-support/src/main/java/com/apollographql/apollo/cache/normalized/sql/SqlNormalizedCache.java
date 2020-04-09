@@ -3,7 +3,6 @@ package com.apollographql.apollo.cache.normalized.sql;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
-
 import com.apollographql.apollo.api.internal.Action;
 import com.apollographql.apollo.api.internal.Function;
 import com.apollographql.apollo.api.internal.Optional;
@@ -13,14 +12,13 @@ import com.apollographql.apollo.cache.normalized.CacheReference;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 import static com.apollographql.apollo.cache.ApolloCacheHeaders.DO_NOT_STORE;
@@ -130,7 +128,7 @@ public final class SqlNormalizedCache extends NormalizedCache {
             @NotNull @Override public Boolean apply(@NotNull Record record) {
               boolean result = true;
               for (CacheReference cacheReference : record.referencedFields()) {
-                result = result & remove(CacheKey.from(cacheReference.key()), true);
+                result = result & remove(new CacheKey(cacheReference.key()), true);
               }
               return result;
             }

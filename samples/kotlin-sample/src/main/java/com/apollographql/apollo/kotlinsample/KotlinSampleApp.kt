@@ -47,9 +47,9 @@ class KotlinSampleApp : Application() {
     val apolloSqlHelper = ApolloSqlHelper.create(this, "github_cache")
     val sqlNormalizedCacheFactory = SqlNormalizedCacheFactory(apolloSqlHelper)
     val cacheKeyResolver = object : CacheKeyResolver() {
-      override fun fromFieldRecordSet(field: ResponseField, recordSet: MutableMap<String, Any>): CacheKey {
+      override fun fromFieldRecordSet(field: ResponseField, recordSet: Map<String, Any>): CacheKey {
         return if (recordSet["__typename"] == "Repository") {
-          CacheKey.from(recordSet["id"] as String)
+          CacheKey(recordSet["id"] as String)
         } else {
           CacheKey.NO_KEY
         }

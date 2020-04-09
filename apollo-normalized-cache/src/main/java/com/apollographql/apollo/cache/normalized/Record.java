@@ -77,6 +77,7 @@ public final class Record {
     this.mutationId = mutationId;
   }
 
+  @Nullable
   public Object field(String fieldKey) {
     return fields.get(fieldKey);
   }

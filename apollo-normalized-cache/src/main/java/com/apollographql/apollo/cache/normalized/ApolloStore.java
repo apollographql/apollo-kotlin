@@ -199,13 +199,13 @@ public interface ApolloStore {
       @NotNull Operation.Variables variables);
 
   /**
-   * Write fragment to the store and publish changes of {@link Record} which have changed, that will notify any {@link
-   * com.apollographql.apollo.ApolloQueryWatcher} that depends on these {@link Record} to re-fetch.
+   * Write fragment to the store and publish changes of {@link Record} which have changed, that will notify any ApolloQueryWatcher that
+   * depends on these {@link Record} to re-fetch.
    *
    * @param fragment data to be written to the store
    * @param cacheKey {@link CacheKey} to be used as root record key
-   * @param {@link   Operation.Variables} required for fragment arguments resolving
-   * @return {@ApolloStoreOperation} to be performed
+   * @param variables {@link Operation.Variables} required for fragment arguments resolving
+   * @return {@link ApolloStoreOperation} to be performed
    */
   @NotNull ApolloStoreOperation<Boolean> writeAndPublish(@NotNull GraphqlFragment fragment, @NotNull CacheKey cacheKey,
       @NotNull Operation.Variables variables);

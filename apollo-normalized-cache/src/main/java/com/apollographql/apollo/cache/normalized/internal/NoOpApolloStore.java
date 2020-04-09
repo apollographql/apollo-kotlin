@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * An alternative to {@link RealApolloStore} for when a no-operation cache is needed.
+ * An alternative to RealApolloStore for when a no-operation cache is needed.
  */
 public final class NoOpApolloStore implements ApolloStore, ReadableStore, WriteableStore {
 

@@ -70,7 +70,7 @@ class SubscriptionNormalizedCacheTest {
         expectedContent = "Network comment content"
     )
 
-    val cacheDump = apolloClient.apolloStore().normalizedCache().dump()
+    val cacheDump = apolloClient.apolloStore.normalizedCache().dump()
     assertThat(NormalizedCache.prettifyDump(cacheDump)).isEqualTo("""
       OptimisticNormalizedCache {}
       LruNormalizedCache {}
@@ -86,7 +86,7 @@ class SubscriptionNormalizedCacheTest {
             "Comment", 100, "Cached comment content", NewRepoCommentSubscription.PostedBy("User", "user@user.com")
         )
     )
-    apolloClient.apolloStore().write(operation, data).execute()
+    apolloClient.apolloStore.write(operation, data).execute()
 
     val callback = SubscriptionManagerCallbackAdapter<NewRepoCommentSubscription.Data>()
     subscriptionCall.cachePolicy(ApolloSubscriptionCall.CachePolicy.NETWORK_ONLY).execute(callback)
@@ -106,7 +106,7 @@ class SubscriptionNormalizedCacheTest {
         expectedContent = "Network comment content"
     )
 
-    val cacheDump = apolloClient.apolloStore().normalizedCache().dump()
+    val cacheDump = apolloClient.apolloStore.normalizedCache().dump()
     assertThat(NormalizedCache.prettifyDump(cacheDump)).isEqualTo("""
       OptimisticNormalizedCache {}
       LruNormalizedCache {
@@ -138,7 +138,7 @@ class SubscriptionNormalizedCacheTest {
             "Comment", 100, "Cached comment content", NewRepoCommentSubscription.PostedBy("User", "user@user.com")
         )
     )
-    apolloClient.apolloStore().write(operation, data).execute()
+    apolloClient.apolloStore.write(operation, data).execute()
 
     val callback = SubscriptionManagerCallbackAdapter<NewRepoCommentSubscription.Data>()
     subscriptionCall.cachePolicy(ApolloSubscriptionCall.CachePolicy.CACHE_AND_NETWORK).execute(callback)
@@ -161,7 +161,7 @@ class SubscriptionNormalizedCacheTest {
         expectedContent = "Network comment content"
     )
 
-    val cacheDump = apolloClient.apolloStore().normalizedCache().dump()
+    val cacheDump = apolloClient.apolloStore.normalizedCache().dump()
     assertThat(NormalizedCache.prettifyDump(cacheDump)).isEqualTo("""
       OptimisticNormalizedCache {}
       LruNormalizedCache {

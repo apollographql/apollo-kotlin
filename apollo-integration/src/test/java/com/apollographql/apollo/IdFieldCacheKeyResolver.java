@@ -4,12 +4,12 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-
 public class IdFieldCacheKeyResolver extends CacheKeyResolver {
+
   @NotNull @Override
   public CacheKey fromFieldRecordSet(@NotNull ResponseField field, @NotNull Map<String, Object> recordSet) {
     Object id = recordSet.get("id");
@@ -34,7 +34,7 @@ public class IdFieldCacheKeyResolver extends CacheKeyResolver {
     if (id == null || id.isEmpty()) {
       return CacheKey.NO_KEY;
     } else {
-      return CacheKey.from(id);
+      return new CacheKey(id);
     }
   }
 }

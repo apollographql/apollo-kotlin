@@ -20,7 +20,10 @@ import com.apollographql.apollo.integration.normalizer.HeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.HeroParentTypeDependentFieldQuery;
 import com.apollographql.apollo.integration.normalizer.HeroTypeDependentAliasedFieldQuery;
 import com.apollographql.apollo.integration.normalizer.SameHeroTwiceQuery;
-
+import io.reactivex.functions.Predicate;
+import okhttp3.Dispatcher;
+import okhttp3.OkHttpClient;
+import okhttp3.mockwebserver.MockWebServer;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,11 +32,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import io.reactivex.functions.Predicate;
-import okhttp3.Dispatcher;
-import okhttp3.OkHttpClient;
-import okhttp3.mockwebserver.MockWebServer;
 
 import static com.apollographql.apollo.integration.normalizer.type.Episode.EMPIRE;
 import static com.apollographql.apollo.integration.normalizer.type.Episode.JEDI;
@@ -59,7 +57,7 @@ public class ResponseNormalizationTest {
         .normalizedCache(new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), new IdFieldCacheKeyResolver())
         .dispatcher(Utils.INSTANCE.immediateExecutor())
         .build();
-    normalizedCache = apolloClient.apolloStore().normalizedCache();
+    normalizedCache = apolloClient.getApolloStore().normalizedCache();
   }
 
   @Test public void testHeroName() throws Exception {
