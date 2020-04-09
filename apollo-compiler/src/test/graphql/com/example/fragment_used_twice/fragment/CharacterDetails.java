@@ -70,7 +70,7 @@ public class CharacterDetails implements GraphqlFragment {
     return this.birthDate;
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({"rawtypes", "unchecked"})
   public ResponseFieldMarshaller marshaller() {
     return new ResponseFieldMarshaller() {
       @Override

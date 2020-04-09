@@ -71,7 +71,7 @@ public class DroidDetails implements GraphqlFragment {
     return this.primaryFunction;
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({"rawtypes", "unchecked"})
   public ResponseFieldMarshaller marshaller() {
     return new ResponseFieldMarshaller() {
       @Override

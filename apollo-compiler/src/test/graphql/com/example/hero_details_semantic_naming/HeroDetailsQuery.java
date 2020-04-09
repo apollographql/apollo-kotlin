@@ -145,7 +145,7 @@ public final class HeroDetailsQuery implements Query<HeroDetailsQuery.Data, Opti
       return this.hero;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -249,7 +249,7 @@ public final class HeroDetailsQuery implements Query<HeroDetailsQuery.Data, Opti
       return this.friendsConnection;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -365,7 +365,7 @@ public final class HeroDetailsQuery implements Query<HeroDetailsQuery.Data, Opti
       return this.edges;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -481,7 +481,7 @@ public final class HeroDetailsQuery implements Query<HeroDetailsQuery.Data, Opti
       return this.node;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -579,7 +579,7 @@ public final class HeroDetailsQuery implements Query<HeroDetailsQuery.Data, Opti
       return this.name;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override

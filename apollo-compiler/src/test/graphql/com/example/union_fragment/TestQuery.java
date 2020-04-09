@@ -147,7 +147,7 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
       return this.search;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -248,7 +248,7 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
       return this.fragments;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override

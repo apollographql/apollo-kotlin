@@ -58,7 +58,7 @@ public class PlanetFragment implements GraphqlFragment {
     return this.name;
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({"rawtypes", "unchecked"})
   public ResponseFieldMarshaller marshaller() {
     return new ResponseFieldMarshaller() {
       @Override
