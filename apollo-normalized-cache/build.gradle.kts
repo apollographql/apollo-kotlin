@@ -1,6 +1,13 @@
 plugins {
   `java-library`
   kotlin("jvm")
+  id("com.squareup.sqldelight")
+}
+
+sqldelight {
+  database("ApolloDatabase") {
+    packageName = "com.apollographql.apollo.cache.normalized.sql"
+  }
 }
 
 dependencies {
