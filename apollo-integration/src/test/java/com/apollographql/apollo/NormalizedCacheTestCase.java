@@ -4,7 +4,6 @@ import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.CacheKey;
-import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
@@ -24,18 +23,16 @@ import com.apollographql.apollo.integration.normalizer.StarshipByIdQuery;
 import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsFragment;
 import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragment;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
-
+import io.reactivex.functions.Predicate;
+import okhttp3.Dispatcher;
+import okhttp3.OkHttpClient;
+import okhttp3.mockwebserver.MockWebServer;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import io.reactivex.functions.Predicate;
-import okhttp3.Dispatcher;
-import okhttp3.OkHttpClient;
-import okhttp3.mockwebserver.MockWebServer;
 
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_FIRST;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY;
@@ -797,8 +794,8 @@ public class NormalizedCacheTestCase {
         }
     );
 
-    Map<Class, Map<String, Record>> dump = apolloClient.getApolloStore().normalizedCache().dump();
-    assertThat(NormalizedCache.prettifyDump(dump)).isEqualTo("OptimisticNormalizedCache {}\n" +
+    Map<Class<?>, Map<String, Record>> dump = apolloClient.getApolloStore().normalizedCache().dump();
+    assertThat(Utils.INSTANCE.prettifyDump(dump)).isEqualTo("OptimisticNormalizedCache {}\n" +
         "LruNormalizedCache {\n" +
         "  \"1002\" : {\n" +
         "    \"__typename\" : Human\n" +
@@ -929,7 +926,7 @@ public class NormalizedCacheTestCase {
         }
     );
 
-    assertThat(NormalizedCache.prettifyDump(apolloClient.getApolloStore().normalizedCache().dump())).isEqualTo("" +
+    assertThat(Utils.INSTANCE.prettifyDump(apolloClient.getApolloStore().normalizedCache().dump())).isEqualTo("" +
         "OptimisticNormalizedCache {}\n" +
         "LruNormalizedCache {\n" +
         "  \"QUERY_ROOT\" : {\n" +

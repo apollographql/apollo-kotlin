@@ -1,8 +1,5 @@
 package com.apollographql.apollo.cache.normalized;
 
-import com.apollographql.apollo.api.internal.Action;
-import com.apollographql.apollo.api.internal.Function;
-import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.cache.CacheBuilder;
@@ -30,48 +27,45 @@ public final class OptimisticNormalizedCache extends NormalizedCache {
     checkNotNull(cacheHeaders, "cacheHeaders == null");
 
     try {
-      final Optional<Record> nonOptimisticRecord = nextCache()
-          .flatMap(new Function<NormalizedCache, Optional<Record>>() {
-            @NotNull @Override public Optional<Record> apply(@NotNull NormalizedCache cache) {
-              return Optional.fromNullable(cache.loadRecord(key, cacheHeaders));
-            }
-          });
+      @Nullable final Record nonOptimisticRecord;
+      if (getNextCache() != null) {
+        nonOptimisticRecord = getNextCache().loadRecord(key, cacheHeaders);
+      } else {
+        nonOptimisticRecord = null;
+      }
       final RecordJournal journal = lruCache.getIfPresent(key);
       if (journal != null) {
-        return nonOptimisticRecord.map(new Function<Record, Record>() {
-          @NotNull @Override public Record apply(@NotNull Record record) {
-            Record result = record.clone();
-            result.mergeWith(journal.snapshot);
-            return result;
-          }
-        }).or(journal.snapshot.clone());
+        if (nonOptimisticRecord != null) {
+          final Record result = nonOptimisticRecord.clone();
+          result.mergeWith(journal.snapshot);
+          return result;
+        } else {
+          return journal.snapshot.clone();
+        }
       } else {
-        return nonOptimisticRecord.orNull();
+        return nonOptimisticRecord;
       }
     } catch (Exception ignore) {
       return null;
     }
   }
 
-  @SuppressWarnings("ResultOfMethodCallIgnored")
   @Override public void clearAll() {
     lruCache.invalidateAll();
-    //noinspection ResultOfMethodCallIgnored
-    nextCache().apply(new Action<NormalizedCache>() {
-      @Override public void apply(@NotNull NormalizedCache cache) {
-        cache.clearAll();
-      }
-    });
+    if (getNextCache() != null) {
+      getNextCache().clearAll();
+    }
   }
 
   @Override public boolean remove(@NotNull final CacheKey cacheKey, final boolean cascade) {
     checkNotNull(cacheKey, "cacheKey == null");
 
-    boolean result = nextCache().map(new Function<NormalizedCache, Boolean>() {
-      @NotNull @Override public Boolean apply(@NotNull NormalizedCache cache) {
-        return cache.remove(cacheKey, cascade);
-      }
-    }).or(Boolean.FALSE);
+    boolean result;
+    if (getNextCache() != null) {
+      result = getNextCache().remove(cacheKey, cascade);
+    } else {
+      result = false;
+    }
 
     RecordJournal recordJournal = lruCache.getIfPresent(cacheKey.key());
     if (recordJournal != null) {
@@ -131,16 +125,16 @@ public final class OptimisticNormalizedCache extends NormalizedCache {
     return Collections.emptySet();
   }
 
-  @Override public Map<Class, Map<String, Record>> dump() {
+  @Override public Map<Class<?>, Map<String, Record>> dump() {
     Map<String, Record> records = new LinkedHashMap<>();
     for (Map.Entry<String, RecordJournal> entry : lruCache.asMap().entrySet()) {
       records.put(entry.getKey(), entry.getValue().snapshot);
     }
 
-    Map<Class, Map<String, Record>> dump = new LinkedHashMap<>();
+    Map<Class<?>, Map<String, Record>> dump = new LinkedHashMap<>();
     dump.put(this.getClass(), Collections.unmodifiableMap(records));
-    if (nextCache().isPresent()) {
-      dump.putAll(nextCache().get().dump());
+    if (getNextCache() != null) {
+      dump.putAll(getNextCache().dump());
     }
     return dump;
   }
@@ -163,8 +157,8 @@ public final class OptimisticNormalizedCache extends NormalizedCache {
     }
 
     /**
-     * Lookups record by mutation id, if it's found removes it from the history and invalidates snapshot record.
-     * Snapshot record is superposition of all record versions in the history.
+     * Lookups record by mutation id, if it's found removes it from the history and invalidates snapshot record. Snapshot record is
+     * superposition of all record versions in the history.
      */
     Set<String> revert(UUID mutationId) {
       int recordIndex = -1;

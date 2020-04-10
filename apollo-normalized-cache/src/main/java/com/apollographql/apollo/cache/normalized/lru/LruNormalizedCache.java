@@ -1,6 +1,5 @@
 package com.apollographql.apollo.cache.normalized.lru;
 
-import com.apollographql.apollo.api.internal.Action;
 import com.apollographql.apollo.api.internal.Function;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.ApolloCacheHeaders;
@@ -37,11 +36,7 @@ public final class LruNormalizedCache extends NormalizedCache {
     final CacheBuilder<Object, Object> lruCacheBuilder = CacheBuilder.newBuilder();
     if (evictionPolicy.maxSizeBytes().isPresent()) {
       lruCacheBuilder.maximumWeight(evictionPolicy.maxSizeBytes().get())
-          .weigher(new Weigher<String, Record>() {
-            @Override public int weigh(String key, Record value) {
-              return key.getBytes(Charset.defaultCharset()).length + value.sizeEstimateBytes();
-            }
-          });
+          .weigher((Weigher<String, Record>) (key, value) -> key.getBytes(Charset.defaultCharset()).length + value.sizeEstimateBytes());
     }
     if (evictionPolicy.maxEntries().isPresent()) {
       lruCacheBuilder.maximumSize(evictionPolicy.maxEntries().get());
@@ -62,14 +57,14 @@ public final class LruNormalizedCache extends NormalizedCache {
     try {
       record = lruCache.get(key, new Callable<Record>() {
         @Override public Record call() throws Exception {
-          return nextCache().flatMap(new Function<NormalizedCache, Optional<Record>>() {
-            @NotNull @Override public Optional<Record> apply(@NotNull NormalizedCache cache) {
-              return Optional.fromNullable(cache.loadRecord(key, cacheHeaders));
-            }
-          }).get(); // lruCache.get(key, callable) requires non-null.
+          if (getNextCache() != null) {
+            return getNextCache().loadRecord(key, cacheHeaders);
+          } else {
+            return null;
+          }
         }
       });
-    } catch (Exception ignore) {
+    } catch (Exception ignored) { // Thrown when the nextCache's value is null
       return null;
     }
 
@@ -80,25 +75,22 @@ public final class LruNormalizedCache extends NormalizedCache {
     return record;
   }
 
-  @SuppressWarnings("ResultOfMethodCallIgnored")
   @Override public void clearAll() {
-    nextCache().apply(new Action<NormalizedCache>() {
-      @Override public void apply(@NotNull NormalizedCache cache) {
-        cache.clearAll();
-      }
-    });
+    if (getNextCache() != null) {
+      getNextCache().clearAll();
+    }
     clearCurrentCache();
   }
 
   @Override public boolean remove(@NotNull final CacheKey cacheKey, final boolean cascade) {
     checkNotNull(cacheKey, "cacheKey == null");
-    boolean result;
 
-    result = nextCache().map(new Function<NormalizedCache, Boolean>() {
-      @NotNull @Override public Boolean apply(@NotNull NormalizedCache cache) {
-        return cache.remove(cacheKey, cascade);
-      }
-    }).or(Boolean.FALSE);
+    boolean result;
+    if (getNextCache() != null) {
+      result = getNextCache().remove(cacheKey, cascade);
+    } else {
+      result = false;
+    }
 
     Record record = lruCache.getIfPresent(cacheKey.key());
     if (record != null) {
@@ -134,11 +126,11 @@ public final class LruNormalizedCache extends NormalizedCache {
     }
   }
 
-  @Override public Map<Class, Map<String, Record>> dump() {
-    Map<Class, Map<String, Record>> dump = new LinkedHashMap<>();
+  @Override public Map<Class<?>, Map<String, Record>> dump() {
+    Map<Class<?>, Map<String, Record>> dump = new LinkedHashMap<>();
     dump.put(this.getClass(), Collections.unmodifiableMap(new LinkedHashMap<>(lruCache.asMap())));
-    if (nextCache().isPresent()) {
-      dump.putAll(nextCache().get().dump());
+    if (getNextCache() != null) {
+      dump.putAll(getNextCache().dump());
     }
     return dump;
   }

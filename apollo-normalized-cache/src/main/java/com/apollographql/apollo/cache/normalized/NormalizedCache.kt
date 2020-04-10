@@ -1,146 +1,112 @@
-package com.apollographql.apollo.cache.normalized;
+package com.apollographql.apollo.cache.normalized
 
-import com.apollographql.apollo.api.internal.Function;
-import com.apollographql.apollo.api.internal.Optional;
-import com.apollographql.apollo.cache.ApolloCacheHeaders;
-import com.apollographql.apollo.cache.CacheHeaders;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+import com.apollographql.apollo.cache.ApolloCacheHeaders
+import com.apollographql.apollo.cache.CacheHeaders
+import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCache
+import java.util.ArrayList
+import java.util.HashSet
 
 /**
- * A provider of {@link Record} for reading requests from cache.
+ * A provider of [Record] for reading requests from cache.
  *
- * To serialize a {@link Record} to a standardized form use {@link #recordAdapter()} which handles call custom scalar
+ * To serialize a [Record] to a standardized form use recordAdapter() which handles call custom scalar
  * types registered on the ApolloClient
  *
- * If a {@link NormalizedCache} cannot return all the records needed to read a response, it will be considered a cache
+ * If a [NormalizedCache] cannot return all the records needed to read a response, it will be considered a cache
  * miss.
  *
- * A {@link NormalizedCache} is recommended to implement support for {@link CacheHeaders} specified in {@link
- * ApolloCacheHeaders}.
+ * A [NormalizedCache] is recommended to implement support for [CacheHeaders] specified in [ ].
  *
- * A {@link NormalizedCache} can choose to store records in any manner.
+ * A [NormalizedCache] can choose to store records in any manner.
  *
- * See {@link com.apollographql.apollo.cache.normalized.lru.LruNormalizedCache} for a in memory cache.
+ * See [LruNormalizedCache] for a in memory cache.
  */
-public abstract class NormalizedCache {
-  private Optional<NormalizedCache> nextCache = Optional.absent();
+abstract class NormalizedCache {
+  var nextCache: NormalizedCache? = null
+    private set
 
   /**
    * @param key          The key of the record to read.
    * @param cacheHeaders The cache headers associated with the request which generated this record.
-   * @return The {@link Record} for key. If not present return null.
+   * @return The [Record] for key. If not present return null.
    */
-  @Nullable public abstract Record loadRecord(@NotNull String key, @NotNull CacheHeaders cacheHeaders);
+  abstract fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record?
 
   /**
-   * Calls through to {@link NormalizedCache#loadRecord(String, CacheHeaders)}. Implementations should override this
+   * Calls through to [NormalizedCache.loadRecord]. Implementations should override this
    * method if the underlying storage technology can offer an optimized manner to read multiple records.
    *
-   * @param keys         The set of {@link Record} keys to read.
+   * @param keys         The set of [Record] keys to read.
    * @param cacheHeaders The cache headers associated with the request which generated this record.
    */
-  @NotNull public Collection<Record> loadRecords(@NotNull Collection<String> keys, @NotNull CacheHeaders cacheHeaders) {
-    List<Record> records = new ArrayList<>(keys.size());
-    for (String key : keys) {
-      final Record record = loadRecord(key, cacheHeaders);
+  fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
+    val records: MutableList<Record> = ArrayList(keys.size)
+    for (key in keys) {
+      val record = loadRecord(key, cacheHeaders)
       if (record != null) {
-        records.add(record);
+        records.add(record)
       }
     }
-    return records;
+    return records
   }
 
   /**
-   * @param record       The {@link Record} to merge.
-   * @param cacheHeaders The {@link CacheHeaders} associated with the request which generated this record.
-   * @return A set of record field keys that have changed. This set is returned by {@link Record#mergeWith(Record)}.
+   * @param record       The [Record] to merge.
+   * @param cacheHeaders The [CacheHeaders] associated with the request which generated this record.
+   * @return A set of record field keys that have changed. This set is returned by [Record.mergeWith].
    */
-  @NotNull public Set<String> merge(@NotNull final Record record, @NotNull final CacheHeaders cacheHeaders) {
-    checkNotNull(record, "apolloRecord == null");
-    checkNotNull(cacheHeaders, "cacheHeaders == null");
-
+  open fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String?> {
     if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
-      return Collections.emptySet();
+      return emptySet<String>()
     }
-
-    Set<String> nextCacheChangedKeys = nextCache().map(new Function<NormalizedCache, Set<String>>() {
-      @NotNull @Override public Set<String> apply(@NotNull NormalizedCache cache) {
-        return cache.merge(record, cacheHeaders);
-      }
-    }).or(Collections.<String>emptySet());
-
-    Set<String> currentCacheChangedKeys = performMerge(record, cacheHeaders);
-
-    Set<String> changedKeys = new HashSet<>();
-    changedKeys.addAll(nextCacheChangedKeys);
-    changedKeys.addAll(currentCacheChangedKeys);
-    return changedKeys;
+    val nextCacheChangedKeys = nextCache?.merge(record, cacheHeaders).orEmpty()
+    val currentCacheChangedKeys = performMerge(record, cacheHeaders)
+    val changedKeys: MutableSet<String?> = HashSet()
+    changedKeys.addAll(nextCacheChangedKeys)
+    changedKeys.addAll(currentCacheChangedKeys)
+    return changedKeys
   }
 
   /**
-   * Calls through to {@link NormalizedCache#merge(Record, CacheHeaders)}. Implementations should override this method
+   * Calls through to [NormalizedCache.merge]. Implementations should override this method
    * if the underlying storage technology can offer an optimized manner to store multiple records.
    *
    * @param recordSet    The set of Records to merge.
-   * @param cacheHeaders The {@link CacheHeaders} associated with the request which generated this record.
-   * @return A set of record field keys that have changed. This set is returned by {@link Record#mergeWith(Record)}.
+   * @param cacheHeaders The [CacheHeaders] associated with the request which generated this record.
+   * @return A set of record field keys that have changed. This set is returned by [Record.mergeWith].
    */
-  @NotNull
-  public Set<String> merge(@NotNull final Collection<Record> recordSet, @NotNull final CacheHeaders cacheHeaders) {
-    checkNotNull(recordSet, "recordSet == null");
-    checkNotNull(cacheHeaders, "cacheHeaders == null");
-
+  open fun merge(recordSet: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
     if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
-      return Collections.emptySet();
+      return emptySet()
     }
-
-    //noinspection ResultOfMethodCallIgnored
-    Set<String> nextCacheChangedKeys = nextCache().map(new Function<NormalizedCache, Set<String>>() {
-      @NotNull @Override public Set<String> apply(@NotNull NormalizedCache cache) {
-        return cache.merge(recordSet, cacheHeaders);
-      }
-    }).or(Collections.<String>emptySet());
-
-    Set<String> currentCacheChangedKeys = new HashSet<>();
-    for (Record record : recordSet) {
-      currentCacheChangedKeys.addAll(performMerge(record, cacheHeaders));
+    val nextCacheChangedKeys = nextCache?.merge(recordSet, cacheHeaders).orEmpty()
+    val currentCacheChangedKeys: MutableSet<String> = HashSet()
+    for (record in recordSet) {
+      currentCacheChangedKeys.addAll(performMerge(record, cacheHeaders))
     }
-
-    Set<String> changedKeys = new HashSet<>();
-    changedKeys.addAll(nextCacheChangedKeys);
-    changedKeys.addAll(currentCacheChangedKeys);
-    return changedKeys;
+    val changedKeys: MutableSet<String> = HashSet()
+    changedKeys.addAll(nextCacheChangedKeys)
+    changedKeys.addAll(currentCacheChangedKeys)
+    return changedKeys
   }
 
-  @NotNull
-  protected abstract Set<String> performMerge(@NotNull Record apolloRecord, @NotNull CacheHeaders cacheHeaders);
+  protected abstract fun performMerge(apolloRecord: Record, cacheHeaders: CacheHeaders): Set<String>
 
   /**
    * Clears all records from the cache.
    *
    * Clients should call ApolloClient#clearNormalizedCache() for a thread-safe access to this method.
    */
-  public abstract void clearAll();
+  abstract fun clearAll()
 
   /**
    * Remove cached record by the key
    *
    * @param cacheKey of record to be removed
-   * @return {@code true} if record with such key was successfully removed, {@code false} otherwise
+   * @return `true` if record with such key was successfully removed, `false` otherwise
    */
-  public boolean remove(@NotNull CacheKey cacheKey) {
-    return remove(cacheKey, false);
+  fun remove(cacheKey: CacheKey): Boolean {
+    return remove(cacheKey, false)
   }
 
   /**
@@ -148,68 +114,23 @@ public abstract class NormalizedCache {
    *
    * @param cacheKey of record to be removed
    * @param cascade defines if remove operation is propagated to the referenced entities
-   * @return {@code true} if record with such key was successfully removed, {@code false} otherwise
+   * @return `true` if record with such key was successfully removed, `false` otherwise
    */
-  public abstract boolean remove(@NotNull CacheKey cacheKey, boolean cascade);
+  abstract fun remove(cacheKey: CacheKey, cascade: Boolean): Boolean
 
-  public final NormalizedCache chain(@NotNull NormalizedCache cache) {
-    checkNotNull(cache, "cache == null");
-
-    NormalizedCache leafCache = this;
-    while (leafCache.nextCache.isPresent()) {
-      leafCache = leafCache.nextCache.get();
+  fun chain(cache: NormalizedCache) = apply {
+    var leafCache = this
+    while (leafCache.nextCache != null) {
+      leafCache = leafCache.nextCache!!
     }
-    leafCache.nextCache = Optional.of(cache);
-
-    return this;
+    leafCache.nextCache = cache
   }
 
-  public final Optional<NormalizedCache> nextCache() {
-    return nextCache;
-  }
+  @Deprecated("Use property instead", replaceWith = ReplaceWith("nextCache"))
+  fun nextCache() = nextCache
 
-  public Map<Class, Map<String, Record>> dump() {
-    Class clazz = this.getClass();
-    return Collections.singletonMap(clazz, Collections.<String, Record>emptyMap());
-  }
-
-  public static String prettifyDump(Map<Class, Map<String, Record>> dump) {
-    StringBuilder builder = new StringBuilder();
-    for (Map.Entry<Class, Map<String, Record>> dumpEntry : dump.entrySet()) {
-      builder.append(dumpEntry.getKey().getSimpleName())
-          .append(" {");
-      for (Map.Entry<String, Record> recordEntry : dumpEntry.getValue().entrySet()) {
-        builder
-            .append("\n  \"")
-            .append(recordEntry.getKey())
-            .append("\" : {");
-        for (Map.Entry<String, Object> fieldEntry : recordEntry.getValue().fields().entrySet()) {
-          builder
-              .append("\n    \"")
-              .append(fieldEntry.getKey())
-              .append("\" : ");
-          if (fieldEntry.getValue() instanceof CacheReference) {
-            builder.append("CacheRecordRef(")
-                .append(fieldEntry.getValue())
-                .append(")");
-          } else if (fieldEntry.getValue() instanceof List) {
-            builder.append("[");
-            for (Object item : (List) fieldEntry.getValue()) {
-              builder
-                  .append("\n      ")
-                  .append(item instanceof CacheReference ? "CacheRecordRef(" : "")
-                  .append(item)
-                  .append(item instanceof CacheReference ? ")" : "");
-            }
-            builder.append("\n    ]");
-          } else {
-            builder.append(fieldEntry.getValue());
-          }
-        }
-        builder.append("\n  }\n");
-      }
-      builder.append("}\n");
-    }
-    return builder.toString();
+  open fun dump(): Map<@JvmSuppressWildcards Class<*>, Map<String, Record>> {
+    val clazz: Class<*> = this.javaClass
+    return mapOf(clazz to emptyMap())
   }
 }
