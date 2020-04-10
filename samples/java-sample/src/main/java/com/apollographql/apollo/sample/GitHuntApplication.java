@@ -9,10 +9,10 @@ import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
-import com.apollographql.apollo.cache.normalized.sql.ApolloDatabase;
+import com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper;
 import com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCacheFactory;
 import com.apollographql.apollo.subscription.WebSocketSubscriptionTransport;
-import com.squareup.sqldelight.android.AndroidSqliteDriver;
+import com.squareup.sqldelight.db.SqlDriver;
 import okhttp3.OkHttpClient;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,9 +33,9 @@ public class GitHuntApplication extends Application {
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
         .build();
 
-    AndroidSqliteDriver sqliteDriver = new AndroidSqliteDriver(ApolloDatabase.Companion.getSchema(), this, SQL_CACHE_NAME);
+    SqlDriver driver = ApolloSqlHelper.create(this, SQL_CACHE_NAME);
     NormalizedCacheFactory normalizedCacheFactory = new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
-        .chain(new SqlNormalizedCacheFactory(sqliteDriver));
+        .chain(new SqlNormalizedCacheFactory(driver));
 
     CacheKeyResolver cacheKeyResolver = new CacheKeyResolver() {
       @NotNull @Override

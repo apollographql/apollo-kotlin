@@ -1,7 +1,10 @@
 import com.android.build.gradle.BaseExtension
-apply(plugin = "com.android.library")
+plugins {
+  id("com.android.library")
+  kotlin("android")
+}
 
-extensions.findByType(BaseExtension::class.java)!!.apply {
+android {
   compileSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt())
 
   lintOptions {
@@ -18,9 +21,10 @@ extensions.findByType(BaseExtension::class.java)!!.apply {
 }
 
 dependencies {
-  add("compileOnly", groovy.util.Eval.x(project, "x.dep.jetbrainsAnnotations"))
-  add("compileOnly", project(":apollo-runtime"))
-  add("compileOnly", project(":apollo-api"))
+  implementation(kotlin("stdlib"))
+  implementation(groovy.util.Eval.x(project, "x.dep.sqldelight.android"))
+  compileOnly(project(":apollo-runtime"))
+  compileOnly(project(":apollo-api"))
 
   add("androidTestCompileOnly", groovy.util.Eval.x(project, "x.dep.jetbrainsAnnotations"))
 
@@ -28,7 +32,6 @@ dependencies {
     exclude(module = "support-annotations")
   }
   add("androidTestImplementation", project(":apollo-runtime"))
-  add("androidTestImplementation", "com.squareup.sqldelight:android-driver:1.2.2")
   add("androidTestImplementation", project(":apollo-api"))
   add("androidTestImplementation", groovy.util.Eval.x(project, "x.dep.truth"))
   add("androidTestImplementation", groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer"))

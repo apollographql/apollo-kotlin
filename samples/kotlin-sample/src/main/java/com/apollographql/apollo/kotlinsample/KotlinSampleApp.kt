@@ -21,7 +21,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.io.File
 
-@Suppress("unused")
 class KotlinSampleApp : Application() {
   private val baseUrl = "https://api.github.com/graphql"
   private val apolloClient: ApolloClient by lazy {
@@ -44,8 +43,8 @@ class KotlinSampleApp : Application() {
         .addInterceptor(logInterceptor)
         .build()
 
-    val apolloSqlHelper = ApolloSqlHelper.create(this, "github_cache")
-    val sqlNormalizedCacheFactory = SqlNormalizedCacheFactory(apolloSqlHelper)
+    val driver = ApolloSqlHelper.create(this, "github_cache")
+    val sqlNormalizedCacheFactory = SqlNormalizedCacheFactory(driver)
     val cacheKeyResolver = object : CacheKeyResolver() {
       override fun fromFieldRecordSet(field: ResponseField, recordSet: Map<String, Any>): CacheKey {
         return if (recordSet["__typename"] == "Repository") {

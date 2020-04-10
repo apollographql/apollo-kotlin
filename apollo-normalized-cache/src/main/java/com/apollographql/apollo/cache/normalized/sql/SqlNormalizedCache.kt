@@ -59,7 +59,7 @@ class SqlNormalizedCache(
     }
   }
 
-  internal fun selectRecordForKey(key: String): Record? {
+  fun selectRecordForKey(key: String): Record? {
     return try {
       cacheQueries.recordForKey(key)
           .executeAsList()
