@@ -28,6 +28,7 @@ dependencies {
     exclude(module = "support-annotations")
   }
   add("androidTestImplementation", project(":apollo-runtime"))
+  add("androidTestImplementation", "com.squareup.sqldelight:android-driver:1.2.2")
   add("androidTestImplementation", project(":apollo-api"))
   add("androidTestImplementation", groovy.util.Eval.x(project, "x.dep.truth"))
   add("androidTestImplementation", groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer"))

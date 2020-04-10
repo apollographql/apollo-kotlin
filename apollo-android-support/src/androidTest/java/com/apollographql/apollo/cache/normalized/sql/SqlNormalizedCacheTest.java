@@ -6,6 +6,7 @@ import com.apollographql.apollo.cache.ApolloCacheHeaders;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter;
+import com.squareup.sqldelight.android.AndroidSqliteDriver;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,32 +19,32 @@ public class SqlNormalizedCacheTest {
   public static final String STANDARD_KEY = "key";
   public static final String QUERY_ROOT_KEY = "QUERY_ROOT";
   public static final String FIELDS = "{\"fieldKey\": \"value\"}";
-  public static final String IN_MEMORY_DB = null; //null means db is memory only
   private SqlNormalizedCache sqlStore;
 
   @Before
   public void setUp() {
-    ApolloSqlHelper apolloSqlHelper = ApolloSqlHelper.create(InstrumentationRegistry.getTargetContext(),
-        IN_MEMORY_DB);
-    sqlStore = new SqlNormalizedCacheFactory(apolloSqlHelper).create(RecordFieldJsonAdapter.create());
+    sqlStore = new SqlNormalizedCacheFactory(new AndroidSqliteDriver(ApolloDatabase.Companion.getSchema(), InstrumentationRegistry.getTargetContext(), "test.db")).create(RecordFieldJsonAdapter.create());
+    sqlStore.clearAll();
   }
 
   @Test
   public void testRecordCreation() {
-    long record = createRecord(STANDARD_KEY);
-    assertThat(record).isEqualTo(1);
+    createRecord(STANDARD_KEY);
+    assertThat(sqlStore.loadRecord(STANDARD_KEY, CacheHeaders.NONE))
+        .isNotNull();
   }
 
   @Test
   public void testRecordCreation_root() {
-    long record = createRecord(QUERY_ROOT_KEY);
-    assertThat(record).isEqualTo(1);
+    createRecord(QUERY_ROOT_KEY);
+    assertThat(sqlStore.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE))
+        .isNotNull();
   }
 
   @Test
   public void testRecordSelection() {
     createRecord(STANDARD_KEY);
-    Record record = sqlStore.selectRecordForKey(STANDARD_KEY);
+    Record record = sqlStore.selectRecordForKey$apollo_normalized_cache(STANDARD_KEY);
     assertThat(record).isNotNull();
     assertThat(record.key()).isEqualTo(STANDARD_KEY);
   }
@@ -51,7 +52,7 @@ public class SqlNormalizedCacheTest {
   @Test
   public void testRecordSelection_root() {
     createRecord(QUERY_ROOT_KEY);
-    Record record = sqlStore.selectRecordForKey(QUERY_ROOT_KEY);
+    Record record = sqlStore.selectRecordForKey$apollo_normalized_cache(QUERY_ROOT_KEY);
     assertThat(record).isNotNull();
     assertThat(record.key()).isEqualTo(QUERY_ROOT_KEY);
   }
@@ -67,7 +68,7 @@ public class SqlNormalizedCacheTest {
     sqlStore.merge(Record.builder(STANDARD_KEY)
         .addField("fieldKey", "valueUpdated")
         .addField("newFieldKey", true).build(), CacheHeaders.NONE);
-    Record record = sqlStore.selectRecordForKey(STANDARD_KEY);
+    Record record = sqlStore.selectRecordForKey$apollo_normalized_cache(STANDARD_KEY);
     assertThat(record).isNotNull();
     assertThat(record.fields().get("fieldKey")).isEqualTo("valueUpdated");
     assertThat(record.fields().get("newFieldKey")).isEqualTo(true);
@@ -80,7 +81,7 @@ public class SqlNormalizedCacheTest {
         .addField("fieldKey", "valueUpdated")
         .addField("newFieldKey", true).build(), CacheHeaders.NONE);
     sqlStore.deleteRecord(STANDARD_KEY);
-    Record record = sqlStore.selectRecordForKey(STANDARD_KEY);
+    Record record = sqlStore.selectRecordForKey$apollo_normalized_cache(STANDARD_KEY);
     assertThat(record).isNull();
   }
 
@@ -89,8 +90,8 @@ public class SqlNormalizedCacheTest {
     createRecord(QUERY_ROOT_KEY);
     createRecord(STANDARD_KEY);
     sqlStore.clearAll();
-    assertThat(sqlStore.selectRecordForKey(QUERY_ROOT_KEY)).isNull();
-    assertThat(sqlStore.selectRecordForKey(STANDARD_KEY)).isNull();
+    assertThat(sqlStore.selectRecordForKey$apollo_normalized_cache(QUERY_ROOT_KEY)).isNull();
+    assertThat(sqlStore.selectRecordForKey$apollo_normalized_cache(STANDARD_KEY)).isNull();
   }
 
 
@@ -115,7 +116,7 @@ public class SqlNormalizedCacheTest {
     assertThat(record).isNull();
   }
 
-  private long createRecord(String key) {
-    return sqlStore.createRecord(key, FIELDS);
+  private void createRecord(String key) {
+    sqlStore.createRecord(key, FIELDS);
   }
 }

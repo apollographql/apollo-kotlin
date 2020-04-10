@@ -25,6 +25,7 @@ extensions.findByType(BaseExtension::class.java)!!.apply {
 
 dependencies {
   add("compileOnly", groovy.util.Eval.x(project, "x.dep.jetbrainsAnnotations"))
+  add("implementation", "com.squareup.sqldelight:android-driver:1.2.2")
   add("implementation", "com.apollographql.apollo:apollo-runtime")
   add("implementation", "com.apollographql.apollo:apollo-android-support")
   add("implementation", "com.apollographql.apollo:apollo-rx2-support")

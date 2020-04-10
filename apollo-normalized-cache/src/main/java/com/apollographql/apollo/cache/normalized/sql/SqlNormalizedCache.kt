@@ -18,7 +18,7 @@ class SqlNormalizedCache(
 
     if (record != null) {
       if (cacheHeaders.hasHeader(EVICT_AFTER_READ)) {
-        cacheQueries.deleteRecord(key)
+        deleteRecord(key)
       }
       return record
     }
@@ -41,7 +41,7 @@ class SqlNormalizedCache(
           ?.all { remove(CacheKey(it.key()), cascade = true) }
           ?: false
     } else {
-      cacheQueries.deleteRecord(cacheKey.key)
+      deleteRecord(cacheKey.key)
     }
   }
 
@@ -59,10 +59,12 @@ class SqlNormalizedCache(
     }
   }
 
-  private fun selectRecordForKey(key: String): Record? {
+  internal fun selectRecordForKey(key: String): Record? {
     return try {
       cacheQueries.recordForKey(key)
-          .executeAsOneOrNull()?.let {
+          .executeAsList()
+          .firstOrNull()
+          ?.let {
             Record.builder(it.key)
                 .addFields(recordFieldAdapter.from(it.record))
                 .build()
@@ -80,15 +82,16 @@ class SqlNormalizedCache(
     return result
   }
 
-  companion object {
-
-    fun CacheQueries.deleteRecord(key: String): Boolean {
-      var changes = 0L
-      transaction {
-        delete(key)
-        changes = changes().executeAsOne()
-      }
-      return changes > 0
+  fun deleteRecord(key: String): Boolean {
+    var changes = 0L
+    cacheQueries.transaction {
+      cacheQueries.delete(key)
+      changes = cacheQueries.changes().executeAsOne()
     }
+    return changes > 0
+  }
+
+  fun createRecord(key: String, fields: String) {
+    cacheQueries.insert(key, fields)
   }
 }
