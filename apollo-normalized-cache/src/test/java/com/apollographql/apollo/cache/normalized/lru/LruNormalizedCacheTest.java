@@ -185,7 +185,7 @@ public class LruNormalizedCacheTest {
     //verify write through behavior
     assertThat(primaryCache.loadRecord("root",
         CacheHeaders.NONE).field("bar")).isEqualTo("bar");
-    assertThat(primaryCache.getNextCache().loadRecord("root",
+    assertThat(primaryCache.nextCache().get().loadRecord("root",
         CacheHeaders.NONE).field("bar")).isEqualTo("bar");
   }
 
@@ -216,7 +216,7 @@ public class LruNormalizedCacheTest {
 
     //verify write through behavior
     assertThat(primaryCache.loadRecords(keys, CacheHeaders.NONE).size()).isEqualTo(3);
-    assertThat(primaryCache.getNextCache()
+    assertThat(primaryCache.nextCache().get()
         .loadRecords(keys, CacheHeaders.NONE).size()).isEqualTo(3);
   }
 
@@ -254,9 +254,9 @@ public class LruNormalizedCacheTest {
     primaryCache.merge(record, CacheHeaders.NONE);
     primaryCache.clearCurrentCache();
 
-    assertThat(primaryCache.getNextCache()
+    assertThat(primaryCache.nextCache().get()
         .loadRecord("key", CacheHeaders.NONE)).isNotNull();
-    assertThat(primaryCache.getNextCache()
+    assertThat(primaryCache.nextCache().get()
         .loadRecord("key", CacheHeaders.NONE)).isNotNull();
   }
 
@@ -269,9 +269,9 @@ public class LruNormalizedCacheTest {
     Record record = Record.builder("key").build();
 
     primaryCache.merge(record, CacheHeaders.NONE);
-    primaryCache.getNextCache().clearAll();
+    primaryCache.nextCache().get().clearAll();
 
-    assertThat(primaryCache.getNextCache().loadRecord("key", CacheHeaders.NONE)).isNull();
+    assertThat(primaryCache.nextCache().get().loadRecord("key", CacheHeaders.NONE)).isNull();
   }
 
   // Tests for StandardCacheHeader compliance.

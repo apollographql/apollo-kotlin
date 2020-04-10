@@ -1,5 +1,6 @@
 package com.apollographql.apollo.cache.normalized
 
+import com.apollographql.apollo.api.internal.Optional
 import com.apollographql.apollo.cache.ApolloCacheHeaders
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCache
@@ -127,7 +128,7 @@ abstract class NormalizedCache {
   }
 
   @Deprecated("Use property instead", replaceWith = ReplaceWith("nextCache"))
-  fun nextCache() = nextCache
+  fun nextCache(): Optional<NormalizedCache> = Optional.fromNullable(nextCache)
 
   open fun dump(): Map<@JvmSuppressWildcards Class<*>, Map<String, Record>> {
     val clazz: Class<*> = this.javaClass
