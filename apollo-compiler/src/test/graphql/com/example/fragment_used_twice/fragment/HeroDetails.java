@@ -66,7 +66,7 @@ public class HeroDetails implements GraphqlFragment {
     return this.fragments;
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({"rawtypes", "unchecked"})
   public ResponseFieldMarshaller marshaller() {
     return new ResponseFieldMarshaller() {
       @Override

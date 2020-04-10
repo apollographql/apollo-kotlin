@@ -216,7 +216,7 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
       return this.createReview;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -367,7 +367,7 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
       return this.listOfListOfObject;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -591,7 +591,7 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
       return this.name;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override

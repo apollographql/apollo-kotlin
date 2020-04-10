@@ -199,7 +199,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.hero;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -389,7 +389,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.homePlanet;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -515,7 +515,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.primaryFunction;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -618,7 +618,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.id;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override

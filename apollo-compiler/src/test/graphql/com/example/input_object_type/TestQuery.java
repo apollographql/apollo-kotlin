@@ -206,7 +206,7 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
       return this.createReview;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -309,7 +309,7 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
       return this.commentary;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override

@@ -170,7 +170,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       return this.allStarships;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -262,7 +262,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       return this.edges;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -372,7 +372,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       return this.node;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -467,7 +467,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       return this.fragments;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override

@@ -74,7 +74,7 @@ public class PilotFragment implements GraphqlFragment {
     return this.homeworld;
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({"rawtypes", "unchecked"})
   public ResponseFieldMarshaller marshaller() {
     return new ResponseFieldMarshaller() {
       @Override
@@ -174,7 +174,7 @@ public class PilotFragment implements GraphqlFragment {
       return this.fragments;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
