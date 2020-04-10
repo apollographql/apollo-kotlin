@@ -185,7 +185,7 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
       return this.commentAdded;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -288,7 +288,7 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
       return this.content;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override

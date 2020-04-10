@@ -13,5 +13,7 @@ object Annotations {
       .addMember( "value", CodeBlock.of( "\$S", "rawtypes")).build()
   val SUPPRESS_UNCHECKED_WARNING: AnnotationSpec = AnnotationSpec.builder(SuppressWarnings::class.java)
       .addMember( "value", CodeBlock.of( "\$S", "unchecked")).build()
+  val SUPPRESS_RAW_VALUE_AND_UNCHECKED_WARNING: AnnotationSpec = AnnotationSpec.builder(SuppressWarnings::class.java)
+      .addMember("value", CodeBlock.of("\$L", "{\"rawtypes\", \"unchecked\"}")).build()
   val DEPRECATED: AnnotationSpec = AnnotationSpec.builder(java.lang.Deprecated::class.java).build()
 }

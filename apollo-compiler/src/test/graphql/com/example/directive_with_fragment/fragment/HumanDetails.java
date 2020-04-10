@@ -58,7 +58,7 @@ public class HumanDetails implements GraphqlFragment {
     return this.homePlanet;
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({"rawtypes", "unchecked"})
   public ResponseFieldMarshaller marshaller() {
     return new ResponseFieldMarshaller() {
       @Override
