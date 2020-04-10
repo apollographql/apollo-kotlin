@@ -46,4 +46,3 @@ fun Operation.Data.toJson(indent: String = "", scalarTypeAdapters: ScalarTypeAda
     throw IllegalStateException(e)
   }
 }
-

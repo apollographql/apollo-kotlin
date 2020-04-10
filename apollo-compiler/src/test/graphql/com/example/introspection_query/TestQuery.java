@@ -11,6 +11,7 @@ import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
+import com.apollographql.apollo.api.internal.OperationRequestBodyComposer;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier;
 import com.apollographql.apollo.api.internal.ResponseFieldMapper;
@@ -28,6 +29,7 @@ import java.lang.SuppressWarnings;
 import java.util.Collections;
 import java.util.List;
 import okio.BufferedSource;
+import okio.ByteString;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -113,6 +115,24 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public Response<Optional<TestQuery.Data>> parse(@NotNull final BufferedSource source) throws
       IOException {
     return parse(source, ScalarTypeAdapters.DEFAULT);
+  }
+
+  @Override
+  @NotNull
+  public ByteString composeRequestBody(@NotNull final ScalarTypeAdapters scalarTypeAdapters) {
+    return OperationRequestBodyComposer.compose(this, false, true, scalarTypeAdapters);
+  }
+
+  @NotNull
+  public ByteString composeRequestBody() {
+    return OperationRequestBodyComposer.compose(this, false, true, ScalarTypeAdapters.DEFAULT);
+  }
+
+  @Override
+  @NotNull
+  public ByteString composeRequestBody(final boolean autoPersistQueries,
+      final boolean withQueryDocument, @NotNull final ScalarTypeAdapters scalarTypeAdapters) {
+    return OperationRequestBodyComposer.compose(this, autoPersistQueries, withQueryDocument, scalarTypeAdapters);
   }
 
   public static final class Builder {

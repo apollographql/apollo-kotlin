@@ -9,6 +9,7 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
+import com.apollographql.apollo.api.internal.OperationRequestBodyComposer
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
@@ -34,8 +35,10 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
+import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
 import okio.BufferedSource
+import okio.ByteString
 
 internal fun OperationType.typeSpec(targetPackage: String, generateAsInternal: Boolean = false) = TypeSpec
     .classBuilder(name)
@@ -119,6 +122,10 @@ internal fun OperationType.typeSpec(targetPackage: String, generateAsInternal: B
         .addStatement("return parse(source, %M)", MemberName(ScalarTypeAdapters.Companion::class.asClassName(), "DEFAULT"))
         .build()
     )
+    .addFunction(composeRequestBodyFunSpec())
+    .applyIf(type == OperationType.Type.QUERY) {
+      addFunction(composeRequestBodyFunSpecForQuery())
+    }
     .addTypes(nestedObjects.map { (ref, type) ->
       if (ref == data) {
         type.toOperationDataTypeSpec(data.name)
@@ -268,3 +275,45 @@ private fun ObjectType.toOperationDataTypeSpec(name: String) =
         )
         .addFunction(fields.marshallerFunSpec(override = true, thisRef = name))
         .build()
+
+private fun composeRequestBodyFunSpec(): FunSpec {
+  return FunSpec.builder("composeRequestBody")
+      .addModifiers(KModifier.OVERRIDE)
+      .addParameter(ParameterSpec("scalarTypeAdapters", ScalarTypeAdapters::class.asTypeName()))
+      .returns(ByteString::class)
+      .addCode(
+          CodeBlock.builder()
+              .add("return %T.compose(\n", OperationRequestBodyComposer::class)
+              .indent()
+              .addStatement("operation = this,")
+              .addStatement("autoPersistQueries = false,")
+              .addStatement("withQueryDocument = true,")
+              .addStatement("scalarTypeAdapters = scalarTypeAdapters")
+              .unindent()
+              .add(")\n")
+              .build()
+      )
+      .build()
+}
+
+private fun composeRequestBodyFunSpecForQuery(): FunSpec {
+  return FunSpec.builder("composeRequestBody")
+      .addModifiers(KModifier.OVERRIDE)
+      .addParameter(ParameterSpec("autoPersistQueries", Boolean::class.asTypeName()))
+      .addParameter(ParameterSpec("withQueryDocument", Boolean::class.asTypeName()))
+      .addParameter(ParameterSpec("scalarTypeAdapters", ScalarTypeAdapters::class.asTypeName()))
+      .returns(ByteString::class)
+      .addCode(
+          CodeBlock.builder()
+              .add("return %T.compose(\n", OperationRequestBodyComposer::class)
+              .indent()
+              .addStatement("operation = this,")
+              .addStatement("autoPersistQueries = autoPersistQueries,")
+              .addStatement("withQueryDocument = withQueryDocument,")
+              .addStatement("scalarTypeAdapters = scalarTypeAdapters")
+              .unindent()
+              .add(")\n")
+              .build()
+      )
+      .build()
+}

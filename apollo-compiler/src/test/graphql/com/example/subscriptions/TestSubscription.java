@@ -13,6 +13,7 @@ import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.api.internal.InputFieldMarshaller;
 import com.apollographql.apollo.api.internal.InputFieldWriter;
+import com.apollographql.apollo.api.internal.OperationRequestBodyComposer;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier;
 import com.apollographql.apollo.api.internal.ResponseFieldMapper;
@@ -31,6 +32,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import okio.BufferedSource;
+import okio.ByteString;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -107,6 +109,17 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
   public Response<Optional<TestSubscription.Data>> parse(@NotNull final BufferedSource source)
       throws IOException {
     return parse(source, ScalarTypeAdapters.DEFAULT);
+  }
+
+  @Override
+  @NotNull
+  public ByteString composeRequestBody(@NotNull final ScalarTypeAdapters scalarTypeAdapters) {
+    return OperationRequestBodyComposer.compose(this, false, true, scalarTypeAdapters);
+  }
+
+  @NotNull
+  public ByteString composeRequestBody() {
+    return OperationRequestBodyComposer.compose(this, false, true, ScalarTypeAdapters.DEFAULT);
   }
 
   public static final class Builder {

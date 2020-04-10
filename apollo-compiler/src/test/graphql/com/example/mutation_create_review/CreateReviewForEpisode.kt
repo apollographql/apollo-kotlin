@@ -13,6 +13,7 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
+import com.apollographql.apollo.api.internal.OperationRequestBodyComposer
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
@@ -32,6 +33,7 @@ import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.jvm.Transient
 import okio.BufferedSource
+import okio.ByteString
 import okio.IOException
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
@@ -68,6 +70,14 @@ internal data class CreateReviewForEpisode(
 
   @Throws(IOException::class)
   override fun parse(source: BufferedSource): Response<Data> = parse(source, DEFAULT)
+
+  override fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters): ByteString =
+      OperationRequestBodyComposer.compose(
+    operation = this,
+    autoPersistQueries = false,
+    withQueryDocument = true,
+    scalarTypeAdapters = scalarTypeAdapters
+  )
 
   data class ListOfListOfObject(
     val __typename: String = "Character",
