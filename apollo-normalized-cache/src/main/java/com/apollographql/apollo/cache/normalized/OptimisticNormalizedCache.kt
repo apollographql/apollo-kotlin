@@ -1,189 +1,127 @@
-package com.apollographql.apollo.cache.normalized;
+package com.apollographql.apollo.cache.normalized
 
-import com.apollographql.apollo.cache.CacheHeaders;
-import com.nytimes.android.external.cache.Cache;
-import com.nytimes.android.external.cache.CacheBuilder;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.apollographql.apollo.cache.CacheHeaders
+import com.nytimes.android.external.cache.CacheBuilder
+import java.util.UUID
+import kotlin.math.max
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+class OptimisticNormalizedCache : NormalizedCache() {
 
-import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+  private val lruCache = CacheBuilder.newBuilder().build<String, RecordJournal>()
 
-public final class OptimisticNormalizedCache extends NormalizedCache {
-  private final Cache<String, RecordJournal> lruCache = CacheBuilder.newBuilder().build();
-
-  @Nullable @Override public Record loadRecord(@NotNull final String key, @NotNull final CacheHeaders cacheHeaders) {
-    checkNotNull(key, "key == null");
-    checkNotNull(cacheHeaders, "cacheHeaders == null");
-
-    try {
-      @Nullable final Record nonOptimisticRecord;
-      if (getNextCache() != null) {
-        nonOptimisticRecord = getNextCache().loadRecord(key, cacheHeaders);
-      } else {
-        nonOptimisticRecord = null;
-      }
-      final RecordJournal journal = lruCache.getIfPresent(key);
+  override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? {
+    return try {
+      val nonOptimisticRecord = nextCache?.loadRecord(key, cacheHeaders)
+      val journal = lruCache.getIfPresent(key)
       if (journal != null) {
-        if (nonOptimisticRecord != null) {
-          final Record result = nonOptimisticRecord.clone();
-          result.mergeWith(journal.snapshot);
-          return result;
-        } else {
-          return journal.snapshot.clone();
-        }
+        nonOptimisticRecord?.clone()?.apply {
+          mergeWith(journal.snapshot)
+        } ?: journal.snapshot.clone()
       } else {
-        return nonOptimisticRecord;
+        nonOptimisticRecord
       }
-    } catch (Exception ignore) {
-      return null;
+    } catch (ignore: Exception) {
+      null
     }
   }
 
-  @Override public void clearAll() {
-    lruCache.invalidateAll();
-    if (getNextCache() != null) {
-      getNextCache().clearAll();
-    }
+  override fun clearAll() {
+    lruCache.invalidateAll()
+    nextCache?.clearAll()
   }
 
-  @Override public boolean remove(@NotNull final CacheKey cacheKey, final boolean cascade) {
-    checkNotNull(cacheKey, "cacheKey == null");
+  override fun remove(cacheKey: CacheKey, cascade: Boolean): Boolean {
+    var result: Boolean = nextCache?.remove(cacheKey, cascade) ?: false
 
-    boolean result;
-    if (getNextCache() != null) {
-      result = getNextCache().remove(cacheKey, cascade);
-    } else {
-      result = false;
-    }
-
-    RecordJournal recordJournal = lruCache.getIfPresent(cacheKey.key());
+    val recordJournal = lruCache.getIfPresent(cacheKey.key)
     if (recordJournal != null) {
-      lruCache.invalidate(cacheKey.key());
-      result = true;
-
+      lruCache.invalidate(cacheKey.key)
+      result = true
       if (cascade) {
-        for (CacheReference cacheReference : recordJournal.snapshot.referencedFields()) {
-          result = result & remove(new CacheKey(cacheReference.key()), true);
+        for (cacheReference in recordJournal.snapshot.referencedFields()) {
+          result = result && remove(CacheKey(cacheReference.key()), true)
         }
       }
     }
-
-    return result;
+    return result
   }
 
-  @NotNull public Set<String> mergeOptimisticUpdates(@NotNull Collection<Record> recordSet) {
-    Set<String> aggregatedDependentKeys = new LinkedHashSet<>();
-    for (Record record : recordSet) {
-      aggregatedDependentKeys.addAll(mergeOptimisticUpdate(record));
-    }
-    return aggregatedDependentKeys;
+  fun mergeOptimisticUpdates(recordSet: Collection<Record>): Set<String> {
+    return recordSet.flatMap {
+      mergeOptimisticUpdate(it)
+    }.toSet()
   }
 
-  @NotNull public Set<String> mergeOptimisticUpdate(@NotNull final Record record) {
-    checkNotNull(record, "record == null");
-
-    final RecordJournal journal = lruCache.getIfPresent(record.key());
-    if (journal == null) {
-      lruCache.put(record.key(), new RecordJournal(record));
-      return Collections.singleton(record.key());
+  fun mergeOptimisticUpdate(record: Record): Set<String> {
+    val journal = lruCache.getIfPresent(record.key())
+    return if (journal == null) {
+      lruCache.put(record.key(), RecordJournal(record))
+      setOf(record.key())
     } else {
-      return journal.commit(record);
+      journal.commit(record)
     }
   }
 
-  @NotNull public Set<String> removeOptimisticUpdates(@NotNull final UUID mutationId) {
-    checkNotNull(mutationId, "mutationId == null");
-
-    Set<String> changedCacheKeys = new HashSet<>();
-    Set<String> removedKeys = new HashSet<>();
-    Map<String, RecordJournal> recordJournals = lruCache.asMap();
-    for (Map.Entry<String, RecordJournal> entry : recordJournals.entrySet()) {
-      String cacheKey = entry.getKey();
-      RecordJournal journal = entry.getValue();
-      changedCacheKeys.addAll(journal.revert(mutationId));
+  fun removeOptimisticUpdates(mutationId: UUID): Set<String> {
+    val changedCacheKeys = mutableSetOf<String>()
+    val removedKeys = mutableSetOf<String>()
+    lruCache.asMap().forEach { (cacheKey, journal) ->
+      changedCacheKeys.addAll(journal.revert(mutationId))
       if (journal.history.isEmpty()) {
-        removedKeys.add(cacheKey);
+        removedKeys.add(cacheKey)
       }
     }
-    lruCache.invalidateAll(removedKeys);
-    return changedCacheKeys;
+    lruCache.invalidateAll(removedKeys)
+    return changedCacheKeys
   }
 
-  @NotNull @Override
-  protected Set<String> performMerge(@NotNull Record apolloRecord, @NotNull CacheHeaders cacheHeaders) {
-    return Collections.emptySet();
+  override fun performMerge(apolloRecord: Record, cacheHeaders: CacheHeaders): Set<String> {
+    return emptySet()
   }
 
-  @Override public Map<Class<?>, Map<String, Record>> dump() {
-    Map<String, Record> records = new LinkedHashMap<>();
-    for (Map.Entry<String, RecordJournal> entry : lruCache.asMap().entrySet()) {
-      records.put(entry.getKey(), entry.getValue().snapshot);
-    }
-
-    Map<Class<?>, Map<String, Record>> dump = new LinkedHashMap<>();
-    dump.put(this.getClass(), Collections.unmodifiableMap(records));
-    if (getNextCache() != null) {
-      dump.putAll(getNextCache().dump());
-    }
-    return dump;
+  @OptIn(ExperimentalStdlibApi::class)
+  override fun dump() = buildMap<Class<*>, Map<String, Record>> {
+    put(
+        this@OptimisticNormalizedCache.javaClass,
+        lruCache.asMap().mapValues { it.value.snapshot }
+    )
+    putAll(nextCache?.dump().orEmpty())
   }
 
-  private static final class RecordJournal {
-    Record snapshot;
-    final List<Record> history = new ArrayList<>();
-
-    RecordJournal(Record mutationRecord) {
-      this.snapshot = mutationRecord.clone();
-      this.history.add(mutationRecord.clone());
-    }
+  private class RecordJournal(mutationRecord: Record) {
+    var snapshot: Record = mutationRecord.clone()
+    val history = mutableListOf<Record>(mutationRecord.clone())
 
     /**
      * Commits new version of record to the history and invalidate snapshot version.
      */
-    Set<String> commit(Record record) {
-      history.add(history.size(), record.clone());
-      return snapshot.mergeWith(record);
+    fun commit(record: Record): Set<String> {
+      history.add(history.size, record.clone())
+      return snapshot.mergeWith(record)
     }
 
     /**
      * Lookups record by mutation id, if it's found removes it from the history and invalidates snapshot record. Snapshot record is
      * superposition of all record versions in the history.
      */
-    Set<String> revert(UUID mutationId) {
-      int recordIndex = -1;
-      for (int i = 0; i < history.size(); i++) {
-        if (mutationId.equals(history.get(i).mutationId())) {
-          recordIndex = i;
-          break;
-        }
-      }
-
+    @OptIn(ExperimentalStdlibApi::class)
+    fun revert(mutationId: UUID): Set<String> {
+      val recordIndex = history.indexOfFirst { mutationId == it.mutationId() }
       if (recordIndex == -1) {
-        return Collections.emptySet();
+        return emptySet()
       }
+      return buildSet<String> {
+        add(history.removeAt(recordIndex).key())
 
-      Set<String> changedKeys = new HashSet<>();
-      changedKeys.add(history.remove(recordIndex).key());
-      for (int i = Math.max(0, recordIndex - 1); i < history.size(); i++) {
-        Record record = history.get(i);
-        if (i == Math.max(0, recordIndex - 1)) {
-          snapshot = record.clone();
-        } else {
-          changedKeys.addAll(snapshot.mergeWith(record));
+        for (i in max(0, recordIndex - 1) until history.size) {
+          val record = history[i]
+          if (i == max(0, recordIndex - 1)) {
+            snapshot = record.clone()
+          } else {
+            addAll(snapshot.mergeWith(record))
+          }
         }
       }
-      return changedKeys;
     }
   }
 }
