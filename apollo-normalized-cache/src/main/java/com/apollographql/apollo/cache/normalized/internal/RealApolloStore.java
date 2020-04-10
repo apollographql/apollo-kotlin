@@ -1,4 +1,4 @@
-package com.apollographql.apollo.internal;
+package com.apollographql.apollo.cache.normalized.internal;
 
 import com.apollographql.apollo.api.GraphqlFragment;
 import com.apollographql.apollo.api.Operation;
@@ -7,6 +7,8 @@ import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.internal.ApolloLogger;
 import com.apollographql.apollo.api.internal.ResponseFieldMapper;
+import com.apollographql.apollo.api.internal.response.RealResponseReader;
+import com.apollographql.apollo.api.internal.response.RealResponseWriter;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
@@ -15,15 +17,6 @@ import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.OptimisticNormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
-import com.apollographql.apollo.cache.normalized.internal.CacheFieldValueResolver;
-import com.apollographql.apollo.cache.normalized.internal.CacheKeyBuilder;
-import com.apollographql.apollo.cache.normalized.internal.ReadableStore;
-import com.apollographql.apollo.cache.normalized.internal.RealCacheKeyBuilder;
-import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer;
-import com.apollographql.apollo.cache.normalized.internal.Transaction;
-import com.apollographql.apollo.cache.normalized.internal.WriteableStore;
-import com.apollographql.apollo.internal.response.RealResponseReader;
-import com.apollographql.apollo.internal.response.RealResponseWriter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -63,7 +56,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     this.dispatcher = checkNotNull(dispatcher, "dispatcher == null");
     this.logger = checkNotNull(logger, "logger == null");
     this.lock = new ReentrantReadWriteLock();
-    this.subscribers = Collections.newSetFromMap(new WeakHashMap<RecordChangeSubscriber, Boolean>());
+    this.subscribers = Collections.newSetFromMap(new WeakHashMap<>());
     this.cacheKeyBuilder = new RealCacheKeyBuilder();
   }
 
@@ -120,11 +113,9 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
   @Override @NotNull public ApolloStoreOperation<Boolean> clearAll() {
     return new ApolloStoreOperation<Boolean>(dispatcher) {
       @Override public Boolean perform() {
-        return writeTransaction(new Transaction<WriteableStore, Boolean>() {
-          @Override public Boolean execute(WriteableStore cache) {
-            optimisticCache.clearAll();
-            return Boolean.TRUE;
-          }
+        return writeTransaction(cache -> {
+          optimisticCache.clearAll();
+          return true;
         });
       }
     };
@@ -139,11 +130,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     checkNotNull(cacheKey, "cacheKey == null");
     return new ApolloStoreOperation<Boolean>(dispatcher) {
       @Override protected Boolean perform() {
-        return writeTransaction(new Transaction<WriteableStore, Boolean>() {
-          @Override public Boolean execute(WriteableStore cache) {
-            return optimisticCache.remove(cacheKey, cascade);
-          }
-        });
+        return writeTransaction(cache -> optimisticCache.remove(cacheKey, cascade));
       }
     };
   }
@@ -152,16 +139,14 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     checkNotNull(cacheKeys, "cacheKey == null");
     return new ApolloStoreOperation<Integer>(dispatcher) {
       @Override protected Integer perform() {
-        return writeTransaction(new Transaction<WriteableStore, Integer>() {
-          @Override public Integer execute(WriteableStore cache) {
-            int count = 0;
-            for (CacheKey cacheKey : cacheKeys) {
-              if (optimisticCache.remove(cacheKey)) {
-                count++;
-              }
+        return writeTransaction(cache -> {
+          int count = 0;
+          for (CacheKey cacheKey : cacheKeys) {
+            if (optimisticCache.remove(cacheKey)) {
+              count++;
             }
-            return count;
           }
+          return count;
         });
       }
     };
@@ -282,11 +267,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
 
     return new ApolloStoreOperation<Set<String>>(dispatcher) {
       @Override protected Set<String> perform() {
-        return writeTransaction(new Transaction<WriteableStore, Set<String>>() {
-          @Override public Set<String> execute(WriteableStore cache) {
-            return doWrite(fragment, cacheKey, variables);
-          }
-        });
+        return writeTransaction(cache -> doWrite(fragment, cacheKey, variables));
       }
     };
   }
@@ -330,11 +311,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
   public ApolloStoreOperation<Set<String>> rollbackOptimisticUpdates(@NotNull final UUID mutationId) {
     return new ApolloStoreOperation<Set<String>>(dispatcher) {
       @Override protected Set<String> perform() {
-        return writeTransaction(new Transaction<WriteableStore, Set<String>>() {
-          @Override public Set<String> execute(WriteableStore cache) {
-            return optimisticCache.removeOptimisticUpdates(mutationId);
-          }
-        });
+        return writeTransaction(cache -> optimisticCache.removeOptimisticUpdates(mutationId));
       }
     };
   }
@@ -343,11 +320,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
   public ApolloStoreOperation<Boolean> rollbackOptimisticUpdatesAndPublish(@NotNull final UUID mutationId) {
     return new ApolloStoreOperation<Boolean>(dispatcher) {
       @Override protected Boolean perform() {
-        Set<String> changedKeys = writeTransaction(new Transaction<WriteableStore, Set<String>>() {
-          @Override public Set<String> execute(WriteableStore cache) {
-            return optimisticCache.removeOptimisticUpdates(mutationId);
-          }
-        });
+        Set<String> changedKeys = writeTransaction(cache -> optimisticCache.removeOptimisticUpdates(mutationId));
         publish(changedKeys);
         return Boolean.TRUE;
       }
@@ -355,109 +328,99 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
   }
 
   <D extends Operation.Data, T, V extends Operation.Variables> T doRead(final Operation<D, T, V> operation) {
-    return readTransaction(new Transaction<ReadableStore, T>() {
-      @Nullable @Override public T execute(ReadableStore cache) {
-        Record rootRecord = cache.read(CacheKeyResolver.rootKeyForOperation(operation).key(), CacheHeaders.NONE);
-        if (rootRecord == null) {
-          return null;
-        }
-
-        ResponseFieldMapper<D> responseFieldMapper = operation.responseFieldMapper();
-        CacheFieldValueResolver fieldValueResolver = new CacheFieldValueResolver(cache, operation.variables(),
-            cacheKeyResolver(), CacheHeaders.NONE, cacheKeyBuilder);
-        //noinspection unchecked
-        RealResponseReader<Record> responseReader = new RealResponseReader<>(operation.variables(), rootRecord,
-            fieldValueResolver, scalarTypeAdapters, ResponseNormalizer.NO_OP_NORMALIZER);
-        return operation.wrapData(responseFieldMapper.map(responseReader));
+    return readTransaction(cache -> {
+      Record rootRecord = cache.read(CacheKeyResolver.rootKeyForOperation(operation).getKey(), CacheHeaders.NONE);
+      if (rootRecord == null) {
+        return null;
       }
+
+      ResponseFieldMapper<D> responseFieldMapper = operation.responseFieldMapper();
+      CacheFieldValueResolver fieldValueResolver = new CacheFieldValueResolver(cache, operation.variables(),
+          cacheKeyResolver(), CacheHeaders.NONE, cacheKeyBuilder);
+      //noinspection unchecked
+      RealResponseReader<Record> responseReader = new RealResponseReader<>(operation.variables(), rootRecord,
+          fieldValueResolver, scalarTypeAdapters, ResponseNormalizer.NO_OP_NORMALIZER);
+      return operation.wrapData(responseFieldMapper.map(responseReader));
     });
   }
 
   <D extends Operation.Data, T, V extends Operation.Variables> Response<T> doRead(
       final Operation<D, T, V> operation, final ResponseFieldMapper<D> responseFieldMapper,
       final ResponseNormalizer<Record> responseNormalizer, final CacheHeaders cacheHeaders) {
-    return readTransaction(new Transaction<ReadableStore, Response<T>>() {
-      @NotNull @Override public Response<T> execute(ReadableStore cache) {
-        Record rootRecord = cache.read(CacheKeyResolver.rootKeyForOperation(operation).key(), cacheHeaders);
-        if (rootRecord == null) {
-          return Response.<T>builder(operation).fromCache(true).build();
-        }
+    return readTransaction(cache -> {
+      Record rootRecord = cache.read(CacheKeyResolver.rootKeyForOperation(operation).getKey(), cacheHeaders);
+      if (rootRecord == null) {
+        return Response.<T>builder(operation).fromCache(true).build();
+      }
 
-        CacheFieldValueResolver fieldValueResolver = new CacheFieldValueResolver(cache, operation.variables(),
-            cacheKeyResolver(), cacheHeaders, cacheKeyBuilder);
-        RealResponseReader<Record> responseReader = new RealResponseReader<>(operation.variables(), rootRecord,
-            fieldValueResolver, scalarTypeAdapters, responseNormalizer);
-        try {
-          responseNormalizer.willResolveRootQuery(operation);
-          T data = operation.wrapData(responseFieldMapper.map(responseReader));
-          return Response.<T>builder(operation)
-              .data(data)
-              .fromCache(true)
-              .dependentKeys(responseNormalizer.dependentKeys())
-              .build();
-        } catch (Exception e) {
-          logger.e(e, "Failed to read cache response");
-          return Response.<T>builder(operation).fromCache(true).build();
-        }
+      CacheFieldValueResolver fieldValueResolver = new CacheFieldValueResolver(cache, operation.variables(),
+          cacheKeyResolver(), cacheHeaders, cacheKeyBuilder);
+      RealResponseReader<Record> responseReader = new RealResponseReader<>(operation.variables(), rootRecord,
+          fieldValueResolver, scalarTypeAdapters, responseNormalizer);
+      try {
+        responseNormalizer.willResolveRootQuery(operation);
+        T data = operation.wrapData(responseFieldMapper.map(responseReader));
+        return Response.<T>builder(operation)
+            .data(data)
+            .fromCache(true)
+            .dependentKeys(responseNormalizer.dependentKeys())
+            .build();
+      } catch (Exception e) {
+        logger.e(e, "Failed to read cache response");
+        return Response.<T>builder(operation).fromCache(true).build();
       }
     });
   }
 
   <F extends GraphqlFragment> F doRead(final ResponseFieldMapper<F> responseFieldMapper,
       final CacheKey cacheKey, final Operation.Variables variables) {
-    return readTransaction(new Transaction<ReadableStore, F>() {
-      @Nullable @Override public F execute(ReadableStore cache) {
-        Record rootRecord = cache.read(cacheKey.key(), CacheHeaders.NONE);
-        if (rootRecord == null) {
-          return null;
-        }
-
-        CacheFieldValueResolver fieldValueResolver = new CacheFieldValueResolver(cache, variables,
-            cacheKeyResolver(), CacheHeaders.NONE, cacheKeyBuilder);
-        //noinspection unchecked
-        RealResponseReader<Record> responseReader = new RealResponseReader<>(variables, rootRecord,
-            fieldValueResolver, scalarTypeAdapters, ResponseNormalizer.NO_OP_NORMALIZER);
-        return responseFieldMapper.map(responseReader);
+    return readTransaction(cache -> {
+      Record rootRecord = cache.read(cacheKey.getKey(), CacheHeaders.NONE);
+      if (rootRecord == null) {
+        return null;
       }
+
+      CacheFieldValueResolver fieldValueResolver = new CacheFieldValueResolver(cache, variables,
+          cacheKeyResolver(), CacheHeaders.NONE, cacheKeyBuilder);
+      //noinspection unchecked
+      RealResponseReader<Record> responseReader = new RealResponseReader<>(variables, rootRecord,
+          fieldValueResolver, scalarTypeAdapters, ResponseNormalizer.NO_OP_NORMALIZER);
+      return responseFieldMapper.map(responseReader);
     });
   }
 
   <D extends Operation.Data, T, V extends Operation.Variables> Set<String> doWrite(
       final Operation<D, T, V> operation, final D operationData, final boolean optimistic,
       final UUID mutationId) {
-    return writeTransaction(new Transaction<WriteableStore, Set<String>>() {
-      @Override public Set<String> execute(WriteableStore cache) {
-        RealResponseWriter responseWriter = new RealResponseWriter(operation.variables(), scalarTypeAdapters);
-        operationData.marshaller().marshal(responseWriter);
+    return writeTransaction(cache -> {
+      RealResponseWriter responseWriter = new RealResponseWriter(operation.variables(), scalarTypeAdapters);
+      operationData.marshaller().marshal(responseWriter);
 
-        ResponseNormalizer<Map<String, Object>> responseNormalizer = networkResponseNormalizer();
-        responseNormalizer.willResolveRootQuery(operation);
-        responseWriter.resolveFields(responseNormalizer);
-        if (optimistic) {
-          List<Record> updatedRecords = new ArrayList<>();
-          for (Record record : responseNormalizer.records()) {
-            updatedRecords.add(record.toBuilder().mutationId(mutationId).build());
-          }
-          return optimisticCache.mergeOptimisticUpdates(updatedRecords);
-        } else {
-          return optimisticCache.merge(responseNormalizer.records(), CacheHeaders.NONE);
+      ResponseNormalizer<Map<String, Object>> responseNormalizer = networkResponseNormalizer();
+      responseNormalizer.willResolveRootQuery(operation);
+      responseWriter.resolveFields(responseNormalizer);
+      if (optimistic) {
+        List<Record> updatedRecords = new ArrayList<>();
+        for (Record record : responseNormalizer.records()) {
+          updatedRecords.add(record.toBuilder().mutationId(mutationId).build());
         }
+        return optimisticCache.mergeOptimisticUpdates(updatedRecords);
+      } else {
+        return optimisticCache.merge(responseNormalizer.records(), CacheHeaders.NONE);
       }
     });
   }
 
   Set<String> doWrite(final GraphqlFragment fragment, final CacheKey cacheKey, final Operation.Variables variables) {
-    return writeTransaction(new Transaction<WriteableStore, Set<String>>() {
-      @Override public Set<String> execute(WriteableStore cache) {
-        RealResponseWriter responseWriter = new RealResponseWriter(variables, scalarTypeAdapters);
-        fragment.marshaller().marshal(responseWriter);
+    return writeTransaction(cache -> {
+      RealResponseWriter responseWriter = new RealResponseWriter(variables, scalarTypeAdapters);
+      fragment.marshaller().marshal(responseWriter);
 
-        ResponseNormalizer<Map<String, Object>> responseNormalizer = networkResponseNormalizer();
-        responseNormalizer.willResolveRecord(cacheKey);
-        responseWriter.resolveFields(responseNormalizer);
+      ResponseNormalizer<Map<String, Object>> responseNormalizer = networkResponseNormalizer();
+      responseNormalizer.willResolveRecord(cacheKey);
+      responseWriter.resolveFields(responseNormalizer);
 
-        return merge(responseNormalizer.records(), CacheHeaders.NONE);
-      }
+      return merge(responseNormalizer.records(), CacheHeaders.NONE);
     });
   }
 }

@@ -1,4 +1,4 @@
-package com.apollographql.apollo.internal.response
+package com.apollographql.apollo.api.internal.response
 
 import com.apollographql.apollo.api.BigDecimal
 import com.apollographql.apollo.api.CustomTypeAdapter
@@ -10,7 +10,6 @@ import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.internal.FieldValueResolver
 import com.apollographql.apollo.api.internal.ResolveDelegate
 import com.apollographql.apollo.api.internal.ResponseReader
-import java.util.Collections
 
 class RealResponseReader<R>(
     val operationVariables: Operation.Variables,
@@ -129,7 +128,7 @@ class RealResponseReader<R>(
     val values = fieldValueResolver.valueFor<List<*>>(recordSet, field)
     checkValue(field, values)
     willResolve(field, values)
-    val result = if (values == null) {
+    return if (values == null) {
       resolveDelegate.didResolveNull()
       null
     } else {
@@ -142,9 +141,7 @@ class RealResponseReader<R>(
           listReader.read(ListItemReader(field, value))
         }.also { resolveDelegate.didResolveElement(index) }
       }.also { resolveDelegate.didResolveList(values) }
-    }
-    didResolve(field)
-    return if (result != null) Collections.unmodifiableList(result) else null
+    }.also { didResolve(field) }
   }
 
   override fun <T : Any> readCustomType(field: ResponseField.CustomTypeField): T? {
@@ -288,7 +285,7 @@ class RealResponseReader<R>(
         }.also { resolveDelegate.didResolveElement(index) }
       }
       resolveDelegate.didResolveList(values)
-      return Collections.unmodifiableList(result)
+      return result
     }
   }
 }
