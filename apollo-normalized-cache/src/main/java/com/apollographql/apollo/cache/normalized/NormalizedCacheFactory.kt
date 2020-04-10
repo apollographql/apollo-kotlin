@@ -1,50 +1,34 @@
-package com.apollographql.apollo.cache.normalized;
-
-import com.apollographql.apollo.api.CustomTypeAdapter;
-import com.apollographql.apollo.api.ScalarType;
-import com.apollographql.apollo.api.internal.Function;
-import com.apollographql.apollo.api.internal.Optional;
-import org.jetbrains.annotations.NotNull;
-
-import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+package com.apollographql.apollo.cache.normalized
 
 /**
- * A Factory used to construct an instance of a {@link NormalizedCache} configured with the custom scalar adapters set
- * in {@link com.apollographql.apollo.ApolloClient.Builder#addCustomTypeAdapter(ScalarType, CustomTypeAdapter)}.
+ * A Factory used to construct an instance of a [NormalizedCache] configured with the custom scalar adapters set in
+ * ApolloClient.Builder#addCustomTypeAdapter(ScalarType, CustomTypeAdapter).
  */
-public abstract class NormalizedCacheFactory<T extends NormalizedCache> {
-  private Optional<NormalizedCacheFactory> nextFactory = Optional.absent();
+abstract class NormalizedCacheFactory<T : NormalizedCache> {
+
+  private var nextFactory: NormalizedCacheFactory<out NormalizedCache>? = null
 
   /**
-   * @param recordFieldAdapter A {@link RecordFieldJsonAdapter} configured with the custom scalar adapters set in {@link
-   *                           com.apollographql.apollo.ApolloClient.Builder#addCustomTypeAdapter(ScalarType,
-   *                           CustomTypeAdapter)}.
-   * @return An implementation of {@link NormalizedCache}.
+   * @param recordFieldAdapter A [RecordFieldJsonAdapter] configured with the custom scalar adapters set in
+   * ApolloClient.Builder#addCustomTypeAdapter(ScalarType, CustomTypeAdapter).
+   * @return An implementation of [NormalizedCache].
    */
-  public abstract T create(RecordFieldJsonAdapter recordFieldAdapter);
+  abstract fun create(recordFieldAdapter: RecordFieldJsonAdapter): T
 
-  public final NormalizedCache createChain(final RecordFieldJsonAdapter recordFieldAdapter) {
-    if (nextFactory.isPresent()) {
-      return create(recordFieldAdapter)
-          .chain(nextFactory.map(new Function<NormalizedCacheFactory, NormalizedCache>() {
-            @NotNull @Override public NormalizedCache apply(@NotNull NormalizedCacheFactory factory) {
-              return factory.createChain(recordFieldAdapter);
-            }
-          }).get());
+  fun createChain(recordFieldAdapter: RecordFieldJsonAdapter): NormalizedCache {
+    val nextFactory = nextFactory
+    return if (nextFactory != null) {
+      create(recordFieldAdapter).chain(nextFactory.createChain(recordFieldAdapter))
     } else {
-      return create(recordFieldAdapter);
+      create(recordFieldAdapter)
     }
   }
 
-  public final NormalizedCacheFactory<T> chain(@NotNull NormalizedCacheFactory factory) {
-    checkNotNull(factory, "factory == null");
-
-    NormalizedCacheFactory leafFactory = this;
-    while (leafFactory.nextFactory.isPresent()) {
-      leafFactory = (NormalizedCacheFactory) leafFactory.nextFactory.get();
+  fun chain(factory: NormalizedCacheFactory<*>) = apply {
+    var leafFactory: NormalizedCacheFactory<*> = this
+    while (leafFactory.nextFactory != null) {
+      leafFactory = leafFactory.nextFactory!!
     }
-    leafFactory.nextFactory = Optional.of(factory);
-
-    return this;
+    leafFactory.nextFactory = factory
   }
 }
