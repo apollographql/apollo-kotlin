@@ -62,9 +62,7 @@ interface Operation<D : Operation.Data, T, V : Operation.Variables> {
   fun parse(source: BufferedSource): Response<T>
 
   /**
-   * Composes POST JSON-encoded request body to be sent to the GraphQL server.
-   *
-   * Optional [scalarTypeAdapters] must be provided in case when this operation defines variables with custom GraphQL scalar type.
+   * Composes POST JSON-encoded request body with provided [scalarTypeAdapters] to be sent to the GraphQL server.
    *
    * *Example*:
    * ```
@@ -75,7 +73,21 @@ interface Operation<D : Operation.Data, T, V : Operation.Variables> {
    * }
    * ```
    */
-  fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters = ScalarTypeAdapters.DEFAULT): ByteString
+  fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters): ByteString
+
+  /**
+   * Composes POST JSON-encoded request body to be sent to the GraphQL server.
+   *
+   * *Example*:
+   * ```
+   * {
+   *    "query": "query TestQuery($episode: Episode) { hero(episode: $episode) { name } }",
+   *    "operationName": "TestQuery",
+   *    "variables": { "episode": "JEDI" }
+   * }
+   * ```
+   */
+  fun composeRequestBody(): ByteString
 
   /**
    * Abstraction for data returned by the server in response to this operation.

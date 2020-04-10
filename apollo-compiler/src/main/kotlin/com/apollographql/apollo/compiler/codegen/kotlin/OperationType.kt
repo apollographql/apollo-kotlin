@@ -123,6 +123,7 @@ internal fun OperationType.typeSpec(targetPackage: String, generateAsInternal: B
         .build()
     )
     .addFunction(composeRequestBodyFunSpec())
+    .addFunction(composeRequestBodyWithDefaultAdaptersFunSpec())
     .applyIf(type == OperationType.Type.QUERY) {
       addFunction(composeRequestBodyFunSpecForQuery())
     }
@@ -289,6 +290,25 @@ private fun composeRequestBodyFunSpec(): FunSpec {
               .addStatement("autoPersistQueries = false,")
               .addStatement("withQueryDocument = true,")
               .addStatement("scalarTypeAdapters = scalarTypeAdapters")
+              .unindent()
+              .add(")\n")
+              .build()
+      )
+      .build()
+}
+
+private fun composeRequestBodyWithDefaultAdaptersFunSpec(): FunSpec {
+  return FunSpec.builder("composeRequestBody")
+      .addModifiers(KModifier.OVERRIDE)
+      .returns(ByteString::class)
+      .addCode(
+          CodeBlock.builder()
+              .add("return %T.compose(\n", OperationRequestBodyComposer::class)
+              .indent()
+              .addStatement("operation = this,")
+              .addStatement("autoPersistQueries = false,")
+              .addStatement("withQueryDocument = true,")
+              .addStatement("scalarTypeAdapters = %M", MemberName(ScalarTypeAdapters.Companion::class.asClassName(), "DEFAULT"))
               .unindent()
               .add(")\n")
               .build()

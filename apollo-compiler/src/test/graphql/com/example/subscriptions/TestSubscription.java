@@ -118,6 +118,7 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
   }
 
   @NotNull
+  @Override
   public ByteString composeRequestBody() {
     return OperationRequestBodyComposer.compose(this, false, true, ScalarTypeAdapters.DEFAULT);
   }

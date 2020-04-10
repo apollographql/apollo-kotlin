@@ -341,6 +341,7 @@ class OperationTypeSpecBuilder(
     return MethodSpec
         .methodBuilder("composeRequestBody")
         .addAnnotation(Annotations.NONNULL)
+        .addAnnotation(Annotations.OVERRIDE)
         .addModifiers(Modifier.PUBLIC)
         .returns(ByteString::class.java)
         .addStatement("return \$T.compose(this, false, true, \$T.DEFAULT)", OperationRequestBodyComposer::class.java,

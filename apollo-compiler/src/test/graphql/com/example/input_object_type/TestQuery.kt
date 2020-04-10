@@ -76,6 +76,13 @@ data class TestQuery(
     scalarTypeAdapters = scalarTypeAdapters
   )
 
+  override fun composeRequestBody(): ByteString = OperationRequestBodyComposer.compose(
+    operation = this,
+    autoPersistQueries = false,
+    withQueryDocument = true,
+    scalarTypeAdapters = DEFAULT
+  )
+
   data class CreateReview(
     val __typename: String = "Review",
     /**

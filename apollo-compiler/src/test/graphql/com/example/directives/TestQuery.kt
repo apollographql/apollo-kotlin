@@ -75,6 +75,13 @@ data class TestQuery(
     scalarTypeAdapters = scalarTypeAdapters
   )
 
+  override fun composeRequestBody(): ByteString = OperationRequestBodyComposer.compose(
+    operation = this,
+    autoPersistQueries = false,
+    withQueryDocument = true,
+    scalarTypeAdapters = DEFAULT
+  )
+
   override fun composeRequestBody(
     autoPersistQueries: Boolean,
     withQueryDocument: Boolean,

@@ -31,8 +31,8 @@ interface Query<D : Operation.Data, T, V : Operation.Variables> : Operation<D, T
    * ```
    */
   fun composeRequestBody(
-      autoPersistQueries: Boolean = false,
-      withQueryDocument: Boolean = true,
-      scalarTypeAdapters: ScalarTypeAdapters = ScalarTypeAdapters.DEFAULT
+      autoPersistQueries: Boolean,
+      withQueryDocument: Boolean,
+      scalarTypeAdapters: ScalarTypeAdapters
   ): ByteString
 }

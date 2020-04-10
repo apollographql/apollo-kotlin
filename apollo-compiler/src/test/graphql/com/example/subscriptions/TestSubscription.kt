@@ -71,6 +71,13 @@ data class TestSubscription(
     scalarTypeAdapters = scalarTypeAdapters
   )
 
+  override fun composeRequestBody(): ByteString = OperationRequestBodyComposer.compose(
+    operation = this,
+    autoPersistQueries = false,
+    withQueryDocument = true,
+    scalarTypeAdapters = DEFAULT
+  )
+
   data class CommentAdded(
     val __typename: String = "Comment",
     /**

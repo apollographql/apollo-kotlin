@@ -79,6 +79,13 @@ internal data class CreateReviewForEpisode(
     scalarTypeAdapters = scalarTypeAdapters
   )
 
+  override fun composeRequestBody(): ByteString = OperationRequestBodyComposer.compose(
+    operation = this,
+    autoPersistQueries = false,
+    withQueryDocument = true,
+    scalarTypeAdapters = DEFAULT
+  )
+
   data class ListOfListOfObject(
     val __typename: String = "Character",
     /**

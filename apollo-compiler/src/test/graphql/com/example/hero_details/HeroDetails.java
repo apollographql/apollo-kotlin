@@ -126,6 +126,7 @@ public final class HeroDetails implements Query<HeroDetails.Data, Optional<HeroD
   }
 
   @NotNull
+  @Override
   public ByteString composeRequestBody() {
     return OperationRequestBodyComposer.compose(this, false, true, ScalarTypeAdapters.DEFAULT);
   }

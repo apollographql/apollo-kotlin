@@ -57,6 +57,13 @@ class HeroDetails : Query<HeroDetails.Data, HeroDetails.Data, Operation.Variable
     scalarTypeAdapters = scalarTypeAdapters
   )
 
+  override fun composeRequestBody(): ByteString = OperationRequestBodyComposer.compose(
+    operation = this,
+    autoPersistQueries = false,
+    withQueryDocument = true,
+    scalarTypeAdapters = DEFAULT
+  )
+
   override fun composeRequestBody(
     autoPersistQueries: Boolean,
     withQueryDocument: Boolean,

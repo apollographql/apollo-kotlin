@@ -121,6 +121,7 @@ public final class CreateReviewForEpisodeMutation implements Mutation<CreateRevi
   }
 
   @NotNull
+  @Override
   public ByteString composeRequestBody() {
     return OperationRequestBodyComposer.compose(this, false, true, ScalarTypeAdapters.DEFAULT);
   }

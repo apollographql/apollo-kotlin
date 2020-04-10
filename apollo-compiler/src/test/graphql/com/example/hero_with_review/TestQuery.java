@@ -119,6 +119,7 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
   }
 
   @NotNull
+  @Override
   public ByteString composeRequestBody() {
     return OperationRequestBodyComposer.compose(this, false, true, ScalarTypeAdapters.DEFAULT);
   }

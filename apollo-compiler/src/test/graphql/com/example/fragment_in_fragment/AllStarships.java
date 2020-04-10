@@ -147,6 +147,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
   }
 
   @NotNull
+  @Override
   public ByteString composeRequestBody() {
     return OperationRequestBodyComposer.compose(this, false, true, ScalarTypeAdapters.DEFAULT);
   }

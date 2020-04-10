@@ -128,6 +128,7 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
   }
 
   @NotNull
+  @Override
   public ByteString composeRequestBody() {
     return OperationRequestBodyComposer.compose(this, false, true, ScalarTypeAdapters.DEFAULT);
   }
