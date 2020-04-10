@@ -1,137 +1,99 @@
-package com.apollographql.apollo.cache.normalized.lru;
+package com.apollographql.apollo.cache.normalized.lru
 
-import com.apollographql.apollo.api.internal.Function;
-import com.apollographql.apollo.api.internal.Optional;
-import com.apollographql.apollo.cache.ApolloCacheHeaders;
-import com.apollographql.apollo.cache.CacheHeaders;
-import com.apollographql.apollo.cache.normalized.CacheKey;
-import com.apollographql.apollo.cache.normalized.CacheReference;
-import com.apollographql.apollo.cache.normalized.NormalizedCache;
-import com.apollographql.apollo.cache.normalized.Record;
-import com.nytimes.android.external.cache.Cache;
-import com.nytimes.android.external.cache.CacheBuilder;
-import com.nytimes.android.external.cache.Weigher;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.nio.charset.Charset;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Callable;
-
-import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+import com.apollographql.apollo.cache.ApolloCacheHeaders
+import com.apollographql.apollo.cache.CacheHeaders
+import com.apollographql.apollo.cache.normalized.CacheKey
+import com.apollographql.apollo.cache.normalized.NormalizedCache
+import com.apollographql.apollo.cache.normalized.Record
+import com.nytimes.android.external.cache.Cache
+import com.nytimes.android.external.cache.CacheBuilder
+import com.nytimes.android.external.cache.Weigher
+import java.nio.charset.Charset
+import java.util.concurrent.Callable
 
 /**
- * A {@link NormalizedCache} backed by an in memory {@link Cache}. Can be configured with an optional secondaryCache {@link
- * NormalizedCache}, which will be used as a backup if a {@link Record} is not present in the primary cache.
- * <p>
+ * A [NormalizedCache] backed by an in memory [Cache]. Can be configured with an optional secondaryCache [ ], which will be used as a backup if a [Record] is not present in the primary cache.
+ *
+ *
  * A common configuration is to have secondary SQL cache.
  */
-public final class LruNormalizedCache extends NormalizedCache {
-  private final Cache<String, Record> lruCache;
+class LruNormalizedCache internal constructor(evictionPolicy: EvictionPolicy) : NormalizedCache() {
 
-  LruNormalizedCache(EvictionPolicy evictionPolicy) {
-    final CacheBuilder<Object, Object> lruCacheBuilder = CacheBuilder.newBuilder();
-    if (evictionPolicy.maxSizeBytes().isPresent()) {
-      lruCacheBuilder.maximumWeight(evictionPolicy.maxSizeBytes().get())
-          .weigher((Weigher<String, Record>) (key, value) -> key.getBytes(Charset.defaultCharset()).length + value.sizeEstimateBytes());
-    }
-    if (evictionPolicy.maxEntries().isPresent()) {
-      lruCacheBuilder.maximumSize(evictionPolicy.maxEntries().get());
-    }
-    if (evictionPolicy.expireAfterAccess().isPresent()) {
-      lruCacheBuilder.expireAfterAccess(evictionPolicy.expireAfterAccess().get(),
-          evictionPolicy.expireAfterAccessTimeUnit().get());
-    }
-    if (evictionPolicy.expireAfterWrite().isPresent()) {
-      lruCacheBuilder.expireAfterWrite(evictionPolicy.expireAfterWrite().get(),
-          evictionPolicy.expireAfterWriteTimeUnit().get());
-    }
-    lruCache = lruCacheBuilder.build();
-  }
-
-  @Nullable @Override public Record loadRecord(@NotNull final String key, @NotNull final CacheHeaders cacheHeaders) {
-    final Record record;
-    try {
-      record = lruCache.get(key, new Callable<Record>() {
-        @Override public Record call() throws Exception {
-          if (getNextCache() != null) {
-            return getNextCache().loadRecord(key, cacheHeaders);
-          } else {
-            return null;
-          }
+  private val lruCache: Cache<String, Record> =
+      CacheBuilder.newBuilder().apply {
+        if (evictionPolicy.maxSizeBytes().isPresent) {
+          maximumWeight(evictionPolicy.maxSizeBytes().get()).weigher(
+              Weigher { key: String, value: Record ->
+                key.toByteArray(Charset.defaultCharset()).size + value.sizeEstimateBytes()
+              }
+          )
         }
-      });
-    } catch (Exception ignored) { // Thrown when the nextCache's value is null
-      return null;
-    }
+        if (evictionPolicy.maxEntries().isPresent) {
+          maximumSize(evictionPolicy.maxEntries().get())
+        }
+        if (evictionPolicy.expireAfterAccess().isPresent) {
+          expireAfterAccess(evictionPolicy.expireAfterAccess().get(), evictionPolicy.expireAfterAccessTimeUnit().get())
+        }
+        if (evictionPolicy.expireAfterWrite().isPresent) {
+          expireAfterWrite(evictionPolicy.expireAfterWrite().get(), evictionPolicy.expireAfterWriteTimeUnit().get())
+        }
+      }.build()
 
-    if (cacheHeaders.hasHeader(ApolloCacheHeaders.EVICT_AFTER_READ)) {
-      lruCache.invalidate(key);
+  override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? {
+    return try {
+      lruCache.get(key, Callable {
+        nextCache?.loadRecord(key, cacheHeaders)
+      })
+    } catch (ignored: Exception) { // Thrown when the nextCache's value is null
+      return null
+    }.also {
+      if (cacheHeaders.hasHeader(ApolloCacheHeaders.EVICT_AFTER_READ)) {
+        lruCache.invalidate(key)
+      }
     }
-
-    return record;
   }
 
-  @Override public void clearAll() {
-    if (getNextCache() != null) {
-      getNextCache().clearAll();
-    }
-    clearCurrentCache();
+  override fun clearAll() {
+    nextCache?.clearAll()
+    clearCurrentCache()
   }
 
-  @Override public boolean remove(@NotNull final CacheKey cacheKey, final boolean cascade) {
-    checkNotNull(cacheKey, "cacheKey == null");
+  override fun remove(cacheKey: CacheKey, cascade: Boolean): Boolean {
+    var result: Boolean = nextCache?.remove(cacheKey, cascade) ?: false
 
-    boolean result;
-    if (getNextCache() != null) {
-      result = getNextCache().remove(cacheKey, cascade);
-    } else {
-      result = false;
-    }
-
-    Record record = lruCache.getIfPresent(cacheKey.key());
+    val record = lruCache.getIfPresent(cacheKey.key)
     if (record != null) {
-      lruCache.invalidate(cacheKey.key());
-      result = true;
-
+      lruCache.invalidate(cacheKey.key)
+      result = true
       if (cascade) {
-        for (CacheReference cacheReference : record.referencedFields()) {
-          result = result & remove(new CacheKey(cacheReference.key()), true);
+        for (cacheReference in record.referencedFields()) {
+          result = result && remove(CacheKey(cacheReference.key()), true)
         }
       }
     }
-
-    return result;
+    return result
   }
 
-  void clearCurrentCache() {
-    lruCache.invalidateAll();
+  fun clearCurrentCache() {
+    lruCache.invalidateAll()
   }
 
-  @NotNull
-  @Override protected Set<String> performMerge(@NotNull final Record apolloRecord, @NotNull final CacheHeaders cacheHeaders) {
-    final Record oldRecord = lruCache.getIfPresent(apolloRecord.key());
-    if (oldRecord == null) {
-      lruCache.put(apolloRecord.key(), apolloRecord);
-      return apolloRecord.keys();
+  override fun performMerge(apolloRecord: Record, cacheHeaders: CacheHeaders): Set<String> {
+    val oldRecord = lruCache.getIfPresent(apolloRecord.key())
+    return if (oldRecord == null) {
+      lruCache.put(apolloRecord.key(), apolloRecord)
+      apolloRecord.keys()
     } else {
-      Set<String> changedKeys = oldRecord.mergeWith(apolloRecord);
-
-      //re-insert to trigger new weight calculation
-      lruCache.put(apolloRecord.key(), oldRecord);
-      return changedKeys;
+      oldRecord.mergeWith(apolloRecord).also {
+        //re-insert to trigger new weight calculation
+        lruCache.put(apolloRecord.key(), oldRecord)
+      }
     }
   }
 
-  @Override public Map<Class<?>, Map<String, Record>> dump() {
-    Map<Class<?>, Map<String, Record>> dump = new LinkedHashMap<>();
-    dump.put(this.getClass(), Collections.unmodifiableMap(new LinkedHashMap<>(lruCache.asMap())));
-    if (getNextCache() != null) {
-      dump.putAll(getNextCache().dump());
-    }
-    return dump;
+  @OptIn(ExperimentalStdlibApi::class)
+  override fun dump() = buildMap<Class<*>, Map<String, Record>> {
+    put(this@LruNormalizedCache.javaClass, lruCache.asMap())
+    putAll(nextCache?.dump().orEmpty())
   }
 }
