@@ -94,6 +94,7 @@ ext.dep = [
     spock                 : "org.spockframework:spock-core:$versions.spock",
     sqldelight            : [
         android: "com.squareup.sqldelight:android-driver:$versions.sqldelight",
+        jvm    : "com.squareup.sqldelight:sqlite-driver:$versions.sqldelight",
         plugin : "com.squareup.sqldelight:gradle-plugin:$versions.sqldelight"
     ],
     truth                 : "com.google.truth:truth:$versions.truth",

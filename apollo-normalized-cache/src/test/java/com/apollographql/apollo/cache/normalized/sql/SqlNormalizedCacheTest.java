@@ -1,30 +1,29 @@
 package com.apollographql.apollo.cache.normalized.sql;
 
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
 import com.apollographql.apollo.cache.ApolloCacheHeaders;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter;
 import com.squareup.sqldelight.db.SqlDriver;
+import com.squareup.sqldelight.sqlite.driver.JdbcSqliteDriver;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+
+import java.util.Properties;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@RunWith(AndroidJUnit4.class)
 public class SqlNormalizedCacheTest {
 
   public static final String STANDARD_KEY = "key";
   public static final String QUERY_ROOT_KEY = "QUERY_ROOT";
   public static final String FIELDS = "{\"fieldKey\": \"value\"}";
-  public static final String IN_MEMORY_DB = null; //null means db is memory only
   private SqlNormalizedCache sqlStore;
 
   @Before
   public void setUp() {
-    SqlDriver driver = ApolloSqlHelper.create(InstrumentationRegistry.getTargetContext(), IN_MEMORY_DB);
+    SqlDriver driver = new JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY, new Properties());
+    ApolloDatabase.Companion.getSchema().create(driver);
     sqlStore = new SqlNormalizedCacheFactory(driver).create(RecordFieldJsonAdapter.create());
     sqlStore.clearAll();
   }

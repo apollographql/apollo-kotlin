@@ -17,6 +17,7 @@ dependencies {
 
   testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.sqldelight.jvm"))
 }
 
 tasks.withType<Javadoc> {
