@@ -1,3 +1,4 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
@@ -74,6 +75,12 @@ subprojects {
     kotlinOptions {
       jvmTarget = JavaVersion.VERSION_1_8.toString()
       freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+    }
+  }
+
+  tasks.withType<Test> {
+    testLogging {
+      exceptionFormat = TestExceptionFormat.FULL
     }
   }
 
