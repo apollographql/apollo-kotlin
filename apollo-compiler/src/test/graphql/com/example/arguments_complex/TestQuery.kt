@@ -42,7 +42,9 @@ data class TestQuery(
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
-      if (this@TestQuery.episode.defined) this["episode"] = this@TestQuery.episode.value
+      if (this@TestQuery.episode.defined) {
+        this["episode"] = this@TestQuery.episode.value
+      }
       this["stars"] = this@TestQuery.stars
       this["greenValue"] = this@TestQuery.greenValue
     }
