@@ -3,8 +3,8 @@ package com.apollographql.apollo.internal.subscription
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.ApolloSubscriptionCall
 import com.apollographql.apollo.IdFieldCacheKeyResolver
-import com.apollographql.apollo.Utils
 import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
 import com.apollographql.apollo.exception.ApolloException
@@ -71,7 +71,7 @@ class SubscriptionNormalizedCacheTest {
     )
 
     val cacheDump = apolloClient.apolloStore.normalizedCache().dump()
-    assertThat(Utils.prettifyDump(cacheDump)).isEqualTo("""
+    assertThat(NormalizedCache.prettifyDump(cacheDump)).isEqualTo("""
       OptimisticNormalizedCache {}
       LruNormalizedCache {}
       
@@ -107,7 +107,7 @@ class SubscriptionNormalizedCacheTest {
     )
 
     val cacheDump = apolloClient.apolloStore.normalizedCache().dump()
-    assertThat(Utils.prettifyDump(cacheDump)).isEqualTo("""
+    assertThat(NormalizedCache.prettifyDump(cacheDump)).isEqualTo("""
       OptimisticNormalizedCache {}
       LruNormalizedCache {
         "100" : {
@@ -162,7 +162,7 @@ class SubscriptionNormalizedCacheTest {
     )
 
     val cacheDump = apolloClient.apolloStore.normalizedCache().dump()
-    assertThat(Utils.prettifyDump(cacheDump)).isEqualTo("""
+    assertThat(NormalizedCache.prettifyDump(cacheDump)).isEqualTo("""
       OptimisticNormalizedCache {}
       LruNormalizedCache {
         "100" : {

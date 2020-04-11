@@ -4,6 +4,7 @@ import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.CacheKey;
+import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
@@ -795,7 +796,7 @@ public class NormalizedCacheTestCase {
     );
 
     Map<Class<?>, Map<String, Record>> dump = apolloClient.getApolloStore().normalizedCache().dump();
-    assertThat(Utils.INSTANCE.prettifyDump(dump)).isEqualTo("OptimisticNormalizedCache {}\n" +
+    assertThat(NormalizedCache.prettifyDump(dump)).isEqualTo("OptimisticNormalizedCache {}\n" +
         "LruNormalizedCache {\n" +
         "  \"1002\" : {\n" +
         "    \"__typename\" : Human\n" +
@@ -926,7 +927,7 @@ public class NormalizedCacheTestCase {
         }
     );
 
-    assertThat(Utils.INSTANCE.prettifyDump(apolloClient.getApolloStore().normalizedCache().dump())).isEqualTo("" +
+    assertThat(NormalizedCache.prettifyDump(apolloClient.getApolloStore().normalizedCache().dump())).isEqualTo("" +
         "OptimisticNormalizedCache {}\n" +
         "LruNormalizedCache {\n" +
         "  \"QUERY_ROOT\" : {\n" +

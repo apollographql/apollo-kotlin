@@ -134,4 +134,45 @@ abstract class NormalizedCache {
     val clazz: Class<*> = this.javaClass
     return mapOf(clazz to emptyMap())
   }
+
+  companion object {
+
+    @JvmStatic
+    fun prettifyDump(dump: Map<@JvmSuppressWildcards Class<*>, Map<String, Record>>) = buildString {
+      for ((key, value) in dump) {
+        append(key.simpleName)
+            .append(" {")
+        for ((key1, value1) in value) {
+          append("\n  \"")
+              .append(key1)
+              .append("\" : {")
+          for ((key2, value2) in value1.fields()) {
+            append("\n    \"")
+                .append(key2)
+                .append("\" : ")
+            when (value2) {
+              is CacheReference -> {
+                append("CacheRecordRef(")
+                    .append(value2)
+                    .append(")")
+              }
+              is List<*> -> {
+                append("[")
+                for (item in value2) {
+                  append("\n      ")
+                      .append(if (item is CacheReference) "CacheRecordRef(" else "")
+                      .append(item)
+                      .append(if (item is CacheReference) ")" else "")
+                }
+                append("\n    ]")
+              }
+              else -> append(value2)
+            }
+          }
+          append("\n  }\n")
+        }
+        append("}\n")
+      }
+    }
+  }
 }

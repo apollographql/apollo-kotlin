@@ -143,46 +143,4 @@ object Utils {
       }
     }
   }
-
-  fun prettifyDump(dump: Map<@JvmSuppressWildcards Class<*>, Map<String, Record>>): String {
-    val builder = StringBuilder()
-    for ((key, value) in dump) {
-      builder.append(key.simpleName)
-          .append(" {")
-      for ((key1, value1) in value) {
-        builder
-            .append("\n  \"")
-            .append(key1)
-            .append("\" : {")
-        for ((key2, value2) in value1.fields()) {
-          builder
-              .append("\n    \"")
-              .append(key2)
-              .append("\" : ")
-          when (value2) {
-            is CacheReference -> {
-              builder.append("CacheRecordRef(")
-                  .append(value2)
-                  .append(")")
-            }
-            is List<*> -> {
-              builder.append("[")
-              for (item in value2) {
-                builder
-                    .append("\n      ")
-                    .append(if (item is CacheReference) "CacheRecordRef(" else "")
-                    .append(item)
-                    .append(if (item is CacheReference) ")" else "")
-              }
-              builder.append("\n    ]")
-            }
-            else -> builder.append(value2)
-          }
-        }
-        builder.append("\n  }\n")
-      }
-      builder.append("}\n")
-    }
-    return builder.toString()
-  }
 }
