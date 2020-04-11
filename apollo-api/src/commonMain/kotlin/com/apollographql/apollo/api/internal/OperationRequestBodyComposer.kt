@@ -34,7 +34,7 @@ object OperationRequestBodyComposer {
           endObject()
           endObject()
         }
-        if (withQueryDocument) {
+        if (!autoPersistQueries || withQueryDocument) {
           name("query").value(operation.queryDocument())
         }
         endObject()

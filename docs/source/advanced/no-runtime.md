@@ -10,7 +10,40 @@ For this, remove the `com.apollographql.apollo:apollo-runtime`dependency and rep
   implementation("com.apollographql.apollo:apollo-api:x.y.z")
 ```
 
-## Parsing HTTP body
+## Composing HTTP request body
+
+To compose HTTP POST request body `Operation` provides such API:
+
+```java
+    Query query = ...
+    ByteString payload = query.composeRequestBody();
+    okhttp3.MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
+    okhttp3.RequestBody requestBody = RequestBody.create(mediaType, payload);
+```
+
+If GraphQL operation defines any variable with custom scalar type, you must provide properly configured instance of `com.apollographql.apollo.response.ScalarTypeAdapters`:
+
+```java
+    ScalarTypeAdapters scalarTypeAdapters = new ScalarTypeAdapters(<provide your custom scalar type adapters>);
+    Query query = ...
+    ByteString payload = query.composeRequestBody(scalarTypeAdapters);
+    okhttp3.MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
+    okhttp3.RequestBody requestBody = RequestBody.create(mediaType, payload);
+```
+
+In case when GraphQL server supports auto persistence query:
+
+```java
+    Query query = ...
+    boolean autoPersistQueries = ... // encode extensions attributes required by query auto persistence or not
+    withQueryDocument = ... // encode query document or not
+    ScalarTypeAdapters scalarTypeAdapters = ...
+    ByteString payload = query.composeRequestBody(autoPersistQueries, withQueryDocument, scalarTypeAdapters);
+    okhttp3.MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
+    okhttp3.RequestBody requestBody = RequestBody.create(mediaType, payload);
+```
+
+## Parsing HTTP response body
 
 All `Operation` instances provide an API to parse `Response` from raw `okio.BufferedSource` source that represents http response body returned by the GraphQL server.
 If for some reason you want to use your own network layer and don't want to use fully featured `ApolloClient` provided by `apollo-runtime` you can use this API:
