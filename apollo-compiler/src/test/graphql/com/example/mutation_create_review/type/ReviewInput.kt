@@ -108,7 +108,7 @@ internal data class ReviewInput(
     writer.writeInt("stars", this@ReviewInput.stars)
     if (this@ReviewInput.nullableIntFieldWithDefaultValue.defined) {
       writer.writeInt("nullableIntFieldWithDefaultValue",
-        this@ReviewInput.nullableIntFieldWithDefaultValue.value)
+          this@ReviewInput.nullableIntFieldWithDefaultValue.value)
     }
     if (this@ReviewInput.commentary.defined) {
       writer.writeString("commentary", this@ReviewInput.commentary.value)
@@ -116,7 +116,7 @@ internal data class ReviewInput(
     writer.writeObject("favoriteColor", this@ReviewInput.favoriteColor.marshaller())
     if (this@ReviewInput.enumWithDefaultValue.defined) {
       writer.writeString("enumWithDefaultValue",
-        this@ReviewInput.enumWithDefaultValue.value?.rawValue)
+          this@ReviewInput.enumWithDefaultValue.value?.rawValue)
     }
     writer.writeString("nonNullableEnumWithDefaultValue",
         this@ReviewInput.nonNullableEnumWithDefaultValue.rawValue)

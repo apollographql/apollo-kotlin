@@ -75,116 +75,81 @@ internal fun InputType.Field.writeCodeBlock(thisRef: String): CodeBlock {
     is FieldType.Scalar -> when (type) {
       is FieldType.Scalar.String -> {
         if (isOptional) {
-          CodeBlock.of(
-              """
-                if (this@%L.%L.defined) {
-                  writer.writeString(%S, this@%L.%L.value)
-                }
-                
-                """.trimIndent(),
-              thisRef,
-              name,
-              schemaName,
-              thisRef,
-              name
-          )
+          CodeBlock.builder()
+              .addStatement("if·(this@%L.%L.defined)·{", thisRef, name)
+              .indent()
+              .addStatement("writer.writeString(%S, this@%L.%L.value)", schemaName, thisRef, name)
+              .unindent()
+              .addStatement("}")
+              .build()
         } else {
           CodeBlock.of("writer.writeString(%S, this@%L.%L)\n", schemaName, thisRef, name)
         }
       }
       is FieldType.Scalar.Int -> {
         if (isOptional) {
-          CodeBlock.of(
-              """
-                if (this@%L.%L.defined) {
-                  writer.writeInt(%S, this@%L.%L.value)
-                }
-                
-                """.trimIndent(),
-              thisRef,
-              schemaName,
-              name,
-              thisRef,
-              name
-          )
+          CodeBlock.builder()
+              .addStatement("if·(this@%L.%L.defined)·{", thisRef, schemaName)
+              .indent()
+              .addStatement("writer.writeInt(%S, this@%L.%L.value)", name, thisRef, name)
+              .unindent()
+              .addStatement("}")
+              .build()
         } else {
           CodeBlock.of("writer.writeInt(%S, this@%L.%L)\n", schemaName, thisRef, name)
         }
       }
       is FieldType.Scalar.Boolean -> {
         if (isOptional) {
-          CodeBlock.of(
-              """
-                if (this@%L.%L.defined) {
-                  writer.writeBoolean(%S, this@%L.%L.value)
-                }
-                
-                """.trimIndent(),
-              thisRef,
-              name,
-              schemaName,
-              thisRef,
-              name
-          )
+          CodeBlock.builder()
+              .addStatement("if·(this@%L.%L.defined)·{", thisRef, name)
+              .indent()
+              .addStatement("writer.writeBoolean(%S, this@%L.%L.value)", schemaName, thisRef, name)
+              .unindent()
+              .addStatement("}")
+              .build()
         } else {
           CodeBlock.of("writer.writeBoolean(%S, this@%L.%L)\n", schemaName, thisRef, name)
         }
       }
       is FieldType.Scalar.Float -> {
         if (isOptional) {
-          CodeBlock.of(
-              """
-                if (this@%L.%L.defined) {
-                  writer.writeDouble(%S, this@%L.%L.value)
-                }
-                
-                """.trimIndent(),
-              thisRef,
-              name,
-              schemaName,
-              thisRef,
-              name
-          )
+          CodeBlock.builder()
+              .addStatement("if·(this@%L.%L.defined)·{", thisRef, name)
+              .indent()
+              .addStatement("writer.writeDouble(%S, this@%L.%L.value)", schemaName, thisRef, name)
+              .unindent()
+              .addStatement("}")
+              .build()
         } else {
           CodeBlock.of("writer.writeDouble(%S, this@%L.%L)\n", schemaName, thisRef, name)
         }
       }
       is FieldType.Scalar.Enum -> {
         if (isOptional) {
-          CodeBlock.of(
-              """
-                if (this@%L.%L.defined) {
-                  writer.writeString(%S, this@%L.%L.value?.rawValue)
-                }
-                
-                """.trimIndent(),
-              thisRef,
-              name,
-              schemaName,
-              thisRef,
-              name
-          )
+          CodeBlock.builder()
+              .addStatement("if·(this@%L.%L.defined)·{", thisRef, name)
+              .indent()
+              .addStatement("writer.writeString(%S, this@%L.%L.value?.rawValue)", schemaName, thisRef, name)
+              .unindent()
+              .addStatement("}")
+              .build()
         } else {
           CodeBlock.of("writer.writeString(%S, this@%L.%L.rawValue)\n", schemaName, thisRef, name)
         }
       }
       is FieldType.Scalar.Custom -> {
         if (isOptional) {
-          CodeBlock.of(
-              """
-                if (this@%L.%L.defined) {
-                  writer.writeCustom(%S, %T.%L, this@%L.%L.value)
-                }
-                
-                """.trimIndent(),
-              thisRef,
-              name,
-              schemaName,
-              type.customEnumType.asTypeName(),
-              type.customEnumConst,
-              thisRef,
-              name
-          )
+          CodeBlock.builder()
+              .addStatement("if·(this@%L.%L.defined)·{", thisRef, name)
+              .indent()
+              .addStatement(
+                  "writer.writeCustom(%S, %T.%L, this@%L.%L.value)", schemaName, type.customEnumType.asTypeName(), type.customEnumConst,
+                  thisRef, name
+              )
+              .unindent()
+              .addStatement("}")
+              .build()
         } else {
           CodeBlock.of("writer.writeCustom(%S, %T.%L, this@%L.%L)\n", schemaName, type.customEnumType.asTypeName(), type.customEnumConst,
               thisRef, name)
@@ -193,19 +158,13 @@ internal fun InputType.Field.writeCodeBlock(thisRef: String): CodeBlock {
     }
     is FieldType.Object -> {
       if (isOptional) {
-        CodeBlock.of(
-            """
-              if (this@%L.%L.defined) {
-                writer.writeObject(%S, this@%L.%L.value?.marshaller())
-              }
-              
-              """.trimIndent(),
-            thisRef,
-            name,
-            schemaName,
-            thisRef,
-            name
-        )
+        CodeBlock.builder()
+            .addStatement("if·(this@%L.%L.defined)·{", thisRef, name)
+            .indent()
+            .addStatement("writer.writeObject(%S, this@%L.%L.value?.marshaller())", schemaName, thisRef, name)
+            .unindent()
+            .addStatement("}")
+            .build()
       } else {
         CodeBlock.of("writer.writeObject(%S, this@%L.%L.marshaller())\n", schemaName, thisRef, name)
       }
@@ -214,7 +173,7 @@ internal fun InputType.Field.writeCodeBlock(thisRef: String): CodeBlock {
       val codeBlockBuilder: CodeBlock.Builder = CodeBlock.Builder()
       if (isOptional) {
         codeBlockBuilder
-            .beginControlFlow("if (this@%L.%L.defined)", thisRef, name)
+            .beginControlFlow("if·(this@%L.%L.defined)", thisRef, name)
             .add("writer.writeList(%S, this@%L.%L.value?.let { value ->\n", schemaName, thisRef, name)
             .indent()
             .beginControlFlow("%T { listItemWriter ->", InputFieldWriter.ListWriter::class)
