@@ -110,24 +110,28 @@ public final class SqlNormalizedCache extends NormalizedCache {
   @Override public boolean remove(@NotNull final CacheKey cacheKey, final boolean cascade) {
     checkNotNull(cacheKey, "cacheKey == null");
 
+    boolean result = false;
     NormalizedCache nextCache = getNextCache();
-    if (nextCache != null && nextCache.remove(cacheKey, cascade)) {
-      return true;
+    if (nextCache != null) {
+      result = nextCache.remove(cacheKey, cascade);
     }
 
     if (cascade) {
-      Record record = selectRecordForKey(cacheKey.getKey());
-      if (record != null) {
-        boolean result = true;
-        for (CacheReference cacheReference : record.referencedFields()) {
-          result = result && remove(new CacheKey(cacheReference.key()), true);
-        }
-        return result;
-      } else {
-        return false;
-      }
+      return result || removeRecord(selectRecordForKey(cacheKey.getKey()));
     } else {
-      return deleteRecord(cacheKey.getKey());
+      return result || deleteRecord(cacheKey.getKey());
+    }
+  }
+
+  private boolean removeRecord(Record record) {
+    if (record != null) {
+      boolean result = true;
+      for (CacheReference cacheReference : record.referencedFields()) {
+        result = result && remove(new CacheKey(cacheReference.key()), true);
+      }
+      return result;
+    } else {
+      return false;
     }
   }
 
