@@ -10,6 +10,7 @@ import com.apollographql.apollo.api.internal.ResponseFieldMapper;
 import com.apollographql.apollo.api.internal.ResponseReader;
 import okhttp3.OkHttpClient;
 import okio.BufferedSource;
+import okio.ByteString;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,6 +65,18 @@ public class ResponseFetcherTest {
       }
 
       @NotNull @Override public Response parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+        throw new UnsupportedOperationException();
+      }
+
+      @NotNull @Override public ByteString composeRequestBody(boolean autoPersistQueries, boolean withQueryDocument, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+        throw new UnsupportedOperationException();
+      }
+
+      @NotNull @Override public ByteString composeRequestBody(@NotNull ScalarTypeAdapters scalarTypeAdapters) {
+        throw new UnsupportedOperationException();
+      }
+
+      @NotNull @Override public ByteString composeRequestBody() {
         throw new UnsupportedOperationException();
       }
     };

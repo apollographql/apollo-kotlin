@@ -14,6 +14,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okio.BufferedSource;
+import okio.ByteString;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Rule;
@@ -73,6 +74,18 @@ public class ApolloCallTrackerTest {
     }
 
     @NotNull @Override public Response parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+      throw new UnsupportedOperationException();
+    }
+
+    @NotNull @Override public ByteString composeRequestBody(boolean autoPersistQueries, boolean withQueryDocument, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+      throw new UnsupportedOperationException();
+    }
+
+    @NotNull @Override public ByteString composeRequestBody(@NotNull ScalarTypeAdapters scalarTypeAdapters) {
+      throw new UnsupportedOperationException();
+    }
+
+    @NotNull @Override public ByteString composeRequestBody() {
       throw new UnsupportedOperationException();
     }
   };
