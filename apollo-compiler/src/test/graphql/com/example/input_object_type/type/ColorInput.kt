@@ -47,7 +47,7 @@ data class ColorInput(
     writer.writeDouble("blue", this@ColorInput.blue)
     if (this@ColorInput.enumWithDefaultValue.defined) {
       writer.writeString("enumWithDefaultValue",
-        this@ColorInput.enumWithDefaultValue.value?.rawValue)
+          this@ColorInput.enumWithDefaultValue.value?.rawValue)
     }
     if (this@ColorInput.reviewRefInput.defined) {
       writer.writeObject("reviewRefInput", this@ColorInput.reviewRefInput.value?.marshaller())

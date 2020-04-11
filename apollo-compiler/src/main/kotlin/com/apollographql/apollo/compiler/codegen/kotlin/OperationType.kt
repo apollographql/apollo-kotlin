@@ -213,11 +213,17 @@ private fun InputType.variablesValueMapSpec(operationType: OperationType): FunSp
       .addCode(
           fields.map { field ->
             if (field.isOptional) {
-              CodeBlock.of("if (this@%L.%L.defined) this[%S] = this@%L.%L.value", operationType.name, field.name, field.schemaName, operationType.name, field.name)
+              CodeBlock.builder()
+                  .addStatement("if·(this@%L.%L.defined)·{", operationType.name, field.name)
+                  .indent()
+                  .addStatement("this[%S]·=·this@%L.%L.value", field.schemaName, operationType.name, field.name)
+                  .unindent()
+                  .addStatement("}")
+                  .build()
             } else {
-              CodeBlock.of("this[%S] = this@%L.%L", field.schemaName, operationType.name, field.name)
+              CodeBlock.of("this[%S]·=·this@%L.%L\n", field.schemaName, operationType.name, field.name)
             }
-          }.joinToCode(separator = "\n", suffix = "\n")
+          }.joinToCode(separator = "")
       )
       .endControlFlow()
       .build()
