@@ -43,8 +43,8 @@ class KotlinSampleApp : Application() {
         .addInterceptor(logInterceptor)
         .build()
 
-    val driver = ApolloSqlHelper.create(this, "github_cache")
-    val sqlNormalizedCacheFactory = SqlNormalizedCacheFactory(driver)
+    val apolloSqlHelper = ApolloSqlHelper.create(this, "github_cache")
+    val sqlNormalizedCacheFactory = SqlNormalizedCacheFactory(apolloSqlHelper)
     val cacheKeyResolver = object : CacheKeyResolver() {
       override fun fromFieldRecordSet(field: ResponseField, recordSet: Map<String, Any>): CacheKey {
         return if (recordSet["__typename"] == "Repository") {
