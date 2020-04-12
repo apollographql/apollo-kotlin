@@ -1,10 +1,17 @@
 package com.apollographql.apollo
 
-import com.google.common.io.CharStreams
-
 import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.cache.normalized.CacheReference
+import com.apollographql.apollo.cache.normalized.Record
+import com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY
+import com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY
 import com.apollographql.apollo.rx2.Rx2Apollo
-
+import com.google.common.io.CharStreams
+import io.reactivex.functions.Predicate
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
+import java.io.File
+import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStreamReader
 import java.nio.charset.Charset
@@ -13,15 +20,6 @@ import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.TimeUnit
-
-import io.reactivex.functions.Predicate
-import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
-
-import com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY
-import com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY
-import java.io.File
-import java.io.FileNotFoundException
 
 object Utils {
 

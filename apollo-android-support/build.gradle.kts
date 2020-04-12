@@ -1,10 +1,4 @@
 import com.android.build.gradle.BaseExtension
-buildscript {
-  dependencies {
-    classpath(groovy.util.Eval.x(project, "x.dep.android.plugin"))
-  }
-}
-
 apply(plugin = "com.android.library")
 
 extensions.findByType(BaseExtension::class.java)!!.apply {

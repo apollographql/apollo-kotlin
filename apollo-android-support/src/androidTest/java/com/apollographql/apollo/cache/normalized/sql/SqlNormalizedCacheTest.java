@@ -2,13 +2,10 @@ package com.apollographql.apollo.cache.normalized.sql;
 
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-
-import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.ApolloCacheHeaders;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,15 +43,17 @@ public class SqlNormalizedCacheTest {
   @Test
   public void testRecordSelection() {
     createRecord(STANDARD_KEY);
-    Optional<Record> record = sqlStore.selectRecordForKey(STANDARD_KEY);
-    assertThat(record.get().key()).isEqualTo(STANDARD_KEY);
+    Record record = sqlStore.selectRecordForKey(STANDARD_KEY);
+    assertThat(record).isNotNull();
+    assertThat(record.key()).isEqualTo(STANDARD_KEY);
   }
 
   @Test
   public void testRecordSelection_root() {
     createRecord(QUERY_ROOT_KEY);
-    Optional<Record> record = sqlStore.selectRecordForKey(QUERY_ROOT_KEY);
-    assertThat(record.get().key()).isEqualTo(QUERY_ROOT_KEY);
+    Record record = sqlStore.selectRecordForKey(QUERY_ROOT_KEY);
+    assertThat(record).isNotNull();
+    assertThat(record.key()).isEqualTo(QUERY_ROOT_KEY);
   }
 
   @Test
@@ -68,9 +67,10 @@ public class SqlNormalizedCacheTest {
     sqlStore.merge(Record.builder(STANDARD_KEY)
         .addField("fieldKey", "valueUpdated")
         .addField("newFieldKey", true).build(), CacheHeaders.NONE);
-    Optional<Record> record = sqlStore.selectRecordForKey(STANDARD_KEY);
-    assertThat(record.get().fields().get("fieldKey")).isEqualTo("valueUpdated");
-    assertThat(record.get().fields().get("newFieldKey")).isEqualTo(true);
+    Record record = sqlStore.selectRecordForKey(STANDARD_KEY);
+    assertThat(record).isNotNull();
+    assertThat(record.fields().get("fieldKey")).isEqualTo("valueUpdated");
+    assertThat(record.fields().get("newFieldKey")).isEqualTo(true);
   }
 
   @Test
@@ -80,8 +80,8 @@ public class SqlNormalizedCacheTest {
         .addField("fieldKey", "valueUpdated")
         .addField("newFieldKey", true).build(), CacheHeaders.NONE);
     sqlStore.deleteRecord(STANDARD_KEY);
-    Optional<Record> record = sqlStore.selectRecordForKey(STANDARD_KEY);
-    assertThat(record.isPresent()).isFalse();
+    Record record = sqlStore.selectRecordForKey(STANDARD_KEY);
+    assertThat(record).isNull();
   }
 
   @Test
@@ -89,8 +89,8 @@ public class SqlNormalizedCacheTest {
     createRecord(QUERY_ROOT_KEY);
     createRecord(STANDARD_KEY);
     sqlStore.clearAll();
-    assertThat(sqlStore.selectRecordForKey(QUERY_ROOT_KEY).isPresent()).isFalse();
-    assertThat(sqlStore.selectRecordForKey(STANDARD_KEY).isPresent()).isFalse();
+    assertThat(sqlStore.selectRecordForKey(QUERY_ROOT_KEY)).isNull();
+    assertThat(sqlStore.selectRecordForKey(STANDARD_KEY)).isNull();
   }
 
 

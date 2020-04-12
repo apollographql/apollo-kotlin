@@ -24,18 +24,16 @@ import com.apollographql.apollo.integration.normalizer.StarshipByIdQuery;
 import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsFragment;
 import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragment;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
-
+import io.reactivex.functions.Predicate;
+import okhttp3.Dispatcher;
+import okhttp3.OkHttpClient;
+import okhttp3.mockwebserver.MockWebServer;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import io.reactivex.functions.Predicate;
-import okhttp3.Dispatcher;
-import okhttp3.OkHttpClient;
-import okhttp3.mockwebserver.MockWebServer;
 
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_FIRST;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY;
@@ -797,7 +795,7 @@ public class NormalizedCacheTestCase {
         }
     );
 
-    Map<Class, Map<String, Record>> dump = apolloClient.getApolloStore().normalizedCache().dump();
+    Map<Class<?>, Map<String, Record>> dump = apolloClient.getApolloStore().normalizedCache().dump();
     assertThat(NormalizedCache.prettifyDump(dump)).isEqualTo("OptimisticNormalizedCache {}\n" +
         "LruNormalizedCache {\n" +
         "  \"1002\" : {\n" +
