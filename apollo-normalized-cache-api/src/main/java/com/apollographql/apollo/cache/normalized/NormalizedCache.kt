@@ -3,7 +3,6 @@ package com.apollographql.apollo.cache.normalized
 import com.apollographql.apollo.api.internal.Optional
 import com.apollographql.apollo.cache.ApolloCacheHeaders
 import com.apollographql.apollo.cache.CacheHeaders
-import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCache
 import java.util.ArrayList
 import java.util.HashSet
 
@@ -20,7 +19,7 @@ import java.util.HashSet
  *
  * A [NormalizedCache] can choose to store records in any manner.
  *
- * See [LruNormalizedCache] for a in memory cache.
+ * See [com.apollographql.apollo.cache.normalized.lru.LruNormalizedCache] for a in memory cache.
  */
 abstract class NormalizedCache {
   var nextCache: NormalizedCache? = null

@@ -32,7 +32,7 @@ public final class Record {
     private final String key;
     private UUID mutationId;
 
-    public Builder(String key, Map<String, Object> fields, UUID mutationId) {
+    public Builder(String key, @NotNull Map<String, Object> fields, @Nullable UUID mutationId) {
       this.key = key;
       this.fields = new LinkedHashMap<>(fields);
       this.mutationId = mutationId;
