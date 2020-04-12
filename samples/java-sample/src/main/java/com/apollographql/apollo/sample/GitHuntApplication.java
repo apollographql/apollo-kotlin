@@ -12,7 +12,6 @@ import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
 import com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper;
 import com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCacheFactory;
 import com.apollographql.apollo.subscription.WebSocketSubscriptionTransport;
-import com.squareup.sqldelight.db.SqlDriver;
 import okhttp3.OkHttpClient;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,9 +32,9 @@ public class GitHuntApplication extends Application {
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
         .build();
 
-    SqlDriver driver = ApolloSqlHelper.create(this, SQL_CACHE_NAME);
+    ApolloSqlHelper apolloSqlHelper = new ApolloSqlHelper(this, SQL_CACHE_NAME);
     NormalizedCacheFactory normalizedCacheFactory = new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
-        .chain(new SqlNormalizedCacheFactory(driver));
+        .chain(new SqlNormalizedCacheFactory(apolloSqlHelper));
 
     CacheKeyResolver cacheKeyResolver = new CacheKeyResolver() {
       @NotNull @Override

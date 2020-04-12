@@ -1,6 +1,6 @@
 plugins {
-  `java-library`
-  kotlin("jvm")
+  id("com.android.library")
+  kotlin("android")
   id("com.squareup.sqldelight")
 }
 
@@ -10,10 +10,26 @@ sqldelight {
   }
 }
 
+android {
+  compileSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt())
+
+  lintOptions {
+    textReport = true
+    textOutput("stdout")
+    ignore("InvalidPackage")
+  }
+
+  defaultConfig {
+    minSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.minSdkVersion").toString())
+    targetSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.targetSdkVersion").toString())
+  }
+}
+
 dependencies {
   api(project(":apollo-api"))
   api(project(":apollo-normalized-cache-api"))
   implementation(groovy.util.Eval.x(project, "x.dep.kotlin.stdLib"))
+  implementation(groovy.util.Eval.x(project, "x.dep.sqldelight.android"))
 
   testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))

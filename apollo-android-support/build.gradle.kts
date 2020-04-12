@@ -20,8 +20,8 @@ android {
 }
 
 dependencies {
+  api(project(":apollo-sqlite-cache"))
   implementation(kotlin("stdlib"))
-  implementation(groovy.util.Eval.x(project, "x.dep.sqldelight.android"))
   compileOnly(project(":apollo-runtime"))
   compileOnly(project(":apollo-api"))
 }
