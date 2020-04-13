@@ -145,48 +145,6 @@ class ConfigurationTests {
   }
 
   @Test
-  fun `sourceSet fails gracefully`() {
-    withSimpleProject("""
-      apollo {
-        sourceSet {
-          schemaFile = "schema.json"
-          exclude = "**/*.gql"
-        }
-      }
-    """.trimIndent()) { dir ->
-      var exception: Exception? = null
-      try {
-        TestUtils.executeTask("generateApolloSources", dir)
-      } catch (e: UnexpectedBuildFailure) {
-        exception = e
-        assertThat(e.message, containsString("is not supported anymore"))
-      }
-      assertNotNull(exception)
-    }
-  }
-
-  @Test
-  fun `sourceSet with multiple exclude fails gracefully`() {
-    withSimpleProject("""
-      apollo {
-        sourceSet {
-          schemaFile = "schema.json"
-          exclude = ["**/Query1.graphql", "**/Query2.graphql"]
-        }
-      }
-    """.trimIndent()) { dir ->
-      var exception: Exception? = null
-      try {
-        TestUtils.executeTask("generateApolloSources", dir)
-      } catch (e: UnexpectedBuildFailure) {
-        exception = e
-        assertThat(e.message, containsString("is not supported anymore"))
-      }
-      assertNotNull(exception)
-    }
-  }
-
-  @Test
   fun `service compilerParams override extension compilerParams`() {
     withSimpleProject("""
       apollo {
