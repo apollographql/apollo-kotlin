@@ -26,7 +26,23 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
+        implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines.coreCommon"))
         implementation(kotlin("stdlib-common"))
+        implementation("com.apollographql.apollo:apollo-api")
+      }
+    }
+    val jvmMain by getting {
+      dependencies {
+        implementation(kotlin("stdlib"))
+        implementation("com.apollographql.apollo:apollo-api")
+        implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines.core"))
+        implementation("com.apollographql.apollo:apollo-coroutines-support")
+        implementation("com.apollographql.apollo:apollo-runtime")
+      }
+    }
+    val iosMain by getting {
+      dependencies {
+        implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines.coreNative"))
         implementation("com.apollographql.apollo:apollo-api")
       }
     }

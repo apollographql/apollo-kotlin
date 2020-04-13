@@ -2,7 +2,6 @@ package com.apollographql.apollo.kmpsample
 
 import android.app.Application
 import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.kmpsample.data.ApolloCoroutinesService
 import okhttp3.OkHttpClient
 
 @Suppress("unused")
