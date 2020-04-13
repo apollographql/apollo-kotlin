@@ -9,7 +9,6 @@ import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
-import com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper;
 import com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCacheFactory;
 import com.apollographql.apollo.subscription.WebSocketSubscriptionTransport;
 import okhttp3.OkHttpClient;
@@ -32,9 +31,8 @@ public class GitHuntApplication extends Application {
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
         .build();
 
-    ApolloSqlHelper apolloSqlHelper = new ApolloSqlHelper(this, SQL_CACHE_NAME);
     NormalizedCacheFactory normalizedCacheFactory = new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
-        .chain(new SqlNormalizedCacheFactory(apolloSqlHelper));
+        .chain(new SqlNormalizedCacheFactory(this, SQL_CACHE_NAME));
 
     CacheKeyResolver cacheKeyResolver = new CacheKeyResolver() {
       @NotNull @Override
