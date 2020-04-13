@@ -1,12 +1,9 @@
 package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.gradle.api.ApolloExtension
-import com.apollographql.apollo.gradle.api.ApolloSourceSetExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.gradle.api.artifacts.ConfigurationContainer
-import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.util.GradleVersion
 import java.net.URLDecoder
@@ -49,30 +46,6 @@ open class ApolloPlugin : Plugin<Project> {
       return ret
     }
 
-    private fun deprecationChecks(apolloExtension: DefaultApolloExtension, apolloSourceSetExtension: ApolloSourceSetExtension) {
-      if (apolloSourceSetExtension.schemaFile.isPresent || apolloSourceSetExtension.exclude.get().isNotEmpty()) {
-        throw IllegalArgumentException("""
-        apollo.sourceSet is not supported anymore.
-        
-      """.trimIndent() + useService(apolloExtension.project, apolloSourceSetExtension.schemaFile.orNull,
-            null, "[${apolloSourceSetExtension.exclude.get().joinToString(",")}]"))
-      }
-
-      if (apolloExtension.schemaFilePath.isPresent) {
-        throw IllegalArgumentException("""
-        apollo.schemaFilePath is not supported anymore as it doesn't work for multiple services.
-        
-      """.trimIndent() + useService(apolloExtension.project, apolloExtension.schemaFilePath.get(), apolloExtension.outputPackageName.orNull))
-      }
-
-      if (apolloExtension.outputPackageName.isPresent) {
-        throw IllegalArgumentException("""
-        apollo.outputPackageName is not supported anymore as it doesn't work for multiple services and also flattens the packages.
-        
-      """.trimIndent() + useService(apolloExtension.project, apolloExtension.schemaFilePath.orNull, apolloExtension.outputPackageName.get()))
-      }
-    }
-
     private fun registerCodeGenTasks(project: Project, apolloExtension: DefaultApolloExtension) {
       val androidExtension = project.extensions.findByName("android")
 
@@ -82,10 +55,14 @@ open class ApolloPlugin : Plugin<Project> {
         else -> JvmTaskConfigurator.getVariants(project)
       }
 
-      val rootProvider = registerRootTask(project)
+      val rootProvider = project.tasks.register("generateApolloSources") {
+        it.group = TASK_GROUP
+      }
 
       apolloVariants.all { apolloVariant ->
-        val variantProvider = registerVariantTask(project, apolloVariant.name)
+        val variantProvider = project.tasks.register("generate${apolloVariant.name.capitalize()}ApolloSources") {
+          it.group = TASK_GROUP
+        }
 
         val compilationUnits = if (apolloExtension.services.isEmpty()) {
           listOf(DefaultCompilationUnit.fromFiles(project, apolloExtension, apolloVariant))
@@ -116,9 +93,7 @@ open class ApolloPlugin : Plugin<Project> {
             project.isKotlinMultiplatform -> {
               KotlinMultiplatformTaskConfigurator.registerGeneratedDirectory(project, compilationUnit, codegenProvider)
             }
-            androidExtension != null -> {
-              AndroidTaskConfigurator.registerGeneratedDirectory(project, androidExtension, compilationUnit, codegenProvider)
-            }
+            androidExtension != null -> AndroidTaskConfigurator.registerGeneratedDirectory(project, compilationUnit, codegenProvider)
             else -> JvmTaskConfigurator.registerGeneratedDirectory(project, compilationUnit, codegenProvider)
           }
         }
@@ -126,36 +101,6 @@ open class ApolloPlugin : Plugin<Project> {
         rootProvider.configure {
           it.dependsOn(variantProvider)
         }
-
-      }
-    }
-
-    private fun registerVariantTask(project: Project, variantName: String): TaskProvider<Task> {
-      // for backward compatibility
-      val oldName = "generate${variantName.capitalize()}ApolloClasses"
-      project.tasks.register(oldName) {
-        it.group = TASK_GROUP
-        it.doLast {
-          throw IllegalArgumentException("$oldName is deprecated. Please use generateApolloSources instead.")
-        }
-      }
-
-      return project.tasks.register("generate${variantName.capitalize()}ApolloSources") {
-        it.group = TASK_GROUP
-      }
-    }
-
-    private fun registerRootTask(project: Project): TaskProvider<*> {
-      // for backward compatibility
-      project.tasks.register("generateApolloClasses") {
-        it.group = TASK_GROUP
-        it.doLast {
-          throw IllegalArgumentException("generateApolloClasses is deprecated. Please use generateApolloSources instead.")
-        }
-      }
-
-      return project.tasks.register("generateApolloSources") {
-        it.group = TASK_GROUP
       }
     }
 
@@ -273,10 +218,7 @@ open class ApolloPlugin : Plugin<Project> {
           }.toMap()
     }
 
-    private fun afterEvaluate(project: Project, apolloExtension: DefaultApolloExtension, apolloSourceSetExtension: ApolloSourceSetExtension) {
-
-      deprecationChecks(apolloExtension, apolloSourceSetExtension)
-
+    private fun afterEvaluate(project: Project, apolloExtension: DefaultApolloExtension) {
       registerCodeGenTasks(project, apolloExtension)
 
       registerDownloadSchemaTasks(project, apolloExtension)
@@ -313,12 +255,10 @@ open class ApolloPlugin : Plugin<Project> {
     }
 
     val apolloExtension = project.extensions.create(ApolloExtension::class.java, "apollo", DefaultApolloExtension::class.java, project) as DefaultApolloExtension
-    // for backward compatibility
-    val apolloSourceSetExtension = (apolloExtension as ExtensionAware).extensions.create("sourceSet", ApolloSourceSetExtension::class.java, project.objects)
 
     // the extension block has not been evaluated yet, register a callback once the project has been evaluated
     project.afterEvaluate {
-      afterEvaluate(it, apolloExtension, apolloSourceSetExtension)
+      afterEvaluate(it, apolloExtension)
     }
   }
 }
