@@ -3,6 +3,7 @@ package com.apollographql.apollo.compiler
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.internal.OperationRequestBodyComposer
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
@@ -10,6 +11,7 @@ import com.apollographql.apollo.compiler.VisitorSpec.VISITOR_CLASSNAME
 import com.apollographql.apollo.compiler.ir.*
 import com.squareup.javapoet.*
 import okio.BufferedSource
+import okio.ByteString
 import java.io.IOException
 import javax.lang.model.element.Modifier
 
@@ -37,6 +39,11 @@ class OperationTypeSpecBuilder(
         .addOperationName()
         .addMethod(parseMethod(context))
         .addMethod(parseMethodWithDefaultScalarTypeAdapters(context))
+        .addMethod(composeRequestBody())
+        .addMethod(composeRequestBodyWithDefaultScalarTypeAdapters())
+        .applyIf(operation.isQuery()) {
+          addMethod(composeRequestBodyForQuery())
+        }
         .build()
         .flatten(excludeTypeNames = listOf(
             VISITOR_CLASSNAME,
@@ -311,6 +318,59 @@ class OperationTypeSpecBuilder(
         .addException(IOException::class.java)
         .returns(ParameterizedTypeName.get(ClassName.get(Response::class.java), wrapperType(context)))
         .addStatement("return parse(source, \$T.DEFAULT)", ScalarTypeAdapters::class.java)
+        .build()
+  }
+
+  private fun composeRequestBody(): MethodSpec {
+    return MethodSpec
+        .methodBuilder("composeRequestBody")
+        .addAnnotation(Annotations.OVERRIDE)
+        .addAnnotation(Annotations.NONNULL)
+        .addModifiers(Modifier.PUBLIC)
+        .addParameter(ParameterSpec
+            .builder(ScalarTypeAdapters::class.java, "scalarTypeAdapters", Modifier.FINAL)
+            .addAnnotation(Annotations.NONNULL)
+            .build()
+        )
+        .returns(ByteString::class.java)
+        .addStatement("return \$T.compose(this, false, true, scalarTypeAdapters)", OperationRequestBodyComposer::class.java)
+        .build()
+  }
+
+  private fun composeRequestBodyWithDefaultScalarTypeAdapters(): MethodSpec {
+    return MethodSpec
+        .methodBuilder("composeRequestBody")
+        .addAnnotation(Annotations.NONNULL)
+        .addAnnotation(Annotations.OVERRIDE)
+        .addModifiers(Modifier.PUBLIC)
+        .returns(ByteString::class.java)
+        .addStatement("return \$T.compose(this, false, true, \$T.DEFAULT)", OperationRequestBodyComposer::class.java,
+            ScalarTypeAdapters::class.java)
+        .build()
+  }
+
+  private fun composeRequestBodyForQuery(): MethodSpec {
+    return MethodSpec
+        .methodBuilder("composeRequestBody")
+        .addAnnotation(Annotations.OVERRIDE)
+        .addAnnotation(Annotations.NONNULL)
+        .addModifiers(Modifier.PUBLIC)
+        .addParameter(ParameterSpec
+            .builder(TypeName.BOOLEAN, "autoPersistQueries", Modifier.FINAL)
+            .build()
+        )
+        .addParameter(ParameterSpec
+            .builder(TypeName.BOOLEAN, "withQueryDocument", Modifier.FINAL)
+            .build()
+        )
+        .addParameter(ParameterSpec
+            .builder(ScalarTypeAdapters::class.java, "scalarTypeAdapters", Modifier.FINAL)
+            .addAnnotation(Annotations.NONNULL)
+            .build()
+        )
+        .returns(ByteString::class.java)
+        .addStatement("return \$T.compose(this, autoPersistQueries, withQueryDocument, scalarTypeAdapters)",
+            OperationRequestBodyComposer::class.java)
         .build()
   }
 

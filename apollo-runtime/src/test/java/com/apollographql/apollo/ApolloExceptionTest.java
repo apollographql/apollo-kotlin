@@ -4,6 +4,7 @@ import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
+import com.apollographql.apollo.api.internal.OperationRequestBodyComposer;
 import com.apollographql.apollo.api.internal.ResponseFieldMapper;
 import com.apollographql.apollo.api.internal.ResponseReader;
 import com.apollographql.apollo.api.internal.json.JsonEncodingException;
@@ -17,6 +18,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okio.BufferedSource;
+import okio.ByteString;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Rule;
@@ -85,6 +87,18 @@ import static com.google.common.truth.Truth.assertThat;
 
       @NotNull @Override public Response parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
         throw new UnsupportedOperationException();
+      }
+
+      @NotNull @Override public ByteString composeRequestBody(boolean autoPersistQueries, boolean withQueryDocument, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+        return OperationRequestBodyComposer.compose(this, autoPersistQueries, withQueryDocument, scalarTypeAdapters);
+      }
+
+      @NotNull @Override public ByteString composeRequestBody(@NotNull ScalarTypeAdapters scalarTypeAdapters) {
+        return OperationRequestBodyComposer.compose(this, false, true, scalarTypeAdapters);
+      }
+
+      @NotNull @Override public ByteString composeRequestBody() {
+        return OperationRequestBodyComposer.compose(this, false, true, ScalarTypeAdapters.DEFAULT);
       }
     };
   }

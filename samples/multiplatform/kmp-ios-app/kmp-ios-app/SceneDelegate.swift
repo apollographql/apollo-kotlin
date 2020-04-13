@@ -13,7 +13,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
@@ -23,11 +22,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             orderBy: RepositoryOrderField.updatedAt,
             orderDirection: OrderDirection.desc
         )
-        let requestPayload = "{" +
-        "\"operationName\": \"" + query.name().name() + "\", " +
-        "\"query\": \"" + query.queryDocument() + "\", " +
-        "\"variables\": " + query.variables().marshal() +
-        "}"
+        
+        let requestPayload = query.composeRequestBody().utf8()
         print(requestPayload)
         
         let url = URL(string: "https://api.github.com/graphql")!

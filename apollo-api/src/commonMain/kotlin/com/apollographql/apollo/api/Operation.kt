@@ -10,6 +10,7 @@ import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.json.use
 import okio.Buffer
 import okio.BufferedSource
+import okio.ByteString
 import okio.IOException
 import kotlin.jvm.JvmField
 
@@ -59,6 +60,34 @@ interface Operation<D : Operation.Data, T, V : Operation.Variables> {
    */
   @Throws(IOException::class)
   fun parse(source: BufferedSource): Response<T>
+
+  /**
+   * Composes POST JSON-encoded request body with provided [scalarTypeAdapters] to be sent to the GraphQL server.
+   *
+   * *Example*:
+   * ```
+   * {
+   *    "query": "query TestQuery($episode: Episode) { hero(episode: $episode) { name } }",
+   *    "operationName": "TestQuery",
+   *    "variables": { "episode": "JEDI" }
+   * }
+   * ```
+   */
+  fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters): ByteString
+
+  /**
+   * Composes POST JSON-encoded request body to be sent to the GraphQL server.
+   *
+   * *Example*:
+   * ```
+   * {
+   *    "query": "query TestQuery($episode: Episode) { hero(episode: $episode) { name } }",
+   *    "operationName": "TestQuery",
+   *    "variables": { "episode": "JEDI" }
+   * }
+   * ```
+   */
+  fun composeRequestBody(): ByteString
 
   /**
    * Abstraction for data returned by the server in response to this operation.
