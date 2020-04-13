@@ -6,6 +6,7 @@ import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
+import com.apollographql.apollo.api.internal.OperationRequestBodyComposer;
 import com.apollographql.apollo.api.internal.ResponseFieldMapper;
 import com.apollographql.apollo.api.internal.ResponseReader;
 import okhttp3.OkHttpClient;
@@ -68,16 +69,16 @@ public class ResponseFetcherTest {
         throw new UnsupportedOperationException();
       }
 
-      @NotNull @Override public ByteString composeRequestBody(boolean autoPersistQueries, boolean withQueryDocument, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
-        throw new UnsupportedOperationException();
+     @NotNull @Override public ByteString composeRequestBody(boolean autoPersistQueries, boolean withQueryDocument, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+        return OperationRequestBodyComposer.compose(this, autoPersistQueries, withQueryDocument, scalarTypeAdapters);
       }
 
       @NotNull @Override public ByteString composeRequestBody(@NotNull ScalarTypeAdapters scalarTypeAdapters) {
-        throw new UnsupportedOperationException();
+        return OperationRequestBodyComposer.compose(this, false, true, scalarTypeAdapters);
       }
 
       @NotNull @Override public ByteString composeRequestBody() {
-        throw new UnsupportedOperationException();
+        return OperationRequestBodyComposer.compose(this, false, true, ScalarTypeAdapters.DEFAULT);
       }
     };
   }
