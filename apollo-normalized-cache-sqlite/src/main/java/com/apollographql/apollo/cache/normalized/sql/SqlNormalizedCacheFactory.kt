@@ -6,7 +6,7 @@ import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
 
-class SqlNormalizedCacheFactory private constructor(
+class SqlNormalizedCacheFactory internal constructor(
     driver: SqlDriver
 ) : NormalizedCacheFactory<SqlNormalizedCache>() {
 
