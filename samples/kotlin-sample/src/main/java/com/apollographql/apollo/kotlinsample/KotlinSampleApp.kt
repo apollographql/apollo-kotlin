@@ -10,7 +10,6 @@ import com.apollographql.apollo.cache.http.ApolloHttpCache
 import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore
 import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
-import com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper
 import com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo.kotlinsample.data.ApolloCallbackService
 import com.apollographql.apollo.kotlinsample.data.ApolloCoroutinesService
@@ -21,7 +20,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.io.File
 
-@Suppress("unused")
 class KotlinSampleApp : Application() {
   private val baseUrl = "https://api.github.com/graphql"
   private val apolloClient: ApolloClient by lazy {
@@ -44,8 +42,7 @@ class KotlinSampleApp : Application() {
         .addInterceptor(logInterceptor)
         .build()
 
-    val apolloSqlHelper = ApolloSqlHelper.create(this, "github_cache")
-    val sqlNormalizedCacheFactory = SqlNormalizedCacheFactory(apolloSqlHelper)
+    val sqlNormalizedCacheFactory = SqlNormalizedCacheFactory(this, "github_cache")
     val cacheKeyResolver = object : CacheKeyResolver() {
       override fun fromFieldRecordSet(field: ResponseField, recordSet: Map<String, Any>): CacheKey {
         return if (recordSet["__typename"] == "Repository") {

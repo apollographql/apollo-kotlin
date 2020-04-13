@@ -19,6 +19,7 @@ buildscript {
     classpath(groovy.util.Eval.x(project, "x.dep.gradleJapiCmpPlugin"))
     classpath(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
     classpath(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
+    classpath(groovy.util.Eval.x(project, "x.dep.sqldelight.plugin"))
   }
 }
 

@@ -1,7 +1,5 @@
 package com.apollographql.apollo;
 
-import android.support.annotation.NonNull;
-
 import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.cache.ApolloCacheHeaders;
 import com.apollographql.apollo.cache.CacheHeaders;
@@ -14,21 +12,18 @@ import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesQuery;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.rx2.Rx2Apollo;
-
+import okhttp3.Dispatcher;
+import okhttp3.OkHttpClient;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import okhttp3.Dispatcher;
-import okhttp3.OkHttpClient;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
 
 import static com.google.common.truth.Truth.assertThat;
 import static java.util.Collections.emptySet;
