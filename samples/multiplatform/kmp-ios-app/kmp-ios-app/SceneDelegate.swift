@@ -17,42 +17,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        let query = GithubRepositoriesQuery(
-            repositoriesCount: 50,
-            orderBy: RepositoryOrderField.updatedAt,
-            orderDirection: OrderDirection.desc
-        )
-        
-        let requestPayload = query.composeRequestBody().utf8()
-        print(requestPayload)
-        
-        let url = URL(string: "https://api.github.com/graphql")!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue(query.operationId(), forHTTPHeaderField: "X-APOLLO-OPERATION-ID")
-        request.setValue(query.name().name(), forHTTPHeaderField: "X-APOLLO-OPERATION-NAME")
-        request.setValue("bearer 230a8a1fcf3b2d318b7640b4b394d469d8783970", forHTTPHeaderField: "Authorization")
-
-        request.httpBody = requestPayload.data(using: String.Encoding.utf8)
-        
-        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-            // Check for Error
-            if let error = error {
-                print("Error took place \(error)")
-                return
+        let repository = ApolloiOSRepositoryKt.create()
+        DispatchQueue.main.async {
+            repository.fetchRepositories { (repositories) in
+                print(repositories)
             }
-     
-            // Convert HTTP Response Data to a String
-            if let data = data, let dataString = String(data: data, encoding: .utf8) {
-                query.parse(source: OkioBuffer())
-                print("Response data string:\n" + (dataString.data(using: .utf8)!.prettyPrintedJSONString! as String))
-                
-            }
-        }
-        task.resume()
-        
         
         // Create the SwiftUI view that provides the window contents.
         let contentView = ContentView()
@@ -94,14 +63,4 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 }
-
-extension Data {
-    var prettyPrintedJSONString: NSString? { /// NSString gives us a nice sanitized debugDescription
-        guard let object = try? JSONSerialization.jsonObject(with: self, options: []),
-              let data = try? JSONSerialization.data(withJSONObject: object, options: [.prettyPrinted]),
-              let prettyPrintedString = NSString(data: data, encoding: String.Encoding.utf8.rawValue) else { return nil }
-
-        return prettyPrintedString
-    }
 }
-

@@ -53,7 +53,7 @@ actual class ApolloCoroutinesService {
       setValue("application/json", forHTTPHeaderField = "Content-Type")
       setValue(operation.operationId(), forHTTPHeaderField = "X-APOLLO-OPERATION-ID")
       setValue(operation.name().name(), forHTTPHeaderField = "X-APOLLO-OPERATION-NAME")
-      setValue("bearer ${Companion.GITHUB_KEY}", forHTTPHeaderField = "Authorization")
+      setValue("bearer $GITHUB_KEY", forHTTPHeaderField = "Authorization")
 
       setHTTPBody(requestPayload.dataUsingEncoding(NSUTF8StringEncoding))
     }

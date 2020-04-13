@@ -77,7 +77,7 @@ tasks.register("copyFramework", Sync::class) {
     gradlew.writeText("#!/bin/bash\n"
         + "export 'JAVA_HOME=${System.getProperty("java.home")}'\n"
         + "cd '${rootProject.rootDir}'\n"
-        + "./gradlew \$@\n")
+        + "./gradlew \$@ --no-configure-on-demand\n")
     gradlew.setExecutable(true)
   }
 }
