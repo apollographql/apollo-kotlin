@@ -8,7 +8,7 @@ import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter
 import okio.IOException
 
-class SqlNormalizedCache(
+class SqlNormalizedCache internal constructor(
     private val recordFieldAdapter: RecordFieldJsonAdapter,
     private val cacheQueries: CacheQueries
 ) : NormalizedCache() {
