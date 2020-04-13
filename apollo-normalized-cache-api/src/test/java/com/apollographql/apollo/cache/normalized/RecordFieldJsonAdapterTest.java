@@ -14,7 +14,7 @@ import java.util.Map;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public class RecordFieldAdapterTest {
+public class RecordFieldJsonAdapterTest {
 
   RecordFieldJsonAdapter recordFieldAdapter;
   CustomTypeAdapter<TestCustomScalar> customTypeAdapter;

@@ -204,7 +204,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     return optimisticCache.merge(checkNotNull(recordSet, "recordSet == null"), cacheHeaders);
   }
 
-  @Override public Set<String> merge(Record record, @NotNull CacheHeaders cacheHeaders) {
+  @Override public Set<String> merge(@NotNull Record record, @NotNull CacheHeaders cacheHeaders) {
     return optimisticCache.merge(checkNotNull(record, "record == null"), cacheHeaders);
   }
 
