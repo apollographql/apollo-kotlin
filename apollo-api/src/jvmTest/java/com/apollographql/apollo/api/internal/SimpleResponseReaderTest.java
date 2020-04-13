@@ -296,13 +296,13 @@ public class SimpleResponseReaderTest {
         scalarTypeFor(RuntimeException.class), noConditions);
 
     final Map<String, Object> recordSet = new HashMap<>();
-    recordSet.put(stringField.responseName(), "string");
-    recordSet.put(booleanField.responseName(), true);
-    recordSet.put(integerField.responseName(), BigDecimal.valueOf(1));
-    recordSet.put(longField.responseName(), BigDecimal.valueOf(2));
-    recordSet.put(floatField.responseName(), BigDecimal.valueOf(3.99));
-    recordSet.put(doubleField.responseName(), BigDecimal.valueOf(4.99));
-    recordSet.put(unsupportedField.responseName(), "smth");
+    recordSet.put(stringField.getResponseName(), "string");
+    recordSet.put(booleanField.getResponseName(), true);
+    recordSet.put(integerField.getResponseName(), BigDecimal.valueOf(1));
+    recordSet.put(longField.getResponseName(), BigDecimal.valueOf(2));
+    recordSet.put(floatField.getResponseName(), BigDecimal.valueOf(3.99));
+    recordSet.put(doubleField.getResponseName(), BigDecimal.valueOf(4.99));
+    recordSet.put(unsupportedField.getResponseName(), "smth");
 
     final SimpleResponseReader responseReader = responseReader(recordSet);
     assertThat(responseReader.<String>readCustomType(stringField)).isEqualTo("string");

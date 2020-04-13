@@ -73,14 +73,14 @@ public class ApolloAutoPersistedQueryInterceptor implements ApolloInterceptor {
     return response.parsedResponse.flatMap(new Function<Response, Optional<InterceptorRequest>>() {
       @NotNull @Override public Optional<InterceptorRequest> apply(@NotNull Response response) {
         if (response.hasErrors()) {
-          if (isPersistedQueryNotFound(response.errors())) {
+          if (isPersistedQueryNotFound(response.getErrors())) {
             logger.w("GraphQL server couldn't find Automatic Persisted Query for operation name: "
                 + request.operation.name().name() + " id: " + request.operation.operationId());
 
             return Optional.of(request);
           }
 
-          if (isPersistedQueryNotSupported(response.errors())) {
+          if (isPersistedQueryNotSupported(response.getErrors())) {
             // TODO how to disable Automatic Persisted Queries in future and how to notify user about this
             logger.e("GraphQL server doesn't support Automatic Persisted Queries");
             return Optional.of(request);
@@ -93,7 +93,7 @@ public class ApolloAutoPersistedQueryInterceptor implements ApolloInterceptor {
 
   boolean isPersistedQueryNotFound(List<Error> errors) {
     for (Error error : errors) {
-      if (PROTOCOL_NEGOTIATION_ERROR_QUERY_NOT_FOUND.equalsIgnoreCase(error.message())) {
+      if (PROTOCOL_NEGOTIATION_ERROR_QUERY_NOT_FOUND.equalsIgnoreCase(error.getMessage())) {
         return true;
       }
     }
@@ -102,7 +102,7 @@ public class ApolloAutoPersistedQueryInterceptor implements ApolloInterceptor {
 
   boolean isPersistedQueryNotSupported(List<Error> errors) {
     for (Error error : errors) {
-      if (PROTOCOL_NEGOTIATION_ERROR_NOT_SUPPORTED.equalsIgnoreCase(error.message())) {
+      if (PROTOCOL_NEGOTIATION_ERROR_NOT_SUPPORTED.equalsIgnoreCase(error.getMessage())) {
         return true;
       }
     }

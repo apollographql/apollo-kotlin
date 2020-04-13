@@ -37,8 +37,6 @@ class DeprecatedPackageNameProvider(
   }
 }
 
-fun String.appendPackageName(packageName: String) = "$this.$packageName".removePrefix(".").removeSuffix(".")
-
 fun String.relativePathToGraphql(dropLast: Int = 0): String? {
   val parts = split(File.separator)
       .filter { it.isNotBlank() }
