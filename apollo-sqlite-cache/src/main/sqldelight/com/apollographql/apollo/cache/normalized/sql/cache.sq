@@ -13,7 +13,7 @@ insert:
 INSERT INTO records (key, record) VALUES (?,?);
 
 update:
-UPDATE records SET key=:key, record=:record WHERE key=:key;
+UPDATE records SET record=:record WHERE key=:key;
 
 delete:
 DELETE FROM records WHERE key=?;
