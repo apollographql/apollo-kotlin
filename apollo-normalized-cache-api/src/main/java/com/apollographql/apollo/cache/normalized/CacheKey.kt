@@ -24,7 +24,6 @@ class CacheKey(val key: String) {
     val NO_KEY = CacheKey("")
 
     @JvmStatic
-    @Deprecated("Use constructor to instantiate CacheKey", replaceWith = ReplaceWith(expression = "CacheKey(key)"))
     fun from(key: String): CacheKey = CacheKey(key)
   }
 
