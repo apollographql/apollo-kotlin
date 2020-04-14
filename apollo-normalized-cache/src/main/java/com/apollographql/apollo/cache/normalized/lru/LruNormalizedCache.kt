@@ -74,7 +74,7 @@ class LruNormalizedCache internal constructor(evictionPolicy: EvictionPolicy) : 
     return result
   }
 
-  fun clearCurrentCache() {
+  internal fun clearCurrentCache() {
     lruCache.invalidateAll()
   }
 
