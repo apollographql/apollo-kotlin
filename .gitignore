@@ -12,7 +12,6 @@
 build
 local.properties
 /reports
-node_modules/
 generated
 
 .DS_Store
@@ -28,3 +27,4 @@ package-lock.json
 **/.project
 .vscode/**
 **/bin
+.sqldelight
