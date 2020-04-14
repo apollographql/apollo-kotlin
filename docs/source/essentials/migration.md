@@ -2,6 +2,54 @@
 title: Migration Guides
 ---
 
+## Migrating to 2.x
+
+### Kotlin Multiplatform
+
+We are really excited to announce that with this release it is possible to build Kotlin Multiplatform apps with Apollo. The supported
+targets are Android / iOS / JVM.
+
+Please check-out `samples/multiplatform` for sample application.
+
+This is a backward compatible change for existing users. Please keep in mind that it will bring Kotlin standard library as a transitive
+dependency.
+
+Side effect changes of Kotlin migration:
+- Some primitive types like `Boolean`s may be unboxed where appropriate
+- Classes and functions are `final` unless they are intentionally marked as `open`
+- Kotlin-stdlib is added as a transitive dependency
+- Jvm target version is now 1.8
+- Gradle 6.x recommended. In 5.x, Gradle Metadata needs to be enabled by putting this into settings.gradle `enableFeaturePreview("GRADLE_METADATA")`
+
+### New Normalized Cache Modules
+
+For in-memory `LruNormalizedCache` users, no change required since `apollo-runtime` brings it as transitive dependency. It is still
+recommended adding the following dependency explicitly: `implementation("com.apollographql.apollo:apollo-normalized-cache:x.y.z")`
+
+> Apollo normalized cache module ([#2142](https://github.com/apollographql/apollo-android/pull/2142))
+
+`SqlNormalizedCache` is moved to its own module. If you added `apollo-android-support` for disk cache, replace it with new dependency.
+
+```
+// Replace:
+implementation("com.apollographql.apollo:apollo-android-support:x.y.z")
+
+// With:
+implementation("com.apollographql.apollo:apollo-normalized-cache-sqlite:x.y.z")
+```
+
+`ApolloSqlHelper` is deprecated. Instantiate `SqlNormalizedCacheFactory` with same arguments instead.
+```
+// Replace:
+ApolloSqlHelper apolloSqlHelper = ApolloSqlHelper.create(context, "db_name");
+NormalizedCacheFactory cacheFactory = new SqlNormalizedCacheFactory(apolloSqlHelper);
+
+// With:
+NormalizedCacheFactory cacheFactory = new SqlNormalizedCacheFactory(context, "db_name");
+```
+
+> Replace legacy Android SQL with SqlDelight ([#2158](https://github.com/apollographql/apollo-android/pull/2158))
+
 ## Migrating to 1.3.x
 
 Apollo-Android version 1.3.0 introduces some fixes and improvements that are incompatible with 1.2.x. Updating should be transparent for
