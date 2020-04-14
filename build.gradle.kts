@@ -211,13 +211,24 @@ fun Project.configurePublishing() {
       when {
         plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") -> {
           withType<MavenPublication>().getByName("jvm") {
+            // multiplatform doesn't add javadoc by default so add it here
             if (javadocJarTaskProvider != null) {
               artifact(javadocJarTaskProvider.get())
             }
           }
         }
         plugins.hasPlugin("java-gradle-plugin") -> {
-          // do nothing, the plugin will create the publications for us
+          // java-gradle-plugin doesn't add javadoc/sources by default so add it here
+          withType<MavenPublication>().all {
+            if (name == "pluginMaven") {
+              if (javadocJarTaskProvider != null) {
+                artifact(javadocJarTaskProvider.get())
+              }
+              if (sourcesJarTaskProvider != null) {
+                artifact(sourcesJarTaskProvider.get())
+              }
+            }
+          }
         }
         else -> {
           create<MavenPublication>("default") {
