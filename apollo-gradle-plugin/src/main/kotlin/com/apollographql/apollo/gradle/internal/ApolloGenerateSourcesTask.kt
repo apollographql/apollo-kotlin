@@ -1,16 +1,30 @@
 package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo.compiler.*
 import com.apollographql.apollo.compiler.DefaultPackageNameProvider
+import com.apollographql.apollo.compiler.GraphQLCompiler
+import com.apollographql.apollo.compiler.NullableValueType
 import com.apollographql.apollo.compiler.OperationIdGenerator
 import com.apollographql.apollo.compiler.parser.GraphQLDocumentParser
 import com.apollographql.apollo.compiler.parser.Schema
 import org.gradle.api.DefaultTask
-import org.gradle.api.file.*
+import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
-import org.gradle.api.tasks.*
+import org.gradle.api.tasks.CacheableTask
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
+import org.gradle.api.tasks.SkipWhenEmpty
+import org.gradle.api.tasks.TaskAction
 import java.io.File
 
 @CacheableTask
@@ -86,7 +100,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
     val realSchemaFile = schemaFile.get().asFile
 
-    outputDir.get().asFile.delete()
+    outputDir.get().asFile.deleteRecursively()
 
     val schema = Schema.invoke(realSchemaFile)
 
@@ -102,7 +116,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
     val nullableValueTypeEnum = NullableValueType.values().find { it.value == nullableValueType.getOrElse(NullableValueType.ANNOTATED.value) }
     if (nullableValueTypeEnum == null) {
       throw IllegalArgumentException("ApolloGraphQL: Unknown nullableValueType: '${nullableValueType.get()}'. Possible values:\n" +
-          NullableValueType.values().map { it.value }.joinToString("\n"))
+          NullableValueType.values().joinToString(separator = "\n") { it.value })
     }
 
     val codeGenerationIR = GraphQLDocumentParser(schema, packageNameProvider).parse(files)
