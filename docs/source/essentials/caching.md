@@ -21,7 +21,7 @@ dependencies {
 
 ### Raw HTTP Response Cache
 
-```Kotlin tab=
+```kotlin
 // Directory where cached responses will be stored
 val file = File(cacheDir, "apolloCache")
 
@@ -45,7 +45,7 @@ val dataResponse = apolloClient.query(query)
     .toDeferred().await()
 ```
 
-```Java tab=
+```java
 //Directory where cached responses will be stored
 File file = new File(context.getApplicationContext().getFilesDir(), "apolloCache");
 
@@ -110,7 +110,7 @@ dependencies {
 
 ### Usage
 
-```Kotlin tab=             
+```kotlin             
 // Create NormalizedCacheFactory
 // Please note that if null is passed in as the name, you will get an in-memory SQLite database that 
 // will not persist across restarts of the app.
@@ -137,7 +137,7 @@ val apolloClient = ApolloClient.builder()
     .build()
 ```
 
-```Java tab=
+```java
 // Create NormalizedCacheFactory
 // Please note that if null is passed in as the name, you will get an in-memory SQLite database that 
 // will not persist across restarts of the app.
@@ -185,7 +185,7 @@ dependencies {
 
 ### Usage
 
-```Kotlin tab=
+```kotlin
 // Create NormalizedCacheFactory
 val cacheFactory = LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build())
 
@@ -197,7 +197,7 @@ val apolloClient = ApolloClient.builder()
   .build())
 ```
 
-```Java tab=
+```java
 // Create NormalizedCacheFactory
 NormalizedCacheFactory cacheFactory = new LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build());
 
@@ -214,7 +214,7 @@ ApolloClient apolloClient = ApolloClient.builder()
 You can use both a memory cache and disk cache, with a cache chain. Reads will read from the first cache hit in the chain. Writes will
 propagate down the entire chain.
 
-```Kotlin tab=
+```kotlin
 
 val sqlCacheFactory = SqlNormalizedCacheFactory(context, "db_name")
 val memoryFirstThenSqlCacheFactory = LruNormalizedCacheFactory(
@@ -223,7 +223,7 @@ val memoryFirstThenSqlCacheFactory = LruNormalizedCacheFactory(
 
 ```
 
-```Java tab=
+```java
 
 NormalizedCacheFactory sqlCacheFactory = new SqlNormalizedCacheFactory(context, "db_name");
 NormalizedCacheFactory memoryFirstThenSqlCacheFactory = new LruNormalizedCacheFactory(

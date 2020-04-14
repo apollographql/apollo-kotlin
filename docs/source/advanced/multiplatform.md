@@ -21,7 +21,7 @@ the Framework needs to be linked into your XCode project. For more details on th
 
 First of all, here is how a classic Gradle setup looks like:
 
-```
+```kotlin:title=build.gralde
 plugins {
   kotlin("multiplatform")
   id("com.apollographql.apollo")
