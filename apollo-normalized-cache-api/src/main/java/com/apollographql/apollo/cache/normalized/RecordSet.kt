@@ -6,9 +6,9 @@ class RecordSet {
   operator fun get(key: String): Record? = recordMap[key]
 
   fun merge(apolloRecord: Record): Set<String> {
-    val oldRecord = recordMap[apolloRecord.key()]
+    val oldRecord = recordMap[apolloRecord.key]
     return if (oldRecord == null) {
-      recordMap[apolloRecord.key()] = apolloRecord
+      recordMap[apolloRecord.key] = apolloRecord
       emptySet()
     } else {
       oldRecord.mergeWith(apolloRecord)

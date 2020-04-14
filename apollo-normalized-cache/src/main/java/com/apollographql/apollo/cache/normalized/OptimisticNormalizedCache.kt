@@ -14,9 +14,9 @@ class OptimisticNormalizedCache : NormalizedCache() {
       val nonOptimisticRecord = nextCache?.loadRecord(key, cacheHeaders)
       val journal = lruCache.getIfPresent(key)
       if (journal != null) {
-        nonOptimisticRecord?.clone()?.apply {
+        nonOptimisticRecord?.toBuilder()?.build()?.apply {
           mergeWith(journal.snapshot)
-        } ?: journal.snapshot.clone()
+        } ?: journal.snapshot.toBuilder().build()
       } else {
         nonOptimisticRecord
       }
@@ -39,7 +39,7 @@ class OptimisticNormalizedCache : NormalizedCache() {
       result = true
       if (cascade) {
         for (cacheReference in recordJournal.snapshot.referencedFields()) {
-          result = result && remove(CacheKey(cacheReference.key()), true)
+          result = result && remove(CacheKey(cacheReference.key), true)
         }
       }
     }
@@ -53,10 +53,10 @@ class OptimisticNormalizedCache : NormalizedCache() {
   }
 
   fun mergeOptimisticUpdate(record: Record): Set<String> {
-    val journal = lruCache.getIfPresent(record.key())
+    val journal = lruCache.getIfPresent(record.key)
     return if (journal == null) {
-      lruCache.put(record.key(), RecordJournal(record))
-      setOf(record.key())
+      lruCache.put(record.key, RecordJournal(record))
+      setOf(record.key)
     } else {
       journal.commit(record)
     }
@@ -89,14 +89,14 @@ class OptimisticNormalizedCache : NormalizedCache() {
   }
 
   private class RecordJournal(mutationRecord: Record) {
-    var snapshot: Record = mutationRecord.clone()
-    val history = mutableListOf<Record>(mutationRecord.clone())
+    var snapshot: Record = mutationRecord.toBuilder().build()
+    val history = mutableListOf<Record>(mutationRecord.toBuilder().build())
 
     /**
      * Commits new version of record to the history and invalidate snapshot version.
      */
     fun commit(record: Record): Set<String> {
-      history.add(history.size, record.clone())
+      history.add(history.size, record.toBuilder().build())
       return snapshot.mergeWith(record)
     }
 
@@ -106,17 +106,17 @@ class OptimisticNormalizedCache : NormalizedCache() {
      */
     @OptIn(ExperimentalStdlibApi::class)
     fun revert(mutationId: UUID): Set<String> {
-      val recordIndex = history.indexOfFirst { mutationId == it.mutationId() }
+      val recordIndex = history.indexOfFirst { mutationId == it.mutationId }
       if (recordIndex == -1) {
         return emptySet()
       }
       return buildSet<String> {
-        add(history.removeAt(recordIndex).key())
+        add(history.removeAt(recordIndex).key)
 
         for (i in max(0, recordIndex - 1) until history.size) {
           val record = history[i]
           if (i == max(0, recordIndex - 1)) {
-            snapshot = record.clone()
+            snapshot = record.toBuilder().build()
           } else {
             addAll(snapshot.mergeWith(record))
           }

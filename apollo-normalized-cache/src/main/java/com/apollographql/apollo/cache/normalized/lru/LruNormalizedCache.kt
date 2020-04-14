@@ -67,7 +67,7 @@ class LruNormalizedCache internal constructor(evictionPolicy: EvictionPolicy) : 
       result = true
       if (cascade) {
         for (cacheReference in record.referencedFields()) {
-          result = result && remove(CacheKey(cacheReference.key()), true)
+          result = result && remove(CacheKey(cacheReference.key), true)
         }
       }
     }
@@ -79,14 +79,14 @@ class LruNormalizedCache internal constructor(evictionPolicy: EvictionPolicy) : 
   }
 
   override fun performMerge(apolloRecord: Record, cacheHeaders: CacheHeaders): Set<String> {
-    val oldRecord = lruCache.getIfPresent(apolloRecord.key())
+    val oldRecord = lruCache.getIfPresent(apolloRecord.key)
     return if (oldRecord == null) {
-      lruCache.put(apolloRecord.key(), apolloRecord)
+      lruCache.put(apolloRecord.key, apolloRecord)
       apolloRecord.keys()
     } else {
       oldRecord.mergeWith(apolloRecord).also {
         //re-insert to trigger new weight calculation
-        lruCache.put(apolloRecord.key(), oldRecord)
+        lruCache.put(apolloRecord.key, oldRecord)
       }
     }
   }

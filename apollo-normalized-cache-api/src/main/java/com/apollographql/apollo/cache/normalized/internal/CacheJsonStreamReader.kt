@@ -1,29 +1,22 @@
-package com.apollographql.apollo.cache.normalized.internal;
+package com.apollographql.apollo.cache.normalized.internal
 
-import com.apollographql.apollo.api.internal.json.JsonReader;
-import com.apollographql.apollo.api.internal.json.ResponseJsonStreamReader;
-import com.apollographql.apollo.cache.normalized.CacheReference;
-
-import java.io.IOException;
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.internal.json.ResponseJsonStreamReader
+import com.apollographql.apollo.cache.normalized.CacheReference
+import okio.IOException
 
 /**
- * A {@link ResponseJsonStreamReader} with additional support for {@link CacheReference}.
+ * A [ResponseJsonStreamReader] with additional support for [CacheReference].
  */
-public final class CacheJsonStreamReader extends ResponseJsonStreamReader {
+class CacheJsonStreamReader(jsonReader: JsonReader) : ResponseJsonStreamReader(jsonReader) {
 
-  public CacheJsonStreamReader(JsonReader jsonReader) {
-    super(jsonReader);
-  }
-
-  @Override public Object nextScalar(boolean optional) throws IOException {
-    Object scalar = super.nextScalar(optional);
-    if (scalar instanceof String) {
-      String scalarString = (String) scalar;
-      if (CacheReference.canDeserialize(scalarString)) {
-        return CacheReference.deserialize(scalarString);
-      }
+  @Throws(IOException::class)
+  override fun nextScalar(optional: Boolean): Any? {
+    val scalar = super.nextScalar(optional)
+    return if (scalar is String && CacheReference.canDeserialize(scalar)) {
+      CacheReference.deserialize(scalar)
+    } else {
+      scalar
     }
-    return scalar;
   }
-
 }

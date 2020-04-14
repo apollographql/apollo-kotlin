@@ -50,7 +50,7 @@ public abstract class ResponseNormalizer<R> implements ResolveDelegate<R> {
     path.remove(path.size() - 1);
     Object value = valueStack.pop();
     String cacheKey = cacheKeyBuilder().build(field, variables);
-    String dependentKey = currentRecordBuilder.key() + "." + cacheKey;
+    String dependentKey = currentRecordBuilder.getKey() + "." + cacheKey;
     dependentKeys.add(dependentKey);
     currentRecordBuilder.addField(cacheKey, value);
 

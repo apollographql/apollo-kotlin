@@ -35,7 +35,7 @@ class CacheFieldValueResolver(
           else -> CacheReference(fieldCacheKey.key)
         }
     return cacheReference?.let {
-      readableCache.read(cacheReference.key(), cacheHeaders)
+      readableCache.read(cacheReference.key, cacheHeaders)
           ?: // we are unable to find record in the cache by reference,
           // means it was removed intentionally by using imperative store API or
           // evicted from LRU cache, we must prevent of further resolving cache response as it's broken
@@ -47,7 +47,7 @@ class CacheFieldValueResolver(
     return values?.map { value ->
       when (value) {
         is CacheReference -> {
-          readableCache.read(value.key(), cacheHeaders)
+          readableCache.read(value.key, cacheHeaders)
               ?: // we are unable to find record in the cache by reference,
               // means it was removed intentionally by using imperative store API or
               // evicted from LRU cache, we must prevent of further resolving cache response as it's broken

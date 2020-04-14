@@ -3,8 +3,6 @@ package com.apollographql.apollo.cache.normalized
 import com.apollographql.apollo.api.internal.Optional
 import com.apollographql.apollo.cache.ApolloCacheHeaders
 import com.apollographql.apollo.cache.CacheHeaders
-import java.util.ArrayList
-import java.util.HashSet
 
 /**
  * A provider of [Record] for reading requests from cache.
@@ -145,7 +143,7 @@ abstract class NormalizedCache {
           append("\n  \"")
               .append(key1)
               .append("\" : {")
-          for ((key2, value2) in value1.fields()) {
+          for ((key2, value2) in value1.fields) {
             append("\n    \"")
                 .append(key2)
                 .append("\" : ")

@@ -1,99 +1,81 @@
-package com.apollographql.apollo.cache.normalized;
+package com.apollographql.apollo.cache.normalized
 
-import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader;
-import com.apollographql.apollo.cache.normalized.internal.CacheJsonStreamReader;
-import com.apollographql.apollo.api.internal.json.JsonWriter;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.List;
-import java.util.Map;
-
-import okio.Buffer;
-import okio.BufferedSource;
-import okio.Okio;
-
-import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
+import com.apollographql.apollo.api.internal.json.JsonWriter
+import com.apollographql.apollo.cache.normalized.internal.CacheJsonStreamReader
+import okio.Buffer
+import okio.BufferedSource
+import okio.ByteString.Companion.encodeUtf8
+import okio.IOException
 
 /**
  * An adapter used to serialize and deserialize Record fields. Record object types will be serialized to
- * {@link CacheReference}.
+ * [CacheReference].
  */
-public final class RecordFieldJsonAdapter {
+class RecordFieldJsonAdapter private constructor() {
 
-  public static RecordFieldJsonAdapter create() {
-    return new RecordFieldJsonAdapter();
-  }
-
-  private RecordFieldJsonAdapter() {
-  }
-
-  public String toJson(@NotNull Map<String, Object> fields) {
-    checkNotNull(fields, "fields == null");
-    Buffer buffer = new Buffer();
-    JsonWriter jsonWriter = JsonWriter.of(buffer);
-    jsonWriter.setSerializeNulls(true);
-
-    try {
-      jsonWriter.beginObject();
-      for (Map.Entry<String, Object> fieldEntry : fields.entrySet()) {
-        String key = fieldEntry.getKey();
-        Object value = fieldEntry.getValue();
-        jsonWriter.name(key);
-        writeJsonValue(value, jsonWriter);
+  fun toJson(fields: Map<String, Any?>): String {
+    val buffer = Buffer()
+    return JsonWriter.of(buffer).use { jsonWriter ->
+      jsonWriter.serializeNulls = true
+      try {
+        jsonWriter.beginObject()
+        for ((key, value) in fields) {
+          jsonWriter.name(key)
+          writeJsonValue(value, jsonWriter)
+        }
+        jsonWriter.endObject()
+        jsonWriter.close()
+        buffer.readUtf8()
+      } catch (e: IOException) {
+        // should never happen as we are working with mem buffer
+        throw RuntimeException(e)
       }
-      jsonWriter.endObject();
-      jsonWriter.close();
-      return buffer.readUtf8();
-    } catch (IOException e) {
-      // should never happen as we are working with mem buffer
-      throw new RuntimeException(e);
     }
   }
 
-  private Map<String, Object> fromBufferSource(BufferedSource bufferedFieldSource) throws IOException {
-    final CacheJsonStreamReader cacheJsonStreamReader =
-        new CacheJsonStreamReader(new BufferedSourceJsonReader(bufferedFieldSource));
-    return cacheJsonStreamReader.toMap();
+  @Throws(IOException::class)
+  private fun fromBufferSource(bufferedFieldSource: BufferedSource): Map<String, Any?>? {
+    val cacheJsonStreamReader = CacheJsonStreamReader(BufferedSourceJsonReader(bufferedFieldSource))
+    return cacheJsonStreamReader.toMap()
   }
 
-  public Map<String, Object> from(String jsonFieldSource) throws IOException {
-    final BufferedSource bufferSource
-        = Okio.buffer(Okio.source(new ByteArrayInputStream(jsonFieldSource.getBytes(Charset.defaultCharset()))));
-    return fromBufferSource(bufferSource);
+  @Throws(IOException::class)
+  fun from(jsonFieldSource: String): Map<String, Any?>? {
+    return fromBufferSource(Buffer().write(jsonFieldSource.encodeUtf8()))
   }
 
-  private static void writeJsonValue(Object value, JsonWriter jsonWriter) throws IOException {
-    if (value == null) {
-      jsonWriter.nullValue();
-    } else if (value instanceof String) {
-      jsonWriter.value((String) value);
-    } else if (value instanceof Boolean) {
-      jsonWriter.value((boolean) value);
-    } else if (value instanceof Number) {
-      jsonWriter.value((Number) value);
-    } else if (value instanceof CacheReference) {
-      jsonWriter.value(((CacheReference) value).serialize());
-    } else if (value instanceof List) {
-      jsonWriter.beginArray();
-      for (Object item : (List) value) {
-        writeJsonValue(item, jsonWriter);
+  companion object {
+    @JvmStatic
+    @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "RecordFieldJsonAdapter()"))
+    fun create(): RecordFieldJsonAdapter {
+      return RecordFieldJsonAdapter()
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IOException::class)
+    private fun writeJsonValue(value: Any?, jsonWriter: JsonWriter) {
+      when (value) {
+        null -> jsonWriter.nullValue()
+        is String -> jsonWriter.value(value)
+        is Boolean -> jsonWriter.value(value)
+        is Number -> jsonWriter.value(value)
+        is CacheReference -> jsonWriter.value(value.serialize())
+        is List<*> -> {
+          jsonWriter.beginArray()
+          value.forEach { writeJsonValue(it, jsonWriter) }
+          jsonWriter.endArray()
+        }
+        is Map<*, *> -> {
+          jsonWriter.beginObject()
+          for (entry in value as Map<String, Any?>) {
+            jsonWriter.name(entry.key)
+            writeJsonValue(entry.value, jsonWriter)
+          }
+          jsonWriter.endObject()
+        }
+        else -> error("Unsupported record value type: ${value::class.qualifiedName}")
       }
-      jsonWriter.endArray();
-    } else if (value instanceof Map) {
-      //noinspection unchecked
-      Map<String, Object> fields = (Map) value;
-      jsonWriter.beginObject();
-      for (Map.Entry<String, Object> fieldEntry : fields.entrySet()) {
-        jsonWriter.name(fieldEntry.getKey());
-        writeJsonValue(fieldEntry.getValue(), jsonWriter);
-      }
-      jsonWriter.endObject();
-    } else {
-      throw new RuntimeException("Unsupported record value type: " + value.getClass());
     }
   }
 }

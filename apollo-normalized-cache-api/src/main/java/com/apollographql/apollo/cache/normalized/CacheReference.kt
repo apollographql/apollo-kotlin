@@ -1,57 +1,41 @@
-package com.apollographql.apollo.cache.normalized;
+package com.apollographql.apollo.cache.normalized
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+class CacheReference(val key: String) {
 
-public final class CacheReference {
-
-  private final String key;
-  private static final Pattern SERIALIZATION_REGEX_PATTERN = Pattern.compile("ApolloCacheReference\\{(.*)\\}");
-  private static final String SERIALIZATION_TEMPLATE = "ApolloCacheReference{%s}";
-
-  public CacheReference(String key) {
-    this.key = key;
+  @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "key"))
+  fun key(): String {
+    return key
   }
 
-  public String key() {
-    return key;
+  override fun equals(other: Any?): Boolean {
+    return key == (other as? CacheReference)?.key
   }
 
-  @Override public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+  override fun hashCode(): Int = key.hashCode()
 
-    CacheReference that = (CacheReference) o;
+  override fun toString(): String = key
 
-    return key != null ? key.equals(that.key) : that.key == null;
-
+  fun serialize(): String {
+    return "$SERIALIZATION_TEMPLATE{$key}"
   }
 
-  @Override public int hashCode() {
-    return key != null ? key.hashCode() : 0;
-  }
+  companion object {
+    private val SERIALIZATION_REGEX_PATTERN = Regex("ApolloCacheReference\\{(.*)\\}")
+    private const val SERIALIZATION_TEMPLATE = "ApolloCacheReference"
 
-  @Override public String toString() {
-    return key;
-  }
-
-  public String serialize() {
-    return String.format(SERIALIZATION_TEMPLATE, key);
-  }
-
-  public static CacheReference deserialize(String serializedCacheReference) {
-    Matcher matcher = SERIALIZATION_REGEX_PATTERN.matcher(serializedCacheReference);
-    if (!matcher.find() || matcher.groupCount() != 1) {
-      throw new IllegalArgumentException("Not a cache reference: " + serializedCacheReference
-          + " Must be of the form:" + SERIALIZATION_TEMPLATE);
+    @JvmStatic
+    fun deserialize(serializedCacheReference: String): CacheReference {
+      val values = SERIALIZATION_REGEX_PATTERN.matchEntire(serializedCacheReference)?.groupValues
+      require(values != null && values.size > 1) {
+        "Not a cache reference: $serializedCacheReference Must be of the form: $SERIALIZATION_TEMPLATE{%s}"
+      }
+      return CacheReference(values[1])
     }
-    return new CacheReference(matcher.group(1));
-  }
 
-  public static boolean canDeserialize(String value) {
-    Matcher matcher = SERIALIZATION_REGEX_PATTERN.matcher(value);
-    return matcher.matches();
+    @JvmStatic
+    fun canDeserialize(value: String): Boolean {
+      return SERIALIZATION_REGEX_PATTERN.matches(value)
+    }
   }
 
 }
-
