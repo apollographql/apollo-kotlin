@@ -165,7 +165,6 @@ subprojects {
 }
 
 fun Project.configurePublishing() {
-  val publicationName = "default"
   val android = extensions.findByType(com.android.build.gradle.BaseExtension::class.java)
 
   /**
@@ -209,42 +208,42 @@ fun Project.configurePublishing() {
 
   configure<PublishingExtension> {
     publications {
-      if (plugins.hasPlugin("org.jetbrains.kotlin.multiplatform")) {
-        withType<MavenPublication>().getByName("jvm") {
-          if (javadocJarTaskProvider != null) {
-            artifact(javadocJarTaskProvider.get())
-          }
-        }
-      } else {
-        create<MavenPublication>(publicationName) {
-          val javaComponent = components.findByName("java")
-          if (javaComponent != null) {
-            from(javaComponent)
-          } else if (android != null) {
-            // this is a workaround while the below is fixed.
-            // dependency information in the pom file will most likely be wrong
-            // but it's been like that for some time now. As long as users still
-            // import apollo-runtime in addition to the android artifacts, it
-            // should be fine.
-            //
-            // https://issuetracker.google.com/issues/37055147
-            // https://github.com/gradle/gradle/pull/8399
-            afterEvaluate {
-              artifact(tasks.named("bundleReleaseAar").get())
+      when {
+        plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") -> {
+          withType<MavenPublication>().getByName("jvm") {
+            if (javadocJarTaskProvider != null) {
+              artifact(javadocJarTaskProvider.get())
             }
           }
+        }
+        plugins.hasPlugin("java-gradle-plugin") -> {
+          // do nothing, the plugin will create the publications for us
+        }
+        else -> {
+          create<MavenPublication>("default") {
+            val javaComponent = components.findByName("java")
+            if (javaComponent != null) {
+              from(javaComponent)
+            } else if (android != null) {
+              from(components.findByName("release"))
+            }
 
-          if (javadocJarTaskProvider != null) {
-            artifact(javadocJarTaskProvider.get())
-          }
-          if (sourcesJarTaskProvider != null) {
-            artifact(sourcesJarTaskProvider.get())
-          }
+            if (javadocJarTaskProvider != null) {
+              artifact(javadocJarTaskProvider.get())
+            }
+            if (sourcesJarTaskProvider != null) {
+              artifact(sourcesJarTaskProvider.get())
+            }
 
-          pom {
-            artifactId = findProperty("POM_ARTIFACT_ID") as String?
+            pom {
+              artifactId = findProperty("POM_ARTIFACT_ID") as String?
+            }
           }
         }
+      }
+
+      withType<MavenPublication>() {
+        setDefaultPomFields()
       }
     }
 
@@ -266,16 +265,6 @@ fun Project.configurePublishing() {
       maven {
         name = "ojo"
         url = uri("https://oss.jfrog.org/artifactory/oss-snapshot-local/")
-        credentials {
-          username = System.getenv("BINTRAY_USER")
-          password = System.getenv("BINTRAY_API_KEY")
-        }
-      }
-
-      maven {
-        // Same as the regular bintray repository with the plugin marker hardcoded
-        name = "bintrayMarker"
-        url = uri("https://api.bintray.com/maven/apollographql/android/com.apollographql.apollo.gradle.plugin/;publish=1;override=1")
         credentials {
           username = System.getenv("BINTRAY_USER")
           password = System.getenv("BINTRAY_API_KEY")
