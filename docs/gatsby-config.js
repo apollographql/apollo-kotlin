@@ -28,6 +28,7 @@ module.exports = {
             'advanced/android',
             'advanced/coroutines',
             'advanced/file-upload',
+            'advanced/multiplatform',
             'advanced/no-runtime',
             'advanced/persisted-queries',
             'advanced/rxjava2',
