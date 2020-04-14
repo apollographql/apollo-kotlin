@@ -255,7 +255,7 @@ fun Project.configurePublishing() {
 
       maven {
         name = "bintray"
-        url = uri("https://api.bintray.com/maven/apollographql/android/${project.property("POM_ARTIFACT_ID")}/;publish=1;override=1")
+        url = uri("https://api.bintray.com/maven/apollographql/android/apollo/;publish=1;override=1")
         credentials {
           username = System.getenv("BINTRAY_USER")
           password = System.getenv("BINTRAY_API_KEY")
