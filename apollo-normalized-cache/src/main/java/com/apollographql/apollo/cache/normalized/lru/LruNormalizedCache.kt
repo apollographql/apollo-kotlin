@@ -10,6 +10,7 @@ import com.nytimes.android.external.cache.CacheBuilder
 import com.nytimes.android.external.cache.Weigher
 import java.nio.charset.Charset
 import java.util.concurrent.Callable
+import kotlin.reflect.KClass
 
 /**
  * A [NormalizedCache] backed by an in memory [Cache]. Can be configured with an optional secondaryCache [ ], which will be used as a backup if a [Record] is not present in the primary cache.
@@ -92,8 +93,8 @@ class LruNormalizedCache internal constructor(evictionPolicy: EvictionPolicy) : 
   }
 
   @OptIn(ExperimentalStdlibApi::class)
-  override fun dump() = buildMap<Class<*>, Map<String, Record>> {
-    put(this@LruNormalizedCache.javaClass, lruCache.asMap())
+  override fun dump() = buildMap<KClass<*>, Map<String, Record>> {
+    put(this@LruNormalizedCache::class, lruCache.asMap())
     putAll(nextCache?.dump().orEmpty())
   }
 }

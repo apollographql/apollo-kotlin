@@ -2,7 +2,10 @@ package com.apollographql.apollo.cache.normalized
 
 import com.apollographql.apollo.cache.normalized.internal.RecordWeigher.byteChange
 import com.apollographql.apollo.cache.normalized.internal.RecordWeigher.calculateBytes
-import java.util.UUID
+import com.apollographql.apollo.cache.normalized.internal.UUID
+import kotlin.jvm.JvmStatic
+import kotlin.jvm.Synchronized
+import kotlin.jvm.Volatile
 
 /**
  * A normalized entry that corresponds to a response object. Object fields are stored if they are a GraphQL Scalars. If

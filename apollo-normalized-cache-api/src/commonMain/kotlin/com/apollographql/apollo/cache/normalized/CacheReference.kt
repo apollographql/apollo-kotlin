@@ -1,5 +1,7 @@
 package com.apollographql.apollo.cache.normalized
 
+import kotlin.jvm.JvmStatic
+
 class CacheReference(val key: String) {
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "key"))

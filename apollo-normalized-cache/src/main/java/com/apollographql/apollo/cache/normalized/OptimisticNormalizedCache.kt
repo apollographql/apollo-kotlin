@@ -4,6 +4,7 @@ import com.apollographql.apollo.cache.CacheHeaders
 import com.nytimes.android.external.cache.CacheBuilder
 import java.util.UUID
 import kotlin.math.max
+import kotlin.reflect.KClass
 
 class OptimisticNormalizedCache : NormalizedCache() {
 
@@ -80,9 +81,9 @@ class OptimisticNormalizedCache : NormalizedCache() {
   }
 
   @OptIn(ExperimentalStdlibApi::class)
-  override fun dump() = buildMap<Class<*>, Map<String, Record>> {
+  override fun dump() = buildMap<KClass<*>, Map<String, Record>> {
     put(
-        this@OptimisticNormalizedCache.javaClass,
+        this@OptimisticNormalizedCache::class,
         lruCache.asMap().mapValues { it.value.snapshot }
     )
     putAll(nextCache?.dump().orEmpty())

@@ -1,12 +1,15 @@
 package com.apollographql.apollo.cache.normalized
 
+import com.apollographql.apollo.api.internal.Throws
 import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
+import com.apollographql.apollo.api.internal.json.use
 import com.apollographql.apollo.cache.normalized.internal.CacheJsonStreamReader
 import okio.Buffer
 import okio.BufferedSource
 import okio.ByteString.Companion.encodeUtf8
 import okio.IOException
+import kotlin.jvm.JvmStatic
 
 /**
  * An adapter used to serialize and deserialize Record fields. Record object types will be serialized to

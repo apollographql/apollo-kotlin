@@ -1,5 +1,8 @@
 package com.apollographql.apollo.cache.normalized
 
+import kotlin.jvm.JvmField
+import kotlin.jvm.JvmStatic
+
 /**
  * A key for a [Record] used for normalization in a [NormalizedCache].
  * If the json object which the [Record] corresponds to does not have a suitable

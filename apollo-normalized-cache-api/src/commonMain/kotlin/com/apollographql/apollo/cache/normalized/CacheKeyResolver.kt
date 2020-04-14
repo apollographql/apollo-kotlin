@@ -2,6 +2,9 @@ package com.apollographql.apollo.cache.normalized
 
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
+import kotlin.jvm.JvmField
+import kotlin.jvm.JvmStatic
+import kotlin.jvm.JvmSuppressWildcards
 
 /**
  * Resolves a cache key for a JSON object.
