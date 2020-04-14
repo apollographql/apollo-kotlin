@@ -36,7 +36,7 @@ tasks.withType<Test> {
   setForkEvery(8L)
   dependsOn(":apollo-api:publishAllPublicationsToPluginTestRepository")
   dependsOn(":apollo-compiler:publishAllPublicationsToPluginTestRepository")
-  dependsOn("publishDefaultPublicationToPluginTestRepository")
+  dependsOn("publishAllPublicationsToPluginTestRepository")
 
   inputs.dir("src/test/files")
 }
