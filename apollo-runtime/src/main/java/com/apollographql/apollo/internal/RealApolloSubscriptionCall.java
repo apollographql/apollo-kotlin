@@ -175,7 +175,7 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
       logger.e(e, "Failed to fetch subscription `%s` from the store", subscription);
     }
 
-    if (cachedResponse != null && cachedResponse.data() != null) {
+    if (cachedResponse != null && cachedResponse.getData() != null) {
       logger.d("Cache HIT for subscription `%s`", subscription);
       return cachedResponse;
     } else {

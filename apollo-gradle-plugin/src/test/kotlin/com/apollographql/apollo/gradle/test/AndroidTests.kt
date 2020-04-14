@@ -136,17 +136,4 @@ class AndroidTests {
       assertTrue(dir.generatedChild("release/service/com/example/fragment/SpeciesInformation.java").isFile)
     }
   }
-
-  @Test
-  fun `applying com-apollographql-android shows a warning`() {
-    withProject(apolloConfiguration = "",
-        usesKotlinDsl = false,
-        plugins = listOf(TestUtils.androidLibraryPlugin, TestUtils.apolloPluginAndroid)) { dir ->
-
-      val result = TestUtils.executeTask("generateDebugApolloSources", dir)
-
-      assertEquals(TaskOutcome.SUCCESS, result.task(":generateDebugApolloSources")!!.outcome)
-      assertThat(result.output, containsString("The `com.apollographql.android` plugin is deprecated"))
-    }
-  }
 }

@@ -54,8 +54,6 @@ class KotlinDSLTests {
         useJavaBeansSemanticNaming.set(false)
         suppressRawTypesWarning.set(false)
         generateVisitorForPolymorphicDatatypes.set(false)
-        //schemaFilePath.set("")
-        //outputPackageName.set("")
         customTypeMapping.set(mapOf("DateTime" to "java.util.Date"))
         generateKotlinModels.set(false)
         generateOperationOutput.set(false)

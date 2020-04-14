@@ -43,3 +43,5 @@ class DefaultPackageNameProvider(rootFolders: Collection<String>, schemaFile: Fi
         .joinToString(".")
   }
 }
+
+fun String.appendPackageName(packageName: String) = "$this.$packageName".removePrefix(".").removeSuffix(".")

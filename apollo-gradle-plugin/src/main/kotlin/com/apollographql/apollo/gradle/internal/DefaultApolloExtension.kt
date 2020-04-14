@@ -24,30 +24,9 @@ open class DefaultApolloExtension(val project: Project)
     compilationUnits.all(action)
   }
 
-  override fun onCompilationUnits(action: Action<CompilationUnit>) {
-    throw Exception("please use 'onCompilationUnit'(singular) instead")
-  }
-
   override fun service(name: String, action: Action<DefaultService>) {
     val service = project.objects.newInstance(DefaultService::class.java, project.objects, name)
     action.execute(service)
     services.add(service)
-  }
-
-  override val outputPackageName = project.objects.property(String::class.java)
-  override val schemaFilePath = project.objects.property(String::class.java)
-
-  /**
-   * For backward compatibility
-   */
-  override fun setSchemaFilePath(schemaFilePath: String) {
-    this.schemaFilePath.set(schemaFilePath)
-  }
-
-  /**
-   * For backward compatibility
-   */
-  override fun setOutputPackageName(outputPackageName: String) {
-    this.outputPackageName.set(outputPackageName)
   }
 }
