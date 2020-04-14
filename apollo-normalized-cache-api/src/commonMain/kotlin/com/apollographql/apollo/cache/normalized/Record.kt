@@ -2,7 +2,7 @@ package com.apollographql.apollo.cache.normalized
 
 import com.apollographql.apollo.cache.normalized.internal.RecordWeigher.byteChange
 import com.apollographql.apollo.cache.normalized.internal.RecordWeigher.calculateBytes
-import com.apollographql.apollo.cache.normalized.internal.UUID
+import com.benasher44.uuid.Uuid
 import kotlin.jvm.JvmStatic
 import kotlin.jvm.Synchronized
 import kotlin.jvm.Volatile
@@ -14,7 +14,7 @@ import kotlin.jvm.Volatile
 class Record internal constructor(
     val key: String,
     private val _fields: MutableMap<String, Any?>,
-    mutationId: UUID?
+    mutationId: Uuid?
 ) {
 
   val fields: Map<String, Any?> get() = _fields
@@ -35,7 +35,7 @@ class Record internal constructor(
   fun key(): String = key
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "mutationId"))
-  fun mutationId(): UUID? = mutationId
+  fun mutationId(): Uuid? = mutationId
 
   @Deprecated(message = "Build from a new builder instead", replaceWith = ReplaceWith(expression = "toBuilder().build()"))
   fun clone(): Record {
@@ -116,7 +116,7 @@ class Record internal constructor(
   class Builder(
       val key: String,
       fields: Map<String, Any?>,
-      private var mutationId: UUID?
+      private var mutationId: Uuid?
   ) {
 
     private val fields: MutableMap<String, Any?> = LinkedHashMap(fields)
@@ -136,7 +136,7 @@ class Record internal constructor(
       return key
     }
 
-    fun mutationId(mutationId: UUID?): Builder {
+    fun mutationId(mutationId: Uuid?): Builder {
       this.mutationId = mutationId
       return this
     }

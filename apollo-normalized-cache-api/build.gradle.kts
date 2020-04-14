@@ -30,6 +30,7 @@ kotlin {
         api(project(":apollo-api"))
         implementation(kotlin("stdlib-common"))
         implementation(groovy.util.Eval.x(project, "x.dep.okio.okioMultiplatform"))
+        api(groovy.util.Eval.x(project, "x.dep.uuid"))
       }
     }
 

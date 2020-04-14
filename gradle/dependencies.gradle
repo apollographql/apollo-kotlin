@@ -101,6 +101,7 @@ ext.dep = [
         plugin : "com.squareup.sqldelight:gradle-plugin:$versions.sqldelight"
     ],
     truth                 : "com.google.truth:truth:$versions.truth",
+    uuid                  : "com.benasher44:uuid:0.1.0",
 ]
 ext.androidConfig = [
     compileSdkVersion: 28,
