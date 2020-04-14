@@ -20,7 +20,7 @@ These 3 objects inherit from `CompilerParams` and compiler options can be set in
 
 A complete configuration block with multiple services will look like this:
 
-```groovy
+```groovy:title=build.gradle
 apollo {
   // configure ApolloExtension here
   generateKotlinModels.set(true) // Generate Kotlin models for all services

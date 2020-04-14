@@ -13,7 +13,7 @@ Apollo GraphQL client allows you to cache responses, making it suitable for use 
 To enable HTTP Cache support, add the dependency to your project's build.gradle file. The latest version is
 [![Download](https://api.bintray.com/packages/apollographql/android/apollo-http-cache/images/download.svg)](https://bintray.com/apollographql/android/apollo-http-cache/_latestVersion)
 
-```groovy
+```kotlin:title=build.gradle
 dependencies {
   implementation("com.apollographql.apollo:apollo-http-cache:x.y.z")
 }
@@ -21,7 +21,7 @@ dependencies {
 
 ### Raw HTTP Response Cache
 
-```kotlin
+```kotlin:title=Kotlin
 // Directory where cached responses will be stored
 val file = File(cacheDir, "apolloCache")
 
@@ -45,7 +45,7 @@ val dataResponse = apolloClient.query(query)
     .toDeferred().await()
 ```
 
-```java
+```java:title=Java
 //Directory where cached responses will be stored
 File file = new File(context.getApplicationContext().getFilesDir(), "apolloCache");
 
@@ -102,7 +102,7 @@ and will be evicted from the http cache, `expireAfter(expireTimeout, timeUnit)`.
 To enable Normalized Disk Cache support, add the dependency to your project's build.gradle file. The latest version is
 [![Download](https://api.bintray.com/packages/apollographql/android/apollo-normalized-cache-sqlite/images/download.svg)](https://bintray.com/apollographql/android/apollo-normalized-cache-sqlite/_latestVersion)
 
-```
+```kotlin:title=build.gradle
 dependencies {
   implementation("com.apollographql.apollo:apollo-normalized-cache-sqlite:x.y.z")
 }
@@ -110,7 +110,7 @@ dependencies {
 
 ### Usage
 
-```kotlin             
+```kotlin:title=Kotlin             
 // Create NormalizedCacheFactory
 // Please note that if null is passed in as the name, you will get an in-memory SQLite database that 
 // will not persist across restarts of the app.
@@ -137,7 +137,7 @@ val apolloClient = ApolloClient.builder()
     .build()
 ```
 
-```java
+```java:title=Java
 // Create NormalizedCacheFactory
 // Please note that if null is passed in as the name, you will get an in-memory SQLite database that 
 // will not persist across restarts of the app.
@@ -177,7 +177,7 @@ ApolloClient apolloClient = ApolloClient.builder()
 To enable Normalized In-Memory Cache support, add the dependency to your project's build.gradle file. The latest version is
 [![Download](https://api.bintray.com/packages/apollographql/android/apollo-normalized-cache/images/download.svg)](https://bintray.com/apollographql/android/apollo-normalized-cache/_latestVersion)
 
-```
+```kotlin:title=build.gradle
 dependencies {
   implementation("com.apollographql.apollo:apollo-normalized-cache:x.y.z")
 }
@@ -185,7 +185,7 @@ dependencies {
 
 ### Usage
 
-```kotlin
+```kotlin:title=Kotlin
 // Create NormalizedCacheFactory
 val cacheFactory = LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build())
 
@@ -197,7 +197,7 @@ val apolloClient = ApolloClient.builder()
   .build())
 ```
 
-```java
+```java:title=Java
 // Create NormalizedCacheFactory
 NormalizedCacheFactory cacheFactory = new LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build());
 
@@ -214,7 +214,7 @@ ApolloClient apolloClient = ApolloClient.builder()
 You can use both a memory cache and disk cache, with a cache chain. Reads will read from the first cache hit in the chain. Writes will
 propagate down the entire chain.
 
-```kotlin
+```kotlin:title=Kotlin
 
 val sqlCacheFactory = SqlNormalizedCacheFactory(context, "db_name")
 val memoryFirstThenSqlCacheFactory = LruNormalizedCacheFactory(
@@ -223,7 +223,7 @@ val memoryFirstThenSqlCacheFactory = LruNormalizedCacheFactory(
 
 ```
 
-```java
+```java:title=Java
 
 NormalizedCacheFactory sqlCacheFactory = new SqlNormalizedCacheFactory(context, "db_name");
 NormalizedCacheFactory memoryFirstThenSqlCacheFactory = new LruNormalizedCacheFactory(
