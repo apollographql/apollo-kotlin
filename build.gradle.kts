@@ -225,7 +225,9 @@ fun Project.configurePublishing() {
             if (javaComponent != null) {
               from(javaComponent)
             } else if (android != null) {
-              from(components.findByName("release"))
+              afterEvaluate {
+                from(components.findByName("release"))
+              }
             }
 
             if (javadocJarTaskProvider != null) {
