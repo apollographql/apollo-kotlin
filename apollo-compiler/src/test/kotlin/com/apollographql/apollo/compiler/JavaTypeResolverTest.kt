@@ -37,7 +37,6 @@ class JavaTypeResolverTest {
     override fun operationPackageName(filePath: String): String {
       return filePath.relativePathToGraphql()
     }
-
   }
 
   private val defaultContext = CodeGenerationContext(
