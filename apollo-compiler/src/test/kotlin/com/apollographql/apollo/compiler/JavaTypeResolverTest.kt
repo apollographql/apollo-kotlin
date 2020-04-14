@@ -6,14 +6,40 @@ import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.TypeName
 import org.junit.Assert
 import org.junit.Test
+import java.io.File
 import java.util.*
 
+private fun String.relativePathToGraphql(dropLast: Int = 0): String {
+  val parts = split(File.separator)
+      .filter { it.isNotBlank() }
+      .dropLast(dropLast)
+
+  for (i in 2 until parts.size) {
+    if (parts[i - 2] == "src" && parts[i] == "graphql") {
+      return parts.subList(i + 1, parts.size).joinToString(File.separator)
+    }
+  }
+
+  throw Exception("$this should contain src/{foo}/graphql")
+}
+
+private fun String.formatPackageName(dropLast: Int = 0): String? {
+  return relativePathToGraphql(dropLast = dropLast).split(File.separator).joinToString(".")
+}
+
+
+
 class JavaTypeResolverTest {
-  private val packageNameProvider = DeprecatedPackageNameProvider(
-      rootPackageName = "",
-      outputPackageName = null,
-      schemaPackageName = ""
-  )
+  private val packageNameProvider = object: PackageNameProvider {
+    override val fragmentsPackageName = ""
+    override val typesPackageName = ""
+
+    override fun operationPackageName(filePath: String): String {
+      return filePath.relativePathToGraphql()
+    }
+
+  }
+
   private val defaultContext = CodeGenerationContext(
       reservedTypeNames = emptyList(),
       typeDeclarations = emptyList(),
