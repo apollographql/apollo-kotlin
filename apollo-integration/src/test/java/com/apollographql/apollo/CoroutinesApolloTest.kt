@@ -11,18 +11,15 @@ import com.apollographql.apollo.coroutines.toDeferred
 import com.apollographql.apollo.coroutines.toFlow
 import com.apollographql.apollo.coroutines.toJob
 import com.apollographql.apollo.exception.ApolloException
-import com.apollographql.apollo.exception.ApolloParseException
-import com.apollographql.apollo.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery
-import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
 import com.apollographql.apollo.integration.normalizer.type.Episode
 import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.runBlocking
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
@@ -33,6 +30,7 @@ import org.junit.Test
 
 class CoroutinesApolloTest {
   private lateinit var apolloClient: ApolloClient
+
   @get:Rule
   val server = MockWebServer()
 
@@ -54,9 +52,10 @@ class CoroutinesApolloTest {
   fun callDeferredProducesValue() {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
-    val deferred = apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toDeferred()
     runBlocking {
-      assertThat(deferred.await().data!!.hero()!!.name()).isEqualTo("R2-D2")
+      val response: Response<EpisodeHeroNameQuery.Data> =
+          apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toDeferred().await()
+      assertThat(response.data!!.hero()!!.name()).isEqualTo("R2-D2")
     }
   }
 
@@ -65,8 +64,7 @@ class CoroutinesApolloTest {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
     runBlocking {
-      val job = apolloClient.prefetch(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
-          .toJob()
+      val job = apolloClient.prefetch(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toJob()
       job.join()
     }
   }
@@ -83,6 +81,7 @@ class CoroutinesApolloTest {
   }
 
   @Test
+  @ExperimentalCoroutinesApi
   fun flowCanBeRead() {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
@@ -97,6 +96,7 @@ class CoroutinesApolloTest {
   }
 
   @Test
+  @ExperimentalCoroutinesApi
   fun flowError() {
     server.enqueue(MockResponse().setResponseCode(200).setBody("nonsense"))
 
@@ -120,7 +120,7 @@ class CoroutinesApolloTest {
     server.enqueue(MockResponse().setResponseCode(200).setBody("nonsense"))
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
-    val response = runBlocking {
+    val response: Response<EpisodeHeroNameQuery.Data> = runBlocking {
       apolloClient
           .query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
           .toFlow()
@@ -137,7 +137,7 @@ class CoroutinesApolloTest {
     server.enqueue(MockResponse().setResponseCode(200).setBody("nonsense"))
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
-    val response = runBlocking {
+    val response: Response<EpisodeHeroNameQuery.Data> = runBlocking {
       apolloClient
           .query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
           .watcher()
@@ -151,7 +151,6 @@ class CoroutinesApolloTest {
 
   companion object {
 
-    private val FILE_EPISODE_HERO_NAME_WITH_ID = "EpisodeHeroNameResponseWithId.json"
-    private val FILE_EPISODE_HERO_NAME_CHANGE = "EpisodeHeroNameResponseNameChange.json"
+    private const val FILE_EPISODE_HERO_NAME_WITH_ID = "EpisodeHeroNameResponseWithId.json"
   }
 }
