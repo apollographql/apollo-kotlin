@@ -49,6 +49,11 @@ NormalizedCacheFactory cacheFactory = new SqlNormalizedCacheFactory(context, "db
 ```
 
 > Replace legacy Android SQL with SqlDelight ([#2158](https://github.com/apollographql/apollo-android/pull/2158))
+                              
+### Deprecated Gradle Plugin
+
+The deprecated Gradle Plugin is now removed. Please refer to migration guide from previous releases before upgrading to 2.0
+https://www.apollographql.com/docs/android/essentials/migration/#gradle-plugin-changes
 
 ## Migrating to 1.3.x
 
