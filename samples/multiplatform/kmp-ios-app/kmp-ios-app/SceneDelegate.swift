@@ -46,7 +46,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
      
             // Convert HTTP Response Data to a String
             if let data = data, let dataString = String(data: data, encoding: .utf8) {
-                query.parse(source: OkioBuffer())
+                let viewer: GithubRepositoriesQuery.Viewer = query.parse(source: OkioBuffer()).data!.viewer
+                print(viewer)
+                
                 print("Response data string:\n" + (dataString.data(using: .utf8)!.prettyPrintedJSONString! as String))
                 
             }
