@@ -37,8 +37,11 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
+import okio.Buffer
 import okio.BufferedSource
 import okio.ByteString
+
+private val DEFAULT_SCALAR_TYPE_ADAPTERS = MemberName(ScalarTypeAdapters.Companion::class.asClassName(), "DEFAULT")
 
 internal fun OperationType.typeSpec(targetPackage: String, generateAsInternal: Boolean = false) = TypeSpec
     .classBuilder(name)
@@ -98,14 +101,8 @@ internal fun OperationType.typeSpec(targetPackage: String, generateAsInternal: B
     )
     .addFunction(FunSpec.builder("parse")
         .addModifiers(KModifier.OVERRIDE)
-        .addParameter(ParameterSpec
-            .builder("source", BufferedSource::class)
-            .build()
-        )
-        .addParameter(ParameterSpec
-            .builder("scalarTypeAdapters", ScalarTypeAdapters::class)
-            .build()
-        )
+        .addParameter(ParameterSpec("source", BufferedSource::class.asTypeName()))
+        .addParameter(ParameterSpec("scalarTypeAdapters", ScalarTypeAdapters::class.asTypeName()))
         .throwsMultiplatformIOException()
         .returns(Response::class.asClassName().parameterizedBy(data.asTypeName()))
         .addStatement("return %T.parse(source, this, scalarTypeAdapters)", SimpleOperationResponseParser::class)
@@ -113,13 +110,27 @@ internal fun OperationType.typeSpec(targetPackage: String, generateAsInternal: B
     )
     .addFunction(FunSpec.builder("parse")
         .addModifiers(KModifier.OVERRIDE)
-        .addParameter(ParameterSpec
-            .builder("source", BufferedSource::class)
-            .build()
-        )
+        .addParameter(ParameterSpec("byteString", ByteString::class.asTypeName()))
+        .addParameter(ParameterSpec("scalarTypeAdapters", ScalarTypeAdapters::class.asTypeName()))
         .throwsMultiplatformIOException()
         .returns(Response::class.asClassName().parameterizedBy(data.asTypeName()))
-        .addStatement("return parse(source, %M)", MemberName(ScalarTypeAdapters.Companion::class.asClassName(), "DEFAULT"))
+        .addStatement("return parse(%T().write(byteString), scalarTypeAdapters)", Buffer::class)
+        .build()
+    )
+    .addFunction(FunSpec.builder("parse")
+        .addModifiers(KModifier.OVERRIDE)
+        .addParameter(ParameterSpec("source", BufferedSource::class.asTypeName()))
+        .throwsMultiplatformIOException()
+        .returns(Response::class.asClassName().parameterizedBy(data.asTypeName()))
+        .addStatement("return parse(source, %M)", DEFAULT_SCALAR_TYPE_ADAPTERS)
+        .build()
+    )
+    .addFunction(FunSpec.builder("parse")
+        .addModifiers(KModifier.OVERRIDE)
+        .addParameter(ParameterSpec("byteString", ByteString::class.asTypeName()))
+        .throwsMultiplatformIOException()
+        .returns(Response::class.asClassName().parameterizedBy(data.asTypeName()))
+        .addStatement("return parse(byteString, %M)", DEFAULT_SCALAR_TYPE_ADAPTERS)
         .build()
     )
     .addFunction(composeRequestBodyFunSpec())
@@ -308,7 +319,7 @@ private fun composeRequestBodyWithDefaultAdaptersFunSpec(): FunSpec {
               .addStatement("operation = this,")
               .addStatement("autoPersistQueries = false,")
               .addStatement("withQueryDocument = true,")
-              .addStatement("scalarTypeAdapters = %M", MemberName(ScalarTypeAdapters.Companion::class.asClassName(), "DEFAULT"))
+              .addStatement("scalarTypeAdapters = %M", DEFAULT_SCALAR_TYPE_ADAPTERS)
               .unindent()
               .add(")\n")
               .build()

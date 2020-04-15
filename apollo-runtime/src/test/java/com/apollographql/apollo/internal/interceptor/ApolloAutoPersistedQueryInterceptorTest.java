@@ -317,6 +317,14 @@ public class ApolloAutoPersistedQueryInterceptorTest {
       throw new UnsupportedOperationException();
     }
 
+    @NotNull @Override public com.apollographql.apollo.api.Response parse(@NotNull ByteString byteString) {
+      throw new UnsupportedOperationException();
+    }
+
+    @NotNull @Override public com.apollographql.apollo.api.Response parse(@NotNull ByteString byteString, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+      throw new UnsupportedOperationException();
+    }
+
     @NotNull @Override public ByteString composeRequestBody(@NotNull ScalarTypeAdapters scalarTypeAdapters) {
       throw new UnsupportedOperationException();
     }
