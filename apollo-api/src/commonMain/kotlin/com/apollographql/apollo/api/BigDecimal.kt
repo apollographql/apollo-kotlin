@@ -1,6 +1,6 @@
 package com.apollographql.apollo.api
 
-expect class BigDecimal {
+expect class BigDecimal : Number {
   constructor(strVal: String)
   constructor(doubleVal: Double)
   constructor(intVal: Int)
@@ -14,8 +14,4 @@ expect class BigDecimal {
   fun signum(): Int
 
   override fun toString(): String
-
-  fun toInt(): Int
-  fun toLong(): Long
-  fun toDouble(): Double
 }

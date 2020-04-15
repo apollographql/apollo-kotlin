@@ -2,7 +2,7 @@ package com.apollographql.apollo.api
 
 import platform.Foundation.NSDecimalNumber
 
-actual class BigDecimal internal constructor(private val raw: NSDecimalNumber) : Comparable<BigDecimal> {
+actual class BigDecimal internal constructor(private val raw: NSDecimalNumber) : Number(), Comparable<BigDecimal> {
 
   actual constructor(strVal: String) : this(NSDecimalNumber(strVal))
 
@@ -33,17 +33,41 @@ actual class BigDecimal internal constructor(private val raw: NSDecimalNumber) :
 
   override fun compareTo(other: BigDecimal): Int = raw.compare(other.raw).toInt()
 
+
+
   actual override fun toString(): String = raw.stringValue
 
-  actual fun toInt(): Int {
+  override fun toInt(): Int {
     return raw.intValue
   }
 
-  actual fun toLong(): Long {
+  override fun toLong(): Long {
     return raw.longValue
   }
 
-  actual fun toDouble(): Double {
+  override fun toShort(): Short {
+    return raw.shortValue
+  }
+
+  override fun toByte(): Byte {
+    return raw.charValue
+  }
+
+  override fun toChar(): Char {
+    return raw.charValue.toChar()
+  }
+
+  override fun toDouble(): Double {
     return raw.doubleValue
   }
+
+  override fun toFloat(): Float {
+    return raw.floatValue
+  }
+
+  override fun equals(other: Any?): Boolean {
+    return (this === other) || raw == (other as? BigDecimal)?.raw
+  }
+
+  override fun hashCode(): Int = raw.hashCode()
 }
