@@ -165,7 +165,6 @@ subprojects {
 }
 
 fun Project.configurePublishing() {
-  val publicationName = "default"
   val android = extensions.findByType(com.android.build.gradle.BaseExtension::class.java)
 
   /**
@@ -209,42 +208,55 @@ fun Project.configurePublishing() {
 
   configure<PublishingExtension> {
     publications {
-      if (plugins.hasPlugin("org.jetbrains.kotlin.multiplatform")) {
-        withType<MavenPublication>().getByName("jvm") {
-          if (javadocJarTaskProvider != null) {
-            artifact(javadocJarTaskProvider.get())
-          }
-        }
-      } else {
-        create<MavenPublication>(publicationName) {
-          val javaComponent = components.findByName("java")
-          if (javaComponent != null) {
-            from(javaComponent)
-          } else if (android != null) {
-            // this is a workaround while the below is fixed.
-            // dependency information in the pom file will most likely be wrong
-            // but it's been like that for some time now. As long as users still
-            // import apollo-runtime in addition to the android artifacts, it
-            // should be fine.
-            //
-            // https://issuetracker.google.com/issues/37055147
-            // https://github.com/gradle/gradle/pull/8399
-            afterEvaluate {
-              artifact(tasks.named("bundleReleaseAar").get())
+      when {
+        plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") -> {
+          withType<MavenPublication>().getByName("jvm") {
+            // multiplatform doesn't add javadoc by default so add it here
+            if (javadocJarTaskProvider != null) {
+              artifact(javadocJarTaskProvider.get())
             }
           }
-
-          if (javadocJarTaskProvider != null) {
-            artifact(javadocJarTaskProvider.get())
-          }
-          if (sourcesJarTaskProvider != null) {
-            artifact(sourcesJarTaskProvider.get())
-          }
-
-          pom {
-            artifactId = findProperty("POM_ARTIFACT_ID") as String?
+        }
+        plugins.hasPlugin("java-gradle-plugin") -> {
+          // java-gradle-plugin doesn't add javadoc/sources by default so add it here
+          withType<MavenPublication>().all {
+            if (name == "pluginMaven") {
+              if (javadocJarTaskProvider != null) {
+                artifact(javadocJarTaskProvider.get())
+              }
+              if (sourcesJarTaskProvider != null) {
+                artifact(sourcesJarTaskProvider.get())
+              }
+            }
           }
         }
+        else -> {
+          create<MavenPublication>("default") {
+            val javaComponent = components.findByName("java")
+            if (javaComponent != null) {
+              from(javaComponent)
+            } else if (android != null) {
+              afterEvaluate {
+                from(components.findByName("release"))
+              }
+            }
+
+            if (javadocJarTaskProvider != null) {
+              artifact(javadocJarTaskProvider.get())
+            }
+            if (sourcesJarTaskProvider != null) {
+              artifact(sourcesJarTaskProvider.get())
+            }
+
+            pom {
+              artifactId = findProperty("POM_ARTIFACT_ID") as String?
+            }
+          }
+        }
+      }
+
+      withType<MavenPublication>() {
+        setDefaultPomFields()
       }
     }
 
@@ -256,7 +268,7 @@ fun Project.configurePublishing() {
 
       maven {
         name = "bintray"
-        url = uri("https://api.bintray.com/maven/apollographql/android/${project.property("POM_ARTIFACT_ID")}/;publish=1;override=1")
+        url = uri("https://api.bintray.com/maven/apollographql/android/apollo/;publish=1;override=1")
         credentials {
           username = System.getenv("BINTRAY_USER")
           password = System.getenv("BINTRAY_API_KEY")
@@ -266,16 +278,6 @@ fun Project.configurePublishing() {
       maven {
         name = "ojo"
         url = uri("https://oss.jfrog.org/artifactory/oss-snapshot-local/")
-        credentials {
-          username = System.getenv("BINTRAY_USER")
-          password = System.getenv("BINTRAY_API_KEY")
-        }
-      }
-
-      maven {
-        // Same as the regular bintray repository with the plugin marker hardcoded
-        name = "bintrayMarker"
-        url = uri("https://api.bintray.com/maven/apollographql/android/com.apollographql.apollo.gradle.plugin/;publish=1;override=1")
         credentials {
           username = System.getenv("BINTRAY_USER")
           password = System.getenv("BINTRAY_API_KEY")
@@ -332,58 +334,6 @@ fun PublicationContainer.setDefaultPomFields() {
   }
 }
 
-val publishToOjo = tasks.register("publishToOjo") {
-  dependsOn(subprojects.flatMap { subproject ->
-    subproject.tasks.matching {
-      if (it.name == "apollo-gradle-plugin") {
-        it.name in arrayOf("publishDefaultPublicationToOjoRepository",
-            "publishApolloGradlePluginPluginMarkerMavenPublicationToOjoRepository")
-      } else {
-        it.name == "publishAllPublicationsToOjoRepository"
-      }
-    }
-  })
-  doLast {
-    project.logger.log(LogLevel.LIFECYCLE, "Snapshot deployed on OJO!")
-  }
-}
-
-val publishToBintray = tasks.register("publishToBintray") {
-  dependsOn(subprojects.flatMap { subproject ->
-    subproject.tasks.matching {
-      if (it.name == "apollo-gradle-plugin") {
-        it.name in arrayOf("publishDefaultPublicationToBintrayRepository",
-            "publishApolloGradlePluginPluginMarkerMavenPublicationToBintrayMarkerRepository")
-      } else {
-        it.name == "publishAllPublicationsToBintrayRepository"
-      }
-    }
-  })
-}
-
-val publishToOss = tasks.register("publishToOss") {
-  dependsOn(subprojects.flatMap { subproject ->
-    subproject.tasks.matching {
-      if (it.name == "apollo-gradle-plugin") {
-        it.name in arrayOf("publishDefaultPublicationToOssRepository",
-            "publishApolloGradlePluginPluginMarkerMavenPublicationToOssRepository")
-      } else {
-        it.name == "publishAllPublicationsToOssRepository"
-      }
-    }
-  })
-  doLast {
-    project.logger.log(LogLevel.LIFECYCLE, "Snapshot deployed on OSS!")
-  }
-}
-
-val publishToGradlePortal = tasks.register("publishToGradlePortal") {
-  dependsOn(":apollo-gradle-plugin:publishPlugin")
-  doLast {
-    project.logger.log(LogLevel.LIFECYCLE, "Plugin deployed Gradle Plugin Portal!")
-  }
-}
-
 tasks.register("publishIfNeeded") {
   val eventName = System.getenv("GITHUB_EVENT_NAME")
   val ref = System.getenv("GITHUB_REF")
@@ -394,16 +344,16 @@ tasks.register("publishIfNeeded") {
 
   if (eventName == "push" && ref == "refs/heads/master") {
     project.logger.log(LogLevel.LIFECYCLE, "Deploying snapshot to OJO...")
-    dependsOn(publishToOjo)
+    dependsOn("publishAllPublicationsToOjoRepository")
     project.logger.log(LogLevel.LIFECYCLE, "Deploying snapshot to OSS...")
-    dependsOn(publishToOss)
+    dependsOn("publishAllPublicationsToOssRepository")
   }
 
   if (ref?.startsWith("refs/tags/") == true) {
     project.logger.log(LogLevel.LIFECYCLE, "Deploying release to Bintray...")
-    dependsOn(publishToBintray)
+    dependsOn("publishAllPublicationsToBintrayRepository")
 
     project.logger.log(LogLevel.LIFECYCLE, "Deploying release to Gradle Portal...")
-    dependsOn(publishToGradlePortal)
+    dependsOn(":apollo-gradle-plugin:publishPlugin")
   }
 }
