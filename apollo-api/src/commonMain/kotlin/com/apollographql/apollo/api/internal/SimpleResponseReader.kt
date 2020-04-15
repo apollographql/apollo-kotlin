@@ -1,6 +1,11 @@
 package com.apollographql.apollo.api.internal
 
-import com.apollographql.apollo.api.*
+import com.apollographql.apollo.api.BigDecimal
+import com.apollographql.apollo.api.CustomTypeValue
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.ScalarType
+import com.apollographql.apollo.api.ScalarTypeAdapters
 
 class SimpleResponseReader private constructor(
     private val recordSet: Map<String, Any?>,
@@ -195,8 +200,13 @@ class SimpleResponseReader private constructor(
     }
   }
 
-  @Suppress("UNCHECKED_CAST")
-  private fun <T> valueFor(map: Map<String, Any?>, field: ResponseField): T? {
-    return map[field.responseName] as T?
+  private inline fun <reified T> valueFor(map: Map<String, Any?>, field: ResponseField): T? {
+    return when (val value = map[field.responseName]) {
+      null -> null
+      is T -> value
+      else -> throw ClassCastException(
+          "The value for \"${field.responseName}\" expected to be of type \"${T::class.simpleName}\" but was \"${value::class.simpleName}\""
+      )
+    }
   }
 }

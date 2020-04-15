@@ -245,8 +245,8 @@ class SimpleResponseReaderTest {
     recordSet[booleanField.responseName] = true
     recordSet[integerField.responseName] = BigDecimal(1)
     recordSet[longField.responseName] = BigDecimal(2)
-    recordSet[floatField.responseName] = BigDecimal(3.99)
-    recordSet[doubleField.responseName] = BigDecimal(4.99)
+    recordSet[floatField.responseName] = BigDecimal("3.99")
+    recordSet[doubleField.responseName] = BigDecimal("4.99")
     recordSet[unsupportedField.responseName] = "smth"
     val responseReader = responseReader(recordSet)
     assertEquals("string", responseReader.readCustomType(stringField)!!)
