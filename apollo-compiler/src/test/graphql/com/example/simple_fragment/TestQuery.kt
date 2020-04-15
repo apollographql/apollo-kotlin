@@ -25,6 +25,7 @@ import kotlin.Array
 import kotlin.Boolean
 import kotlin.String
 import kotlin.Suppress
+import okio.Buffer
 import okio.BufferedSource
 import okio.ByteString
 import okio.IOException
@@ -46,7 +47,14 @@ internal class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Varia
       = SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters)
 
   @Throws(IOException::class)
+  override fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters): Response<Data>
+      = parse(Buffer().write(byteString), scalarTypeAdapters)
+
+  @Throws(IOException::class)
   override fun parse(source: BufferedSource): Response<Data> = parse(source, DEFAULT)
+
+  @Throws(IOException::class)
+  override fun parse(byteString: ByteString): Response<Data> = parse(byteString, DEFAULT)
 
   override fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters): ByteString =
       OperationRequestBodyComposer.compose(

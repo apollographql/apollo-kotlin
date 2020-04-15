@@ -36,6 +36,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import okio.Buffer;
 import okio.BufferedSource;
 import okio.ByteString;
 import org.jetbrains.annotations.NotNull;
@@ -119,9 +120,23 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
 
   @Override
   @NotNull
+  public Response<Optional<CreateReviewForEpisode.Data>> parse(@NotNull final ByteString byteString,
+      @NotNull final ScalarTypeAdapters scalarTypeAdapters) throws IOException {
+    return parse(new Buffer().write(byteString), scalarTypeAdapters);
+  }
+
+  @Override
+  @NotNull
   public Response<Optional<CreateReviewForEpisode.Data>> parse(@NotNull final BufferedSource source)
       throws IOException {
     return parse(source, ScalarTypeAdapters.DEFAULT);
+  }
+
+  @Override
+  @NotNull
+  public Response<Optional<CreateReviewForEpisode.Data>> parse(@NotNull final ByteString byteString)
+      throws IOException {
+    return parse(byteString, ScalarTypeAdapters.DEFAULT);
   }
 
   @Override

@@ -30,6 +30,7 @@ import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import okio.Buffer;
 import okio.BufferedSource;
 import okio.ByteString;
 import org.jetbrains.annotations.NotNull;
@@ -113,8 +114,21 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
 
   @Override
   @NotNull
+  public Response<TestQuery.Data> parse(@NotNull final ByteString byteString,
+      @NotNull final ScalarTypeAdapters scalarTypeAdapters) throws IOException {
+    return parse(new Buffer().write(byteString), scalarTypeAdapters);
+  }
+
+  @Override
+  @NotNull
   public Response<TestQuery.Data> parse(@NotNull final BufferedSource source) throws IOException {
     return parse(source, ScalarTypeAdapters.DEFAULT);
+  }
+
+  @Override
+  @NotNull
+  public Response<TestQuery.Data> parse(@NotNull final ByteString byteString) throws IOException {
+    return parse(byteString, ScalarTypeAdapters.DEFAULT);
   }
 
   @Override
