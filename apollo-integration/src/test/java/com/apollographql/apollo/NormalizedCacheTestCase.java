@@ -25,6 +25,7 @@ import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsF
 import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragment;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 import io.reactivex.functions.Predicate;
+import kotlin.reflect.KClass;
 import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockWebServer;
@@ -795,7 +796,7 @@ public class NormalizedCacheTestCase {
         }
     );
 
-    Map<Class<?>, Map<String, Record>> dump = apolloClient.getApolloStore().normalizedCache().dump();
+    Map<KClass<?>, Map<String, Record>> dump = apolloClient.getApolloStore().normalizedCache().dump();
     assertThat(NormalizedCache.prettifyDump(dump)).isEqualTo("OptimisticNormalizedCache {}\n" +
         "LruNormalizedCache {\n" +
         "  \"1002\" : {\n" +

@@ -15,7 +15,7 @@ import kotlin.jvm.JvmStatic
  * An adapter used to serialize and deserialize Record fields. Record object types will be serialized to
  * [CacheReference].
  */
-class RecordFieldJsonAdapter private constructor() {
+class RecordFieldJsonAdapter {
 
   fun toJson(fields: Map<String, Any?>): String {
     val buffer = Buffer()
