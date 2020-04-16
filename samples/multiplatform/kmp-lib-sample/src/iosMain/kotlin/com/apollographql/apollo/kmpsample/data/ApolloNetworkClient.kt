@@ -15,8 +15,8 @@ import kotlinx.cinterop.staticCFunction
 import kotlinx.cinterop.usePinned
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.suspendCancellableCoroutine
-import okio.Buffer
 import okio.IOException
+import okio.toByteString
 import platform.Foundation.NSData
 import platform.Foundation.NSError
 import platform.Foundation.NSHTTPURLResponse
@@ -96,8 +96,8 @@ internal class ApolloNetworkClient(
     return try {
       val statusCode = httpResponse.statusCode.toInt()
       if (statusCode in 200..299) {
-        val payload = data!!.toByteArray()
-        val response = parse(Buffer().write(payload))
+        // Here is the successful Response parsing happening
+        val response = parse(data!!.toByteString())
         Result.Success(response)
       } else {
         Result.Failure(IOException("Network request failed, HTTP status code `$statusCode`"))
