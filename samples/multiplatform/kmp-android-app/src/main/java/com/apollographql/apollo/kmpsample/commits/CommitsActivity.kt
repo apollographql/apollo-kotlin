@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.apollographql.apollo.kmpsample.GithubRepositoryCommitsQuery
 import com.apollographql.apollo.kmpsample.KotlinSampleApp
+import com.apollographql.apollo.kmpsample.data.ApolloCoroutinesRepository
 import com.apollographql.apollo.kmpsample.data.ApolloCoroutinesService
 import com.apollographql.apollo.kmpsample.databinding.ActivityCommitsBinding
 import kotlinx.coroutines.CoroutineScope
@@ -21,7 +22,7 @@ import kotlinx.coroutines.withContext
 class CommitsActivity : AppCompatActivity() {
 
   private val adapter = CommitsAdapter()
-  private val dataSource by lazy { ApolloCoroutinesService((application as KotlinSampleApp).apolloClient) }
+  private val dataSource by lazy { ApolloCoroutinesRepository(ApolloCoroutinesService((application as KotlinSampleApp).apolloClient)) }
   private lateinit var job: Job
 
   private lateinit var binding: ActivityCommitsBinding

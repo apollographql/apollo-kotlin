@@ -8,6 +8,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.apollographql.apollo.kmpsample.KotlinSampleApp
 import com.apollographql.apollo.kmpsample.commits.CommitsActivity
+import com.apollographql.apollo.kmpsample.data.ApolloCoroutinesRepository
 import com.apollographql.apollo.kmpsample.data.ApolloCoroutinesService
 import com.apollographql.apollo.kmpsample.databinding.ActivityRepositoryDetailBinding
 import com.apollographql.apollo.kmpsample.fragment.RepositoryDetail
@@ -19,7 +20,7 @@ import kotlinx.coroutines.withContext
 
 class RepositoryDetailActivity : AppCompatActivity() {
 
-  private val dataSource by lazy { ApolloCoroutinesService((application as KotlinSampleApp).apolloClient) }
+  private val dataSource by lazy { ApolloCoroutinesRepository(ApolloCoroutinesService((application as KotlinSampleApp).apolloClient)) }
 
   private lateinit var binding: ActivityRepositoryDetailBinding
   private lateinit var job: Job

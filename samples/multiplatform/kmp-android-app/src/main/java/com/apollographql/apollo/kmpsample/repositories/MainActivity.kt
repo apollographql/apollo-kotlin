@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.apollographql.apollo.kmpsample.BuildConfig
 import com.apollographql.apollo.kmpsample.KotlinSampleApp
+import com.apollographql.apollo.kmpsample.data.ApolloCoroutinesRepository
 import com.apollographql.apollo.kmpsample.data.ApolloCoroutinesService
 import com.apollographql.apollo.kmpsample.databinding.ActivityMainBinding
 import com.apollographql.apollo.kmpsample.repositoryDetail.RepositoryDetailActivity
@@ -20,7 +21,7 @@ import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 
-  private val dataSource by lazy { ApolloCoroutinesService((application as KotlinSampleApp).apolloClient) }
+  private val dataSource by lazy { ApolloCoroutinesRepository(ApolloCoroutinesService((application as KotlinSampleApp).apolloClient)) }
 
   private lateinit var binding: ActivityMainBinding
   private lateinit var repositoriesAdapter: RepositoriesAdapter

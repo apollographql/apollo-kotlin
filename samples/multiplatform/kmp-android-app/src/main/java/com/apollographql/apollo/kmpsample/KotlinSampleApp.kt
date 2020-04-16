@@ -2,12 +2,10 @@ package com.apollographql.apollo.kmpsample
 
 import android.app.Application
 import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.kmpsample.data.ApolloCoroutinesService
+import com.apollographql.apollo.kmpsample.data.BASE_URL
 import okhttp3.OkHttpClient
 
-@Suppress("unused")
 class KotlinSampleApp : Application() {
-  private val baseUrl = "https://api.github.com/graphql"
 
   val apolloClient: ApolloClient by lazy {
     val okHttpClient = OkHttpClient.Builder()
@@ -21,7 +19,7 @@ class KotlinSampleApp : Application() {
         .build()
 
     ApolloClient.builder()
-        .serverUrl(baseUrl)
+        .serverUrl(BASE_URL)
         .okHttpClient(okHttpClient)
         .build()
   }

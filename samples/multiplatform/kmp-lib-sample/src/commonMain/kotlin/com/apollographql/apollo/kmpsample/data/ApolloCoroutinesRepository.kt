@@ -1,8 +1,5 @@
 package com.apollographql.apollo.kmpsample.data
 
-import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.coroutines.toDeferred
 import com.apollographql.apollo.kmpsample.fragment.RepositoryFragment
 import com.apollographql.apollo.kmpsample.GithubRepositoriesQuery
 import com.apollographql.apollo.kmpsample.GithubRepositoryCommitsQuery
@@ -11,12 +8,11 @@ import com.apollographql.apollo.kmpsample.fragment.RepositoryDetail
 import com.apollographql.apollo.kmpsample.type.OrderDirection
 import com.apollographql.apollo.kmpsample.type.PullRequestState
 import com.apollographql.apollo.kmpsample.type.RepositoryOrderField
-import kotlinx.coroutines.invoke
 
 /**
  * An implementation of a [GitHubDataSource] that shows how we can use coroutines to make our apollo requests.
  */
-class ApolloCoroutinesService(private val apolloClient: ApolloClient) {
+class ApolloCoroutinesRepository(private val service: ApolloCoroutinesService) {
 
   suspend fun fetchRepositories(): List<RepositoryFragment> {
     val repositoriesQuery = GithubRepositoriesQuery(
@@ -24,8 +20,7 @@ class ApolloCoroutinesService(private val apolloClient: ApolloClient) {
         orderBy = RepositoryOrderField.UPDATED_AT,
         orderDirection = OrderDirection.DESC
     )
-
-    val response: Response<GithubRepositoriesQuery.Data> = apolloClient.query(repositoriesQuery).toDeferred().await()
+    val response = service.fetchRepositories(repositoriesQuery)
     return response.data?.viewer?.repositories?.nodes?.mapNotNull { it?.fragments?.repositoryFragment }.orEmpty()
   }
 
@@ -34,15 +29,12 @@ class ApolloCoroutinesService(private val apolloClient: ApolloClient) {
         name = repositoryName,
         pullRequestStates = listOf(PullRequestState.OPEN)
     )
-
-    val response: Response<GithubRepositoryDetailQuery.Data> = apolloClient.query(repositoryDetailQuery).toDeferred().await()
+    val response = service.fetchRepositoryDetail(repositoryDetailQuery)
     return response.data?.viewer?.repository?.fragments?.repositoryDetail
   }
 
   suspend fun fetchCommits(repositoryName: String): List<GithubRepositoryCommitsQuery.Edge?> {
-    val commitsQuery = GithubRepositoryCommitsQuery(repositoryName)
-
-    val response: Response<GithubRepositoryCommitsQuery.Data> = apolloClient.query(commitsQuery).toDeferred().await()
+    val response = service.fetchCommits(GithubRepositoryCommitsQuery(repositoryName))
     val headCommit = response.data?.viewer?.repository?.ref?.target?.asCommit
     return headCommit?.history?.edges.orEmpty()
   }

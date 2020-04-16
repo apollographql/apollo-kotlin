@@ -28,8 +28,24 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        implementation(kotlin("stdlib-common"))
         implementation("com.apollographql.apollo:apollo-api")
+        implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines.coreCommon"))
+        implementation(kotlin("stdlib-common"))
+      }
+    }
+    val jvmMain by getting {
+      dependencies {
+        implementation("com.apollographql.apollo:apollo-api")
+        implementation("com.apollographql.apollo:apollo-coroutines-support")
+        implementation("com.apollographql.apollo:apollo-runtime")
+        implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines.core"))
+        implementation(kotlin("stdlib"))
+      }
+    }
+    val iosMain by getting {
+      dependencies {
+        implementation("com.apollographql.apollo:apollo-api")
+        implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines.coreNative"))
       }
     }
     commonTest {
@@ -63,7 +79,7 @@ tasks.register("copyFramework", Sync::class) {
     gradlew.writeText("#!/bin/bash\n"
         + "export 'JAVA_HOME=${System.getProperty("java.home")}'\n"
         + "cd '${rootProject.rootDir}'\n"
-        + "./gradlew \$@\n")
+        + "./gradlew \$@ --no-configure-on-demand\n")
     gradlew.setExecutable(true)
   }
 }
