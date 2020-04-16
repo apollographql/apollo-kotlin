@@ -183,7 +183,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
         val __typename = readString(RESPONSE_FIELDS[0])!!
         val name = readString(RESPONSE_FIELDS[1])!!
         val appearsIn = readList<Episode>(RESPONSE_FIELDS[2]) { reader ->
-          reader.readString()?.let{ Episode.safeValueOf(it) }
+          reader.readString()?.let { Episode.safeValueOf(it) }
         }!!
         val friends = readList<Friend1>(RESPONSE_FIELDS[3]) { reader ->
           reader.readObject<Friend1> { reader ->
