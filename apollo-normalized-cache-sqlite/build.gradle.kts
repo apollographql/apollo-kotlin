@@ -29,8 +29,10 @@ android {
 dependencies {
   api(project(":apollo-api"))
   api(project(":apollo-normalized-cache-api"))
+  api(groovy.util.Eval.x(project, "x.dep.androidx.sqlite"))
   implementation(groovy.util.Eval.x(project, "x.dep.kotlin.stdLib"))
   implementation(groovy.util.Eval.x(project, "x.dep.sqldelight.android"))
+  implementation(groovy.util.Eval.x(project, "x.dep.androidx.sqliteFramework"))
 
   testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))

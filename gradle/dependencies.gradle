@@ -1,6 +1,7 @@
 def versions = [
     minAndroidPlugin      : '3.4.2',
     androidPlugin         : '3.6.2',
+    androidxSqlite        : '2.1.0',
     apollo                : '2.0.0-SNAPSHOT', // This should only be used by apollo-gradle-plugin-incubating:test to get the artifacts locally
     antlr4                : '4.5.3',
     cache                 : '2.0.2',
@@ -38,8 +39,10 @@ ext.dep = [
         espressoIdlingResource: "androidx.test.espresso:espresso-idling-resource:$versions.espressoIdlingResource",
     ],
     androidx              : [
-        recyclerView: "androidx.recyclerview:recyclerview:1.1.0",
-        appcompat   : "androidx.appcompat:appcompat:1.1.0",
+        recyclerView   : "androidx.recyclerview:recyclerview:1.1.0",
+        appcompat      : "androidx.appcompat:appcompat:1.1.0",
+        sqlite         : "androidx.sqlite:sqlite:${versions.androidxSqlite}",
+        sqliteFramework: "androidx.sqlite:sqlite-framework:${versions.androidxSqlite}",
     ],
     antlr                 : [
         antlr  : "org.antlr:antlr4:$versions.antlr4",
