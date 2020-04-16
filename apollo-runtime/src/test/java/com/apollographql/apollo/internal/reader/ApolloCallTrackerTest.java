@@ -78,6 +78,14 @@ public class ApolloCallTrackerTest {
       throw new UnsupportedOperationException();
     }
 
+    @NotNull @Override public Response parse(@NotNull ByteString byteString) {
+      throw new UnsupportedOperationException();
+    }
+
+    @NotNull @Override public Response parse(@NotNull ByteString byteString, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+      throw new UnsupportedOperationException();
+    }
+
     @NotNull @Override public ByteString composeRequestBody(boolean autoPersistQueries, boolean withQueryDocument, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
         return OperationRequestBodyComposer.compose(this, autoPersistQueries, withQueryDocument, scalarTypeAdapters);
       }

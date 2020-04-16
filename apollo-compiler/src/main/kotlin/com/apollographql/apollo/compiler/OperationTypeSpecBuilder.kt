@@ -8,8 +8,20 @@ import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.compiler.VisitorSpec.VISITOR_CLASSNAME
-import com.apollographql.apollo.compiler.ir.*
-import com.squareup.javapoet.*
+import com.apollographql.apollo.compiler.ir.CodeGenerationContext
+import com.apollographql.apollo.compiler.ir.CodeGenerator
+import com.apollographql.apollo.compiler.ir.Fragment
+import com.apollographql.apollo.compiler.ir.Operation
+import com.apollographql.apollo.compiler.ir.Variable
+import com.squareup.javapoet.ClassName
+import com.squareup.javapoet.CodeBlock
+import com.squareup.javapoet.FieldSpec
+import com.squareup.javapoet.MethodSpec
+import com.squareup.javapoet.ParameterSpec
+import com.squareup.javapoet.ParameterizedTypeName
+import com.squareup.javapoet.TypeName
+import com.squareup.javapoet.TypeSpec
+import okio.Buffer
 import okio.BufferedSource
 import okio.ByteString
 import java.io.IOException
@@ -38,7 +50,9 @@ class OperationTypeSpecBuilder(
         .addType(operation.toTypeSpec(newContext, abstract))
         .addOperationName()
         .addMethod(parseMethod(context))
+        .addMethod(parseByteStringMethod(context))
         .addMethod(parseMethodWithDefaultScalarTypeAdapters(context))
+        .addMethod(parseByteStringMethodWithDefaultScalarTypeAdapters(context))
         .addMethod(composeRequestBody())
         .addMethod(composeRequestBodyWithDefaultScalarTypeAdapters())
         .applyIf(operation.isQuery()) {
@@ -318,6 +332,45 @@ class OperationTypeSpecBuilder(
         .addException(IOException::class.java)
         .returns(ParameterizedTypeName.get(ClassName.get(Response::class.java), wrapperType(context)))
         .addStatement("return parse(source, \$T.DEFAULT)", ScalarTypeAdapters::class.java)
+        .build()
+  }
+
+  private fun parseByteStringMethod(context: CodeGenerationContext): MethodSpec {
+    return MethodSpec
+        .methodBuilder("parse")
+        .addAnnotation(Annotations.OVERRIDE)
+        .addAnnotation(Annotations.NONNULL)
+        .addModifiers(Modifier.PUBLIC)
+        .addParameter(ParameterSpec
+            .builder(ByteString::class.java, "byteString", Modifier.FINAL)
+            .addAnnotation(Annotations.NONNULL)
+            .build()
+        )
+        .addParameter(ParameterSpec
+            .builder(ScalarTypeAdapters::class.java, "scalarTypeAdapters", Modifier.FINAL)
+            .addAnnotation(Annotations.NONNULL)
+            .build()
+        )
+        .addException(IOException::class.java)
+        .returns(ParameterizedTypeName.get(ClassName.get(Response::class.java), wrapperType(context)))
+        .addStatement("return parse(new \$T().write(byteString), scalarTypeAdapters)", Buffer::class.java)
+        .build()
+  }
+
+  private fun parseByteStringMethodWithDefaultScalarTypeAdapters(context: CodeGenerationContext): MethodSpec {
+    return MethodSpec
+        .methodBuilder("parse")
+        .addAnnotation(Annotations.OVERRIDE)
+        .addAnnotation(Annotations.NONNULL)
+        .addModifiers(Modifier.PUBLIC)
+        .addParameter(ParameterSpec
+            .builder(ByteString::class.java, "byteString", Modifier.FINAL)
+            .addAnnotation(Annotations.NONNULL)
+            .build()
+        )
+        .addException(IOException::class.java)
+        .returns(ParameterizedTypeName.get(ClassName.get(Response::class.java), wrapperType(context)))
+        .addStatement("return parse(byteString, \$T.DEFAULT)", ScalarTypeAdapters::class.java)
         .build()
   }
 

@@ -56,10 +56,22 @@ interface Operation<D : Operation.Data, T, V : Operation.Variables> {
   fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters): Response<T>
 
   /**
+   * Parses GraphQL operation raw response from the [byteString] with provided [scalarTypeAdapters] and returns result [Response]
+   */
+  @Throws(IOException::class)
+  fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters): Response<T>
+
+  /**
    * Parses GraphQL operation raw response from the [source] and returns result [Response]
    */
   @Throws(IOException::class)
   fun parse(source: BufferedSource): Response<T>
+
+  /**
+   * Parses GraphQL operation raw response from the [byteString] and returns result [Response]
+   */
+  @Throws(IOException::class)
+  fun parse(byteString: ByteString): Response<T>
 
   /**
    * Composes POST JSON-encoded request body with provided [scalarTypeAdapters] to be sent to the GraphQL server.
