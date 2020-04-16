@@ -60,5 +60,28 @@ JVM and Android users can use `apollo-runtime` to do network requests and intera
 documentation for more details.
 
 iOS users can only use `apollo-api` (as for 2.0.0). That means you will need to do the Http request (with any iOS networking library) and
-let Apollo parse the response. Please refer to [no-runtime](https://www.apollographql.com/docs/android/advanced/no-runtime) for more
-details.
+let Apollo parse the response.
+
+```kotlin:title="Prepare the request"                                   
+NSMutableURLRequest.requestWithURL(NSURL(string = url)).apply {
+  setHTTPMethod("POST")
+  setCachePolicy(NSURLRequestReloadIgnoringCacheData)
+  setValue(query.operationId(), forHTTPHeaderField = "X-APOLLO-OPERATION-ID")
+  setValue(query.name().name(), forHTTPHeaderField = "X-APOLLO-OPERATION-NAME")
+  // add additional headers like authorization
+  
+  // set the request body
+  setHTTPBody(query.composeRequestBody().toByteArray().toNSData())
+}
+```                                    
+
+```kotlin:title="Parse the response"
+val data: NSData = ...;
+
+val response = query.parse(data.toByteString())
+``` 
+
+> Please refer to [no-runtime](https://www.apollographql.com/docs/android/advanced/no-runtime) docs and
+[multiplatform samples](https://github.com/apollographql/apollo-android/tree/master/samples) (specifically ApolloNetworkClient class) for
+more details.
+

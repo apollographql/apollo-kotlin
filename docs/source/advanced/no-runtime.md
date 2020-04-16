@@ -62,7 +62,15 @@ If you do have custom GraphQL scalar types, pass properly configured instance of
     ScalarTypeAdapters scalarTypeAdapters = new ScalarTypeAdapters(<provide your custom scalar type adapters>);
 
     Response<Operation.Data> response = new Query().parse(httpResponse.body().source(), scalarTypeAdapters);
-```
+```        
+
+With Kotlin Multiplatform support, you can use Swift's `NSData` type to parse the response
+
+```kotlin:title=Kotlin Common
+val data: NSData = ...;
+
+val response = query.parse(data.toByteString())
+``` 
 
 ## Converting Query.Data back to JSON
 
