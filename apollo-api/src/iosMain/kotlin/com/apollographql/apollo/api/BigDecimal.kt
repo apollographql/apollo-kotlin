@@ -31,12 +31,6 @@ actual class BigDecimal internal constructor(private val raw: NSDecimalNumber) :
     }
   }
 
-  override fun compareTo(other: BigDecimal): Int = raw.compare(other.raw).toInt()
-
-
-
-  actual override fun toString(): String = raw.stringValue
-
   override fun toInt(): Int {
     return raw.intValue
   }
@@ -70,4 +64,8 @@ actual class BigDecimal internal constructor(private val raw: NSDecimalNumber) :
   }
 
   override fun hashCode(): Int = raw.hashCode()
+
+  override fun compareTo(other: BigDecimal): Int = raw.compare(other.raw).toInt()
+
+  override fun toString(): String = raw.stringValue
 }

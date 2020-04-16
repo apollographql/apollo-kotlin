@@ -12,6 +12,4 @@ expect class BigDecimal : Number {
   fun divide(divisor: BigDecimal): BigDecimal
   fun negate(): BigDecimal
   fun signum(): Int
-
-  override fun toString(): String
 }
