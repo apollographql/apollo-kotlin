@@ -49,10 +49,17 @@ kotlin {
       dependsOn(iosMain)
     }
 
+    val commonTest by getting {
+      dependencies {
+        implementation(kotlin("test-common"))
+        implementation(kotlin("test-annotations-common"))
+      }
+    }
+
     val jvmTest by getting {
       dependsOn(jvmMain)
       dependencies {
-        implementation(groovy.util.Eval.x(project, "x.dep.junit"))
+        implementation(kotlin("test-junit"))
         implementation(groovy.util.Eval.x(project, "x.dep.truth"))
         implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
       }

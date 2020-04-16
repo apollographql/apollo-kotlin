@@ -39,35 +39,35 @@ class ScalarTypeAdapters(val customAdapters: Map<ScalarType, CustomTypeAdapter<*
             value.value.toString()
           }
         } +
-        createDefaultScalarTypeAdapter("java.lang.Boolean", "kotlin.Boolean") { value ->
+        createDefaultScalarTypeAdapter("java.lang.Boolean", "kotlin.Boolean", "boolean") { value ->
           when (value) {
             is GraphQLBoolean -> value.value
             is GraphQLString -> value.value.toBoolean()
             else -> throw IllegalArgumentException("Can't decode: $value into Boolean")
           }
         } +
-        createDefaultScalarTypeAdapter("java.lang.Integer", "kotlin.Int") { value ->
+        createDefaultScalarTypeAdapter("java.lang.Integer", "kotlin.Int", "int") { value ->
           when (value) {
             is GraphQLNumber -> value.value.toInt()
             is GraphQLString -> value.value.toInt()
             else -> throw IllegalArgumentException("Can't decode: $value into Integer")
           }
         } +
-        createDefaultScalarTypeAdapter("java.lang.Long", "kotlin.Long") { value ->
+        createDefaultScalarTypeAdapter("java.lang.Long", "kotlin.Long", "long") { value ->
           when (value) {
             is GraphQLNumber -> value.value.toLong()
             is GraphQLString -> value.value.toLong()
             else -> throw IllegalArgumentException("Can't decode: $value into Long")
           }
         } +
-        createDefaultScalarTypeAdapter("java.lang.Float", "kotlin.Float") { value ->
+        createDefaultScalarTypeAdapter("java.lang.Float", "kotlin.Float", "float") { value ->
           when (value) {
             is GraphQLNumber -> value.value.toFloat()
             is GraphQLString -> value.value.toFloat()
             else -> throw IllegalArgumentException("Can't decode: $value into Float")
           }
         } +
-        createDefaultScalarTypeAdapter("java.lang.Double", "kotlin.Double") { value ->
+        createDefaultScalarTypeAdapter("java.lang.Double", "kotlin.Double", "double") { value ->
           when (value) {
             is GraphQLNumber -> value.value.toDouble()
             is GraphQLString -> value.value.toDouble()
