@@ -62,7 +62,7 @@ documentation for more details.
 iOS users can only use `apollo-api` (as for 2.0.0). That means you will need to do the Http request (with any iOS networking library) and
 let Apollo parse the response.
 
-```kotlin:title="Prepare the request"                                   
+```kotlin:title=prepare-request                                   
 NSMutableURLRequest.requestWithURL(NSURL(string = url)).apply {
   setHTTPMethod("POST")
   setCachePolicy(NSURLRequestReloadIgnoringCacheData)
@@ -75,7 +75,7 @@ NSMutableURLRequest.requestWithURL(NSURL(string = url)).apply {
 }
 ```                                    
 
-```kotlin:title="Parse the response"
+```kotlin:title=parse-response
 val data: NSData = ...;
 
 val response = query.parse(data.toByteString())
