@@ -23,7 +23,8 @@ import kotlinx.coroutines.flow.callbackFlow
  */
 @ExperimentalCoroutinesApi
 fun <T> ApolloCall<T>.toFlow(): Flow<Response<T>> = callbackFlow {
-  clone().enqueue(
+  val clone = clone()
+  clone.enqueue(
       object : ApolloCall.Callback<T>() {
         override fun onResponse(response: Response<T>) {
           runCatching {
@@ -42,7 +43,7 @@ fun <T> ApolloCall<T>.toFlow(): Flow<Response<T>> = callbackFlow {
         }
       }
   )
-  awaitClose { this@toFlow.cancel() }
+  awaitClose { clone.cancel() }
 }
 
 /**
@@ -53,7 +54,8 @@ fun <T> ApolloCall<T>.toFlow(): Flow<Response<T>> = callbackFlow {
  */
 @ExperimentalCoroutinesApi
 fun <T> ApolloQueryWatcher<T>.toFlow(): Flow<Response<T>> = callbackFlow {
-  clone().enqueueAndWatch(
+  val clone = clone()
+  clone.enqueueAndWatch(
       object : ApolloCall.Callback<T>() {
         override fun onResponse(response: Response<T>) {
           runCatching {
@@ -72,7 +74,7 @@ fun <T> ApolloQueryWatcher<T>.toFlow(): Flow<Response<T>> = callbackFlow {
         }
       }
   )
-  awaitClose { this@toFlow.cancel() }
+  awaitClose { clone.cancel() }
 }
 
 
@@ -116,7 +118,8 @@ fun <T> ApolloCall<T>.toDeferred(): Deferred<Response<T>> {
  */
 @ExperimentalCoroutinesApi
 fun <T> ApolloSubscriptionCall<T>.toFlow(): Flow<Response<T>> = callbackFlow {
-  clone().execute(
+  val clone = clone()
+  clone.execute(
       object : ApolloSubscriptionCall.Callback<T> {
         override fun onConnected() {
         }
@@ -140,7 +143,7 @@ fun <T> ApolloSubscriptionCall<T>.toFlow(): Flow<Response<T>> = callbackFlow {
         }
       }
   )
-  awaitClose { this@toFlow.cancel() }
+  awaitClose { clone.cancel() }
 }
 
 /**
