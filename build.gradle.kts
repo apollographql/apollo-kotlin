@@ -334,6 +334,12 @@ fun PublicationContainer.setDefaultPomFields() {
   }
 }
 
+fun subprojectTasks(name: String): List<Task> {
+  return subprojects.flatMap { subproject ->
+    subproject.tasks.matching {it.name == name }
+  }
+}
+
 tasks.register("publishIfNeeded") {
   val eventName = System.getenv("GITHUB_EVENT_NAME")
   val ref = System.getenv("GITHUB_REF")
@@ -344,14 +350,14 @@ tasks.register("publishIfNeeded") {
 
   if (eventName == "push" && ref == "refs/heads/master") {
     project.logger.log(LogLevel.LIFECYCLE, "Deploying snapshot to OJO...")
-    dependsOn("publishAllPublicationsToOjoRepository")
+    dependsOn(subprojectTasks("publishAllPublicationsToOjoRepository"))
     project.logger.log(LogLevel.LIFECYCLE, "Deploying snapshot to OSS...")
-    dependsOn("publishAllPublicationsToOssRepository")
+    dependsOn(subprojectTasks("publishAllPublicationsToOssRepository"))
   }
 
   if (ref?.startsWith("refs/tags/") == true) {
     project.logger.log(LogLevel.LIFECYCLE, "Deploying release to Bintray...")
-    dependsOn("publishAllPublicationsToBintrayRepository")
+    dependsOn(subprojectTasks("publishAllPublicationsToBintrayRepository"))
 
     project.logger.log(LogLevel.LIFECYCLE, "Deploying release to Gradle Portal...")
     dependsOn(":apollo-gradle-plugin:publishPlugin")
