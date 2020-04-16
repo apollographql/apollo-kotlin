@@ -6,10 +6,13 @@ import com.apollographql.apollo.ApolloQueryWatcher
 import com.apollographql.apollo.ApolloSubscriptionCall
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
-import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 
 
 /**
@@ -20,7 +23,8 @@ import kotlinx.coroutines.flow.*
  */
 @ExperimentalCoroutinesApi
 fun <T> ApolloCall<T>.toFlow() = callbackFlow {
-  clone().enqueue(
+  val clone = clone()
+  clone.enqueue(
       object : ApolloCall.Callback<T>() {
         override fun onResponse(response: Response<T>) {
           runCatching {
@@ -39,7 +43,7 @@ fun <T> ApolloCall<T>.toFlow() = callbackFlow {
         }
       }
   )
-  awaitClose { this@toFlow.cancel() }
+  awaitClose { clone.cancel() }
 }
 
 /**
@@ -50,7 +54,8 @@ fun <T> ApolloCall<T>.toFlow() = callbackFlow {
  */
 @ExperimentalCoroutinesApi
 fun <T> ApolloQueryWatcher<T>.toFlow() = callbackFlow {
-  clone().enqueueAndWatch(
+  val clone = clone()
+  clone.enqueueAndWatch(
       object : ApolloCall.Callback<T>() {
         override fun onResponse(response: Response<T>) {
           runCatching {
@@ -69,7 +74,7 @@ fun <T> ApolloQueryWatcher<T>.toFlow() = callbackFlow {
         }
       }
   )
-  awaitClose { this@toFlow.cancel() }
+  awaitClose { clone.cancel() }
 }
 
 
@@ -113,7 +118,8 @@ fun <T> ApolloCall<T>.toDeferred(): Deferred<Response<T>> {
  */
 @ExperimentalCoroutinesApi
 fun <T> ApolloSubscriptionCall<T>.toFlow(): Flow<Response<T>> = callbackFlow {
-  clone().execute(
+  val clone = clone()
+  clone.execute(
       object : ApolloSubscriptionCall.Callback<T> {
         override fun onConnected() {
         }
@@ -137,7 +143,7 @@ fun <T> ApolloSubscriptionCall<T>.toFlow(): Flow<Response<T>> = callbackFlow {
         }
       }
   )
-  awaitClose { this@toFlow.cancel() }
+  awaitClose { clone.cancel() }
 }
 
 /**

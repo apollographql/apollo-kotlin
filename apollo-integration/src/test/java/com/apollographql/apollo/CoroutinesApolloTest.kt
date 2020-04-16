@@ -14,7 +14,8 @@ import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloParseException
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery
-import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
+import com.apollographql.apollo.integration.normalizer.HeroNameQuery
+import com.apollographql.apollo.integration.normalizer.HeroNameWithIdQuery
 import com.apollographql.apollo.integration.normalizer.type.Episode
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.*
@@ -148,6 +149,29 @@ class CoroutinesApolloTest {
 
     assertThat(response.data()!!.hero()!!.name()).isEqualTo("R2-D2")
   }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun watcherFlowCancellationCancelsWatcher(): Unit = runBlocking {
+    server.enqueue(mockResponse("HeroNameWithIdResponse.json"))
+    apolloClient
+        .query(HeroNameWithIdQuery())
+        .watcher()
+        .toFlow()
+        .first() // Cancels the flow after first response
+
+    apolloClient.clearNormalizedCache()
+    apolloClient.clearHttpCache()
+
+    server.enqueue(mockResponse("HeroNameResponse.json"))
+    apolloClient
+        .query(HeroNameQuery())
+        .watcher()
+        .toFlow()
+        .first()
+
+    assertThat(server.requestCount).isEqualTo(2)
+  }.let { }
 
   companion object {
 
