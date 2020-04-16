@@ -2,14 +2,10 @@ package com.apollographql.apollo.api.internal
 
 import com.apollographql.apollo.api.CustomTypeAdapter
 import com.apollographql.apollo.api.CustomTypeValue
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.OperationName
-import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.api.EMPTY_OPERATION
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ScalarType
 import com.apollographql.apollo.api.ScalarTypeAdapters
-import okio.BufferedSource
-import okio.ByteString
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -139,50 +135,5 @@ class SimpleResponseReaderJvmCustomTypesTest {
       }
     }
     private val DATE_TIME_FORMAT = SimpleDateFormat("yyyyy-mm-dd")
-    private val EMPTY_OPERATION: Operation<*, *, *> = object : Operation<Operation.Data, Any?, Operation.Variables> {
-      override fun queryDocument(): String {
-        throw UnsupportedOperationException()
-      }
-
-      override fun variables(): Operation.Variables {
-        return Operation.EMPTY_VARIABLES
-      }
-
-      override fun responseFieldMapper(): ResponseFieldMapper<Operation.Data> {
-        throw UnsupportedOperationException()
-      }
-
-      override fun wrapData(data: Operation.Data?): Any? {
-        throw UnsupportedOperationException()
-      }
-
-      override fun name(): OperationName {
-        return object : OperationName {
-          override fun name(): String {
-            return "test"
-          }
-        }
-      }
-
-      override fun operationId(): String {
-        return ""
-      }
-
-      override fun parse(source: BufferedSource): Response<Any?> {
-        throw UnsupportedOperationException()
-      }
-
-      override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters): Response<Any?> {
-        throw UnsupportedOperationException()
-      }
-
-      override fun composeRequestBody(): ByteString {
-        throw UnsupportedOperationException()
-      }
-
-      override fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters): ByteString {
-        throw UnsupportedOperationException()
-      }
-    }
   }
 }

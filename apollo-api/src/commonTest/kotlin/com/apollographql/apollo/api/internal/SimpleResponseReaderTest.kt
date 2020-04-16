@@ -3,15 +3,11 @@ package com.apollographql.apollo.api.internal
 import com.apollographql.apollo.api.BigDecimal
 import com.apollographql.apollo.api.CustomTypeAdapter
 import com.apollographql.apollo.api.CustomTypeValue
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.OperationName
-import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.api.EMPTY_OPERATION
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseField.Condition.Companion.typeCondition
 import com.apollographql.apollo.api.ScalarType
 import com.apollographql.apollo.api.ScalarTypeAdapters
-import okio.BufferedSource
-import okio.ByteString
 import kotlin.reflect.KClass
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -32,7 +28,7 @@ class SimpleResponseReaderTest {
     recordSet["successFieldName"] = "response2"
     recordSet["classCastExceptionField"] = 1
     val responseReader = responseReader(recordSet)
-    assertEquals("response1", responseReader.readString(successField))
+    assertEquals(expected = "response1", actual = responseReader.readString(successField))
     try {
       responseReader.readString(classCastExceptionField)
       fail("expected ClassCastException")
@@ -51,7 +47,7 @@ class SimpleResponseReaderTest {
     recordSet["successFieldName"] = BigDecimal(2)
     recordSet["classCastExceptionField"] = "anything"
     val responseReader = responseReader(recordSet)
-    assertEquals(1, responseReader.readInt(successField))
+    assertEquals(expected = 1, actual = responseReader.readInt(successField))
     try {
       responseReader.readInt(classCastExceptionField)
       fail("expected ClassCastException")
@@ -70,7 +66,7 @@ class SimpleResponseReaderTest {
     recordSet["successFieldName"] = BigDecimal(2)
     recordSet["classCastExceptionField"] = "anything"
     val responseReader = responseReader(recordSet)
-    assertEquals(1, responseReader.readLong(successField) as Long)
+    assertEquals(expected = 1, actual = responseReader.readLong(successField) as Long)
     try {
       responseReader.readLong(classCastExceptionField)
       fail("expected ClassCastException")
@@ -89,7 +85,7 @@ class SimpleResponseReaderTest {
     recordSet["successFieldName"] = BigDecimal(2.2)
     recordSet["classCastExceptionField"] = "anything"
     val responseReader = responseReader(recordSet)
-    assertEquals(1.1, responseReader.readDouble(successField)!!)
+    assertEquals(expected = 1.1, actual = responseReader.readDouble(successField)!!)
     try {
       responseReader.readDouble(classCastExceptionField)
       fail("expected ClassCastException")
@@ -128,11 +124,11 @@ class SimpleResponseReaderTest {
     recordSet["successFieldName"] = emptyMap<Any, Any>()
     recordSet["classCastExceptionField"] = "anything"
     val responseReader = responseReader(recordSet)
-    assertEquals(responseObject, responseReader.readObject(successField, object : ResponseReader.ObjectReader<Any> {
-      override fun read(reader: ResponseReader): Any {
-        return responseObject
-      }
-    }))
+    assertEquals(
+        expected = responseObject,
+        actual = responseReader.readObject(successField, object : ResponseReader.ObjectReader<Any> {
+          override fun read(reader: ResponseReader): Any = responseObject
+        }))
     try {
       responseReader.readObject(classCastExceptionField, object : ResponseReader.ObjectReader<Any> {
         override fun read(reader: ResponseReader): Any {
@@ -153,16 +149,17 @@ class SimpleResponseReaderTest {
     val recordSet: MutableMap<String, Any> = HashMap()
     recordSet["__typename"] = "Fragment1"
     val responseReader = responseReader(recordSet)
-    assertEquals(responseObject, responseReader.readFragment(successFragmentField, object : ResponseReader.ObjectReader<Any> {
-      override fun read(reader: ResponseReader): Any {
-        return responseObject
-      }
-    }))
-    assertNull(responseReader.readFragment(skipFragmentField, object : ResponseReader.ObjectReader<Any> {
-      override fun read(reader: ResponseReader): Any {
-        return responseObject
-      }
-    }))
+    assertEquals(
+        expected = responseObject,
+        actual = responseReader.readFragment(successFragmentField, object : ResponseReader.ObjectReader<Any> {
+          override fun read(reader: ResponseReader): Any = responseObject
+        })
+    )
+    assertNull(
+        responseReader.readFragment(skipFragmentField, object : ResponseReader.ObjectReader<Any> {
+          override fun read(reader: ResponseReader): Any = responseObject
+        })
+    )
   }
 
   @Test
@@ -197,7 +194,7 @@ class SimpleResponseReaderTest {
     recordSet["successFieldResponseName"] = objectMap
     recordSet["successFieldName"] = objectMap
     val responseReader = responseReader(recordSet)
-    assertEquals(objectMap, responseReader.readCustomType<Map<*, *>>(successField))
+    assertEquals(expected = objectMap, actual = responseReader.readCustomType<Map<*, *>>(successField))
   }
 
   @Test
@@ -221,7 +218,7 @@ class SimpleResponseReaderTest {
     recordSet["successFieldResponseName"] = objectList
     recordSet["successFieldName"] = objectList
     val responseReader = responseReader(recordSet)
-    assertEquals(objectList, responseReader.readCustomType<List<*>>(successField))
+    assertEquals(expected = objectList, actual = responseReader.readCustomType<List<*>>(successField))
   }
 
   @Test
@@ -249,12 +246,12 @@ class SimpleResponseReaderTest {
     recordSet[doubleField.responseName] = BigDecimal("4.99")
     recordSet[unsupportedField.responseName] = "smth"
     val responseReader = responseReader(recordSet)
-    assertEquals("string", responseReader.readCustomType(stringField)!!)
-    assertEquals(true, responseReader.readCustomType(booleanField)!!)
-    assertEquals(1, responseReader.readCustomType(integerField)!!)
-    assertEquals(2L, responseReader.readCustomType(longField)!!)
-    assertEquals(3.99f, responseReader.readCustomType(floatField)!!)
-    assertEquals(4.99, responseReader.readCustomType(doubleField)!!)
+    assertEquals(expected = "string", actual = responseReader.readCustomType(stringField)!!)
+    assertEquals(expected = true, actual = responseReader.readCustomType(booleanField)!!)
+    assertEquals(expected = 1, actual = responseReader.readCustomType(integerField)!!)
+    assertEquals(expected = 2L, actual = responseReader.readCustomType(longField)!!)
+    assertEquals(expected = 3.99f, actual = responseReader.readCustomType(floatField)!!)
+    assertEquals(expected = 4.99, actual = responseReader.readCustomType(doubleField)!!)
     try {
       responseReader.readCustomType<Any>(unsupportedField)
       fail("Expect IllegalArgumentException")
@@ -266,76 +263,112 @@ class SimpleResponseReaderTest {
   @Test
   fun readStringList() {
     val successField = ResponseField.forList("successFieldResponseName", "successFieldName", null, false, noConditions)
+    val classCastExceptionField = ResponseField.forList("classCastExceptionField", "classCastExceptionField", null, false, noConditions)
     val recordSet: MutableMap<String, Any> = HashMap()
     recordSet["successFieldResponseName"] = listOf("value1", "value2", "value3")
     recordSet["successFieldName"] = listOf("value4", "value5")
     recordSet["classCastExceptionField"] = "anything"
     val responseReader = responseReader(recordSet)
     assertEquals(
-        listOf("value1", "value2", "value3"),
-        responseReader.readList<Any>(successField) { reader: ResponseReader.ListItemReader -> reader.readString() }
+        expected = listOf("value1", "value2", "value3"),
+        actual = responseReader.readList<Any>(successField) { reader: ResponseReader.ListItemReader -> reader.readString() }
     )
+    try {
+      responseReader.readList(classCastExceptionField) { null!! }
+      fail("expected ClassCastException")
+    } catch (expected: ClassCastException) {
+      // expected
+    }
   }
 
   @Test
   fun readIntList() {
     val successField = ResponseField.forList("successFieldResponseName", "successFieldName", null, false, noConditions)
+    val classCastExceptionField = ResponseField.forList("classCastExceptionField", "classCastExceptionField", null, false, noConditions)
     val recordSet: MutableMap<String, Any> = HashMap()
     recordSet["successFieldResponseName"] = listOf(BigDecimal(1), BigDecimal(2), BigDecimal(3))
     recordSet["successFieldName"] = listOf(BigDecimal(4), BigDecimal(5))
     recordSet["classCastExceptionField"] = "anything"
     val responseReader = responseReader(recordSet)
     assertEquals(
-        listOf(1, 2, 3),
-        responseReader.readList<Any>(successField) { reader: ResponseReader.ListItemReader -> reader.readInt() }
+        expected = listOf(1, 2, 3),
+        actual = responseReader.readList<Any>(successField) { reader: ResponseReader.ListItemReader -> reader.readInt() }
     )
+    try {
+      responseReader.readList(classCastExceptionField) { null!! }
+      fail("expected ClassCastException")
+    } catch (expected: ClassCastException) {
+      // expected
+    }
   }
 
   @Test
   fun readLongList() {
     val successField = ResponseField.forList("successFieldResponseName", "successFieldName", null, false, noConditions)
+    val classCastExceptionField = ResponseField.forList("classCastExceptionField", "classCastExceptionField", null, false, noConditions)
     val recordSet: MutableMap<String, Any> = HashMap()
     recordSet["successFieldResponseName"] = listOf(BigDecimal(1), BigDecimal(2), BigDecimal(3))
     recordSet["successFieldName"] = listOf(BigDecimal(4), BigDecimal(5))
     recordSet["classCastExceptionField"] = "anything"
     val responseReader = responseReader(recordSet)
     assertEquals(
-        listOf(1, 2, 3),
-        responseReader.readList<Any>(successField) { reader: ResponseReader.ListItemReader -> reader.readInt() }
+        expected = listOf(1, 2, 3),
+        actual = responseReader.readList<Any>(successField) { reader: ResponseReader.ListItemReader -> reader.readInt() }
     )
+    try {
+      responseReader.readList(classCastExceptionField) { null!! }
+      fail("expected ClassCastException")
+    } catch (expected: ClassCastException) {
+      // expected
+    }
   }
 
   @Test
   fun readDoubleList() {
     val successField = ResponseField.forList("successFieldResponseName", "successFieldName", null, false, noConditions)
+    val classCastExceptionField = ResponseField.forList("classCastExceptionField", "classCastExceptionField", null, false, noConditions)
     val recordSet: MutableMap<String, Any> = HashMap()
     recordSet["successFieldResponseName"] = listOf(BigDecimal(1), BigDecimal(2), BigDecimal(3))
     recordSet["successFieldName"] = listOf(BigDecimal(4), BigDecimal(5))
     recordSet["classCastExceptionField"] = "anything"
     val responseReader = responseReader(recordSet)
     assertEquals(
-        listOf(1.0, 2.0, 3.0),
-        responseReader.readList<Any>(successField) { reader: ResponseReader.ListItemReader -> reader.readDouble() }
+        expected = listOf(1.0, 2.0, 3.0),
+        actual = responseReader.readList<Any>(successField) { reader: ResponseReader.ListItemReader -> reader.readDouble() }
     )
+    try {
+      responseReader.readList(classCastExceptionField) { null!! }
+      fail("expected ClassCastException")
+    } catch (expected: ClassCastException) {
+      // expected
+    }
   }
 
   @Test
   fun readBooleanList() {
     val successField = ResponseField.forList("successFieldResponseName", "successFieldName", null, false, noConditions)
+    val classCastExceptionField = ResponseField.forList("classCastExceptionField", "classCastExceptionField", null, false, noConditions)
     val recordSet: MutableMap<String, Any> = HashMap()
     recordSet["successFieldResponseName"] = listOf(true, false, true)
     recordSet["successFieldName"] = listOf(false, false)
     recordSet["classCastExceptionField"] = "anything"
     val responseReader = responseReader(recordSet)
     assertEquals(
-        listOf(true, false, true),
-        responseReader.readList<Any>(successField) { reader: ResponseReader.ListItemReader -> reader.readBoolean() }
+        expected = listOf(true, false, true),
+        actual = responseReader.readList<Any>(successField) { reader: ResponseReader.ListItemReader -> reader.readBoolean() }
     )
+    try {
+      responseReader.readList(classCastExceptionField) { null!! }
+      fail("expected ClassCastException")
+    } catch (expected: ClassCastException) {
+      // expected
+    }
   }
 
   @Test
   fun readObjectList() {
     val successField = ResponseField.forList("successFieldResponseName", "successFieldName", null, false, noConditions)
+    val classCastExceptionField = ResponseField.forList("classCastExceptionField", "classCastExceptionField", null, false, noConditions)
     val responseObject1 = Any()
     val responseObject2 = Any()
     val responseObject3 = Any()
@@ -347,15 +380,24 @@ class SimpleResponseReaderTest {
     val responseReader = responseReader(recordSet)
 
     var index = 0
-    assertEquals(objects, responseReader.readList(successField) { reader ->
-      reader.readObject { objects[index++] }
-    }
+    assertEquals(
+        expected = objects,
+        actual = responseReader.readList(successField) { reader ->
+          reader.readObject { objects[index++] }
+        }
     )
+    try {
+      responseReader.readList(classCastExceptionField) { null!! }
+      fail("expected ClassCastException")
+    } catch (expected: ClassCastException) {
+      // expected
+    }
   }
 
   @Test
   fun readListOfScalarList() {
     val successField = ResponseField.forList("successFieldResponseName", "successFieldName", null, false, noConditions)
+    val classCastExceptionField = ResponseField.forList("classCastExceptionField", "classCastExceptionField", null, false, noConditions)
     val response1 = listOf(listOf("1", "2"), listOf("3", "4", "5"))
     val response2 = listOf(listOf("6", "7", "8"), listOf("9", "0"))
     val recordSet: MutableMap<String, Any> = HashMap()
@@ -364,9 +406,15 @@ class SimpleResponseReaderTest {
     recordSet["classCastExceptionField"] = "anything"
     val responseReader = responseReader(recordSet)
     assertEquals(
-        listOf(listOf("1", "2"), listOf("3", "4", "5")),
-        responseReader.readList(successField) { reader -> reader.readList(ResponseReader.ListItemReader::readString) }
+        expected = listOf(listOf("1", "2"), listOf("3", "4", "5")),
+        actual = responseReader.readList(successField) { reader -> reader.readList(ResponseReader.ListItemReader::readString) }
     )
+    try {
+      responseReader.readList(classCastExceptionField) { null!! }
+      fail("expected ClassCastException")
+    } catch (expected: ClassCastException) {
+      // expected
+    }
   }
 
   @Test
@@ -435,8 +483,8 @@ class SimpleResponseReaderTest {
     recordSet["list"] = listOf(null, "item2", "item3", null, "item5", null)
     val responseReader = responseReader(recordSet)
     assertEquals(
-        listOf(null, "item2", "item3", null, "item5", null),
-        responseReader.readList(scalarList) { reader: ResponseReader.ListItemReader -> reader.readString() })
+        expected = listOf(null, "item2", "item3", null, "item5", null),
+        actual = responseReader.readList(scalarList) { reader: ResponseReader.ListItemReader -> reader.readString() })
   }
 
   @Test
@@ -455,8 +503,8 @@ class SimpleResponseReaderTest {
     )
     val responseReader = responseReader(recordSet)
     assertEquals(
-        responseObjects,
-        responseReader.readList(listField) { listReader ->
+        expected = responseObjects,
+        actual = responseReader.readList(listField) { listReader ->
           listReader.readObject { reader ->
             responseObjects[reader.readString(indexField)!!.toInt()]!!
           }
@@ -498,51 +546,6 @@ class SimpleResponseReaderTest {
 
       override fun className(): String {
         return String::class.qualifiedName!!
-      }
-    }
-    private val EMPTY_OPERATION: Operation<*, *, *> = object : Operation<Operation.Data, Any?, Operation.Variables> {
-      override fun queryDocument(): String {
-        throw UnsupportedOperationException()
-      }
-
-      override fun variables(): Operation.Variables {
-        return Operation.EMPTY_VARIABLES
-      }
-
-      override fun responseFieldMapper(): ResponseFieldMapper<Operation.Data> {
-        throw UnsupportedOperationException()
-      }
-
-      override fun wrapData(data: Operation.Data?): Any? {
-        throw UnsupportedOperationException()
-      }
-
-      override fun name(): OperationName {
-        return object : OperationName {
-          override fun name(): String {
-            return "test"
-          }
-        }
-      }
-
-      override fun operationId(): String {
-        return ""
-      }
-
-      override fun parse(source: BufferedSource): Response<Any?> {
-        throw UnsupportedOperationException()
-      }
-
-      override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters): Response<Any?> {
-        throw UnsupportedOperationException()
-      }
-
-      override fun composeRequestBody(): ByteString {
-        throw UnsupportedOperationException()
-      }
-
-      override fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters): ByteString {
-        throw UnsupportedOperationException()
       }
     }
   }
