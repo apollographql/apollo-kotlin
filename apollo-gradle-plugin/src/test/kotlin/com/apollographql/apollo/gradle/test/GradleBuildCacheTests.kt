@@ -7,7 +7,7 @@ import org.junit.Assert
 import org.junit.Test
 import java.io.File
 
-class CacheTests {
+class GradleBuildCacheTests {
 
   @Test
   fun `generate apollo classes task is cached`() {

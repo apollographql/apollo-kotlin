@@ -20,6 +20,8 @@ kotlin {
       if (!buildForDevice) {
         embedBitcode("disable")
       }
+
+      freeCompilerArgs = freeCompilerArgs + "-Xobjc-generics"
     }
   }
 

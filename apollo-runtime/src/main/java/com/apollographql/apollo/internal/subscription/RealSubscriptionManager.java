@@ -450,8 +450,8 @@ public final class RealSubscriptionManager implements SubscriptionManager {
     final boolean resendSubscriptionWithDocument;
     if (autoPersistSubscription) {
       Error error = OperationResponseParser.parseError(message.payload);
-      resendSubscriptionWithDocument = PROTOCOL_NEGOTIATION_ERROR_NOT_FOUND.equalsIgnoreCase(error.message())
-          || PROTOCOL_NEGOTIATION_ERROR_NOT_SUPPORTED.equalsIgnoreCase(error.message());
+      resendSubscriptionWithDocument = PROTOCOL_NEGOTIATION_ERROR_NOT_FOUND.equalsIgnoreCase(error.getMessage())
+          || PROTOCOL_NEGOTIATION_ERROR_NOT_SUPPORTED.equalsIgnoreCase(error.getMessage());
     } else {
       resendSubscriptionWithDocument = false;
     }

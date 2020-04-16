@@ -39,43 +39,4 @@ interface ApolloExtension: CompilerParams {
    */
   fun onCompilationUnit(action: Action<CompilationUnit>)
 
-  /**
-   * @Deprecated
-   *
-   * Please see [onCompilationUnit]
-   */
-  @Deprecated("There is a typo. Please use onCompilationUnit instead", replaceWith = ReplaceWith("onCompilationUnit"))
-  fun onCompilationUnits(action: Action<CompilationUnit>)
-
-  /**
-   * @Deprecated
-   *
-   * Used for backward compatibility reasons with the old groovy plugin
-   */
-  @Deprecated("please use services instead")
-  val schemaFilePath: Property<String>
-
-  /**
-   * @Deprecated
-   *
-   * Used for backward compatibility reasons with the old groovy plugin
-   */
-  @Deprecated("please use services instead")
-  fun setSchemaFilePath(schemaFilePath: String)
-
-  /**
-   * @Deprecated
-   *
-   * Used for backward compatibility reasons with the old groovy plugin
-   */
-  @Deprecated("please use services instead")
-  val outputPackageName: Property<String>
-
-  /**
-   * @Deprecated
-   *
-   * Used for backward compatibility reasons with the old groovy plugin
-   */
-  @Deprecated("please use services instead")
-  fun setOutputPackageName(outputPackageName: String)
 }

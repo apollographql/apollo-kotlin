@@ -1,7 +1,6 @@
 package com.apollographql.apollo.gradle.internal
 
 import com.android.build.gradle.AppExtension
-import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.api.BaseVariant
 import org.gradle.api.NamedDomainObjectContainer
@@ -56,7 +55,6 @@ object AndroidTaskConfigurator {
   // TODO: make this lazy (https://github.com/apollographql/apollo-android/issues/1454)
   fun registerGeneratedDirectory(
       project: Project,
-      androidExtension: Any,
       compilationUnit: DefaultCompilationUnit,
       codegenProvider: TaskProvider<ApolloGenerateSourcesTask>
   ) {

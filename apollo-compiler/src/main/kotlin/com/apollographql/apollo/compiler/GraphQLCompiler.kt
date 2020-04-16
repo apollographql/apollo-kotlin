@@ -29,11 +29,6 @@ class GraphQLCompiler {
         generateVisitorForPolymorphicDatatypes = args.generateVisitorForPolymorphicDatatypes
     )
 
-    val schemaPackageName = (args.packageNameProvider as? DeprecatedPackageNameProvider)?.schemaPackageName
-    if (schemaPackageName != null && schemaPackageName.isNotBlank()) {
-      File(args.outputDir, schemaPackageName.replace('.', File.separatorChar)).deleteRecursively()
-    }
-
     if (args.generateKotlinModels) {
       GraphQLKompiler(
           ir = ir,

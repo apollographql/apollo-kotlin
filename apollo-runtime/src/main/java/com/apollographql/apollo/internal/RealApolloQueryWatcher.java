@@ -138,7 +138,7 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
           logger.d("onResponse for watched operation: %s. No callback present.", operation().name().name());
           return;
         }
-        dependentKeys = response.dependentKeys();
+        dependentKeys = response.getDependentKeys();
         apolloStore.subscribe(recordChangeSubscriber);
         callback.get().onResponse(response);
       }

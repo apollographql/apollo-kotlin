@@ -113,7 +113,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
     ApolloStoreOperation<Response> apolloStoreOperation = apolloStore.read(request.operation, responseFieldMapper,
         responseNormalizer, request.cacheHeaders);
     Response cachedResponse = apolloStoreOperation.execute();
-    if (cachedResponse.data() != null) {
+    if (cachedResponse.getData() != null) {
       logger.d("Cache HIT for operation %s", request.operation);
       return new InterceptorResponse(null, cachedResponse, responseNormalizer.records());
     }

@@ -49,21 +49,21 @@ public final class RealResponseWriter implements ResponseWriter {
 
   @SuppressWarnings("unchecked")
   @Override public void writeCustom(@NotNull ResponseField.CustomTypeField field, @Nullable Object value) {
-    CustomTypeAdapter typeAdapter = scalarTypeAdapters.adapterFor(field.scalarType());
+    CustomTypeAdapter typeAdapter = scalarTypeAdapters.adapterFor(field.getScalarType());
     writeScalarFieldValue(field, value != null ? typeAdapter.encode(value).value : null);
   }
 
   @Override public void writeObject(@NotNull ResponseField field, @Nullable ResponseFieldMarshaller marshaller) {
     checkFieldValue(field, marshaller);
     if (marshaller == null) {
-      buffer.put(field.responseName(), new FieldDescriptor(field, null));
+      buffer.put(field.getResponseName(), new FieldDescriptor(field, null));
       return;
     }
 
     RealResponseWriter nestedResponseWriter = new RealResponseWriter(operationVariables, scalarTypeAdapters);
     marshaller.marshal(nestedResponseWriter);
 
-    buffer.put(field.responseName(), new FieldDescriptor(field, nestedResponseWriter.buffer));
+    buffer.put(field.getResponseName(), new FieldDescriptor(field, nestedResponseWriter.buffer));
   }
 
   @Override public void writeFragment(@Nullable ResponseFieldMarshaller marshaller) {
@@ -77,13 +77,13 @@ public final class RealResponseWriter implements ResponseWriter {
     checkFieldValue(field, values);
 
     if (values == null) {
-      buffer.put(field.responseName(), new FieldDescriptor(field, null));
+      buffer.put(field.getResponseName(), new FieldDescriptor(field, null));
       return;
     }
 
     List accumulated = new ArrayList();
     listWriter.write(values, new ListItemWriter(operationVariables, scalarTypeAdapters, accumulated));
-    buffer.put(field.responseName(), new FieldDescriptor(field, accumulated));
+    buffer.put(field.getResponseName(), new FieldDescriptor(field, accumulated));
   }
 
   public void resolveFields(ResolveDelegate<Map<String, Object>> delegate) {
@@ -92,7 +92,7 @@ public final class RealResponseWriter implements ResponseWriter {
 
   private void writeScalarFieldValue(ResponseField field, Object value) {
     checkFieldValue(field, value);
-    buffer.put(field.responseName(), new FieldDescriptor(field, value));
+    buffer.put(field.getResponseName(), new FieldDescriptor(field, value));
   }
 
   @SuppressWarnings("unchecked")
@@ -137,7 +137,7 @@ public final class RealResponseWriter implements ResponseWriter {
       Object rawFieldValue = rawFieldValues.get(fieldResponseName);
       delegate.willResolve(fieldDescriptor.field, operationVariables, fieldDescriptor.value);
 
-      switch (fieldDescriptor.field.type()) {
+      switch (fieldDescriptor.field.getType()) {
         case OBJECT: {
           resolveObjectFields(fieldDescriptor, (Map<String, Object>) rawFieldValue, delegate);
           break;
@@ -199,9 +199,9 @@ public final class RealResponseWriter implements ResponseWriter {
   }
 
   private static void checkFieldValue(ResponseField field, Object value) {
-    if (!field.optional() && value == null) {
+    if (!field.getOptional() && value == null) {
       throw new NullPointerException(String.format("Mandatory response field `%s` resolved with null value",
-          field.responseName()));
+          field.getResponseName()));
     }
   }
 
