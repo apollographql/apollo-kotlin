@@ -2,10 +2,10 @@ package com.apollographql.apollo.kotlinsample.repositories
 
 import android.os.Bundle
 import android.view.View
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.apollographql.apollo.kotlinsample.BuildConfig
 import com.apollographql.apollo.kotlinsample.KotlinSampleApp
 import com.apollographql.apollo.kotlinsample.R
@@ -15,7 +15,9 @@ import com.apollographql.apollo.kotlinsample.repositoryDetail.RepositoryDetailAc
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.progressBar
+import kotlinx.android.synthetic.main.activity_main.rvRepositories
+import kotlinx.android.synthetic.main.activity_main.tvError
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,8 +41,8 @@ class MainActivity : AppCompatActivity() {
 
     tvError.visibility = View.GONE
 
-    rvRepositories.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
-    rvRepositories.addItemDecoration(DividerItemDecoration(this, LinearLayout.VERTICAL))
+    rvRepositories.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+    rvRepositories.addItemDecoration(DividerItemDecoration(this, RecyclerView.VERTICAL))
     repositoriesAdapter = RepositoriesAdapter { repositoryFragment ->
       RepositoryDetailActivity.start(this@MainActivity, repositoryFragment.name())
     }
