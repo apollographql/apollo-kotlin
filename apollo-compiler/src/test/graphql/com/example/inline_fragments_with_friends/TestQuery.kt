@@ -112,7 +112,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       operator fun invoke(reader: ResponseReader): Friend = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
         val appearsIn = readList<Episode>(RESPONSE_FIELDS[1]) { reader ->
-          reader.readString()?.let{ Episode.safeValueOf(it) }
+          reader.readString()?.let { Episode.safeValueOf(it) }
         }!!
         Friend(
           __typename = __typename,

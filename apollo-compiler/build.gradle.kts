@@ -46,3 +46,6 @@ tasks.getByName("compileKotlin").dependsOn("pluginVersion")
 tasks.withType<Checkstyle> {
   exclude("**com/apollographql/apollo/compiler/parser/antlr/**")
 }
+
+// since test/graphql is not an input to Test tasks, they're not run with the changes made in there.
+tasks.withType<Test>().configureEach { outputs.upToDateWhen { false } }
