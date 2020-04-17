@@ -20,6 +20,19 @@ Side effect changes of Kotlin migration:
 - Kotlin-stdlib is added as a transitive dependency
 - Jvm target version is now 1.8
 - Gradle 6.x recommended. In 5.x, Gradle Metadata needs to be enabled by putting this into settings.gradle `enableFeaturePreview("GRADLE_METADATA")`
+                                
+### Okio and OkHttp migration
+
+During Kotlin Multiplatform integration, Okio and OkHttp are migrated to their latest major versions to make use of their Kotlin support.
+Okio is upgraded to 2.4.3 and OkHttp is upgraded to 4.4.0.
+
+**Note:** If you explicitly depend on these libraries, it would be recommended to do major version upgrade of this libraries first before
+upgrading Apollo. 
+
+Both of them are binary compatible for Java users. There are some source incompatible changes for Kotlin users. Please use `Code Cleanup`
+feature of IntelliJ / Android Studio to automatically handle the migration. More info can be found here: https://square.github.io/okhttp/upgrading_to_okhttp_4/
+
+> Update Okio and Okhttp ([#2054](https://github.com/apollographql/apollo-android/pull/2054))
 
 ### New Normalized Cache Modules
 
