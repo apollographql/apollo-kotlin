@@ -1,8 +1,5 @@
 package com.apollographql.apollo;
 
-
-import android.support.annotation.NonNull;
-
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.exception.ApolloException;
@@ -11,7 +8,11 @@ import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.internal.interceptor.RealApolloInterceptorChain;
-
+import okhttp3.MediaType;
+import okhttp3.Protocol;
+import okhttp3.Request;
+import okhttp3.ResponseBody;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,13 +21,6 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.jetbrains.annotations.NotNull;
-
-import okhttp3.MediaType;
-import okhttp3.Protocol;
-import okhttp3.Request;
-import okhttp3.ResponseBody;
 
 import static com.apollographql.apollo.interceptor.ApolloInterceptor.CallBack;
 import static com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorResponse;

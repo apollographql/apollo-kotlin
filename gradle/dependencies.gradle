@@ -1,6 +1,7 @@
 def versions = [
     minAndroidPlugin      : '3.4.2',
     androidPlugin         : '3.6.2',
+    androidxSqlite        : '2.1.0',
     apollo                : '2.0.0-SNAPSHOT', // This should only be used by apollo-gradle-plugin-incubating:test to get the artifacts locally
     antlr4                : '4.5.3',
     cache                 : '2.0.2',
@@ -30,16 +31,16 @@ ext.isCi = "true" == System.getenv('CI')
 
 ext.dep = [
     android               : [
-        plugin                : "com.android.tools.build:gradle:$versions.androidPlugin",
-        minPlugin             : "com.android.tools.build:gradle:$versions.minAndroidPlugin",
-        recyclerView          : "com.android.support:recyclerview-v7:$versions.supportLib",
-        appcompat             : "com.android.support:appcompat-v7:$versions.supportLib",
-        testRunner            : "com.android.support.test:runner:$versions.testRunner",
-        espressoIdlingResource: "androidx.test.espresso:espresso-idling-resource:$versions.espressoIdlingResource",
+        plugin    : "com.android.tools.build:gradle:$versions.androidPlugin",
+        minPlugin : "com.android.tools.build:gradle:$versions.minAndroidPlugin",
+        testRunner: "com.android.support.test:runner:$versions.testRunner",
     ],
     androidx              : [
-        recyclerView: "androidx.recyclerview:recyclerview:1.1.0",
-        appcompat   : "androidx.appcompat:appcompat:1.1.0",
+        appcompat             : "androidx.appcompat:appcompat:1.1.0",
+        espressoIdlingResource: "androidx.test.espresso:espresso-idling-resource:$versions.espressoIdlingResource",
+        recyclerView          : "androidx.recyclerview:recyclerview:1.1.0",
+        sqlite                : "androidx.sqlite:sqlite:${versions.androidxSqlite}",
+        sqliteFramework       : "androidx.sqlite:sqlite-framework:${versions.androidxSqlite}",
     ],
     antlr                 : [
         antlr  : "org.antlr:antlr4:$versions.antlr4",

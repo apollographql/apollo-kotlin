@@ -1,7 +1,7 @@
 import com.android.build.gradle.BaseExtension
 import com.apollographql.apollo.gradle.api.ApolloExtension
 
-apply(plugin = "com.android.application")
+apply(plugin = "com.android.library")
 apply(plugin = "com.apollographql.apollo")
 apply(plugin = "kotlin-android")
 
@@ -9,7 +9,6 @@ extensions.findByType(BaseExtension::class.java)!!.apply {
   compileSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt())
 
   defaultConfig {
-    applicationId = "com.example.apollographql.integration"
     minSdkVersion(21) // not using androidConfig.minSdkVersion to have multidex by default
     targetSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.targetSdkVersion").toString())
   }
@@ -31,7 +30,6 @@ extensions.findByType(BaseExtension::class.java)!!.apply {
 }
 
 dependencies {
-  add("implementation", groovy.util.Eval.x(project, "x.dep.android.appcompat"))
   add("implementation", groovy.util.Eval.x(project, "x.dep.kotlin.coroutines.core"))
   add("implementation", groovy.util.Eval.x(project, "x.dep.kotlin.stdLib"))
 

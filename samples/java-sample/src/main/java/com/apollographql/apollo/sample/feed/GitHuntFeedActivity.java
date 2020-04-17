@@ -4,14 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloCallback;
 import com.apollographql.apollo.api.Response;
@@ -22,12 +21,11 @@ import com.apollographql.apollo.sample.GitHuntApplication;
 import com.apollographql.apollo.sample.R;
 import com.apollographql.apollo.sample.detail.GitHuntEntryDetailActivity;
 import com.apollographql.apollo.sample.type.FeedType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.jetbrains.annotations.NotNull;
 
 import static com.apollographql.apollo.sample.FeedQuery.FeedEntry;
 
@@ -50,10 +48,10 @@ public class GitHuntFeedActivity extends AppCompatActivity implements GitHuntNav
     setContentView(R.layout.activity_githunt_feed);
     application = (GitHuntApplication) getApplication();
 
-    content = (ViewGroup) findViewById(R.id.content_holder);
-    progressBar = (ProgressBar) findViewById(R.id.loading_bar);
+    content = findViewById(R.id.content_holder);
+    progressBar = findViewById(R.id.loading_bar);
 
-    RecyclerView feedRecyclerView = (RecyclerView) findViewById(R.id.rv_feed_list);
+    RecyclerView feedRecyclerView = findViewById(R.id.rv_feed_list);
     feedAdapter = new GitHuntFeedRecyclerViewAdapter(this);
     feedRecyclerView.setAdapter(feedAdapter);
     feedRecyclerView.setLayoutManager(new LinearLayoutManager(this));
