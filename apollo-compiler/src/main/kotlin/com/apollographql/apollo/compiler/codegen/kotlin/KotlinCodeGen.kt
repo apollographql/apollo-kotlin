@@ -178,7 +178,7 @@ internal object KotlinCodeGen {
                 .build()
         )
         .returns(ResponseFieldMapper::class.asClassName().parameterizedBy(this))
-        .addStatement("return %T { invoke(it) }", ResponseFieldMapper::class)
+        .addStatement("return %T·{ invoke(it) }", ResponseFieldMapper::class)
         .build()
   }
 
@@ -190,7 +190,7 @@ internal object KotlinCodeGen {
         is FieldType.Scalar.Boolean -> CodeBlock.of("readBoolean(%L)\n", field)
         is FieldType.Scalar.Float -> CodeBlock.of("readDouble(%L)\n", field)
         is FieldType.Scalar.Enum -> if (optional) {
-          CodeBlock.of("readString(%L)?.let{ %T.safeValueOf(it) }\n", field, typeRef.asTypeName())
+          CodeBlock.of("readString(%L)?.let·{ %T.safeValueOf(it) }\n", field, typeRef.asTypeName())
         } else {
           CodeBlock.of("%T.safeValueOf(readString(%L))\n", typeRef.asTypeName(), field)
         }
@@ -203,14 +203,14 @@ internal object KotlinCodeGen {
       is FieldType.Object -> {
         val fieldCode = field.takeIf { it.isNotEmpty() }?.let { CodeBlock.of("(%L)", it) } ?: CodeBlock.of("")
         CodeBlock.builder()
-            .beginControlFlow("readObject<%T>%L { reader ->", typeRef.asTypeName(), fieldCode)
+            .beginControlFlow("readObject<%T>%L·{ reader ->", typeRef.asTypeName(), fieldCode)
             .addStatement("%T(reader)", typeRef.asTypeName())
             .endControlFlow()
             .build()
       }
       is FieldType.Array -> {
         CodeBlock.builder()
-            .beginControlFlow("readList<%T>(%L) { reader ->", rawType.asTypeName(), field)
+            .beginControlFlow("readList<%T>(%L)·{ reader ->", rawType.asTypeName(), field)
             .add(rawType.readListItemCode(optional = isOptional))
             .endControlFlow()
             .build()
@@ -220,7 +220,7 @@ internal object KotlinCodeGen {
       }
       is FieldType.Fragment -> {
         CodeBlock.builder()
-            .beginControlFlow("readFragment<%T>(%L) { reader ->", typeRef.asTypeName(), field)
+            .beginControlFlow("readFragment<%T>(%L)·{ reader ->", typeRef.asTypeName(), field)
             .addStatement("%T(reader)", typeRef.asTypeName())
             .endControlFlow()
             .build()
@@ -236,7 +236,7 @@ internal object KotlinCodeGen {
         is FieldType.Scalar.Boolean -> CodeBlock.of("reader.readBoolean()")
         is FieldType.Scalar.Float -> CodeBlock.of("reader.readDouble()")
         is FieldType.Scalar.Enum -> if (optional) {
-          CodeBlock.of("reader.readString()?.let{ %T.safeValueOf(it) }", typeRef.asTypeName())
+          CodeBlock.of("reader.readString()?.let·{ %T.safeValueOf(it) }", typeRef.asTypeName())
         } else {
           CodeBlock.of("%T.safeValueOf(reader.readString())", typeRef.asTypeName())
         }
@@ -245,14 +245,14 @@ internal object KotlinCodeGen {
       }
       is FieldType.Object -> {
         CodeBlock.builder()
-            .beginControlFlow("reader.readObject<%T> { reader ->", typeRef.asTypeName())
+            .beginControlFlow("reader.readObject<%T>·{ reader ->", typeRef.asTypeName())
             .addStatement("%T(reader)", typeRef.asTypeName())
             .endControlFlow()
             .build()
       }
       is FieldType.Array -> {
         CodeBlock.builder()
-            .beginControlFlow("reader.readList<%T> { reader ->", rawType.asTypeName())
+            .beginControlFlow("reader.readList<%T>·{ reader ->", rawType.asTypeName())
             .add(rawType.readListItemCode(optional = isOptional))
             .endControlFlow()
             .build()
@@ -269,7 +269,7 @@ internal object KotlinCodeGen {
     return FunSpec.builder("marshaller")
         .applyIf(override) { addModifiers(KModifier.OVERRIDE) }
         .returns(ResponseFieldMarshaller::class)
-        .beginControlFlow("return %T { writer ->", ResponseFieldMarshaller::class)
+        .beginControlFlow("return %T·{ writer ->", ResponseFieldMarshaller::class)
         .addCode(writeFieldsCode)
         .endControlFlow()
         .build()
@@ -308,8 +308,8 @@ internal object KotlinCodeGen {
       }
       is FieldType.Array -> {
         CodeBlock.builder()
-            .beginControlFlow("writer.writeList(%L, this@%L.%L) { value, listItemWriter ->", field, thisRef, name)
-            .beginControlFlow("value?.forEach { value ->")
+            .beginControlFlow("writer.writeList(%L, this@%L.%L)·{ value, listItemWriter ->", field, thisRef, name)
+            .beginControlFlow("value?.forEach·{ value ->")
             .add(type.rawType.writeListItemCode)
             .endControlFlow()
             .endControlFlow()
@@ -335,9 +335,9 @@ internal object KotlinCodeGen {
         is FieldType.Array -> {
           CodeBlock.builder()
               .beginControlFlow(
-                  "listItemWriter.writeList(value) { value, listItemWriter ->",
+                  "listItemWriter.writeList(value)·{ value, listItemWriter ->",
                   List::class.asClassName().parameterizedBy(rawType.asTypeName()))
-              .beginControlFlow("value?.forEach { value ->", List::class.asClassName().parameterizedBy(rawType.asTypeName()))
+              .beginControlFlow("value?.forEach·{ value ->", List::class.asClassName().parameterizedBy(rawType.asTypeName()))
               .add(rawType.writeListItemCode)
               .endControlFlow()
               .endControlFlow()

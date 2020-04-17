@@ -73,7 +73,7 @@ internal fun OperationType.typeSpec(targetPackage: String, generateAsInternal: B
     .addFunction(FunSpec.builder("responseFieldMapper")
         .addModifiers(KModifier.OVERRIDE)
         .returns(ResponseFieldMapper::class.asClassName().parameterizedBy(data.asTypeName()))
-        .beginControlFlow("return %T {", ResponseFieldMapper::class)
+        .beginControlFlow("return %T·{", ResponseFieldMapper::class)
         .addStatement("%T(it)", data.asTypeName())
         .endControlFlow()
         .build()
@@ -209,7 +209,7 @@ private fun InputType.variablesMarshallerSpec(thisRef: String): FunSpec {
       .addModifiers(KModifier.OVERRIDE)
       .addCode(CodeBlock
           .builder()
-          .beginControlFlow("return %T { writer ->", InputFieldMarshaller::class)
+          .beginControlFlow("return %T·{ writer ->", InputFieldMarshaller::class)
           .apply { fields.forEach { field -> add(field.writeCodeBlock(thisRef)) } }
           .endControlFlow()
           .build()

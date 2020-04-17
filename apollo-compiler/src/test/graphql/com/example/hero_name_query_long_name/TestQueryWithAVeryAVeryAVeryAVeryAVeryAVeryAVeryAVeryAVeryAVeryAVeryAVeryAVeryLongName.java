@@ -37,11 +37,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName implements Query<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data, Optional<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data>, TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Variables> {
-  public static final String OPERATION_ID = "559f93954a812b8951d51c0a999e5d05fedc65a77f8a9fb9a0acb48378f2984c";
+  public static final String OPERATION_ID = "da1b713dcfa710f7f5dbe01186d56ebdec768de44002ab965740de6acbee1d01";
 
   public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
     "query TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName($episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName:Episode) {\n"
-        + "  heroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName: hero(episode: $episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName) {\n"
+        + "  heroAVeryAVeryAVeryAVeryAVeryAVeryAV: hero(episode: $episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName) {\n"
         + "    __typename\n"
         + "    nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName: name\n"
         + "  }\n"
@@ -167,7 +167,7 @@ public final class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVe
 
   public static class Data implements Operation.Data {
     static final ResponseField[] $responseFields = {
-      ResponseField.forObject("heroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName", "hero", new UnmodifiableMapBuilder<String, Object>(1)
+      ResponseField.forObject("heroAVeryAVeryAVeryAVeryAVeryAVeryAV", "hero", new UnmodifiableMapBuilder<String, Object>(1)
       .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
         .put("kind", "Variable")
         .put("variableName", "episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")
@@ -175,7 +175,7 @@ public final class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVe
       .build(), true, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final Optional<HeroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName> heroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName;
+    final Optional<HeroAVeryAVeryAVeryAVeryAVeryAVeryAV> heroAVeryAVeryAVeryAVeryAVeryAVeryAV;
 
     private transient volatile String $toString;
 
@@ -183,12 +183,12 @@ public final class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVe
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Data(@Nullable HeroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName heroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName) {
-      this.heroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = Optional.fromNullable(heroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName);
+    public Data(@Nullable HeroAVeryAVeryAVeryAVeryAVeryAVeryAV heroAVeryAVeryAVeryAVeryAVeryAVeryAV) {
+      this.heroAVeryAVeryAVeryAVeryAVeryAVeryAV = Optional.fromNullable(heroAVeryAVeryAVeryAVeryAVeryAVeryAV);
     }
 
-    public Optional<HeroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName> heroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName() {
-      return this.heroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName;
+    public Optional<HeroAVeryAVeryAVeryAVeryAVeryAVeryAV> heroAVeryAVeryAVeryAVeryAVeryAVeryAV() {
+      return this.heroAVeryAVeryAVeryAVeryAVeryAVeryAV;
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -196,7 +196,7 @@ public final class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVe
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeObject($responseFields[0], heroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.isPresent() ? heroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.get().marshaller() : null);
+          writer.writeObject($responseFields[0], heroAVeryAVeryAVeryAVeryAVeryAVeryAV.isPresent() ? heroAVeryAVeryAVeryAVeryAVeryAVeryAV.get().marshaller() : null);
         }
       };
     }
@@ -205,7 +205,7 @@ public final class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVe
     public String toString() {
       if ($toString == null) {
         $toString = "Data{"
-          + "heroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName=" + heroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName
+          + "heroAVeryAVeryAVeryAVeryAVeryAVeryAV=" + heroAVeryAVeryAVeryAVeryAVeryAVeryAV
           + "}";
       }
       return $toString;
@@ -218,7 +218,7 @@ public final class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVe
       }
       if (o instanceof Data) {
         Data that = (Data) o;
-        return this.heroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.equals(that.heroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName);
+        return this.heroAVeryAVeryAVeryAVeryAVeryAVeryAV.equals(that.heroAVeryAVeryAVeryAVeryAVeryAVeryAV);
       }
       return false;
     }
@@ -228,7 +228,7 @@ public final class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVe
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= heroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.hashCode();
+        h ^= heroAVeryAVeryAVeryAVeryAVeryAVeryAV.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -236,22 +236,22 @@ public final class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVe
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
-      final HeroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Mapper heroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongNameFieldMapper = new HeroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Mapper();
+      final HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.Mapper heroAVeryAVeryAVeryAVeryAVeryAVeryAVFieldMapper = new HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.Mapper();
 
       @Override
       public Data map(ResponseReader reader) {
-        final HeroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName heroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<HeroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName>() {
+        final HeroAVeryAVeryAVeryAVeryAVeryAVeryAV heroAVeryAVeryAVeryAVeryAVeryAVeryAV = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<HeroAVeryAVeryAVeryAVeryAVeryAVeryAV>() {
           @Override
-          public HeroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName read(ResponseReader reader) {
-            return heroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongNameFieldMapper.map(reader);
+          public HeroAVeryAVeryAVeryAVeryAVeryAVeryAV read(ResponseReader reader) {
+            return heroAVeryAVeryAVeryAVeryAVeryAVeryAVFieldMapper.map(reader);
           }
         });
-        return new Data(heroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName);
+        return new Data(heroAVeryAVeryAVeryAVeryAVeryAVeryAV);
       }
     }
   }
 
-  public static class HeroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName {
+  public static class HeroAVeryAVeryAVeryAVeryAVeryAVeryAV {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName", "name", null, false, Collections.<ResponseField.Condition>emptyList())
@@ -267,7 +267,7 @@ public final class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVe
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public HeroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName(@NotNull String __typename,
+    public HeroAVeryAVeryAVeryAVeryAVeryAVeryAV(@NotNull String __typename,
         @NotNull String nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = Utils.checkNotNull(nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName, "nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName == null");
@@ -298,7 +298,7 @@ public final class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVe
     @Override
     public String toString() {
       if ($toString == null) {
-        $toString = "HeroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName{"
+        $toString = "HeroAVeryAVeryAVeryAVeryAVeryAVeryAV{"
           + "__typename=" + __typename + ", "
           + "nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName=" + nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName
           + "}";
@@ -311,8 +311,8 @@ public final class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVe
       if (o == this) {
         return true;
       }
-      if (o instanceof HeroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName) {
-        HeroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName that = (HeroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName) o;
+      if (o instanceof HeroAVeryAVeryAVeryAVeryAVeryAVeryAV) {
+        HeroAVeryAVeryAVeryAVeryAVeryAVeryAV that = (HeroAVeryAVeryAVeryAVeryAVeryAVeryAV) o;
         return this.__typename.equals(that.__typename)
          && this.nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.equals(that.nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName);
       }
@@ -333,12 +333,12 @@ public final class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVe
       return $hashCode;
     }
 
-    public static final class Mapper implements ResponseFieldMapper<HeroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName> {
+    public static final class Mapper implements ResponseFieldMapper<HeroAVeryAVeryAVeryAVeryAVeryAVeryAV> {
       @Override
-      public HeroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName map(ResponseReader reader) {
+      public HeroAVeryAVeryAVeryAVeryAVeryAVeryAV map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = reader.readString($responseFields[1]);
-        return new HeroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName(__typename, nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName);
+        return new HeroAVeryAVeryAVeryAVeryAVeryAVeryAV(__typename, nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName);
       }
     }
   }

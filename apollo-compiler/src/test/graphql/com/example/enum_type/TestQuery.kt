@@ -82,7 +82,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         val __typename = readString(RESPONSE_FIELDS[0])
         val name = readString(RESPONSE_FIELDS[1])
         val appearsIn = readList<Episode>(RESPONSE_FIELDS[2]) { reader ->
-          reader.readString()?.let{ Episode.safeValueOf(it) }}
+          reader.readString()?.let { Episode.safeValueOf(it) }}
         val firstAppearsIn = Episode.safeValueOf(readString(RESPONSE_FIELDS[3]))
         Hero(
           __typename = __typename,

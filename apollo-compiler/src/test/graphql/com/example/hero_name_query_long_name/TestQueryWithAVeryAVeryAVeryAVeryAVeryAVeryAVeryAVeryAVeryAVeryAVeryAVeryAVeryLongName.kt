@@ -71,8 +71,7 @@ data class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryA
   @Throws(IOException::class)
   override fun parse(source: BufferedSource): Response<Data> = parse(source, DEFAULT)
 
-  data class
-      HeroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName(
+  data class HeroAVeryAVeryAVeryAVeryAVeryAVeryAV(
     val __typename: String = "Character",
     /**
      * The name of the character
@@ -81,10 +80,9 @@ data class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryA
         String
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
-      writer.writeString(RESPONSE_FIELDS[0],
-          this@HeroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.__typename)
+      writer.writeString(RESPONSE_FIELDS[0], this@HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.__typename)
       writer.writeString(RESPONSE_FIELDS[1],
-          this@HeroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName)
+          this@HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName)
     }
 
     companion object {
@@ -94,13 +92,12 @@ data class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryA
               "name", null, false, null)
           )
 
-      operator fun invoke(reader: ResponseReader):
-          HeroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName =
+      operator fun invoke(reader: ResponseReader): HeroAVeryAVeryAVeryAVeryAVeryAVeryAV =
           reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])
         val nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName
             = readString(RESPONSE_FIELDS[1])
-        HeroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName(
+        HeroAVeryAVeryAVeryAVeryAVeryAVeryAV(
           __typename = __typename,
           nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName =
               nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName
@@ -108,25 +105,23 @@ data class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryA
       }
 
       @Suppress("FunctionName")
-      fun Mapper():
-          ResponseFieldMapper<HeroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName>
-          = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<HeroAVeryAVeryAVeryAVeryAVeryAVeryAV> =
+          ResponseFieldMapper { invoke(it) }
     }
   }
 
   data class Data(
-    val heroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName:
-        HeroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName?
+    val heroAVeryAVeryAVeryAVeryAVeryAVeryAV: HeroAVeryAVeryAVeryAVeryAVeryAVeryAV?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller { writer ->
       writer.writeObject(RESPONSE_FIELDS[0],
-          this@Data.heroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName?.marshaller())
+          this@Data.heroAVeryAVeryAVeryAVeryAVeryAVeryAV?.marshaller())
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forObject("heroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName",
-              "hero", mapOf<String, Any>(
+          ResponseField.forObject("heroAVeryAVeryAVeryAVeryAVeryAVeryAV", "hero", mapOf<String,
+              Any>(
             "episode" to mapOf<String, Any>(
               "kind" to "Variable",
               "variableName" to
@@ -135,15 +130,12 @@ data class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryA
           )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {
-        val heroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName
-            =
-            readObject<HeroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName>(RESPONSE_FIELDS[0])
-            { reader ->
-          HeroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName(reader)
+        val heroAVeryAVeryAVeryAVeryAVeryAVeryAV =
+            readObject<HeroAVeryAVeryAVeryAVeryAVeryAVeryAV>(RESPONSE_FIELDS[0]) { reader ->
+          HeroAVeryAVeryAVeryAVeryAVeryAVeryAV(reader)
         }
         Data(
-          heroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName =
-              heroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName
+          heroAVeryAVeryAVeryAVeryAVeryAVeryAV = heroAVeryAVeryAVeryAVeryAVeryAVeryAV
         )
       }
 
@@ -154,12 +146,12 @@ data class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryA
 
   companion object {
     const val OPERATION_ID: String =
-        "559f93954a812b8951d51c0a999e5d05fedc65a77f8a9fb9a0acb48378f2984c"
+        "da1b713dcfa710f7f5dbe01186d56ebdec768de44002ab965740de6acbee1d01"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName(${'$'}episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName:Episode) {
-          |  heroAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName: hero(episode: ${'$'}episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName) {
+          |  heroAVeryAVeryAVeryAVeryAVeryAVeryAV: hero(episode: ${'$'}episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName) {
           |    __typename
           |    nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName: name
           |  }
