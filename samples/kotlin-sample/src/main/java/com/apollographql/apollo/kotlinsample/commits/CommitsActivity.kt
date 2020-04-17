@@ -3,10 +3,10 @@ package com.apollographql.apollo.kotlinsample.commits
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.apollographql.apollo.kotlinsample.GithubRepositoryCommitsQuery
 import com.apollographql.apollo.kotlinsample.KotlinSampleApp
 import com.apollographql.apollo.kotlinsample.R

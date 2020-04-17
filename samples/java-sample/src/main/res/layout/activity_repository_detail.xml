@@ -57,12 +57,12 @@
       android:layout_marginTop="16dp"
       />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/comments"
       android:layout_width="match_parent"
       android:layout_height="0dp"
       android:layout_weight="1"
-      app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       />
 
   </LinearLayout>

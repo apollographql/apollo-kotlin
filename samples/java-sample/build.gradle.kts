@@ -28,8 +28,8 @@ dependencies {
   add("implementation", "com.apollographql.apollo:apollo-runtime")
   add("implementation", "com.apollographql.apollo:apollo-android-support")
   add("implementation", "com.apollographql.apollo:apollo-rx2-support")
-  add("implementation", groovy.util.Eval.x(project, "x.dep.android.appcompat"))
-  add("implementation", groovy.util.Eval.x(project, "x.dep.android.recyclerView"))
+  add("implementation", groovy.util.Eval.x(project, "x.dep.androidx.appcompat"))
+  add("implementation", groovy.util.Eval.x(project, "x.dep.androidx.recyclerView"))
   add("implementation", groovy.util.Eval.x(project, "x.dep.rx.java"))
   add("implementation", groovy.util.Eval.x(project, "x.dep.rx.android"))
 

@@ -4,8 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.kotlinsample.GithubRepositoryDetailQuery
 import com.apollographql.apollo.kotlinsample.KotlinSampleApp

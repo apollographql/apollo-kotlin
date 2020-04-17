@@ -26,7 +26,7 @@ extensions.findByType(BaseExtension::class.java)!!.apply {
 dependencies {
   add("compileOnly", groovy.util.Eval.x(project, "x.dep.jetbrainsAnnotations"))
 
-  add("implementation", groovy.util.Eval.x(project, "x.dep.android.espressoIdlingResource"))
+  add("implementation", groovy.util.Eval.x(project, "x.dep.androidx.espressoIdlingResource"))
   add("implementation", project(":apollo-runtime"))
 
   add("testCompileOnly", groovy.util.Eval.x(project, "x.dep.jetbrainsAnnotations"))
