@@ -22,11 +22,11 @@ class ApolloCoroutinesService(
   private var job: Job? = null
 
   override fun fetchRepositories() {
-    val repositoriesQuery = GithubRepositoriesQuery.builder()
-        .repositoriesCount(50)
-        .orderBy(RepositoryOrderField.UPDATED_AT)
-        .orderDirection(OrderDirection.DESC)
-        .build()
+    val repositoriesQuery = GithubRepositoriesQuery(
+        50,
+        RepositoryOrderField.UPDATED_AT,
+        OrderDirection.DESC
+    )
 
     job = CoroutineScope(processContext).launch {
       try {
@@ -41,10 +41,7 @@ class ApolloCoroutinesService(
   }
 
   override fun fetchRepositoryDetail(repositoryName: String) {
-    val repositoryDetailQuery = GithubRepositoryDetailQuery.builder()
-        .name(repositoryName)
-        .pullRequestStates(listOf(PullRequestState.OPEN))
-        .build()
+    val repositoryDetailQuery = GithubRepositoryDetailQuery(repositoryName, listOf(PullRequestState.OPEN))
 
     job = CoroutineScope(processContext).launch {
       try {
@@ -60,15 +57,13 @@ class ApolloCoroutinesService(
   }
 
   override fun fetchCommits(repositoryName: String) {
-    val commitsQuery = GithubRepositoryCommitsQuery.builder()
-        .name(repositoryName)
-        .build()
+    val commitsQuery = GithubRepositoryCommitsQuery(repositoryName)
 
     job = CoroutineScope(processContext).launch {
       try {
         val response = apolloClient.query(commitsQuery).toDeferred().await()
-        val headCommit = response.data?.viewer()?.repository()?.ref()?.target() as? GithubRepositoryCommitsQuery.AsCommit
-        val commits = headCommit?.history()?.edges().orEmpty()
+        val headCommit = response.data?.viewer?.repository?.ref?.target?.asCommit
+        val commits = headCommit?.history?.edges?.filterNotNull().orEmpty()
 
         withContext(resultContext) {
           commitsSubject.onNext(commits)

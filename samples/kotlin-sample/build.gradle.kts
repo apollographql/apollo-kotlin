@@ -32,6 +32,7 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
 
+
 dependencies {
     add("implementation", "com.apollographql.apollo:apollo-android-support")
     add("implementation", "com.apollographql.apollo:apollo-rx2-support")
@@ -46,4 +47,8 @@ dependencies {
     add("implementation", groovy.util.Eval.x(project, "x.dep.kotlin.stdLib"))
     add("implementation", groovy.util.Eval.x(project, "x.dep.rx.android"))
     add("implementation", groovy.util.Eval.x(project, "x.dep.rx.java"))
+}
+
+configure<com.apollographql.apollo.gradle.api.ApolloExtension> {
+    generateKotlinModels.set(true)
 }
