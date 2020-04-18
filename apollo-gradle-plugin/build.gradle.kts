@@ -2,7 +2,7 @@ plugins {
   id("java")
   id("org.jetbrains.kotlin.jvm")
   id("java-gradle-plugin")
-  id("com.gradle.plugin-publish") version "0.10.1"
+  id("com.gradle.plugin-publish") version "0.11.0"
 }
 
 // groovy strings with double quotes are GString.
