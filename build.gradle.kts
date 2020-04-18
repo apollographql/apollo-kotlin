@@ -192,7 +192,6 @@ fun Project.configurePublishing() {
           // but it's been like that for some time now. As long as users still
           // import apollo-runtime in addition to the android artifacts, it
           // should be fine.
-          //
           // https://issuetracker.google.com/issues/37055147
           // https://github.com/gradle/gradle/pull/8399
           afterEvaluate {
