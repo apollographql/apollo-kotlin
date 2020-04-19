@@ -32,7 +32,6 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
 
-
 dependencies {
     add("implementation", "com.apollographql.apollo:apollo-android-support")
     add("implementation", "com.apollographql.apollo:apollo-rx2-support")
