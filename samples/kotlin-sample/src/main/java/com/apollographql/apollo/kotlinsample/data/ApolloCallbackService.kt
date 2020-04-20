@@ -18,9 +18,9 @@ import com.apollographql.apollo.kotlinsample.type.RepositoryOrderField
 class ApolloCallbackService(apolloClient: ApolloClient) : GitHubDataSource(apolloClient) {
   override fun fetchRepositories() {
     val repositoriesQuery = GithubRepositoriesQuery(
-        50,
-        RepositoryOrderField.UPDATED_AT,
-        OrderDirection.DESC
+        repositoriesCount = 50,
+        orderBy = RepositoryOrderField.UPDATED_AT,
+        orderDirection = OrderDirection.DESC
     )
 
     val callback = object : ApolloCall.Callback<GithubRepositoriesQuery.Data>() {
@@ -40,7 +40,10 @@ class ApolloCallbackService(apolloClient: ApolloClient) : GitHubDataSource(apoll
   }
 
   override fun fetchRepositoryDetail(repositoryName: String) {
-    val repositoryDetailQuery = GithubRepositoryDetailQuery(repositoryName, listOf(PullRequestState.OPEN))
+    val repositoryDetailQuery = GithubRepositoryDetailQuery(
+        name = repositoryName,
+        pullRequestStates = listOf(PullRequestState.OPEN)
+    )
 
     val callback = object : ApolloCall.Callback<GithubRepositoryDetailQuery.Data>() {
       override fun onFailure(e: ApolloException) {
@@ -59,7 +62,9 @@ class ApolloCallbackService(apolloClient: ApolloClient) : GitHubDataSource(apoll
   }
 
   override fun fetchCommits(repositoryName: String) {
-    val commitsQuery = GithubRepositoryCommitsQuery(repositoryName)
+    val commitsQuery = GithubRepositoryCommitsQuery(
+        name = repositoryName
+    )
 
     val callback = object : ApolloCall.Callback<GithubRepositoryCommitsQuery.Data>() {
       override fun onFailure(e: ApolloException) {

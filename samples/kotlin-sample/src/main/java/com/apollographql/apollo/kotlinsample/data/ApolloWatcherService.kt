@@ -20,9 +20,9 @@ import com.apollographql.apollo.kotlinsample.type.RepositoryOrderField
 class ApolloWatcherService(apolloClient: ApolloClient) : GitHubDataSource(apolloClient) {
   override fun fetchRepositories() {
     val repositoriesQuery = GithubRepositoriesQuery(
-        50,
-        RepositoryOrderField.UPDATED_AT,
-        OrderDirection.DESC
+        repositoriesCount = 50,
+        orderBy = RepositoryOrderField.UPDATED_AT,
+        orderDirection = OrderDirection.DESC
     )
 
     val callback = createCallback<GithubRepositoriesQuery.Data> {
@@ -37,7 +37,10 @@ class ApolloWatcherService(apolloClient: ApolloClient) : GitHubDataSource(apollo
   }
 
   override fun fetchRepositoryDetail(repositoryName: String) {
-    val repositoryDetailQuery = GithubRepositoryDetailQuery(repositoryName, listOf(PullRequestState.OPEN))
+    val repositoryDetailQuery = GithubRepositoryDetailQuery(
+        name = repositoryName,
+        pullRequestStates = listOf(PullRequestState.OPEN)
+    )
 
     val callback = createCallback<GithubRepositoryDetailQuery.Data> {
       repositoryDetailSubject.onNext(it)
@@ -51,7 +54,9 @@ class ApolloWatcherService(apolloClient: ApolloClient) : GitHubDataSource(apollo
   }
 
   override fun fetchCommits(repositoryName: String) {
-    val commitsQuery = GithubRepositoryCommitsQuery(repositoryName)
+    val commitsQuery = GithubRepositoryCommitsQuery(
+        name = repositoryName
+    )
 
     val callback = createCallback<GithubRepositoryCommitsQuery.Data> { response ->
       val headCommit = response.data?.viewer?.repository?.ref?.target?.asCommit

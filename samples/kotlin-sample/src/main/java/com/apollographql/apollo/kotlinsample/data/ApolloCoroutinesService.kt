@@ -23,9 +23,9 @@ class ApolloCoroutinesService(
 
   override fun fetchRepositories() {
     val repositoriesQuery = GithubRepositoriesQuery(
-        50,
-        RepositoryOrderField.UPDATED_AT,
-        OrderDirection.DESC
+        repositoriesCount = 50,
+        orderBy = RepositoryOrderField.UPDATED_AT,
+        orderDirection = OrderDirection.DESC
     )
 
     job = CoroutineScope(processContext).launch {
@@ -41,7 +41,10 @@ class ApolloCoroutinesService(
   }
 
   override fun fetchRepositoryDetail(repositoryName: String) {
-    val repositoryDetailQuery = GithubRepositoryDetailQuery(repositoryName, listOf(PullRequestState.OPEN))
+    val repositoryDetailQuery = GithubRepositoryDetailQuery(
+        name = repositoryName,
+        pullRequestStates = listOf(PullRequestState.OPEN)
+    )
 
     job = CoroutineScope(processContext).launch {
       try {
@@ -57,7 +60,9 @@ class ApolloCoroutinesService(
   }
 
   override fun fetchCommits(repositoryName: String) {
-    val commitsQuery = GithubRepositoryCommitsQuery(repositoryName)
+    val commitsQuery = GithubRepositoryCommitsQuery(
+        name = repositoryName
+    )
 
     job = CoroutineScope(processContext).launch {
       try {

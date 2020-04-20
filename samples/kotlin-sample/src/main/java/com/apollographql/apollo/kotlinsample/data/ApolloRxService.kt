@@ -25,9 +25,9 @@ class ApolloRxService(
 ) : GitHubDataSource(apolloClient) {
   override fun fetchRepositories() {
     val repositoriesQuery = GithubRepositoriesQuery(
-        50,
-        RepositoryOrderField.UPDATED_AT,
-        OrderDirection.DESC
+        repositoriesCount = 50,
+        orderBy = RepositoryOrderField.UPDATED_AT,
+        orderDirection = OrderDirection.DESC
     )
 
     val disposable = apolloClient.rxQuery(repositoriesQuery)
@@ -43,7 +43,10 @@ class ApolloRxService(
   }
 
   override fun fetchRepositoryDetail(repositoryName: String) {
-    val repositoryDetailQuery = GithubRepositoryDetailQuery(repositoryName, listOf(PullRequestState.OPEN))
+    val repositoryDetailQuery = GithubRepositoryDetailQuery(
+        name = repositoryName,
+        pullRequestStates = listOf(PullRequestState.OPEN)
+    )
 
     val disposable = apolloClient.rxQuery(repositoryDetailQuery)
         .subscribeOn(processScheduler)
@@ -57,7 +60,9 @@ class ApolloRxService(
   }
 
   override fun fetchCommits(repositoryName: String) {
-    val commitsQuery = GithubRepositoryCommitsQuery(repositoryName)
+    val commitsQuery = GithubRepositoryCommitsQuery(
+        name = repositoryName
+    )
 
     val disposable = apolloClient
         .rxQuery(commitsQuery) {
