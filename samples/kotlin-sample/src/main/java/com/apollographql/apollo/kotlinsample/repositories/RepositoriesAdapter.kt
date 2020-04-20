@@ -32,11 +32,11 @@ class RepositoriesAdapter(private val onClick: (RepositoryFragment) -> Unit) : R
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun bind(repositoryFragment: RepositoryFragment, onClick: (RepositoryFragment) -> Unit) {
       itemView.run {
-        tvRepositoryName.text = repositoryFragment.name()
-        if (repositoryFragment.description() == null) {
+        tvRepositoryName.text = repositoryFragment.name
+        if (repositoryFragment.description == null) {
           tvRepositoryDescription.visibility = View.GONE
         } else {
-          tvRepositoryDescription.text = repositoryFragment.description()
+          tvRepositoryDescription.text = repositoryFragment.description
         }
 
         rootLayout.setOnClickListener {

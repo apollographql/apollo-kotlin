@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
     rvRepositories.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
     rvRepositories.addItemDecoration(DividerItemDecoration(this, RecyclerView.VERTICAL))
     repositoriesAdapter = RepositoriesAdapter { repositoryFragment ->
-      RepositoryDetailActivity.start(this@MainActivity, repositoryFragment.name())
+      RepositoryDetailActivity.start(this@MainActivity, repositoryFragment.name)
     }
     rvRepositories.adapter = repositoriesAdapter
 

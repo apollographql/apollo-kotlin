@@ -34,14 +34,10 @@ class CommitsAdapter : RecyclerView.Adapter<CommitsAdapter.ViewHolder>() {
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun bind(commit: GithubRepositoryCommitsQuery.Edge) {
       itemView.run {
-        tvCommitSha1.text = commit.node()?.abbreviatedOid()
-        val headline = "${commit.node()?.author()?.email()}: ${commit.node()?.messageHeadline()}"
-        if (headline == null) {
-          tvCommitMessage.visibility = View.GONE
-        } else {
-          tvCommitMessage.visibility = VISIBLE
-          tvCommitMessage.text = headline
-        }
+        tvCommitSha1.text = commit.node?.abbreviatedOid
+        val headline = "${commit.node?.author?.email}: ${commit.node?.messageHeadline}"
+        tvCommitMessage.visibility = VISIBLE
+        tvCommitMessage.text = headline
       }
     }
   }

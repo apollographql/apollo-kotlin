@@ -24,11 +24,11 @@ class ApolloRxService(
     private val resultScheduler: Scheduler = AndroidSchedulers.mainThread()
 ) : GitHubDataSource(apolloClient) {
   override fun fetchRepositories() {
-    val repositoriesQuery = GithubRepositoriesQuery.builder()
-        .repositoriesCount(50)
-        .orderBy(RepositoryOrderField.UPDATED_AT)
-        .orderDirection(OrderDirection.DESC)
-        .build()
+    val repositoriesQuery = GithubRepositoriesQuery(
+        repositoriesCount = 50,
+        orderBy = RepositoryOrderField.UPDATED_AT,
+        orderDirection = OrderDirection.DESC
+    )
 
     val disposable = apolloClient.rxQuery(repositoriesQuery)
         .subscribeOn(processScheduler)
@@ -43,10 +43,10 @@ class ApolloRxService(
   }
 
   override fun fetchRepositoryDetail(repositoryName: String) {
-    val repositoryDetailQuery = GithubRepositoryDetailQuery.builder()
-        .name(repositoryName)
-        .pullRequestStates(listOf(PullRequestState.OPEN))
-        .build()
+    val repositoryDetailQuery = GithubRepositoryDetailQuery(
+        name = repositoryName,
+        pullRequestStates = listOf(PullRequestState.OPEN)
+    )
 
     val disposable = apolloClient.rxQuery(repositoryDetailQuery)
         .subscribeOn(processScheduler)
@@ -60,9 +60,9 @@ class ApolloRxService(
   }
 
   override fun fetchCommits(repositoryName: String) {
-    val commitsQuery = GithubRepositoryCommitsQuery.builder()
-        .name(repositoryName)
-        .build()
+    val commitsQuery = GithubRepositoryCommitsQuery(
+        name = repositoryName
+    )
 
     val disposable = apolloClient
         .rxQuery(commitsQuery) {
@@ -71,8 +71,8 @@ class ApolloRxService(
         .subscribeOn(processScheduler)
         .observeOn(resultScheduler)
         .map { response ->
-          val headCommit = response.data?.viewer()?.repository()?.ref()?.target() as? GithubRepositoryCommitsQuery.AsCommit
-          headCommit?.history()?.edges().orEmpty()
+          val headCommit = response.data?.viewer?.repository?.ref?.target as? GithubRepositoryCommitsQuery.AsCommit
+          headCommit?.history?.edges?.filterNotNull().orEmpty()
         }
         .subscribe(
             commitsSubject::onNext,

@@ -19,11 +19,11 @@ import com.apollographql.apollo.kotlinsample.type.RepositoryOrderField
  */
 class ApolloWatcherService(apolloClient: ApolloClient) : GitHubDataSource(apolloClient) {
   override fun fetchRepositories() {
-    val repositoriesQuery = GithubRepositoriesQuery.builder()
-        .repositoriesCount(50)
-        .orderBy(RepositoryOrderField.UPDATED_AT)
-        .orderDirection(OrderDirection.DESC)
-        .build()
+    val repositoriesQuery = GithubRepositoriesQuery(
+        repositoriesCount = 50,
+        orderBy = RepositoryOrderField.UPDATED_AT,
+        orderDirection = OrderDirection.DESC
+    )
 
     val callback = createCallback<GithubRepositoriesQuery.Data> {
       repositoriesSubject.onNext(mapRepositoriesResponseToRepositories(it))
@@ -37,10 +37,10 @@ class ApolloWatcherService(apolloClient: ApolloClient) : GitHubDataSource(apollo
   }
 
   override fun fetchRepositoryDetail(repositoryName: String) {
-    val repositoryDetailQuery = GithubRepositoryDetailQuery.builder()
-        .name(repositoryName)
-        .pullRequestStates(listOf(PullRequestState.OPEN))
-        .build()
+    val repositoryDetailQuery = GithubRepositoryDetailQuery(
+        name = repositoryName,
+        pullRequestStates = listOf(PullRequestState.OPEN)
+    )
 
     val callback = createCallback<GithubRepositoryDetailQuery.Data> {
       repositoryDetailSubject.onNext(it)
@@ -54,13 +54,13 @@ class ApolloWatcherService(apolloClient: ApolloClient) : GitHubDataSource(apollo
   }
 
   override fun fetchCommits(repositoryName: String) {
-    val commitsQuery = GithubRepositoryCommitsQuery.builder()
-        .name(repositoryName)
-        .build()
+    val commitsQuery = GithubRepositoryCommitsQuery(
+        name = repositoryName
+    )
 
     val callback = createCallback<GithubRepositoryCommitsQuery.Data> { response ->
-      val headCommit = response.data?.viewer()?.repository()?.ref()?.target() as? GithubRepositoryCommitsQuery.AsCommit
-      val commits = headCommit?.history()?.edges().orEmpty()
+      val headCommit = response.data?.viewer?.repository?.ref?.target?.asCommit
+      val commits = headCommit?.history?.edges?.filterNotNull().orEmpty()
       commitsSubject.onNext(commits)
     }
 
