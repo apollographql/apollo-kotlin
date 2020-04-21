@@ -311,7 +311,9 @@ public class CacheKeyBuilderTest {
       }
     };
     assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo(
-        "hero({\"episode\":\"JEDI\",\"nested\":{\"bar\":\"2\",\"foo\":{\"boolean\":true,\"custom\":\"JEDI\",\"double\":3.0,\"int\":1,\"list\":[\"string\",1,2,3.0,4,true,\"JEDI\",{\"int\":1,\"string\":\"string\"},[\"string\",1]],\"long\":2,\"number\":4,\"object\":{\"int\":1,\"string\":\"string\"},\"string\":\"string\"}}})");
+        "hero({\"episode\":\"JEDI\",\"nested\":{\"bar\":\"2\",\"foo\":{\"boolean\":true,\"custom\":\"JEDI\",\"double\":3.0,\"int\":1,"
+            + "\"list\":[\"string\",1,2,3.0,4,true,\"JEDI\",{\"int\":1,\"string\":\"string\"},[\"string\",1]],\"long\":2,"
+            + "\"number\":4,\"object\":{\"int\":1,\"string\":\"string\"},\"string\":\"string\"}}})");
   }
 
   @Test
@@ -386,7 +388,8 @@ public class CacheKeyBuilderTest {
       }
     };
     assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo(
-        "hero({\"episode\":null,\"nested\":{\"bar\":null,\"foo\":{\"boolean\":null,\"custom\":null,\"double\":null,\"int\":null,\"listNull\":null,\"listWithNulls\":[],\"long\":null,\"null\":null,\"number\":null,\"object\":null,\"string\":null}}})");
+        "hero({\"episode\":null,\"nested\":{\"bar\":null,\"foo\":{\"boolean\":null,\"custom\":null,\"double\":null,\"int\":null,\"listNull"
+            + "\":null,\"listWithNulls\":[],\"long\":null,\"null\":null,\"number\":null,\"object\":null,\"string\":null}}})");
   }
 
   private ResponseField createResponseField(String responseName, String fieldName, Map<String, Object> arguments) {
