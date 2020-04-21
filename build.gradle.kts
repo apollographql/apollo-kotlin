@@ -360,6 +360,6 @@ tasks.register("publishIfNeeded") {
     dependsOn(subprojectTasks("publishAllPublicationsToBintrayRepository"))
 
     project.logger.log(LogLevel.LIFECYCLE, "Deploying release to Gradle Portal...")
-    dependsOn(":apollo-gradle-plugin:publishPlugin")
+    dependsOn(":apollo-gradle-plugin:publishPlugins")
   }
 }
