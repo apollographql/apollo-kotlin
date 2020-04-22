@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicReference
 abstract class ApolloStoreOperation<T> protected constructor(private val dispatcher: Executor?) {
   private val callback = AtomicReference<Callback<T>?>()
   private val executed = AtomicBoolean()
+
   protected abstract fun perform(): T
 
   /**

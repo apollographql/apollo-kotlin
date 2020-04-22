@@ -121,7 +121,8 @@ interface ApolloStore {
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with cached data for specified operation
   </V></T></D> */
   fun <D : Operation.Data, T, V : Operation.Variables> read(
-      operation: Operation<D, T, V>): ApolloStoreOperation<T>
+      operation: Operation<D, T, V>
+  ): ApolloStoreOperation<T>
 
   /**
    * Read GraphQL operation response from store.
@@ -136,8 +137,11 @@ interface ApolloStore {
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with cached response for specified operation
   </V></T></D> */
   fun <D : Operation.Data, T, V : Operation.Variables> read(
-      operation: Operation<D, T, V>, responseFieldMapper: ResponseFieldMapper<D>,
-      responseNormalizer: ResponseNormalizer<Record>, cacheHeaders: CacheHeaders): ApolloStoreOperation<Response<T>>
+      operation: Operation<D, T, V>,
+      responseFieldMapper: ResponseFieldMapper<D>,
+      responseNormalizer: ResponseNormalizer<Record>,
+      cacheHeaders: CacheHeaders
+  ): ApolloStoreOperation<Response<T>>
 
   /**
    * Read GraphQL fragment from store.
@@ -148,8 +152,11 @@ interface ApolloStore {
    * @param <F>         type of fragment to be read
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with cached fragment data
   </F> */
-  fun <F : GraphqlFragment> read(fieldMapper: ResponseFieldMapper<F>,
-                                  cacheKey: CacheKey, variables: Operation.Variables): ApolloStoreOperation<F>
+  fun <F : GraphqlFragment> read(
+      fieldMapper: ResponseFieldMapper<F>,
+      cacheKey: CacheKey,
+      variables: Operation.Variables
+  ): ApolloStoreOperation<F>
 
   /**
    * Write operation to the store.
@@ -163,10 +170,12 @@ interface ApolloStore {
    * have changed
   </V></T></D> */
   fun <D : Operation.Data, T, V : Operation.Variables> write(
-      operation: Operation<D, T, V>, operationData: D): ApolloStoreOperation<Set<String>>
+      operation: Operation<D, T, V>,
+      operationData: D
+  ): ApolloStoreOperation<Set<String>>
 
   /**
-   * Write operation to the store and publish changes of [Record] which have changed, that will notify any [ ] that depends on these [Record] to re-fetch.
+   * Write operation to the store and publish changes of [Record] which have changed, that will notify any [com.apollographql.apollo.ApolloQueryWatcher] that depends on these [Record] to re-fetch.
    *
    * @param operation     [Operation] response data of which should be written to the store
    * @param operationData [Operation.Data] operation response data to be written to the store
@@ -176,7 +185,9 @@ interface ApolloStore {
    * @return {@ApolloStoreOperation} to be performed
   </V></T></D> */
   fun <D : Operation.Data, T, V : Operation.Variables> writeAndPublish(
-      operation: Operation<D, T, V>, operationData: D): ApolloStoreOperation<Boolean>
+      operation: Operation<D, T, V>,
+      operationData: D
+  ): ApolloStoreOperation<Boolean>
 
   /**
    * Write fragment to the store.
@@ -187,8 +198,11 @@ interface ApolloStore {
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with set of keys of [Record] which
    * have changed
    */
-  fun write(fragment: GraphqlFragment, cacheKey: CacheKey,
-            variables: Operation.Variables): ApolloStoreOperation<Set<String>>
+  fun write(
+      fragment: GraphqlFragment,
+      cacheKey: CacheKey,
+      variables: Operation.Variables
+  ): ApolloStoreOperation<Set<String>>
 
   /**
    * Write fragment to the store and publish changes of [Record] which have changed, that will notify any ApolloQueryWatcher that
@@ -199,8 +213,11 @@ interface ApolloStore {
    * @param variables [Operation.Variables] required for fragment arguments resolving
    * @return [ApolloStoreOperation] to be performed
    */
-  fun writeAndPublish(fragment: GraphqlFragment, cacheKey: CacheKey,
-                      variables: Operation.Variables): ApolloStoreOperation<Boolean>
+  fun writeAndPublish(
+      fragment: GraphqlFragment,
+      cacheKey: CacheKey,
+      variables: Operation.Variables
+  ): ApolloStoreOperation<Boolean>
 
   /**
    * Write operation data to the optimistic store.
@@ -211,19 +228,26 @@ interface ApolloStore {
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with set of keys of [Record] which
    * have changed
    */
-  fun <D : Operation.Data, T, V : Operation.Variables> writeOptimisticUpdates(operation: Operation<D, T, V>, operationData: D, mutationId: UUID): ApolloStoreOperation<Set<String>>
+  fun <D : Operation.Data, T, V : Operation.Variables> writeOptimisticUpdates(
+      operation: Operation<D, T, V>,
+      operationData: D,
+      mutationId: UUID
+  ): ApolloStoreOperation<Set<String>>
 
   /**
    * Write operation data to the optimistic store and publish changes of [Record]s which have changed, that will
-   * notify any {@linkcom.apollographql.apollo.ApolloQueryWatcher} that depends on these [Record] to re-fetch.
+   * notify any [com.apollographql.apollo.ApolloQueryWatcher] that depends on these [Record] to re-fetch.
    *
    * @param operation     [Operation] response data of which should be written to the store
    * @param operationData [Operation.Data] operation response data to be written to the store
    * @param mutationId    mutation unique identifier
    * @return {@ApolloStoreOperation} to be performed
    */
-  fun <D : Operation.Data, T, V : Operation.Variables> writeOptimisticUpdatesAndPublish(operation: Operation<D, T, V>, operationData: D,
-                                                                                          mutationId: UUID): ApolloStoreOperation<Boolean>
+  fun <D : Operation.Data, T, V : Operation.Variables> writeOptimisticUpdatesAndPublish(
+      operation: Operation<D, T, V>,
+      operationData: D,
+      mutationId: UUID
+  ): ApolloStoreOperation<Boolean>
 
   /**
    * Rollback operation data optimistic updates.
@@ -235,7 +259,7 @@ interface ApolloStore {
 
   /**
    * Rollback operation data optimistic updates and publish changes of [Record]s which have changed, that will
-   * notify any {@linkcom.apollographql.apollo.ApolloQueryWatcher} that depends on these [Record] to re-fetch.
+   * notify any [com.apollographql.apollo.ApolloQueryWatcher] that depends on these [Record] to re-fetch.
    *
    * @param mutationId mutation unique identifier
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with set of keys of [Record] which
