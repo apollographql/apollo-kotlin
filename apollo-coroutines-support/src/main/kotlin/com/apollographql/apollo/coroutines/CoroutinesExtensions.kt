@@ -66,12 +66,6 @@ fun <T> ApolloQueryWatcher<T>.toFlow(): Flow<Response<T>> = callbackFlow {
         override fun onFailure(e: ApolloException) {
           close(e)
         }
-
-        override fun onStatusEvent(event: ApolloCall.StatusEvent) {
-          if (event == ApolloCall.StatusEvent.COMPLETED) {
-            close()
-          }
-        }
       }
   )
   awaitClose { clone.cancel() }
