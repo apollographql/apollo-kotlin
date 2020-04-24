@@ -171,7 +171,7 @@ internal data class CreateReviewForEpisode(
         value?.forEach { value ->
           listItemWriter.writeList(value) { value, listItemWriter ->
             value?.forEach { value ->
-              listItemWriter.writeString(value?.rawValue)}
+              listItemWriter.writeString(value.rawValue)}
           }
         }
       }
@@ -189,7 +189,7 @@ internal data class CreateReviewForEpisode(
         value?.forEach { value ->
           listItemWriter.writeList(value) { value, listItemWriter ->
             value?.forEach { value ->
-              listItemWriter.writeObject(value?.marshaller())}
+              listItemWriter.writeObject(value.marshaller())}
           }
         }
       }

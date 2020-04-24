@@ -10,8 +10,24 @@ import com.apollographql.apollo.compiler.ast.FieldType
 import com.apollographql.apollo.compiler.ast.InputType
 import com.apollographql.apollo.compiler.ast.ObjectType
 import com.apollographql.apollo.compiler.ast.TypeRef
-import com.squareup.kotlinpoet.*
+import com.squareup.kotlinpoet.AnnotationSpec
+import com.squareup.kotlinpoet.BOOLEAN
+import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
+import com.squareup.kotlinpoet.DOUBLE
+import com.squareup.kotlinpoet.FLOAT
+import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.INT
+import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.LONG
+import com.squareup.kotlinpoet.ParameterSpec
+import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeName
+import com.squareup.kotlinpoet.asClassName
+import com.squareup.kotlinpoet.asTypeName
+import com.squareup.kotlinpoet.joinToCode
 
 internal object KotlinCodeGen {
 
@@ -322,7 +338,7 @@ internal object KotlinCodeGen {
         CodeBlock.builder()
             .beginControlFlow("writer.writeList(%L, this@%L.%L)·{ value, listItemWriter ->", field, thisRef, name)
             .beginControlFlow("value?.forEach·{ value ->")
-            .add(type.rawType.writeListItemCode)
+            .add(type.writeListItemCode)
             .endControlFlow()
             .endControlFlow()
             .build()
@@ -331,25 +347,31 @@ internal object KotlinCodeGen {
     }
   }
 
-  private val FieldType.writeListItemCode: CodeBlock
+  private val FieldType.Array.writeListItemCode: CodeBlock
     get() {
-      return when (this) {
-        is FieldType.Scalar -> when (this) {
+      val safeValue = if (isOptional) "value?" else "value"
+      return when (rawType) {
+        is FieldType.Scalar -> when (rawType) {
           is FieldType.Scalar.String -> CodeBlock.of("listItemWriter.writeString(value)")
           is FieldType.Scalar.Int -> CodeBlock.of("listItemWriter.writeInt(value)")
           is FieldType.Scalar.Boolean -> CodeBlock.of("listItemWriter.writeBoolean(value)")
           is FieldType.Scalar.Float -> CodeBlock.of("listItemWriter.writeDouble(value)")
-          is FieldType.Scalar.Enum -> CodeBlock.of("listItemWriter.writeString(value?.rawValue)")
-          is FieldType.Scalar.Custom -> CodeBlock.of("listItemWriter.writeCustom(%T.%L, value)", customEnumType.asTypeName(),
-              customEnumConst)
+          is FieldType.Scalar.Enum -> CodeBlock.of("listItemWriter.writeString($safeValue.rawValue)")
+          is FieldType.Scalar.Custom -> {
+            CodeBlock.of("listItemWriter.writeCustom(%T.%L, value)", rawType.customEnumType.asTypeName(), rawType.customEnumConst)
+          }
         }
-        is FieldType.Object -> CodeBlock.of("listItemWriter.writeObject(value?.marshaller())", asTypeName())
+        is FieldType.Object -> CodeBlock.of("listItemWriter.writeObject($safeValue.marshaller())", asTypeName())
         is FieldType.Array -> {
           CodeBlock.builder()
               .beginControlFlow(
                   "listItemWriter.writeList(value)·{ value, listItemWriter ->",
-                  List::class.asClassName().parameterizedBy(rawType.asTypeName()))
-              .beginControlFlow("value?.forEach·{ value ->", List::class.asClassName().parameterizedBy(rawType.asTypeName()))
+                  List::class.asClassName().parameterizedBy(rawType.rawType.asTypeName())
+              )
+              .beginControlFlow(
+                  "value?.forEach·{ value ->", // value always nullable in ListItemWriter
+                  List::class.asClassName().parameterizedBy(rawType.rawType.asTypeName())
+              )
               .add(rawType.writeListItemCode)
               .endControlFlow()
               .endControlFlow()
