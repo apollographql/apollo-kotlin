@@ -29,6 +29,7 @@ data class Operation(
           .build(Modifier.PUBLIC, Modifier.STATIC)
           .toBuilder()
           .addSuperinterface(Operation.Data::class.java)
+          .addJavadoc("\$L\n", "Data from the response after executing this GraphQL operation")
           .build()
           .let {
             if (context.generateModelBuilder) {
@@ -46,6 +47,7 @@ data class Operation(
   }
 
   private fun normalizedOperationName(useSemanticNaming: Boolean, operationNameSuffix: String): String {
+    "".run {  }
     return if (useSemanticNaming && !operationName.endsWith(operationNameSuffix)) {
       operationName.capitalize() + operationNameSuffix
     } else {

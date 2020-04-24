@@ -8,6 +8,7 @@ data class Field(
     val responseName: String,
     val fieldName: String,
     val type: String,
+    val typeDescription: String,
     val args: List<Argument> = emptyList(),
     val isConditional: Boolean = false,
     val fields: List<Field> = emptyList(),
@@ -24,6 +25,7 @@ data class Field(
     val fields = if (isNonScalar()) fields else emptyList()
     return SchemaTypeSpecBuilder(
         typeName = formatClassName(),
+        description = typeDescription,
         schemaType = type,
         fields = fields,
         fragmentRefs = fragmentRefs,
@@ -167,6 +169,7 @@ data class Field(
         responseName = "__typename",
         fieldName = "__typename",
         type = "String!",
+        typeDescription = "",
         fragmentRefs = emptyList(),
         sourceLocation = SourceLocation.UNKNOWN
     )

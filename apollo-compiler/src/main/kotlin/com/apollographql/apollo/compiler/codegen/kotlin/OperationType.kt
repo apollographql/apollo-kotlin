@@ -238,6 +238,7 @@ private fun ObjectType.toOperationDataTypeSpec(name: String) =
         .classBuilder(name)
         .addModifiers(KModifier.DATA)
         .addSuperinterface(Operation.Data::class)
+        .apply { if (description.isNotBlank()) addKdoc("%L\n", description) }
         .primaryConstructor(FunSpec.constructorBuilder()
             .addParameters(fields.map { field ->
               val typeName = field.type.asTypeName()

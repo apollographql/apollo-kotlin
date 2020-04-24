@@ -14,6 +14,7 @@ import javax.lang.model.element.Modifier
 
 class SchemaTypeSpecBuilder(
     typeName: String,
+    private val description: String = "",
     private val schemaType: String = "",
     private val fields: List<Field>,
     private val fragmentRefs: List<FragmentRef>,
@@ -57,6 +58,7 @@ class SchemaTypeSpecBuilder(
       SchemaTypeSpecBuilder(
           typeName = formatUniqueTypeName("As${normalizeGraphQlType(schemaType).capitalize()}",
               context.reservedTypeNames),
+          description = description,
           schemaType = schemaType,
           fields = fields,
           fragmentRefs = fragmentRefs,
@@ -69,6 +71,7 @@ class SchemaTypeSpecBuilder(
       null
     }
     return TypeSpec.interfaceBuilder(uniqueTypeName)
+        .applyIf(description.isNotBlank()) { addJavadoc("\$L\n", description) }
         .addModifiers(*modifiers)
         .addMethods(methods)
         .addMethod(marshallerAccessorMethodSpec)
@@ -101,6 +104,7 @@ class SchemaTypeSpecBuilder(
     val nameOverrideMap = nestedTypeSpecs.plus(inlineFragmentTypeSpecs).map { it.first to it.second.name }.toMap()
     val responseFieldSpecs = responseFieldSpecs(nameOverrideMap)
     return TypeSpec.classBuilder(uniqueTypeName)
+        .applyIf(description.isNotBlank()) { addJavadoc("\$L\n", description) }
         .addModifiers(*modifiers)
         .addTypes(nestedTypeSpecs.map { it.second })
         .addFields(fieldSpecs(nameOverrideMap))
