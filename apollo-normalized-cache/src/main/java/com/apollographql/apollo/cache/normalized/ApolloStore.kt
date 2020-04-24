@@ -194,7 +194,7 @@ interface ApolloStore {
    *
    * @param fragment data to be written to the store
    * @param cacheKey [CacheKey] to be used as root record key
-   * @param {@link   Operation.Variables} required for fragment arguments resolving
+   * @param variables [Operation.Variables] required for fragment arguments resolving
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with set of keys of [Record] which
    * have changed
    */
