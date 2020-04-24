@@ -149,6 +149,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
   }
 
+  /**
+   * Data from the response after executing this GraphQL operation
+   */
   data class Data(
     val search: List<Search?>?
   ) : Operation.Data {

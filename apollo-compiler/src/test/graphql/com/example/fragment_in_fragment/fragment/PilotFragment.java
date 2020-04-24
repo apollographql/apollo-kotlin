@@ -145,6 +145,10 @@ public class PilotFragment implements GraphqlFragment {
     }
   }
 
+  /**
+   * A large mass, planet or planetoid in the Star Wars Universe, at the time of
+   * 0 ABY.
+   */
   public static class Homeworld {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),

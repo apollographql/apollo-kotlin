@@ -183,6 +183,9 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     }
   }
 
+  /**
+   * Data from the response after executing this GraphQL operation
+   */
   public static class Data implements Operation.Data {
     static final ResponseField[] $responseFields = {
       ResponseField.forObject("allStarships", "allStarships", new UnmodifiableMapBuilder<String, Object>(1)
@@ -266,6 +269,9 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     }
   }
 
+  /**
+   * A connection to a list of items.
+   */
   public static class AllStarships1 {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
@@ -376,6 +382,9 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     }
   }
 
+  /**
+   * An edge in a connection.
+   */
   public static class Edge {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
@@ -474,6 +483,9 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     }
   }
 
+  /**
+   * A single transport craft that has hyperdrive capability.
+   */
   public static class Node {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),

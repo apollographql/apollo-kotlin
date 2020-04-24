@@ -88,6 +88,9 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
     fun marshaller(): ResponseFieldMarshaller
   }
 
+  /**
+   * A character from the Star Wars universe
+   */
   data class Friend1(
     val __typename: String = "Character",
     val fragments: Fragments
@@ -143,6 +146,9 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
     }
   }
 
+  /**
+   * A character from the Star Wars universe
+   */
   data class Friend(
     val __typename: String = "Character",
     /**
@@ -203,6 +209,9 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
     }
   }
 
+  /**
+   * A humanoid creature from the Star Wars universe
+   */
   data class AsHuman(
     val __typename: String = "Human",
     /**
@@ -258,6 +267,9 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
     }
   }
 
+  /**
+   * A character from the Star Wars universe
+   */
   data class Friend2(
     val __typename: String = "Character",
     /**
@@ -290,6 +302,9 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
     }
   }
 
+  /**
+   * A character from the Star Wars universe
+   */
   data class HeroDetailQuery(
     val __typename: String = "Character",
     /**
@@ -346,6 +361,9 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
     }
   }
 
+  /**
+   * Data from the response after executing this GraphQL operation
+   */
   data class Data(
     val heroDetailQuery: HeroDetailQuery?
   ) : Operation.Data {

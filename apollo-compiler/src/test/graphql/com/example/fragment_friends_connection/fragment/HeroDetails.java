@@ -154,6 +154,9 @@ public class HeroDetails implements GraphqlFragment {
     }
   }
 
+  /**
+   * A connection object for a character's friends
+   */
   public static class FriendsConnection {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
@@ -282,6 +285,9 @@ public class HeroDetails implements GraphqlFragment {
     }
   }
 
+  /**
+   * An edge object for a character's friends
+   */
   public static class Edge {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
@@ -380,6 +386,9 @@ public class HeroDetails implements GraphqlFragment {
     }
   }
 
+  /**
+   * A character from the Star Wars universe
+   */
   public static class Node {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),

@@ -94,6 +94,9 @@ internal data class CreateReviewForEpisode(
     scalarTypeAdapters = DEFAULT
   )
 
+  /**
+   * A character from the Star Wars universe
+   */
   data class ListOfListOfObject(
     val __typename: String = "Character",
     /**
@@ -126,6 +129,9 @@ internal data class CreateReviewForEpisode(
     }
   }
 
+  /**
+   * Represents a review for a movie
+   */
   data class CreateReview(
     val __typename: String = "Review",
     /**
@@ -248,6 +254,9 @@ internal data class CreateReviewForEpisode(
     }
   }
 
+  /**
+   * Data from the response after executing this GraphQL operation
+   */
   data class Data(
     val createReview: CreateReview?
   ) : Operation.Data {

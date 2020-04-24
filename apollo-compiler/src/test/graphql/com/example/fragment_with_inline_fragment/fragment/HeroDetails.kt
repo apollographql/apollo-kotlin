@@ -123,6 +123,9 @@ data class HeroDetails(
     }
   }
 
+  /**
+   * A character from the Star Wars universe
+   */
   data class Node(
     val __typename: String = "Character",
     /**
@@ -155,6 +158,9 @@ data class HeroDetails(
     }
   }
 
+  /**
+   * An edge object for a character's friends
+   */
   data class Edge(
     val __typename: String = "FriendsEdge",
     /**
@@ -189,6 +195,9 @@ data class HeroDetails(
     }
   }
 
+  /**
+   * A connection object for a character's friends
+   */
   data class FriendsConnection(
     val __typename: String = "FriendsConnection",
     /**
@@ -240,6 +249,9 @@ data class HeroDetails(
     fun marshaller(): ResponseFieldMarshaller
   }
 
+  /**
+   * A character from the Star Wars universe
+   */
   data class Node1(
     val __typename: String = "Character",
     /**
@@ -272,6 +284,9 @@ data class HeroDetails(
     }
   }
 
+  /**
+   * An edge object for a character's friends
+   */
   data class Edge1(
     val __typename: String = "FriendsEdge",
     /**
@@ -306,6 +321,9 @@ data class HeroDetails(
     }
   }
 
+  /**
+   * A connection object for a character's friends
+   */
   data class FriendsConnection1(
     val __typename: String = "FriendsConnection",
     /**
@@ -353,6 +371,9 @@ data class HeroDetails(
     }
   }
 
+  /**
+   * An autonomous mechanical character in the Star Wars universe
+   */
   data class AsDroid(
     val __typename: String = "Droid",
     /**

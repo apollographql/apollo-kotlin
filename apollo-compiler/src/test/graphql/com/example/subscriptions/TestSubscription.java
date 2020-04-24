@@ -185,6 +185,9 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
     }
   }
 
+  /**
+   * Data from the response after executing this GraphQL operation
+   */
   public static class Data implements Operation.Data {
     static final ResponseField[] $responseFields = {
       ResponseField.forObject("commentAdded", "commentAdded", new UnmodifiableMapBuilder<String, Object>(1)
@@ -274,6 +277,9 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
     }
   }
 
+  /**
+   * A comment about an entry, submitted by a user
+   */
   public static class CommentAdded {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),

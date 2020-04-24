@@ -86,6 +86,9 @@ data class TestSubscription(
     scalarTypeAdapters = DEFAULT
   )
 
+  /**
+   * A comment about an entry, submitted by a user
+   */
   data class CommentAdded(
     val __typename: String = "Comment",
     /**
@@ -126,6 +129,9 @@ data class TestSubscription(
     }
   }
 
+  /**
+   * Data from the response after executing this GraphQL operation
+   */
   data class Data(
     /**
      * Subscription fires on every comment added

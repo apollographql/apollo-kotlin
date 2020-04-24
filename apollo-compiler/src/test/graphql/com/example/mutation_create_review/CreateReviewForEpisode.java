@@ -215,6 +215,9 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
     }
   }
 
+  /**
+   * Data from the response after executing this GraphQL operation
+   */
   public static class Data implements Operation.Data {
     static final ResponseField[] $responseFields = {
       ResponseField.forObject("createReview", "createReview", new UnmodifiableMapBuilder<String, Object>(2)
@@ -305,6 +308,9 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
     }
   }
 
+  /**
+   * Represents a review for a movie
+   */
   public static class CreateReview {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
@@ -588,6 +594,9 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
     }
   }
 
+  /**
+   * A character from the Star Wars universe
+   */
   public static class ListOfListOfObject {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),

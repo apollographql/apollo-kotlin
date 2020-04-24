@@ -82,6 +82,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     scalarTypeAdapters = scalarTypeAdapters
   )
 
+  /**
+   * A character from the Star Wars universe
+   */
   data class Node(
     val __typename: String = "Character",
     /**
@@ -114,6 +117,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
   }
 
+  /**
+   * An edge object for a character's friends
+   */
   data class Edge(
     val __typename: String = "FriendsEdge",
     /**
@@ -148,6 +154,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
   }
 
+  /**
+   * A connection object for a character's friends
+   */
   data class FriendsConnection(
     val __typename: String = "FriendsConnection",
     /**
@@ -195,6 +204,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
   }
 
+  /**
+   * A character from the Star Wars universe
+   */
   data class Hero(
     val __typename: String = "Character",
     /**
@@ -237,6 +249,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
   }
 
+  /**
+   * Data from the response after executing this GraphQL operation
+   */
   data class Data(
     val hero: Hero?
   ) : Operation.Data {

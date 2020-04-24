@@ -101,6 +101,9 @@ data class TestQuery(
     scalarTypeAdapters = scalarTypeAdapters
   )
 
+  /**
+   * A connection object for a character's friends
+   */
   data class FriendsConnection(
     val __typename: String = "FriendsConnection",
     /**
@@ -133,6 +136,9 @@ data class TestQuery(
     }
   }
 
+  /**
+   * A character from the Star Wars universe
+   */
   data class Hero(
     val __typename: String = "Character",
     /**
@@ -179,6 +185,9 @@ data class TestQuery(
     }
   }
 
+  /**
+   * Data from the response after executing this GraphQL operation
+   */
   data class Data(
     val hero: Hero?
   ) : Operation.Data {

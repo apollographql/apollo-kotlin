@@ -82,6 +82,9 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
     scalarTypeAdapters = scalarTypeAdapters
   )
 
+  /**
+   * A single transport craft that has hyperdrive capability.
+   */
   data class Node(
     val __typename: String = "Starship",
     val fragments: Fragments
@@ -137,6 +140,9 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
     }
   }
 
+  /**
+   * An edge in a connection.
+   */
   data class Edge(
     val __typename: String = "StarshipsEdge",
     /**
@@ -171,6 +177,9 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
     }
   }
 
+  /**
+   * A connection to a list of items.
+   */
   data class AllStarships(
     val __typename: String = "StarshipsConnection",
     /**
@@ -210,6 +219,9 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
     }
   }
 
+  /**
+   * Data from the response after executing this GraphQL operation
+   */
   data class Data(
     val allStarships: AllStarships?
   ) : Operation.Data {

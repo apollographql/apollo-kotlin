@@ -201,6 +201,9 @@ public final class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVe
     }
   }
 
+  /**
+   * Data from the response after executing this GraphQL operation
+   */
   public static class Data implements Operation.Data {
     static final ResponseField[] $responseFields = {
       ResponseField.forObject("heroAVeryAVeryAVeryAVeryAVeryAVeryAV", "hero", new UnmodifiableMapBuilder<String, Object>(1)
@@ -287,6 +290,9 @@ public final class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVe
     }
   }
 
+  /**
+   * A character from the Star Wars universe
+   */
   public static class HeroAVeryAVeryAVeryAVeryAVeryAVeryAV {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),

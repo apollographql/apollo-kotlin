@@ -104,6 +104,9 @@ public interface HeroDetails extends GraphqlFragment {
     T visit(@NotNull AsCharacter asCharacter);
   }
 
+  /**
+   * A connection object for a character's friends
+   */
   interface FriendsConnection {
     @NotNull String __typename();
 
@@ -120,6 +123,9 @@ public interface HeroDetails extends GraphqlFragment {
     ResponseFieldMarshaller marshaller();
   }
 
+  /**
+   * An edge object for a character's friends
+   */
   interface Edge {
     @NotNull String __typename();
 
@@ -131,6 +137,9 @@ public interface HeroDetails extends GraphqlFragment {
     ResponseFieldMarshaller marshaller();
   }
 
+  /**
+   * A character from the Star Wars universe
+   */
   interface Node {
     @NotNull String __typename();
 
@@ -142,6 +151,9 @@ public interface HeroDetails extends GraphqlFragment {
     ResponseFieldMarshaller marshaller();
   }
 
+  /**
+   * An autonomous mechanical character in the Star Wars universe
+   */
   class AsDroid implements HeroDetails {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
@@ -455,6 +467,9 @@ public interface HeroDetails extends GraphqlFragment {
     }
   }
 
+  /**
+   * A connection object for a character's friends
+   */
   class FriendsConnection1 implements FriendsConnection {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
@@ -643,6 +658,9 @@ public interface HeroDetails extends GraphqlFragment {
     }
   }
 
+  /**
+   * An edge object for a character's friends
+   */
   class Edge1 implements Edge {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
@@ -784,6 +802,9 @@ public interface HeroDetails extends GraphqlFragment {
     }
   }
 
+  /**
+   * A character from the Star Wars universe
+   */
   class Node1 implements Node {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
@@ -1224,6 +1245,9 @@ public interface HeroDetails extends GraphqlFragment {
     }
   }
 
+  /**
+   * A connection object for a character's friends
+   */
   class FriendsConnection2 implements FriendsConnection {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
@@ -1412,6 +1436,9 @@ public interface HeroDetails extends GraphqlFragment {
     }
   }
 
+  /**
+   * An edge object for a character's friends
+   */
   class Edge2 implements Edge {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
@@ -1553,6 +1580,9 @@ public interface HeroDetails extends GraphqlFragment {
     }
   }
 
+  /**
+   * A character from the Star Wars universe
+   */
   class Node2 implements Node {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
