@@ -24,7 +24,6 @@ import com.apollographql.apollo.api.internal.Utils;
 import com.example.union_inline_fragments.type.CustomType;
 import com.example.union_inline_fragments.type.Episode;
 import java.io.IOException;
-import java.lang.Deprecated;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -39,7 +38,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "d917122adce28477721dc274dd7fce307cb1b714452af1df8bb26087b8ec33d0";
+  public static final String OPERATION_ID = "5450032fd838d0216d8b419846d25e09f98228b403e520aacd7eb68cd838f4da";
 
   public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
     "query TestQuery {\n"
@@ -67,7 +66,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         + "          friends {\n"
         + "            __typename\n"
         + "            id\n"
-        + "            deprecated\n"
         + "          }\n"
         + "        }\n"
         + "      }\n"
@@ -972,15 +970,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static class Friend2 {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forCustomType("id", "id", null, false, CustomType.ID, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forString("deprecated", "deprecated", null, false, Collections.<ResponseField.Condition>emptyList())
+      ResponseField.forCustomType("id", "id", null, false, CustomType.ID, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @NotNull String __typename;
 
     final @NotNull String id;
-
-    final @NotNull @Deprecated String deprecated;
 
     private transient volatile String $toString;
 
@@ -988,11 +983,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Friend2(@NotNull String __typename, @NotNull String id,
-        @NotNull @Deprecated String deprecated) {
+    public Friend2(@NotNull String __typename, @NotNull String id) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.id = Utils.checkNotNull(id, "id == null");
-      this.deprecated = Utils.checkNotNull(deprecated, "deprecated == null");
     }
 
     public @NotNull String __typename() {
@@ -1006,14 +999,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.id;
     }
 
-    /**
-     * Test deprecated field
-     * @deprecated For test purpose only
-     */
-    public @NotNull @Deprecated String deprecated() {
-      return this.deprecated;
-    }
-
     @SuppressWarnings({"rawtypes", "unchecked"})
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
@@ -1021,7 +1006,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeCustom((ResponseField.CustomTypeField) $responseFields[1], id);
-          writer.writeString($responseFields[2], deprecated);
         }
       };
     }
@@ -1031,8 +1015,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if ($toString == null) {
         $toString = "Friend2{"
           + "__typename=" + __typename + ", "
-          + "id=" + id + ", "
-          + "deprecated=" + deprecated
+          + "id=" + id
           + "}";
       }
       return $toString;
@@ -1046,8 +1029,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (o instanceof Friend2) {
         Friend2 that = (Friend2) o;
         return this.__typename.equals(that.__typename)
-         && this.id.equals(that.id)
-         && this.deprecated.equals(that.deprecated);
+         && this.id.equals(that.id);
       }
       return false;
     }
@@ -1060,8 +1042,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         h ^= __typename.hashCode();
         h *= 1000003;
         h ^= id.hashCode();
-        h *= 1000003;
-        h ^= deprecated.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -1073,8 +1053,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       public Friend2 map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String id = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[1]);
-        final String deprecated = reader.readString($responseFields[2]);
-        return new Friend2(__typename, id, deprecated);
+        return new Friend2(__typename, id);
       }
     }
   }

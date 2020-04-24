@@ -120,7 +120,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         val __typename = readString(RESPONSE_FIELDS[0])!!
         val name = readString(RESPONSE_FIELDS[1])!!
         val appearsIn = readList<Episode>(RESPONSE_FIELDS[2]) { reader ->
-          reader.readString()?.let { Episode.safeValueOf(it) }
+          Episode.safeValueOf(reader.readString())
         }!!
         val fragments = Fragments(reader)
         Hero(

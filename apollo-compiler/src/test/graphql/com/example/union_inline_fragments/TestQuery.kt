@@ -23,7 +23,6 @@ import com.example.union_inline_fragments.type.CustomType
 import com.example.union_inline_fragments.type.Episode
 import kotlin.Array
 import kotlin.Boolean
-import kotlin.Deprecated
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
@@ -193,34 +192,25 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     /**
      * The ID of the character
      */
-    val id: String,
-    /**
-     * Test deprecated field
-     */
-    @Deprecated(message = "For test purpose only")
-    val deprecated: String
+    val id: String
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@Friend1.__typename)
       writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, this@Friend1.id)
-      writer.writeString(RESPONSE_FIELDS[2], this@Friend1.deprecated)
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
-          ResponseField.forString("deprecated", "deprecated", null, false, null)
+          ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null)
           )
 
       operator fun invoke(reader: ResponseReader): Friend1 = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
         val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)!!
-        val deprecated = readString(RESPONSE_FIELDS[2])!!
         Friend1(
           __typename = __typename,
-          id = id,
-          deprecated = deprecated
+          id = id
         )
       }
 
@@ -509,7 +499,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "d917122adce28477721dc274dd7fce307cb1b714452af1df8bb26087b8ec33d0"
+        "5450032fd838d0216d8b419846d25e09f98228b403e520aacd7eb68cd838f4da"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -538,7 +528,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           |          friends {
           |            __typename
           |            id
-          |            deprecated
           |          }
           |        }
           |      }
