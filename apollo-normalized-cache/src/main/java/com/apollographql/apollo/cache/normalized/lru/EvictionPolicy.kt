@@ -41,49 +41,53 @@ class EvictionPolicy internal constructor(
   }
 
   class Builder internal constructor() {
-    private var maxSizeBytes = Optional.absent<Long>()
-    private var maxEntries = Optional.absent<Long>()
-    private var expireAfterAccess = Optional.absent<Long>()
-    private var expireAfterAccessTimeUnit = Optional.absent<TimeUnit>()
-    private var expireAfterWrite = Optional.absent<Long>()
-    private var expireAfterWriteTimeUnit = Optional.absent<TimeUnit>()
+    private var maxSizeBytes: Long? = null
+    private var maxEntries: Long? = null
+    private var expireAfterAccess: Long? = null
+    private var expireAfterAccessTimeUnit: TimeUnit? = null
+    private var expireAfterWrite: Long? = null
+    private var expireAfterWriteTimeUnit: TimeUnit? = null
 
     fun maxSizeBytes(maxSizeBytes: Long): Builder {
-      this.maxSizeBytes = Optional.of(maxSizeBytes)
+      this.maxSizeBytes = maxSizeBytes
       return this
     }
 
     fun maxEntries(maxEntries: Long): Builder {
-      this.maxEntries = Optional.of(maxEntries)
+      this.maxEntries = maxEntries
       return this
     }
 
     fun expireAfterAccess(time: Long, timeUnit: TimeUnit): Builder {
-      expireAfterAccess = Optional.of(time)
-      expireAfterAccessTimeUnit = Optional.of(timeUnit)
+      expireAfterAccess = time
+      expireAfterAccessTimeUnit = timeUnit
       return this
     }
 
     fun expireAfterWrite(time: Long, timeUnit: TimeUnit): Builder {
-      expireAfterWrite = Optional.of(time)
-      expireAfterWriteTimeUnit = Optional.of(timeUnit)
+      expireAfterWrite = time
+      expireAfterWriteTimeUnit = timeUnit
       return this
     }
 
     fun build(): EvictionPolicy {
       return EvictionPolicy(
-          maxSizeBytes,
-          maxEntries,
-          expireAfterAccess,
-          expireAfterAccessTimeUnit,
-          expireAfterWrite,
-          expireAfterWriteTimeUnit
+          Optional.fromNullable(maxSizeBytes),
+          Optional.fromNullable(maxEntries),
+          Optional.fromNullable(expireAfterAccess),
+          Optional.fromNullable(expireAfterAccessTimeUnit),
+          Optional.fromNullable(expireAfterWrite),
+          Optional.fromNullable(expireAfterWriteTimeUnit)
       )
     }
   }
 
   companion object {
+
+    @JvmField
     val NO_EVICTION = builder().build()
+
+    @JvmStatic
     fun builder(): Builder {
       return Builder()
     }
