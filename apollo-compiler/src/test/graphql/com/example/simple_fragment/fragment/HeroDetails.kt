@@ -14,6 +14,10 @@ import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
 
+/**
+ *  Fragment with Java / Kotlin docs generation
+ *  with multi lines support
+ */
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
 internal data class HeroDetails(

@@ -40,6 +40,7 @@ class OperationTypeSpecBuilder(
     return TypeSpec.classBuilder(operationTypeName)
         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
         .addSuperinterface(operationSuperInterface(context))
+        .applyIf(operation.description.isNotBlank()) { addJavadoc("\$L\n", operation.description) }
         .addOperationId(operation, newContext)
         .addQueryDocumentDefinition()
         .addConstructor(context)

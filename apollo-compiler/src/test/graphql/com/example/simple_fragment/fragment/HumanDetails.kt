@@ -14,6 +14,9 @@ import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
 
+/**
+ *  Fragment with Java / Kotlin docs generation
+ */
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
 internal data class HumanDetails(

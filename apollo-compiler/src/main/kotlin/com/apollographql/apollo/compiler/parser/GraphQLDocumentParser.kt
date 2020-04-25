@@ -75,7 +75,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
     try {
       return parser.document()
           .also { ctx -> parser.checkEOF(ctx) }
-          .parse(absolutePath)
+          .parse(tokenStream, absolutePath)
     } catch (e: ParseException) {
       throw GraphQLDocumentParseException(
           parseException = e,
@@ -100,10 +100,10 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
     }
   }
 
-  private fun GraphQLParser.DocumentContext.parse(graphQLFilePath: String): DocumentParseResult {
-    val fragments = definition().mapNotNull { it.fragmentDefinition()?.parse(graphQLFilePath) }
+  private fun GraphQLParser.DocumentContext.parse(tokenStream: CommonTokenStream, graphQLFilePath: String): DocumentParseResult {
+    val fragments = definition().mapNotNull { it.fragmentDefinition()?.parse(tokenStream, graphQLFilePath) }
     val operations = definition().mapNotNull { ctx ->
-      ctx.operationDefinition()?.parse(graphQLFilePath)
+      ctx.operationDefinition()?.parse(tokenStream, graphQLFilePath)
     }
     return DocumentParseResult(
         operations = operations.map { it.result },
@@ -112,7 +112,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
     )
   }
 
-  private fun GraphQLParser.OperationDefinitionContext.parse(graphQLFilePath: String): ParseResult<Operation> {
+  private fun GraphQLParser.OperationDefinitionContext.parse(tokenStream: CommonTokenStream, graphQLFilePath: String): ParseResult<Operation> {
     val operationType = operationType().text
     val operationName = NAME()?.text ?: throw ParseException(
         message = "Apollo does not support anonymous operations",
@@ -128,9 +128,15 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
         )
       }
     }
+
+    val commentTokens = tokenStream.getHiddenTokensToLeft(start.tokenIndex, 2) ?: emptyList()
+    val description = commentTokens.joinToString(separator = "\n") { token ->
+      token.text.trim().removePrefix("#")
+    }
     val operation = Operation(
         operationName = operationName,
         operationType = operationType,
+        description = description,
         variables = variables.result,
         source = graphQLDocumentSource,
         sourceWithFragments = graphQLDocumentSource,
@@ -451,7 +457,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
     )
   }
 
-  private fun GraphQLParser.FragmentDefinitionContext.parse(graphQLFilePath: String): ParseResult<Fragment> {
+  private fun GraphQLParser.FragmentDefinitionContext.parse(tokenStream: CommonTokenStream, graphQLFilePath: String): ParseResult<Fragment> {
     val fragmentKeyword = fragmentKeyword().text
     if (fragmentKeyword != "fragment") {
       throw ParseException(
@@ -491,11 +497,16 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
         .filter { it.typeCondition == typeCondition }
         .flatMap { it.fragmentRefs }
 
+    val commentTokens = tokenStream.getHiddenTokensToLeft(start.tokenIndex, 2) ?: emptyList()
+    val description = commentTokens.joinToString(separator = "\n") { token ->
+      token.text.trim().removePrefix("#")
+    }
     return ParseResult(
         result = Fragment(
             fragmentName = fragmentName,
             typeCondition = typeCondition,
             source = graphQLDocumentSource,
+            description = description,
             possibleTypes = possibleTypes.toList(),
             fields = fields.result.mergeFields(mergeInlineFragmentFields),
             fragmentRefs = fragmentRefs.union(mergeInlineFragmentRefs).toList(),

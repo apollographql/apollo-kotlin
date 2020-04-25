@@ -39,6 +39,7 @@ internal data class OperationType(
     val name: String,
     val type: Type,
     val operationName: String,
+    val description: String,
     val operationId: String,
     val queryDocument: String,
     val variables: InputType,

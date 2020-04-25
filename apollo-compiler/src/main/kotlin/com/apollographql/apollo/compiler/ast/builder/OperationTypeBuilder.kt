@@ -36,6 +36,7 @@ internal fun Operation.ast(
       name = operationClassName,
       type = operationType,
       operationName = operationName,
+      description = description,
       operationId = operationId,
       queryDocument = sourceWithFragments,
       variables = InputType(

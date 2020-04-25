@@ -12,7 +12,7 @@ internal fun Fragment.ast(context: Context): ObjectType {
   val typeRef = context.registerObjectType(
       name = fragmentName.capitalize().escapeKotlinReservedWord(),
       schemaTypeName = typeCondition,
-      description = "",
+      description = description,
       fragmentRefs = fragmentRefs,
       inlineFragments = emptyList(),
       fields = fields,
