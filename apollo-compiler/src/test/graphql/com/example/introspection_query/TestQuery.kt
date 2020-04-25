@@ -178,7 +178,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       writer.writeObject(RESPONSE_FIELDS[1], this@__Schema.queryType.marshaller())
       writer.writeList(RESPONSE_FIELDS[2], this@__Schema.types) { value, listItemWriter ->
         value?.forEach { value ->
-          listItemWriter.writeObject(value?.marshaller())}
+          listItemWriter.writeObject(value.marshaller())}
       }
     }
 
