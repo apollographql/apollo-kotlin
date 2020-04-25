@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicReference
  *
  * @param <T> result type for this operation
 </T> */
-abstract class ApolloStoreOperation<T> protected constructor(private val dispatcher: Executor?) {
+abstract class ApolloStoreOperation<T> protected constructor(private val dispatcher: Executor) {
   private val callback = AtomicReference<Callback<T>?>()
   private val executed = AtomicBoolean()
 
@@ -49,7 +49,7 @@ abstract class ApolloStoreOperation<T> protected constructor(private val dispatc
   open fun enqueue(callback: Callback<T>?) {
     checkIfExecuted()
     this.callback.set(callback)
-    dispatcher!!.execute(Runnable {
+    dispatcher.execute(Runnable {
       val result: T
       result = try {
         perform()
@@ -88,7 +88,7 @@ abstract class ApolloStoreOperation<T> protected constructor(private val dispatc
   companion object {
     @JvmStatic
     fun <T> emptyOperation(result: T): ApolloStoreOperation<T> {
-      return object : ApolloStoreOperation<T>(null) {
+      return object : ApolloStoreOperation<T>(emptyExecutor()) {
         override fun perform(): T {
           return result
         }
@@ -98,6 +98,9 @@ abstract class ApolloStoreOperation<T> protected constructor(private val dispatc
         }
       }
     }
+
+    @JvmStatic
+    fun emptyExecutor() = Executor { }
   }
 
 }
