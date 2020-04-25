@@ -68,6 +68,10 @@ data class PilotFragment(
     fun Mapper(): ResponseFieldMapper<PilotFragment> = ResponseFieldMapper { invoke(it) }
   }
 
+  /**
+   * A large mass, planet or planetoid in the Star Wars Universe, at the time of
+   * 0 ABY.
+   */
   data class Homeworld(
     val __typename: String = "Planet",
     val fragments: Fragments

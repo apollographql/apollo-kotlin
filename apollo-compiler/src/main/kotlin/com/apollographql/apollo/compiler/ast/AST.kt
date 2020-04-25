@@ -54,6 +54,7 @@ internal data class OperationType(
 internal data class ObjectType(
     val name: String,
     val schemaTypeName: String,
+    val description: String,
     val fields: List<Field>,
     val fragmentsType: ObjectType?,
     val kind: Kind,

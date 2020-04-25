@@ -168,6 +168,9 @@ public class StarshipFragment implements GraphqlFragment {
     }
   }
 
+  /**
+   * A connection to a list of items.
+   */
   public static class PilotConnection {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
@@ -278,6 +281,9 @@ public class StarshipFragment implements GraphqlFragment {
     }
   }
 
+  /**
+   * An edge in a connection.
+   */
   public static class Edge {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
@@ -376,6 +382,9 @@ public class StarshipFragment implements GraphqlFragment {
     }
   }
 
+  /**
+   * An individual person or character within the Star Wars universe.
+   */
   public static class Node {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),

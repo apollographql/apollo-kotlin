@@ -156,6 +156,9 @@ data class TestQuery(
     }
   }
 
+  /**
+   * Data from the response after executing this GraphQL operation
+   */
   data class Data(
     val starship: Starship?
   ) : Operation.Data {

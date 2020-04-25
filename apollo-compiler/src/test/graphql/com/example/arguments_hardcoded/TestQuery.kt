@@ -82,6 +82,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     scalarTypeAdapters = scalarTypeAdapters
   )
 
+  /**
+   * Represents a review for a movie
+   */
   data class Review(
     val __typename: String = "Review",
     /**
@@ -122,6 +125,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
   }
 
+  /**
+   * Data from the response after executing this GraphQL operation
+   */
   data class Data(
     val reviews: List<Review?>?
   ) : Operation.Data {

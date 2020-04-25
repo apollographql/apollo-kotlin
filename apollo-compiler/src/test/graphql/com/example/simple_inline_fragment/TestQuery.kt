@@ -85,6 +85,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     fun marshaller(): ResponseFieldMarshaller
   }
 
+  /**
+   * A humanoid creature from the Star Wars universe
+   */
   data class AsHuman(
     val __typename: String = "Human",
     /**
@@ -125,6 +128,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
   }
 
+  /**
+   * An autonomous mechanical character in the Star Wars universe
+   */
   data class AsDroid(
     val __typename: String = "Droid",
     /**
@@ -165,6 +171,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
   }
 
+  /**
+   * A character from the Star Wars universe
+   */
   data class Hero(
     val __typename: String = "Character",
     /**
@@ -215,6 +224,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
   }
 
+  /**
+   * Data from the response after executing this GraphQL operation
+   */
   data class Data(
     val hero: Hero?
   ) : Operation.Data {

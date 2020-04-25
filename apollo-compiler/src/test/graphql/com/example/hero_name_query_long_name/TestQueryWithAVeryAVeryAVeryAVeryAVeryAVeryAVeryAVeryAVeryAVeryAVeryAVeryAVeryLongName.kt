@@ -108,6 +108,9 @@ data class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryA
     scalarTypeAdapters = scalarTypeAdapters
   )
 
+  /**
+   * A character from the Star Wars universe
+   */
   data class HeroAVeryAVeryAVeryAVeryAVeryAVeryAV(
     val __typename: String = "Character",
     /**
@@ -147,6 +150,9 @@ data class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryA
     }
   }
 
+  /**
+   * Data from the response after executing this GraphQL operation
+   */
   data class Data(
     val heroAVeryAVeryAVeryAVeryAVeryAVeryAV: HeroAVeryAVeryAVeryAVeryAVeryAVeryAV?
   ) : Operation.Data {

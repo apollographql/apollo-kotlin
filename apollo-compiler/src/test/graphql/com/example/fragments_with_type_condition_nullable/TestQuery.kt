@@ -82,6 +82,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     scalarTypeAdapters = scalarTypeAdapters
   )
 
+  /**
+   * A character from the Star Wars universe
+   */
   data class R2(
     val __typename: String = "Character",
     val fragments: Fragments
@@ -148,6 +151,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
   }
 
+  /**
+   * A character from the Star Wars universe
+   */
   data class Luke(
     val __typename: String = "Character",
     val fragments: Fragments
@@ -214,6 +220,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
   }
 
+  /**
+   * Data from the response after executing this GraphQL operation
+   */
   data class Data(
     val r2: R2?,
     val luke: Luke?

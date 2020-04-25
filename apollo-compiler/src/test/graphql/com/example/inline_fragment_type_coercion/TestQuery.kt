@@ -84,6 +84,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     fun marshaller(): ResponseFieldMarshaller
   }
 
+  /**
+   * For testing fragment type coercion
+   */
   data class AsBar(
     val __typename: String = "Bar",
     val foo: String,
@@ -118,6 +121,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
   }
 
+  /**
+   * For testing fragment type coercion
+   */
   data class Foo(
     val __typename: String = "Foo",
     val foo: String,
@@ -156,6 +162,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
   }
 
+  /**
+   * Data from the response after executing this GraphQL operation
+   */
   data class Data(
     /**
      * For testing fragment type coercion

@@ -205,6 +205,9 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
     }
   }
 
+  /**
+   * Data from the response after executing this GraphQL operation
+   */
   public static class Data implements Operation.Data {
     static final ResponseField[] $responseFields = {
       ResponseField.forObject("createReview", "createReview", new UnmodifiableMapBuilder<String, Object>(2)
@@ -295,6 +298,9 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
     }
   }
 
+  /**
+   * Represents a review for a movie
+   */
   public static class CreateReview {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),

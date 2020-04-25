@@ -159,6 +159,9 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
     }
   }
 
+  /**
+   * Data from the response after executing this GraphQL operation
+   */
   public static class Data implements Operation.Data {
     static final ResponseField[] $responseFields = {
       ResponseField.forList("search", "search", new UnmodifiableMapBuilder<String, Object>(1)

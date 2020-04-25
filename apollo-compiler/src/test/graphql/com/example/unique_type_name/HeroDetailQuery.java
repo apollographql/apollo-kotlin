@@ -182,6 +182,9 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     }
   }
 
+  /**
+   * Data from the response after executing this GraphQL operation
+   */
   public static class Data implements Operation.Data {
     static final ResponseField[] $responseFields = {
       ResponseField.forObject("heroDetailQuery", "heroDetailQuery", null, true, Collections.<ResponseField.Condition>emptyList())
@@ -263,6 +266,9 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     }
   }
 
+  /**
+   * A character from the Star Wars universe
+   */
   public interface HeroDetailQuery1 {
     @NotNull String __typename();
 
@@ -322,6 +328,9 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     }
   }
 
+  /**
+   * A character from the Star Wars universe
+   */
   public interface Friend {
     @NotNull String __typename();
 
@@ -333,6 +342,9 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     ResponseFieldMarshaller marshaller();
   }
 
+  /**
+   * A humanoid creature from the Star Wars universe
+   */
   public static class AsHuman implements HeroDetailQuery1 {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
@@ -478,6 +490,9 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     }
   }
 
+  /**
+   * A character from the Star Wars universe
+   */
   public static class Friend1 implements Friend {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
@@ -635,6 +650,9 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     }
   }
 
+  /**
+   * A character from the Star Wars universe
+   */
   public static class Friend2 {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
@@ -805,6 +823,9 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     }
   }
 
+  /**
+   * A character from the Star Wars universe
+   */
   public static class AsCharacter implements HeroDetailQuery1 {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
@@ -933,6 +954,9 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     }
   }
 
+  /**
+   * A character from the Star Wars universe
+   */
   public static class Friend3 implements Friend {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),

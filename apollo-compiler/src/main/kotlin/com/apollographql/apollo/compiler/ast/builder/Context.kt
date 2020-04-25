@@ -25,6 +25,7 @@ internal class Context(
   fun registerObjectType(
       name: String,
       schemaTypeName: String,
+      description: String,
       fragmentRefs: List<FragmentRef>,
       inlineFragments: List<InlineFragment>,
       fields: List<Field>,
@@ -68,6 +69,7 @@ internal class Context(
     objectTypeContainer[uniqueTypeRef] = ObjectType(
         name = uniqueTypeRef.name,
         schemaTypeName = schemaTypeName,
+        description = description,
         fields = fields.map { it.ast(this) }
             .let { if (fragmentsField != null) it + fragmentsField else it }
             + inlineFragmentFields,

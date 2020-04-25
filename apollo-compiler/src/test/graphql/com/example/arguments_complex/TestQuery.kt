@@ -111,6 +111,9 @@ data class TestQuery(
     scalarTypeAdapters = scalarTypeAdapters
   )
 
+  /**
+   * A humanoid creature from the Star Wars universe
+   */
   data class HeroWithReview(
     val __typename: String = "Human",
     /**
@@ -152,6 +155,9 @@ data class TestQuery(
     }
   }
 
+  /**
+   * Data from the response after executing this GraphQL operation
+   */
   data class Data(
     val heroWithReview: HeroWithReview?
   ) : Operation.Data {

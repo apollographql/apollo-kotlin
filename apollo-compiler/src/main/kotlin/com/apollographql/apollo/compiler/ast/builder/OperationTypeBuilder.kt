@@ -16,6 +16,7 @@ internal fun Operation.ast(
   val dataTypeRef = context.registerObjectType(
       name = "Data",
       schemaTypeName = "",
+      description = "Data from the response after executing this GraphQL operation",
       fragmentRefs = emptyList(),
       inlineFragments = emptyList(),
       fields = fields,

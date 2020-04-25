@@ -83,6 +83,9 @@ data class StarshipFragment(
     fun Mapper(): ResponseFieldMapper<StarshipFragment> = ResponseFieldMapper { invoke(it) }
   }
 
+  /**
+   * An individual person or character within the Star Wars universe.
+   */
   data class Node(
     val __typename: String = "Person",
     val fragments: Fragments
@@ -138,6 +141,9 @@ data class StarshipFragment(
     }
   }
 
+  /**
+   * An edge in a connection.
+   */
   data class Edge(
     val __typename: String = "StarshipPilotsEdge",
     /**
@@ -172,6 +178,9 @@ data class StarshipFragment(
     }
   }
 
+  /**
+   * A connection to a list of items.
+   */
   data class PilotConnection(
     val __typename: String = "StarshipPilotsConnection",
     /**

@@ -12,6 +12,7 @@ internal fun Fragment.ast(context: Context): ObjectType {
   val typeRef = context.registerObjectType(
       name = fragmentName.capitalize().escapeKotlinReservedWord(),
       schemaTypeName = typeCondition,
+      description = "",
       fragmentRefs = fragmentRefs,
       inlineFragments = emptyList(),
       fields = fields,
@@ -52,6 +53,7 @@ internal fun Map<FragmentRef, Fragment>.astFragmentsObjectFieldType(
   val type = ObjectType(
       name = "Fragments",
       schemaTypeName = "",
+      description = "",
       fields = map { (fragmentRef, fragment) ->
         val isOptional = fragmentRef.conditions.isNotEmpty() || fragment.typeCondition != parentFieldSchemaTypeName
         val possibleTypes = fragment.takeIf { fragment.typeCondition != parentFieldSchemaTypeName }?.possibleTypes ?: emptyList()

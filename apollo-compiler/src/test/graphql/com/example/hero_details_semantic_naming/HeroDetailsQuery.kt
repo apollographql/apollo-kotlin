@@ -82,6 +82,9 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data, HeroDetailsQuery.Data, Ope
     scalarTypeAdapters = scalarTypeAdapters
   )
 
+  /**
+   * A character from the Star Wars universe
+   */
   data class Node(
     val __typename: String = "Character",
     /**
@@ -114,6 +117,9 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data, HeroDetailsQuery.Data, Ope
     }
   }
 
+  /**
+   * An edge object for a character's friends
+   */
   data class Edge(
     val __typename: String = "FriendsEdge",
     /**
@@ -148,6 +154,9 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data, HeroDetailsQuery.Data, Ope
     }
   }
 
+  /**
+   * A connection object for a character's friends
+   */
   data class FriendsConnection(
     val __typename: String = "FriendsConnection",
     /**
@@ -195,6 +204,9 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data, HeroDetailsQuery.Data, Ope
     }
   }
 
+  /**
+   * A character from the Star Wars universe
+   */
   data class Hero(
     val __typename: String = "Character",
     /**
@@ -237,6 +249,9 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data, HeroDetailsQuery.Data, Ope
     }
   }
 
+  /**
+   * Data from the response after executing this GraphQL operation
+   */
   data class Data(
     val hero: Hero?
   ) : Operation.Data {

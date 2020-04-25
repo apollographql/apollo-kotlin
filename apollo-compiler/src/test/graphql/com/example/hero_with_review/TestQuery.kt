@@ -87,6 +87,9 @@ data class TestQuery(
     scalarTypeAdapters = DEFAULT
   )
 
+  /**
+   * Represents a review for a movie
+   */
   data class CreateReview(
     val __typename: String = "Review",
     /**
@@ -127,6 +130,9 @@ data class TestQuery(
     }
   }
 
+  /**
+   * Data from the response after executing this GraphQL operation
+   */
   data class Data(
     val createReview: CreateReview?
   ) : Operation.Data {

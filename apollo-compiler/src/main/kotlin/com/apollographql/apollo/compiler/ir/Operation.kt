@@ -29,6 +29,7 @@ data class Operation(
           .build(Modifier.PUBLIC, Modifier.STATIC)
           .toBuilder()
           .addSuperinterface(Operation.Data::class.java)
+          .addJavadoc("\$L\n", "Data from the response after executing this GraphQL operation")
           .build()
           .let {
             if (context.generateModelBuilder) {

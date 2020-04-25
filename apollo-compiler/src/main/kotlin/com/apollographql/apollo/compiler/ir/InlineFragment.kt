@@ -10,6 +10,7 @@ import javax.lang.model.element.Modifier
 data class InlineFragment(
     val typeCondition: String,
     val possibleTypes: List<String> = emptyList(),
+    val description: String,
     val fields: List<Field>,
     val fragmentRefs: List<FragmentRef>,
     val sourceLocation: SourceLocation,
@@ -19,6 +20,7 @@ data class InlineFragment(
   override fun toTypeSpec(context: CodeGenerationContext, abstract: Boolean): TypeSpec {
     return SchemaTypeSpecBuilder(
         typeName = formatClassName(),
+        description = description,
         fields = fields,
         fragmentRefs = fragmentRefs,
         inlineFragments = emptyList(),

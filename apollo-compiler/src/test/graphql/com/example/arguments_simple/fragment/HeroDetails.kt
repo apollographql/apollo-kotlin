@@ -71,6 +71,9 @@ data class HeroDetails(
     fun Mapper(): ResponseFieldMapper<HeroDetails> = ResponseFieldMapper { invoke(it) }
   }
 
+  /**
+   * A character from the Star Wars universe
+   */
   data class Node(
     val __typename: String = "Character",
     /**
@@ -105,6 +108,9 @@ data class HeroDetails(
     }
   }
 
+  /**
+   * An edge object for a character's friends
+   */
   data class Edge(
     val __typename: String = "FriendsEdge",
     /**
@@ -139,6 +145,9 @@ data class HeroDetails(
     }
   }
 
+  /**
+   * A connection object for a character's friends
+   */
   data class FriendsConnection(
     val __typename: String = "FriendsConnection",
     /**

@@ -19,6 +19,7 @@ internal fun ObjectType.typeSpec(generateAsInternal: Boolean = false): TypeSpec 
       .classBuilder(name)
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .addModifiers(KModifier.DATA)
+      .apply { if (description.isNotBlank()) addKdoc("%L\n", description) }
       .primaryConstructor(primaryConstructorSpec)
       .addProperties(fields.map { it.asPropertySpec(initializer = CodeBlock.of(it.name)) })
       .addType(TypeSpec.companionObjectBuilder()
@@ -44,6 +45,7 @@ internal fun ObjectType.typeSpec(generateAsInternal: Boolean = false): TypeSpec 
   is ObjectType.Kind.InlineFragment -> TypeSpec
       .classBuilder(name)
       .addModifiers(KModifier.DATA)
+      .apply { if (description.isNotBlank()) addKdoc("%L\n", description) }
       .primaryConstructor(primaryConstructorSpec)
       .addProperties(fields.map { it.asPropertySpec(initializer = CodeBlock.of(it.name)) })
       .addSuperinterface(kind.superInterface.asTypeName())
@@ -61,6 +63,7 @@ internal fun ObjectType.typeSpec(generateAsInternal: Boolean = false): TypeSpec 
       .classBuilder(name)
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .addModifiers(KModifier.DATA)
+      .apply { if (description.isNotBlank()) addKdoc("%L\n", description) }
       .addSuperinterface(GraphqlFragment::class.java)
       .addAnnotation(KotlinCodeGen.suppressWarningsAnnotation)
       .primaryConstructor(primaryConstructorSpec)

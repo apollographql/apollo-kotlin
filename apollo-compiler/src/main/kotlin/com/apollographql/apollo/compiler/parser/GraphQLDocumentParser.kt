@@ -299,6 +299,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
             responseName = responseName,
             fieldName = fieldName,
             type = schemaField.type.asGraphQLType(),
+            typeDescription = schemaFieldType.description ?: "",
             args = arguments.result,
             isConditional = conditions.isNotEmpty(),
             fields = mergedFields,
@@ -440,6 +441,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
         result = InlineFragment(
             typeCondition = typeCondition,
             possibleTypes = possibleTypes,
+            description = schemaType.description ?: "",
             fields = fields.result,
             fragmentRefs = selectionSet().fragmentRefs(),
             sourceLocation = SourceLocation(start),
