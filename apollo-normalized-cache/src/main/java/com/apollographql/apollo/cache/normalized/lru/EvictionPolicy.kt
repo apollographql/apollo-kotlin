@@ -8,37 +8,31 @@ import java.util.concurrent.TimeUnit
  * stay in a [LruNormalizedCache].
  */
 class EvictionPolicy internal constructor(
-    private val maxSizeBytes: Optional<Long>,
-    private val maxEntries: Optional<Long>,
-    private val expireAfterAccess: Optional<Long>,
-    private val expireAfterAccessTimeUnit: Optional<TimeUnit>,
-    private val expireAfterWrite: Optional<Long>,
-    private val expireAfterWriteTimeUnit: Optional<TimeUnit>
+    val maxSizeBytes: Long? = null,
+    val maxEntries: Long? = null,
+    val expireAfterAccess: Long? = null,
+    val expireAfterAccessTimeUnit: TimeUnit? = null,
+    val expireAfterWrite: Long? = null,
+    val expireAfterWriteTimeUnit: TimeUnit? = null
 ) {
 
-  fun maxSizeBytes(): Optional<Long> {
-    return maxSizeBytes
-  }
+  @Deprecated("Use property instead", replaceWith = ReplaceWith("maxSizeBytes"))
+  fun maxSizeBytes(): Optional<Long> = Optional.fromNullable(maxSizeBytes)
 
-  fun maxEntries(): Optional<Long> {
-    return maxEntries
-  }
+  @Deprecated("Use property instead", replaceWith = ReplaceWith("maxEntries"))
+  fun maxEntries(): Optional<Long> = Optional.fromNullable(maxEntries)
 
-  fun expireAfterAccess(): Optional<Long> {
-    return expireAfterAccess
-  }
+  @Deprecated("Use property instead", replaceWith = ReplaceWith("expireAfterAccess"))
+  fun expireAfterAccess(): Optional<Long> = Optional.fromNullable(expireAfterAccess)
 
-  fun expireAfterAccessTimeUnit(): Optional<TimeUnit> {
-    return expireAfterAccessTimeUnit
-  }
+  @Deprecated("Use property instead", replaceWith = ReplaceWith("expireAfterAccessTimeUnit"))
+  fun expireAfterAccessTimeUnit(): Optional<TimeUnit> = Optional.fromNullable(expireAfterAccessTimeUnit)
 
-  fun expireAfterWrite(): Optional<Long> {
-    return expireAfterWrite
-  }
+  @Deprecated("Use property instead", replaceWith = ReplaceWith("expireAfterWrite"))
+  fun expireAfterWrite(): Optional<Long> = Optional.fromNullable(expireAfterWrite)
 
-  fun expireAfterWriteTimeUnit(): Optional<TimeUnit> {
-    return expireAfterWriteTimeUnit
-  }
+  @Deprecated("Use property instead", replaceWith = ReplaceWith("expireAfterWriteTimeUnit"))
+  fun expireAfterWriteTimeUnit(): Optional<TimeUnit> = Optional.fromNullable(expireAfterWriteTimeUnit)
 
   class Builder internal constructor() {
     private var maxSizeBytes: Long? = null
@@ -72,12 +66,12 @@ class EvictionPolicy internal constructor(
 
     fun build(): EvictionPolicy {
       return EvictionPolicy(
-          Optional.fromNullable(maxSizeBytes),
-          Optional.fromNullable(maxEntries),
-          Optional.fromNullable(expireAfterAccess),
-          Optional.fromNullable(expireAfterAccessTimeUnit),
-          Optional.fromNullable(expireAfterWrite),
-          Optional.fromNullable(expireAfterWriteTimeUnit)
+          maxSizeBytes,
+          maxEntries,
+          expireAfterAccess,
+          expireAfterAccessTimeUnit,
+          expireAfterWrite,
+          expireAfterWriteTimeUnit
       )
     }
   }

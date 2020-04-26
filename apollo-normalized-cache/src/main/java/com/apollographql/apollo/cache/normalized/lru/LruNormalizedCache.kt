@@ -21,21 +21,21 @@ class LruNormalizedCache internal constructor(evictionPolicy: EvictionPolicy) : 
 
   private val lruCache: Cache<String, Record> =
       CacheBuilder.newBuilder().apply {
-        if (evictionPolicy.maxSizeBytes().isPresent) {
-          maximumWeight(evictionPolicy.maxSizeBytes().get()).weigher(
+        if (evictionPolicy.maxSizeBytes != null) {
+          maximumWeight(evictionPolicy.maxSizeBytes).weigher(
               Weigher { key: String, value: Record ->
                 key.toByteArray(Charset.defaultCharset()).size + value.sizeEstimateBytes()
               }
           )
         }
-        if (evictionPolicy.maxEntries().isPresent) {
-          maximumSize(evictionPolicy.maxEntries().get())
+        if (evictionPolicy.maxEntries != null) {
+          maximumSize(evictionPolicy.maxEntries)
         }
-        if (evictionPolicy.expireAfterAccess().isPresent) {
-          expireAfterAccess(evictionPolicy.expireAfterAccess().get(), evictionPolicy.expireAfterAccessTimeUnit().get())
+        if (evictionPolicy.expireAfterAccess != null) {
+          expireAfterAccess(evictionPolicy.expireAfterAccess, evictionPolicy.expireAfterAccessTimeUnit!!)
         }
-        if (evictionPolicy.expireAfterWrite().isPresent) {
-          expireAfterWrite(evictionPolicy.expireAfterWrite().get(), evictionPolicy.expireAfterWriteTimeUnit().get())
+        if (evictionPolicy.expireAfterWrite != null) {
+          expireAfterWrite(evictionPolicy.expireAfterWrite, evictionPolicy.expireAfterWriteTimeUnit!!)
         }
       }.build()
 
