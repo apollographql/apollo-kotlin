@@ -10,6 +10,7 @@ import javax.lang.model.element.Modifier
 data class Fragment(
     val fragmentName: String,
     val source: String,
+    val description: String,
     val typeCondition: String,
     val possibleTypes: List<String>,
     val fields: List<Field>,
@@ -24,6 +25,7 @@ data class Fragment(
     return SchemaTypeSpecBuilder(
         typeName = fragmentName.capitalize(),
         schemaType = typeCondition,
+        description = description,
         fields = fields,
         fragmentRefs = fragmentRefs,
         inlineFragments = inlineFragments,

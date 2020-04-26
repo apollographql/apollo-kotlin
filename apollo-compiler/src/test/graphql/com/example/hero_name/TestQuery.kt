@@ -29,6 +29,11 @@ import okio.BufferedSource
 import okio.ByteString
 import okio.IOException
 
+/**
+ *  This is a sample query to fetch hero name
+ *  that demonstrates Java / Kotlin docs generations
+ *  for query data model
+ */
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
 class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {

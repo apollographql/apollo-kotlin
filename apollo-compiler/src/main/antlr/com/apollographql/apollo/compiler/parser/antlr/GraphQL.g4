@@ -196,7 +196,7 @@ WS
    : [ \t\n\r]+ -> skip
    ;
 COMMENT
-    : '#' ~[\n\r]* -> skip
+    : '#' ~[\n\r]* -> channel(2)
     ;
 COMMA
     : ',' -> skip

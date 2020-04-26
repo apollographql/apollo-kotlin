@@ -35,6 +35,10 @@ import okio.ByteString;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ *  Demonstration of Java / Kotlin docs generation
+ *  for both query and fragments
+ */
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
   public static final String OPERATION_ID = "11b6156b253df199195798f2de386724580e3882c9888f7e5d1685c42b64e0cf";
 

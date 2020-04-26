@@ -30,6 +30,10 @@ import okio.BufferedSource
 import okio.ByteString
 import okio.IOException
 
+/**
+ *  Demonstration of Java / Kotlin docs generation
+ *  for both query and fragments
+ */
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
 internal class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {

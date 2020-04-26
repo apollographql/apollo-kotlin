@@ -22,6 +22,10 @@ import java.util.Collections;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ *  Fragment with Java / Kotlin docs generation
+ *  with multi lines support
+ */
 public class HeroDetails implements GraphqlFragment {
   static final ResponseField[] $responseFields = {
     ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),

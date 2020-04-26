@@ -48,6 +48,7 @@ internal fun OperationType.typeSpec(targetPackage: String, generateAsInternal: B
     .addAnnotation(suppressWarningsAnnotation)
     .addSuperinterface(superInterfaceType(targetPackage))
     .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
+    .applyIf(description.isNotBlank()) { addKdoc("%L", description) }
     .applyIf(variables.fields.isNotEmpty()) {
       addModifiers(KModifier.DATA)
       primaryConstructor(primaryConstructorSpec)

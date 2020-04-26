@@ -1,4 +1,6 @@
-# some comment
+# This is a sample query to fetch hero name
+# that demonstrates Java / Kotlin docs generations
+# for query data model
 query TestQuery {
   # another comment
   hero {

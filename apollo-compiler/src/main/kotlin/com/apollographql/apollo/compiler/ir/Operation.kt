@@ -9,6 +9,7 @@ import javax.lang.model.element.Modifier
 data class Operation(
     val operationName: String,
     val operationType: String,
+    val description: String,
     val variables: List<Variable>,
     val source: String,
     val sourceWithFragments: String,
@@ -20,6 +21,7 @@ data class Operation(
   override fun toTypeSpec(context: CodeGenerationContext, abstract: Boolean): TypeSpec =
       SchemaTypeSpecBuilder(
           typeName = DATA_TYPE_NAME,
+          description = "Data from the response after executing this GraphQL operation",
           fields = fields,
           fragmentRefs = emptyList(),
           inlineFragments = emptyList(),
@@ -29,7 +31,6 @@ data class Operation(
           .build(Modifier.PUBLIC, Modifier.STATIC)
           .toBuilder()
           .addSuperinterface(Operation.Data::class.java)
-          .addJavadoc("\$L\n", "Data from the response after executing this GraphQL operation")
           .build()
           .let {
             if (context.generateModelBuilder) {
