@@ -15,7 +15,7 @@ class RepositoryManager: ObservableObject {
     
     @Published var repos: [RepositoryFragment] = []
     @Published var repoDetails: [String: RepositoryDetail] = [:]
-    @Published var commits: [String: [Any]] = [:]
+    @Published var commits: [String: [GithubRepositoryCommitsQuery.Node]] = [:]
     
     func fetch() {
         self.repository.fetchRepositories { [weak self] repos in
@@ -32,8 +32,15 @@ class RepositoryManager: ObservableObject {
     }
     
     func fetchCommits(for repo: RepositoryFragment) {
-        self.repository.fetchCommits(repositoryName: repo.name) { commits in
-            self.commits[repo.name] = commits
+        // NOTE: This comes in as `[Any]` due to some some issues with representing
+        // optional types in a generic array in Objective-C from K/N. The actual
+        // type coming back here is `GithubRepositoryCommitsQuery.Edge`, and the
+        // `Node` it contains is where actual information about the commit lives.
+        self.repository.fetchCommits(repositoryName: repo.name) { [weak self] commits in
+            let filteredCommits = commits
+                .compactMap { $0 as? GithubRepositoryCommitsQuery.Edge }
+                .compactMap { $0.node }
+            self?.commits[repo.name] = filteredCommits
         }
     }
 }
