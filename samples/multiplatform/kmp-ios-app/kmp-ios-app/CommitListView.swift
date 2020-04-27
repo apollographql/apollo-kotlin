@@ -9,16 +9,27 @@ import kmp_lib_sample
 import SwiftUI
 
 struct CommitListView: View {
-    let repoManager: RepositoryManager
+    @ObservedObject var repoManager: RepositoryManager
+    let repo: RepositoryFragment
     
     var body: some View {
-        Text("Coming soon!")
+        List(repoManager.commits[repo.name] ?? []) { commit in
+            CommitCell(commit: commit)
+        }.navigationBarTitle("Commits")
     }
 }
 
 struct CommitListView_Previews: PreviewProvider {
     static var previews: some View {
+        let repo = RepositoryFragment(__typename: "__typename",
+                                      id: "1",
+                                      name: "TestRepo",
+                                      repoDescription: "a test repo")
         let manager = RepositoryManager()
-        return CommitListView(repoManager: manager)
+        return NavigationView {
+            CommitListView(repoManager: manager, repo: repo)
+        }
     }
 }
+
+extension GithubRepositoryCommitsQuery.Node: Identifiable {}
