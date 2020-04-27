@@ -17,14 +17,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        let repository = ApolloiOSRepositoryKt.create()
         DispatchQueue.main.async {
-            repository.fetchRepositories { (repositories) in
-                print(repositories)
-            }
-            
             // Create the SwiftUI view that provides the window contents.
-            let contentView = ContentView()
+            let repoManager = RepositoryManager()
+            let contentView = RepoListView(repoManager: repoManager)
+            repoManager.fetch()
             
             // Use a UIHostingController as window root view controller.
             if let windowScene = scene as? UIWindowScene {
