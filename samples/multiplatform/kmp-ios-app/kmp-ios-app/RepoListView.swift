@@ -10,7 +10,6 @@ import kmp_lib_sample
 
 struct RepoListView: View {
     
-    var text = "Hello, World!"
     @ObservedObject var repoManager: RepositoryManager
     
     var body: some View {
