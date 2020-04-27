@@ -19,5 +19,5 @@ query GithubRepositories(
 fragment RepositoryFragment on Repository {
   id
   name
-  description
+  repoDescription: description
 }
