@@ -20,10 +20,14 @@ struct RepoDetailView: View {
             Text("↔️ (pull requests): \(self.pulls)")
             Text("😭 (issues): \(self.issues)")
             Text("🏷 (releases): \(self.releases)")
-            NavigationLink(destination: CommitListView(repoManager: self.repoManager)) {
+            NavigationLink(destination:
+                CommitListView(repoManager: self.repoManager, repo: self.repo).onAppear {
+                    self.repoManager.fetchCommits(for: self.repo)
+                }
+            ) {
                 Text("Commits")
             }
-        }.navigationBarTitle(self.repo.name)
+        }.navigationBarTitle(Text(self.repo.name), displayMode: .inline)
     }
     
     var details: RepositoryDetail? {

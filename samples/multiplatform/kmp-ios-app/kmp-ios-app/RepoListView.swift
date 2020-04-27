@@ -24,7 +24,7 @@ struct RepoListView: View {
                     RepositoryCell(repo: repo)
                 }
                 
-            }.navigationBarTitle("Repositories", displayMode: .inline)
+            }.navigationBarTitle("Repositories")
         }
     }
 }
@@ -42,7 +42,4 @@ struct ContentView_Previews: PreviewProvider {
     }
 }
 
-extension RepositoryFragment: Identifiable {
-    
-
-}
+extension RepositoryFragment: Identifiable { }
