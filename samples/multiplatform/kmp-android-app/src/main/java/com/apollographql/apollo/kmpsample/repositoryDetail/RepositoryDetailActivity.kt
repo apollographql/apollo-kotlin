@@ -70,7 +70,7 @@ class RepositoryDetailActivity : AppCompatActivity() {
   private fun updateUI(repositoryDetail: RepositoryDetail?) {
     repositoryDetail?.run {
       binding.tvRepositoryName.text = name
-      binding.tvRepositoryDescription.text = description
+      binding.tvRepositoryDescription.text = repoDescription
       binding.tvRepositoryForks.text = "$forkCount Forks"
       binding.tvRepositoryIssues.text = "${issues.totalCount} Issues"
       binding.tvRepositoryPullRequests.text = "${pullRequests.totalCount} Pull requests"

@@ -15,6 +15,7 @@ struct RepoDetailView: View {
     
     var body: some View {
         List {
+            Text(self.repoDescription)
             Text("🌟 (stars): \(self.stargazers)")
             Text("🍴 (forks): \(self.forks)")
             Text("↔️ (pull requests): \(self.pulls)")
@@ -32,6 +33,14 @@ struct RepoDetailView: View {
     
     var details: RepositoryDetail? {
         repoManager.repoDetails[repo.name]
+    }
+    
+    var repoDescription: String {
+        if let description = details?.repoDescription {
+            return description
+        } else {
+            return "..."
+        }
     }
     
     var stargazers: String {
@@ -84,7 +93,7 @@ struct RepoDetailView_Previews: PreviewProvider {
                                       repoDescription: "a test repo")
         manager.repoDetails[repo.name] = RepositoryDetail(__typename: "__typename",
                                                           id: "1",
-                                                          name: "Test Repo", description: "A Test Repo", issues: RepositoryDetail.Issues(__typename: "__typename", totalCount: 3),
+                                                          name: "Test Repo", repoDescription: "A Test Repo", issues: RepositoryDetail.Issues(__typename: "__typename", totalCount: 3),
                                                           pullRequests: RepositoryDetail.PullRequests(__typename: "__typename", totalCount: 1),
                                                           stargazers: RepositoryDetail.Stargazers(__typename: "__typename", totalCount: 25),
                                                           forkCount: 2,

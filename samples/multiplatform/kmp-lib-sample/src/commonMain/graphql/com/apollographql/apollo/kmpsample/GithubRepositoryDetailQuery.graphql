@@ -14,7 +14,7 @@ query GithubRepositoryDetail(
 fragment RepositoryDetail on Repository {
   id
   name
-  description
+  repoDescription: description
   issues {
     totalCount
   }
