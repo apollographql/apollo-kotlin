@@ -13,10 +13,9 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import java.io.File
 import java.lang.Exception
-import javax.tools.JavaFileObject
 
 @RunWith(Parameterized::class)
-class CodeGenTest(val folder: File) {
+class CodeGenTest(private val folder: File) {
   @Test
   fun generateExpectedClasses() {
     generateExpectedClasses(arguments(folder = folder, generateKotlinModels = false))
@@ -77,6 +76,8 @@ class CodeGenTest(val folder: File) {
         jvmTarget = "1.8"
         sources = kotlinFiles
 
+        val expectedWarnings = folder.name in listOf("deprecation", "custom_scalar_type_warnings")
+        allWarningsAsErrors = expectedWarnings.not()
         inheritClassPath = true
         messageOutputStream = System.out // see diagnostics in real time
       }.compile()
@@ -87,9 +88,12 @@ class CodeGenTest(val folder: File) {
 
   companion object {
     fun arguments(folder: File, generateKotlinModels: Boolean): GraphQLCompiler.Arguments {
-      val customTypeMap = if (folder.name in listOf("custom_scalar_type", "input_object_type",
-              "mutation_create_review")) {
-        mapOf("Date" to "java.util.Date", "URL" to "java.lang.String", "ID" to "java.lang.Integer")
+      val customTypeMap = if (folder.name in listOf("custom_scalar_type", "input_object_type", "mutation_create_review")) {
+        if (generateKotlinModels) {
+          mapOf("Date" to "java.util.Date", "URL" to "kotlin.String", "ID" to "kotlin.Int")
+        } else {
+          mapOf("Date" to "java.util.Date", "URL" to "java.lang.String", "ID" to "java.lang.Integer")
+        }
       } else {
         emptyMap()
       }
@@ -151,7 +155,7 @@ class CodeGenTest(val folder: File) {
 
       val ir = GraphQLDocumentParser(schema, packageNameProvider).parse(setOf(graphQLFile))
       val language = if (generateKotlinModels) "kotlin" else "java"
-      val args = GraphQLCompiler.Arguments(
+      return GraphQLCompiler.Arguments(
           ir = ir,
           outputDir = File("build/generated/test/${folder.name}/$language"),
           operationIdGenerator = operationIdGenerator,
@@ -166,7 +170,6 @@ class CodeGenTest(val folder: File) {
           packageNameProvider = packageNameProvider,
           generateAsInternal = generateAsInternal
       )
-      return args
     }
 
     @JvmStatic

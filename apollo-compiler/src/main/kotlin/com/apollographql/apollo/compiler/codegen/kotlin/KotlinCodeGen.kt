@@ -224,7 +224,7 @@ internal object KotlinCodeGen {
         CodeBlock.builder()
             .addStatement("readList<%T>(%L)·{ reader ->", rawType.asTypeName(), field)
             .indent()
-            .add(rawType.readListItemCode(optional = isOptional))
+            .add(rawType.readListItemCode())
             .unindent()
             .add("\n}%L", notNullOperator)
             .applyIf(!isOptional) {
@@ -251,20 +251,17 @@ internal object KotlinCodeGen {
     }
   }
 
-  private fun FieldType.readListItemCode(optional: Boolean): CodeBlock {
+  private fun FieldType.readListItemCode(): CodeBlock {
     return when (this) {
       is FieldType.Scalar -> when (this) {
         is FieldType.Scalar.String -> CodeBlock.of("reader.readString()")
         is FieldType.Scalar.Int -> CodeBlock.of("reader.readInt()")
         is FieldType.Scalar.Boolean -> CodeBlock.of("reader.readBoolean()")
         is FieldType.Scalar.Float -> CodeBlock.of("reader.readDouble()")
-        is FieldType.Scalar.Enum -> if (optional) {
-          CodeBlock.of("reader.readString()?.let·{ %T.safeValueOf(it) }", typeRef.asTypeName())
-        } else {
-          CodeBlock.of("%T.safeValueOf(reader.readString())", typeRef.asTypeName())
+        is FieldType.Scalar.Enum -> CodeBlock.of("%T.safeValueOf(reader.readString())", typeRef.asTypeName())
+        is FieldType.Scalar.Custom -> {
+          CodeBlock.of("reader.readCustomType<%T>(%T.%L)", ClassName.bestGuess(mappedType), customEnumType.asTypeName(), customEnumConst)
         }
-        is FieldType.Scalar.Custom -> CodeBlock.of("reader.readCustomType<%T>(%T.%L)", ClassName.bestGuess(mappedType),
-            customEnumType.asTypeName(), customEnumConst)
       }
       is FieldType.Object -> {
         CodeBlock.builder()
@@ -279,7 +276,7 @@ internal object KotlinCodeGen {
         CodeBlock.builder()
             .addStatement("reader.readList<%T>·{ reader ->", rawType.asTypeName())
             .indent()
-            .add(rawType.readListItemCode(optional = isOptional))
+            .add(rawType.readListItemCode())
             .unindent()
             .add("\n}")
             .applyIf(!isOptional) { add(".map·{ it!! }") }

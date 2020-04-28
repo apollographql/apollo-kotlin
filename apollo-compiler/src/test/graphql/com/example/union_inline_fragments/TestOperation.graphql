@@ -19,7 +19,6 @@ query TestQuery {
           primaryFunction
           friends {
             id
-            deprecated
           }
         }
       }
