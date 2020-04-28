@@ -30,6 +30,7 @@ class RepositoryDetailActivity : AppCompatActivity() {
     binding = ActivityRepositoryDetailBinding.inflate(layoutInflater)
     val repoName = intent.getStringExtra(REPO_NAME_KEY)
     supportActionBar?.title = repoName
+    setContentView(binding.root)
 
     fetchRepository(repoName)
   }
