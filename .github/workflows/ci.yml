@@ -25,3 +25,5 @@ jobs:
           BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
           SONATYPE_NEXUS_PASSWORD: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
           SONATYPE_NEXUS_USERNAME: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
+          GRADLE_PUBLISH_KEY: ${{ secrets.$GRADLE_PUBLISH_KEY }}
+          GRADLE_PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}
