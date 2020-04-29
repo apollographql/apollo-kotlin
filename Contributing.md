@@ -34,7 +34,7 @@ DOs and DON'Ts
 Coding Style
 ------------
 
-The coding style employed here is fairly conventional Java - indentations are four spaces, class
+The coding style employed here is fairly conventional Kotlin - indentations are four spaces, class
 names are PascalCased, identifiers and methods are camelCased.    
 
 Workflow
@@ -47,4 +47,9 @@ Small pull requests for things like typos, bugfixes, etc are always welcome.
 
 Please note that we will not accept pull requests for style changes.
 
+Releasing
+--------
 
+The CI contains credentials and will push artifacts to bintray/sonatype/gradlePortal when a tag is pushed. Every tag will trigger a new release.
+
+After a successful release, do not forget to add a changelog to the [releases page](https://github.com/apollographql/apollo-android/releases).
