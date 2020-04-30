@@ -34,7 +34,7 @@ DOs and DON'Ts
 Coding Style
 ------------
 
-The coding style employed here is fairly conventional Kotlin - indentations are four spaces, class
+The coding style employed here is fairly conventional Kotlin - indentations are 2 spaces, class
 names are PascalCased, identifiers and methods are camelCased.    
 
 Workflow
