@@ -11,7 +11,7 @@ import org.junit.Test
 import java.util.concurrent.TimeUnit
 
 class LruNormalizedCacheTest {
-  private val basicFieldAdapter = RecordFieldJsonAdapter.create()
+  private val basicFieldAdapter = RecordFieldJsonAdapter()
 
   @Test
   fun testEvictionPolicyBuilder() {
@@ -157,7 +157,7 @@ class LruNormalizedCacheTest {
     recordBuilder.addField("bar", "bar")
     val record3 = recordBuilder.build()
     val records = listOf(record1, record2, record3)
-    val keys = listOf(record1.key(), record2.key(), record3.key())
+    val keys = listOf(record1.key, record2.key, record3.key)
     primaryCache.merge(records, CacheHeaders.NONE)
     assertThat(primaryCache.loadRecords(keys, CacheHeaders.NONE)).hasSize(3)
 
@@ -252,9 +252,9 @@ class LruNormalizedCacheTest {
       LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(10 * 1024.toLong()).build()).create(basicFieldAdapter)
 
   private fun assertTestRecordPresentAndAccurate(testRecord: Record, store: NormalizedCache) {
-    val cacheRecord = requireNotNull(store.loadRecord(testRecord.key(), CacheHeaders.NONE))
+    val cacheRecord = requireNotNull(store.loadRecord(testRecord.key, CacheHeaders.NONE))
 
-    assertThat(cacheRecord.key()).isEqualTo(testRecord.key())
+    assertThat(cacheRecord.key).isEqualTo(testRecord.key)
     assertThat(cacheRecord.field("a")).isEqualTo(testRecord.field("a"))
     assertThat(cacheRecord.field("b")).isEqualTo(testRecord.field("b"))
   }

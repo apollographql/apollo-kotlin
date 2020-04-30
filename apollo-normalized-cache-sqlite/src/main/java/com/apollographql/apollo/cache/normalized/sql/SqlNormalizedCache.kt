@@ -38,7 +38,7 @@ class SqlNormalizedCache internal constructor(
     return if (cascade) {
       selectRecordForKey(cacheKey.key)
           ?.referencedFields()
-          ?.all { remove(CacheKey(it.key()), cascade = true) }
+          ?.all { remove(CacheKey(it.key), cascade = true) }
           ?: false
     } else {
       deleteRecord(cacheKey.key)
@@ -46,14 +46,14 @@ class SqlNormalizedCache internal constructor(
   }
 
   override fun performMerge(apolloRecord: Record, cacheHeaders: CacheHeaders): Set<String> {
-    val oldRecord = selectRecordForKey(apolloRecord.key())
+    val oldRecord = selectRecordForKey(apolloRecord.key)
     return if (oldRecord == null) {
-      cacheQueries.insert(apolloRecord.key(), recordFieldAdapter.toJson(apolloRecord.fields()))
+      cacheQueries.insert(apolloRecord.key, recordFieldAdapter.toJson(apolloRecord.fields))
       emptySet()
     } else {
       oldRecord.mergeWith(apolloRecord).also {
         if (it.isNotEmpty()) {
-          cacheQueries.update(oldRecord.key(), recordFieldAdapter.toJson(oldRecord.fields()))
+          cacheQueries.update(oldRecord.key, recordFieldAdapter.toJson(oldRecord.fields))
         }
       }
     }
@@ -66,7 +66,7 @@ class SqlNormalizedCache internal constructor(
           .firstOrNull()
           ?.let {
             Record.builder(it.key)
-                .addFields(recordFieldAdapter.from(it.record))
+                .addFields(recordFieldAdapter.from(it.record)!!)
                 .build()
           }
     } catch (e: IOException) {

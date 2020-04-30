@@ -1,10 +1,10 @@
 package com.apollographql.apollo.cache.normalized
 
-import com.apollographql.apollo.api.internal.Optional
 import com.apollographql.apollo.cache.ApolloCacheHeaders
 import com.apollographql.apollo.cache.CacheHeaders
-import java.util.ArrayList
-import java.util.HashSet
+import kotlin.jvm.JvmStatic
+import kotlin.jvm.JvmSuppressWildcards
+import kotlin.reflect.KClass
 
 /**
  * A provider of [Record] for reading requests from cache.
@@ -126,18 +126,14 @@ abstract class NormalizedCache {
     leafCache.nextCache = cache
   }
 
-  @Deprecated("Use property instead", replaceWith = ReplaceWith("nextCache"))
-  fun nextCache(): Optional<NormalizedCache> = Optional.fromNullable(nextCache)
-
-  open fun dump(): Map<@JvmSuppressWildcards Class<*>, Map<String, Record>> {
-    val clazz: Class<*> = this.javaClass
-    return mapOf(clazz to emptyMap())
+  open fun dump(): Map<@JvmSuppressWildcards KClass<*>, Map<String, Record>> {
+    return mapOf(this::class to emptyMap())
   }
 
   companion object {
 
     @JvmStatic
-    fun prettifyDump(dump: Map<@JvmSuppressWildcards Class<*>, Map<String, Record>>) = buildString {
+    fun prettifyDump(dump: Map<@JvmSuppressWildcards KClass<*>, Map<String, Record>>) = buildString {
       for ((key, value) in dump) {
         append(key.simpleName)
             .append(" {")
@@ -145,7 +141,7 @@ abstract class NormalizedCache {
           append("\n  \"")
               .append(key1)
               .append("\" : {")
-          for ((key2, value2) in value1.fields()) {
+          for ((key2, value2) in value1.fields) {
             append("\n    \"")
                 .append(key2)
                 .append("\" : ")

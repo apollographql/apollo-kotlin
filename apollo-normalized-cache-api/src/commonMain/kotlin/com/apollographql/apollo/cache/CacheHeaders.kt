@@ -3,6 +3,8 @@ package com.apollographql.apollo.cache
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.Record
+import kotlin.jvm.JvmField
+import kotlin.jvm.JvmStatic
 
 /**
  * A key/value collection which is sent with [Record] from a [Operation] to the [NormalizedCache].

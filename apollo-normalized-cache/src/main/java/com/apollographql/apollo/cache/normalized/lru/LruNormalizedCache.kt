@@ -10,6 +10,7 @@ import com.nytimes.android.external.cache.CacheBuilder
 import com.nytimes.android.external.cache.Weigher
 import java.nio.charset.Charset
 import java.util.concurrent.Callable
+import kotlin.reflect.KClass
 
 /**
  * A [NormalizedCache] backed by an in memory [Cache]. Can be configured with an optional secondaryCache [ ], which will be used as a backup if a [Record] is not present in the primary cache.
@@ -67,7 +68,7 @@ class LruNormalizedCache internal constructor(evictionPolicy: EvictionPolicy) : 
       result = true
       if (cascade) {
         for (cacheReference in record.referencedFields()) {
-          result = result && remove(CacheKey(cacheReference.key()), true)
+          result = result && remove(CacheKey(cacheReference.key), true)
         }
       }
     }
@@ -79,21 +80,21 @@ class LruNormalizedCache internal constructor(evictionPolicy: EvictionPolicy) : 
   }
 
   override fun performMerge(apolloRecord: Record, cacheHeaders: CacheHeaders): Set<String> {
-    val oldRecord = lruCache.getIfPresent(apolloRecord.key())
+    val oldRecord = lruCache.getIfPresent(apolloRecord.key)
     return if (oldRecord == null) {
-      lruCache.put(apolloRecord.key(), apolloRecord)
+      lruCache.put(apolloRecord.key, apolloRecord)
       apolloRecord.keys()
     } else {
       oldRecord.mergeWith(apolloRecord).also {
         //re-insert to trigger new weight calculation
-        lruCache.put(apolloRecord.key(), oldRecord)
+        lruCache.put(apolloRecord.key, oldRecord)
       }
     }
   }
 
   @OptIn(ExperimentalStdlibApi::class)
-  override fun dump() = buildMap<Class<*>, Map<String, Record>> {
-    put(this@LruNormalizedCache.javaClass, lruCache.asMap())
+  override fun dump() = buildMap<KClass<*>, Map<String, Record>> {
+    put(this@LruNormalizedCache::class, lruCache.asMap())
     putAll(nextCache?.dump().orEmpty())
   }
 }
