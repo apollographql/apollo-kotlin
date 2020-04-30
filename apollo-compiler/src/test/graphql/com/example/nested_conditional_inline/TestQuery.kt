@@ -224,6 +224,8 @@ data class TestQuery(
       }
     }
 
+    fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
+
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
@@ -365,6 +367,8 @@ data class TestQuery(
           listItemWriter.writeObject(value?.marshaller())}
       }
     }
+
+    fun friendsFilterNotNull(): List<Friend1>? = friends?.filterNotNull()
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(

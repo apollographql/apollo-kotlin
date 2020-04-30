@@ -177,6 +177,10 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
       }
     }
 
+    fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
+
+    fun friendsFilterNotNull(): List<Friend1>? = friends?.filterNotNull()
+
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
@@ -236,6 +240,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
       }
       writer.writeDouble(RESPONSE_FIELDS[3], this@AsHuman.height)
     }
+
+    fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
@@ -326,6 +332,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
       }
       writer.writeFragment(this@HeroDetailQuery.asHuman?.marshaller())
     }
+
+    fun friendsFilterNotNull(): List<Friend2>? = friends?.filterNotNull()
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(

@@ -108,6 +108,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       this@Hero.fragments.marshaller().marshal(writer)
     }
 
+    fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
+
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),

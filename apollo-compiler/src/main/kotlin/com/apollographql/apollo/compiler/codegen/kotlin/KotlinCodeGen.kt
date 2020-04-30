@@ -25,6 +25,7 @@ import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
+import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
@@ -450,5 +451,30 @@ internal object KotlinCodeGen {
     is Map<*, *> -> CodeBlock.of("%S to %L", key, (value as Map<String, Any>).toCode())
     null -> CodeBlock.of("%S to null", key)
     else -> CodeBlock.of("%S to %S", key, value)
+  }
+
+  fun TypeSpec.patchKotlinNativeOptionalArrayProperties(): TypeSpec {
+    val patchedNestedTypes = typeSpecs.map { it.patchKotlinNativeOptionalArrayProperties() }
+    val nonOptionalListPropertyAccessors = propertySpecs
+        .filter { propertySpec ->
+          val propertyType = propertySpec.type
+          propertyType is ParameterizedTypeName &&
+              propertyType.rawType == List::class.asClassName() &&
+              propertyType.typeArguments.single().isNullable
+        }
+        .map { propertySpec ->
+          val listItemType = (propertySpec.type as ParameterizedTypeName).typeArguments.single().copy(nullable = false)
+          val nonOptionalListType = List::class.asClassName().parameterizedBy(listItemType).copy(nullable = propertySpec.type.isNullable)
+          FunSpec
+              .builder("${propertySpec.name}FilterNotNull")
+              .returns(nonOptionalListType)
+              .addStatement("return %L%L.filterNotNull()", propertySpec.name, if (propertySpec.type.isNullable) "?" else "")
+              .build()
+        }
+    return toBuilder()
+        .addFunctions(nonOptionalListPropertyAccessors)
+        .apply { typeSpecs.clear() }
+        .addTypes(patchedNestedTypes)
+        .build()
   }
 }

@@ -138,6 +138,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       }
     }
 
+    fun reviewsFilterNotNull(): List<Review>? = reviews?.filterNotNull()
+
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forList("reviews", "reviews", mapOf<String, Any>(

@@ -233,6 +233,8 @@ data class HeroDetails(
       writer.writeBoolean(RESPONSE_FIELDS[4], this@FriendsConnection.isEmpty)
     }
 
+    fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
+
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
@@ -408,6 +410,8 @@ data class HeroDetails(
       writer.writeObject(RESPONSE_FIELDS[3], this@FriendsConnection1.pageInfo.marshaller())
       writer.writeBoolean(RESPONSE_FIELDS[4], this@FriendsConnection1.isEmpty)
     }
+
+    fun edgesFilterNotNull(): List<Edge1>? = edges?.filterNotNull()
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(

@@ -162,6 +162,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       }
     }
 
+    fun searchFilterNotNull(): List<Search>? = search?.filterNotNull()
+
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forList("search", "search", mapOf<String, Any>(
