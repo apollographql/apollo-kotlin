@@ -30,6 +30,7 @@ class RepositoryDetailActivity : AppCompatActivity() {
     binding = ActivityRepositoryDetailBinding.inflate(layoutInflater)
     val repoName = intent.getStringExtra(REPO_NAME_KEY)
     supportActionBar?.title = repoName
+    setContentView(binding.root)
 
     fetchRepository(repoName)
   }
@@ -70,7 +71,7 @@ class RepositoryDetailActivity : AppCompatActivity() {
   private fun updateUI(repositoryDetail: RepositoryDetail?) {
     repositoryDetail?.run {
       binding.tvRepositoryName.text = name
-      binding.tvRepositoryDescription.text = description
+      binding.tvRepositoryDescription.text = repoDescription
       binding.tvRepositoryForks.text = "$forkCount Forks"
       binding.tvRepositoryIssues.text = "${issues.totalCount} Issues"
       binding.tvRepositoryPullRequests.text = "${pullRequests.totalCount} Pull requests"

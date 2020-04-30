@@ -24,7 +24,7 @@
         android:parentActivityName=".repositories.MainActivity" />
     <activity
         android:name=".commits.CommitsActivity"
-        android:parentActivityName=".repositories.MainActivity" />
+        android:parentActivityName=".repositoryDetail.RepositoryDetailActivity" />
   </application>
 
 </manifest>

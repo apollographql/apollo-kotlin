@@ -33,10 +33,10 @@ class RepositoriesAdapter(
     fun bind(repositoryFragment: RepositoryFragment, onClick: (RepositoryFragment) -> Unit) {
       binding.run {
         tvRepositoryName.text = repositoryFragment.name
-        if (repositoryFragment.description == null) {
+        if (repositoryFragment.repoDescription == null) {
           tvRepositoryDescription.visibility = View.GONE
         } else {
-          tvRepositoryDescription.text = repositoryFragment.description
+          tvRepositoryDescription.text = repositoryFragment.repoDescription
         }
 
         rootLayout.setOnClickListener {
