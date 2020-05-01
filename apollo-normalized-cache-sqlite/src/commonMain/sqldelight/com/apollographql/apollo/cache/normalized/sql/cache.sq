@@ -1,17 +1,19 @@
 CREATE TABLE records (
+  _id INTEGER PRIMARY KEY AUTOINCREMENT,
   key TEXT NOT NULL,
-  record TEXT NOT NULL,
-  PRIMARY KEY (key)
+  record TEXT NOT NULL
 );
 
+CREATE INDEX idx_records_key ON records(key);
+
 recordForKey:
-SELECT key, record FROM records WHERE key=?;
+SELECT _id, key, record FROM records WHERE key=?;
 
 insert:
 INSERT INTO records (key, record) VALUES (?,?);
 
 update:
-INSERT OR REPLACE INTO records (key, record) VALUES(?,?);
+INSERT OR REPLACE INTO records (_id, key, record) VALUES(?,?,?);
 
 delete:
 DELETE FROM records WHERE key=?;
