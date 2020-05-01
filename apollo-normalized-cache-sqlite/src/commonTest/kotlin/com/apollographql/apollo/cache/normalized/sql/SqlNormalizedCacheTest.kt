@@ -11,7 +11,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 class SqlNormalizedCacheTest {
-  
+
   private val cache: SqlNormalizedCache = SqlNormalizedCacheFactory(createDriver()).create(RecordFieldJsonAdapter())
 
   @BeforeTest
@@ -54,7 +54,19 @@ class SqlNormalizedCacheTest {
   }
 
   @Test
-  fun testRecordMerge() {
+  fun testRecordMerge_noOldRecord() {
+    cache.merge(Record.builder(STANDARD_KEY)
+            .addField("fieldKey", "valueUpdated")
+            .addField("newFieldKey", true).build(), CacheHeaders.NONE)
+    val record = cache.selectRecordForKey(STANDARD_KEY)
+    assertNotNull(record)
+    assertEquals(expected = "valueUpdated", actual = record.fields["fieldKey"])
+    assertEquals(expected = true, actual = record.fields["newFieldKey"])
+  }
+
+  @Test
+  fun testRecordMerge_withOldRecord() {
+    createRecord(STANDARD_KEY)
     cache.merge(Record.builder(STANDARD_KEY)
         .addField("fieldKey", "valueUpdated")
         .addField("newFieldKey", true).build(), CacheHeaders.NONE)
