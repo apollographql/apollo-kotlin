@@ -18,8 +18,20 @@ extensions.findByType(BaseExtension::class.java)!!.apply {
 
   lintOptions {
     textReport = true
+    isCheckReleaseBuilds = false
     textOutput("stdout")
     ignore("InvalidPackage", "GoogleAppIndexingWarning", "AllowBackup")
+  }
+
+  // PLEASE DO NOT COPY
+  // Only in java samples. This is something to do with composite builds + Kotlin Multiplatform
+  buildTypes {
+    getByName("debug") {
+      matchingFallbacks = listOf("release")
+    }
+    getByName("release") {
+      matchingFallbacks = listOf("debug")
+    }
   }
 }
 

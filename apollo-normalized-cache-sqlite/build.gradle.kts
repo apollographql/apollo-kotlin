@@ -29,7 +29,7 @@ kotlin {
   }
 
   android {
-    publishLibraryVariants("release")
+    publishAllLibraryVariants()
   }
   jvm()
 
@@ -71,7 +71,6 @@ kotlin {
       dependsOn(iosMain)
     }
 
-
     val commonTest by getting {
       dependencies {
         implementation(kotlin("test-common"))
@@ -87,6 +86,10 @@ kotlin {
         implementation(groovy.util.Eval.x(project, "x.dep.junit"))
         implementation(groovy.util.Eval.x(project, "x.dep.truth"))
       }
+    }
+
+    val androidTest by getting {
+      dependsOn(jvmTest)
     }
 
     val iosTest by getting {
