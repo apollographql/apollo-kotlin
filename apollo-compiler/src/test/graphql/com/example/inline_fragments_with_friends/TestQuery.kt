@@ -106,6 +106,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       }
     }
 
+    fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
+
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
@@ -155,6 +157,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           listItemWriter.writeObject(value?.marshaller())}
       }
     }
+
+    fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
@@ -248,6 +252,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           listItemWriter.writeObject(value?.marshaller())}
       }
     }
+
+    fun friendsFilterNotNull(): List<Friend1>? = friends?.filterNotNull()
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(

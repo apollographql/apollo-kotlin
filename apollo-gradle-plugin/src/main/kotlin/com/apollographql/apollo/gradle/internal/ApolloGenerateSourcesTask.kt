@@ -95,6 +95,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Optional
   abstract val generateAsInternal: Property<Boolean>
 
+  @get:Input
+  @get:Optional
+  abstract val kotlinMultiPlatformProject: Property<Boolean>
+
   @TaskAction
   fun taskAction() {
 
@@ -134,7 +138,8 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         generateVisitorForPolymorphicDatatypes = generateVisitorForPolymorphicDatatypes.getOrElse(false),
         packageNameProvider = packageNameProvider,
         operationOutputFile = operationOutputFile.orNull?.asFile,
-        generateAsInternal = generateAsInternal.getOrElse(false)
+        generateAsInternal = generateAsInternal.getOrElse(false),
+        kotlinMultiPlatformProject = kotlinMultiPlatformProject.getOrElse(false)
     )
 
     GraphQLCompiler().write(args)

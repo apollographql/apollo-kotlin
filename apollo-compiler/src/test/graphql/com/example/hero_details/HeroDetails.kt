@@ -178,6 +178,8 @@ class HeroDetails : Query<HeroDetails.Data, HeroDetails.Data, Operation.Variable
       }
     }
 
+    fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
+
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),

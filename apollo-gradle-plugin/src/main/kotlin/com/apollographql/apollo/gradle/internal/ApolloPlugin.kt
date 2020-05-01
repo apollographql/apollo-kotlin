@@ -153,6 +153,7 @@ open class ApolloPlugin : Plugin<Project> {
 
         it.generateAsInternal.set(compilerParams.generateAsInternal)
         it.operationIdGenerator.set(compilerParams.operationIdGenerator)
+        it.kotlinMultiPlatformProject.set(project.isKotlinMultiplatform)
         Unit
       }
     }

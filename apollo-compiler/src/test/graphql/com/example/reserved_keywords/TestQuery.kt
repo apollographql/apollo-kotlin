@@ -212,6 +212,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       }
     }
 
+    fun objectsFilterNotNull(): List<Object>? = objects?.filterNotNull()
+
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forObject("yield", "hero", null, true, null),

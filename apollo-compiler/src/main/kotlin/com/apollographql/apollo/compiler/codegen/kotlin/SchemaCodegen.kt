@@ -2,13 +2,15 @@ package com.apollographql.apollo.compiler.codegen.kotlin
 
 import com.apollographql.apollo.compiler.PackageNameProvider
 import com.apollographql.apollo.compiler.ast.*
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.patchKotlinNativeOptionalArrayProperties
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.TypeSpec
 import java.io.File
 
 internal class SchemaCodegen(
     private val packageNameProvider: PackageNameProvider,
-    private val generateAsInternal: Boolean = false
+    private val generateAsInternal: Boolean = false,
+    private val kotlinMultiPlatformProject: Boolean
 ) : SchemaVisitor {
   private var fileSpecs: List<FileSpec> = emptyList()
 
@@ -21,17 +23,30 @@ internal class SchemaCodegen(
   }
 
   override fun visit(inputType: InputType) {
-    fileSpecs = fileSpecs + inputType.typeSpec(generateAsInternal).fileSpec(packageNameProvider.typesPackageName)
+    val inputTypeSpec = inputType.typeSpec(generateAsInternal)
+    fileSpecs = fileSpecs + inputTypeSpec.fileSpec(packageNameProvider.typesPackageName)
   }
 
   override fun visit(fragmentType: ObjectType) {
-    fileSpecs = fileSpecs + fragmentType.typeSpec(generateAsInternal).fileSpec(packageNameProvider.fragmentsPackageName)
+    val fragmentTypeSpec = fragmentType.typeSpec(generateAsInternal).let {
+      if (kotlinMultiPlatformProject) {
+        it.patchKotlinNativeOptionalArrayProperties()
+      } else it
+    }
+    fileSpecs = fileSpecs + fragmentTypeSpec.fileSpec(packageNameProvider.fragmentsPackageName)
   }
 
   override fun visit(operationType: OperationType) {
     val targetPackage = packageNameProvider.operationPackageName(operationType.filePath)
-    fileSpecs = fileSpecs + operationType.typeSpec(targetPackage = targetPackage, generateAsInternal = generateAsInternal)
-        .fileSpec(targetPackage)
+    val operationTypeSpec = operationType.typeSpec(
+        targetPackage = targetPackage,
+        generateAsInternal = generateAsInternal
+    ).let {
+      if (kotlinMultiPlatformProject) {
+        it.patchKotlinNativeOptionalArrayProperties()
+      } else it
+    }
+    fileSpecs = fileSpecs + operationTypeSpec.fileSpec(targetPackage)
   }
 
   fun writeTo(outputDir: File) {

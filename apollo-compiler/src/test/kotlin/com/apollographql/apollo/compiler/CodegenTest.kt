@@ -168,7 +168,8 @@ class CodeGenTest(private val folder: File) {
           suppressRawTypesWarning = suppressRawTypesWarning,
           generateVisitorForPolymorphicDatatypes = generateVisitorForPolymorphicDatatypes,
           packageNameProvider = packageNameProvider,
-          generateAsInternal = generateAsInternal
+          generateAsInternal = generateAsInternal,
+          kotlinMultiPlatformProject = true
       )
     }
 

@@ -110,6 +110,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       writer.writeString(RESPONSE_FIELDS[3], this@Hero.firstAppearsIn.rawValue)
     }
 
+    fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
+
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
