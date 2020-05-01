@@ -95,6 +95,7 @@ ext.dep = [
     sqldelight            : [
         android: "com.squareup.sqldelight:android-driver:$versions.sqldelight",
         jvm    : "com.squareup.sqldelight:sqlite-driver:$versions.sqldelight",
+        native : "com.squareup.sqldelight:native-driver:$versions.sqldelight",
         plugin : "com.squareup.sqldelight:gradle-plugin:$versions.sqldelight"
     ],
     truth                 : "com.google.truth:truth:$versions.truth",

@@ -1,6 +1,6 @@
 plugins {
   id("com.android.library")
-  kotlin("android")
+  kotlin("multiplatform")
   id("com.squareup.sqldelight")
 }
 
@@ -8,6 +8,94 @@ sqldelight {
   database("ApolloDatabase") {
     packageName = "com.apollographql.apollo.cache.normalized.sql"
     schemaOutputDirectory = file("src/main/sqldelight/schemas")
+  }
+}
+
+kotlin {
+  @Suppress("ClassName")
+  data class iOSTarget(val name: String, val preset: String, val id: String)
+
+  val iosTargets = listOf(
+      iOSTarget("ios", "iosArm64", "ios-arm64"),
+      iOSTarget("iosSim", "iosX64", "ios-x64")
+  )
+
+  for ((targetName, presetName, id) in iosTargets) {
+    targetFromPreset(presets.getByName(presetName), targetName) {
+      mavenPublication {
+        artifactId = "${project.name}-$id"
+      }
+    }
+  }
+
+  android {
+    publishLibraryVariants("release")
+  }
+  jvm()
+
+  sourceSets {
+    val commonMain by getting {
+      dependencies {
+        api(project(":apollo-api"))
+        api(project(":apollo-normalized-cache-api"))
+        implementation(kotlin("stdlib-common"))
+      }
+    }
+
+    val jvmMain by getting {
+      dependsOn(commonMain)
+      dependencies {
+        implementation(kotlin("stdlib"))
+        implementation(groovy.util.Eval.x(project, "x.dep.sqldelight.jvm"))
+      }
+    }
+
+    val androidMain by getting {
+      dependsOn(commonMain)
+      dependencies {
+        api(groovy.util.Eval.x(project, "x.dep.androidx.sqlite"))
+        implementation(kotlin("stdlib"))
+        implementation(groovy.util.Eval.x(project, "x.dep.sqldelight.android"))
+        implementation(groovy.util.Eval.x(project, "x.dep.androidx.sqliteFramework"))
+      }
+    }
+
+    val iosMain by getting {
+      dependsOn(commonMain)
+      dependencies {
+        implementation(groovy.util.Eval.x(project, "x.dep.sqldelight.native"))
+      }
+    }
+
+    val iosSimMain by getting {
+      dependsOn(iosMain)
+    }
+
+
+    val commonTest by getting {
+      dependencies {
+        implementation(kotlin("test-common"))
+        implementation(kotlin("test-annotations-common"))
+      }
+    }
+
+    val jvmTest by getting {
+      dependsOn(commonTest)
+      dependencies {
+        implementation(kotlin("test-junit"))
+
+        implementation(groovy.util.Eval.x(project, "x.dep.junit"))
+        implementation(groovy.util.Eval.x(project, "x.dep.truth"))
+      }
+    }
+
+    val iosTest by getting {
+      dependsOn(commonTest)
+    }
+
+    val iosSimTest by getting {
+      dependsOn(iosTest)
+    }
   }
 }
 
@@ -26,18 +114,6 @@ android {
   }
 }
 
-dependencies {
-  api(project(":apollo-api"))
-  api(project(":apollo-normalized-cache-api"))
-  api(groovy.util.Eval.x(project, "x.dep.androidx.sqlite"))
-  implementation(groovy.util.Eval.x(project, "x.dep.kotlin.stdLib"))
-  implementation(groovy.util.Eval.x(project, "x.dep.sqldelight.android"))
-  implementation(groovy.util.Eval.x(project, "x.dep.androidx.sqliteFramework"))
-
-  testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
-  testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
-  testImplementation(groovy.util.Eval.x(project, "x.dep.sqldelight.jvm"))
-}
 
 tasks.withType<Javadoc> {
   options.encoding = "UTF-8"
