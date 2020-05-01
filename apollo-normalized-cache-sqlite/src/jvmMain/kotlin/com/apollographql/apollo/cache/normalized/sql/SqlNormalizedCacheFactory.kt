@@ -18,14 +18,17 @@ actual class SqlNormalizedCacheFactory internal actual constructor(
        */
       url: String,
       properties: Properties = Properties()
-  ) : this(JdbcSqliteDriver(url, properties))
-
-  init {
-    ApolloDatabase.Schema.create(driver)
-  }
+  ) : this(createDriverAndDatabase(url, properties))
 
   private val apolloDatabase = ApolloDatabase(driver)
 
   override fun create(recordFieldAdapter: RecordFieldJsonAdapter) =
       SqlNormalizedCache(recordFieldAdapter, apolloDatabase.cacheQueries)
+
+  companion object {
+    private fun createDriverAndDatabase(url: String, properties: Properties) =
+        JdbcSqliteDriver(url, properties).also {
+          ApolloDatabase.Schema.create(it)
+        }
+  }
 }
