@@ -48,12 +48,12 @@ class SqlNormalizedCache internal constructor(
   override fun performMerge(apolloRecord: Record, cacheHeaders: CacheHeaders): Set<String> {
     val oldRecord = selectRecordForKey(apolloRecord.key())
     return if (oldRecord == null) {
-      cacheQueries.insert(apolloRecord.key(), recordFieldAdapter.toJson(apolloRecord.fields()))
+      cacheQueries.insert(key = apolloRecord.key(), record = recordFieldAdapter.toJson(apolloRecord.fields()))
       emptySet()
     } else {
       oldRecord.mergeWith(apolloRecord).also {
         if (it.isNotEmpty()) {
-          cacheQueries.update(oldRecord.key(), recordFieldAdapter.toJson(oldRecord.fields()))
+          cacheQueries.update(record = recordFieldAdapter.toJson(oldRecord.fields()), key = oldRecord.key())
         }
       }
     }
@@ -92,6 +92,6 @@ class SqlNormalizedCache internal constructor(
   }
 
   fun createRecord(key: String, fields: String) {
-    cacheQueries.insert(key, fields)
+    cacheQueries.insert(key = key, record = fields)
   }
 }

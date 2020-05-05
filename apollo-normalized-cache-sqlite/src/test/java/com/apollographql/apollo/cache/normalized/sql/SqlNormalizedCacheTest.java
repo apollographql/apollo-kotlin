@@ -12,6 +12,7 @@ import org.junit.Test;
 import java.util.Properties;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertNotNull;
 
 public class SqlNormalizedCacheTest {
 
@@ -115,6 +116,29 @@ public class SqlNormalizedCacheTest {
         CacheHeaders.builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "true").build());
     final Record record = sqlStore.loadRecord(STANDARD_KEY, CacheHeaders.NONE);
     assertThat(record).isNull();
+  }
+
+  @Test
+  public void testRecordMerge_noOldRecord() {
+    sqlStore.merge(Record.builder(STANDARD_KEY)
+        .addField("fieldKey", "valueUpdated")
+        .addField("newFieldKey", true).build(), CacheHeaders.NONE);
+    Record record = sqlStore.selectRecordForKey(STANDARD_KEY);
+    assertNotNull(record);
+    assertThat(record.fields().get("fieldKey")).isEqualTo("valueUpdated");
+    assertThat(record.fields().get("newFieldKey")).isEqualTo(true);
+  }
+
+  @Test
+  public void testRecordMerge_withOldRecord() {
+    createRecord(STANDARD_KEY);
+    sqlStore.merge(Record.builder(STANDARD_KEY)
+        .addField("fieldKey", "valueUpdated")
+        .addField("newFieldKey", true).build(), CacheHeaders.NONE);
+    Record record = sqlStore.selectRecordForKey(STANDARD_KEY);
+    assertNotNull(record);
+    assertThat(record.fields().get("fieldKey")).isEqualTo("valueUpdated");
+    assertThat(record.fields().get("newFieldKey")).isEqualTo(true);
   }
 
   private void createRecord(String key) {
