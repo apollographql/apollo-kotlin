@@ -53,7 +53,7 @@ class SqlNormalizedCache internal constructor(
     } else {
       oldRecord.mergeWith(apolloRecord).also {
         if (it.isNotEmpty()) {
-          cacheQueries.update(oldRecord.key, recordFieldAdapter.toJson(oldRecord.fields))
+          cacheQueries.update(record = recordFieldAdapter.toJson(oldRecord.fields), key = oldRecord.key)
         }
       }
     }
