@@ -17,7 +17,7 @@ import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery;
 import com.apollographql.apollo.integration.httpcache.type.CustomType;
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.HeroNameQuery;
-import com.apollographql.apollo.http.HttpExecutionContext;
+import com.apollographql.apollo.http.OkHttpExecutionContext;
 import com.apollographql.apollo.response.OperationResponseParser;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 import com.google.common.base.Charsets;
@@ -350,15 +350,15 @@ public class IntegrationTest {
     assertResponse(
         apolloClient.query(new AllPlanetsQuery()),
         (Predicate<Response<AllPlanetsQuery.Data>>) response -> {
-          assertThat(response.getExecutionContext().get(HttpExecutionContext.KEY)).isNotNull();
-          assertThat(response.getExecutionContext().get(HttpExecutionContext.KEY).response).isNotNull();
-          assertThat(response.getExecutionContext().get(HttpExecutionContext.KEY).response.headers().toString())
+          assertThat(response.getExecutionContext().get(OkHttpExecutionContext.KEY)).isNotNull();
+          assertThat(response.getExecutionContext().get(OkHttpExecutionContext.KEY).response).isNotNull();
+          assertThat(response.getExecutionContext().get(OkHttpExecutionContext.KEY).response.headers().toString())
               .isEqualTo(
                   "Transfer-encoding: chunked\n" +
                       "Header1: Header1#value\n" +
                       "Header2: Header2#value\n"
               );
-          assertThat(response.getExecutionContext().get(HttpExecutionContext.KEY).response.body()).isNull();
+          assertThat(response.getExecutionContext().get(OkHttpExecutionContext.KEY).response.body()).isNull();
           return true;
         }
     );
