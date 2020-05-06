@@ -12,6 +12,8 @@ import com.apollographql.apollo.exception.ApolloParseException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer;
+import com.apollographql.apollo.internal.util.HttpResponseUtils;
+import com.apollographql.apollo.http.HttpExecutionContext;
 import com.apollographql.apollo.response.OperationResponseParser;
 import org.jetbrains.annotations.NotNull;
 
@@ -81,12 +83,15 @@ public final class ApolloParseInterceptor implements ApolloInterceptor {
     String cacheKey = httpResponse.request().header(HttpCache.CACHE_KEY_HEADER);
     if (httpResponse.isSuccessful()) {
       try {
-        OperationResponseParser parser = new OperationResponseParser(operation, responseFieldMapper, scalarTypeAdapters,
-            normalizer);
-        Response parsedResponse = parser.parse(httpResponse.body().source())
+        final OperationResponseParser parser = new OperationResponseParser(operation, responseFieldMapper, scalarTypeAdapters, normalizer);
+        final HttpExecutionContext httpExecutionContext = new HttpExecutionContext(HttpResponseUtils.strip(httpResponse));
+        Response parsedResponse = parser.parse(httpResponse.body().source());
+        parsedResponse = parsedResponse
             .toBuilder()
             .fromCache(httpResponse.cacheResponse() != null)
+            .executionContext(parsedResponse.getExecutionContext().set(HttpExecutionContext.KEY, httpExecutionContext))
             .build();
+
         if (parsedResponse.hasErrors() && httpCache != null) {
           httpCache.removeQuietly(cacheKey);
         }

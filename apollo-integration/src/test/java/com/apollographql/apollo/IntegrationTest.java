@@ -17,6 +17,7 @@ import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery;
 import com.apollographql.apollo.integration.httpcache.type.CustomType;
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.HeroNameQuery;
+import com.apollographql.apollo.http.HttpExecutionContext;
 import com.apollographql.apollo.response.OperationResponseParser;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 import com.google.common.base.Charsets;
@@ -338,6 +339,29 @@ public class IntegrationTest {
     final Buffer source = new Buffer().readFrom(getClass().getResourceAsStream("/HeroNameResponse.json"));
     final Response<HeroNameQuery.Data> response = new HeroNameQuery().parse(source);
     assertThat(response.extensions().toString()).isEqualTo("{cost={requestedQueryCost=3, actualQueryCost=3, throttleStatus={maximumAvailable=1000, currentlyAvailable=997, restoreRate=50}}}");
+  }
+
+  @SuppressWarnings("ConstantConditions")
+  @Test public void operationResponseContainsHttpExecutionContext() throws Exception {
+    final MockResponse httpResponse = mockResponse("HttpCacheTestAllPlanets.json")
+        .setHeader("Header1", "Header1#value")
+        .setHeader("Header2", "Header2#value");
+    server.enqueue(httpResponse);
+    assertResponse(
+        apolloClient.query(new AllPlanetsQuery()),
+        (Predicate<Response<AllPlanetsQuery.Data>>) response -> {
+          assertThat(response.getExecutionContext().get(HttpExecutionContext.KEY)).isNotNull();
+          assertThat(response.getExecutionContext().get(HttpExecutionContext.KEY).response).isNotNull();
+          assertThat(response.getExecutionContext().get(HttpExecutionContext.KEY).response.headers().toString())
+              .isEqualTo(
+                  "Transfer-encoding: chunked\n" +
+                      "Header1: Header1#value\n" +
+                      "Header2: Header2#value\n"
+              );
+          assertThat(response.getExecutionContext().get(HttpExecutionContext.KEY).response.body()).isNull();
+          return true;
+        }
+    );
   }
 
   private MockResponse mockResponse(String fileName) throws IOException {
