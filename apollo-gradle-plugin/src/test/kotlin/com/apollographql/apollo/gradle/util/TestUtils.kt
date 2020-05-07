@@ -26,6 +26,10 @@ object TestUtils {
     val dest = File(System.getProperty("user.dir")).child("build", "testProject")
     dest.deleteRecursively()
 
+    // See https://github.com/apollographql/apollo-android/issues/2184
+    dest.mkdirs()
+    File(dest, "gradle.properties").writeText("org.gradle.jvmargs=-XX:MaxMetaspaceSize=1g")
+
     block(dest)
 
     // It's ok to not delete the directory as it will be deleted before next test
@@ -145,7 +149,7 @@ object TestUtils {
     block(dest)
   }
 
-  fun withGeneratedAccessorsProject(apolloConfiguration: String,  block: (File) -> Unit) = withDirectory {dir->
+  fun withGeneratedAccessorsProject(apolloConfiguration: String, block: (File) -> Unit) = withDirectory { dir ->
     fixturesDirectory().child("gradle", "settings.gradle.kts").copyTo(dir.child("settings.gradle.kts"))
     fixturesDirectory().child("gradle", "build.gradle.kts").copyTo(dir.child("build.gradle.kts"))
 
@@ -154,10 +158,11 @@ object TestUtils {
     block(dir)
   }
 
-  fun withTestProject(name: String, block: (File) -> Unit) = withDirectory {dir ->
+  fun withTestProject(name: String, block: (File) -> Unit) = withDirectory { dir ->
     File(System.getProperty("user.dir"), "testProjects/$name").copyRecursively(dir, overwrite = true)
     block(dir)
   }
+
   /**
    * creates a simple java non-android non-kotlin-gradle project
    */

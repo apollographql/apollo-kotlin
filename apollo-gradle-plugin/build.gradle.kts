@@ -29,11 +29,6 @@ dependencies {
 }
 
 tasks.withType<Test> {
-  // Restart the daemon once in a while or we end up running out of MetaSpace
-  // It's not clear if it's a real ClassLoader leak or something else. The okio timeout thread does hold some ClassLoaders
-  // for up to 60s. The heap dumps also show some process reaper threads but it might just as well be a temporary thing, not sure.
-  // See https://github.com/gradle/gradle/issues/8354
-  setForkEvery(1L)
   dependsOn(":apollo-api:publishAllPublicationsToPluginTestRepository")
   dependsOn(":apollo-compiler:publishAllPublicationsToPluginTestRepository")
   dependsOn("publishAllPublicationsToPluginTestRepository")
