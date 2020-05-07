@@ -1,0 +1,12 @@
+query getNodeId {
+    nodeId
+}
+
+query getActivities {
+    activities {
+        nodes {
+            createdAt
+            eventDescription
+        }
+    }
+}

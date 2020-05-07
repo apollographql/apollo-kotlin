@@ -241,12 +241,14 @@ open class ApolloPlugin : Plugin<Project> {
     }
 
     fun checkVersions(project: Project) {
-      val allDeps = getDeps(project.buildscript.configurations) + getDeps(project.configurations)
+      val allDeps = getDeps(project.rootProject.buildscript.configurations) +
+          getDeps(project.buildscript.configurations) +
+          getDeps(project.configurations)
+
       check(allDeps.mapNotNull { it.version }.distinct().size <= 1) {
         val found = allDeps.map { "${it.name}:${it.version}" }.distinct().joinToString("\n")
-        "All apollo version should be the same. Found:\n$found"
+        "All apollo versions should be the same. Found:\n$found"
       }
-
     }
   }
 
