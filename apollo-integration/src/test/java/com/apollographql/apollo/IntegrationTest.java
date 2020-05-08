@@ -351,14 +351,14 @@ public class IntegrationTest {
         apolloClient.query(new AllPlanetsQuery()),
         (Predicate<Response<AllPlanetsQuery.Data>>) response -> {
           assertThat(response.getExecutionContext().get(OkHttpExecutionContext.KEY)).isNotNull();
-          assertThat(response.getExecutionContext().get(OkHttpExecutionContext.KEY).response).isNotNull();
-          assertThat(response.getExecutionContext().get(OkHttpExecutionContext.KEY).response.headers().toString())
+          assertThat(response.getExecutionContext().get(OkHttpExecutionContext.KEY).getResponse()).isNotNull();
+          assertThat(response.getExecutionContext().get(OkHttpExecutionContext.KEY).getResponse().headers().toString())
               .isEqualTo(
                   "Transfer-encoding: chunked\n" +
                       "Header1: Header1#value\n" +
                       "Header2: Header2#value\n"
               );
-          assertThat(response.getExecutionContext().get(OkHttpExecutionContext.KEY).response.body()).isNull();
+          assertThat(response.getExecutionContext().get(OkHttpExecutionContext.KEY).getResponse().body()).isNull();
           return true;
         }
     );
