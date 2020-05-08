@@ -676,9 +676,9 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
           .map { schema[it] ?: throw GraphQLParseException(message = "Undefined schema type `$it`") }
           .filter { type -> type.kind == Schema.Kind.SCALAR || type.kind == Schema.Kind.ENUM || type.kind == Schema.Kind.INPUT_OBJECT }
           .partition { type -> type.kind == Schema.Kind.SCALAR || type.kind == Schema.Kind.ENUM }
-          .let { (scalaTypes, inputTypes) ->
+          .let { (scalarTypes, inputTypes) ->
             @Suppress("UNCHECKED_CAST")
-            scalaTypes.filter { ScalarType.forName(it.name) == null } to (inputTypes as List<Schema.Type.InputObject>)
+            scalarTypes.filter { ScalarType.forName(it.name) == null } to (inputTypes as List<Schema.Type.InputObject>)
           }
 
       usedTypes.addAll(nestedScalarTypes)
