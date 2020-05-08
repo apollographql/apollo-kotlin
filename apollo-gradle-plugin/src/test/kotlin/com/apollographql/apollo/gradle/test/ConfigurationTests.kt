@@ -427,7 +427,21 @@ class ConfigurationTests {
         TestUtils.executeTask("generateApolloSources", dir)
       } catch (e: UnexpectedBuildFailure) {
         exception = e
-        assertThat(e.message, containsString("All apollo version should be the same"))
+        assertThat(e.message, containsString("All apollo versions should be the same"))
+      }
+      assertNotNull(exception)
+    }
+  }
+
+  @Test
+  fun `versions are enforced even in rootProject`() {
+    withTestProject("mismatchedVersions") { dir ->
+      var exception: Exception? = null
+      try {
+        TestUtils.executeTask("generateApolloSources", dir)
+      } catch (e: UnexpectedBuildFailure) {
+        exception = e
+        assertThat(e.message, containsString("All apollo versions should be the same"))
       }
       assertNotNull(exception)
     }
