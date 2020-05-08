@@ -36,7 +36,12 @@ class Response<T>(
     /**
      * Extensions of GraphQL protocol, arbitrary map of key [String] / value [Any] sent by server along with the response.
      */
-    val extensions: Map<String, Any?> = emptyMap()
+    val extensions: Map<String, Any?> = emptyMap(),
+
+    /**
+     * The context of GraphQL [operation] execution.
+     */
+    val executionContext: ExecutionContext = ExecutionContext.Empty
 ) {
 
   constructor(builder: Builder<T>) : this(
@@ -45,7 +50,8 @@ class Response<T>(
       errors = builder.errors,
       dependentKeys = builder.dependentKeys.orEmpty(),
       fromCache = builder.fromCache,
-      extensions = builder.extensions.orEmpty()
+      extensions = builder.extensions.orEmpty(),
+      executionContext = builder.executionContext
   )
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "operation"))
@@ -82,6 +88,7 @@ class Response<T>(
       .dependentKeys(dependentKeys)
       .fromCache(fromCache)
       .extensions(extensions)
+      .executionContext(executionContext)
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -93,6 +100,7 @@ class Response<T>(
     if (dependentKeys != other.dependentKeys) return false
     if (fromCache != other.fromCache) return false
     if (extensions != other.extensions) return false
+    if (executionContext != other.executionContext) return false
 
     return true
   }
@@ -113,6 +121,7 @@ class Response<T>(
     internal var dependentKeys: Set<String>? = null
     internal var fromCache: Boolean = false
     internal var extensions: Map<String, Any?>? = null
+    internal var executionContext: ExecutionContext = ExecutionContext.Empty
 
     fun data(data: T?) = apply {
       this.data = data
@@ -132,6 +141,10 @@ class Response<T>(
 
     fun extensions(extensions: Map<String, Any?>?) = apply {
       this.extensions = extensions
+    }
+
+    fun executionContext(executionContext: ExecutionContext) = apply {
+      this.executionContext = executionContext
     }
 
     fun build(): Response<T> = Response(this)
