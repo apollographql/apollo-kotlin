@@ -7,6 +7,7 @@ import kotlin.jvm.JvmField
 /**
  * A context of GraphQL operation execution, represented as a set of [Key] keys and corresponding [Element] values.
  */
+@ApolloExperimental
 class ExecutionContext private constructor(private val context: Map<Key<*>, Element>) {
 
   /**
@@ -15,6 +16,15 @@ class ExecutionContext private constructor(private val context: Map<Key<*>, Elem
   @Suppress("UNCHECKED_CAST")
   operator fun <E : Element> get(key: Key<E>): E? {
     return context[key] as? E
+  }
+
+  operator fun plus(other: ExecutionContext): ExecutionContext {
+    return ExecutionContext(context + other.context)
+  }
+
+  @Suppress("UNCHECKED_CAST")
+  operator fun plus(other: Element): ExecutionContext {
+    return set(other.key as Key<Element>, other)
   }
 
   /**
@@ -32,7 +42,9 @@ class ExecutionContext private constructor(private val context: Map<Key<*>, Elem
   /**
    * An element of the [ExecutionContext].
    */
-  interface Element
+  interface Element {
+    val key: Key<*>
+  }
 
   companion object {
     @JvmField
