@@ -645,29 +645,48 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
     }
   }
 
-  private fun Set<String>.usedSchemaTypes(exclude: Set<String> = emptySet()): Set<Schema.Type> {
+  private fun Set<String>.usedSchemaTypes(): Set<Schema.Type> {
     if (isEmpty()) {
       return emptySet()
     }
 
-    val usedSchemaTypes = filter { ScalarType.forName(it) == null }
+    val (scalarTypes, inputObjectTypes) = filter { ScalarType.forName(it) == null }
         .map { schema[it] ?: throw GraphQLParseException(message = "Undefined schema type `$it`") }
         .filter { type -> type.kind == Schema.Kind.SCALAR || type.kind == Schema.Kind.ENUM || type.kind == Schema.Kind.INPUT_OBJECT }
-        .toSet()
+        .partition { type -> type.kind == Schema.Kind.SCALAR || type.kind == Schema.Kind.ENUM }
+        .let { (scalarTypes, inputObjectTypes) ->
+          @Suppress("UNCHECKED_CAST")
+          scalarTypes to (inputObjectTypes as List<Schema.Type.InputObject>)
+        }
 
-    val inputObjectUsedTypes = usedSchemaTypes
-        .mapNotNull { type -> type as? Schema.Type.InputObject }
-        .flatMap { inputObject -> inputObject.usedTypes(exclude = this + exclude) }
-        .toSet()
-        .usedSchemaTypes(this + exclude)
+    val usedTypes = (scalarTypes + inputObjectTypes).toMutableSet()
+    val visitedTypeNames = scalarTypes.map { it.name }.toMutableSet()
 
-    return usedSchemaTypes + inputObjectUsedTypes
-  }
+    val inputTypesToVisit = inputObjectTypes.toMutableList()
+    while (inputTypesToVisit.isNotEmpty()) {
+      val inputType = inputTypesToVisit.removeAt(inputTypesToVisit.lastIndex).also {
+        usedTypes.add(it)
+        visitedTypeNames.add(it.name)
+      }
+      val (nestedScalarTypes, nestedInputTypes) = inputType
+          .inputFields
+          .asSequence()
+          .map { field -> field.type.rawType.name!! }
+          .filterNot { type -> visitedTypeNames.contains(type) }
+          .map { schema[it] ?: throw GraphQLParseException(message = "Undefined schema type `$it`") }
+          .filter { type -> type.kind == Schema.Kind.SCALAR || type.kind == Schema.Kind.ENUM || type.kind == Schema.Kind.INPUT_OBJECT }
+          .partition { type -> type.kind == Schema.Kind.SCALAR || type.kind == Schema.Kind.ENUM }
+          .let { (scalarTypes, inputTypes) ->
+            @Suppress("UNCHECKED_CAST")
+            scalarTypes.filter { ScalarType.forName(it.name) == null } to (inputTypes as List<Schema.Type.InputObject>)
+          }
 
-  private fun Schema.Type.InputObject.usedTypes(exclude: Set<String>): Set<String> {
-    val usedTypes = inputFields.map { field -> field.type.rawType.name!! }.subtract(exclude)
-    val usedInputObjects = usedTypes.mapNotNull { schema[it] as? Schema.Type.InputObject }
-    return usedTypes + usedInputObjects.flatMap { inputObject -> inputObject.usedTypes(exclude + usedTypes) }
+      usedTypes.addAll(nestedScalarTypes)
+      visitedTypeNames.addAll(nestedScalarTypes.map { it.name })
+
+      inputTypesToVisit.addAll(nestedInputTypes)
+    }
+    return usedTypes
   }
 
   private fun List<Field>.union(other: List<Field>): List<Field> {
