@@ -1,12 +1,10 @@
 package com.apollographql.apollo
 
 import com.apollographql.apollo.api.ExecutionContext
-import com.apollographql.apollo.context.DispatchersContext
 import com.apollographql.apollo.mock.MockNetworkTransport
 import com.apollographql.apollo.mock.MockQuery
 import com.apollographql.apollo.mock.TestLoggerExecutor
-import com.apollographql.apollo.network.NetworkResponse
-import kotlinx.coroutines.Dispatchers
+import com.apollographql.apollo.network.GraphQLResponse
 import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.flow.single
 import okio.Buffer
@@ -27,9 +25,6 @@ class ApolloClientTest {
     networkTransport = MockNetworkTransport()
     apolloClient = ApolloClient(
         networkTransport = networkTransport,
-        executionContext = ExecutionContext.Empty + DispatchersContext(
-            ioDispatcher = Dispatchers.Unconfined
-        ),
         executors = listOf(TestLoggerExecutor)
     )
   }
@@ -37,7 +32,7 @@ class ApolloClientTest {
   @Test
   fun `when query and success network response, assert success`() {
     networkTransport.offer(
-        NetworkResponse(
+        GraphQLResponse(
             body = Buffer().write("{\"data\":{\"name\":\"MockQuery\"}}".encodeUtf8()),
             executionContext = ExecutionContext.Empty
         )
@@ -57,7 +52,7 @@ class ApolloClientTest {
   @Test
   fun `when query and malformed network response, assert parse error`() {
     networkTransport.offer(
-        NetworkResponse(
+        GraphQLResponse(
             body = Buffer(),
             executionContext = ExecutionContext.Empty
         )
@@ -82,13 +77,13 @@ class ApolloClientTest {
   @Test
   fun `when query and malformed network response, assert success after retry`() {
     networkTransport.offer(
-        NetworkResponse(
+        GraphQLResponse(
             body = Buffer(),
             executionContext = ExecutionContext.Empty
         )
     )
     networkTransport.offer(
-        NetworkResponse(
+        GraphQLResponse(
             body = Buffer().write("{\"data\":{\"name\":\"MockQuery\"}}".encodeUtf8()),
             executionContext = ExecutionContext.Empty
         )

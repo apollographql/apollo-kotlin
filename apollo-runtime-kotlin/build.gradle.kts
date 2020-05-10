@@ -46,6 +46,7 @@ kotlin {
     val iosMain by getting {
       dependsOn(commonMain)
       dependencies {
+        api(project(":apollo-api"))
         implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines.coreNative"))
       }
     }

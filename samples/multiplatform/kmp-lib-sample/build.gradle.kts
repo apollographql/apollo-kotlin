@@ -29,6 +29,7 @@ kotlin {
     commonMain {
       dependencies {
         implementation("com.apollographql.apollo:apollo-api")
+        implementation("com.apollographql.apollo:apollo-runtime-kotlin")
         implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines.coreCommon"))
         implementation(kotlin("stdlib-common"))
       }
@@ -37,7 +38,6 @@ kotlin {
       dependencies {
         implementation("com.apollographql.apollo:apollo-api")
         implementation("com.apollographql.apollo:apollo-coroutines-support")
-        implementation("com.apollographql.apollo:apollo-runtime")
         implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines.core"))
         implementation(kotlin("stdlib"))
       }
