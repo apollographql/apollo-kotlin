@@ -88,7 +88,7 @@ public final class ApolloParseInterceptor implements ApolloInterceptor {
         parsedResponse = parsedResponse
             .toBuilder()
             .fromCache(httpResponse.cacheResponse() != null)
-            .executionContext(parsedResponse.getExecutionContext().set(OkHttpExecutionContext.KEY, httpExecutionContext))
+            .executionContext(parsedResponse.getExecutionContext().plus(httpExecutionContext))
             .build();
 
         if (parsedResponse.hasErrors() && httpCache != null) {
