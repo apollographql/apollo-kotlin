@@ -45,7 +45,6 @@ class CodeGenTest(private val folder: File) {
       it.isFile
     }
 
-    println("actualFiles: ${actualFiles.joinToString(",")}")
     expectedFiles.forEach {expected ->
       val relativePath = expected.relativeTo(expectedRoot).path
       val actual = File(actualRoot, relativePath)
