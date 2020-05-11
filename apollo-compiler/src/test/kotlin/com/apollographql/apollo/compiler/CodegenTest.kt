@@ -34,44 +34,65 @@ class CodeGenTest(private val folder: File) {
       "java"
     }
 
-    val walk = folder.walkTopDown()
-    val files = walk.mapNotNull { file ->
-      if (!file.name.endsWith(extension)) {
-        return@mapNotNull null
+    val expectedRoot = folder.parentFile.parentFile.parentFile
+    val expectedFiles = folder.walk().filter {
+      it.isFile && it.extension == extension
+    }
+
+    val actualRoot = args.outputDir
+    val actualFiles = actualRoot.walk().filter {
+      // extension should always be the correct one, it's a bug else
+      it.isFile
+    }
+
+    println("actualFiles: ${actualFiles.joinToString(",")}")
+    expectedFiles.forEach {expected ->
+      val relativePath = expected.relativeTo(expectedRoot).path
+      val actual = File(actualRoot, relativePath)
+      if (!actual.exists()) {
+        if (shouldUpdateTestFixtures()) {
+          println("removing actual file: ${expected.absolutePath}")
+          expected.delete()
+          return@forEach
+        } else {
+          throw Exception("No actual file for ${actual.absolutePath}")
+        }
       }
-
-      val relativePath = "com/example/${folder.name}/${file.relativeTo(folder).path}"
-      val actual = File(args.outputDir, relativePath)
-
-      if (!actual.isFile) {
-        throw AssertionError("Couldn't find actual file: $actual")
+      checkTestFixture(actual = actual, expected = expected)
+    }
+    actualFiles.forEach {actual->
+      val relativePath = actual.relativeTo(actualRoot).path
+      val expected = File(expectedRoot, relativePath)
+      if (!expected.exists()) {
+        if (shouldUpdateTestFixtures()) {
+          println("adding expected file: ${actual.absolutePath} - ${actual.path}")
+          actual.copyTo(expected)
+          return@forEach
+        } else {
+          throw Exception("No expected file for ${expected.absolutePath}")
+        }
       }
-
-      GeneratedFile(expected = file, actual = actual, relativePath = relativePath)
-    }.toList()
-
-    // Check that files match
-    files.forEach {
-      checkTestFixture(actual = it.actual, expected = it.expected)
+      // no need to call checkTestFixture again, this has been taken care of
     }
 
     // And that they compile
     if (!args.generateKotlinModels) {
-      val javaFileObjects = files.map {
-        val qualifiedName = it.relativePath
+      val javaFileObjects = actualFiles.map {
+        val qualifiedName = it.path
             .substringBeforeLast(".")
             .split(File.separator)
             .joinToString(".")
 
         JavaFileObjects.forSourceLines(qualifiedName,
-            it.actual.readLines())
-      }
+            it.readLines())
+      }.toList()
 
       assertAbout(javaSources()).that(javaFileObjects).compilesWithoutError()
     } else {
-      val kotlinFiles = files.map {
-        SourceFile.kotlin(it.actual.name, it.actual.readText())
-      }
+      val kotlinFiles = actualFiles.map {
+        SourceFile.kotlin(it.name, it.readText())
+      }.toList()
+
       val result = KotlinCompilation().apply {
         jvmTarget = "1.8"
         sources = kotlinFiles
@@ -180,31 +201,28 @@ class CodeGenTest(private val folder: File) {
           .listFiles()!!
           .filter { it.isDirectory }
     }
-  }
-}
 
-fun checkTestFixture(actual: File, expected: File) {
-  check (actual.exists()) {
-    "actual=$actual not found (expected=$expected)"
-  }
-  check (expected.exists()) {
-    "expected=$expected not found (actual=$actual)"
-  }
-
-  val actualText = actual.readText()
-  val expectedText = expected.readText()
-
-  if (actualText != expectedText) {
-    when (System.getProperty("updateTestFixtures")?.trim()) {
-      "on", "true", "1" -> {
-        expected.writeText(actualText)
+    private fun shouldUpdateTestFixtures(): Boolean {
+      return when (System.getProperty("updateTestFixtures")?.trim()) {
+        "on", "true", "1" -> true
+        else -> false
       }
-      else -> {
-        throw Exception("""generatedFile content doesn't match the expectedFile content.
+    }
+
+    fun checkTestFixture(actual: File, expected: File) {
+      val actualText = actual.readText()
+      val expectedText = expected.readText()
+
+      if (actualText != expectedText) {
+        if (shouldUpdateTestFixtures()) {
+          expected.writeText(actualText)
+        } else {
+          throw Exception("""generatedFile content doesn't match the expectedFile content.
       |If you changed the compiler recently, you need to update the testFixtures.
       |Run the tests with `-DupdateTestFixtures=true` to do so.
       |generatedFile: ${actual.path}
       |expectedFile: ${expected.path}""".trimMargin())
+        }
       }
     }
   }
