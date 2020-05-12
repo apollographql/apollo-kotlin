@@ -7,24 +7,21 @@ import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.StableRef
-import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.asStableRef
-import kotlinx.cinterop.convert
 import kotlinx.cinterop.staticCFunction
-import kotlinx.cinterop.usePinned
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.isActive
 import okio.Buffer
 import okio.IOException
 import okio.toByteString
 import platform.Foundation.NSData
 import platform.Foundation.NSError
 import platform.Foundation.NSHTTPURLResponse
-import platform.Foundation.NSMutableData
 import platform.Foundation.NSMutableURLRequest
 import platform.Foundation.NSThread
 import platform.Foundation.NSURL
@@ -35,7 +32,6 @@ import platform.Foundation.NSURLRequestReloadIgnoringCacheData
 import platform.Foundation.NSURLResponse
 import platform.Foundation.NSURLSession
 import platform.Foundation.NSURLSessionDataTask
-import platform.Foundation.appendBytes
 import platform.Foundation.dataTaskWithRequest
 import platform.Foundation.setHTTPBody
 import platform.Foundation.setHTTPMethod
@@ -204,6 +200,8 @@ internal fun ApolloHttpNetworkTransport.Result.dispatch(producerRef: COpaquePoin
   val producerRef = producerRef.asStableRef<ProducerScope<GraphQLResponse>>()
   val producer = producerRef.get()
   producerRef.dispose()
+
+  if (!producer.isActive) return
 
   when (this) {
     is ApolloHttpNetworkTransport.Result.Success -> {

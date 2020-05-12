@@ -10,6 +10,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.isActive
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Headers
@@ -53,6 +54,8 @@ actual class ApolloHttpNetworkTransport(
         enqueue(
             object : Callback {
               override fun onFailure(call: Call, e: IOException) {
+                if (!isActive) return
+
                 val apolloException = ApolloException(
                     message = "Failed to execute GraphQL http network request",
                     error = ApolloError.Network,
@@ -62,6 +65,8 @@ actual class ApolloHttpNetworkTransport(
               }
 
               override fun onResponse(call: Call, response: Response) {
+                if (!isActive) return
+
                 try {
                   val result = response.parse()
                   offer(result)
