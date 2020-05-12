@@ -30,10 +30,11 @@ import platform.Foundation.NSThread
 import platform.Foundation.NSURL
 import platform.Foundation.NSURLComponents
 import platform.Foundation.NSURLQueryItem
+import platform.Foundation.NSURLRequest
 import platform.Foundation.NSURLRequestReloadIgnoringCacheData
 import platform.Foundation.NSURLResponse
 import platform.Foundation.NSURLSession
-import platform.Foundation.NSURLSessionConfiguration
+import platform.Foundation.NSURLSessionDataTask
 import platform.Foundation.appendBytes
 import platform.Foundation.dataTaskWithRequest
 import platform.Foundation.setHTTPBody
@@ -43,13 +44,16 @@ import platform.darwin.dispatch_async_f
 import platform.darwin.dispatch_get_main_queue
 import kotlin.native.concurrent.freeze
 
+typealias DataTaskCompletionHandler = (NSData?, NSURLResponse?, NSError?) -> Unit
+typealias DataTaskProvider = (NSURLRequest, DataTaskCompletionHandler) -> NSURLSessionDataTask
+
 @ApolloExperimental
 @ExperimentalCoroutinesApi
 actual class ApolloHttpNetworkTransport(
     private val serverUrl: NSURL,
     private val httpHeaders: Map<String, String>,
     private val httpMethod: HttpMethod,
-    private val urlSession: NSURLSession
+    private val dataTaskProvider: DataTaskProvider
 ) : NetworkTransport {
 
   actual constructor(
@@ -60,7 +64,7 @@ actual class ApolloHttpNetworkTransport(
       serverUrl = NSURL(string = serverUrl),
       httpHeaders = httpHeaders,
       httpMethod = httpMethod,
-      urlSession = NSURLSession.sessionWithConfiguration(NSURLSessionConfiguration.defaultSessionConfiguration())
+      dataTaskProvider = { request, completionHandler -> NSURLSession.sharedSession.dataTaskWithRequest(request, completionHandler) }
   )
 
   override fun execute(request: GraphQLRequest): Flow<GraphQLResponse> {
@@ -72,13 +76,14 @@ actual class ApolloHttpNetworkTransport(
         initRuntimeIfNeeded()
         val response = parse(
             data = httpData,
-            httpResponse = httpResponse as NSHTTPURLResponse,
+            httpResponse = httpResponse as? NSHTTPURLResponse,
             error = error
         )
         response.dispatchOnMain(producerRef)
       }
       val httpRequest = request.toHttpRequest()
-      val task = urlSession.dataTaskWithRequest(httpRequest.freeze(), delegate.freeze()).apply {
+
+      val task = dataTaskProvider(httpRequest.freeze(), delegate.freeze()).apply {
         resume()
       }
       awaitClose {
@@ -87,14 +92,14 @@ actual class ApolloHttpNetworkTransport(
     }
   }
 
-  private fun GraphQLRequest.toHttpRequest(): NSMutableURLRequest {
+  private fun GraphQLRequest.toHttpRequest(): NSURLRequest {
     return when (httpMethod) {
       HttpMethod.Get -> toHttpGetRequest()
       HttpMethod.Post -> toHttpPostRequest()
     }
   }
 
-  private fun GraphQLRequest.toHttpGetRequest(): NSMutableURLRequest {
+  private fun GraphQLRequest.toHttpGetRequest(): NSURLRequest {
     val urlComponents = NSURLComponents(uRL = serverUrl, resolvingAgainstBaseURL = false)
     urlComponents.queryItems = listOfNotNull(
         NSURLQueryItem(name = "query", value = document),
@@ -108,7 +113,7 @@ actual class ApolloHttpNetworkTransport(
     }
   }
 
-  private fun GraphQLRequest.toHttpPostRequest(): NSMutableURLRequest {
+  private fun GraphQLRequest.toHttpPostRequest(): NSURLRequest {
     return NSMutableURLRequest.requestWithURL(serverUrl).apply {
       val buffer = Buffer()
       JsonWriter.of(buffer)
@@ -129,7 +134,7 @@ actual class ApolloHttpNetworkTransport(
 
   private fun parse(
       data: NSData?,
-      httpResponse: NSHTTPURLResponse,
+      httpResponse: NSHTTPURLResponse?,
       error: NSError?
   ): Result {
     if (error != null) return Result.Failure(
@@ -137,6 +142,13 @@ actual class ApolloHttpNetworkTransport(
             message = "Failed to execute GraphQL http network request",
             error = ApolloError.Network,
             cause = IOException(error.localizedDescription)
+        )
+    )
+
+    if (httpResponse == null) return Result.Failure(
+        ApolloException(
+            message = "Failed to parse GraphQL http network response: EOF",
+            error = ApolloError.Network
         )
     )
 
@@ -163,46 +175,51 @@ actual class ApolloHttpNetworkTransport(
     class Failure(val cause: ApolloException) : Result()
   }
 
-  private fun ByteArray.toNSData(): NSData = NSMutableData().apply {
-    if (isEmpty()) return@apply
-    this@toNSData.usePinned {
-      appendBytes(it.addressOf(0), size.convert())
-    }
-  }
-
   @Suppress("NAME_SHADOWING")
   private fun Result.dispatchOnMain(producerRef: COpaquePointer) {
-    val producerWithResultRef = StableRef.create((producerRef to this).freeze())
-    dispatch_async_f(
-        queue = dispatch_get_main_queue(),
-        context = producerWithResultRef.asCPointer(),
-        work = staticCFunction { ref ->
-          val producerWithResultRef = ref!!.asStableRef<Pair<COpaquePointer, Result>>()
-          val (producerPointer, result) = producerWithResultRef.get()
-          producerWithResultRef.dispose()
+    if (NSThread.isMainThread()) {
+      dispatch(producerRef)
+    } else {
+      val producerWithResultRef = StableRef.create((producerRef to this).freeze())
+      dispatch_async_f(
+          queue = dispatch_get_main_queue(),
+          context = producerWithResultRef.asCPointer(),
+          work = staticCFunction { ref ->
+            val producerWithResultRef = ref!!.asStableRef<Pair<COpaquePointer, Result>>()
+            val (producerRef, result) = producerWithResultRef.get()
+            producerWithResultRef.dispose()
 
-          val producerRef = producerPointer.asStableRef<ProducerScope<GraphQLResponse>>()
-          val producer = producerRef.get()
-          producerRef.dispose()
-
-          when (result) {
-            is Result.Success -> {
-              producer.offer(
-                  GraphQLResponse(
-                      body = Buffer().write(result.data.toByteString()),
-                      executionContext = ExecutionContext.Empty
-                  )
-              )
-              producer.close()
-            }
-            is Result.Failure -> {
-              producer.cancel(
-                  message = result.cause.message,
-                  cause = result.cause
-              )
-            }
+            result.dispatch(producerRef)
           }
-        }
-    )
+      )
+    }
+  }
+}
+
+
+@Suppress("NAME_SHADOWING")
+@ApolloExperimental
+@ExperimentalCoroutinesApi
+internal fun ApolloHttpNetworkTransport.Result.dispatch(producerRef: COpaquePointer) {
+  val producerRef = producerRef.asStableRef<ProducerScope<GraphQLResponse>>()
+  val producer = producerRef.get()
+  producerRef.dispose()
+
+  when (this) {
+    is ApolloHttpNetworkTransport.Result.Success -> {
+      producer.offer(
+          GraphQLResponse(
+              body = Buffer().write(data.toByteString()),
+              executionContext = ExecutionContext.Empty
+          )
+      )
+      producer.close()
+    }
+    is ApolloHttpNetworkTransport.Result.Failure -> {
+      producer.cancel(
+          message = cause.message,
+          cause = cause
+      )
+    }
   }
 }
