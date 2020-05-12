@@ -205,13 +205,15 @@ internal fun ApolloHttpNetworkTransport.Result.dispatch(producerRef: COpaquePoin
 
   when (this) {
     is ApolloHttpNetworkTransport.Result.Success -> {
-      producer.offer(
-          GraphQLResponse(
-              body = Buffer().write(data.toByteString()),
-              executionContext = ExecutionContext.Empty
-          )
-      )
-      producer.close()
+      runCatching {
+        producer.offer(
+            GraphQLResponse(
+                body = Buffer().write(data.toByteString()),
+                executionContext = ExecutionContext.Empty
+            )
+        )
+        producer.close()
+      }
     }
     is ApolloHttpNetworkTransport.Result.Failure -> {
       producer.cancel(

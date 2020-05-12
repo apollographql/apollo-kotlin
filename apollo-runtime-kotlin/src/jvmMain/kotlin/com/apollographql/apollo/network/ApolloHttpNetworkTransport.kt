@@ -55,7 +55,6 @@ actual class ApolloHttpNetworkTransport(
             object : Callback {
               override fun onFailure(call: Call, e: IOException) {
                 if (!isActive) return
-
                 val apolloException = ApolloException(
                     message = "Failed to execute GraphQL http network request",
                     error = ApolloError.Network,
@@ -66,20 +65,24 @@ actual class ApolloHttpNetworkTransport(
 
               override fun onResponse(call: Call, response: Response) {
                 if (!isActive) return
-
-                try {
-                  val result = response.parse()
-                  offer(result)
-                  close()
-                } catch (apolloException: ApolloException) {
-                  cancel(message = apolloException.message, cause = apolloException)
-                } catch (e: Exception) {
-                  val apolloException = ApolloException(
-                      message = "Failed to parse GraphQL http network response",
-                      error = ApolloError.ParseError
-                  )
-                  cancel(message = apolloException.message, cause = apolloException)
-                }
+                runCatching { response.parse() }
+                    .onSuccess { graphQlResponse ->
+                      runCatching {
+                        offer(graphQlResponse)
+                        close()
+                      }
+                    }
+                    .onFailure { e ->
+                      if (e is ApolloException) {
+                        cancel(message = e.message, cause = e)
+                      } else {
+                        val apolloException = ApolloException(
+                            message = "Failed to parse GraphQL http network response",
+                            error = ApolloError.ParseError
+                        )
+                        cancel(message = apolloException.message, cause = apolloException)
+                      }
+                    }
               }
             }
         )
