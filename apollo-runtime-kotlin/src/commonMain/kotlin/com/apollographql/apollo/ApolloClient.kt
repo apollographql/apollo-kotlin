@@ -6,8 +6,8 @@ import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.ScalarTypeAdapters
-import com.apollographql.apollo.executor.NetworkExecutor
-import com.apollographql.apollo.executor.RequestExecutor
+import com.apollographql.apollo.interceptor.NetworkExecutor
+import com.apollographql.apollo.interceptor.ApolloRequestInterceptor
 import com.apollographql.apollo.internal.RealApolloCall
 import com.apollographql.apollo.network.NetworkTransport
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -17,7 +17,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 class ApolloClient constructor(
     private val networkTransport: NetworkTransport,
     private val scalarTypeAdapters: ScalarTypeAdapters = ScalarTypeAdapters.DEFAULT,
-    private val executors: List<RequestExecutor> = emptyList(),
+    private val interceptors: List<ApolloRequestInterceptor> = emptyList(),
     private val executionContext: ExecutionContext = ExecutionContext.Empty
 ) {
 
@@ -25,7 +25,7 @@ class ApolloClient constructor(
     return RealApolloCall(
         operation = mutation,
         scalarTypeAdapters = scalarTypeAdapters,
-        executors = executors + NetworkExecutor(networkTransport),
+        interceptors = interceptors + NetworkExecutor(networkTransport),
         executionContext = executionContext
     )
   }
@@ -34,7 +34,7 @@ class ApolloClient constructor(
     return RealApolloCall(
         operation = query,
         scalarTypeAdapters = scalarTypeAdapters,
-        executors = executors + NetworkExecutor(networkTransport),
+        interceptors = interceptors + NetworkExecutor(networkTransport),
         executionContext = executionContext
     )
   }

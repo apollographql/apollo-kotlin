@@ -61,16 +61,16 @@ internal class MockQuery : Query<MockQuery.Data, MockQuery.Data, Operation.Varia
   }
 
   override fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters): ByteString {
-    TODO("Unsupported")
+    throw UnsupportedOperationException("Unsupported")
   }
 
   override fun composeRequestBody(): ByteString {
-    TODO("Unsupported")
+    throw UnsupportedOperationException("Unsupported")
   }
 
   object Data : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
-      TODO("Unsupported")
+      throw UnsupportedOperationException("Unsupported")
     }
   }
 }

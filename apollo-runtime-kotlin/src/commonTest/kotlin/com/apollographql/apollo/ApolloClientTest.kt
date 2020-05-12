@@ -25,7 +25,7 @@ class ApolloClientTest {
     networkTransport = MockNetworkTransport()
     apolloClient = ApolloClient(
         networkTransport = networkTransport,
-        executors = listOf(TestLoggerExecutor)
+        interceptors = listOf(TestLoggerExecutor)
     )
   }
 

@@ -1,4 +1,4 @@
-package com.apollographql.apollo.executor
+package com.apollographql.apollo.interceptor
 
 import com.apollographql.apollo.ApolloError
 import com.apollographql.apollo.ApolloException
@@ -17,15 +17,15 @@ import kotlinx.coroutines.flow.map
 @ExperimentalCoroutinesApi
 class NetworkExecutor(
     private val networkTransport: NetworkTransport
-) : RequestExecutor {
+) : ApolloRequestInterceptor {
 
-  override fun <T> execute(request: ExecutionRequest<T>, executorChain: RequestExecutorChain): Flow<Response<T>> {
+  override fun <T> execute(request: ApolloRequest<T>, executorChain: ApolloInterceptorChain): Flow<Response<T>> {
     return flow { emit(request.toNetworkRequest()) }
         .flatMapLatest { networkRequest -> networkTransport.execute(networkRequest) }
         .map { networkResponse -> networkResponse.parse(request) }
   }
 
-  private fun <T> GraphQLResponse.parse(request: ExecutionRequest<T>): Response<T> {
+  private fun <T> GraphQLResponse.parse(request: ApolloRequest<T>): Response<T> {
     val response = try {
       request.operation.parse(
           source = body,
@@ -44,7 +44,7 @@ class NetworkExecutor(
     return response.copy(executionContext = request.executionContext + response.executionContext)
   }
 
-  private fun ExecutionRequest<*>.toNetworkRequest(): GraphQLRequest {
+  private fun ApolloRequest<*>.toNetworkRequest(): GraphQLRequest {
     return try {
       GraphQLRequest(
           operationName = operation.name().name(),
