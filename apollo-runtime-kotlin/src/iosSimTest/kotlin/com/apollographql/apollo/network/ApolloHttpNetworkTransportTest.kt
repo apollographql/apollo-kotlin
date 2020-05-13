@@ -39,9 +39,8 @@ class ApolloHttpNetworkTransportTest {
       runBlocking {
         networkTransport.execute(mockGraphQLRequest()).single()
       }
-    } catch (e: CancellationException) {
-      assertTrue(e.cause is ApolloException)
-      assertEquals((e.cause as ApolloException).error, ApolloError.Network)
+    } catch (e: ApolloException) {
+      assertEquals(e.error, ApolloError.Network)
     }
   }
 
@@ -65,9 +64,8 @@ class ApolloHttpNetworkTransportTest {
       runBlocking {
         networkTransport.execute(mockGraphQLRequest()).single()
       }
-    } catch (e: CancellationException) {
-      assertTrue(e.cause is ApolloException)
-      assertEquals((e.cause as ApolloException).error, ApolloError.Network)
+    } catch (e: ApolloException) {
+      assertEquals(e.error, ApolloError.Network)
     }
   }
 

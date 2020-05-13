@@ -7,10 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.apollographql.apollo.kmpsample.BuildConfig
-import com.apollographql.apollo.kmpsample.KotlinSampleApp
 import com.apollographql.apollo.kmpsample.data.ApolloCoroutinesRepository
-import com.apollographql.apollo.kmpsample.data.ApolloCoroutinesService
 import com.apollographql.apollo.kmpsample.databinding.ActivityMainBinding
 import com.apollographql.apollo.kmpsample.repositoryDetail.RepositoryDetailActivity
 import kotlinx.coroutines.CoroutineScope
@@ -21,7 +18,7 @@ import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 
-  private val dataSource by lazy { ApolloCoroutinesRepository(ApolloCoroutinesService((application as KotlinSampleApp).apolloClient)) }
+  private val dataSource by lazy { ApolloCoroutinesRepository() }
 
   private lateinit var binding: ActivityMainBinding
   private lateinit var repositoriesAdapter: RepositoriesAdapter
@@ -30,14 +27,6 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     binding = ActivityMainBinding.inflate(layoutInflater)
-
-    if (BuildConfig.GITHUB_OAUTH_TOKEN == "your_token") {
-      binding.tvError.visibility = View.VISIBLE
-      binding.tvError.text = "Please replace \"your_token\" in apollo-kotlin-samples/github_token with an actual token.\n\nhttps://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/"
-      binding.rvRepositories.visibility = View.GONE
-      binding.progressBar.visibility = View.GONE
-      return
-    }
 
     binding.tvError.visibility = View.GONE
 

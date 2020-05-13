@@ -37,7 +37,6 @@ kotlin {
     val jvmMain by getting {
       dependencies {
         implementation("com.apollographql.apollo:apollo-api")
-        implementation("com.apollographql.apollo:apollo-coroutines-support")
         implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines.core"))
         implementation(kotlin("stdlib"))
       }

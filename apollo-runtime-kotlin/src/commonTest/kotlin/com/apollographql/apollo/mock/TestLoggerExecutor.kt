@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.onStart
 @ExperimentalCoroutinesApi
 object TestLoggerExecutor : ApolloRequestInterceptor {
 
-  override fun <T> execute(request: ApolloRequest<T>, interceptorChain: ApolloInterceptorChain): Flow<Response<T>> {
+  override fun <T> intercept(request: ApolloRequest<T>, interceptorChain: ApolloInterceptorChain): Flow<Response<T>> {
     println("Preparing `${request.operation.name().name()}` GraphQL operation for execution ...")
     return interceptorChain.proceed(request)
         .onStart { println("Started `${request.operation.name().name()}` GraphQL operation execution ...") }

@@ -10,12 +10,9 @@ import kotlinx.cinterop.StableRef
 import kotlinx.cinterop.asStableRef
 import kotlinx.cinterop.staticCFunction
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.channels.ProducerScope
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.isActive
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.suspendCancellableCoroutine
 import okio.Buffer
 import okio.IOException
 import okio.toByteString
@@ -38,6 +35,8 @@ import platform.Foundation.setHTTPMethod
 import platform.Foundation.setValue
 import platform.darwin.dispatch_async_f
 import platform.darwin.dispatch_get_main_queue
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
 import kotlin.native.concurrent.freeze
 
 typealias DataTaskCompletionHandler = (NSData?, NSURLResponse?, NSError?) -> Unit
@@ -64,26 +63,39 @@ actual class ApolloHttpNetworkTransport(
   )
 
   override fun execute(request: GraphQLRequest): Flow<GraphQLResponse> {
-    return callbackFlow {
+    return flow {
       assert(NSThread.isMainThread())
 
-      val producerRef = StableRef.create(this).asCPointer()
-      val delegate = { httpData: NSData?, httpResponse: NSURLResponse?, error: NSError? ->
-        initRuntimeIfNeeded()
-        val response = parse(
-            data = httpData,
-            httpResponse = httpResponse as? NSHTTPURLResponse,
-            error = error
-        )
-        response.dispatchOnMain(producerRef)
-      }
-      val httpRequest = request.toHttpRequest()
+      val result = suspendCancellableCoroutine<Result> { continuation ->
+        val continuationRef = StableRef.create(continuation).asCPointer()
+        val delegate = { httpData: NSData?, httpResponse: NSURLResponse?, error: NSError? ->
+          initRuntimeIfNeeded()
+          val response = parse(
+              data = httpData,
+              httpResponse = httpResponse as? NSHTTPURLResponse,
+              error = error
+          )
+          response.dispatchOnMain(continuationRef)
+        }
+        val httpRequest = request.toHttpRequest()
 
-      val task = dataTaskProvider(httpRequest.freeze(), delegate.freeze()).apply {
-        resume()
+        dataTaskProvider(httpRequest.freeze(), delegate.freeze())
+            .also { task ->
+              continuation.invokeOnCancellation {
+                task.cancel()
+              }
+            }
+            .resume()
       }
-      awaitClose {
-        task.cancel()
+
+      when (result) {
+        is Result.Success -> emit(
+            GraphQLResponse(
+                body = Buffer().write(result.data.toByteString()),
+                executionContext = ExecutionContext.Empty
+            )
+        )
+        is Result.Failure -> throw result.cause
       }
     }
   }
@@ -172,54 +184,33 @@ actual class ApolloHttpNetworkTransport(
   }
 
   @Suppress("NAME_SHADOWING")
-  private fun Result.dispatchOnMain(producerRef: COpaquePointer) {
+  private fun Result.dispatchOnMain(continuationPtr: COpaquePointer) {
     if (NSThread.isMainThread()) {
-      dispatch(producerRef)
+      dispatch(continuationPtr)
     } else {
-      val producerWithResultRef = StableRef.create((producerRef to this).freeze())
+      val continuationWithResultRef = StableRef.create((continuationPtr to this).freeze())
       dispatch_async_f(
           queue = dispatch_get_main_queue(),
-          context = producerWithResultRef.asCPointer(),
-          work = staticCFunction { ref ->
-            val producerWithResultRef = ref!!.asStableRef<Pair<COpaquePointer, Result>>()
-            val (producerRef, result) = producerWithResultRef.get()
-            producerWithResultRef.dispose()
+          context = continuationWithResultRef.asCPointer(),
+          work = staticCFunction { ptr ->
+            val continuationWithResultRef = ptr!!.asStableRef<Pair<COpaquePointer, Result>>()
+            val (continuationPtr, result) = continuationWithResultRef.get()
+            continuationWithResultRef.dispose()
 
-            result.dispatch(producerRef)
+            result.dispatch(continuationPtr)
           }
       )
     }
   }
 }
 
-
 @Suppress("NAME_SHADOWING")
 @ApolloExperimental
 @ExperimentalCoroutinesApi
-internal fun ApolloHttpNetworkTransport.Result.dispatch(producerRef: COpaquePointer) {
-  val producerRef = producerRef.asStableRef<ProducerScope<GraphQLResponse>>()
-  val producer = producerRef.get()
-  producerRef.dispose()
+internal fun ApolloHttpNetworkTransport.Result.dispatch(continuationPtr: COpaquePointer) {
+  val continuationRef = continuationPtr.asStableRef<Continuation<ApolloHttpNetworkTransport.Result>>()
+  val continuation = continuationRef.get()
+  continuationRef.dispose()
 
-  if (!producer.isActive) return
-
-  when (this) {
-    is ApolloHttpNetworkTransport.Result.Success -> {
-      runCatching {
-        producer.offer(
-            GraphQLResponse(
-                body = Buffer().write(data.toByteString()),
-                executionContext = ExecutionContext.Empty
-            )
-        )
-        producer.close()
-      }
-    }
-    is ApolloHttpNetworkTransport.Result.Failure -> {
-      producer.cancel(
-          message = cause.message,
-          cause = cause
-      )
-    }
-  }
+  continuation.resume(this)
 }

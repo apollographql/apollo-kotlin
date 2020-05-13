@@ -6,11 +6,9 @@ import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.isActive
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Headers
@@ -22,8 +20,11 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
+import okhttp3.internal.closeQuietly
 import okio.Buffer
 import java.io.IOException
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 private const val MEDIA_TYPE = "application/json; charset=utf-8"
 
@@ -48,48 +49,51 @@ actual class ApolloHttpNetworkTransport(
   )
 
   override fun execute(request: GraphQLRequest): Flow<GraphQLResponse> {
-    return callbackFlow {
-      val httpRequest = request.toHttpRequest()
-      val call = httpCallFactory.newCall(httpRequest).apply {
-        enqueue(
-            object : Callback {
-              override fun onFailure(call: Call, e: IOException) {
-                if (!isActive) return
-                val apolloException = ApolloException(
-                    message = "Failed to execute GraphQL http network request",
-                    error = ApolloError.Network,
-                    cause = e
-                )
-                cancel(message = apolloException.message, cause = apolloException)
-              }
-
-              override fun onResponse(call: Call, response: Response) {
-                if (!isActive) return
-                runCatching { response.parse() }
-                    .onSuccess { graphQlResponse ->
-                      runCatching {
-                        offer(graphQlResponse)
-                        close()
-                      }
-                    }
-                    .onFailure { e ->
-                      if (e is ApolloException) {
-                        cancel(message = e.message, cause = e)
-                      } else {
-                        val apolloException = ApolloException(
-                            message = "Failed to parse GraphQL http network response",
-                            error = ApolloError.ParseError
-                        )
-                        cancel(message = apolloException.message, cause = apolloException)
-                      }
-                    }
+    return flow {
+      val response = suspendCancellableCoroutine<GraphQLResponse> { continuation ->
+        val httpRequest = request.toHttpRequest()
+        httpCallFactory.newCall(httpRequest)
+            .also { call ->
+              continuation.invokeOnCancellation {
+                call.cancel()
               }
             }
-        )
+            .enqueue(
+                object : Callback {
+                  override fun onFailure(call: Call, e: IOException) {
+                    if (continuation.isCancelled) return
+                    continuation.resumeWithException(
+                        ApolloException(
+                            message = "Failed to execute GraphQL http network request",
+                            error = ApolloError.Network,
+                            cause = e
+                        )
+                    )
+                  }
+
+                  override fun onResponse(call: Call, response: Response) {
+                    if (continuation.isCancelled) return
+                    runCatching { response.parse() }
+                        .onSuccess { graphQlResponse -> continuation.resume(graphQlResponse) }
+                        .onFailure { e ->
+                          response.closeQuietly()
+
+                          if (e is ApolloException) {
+                            continuation.resumeWithException(e)
+                          } else {
+                            continuation.resumeWithException(
+                                ApolloException(
+                                    message = "Failed to parse GraphQL http network response",
+                                    error = ApolloError.ParseError
+                                )
+                            )
+                          }
+                        }
+                  }
+                }
+            )
       }
-      awaitClose {
-        call.cancel()
-      }
+      emit(response)
     }
   }
 
@@ -133,9 +137,11 @@ actual class ApolloHttpNetworkTransport(
   private fun GraphQLRequest.toHttpPostRequest(): Request {
     val buffer = Buffer()
     JsonWriter.of(buffer)
+        .beginObject()
         .name("operationName").value(operationName)
         .name("query").value(document)
         .name("variables").value(variables)
+        .endObject()
         .close()
     val requestBody = buffer.readByteArray().toRequestBody(contentType = MEDIA_TYPE.toMediaType())
     return Request.Builder()

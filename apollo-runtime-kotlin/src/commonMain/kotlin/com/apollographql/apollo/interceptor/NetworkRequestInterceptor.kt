@@ -15,11 +15,11 @@ import kotlinx.coroutines.flow.map
 
 @ApolloExperimental
 @ExperimentalCoroutinesApi
-class NetworkExecutor(
+class NetworkRequestInterceptor(
     private val networkTransport: NetworkTransport
 ) : ApolloRequestInterceptor {
 
-  override fun <T> execute(request: ApolloRequest<T>, executorChain: ApolloInterceptorChain): Flow<Response<T>> {
+  override fun <T> intercept(request: ApolloRequest<T>, interceptorChain: ApolloInterceptorChain): Flow<Response<T>> {
     return flow { emit(request.toNetworkRequest()) }
         .flatMapLatest { networkRequest -> networkTransport.execute(networkRequest) }
         .map { networkResponse -> networkResponse.parse(request) }

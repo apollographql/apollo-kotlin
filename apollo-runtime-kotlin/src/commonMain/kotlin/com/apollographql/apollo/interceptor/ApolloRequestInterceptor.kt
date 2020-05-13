@@ -15,7 +15,7 @@ interface ApolloInterceptorChain {
 
 @ApolloExperimental
 interface ApolloRequestInterceptor {
-  fun <T> execute(request: ApolloRequest<T>, interceptorChain: ApolloInterceptorChain): Flow<Response<T>>
+  fun <T> intercept(request: ApolloRequest<T>, interceptorChain: ApolloInterceptorChain): Flow<Response<T>>
 }
 
 @ApolloExperimental
@@ -31,7 +31,7 @@ internal class RealInterceptorChain private constructor(
 
   override fun <T> proceed(request: ApolloRequest<T>): Flow<Response<T>> {
     check(index < interceptors.size)
-    return interceptors[index].execute(request, RealInterceptorChain(interceptors = interceptors, index = index + 1))
+    return interceptors[index].intercept(request, RealInterceptorChain(interceptors = interceptors, index = index + 1))
   }
 
   override fun canProceed(): Boolean = index < interceptors.size

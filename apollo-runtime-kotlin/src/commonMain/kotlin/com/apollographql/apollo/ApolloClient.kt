@@ -6,7 +6,7 @@ import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.ScalarTypeAdapters
-import com.apollographql.apollo.interceptor.NetworkExecutor
+import com.apollographql.apollo.interceptor.NetworkRequestInterceptor
 import com.apollographql.apollo.interceptor.ApolloRequestInterceptor
 import com.apollographql.apollo.internal.RealApolloCall
 import com.apollographql.apollo.network.NetworkTransport
@@ -25,7 +25,7 @@ class ApolloClient constructor(
     return RealApolloCall(
         operation = mutation,
         scalarTypeAdapters = scalarTypeAdapters,
-        interceptors = interceptors + NetworkExecutor(networkTransport),
+        interceptors = interceptors + NetworkRequestInterceptor(networkTransport),
         executionContext = executionContext
     )
   }
@@ -34,7 +34,7 @@ class ApolloClient constructor(
     return RealApolloCall(
         operation = query,
         scalarTypeAdapters = scalarTypeAdapters,
-        interceptors = interceptors + NetworkExecutor(networkTransport),
+        interceptors = interceptors + NetworkRequestInterceptor(networkTransport),
         executionContext = executionContext
     )
   }
