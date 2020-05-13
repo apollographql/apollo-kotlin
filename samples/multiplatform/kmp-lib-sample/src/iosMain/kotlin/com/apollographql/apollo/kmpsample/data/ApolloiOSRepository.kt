@@ -30,4 +30,4 @@ class ApolloiOSRepository(private val repository: ApolloCoroutinesRepository) {
 }
 
 @InternalCoroutinesApi
-fun create() = ApolloiOSRepository(ApolloCoroutinesRepository((ApolloCoroutinesService())))
+fun create() = ApolloiOSRepository(ApolloCoroutinesRepository())

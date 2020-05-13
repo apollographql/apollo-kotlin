@@ -5,7 +5,7 @@ import kotlin.jvm.JvmStatic
 /**
  * Represents either a successful or failed response received from the GraphQL server.
  */
-class Response<T>(
+data class Response<T>(
     /**
      * GraphQL operation this response represents of
      */
