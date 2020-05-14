@@ -16,6 +16,7 @@ def versions = [
     kotlinPoet            : '1.5.0',
     mockito               : '1.9.5',
     moshi                 : '1.9.2',
+    okHttp4               : '4.5.0',
     okHttp                : '3.12.11',
     okio                  : '2.5.0',
     rxjava                : '2.0.5',
@@ -78,6 +79,7 @@ ext.dep = [
     okHttp                : [
         mockWebServer: "com.squareup.okhttp3:mockwebserver:$versions.okHttp",
         okHttp       : "com.squareup.okhttp3:okhttp:$versions.okHttp",
+        okHttp4      : "com.squareup.okhttp3:okhttp:$versions.okHttp4",
         logging      : "com.squareup.okhttp3:logging-interceptor:$versions.okHttp",
     ],
     okio                  : [

@@ -38,7 +38,7 @@ kotlin {
       dependsOn(commonMain)
       dependencies {
         implementation(kotlin("stdlib"))
-        implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
+        implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp4"))
         implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines.core"))
       }
     }
@@ -66,7 +66,7 @@ kotlin {
       dependencies {
         implementation(kotlin("test-junit"))
         implementation(groovy.util.Eval.x(project, "x.dep.truth"))
-        implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
+        implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp4"))
       }
     }
 

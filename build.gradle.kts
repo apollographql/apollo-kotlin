@@ -13,7 +13,7 @@ buildscript {
   }
 
   dependencies {
-    classpath(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
+    classpath(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp4"))
     classpath(groovy.util.Eval.x(project, "x.dep.android.plugin"))
     classpath(groovy.util.Eval.x(project, "x.dep.gradleErrorpronePlugin"))
     classpath(groovy.util.Eval.x(project, "x.dep.gradleJapiCmpPlugin"))
