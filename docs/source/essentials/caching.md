@@ -11,7 +11,7 @@ Apollo GraphQL client allows you to cache responses, making it suitable for use 
 ## Http Cache
 
 To enable HTTP Cache support, add the dependency to your project's build.gradle file. The latest version is
-[![Download](https://api.bintray.com/packages/apollographql/android/apollo-http-cache/images/download.svg)](https://bintray.com/apollographql/android/apollo-http-cache/_latestVersion)
+[![Download](https://api.bintray.com/packages/apollographql/android/apollo/images/download.svg)](https://bintray.com/apollographql/android/apollo-http-cache/_latestVersion)
 
 ```kotlin:title=build.gradle
 dependencies {
@@ -100,7 +100,7 @@ and will be evicted from the http cache, `expireAfter(expireTimeout, timeUnit)`.
 ## Normalized Disk Cache:
 
 To enable Normalized Disk Cache support, add the dependency to your project's build.gradle file. The latest version is
-[![Download](https://api.bintray.com/packages/apollographql/android/apollo-normalized-cache-sqlite/images/download.svg)](https://bintray.com/apollographql/android/apollo-normalized-cache-sqlite/_latestVersion)
+[![Download](https://api.bintray.com/packages/apollographql/android/apollo/images/download.svg)](https://bintray.com/apollographql/android/apollo-normalized-cache-sqlite/_latestVersion)
 
 ```kotlin:title=build.gradle
 dependencies {
@@ -175,7 +175,7 @@ ApolloClient apolloClient = ApolloClient.builder()
 ## Normalized In-Memory Cache:
 
 To enable Normalized In-Memory Cache support, add the dependency to your project's build.gradle file. The latest version is
-[![Download](https://api.bintray.com/packages/apollographql/android/apollo-normalized-cache/images/download.svg)](https://bintray.com/apollographql/android/apollo-normalized-cache/_latestVersion)
+[![Download](https://api.bintray.com/packages/apollographql/android/apollo/images/download.svg)](https://bintray.com/apollographql/android/apollo-normalized-cache/_latestVersion)
 
 ```kotlin:title=build.gradle
 dependencies {
