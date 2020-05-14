@@ -25,7 +25,7 @@ dependencies {
   implementation(dep("moshi").dot("moshi"))
   
   testImplementation(dep("junit"))
-  testImplementation(dep("okHttp").dot("mockWebServer"))
+  testImplementation(dep("okHttp").dot("mockWebServer4"))
 }
 
 tasks.withType<Test> {

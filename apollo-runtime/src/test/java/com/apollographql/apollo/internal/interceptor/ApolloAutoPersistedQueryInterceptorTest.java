@@ -269,7 +269,7 @@ public class ApolloAutoPersistedQueryInterceptorTest {
         .protocol(Protocol.HTTP_2)
         .code(200)
         .message("Intercepted")
-        .body(ResponseBody.create("fakeResponse", MediaType.parse("text/plain; charset=utf-8")))
+        .body(ResponseBody.create(MediaType.parse("text/plain; charset=utf-8"), "fakeResponse"))
         .build();
   }
 
