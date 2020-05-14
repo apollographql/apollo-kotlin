@@ -1,0 +1,5 @@
+mutation TestQuery($input: Login!) {
+    login(input: $input) {
+        name
+    }
+}
