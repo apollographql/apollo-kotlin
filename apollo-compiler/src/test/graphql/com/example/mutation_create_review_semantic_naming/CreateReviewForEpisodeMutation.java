@@ -78,7 +78,8 @@ public final class CreateReviewForEpisodeMutation implements Mutation<CreateRevi
   }
 
   @Override
-  public Optional<CreateReviewForEpisodeMutation.Data> wrapData(CreateReviewForEpisodeMutation.Data data) {
+  public Optional<CreateReviewForEpisodeMutation.Data> wrapData(
+      CreateReviewForEpisodeMutation.Data data) {
     return Optional.fromNullable(data);
   }
 
@@ -103,29 +104,31 @@ public final class CreateReviewForEpisodeMutation implements Mutation<CreateRevi
 
   @Override
   @NotNull
-  public Response<Optional<CreateReviewForEpisodeMutation.Data>> parse(@NotNull final BufferedSource source,
-      @NotNull final ScalarTypeAdapters scalarTypeAdapters) throws IOException {
+  public Response<Optional<CreateReviewForEpisodeMutation.Data>> parse(
+      @NotNull final BufferedSource source, @NotNull final ScalarTypeAdapters scalarTypeAdapters)
+      throws IOException {
     return SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters);
   }
 
   @Override
   @NotNull
-  public Response<Optional<CreateReviewForEpisodeMutation.Data>> parse(@NotNull final ByteString byteString,
-      @NotNull final ScalarTypeAdapters scalarTypeAdapters) throws IOException {
+  public Response<Optional<CreateReviewForEpisodeMutation.Data>> parse(
+      @NotNull final ByteString byteString, @NotNull final ScalarTypeAdapters scalarTypeAdapters)
+      throws IOException {
     return parse(new Buffer().write(byteString), scalarTypeAdapters);
   }
 
   @Override
   @NotNull
-  public Response<Optional<CreateReviewForEpisodeMutation.Data>> parse(@NotNull final BufferedSource source)
-      throws IOException {
+  public Response<Optional<CreateReviewForEpisodeMutation.Data>> parse(
+      @NotNull final BufferedSource source) throws IOException {
     return parse(source, ScalarTypeAdapters.DEFAULT);
   }
 
   @Override
   @NotNull
-  public Response<Optional<CreateReviewForEpisodeMutation.Data>> parse(@NotNull final ByteString byteString)
-      throws IOException {
+  public Response<Optional<CreateReviewForEpisodeMutation.Data>> parse(
+      @NotNull final ByteString byteString) throws IOException {
     return parse(byteString, ScalarTypeAdapters.DEFAULT);
   }
 
