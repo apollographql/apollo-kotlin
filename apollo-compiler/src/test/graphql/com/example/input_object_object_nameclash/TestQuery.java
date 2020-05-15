@@ -58,7 +58,7 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
 
   private final TestQuery.Variables variables;
 
-  public TestQuery(com.example.input_object_object_nameclash.type. @NotNull Login input) {
+  public TestQuery(@NotNull com.example.input_object_object_nameclash.type.Login input) {
     Utils.checkNotNull(input, "input == null");
     variables = new TestQuery.Variables(input);
   }
@@ -138,7 +138,8 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
   }
 
   public static final class Builder {
-    private com.example.input_object_object_nameclash.type. @NotNull Login input;
+    @NotNull
+    private com.example.input_object_object_nameclash.type.Login input;
 
     Builder() {
     }

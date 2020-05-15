@@ -140,7 +140,8 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
   }
 
   public static final class Builder {
-    private @NotNull Episode ep;
+    @NotNull
+    private Episode ep;
 
     Builder() {
     }

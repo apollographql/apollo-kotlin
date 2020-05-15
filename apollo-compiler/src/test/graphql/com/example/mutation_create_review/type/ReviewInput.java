@@ -494,11 +494,13 @@ public final class ReviewInput implements InputType {
 
     private Input<String> commentary = Input.absent();
 
-    private @NotNull ColorInput favoriteColor;
+    @NotNull
+    private ColorInput favoriteColor;
 
     private Input<Episode> enumWithDefaultValue = Input.fromNullable(Episode.safeValueOf("JEDI"));
 
-    private @NotNull Episode nonNullableEnumWithDefaultValue = Episode.safeValueOf("JEDI");
+    @NotNull
+    private Episode nonNullableEnumWithDefaultValue = Episode.safeValueOf("JEDI");
 
     private Input<Episode> nullableEnum = Input.absent();
 
@@ -512,7 +514,8 @@ public final class ReviewInput implements InputType {
 
     private Input<List<String>> listOfString = Input.fromNullable(Arrays.<String>asList("test1", "test2", "test3"));
 
-    private @NotNull List<String> listOfStringNonOptional;
+    @NotNull
+    private List<String> listOfStringNonOptional;
 
     private Input<List<ColorInput>> listOfInputTypes = Input.fromNullable(Arrays.<ColorInput>asList());
 

@@ -69,7 +69,8 @@ public final class Login implements InputType {
   }
 
   public static final class Builder {
-    private @NotNull String name = "johnDoe";
+    @NotNull
+    private String name = "johnDoe";
 
     Builder() {
     }

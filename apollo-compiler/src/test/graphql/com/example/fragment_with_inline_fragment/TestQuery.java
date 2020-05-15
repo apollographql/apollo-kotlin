@@ -275,7 +275,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static final class Builder {
-      private @Nullable Hero hero;
+      @Nullable
+      private Hero hero;
 
       Builder() {
       }
@@ -523,7 +524,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
 
       public static final class Builder {
-        private @NotNull HeroDetails heroDetails;
+        @NotNull
+        private HeroDetails heroDetails;
 
         Builder() {
         }
@@ -559,13 +561,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static final class Builder {
-      private @NotNull String __typename;
+      @NotNull
+      private String __typename;
 
-      private @NotNull String name;
+      @NotNull
+      private String name;
 
-      private @NotNull List<Episode> appearsIn;
+      @NotNull
+      private List<Episode> appearsIn;
 
-      private @NotNull Fragments fragments;
+      @NotNull
+      private Fragments fragments;
 
       Builder() {
       }

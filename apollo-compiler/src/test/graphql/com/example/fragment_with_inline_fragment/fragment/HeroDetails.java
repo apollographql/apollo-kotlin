@@ -373,7 +373,8 @@ public interface HeroDetails extends GraphqlFragment {
       }
 
       public static final class Builder {
-        private @Nullable DroidDetails droidDetails;
+        @Nullable
+        private DroidDetails droidDetails;
 
         Builder() {
         }
@@ -410,13 +411,17 @@ public interface HeroDetails extends GraphqlFragment {
     }
 
     public static final class Builder {
-      private @NotNull String __typename;
+      @NotNull
+      private String __typename;
 
-      private @NotNull String name;
+      @NotNull
+      private String name;
 
-      private @NotNull FriendsConnection1 friendsConnection;
+      @NotNull
+      private FriendsConnection1 friendsConnection;
 
-      private @NotNull Fragments fragments;
+      @NotNull
+      private Fragments fragments;
 
       Builder() {
       }
@@ -610,11 +615,14 @@ public interface HeroDetails extends GraphqlFragment {
     }
 
     public static final class Builder {
-      private @NotNull String __typename;
+      @NotNull
+      private String __typename;
 
-      private @Nullable Integer totalCount;
+      @Nullable
+      private Integer totalCount;
 
-      private @Nullable List<Edge1> edges;
+      @Nullable
+      private List<Edge1> edges;
 
       Builder() {
       }
@@ -770,9 +778,11 @@ public interface HeroDetails extends GraphqlFragment {
     }
 
     public static final class Builder {
-      private @NotNull String __typename;
+      @NotNull
+      private String __typename;
 
-      private @Nullable Node1 node;
+      @Nullable
+      private Node1 node;
 
       Builder() {
       }
@@ -907,9 +917,11 @@ public interface HeroDetails extends GraphqlFragment {
     }
 
     public static final class Builder {
-      private @NotNull String __typename;
+      @NotNull
+      private String __typename;
 
-      private @NotNull String name;
+      @NotNull
+      private String name;
 
       Builder() {
       }
@@ -1151,7 +1163,8 @@ public interface HeroDetails extends GraphqlFragment {
       }
 
       public static final class Builder {
-        private @Nullable HumanDetails humanDetails;
+        @Nullable
+        private HumanDetails humanDetails;
 
         Builder() {
         }
@@ -1188,13 +1201,17 @@ public interface HeroDetails extends GraphqlFragment {
     }
 
     public static final class Builder {
-      private @NotNull String __typename;
+      @NotNull
+      private String __typename;
 
-      private @NotNull String name;
+      @NotNull
+      private String name;
 
-      private @NotNull FriendsConnection2 friendsConnection;
+      @NotNull
+      private FriendsConnection2 friendsConnection;
 
-      private @NotNull Fragments fragments;
+      @NotNull
+      private Fragments fragments;
 
       Builder() {
       }
@@ -1388,11 +1405,14 @@ public interface HeroDetails extends GraphqlFragment {
     }
 
     public static final class Builder {
-      private @NotNull String __typename;
+      @NotNull
+      private String __typename;
 
-      private @Nullable Integer totalCount;
+      @Nullable
+      private Integer totalCount;
 
-      private @Nullable List<Edge2> edges;
+      @Nullable
+      private List<Edge2> edges;
 
       Builder() {
       }
@@ -1548,9 +1568,11 @@ public interface HeroDetails extends GraphqlFragment {
     }
 
     public static final class Builder {
-      private @NotNull String __typename;
+      @NotNull
+      private String __typename;
 
-      private @Nullable Node2 node;
+      @Nullable
+      private Node2 node;
 
       Builder() {
       }
@@ -1685,9 +1707,11 @@ public interface HeroDetails extends GraphqlFragment {
     }
 
     public static final class Builder {
-      private @NotNull String __typename;
+      @NotNull
+      private String __typename;
 
-      private @NotNull String name;
+      @NotNull
+      private String name;
 
       Builder() {
       }

@@ -150,7 +150,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static final class Builder {
-    private @NotNull String id;
+    @NotNull
+    private String id;
 
     Builder() {
     }

@@ -148,11 +148,14 @@ public class DroidDetails implements GraphqlFragment {
   }
 
   public static final class Builder {
-    private @NotNull String __typename;
+    @NotNull
+    private String __typename;
 
-    private @NotNull String name;
+    @NotNull
+    private String name;
 
-    private @Nullable String primaryFunction;
+    @Nullable
+    private String primaryFunction;
 
     Builder() {
     }

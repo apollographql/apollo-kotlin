@@ -62,8 +62,13 @@ class BuilderTypeSpecBuilder(
           ?.let { code ->
             fieldType.wrapOptionalValue(code)
           }
-      FieldSpec.builder(fieldType, fieldName)
+      FieldSpec.builder(fieldType.withoutAnnotations(), fieldName)
           .addModifiers(Modifier.PRIVATE)
+          .apply {
+            fieldType.annotations.forEach {
+              addAnnotation(it)
+            }
+          }
           .initializer(initializer ?: fieldType.defaultOptionalValue())
           .build()
     }
@@ -102,7 +107,9 @@ class BuilderTypeSpecBuilder(
   private fun inputFieldSetterMethodSpec(fieldName: String, fieldType: TypeName, javaDoc: String?): MethodSpec {
     return MethodSpec.methodBuilder("${fieldName}Input")
         .addModifiers(Modifier.PUBLIC)
-        .addParameter(ParameterSpec.builder(fieldType, fieldName).addAnnotation(Annotations.NONNULL).build())
+        .addParameter(ParameterSpec.builder(fieldType.withoutAnnotations(), fieldName)
+            .addAnnotation(Annotations.NONNULL)
+            .build())
         .apply {
           if (!javaDoc.isNullOrBlank()) {
             addJavadoc(CodeBlock.of("\$L\n", javaDoc))

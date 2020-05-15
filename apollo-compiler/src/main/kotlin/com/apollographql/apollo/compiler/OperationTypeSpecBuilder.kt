@@ -192,8 +192,11 @@ class OperationTypeSpecBuilder(
             ).resolve(variable.type)
           }
           .map { (name, type) ->
-            ParameterSpec.builder(type, name)
+            ParameterSpec.builder(type.withoutAnnotations(), name)
                 .apply {
+                  type.annotations.forEach {
+                    addAnnotation(it)
+                  }
                   if (!type.annotations.contains(Annotations.NONNULL) && !type.isPrimitive) {
                     addAnnotation(Annotations.NONNULL)
                   }

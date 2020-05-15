@@ -139,7 +139,8 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
   }
 
   public static final class Builder {
-    private @NotNull String repo;
+    @NotNull
+    private String repo;
 
     Builder() {
     }

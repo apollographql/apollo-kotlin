@@ -177,7 +177,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private int friendsCount;
 
-    private @NotNull List<List<String>> listOfListOfStringArgs;
+    @NotNull
+    private List<List<String>> listOfListOfStringArgs;
 
     Builder() {
     }
