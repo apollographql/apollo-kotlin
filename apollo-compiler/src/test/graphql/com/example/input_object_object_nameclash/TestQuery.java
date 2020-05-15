@@ -156,16 +156,18 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
   }
 
   public static final class Variables extends Operation.Variables {
-    private final com.example.input_object_object_nameclash.type. @NotNull Login input;
+    @NotNull
+    private final com.example.input_object_object_nameclash.type.Login input;
 
     private final transient Map<String, Object> valueMap = new LinkedHashMap<>();
 
-    Variables(com.example.input_object_object_nameclash.type. @NotNull Login input) {
+    Variables(@NotNull com.example.input_object_object_nameclash.type.Login input) {
       this.input = input;
       this.valueMap.put("input", input);
     }
 
-    public com.example.input_object_object_nameclash.type. @NotNull Login input() {
+    @NotNull
+    public com.example.input_object_object_nameclash.type.Login input() {
       return input;
     }
 

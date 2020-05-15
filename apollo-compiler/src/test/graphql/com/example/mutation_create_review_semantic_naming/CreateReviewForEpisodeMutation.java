@@ -172,9 +172,11 @@ public final class CreateReviewForEpisodeMutation implements Mutation<CreateRevi
   }
 
   public static final class Variables extends Operation.Variables {
-    private final @NotNull Episode ep;
+    @NotNull
+    private final Episode ep;
 
-    private final @NotNull ReviewInput review;
+    @NotNull
+    private final ReviewInput review;
 
     private final transient Map<String, Object> valueMap = new LinkedHashMap<>();
 
@@ -185,11 +187,13 @@ public final class CreateReviewForEpisodeMutation implements Mutation<CreateRevi
       this.valueMap.put("review", review);
     }
 
-    public @NotNull Episode ep() {
+    @NotNull
+    public Episode ep() {
       return ep;
     }
 
-    public @NotNull ReviewInput review() {
+    @NotNull
+    public ReviewInput review() {
       return review;
     }
 

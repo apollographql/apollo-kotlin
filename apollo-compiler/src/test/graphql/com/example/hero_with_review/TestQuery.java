@@ -158,7 +158,8 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
   }
 
   public static final class Variables extends Operation.Variables {
-    private final @NotNull Episode ep;
+    @NotNull
+    private final Episode ep;
 
     private final transient Map<String, Object> valueMap = new LinkedHashMap<>();
 
@@ -167,7 +168,8 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
       this.valueMap.put("ep", ep);
     }
 
-    public @NotNull Episode ep() {
+    @NotNull
+    public Episode ep() {
       return ep;
     }
 

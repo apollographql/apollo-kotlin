@@ -157,7 +157,8 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
   }
 
   public static final class Variables extends Operation.Variables {
-    private final @NotNull String repo;
+    @NotNull
+    private final String repo;
 
     private final transient Map<String, Object> valueMap = new LinkedHashMap<>();
 
@@ -166,7 +167,8 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
       this.valueMap.put("repo", repo);
     }
 
-    public @NotNull String repo() {
+    @NotNull
+    public String repo() {
       return repo;
     }
 

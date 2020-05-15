@@ -28,7 +28,13 @@ class VariablesTypeSpecBuilder(
 
   private fun variableFieldSpecs(): List<FieldSpec> {
     return variables.map { variable ->
-      FieldSpec.builder(variable.javaTypeName(context), variable.name.decapitalize())
+      val typeName = variable.javaTypeName(context)
+      FieldSpec.builder(typeName.withoutAnnotations(), variable.name.decapitalize())
+          .apply {
+            typeName.annotations.forEach {
+              addAnnotation(it)
+            }
+          }
           .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
           .build()
     }
@@ -62,9 +68,17 @@ class VariablesTypeSpecBuilder(
           .build()
     }.fold(CodeBlock.builder(), CodeBlock.Builder::add)
 
+
     return MethodSpec.constructorBuilder()
         .addParameters(variables.map {
-          ParameterSpec.builder(it.javaTypeName(context), it.name.decapitalize()).build()
+          val typeName = it.javaTypeName(context)
+          ParameterSpec.builder(typeName.withoutAnnotations(), it.name.decapitalize())
+              .apply {
+                typeName.annotations.forEach {
+                  addAnnotation(it)
+                }
+              }
+              .build()
         })
         .addCode(fieldInitializeCode.build())
         .addCode(fieldMapInitializeCode.build())
@@ -73,10 +87,16 @@ class VariablesTypeSpecBuilder(
 
   private fun variableAccessorMethodSpecs(): List<MethodSpec> {
     return variables.map { variable ->
+      val typeName = variable.javaTypeName(context)
       MethodSpec
           .methodBuilder(variable.name.decapitalize())
           .addModifiers(Modifier.PUBLIC)
-          .returns(variable.javaTypeName(context))
+          .returns(typeName.withoutAnnotations())
+          .apply {
+            typeName.annotations.forEach {
+              addAnnotation(it)
+            }
+          }
           .addStatement("return \$L", variable.name.decapitalize())
           .build()
     }

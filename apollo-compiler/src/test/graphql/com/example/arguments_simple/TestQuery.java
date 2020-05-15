@@ -221,7 +221,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private final int friendsCount;
 
-    private final @NotNull List<List<String>> listOfListOfStringArgs;
+    @NotNull
+    private final List<List<String>> listOfListOfStringArgs;
 
     private final transient Map<String, Object> valueMap = new LinkedHashMap<>();
 
@@ -251,7 +252,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return friendsCount;
     }
 
-    public @NotNull List<List<String>> listOfListOfStringArgs() {
+    @NotNull
+    public List<List<String>> listOfListOfStringArgs() {
       return listOfListOfStringArgs;
     }
 

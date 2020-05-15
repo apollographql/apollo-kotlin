@@ -168,7 +168,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static final class Variables extends Operation.Variables {
-    private final @NotNull String id;
+    @NotNull
+    private final String id;
 
     private final transient Map<String, Object> valueMap = new LinkedHashMap<>();
 
@@ -177,7 +178,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       this.valueMap.put("id", id);
     }
 
-    public @NotNull String id() {
+    @NotNull
+    public String id() {
       return id;
     }
 
