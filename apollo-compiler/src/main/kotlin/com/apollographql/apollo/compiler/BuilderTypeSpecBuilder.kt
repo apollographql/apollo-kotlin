@@ -82,9 +82,16 @@ class BuilderTypeSpecBuilder(
   }
 
   private fun fieldSetterMethodSpec(fieldName: String, fieldType: TypeName, javaDoc: String?): MethodSpec {
+    val unwrappedType = fieldType.unwrapOptionalType()
     return MethodSpec.methodBuilder(fieldName)
         .addModifiers(Modifier.PUBLIC)
-        .addParameter(ParameterSpec.builder(fieldType.unwrapOptionalType(), fieldName).build())
+        .addParameter(ParameterSpec.builder(unwrappedType.withoutAnnotations(), fieldName)
+            .apply {
+              unwrappedType.annotations.forEach {
+                addAnnotation(it)
+              }
+            }
+            .build())
         .apply {
           if (!javaDoc.isNullOrBlank()) {
             addJavadoc(CodeBlock.of("\$L\n", javaDoc))
@@ -107,9 +114,7 @@ class BuilderTypeSpecBuilder(
   private fun inputFieldSetterMethodSpec(fieldName: String, fieldType: TypeName, javaDoc: String?): MethodSpec {
     return MethodSpec.methodBuilder("${fieldName}Input")
         .addModifiers(Modifier.PUBLIC)
-        .addParameter(ParameterSpec.builder(fieldType.withoutAnnotations(), fieldName)
-            .addAnnotation(Annotations.NONNULL)
-            .build())
+        .addParameter(ParameterSpec.builder(fieldType, fieldName).addAnnotation(Annotations.NONNULL).build())
         .apply {
           if (!javaDoc.isNullOrBlank()) {
             addJavadoc(CodeBlock.of("\$L\n", javaDoc))

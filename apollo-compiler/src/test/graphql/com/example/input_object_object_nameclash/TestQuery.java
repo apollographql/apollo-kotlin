@@ -144,7 +144,7 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
     Builder() {
     }
 
-    public Builder input(com.example.input_object_object_nameclash.type. @NotNull Login input) {
+    public Builder input(@NotNull com.example.input_object_object_nameclash.type.Login input) {
       this.input = input;
       return this;
     }
