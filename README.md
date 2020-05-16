@@ -23,7 +23,7 @@ Apollo-android features:
 
 ## Adding Apollo-Android to your Project
 
-The latest Gradle plugin version is [ ![Download](https://api.bintray.com/packages/apollographql/android/apollo-gradle-plugin/images/download.svg) ](https://bintray.com/apollographql/android/apollo-gradle-plugin/_latestVersion)
+The latest Gradle plugin version is [ ![Download](https://api.bintray.com/packages/apollographql/android/apollo/images/download.svg) ](https://bintray.com/apollographql/android/apollo-gradle-plugin/_latestVersion)
 
 To use this plugin, add the dependency to your project's root build.gradle file:
 
@@ -234,11 +234,6 @@ Latest development changes are available in Sonatype's snapshots repository:
   }
 ```
 
-## Migrating to 1.3.x
-
-Apollo-Android version 1.3.0 introduces some fixes and improvements that are incompatible with 1.2.x. Please refer to
-[Migration Guide](https://www.apollographql.com/docs/android/essentials/migration/) for details.
-
 ## Advanced topics
 
 Advanced topics are available in [the official docs](https://www.apollographql.com/docs/android/):
@@ -252,6 +247,7 @@ Advanced topics are available in [the official docs](https://www.apollographql.c
 * [persisted-queries.md](https://www.apollographql.com/docs/android/advanced/persisted-queries/)
 * [no-runtime.md](https://www.apollographql.com/docs/android/advanced/no-runtime/) 
 * [subscriptions.md](https://www.apollographql.com/docs/android/advanced/subscriptions/)
+* [migrations.md](https://www.apollographql.com/docs/android/essentials/migration/)
 
 
 ## Changelog
