@@ -82,7 +82,10 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
       throw Exception("cannot get schema: ${response.code}:\n${response.body?.string()}")
     }
 
-    project.projectDir.child(schemaFilePath.get()).writeText(response.body!!.string())
+    val jsonFile = project.projectDir.child(schemaFilePath.get())
+
+    jsonFile.parentFile.mkdirs()
+    jsonFile.writeText(response.body!!.string())
   }
 
   companion object {
