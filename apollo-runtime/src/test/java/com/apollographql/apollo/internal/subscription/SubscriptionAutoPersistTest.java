@@ -111,24 +111,24 @@ public class SubscriptionAutoPersistTest {
     final UUID subscriptionId = new ArrayList<>(subscriptionManager.subscriptions.keySet()).get(0);
     if (isWriteDocument) {
       assertThat(subscriptionTransportFactory.subscriptionTransport.lastSentMessage.toJsonString()).isEqualTo(
-          "" +
-              "{\"id\":\"" + subscriptionId.toString() + "\"," +
-              "\"type\":\"start\"," +
-              "\"payload\":{" +
-              "\"variables\":{}," +
-              "\"operationName\":\"SomeSubscription\"," +
-              "\"query\":\"subscription{\\ncommentAdded(repoFullName:\\\"repo\\\"){\\n__typename\\nid\\ncontent\\n}\\n}\"," +
-              "\"extensions\":{\"persistedQuery\":{\"version\":1,\"sha256Hash\":\"MockSubscription\"}}}}"
+          ""
+              + "{\"id\":\"" + subscriptionId.toString() + "\","
+              + "\"type\":\"start\","
+              + "\"payload\":{"
+              + "\"variables\":{},"
+              + "\"operationName\":\"SomeSubscription\","
+              + "\"query\":\"subscription{\\ncommentAdded(repoFullName:\\\"repo\\\"){\\n__typename\\nid\\ncontent\\n}\\n}\","
+              + "\"extensions\":{\"persistedQuery\":{\"version\":1,\"sha256Hash\":\"MockSubscription\"}}}}"
       );
     } else {
       assertThat(subscriptionTransportFactory.subscriptionTransport.lastSentMessage.toJsonString()).isEqualTo(
-          "" +
-              "{\"id\":\"" + subscriptionId.toString() + "\"," +
-              "\"type\":\"start\"," +
-              "\"payload\":{" +
-              "\"variables\":{}," +
-              "\"operationName\":\"SomeSubscription\"," +
-              "\"extensions\":{\"persistedQuery\":{\"version\":1,\"sha256Hash\":\"MockSubscription\"}}}}"
+          ""
+              + "{\"id\":\"" + subscriptionId.toString() + "\","
+              + "\"type\":\"start\","
+              + "\"payload\":{"
+              + "\"variables\":{},"
+              + "\"operationName\":\"SomeSubscription\","
+              + "\"extensions\":{\"persistedQuery\":{\"version\":1,\"sha256Hash\":\"MockSubscription\"}}}}"
       );
     }
   }

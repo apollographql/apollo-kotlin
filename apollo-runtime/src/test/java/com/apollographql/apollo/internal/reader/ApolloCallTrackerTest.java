@@ -86,7 +86,11 @@ public class ApolloCallTrackerTest {
       throw new UnsupportedOperationException();
     }
 
-    @NotNull @Override public ByteString composeRequestBody(boolean autoPersistQueries, boolean withQueryDocument, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+    @NotNull @Override public ByteString composeRequestBody(
+        boolean autoPersistQueries,
+        boolean withQueryDocument,
+        @NotNull ScalarTypeAdapters scalarTypeAdapters
+    ) {
         return OperationRequestBodyComposer.compose(this, autoPersistQueries, withQueryDocument, scalarTypeAdapters);
       }
 
@@ -124,7 +128,7 @@ public class ApolloCallTrackerTest {
   }
 
   @Test
-  public void testRunningCallsCount_whenSyncPrefetchCallIsMade() throws InterruptedException {
+  public void testRunningCallsCountWhenSyncPrefetchCallIsMade() throws InterruptedException {
     assertThat(apolloClient.activeCallsCount()).isEqualTo(0);
     Rx2Apollo
         .from(apolloClient.prefetch(EMPTY_QUERY))
@@ -135,7 +139,7 @@ public class ApolloCallTrackerTest {
   }
 
   @Test
-  public void testRunningCallsCount_whenAsyncPrefetchCallIsMade() throws InterruptedException {
+  public void testRunningCallsCountWhenAsyncPrefetchCallIsMade() throws InterruptedException {
     assertThat(apolloClient.activeCallsCount()).isEqualTo(0);
     server.enqueue(createMockResponse());
     Rx2Apollo
@@ -147,7 +151,7 @@ public class ApolloCallTrackerTest {
   }
 
   @Test
-  public void testRunningCallsCount_whenAsyncApolloCallIsMade() throws InterruptedException {
+  public void testRunningCallsCountWhenAsyncApolloCallIsMade() throws InterruptedException {
     assertThat(apolloClient.activeCallsCount()).isEqualTo(0);
     server.enqueue(createMockResponse());
     Rx2Apollo
@@ -159,7 +163,7 @@ public class ApolloCallTrackerTest {
   }
 
   @Test
-  public void testIdleCallBackIsInvoked_whenApolloClientBecomesIdle() throws InterruptedException, TimeoutException {
+  public void testIdleCallBackIsInvokedWhenApolloClientBecomesIdle() throws InterruptedException, TimeoutException {
     server.enqueue(createMockResponse());
     final AtomicBoolean idle = new AtomicBoolean();
     IdleResourceCallback idleResourceCallback = new IdleResourceCallback() {

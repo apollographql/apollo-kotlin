@@ -55,15 +55,16 @@ public class WebSocketSubscriptionTransportMessageTest {
                 .build()
         )
     );
-    assertThat(webSocketFactory.webSocket.lastSentMessage).isEqualTo("{\"type\":\"connection_init\",\"payload\":{\"param1\":true,\"param2\":\"value\"}}");
+    assertThat(webSocketFactory.webSocket.lastSentMessage)
+        .isEqualTo("{\"type\":\"connection_init\",\"payload\":{\"param1\":true,\"param2\":\"value\"}}");
   }
 
   @Test public void startSubscriptionAutoPersistSubscriptionDisabled() {
     subscriptionTransport.send(new OperationClientMessage.Start("subscriptionId", new MockSubscription(),
         new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap()), false, false));
 
-    String expected = "{\"id\":\"subscriptionId\",\"type\":\"start\",\"payload\":{\"variables\":{}," +
-        "\"operationName\":\"SomeSubscription\",\"query\":\"subscription{commentAdded{id  name}\"}}";
+    String expected = "{\"id\":\"subscriptionId\",\"type\":\"start\",\"payload\":{\"variables\":{},"
+        + "\"operationName\":\"SomeSubscription\",\"query\":\"subscription{commentAdded{id  name}\"}}";
 
     assertThat(webSocketFactory.webSocket.lastSentMessage).isEqualTo(expected);
   }
@@ -72,19 +73,19 @@ public class WebSocketSubscriptionTransportMessageTest {
     subscriptionTransport.send(new OperationClientMessage.Start("subscriptionId", new MockSubscription(),
         new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap()), true, true));
 
-    String expected = "{\"id\":\"subscriptionId\",\"type\":\"start\",\"payload\":{\"variables\":{}," +
-        "\"operationName\":\"SomeSubscription\",\"query\":\"subscription{commentAdded{id  name}\"," +
-        "\"extensions\":{\"persistedQuery\":{\"version\":1,\"sha256Hash\":\"someId\"}}}}";
+    String expected = "{\"id\":\"subscriptionId\",\"type\":\"start\",\"payload\":{\"variables\":{},"
+        + "\"operationName\":\"SomeSubscription\",\"query\":\"subscription{commentAdded{id  name}\","
+        + "\"extensions\":{\"persistedQuery\":{\"version\":1,\"sha256Hash\":\"someId\"}}}}";
 
     assertThat(webSocketFactory.webSocket.lastSentMessage).isEqualTo(expected);
   }
 
-    @Test public void startSubscriptionAutoPersistSubscriptionEnabledSendDocumentDisabled() {
+  @Test public void startSubscriptionAutoPersistSubscriptionEnabledSendDocumentDisabled() {
     subscriptionTransport.send(new OperationClientMessage.Start("subscriptionId", new MockSubscription(),
         new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap()), true, false));
 
-    String expected = "{\"id\":\"subscriptionId\",\"type\":\"start\",\"payload\":{\"variables\":{}," +
-        "\"operationName\":\"SomeSubscription\",\"extensions\":{\"persistedQuery\":{\"version\":1,\"sha256Hash\":\"someId\"}}}}";
+    String expected = "{\"id\":\"subscriptionId\",\"type\":\"start\",\"payload\":{\"variables\":{},"
+        + "\"operationName\":\"SomeSubscription\",\"extensions\":{\"persistedQuery\":{\"version\":1,\"sha256Hash\":\"someId\"}}}}";
 
     assertThat(webSocketFactory.webSocket.lastSentMessage).isEqualTo(expected);
   }
@@ -106,26 +107,38 @@ public class WebSocketSubscriptionTransportMessageTest {
 
   @SuppressWarnings("unchecked")
   @Test public void data() {
-    webSocketFactory.webSocket.listener.onMessage(webSocketFactory.webSocket, "{\"type\":\"data\",\"id\":\"subscriptionId\",\"payload\":{\"data\":{\"commentAdded\":{\"__typename\":\"Comment\",\"id\":10,\"content\":\"test10\"}}}}");
+    webSocketFactory.webSocket.listener.onMessage(
+        webSocketFactory.webSocket,
+        "{\"type\":\"data\",\"id\":\"subscriptionId\",\"payload\":{\"data\":{\"commentAdded\":"
+            + "{\"__typename\":\"Comment\",\"id\":10,\"content\":\"test10\"}}}}");
     assertThat(transportCallback.lastMessage).isInstanceOf(OperationServerMessage.Data.class);
     assertThat(((OperationServerMessage.Data) transportCallback.lastMessage).id).isEqualTo("subscriptionId");
-    assertThat((Map<String, Object>) ((Map<String, Object>) ((OperationServerMessage.Data) transportCallback.lastMessage).payload.get("data")).get("commentAdded"))
-        .containsExactlyEntriesIn(new UnmodifiableMapBuilder<String, Object>()
+    assertThat((Map<String, Object>)
+        ((Map<String, Object>) ((OperationServerMessage.Data) transportCallback.lastMessage).payload.get("data")).get("commentAdded")
+    ).containsExactlyEntriesIn(
+        new UnmodifiableMapBuilder<String, Object>()
             .put("__typename", "Comment")
             .put("id", BigDecimal.valueOf(10))
             .put("content", "test10")
             .build()
-        );
+    );
   }
 
   @Test public void connectionError() {
-    webSocketFactory.webSocket.listener.onMessage(webSocketFactory.webSocket, "{\"type\":\"connection_error\",\"payload\":{\"message\":\"Connection Error\"}}");
+    webSocketFactory.webSocket.listener.onMessage(
+        webSocketFactory.webSocket,
+        "{\"type\":\"connection_error\",\"payload\":{\"message\":\"Connection Error\"}}"
+    );
     assertThat(transportCallback.lastMessage).isInstanceOf(OperationServerMessage.ConnectionError.class);
-    assertThat(((OperationServerMessage.ConnectionError) transportCallback.lastMessage).payload).containsExactly("message", "Connection Error");
+    assertThat(((OperationServerMessage.ConnectionError) transportCallback.lastMessage).payload)
+        .containsExactly("message", "Connection Error");
   }
 
   @Test public void error() {
-    webSocketFactory.webSocket.listener.onMessage(webSocketFactory.webSocket, "{\"type\":\"error\", \"id\":\"subscriptionId\", \"payload\":{\"message\":\"Error\"}}");
+    webSocketFactory.webSocket.listener.onMessage(
+        webSocketFactory.webSocket,
+        "{\"type\":\"error\", \"id\":\"subscriptionId\", \"payload\":{\"message\":\"Error\"}}"
+    );
     assertThat(transportCallback.lastMessage).isInstanceOf(OperationServerMessage.Error.class);
     assertThat(((OperationServerMessage.Error) transportCallback.lastMessage).id).isEqualTo("subscriptionId");
     assertThat(((OperationServerMessage.Error) transportCallback.lastMessage).payload).containsExactly("message", "Error");

@@ -96,7 +96,7 @@ public class ApolloAutoPersistedQueryInterceptorTest {
                   com.apollographql.apollo.api.Response.<MockOperation.Data>builder(new MockOperation())
                       .errors(
                           Collections.singletonList(
-                              new Error("PersistedQueryNotFound", Collections.<Error.Location>emptyList(), Collections.<String, Object>emptyMap())
+                              new Error("PersistedQueryNotFound", Collections.emptyList(), Collections.emptyMap())
                           )
                       )
                       .build(),
@@ -149,7 +149,7 @@ public class ApolloAutoPersistedQueryInterceptorTest {
                   com.apollographql.apollo.api.Response.<MockOperation.Data>builder(new MockOperation())
                       .errors(
                           Collections.singletonList(
-                              new Error("PersistedQueryNotSupported", Collections.<Error.Location>emptyList(), Collections.<String, Object>emptyMap())
+                              new Error("PersistedQueryNotSupported", Collections.emptyList(), Collections.emptyMap())
                           )
                       )
                       .build(),
@@ -313,7 +313,10 @@ public class ApolloAutoPersistedQueryInterceptorTest {
       throw new UnsupportedOperationException();
     }
 
-    @NotNull @Override public com.apollographql.apollo.api.Response<Data> parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+    @NotNull @Override public com.apollographql.apollo.api.Response<Data> parse(
+        @NotNull BufferedSource source,
+        @NotNull ScalarTypeAdapters scalarTypeAdapters
+    ) {
       throw new UnsupportedOperationException();
     }
 
@@ -321,7 +324,10 @@ public class ApolloAutoPersistedQueryInterceptorTest {
       throw new UnsupportedOperationException();
     }
 
-    @NotNull @Override public com.apollographql.apollo.api.Response parse(@NotNull ByteString byteString, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+    @NotNull @Override public com.apollographql.apollo.api.Response parse(
+        @NotNull ByteString byteString,
+        @NotNull ScalarTypeAdapters scalarTypeAdapters
+    ) {
       throw new UnsupportedOperationException();
     }
 
