@@ -35,12 +35,7 @@ class ApolloCoroutinesRepository {
         orderBy = RepositoryOrderField.UPDATED_AT,
         orderDirection = OrderDirection.DESC
     )
-    val response = try {
-      apolloClient.query(repositoriesQuery).execute().single()
-    } catch (e: ApolloException) {
-      println("Http response: " + e.executionContext[HttpExecutionContext.Response])
-      throw e
-    }
+    val response = apolloClient.query(repositoriesQuery).execute().single()
     println("Http response: " + response.executionContext[HttpExecutionContext.Response])
     return response.data?.viewer?.repositories?.nodes?.mapNotNull { it?.fragments?.repositoryFragment }.orEmpty()
   }

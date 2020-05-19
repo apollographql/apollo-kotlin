@@ -154,16 +154,16 @@ actual class ApolloHttpNetworkTransport(
   ): Result {
     if (error != null) return Result.Failure(
         cause = ApolloException(
-            message = "Failed to execute GraphQL http network request",
             error = ApolloError.Network,
+            message = "Failed to execute GraphQL http network request",
             cause = IOException(error.localizedDescription)
         )
     )
 
     if (httpResponse == null) return Result.Failure(
         cause = ApolloException(
-            message = "Failed to parse GraphQL http network response: EOF",
-            error = ApolloError.Network
+            error = ApolloError.Network,
+            message = "Failed to parse GraphQL http network response: EOF"
         )
     )
 
@@ -174,23 +174,21 @@ actual class ApolloHttpNetworkTransport(
     val statusCode = httpResponse.statusCode.toInt()
     if (statusCode !in 200..299) return Result.Failure(
         cause = ApolloException(
-            message = "Http request failed with status code `$statusCode`",
-            error = ApolloError.Network,
-            executionContext = HttpExecutionContext.Response(
+            error = ApolloError.Http(
                 statusCode = httpResponse.statusCode.toInt(),
                 headers = httpHeaders
-            )
+            ),
+            message = "Http request failed with status code `$statusCode`"
         )
     )
 
     if (data == null) return Result.Failure(
         cause = ApolloException(
-            message = "Failed to parse GraphQL http network response: EOF",
-            error = ApolloError.Network,
-            executionContext = HttpExecutionContext.Response(
+            error = ApolloError.Http(
                 statusCode = httpResponse.statusCode.toInt(),
                 headers = httpHeaders
-            )
+            ),
+            message = "Failed to parse GraphQL http network response: EOF"
         )
     )
 

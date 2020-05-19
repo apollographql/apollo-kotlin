@@ -64,8 +64,8 @@ actual class ApolloHttpNetworkTransport(
                     if (continuation.isCancelled) return
                     continuation.resumeWithException(
                         ApolloException(
-                            message = "Failed to execute GraphQL http network request",
                             error = ApolloError.Network,
+                            message = "Failed to execute GraphQL http network request",
                             cause = e
                         )
                     )
@@ -77,14 +77,13 @@ actual class ApolloHttpNetworkTransport(
                         .onSuccess { graphQlResponse -> continuation.resume(graphQlResponse) }
                         .onFailure { e ->
                           response.closeQuietly()
-
                           if (e is ApolloException) {
                             continuation.resumeWithException(e)
                           } else {
                             continuation.resumeWithException(
                                 ApolloException(
-                                    message = "Failed to parse GraphQL http network response",
-                                    error = ApolloError.ParseError
+                                    error = ApolloError.ParseError,
+                                    message = "Failed to parse GraphQL http network response"
                                 )
                             )
                           }
@@ -100,21 +99,19 @@ actual class ApolloHttpNetworkTransport(
   @Suppress("UNCHECKED_CAST")
   private fun Response.parse(): GraphQLResponse {
     if (!isSuccessful) throw ApolloException(
-        message = "Http request failed with status code `$code ($message)`",
-        error = ApolloError.Network,
-        executionContext = HttpExecutionContext.Response(
+        error = ApolloError.Http(
             statusCode = code,
             headers = headers.toMap()
-        )
+        ),
+        message = "Http request failed with status code `$code ($message)`"
     )
 
     val responseBody = body ?: throw ApolloException(
-        message = "Failed to parse GraphQL http network response: EOF",
-        error = ApolloError.Network,
-        executionContext = HttpExecutionContext.Response(
+        error = ApolloError.Http(
             statusCode = code,
             headers = headers.toMap()
-        )
+        ),
+        message = "Failed to parse GraphQL http network response: EOF"
     )
 
     return GraphQLResponse(

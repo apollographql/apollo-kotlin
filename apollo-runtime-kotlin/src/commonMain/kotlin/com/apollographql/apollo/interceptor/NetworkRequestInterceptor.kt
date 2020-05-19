@@ -33,9 +33,8 @@ class NetworkRequestInterceptor(
       )
     } catch (e: Exception) {
       throw ApolloException(
-          message = "Failed to parse GraphQL network response",
           error = ApolloError.ParseError,
-          executionContext = request.executionContext,
+          message = "Failed to parse GraphQL network response",
           cause = e
       )
     } finally {
@@ -54,9 +53,8 @@ class NetworkRequestInterceptor(
       )
     } catch (e: Exception) {
       throw ApolloException(
-          message = "Failed to compose GraphQL network request",
           error = ApolloError.SerializationError,
-          executionContext = executionContext,
+          message = "Failed to compose GraphQL network request",
           cause = e
       )
     }
