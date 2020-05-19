@@ -62,7 +62,7 @@ actual class ApolloHttpNetworkTransport(
       dataTaskProvider = { request, completionHandler -> NSURLSession.sharedSession.dataTaskWithRequest(request, completionHandler) }
   )
 
-  override fun execute(request: GraphQLRequest): Flow<GraphQLResponse> {
+  override fun execute(request: GraphQLRequest, executionContext: ExecutionContext): Flow<GraphQLResponse> {
     return flow {
       assert(NSThread.isMainThread())
 
@@ -77,7 +77,7 @@ actual class ApolloHttpNetworkTransport(
           )
           response.dispatchOnMain(continuationRef)
         }
-        val httpRequest = request.toHttpRequest()
+        val httpRequest = request.toHttpRequest(executionContext[HttpExecutionContext.Request])
 
         dataTaskProvider(httpRequest.freeze(), delegate.freeze())
             .also { task ->
@@ -92,7 +92,10 @@ actual class ApolloHttpNetworkTransport(
         is Result.Success -> emit(
             GraphQLResponse(
                 body = Buffer().write(result.data.toByteString()),
-                executionContext = ExecutionContext.Empty
+                executionContext = HttpExecutionContext.Response(
+                    statusCode = result.httpStatusCode,
+                    headers = result.httpHeaders
+                )
             )
         )
         is Result.Failure -> throw result.cause
@@ -100,14 +103,14 @@ actual class ApolloHttpNetworkTransport(
     }
   }
 
-  private fun GraphQLRequest.toHttpRequest(): NSURLRequest {
+  private fun GraphQLRequest.toHttpRequest(httpExecutionContext: HttpExecutionContext.Request?): NSURLRequest {
     return when (httpMethod) {
-      HttpMethod.Get -> toHttpGetRequest()
-      HttpMethod.Post -> toHttpPostRequest()
+      HttpMethod.Get -> toHttpGetRequest(httpExecutionContext)
+      HttpMethod.Post -> toHttpPostRequest(httpExecutionContext)
     }
   }
 
-  private fun GraphQLRequest.toHttpGetRequest(): NSURLRequest {
+  private fun GraphQLRequest.toHttpGetRequest(httpExecutionContext: HttpExecutionContext.Request?): NSURLRequest {
     val urlComponents = NSURLComponents(uRL = serverUrl, resolvingAgainstBaseURL = false)
     urlComponents.queryItems = listOfNotNull(
         NSURLQueryItem(name = "query", value = document),
@@ -116,12 +119,14 @@ actual class ApolloHttpNetworkTransport(
     )
     return NSMutableURLRequest.requestWithURL(urlComponents.URL!!).apply {
       setHTTPMethod("GET")
-      httpHeaders.forEach { (key, value) -> setValue(value, forHTTPHeaderField = key) }
+      httpHeaders
+          .plus(httpExecutionContext?.headers ?: emptyMap())
+          .forEach { (key, value) -> setValue(value, forHTTPHeaderField = key) }
       setCachePolicy(NSURLRequestReloadIgnoringCacheData)
     }
   }
 
-  private fun GraphQLRequest.toHttpPostRequest(): NSURLRequest {
+  private fun GraphQLRequest.toHttpPostRequest(httpExecutionContext: HttpExecutionContext.Request?): NSURLRequest {
     return NSMutableURLRequest.requestWithURL(serverUrl).apply {
       val buffer = Buffer()
       JsonWriter.of(buffer)
@@ -134,7 +139,9 @@ actual class ApolloHttpNetworkTransport(
       val postBody = buffer.readByteArray().toNSData()
 
       setHTTPMethod("POST")
-      httpHeaders.forEach { (key, value) -> setValue(value, forHTTPHeaderField = key) }
+      httpHeaders
+          .plus(httpExecutionContext?.headers ?: emptyMap())
+          .forEach { (key, value) -> setValue(value, forHTTPHeaderField = key) }
       setCachePolicy(NSURLRequestReloadIgnoringCacheData)
       setHTTPBody(postBody)
     }
@@ -146,7 +153,7 @@ actual class ApolloHttpNetworkTransport(
       error: NSError?
   ): Result {
     if (error != null) return Result.Failure(
-        ApolloException(
+        cause = ApolloException(
             message = "Failed to execute GraphQL http network request",
             error = ApolloError.Network,
             cause = IOException(error.localizedDescription)
@@ -154,32 +161,48 @@ actual class ApolloHttpNetworkTransport(
     )
 
     if (httpResponse == null) return Result.Failure(
-        ApolloException(
+        cause = ApolloException(
             message = "Failed to parse GraphQL http network response: EOF",
             error = ApolloError.Network
         )
     )
 
+    val httpHeaders = httpResponse.allHeaderFields
+        .mapKeys { it.toString() }
+        .mapValues { it.toString() }
+
     val statusCode = httpResponse.statusCode.toInt()
     if (statusCode !in 200..299) return Result.Failure(
-        ApolloException(
+        cause = ApolloException(
             message = "Http request failed with status code `$statusCode`",
-            error = ApolloError.Network
+            error = ApolloError.Network,
+            executionContext = HttpExecutionContext.Response(
+                statusCode = httpResponse.statusCode.toInt(),
+                headers = httpHeaders
+            )
         )
     )
 
     if (data == null) return Result.Failure(
-        ApolloException(
+        cause = ApolloException(
             message = "Failed to parse GraphQL http network response: EOF",
-            error = ApolloError.Network
+            error = ApolloError.Network,
+            executionContext = HttpExecutionContext.Response(
+                statusCode = httpResponse.statusCode.toInt(),
+                headers = httpHeaders
+            )
         )
     )
 
-    return Result.Success(data)
+    return Result.Success(
+        data = data,
+        httpStatusCode = httpResponse.statusCode.toInt(),
+        httpHeaders = httpHeaders
+    )
   }
 
   sealed class Result {
-    class Success(val data: NSData) : Result()
+    class Success(val data: NSData, val httpStatusCode: Int, val httpHeaders: Map<String, String>) : Result()
     class Failure(val cause: ApolloException) : Result()
   }
 

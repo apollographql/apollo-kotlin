@@ -3,10 +3,10 @@ package com.apollographql.apollo.network
 import com.apollographql.apollo.ApolloError
 import com.apollographql.apollo.ApolloException
 import com.apollographql.apollo.api.ApolloExperimental
+import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.network.mock.MockHttpResponse
 import com.apollographql.apollo.network.mock.MockSessionDataTask
 import com.apollographql.apollo.runBlocking
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.single
 import okio.ByteString.Companion.encodeUtf8
@@ -18,7 +18,6 @@ import platform.Foundation.NSHTTPURLResponse
 import platform.Foundation.NSURL
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 @ApolloExperimental
 @ExperimentalCoroutinesApi
@@ -37,7 +36,7 @@ class ApolloHttpNetworkTransportTest {
 
     try {
       runBlocking {
-        networkTransport.execute(mockGraphQLRequest()).single()
+        networkTransport.execute(request = mockGraphQLRequest(), executionContext = ExecutionContext.Empty).single()
       }
     } catch (e: ApolloException) {
       assertEquals(e.error, ApolloError.Network)
@@ -62,7 +61,7 @@ class ApolloHttpNetworkTransportTest {
 
     try {
       runBlocking {
-        networkTransport.execute(mockGraphQLRequest()).single()
+        networkTransport.execute(request = mockGraphQLRequest(), executionContext = ExecutionContext.Empty).single()
       }
     } catch (e: ApolloException) {
       assertEquals(e.error, ApolloError.Network)
@@ -79,7 +78,7 @@ class ApolloHttpNetworkTransportTest {
     }
 
     val response = runBlocking {
-      networkTransport.execute(mockGraphQLRequest()).single()
+      networkTransport.execute(request = mockGraphQLRequest(), executionContext = ExecutionContext.Empty).single()
     }
 
     assertEquals("{\"data\":{\"name\":\"MockQuery\"}}", response.body.readUtf8())
@@ -101,7 +100,7 @@ class ApolloHttpNetworkTransportTest {
     }
 
     runBlocking {
-      networkTransport.execute(mockGraphQLRequest()).single()
+      networkTransport.execute(request = mockGraphQLRequest(), executionContext = ExecutionContext.Empty).single()
     }
   }
 

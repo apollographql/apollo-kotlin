@@ -21,7 +21,7 @@ class NetworkRequestInterceptor(
 
   override fun <T> intercept(request: ApolloRequest<T>, interceptorChain: ApolloInterceptorChain): Flow<Response<T>> {
     return flow { emit(request.toNetworkRequest()) }
-        .flatMapLatest { networkRequest -> networkTransport.execute(networkRequest) }
+        .flatMapLatest { networkRequest -> networkTransport.execute(request = networkRequest, executionContext = request.executionContext) }
         .map { networkResponse -> networkResponse.parse(request) }
   }
 
@@ -41,7 +41,7 @@ class NetworkRequestInterceptor(
     } finally {
       body.close()
     }
-    return response.copy(executionContext = request.executionContext + response.executionContext)
+    return response.copy(executionContext = request.executionContext + executionContext)
   }
 
   private fun ApolloRequest<*>.toNetworkRequest(): GraphQLRequest {

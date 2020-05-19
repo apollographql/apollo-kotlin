@@ -48,10 +48,10 @@ actual class ApolloHttpNetworkTransport(
       httpMethod = httpMethod
   )
 
-  override fun execute(request: GraphQLRequest): Flow<GraphQLResponse> {
+  override fun execute(request: GraphQLRequest, executionContext: ExecutionContext): Flow<GraphQLResponse> {
     return flow {
       val response = suspendCancellableCoroutine<GraphQLResponse> { continuation ->
-        val httpRequest = request.toHttpRequest()
+        val httpRequest = request.toHttpRequest(executionContext[HttpExecutionContext.Request])
         httpCallFactory.newCall(httpRequest)
             .also { call ->
               continuation.invokeOnCancellation {
@@ -101,28 +101,39 @@ actual class ApolloHttpNetworkTransport(
   private fun Response.parse(): GraphQLResponse {
     if (!isSuccessful) throw ApolloException(
         message = "Http request failed with status code `$code ($message)`",
-        error = ApolloError.Network
+        error = ApolloError.Network,
+        executionContext = HttpExecutionContext.Response(
+            statusCode = code,
+            headers = headers.toMap()
+        )
     )
 
     val responseBody = body ?: throw ApolloException(
         message = "Failed to parse GraphQL http network response: EOF",
-        error = ApolloError.Network
+        error = ApolloError.Network,
+        executionContext = HttpExecutionContext.Response(
+            statusCode = code,
+            headers = headers.toMap()
+        )
     )
 
     return GraphQLResponse(
         body = responseBody.source(),
-        executionContext = ExecutionContext.Empty
+        executionContext = HttpExecutionContext.Response(
+            statusCode = code,
+            headers = headers.toMap()
+        )
     )
   }
 
-  private fun GraphQLRequest.toHttpRequest(): Request {
+  private fun GraphQLRequest.toHttpRequest(httpExecutionContext: HttpExecutionContext.Request?): Request {
     return when (httpMethod) {
-      HttpMethod.Get -> toHttpGetRequest()
-      HttpMethod.Post -> toHttpPostRequest()
+      HttpMethod.Get -> toHttpGetRequest(httpExecutionContext)
+      HttpMethod.Post -> toHttpPostRequest(httpExecutionContext)
     }
   }
 
-  private fun GraphQLRequest.toHttpGetRequest(): Request {
+  private fun GraphQLRequest.toHttpGetRequest(httpExecutionContext: HttpExecutionContext.Request?): Request {
     val url = serverUrl.newBuilder()
         .addQueryParameter("query", document)
         .addQueryParameter("operationName", operationName)
@@ -131,10 +142,15 @@ actual class ApolloHttpNetworkTransport(
     return Request.Builder()
         .url(url)
         .headers(httpHeaders)
+        .apply {
+          httpExecutionContext?.headers?.forEach { name, value ->
+            header(name = name, value = value)
+          }
+        }
         .build()
   }
 
-  private fun GraphQLRequest.toHttpPostRequest(): Request {
+  private fun GraphQLRequest.toHttpPostRequest(httpExecutionContext: HttpExecutionContext.Request?): Request {
     val buffer = Buffer()
     JsonWriter.of(buffer)
         .beginObject()
@@ -147,6 +163,11 @@ actual class ApolloHttpNetworkTransport(
     return Request.Builder()
         .url(serverUrl)
         .headers(httpHeaders)
+        .apply {
+          httpExecutionContext?.headers?.forEach { name, value ->
+            header(name = name, value = value)
+          }
+        }
         .post(requestBody)
         .build()
   }
