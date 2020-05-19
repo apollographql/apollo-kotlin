@@ -23,16 +23,16 @@ class OkHttpExecutionContext(
   private fun Response.strip(): Response {
     val builder = newBuilder()
 
-    if (body != null) {
+    if (body() != null) {
       builder.body(null)
     }
 
-    val cacheResponse = cacheResponse
+    val cacheResponse = cacheResponse()
     if (cacheResponse != null) {
       builder.cacheResponse(cacheResponse.strip())
     }
 
-    val networkResponse = networkResponse
+    val networkResponse = networkResponse()
     if (networkResponse != null) {
       builder.networkResponse(networkResponse.strip())
     }

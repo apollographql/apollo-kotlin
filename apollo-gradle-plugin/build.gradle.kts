@@ -21,11 +21,11 @@ dependencies {
 
   api(project(":apollo-compiler"))
   implementation(dep("kotlin").dot("stdLib"))
-  implementation(dep("okHttp").dot("okHttp"))
+  implementation(dep("okHttp").dot("okHttp4"))
   implementation(dep("moshi").dot("moshi"))
   
   testImplementation(dep("junit"))
-  testImplementation(dep("okHttp").dot("mockWebServer"))
+  testImplementation(dep("okHttp").dot("mockWebServer4"))
 }
 
 tasks.withType<Test> {
