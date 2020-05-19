@@ -66,14 +66,14 @@ class KotlinCodegenTests {
   }
 
   @Test
-  fun `when generateEnumAsSealedClass to match all - generated enum type as sealed class`() {
+  fun `when sealedClassesForEnumsMatching to match all - generated enum type as sealed class`() {
     val apolloConfiguration = """
       apollo {
         service("githunt") {
           sourceFolder = "githunt"
         }
         generateKotlinModels = true
-        generateEnumAsSealedClass = [".*"]
+        sealedClassesForEnumsMatching = [".*"]
       }
     """.trimIndent()
     withProject(

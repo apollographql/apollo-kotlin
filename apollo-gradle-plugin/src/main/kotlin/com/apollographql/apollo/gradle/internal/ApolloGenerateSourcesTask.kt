@@ -101,7 +101,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @get:Input
   @get:Optional
-  abstract val generateEnumAsSealedClass: ListProperty<String>
+  abstract val sealedClassesForEnumsMatching: ListProperty<String>
 
   @TaskAction
   fun taskAction() {
@@ -144,7 +144,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         operationOutputFile = operationOutputFile.orNull?.asFile,
         generateAsInternal = generateAsInternal.getOrElse(false),
         kotlinMultiPlatformProject = kotlinMultiPlatformProject.getOrElse(false),
-        enumAsSealedClassPatternFilters = generateEnumAsSealedClass.getOrElse(emptyList())
+        enumAsSealedClassPatternFilters = sealedClassesForEnumsMatching.getOrElse(emptyList())
     )
 
     GraphQLCompiler().write(args)

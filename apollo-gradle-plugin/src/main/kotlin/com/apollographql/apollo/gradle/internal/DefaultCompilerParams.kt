@@ -23,7 +23,7 @@ abstract class DefaultCompilerParams @Inject constructor(objects: ObjectFactory)
   init {
     // see https://github.com/gradle/gradle/issues/7485
     customTypeMapping.set(null as Map<String, String>?)
-    generateEnumAsSealedClass.set(null as List<String>?)
+    sealedClassesForEnumsMatching.set(null as List<String>?)
   }
 
   abstract override val suppressRawTypesWarning : Property<Boolean>
@@ -42,5 +42,5 @@ abstract class DefaultCompilerParams @Inject constructor(objects: ObjectFactory)
 
   abstract override val generateAsInternal: Property<Boolean>
 
-  abstract override val generateEnumAsSealedClass: ListProperty<String>
+  abstract override val sealedClassesForEnumsMatching: ListProperty<String>
 }
