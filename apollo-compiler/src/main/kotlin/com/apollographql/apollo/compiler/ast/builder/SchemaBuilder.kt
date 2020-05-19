@@ -1,7 +1,11 @@
 package com.apollographql.apollo.compiler.ast.builder
 
 import com.apollographql.apollo.compiler.OperationIdGenerator
-import com.apollographql.apollo.compiler.ast.*
+import com.apollographql.apollo.compiler.ast.CustomTypes
+import com.apollographql.apollo.compiler.ast.EnumType
+import com.apollographql.apollo.compiler.ast.FieldType
+import com.apollographql.apollo.compiler.ast.Schema
+import com.apollographql.apollo.compiler.ast.TypeRef
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.ir.ScalarType

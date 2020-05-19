@@ -11,43 +11,51 @@ import kotlin.String
 /**
  * The episodes in the Star Wars trilogy
  */
-enum class Episode(
+sealed class Episode(
   val rawValue: String
 ) {
   /**
    * Star Wars Episode IV: A New Hope, released in 1977.
    */
-  NEWHOPE("NEWHOPE"),
+  object NEWHOPE : Episode(rawValue = "NEWHOPE")
 
   /**
    * Star Wars Episode V: The Empire Strikes Back, released in 1980.
    */
-  EMPIRE("EMPIRE"),
+  object EMPIRE : Episode(rawValue = "EMPIRE")
 
   /**
    * Star Wars Episode VI: Return of the Jedi, released in 1983.
    */
-  JEDI("JEDI"),
+  object JEDI : Episode(rawValue = "JEDI")
 
   /**
    * Test deprecated enum value
    */
   @Deprecated(message = "For test purpose only")
-  DEPRECATED("DEPRECATED"),
+  object DEPRECATED : Episode(rawValue = "DEPRECATED")
 
   /**
    * Test java reserved word
    */
   @Deprecated(message = "For test purpose only")
-  NEW("new"),
+  object NEW : Episode(rawValue = "new")
 
   /**
    * Auto generated constant for unknown enum values
    */
-  UNKNOWN__("UNKNOWN__");
+  class UNKNOWN__(
+    rawValue: String
+  ) : Episode(rawValue = rawValue)
 
   companion object {
-    fun safeValueOf(rawValue: String): Episode = values().find { it.rawValue == rawValue } ?:
-        UNKNOWN__
+    fun safeValueOf(rawValue: String): Episode = when(rawValue) {
+      "NEWHOPE" -> NEWHOPE
+      "EMPIRE" -> EMPIRE
+      "JEDI" -> JEDI
+      "DEPRECATED" -> DEPRECATED
+      "new" -> NEW
+      else -> UNKNOWN__(rawValue)
+    }
   }
 }

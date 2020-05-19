@@ -3,9 +3,9 @@ package com.apollographql.apollo.gradle.api
 import com.apollographql.apollo.compiler.OperationIdGenerator
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.file.SourceDirectorySet
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
-import org.gradle.api.provider.Provider
 
 /**
  * CompilerParams contains all the parameters needed to invoke the apollo compiler.
@@ -154,4 +154,12 @@ interface CompilerParams {
    * Default value: false
    */
   val generateAsInternal: Property<Boolean>
+
+  /**
+   * A list of [Regex] patterns for GraphQL enums that should be generated as Kotlin sealed classes instead of the default Kotlin enums.
+   *
+   * Use this if you want your client to have access to the rawValue of the enum. This can be useful if new GraphQL enums are added but
+   * the client was compiled against an older schema that doesn't have knowledge of the new enums.
+   */
+  val sealedClassesForEnumsMatching: ListProperty<String>
 }

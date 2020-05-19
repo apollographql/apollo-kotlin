@@ -1,7 +1,12 @@
 package com.apollographql.apollo.compiler.codegen.kotlin
 
 import com.apollographql.apollo.compiler.PackageNameProvider
-import com.apollographql.apollo.compiler.ast.*
+import com.apollographql.apollo.compiler.ast.CustomTypes
+import com.apollographql.apollo.compiler.ast.EnumType
+import com.apollographql.apollo.compiler.ast.InputType
+import com.apollographql.apollo.compiler.ast.ObjectType
+import com.apollographql.apollo.compiler.ast.OperationType
+import com.apollographql.apollo.compiler.ast.SchemaVisitor
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.patchKotlinNativeOptionalArrayProperties
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.TypeSpec
@@ -10,7 +15,8 @@ import java.io.File
 internal class SchemaCodegen(
     private val packageNameProvider: PackageNameProvider,
     private val generateAsInternal: Boolean = false,
-    private val kotlinMultiPlatformProject: Boolean
+    private val kotlinMultiPlatformProject: Boolean,
+    private val enumAsSealedClassPatternFilters: List<Regex>
 ) : SchemaVisitor {
   private var fileSpecs: List<FileSpec> = emptyList()
 
@@ -19,7 +25,10 @@ internal class SchemaCodegen(
   }
 
   override fun visit(enumType: EnumType) {
-    fileSpecs = fileSpecs + enumType.typeSpec(generateAsInternal).fileSpec(packageNameProvider.typesPackageName)
+    fileSpecs = fileSpecs + enumType.typeSpec(
+        generateAsInternal = generateAsInternal,
+        enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters
+    ).fileSpec(packageNameProvider.typesPackageName)
   }
 
   override fun visit(inputType: InputType) {

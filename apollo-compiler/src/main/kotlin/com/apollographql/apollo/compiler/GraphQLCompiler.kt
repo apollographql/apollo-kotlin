@@ -37,7 +37,8 @@ class GraphQLCompiler {
           useSemanticNaming = args.useSemanticNaming,
           packageNameProvider = args.packageNameProvider,
           generateAsInternal = args.generateAsInternal,
-          kotlinMultiPlatformProject = args.kotlinMultiPlatformProject
+          kotlinMultiPlatformProject = args.kotlinMultiPlatformProject,
+          enumAsSealedClassPatternFilters = args.enumAsSealedClassPatternFilters.map { it.toRegex() }
       ).write(args.outputDir)
     } else {
       ir.writeJavaFiles(
@@ -121,7 +122,8 @@ class GraphQLCompiler {
       val generateKotlinModels: Boolean = false,
       val operationOutputFile: File? = null,
       val generateAsInternal: Boolean = false,
-
+      // only if generateKotlinModels = true
+      val enumAsSealedClassPatternFilters: List<String>,
       // only if generateKotlinModels = false
       val nullableValueType: NullableValueType,
       // only if generateKotlinModels = false

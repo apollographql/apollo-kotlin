@@ -17,7 +17,8 @@ class GraphQLKompiler(
     private val useSemanticNaming: Boolean,
     private val generateAsInternal: Boolean = false,
     private val operationIdGenerator: OperationIdGenerator,
-    private val kotlinMultiPlatformProject: Boolean
+    private val kotlinMultiPlatformProject: Boolean,
+    private val enumAsSealedClassPatternFilters: List<Regex>
 ) {
   fun write(outputDir: File) {
     val customTypeMap = customTypeMap.supportedCustomTypes(ir.typesUsed)
@@ -28,11 +29,11 @@ class GraphQLKompiler(
         useSemanticNaming = useSemanticNaming,
         operationIdGenerator = operationIdGenerator
     )
-
     val schemaCodegen = SchemaCodegen(
         packageNameProvider = packageNameProvider,
         generateAsInternal = generateAsInternal,
-        kotlinMultiPlatformProject = kotlinMultiPlatformProject
+        kotlinMultiPlatformProject = kotlinMultiPlatformProject,
+        enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters
     )
     schemaCodegen.apply(schema::accept).writeTo(outputDir)
   }

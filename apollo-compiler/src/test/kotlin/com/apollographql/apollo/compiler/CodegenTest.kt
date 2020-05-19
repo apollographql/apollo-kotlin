@@ -3,11 +3,11 @@ package com.apollographql.apollo.compiler
 import com.apollographql.apollo.compiler.parser.GraphQLDocumentParser
 import com.apollographql.apollo.compiler.parser.Schema
 import com.google.common.truth.Truth.assertAbout
-import com.google.common.truth.Truth.assertThat
 import com.google.testing.compile.JavaFileObjects
 import com.google.testing.compile.JavaSourcesSubjectFactory.javaSources
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
+import org.junit.Assert.fail
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -45,7 +45,7 @@ class CodeGenTest(private val folder: File) {
       it.isFile
     }
 
-    expectedFiles.forEach {expected ->
+    expectedFiles.forEach { expected ->
       val relativePath = expected.relativeTo(expectedRoot).path
       val actual = File(actualRoot, relativePath)
       if (!actual.exists()) {
@@ -59,7 +59,7 @@ class CodeGenTest(private val folder: File) {
       }
       checkTestFixture(actual = actual, expected = expected)
     }
-    actualFiles.forEach {actual->
+    actualFiles.forEach { actual ->
       val relativePath = actual.relativeTo(actualRoot).path
       val expected = File(expectedRoot, relativePath)
       if (!expected.exists()) {
@@ -96,13 +96,19 @@ class CodeGenTest(private val folder: File) {
         jvmTarget = "1.8"
         sources = kotlinFiles
 
-        val expectedWarnings = folder.name in listOf("deprecation", "custom_scalar_type_warnings")
+        val expectedWarnings = folder.name in listOf("deprecation", "custom_scalar_type_warnings", "arguments_complex", "arguments_simple")
         allWarningsAsErrors = expectedWarnings.not()
         inheritClassPath = true
         messageOutputStream = System.out // see diagnostics in real time
       }.compile()
 
-      assertThat(result.exitCode).isEqualTo(KotlinCompilation.ExitCode.OK)
+      if (result.exitCode != KotlinCompilation.ExitCode.OK) {
+        val compilationErrorMessages = "\\ne: .*\\n+".toRegex().find(result.messages)?.groupValues ?: emptyList()
+        val errorMessages = compilationErrorMessages.joinToString(prefix = "\n", separator = "\n", postfix = "\n") {
+          "`${it.replace("\n", "")}`"
+        }
+        fail("Failed to compile generated Kotlin files due to compiler errors: $errorMessages")
+      }
     }
   }
 
@@ -173,6 +179,13 @@ class CodeGenTest(private val folder: File) {
         else -> OperationIdGenerator.Sha256()
       }
 
+      val enumAsSealedClassPatternFilters = when(folder.name) {
+        "arguments_complex" -> listOf(".*") // test all pattern matching
+        "arguments_simple" -> listOf("Bla-bla", "Yada-yada", "Ep.*de") // test multiple pattern matching
+        "enum_type" -> listOf("Bla") // test not matching
+        else -> emptyList()
+      }
+
       val ir = GraphQLDocumentParser(schema, packageNameProvider).parse(setOf(graphQLFile))
       val language = if (generateKotlinModels) "kotlin" else "java"
       return GraphQLCompiler.Arguments(
@@ -189,7 +202,8 @@ class CodeGenTest(private val folder: File) {
           generateVisitorForPolymorphicDatatypes = generateVisitorForPolymorphicDatatypes,
           packageNameProvider = packageNameProvider,
           generateAsInternal = generateAsInternal,
-          kotlinMultiPlatformProject = true
+          kotlinMultiPlatformProject = true,
+          enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters
       )
     }
 

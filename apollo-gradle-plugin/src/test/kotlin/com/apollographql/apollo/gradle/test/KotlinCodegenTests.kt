@@ -4,9 +4,7 @@ import com.apollographql.apollo.gradle.internal.child
 import com.apollographql.apollo.gradle.util.TestUtils
 import com.apollographql.apollo.gradle.util.TestUtils.withProject
 import com.apollographql.apollo.gradle.util.generatedChild
-import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.CoreMatchers
-import org.junit.Assert
 import org.junit.Assert.assertThat
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -64,6 +62,36 @@ class KotlinCodegenTests {
 
       assertTrue(dir.generatedChild("main/service/com/example/fragment/SpeciesInformation.kt").isFile)
       assertThat(dir.generatedChild("main/service/com/example/fragment/SpeciesInformation.kt").readText(), CoreMatchers.containsString("internal data class"))
+    }
+  }
+
+  @Test
+  fun `when sealedClassesForEnumsMatching to match all - generated enum type as sealed class`() {
+    val apolloConfiguration = """
+      apollo {
+        service("githunt") {
+          sourceFolder = "githunt"
+        }
+        generateKotlinModels = true
+        sealedClassesForEnumsMatching = [".*"]
+      }
+    """.trimIndent()
+    withProject(
+        usesKotlinDsl = false,
+        apolloConfiguration = apolloConfiguration,
+        plugins = listOf(TestUtils.javaPlugin, TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin)
+    ) { dir ->
+      val source = TestUtils.fixturesDirectory()
+
+      val target = dir.child("src", "main", "graphql", "githunt")
+      source.child("githunt").copyRecursively(target = target, overwrite = true)
+
+      dir.child("src", "main", "graphql", "com").deleteRecursively()
+
+      TestUtils.executeTask("build", dir)
+
+      assertTrue(dir.generatedChild("main/githunt/type/FeedType.kt").isFile)
+      assertThat(dir.generatedChild("main/githunt/type/FeedType.kt").readText(), CoreMatchers.containsString("sealed class"))
     }
   }
 }
