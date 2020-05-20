@@ -1,5 +1,5 @@
 ---
-title: Coroutines Support 
+title: Kotlin coroutines
 ---
 
 The Apollo GraphQL client comes with coroutines support with the following extensions:

@@ -1,5 +1,5 @@
 ---
-title: Mutation
+title: Mutations
 ---
 
 Queries are useful to fetch data from a server, but client-server communication may also require sending data to the server. This is where Mutations become handy.
@@ -108,6 +108,46 @@ apolloClient
 In GraphQL, mutations can return any type, and that type can be queried just like a regular GraphQL query. So the question is - what type should a particular mutation return?
 
 In most cases, the data available from a mutation result should be the server developer's best guess of the data a client would need to understand what happened on the server. For example, a mutation that creates a new comment on a blog post might return the comment itself. A mutation that reorders an array might need to return the whole array.
+
+## Uploading files
+
+Apollo Android supports file uploading over [graphql-multipart-request-spec](https://github.com/jaydenseric/graphql-multipart-request-spec).
+
+You need to define this mapping in your build.gradle file.
+
+```gradle
+apollo {
+  customTypeMapping = [
+    "Upload" : "com.apollographql.apollo.api.FileUpload"
+  ]
+}
+```
+
+**Note** You don't need to register custom type adapter for `FileUpload`.
+
+In this example, the GraphQL schema uses custom scalar type named `Upload` for file upload. 
+Change it to match your GraphQL schema.
+
+Create graphql mutation.
+
+```
+mutation SingleUpload($file: Upload!) {
+  singleUpload(file: $file) {
+    id
+    path
+    filename
+    mimetype
+  }
+}
+```
+
+Call your mutation with mimetype and a valid `File`.
+
+```java
+  mutationSingle = SingleUploadMutation.builder()
+        .file(new FileUpload("image/jpg", new File("/my/image.jpg")))
+        .build();
+```
 
 ## Next steps
 

@@ -8,7 +8,7 @@ module.exports = {
       options: {
         ...themeOptions,
         root: __dirname,
-        subtitle: 'Apollo Android Guide',
+        subtitle: 'Client (Android)',
         description: 'A guide to using Apollo with Android',
         githubRepo: 'apollographql/apollo-android',
         sidebarCategories: {
@@ -16,24 +16,23 @@ module.exports = {
             'index',
             'essentials/get-started',
           ],
-          Essentials: [
-            'essentials/get-started',
+          'Fetching data': [
             'essentials/queries',
             'essentials/mutations',
-            'essentials/plugin-configuration',
             'essentials/caching',
-            'essentials/migration',
-          ],
-          Advanced: [
-            'advanced/android',
-            'advanced/coroutines',
-            'advanced/file-upload',
-            'advanced/multiplatform',
-            'advanced/no-runtime',
             'advanced/persisted-queries',
+          ],
+          'Languages & Extensions': [
+            'advanced/coroutines',
+            'advanced/multiplatform',
             'advanced/rxjava2',
-            'advanced/subscriptions'
-          ]
+          ],
+          Reference: [
+            'essentials/plugin-configuration',
+            'advanced/android',
+            'essentials/migration',
+            'advanced/no-runtime',
+          ],
         }
       }
     }
