@@ -113,7 +113,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
     val schema = Schema.invoke(realSchemaFile)
 
     val packageNameProvider = DefaultPackageNameProvider(
-        rootFolders = rootFolders.get(),
+        rootFolders = rootFolders.get().map { project.file(it) },
         rootPackageName = rootPackageName.getOrElse(""),
         schemaFile = realSchemaFile
     )

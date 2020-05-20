@@ -2,8 +2,8 @@ package com.apollographql.apollo.compiler
 
 import java.io.File
 
-class DefaultPackageNameProvider(rootFolders: Collection<String>, schemaFile: File, private val rootPackageName: String) : PackageNameProvider {
-  private val roots = rootFolders.map(::File).map { File(it.absolutePath).normalize() }
+class DefaultPackageNameProvider(rootFolders: Collection<File>, schemaFile: File, private val rootPackageName: String) : PackageNameProvider {
+  private val roots = rootFolders.map { File(it.absolutePath).normalize() }
   private val schemaPackageName = try {
     filePackageName(schemaFile.absolutePath)
   } catch (e: IllegalArgumentException) {
