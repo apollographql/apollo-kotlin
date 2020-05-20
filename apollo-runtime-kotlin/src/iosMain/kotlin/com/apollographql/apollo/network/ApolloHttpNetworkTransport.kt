@@ -168,8 +168,8 @@ actual class ApolloHttpNetworkTransport(
     )
 
     val httpHeaders = httpResponse.allHeaderFields
-        .mapKeys { it.toString() }
-        .mapValues { it.toString() }
+        .map { (key, value) -> key.toString() to value.toString() }
+        .toMap()
 
     val statusCode = httpResponse.statusCode.toInt()
     if (statusCode !in 200..299) return Result.Failure(

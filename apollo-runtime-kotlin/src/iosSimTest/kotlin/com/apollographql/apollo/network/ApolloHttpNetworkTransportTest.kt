@@ -18,6 +18,8 @@ import platform.Foundation.NSHTTPURLResponse
 import platform.Foundation.NSURL
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 @ApolloExperimental
 @ExperimentalCoroutinesApi
@@ -51,9 +53,12 @@ class ApolloHttpNetworkTransportTest {
           mockResponse = MockHttpResponse(
               httpResponse = NSHTTPURLResponse(
                   uRL = NSURL(string = "https://apollo.com"),
-                  statusCode = 404L,
+                  statusCode = 404,
                   HTTPVersion = null,
-                  headerFields = null
+                  headerFields = mapOf<Any?, Any>(
+                      "header1" to "header1Value",
+                      "header2" to "header2Value"
+                  )
               )
           )
       )
@@ -64,7 +69,10 @@ class ApolloHttpNetworkTransportTest {
         networkTransport.execute(request = mockGraphQLRequest(), executionContext = ExecutionContext.Empty).single()
       }
     } catch (e: ApolloException) {
-      assertEquals(e.error, ApolloError.Network)
+      assertTrue(e.error is ApolloError.Http)
+      assertEquals(404, (e.error as ApolloError.Http).statusCode)
+      assertEquals("header1Value", (e.error as ApolloError.Http).headers["header1"])
+      assertEquals("header2Value", (e.error as ApolloError.Http).headers["header2"])
     }
   }
 
@@ -82,6 +90,10 @@ class ApolloHttpNetworkTransportTest {
     }
 
     assertEquals("{\"data\":{\"name\":\"MockQuery\"}}", response.body.readUtf8())
+    assertNotNull(response.executionContext[HttpExecutionContext.Response])
+    assertEquals(200, response.executionContext[HttpExecutionContext.Response]?.statusCode)
+    assertEquals("header1Value", response.executionContext[HttpExecutionContext.Response]?.headers?.get("header1"))
+    assertEquals("header2Value", response.executionContext[HttpExecutionContext.Response]?.headers?.get("header2"))
   }
 
   @Test
@@ -128,7 +140,10 @@ class ApolloHttpNetworkTransportTest {
             uRL = NSURL(string = "https://apollo.com"),
             statusCode = 200L,
             HTTPVersion = null,
-            headerFields = null
+            headerFields = mapOf<Any?, Any>(
+                "header1" to "header1Value",
+                "header2" to "header2Value"
+            )
         ),
         httpData = "{\"data\":{\"name\":\"MockQuery\"}}".encodeUtf8().toByteArray().toNSData()
     )
