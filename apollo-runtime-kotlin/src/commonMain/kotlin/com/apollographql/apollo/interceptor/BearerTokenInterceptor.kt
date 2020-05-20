@@ -6,7 +6,6 @@ import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.network.HttpExecutionContext
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.retry
@@ -15,7 +14,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 @ApolloExperimental
-class OauthInterceptor(private val accessTokenProvider: AccessTokenProvider) : ApolloRequestInterceptor {
+class BearerTokenInterceptor(private val tokenProvider: TokenProvider) : ApolloRequestInterceptor {
   val mutex = Mutex()
 
   private fun <T> ApolloRequest<T>.withHeader(name: String, value: String): ApolloRequest<T> {
@@ -51,7 +50,7 @@ class OauthInterceptor(private val accessTokenProvider: AccessTokenProvider) : A
 
   override fun <T> intercept(request: ApolloRequest<T>, interceptorChain: ApolloInterceptorChain): Flow<Response<T>> {
     return flow {
-      val token = mutex.withLock { accessTokenProvider.currentToken() }
+      val token = mutex.withLock { tokenProvider.currentToken() }
       emit(token)
     }.map { token ->
       proceedWithToken(request, interceptorChain, token)
@@ -59,7 +58,7 @@ class OauthInterceptor(private val accessTokenProvider: AccessTokenProvider) : A
       val shouldRenewToken = error is ApolloException && error.error is ApolloError.Network && error.executionContext[HttpExecutionContext.Response]?.statusCode == 401
       shouldRenewToken.also { renewToken ->
         if (renewToken) mutex.withLock {
-          accessTokenProvider.renewToken()
+          tokenProvider.renewToken()
         }
       }
     }

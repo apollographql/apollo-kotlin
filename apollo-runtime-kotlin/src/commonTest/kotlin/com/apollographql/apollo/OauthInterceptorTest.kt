@@ -2,12 +2,9 @@ package com.apollographql.apollo
 
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
-import com.apollographql.apollo.interceptor.AccessTokenProvider
-import com.apollographql.apollo.interceptor.OauthInterceptor
-import com.apollographql.apollo.mock.MockNetworkTransport
+import com.apollographql.apollo.interceptor.BearerTokenInterceptor
 import com.apollographql.apollo.mock.MockQuery
-import com.apollographql.apollo.mock.TestAccessTokenProvider
-import com.apollographql.apollo.mock.TestLoggerExecutor
+import com.apollographql.apollo.mock.TestTokenProvider
 import com.apollographql.apollo.network.GraphQLRequest
 import com.apollographql.apollo.network.GraphQLResponse
 import com.apollographql.apollo.network.HttpExecutionContext
@@ -18,7 +15,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.single
 import okio.Buffer
 import okio.ByteString.Companion.encodeUtf8
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -64,7 +60,7 @@ class OauthInterceptorTest {
     val networkTransport = AuthenticatedNetworkTransport()
     return ApolloClient(
         networkTransport = networkTransport,
-        interceptors = listOf(OauthInterceptor(TestAccessTokenProvider(
+        interceptors = listOf(BearerTokenInterceptor(TestTokenProvider(
             currentAccessToken,
             newAccessToken
         )))
