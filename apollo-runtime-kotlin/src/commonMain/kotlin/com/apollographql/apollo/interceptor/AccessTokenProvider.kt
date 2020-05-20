@@ -1,6 +1,6 @@
 package com.apollographql.apollo.interceptor
 
 interface AccessTokenProvider {
-  suspend fun currentAccessToken(): String
-  suspend fun newAccessToken(previousToken: String): String
+  suspend fun currentToken(): String
+  suspend fun renewToken(): String
 }

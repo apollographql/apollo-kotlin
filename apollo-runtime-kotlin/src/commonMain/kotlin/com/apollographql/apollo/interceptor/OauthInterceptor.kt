@@ -6,11 +6,18 @@ import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.network.HttpExecutionContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 @ApolloExperimental
 class OauthInterceptor(private val accessTokenProvider: AccessTokenProvider) : ApolloRequestInterceptor {
+  val mutex = Mutex()
+
   private fun <T> ApolloRequest<T>.withHeader(name: String, value: String): ApolloRequest<T> {
     val httpRequestContext = executionContext[HttpExecutionContext.Request]
         ?: HttpExecutionContext.Request(emptyMap())
@@ -44,18 +51,15 @@ class OauthInterceptor(private val accessTokenProvider: AccessTokenProvider) : A
 
   override fun <T> intercept(request: ApolloRequest<T>, interceptorChain: ApolloInterceptorChain): Flow<Response<T>> {
     return flow {
-      val token = accessTokenProvider.currentAccessToken()
-
-      try {
-        val response = proceedWithToken(request, interceptorChain, token)
-        emit(response)
-      } catch (e: ApolloException) {
-        if (e.error == ApolloError.Network
-            && e.executionContext[HttpExecutionContext.Response]?.statusCode == 401) {
-          val newToken = accessTokenProvider.newAccessToken(token)
-          emit(proceedWithToken(request, interceptorChain, newToken))
-        } else {
-          throw e
+      val token = mutex.withLock { accessTokenProvider.currentToken() }
+      emit(token)
+    }.map { token ->
+      proceedWithToken(request, interceptorChain, token)
+    }.retry { error ->
+      val shouldRenewToken = error is ApolloException && error.error is ApolloError.Network && error.executionContext[HttpExecutionContext.Response]?.statusCode == 401
+      shouldRenewToken.also { renewToken ->
+        if (renewToken) mutex.withLock {
+          accessTokenProvider.renewToken()
         }
       }
     }
