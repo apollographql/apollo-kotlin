@@ -15,7 +15,7 @@ enum CallState {
     }
 
     String expected(CallState... acceptableStates) {
-      StringBuilder stringBuilder = new StringBuilder("Expected: " + callState.name() + ", but found [");
+      StringBuilder stringBuilder = new StringBuilder("Found: " + callState.name() + ", but expected [");
       String deliminator = "";
       for (CallState state : acceptableStates) {
         stringBuilder.append(deliminator).append(state.name());
