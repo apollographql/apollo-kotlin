@@ -1,11 +1,10 @@
-
 buildscript {
-    apply(from = "../../../gradle/dependencies.gradle")
+    apply(from = "../../../../gradle/dependencies.gradle")
 
     repositories {
         jcenter()
         maven {
-            url = uri("../../../build/localMaven")
+            url = uri("../../../../build/localMaven")
         }
     }
     dependencies {
@@ -14,8 +13,3 @@ buildscript {
     }
 }
 
-subprojects {
-    repositories {
-        jcenter()
-    }
-}

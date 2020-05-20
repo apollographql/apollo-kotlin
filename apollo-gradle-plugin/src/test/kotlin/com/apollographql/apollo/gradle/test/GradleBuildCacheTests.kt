@@ -11,31 +11,19 @@ class GradleBuildCacheTests {
 
   @Test
   fun `generate apollo classes task is cached`() {
-    TestUtils.withSimpleProject { dir ->
+    TestUtils.withDirectory { dir ->
+      val project1 = File(dir, "project1")
+      val project2 = File(dir, "project2")
+      File(System.getProperty("user.dir"), "testProjects/buildCache").copyRecursively(project1)
+      File(System.getProperty("user.dir"), "testProjects/buildCache").copyRecursively(project2)
 
-      val buildCacheDir = dir.child("buildCache")
+      System.out.println("building project1")
+      var result = TestUtils.executeTask("generateMainServiceApolloSources", project1, "--build-cache")
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":module:generateMainServiceApolloSources")!!.outcome)
 
-      File(dir, "settings.gradle").appendText("""
-        
-        buildCache {
-            local {
-                directory '${buildCacheDir.absolutePath}'
-            }
-        }
-      """.trimIndent())
-
-      System.out.println("build the project")
-      var result = TestUtils.executeTask("generateMainServiceApolloSources", dir, "--build-cache")
-
-      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainServiceApolloSources")!!.outcome)
-
-      System.out.println("delete build folder")
-      dir.child("build").deleteRecursively()
-
-      System.out.println("build from cache")
-      result = TestUtils.executeTask("generateMainServiceApolloSources", dir, "--build-cache")
-
-      Assert.assertEquals(TaskOutcome.FROM_CACHE, result.task(":generateMainServiceApolloSources")!!.outcome)
+      System.out.println("building project2")
+      result = TestUtils.executeTask("generateMainServiceApolloSources", project2, "--build-cache")
+      Assert.assertEquals(TaskOutcome.FROM_CACHE, result.task(":module:generateMainServiceApolloSources")!!.outcome)
     }
   }
 }
