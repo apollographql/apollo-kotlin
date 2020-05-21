@@ -132,9 +132,9 @@ class RealResponseWriter(private val operationVariables: Operation.Variables, pr
     }
   }
 
-  private fun resolveObjectFields(fieldDescriptor: FieldDescriptor?,
+  private fun resolveObjectFields(fieldDescriptor: FieldDescriptor,
                                   rawFieldValues: Map<String, Any>?, delegate: ResolveDelegate<Map<String, Any>?>) {
-    delegate.willResolveObject(fieldDescriptor!!.field, rawFieldValues)
+    delegate.willResolveObject(fieldDescriptor.field, rawFieldValues)
     val value = fieldDescriptor.value
     if (value == null) {
       delegate.didResolveNull()
