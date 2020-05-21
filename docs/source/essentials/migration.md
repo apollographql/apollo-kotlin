@@ -1,5 +1,5 @@
 ---
-title: Migration Guides
+title: Migration guides
 ---
 
 ## Migrating to 2.x

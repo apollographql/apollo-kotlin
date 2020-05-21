@@ -1,8 +1,8 @@
 ---
-title: Gradle Configuration 
+title: Gradle configuration options
 ---
 
-Apollo Android comes with logical defaults that will work for the majority of use cases. If you're getting started, please read the main [README.md](https://github.com/apollographql/apollo-android/blob/master/README.md) for an overview of the most common options. This page describes the different options individually.
+Apollo Android comes with logical defaults that will work for the majority of use cases. If you're getting started, see the [getting started guide](./get-started/) for an overview of the most common options. This page describes the different options individually.
  
 ## ApolloExtension, Services and CompilationUnit
 
@@ -182,8 +182,3 @@ The up-to-date list of options can be found in [CompilerParams](https://github.c
    */
   val generateAsInternal: Property<Boolean>
 ```
-
-
-
-
-
