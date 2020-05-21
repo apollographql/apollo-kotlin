@@ -74,14 +74,14 @@ class RealResponseWriter(private val operationVariables: Operation.Variables, pr
     buffer[field.responseName] = FieldDescriptor(field, value)
   }
 
-  private fun rawFieldValues(buffer: Map<String, FieldDescriptor>?): Map<String, Any?> {
+  private fun rawFieldValues(buffer: Map<String, FieldDescriptor>): Map<String, Any?> {
     val fieldValues: MutableMap<String, Any?> = LinkedHashMap()
-    for ((fieldResponseName, value) in buffer!!) {
+    for ((fieldResponseName, value) in buffer) {
       val fieldValue = value.value
       if (fieldValue == null) {
         fieldValues[fieldResponseName] = null
       } else if (fieldValue is Map<*, *>) {
-        val nestedMap = rawFieldValues(fieldValue as Map<String, FieldDescriptor>?)
+        val nestedMap = rawFieldValues(fieldValue as Map<String, FieldDescriptor>)
         fieldValues[fieldResponseName] = nestedMap
       } else if (fieldValue is List<*>) {
         fieldValues[fieldResponseName] = rawListFieldValues(fieldValue)
