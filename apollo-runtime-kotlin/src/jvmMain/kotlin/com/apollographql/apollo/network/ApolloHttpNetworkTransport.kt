@@ -1,6 +1,5 @@
 package com.apollographql.apollo.network
 
-import com.apollographql.apollo.ApolloError
 import com.apollographql.apollo.ApolloException
 import com.apollographql.apollo.ApolloHttpException
 import com.apollographql.apollo.ApolloNetworkException
