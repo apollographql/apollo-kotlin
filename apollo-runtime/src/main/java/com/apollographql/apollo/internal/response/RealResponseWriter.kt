@@ -150,17 +150,21 @@ class RealResponseWriter(private val operationVariables: Operation.Variables, pr
       delegate.didResolveNull()
       return
     }
-    for (i in fieldValues.indices) {
+    fieldValues.forEachIndexed { i, fieldValue ->
       delegate.willResolveElement(i)
-      val fieldValue = fieldValues[i]!!
-      if (fieldValue is Map<*, *>) {
-        delegate.willResolveObject(listResponseField, rawFieldValues!![i] as Map<String, Any>?)
-        resolveFields(operationVariables, delegate, fieldValue as Map<String, FieldDescriptor>)
-        delegate.didResolveObject(listResponseField, rawFieldValues[i] as Map<String, Any>?)
-      } else if (fieldValue is List<*>) {
-        resolveListField(listResponseField, fieldValue, rawFieldValues!![i] as List<*>?, delegate)
-      } else {
-        delegate.didResolveScalar(rawFieldValues!![i])
+
+      when (fieldValue) {
+        is Map<*, *> -> {
+          delegate.willResolveObject(listResponseField, rawFieldValues!![i] as Map<String, Any>?)
+          resolveFields(operationVariables, delegate, fieldValue as Map<String, FieldDescriptor>)
+          delegate.didResolveObject(listResponseField, rawFieldValues[i] as Map<String, Any>?)
+        }
+        is List<*> -> {
+          resolveListField(listResponseField, fieldValue, rawFieldValues!![i] as List<*>?, delegate)
+        }
+        else -> {
+          delegate.didResolveScalar(rawFieldValues!![i])
+        }
       }
       delegate.didResolveElement(i)
     }
@@ -189,7 +193,7 @@ class RealResponseWriter(private val operationVariables: Operation.Variables, pr
     }
 
     override fun writeCustom(scalarType: ScalarType, value: Any?) {
-      val typeAdapter= scalarTypeAdapters.adapterFor<Any>(scalarType)
+      val typeAdapter = scalarTypeAdapters.adapterFor<Any>(scalarType)
       accumulator.add(if (value != null) typeAdapter.encode(value).value else null)
     }
 
@@ -203,7 +207,7 @@ class RealResponseWriter(private val operationVariables: Operation.Variables, pr
       if (items == null) {
         accumulator.add(null)
       } else {
-        val nestedAccumulated= ArrayList<Any?>()
+        val nestedAccumulated = ArrayList<Any?>()
         listWriter.write(items, ListItemWriter(operationVariables, scalarTypeAdapters, nestedAccumulated))
         accumulator.add(nestedAccumulated)
       }
