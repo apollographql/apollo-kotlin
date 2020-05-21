@@ -107,9 +107,9 @@ class RealResponseWriter(private val operationVariables: Operation.Variables, pr
   }
 
   private fun resolveFields(operationVariables: Operation.Variables,
-                            delegate: ResolveDelegate<Map<String, Any>?>, buffer: Map<String, FieldDescriptor>?) {
+                            delegate: ResolveDelegate<Map<String, Any>?>, buffer: Map<String, FieldDescriptor>) {
     val rawFieldValues = rawFieldValues(buffer)
-    for (fieldResponseName in buffer!!.keys) {
+    for (fieldResponseName in buffer.keys) {
       val fieldDescriptor = buffer[fieldResponseName]
       val rawFieldValue = rawFieldValues[fieldResponseName]
       delegate.willResolve(fieldDescriptor!!.field, operationVariables, fieldDescriptor.value)
@@ -135,10 +135,11 @@ class RealResponseWriter(private val operationVariables: Operation.Variables, pr
   private fun resolveObjectFields(fieldDescriptor: FieldDescriptor?,
                                   rawFieldValues: Map<String, Any>?, delegate: ResolveDelegate<Map<String, Any>?>) {
     delegate.willResolveObject(fieldDescriptor!!.field, rawFieldValues)
-    if (fieldDescriptor.value == null) {
+    val value = fieldDescriptor.value
+    if (value == null) {
       delegate.didResolveNull()
     } else {
-      resolveFields(operationVariables, delegate, fieldDescriptor.value as Map<String, FieldDescriptor>?)
+      resolveFields(operationVariables, delegate, value as Map<String, FieldDescriptor>)
     }
     delegate.didResolveObject(fieldDescriptor.field, rawFieldValues)
   }
