@@ -123,6 +123,9 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
 
   Set<String> cacheResponse(final InterceptorResponse networkResponse,
       final InterceptorRequest request) {
+    if (networkResponse.parsedResponse.isPresent() && networkResponse.parsedResponse.get().hasErrors()) {
+      return Collections.emptySet();
+    }
     final Optional<List<Record>> records = networkResponse.cacheRecords.map(
         new Function<Collection<Record>, List<Record>>() {
           @NotNull @Override public List<Record> apply(@NotNull Collection<Record> records) {

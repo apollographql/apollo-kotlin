@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import static com.google.common.truth.Truth.assertThat;
 
 @SuppressWarnings("unchecked") public class ApolloExceptionTest {
-  private static long TIMEOUT_SECONDS = 2;
+  private static long timeoutSeconds = 2;
 
   @Rule public final MockWebServer server = new MockWebServer();
   private ApolloClient apolloClient;
@@ -41,8 +41,8 @@ import static com.google.common.truth.Truth.assertThat;
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(new OkHttpClient.Builder()
-            .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
-            .readTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .connectTimeout(timeoutSeconds, TimeUnit.SECONDS)
+            .readTimeout(timeoutSeconds, TimeUnit.SECONDS)
             .build())
         .build();
 
@@ -97,7 +97,11 @@ import static com.google.common.truth.Truth.assertThat;
         throw new UnsupportedOperationException();
       }
 
-      @NotNull @Override public ByteString composeRequestBody(boolean autoPersistQueries, boolean withQueryDocument, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+      @NotNull @Override public ByteString composeRequestBody(
+          boolean autoPersistQueries,
+          boolean withQueryDocument,
+          @NotNull ScalarTypeAdapters scalarTypeAdapters
+      ) {
         return OperationRequestBodyComposer.compose(this, autoPersistQueries, withQueryDocument, scalarTypeAdapters);
       }
 
@@ -125,7 +129,7 @@ import static com.google.common.truth.Truth.assertThat;
           }
         })
         .test()
-        .awaitDone(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+        .awaitDone(timeoutSeconds, TimeUnit.SECONDS)
         .assertError(ApolloHttpException.class);
 
     ApolloHttpException e = (ApolloHttpException) errorRef.get();
@@ -140,7 +144,7 @@ import static com.google.common.truth.Truth.assertThat;
     Rx2Apollo
         .from(apolloClient.prefetch(emptyQuery))
         .test()
-        .awaitDone(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+        .awaitDone(timeoutSeconds, TimeUnit.SECONDS)
         .assertNoValues()
         .assertError(ApolloHttpException.class);
   }
@@ -149,7 +153,7 @@ import static com.google.common.truth.Truth.assertThat;
     Rx2Apollo
         .from(apolloClient.query(emptyQuery))
         .test()
-        .awaitDone(TIMEOUT_SECONDS * 2, TimeUnit.SECONDS)
+        .awaitDone(timeoutSeconds * 2, TimeUnit.SECONDS)
         .assertNoValues()
         .assertError(new Predicate<Throwable>() {
           @Override public boolean test(Throwable throwable) throws Exception {
@@ -165,7 +169,7 @@ import static com.google.common.truth.Truth.assertThat;
     Rx2Apollo
         .from(apolloClient.prefetch(emptyQuery))
         .test()
-        .awaitDone(TIMEOUT_SECONDS * 2, TimeUnit.SECONDS)
+        .awaitDone(timeoutSeconds * 2, TimeUnit.SECONDS)
         .assertNoValues()
         .assertError(new Predicate<Throwable>() {
           @Override public boolean test(Throwable throwable) throws Exception {
@@ -182,7 +186,7 @@ import static com.google.common.truth.Truth.assertThat;
     Rx2Apollo
         .from(apolloClient.query(emptyQuery))
         .test()
-        .awaitDone(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+        .awaitDone(timeoutSeconds, TimeUnit.SECONDS)
         .assertNoValues()
         .assertError(new Predicate<Throwable>() {
           @Override public boolean test(Throwable throwable) throws Exception {
