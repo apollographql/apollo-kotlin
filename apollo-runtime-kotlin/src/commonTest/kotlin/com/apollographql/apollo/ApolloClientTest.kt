@@ -69,8 +69,7 @@ class ApolloClientTest {
 
     assertTrue(result.isFailure)
     result.onFailure { e ->
-      assertTrue(e is ApolloException)
-      assertTrue(e.error is ApolloError.ParseError)
+      assertTrue(e is ApolloParseException)
     }
   }
 

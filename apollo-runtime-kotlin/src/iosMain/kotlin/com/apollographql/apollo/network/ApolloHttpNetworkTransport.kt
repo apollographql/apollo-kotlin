@@ -1,7 +1,8 @@
 package com.apollographql.apollo.network
 
-import com.apollographql.apollo.ApolloError
 import com.apollographql.apollo.ApolloException
+import com.apollographql.apollo.ApolloHttpException
+import com.apollographql.apollo.ApolloNetworkException
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.internal.json.JsonWriter
@@ -153,18 +154,14 @@ actual class ApolloHttpNetworkTransport(
       error: NSError?
   ): Result {
     if (error != null) return Result.Failure(
-        cause = ApolloException(
-            error = ApolloError.Network,
+        cause = ApolloNetworkException(
             message = "Failed to execute GraphQL http network request",
             cause = IOException(error.localizedDescription)
         )
     )
 
     if (httpResponse == null) return Result.Failure(
-        cause = ApolloException(
-            error = ApolloError.Network,
-            message = "Failed to parse GraphQL http network response: EOF"
-        )
+        cause = ApolloNetworkException("Failed to parse GraphQL http network response: EOF")
     )
 
     val httpHeaders = httpResponse.allHeaderFields
@@ -173,21 +170,17 @@ actual class ApolloHttpNetworkTransport(
 
     val statusCode = httpResponse.statusCode.toInt()
     if (statusCode !in 200..299) return Result.Failure(
-        cause = ApolloException(
-            error = ApolloError.Http(
-                statusCode = httpResponse.statusCode.toInt(),
-                headers = httpHeaders
-            ),
+        cause = ApolloHttpException(
+            statusCode = httpResponse.statusCode.toInt(),
+            headers = httpHeaders,
             message = "Http request failed with status code `$statusCode`"
         )
     )
 
     if (data == null) return Result.Failure(
-        cause = ApolloException(
-            error = ApolloError.Http(
-                statusCode = httpResponse.statusCode.toInt(),
-                headers = httpHeaders
-            ),
+        cause = ApolloHttpException(
+            statusCode = httpResponse.statusCode.toInt(),
+            headers = httpHeaders,
             message = "Failed to parse GraphQL http network response: EOF"
         )
     )

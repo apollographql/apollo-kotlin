@@ -1,7 +1,7 @@
 package com.apollographql.apollo.network
 
-import com.apollographql.apollo.ApolloError
-import com.apollographql.apollo.ApolloException
+import com.apollographql.apollo.ApolloHttpException
+import com.apollographql.apollo.ApolloNetworkException
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.network.mock.MockHttpResponse
@@ -19,7 +19,6 @@ import platform.Foundation.NSURL
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 @ApolloExperimental
 @ExperimentalCoroutinesApi
@@ -40,8 +39,8 @@ class ApolloHttpNetworkTransportTest {
       runBlocking {
         networkTransport.execute(request = mockGraphQLRequest(), executionContext = ExecutionContext.Empty).single()
       }
-    } catch (e: ApolloException) {
-      assertEquals(e.error, ApolloError.Network)
+    } catch (e: ApolloNetworkException) {
+      // expected
     }
   }
 
@@ -68,11 +67,10 @@ class ApolloHttpNetworkTransportTest {
       runBlocking {
         networkTransport.execute(request = mockGraphQLRequest(), executionContext = ExecutionContext.Empty).single()
       }
-    } catch (e: ApolloException) {
-      assertTrue(e.error is ApolloError.Http)
-      assertEquals(404, (e.error as ApolloError.Http).statusCode)
-      assertEquals("header1Value", (e.error as ApolloError.Http).headers["header1"])
-      assertEquals("header2Value", (e.error as ApolloError.Http).headers["header2"])
+    } catch (e: ApolloHttpException) {
+      assertEquals(404, e.statusCode)
+      assertEquals("header1Value", e.headers["header1"])
+      assertEquals("header2Value", e.headers["header2"])
     }
   }
 

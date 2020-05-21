@@ -1,7 +1,7 @@
 package com.apollographql.apollo.interceptor
 
-import com.apollographql.apollo.ApolloError
-import com.apollographql.apollo.ApolloException
+import com.apollographql.apollo.ApolloParseException
+import com.apollographql.apollo.ApolloSerializationException
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.network.GraphQLRequest
@@ -32,8 +32,7 @@ class NetworkRequestInterceptor(
           scalarTypeAdapters = request.scalarTypeAdapters
       )
     } catch (e: Exception) {
-      throw ApolloException(
-          error = ApolloError.ParseError,
+      throw ApolloParseException(
           message = "Failed to parse GraphQL network response",
           cause = e
       )
@@ -52,8 +51,7 @@ class NetworkRequestInterceptor(
           variables = operation.variables().marshal(scalarTypeAdapters)
       )
     } catch (e: Exception) {
-      throw ApolloException(
-          error = ApolloError.SerializationError,
+      throw ApolloSerializationException(
           message = "Failed to compose GraphQL network request",
           cause = e
       )

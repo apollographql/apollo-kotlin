@@ -2,6 +2,9 @@ package com.apollographql.apollo.network
 
 import com.apollographql.apollo.ApolloError
 import com.apollographql.apollo.ApolloException
+import com.apollographql.apollo.ApolloHttpException
+import com.apollographql.apollo.ApolloNetworkException
+import com.apollographql.apollo.ApolloParseException
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.internal.json.JsonWriter
@@ -63,8 +66,7 @@ actual class ApolloHttpNetworkTransport(
                   override fun onFailure(call: Call, e: IOException) {
                     if (continuation.isCancelled) return
                     continuation.resumeWithException(
-                        ApolloException(
-                            error = ApolloError.Network,
+                        ApolloNetworkException(
                             message = "Failed to execute GraphQL http network request",
                             cause = e
                         )
@@ -81,9 +83,9 @@ actual class ApolloHttpNetworkTransport(
                             continuation.resumeWithException(e)
                           } else {
                             continuation.resumeWithException(
-                                ApolloException(
-                                    error = ApolloError.ParseError,
-                                    message = "Failed to parse GraphQL http network response"
+                                ApolloParseException(
+                                    message = "Failed to parse GraphQL http network response",
+                                    cause = e
                                 )
                             )
                           }
@@ -98,19 +100,15 @@ actual class ApolloHttpNetworkTransport(
 
   @Suppress("UNCHECKED_CAST")
   private fun Response.parse(): GraphQLResponse {
-    if (!isSuccessful) throw ApolloException(
-        error = ApolloError.Http(
-            statusCode = code,
-            headers = headers.toMap()
-        ),
+    if (!isSuccessful) throw ApolloHttpException(
+        statusCode = code,
+        headers = headers.toMap(),
         message = "Http request failed with status code `$code ($message)`"
     )
 
-    val responseBody = body ?: throw ApolloException(
-        error = ApolloError.Http(
-            statusCode = code,
-            headers = headers.toMap()
-        ),
+    val responseBody = body ?: throw ApolloHttpException(
+        statusCode = code,
+        headers = headers.toMap(),
         message = "Failed to parse GraphQL http network response: EOF"
     )
 
