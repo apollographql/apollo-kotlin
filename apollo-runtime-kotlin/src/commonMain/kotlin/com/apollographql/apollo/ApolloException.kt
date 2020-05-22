@@ -1,13 +1,16 @@
 package com.apollographql.apollo
 
-import com.apollographql.apollo.api.ApolloExperimental
-import com.apollographql.apollo.api.ExecutionContext
+sealed class ApolloException(message: String, cause: Throwable?) : RuntimeException(message, cause)
 
-@ApolloExperimental
-class ApolloException(
-    override val message: String,
-    cause: Throwable? = null,
-    val error: ApolloError,
-    val executionContext: ExecutionContext = ExecutionContext.Empty
+class ApolloSerializationException(message: String, cause: Throwable? = null) : ApolloException(message = message, cause = cause)
 
-) : RuntimeException(message, cause)
+class ApolloParseException(message: String, cause: Throwable? = null) : ApolloException(message = message, cause = cause)
+
+class ApolloNetworkException(message: String, cause: Throwable? = null) : ApolloException(message = message, cause = cause)
+
+class ApolloHttpException(
+    val statusCode: Int,
+    val headers: Map<String, String>,
+    message: String,
+    cause: Throwable? = null
+) : ApolloException(message = message, cause = cause)

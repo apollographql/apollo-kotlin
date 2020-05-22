@@ -1,7 +1,7 @@
 package com.apollographql.apollo.interceptor
 
-import com.apollographql.apollo.ApolloError
-import com.apollographql.apollo.ApolloException
+import com.apollographql.apollo.ApolloParseException
+import com.apollographql.apollo.ApolloSerializationException
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.network.GraphQLRequest
@@ -21,7 +21,7 @@ class NetworkRequestInterceptor(
 
   override fun <T> intercept(request: ApolloRequest<T>, interceptorChain: ApolloInterceptorChain): Flow<Response<T>> {
     return flow { emit(request.toNetworkRequest()) }
-        .flatMapLatest { networkRequest -> networkTransport.execute(networkRequest) }
+        .flatMapLatest { networkRequest -> networkTransport.execute(request = networkRequest, executionContext = request.executionContext) }
         .map { networkResponse -> networkResponse.parse(request) }
   }
 
@@ -32,16 +32,14 @@ class NetworkRequestInterceptor(
           scalarTypeAdapters = request.scalarTypeAdapters
       )
     } catch (e: Exception) {
-      throw ApolloException(
+      throw ApolloParseException(
           message = "Failed to parse GraphQL network response",
-          error = ApolloError.ParseError,
-          executionContext = request.executionContext,
           cause = e
       )
     } finally {
       body.close()
     }
-    return response.copy(executionContext = request.executionContext + response.executionContext)
+    return response.copy(executionContext = request.executionContext + executionContext)
   }
 
   private fun ApolloRequest<*>.toNetworkRequest(): GraphQLRequest {
@@ -53,10 +51,8 @@ class NetworkRequestInterceptor(
           variables = operation.variables().marshal(scalarTypeAdapters)
       )
     } catch (e: Exception) {
-      throw ApolloException(
+      throw ApolloSerializationException(
           message = "Failed to compose GraphQL network request",
-          error = ApolloError.SerializationError,
-          executionContext = executionContext,
           cause = e
       )
     }

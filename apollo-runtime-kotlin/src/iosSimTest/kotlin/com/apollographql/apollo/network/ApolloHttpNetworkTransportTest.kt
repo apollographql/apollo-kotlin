@@ -1,12 +1,12 @@
 package com.apollographql.apollo.network
 
-import com.apollographql.apollo.ApolloError
-import com.apollographql.apollo.ApolloException
+import com.apollographql.apollo.ApolloHttpException
+import com.apollographql.apollo.ApolloNetworkException
 import com.apollographql.apollo.api.ApolloExperimental
+import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.network.mock.MockHttpResponse
 import com.apollographql.apollo.network.mock.MockSessionDataTask
 import com.apollographql.apollo.runBlocking
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.single
 import okio.ByteString.Companion.encodeUtf8
@@ -18,7 +18,7 @@ import platform.Foundation.NSHTTPURLResponse
 import platform.Foundation.NSURL
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
+import kotlin.test.assertNotNull
 
 @ApolloExperimental
 @ExperimentalCoroutinesApi
@@ -37,10 +37,10 @@ class ApolloHttpNetworkTransportTest {
 
     try {
       runBlocking {
-        networkTransport.execute(mockGraphQLRequest()).single()
+        networkTransport.execute(request = mockGraphQLRequest(), executionContext = ExecutionContext.Empty).single()
       }
-    } catch (e: ApolloException) {
-      assertEquals(e.error, ApolloError.Network)
+    } catch (e: ApolloNetworkException) {
+      // expected
     }
   }
 
@@ -52,9 +52,12 @@ class ApolloHttpNetworkTransportTest {
           mockResponse = MockHttpResponse(
               httpResponse = NSHTTPURLResponse(
                   uRL = NSURL(string = "https://apollo.com"),
-                  statusCode = 404L,
+                  statusCode = 404,
                   HTTPVersion = null,
-                  headerFields = null
+                  headerFields = mapOf<Any?, Any>(
+                      "header1" to "header1Value",
+                      "header2" to "header2Value"
+                  )
               )
           )
       )
@@ -62,10 +65,12 @@ class ApolloHttpNetworkTransportTest {
 
     try {
       runBlocking {
-        networkTransport.execute(mockGraphQLRequest()).single()
+        networkTransport.execute(request = mockGraphQLRequest(), executionContext = ExecutionContext.Empty).single()
       }
-    } catch (e: ApolloException) {
-      assertEquals(e.error, ApolloError.Network)
+    } catch (e: ApolloHttpException) {
+      assertEquals(404, e.statusCode)
+      assertEquals("header1Value", e.headers["header1"])
+      assertEquals("header2Value", e.headers["header2"])
     }
   }
 
@@ -79,10 +84,14 @@ class ApolloHttpNetworkTransportTest {
     }
 
     val response = runBlocking {
-      networkTransport.execute(mockGraphQLRequest()).single()
+      networkTransport.execute(request = mockGraphQLRequest(), executionContext = ExecutionContext.Empty).single()
     }
 
     assertEquals("{\"data\":{\"name\":\"MockQuery\"}}", response.body.readUtf8())
+    assertNotNull(response.executionContext[HttpExecutionContext.Response])
+    assertEquals(200, response.executionContext[HttpExecutionContext.Response]?.statusCode)
+    assertEquals("header1Value", response.executionContext[HttpExecutionContext.Response]?.headers?.get("header1"))
+    assertEquals("header2Value", response.executionContext[HttpExecutionContext.Response]?.headers?.get("header2"))
   }
 
   @Test
@@ -101,7 +110,7 @@ class ApolloHttpNetworkTransportTest {
     }
 
     runBlocking {
-      networkTransport.execute(mockGraphQLRequest()).single()
+      networkTransport.execute(request = mockGraphQLRequest(), executionContext = ExecutionContext.Empty).single()
     }
   }
 
@@ -129,7 +138,10 @@ class ApolloHttpNetworkTransportTest {
             uRL = NSURL(string = "https://apollo.com"),
             statusCode = 200L,
             HTTPVersion = null,
-            headerFields = null
+            headerFields = mapOf<Any?, Any>(
+                "header1" to "header1Value",
+                "header2" to "header2Value"
+            )
         ),
         httpData = "{\"data\":{\"name\":\"MockQuery\"}}".encodeUtf8().toByteArray().toNSData()
     )
