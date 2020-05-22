@@ -1,15 +1,16 @@
 package com.apollographql.apollo.interceptor
 
-import com.apollographql.apollo.ApolloError
 import com.apollographql.apollo.ApolloException
+import com.apollographql.apollo.ApolloHttpException
+import com.apollographql.apollo.BearerTokenException
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.network.HttpExecutionContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.retry
-import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -31,35 +32,29 @@ class BearerTokenInterceptor(private val tokenProvider: TokenProvider) : ApolloR
     )
   }
 
-  private suspend fun <T> proceedWithToken(request: ApolloRequest<T>, interceptorChain: ApolloInterceptorChain, token: String): Response<T> {
+  private fun <T> proceedWithToken(request: ApolloRequest<T>, interceptorChain: ApolloInterceptorChain, token: String): Flow<Response<T>> {
     val newRequest = request.withHeader("Authorization", "Bearer $token")
-    return try {
-      interceptorChain.proceed(newRequest).single()
-    } catch (e: IllegalStateException) {
-      throw ApolloException(
-          message = "The downstream chain returned more than one response. Put OauthInterceptor just before the NetworkInterceptor",
-          error = ApolloError.Oauth
-      )
-    } catch (e: NoSuchElementException) {
-      throw ApolloException(
-          message = "The downstream chain did not return any response.",
-          error = ApolloError.Oauth
-      )
-    }
+    return interceptorChain.proceed(newRequest)
   }
 
   override fun <T> intercept(request: ApolloRequest<T>, interceptorChain: ApolloInterceptorChain): Flow<Response<T>> {
     return flow {
       val token = mutex.withLock { tokenProvider.currentToken() }
       emit(token)
-    }.map { token ->
-      proceedWithToken(request, interceptorChain, token)
-    }.retry { error ->
-      val shouldRenewToken = error is ApolloException && error.error is ApolloError.Network && error.executionContext[HttpExecutionContext.Response]?.statusCode == 401
-      shouldRenewToken.also { renewToken ->
-        if (renewToken) mutex.withLock {
-          tokenProvider.renewToken()
+    }.flatMapConcat { token ->
+      proceedWithToken(request, interceptorChain, token).catch { exception->
+        if (exception is ApolloHttpException && exception.statusCode == 401) {
+          throw BearerTokenException(message = "Request failed with status code `401`", cause = exception, token = token)
+        } else {
+          throw exception
         }
+      }
+    }.retry(retries = 1) { error ->
+      if (error is BearerTokenException) {
+        tokenProvider.renewToken(error.token)
+        true
+      } else {
+        false
       }
     }
   }

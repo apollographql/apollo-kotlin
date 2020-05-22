@@ -42,13 +42,10 @@ class OauthInterceptorTest {
           )
         }
         else -> {
-          throw ApolloException(
+          throw ApolloHttpException(
               message = "Http request failed with status code `401`",
-              error = ApolloError.Network,
-              executionContext = HttpExecutionContext.Response(
-                  statusCode = 401,
-                  headers = emptyMap()
-              )
+              statusCode = 401,
+              headers = emptyMap()
           )
         }
       })
@@ -92,7 +89,6 @@ class OauthInterceptorTest {
     assertTrue(result.isFailure)
     result.onFailure { e ->
       assertTrue(e is ApolloException)
-      assertTrue(e.error is ApolloError.Network)
     }
   }
 
