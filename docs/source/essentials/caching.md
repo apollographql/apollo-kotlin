@@ -106,7 +106,20 @@ To enable Normalized Disk Cache support, add the dependency to your project's bu
 dependencies {
   implementation("com.apollographql.apollo:apollo-normalized-cache-sqlite:x.y.z")
 }
-```                                                                   
+```
+
+**Note:** As of version 2.1.0, Cache module is published via Kotlin Multiplatform and that requires variant matching in Android projects.
+ Only if you define a custom `buildType` please also put `matchingFallbacks`.
+
+```groovy:title=build.gradle
+android {
+  buildTypes {
+    custom {
+      matchingFallbacks = ["debug"]
+    }
+  }
+}
+```
 
 ### Usage
 
