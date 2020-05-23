@@ -21,7 +21,7 @@ class ValidationTest(name: String, private val graphQLFile: File) {
     val schemaFile = File("src/test/validation/schema.json")
     val schema = Schema(schemaFile)
     val packageNameProvider = DefaultPackageNameProvider(
-        rootFolders = listOf(graphQLFile.parent),
+        rootFolders = listOf(graphQLFile.parentFile),
         schemaFile = schemaFile,
         rootPackageName = ""
     )

@@ -126,7 +126,7 @@ open class ApolloPlugin : Plugin<Project> {
 
         it.graphqlFiles.setFrom(graphqlSourceDirectorySet)
         // I'm not sure if gradle is sensitive to the order of the rootFolders. Sort them just in case.
-        it.rootFolders.set(project.provider { graphqlSourceDirectorySet.srcDirs.map { it.absolutePath }.sorted() })
+        it.rootFolders.set(project.provider { graphqlSourceDirectorySet.srcDirs.map { it.relativeTo(project.projectDir).path }.sorted() })
         it.schemaFile.set(compilerParams.schemaFile)
 
         it.nullableValueType.set(compilerParams.nullableValueType)

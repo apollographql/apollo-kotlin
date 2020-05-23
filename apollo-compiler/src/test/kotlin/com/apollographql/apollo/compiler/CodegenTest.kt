@@ -163,7 +163,7 @@ class CodeGenTest(private val folder: File) {
       val graphQLFile = File(folder, "TestOperation.graphql")
 
       val packageNameProvider = DefaultPackageNameProvider(
-          rootFolders = listOf(folder.absolutePath),
+          rootFolders = listOf(folder),
           schemaFile = schemaJson,
           rootPackageName = "com.example.${folder.name}"
       )
