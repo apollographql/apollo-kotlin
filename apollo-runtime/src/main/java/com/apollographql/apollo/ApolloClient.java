@@ -309,7 +309,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   }
 
   /**
-   * @return The list of {@link ApolloInterceptor}s
+   * @return The list of {@link ApolloInterceptorFactory}
    */
   public List<ApolloInterceptorFactory> getApplicationInterceptorFactories() {
     return Collections.unmodifiableList(applicationInterceptorFactories);
