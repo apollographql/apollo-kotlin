@@ -1,0 +1,98 @@
+---
+title: "1. Configure your project"
+---
+
+In this step, you will import the starter project and add the Apollo-Android SDK to it.
+
+## Clone the starter project
+
+```
+git clone https://github.com/apollographql/apollo-android-tutorial
+cd apollo-android-tutorial
+git checkout initial
+```
+
+At any time, if you want to check the finished result, you can checkout the `master` branch that contains all the code to book your seat.
+
+## Open the project in Android Studio
+
+Android Studio will take some time to index the contents of the project. Take some time to look around. You should see 3 Fragments:
+
+* `LaunchListFragment` is the first fragment. You will display a list of launches there.
+* `LaunchDetailsFragment` will display details about a launch and give you the opportunity to book a seat.
+* `LoginFragment` will allow you to log in before booking the seat.
+
+Build and run the project, you should see an empty app. That's good !
+
+<img src="images/initial.png" alt="The initial state of the project!" class="screenshot" width="300"/>
+
+Now you will add Apollo-Android to the project.
+
+## Get the latest version of Apollo-Android
+
+You can find the latest version of Apollo-Android from the [github releases page](https://github.com/apollographql/apollo-android/releases). It is also displayed at the top of the [apollo-android repo](https://github.com/apollographql/apollo-android/)
+
+This tutorial uses `2.1.0` because it is the latest version at the time of writing but feel free to use a more recent version if one is available when you're reading this.
+
+## Add the plugin to the buildscript
+
+Open the `build.gradle.kts` at the root of the project and add the Apollo Gradle plugin to the buildscript classpath:
+
+```kotlin:title=build.gradle.kts
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath("com.android.tools.build:gradle:3.6.3")
+        // ...
+        classpath("com.apollographql.apollo:apollo-gradle-plugin:2.1.0")
+    }
+}
+```
+
+## Apply the plugin
+
+Apply the Apollo plugin in `app/build.gradle.kts`. There are two `build.gradle.kts` in the project. Make sure to use the one in the `app` directory this time. The Apollo plugin ID is `com.apollographql.apollo`.
+
+```kotlin:title=app/build.gradle.kts
+plugins {
+    id("com.android.application")
+    // ...
+    id("com.apollographql.apollo")
+}
+```
+
+The plugin contains the compiler that will generate models from your queries when you build your project.
+
+## Configure Kotlin
+
+Configure the Apollo plugin to generate Kotlin files instead of Java files. Put this at the end of `app/build.gradle.kts`:
+
+```kotlin:title=app/build.gradle.kts
+apollo {
+    generateKotlinModels.set(true)
+}
+```
+
+## Add dependencies
+
+Now add the Apollo runtime to the list of dependencies. This is the actual code that will run on the device:
+Also add `apollo-coroutines-support`. That will help to schedule the queries.
+
+```groovy:title=app/build.gradle.kts
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    // ...
+    implementation 'com.apollographql.apollo:apollo-runtime:2.1.0'
+    implementation 'com.apollographql.apollo:apollo-coroutines-support:2.1.0'
+    // ...
+}
+```
+
+Android Studio will display a yellow banner, `A project sync may be necessary for the IDE to work properly.` Hit **Sync Now**.
+
+If everything went well, Apollo Android is now added to your project. Next, you will [add the GraphQL schema to the project](02-add-the-graphql-schema).
+

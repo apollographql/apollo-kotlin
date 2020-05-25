@@ -1,0 +1,180 @@
+---
+title: "10. Authenticate your queries"
+---
+
+In this section, you will book a flight 🚀! Booking a flight requires being authenticated to the server so the correct person is sent to space! To do that, and since Apollo-Android is using [OkHttp](https://square.github.io/okhttp/) to handle HTTP requests, you will leverage the OkHttp [Interceptors](https://square.github.io/okhttp/interceptors/) to add headers to your GraphQL requests.
+
+## Add the interceptor
+
+In `Apollo.kt`, add the `AuthorizationInterceptor` class:
+
+```kotlin:title=app/src/main/kotlin/com/example/rocketreserver/Apollo.kt
+private class AuthorizationInterceptor(val context: Context): Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val request = chain.request().newBuilder()
+            .addHeader("Authorization", User.getToken(context) ?: "")
+            .build()
+
+        return chain.proceed(request)
+    }
+}
+```
+
+This interceptor will append a `"Authorization: $token"` HTTP header to every request.
+
+## Use the interceptor
+
+Create a custom OkHttpClient that will use this interceptor and pass it to the ApolloClient:
+
+```kotlin:title=app/src/main/kotlin/com/example/rocketreserver/Apollo.kt
+    instance = ApolloClient.builder()
+        .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/")
+        .okHttpClient(OkHttpClient.Builder()
+            .addInterceptor(AuthorizationInterceptor(context))
+            .build()
+        )
+        .build()
+```
+
+Notice that `Apollo.kt` now requires a context to create the interceptor and read the token from the `EncryptedSharedPreferences`. `apolloClient` cannot be a top level variable anymore so transform it to a top-level method that takes a `context` parameter instead:
+
+```kotlin:title=app/src/main/kotlin/com/example/rocketreserver/Apollo.kt
+fun apolloClient(context: Context): ApolloClient {
+    return ApolloClient.builder()
+        .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/")
+        .okHttpClient(OkHttpClient.Builder()
+            .addInterceptor(AuthorizationInterceptor(context))
+            .build()
+        )
+        .build()
+}
+```
+
+Replace all usages of `apolloClient` with `apolloClient(context)`. There is one instance in each fragment:
+
+```kotlin
+// LaunchListFragment
+apolloClient(requireContext()).query(LaunchListQuery(cursor = Input.fromNullable(cursor))).toDeferred().await()
+
+// LaunchDetailsFragment
+apolloClient(requireContext()).query(LaunchDetailsQuery(id = args.launchId)).toDeferred().await()
+
+// LoginFragment
+apolloClient(requireContext()).mutate(LoginMutation(email = Input.fromNullable(email))).toDeferred().await()
+
+```
+
+Make the `apolloClient` a singleton
+
+There is no need to create a new instance of the apolloClient for each GraphQL request. You can reuse the `apolloClient`:
+
+```
+private var instance: ApolloClient? = null
+
+fun apolloClient(context: Context): ApolloClient {
+    check(Looper.myLooper() == Looper.getMainLooper()) {
+        "Only the main thread can get the apolloClient instance"
+    }
+
+    if (instance != null) {
+        return instance!!
+    }
+
+    instance = ApolloClient.builder()
+        .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/")
+        .okHttpClient(
+            OkHttpClient.Builder()
+            .addInterceptor(AuthorizationInterceptor(context))
+            .build()
+        )
+        .build()
+
+    return instance!!
+}
+```
+
+## Add the BookTrip and CancelTrip mutations
+
+Next to `schema.json` add a `BookTrip.graphql` file:
+
+```graphql:title=app/src/main/graphql/com/example/rocketreserver/BookTrip.graphql
+mutation BookTrip($id:ID!) {
+  bookTrips(launchIds: [$id]) {
+    success
+    message
+    launches {
+      id
+    }
+  }
+}
+```
+
+Notice how the `bookTrips` field takes a list as argument but the mutation itself only take a single variable.
+
+Also add the `CancelTrip.graphql` file. This mutation doesn't use lists:
+
+```graphql:title=app/src/main/graphql/com/example/rocketreserver/CancelTrip.graphql
+mutation CancelTrip($id:ID!) {
+  cancelTrip(launchId: $id) {
+    success
+    message
+    launches {
+      id
+    }
+  }
+}
+```
+
+## Connect the mutations to your UI
+
+Connect the mutations to the **Book Now** button:
+
+Go back to `LaunchDetailsFragment.kt` and in the button click listener, after checking for the user token, add the following code:
+
+```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchDetailsFragment.kt
+binding.bookButton.visibility = View.INVISIBLE
+binding.bookProgressBar.visibility = View.VISIBLE
+
+lifecycleScope.launchWhenResumed {
+    val mutation = if (isBooked) {
+        CancelTripMutation(id = args.launchId)
+    } else {
+        BookTripMutation(id = args.launchId)
+    }
+
+    val response = try {
+        apolloClient(requireContext()).mutate(mutation).toDeferred().await()
+    } catch (e: ApolloException) {
+        configureButton(isBooked)
+        return@launchWhenResumed
+    }
+
+    if (response.hasErrors()) {
+        configureButton(isBooked)
+        return@launchWhenResumed
+    }
+
+    configureButton(!isBooked)
+}
+```
+
+This will send the appropriate mutation based on whether the launch is booked or not.
+
+## Book your trip!
+
+Compile and run your app. You can now book and cancel your trips!
+
+That concludes this tutorial.
+
+## More resources
+
+Use the rest of this documentation for more advanced topics like [Caching](https://www.apollographql.com/docs/android/essentials/caching/)  or [Gradle configuration](https://www.apollographql.com/docs/android/essentials/plugin-configuration/)
+
+Feel free to ask questions by either [opening an issue on our GitHub repo](https://github.com/apollographql/apollo-android/issues) or [stopping by our Spectrum Chat for help](https://spectrum.chat/apollo/apollo-android).
+
+And if you want dig more and see GraphQL in real life apps, you can take a look at these open source projects using Apollo-Android:
+
+* https://github.com/BoD/apollo-graphql-android-sample
+* https://github.com/ZacSweers/CatchUp
+
+
