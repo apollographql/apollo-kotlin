@@ -22,6 +22,7 @@ import com.apollographql.apollo.exception.ApolloParseException;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
+import com.apollographql.apollo.interceptor.ApolloInterceptorFactory;
 import com.apollographql.apollo.internal.interceptor.ApolloAutoPersistedQueryInterceptor;
 import com.apollographql.apollo.internal.interceptor.ApolloCacheInterceptor;
 import com.apollographql.apollo.internal.interceptor.ApolloParseInterceptor;
@@ -65,6 +66,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   final ApolloLogger logger;
   final ApolloCallTracker tracker;
   final List<ApolloInterceptor> applicationInterceptors;
+  final List<ApolloInterceptorFactory> applicationInterceptorFactories;
   final List<OperationName> refetchQueryNames;
   final List<Query> refetchQueries;
   final Optional<QueryReFetcher> queryReFetcher;
@@ -94,6 +96,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     dispatcher = builder.dispatcher;
     logger = builder.logger;
     applicationInterceptors = builder.applicationInterceptors;
+    applicationInterceptorFactories = builder.applicationInterceptorFactories;
     refetchQueryNames = builder.refetchQueryNames;
     refetchQueries = builder.refetchQueries;
     tracker = builder.tracker;
@@ -112,6 +115,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
           .dispatcher(builder.dispatcher)
           .logger(builder.logger)
           .applicationInterceptors(builder.applicationInterceptors)
+          .applicationInterceptorFactories(builder.applicationInterceptorFactories)
           .callTracker(builder.tracker)
           .build());
     }
@@ -309,6 +313,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         .dispatcher(dispatcher)
         .logger(logger)
         .applicationInterceptors(applicationInterceptors)
+        .applicationInterceptorFactories(applicationInterceptorFactories)
         .tracker(tracker)
         .refetchQueryNames(refetchQueryNames)
         .refetchQueries(refetchQueries)
@@ -375,7 +380,18 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     HttpCachePolicy.Policy httpCachePolicy = operation instanceof Query ? this.httpCachePolicy : null;
     ResponseFieldMapper responseFieldMapper = responseFieldMapperFactory.create(operation);
 
-    List<ApolloInterceptor> interceptors = new ArrayList<>(applicationInterceptors);
+    List<ApolloInterceptor> interceptors = new ArrayList<>();
+
+    if (!applicationInterceptorFactories.isEmpty() && !applicationInterceptors.isEmpty()) {
+      throw new IllegalArgumentException("You can either use applicationInterceptors or applicationInterceptorFactories " +
+          "but not both at the same time.");
+    }
+
+    for (ApolloInterceptorFactory factory : applicationInterceptorFactories) {
+      interceptors.add(factory.newInterceptor());
+    }
+    interceptors.addAll(applicationInterceptors);
+
     interceptors.add(responseFetcher.provideInterceptor(logger));
     interceptors.add(new ApolloCacheInterceptor(apolloStore, responseFieldMapper, dispatcher, logger));
     if (operation instanceof Query && enableAutoPersistedQueries) {
@@ -404,6 +420,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     Executor dispatcher;
     ApolloLogger logger;
     List<ApolloInterceptor> applicationInterceptors;
+    List<ApolloInterceptorFactory> applicationInterceptorFactories;
     List<OperationName> refetchQueryNames = emptyList();
     List<Query> refetchQueries = emptyList();
     ApolloCallTracker tracker;
@@ -484,6 +501,11 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
 
     public Builder<T> applicationInterceptors(List<ApolloInterceptor> applicationInterceptors) {
       this.applicationInterceptors = applicationInterceptors;
+      return this;
+    }
+
+    public Builder<T> applicationInterceptorFactories(List<ApolloInterceptorFactory> applicationInterceptorFactories) {
+      this.applicationInterceptorFactories = applicationInterceptorFactories;
       return this;
     }
 
