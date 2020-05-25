@@ -263,8 +263,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   }
 
   /**
-   * @return The {@link ApolloStore} managing access to the normalized cache created by {@link Builder#normalizedCache(NormalizedCacheFactory,
-   * CacheKeyResolver)}  }
+   * @return The {@link ApolloStore} managing access to the normalized cache created by
+   * {@link Builder#normalizedCache(NormalizedCacheFactory, CacheKeyResolver)}  }
    * @deprecated Use getApolloStore() instead.
    */
   @Deprecated
@@ -273,8 +273,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   }
 
   /**
-   * @return The {@link ApolloStore} managing access to the normalized cache created by {@link Builder#normalizedCache(NormalizedCacheFactory,
-   * CacheKeyResolver)}  }
+   * @return The {@link ApolloStore} managing access to the normalized cache created by
+   * {@link Builder#normalizedCache(NormalizedCacheFactory, CacheKeyResolver)}  }
    */
   public ApolloStore getApolloStore() {
     return apolloStore;
