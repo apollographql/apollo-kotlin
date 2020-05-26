@@ -5,7 +5,6 @@
 //
 package com.example.arguments_simple
 
-import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
@@ -40,7 +39,7 @@ import okio.IOException
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
 data class TestQuery(
-  val episode: Input<Episode> = Input.absent(),
+  val episode: Episode? = null,
   val includeName: Boolean,
   val friendsCount: Int,
   val listOfListOfStringArgs: List<List<String?>>
@@ -48,8 +47,8 @@ data class TestQuery(
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
-      if (this@TestQuery.episode.defined) {
-        this["episode"] = this@TestQuery.episode.value
+      if (this@TestQuery.episode != null) {
+        this["episode"] = this@TestQuery.episode
       }
       this["IncludeName"] = this@TestQuery.includeName
       this["friendsCount"] = this@TestQuery.friendsCount
@@ -57,8 +56,8 @@ data class TestQuery(
     }
 
     override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
-      if (this@TestQuery.episode.defined) {
-        writer.writeString("episode", this@TestQuery.episode.value?.rawValue)
+      if (this@TestQuery.episode != null) {
+        writer.writeString("episode", this@TestQuery.episode.rawValue)
       }
       writer.writeBoolean("IncludeName", this@TestQuery.includeName)
       writer.writeInt("friendsCount", this@TestQuery.friendsCount)

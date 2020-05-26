@@ -35,16 +35,12 @@ private val InputType.primaryConstructorSpec: FunSpec
   }
 
 private fun InputType.Field.parameterSpec(): ParameterSpec {
-  val rawTypeName = type.asTypeName()
-  val typeName = when {
-    isOptional -> Input::class.asClassName().parameterizedBy(rawTypeName)
-    else -> rawTypeName
-  }
+  val typeName = type.asTypeName(isOptional)
   val defaultValue = defaultValue
-      ?.toDefaultValueCodeBlock(typeName = rawTypeName, fieldType = type)
+      ?.toDefaultValueCodeBlock(typeName = typeName, fieldType = type)
       .let { code ->
         if (isOptional) {
-          code?.let { CodeBlock.of("%T.optional(%L)", Input::class, it) } ?: CodeBlock.of("%T.absent()", Input::class)
+          code?.let { CodeBlock.of("%L", it) } ?: CodeBlock.of("null")
         } else {
           code
         }
@@ -76,9 +72,9 @@ internal fun InputType.Field.writeCodeBlock(thisRef: String): CodeBlock {
       is FieldType.Scalar.String -> {
         if (isOptional) {
           CodeBlock.builder()
-              .addStatement("if·(this@%L.%L.defined)·{", thisRef, name)
+              .addStatement("if·(this@%L.%L != null)·{", thisRef, name)
               .indent()
-              .addStatement("writer.writeString(%S, this@%L.%L.value)", schemaName, thisRef, name)
+              .addStatement("writer.writeString(%S, this@%L.%L)", schemaName, thisRef, name)
               .unindent()
               .addStatement("}")
               .build()
@@ -89,9 +85,9 @@ internal fun InputType.Field.writeCodeBlock(thisRef: String): CodeBlock {
       is FieldType.Scalar.Int -> {
         if (isOptional) {
           CodeBlock.builder()
-              .addStatement("if·(this@%L.%L.defined)·{", thisRef, schemaName)
+              .addStatement("if·(this@%L.%L != null)·{", thisRef, schemaName)
               .indent()
-              .addStatement("writer.writeInt(%S, this@%L.%L.value)", name, thisRef, name)
+              .addStatement("writer.writeInt(%S, this@%L.%L)", name, thisRef, name)
               .unindent()
               .addStatement("}")
               .build()
@@ -102,9 +98,9 @@ internal fun InputType.Field.writeCodeBlock(thisRef: String): CodeBlock {
       is FieldType.Scalar.Boolean -> {
         if (isOptional) {
           CodeBlock.builder()
-              .addStatement("if·(this@%L.%L.defined)·{", thisRef, name)
+              .addStatement("if·(this@%L.%L != null)·{", thisRef, name)
               .indent()
-              .addStatement("writer.writeBoolean(%S, this@%L.%L.value)", schemaName, thisRef, name)
+              .addStatement("writer.writeBoolean(%S, this@%L.%L)", schemaName, thisRef, name)
               .unindent()
               .addStatement("}")
               .build()
@@ -115,9 +111,9 @@ internal fun InputType.Field.writeCodeBlock(thisRef: String): CodeBlock {
       is FieldType.Scalar.Float -> {
         if (isOptional) {
           CodeBlock.builder()
-              .addStatement("if·(this@%L.%L.defined)·{", thisRef, name)
+              .addStatement("if·(this@%L.%L != null)·{", thisRef, name)
               .indent()
-              .addStatement("writer.writeDouble(%S, this@%L.%L.value)", schemaName, thisRef, name)
+              .addStatement("writer.writeDouble(%S, this@%L.%L)", schemaName, thisRef, name)
               .unindent()
               .addStatement("}")
               .build()
@@ -128,9 +124,9 @@ internal fun InputType.Field.writeCodeBlock(thisRef: String): CodeBlock {
       is FieldType.Scalar.Enum -> {
         if (isOptional) {
           CodeBlock.builder()
-              .addStatement("if·(this@%L.%L.defined)·{", thisRef, name)
+              .addStatement("if·(this@%L.%L != null)·{", thisRef, name)
               .indent()
-              .addStatement("writer.writeString(%S, this@%L.%L.value?.rawValue)", schemaName, thisRef, name)
+              .addStatement("writer.writeString(%S, this@%L.%L.rawValue)", schemaName, thisRef, name)
               .unindent()
               .addStatement("}")
               .build()
@@ -141,10 +137,10 @@ internal fun InputType.Field.writeCodeBlock(thisRef: String): CodeBlock {
       is FieldType.Scalar.Custom -> {
         if (isOptional) {
           CodeBlock.builder()
-              .addStatement("if·(this@%L.%L.defined)·{", thisRef, name)
+              .addStatement("if·(this@%L.%L != null)·{", thisRef, name)
               .indent()
               .addStatement(
-                  "writer.writeCustom(%S, %T.%L, this@%L.%L.value)", schemaName, type.customEnumType.asTypeName(), type.customEnumConst,
+                  "writer.writeCustom(%S, %T.%L, this@%L.%L)", schemaName, type.customEnumType.asTypeName(), type.customEnumConst,
                   thisRef, name
               )
               .unindent()
@@ -159,9 +155,9 @@ internal fun InputType.Field.writeCodeBlock(thisRef: String): CodeBlock {
     is FieldType.Object -> {
       if (isOptional) {
         CodeBlock.builder()
-            .addStatement("if·(this@%L.%L.defined)·{", thisRef, name)
+            .addStatement("if·(this@%L.%L != null)·{", thisRef, name)
             .indent()
-            .addStatement("writer.writeObject(%S, this@%L.%L.value?.marshaller())", schemaName, thisRef, name)
+            .addStatement("writer.writeObject(%S, this@%L.%L.marshaller())", schemaName, thisRef, name)
             .unindent()
             .addStatement("}")
             .build()
@@ -173,8 +169,8 @@ internal fun InputType.Field.writeCodeBlock(thisRef: String): CodeBlock {
       val codeBlockBuilder: CodeBlock.Builder = CodeBlock.Builder()
       if (isOptional) {
         codeBlockBuilder
-            .beginControlFlow("if·(this@%L.%L.defined)", thisRef, name)
-            .add("writer.writeList(%S, this@%L.%L.value?.let { value ->\n", schemaName, thisRef, name)
+            .beginControlFlow("if·(this@%L.%L != null)", thisRef, name)
+            .add("writer.writeList(%S, this@%L.%L.let { value ->\n", schemaName, thisRef, name)
             .indent()
             .beginControlFlow("%T { listItemWriter ->", InputFieldWriter.ListWriter::class)
             .beginControlFlow("value.forEach { value ->")

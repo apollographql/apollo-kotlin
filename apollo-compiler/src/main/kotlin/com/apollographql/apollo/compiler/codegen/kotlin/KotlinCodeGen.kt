@@ -199,9 +199,9 @@ internal object KotlinCodeGen {
         is FieldType.Scalar.Boolean -> CodeBlock.of("readBoolean(%L)%L", field, notNullOperator)
         is FieldType.Scalar.Float -> CodeBlock.of("readDouble(%L)%L", field, notNullOperator)
         is FieldType.Scalar.Enum -> if (optional) {
-          CodeBlock.of("readString(%L)?.let·{ %T.safeValueOf(it) }", field, typeRef.asTypeName())
+          CodeBlock.of("readString(%L)?.let·{ %T.safeValueOf(it) }", field, typeRef.asTypeName().copy(nullable = false))
         } else {
-          CodeBlock.of("%T.safeValueOf(readString(%L)!!)", typeRef.asTypeName(), field)
+          CodeBlock.of("%T.safeValueOf(readString(%L)!!)", typeRef.asTypeName().copy(nullable = false), field)
         }
         is FieldType.Scalar.Custom -> if (field.isNotEmpty()) {
           CodeBlock.of("readCustomType<%T>(%L as %T)%L", ClassName.bestGuess(mappedType), field, ResponseField.CustomTypeField::class,
@@ -259,7 +259,7 @@ internal object KotlinCodeGen {
         is FieldType.Scalar.Int -> CodeBlock.of("reader.readInt()")
         is FieldType.Scalar.Boolean -> CodeBlock.of("reader.readBoolean()")
         is FieldType.Scalar.Float -> CodeBlock.of("reader.readDouble()")
-        is FieldType.Scalar.Enum -> CodeBlock.of("%T.safeValueOf(reader.readString())", typeRef.asTypeName())
+        is FieldType.Scalar.Enum -> CodeBlock.of("%T.safeValueOf(reader.readString())", typeRef.asTypeName().copy(nullable = false))
         is FieldType.Scalar.Custom -> {
           CodeBlock.of("reader.readCustomType<%T>(%T.%L)", ClassName.bestGuess(mappedType), customEnumType.asTypeName(), customEnumConst)
         }
@@ -383,8 +383,7 @@ internal object KotlinCodeGen {
       PropertySpec
           .builder(
               name = name,
-              type = if (isOptional) Input::class.asClassName().parameterizedBy(
-                  type.asTypeName()) else type.asTypeName()
+              type = type.asTypeName(isOptional)
           )
           .apply { if (description.isNotBlank()) addKdoc("%L\n", description) }
           .apply { initializer(initializer) }
@@ -401,7 +400,7 @@ internal object KotlinCodeGen {
 
   fun Any.toDefaultValueCodeBlock(typeName: TypeName, fieldType: FieldType): CodeBlock = when {
     this is Number -> CodeBlock.of("%L%L", castTo(typeName), if (typeName == LONG) "L" else "")
-    fieldType is FieldType.Scalar.Enum -> CodeBlock.of("%T.safeValueOf(%S)", typeName, this)
+    fieldType is FieldType.Scalar.Enum -> CodeBlock.of("%T.safeValueOf(%S)", typeName.copy(nullable = false), this)
     fieldType is FieldType.Array -> {
       @Suppress("UNCHECKED_CAST")
       (this as List<Any>).toDefaultValueCodeBlock(typeName, fieldType)

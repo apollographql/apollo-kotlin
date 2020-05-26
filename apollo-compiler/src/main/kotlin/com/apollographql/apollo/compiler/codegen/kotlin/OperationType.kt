@@ -167,13 +167,13 @@ private val OperationType.primaryConstructorSpec: FunSpec
     return FunSpec
         .constructorBuilder()
         .addParameters(variables.fields.map { variable ->
-          val typeName = variable.type.asTypeName()
+          val typeName = variable.type.asTypeName(variable.isOptional)
           ParameterSpec
               .builder(
                   name = variable.name,
-                  type = if (variable.isOptional) Input::class.asClassName().parameterizedBy(typeName) else typeName
+                  type = typeName
               )
-              .applyIf(variable.isOptional) { defaultValue("%T.absent()", Input::class.asClassName()) }
+              .applyIf(variable.isOptional) { defaultValue("null") }
               .build()
         })
         .build()
@@ -204,9 +204,9 @@ private fun InputType.variablesValueMapSpec(operationType: OperationType): FunSp
           fields.map { field ->
             if (field.isOptional) {
               CodeBlock.builder()
-                  .addStatement("if·(this@%L.%L.defined)·{", operationType.name, field.name)
+                  .addStatement("if·(this@%L.%L != null)·{", operationType.name, field.name)
                   .indent()
-                  .addStatement("this[%S]·=·this@%L.%L.value", field.schemaName, operationType.name, field.name)
+                  .addStatement("this[%S]·=·this@%L.%L", field.schemaName, operationType.name, field.name)
                   .unindent()
                   .addStatement("}")
                   .build()

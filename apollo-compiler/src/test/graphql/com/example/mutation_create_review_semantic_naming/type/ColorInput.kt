@@ -5,7 +5,6 @@
 //
 package com.example.mutation_create_review_semantic_naming.type
 
-import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.InputType
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import kotlin.Double
@@ -25,7 +24,7 @@ data class ColorInput(
   /**
    * Green color
    */
-  val green: Input<Double> = Input.optional(0.0),
+  val green: Double? = 0.0,
   /**
    * Blue color
    */
@@ -33,24 +32,23 @@ data class ColorInput(
   /**
    * for test purpose only
    */
-  val enumWithDefaultValue: Input<Episode> = Input.optional(Episode.safeValueOf("new")),
+  val enumWithDefaultValue: Episode? = Episode.safeValueOf("new"),
   /**
    * Circle ref to review input
    */
-  val reviewRefInput: Input<ReviewRefInput> = Input.absent()
+  val reviewRefInput: ReviewRefInput? = null
 ) : InputType {
   override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
     writer.writeInt("red", this@ColorInput.red)
-    if (this@ColorInput.green.defined) {
-      writer.writeDouble("green", this@ColorInput.green.value)
+    if (this@ColorInput.green != null) {
+      writer.writeDouble("green", this@ColorInput.green)
     }
     writer.writeDouble("blue", this@ColorInput.blue)
-    if (this@ColorInput.enumWithDefaultValue.defined) {
-      writer.writeString("enumWithDefaultValue",
-          this@ColorInput.enumWithDefaultValue.value?.rawValue)
+    if (this@ColorInput.enumWithDefaultValue != null) {
+      writer.writeString("enumWithDefaultValue", this@ColorInput.enumWithDefaultValue.rawValue)
     }
-    if (this@ColorInput.reviewRefInput.defined) {
-      writer.writeObject("reviewRefInput", this@ColorInput.reviewRefInput.value?.marshaller())
+    if (this@ColorInput.reviewRefInput != null) {
+      writer.writeObject("reviewRefInput", this@ColorInput.reviewRefInput.marshaller())
     }
   }
 }
