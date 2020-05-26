@@ -50,7 +50,7 @@ class BearerTokenInterceptor(private val tokenProvider: TokenProvider) : ApolloR
       }
     }.retry(retries = 1) { error ->
       if (error is ApolloBearerTokenException) {
-        tokenProvider.renewToken(error.token)
+        tokenProvider.refreshToken(error.token)
         true
       } else {
         false

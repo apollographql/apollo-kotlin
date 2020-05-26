@@ -9,7 +9,7 @@ class TestTokenProvider(currentAccessToken: String,
     return accessToken
   }
 
-  override suspend fun renewToken(previousToken: String): String {
+  override suspend fun refreshToken(previousToken: String): String {
     accessToken = newAccessToken
     return accessToken
   }
