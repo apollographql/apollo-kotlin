@@ -19,8 +19,8 @@ class BearerTokenInterceptor(private val tokenProvider: TokenProvider) : ApolloR
   val mutex = Mutex()
 
   private fun <T> ApolloRequest<T>.withHeader(name: String, value: String): ApolloRequest<T> {
-    val httpRequestContext = executionContext[HttpExecutionContext.Request]
-        ?: HttpExecutionContext.Request(emptyMap())
+    val httpRequestContext = (executionContext[HttpExecutionContext.Request]
+        ?: HttpExecutionContext.Request(emptyMap()))
             .let {
               it.copy(headers = it.headers + (name to value))
             }
