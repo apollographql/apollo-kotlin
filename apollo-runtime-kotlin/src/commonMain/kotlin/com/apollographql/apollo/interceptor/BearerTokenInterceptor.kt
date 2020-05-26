@@ -1,8 +1,7 @@
 package com.apollographql.apollo.interceptor
 
-import com.apollographql.apollo.ApolloException
 import com.apollographql.apollo.ApolloHttpException
-import com.apollographql.apollo.BearerTokenException
+import com.apollographql.apollo.ApolloBearerTokenException
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.network.HttpExecutionContext
@@ -44,13 +43,13 @@ class BearerTokenInterceptor(private val tokenProvider: TokenProvider) : ApolloR
     }.flatMapConcat { token ->
       proceedWithToken(request, interceptorChain, token).catch { exception->
         if (exception is ApolloHttpException && exception.statusCode == 401) {
-          throw BearerTokenException(message = "Request failed with status code `401`", cause = exception, token = token)
+          throw ApolloBearerTokenException(message = "Request failed with status code `401`", cause = exception, token = token)
         } else {
           throw exception
         }
       }
     }.retry(retries = 1) { error ->
-      if (error is BearerTokenException) {
+      if (error is ApolloBearerTokenException) {
         tokenProvider.renewToken(error.token)
         true
       } else {
