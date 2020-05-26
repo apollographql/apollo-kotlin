@@ -35,6 +35,7 @@ dependencies {
 
   add("implementation", "com.apollographql.apollo:apollo-runtime")
   add("implementation", "com.apollographql.apollo:apollo-rx2-support")
+  add("implementation", "com.apollographql.apollo:apollo-rx3-support")
   add("implementation", "com.apollographql.apollo:apollo-coroutines-support")
   add("implementation", "com.apollographql.apollo:apollo-http-cache")
   add("implementation", "com.apollographql.apollo:apollo-compiler")
