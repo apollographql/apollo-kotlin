@@ -19,7 +19,7 @@ Apollo-android features:
 * Normalized cache.
 * File Upload.
 * Custom scalar types.
-* Support for RxJava2 and Coroutines. 
+* Support for RxJava2, RxJava3, and Coroutines.
 
 ## Adding Apollo-Android to your Project
 
