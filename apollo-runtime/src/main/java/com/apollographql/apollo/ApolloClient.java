@@ -125,6 +125,10 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     this.defaultResponseFetcher = defaultResponseFetcher;
     this.defaultCacheHeaders = defaultCacheHeaders;
     this.logger = logger;
+    if (!applicationInterceptorFactories.isEmpty() && !applicationInterceptors.isEmpty()) {
+      throw new IllegalArgumentException("You can either use applicationInterceptors or applicationInterceptorFactories "
+          + "but not both at the same time.");
+    }
     this.applicationInterceptors = applicationInterceptors;
     this.applicationInterceptorFactories = applicationInterceptorFactories;
     this.enableAutoPersistedQueries = enableAutoPersistedQueries;
