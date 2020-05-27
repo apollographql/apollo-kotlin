@@ -19,7 +19,7 @@ Apollo-android features:
 * Normalized cache.
 * File Upload.
 * Custom scalar types.
-* Support for RxJava2 and Coroutines. 
+* Support for RxJava2, RxJava3, and Coroutines.
 
 ## Adding Apollo-Android to your Project
 
@@ -244,6 +244,7 @@ Advanced topics are available in [the official docs](https://www.apollographql.c
 * [file-upload.md](https://www.apollographql.com/docs/android/advanced/file-upload/)
 * [coroutines.md](https://www.apollographql.com/docs/android/advanced/coroutines/) 
 * [rxjava2.md](https://www.apollographql.com/docs/android/advanced/rxjava2/)
+* [rxjava3.md](https://www.apollographql.com/docs/android/advanced/rxjava3/)
 * [persisted-queries.md](https://www.apollographql.com/docs/android/advanced/persisted-queries/)
 * [no-runtime.md](https://www.apollographql.com/docs/android/advanced/no-runtime/) 
 * [subscriptions.md](https://www.apollographql.com/docs/android/advanced/subscriptions/)
