@@ -21,7 +21,7 @@ class ApolloCoroutinesRepository {
   private val apolloClient = ApolloClient(
       networkTransport = ApolloHttpNetworkTransport(
           serverUrl = "https://api.github.com/graphql",
-          httpHeaders = mapOf(
+          headers = mapOf(
               "Accept" to "application/json",
               "Content-Type" to "application/json",
               "Authorization" to "bearer $GITHUB_KEY"
@@ -56,6 +56,6 @@ class ApolloCoroutinesRepository {
   }
 
   companion object {
-    private const val GITHUB_KEY = "change me"
+    private const val GITHUB_KEY = "1e184c216f88a497f29bd1caa3b1a3ff20f3b8e8"
   }
 }

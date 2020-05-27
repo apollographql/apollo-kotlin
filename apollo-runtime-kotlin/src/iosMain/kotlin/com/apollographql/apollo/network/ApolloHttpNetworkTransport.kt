@@ -21,6 +21,7 @@ import platform.Foundation.NSData
 import platform.Foundation.NSError
 import platform.Foundation.NSHTTPURLResponse
 import platform.Foundation.NSMutableURLRequest
+import platform.Foundation.NSOperationQueue
 import platform.Foundation.NSThread
 import platform.Foundation.NSURL
 import platform.Foundation.NSURLComponents
@@ -29,6 +30,7 @@ import platform.Foundation.NSURLRequest
 import platform.Foundation.NSURLRequestReloadIgnoringCacheData
 import platform.Foundation.NSURLResponse
 import platform.Foundation.NSURLSession
+import platform.Foundation.NSURLSessionConfiguration
 import platform.Foundation.NSURLSessionDataTask
 import platform.Foundation.dataTaskWithRequest
 import platform.Foundation.setHTTPBody
@@ -47,20 +49,22 @@ typealias DataTaskProvider = (NSURLRequest, DataTaskCompletionHandler) -> NSURLS
 @ExperimentalCoroutinesApi
 actual class ApolloHttpNetworkTransport(
     private val serverUrl: NSURL,
-    private val httpHeaders: Map<String, String>,
+    private val headers: Map<String, String>,
     private val httpMethod: HttpMethod,
     private val dataTaskProvider: DataTaskProvider
 ) : NetworkTransport {
 
   actual constructor(
       serverUrl: String,
-      httpHeaders: Map<String, String>,
+      headers: Map<String, String>,
       httpMethod: HttpMethod
   ) : this(
       serverUrl = NSURL(string = serverUrl),
-      httpHeaders = httpHeaders,
+      headers = headers,
       httpMethod = httpMethod,
-      dataTaskProvider = { request, completionHandler -> NSURLSession.sharedSession.dataTaskWithRequest(request, completionHandler) }
+      dataTaskProvider = { request, completionHandler ->
+        NSURLSession.sharedSession.dataTaskWithRequest(request, completionHandler)
+      }
   )
 
   override fun execute(request: GraphQLRequest, executionContext: ExecutionContext): Flow<GraphQLResponse> {
@@ -70,6 +74,7 @@ actual class ApolloHttpNetworkTransport(
       val result = suspendCancellableCoroutine<Result> { continuation ->
         val continuationRef = StableRef.create(continuation).asCPointer()
         val delegate = { httpData: NSData?, httpResponse: NSURLResponse?, error: NSError? ->
+          assert(!NSThread.isMainThread())
           initRuntimeIfNeeded()
           val response = parse(
               data = httpData,
@@ -120,7 +125,7 @@ actual class ApolloHttpNetworkTransport(
     )
     return NSMutableURLRequest.requestWithURL(urlComponents.URL!!).apply {
       setHTTPMethod("GET")
-      httpHeaders
+      headers
           .plus(httpExecutionContext?.headers ?: emptyMap())
           .forEach { (key, value) -> setValue(value, forHTTPHeaderField = key) }
       setCachePolicy(NSURLRequestReloadIgnoringCacheData)
@@ -140,7 +145,7 @@ actual class ApolloHttpNetworkTransport(
       val postBody = buffer.readByteArray().toNSData()
 
       setHTTPMethod("POST")
-      httpHeaders
+      headers
           .plus(httpExecutionContext?.headers ?: emptyMap())
           .forEach { (key, value) -> setValue(value, forHTTPHeaderField = key) }
       setCachePolicy(NSURLRequestReloadIgnoringCacheData)

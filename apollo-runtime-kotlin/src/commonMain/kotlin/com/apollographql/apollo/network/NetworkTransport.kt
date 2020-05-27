@@ -6,5 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 @ApolloExperimental
 interface NetworkTransport {
+
   fun execute(request: GraphQLRequest, executionContext: ExecutionContext): Flow<GraphQLResponse>
+
 }
