@@ -56,6 +56,6 @@ class ApolloCoroutinesRepository {
   }
 
   companion object {
-    private const val GITHUB_KEY = "1e184c216f88a497f29bd1caa3b1a3ff20f3b8e8"
+    private const val GITHUB_KEY = "change me"
   }
 }
