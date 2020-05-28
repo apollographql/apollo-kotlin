@@ -14,3 +14,5 @@ class ApolloHttpException(
     message: String,
     cause: Throwable? = null
 ) : ApolloException(message = message, cause = cause)
+
+class ApolloBearerTokenException(message: String, cause: Throwable? = null, val token: String): ApolloException(message = message, cause = cause)
