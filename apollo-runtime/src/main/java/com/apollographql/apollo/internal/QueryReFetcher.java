@@ -13,6 +13,7 @@ import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
+import com.apollographql.apollo.interceptor.ApolloInterceptorFactory;
 import okhttp3.Call;
 import okhttp3.HttpUrl;
 import org.jetbrains.annotations.NotNull;
@@ -52,6 +53,7 @@ final class QueryReFetcher {
           .cacheHeaders(CacheHeaders.NONE)
           .logger(builder.logger)
           .applicationInterceptors(builder.applicationInterceptors)
+          .applicationInterceptorFactories(builder.applicationInterceptorFactories)
           .tracker(builder.callTracker)
           .dispatcher(builder.dispatcher)
           .build());
@@ -123,6 +125,7 @@ final class QueryReFetcher {
     Executor dispatcher;
     ApolloLogger logger;
     List<ApolloInterceptor> applicationInterceptors;
+    List<ApolloInterceptorFactory> applicationInterceptorFactories;
     ApolloCallTracker callTracker;
 
     Builder queries(List<Query> queries) {
@@ -172,6 +175,11 @@ final class QueryReFetcher {
 
     Builder applicationInterceptors(List<ApolloInterceptor> applicationInterceptors) {
       this.applicationInterceptors = applicationInterceptors;
+      return this;
+    }
+
+    Builder applicationInterceptorFactories(List<ApolloInterceptorFactory> applicationInterceptorFactories) {
+      this.applicationInterceptorFactories = applicationInterceptorFactories;
       return this;
     }
 
