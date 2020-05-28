@@ -10,9 +10,12 @@ import okio.IOException
 import okio.internal.commonAsUtf8ToByteArray
 import okio.toByteString
 import platform.Foundation.NSMutableURLRequest
+import platform.Foundation.NSOperationQueue
+import platform.Foundation.NSThread
 import platform.Foundation.NSURL
 import platform.Foundation.NSURLRequest
 import platform.Foundation.NSURLSession
+import platform.Foundation.NSURLSessionConfiguration
 import platform.Foundation.NSURLSessionWebSocketCloseCode
 import platform.Foundation.NSURLSessionWebSocketMessage
 import platform.Foundation.NSURLSessionWebSocketMessageTypeData
@@ -35,7 +38,13 @@ actual class ApolloWebSocketFactory(
       request = NSMutableURLRequest.requestWithURL(NSURL(string = serverUrl)).apply {
         headers.forEach { (key, value) -> setValue(value, forHTTPHeaderField = key) }
       },
-      webSocketFactory = { NSURLSession.sharedSession.webSocketTaskWithRequest(it) }
+      webSocketFactory = {
+        NSURLSession.sessionWithConfiguration(
+            configuration = NSURLSessionConfiguration.defaultSessionConfiguration,
+            delegate = null,
+            delegateQueue = NSOperationQueue.mainQueue
+        ).webSocketTaskWithRequest(it)
+      }
   )
 
   actual fun open(): ApolloWebSocketConnection = ApolloWebSocketConnection(
@@ -47,7 +56,7 @@ actual class ApolloWebSocketFactory(
 actual class ApolloWebSocketConnection(
     request: NSURLRequest,
     webSocketFactory: WebSocketFactory,
-    private val eventChannel: Channel<Event> = Channel(Channel.CONFLATED)
+    private val eventChannel: Channel<Event> = Channel()
 ) : ReceiveChannel<ApolloWebSocketConnection.Event> by eventChannel {
   private val state = AtomicReference<State>(State.Connecting)
 
@@ -58,6 +67,8 @@ actual class ApolloWebSocketConnection(
   }
 
   actual fun send(data: ByteString) {
+    assert(NSThread.isMainThread())
+
     val currentState = state.value
     if (currentState is State.Connected) {
       val message = NSURLSessionWebSocketMessage(data.toByteArray().toNSData())
@@ -76,6 +87,8 @@ actual class ApolloWebSocketConnection(
   }
 
   actual fun close(code: Int, reason: String?) {
+    assert(NSThread.isMainThread())
+
     val connectedState = state.value
     if (connectedState is State.Connected && state.compareAndSet(connectedState, State.Disconnected)) {
       connectedState.webSocket.cancelWithCloseCode(
@@ -93,7 +106,7 @@ actual class ApolloWebSocketConnection(
             message.data
                 ?.toByteString()
                 ?.let { data ->
-                  Event.OnMessage(
+                  Event.Message(
                       data = data,
                       webSocketTask = this
                   )
@@ -105,7 +118,7 @@ actual class ApolloWebSocketConnection(
                 ?.commonAsUtf8ToByteArray()
                 ?.toByteString()
                 ?.let { data ->
-                  Event.OnMessage(
+                  Event.Message(
                       data = data,
                       webSocketTask = this
                   )
@@ -132,11 +145,9 @@ actual class ApolloWebSocketConnection(
 
   actual sealed class Event {
 
-    actual class OnOpen(val webSocketTask: NSURLSessionWebSocketTask) : Event()
+    actual class Open(val webSocketTask: NSURLSessionWebSocketTask) : Event()
 
-    actual class OnClosed(val webSocketTask: NSURLSessionWebSocketTask) : Event()
-
-    actual class OnMessage(actual val data: ByteString, val webSocketTask: NSURLSessionWebSocketTask) : Event()
+    actual class Message(actual val data: ByteString, val webSocketTask: NSURLSessionWebSocketTask) : Event()
   }
 
   sealed class State {

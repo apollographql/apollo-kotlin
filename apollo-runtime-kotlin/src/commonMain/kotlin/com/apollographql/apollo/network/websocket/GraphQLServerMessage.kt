@@ -41,7 +41,7 @@ sealed class GraphQLServerMessage {
 
   class Unsupported(val rawMessage: String) : GraphQLServerMessage()
 
-  companion object Parser {
+  companion object {
 
     fun ByteString.parse(): GraphQLServerMessage {
       val message = try {

@@ -1,9 +1,8 @@
 package com.apollographql.apollo.network.websocket
 
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.json.Utils.writeToJson
+import com.apollographql.apollo.network.GraphQLRequest
 import com.benasher44.uuid.Uuid
 import okio.ByteString
 
@@ -31,8 +30,7 @@ sealed class GraphQLClientMessage {
 
   class Start(
       private val uuid: Uuid,
-      private val operation: Operation<*, *, *>,
-      private val scalarTypeAdapters: ScalarTypeAdapters
+      private val request: GraphQLRequest
   ) : GraphQLClientMessage() {
 
     override fun serialize(): ByteString {
@@ -42,9 +40,9 @@ sealed class GraphQLClientMessage {
             .name("type").value("start")
             .name("id").value(uuid.toString())
             .name("payload").beginObject()
-            .name("variables").jsonValue(operation.variables().marshal(scalarTypeAdapters))
-            .name("operationName").value(operation.name().name())
-            .name("query").value(operation.queryDocument())
+            .name("variables").jsonValue(request.variables)
+            .name("operationName").value(request.operationName)
+            .name("query").value(request.document)
             .endObject()
             .close()
       }.readByteString()
