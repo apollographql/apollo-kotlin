@@ -1,6 +1,7 @@
 package com.apollographql.apollo.network.websocket
 
 import com.apollographql.apollo.ApolloWebSocketException
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
@@ -14,7 +15,6 @@ import okhttp3.WebSocketListener
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
 import okio.internal.commonAsUtf8ToByteArray
-import java.util.concurrent.atomic.AtomicReference
 
 @ExperimentalCoroutinesApi
 actual class ApolloWebSocketFactory(
@@ -33,105 +33,77 @@ actual class ApolloWebSocketFactory(
       webSocketFactory = OkHttpClient()
   )
 
-  actual fun open(): ApolloWebSocketConnection = ApolloWebSocketConnection(
-      request = request,
-      webSocketFactory = webSocketFactory
-  )
-}
+  actual suspend fun open(): ApolloWebSocketConnection {
+    val messageChannel = Channel<ByteString>(Channel.CONFLATED)
+    val webSocketConnectionDeferred = CompletableDeferred<WebSocket>()
 
-@ExperimentalCoroutinesApi
-actual class ApolloWebSocketConnection(
-    request: Request,
-    webSocketFactory: WebSocket.Factory,
-    private val eventChannel: Channel<Event> = Channel()
-) : ReceiveChannel<ApolloWebSocketConnection.Event> by eventChannel {
-
-  private val state = AtomicReference<State>(State.Connecting)
-
-  init {
-    webSocketFactory.newWebSocket(request = request, listener = object : WebSocketListener() {
+    val webSocket = webSocketFactory.newWebSocket(request = request, listener = object : WebSocketListener() {
       override fun onOpen(webSocket: WebSocket, response: Response) {
-        if (state.compareAndSet(State.Connecting, State.Connected(webSocket))) {
-          eventChannel.offer(Event.Open(webSocket))
-        } else {
+        if (!webSocketConnectionDeferred.complete(webSocket)) {
           webSocket.cancel()
         }
       }
 
       override fun onMessage(webSocket: WebSocket, text: String) {
-        if (state.get() is State.Connected) {
-          eventChannel.offer(
-              Event.Message(
-                  data = text.commonAsUtf8ToByteArray().toByteString(),
-                  webSocket = webSocket
-              )
-          )
-        } else {
+        try {
+          messageChannel.offer(text.commonAsUtf8ToByteArray().toByteString())
+        } catch (e: Exception) {
           webSocket.cancel()
         }
       }
 
       override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
-        if (state.get() is State.Connected) {
-          eventChannel.offer(
-              Event.Message(
-                  data = bytes,
-                  webSocket = webSocket
-              )
-          )
-        } else {
+        try {
+          messageChannel.offer(bytes)
+        } catch (e: Exception) {
           webSocket.cancel()
         }
       }
 
       override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-        val currentState = state.get()
-        if (currentState is State.Connected && state.compareAndSet(currentState, State.Disconnected)) {
-          eventChannel.close(
-              ApolloWebSocketException(
-                  message = "Web socket communication error",
-                  cause = t
-              )
-          )
-        }
+        messageChannel.close(
+            ApolloWebSocketException(
+                message = "Web socket communication error",
+                cause = t
+            )
+        )
       }
 
       override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-        val currentState = state.get()
-        if (currentState is State.Connected && state.compareAndSet(currentState, State.Disconnected)) {
-          eventChannel.close()
-        }
+        messageChannel.close()
       }
     })
+
+    try {
+      return ApolloWebSocketConnection(
+          webSocket = webSocketConnectionDeferred.await(),
+          messageChannel = messageChannel
+      )
+    } finally {
+      webSocket.cancel()
+    }
+  }
+}
+
+@ExperimentalCoroutinesApi
+actual class ApolloWebSocketConnection(
+    private val webSocket: WebSocket,
+    private val messageChannel: Channel<ByteString> = Channel()
+) : ReceiveChannel<ByteString> by messageChannel {
+
+  init {
+    messageChannel.invokeOnClose {
+      webSocket.close(code = 1000, reason = null)
+    }
   }
 
   actual fun send(data: ByteString) {
-    val currentState = state.get()
-    if (currentState is State.Connected) {
-      currentState.webSocket.send(data)
+    if (!messageChannel.isClosedForReceive) {
+      webSocket.send(data)
     }
   }
 
-  actual fun close(code: Int, reason: String?) {
-    val connectedState = state.get()
-    if (connectedState is State.Connected && state.compareAndSet(connectedState, State.Disconnected)) {
-      connectedState.webSocket.close(code = code, reason = reason)
-      eventChannel.close()
-    }
-  }
-
-  actual sealed class Event {
-
-    actual class Open(val webSocket: WebSocket) : Event()
-
-    actual class Message(actual val data: ByteString, val webSocket: WebSocket) : Event()
-  }
-
-  sealed class State {
-    object Connecting : State()
-
-    class Connected(val webSocket: WebSocket) : State()
-
-    object Disconnected : State()
+  actual fun close() {
+    messageChannel.close()
   }
 }

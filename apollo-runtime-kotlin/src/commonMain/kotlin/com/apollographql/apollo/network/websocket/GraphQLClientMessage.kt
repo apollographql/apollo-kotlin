@@ -28,21 +28,19 @@ sealed class GraphQLClientMessage {
     }
   }
 
-  class Start(
-      private val uuid: Uuid,
-      private val request: GraphQLRequest
-  ) : GraphQLClientMessage() {
+  class Start(private val request: GraphQLRequest) : GraphQLClientMessage() {
 
     override fun serialize(): ByteString {
       return okio.Buffer().also { buffer ->
         JsonWriter.of(buffer)
             .beginObject()
             .name("type").value("start")
-            .name("id").value(uuid.toString())
+            .name("id").value(request.uuid.toString())
             .name("payload").beginObject()
             .name("variables").jsonValue(request.variables)
             .name("operationName").value(request.operationName)
             .name("query").value(request.document)
+            .endObject()
             .endObject()
             .close()
       }.readByteString()

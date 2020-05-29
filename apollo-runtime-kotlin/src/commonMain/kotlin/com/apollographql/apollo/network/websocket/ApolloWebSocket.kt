@@ -9,22 +9,13 @@ expect class ApolloWebSocketFactory constructor(
     serverUrl: String,
     headers: Map<String, String>
 ) {
-  fun open(): ApolloWebSocketConnection
+  suspend fun open(): ApolloWebSocketConnection
 }
 
 @ExperimentalCoroutinesApi
-expect class ApolloWebSocketConnection : ReceiveChannel<ApolloWebSocketConnection.Event> {
+expect class ApolloWebSocketConnection : ReceiveChannel<ByteString> {
 
   fun send(data: ByteString)
 
-  fun close(code: Int, reason: String?)
-
-  sealed class Event {
-
-    class Open : Event
-
-    class Message : Event {
-      val data: ByteString
-    }
-  }
+  fun close()
 }

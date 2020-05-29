@@ -17,6 +17,6 @@ class ApolloHttpException(
 
 class ApolloBearerTokenException(message: String, cause: Throwable? = null, val token: String): ApolloException(message = message, cause = cause)
 
-class ApolloWebSocketException(message: String, cause: Throwable? = null) : ApolloException(message = message, cause = null)
+class ApolloWebSocketException(message: String, cause: Throwable? = null) : ApolloException(message = message, cause = cause)
 
 class ApolloWebSocketServerException(message: String, val payload: Map<String, Any?>) : ApolloException(message = message, cause = null)

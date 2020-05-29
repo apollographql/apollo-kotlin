@@ -21,7 +21,6 @@ import platform.Foundation.NSData
 import platform.Foundation.NSError
 import platform.Foundation.NSHTTPURLResponse
 import platform.Foundation.NSMutableURLRequest
-import platform.Foundation.NSOperationQueue
 import platform.Foundation.NSThread
 import platform.Foundation.NSURL
 import platform.Foundation.NSURLComponents
@@ -30,7 +29,6 @@ import platform.Foundation.NSURLRequest
 import platform.Foundation.NSURLRequestReloadIgnoringCacheData
 import platform.Foundation.NSURLResponse
 import platform.Foundation.NSURLSession
-import platform.Foundation.NSURLSessionConfiguration
 import platform.Foundation.NSURLSessionDataTask
 import platform.Foundation.dataTaskWithRequest
 import platform.Foundation.setHTTPBody
@@ -42,8 +40,8 @@ import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.native.concurrent.freeze
 
-typealias DataTaskCompletionHandler = (NSData?, NSURLResponse?, NSError?) -> Unit
-typealias DataTaskProvider = (NSURLRequest, DataTaskCompletionHandler) -> NSURLSessionDataTask
+typealias UrlSessionDataTaskCompletionHandler = (NSData?, NSURLResponse?, NSError?) -> Unit
+typealias UrlSessionDataTaskFactory = (NSURLRequest, UrlSessionDataTaskCompletionHandler) -> NSURLSessionDataTask
 
 @ApolloExperimental
 @ExperimentalCoroutinesApi
@@ -51,7 +49,7 @@ actual class ApolloHttpNetworkTransport(
     private val serverUrl: NSURL,
     private val headers: Map<String, String>,
     private val httpMethod: HttpMethod,
-    private val dataTaskProvider: DataTaskProvider
+    private val dataTaskFactory: UrlSessionDataTaskFactory
 ) : NetworkTransport {
 
   actual constructor(
@@ -62,7 +60,7 @@ actual class ApolloHttpNetworkTransport(
       serverUrl = NSURL(string = serverUrl),
       headers = headers,
       httpMethod = httpMethod,
-      dataTaskProvider = { request, completionHandler ->
+      dataTaskFactory = { request, completionHandler ->
         NSURLSession.sharedSession.dataTaskWithRequest(request, completionHandler)
       }
   )
@@ -85,7 +83,7 @@ actual class ApolloHttpNetworkTransport(
         }
         val httpRequest = request.toHttpRequest(executionContext[HttpExecutionContext.Request])
 
-        dataTaskProvider(httpRequest.freeze(), delegate.freeze())
+        dataTaskFactory(httpRequest.freeze(), delegate.freeze())
             .also { task ->
               continuation.invokeOnCancellation {
                 task.cancel()
@@ -101,7 +99,8 @@ actual class ApolloHttpNetworkTransport(
                 executionContext = HttpExecutionContext.Response(
                     statusCode = result.httpStatusCode,
                     headers = result.httpHeaders
-                )
+                ),
+                requestUuid = request.uuid
             )
         )
         is Result.Failure -> throw result.cause
