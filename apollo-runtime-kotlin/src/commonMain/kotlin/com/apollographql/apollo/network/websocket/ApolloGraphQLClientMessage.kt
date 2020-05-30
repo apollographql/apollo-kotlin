@@ -6,10 +6,10 @@ import com.apollographql.apollo.network.GraphQLRequest
 import com.benasher44.uuid.Uuid
 import okio.ByteString
 
-sealed class GraphQLClientMessage {
+sealed class ApolloGraphQLClientMessage {
   abstract fun serialize(): ByteString
 
-  class Init(private val connectionParams: Map<String, Any?>) : GraphQLClientMessage() {
+  class Init(private val connectionParams: Map<String, Any?>) : ApolloGraphQLClientMessage() {
 
     override fun serialize(): ByteString {
       return okio.Buffer().also { buffer ->
@@ -28,7 +28,7 @@ sealed class GraphQLClientMessage {
     }
   }
 
-  class Start(private val request: GraphQLRequest) : GraphQLClientMessage() {
+  class Start(private val request: GraphQLRequest) : ApolloGraphQLClientMessage() {
 
     override fun serialize(): ByteString {
       return okio.Buffer().also { buffer ->
@@ -47,7 +47,7 @@ sealed class GraphQLClientMessage {
     }
   }
 
-  class Stop(private val uuid: Uuid) : GraphQLClientMessage() {
+  class Stop(private val uuid: Uuid) : ApolloGraphQLClientMessage() {
 
     override fun serialize(): ByteString {
       return okio.Buffer().also { buffer ->
@@ -61,7 +61,7 @@ sealed class GraphQLClientMessage {
     }
   }
 
-  object Terminate : GraphQLClientMessage() {
+  object Terminate : ApolloGraphQLClientMessage() {
     override fun serialize(): ByteString {
       return okio.Buffer().also { buffer ->
         JsonWriter.of(buffer)

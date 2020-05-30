@@ -6,44 +6,44 @@ import com.apollographql.apollo.api.internal.json.ResponseJsonStreamReader
 import okio.Buffer
 import okio.ByteString
 
-sealed class GraphQLServerMessage {
-  class ConnectionError(val payload: Map<String, Any?>) : GraphQLServerMessage() {
+sealed class ApolloGraphQLServerMessage {
+  class ConnectionError(val payload: Map<String, Any?>) : ApolloGraphQLServerMessage() {
     companion object {
       const val TYPE = "connection_error"
     }
   }
 
-  object ConnectionAcknowledge : GraphQLServerMessage() {
+  object ConnectionAcknowledge : ApolloGraphQLServerMessage() {
     const val TYPE = "connection_ack"
   }
 
-  class Data(val id: String, val payload: Map<String, Any?>) : GraphQLServerMessage() {
+  class Data(val id: String, val payload: Map<String, Any?>) : ApolloGraphQLServerMessage() {
     companion object {
       const val TYPE = "data"
     }
   }
 
-  class Error(val id: String, val payload: Map<String, Any?>) : GraphQLServerMessage() {
+  class Error(val id: String, val payload: Map<String, Any?>) : ApolloGraphQLServerMessage() {
     companion object {
       const val TYPE = "error"
     }
   }
 
-  class Complete(val id: String) : GraphQLServerMessage() {
+  class Complete(val id: String) : ApolloGraphQLServerMessage() {
     companion object {
       const val TYPE = "complete"
     }
   }
 
-  object ConnectionKeepAlive : GraphQLServerMessage() {
+  object ConnectionKeepAlive : ApolloGraphQLServerMessage() {
     const val TYPE = "ka"
   }
 
-  class Unsupported(val rawMessage: String) : GraphQLServerMessage()
+  class Unsupported(val rawMessage: String) : ApolloGraphQLServerMessage()
 
   companion object {
 
-    fun ByteString.parse(): GraphQLServerMessage {
+    fun ByteString.parse(): ApolloGraphQLServerMessage {
       val message = try {
         val jsonReader = BufferedSourceJsonReader(Buffer().write(this))
         val responseJsonReader = ResponseJsonStreamReader(jsonReader)

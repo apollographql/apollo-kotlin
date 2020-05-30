@@ -3,9 +3,9 @@ package com.apollographql.apollo.network.mock
 import com.apollographql.apollo.network.GraphQLRequest
 import com.apollographql.apollo.network.GraphQLResponse
 import com.apollographql.apollo.network.toNSData
-import com.apollographql.apollo.network.websocket.GraphQLClientMessage
+import com.apollographql.apollo.network.websocket.ApolloGraphQLClientMessage
 import com.apollographql.apollo.network.websocket.WebSocketConnectionListener
-import com.apollographql.apollo.network.websocket.WebSocketFactory
+import com.apollographql.apollo.network.websocket.NSWebSocketFactory
 import okio.internal.commonAsUtf8ToByteArray
 import okio.toByteString
 import platform.Foundation.NSError
@@ -16,14 +16,14 @@ import kotlin.test.assertEquals
 import kotlin.test.fail
 
 @Suppress("EXPERIMENTAL_API_USAGE")
-class MockWebSocketFactory(
+class NSWebSocketFactoryMock(
     private val expectedRequest: GraphQLRequest,
     private val expectedResponseOnStart: GraphQLResponse
-) : WebSocketFactory {
-  lateinit var lastSessionWebSocketTask: MockSessionWebSocketTask
+) : NSWebSocketFactory {
+  lateinit var lastSessionWebSocketTask: ApolloSessionWebSocketTaskMock
 
   override fun invoke(request: NSURLRequest, connectionListener: WebSocketConnectionListener): NSURLSessionWebSocketTask {
-    return MockSessionWebSocketTask(
+    return ApolloSessionWebSocketTaskMock(
         expectedRequest = expectedRequest,
         expectedResponseOnStart = expectedResponseOnStart,
         connectionListener = connectionListener
@@ -31,9 +31,8 @@ class MockWebSocketFactory(
   }
 }
 
-
 @Suppress("EXPERIMENTAL_API_USAGE")
-class MockSessionWebSocketTask(
+class ApolloSessionWebSocketTaskMock(
     private val expectedRequest: GraphQLRequest,
     private val expectedResponseOnStart: GraphQLResponse,
     private val connectionListener: WebSocketConnectionListener
@@ -53,7 +52,7 @@ class MockSessionWebSocketTask(
   override fun sendMessage(message: NSURLSessionWebSocketMessage, completionHandler: (NSError?) -> Unit) {
     when {
       !connectionInitSent -> {
-        assertEquals(GraphQLClientMessage.Init(emptyMap()).serialize(), message.data!!.toByteString())
+        assertEquals(ApolloGraphQLClientMessage.Init(emptyMap()).serialize(), message.data!!.toByteString())
         connectionInitSent = true
         completionHandler(null)
 
@@ -66,7 +65,7 @@ class MockSessionWebSocketTask(
       }
 
       !startSent -> {
-        assertEquals(GraphQLClientMessage.Start(expectedRequest).serialize(), message.data!!.toByteString())
+        assertEquals(ApolloGraphQLClientMessage.Start(expectedRequest).serialize(), message.data!!.toByteString())
         startSent = true
 
         completionHandler(null)

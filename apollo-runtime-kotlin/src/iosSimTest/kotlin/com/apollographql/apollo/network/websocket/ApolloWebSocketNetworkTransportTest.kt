@@ -4,7 +4,7 @@ import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.network.GraphQLRequest
 import com.apollographql.apollo.network.GraphQLResponse
-import com.apollographql.apollo.network.mock.MockWebSocketFactory
+import com.apollographql.apollo.network.mock.NSWebSocketFactoryMock
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -28,7 +28,7 @@ class ApolloWebSocketNetworkTransportTest {
       val expectedRequest = GraphQLRequest(
           operationName = "operationName",
           operationId = "operationId",
-          document = "query { name }",
+          document = "subscription { name }",
           variables = ""
       )
       val expectedResponses = listOf(
@@ -36,14 +36,14 @@ class ApolloWebSocketNetworkTransportTest {
           "{\"data\":{\"name\":\"MockQuery2\"}}",
           "{\"data\":{\"name\":\"MockQuery3\"}}"
       )
-      val webSocketFactory = MockWebSocketFactory(
+      val webSocketFactory = NSWebSocketFactoryMock(
           expectedRequest = expectedRequest,
           expectedResponseOnStart = mockGraphQLResponse(
               data = expectedResponses.first(),
               requestUuid = expectedRequest.uuid
           )
       )
-      val apolloWebSocketFactory = ApolloWebSocketFactory(
+      val apolloWebSocketFactory = WebSocketFactory(
           request = NSURLRequest.requestWithURL(NSURL(string = "https://apollo.com")),
           webSocketFactory = webSocketFactory
       )
@@ -58,7 +58,7 @@ class ApolloWebSocketNetworkTransportTest {
   }
 
   private suspend fun Flow<GraphQLResponse>.assertInOrder(
-      mockWebSocketFactory: MockWebSocketFactory,
+      mockWebSocketFactory: NSWebSocketFactoryMock,
       expectedResponses: List<String>
   ) {
     withTimeout(5_000) {

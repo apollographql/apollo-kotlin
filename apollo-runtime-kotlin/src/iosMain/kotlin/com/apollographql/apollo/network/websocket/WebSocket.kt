@@ -3,6 +3,7 @@ package com.apollographql.apollo.network.websocket
 import com.apollographql.apollo.ApolloWebSocketException
 import com.apollographql.apollo.network.toNSData
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import okio.ByteString
@@ -33,11 +34,12 @@ interface WebSocketConnectionListener {
   fun onClose(webSocket: NSURLSessionWebSocketTask, code: NSURLSessionWebSocketCloseCode)
 }
 
-typealias WebSocketFactory = (NSURLRequest, WebSocketConnectionListener) -> NSURLSessionWebSocketTask
+typealias NSWebSocketFactory = (NSURLRequest, WebSocketConnectionListener) -> NSURLSessionWebSocketTask
 
-actual class ApolloWebSocketFactory(
+@ExperimentalCoroutinesApi
+actual class WebSocketFactory(
     private val request: NSURLRequest,
-    private val webSocketFactory: WebSocketFactory
+    private val webSocketFactory: NSWebSocketFactory
 ) {
 
   actual constructor(
@@ -56,10 +58,10 @@ actual class ApolloWebSocketFactory(
       }
   )
 
-  actual suspend fun open(): ApolloWebSocketConnection {
+  actual suspend fun open(): WebSocketConnection {
     assert(NSThread.isMainThread())
 
-    val messageChannel = Channel<ByteString>(Channel.CONFLATED)
+    val messageChannel = Channel<ByteString>(Channel.BUFFERED)
     val webSocketConnectionDeferred = CompletableDeferred<NSURLSessionWebSocketTask>()
 
     val connectionListener = object : WebSocketConnectionListener {
@@ -79,7 +81,7 @@ actual class ApolloWebSocketFactory(
         .apply { resume() }
 
     try {
-      return ApolloWebSocketConnection(
+      return WebSocketConnection(
           webSocket = webSocketConnectionDeferred.await(),
           messageChannel = messageChannel
       )
@@ -89,7 +91,8 @@ actual class ApolloWebSocketFactory(
   }
 }
 
-actual class ApolloWebSocketConnection(
+@ExperimentalCoroutinesApi
+actual class WebSocketConnection(
     private val webSocket: NSURLSessionWebSocketTask,
     private val messageChannel: Channel<ByteString>
 ) : ReceiveChannel<ByteString> by messageChannel {
@@ -163,12 +166,24 @@ actual class ApolloWebSocketConnection(
   }
 }
 
-private class NSURLSessionWebSocketDelegate(val webSocketConnectionListener: WebSocketConnectionListener) : NSObject(), NSURLSessionWebSocketDelegateProtocol {
-  override fun URLSession(session: NSURLSession, webSocketTask: NSURLSessionWebSocketTask, didOpenWithProtocol: String?) {
+private class NSURLSessionWebSocketDelegate(
+    val webSocketConnectionListener: WebSocketConnectionListener
+) : NSObject(), NSURLSessionWebSocketDelegateProtocol {
+
+  override fun URLSession(
+      session: NSURLSession,
+      webSocketTask: NSURLSessionWebSocketTask,
+      didOpenWithProtocol: String?
+  ) {
     webSocketConnectionListener.onOpen(webSocketTask)
   }
 
-  override fun URLSession(session: NSURLSession, webSocketTask: NSURLSessionWebSocketTask, didCloseWithCode: NSURLSessionWebSocketCloseCode, reason: NSData?) {
+  override fun URLSession(
+      session: NSURLSession,
+      webSocketTask: NSURLSessionWebSocketTask,
+      didCloseWithCode: NSURLSessionWebSocketCloseCode,
+      reason: NSData?
+  ) {
     webSocketConnectionListener.onClose(webSocket = webSocketTask, code = didCloseWithCode)
   }
 }

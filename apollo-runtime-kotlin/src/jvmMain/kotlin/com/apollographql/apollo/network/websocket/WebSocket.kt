@@ -17,7 +17,7 @@ import okio.ByteString.Companion.toByteString
 import okio.internal.commonAsUtf8ToByteArray
 
 @ExperimentalCoroutinesApi
-actual class ApolloWebSocketFactory(
+actual class WebSocketFactory(
     private val request: Request,
     private val webSocketFactory: WebSocket.Factory
 ) {
@@ -33,8 +33,8 @@ actual class ApolloWebSocketFactory(
       webSocketFactory = OkHttpClient()
   )
 
-  actual suspend fun open(): ApolloWebSocketConnection {
-    val messageChannel = Channel<ByteString>(Channel.CONFLATED)
+  actual suspend fun open(): WebSocketConnection {
+    val messageChannel = Channel<ByteString>(Channel.BUFFERED)
     val webSocketConnectionDeferred = CompletableDeferred<WebSocket>()
 
     val webSocket = webSocketFactory.newWebSocket(request = request, listener = object : WebSocketListener() {
@@ -75,7 +75,7 @@ actual class ApolloWebSocketFactory(
     })
 
     try {
-      return ApolloWebSocketConnection(
+      return WebSocketConnection(
           webSocket = webSocketConnectionDeferred.await(),
           messageChannel = messageChannel
       )
@@ -86,7 +86,7 @@ actual class ApolloWebSocketFactory(
 }
 
 @ExperimentalCoroutinesApi
-actual class ApolloWebSocketConnection(
+actual class WebSocketConnection(
     private val webSocket: WebSocket,
     private val messageChannel: Channel<ByteString> = Channel()
 ) : ReceiveChannel<ByteString> by messageChannel {
