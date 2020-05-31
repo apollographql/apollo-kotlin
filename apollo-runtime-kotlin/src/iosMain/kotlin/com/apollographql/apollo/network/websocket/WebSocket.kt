@@ -155,68 +155,86 @@ actual class WebSocketConnection(
 @Suppress("NAME_SHADOWING")
 @ExperimentalCoroutinesApi
 private fun NSError.dispatchOnMain(webSocketConnectionPtr: COpaquePointer) {
-  dispatch_async_f(
-      queue = dispatch_get_main_queue(),
-      context = StableRef.create(freeze() to webSocketConnectionPtr).asCPointer(),
-      work = staticCFunction { ptr ->
-        val errorAndWebSocketConnectionRef = ptr!!.asStableRef<Pair<NSError, COpaquePointer>>()
+  if (NSThread.isMainThread) {
+    dispatch(webSocketConnectionPtr)
+  } else {
+    dispatch_async_f(
+        queue = dispatch_get_main_queue(),
+        context = StableRef.create(freeze() to webSocketConnectionPtr).asCPointer(),
+        work = staticCFunction { ptr ->
+          val errorAndWebSocketConnectionRef = ptr!!.asStableRef<Pair<NSError, COpaquePointer>>()
 
-        val (error, webSocketConnectionPtr) = errorAndWebSocketConnectionRef.get()
-        errorAndWebSocketConnectionRef.dispose()
+          val (error, webSocketConnectionPtr) = errorAndWebSocketConnectionRef.get()
+          errorAndWebSocketConnectionRef.dispose()
 
-        val webSocketConnectionRef = webSocketConnectionPtr.asStableRef<WebSocketConnection>()
-        val webSocketConnection = webSocketConnectionRef.get()
-        webSocketConnectionRef.dispose()
+          error.dispatch(webSocketConnectionPtr)
+        }
+    )
+  }
+}
 
-        webSocketConnection.messageChannel.close(
-            ApolloWebSocketException(
-                message = "Web socket communication error",
-                cause = IOException(error.localizedDescription)
-            )
-        )
-        webSocketConnection.webSocket.cancel()
-      }
+@ExperimentalCoroutinesApi
+private fun NSError.dispatch(webSocketConnectionPtr: COpaquePointer) {
+  val webSocketConnectionRef = webSocketConnectionPtr.asStableRef<WebSocketConnection>()
+  val webSocketConnection = webSocketConnectionRef.get()
+  webSocketConnectionRef.dispose()
+
+  webSocketConnection.messageChannel.close(
+      ApolloWebSocketException(
+          message = "Web socket communication error",
+          cause = IOException(localizedDescription)
+      )
   )
+  webSocketConnection.webSocket.cancel()
 }
 
 @Suppress("NAME_SHADOWING")
 @ExperimentalCoroutinesApi
 private fun NSURLSessionWebSocketMessage.dispatchOnMainAndRequestNext(webSocketConnectionPtr: COpaquePointer) {
-  dispatch_async_f(
-      queue = dispatch_get_main_queue(),
-      context = StableRef.create(freeze() to webSocketConnectionPtr).asCPointer(),
-      work = staticCFunction { ptr ->
-        val messageAndWebSocketConnectionRef = ptr!!.asStableRef<Pair<NSURLSessionWebSocketMessage, COpaquePointer>>()
+  if (NSThread.isMainThread) {
+    dispatchAndRequestNext(webSocketConnectionPtr)
+  } else {
+    dispatch_async_f(
+        queue = dispatch_get_main_queue(),
+        context = StableRef.create(freeze() to webSocketConnectionPtr).asCPointer(),
+        work = staticCFunction { ptr ->
+          val messageAndWebSocketConnectionRef = ptr!!.asStableRef<Pair<NSURLSessionWebSocketMessage, COpaquePointer>>()
 
-        val (message, webSocketConnectionPtr) = messageAndWebSocketConnectionRef.get()
-        messageAndWebSocketConnectionRef.dispose()
+          val (message, webSocketConnectionPtr) = messageAndWebSocketConnectionRef.get()
+          messageAndWebSocketConnectionRef.dispose()
 
-        val webSocketConnectionRef = webSocketConnectionPtr.asStableRef<WebSocketConnection>()
-        val webSocketConnection = webSocketConnectionRef.get()
-        webSocketConnectionRef.dispose()
-
-        val data = when (message.type) {
-          NSURLSessionWebSocketMessageTypeData -> {
-            message.data?.toByteString()
-          }
-
-          NSURLSessionWebSocketMessageTypeString -> {
-            message.string?.commonAsUtf8ToByteArray()?.toByteString()
-          }
-
-          else -> null
+          message.dispatchAndRequestNext(webSocketConnectionPtr)
         }
+    )
+  }
+}
 
-        try {
-          if (data != null) webSocketConnection.messageChannel.offer(data)
-        } catch (e: Exception) {
-          webSocketConnection.webSocket.cancel()
-          return@staticCFunction
-        }
+@ExperimentalCoroutinesApi
+private fun NSURLSessionWebSocketMessage.dispatchAndRequestNext(webSocketConnectionPtr: COpaquePointer) {
+  val webSocketConnectionRef = webSocketConnectionPtr.asStableRef<WebSocketConnection>()
+  val webSocketConnection = webSocketConnectionRef.get()
+  webSocketConnectionRef.dispose()
 
-        webSocketConnection.receiveNext()
-      }
-  )
+  val data = when (type) {
+    NSURLSessionWebSocketMessageTypeData -> {
+      data?.toByteString()
+    }
+
+    NSURLSessionWebSocketMessageTypeString -> {
+      string?.commonAsUtf8ToByteArray()?.toByteString()
+    }
+
+    else -> null
+  }
+
+  try {
+    if (data != null) webSocketConnection.messageChannel.offer(data)
+  } catch (e: Exception) {
+    webSocketConnection.webSocket.cancel()
+    return
+  }
+
+  webSocketConnection.receiveNext()
 }
 
 
