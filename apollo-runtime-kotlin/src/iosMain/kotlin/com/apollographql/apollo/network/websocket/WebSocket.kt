@@ -2,6 +2,10 @@ package com.apollographql.apollo.network.websocket
 
 import com.apollographql.apollo.ApolloWebSocketException
 import com.apollographql.apollo.network.toNSData
+import kotlinx.cinterop.COpaquePointer
+import kotlinx.cinterop.StableRef
+import kotlinx.cinterop.asStableRef
+import kotlinx.cinterop.staticCFunction
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
@@ -12,6 +16,7 @@ import okio.IOException
 import okio.internal.commonAsUtf8ToByteArray
 import okio.toByteString
 import platform.Foundation.NSData
+import platform.Foundation.NSError
 import platform.Foundation.NSMutableURLRequest
 import platform.Foundation.NSOperationQueue
 import platform.Foundation.NSThread
@@ -25,8 +30,13 @@ import platform.Foundation.NSURLSessionWebSocketMessage
 import platform.Foundation.NSURLSessionWebSocketMessageTypeData
 import platform.Foundation.NSURLSessionWebSocketMessageTypeString
 import platform.Foundation.NSURLSessionWebSocketTask
+import platform.Foundation.setHTTPMethod
 import platform.Foundation.setValue
 import platform.darwin.NSObject
+import platform.darwin.dispatch_async_f
+import platform.darwin.dispatch_get_main_queue
+import kotlin.native.concurrent.ensureNeverFrozen
+import kotlin.native.concurrent.freeze
 
 interface WebSocketConnectionListener {
   fun onOpen(webSocket: NSURLSessionWebSocketTask)
@@ -48,6 +58,7 @@ actual class WebSocketFactory(
   ) : this(
       request = NSMutableURLRequest.requestWithURL(NSURL(string = serverUrl)).apply {
         headers.forEach { (key, value) -> setValue(value, forHTTPHeaderField = key) }
+        setHTTPMethod("GET")
       },
       webSocketFactory = { request, connectionListener ->
         NSURLSession.sessionWithConfiguration(
@@ -62,17 +73,17 @@ actual class WebSocketFactory(
     assert(NSThread.isMainThread())
 
     val messageChannel = Channel<ByteString>(Channel.BUFFERED)
-    val webSocketConnectionDeferred = CompletableDeferred<NSURLSessionWebSocketTask>()
+    val isOpen = CompletableDeferred<Boolean>()
 
     val connectionListener = object : WebSocketConnectionListener {
       override fun onOpen(webSocket: NSURLSessionWebSocketTask) {
-        if (!webSocketConnectionDeferred.complete(webSocket)) {
+        if (!isOpen.complete(true)) {
           webSocket.cancel()
         }
       }
 
       override fun onClose(webSocket: NSURLSessionWebSocketTask, code: NSURLSessionWebSocketCloseCode) {
-        webSocketConnectionDeferred.cancel()
+        isOpen.cancel()
         messageChannel.close()
       }
     }
@@ -81,20 +92,22 @@ actual class WebSocketFactory(
         .apply { resume() }
 
     try {
+      isOpen.await()
       return WebSocketConnection(
-          webSocket = webSocketConnectionDeferred.await(),
-          messageChannel = messageChannel
+          webSocket = webSocket,
+          messageChannel = messageChannel.apply { ensureNeverFrozen() }
       )
-    } finally {
+    } catch (e: Exception) {
       webSocket.cancel()
+      throw e
     }
   }
 }
 
 @ExperimentalCoroutinesApi
 actual class WebSocketConnection(
-    private val webSocket: NSURLSessionWebSocketTask,
-    private val messageChannel: Channel<ByteString>
+    internal val webSocket: NSURLSessionWebSocketTask,
+    internal val messageChannel: Channel<ByteString>
 ) : ReceiveChannel<ByteString> by messageChannel {
 
   init {
@@ -104,24 +117,20 @@ actual class WebSocketConnection(
           reason = null
       )
     }
-    webSocket.receiveNext()
+    receiveNext()
   }
 
+  @Suppress("NAME_SHADOWING")
   actual fun send(data: ByteString) {
     assert(NSThread.isMainThread())
-
     if (!messageChannel.isClosedForReceive) {
       val message = NSURLSessionWebSocketMessage(data.toByteArray().toNSData())
-      webSocket.sendMessage(message) { error ->
-        if (error != null) {
-          messageChannel.close(
-              ApolloWebSocketException(
-                  message = "Web socket communication error",
-                  cause = IOException(error.localizedDescription)
-              )
-          )
-        }
-      }
+      val webSocketConnectionPtr = StableRef.create(this).asCPointer()
+      val completionHandler = { error: NSError? ->
+        error?.dispatchOnMain(webSocketConnectionPtr)
+        Unit
+      }.freeze()
+      webSocket.sendMessage(message, completionHandler)
     }
   }
 
@@ -130,10 +139,63 @@ actual class WebSocketConnection(
     messageChannel.close()
   }
 
-  private fun NSURLSessionWebSocketTask.receiveNext() {
-    receiveMessageWithCompletionHandler { message, error ->
-      if (error == null) {
-        val data = when (message?.type) {
+  @Suppress("NAME_SHADOWING")
+  internal fun receiveNext() {
+    assert(NSThread.isMainThread())
+
+    val webSocketConnectionPtr = StableRef.create(this).asCPointer()
+    val completionHandler = { message: NSURLSessionWebSocketMessage?, error: NSError? ->
+      error?.dispatchOnMain(webSocketConnectionPtr) ?: message?.dispatchOnMainAndRequestNext(webSocketConnectionPtr)
+      Unit
+    }
+    webSocket.receiveMessageWithCompletionHandler(completionHandler)
+  }
+}
+
+@Suppress("NAME_SHADOWING")
+@ExperimentalCoroutinesApi
+private fun NSError.dispatchOnMain(webSocketConnectionPtr: COpaquePointer) {
+  dispatch_async_f(
+      queue = dispatch_get_main_queue(),
+      context = StableRef.create(freeze() to webSocketConnectionPtr).asCPointer(),
+      work = staticCFunction { ptr ->
+        val errorAndWebSocketConnectionRef = ptr!!.asStableRef<Pair<NSError, COpaquePointer>>()
+
+        val (error, webSocketConnectionPtr) = errorAndWebSocketConnectionRef.get()
+        errorAndWebSocketConnectionRef.dispose()
+
+        val webSocketConnectionRef = webSocketConnectionPtr.asStableRef<WebSocketConnection>()
+        val webSocketConnection = webSocketConnectionRef.get()
+        webSocketConnectionRef.dispose()
+
+        webSocketConnection.messageChannel.close(
+            ApolloWebSocketException(
+                message = "Web socket communication error",
+                cause = IOException(error.localizedDescription)
+            )
+        )
+        webSocketConnection.webSocket.cancel()
+      }
+  )
+}
+
+@Suppress("NAME_SHADOWING")
+@ExperimentalCoroutinesApi
+private fun NSURLSessionWebSocketMessage.dispatchOnMainAndRequestNext(webSocketConnectionPtr: COpaquePointer) {
+  dispatch_async_f(
+      queue = dispatch_get_main_queue(),
+      context = StableRef.create(freeze() to webSocketConnectionPtr).asCPointer(),
+      work = staticCFunction { ptr ->
+        val messageAndWebSocketConnectionRef = ptr!!.asStableRef<Pair<NSURLSessionWebSocketMessage, COpaquePointer>>()
+
+        val (message, webSocketConnectionPtr) = messageAndWebSocketConnectionRef.get()
+        messageAndWebSocketConnectionRef.dispose()
+
+        val webSocketConnectionRef = webSocketConnectionPtr.asStableRef<WebSocketConnection>()
+        val webSocketConnection = webSocketConnectionRef.get()
+        webSocketConnectionRef.dispose()
+
+        val data = when (message.type) {
           NSURLSessionWebSocketMessageTypeData -> {
             message.data?.toByteString()
           }
@@ -146,44 +208,27 @@ actual class WebSocketConnection(
         }
 
         try {
-          if (data != null) messageChannel.offer(data)
+          if (data != null) webSocketConnection.messageChannel.offer(data)
         } catch (e: Exception) {
-          cancel()
-          throw e
+          webSocketConnection.webSocket.cancel()
+          return@staticCFunction
         }
 
-        receiveNext()
-      } else {
-        messageChannel.close(
-            ApolloWebSocketException(
-                message = "Web socket communication error",
-                cause = IOException(error.localizedDescription)
-            )
-        )
-        cancel()
+        webSocketConnection.receiveNext()
       }
-    }
-  }
+  )
 }
+
 
 private class NSURLSessionWebSocketDelegate(
     val webSocketConnectionListener: WebSocketConnectionListener
 ) : NSObject(), NSURLSessionWebSocketDelegateProtocol {
 
-  override fun URLSession(
-      session: NSURLSession,
-      webSocketTask: NSURLSessionWebSocketTask,
-      didOpenWithProtocol: String?
-  ) {
+  override fun URLSession(session: NSURLSession, webSocketTask: NSURLSessionWebSocketTask, didOpenWithProtocol: String?) {
     webSocketConnectionListener.onOpen(webSocketTask)
   }
 
-  override fun URLSession(
-      session: NSURLSession,
-      webSocketTask: NSURLSessionWebSocketTask,
-      didCloseWithCode: NSURLSessionWebSocketCloseCode,
-      reason: NSData?
-  ) {
+  override fun URLSession(session: NSURLSession, webSocketTask: NSURLSessionWebSocketTask, didCloseWithCode: NSURLSessionWebSocketCloseCode, reason: NSData?) {
     webSocketConnectionListener.onClose(webSocket = webSocketTask, code = didCloseWithCode)
   }
 }

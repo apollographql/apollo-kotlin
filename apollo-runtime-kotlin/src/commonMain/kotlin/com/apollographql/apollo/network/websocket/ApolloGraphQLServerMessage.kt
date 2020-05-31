@@ -7,7 +7,7 @@ import okio.Buffer
 import okio.ByteString
 
 sealed class ApolloGraphQLServerMessage {
-  class ConnectionError(val payload: Map<String, Any?>) : ApolloGraphQLServerMessage() {
+  class ConnectionError(val rawMessage: String?) : ApolloGraphQLServerMessage() {
     companion object {
       const val TYPE = "connection_error"
     }
@@ -51,7 +51,7 @@ sealed class ApolloGraphQLServerMessage {
         object {
           val id = messageData["id"] as String?
           val type = messageData["type"] as String?
-          val payload = messageData["payload"] as Map<String, Any?>? ?: emptyMap()
+          val payload = messageData["payload"]
         }
       } catch (e: Exception) {
         throw ApolloWebSocketException(
@@ -62,10 +62,10 @@ sealed class ApolloGraphQLServerMessage {
 
       return try {
         when (message.type) {
-          ConnectionError.TYPE -> ConnectionError(message.payload)
+          ConnectionError.TYPE -> ConnectionError(message.payload?.toString())
           ConnectionAcknowledge.TYPE -> ConnectionAcknowledge
-          Data.TYPE -> Data(message.id!!, message.payload)
-          Error.TYPE -> Error(message.id!!, message.payload)
+          Data.TYPE -> Data(message.id!!, message.payload as Map<String, Any?>? ?: emptyMap())
+          Error.TYPE -> Error(message.id!!, message.payload as Map<String, Any?>? ?: emptyMap())
           Complete.TYPE -> Complete(message.id!!)
           ConnectionKeepAlive.TYPE -> ConnectionKeepAlive
           else -> Unsupported(utf8())

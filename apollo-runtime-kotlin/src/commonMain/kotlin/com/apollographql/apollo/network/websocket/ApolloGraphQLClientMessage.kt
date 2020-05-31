@@ -16,12 +16,7 @@ sealed class ApolloGraphQLClientMessage {
         JsonWriter.of(buffer)
             .beginObject()
             .name("type").value("connection_init")
-            .apply {
-              if (connectionParams.isNotEmpty()) {
-                name("payload")
-                writeToJson(connectionParams, this)
-              }
-            }
+            .name("payload").apply { writeToJson(connectionParams, this) }
             .endObject()
             .close()
       }.readByteString()
@@ -37,7 +32,7 @@ sealed class ApolloGraphQLClientMessage {
             .name("type").value("start")
             .name("id").value(request.uuid.toString())
             .name("payload").beginObject()
-            .name("variables").jsonValue(request.variables)
+            .apply { if (request.variables.isNotBlank()) name("variables").jsonValue(request.variables) }
             .name("operationName").value(request.operationName)
             .name("query").value(request.document)
             .endObject()
