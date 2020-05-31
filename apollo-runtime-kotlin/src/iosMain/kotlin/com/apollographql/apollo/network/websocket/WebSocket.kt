@@ -48,7 +48,8 @@ typealias NSWebSocketFactory = (NSURLRequest, WebSocketConnectionListener) -> NS
 
 @ExperimentalCoroutinesApi
 actual class WebSocketFactory(
-    private val request: NSURLRequest,
+    private val serverUrl: NSURL,
+    private val headers: Map<String, String>,
     private val webSocketFactory: NSWebSocketFactory
 ) {
 
@@ -56,10 +57,8 @@ actual class WebSocketFactory(
       serverUrl: String,
       headers: Map<String, String>
   ) : this(
-      request = NSMutableURLRequest.requestWithURL(NSURL(string = serverUrl)).apply {
-        headers.forEach { (key, value) -> setValue(value, forHTTPHeaderField = key) }
-        setHTTPMethod("GET")
-      },
+      serverUrl = NSURL(string = serverUrl),
+      headers = headers,
       webSocketFactory = { request, connectionListener ->
         NSURLSession.sessionWithConfiguration(
             configuration = NSURLSessionConfiguration.defaultSessionConfiguration,
@@ -69,8 +68,15 @@ actual class WebSocketFactory(
       }
   )
 
-  actual suspend fun open(): WebSocketConnection {
+  actual suspend fun open(headers: Map<String, String>): WebSocketConnection {
     assert(NSThread.isMainThread())
+
+    val request = NSMutableURLRequest.requestWithURL(serverUrl).apply {
+      this@WebSocketFactory.headers
+          .plus(headers)
+          .forEach { (key, value) -> setValue(value, forHTTPHeaderField = key) }
+      setHTTPMethod("GET")
+    }
 
     val messageChannel = Channel<ByteString>(Channel.BUFFERED)
     val isOpen = CompletableDeferred<Boolean>()

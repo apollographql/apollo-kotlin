@@ -34,6 +34,10 @@ import okio.ByteString
 
 @ApolloExperimental
 @ExperimentalCoroutinesApi
+/**
+ * Apollo GraphQL WS protocol implementation:
+ * https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md
+ */
 class ApolloWebSocketNetworkTransport(
     private val webSocketFactory: WebSocketFactory,
     private val connectionParams: Map<String, Any?> = emptyMap(),
@@ -111,7 +115,11 @@ class ApolloWebSocketNetworkTransport(
   private suspend fun openServerConnection(): GraphQLWebsocketConnection {
     return try {
       withTimeout(connectionAcknowledgeTimeoutMs) {
-        val webSocketConnection = webSocketFactory.open()
+        val webSocketConnection = webSocketFactory.open(
+            mapOf(
+                "Sec-WebSocket-Protocol" to "graphql-ws"
+            )
+        )
         webSocketConnection.send(ApolloGraphQLClientMessage.Init(connectionParams).serialize())
         while (webSocketConnection.receive().parse() !is ApolloGraphQLServerMessage.ConnectionAcknowledge) {
           // await for connection acknowledgement

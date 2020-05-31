@@ -6,6 +6,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import okhttp3.Headers.Companion.toHeaders
+import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -18,7 +19,8 @@ import okio.internal.commonAsUtf8ToByteArray
 
 @ExperimentalCoroutinesApi
 actual class WebSocketFactory(
-    private val request: Request,
+    private val serverUrl: HttpUrl,
+    private val headers: Map<String, String>,
     private val webSocketFactory: WebSocket.Factory
 ) {
 
@@ -26,16 +28,19 @@ actual class WebSocketFactory(
       serverUrl: String,
       headers: Map<String, String>
   ) : this(
-      request = Request.Builder()
-          .url(serverUrl.toHttpUrl())
-          .headers(headers.toHeaders())
-          .build(),
+      serverUrl = serverUrl.toHttpUrl(),
+      headers = headers,
       webSocketFactory = OkHttpClient()
   )
 
-  actual suspend fun open(): WebSocketConnection {
+  actual suspend fun open(headers: Map<String, String>): WebSocketConnection {
     val messageChannel = Channel<ByteString>(Channel.BUFFERED)
     val webSocketConnectionDeferred = CompletableDeferred<WebSocket>()
+
+    val request = Request.Builder()
+        .url(serverUrl)
+        .headers(this.headers.plus(headers).toHeaders())
+        .build()
 
     val webSocket = webSocketFactory.newWebSocket(request = request, listener = object : WebSocketListener() {
       override fun onOpen(webSocket: WebSocket, response: Response) {

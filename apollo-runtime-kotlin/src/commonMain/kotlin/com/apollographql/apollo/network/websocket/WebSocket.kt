@@ -7,9 +7,9 @@ import okio.ByteString
 @ExperimentalCoroutinesApi
 expect class WebSocketFactory constructor(
     serverUrl: String,
-    headers: Map<String, String>
+    headers: Map<String, String> = emptyMap()
 ) {
-  suspend fun open(): WebSocketConnection
+  suspend fun open(headers: Map<String, String> = emptyMap()): WebSocketConnection
 }
 
 @ExperimentalCoroutinesApi
