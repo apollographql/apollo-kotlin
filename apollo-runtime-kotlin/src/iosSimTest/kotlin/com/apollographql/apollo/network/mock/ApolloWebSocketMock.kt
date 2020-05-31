@@ -40,6 +40,7 @@ class ApolloSessionWebSocketTaskMock(
   private var receiveMessageCompletionHandler: (NSURLSessionWebSocketMessage?, NSError?) -> Unit = { _, _ -> }
   private var connectionInitSent = false
   private var startSent = false
+  private var stopSent = false
 
   override fun resume() {
     connectionListener.onOpen(this)
@@ -74,6 +75,11 @@ class ApolloSessionWebSocketTaskMock(
             NSURLSessionWebSocketMessage(expectedResponseOnStart.body.readByteArray().toNSData()),
             null
         )
+      }
+
+      !stopSent -> {
+        assertEquals(ApolloGraphQLClientMessage.Stop(expectedRequest.uuid).serialize(), message.data!!.toByteString())
+        stopSent = true
       }
 
       else -> fail("Unexpected client message: `${message.data!!.toByteString().utf8()}`")

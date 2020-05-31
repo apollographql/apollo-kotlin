@@ -61,7 +61,7 @@ class ApolloWebSocketNetworkTransport(
                 ApolloGraphQLClientMessage.Start(request)
             )
           }.onCompletion { cause ->
-            if (cause != null) {
+            if (cause == null) {
               serverConnection.send(
                   ApolloGraphQLClientMessage.Stop(request.uuid)
               )

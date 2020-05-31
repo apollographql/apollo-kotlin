@@ -44,7 +44,8 @@ class ApolloWebSocketNetworkTransportTest {
           )
       )
       val apolloWebSocketFactory = WebSocketFactory(
-          request = NSURLRequest.requestWithURL(NSURL(string = "https://apollo.com")),
+          serverUrl = NSURL(string = "https://apollo.com"),
+          headers = emptyMap(),
           webSocketFactory = webSocketFactory
       )
       ApolloWebSocketNetworkTransport(apolloWebSocketFactory).execute(
