@@ -9,11 +9,10 @@ If you instead have a usage question kindly ask on Stackoverflow.com using the t
 Project Setup
 -------------
 
-This project is being developed using IntelliJ IDEA or Android Studio. With [introduction of Kotlin Multiplatform](https://github.com/apollographql/apollo-android/blob/master/apollo-api/build.gradle.kts#L10-L21),
-build may require installation of xcodebuild tools and Xcode 11.
+This project is being developed using IntelliJ IDEA or Android Studio. To build multiplatform projets, you will need a MacOS, and the Xcode developer tools.
  
-It is recommended to import/open `composite` instead of root folder since that includes `apollo-integration` tests
-and all sample projects under `samples` folder by using Gradle Composite builds.
+It is recommended to import/open `composite` instead of the root folder since the [composite build](https://docs.gradle.org/current/userguide/composite_builds.html) also includes `apollo-integration` tests
+and all sample projects under `samples` folder.
 
 DOs and DON'Ts
 --------------
