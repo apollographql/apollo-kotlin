@@ -1,6 +1,7 @@
 package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.gradle.api.ApolloExtension
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.ConfigurationContainer
@@ -167,10 +168,26 @@ open class ApolloPlugin : Plugin<Project> {
 
             val sourceSetName = introspection.sourceSetName.orElse("main")
             task.group = TASK_GROUP
-            task.schemaFilePath.set(service.schemaPath.map { "src/${sourceSetName.get()}/graphql/$it" })
-            task.endpointUrl.set(introspection.endpointUrl)
-            task.queryParameters.set(introspection.queryParameters)
-            task.headers.set(introspection.headers)
+            task.schemaRelativeToProject.set(
+                service.schemaPath.map {
+                  "src/${sourceSetName.get()}/graphql/$it"
+                }
+            )
+
+            task.endpoint.set(introspection.endpointUrl.map {
+              it.toHttpUrl().newBuilder()
+                  .apply {
+                    introspection.queryParameters.get().entries.forEach {
+                      addQueryParameter(it.key, it.value)
+                    }
+                  }
+                  .build()
+                  .toString()
+            }
+            )
+            task.header = introspection.headers.get().map {
+                "${it.key}: ${it.value}"
+            }
           }
         }
       }
@@ -178,34 +195,36 @@ open class ApolloPlugin : Plugin<Project> {
       project.tasks.register("downloadApolloSchema", ApolloDownloadSchemaTask::class.java) { task ->
         task.group = TASK_GROUP
 
-        task.schemaFilePath.set(project.provider {
-          val schema = project.findProperty("com.apollographql.apollo.schema") as? String
-          require(schema != null) {
-            "downloadApolloSchema requires setting -Pcom.apollographql.apollo.schema=/path/to/your/schema.json"
-          }
-          schema
-        })
+        val schemaProp = project.findProperty("com.apollographql.apollo.schema") as? String
+        if (schemaProp != null) {
+          task.schemaRelativeToProject.set(schemaProp)
+        }
 
-        task.endpointUrl.set(project.provider {
-          val endpoint = project.findProperty("com.apollographql.apollo.endpoint") as? String
-          require(endpoint != null) {
-            "downloadApolloSchema requires setting -Pcom.apollographql.apollo.endpoint=https://your.graphql.endpoint"
-          }
-          endpoint
-        })
+        val endpointProp = project.findProperty("com.apollographql.apollo.endpoint") as? String
+        if (endpointProp != null) {
+          task.endpoint.set(endpointProp)
+        }
 
-        task.queryParameters.set(project.provider {
-          (project.findProperty("com.apollographql.apollo.query_params") as? String)
-              ?.let {
-                toMap(it)
-              } ?: emptyMap()
-        })
-        task.headers.set(project.provider {
-          (project.findProperty("com.apollographql.apollo.headers") as? String)
-              ?.let {
-                toMap(it)
-              } ?: emptyMap()
-        })
+        val queryParamsProp = project.findProperty("com.apollographql.apollo.query_params") as? String
+        if (queryParamsProp != null) {
+          val url = task.endpoint.get().toHttpUrl().newBuilder()
+              .apply {
+                toMap(queryParamsProp).entries.forEach {
+                  addQueryParameter(it.key, it.value)
+                }
+              }
+              .build()
+              .toString()
+
+          task.endpoint.set(url)
+        }
+
+        val headersProp = project.findProperty("com.apollographql.apollo.headers") as? String
+        if (headersProp != null) {
+          task.header = toMap(headersProp).entries.map {
+            "${it.key}: ${it.value}"
+          }
+        }
       }
     }
 
