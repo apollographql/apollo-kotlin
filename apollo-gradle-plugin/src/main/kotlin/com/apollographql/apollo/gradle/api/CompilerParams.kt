@@ -129,11 +129,13 @@ interface CompilerParams {
   /**
    * The graphql files containing the queries.
    *
-   * By default, the plugin will use [Service.sourceFolder] to populate the graphqlSourceDirectorySet.
+   * By default, the plugin will use [Service.sourceFolder] to populate the graphqlSourceDirectorySet with all the matching .graphql or .gql files.
+   * You can change this behaviour by calling `graphqlSourceDirectorySet.srcDir("path/to/your/directory")` and specifying includes/excludes:
+   * graphqlSourceDirectorySet.srcDir("path/to/your/directory")
+   * graphqlSourceDirectorySet.include("**&#47;*.graphql")
+   * graphqlSourceDirectorySet.exclude("**&#47;schema.graphql")
    *
-   * You can override the default behaviour in either [ApolloExtension], [Service] or [CompilationUnit] by adding directories to graphqlSourceDirectorySet.
-   * If you override the default behaviour, you're responsible of setting the includes and excludes accordingly. Typically, you would
-   * set graphqlSourceDirectorySet.include("**&#47;*.graphql")
+   * It is an error to call `include` or `exclude` without calling `srcDir`
    *
    * Directories set on [ApolloExtension.graphqlSourceDirectorySet] or [Service.graphqlSourceDirectorySet] will not be used for test
    * variants as that would produce duplicate classes since the exact same files would be compiled for the main variants.
