@@ -25,10 +25,9 @@ Apollo-android features:
 
 The latest Gradle plugin version is [ ![Download](https://api.bintray.com/packages/apollographql/android/apollo/images/download.svg) ](https://bintray.com/apollographql/android/apollo-gradle-plugin/_latestVersion)
 
-In your app Gradle file, apply the `com.apollographql.apollo` plugin and add the Apollo dependencies:
+In your module Gradle file, apply the `com.apollographql.apollo` plugin and add the Apollo dependencies:
 
 ```groovy
-// app/build.gradle or app/build.gradle.kts
 plugins {
   id("com.apollographql.apollo").version("x.y.z")
 }
@@ -85,7 +84,6 @@ query LaunchDetails($id:ID!) {
 4) Decide if you want to generate Kotlin or Java models:
 
 ```groovy
-// app/build.gradle or app/build.gradle.kts
 apollo {
   generateKotlinModels.set(true) // or false for Java models
 }
@@ -166,7 +164,7 @@ The [JS Graphql Intellij Plugin](https://jimkyndemeyer.github.io/js-graphql-inte
 
 ## Releases
 
-Our [release history](https://github.com/apollographql/apollo-android/releases) has the release history. 
+Our [changelog](https://github.com/apollographql/apollo-android/releases) has the release history. 
 
 Releases are hosted on [jcenter](https://jcenter.bintray.com/com/apollographql/apollo/).
 
