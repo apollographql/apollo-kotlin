@@ -38,13 +38,16 @@ repositories {
 
 dependencies {
   implementation("com.apollographql.apollo:apollo-runtime:x.y.z")
-  
+
   // optional: if you want to use the normalized cache
   implementation("com.apollographql.apollo:apollo-normalized-cache-sqlite:x.y.z")
   // optional: for coroutines support
   implementation("com.apollographql.apollo:apollo-coroutines-support:x.y.z")
   // optional: for RxJava3 support  
   implementation("com.apollographql.apollo:apollo-rx3-support:x.y.z")
+
+  // optional: if you just want the generated models and parser write your own HTTP code/cache code   
+  implementation("com.apollographql.apollo:apollo-api:x.y.z")
 }
 ```
 
