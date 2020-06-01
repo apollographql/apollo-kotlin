@@ -89,7 +89,7 @@ apollo {
 }
 ```
 
-5) Execute `./gradlew generateApolloSources` to generate the models from your queries. This will create a generated `LaunchDetailsQuery` Java or Kotlin source file for your query.
+5) Build your project to generate the models from your queries. This will create a generated `LaunchDetailsQuery` Java or Kotlin source file for your query.
 
 ## Executing queries
 
