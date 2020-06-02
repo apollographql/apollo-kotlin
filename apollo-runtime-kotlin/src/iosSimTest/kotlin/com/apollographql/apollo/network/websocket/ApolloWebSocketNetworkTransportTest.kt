@@ -43,7 +43,7 @@ class ApolloWebSocketNetworkTransportTest {
               requestUuid = expectedRequest.uuid
           )
       )
-      val apolloWebSocketFactory = WebSocketFactory(
+      val apolloWebSocketFactory = ApolloWebSocketFactory(
           serverUrl = NSURL(string = "https://apollo.com"),
           headers = emptyMap(),
           webSocketFactory = webSocketFactory

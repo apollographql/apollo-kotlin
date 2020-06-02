@@ -74,7 +74,7 @@ actual class ApolloHttpNetworkTransport(
 
                   override fun onResponse(call: Call, response: Response) {
                     if (continuation.isCancelled) return
-                    runCatching { response.parse() }
+                    runCatching { response.parse(request) }
                         .onSuccess { graphQlResponse -> continuation.resume(graphQlResponse) }
                         .onFailure { e ->
                           response.closeQuietly()
@@ -98,7 +98,7 @@ actual class ApolloHttpNetworkTransport(
   }
 
   @Suppress("UNCHECKED_CAST")
-  private fun Response.parse(): GraphQLResponse {
+  private fun Response.parse(request: GraphQLRequest): GraphQLResponse {
     if (!isSuccessful) throw ApolloHttpException(
         statusCode = code,
         headers = headers.toMap(),
@@ -116,7 +116,8 @@ actual class ApolloHttpNetworkTransport(
         executionContext = HttpExecutionContext.Response(
             statusCode = code,
             headers = headers.toMap()
-        )
+        ),
+        requestUuid = request.uuid
     )
   }
 

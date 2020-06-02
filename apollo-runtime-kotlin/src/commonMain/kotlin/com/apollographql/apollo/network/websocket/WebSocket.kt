@@ -1,21 +1,20 @@
 package com.apollographql.apollo.network.websocket
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ReceiveChannel
 import okio.ByteString
 
-@ExperimentalCoroutinesApi
-expect class WebSocketFactory constructor(
-    serverUrl: String,
-    headers: Map<String, String> = emptyMap()
-) {
+interface WebSocketFactory {
   suspend fun open(headers: Map<String, String> = emptyMap()): WebSocketConnection
 }
 
-@ExperimentalCoroutinesApi
-expect class WebSocketConnection : ReceiveChannel<ByteString> {
+interface WebSocketConnection : ReceiveChannel<ByteString> {
 
   fun send(data: ByteString)
 
   fun close()
 }
+
+expect class ApolloWebSocketFactory constructor(
+    serverUrl: String,
+    headers: Map<String, String> = emptyMap()
+) : WebSocketFactory

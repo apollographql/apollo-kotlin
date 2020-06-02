@@ -72,7 +72,6 @@ actual class ApolloHttpNetworkTransport(
       val result = suspendCancellableCoroutine<Result> { continuation ->
         val continuationRef = StableRef.create(continuation).asCPointer()
         val delegate = { httpData: NSData?, httpResponse: NSURLResponse?, error: NSError? ->
-          assert(!NSThread.isMainThread())
           initRuntimeIfNeeded()
           val response = parse(
               data = httpData,

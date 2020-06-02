@@ -18,11 +18,11 @@ import okio.ByteString.Companion.toByteString
 import okio.internal.commonAsUtf8ToByteArray
 
 @ExperimentalCoroutinesApi
-actual class WebSocketFactory(
+actual class ApolloWebSocketFactory(
     private val serverUrl: HttpUrl,
     private val headers: Map<String, String>,
     private val webSocketFactory: WebSocket.Factory
-) {
+) : WebSocketFactory {
 
   actual constructor(
       serverUrl: String,
@@ -33,7 +33,7 @@ actual class WebSocketFactory(
       webSocketFactory = OkHttpClient()
   )
 
-  actual suspend fun open(headers: Map<String, String>): WebSocketConnection {
+  override suspend fun open(headers: Map<String, String>): WebSocketConnection {
     val messageChannel = Channel<ByteString>(Channel.BUFFERED)
     val webSocketConnectionDeferred = CompletableDeferred<WebSocket>()
 
@@ -80,7 +80,7 @@ actual class WebSocketFactory(
     })
 
     try {
-      return WebSocketConnection(
+      return WebSocketConnectionImpl(
           webSocket = webSocketConnectionDeferred.await(),
           messageChannel = messageChannel
       )
@@ -91,10 +91,10 @@ actual class WebSocketFactory(
 }
 
 @ExperimentalCoroutinesApi
-actual class WebSocketConnection(
+private class WebSocketConnectionImpl(
     private val webSocket: WebSocket,
     private val messageChannel: Channel<ByteString> = Channel()
-) : ReceiveChannel<ByteString> by messageChannel {
+) : WebSocketConnection, ReceiveChannel<ByteString> by messageChannel {
 
   init {
     messageChannel.invokeOnClose {
@@ -102,13 +102,13 @@ actual class WebSocketConnection(
     }
   }
 
-  actual fun send(data: ByteString) {
+  override fun send(data: ByteString) {
     if (!messageChannel.isClosedForReceive) {
       webSocket.send(data)
     }
   }
 
-  actual fun close() {
+  override fun close() {
     messageChannel.close()
   }
 }

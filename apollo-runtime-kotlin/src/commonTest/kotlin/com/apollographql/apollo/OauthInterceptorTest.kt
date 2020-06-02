@@ -9,6 +9,7 @@ import com.apollographql.apollo.network.GraphQLRequest
 import com.apollographql.apollo.network.GraphQLResponse
 import com.apollographql.apollo.network.HttpExecutionContext
 import com.apollographql.apollo.network.NetworkTransport
+import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -38,7 +39,8 @@ class OauthInterceptorTest {
         "Bearer $VALID_ACCESS_TOKEN2" -> {
           GraphQLResponse(
               body = Buffer().write("{\"data\":{\"name\":\"MockQuery\"}}".encodeUtf8()),
-              executionContext = ExecutionContext.Empty
+              executionContext = ExecutionContext.Empty,
+              requestUuid = uuid4()
           )
         }
         else -> {

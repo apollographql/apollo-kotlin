@@ -47,11 +47,11 @@ interface WebSocketConnectionListener {
 typealias NSWebSocketFactory = (NSURLRequest, WebSocketConnectionListener) -> NSURLSessionWebSocketTask
 
 @ExperimentalCoroutinesApi
-actual class WebSocketFactory(
+actual class ApolloWebSocketFactory(
     private val serverUrl: NSURL,
     private val headers: Map<String, String>,
     private val webSocketFactory: NSWebSocketFactory
-) {
+) : WebSocketFactory {
 
   actual constructor(
       serverUrl: String,
@@ -68,11 +68,11 @@ actual class WebSocketFactory(
       }
   )
 
-  actual suspend fun open(headers: Map<String, String>): WebSocketConnection {
+  override suspend fun open(headers: Map<String, String>): WebSocketConnection {
     assert(NSThread.isMainThread())
 
     val request = NSMutableURLRequest.requestWithURL(serverUrl).apply {
-      this@WebSocketFactory.headers
+      this@ApolloWebSocketFactory.headers
           .plus(headers)
           .forEach { (key, value) -> setValue(value, forHTTPHeaderField = key) }
       setHTTPMethod("GET")
@@ -99,7 +99,7 @@ actual class WebSocketFactory(
 
     try {
       isOpen.await()
-      return WebSocketConnection(
+      return WebSocketConnectionImpl(
           webSocket = webSocket,
           messageChannel = messageChannel.apply { ensureNeverFrozen() }
       )
@@ -111,10 +111,10 @@ actual class WebSocketFactory(
 }
 
 @ExperimentalCoroutinesApi
-actual class WebSocketConnection(
-    internal val webSocket: NSURLSessionWebSocketTask,
-    internal val messageChannel: Channel<ByteString>
-) : ReceiveChannel<ByteString> by messageChannel {
+private class WebSocketConnectionImpl(
+    val webSocket: NSURLSessionWebSocketTask,
+    val messageChannel: Channel<ByteString>
+) : WebSocketConnection, ReceiveChannel<ByteString> by messageChannel {
 
   init {
     messageChannel.invokeOnClose {
@@ -127,7 +127,7 @@ actual class WebSocketConnection(
   }
 
   @Suppress("NAME_SHADOWING")
-  actual fun send(data: ByteString) {
+  override fun send(data: ByteString) {
     assert(NSThread.isMainThread())
     if (!messageChannel.isClosedForReceive) {
       val message = NSURLSessionWebSocketMessage(data.toByteArray().toNSData())
@@ -140,7 +140,7 @@ actual class WebSocketConnection(
     }
   }
 
-  actual fun close() {
+  override fun close() {
     assert(NSThread.isMainThread())
     messageChannel.close()
   }
@@ -181,7 +181,7 @@ private fun NSError.dispatchOnMain(webSocketConnectionPtr: COpaquePointer) {
 
 @ExperimentalCoroutinesApi
 private fun NSError.dispatch(webSocketConnectionPtr: COpaquePointer) {
-  val webSocketConnectionRef = webSocketConnectionPtr.asStableRef<WebSocketConnection>()
+  val webSocketConnectionRef = webSocketConnectionPtr.asStableRef<WebSocketConnectionImpl>()
   val webSocketConnection = webSocketConnectionRef.get()
   webSocketConnectionRef.dispose()
 
@@ -217,7 +217,7 @@ private fun NSURLSessionWebSocketMessage.dispatchOnMainAndRequestNext(webSocketC
 
 @ExperimentalCoroutinesApi
 private fun NSURLSessionWebSocketMessage.dispatchAndRequestNext(webSocketConnectionPtr: COpaquePointer) {
-  val webSocketConnectionRef = webSocketConnectionPtr.asStableRef<WebSocketConnection>()
+  val webSocketConnectionRef = webSocketConnectionPtr.asStableRef<WebSocketConnectionImpl>()
   val webSocketConnection = webSocketConnectionRef.get()
   webSocketConnectionRef.dispose()
 
