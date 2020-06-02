@@ -70,7 +70,7 @@ https://www.apollographql.com/docs/android/essentials/migration/#gradle-plugin-c
 
 ## Migrating to 1.3.x
 
-Apollo-Android version 1.3.0 introduces some fixes and improvements that are incompatible with 1.2.x. Updating should be transparent for
+Apollo Android version 1.3.0 introduces some fixes and improvements that are incompatible with 1.2.x. Updating should be transparent for
 simple use cases and your project should compile fine. If you're using more advanced features such as custom schema/graphql files location,
 Kotlin Gradle scripts and/or transformed queries, or if you encounter a build error after updating, read on for details about the changes.
 

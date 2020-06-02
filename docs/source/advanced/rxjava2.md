@@ -2,7 +2,7 @@
 title: RxJava
 ---
 
-Apollo Client for Android includes support for RxJava 2.x.
+Apollo Android includes support for RxJava 2.x.
 
 Apollo types can be converted to RxJava2 `Observable` *types* using wrapper functions `Rx2Apollo.from(...)` in Java or using extension functions in Kotlin.
 
