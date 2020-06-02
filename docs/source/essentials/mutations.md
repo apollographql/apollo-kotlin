@@ -151,7 +151,7 @@ Call your mutation with mimetype and a valid `File`.
 
 ## Next steps
 
-Learning how to build `Mutation` components to update your data is an important part of developing applications with Apollo Client. Now that you're well-versed in updating data, why not try executing client-side mutations with `apollo-link-state`? Here are some resources we think will help you level up your skills:
+Learning how to build `Mutation` components to update your data is an important part of developing applications with Apollo Android. Now that you're well-versed in updating data, why not try executing client-side mutations with `apollo-link-state`? Here are some resources we think will help you level up your skills:
 
 - [#125, Fragmented Podcast](http://fragmentedpodcast.com/episodes/125/): Why's and How's about Apollo Android and the entire journey.
 - [Caching in Apollo](/essentials/caching/): Dive deep into the Apollo cache and how it's normalized in our advanced guide on caching. Understanding the cache is helpful when writing your mutation's `update` function!

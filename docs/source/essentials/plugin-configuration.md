@@ -108,7 +108,7 @@ The up-to-date list of options can be found in [CompilerParams](https://github.c
   val suppressRawTypesWarning: Property<Boolean>
 
   /**
-   * When true, Apollo-Android will make sure all the generated classes end with 'Query' or 'Mutation'.
+   * When true, Apollo Android will make sure all the generated classes end with 'Query' or 'Mutation'.
    * If you write `query droid { ... }`, the generated class will be named 'DroidQuery'.
    *
    * Default value: true
@@ -132,7 +132,7 @@ The up-to-date list of options can be found in [CompilerParams](https://github.c
   val generateModelBuilder: Property<Boolean>
 
   /**
-   * When true, Apollo-Android will use java beans getters in the models. If you request a property named 'user', the generated
+   * When true, Apollo Android will use java beans getters in the models. If you request a property named 'user', the generated
    * model will have a `getUser()` property instead of `user()`
    *
    * Default value: false

@@ -5,23 +5,23 @@
 ![CI](https://github.com/apollographql/apollo-android/workflows/CI/badge.svg)
 [![GitHub release](https://img.shields.io/github/release/apollographql/apollo-android.svg)](https://github.com/apollographql/apollo-android/releases/latest)
 
-Apollo-Android is a GraphQL client that generates Java and Kotlin models from GraphQL queries. These models give you a typesafe API to work with GraphQL servers.  Apollo will help you keep your GraphQL query statements together, organized, and easy to access. Change a query and recompile your project - Apollo code gen will rebuild your data model.  Code generation also allows Apollo to read and unmarshal responses from the network without the need of any reflection.
+Apollo Android is a GraphQL client that generates Java and Kotlin models from GraphQL queries. These models give you a type-safe API to work with GraphQL servers.  Apollo helps you keep your GraphQL query statements together, organized, and easy to access. When you change a query and recompile your project, Apollo codegen rebuilds your data model. Code generation also allows Apollo to read and unmarshal responses from the network without the need for any reflection.
 
-Apollo-Android is designed primarily with Android in mind but you can use it in any Java/Kotlin app. The android-only parts are in `apollo-android-support` and are only needed to use SQLite as a cache or the android main thread for callbacks.
+This library is designed primarily with Android in mind, but you can use it in any Java/Kotlin app. All Android-specific functionality (such as using SQLite as a cache or the Android main thread for callbacks) is in `apollo-android-support`.
 
-Apollo-android features:
+## Features
 
-* Automatic generation of typesafe models.
-* Support for Java and Kotlin code generation.
-* Queries, Mutations and Subscriptions.
-* Reflection-free parsing of responses.
-* HTTP cache.
-* Normalized cache.
-* File Upload.
-* Custom scalar types.
-* Support for RxJava2, RxJava3, and Coroutines.
+* Automatic generation of typesafe models
+* Support for Java and Kotlin code generation
+* Queries, Mutations and Subscriptions
+* Reflection-free parsing of responses
+* HTTP cache
+* Normalized cache
+* File uploads
+* Custom scalar types
+* Support for RxJava2, RxJava3, and Coroutines
 
-## Adding Apollo-Android to your Project
+## Adding Apollo to your Project
 
 The latest Gradle plugin version is [ ![Download](https://api.bintray.com/packages/apollographql/android/apollo/images/download.svg) ](https://bintray.com/apollographql/android/apollo-gradle-plugin/_latestVersion)
 
@@ -53,13 +53,15 @@ dependencies {
 
 ## Downloading a schema.json file
 
-Apollo-Android requires an introspection schema. You can get a schema.json file by running an introspection query on your endpoint. The Apollo Gradle plugin exposes a `downloadApolloSchema` task to help with this. You can download a schema by specifying your endpoint and the location where you want the schema to be downloaded:
+Apollo Android requires your GraphQL server's schema as a `schema.json` file. You can obtain the contents of this file by running an introspection query on your server.
+
+The Apollo Gradle plugin exposes a `downloadApolloSchema` task to help you obtain your schema. Provide this task your server's GraphQL endpoint and the output location for the `schema.json` file:
 
 ```bash
 ./gradlew downloadApolloSchema --endpoint=https://your.graphql.endpoint --schema=app/src/main/graphql/com/example/schema.json
 ```
 
-If your endpoint requires authentication, you can pass custom HTTP headers:
+If your GraphQL endpoint requires authentication, you can pass custom HTTP headers:
 
 ```
 ./gradlew downloadApolloSchema --endpoint="https://your.graphql.endpoint" --schema="app/src/main/graphql/com/example" --header="Authorization: Bearer $TOKEN"
@@ -67,9 +69,9 @@ If your endpoint requires authentication, you can pass custom HTTP headers:
 
 ## Generating models from your queries
 
-1) Create a directory for your GraphQL files like you would do for Java/Kotlin: `src/main/graphql/com/example/`. Apollo-Android will generate models in the `com.apollographql.apollo.sample` package.
-2) Add your `schema.json` to the directory at `src/main/graphql/com/example/schema.json`. If you don't have a `schema.json` file yet, read the section about [downloading a schema file](#downloading-a-schemajson-file). 
-3) Put your GraphQL queries in a `.graphql` files. For an example: `src/main/graphql/com/example/LaunchDetails.graphql`: 
+1. Create a directory for your GraphQL files like you would do for Java/Kotlin: `src/main/graphql/com/example/`. Apollo Android will generate models in the `com.apollographql.apollo.sample` package.
+2. Add your `schema.json` to the directory at `src/main/graphql/com/example/schema.json`. If you don't have a `schema.json` file yet, see [Downloading a schema.json file](#downloading-a-schemajson-file). 
+3. Put each of your client's GraphQL queries in its own `.graphql` file, such as `src/main/graphql/com/example/LaunchDetails.graphql` for the following query: 
 
 ```graphql
 query LaunchDetails($id:ID!) {
@@ -84,7 +86,7 @@ query LaunchDetails($id:ID!) {
 }
 ```
 
-4) Decide if you want to generate Kotlin or Java models:
+4. Specify whether you want to generate Kotlin or Java models:
 
 ```groovy
 apollo {
@@ -92,13 +94,13 @@ apollo {
 }
 ```
 
-5) Build your project to generate the models from your queries. This will create a generated `LaunchDetailsQuery` Java or Kotlin source file for your query.
+5. Build your project to generate models from your queries. In the case of the example query above, this generates a `LaunchDetailsQuery` Java or Kotlin source file.
 
 ## Executing queries
 
-Apollo includes an `ApolloClient` to interact with your server and cache.
+You use an instance of the `ApolloClient` class to interact with your server and cache.
 
-To make a query using the generated models:
+To make a query using your generated models:
 
 ```kotlin
 val apolloClient = ApolloClient.builder()
@@ -117,20 +119,21 @@ val apolloClient = ApolloClient.builder()
                 })
 ```
 
-## Custom Scalar Types
+## Custom scalar types
 
-Apollo supports Custom Scalar Types like `Date`.
+Apollo supports [custom scalar types](https://www.apollographql.com/docs/apollo-server/schema/scalars-enums/), such as `Date`.
 
-You first need to define the mapping in your build.gradle file. This maps from the GraphQL type to the Java/Kotlin class to use in code.
+You first need to define the mapping in your `build.gradle` file. This maps from the GraphQL type to the Java/Kotlin class to use in code.
 
 ```
+// Java
 apollo {
   customTypeMapping = [
     "Date" : "java.util.Date"
   ]
 }
 
-or in Kotlin:
+// Kotlin
 apollo {
     customTypeMapping.set(mapOf(
         "Date" to "java.util.Date"
@@ -138,7 +141,7 @@ apollo {
 }
 ```
 
-Next register your custom adapter & add it to your Apollo Client Builder:
+Next, register your custom adapter and add it to your ApolloClient builder:
 
 ```kotlin
     val dateCustomTypeAdapter = object : CustomTypeAdapter<Date> {
@@ -161,9 +164,9 @@ Next register your custom adapter & add it to your Apollo Client Builder:
          .build()
 ```
 
-## Intellij Plugin
+## IntelliJ Plugin
 
-The [JS Graphql Intellij Plugin](https://jimkyndemeyer.github.io/js-graphql-intellij-plugin/) provides auto-completion, error highlighting, and go-to-definition functionality for your graphql files. You can create a [.graphqlconfig](https://jimkyndemeyer.github.io/js-graphql-intellij-plugin/docs/developer-guide#working-with-graphql-endpoints-and-scratch-files) file in order to use GraphQL scratch files to work with your schema outside product code, e.g. by writing temporary queries to test resolvers.
+The [JS Graphql IntelliJ Plugin](https://jimkyndemeyer.github.io/js-graphql-intellij-plugin/) provides auto-completion, error highlighting, and go-to-definition functionality for your `.graphql` files. You can create a [`.graphqlconfig`](https://jimkyndemeyer.github.io/js-graphql-intellij-plugin/docs/developer-guide#working-with-graphql-endpoints-and-scratch-files) file to use GraphQL scratch files to work with your schema outside product code (such as to write temporary queries to test resolvers).
 
 ## Releases
 
@@ -197,7 +200,7 @@ Advanced topics are available in [the official docs](https://www.apollographql.c
 
 ## Contributing
 
-If you'd like to contribute, please refer to the [Contributing.md](https://github.com/apollographql/apollo-android/blob/master/Contributing.md).
+If you'd like to contribute, please see [Contributing.md](https://github.com/apollographql/apollo-android/blob/master/Contributing.md).
 
 ## License
 
