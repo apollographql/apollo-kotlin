@@ -31,7 +31,7 @@ val size: Long = 1024 * 1024
 // Create the http response cache store
 val cacheStore = DiskLruHttpCacheStore(file, size)
 
-// Build the Apollo Client
+// Build the ApolloClient
 val apolloClient = ApolloClient.builder()
     .serverUrl("/")
     .httpCache(ApolloHttpCache(cacheStore))
@@ -55,7 +55,7 @@ long size = 1024*1024;
 //Create the http response cache store
 DiskLruHttpCacheStore cacheStore = new DiskLruHttpCacheStore(file, size); 
 
-//Build the Apollo Client
+//Build the ApolloClient
 ApolloClient apolloClient = ApolloClient.builder()
   .serverUrl("/")
   .httpCache(new ApolloHttpCache(cacheStore))
@@ -177,7 +177,7 @@ CacheKeyResolver resolver =  new CacheKeyResolver() {
    }
 };
 
-//Build the Apollo Client
+//Build the ApolloClient
 ApolloClient apolloClient = ApolloClient.builder()
   .serverUrl("/")
   .normalizedCache(cacheFactory, resolver)
@@ -202,7 +202,7 @@ dependencies {
 // Create NormalizedCacheFactory
 val cacheFactory = LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build())
 
-// Build the Apollo Client
+// Build the ApolloClient
 val apolloClient = ApolloClient.builder()
   .serverUrl("/")
   .normalizedCache(cacheFactory, resolver)
@@ -214,7 +214,7 @@ val apolloClient = ApolloClient.builder()
 // Create NormalizedCacheFactory
 NormalizedCacheFactory cacheFactory = new LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build());
 
-// Build the Apollo Client
+// Build the ApolloClient
 ApolloClient apolloClient = ApolloClient.builder()
   .serverUrl("/")
   .normalizedCache(cacheFactory, resolver)
