@@ -58,13 +58,13 @@ Apollo Android requires your GraphQL server's schema as a `schema.json` file. Yo
 The Apollo Gradle plugin exposes a `downloadApolloSchema` task to help you obtain your schema. Provide this task your server's GraphQL endpoint and the output location for the `schema.json` file:
 
 ```bash
-./gradlew downloadApolloSchema --endpoint=https://your.graphql.endpoint --schema=app/src/main/graphql/com/example/schema.json
+./gradlew downloadApolloSchema -Pcom.apollographql.apollo.endpoint=https://your.graphql.endpoint -Pcom.apollographql.apollo.schema=src/main/graphql/com/example/schema.json
 ```
 
 If your GraphQL endpoint requires authentication, you can pass custom HTTP headers:
 
 ```
-./gradlew downloadApolloSchema --endpoint="https://your.graphql.endpoint" --schema="app/src/main/graphql/com/example" --header="Authorization: Bearer $TOKEN"
+./gradlew downloadApolloSchema -Pcom.apollographql.apollo.endpoint=https://your.graphql.endpoint -Pcom.apollographql.apollo.schema=src/main/graphql/com/example/schema.json  "-Pcom.apollographql.apollo.headers=Authorization=Bearer YOUR_TOKEN" "-Pcom.apollographql.apollo.query_params=key1=value1&key2=value2"
 ```
 
 ## Generating models from your queries
