@@ -181,4 +181,12 @@ The up-to-date list of options can be found in [CompilerParams](https://github.c
    * Default value: false
    */
   val generateAsInternal: Property<Boolean>
+
+  /**
+   * A list of [Regex] patterns for GraphQL enums that should be generated as Kotlin sealed classes instead of the default Kotlin enums.
+   *
+   * Use this if you want your client to have access to the rawValue of the enum. This can be useful if new GraphQL enums are added but
+   * the client was compiled against an older schema that doesn't have knowledge of the new enums.
+   */
+  val sealedClassesForEnumsMatching: ListProperty<String>
 ```
