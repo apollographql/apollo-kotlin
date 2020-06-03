@@ -5,6 +5,7 @@ import com.apollographql.apollo.mock.MockNetworkTransport
 import com.apollographql.apollo.mock.MockQuery
 import com.apollographql.apollo.mock.TestLoggerExecutor
 import com.apollographql.apollo.network.GraphQLResponse
+import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.flow.single
 import okio.Buffer
@@ -34,7 +35,8 @@ class ApolloClientTest {
     networkTransport.offer(
         GraphQLResponse(
             body = Buffer().write("{\"data\":{\"name\":\"MockQuery\"}}".encodeUtf8()),
-            executionContext = ExecutionContext.Empty
+            executionContext = ExecutionContext.Empty,
+            requestUuid = uuid4()
         )
     )
 
@@ -54,7 +56,8 @@ class ApolloClientTest {
     networkTransport.offer(
         GraphQLResponse(
             body = Buffer(),
-            executionContext = ExecutionContext.Empty
+            executionContext = ExecutionContext.Empty,
+            requestUuid = uuid4()
         )
     )
 
@@ -78,13 +81,15 @@ class ApolloClientTest {
     networkTransport.offer(
         GraphQLResponse(
             body = Buffer(),
-            executionContext = ExecutionContext.Empty
+            executionContext = ExecutionContext.Empty,
+            requestUuid = uuid4()
         )
     )
     networkTransport.offer(
         GraphQLResponse(
             body = Buffer().write("{\"data\":{\"name\":\"MockQuery\"}}".encodeUtf8()),
-            executionContext = ExecutionContext.Empty
+            executionContext = ExecutionContext.Empty,
+            requestUuid = uuid4()
         )
     )
 

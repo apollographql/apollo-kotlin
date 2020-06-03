@@ -29,6 +29,7 @@ kotlin {
       dependencies {
         api(project(":apollo-api"))
         api(groovy.util.Eval.x(project, "x.dep.okio.okioMultiplatform"))
+        api(groovy.util.Eval.x(project, "x.dep.uuid"))
         implementation(kotlin("stdlib-common"))
         implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines.coreCommon"))
       }

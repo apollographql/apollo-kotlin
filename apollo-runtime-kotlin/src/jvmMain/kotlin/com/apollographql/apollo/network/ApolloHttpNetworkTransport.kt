@@ -34,18 +34,18 @@ private const val MEDIA_TYPE = "application/json; charset=utf-8"
 @ExperimentalCoroutinesApi
 actual class ApolloHttpNetworkTransport(
     private val serverUrl: HttpUrl,
-    private val httpHeaders: Headers,
+    private val headers: Headers,
     private val httpCallFactory: Call.Factory,
     private val httpMethod: HttpMethod
 ) : NetworkTransport {
 
   actual constructor(
       serverUrl: String,
-      httpHeaders: Map<String, String>,
+      headers: Map<String, String>,
       httpMethod: HttpMethod
   ) : this(
       serverUrl = serverUrl.toHttpUrl(),
-      httpHeaders = httpHeaders.toHeaders(),
+      headers = headers.toHeaders(),
       httpCallFactory = OkHttpClient(),
       httpMethod = httpMethod
   )
@@ -74,7 +74,7 @@ actual class ApolloHttpNetworkTransport(
 
                   override fun onResponse(call: Call, response: Response) {
                     if (continuation.isCancelled) return
-                    runCatching { response.parse() }
+                    runCatching { response.parse(request) }
                         .onSuccess { graphQlResponse -> continuation.resume(graphQlResponse) }
                         .onFailure { e ->
                           response.closeQuietly()
@@ -98,7 +98,7 @@ actual class ApolloHttpNetworkTransport(
   }
 
   @Suppress("UNCHECKED_CAST")
-  private fun Response.parse(): GraphQLResponse {
+  private fun Response.parse(request: GraphQLRequest): GraphQLResponse {
     if (!isSuccessful) throw ApolloHttpException(
         statusCode = code,
         headers = headers.toMap(),
@@ -116,7 +116,8 @@ actual class ApolloHttpNetworkTransport(
         executionContext = HttpExecutionContext.Response(
             statusCode = code,
             headers = headers.toMap()
-        )
+        ),
+        requestUuid = request.uuid
     )
   }
 
@@ -135,7 +136,7 @@ actual class ApolloHttpNetworkTransport(
         .build()
     return Request.Builder()
         .url(url)
-        .headers(httpHeaders)
+        .headers(headers)
         .apply {
           httpExecutionContext?.headers?.forEach { name, value ->
             header(name = name, value = value)
@@ -156,7 +157,7 @@ actual class ApolloHttpNetworkTransport(
     val requestBody = buffer.readByteArray().toRequestBody(contentType = MEDIA_TYPE.toMediaType())
     return Request.Builder()
         .url(serverUrl)
-        .headers(httpHeaders)
+        .headers(headers)
         .apply {
           httpExecutionContext?.headers?.forEach { name, value ->
             header(name = name, value = value)

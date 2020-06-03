@@ -40,27 +40,29 @@ import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.native.concurrent.freeze
 
-typealias DataTaskCompletionHandler = (NSData?, NSURLResponse?, NSError?) -> Unit
-typealias DataTaskProvider = (NSURLRequest, DataTaskCompletionHandler) -> NSURLSessionDataTask
+typealias UrlSessionDataTaskCompletionHandler = (NSData?, NSURLResponse?, NSError?) -> Unit
+typealias UrlSessionDataTaskFactory = (NSURLRequest, UrlSessionDataTaskCompletionHandler) -> NSURLSessionDataTask
 
 @ApolloExperimental
 @ExperimentalCoroutinesApi
 actual class ApolloHttpNetworkTransport(
     private val serverUrl: NSURL,
-    private val httpHeaders: Map<String, String>,
+    private val headers: Map<String, String>,
     private val httpMethod: HttpMethod,
-    private val dataTaskProvider: DataTaskProvider
+    private val dataTaskFactory: UrlSessionDataTaskFactory
 ) : NetworkTransport {
 
   actual constructor(
       serverUrl: String,
-      httpHeaders: Map<String, String>,
+      headers: Map<String, String>,
       httpMethod: HttpMethod
   ) : this(
       serverUrl = NSURL(string = serverUrl),
-      httpHeaders = httpHeaders,
+      headers = headers,
       httpMethod = httpMethod,
-      dataTaskProvider = { request, completionHandler -> NSURLSession.sharedSession.dataTaskWithRequest(request, completionHandler) }
+      dataTaskFactory = { request, completionHandler ->
+        NSURLSession.sharedSession.dataTaskWithRequest(request, completionHandler)
+      }
   )
 
   override fun execute(request: GraphQLRequest, executionContext: ExecutionContext): Flow<GraphQLResponse> {
@@ -80,7 +82,7 @@ actual class ApolloHttpNetworkTransport(
         }
         val httpRequest = request.toHttpRequest(executionContext[HttpExecutionContext.Request])
 
-        dataTaskProvider(httpRequest.freeze(), delegate.freeze())
+        dataTaskFactory(httpRequest.freeze(), delegate.freeze())
             .also { task ->
               continuation.invokeOnCancellation {
                 task.cancel()
@@ -96,7 +98,8 @@ actual class ApolloHttpNetworkTransport(
                 executionContext = HttpExecutionContext.Response(
                     statusCode = result.httpStatusCode,
                     headers = result.httpHeaders
-                )
+                ),
+                requestUuid = request.uuid
             )
         )
         is Result.Failure -> throw result.cause
@@ -120,7 +123,7 @@ actual class ApolloHttpNetworkTransport(
     )
     return NSMutableURLRequest.requestWithURL(urlComponents.URL!!).apply {
       setHTTPMethod("GET")
-      httpHeaders
+      headers
           .plus(httpExecutionContext?.headers ?: emptyMap())
           .forEach { (key, value) -> setValue(value, forHTTPHeaderField = key) }
       setCachePolicy(NSURLRequestReloadIgnoringCacheData)
@@ -140,7 +143,7 @@ actual class ApolloHttpNetworkTransport(
       val postBody = buffer.readByteArray().toNSData()
 
       setHTTPMethod("POST")
-      httpHeaders
+      headers
           .plus(httpExecutionContext?.headers ?: emptyMap())
           .forEach { (key, value) -> setValue(value, forHTTPHeaderField = key) }
       setCachePolicy(NSURLRequestReloadIgnoringCacheData)

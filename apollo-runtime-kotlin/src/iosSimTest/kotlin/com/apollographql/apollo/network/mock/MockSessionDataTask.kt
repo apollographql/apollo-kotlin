@@ -1,10 +1,10 @@
 package com.apollographql.apollo.network.mock
 
-import com.apollographql.apollo.network.DataTaskCompletionHandler
+import com.apollographql.apollo.network.UrlSessionDataTaskCompletionHandler
 import platform.Foundation.NSURLSessionDataTask
 
 class MockSessionDataTask(
-    private val completionHandler: DataTaskCompletionHandler,
+    private val completionHandler: UrlSessionDataTaskCompletionHandler,
     private val mockResponse: MockHttpResponse
 ) : NSURLSessionDataTask() {
 

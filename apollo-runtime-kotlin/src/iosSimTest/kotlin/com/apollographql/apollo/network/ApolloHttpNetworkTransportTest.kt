@@ -114,12 +114,12 @@ class ApolloHttpNetworkTransportTest {
     }
   }
 
-  private fun mockApolloHttpNetworkTransport(dataTaskProvider: DataTaskProvider): ApolloHttpNetworkTransport {
+  private fun mockApolloHttpNetworkTransport(dataTaskFactory: UrlSessionDataTaskFactory): ApolloHttpNetworkTransport {
     return ApolloHttpNetworkTransport(
         serverUrl = NSURL(string = "https://apollo.com"),
-        httpHeaders = emptyMap(),
+        headers = emptyMap(),
         httpMethod = HttpMethod.Post,
-        dataTaskProvider = dataTaskProvider
+        dataTaskFactory = dataTaskFactory
     )
   }
 
