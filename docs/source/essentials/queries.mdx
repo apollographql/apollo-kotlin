@@ -1,3 +1,5 @@
+import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
+
 ---
 title: Queries
 ---
@@ -44,6 +46,21 @@ query FeedQuery($type: FeedType!, $limit: Int!) {
 Here, `query` is the operation type and `FeedQuery` is the operation name.
 Apollo-android will generate a `FeedQuery` class that you can construct (with variables) and pass to `ApolloClient#query(query)`:
 
+<MultiCodeBlock>
+
+```kotlin
+apolloClient().query(feedQuery)
+        .enqueue(object: ApolloCall.Callback<FeedQuery.Data>() {
+             override fun onFailure(e: ApolloException) {
+                 Log.i(TAG, response.toString());
+             }
+
+             override fun onResponse(response: Response<UpvotePost.Data>) {
+                 Log.e(TAG, e.getMessage(), e);
+             }
+         }, uiHandler);
+```
+
 ```java
 apolloClient().query(feedQuery)
         .enqueue(new ApolloCallback<>(new ApolloCall.Callback<FeedQuery.Data>() {
@@ -56,6 +73,8 @@ apolloClient().query(feedQuery)
           }
         }, uiHandler));
 ```
+
+</MultiCodeBlock>
 
 > By default, Apollo will deliver query results on a background thread. You can provide a handler in `enqueue`, or use [`apollo-android-support`](https://github.com/apollographql/apollo-android/tree/master/apollo-android-support) if you're using the result to update the UI.
 
@@ -112,6 +131,24 @@ query HeroAndFriendsNames($episode: Episode) {
 
 You can fetch results and access data using the following code:
 
+<MultiCodeBlock>
+
+```kotlin
+val heroAndFriendsQuery = HeroAndFriendsNames(episode = NEWHOPE)
+
+apolloClient().query(heroAndFriendsQuery)
+    .enqueue(object: ApolloCall.Callback<FeedQuery.Data>() {
+         override fun onFailure(e: ApolloException) {
+             Log.i(TAG, response.toString());
+         }
+
+         override fun onResponse(response: Response<UpvotePost.Data>) {
+             Log.e(TAG, e.getMessage(), e);
+         }
+     }, uiHandler);
+}
+```
+
 ```java
 final HeroAndFriendsNames heroAndFriendsQuery = HeroAndFriendsNames.builder()
     .episode(NEWHOPE)
@@ -130,12 +167,7 @@ apolloClient().query(heroAndFriendsQuery)
 }
 ```
 
+</MultiCodeBlock>
+
 Because the above query won't fetch `appearsIn`, this property is not part of the returned result type and cannot be accessed here.
 
-## Next steps
-
-Learning how to build `Query` components to fetch data is one of the most important skills to mastering development with Apollo Android. Now that you're a pro at fetching data, why not try building `Mutation` components to update your data? Here are some resources we think will help you level up your skills:
-
-- [More about queries](https://graphql.org/learn/queries/): Read more about queries directly from the official GraphQL docs.
-- [Caching responses](/essentials/caching/): Learn how to cache responses with apollo-android.
-- [Mutations](/essentials/mutations/): Learn how to update data with mutations and when you'll need to update the Apollo cache. For a full list of options, check out the API reference for `Mutation` components.
