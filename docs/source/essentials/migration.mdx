@@ -1,3 +1,5 @@
+import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
+
 ---
 title: Migration guides
 ---
@@ -52,6 +54,18 @@ implementation("com.apollographql.apollo:apollo-normalized-cache-sqlite:x.y.z") 
 ```
 
 `ApolloSqlHelper` is deprecated. Instantiate `SqlNormalizedCacheFactory` with same arguments instead.
+
+<MultiCodeBlock>
+
+```kotlin
+// Replace:
+val apolloSqlHelper = ApolloSqlHelper.create(context, "db_name");
+val cacheFactory = SqlNormalizedCacheFactory(apolloSqlHelper);
+
+// With:
+val cacheFactory = SqlNormalizedCacheFactory(context, "db_name"); // highlight-line
+```
+
 ```java
 // Replace:
 ApolloSqlHelper apolloSqlHelper = ApolloSqlHelper.create(context, "db_name");
@@ -60,6 +74,8 @@ NormalizedCacheFactory cacheFactory = new SqlNormalizedCacheFactory(apolloSqlHel
 // With:
 NormalizedCacheFactory cacheFactory = new SqlNormalizedCacheFactory(context, "db_name"); // highlight-line
 ```
+
+</MultiCodeBlock>
 
 > Replace legacy Android SQL with SqlDelight ([#2158](https://github.com/apollographql/apollo-android/pull/2158))
                               
@@ -85,6 +101,16 @@ different options.
 The plugin ID has been changed from `com.apollographql.android` to `com.apollographql.apollo` to make it clear that the plugin works also
 for non-Android projects. `com.apollographql.android` will be removed in a future revision.
 
+<MultiCodeBlock>
+
+```kotlin
+// Replace:
+apply(plugin = "com.apollographql.android")
+
+// With:
+apply(plugin = "com.apollographql.apollo") // highlight-line
+```
+
 ```groovy
 // Replace:
 apply plugin: 'com.apollographql.android'
@@ -92,6 +118,8 @@ apply plugin: 'com.apollographql.android'
 // With:
 apply plugin: 'com.apollographql.apollo' // highlight-line
 ```
+
+</MultiCodeBlock>
 
 #### Using multiple services
 

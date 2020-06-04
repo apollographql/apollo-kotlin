@@ -1,3 +1,5 @@
+import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
+
 ---
 title: Caching response data
 ---
@@ -20,6 +22,8 @@ dependencies {
 ```
 
 ### Raw HTTP Response Cache
+
+<MultiCodeBlock>
 
 ```kotlin:title=Kotlin
 // Directory where cached responses will be stored
@@ -82,6 +86,8 @@ apolloClient
   }); 
 ```
 
+</MultiCodeBlock>
+
 **IMPORTANT:** Caching is provided only for `query` operations. It isn't available for `mutation` operations.
 
 There are four available cache policies `HttpCachePolicy`:
@@ -111,17 +117,34 @@ dependencies {
 **Note:** As of version 2.1.0, Cache module is published via Kotlin Multiplatform and that requires variant matching in Android projects.
  Only if you define a custom `buildType` please also put `matchingFallbacks`.
 
+<MultiCodeBlock>
+```kotlin:title=build.gradle
+android {
+  buildTypes {
+    create("custom") {
+      // your code...
+      matchingFallbacks = listOf("debug")
+    }
+  }
+}
+```
+
 ```groovy:title=build.gradle
 android {
   buildTypes {
     custom {
+      // your code...
       matchingFallbacks = ["debug"]
     }
   }
 }
 ```
 
+</MultiCodeBlock>
+
 ### Usage
+
+<MultiCodeBlock>
 
 ```kotlin:title=Kotlin             
 // Create NormalizedCacheFactory
@@ -185,6 +208,8 @@ ApolloClient apolloClient = ApolloClient.builder()
   .build();
 ```
 
+</MultiCodeBlock>
+
 ## Normalized In-Memory Cache:
 
 To enable Normalized In-Memory Cache support, add the dependency to your project's build.gradle file. The latest version is
@@ -197,6 +222,8 @@ dependencies {
 ``` 
 
 ### Usage
+
+<MultiCodeBlock>
 
 ```kotlin:title=Kotlin
 // Create NormalizedCacheFactory
@@ -221,11 +248,14 @@ ApolloClient apolloClient = ApolloClient.builder()
   .okHttpClient(okHttpClient)
   .build();
 ```
+</MultiCodeBlock>
 
 ## Chaining Caches:
 
 You can use both a memory cache and disk cache, with a cache chain. Reads will read from the first cache hit in the chain. Writes will
 propagate down the entire chain.
+
+<MultiCodeBlock>
 
 ```kotlin:title=Kotlin
 
@@ -244,6 +274,7 @@ NormalizedCacheFactory memoryFirstThenSqlCacheFactory = new LruNormalizedCacheFa
 ).chain(sqlCacheFactory);
 
 ```
+</MultiCodeBlock>
 
 ## Examples
 

@@ -1,3 +1,5 @@
+import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
+
 ---
 title: Mutations
 ---
@@ -36,6 +38,24 @@ The above mutation will upvote a post on the server. The result might be:
 
 Similar to queries, mutations are represented by instances of generated classes, conforming to the `ApolloMutationCall` interface. Constructor arguments are used to define mutation variables. You pass a mutation object to `ApolloClient#perform(mutation)` to send the mutation to the server, execute it, and receive typed results:
 
+<MultiCodeBlock>
+
+```kotlin
+val upvotePostMutation = UpvotePostMutation(votes = 3)
+
+apolloClient
+    .mutate(upvotePostMutation)
+    .enqueue(object: ApolloCall.Callback<UpvotePost.Data>() {
+            override fun onFailure(e: ApolloException) {
+                Log.i(TAG, response.toString());
+            }
+
+            override fun onResponse(response: Response<UpvotePost.Data>) {
+                Log.e(TAG, e.getMessage(), e);
+            }
+        }
+```
+
 ```java
 UpvotePostMutation upvotePostMutation = UpvotePostMutation.builder()
     .votes(3)
@@ -46,15 +66,17 @@ apolloClient
     .enqueue(
         new ApolloCallback<>(new ApolloCall.Callback<UpvotePost.Data>() {
           @Override public void onResponse(@NotNull Response<UpvotePost.Data> response) {
-            Log.i(TAG, response.toString());
+              Log.i(TAG, response.toString());
           }
         
           @Override public void onFailure(@NotNull ApolloException e) {
-            Log.e(TAG, e.getMessage(), e);
+              Log.e(TAG, e.getMessage(), e);
           }
-        }, uiHandler);
+        });
     );
 ```
+
+</MultiCodeBlock>
 
 ## Using fragments in mutation results
 
@@ -66,6 +88,23 @@ mutation UpvotePost($postId: Int!) {
     ...PostDetails
   }
 }
+```
+
+<MultiCodeBlock>
+
+```kotlin
+apolloClient
+    .mutate(upvotePostMutation)
+    .enqueue(object: ApolloCall.Callback<UpvotePost.Data>() {
+            override fun onFailure(e: ApolloException) {
+                Log.i(TAG, response.data.upvotePost.fragments.postDetails);
+            }
+
+            override fun onResponse(response: Response<UpvotePost.Data>) {
+                Log.e(TAG, e.getMessage(), e);
+            }
+        }
+
 ```
 
 ```java
@@ -80,9 +119,11 @@ apolloClient
           @Override public void onFailure(@NotNull ApolloException e) {
             Log.e(TAG, e.getMessage(), e);
           }
-        }, uiHandler)
+        })
     );
 ```
+
+</MultiCodeBlock>
 
 ## Passing input objects
 
@@ -97,11 +138,23 @@ mutation CreateReviewForEpisode($episode: Episode!, $review: ReviewInput!) {
 }
 ```
 
-```swift
-let review = ReviewInput(stars: 5, commentary: "This is a great movie!")
-apolloClient
-    .mutate(CreateReviewForEpisodeMutation(episode: .jedi, review: review))
+<MultiCodeBlock>
+```kotlin
+val reviewInput = ReviewInput(stars = 5, commentary = "This is a great movie!")
+
+apolloClient.mutate(CreateReviewForEpisodeMutation(episode = Episode.NEWHOPE, review = reviewInput))
 ```
+
+```java
+ReviewInput reviewInput = ReviewInput.Builder()
+    .stars(5)
+    .commentary("This is a great movie!")
+    .build()
+
+apolloClient.mutate(CreateReviewForEpisodeMutation(Episode.NEWHOPE, reviewInput))
+```
+
+</MultiCodeBlock>
 
 ## Designing mutation results
 
@@ -123,6 +176,8 @@ apollo {
 }
 ```
 
+</MultiCodeBlock>
+
 **Note** You don't need to register custom type adapter for `FileUpload`.
 
 In this example, the GraphQL schema uses custom scalar type named `Upload` for file upload. 
@@ -143,16 +198,17 @@ mutation SingleUpload($file: Upload!) {
 
 Call your mutation with mimetype and a valid `File`.
 
+<MultiCodeBlock>
+
+```kotlin
+  mutationSingle = SingleUploadMutation(file = FileUpload("image/jpg", File("/my/image.jpg")))
+```
+
 ```java
   mutationSingle = SingleUploadMutation.builder()
         .file(new FileUpload("image/jpg", new File("/my/image.jpg")))
         .build();
 ```
 
-## Next steps
+</MultiCodeBlock>
 
-Learning how to build `Mutation` components to update your data is an important part of developing applications with Apollo Android. Now that you're well-versed in updating data, why not try executing client-side mutations with `apollo-link-state`? Here are some resources we think will help you level up your skills:
-
-- [#125, Fragmented Podcast](http://fragmentedpodcast.com/episodes/125/): Why's and How's about Apollo Android and the entire journey.
-- [Caching in Apollo](/essentials/caching/): Dive deep into the Apollo cache and how it's normalized in our advanced guide on caching. Understanding the cache is helpful when writing your mutation's `update` function!
-- [Mutation component video by Sara Vieira](https://youtu.be/2SYa0F50Mb4): If you need a refresher or learn best by watching videos, check out this tutorial on `Mutation` components by Sara!
