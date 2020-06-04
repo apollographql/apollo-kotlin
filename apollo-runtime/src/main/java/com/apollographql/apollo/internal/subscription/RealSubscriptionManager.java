@@ -19,6 +19,7 @@ import com.apollographql.apollo.subscription.SubscriptionTransport;
 import kotlin.jvm.functions.Function0;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -246,18 +247,16 @@ public final class RealSubscriptionManager implements SubscriptionManager {
   }
 
   void onTransportConnected() {
-    final Collection<SubscriptionRecord> subscriptionRecords;
+    final Collection<SubscriptionRecord> subscriptionRecords = new ArrayList<>();
 
     final SubscriptionManagerState oldState;
     synchronized (this) {
       oldState = state;
 
       if (state == SubscriptionManagerState.CONNECTING) {
-        subscriptionRecords = subscriptions.values();
+        subscriptionRecords.addAll(subscriptions.values());
         state = SubscriptionManagerState.CONNECTED;
         transport.send(new OperationClientMessage.Init(connectionParams.provide()));
-      } else {
-        subscriptionRecords = Collections.emptyList();
       }
 
       if (state == SubscriptionManagerState.CONNECTED) {
