@@ -1,8 +1,8 @@
-import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
-
 ---
 title: Caching response data
 ---
+
+import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
 
 Apollo GraphQL client allows you to cache responses, making it suitable for use even while offline. The client can be configured with 3 levels of caching:
 
@@ -75,7 +75,6 @@ apolloClient
   )
   .httpCachePolicy(HttpCachePolicy.CACHE_FIRST)
   .enqueue(new ApolloCall.Callback<FeedQuery.Data>() {
-
     @Override public void onResponse(@NotNull Response<FeedQuery.Data> dataResponse) {
       ...
     }
