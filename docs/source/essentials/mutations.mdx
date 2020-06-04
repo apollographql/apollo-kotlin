@@ -169,15 +169,13 @@ Apollo Android supports file uploading over [graphql-multipart-request-spec](htt
 
 You need to define this mapping in your build.gradle file.
 
-```gradle
+```groovy
 apollo {
   customTypeMapping = [
     "Upload" : "com.apollographql.apollo.api.FileUpload"
   ]
 }
 ```
-
-</MultiCodeBlock>
 
 **Note** You don't need to register custom type adapter for `FileUpload`.
 
