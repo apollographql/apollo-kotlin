@@ -2,7 +2,7 @@
 title: "8. Add a details view"
 ---
 
-In this section, you will write your second GraphQL query to request details about a single launch. You will also learn how to handle loading states and errors.
+In this section, you will write your second GraphQL query to request details about a single launch.
 
 ## Open the details fragment from the list
 
@@ -81,38 +81,83 @@ This time, display a progressBar while the query executes:
             binding.progressBar.visibility = View.VISIBLE
             binding.error.visibility = View.GONE
 
-            val response = try {
-                apolloClient.query(LaunchDetailsQuery(id = args.launchId)).toDeferred().await()
-            } catch (e: ApolloException) {
-                null
-            }
+            val response = apolloClient.query(LaunchDetailsQuery(id = args.launchId)).toDeferred().await()
 ```
 
-## Handle errors
+## Handle protocol errors
 
-As you execute your query, three types of errors can happen:
+As you execute your query, two types of errors can happen:
 
-* Protocol errors such as HTTP or Json parsing errors will throw a `ApolloException`
-* Application errors. In this case, `response.errors` will contain the application errors
-* Finally the client might not be ready to handle any type of returned data, especially null fields.
+* Protocol errors such as HTTP errors or Json parsing errors will throw a `ApolloException`
+* Application errors. In this case, `response.errors` will contain the application errors and response.data might be null
 
-Protocol errors are handled by the try/catch above but you should also be prepared to handle the case were there are null fields or application errors:
+For protocol errors, Apollo Android will throw a `ApolloException` so you'll need to wrap the call in a try/catch block:
 
-```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchDetailsFragment.kt
-            val launch = response?.data?.launch
-            if (launch == null || response.hasErrors()) {
-                Log.d("LaunchDetails", "Failure")
+```
+            val response = try {
+                apolloClient(requireContext()).query(LaunchDetailsQuery(id = args.launchId)).toDeferred().await()
+            } catch (e: ApolloException) {
                 binding.progressBar.visibility = View.GONE
+                binding.error.text = "Oh no... A protocol error happened"
                 binding.error.visibility = View.VISIBLE
                 return@launchWhenResumed
             }
 ```
 
-You can test error handling by enabling airplane mode before clicking the details of a launch.
+Enable airplane mode before clicking the details of a launch. You should see this:
 
-<img src="images/error.png" alt="Oh no" class="screenshot" width="300"/>
+<img src="images/error_protocol.png" alt="Oh no" class="screenshot" width="300"/>
 
-This is good!
+This is good! But it's not enough. Even if the request executes correctly at the protocol level, it might also contain application errors that are specific to your server.
+
+## Handle application errors
+
+To handle application errors, you can check `response.hasErrors`:
+
+```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchDetailsFragment.kt
+            val launch = response.data?.launch
+            if (launch == null || response.hasErrors()) {
+                binding.progressBar.visibility = View.GONE
+                binding.error.text = response.errors?.get(0)?.message
+                binding.error.visibility = View.VISIBLE
+                return@launchWhenResumed
+            }
+```
+
+`response.errors` will contain the details about the errors. Note that this code also checks for `response.data == null`. In theory, a server should not set `response.data == null` and `response.hasErrors == false` at the same time but the type system cannot guarantee this so better safe than sorry.
+
+To trigger an error, replace `LaunchDetailsQuery(id = args.launchId)` with `LaunchDetailsQuery(id = "invalidId")`. Disable airplane mode and select a launch. The server will send this response:
+
+```json:title=(error)
+{
+  "errors": [
+    {
+      "message": "Cannot read property 'flight_number' of undefined",
+      "locations": [
+        {
+          "line": 1,
+          "column": 32
+        }
+      ],
+      "path": [
+        "launch"
+      ],
+      "extensions": {
+        "code": "INTERNAL_SERVER_ERROR"
+      }
+    }
+  ],
+  "data": {
+    "launch": null
+  }
+}
+```
+
+<img src="images/error_application.png" alt="Oh no" class="screenshot" width="300"/>
+
+This is all good! You can use the `error` field to add more advanced error management.
+
+Put back the correct launch ID: `LaunchDetailsQuery(id = args.launchId)` before displaying details.
 
 ## Display details
 

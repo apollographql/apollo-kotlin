@@ -19,6 +19,7 @@ val apolloClient = ApolloClient.builder()
 Creating the ApolloClient is as simple as giving it the endpoint of your GraphQL backend. It is `https://apollo-fullstack-tutorial.herokuapp.com` in our case.
 
 ## Execute the query
+
 Open `LaunchListFragment.kt`, override `onViewCreated` and launch a new coroutine. Use the apolloClient and the generated `LaunchListQuery` to execute a new query:
 
 ```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchListFragment.kt
@@ -26,12 +27,7 @@ Open `LaunchListFragment.kt`, override `onViewCreated` and launch a new coroutin
         super.onViewCreated(view, savedInstanceState)
 
         lifecycleScope.launchWhenResumed {
-            val response = try {
-                apolloClient.query(LaunchListQuery()).toDeferred().await()
-            } catch (e: ApolloException) {
-                Log.d("LaunchList", "Failure", e)
-                null
-            }
+            val response = apolloClient.query(LaunchListQuery()).toDeferred().await()
 
             Log.d("LaunchList", "Success ${response?.data}")
         }
