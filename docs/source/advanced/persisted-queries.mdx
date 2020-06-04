@@ -1,6 +1,9 @@
+import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
+
 ---
 title: Persisted queries 
 ---
+
 
 ## Automatic persisted queries
 
@@ -43,6 +46,20 @@ By default, Apollo uses `Sha256` hashing algorithm to generate an ID for the que
 
 Example Md5 hash generator:
 
+<MultiCodeBlock>
+
+```kotlin
+apollo {
+    operationIdGenerator.set(object: com.apollographql.apollo.compiler.OperationIdGenerator {
+        override val version = "my-md5-version1"
+
+        override fun apply(operationDocument: String, operationFilepath: String): String {
+            return operationDocument.md5()
+        }
+    })
+}
+```
+
 ```groovy
 import com.apollographql.apollo.compiler.OperationIdGenerator
 
@@ -60,6 +77,8 @@ apollo {
   }
 }
 ```
+
+</MultiCodeBlock>
 
 ### Versioning Id Generator
 

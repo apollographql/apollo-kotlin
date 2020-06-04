@@ -1,3 +1,5 @@
+import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
+
 ---
 title: Android support
 ---
@@ -15,10 +17,19 @@ implementation("com.apollographql.apollo:apollo-android-support:x.y.z")
 
 SqlNormalizedCacheFactory uses the Android framework [SQLiteDatabase](https://developer.android.com/reference/android/database/sqlite/SQLiteDatabase) databse to provide and instance of a `NormalizedCacheFactory`.
 
+<MultiCodeBlock>
+
+```kotlin
+val apolloSqlHelper = ApolloSqlHelper.create(context, "db_name")
+val cacheFactory = SqlNormalizedCacheFactory(apolloSqlHelper)
+```
+
 ```java
 ApolloSqlHelper apolloSqlHelper = ApolloSqlHelper.create(context, "db_name");
 NormalizedCacheFactory cacheFactory = new SqlNormalizedCacheFactory(apolloSqlHelper);
 ```
+
+</MultiCodeBlock>
 
 ## ApolloIdlingResource
 
@@ -33,21 +44,37 @@ The Apollo GraphQL client comes with a [IdlingResource](https://developer.androi
  during your Android Espresso UI tests. It needs to be created and registered per ApolloClient instance. Register several IdlingResources
  with the same name will crash.
 
-- Example in Java:
-```java
-// Register the idlingResource before running your tests (once per client).
-IdlingResource idlingResource = ApolloIdlingResource.create("ApolloIdlingResource", apolloClient);
-IdlingRegistry.getInstance().register(idlingResource);
-```
+<MultiCodeBlock>
 
-- Example in Kotlin:
 ```kotlin
 // Register the idlingResource before running your tests (once per client).
 val idlingResource = ApolloIdlingResource.create("ApolloIdlingResource", apolloClient)
 IdlingRegistry.getInstance().register(idlingResource)
 ```
 
+```java
+// Register the idlingResource before running your tests (once per client).
+IdlingResource idlingResource = ApolloIdlingResource.create("ApolloIdlingResource", apolloClient);
+IdlingRegistry.getInstance().register(idlingResource);
+```
+
+</MultiCodeBlock>
+
+
 Most frequently this code is put into a custom TestRunner as below. Please note that you need the ApolloClient instance you use in the app.
+
+<MultiCodeBlock>
+
+```kotlin
+class TestRunner : AndroidJUnitRunner() {
+    override fun onStart() {
+        val idlingResource = ApolloIdlingResource.create ("ApolloIdlingResource", apolloClient);
+        IdlingRegistry.getInstance().register(idlingResource);
+
+        super.onStart();
+    }
+}
+```
 
 ```java
 public final class TestRunner extends AndroidJUnitRunner {
@@ -61,3 +88,6 @@ public final class TestRunner extends AndroidJUnitRunner {
   }
 }
 ```
+
+</MultiCodeBlock>
+

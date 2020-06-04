@@ -1,3 +1,5 @@
+import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
+
 ---
 title: Using the client without apollo-runtime
 sidebar_title: Using without apollo-runtime
@@ -15,12 +17,23 @@ implementation("com.apollographql.apollo:apollo-api:x.y.z")
 
 To compose HTTP POST request body `Operation` provides such API:
 
+<MultiCodeBlock>
+
+```kotlin
+val query = ...
+val payload = query.composeRequestBody()
+val  mediaType = MediaType.parse("application/json; charset=utf-8");
+val requestBody = RequestBody.create(mediaType, payload);
+```
+
 ```java
 Query query = ...
 ByteString payload = query.composeRequestBody();
 okhttp3.MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
 okhttp3.RequestBody requestBody = RequestBody.create(mediaType, payload);
 ```
+
+</MultiCodeBlock>
 
 If GraphQL operation defines any variable with custom scalar type, you must provide properly configured instance of
 `com.apollographql.apollo.response.ScalarTypeAdapters`:
