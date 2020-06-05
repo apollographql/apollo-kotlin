@@ -11,6 +11,7 @@ import javax.inject.Inject
 abstract class DefaultIntrospection @Inject constructor(val objects: ObjectFactory): Introspection {
   abstract override val endpointUrl: Property<String>
 
+  @Deprecated("add query parameters to endpointUrl instead")
   abstract override val queryParameters: MapProperty<String, String>
 
   abstract override val headers: MapProperty<String, String>
