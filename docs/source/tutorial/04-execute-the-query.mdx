@@ -14,7 +14,7 @@ val apolloClient = ApolloClient.builder()
     .build()
 ```
 
-`apolloClient` is a top-level variable so that it can be reused from other parts of the app later on for better performance. Reusing the `apolloClient` allows to reuse the underlying OkHttp instance and the associated threadpools and connections.
+**Note**: `apolloClient` is a top-level variable so that it can be reused from other parts of the app later on for better performance. Reusing the `apolloClient` allows to reuse the underlying OkHttp instance and the associated threadpools and connections.
 
 Creating the ApolloClient is as simple as giving it the endpoint of your GraphQL backend. It is `https://apollo-fullstack-tutorial.herokuapp.com` in our case.
 
