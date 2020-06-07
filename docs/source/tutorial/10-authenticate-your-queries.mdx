@@ -93,6 +93,8 @@ fun apolloClient(context: Context): ApolloClient {
 }
 ```
 
+**Note**: Here the singleton handled manually for sample purposes. In a real life application, you would certainly use a dependency injection framework such as `Dagger` or `Koin`.
+
 ## Add the BookTrip and CancelTrip mutations
 
 Next to `schema.json` add a `BookTrip.graphql` file:
