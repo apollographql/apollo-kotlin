@@ -9,8 +9,9 @@ In this chapter, you are going to display a list of Launch Sites in a [RecyclerV
 Open `LaunchListAdapter` and add a `launches` property:
 
 ```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchListAdapter.kt
-class LaunchListAdapter(val launches: List<LaunchListQuery.Launch>) :
-    RecyclerView.Adapter<LaunchListAdapter.ViewHolder>() {
+class LaunchListAdapter(
+    val launches: List<LaunchListQuery.Launch>
+) : RecyclerView.Adapter<LaunchListAdapter.ViewHolder>() {
 ```
 
 `LaunchListQuery.Launch` is a typesafe generated model from your LaunchList.graphql query.
