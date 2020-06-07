@@ -34,25 +34,6 @@ You can find the latest version of Apollo Android from the [github releases page
 
 This tutorial uses `2.1.0` because it is the latest version at the time of writing but feel free to use a more recent version if one is available when you're reading this.
 
-## Add the plugin to the buildscript
-
-Open the `build.gradle.kts` at the root of the project and add the Apollo Gradle plugin to the buildscript classpath:
-
-```kotlin:title=build.gradle.kts
-buildscript {
-    repositories {
-        google()
-        jcenter()
-    }
-
-    dependencies {
-        classpath("com.android.tools.build:gradle:4.0.0")
-        // ...
-        classpath("com.apollographql.apollo:apollo-gradle-plugin:2.1.0")
-    }
-}
-```
-
 ## Apply the plugin
 
 Apply the Apollo plugin in `app/build.gradle.kts`. There are two `build.gradle.kts` in the project. Make sure to use the one in the `app` directory this time. The Apollo plugin ID is `com.apollographql.apollo`.
@@ -61,7 +42,7 @@ Apply the Apollo plugin in `app/build.gradle.kts`. There are two `build.gradle.k
 plugins {
     id("com.android.application")
     // ...
-    id("com.apollographql.apollo")
+    id("com.apollographql.apollo").version("2.1.0")
 }
 ```
 
