@@ -95,7 +95,7 @@ For protocol errors, Apollo Android will throw a `ApolloException` so you'll nee
 
 ```
             val response = try {
-                apolloClient(requireContext()).query(LaunchDetailsQuery(id = args.launchId)).toDeferred().await()
+                apolloClient.query(LaunchDetailsQuery(id = args.launchId)).toDeferred().await()
             } catch (e: ApolloException) {
                 binding.progressBar.visibility = View.GONE
                 binding.error.text = "Oh no... A protocol error happened"
