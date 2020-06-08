@@ -85,7 +85,7 @@ internal fun ObjectType.typeSpec(generateAsInternal: Boolean = false): TypeSpec 
 
 }
 
-private fun ObjectType.fragmentsTypeSpec(generateAsInternal: Boolean = false): TypeSpec {
+internal fun ObjectType.fragmentsTypeSpec(generateAsInternal: Boolean = false): TypeSpec {
   return TypeSpec
       .classBuilder(name)
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }

@@ -111,7 +111,7 @@ internal fun OperationType.typeSpec(targetPackage: String, generateAsInternal: B
     }
     .addTypes(nestedObjects.map { (ref, type) ->
       if (ref == data) {
-        type.toOperationDataTypeSpec(data.name)
+        type.toOperationDataTypeSpec(name = data.name, generateAsInternal = generateAsInternal)
       } else {
         type.typeSpec()
       }
@@ -234,7 +234,7 @@ private fun InputType.variablesMarshallerSpec(thisRef: String): FunSpec {
       .build()
 }
 
-private fun ObjectType.toOperationDataTypeSpec(name: String) =
+private fun ObjectType.toOperationDataTypeSpec(name: String, generateAsInternal: Boolean) =
     TypeSpec
         .classBuilder(name)
         .addModifiers(KModifier.DATA)
@@ -258,6 +258,7 @@ private fun ObjectType.toOperationDataTypeSpec(name: String) =
             .build()
         )
         .addFunction(fields.marshallerFunSpec(override = true, thisRef = name))
+        .applyIf(fragmentsType != null) { addType(fragmentsType!!.fragmentsTypeSpec(generateAsInternal)) }
         .build()
 
 private fun OperationType.parseWithAdaptersFunSpec() = FunSpec.builder("parse")

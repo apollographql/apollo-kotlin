@@ -17,7 +17,7 @@ class SchemaTypeSpecBuilder(
     private val description: String = "",
     private val schemaType: String = "",
     private val fields: List<Field>,
-    private val fragmentRefs: List<FragmentRef>,
+    private val fragments: List<FragmentRef>,
     private val inlineFragments: List<InlineFragment>,
     private val context: CodeGenerationContext,
     private val abstract: Boolean = false
@@ -61,7 +61,7 @@ class SchemaTypeSpecBuilder(
           description = description,
           schemaType = schemaType,
           fields = fields,
-          fragmentRefs = fragmentRefs,
+          fragments = fragments,
           inlineFragments = emptyList(),
           context = context
       )
@@ -133,7 +133,7 @@ class SchemaTypeSpecBuilder(
   }
 
   private fun TypeSpec.Builder.addFragments(): TypeSpec.Builder {
-    if (fragmentRefs.isNotEmpty()) {
+    if (fragments.isNotEmpty()) {
       addType(fragmentsTypeSpec())
       addField(fragmentsFieldSpec())
       addMethod(fragmentsAccessorMethodSpec())
@@ -184,7 +184,7 @@ class SchemaTypeSpecBuilder(
     }
 
     fun responseFieldSpecs(): List<ResponseFieldSpec> {
-      return fragmentRefs
+      return fragments
           .mapNotNull { fragmentRef -> context.ir.fragments.find { it.fragmentName == fragmentRef.name }?.let { fragmentRef to it } }
           .map { (fragmentRef, fragment) ->
             val optional = fragmentRef.isOptional()
@@ -331,7 +331,7 @@ class SchemaTypeSpecBuilder(
           context = context
       )
     }
-    val fragments = if (fragmentRefs.isNotEmpty()) {
+    val fragments = if (fragments.isNotEmpty()) {
       val normalizedFieldSpec = FieldSpec.builder(
           FRAGMENTS_FIELD.type.withoutAnnotations(),
           FRAGMENTS_FIELD.name

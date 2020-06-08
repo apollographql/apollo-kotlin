@@ -12,7 +12,7 @@ data class InlineFragment(
     val possibleTypes: List<String> = emptyList(),
     val description: String,
     val fields: List<Field>,
-    val fragmentRefs: List<FragmentRef>,
+    val fragments: List<FragmentRef>,
     val sourceLocation: SourceLocation,
     val conditions: List<Condition> = emptyList()
 ) : CodeGenerator {
@@ -22,7 +22,7 @@ data class InlineFragment(
         typeName = formatClassName(),
         description = description,
         fields = fields,
-        fragmentRefs = fragmentRefs,
+        fragments = fragments,
         inlineFragments = emptyList(),
         context = context,
         abstract = abstract

@@ -15,6 +15,7 @@ data class Operation(
     val sourceWithFragments: String,
     val fields: List<Field>,
     val filePath: String,
+    val fragments: List<FragmentRef>,
     val fragmentsReferenced: List<String>
 ) : CodeGenerator {
 
@@ -23,7 +24,7 @@ data class Operation(
           typeName = DATA_TYPE_NAME,
           description = "Data from the response after executing this GraphQL operation",
           fields = fields,
-          fragmentRefs = emptyList(),
+          fragments = fragments,
           inlineFragments = emptyList(),
           context = context,
           abstract = abstract

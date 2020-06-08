@@ -27,7 +27,7 @@ data class Fragment(
         schemaType = typeCondition,
         description = description,
         fields = fields,
-        fragmentRefs = fragmentRefs,
+        fragments = fragmentRefs,
         inlineFragments = inlineFragments,
         context = context,
         abstract = abstract
