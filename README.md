@@ -195,7 +195,6 @@ Advanced topics are available in [the official docs](https://www.apollographql.c
 * [rxjava3.md](https://www.apollographql.com/docs/android/advanced/rxjava3/)
 * [persisted-queries.md](https://www.apollographql.com/docs/android/advanced/persisted-queries/)
 * [no-runtime.md](https://www.apollographql.com/docs/android/advanced/no-runtime/) 
-* [subscriptions.md](https://www.apollographql.com/docs/android/advanced/subscriptions/)
 * [migrations.md](https://www.apollographql.com/docs/android/essentials/migration/)
 
 ## Contributing
