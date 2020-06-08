@@ -18,7 +18,7 @@ Apollo-android takes a schema and a set of `.graphql` files and uses these to ge
 
 > All `.graphql` files in your project (or the subset you specify as input to `apollo-codegen` if you customize the script you define as the code generation build phase) will be combined and treated as one big GraphQL document. That means fragments defined in one `.graphql` file are available to all other `.graphql` files for example, but it also means operation names and fragment names have to be unique and you will receive validation errors if they are not.
 
-## Creating queries
+## Creating queries 
 
 Queries are represented as instances of generated classes conforming to the `GraphQLQuery` protocol. Constructor arguments can be used to define query variables if needed.
 You pass a query object to `ApolloClient#query(query)` to send the query to the server, execute it, and receive results.
