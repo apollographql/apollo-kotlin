@@ -1,0 +1,11 @@
+query TestQuery {
+  tree {
+    name
+    children {
+      name
+    }
+    parent {
+      name
+    }
+  }
+}
