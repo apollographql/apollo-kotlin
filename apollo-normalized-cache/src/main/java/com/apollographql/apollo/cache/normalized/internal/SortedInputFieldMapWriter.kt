@@ -1,157 +1,88 @@
-package com.apollographql.apollo.cache.normalized.internal;
+package com.apollographql.apollo.cache.normalized.internal
 
-import com.apollographql.apollo.api.ScalarType;
-import com.apollographql.apollo.api.internal.InputFieldMarshaller;
-import com.apollographql.apollo.api.internal.InputFieldWriter;
-import com.apollographql.apollo.api.internal.Utils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.apollographql.apollo.api.ScalarType
+import com.apollographql.apollo.api.internal.InputFieldMarshaller
+import com.apollographql.apollo.api.internal.InputFieldWriter
+import java.io.IOException
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+class SortedInputFieldMapWriter(
+    private val fieldNameComparator: Comparator<String>
+) : InputFieldWriter {
 
-public class SortedInputFieldMapWriter implements InputFieldWriter {
-  private final Comparator<String> fieldNameComparator;
-  private final Map<String, Object> buffer;
+  constructor(compare: (String, String) -> Int) : this(Comparator { o1, o2 -> compare(o1, o2) })
 
-  public SortedInputFieldMapWriter(@NotNull Comparator<String> fieldNameComparator) {
-    this.fieldNameComparator = Utils.checkNotNull(fieldNameComparator, "fieldNameComparator == null");
-    this.buffer = new TreeMap<>(fieldNameComparator);
-  }
+  private val buffer = mutableMapOf<String, Any?>().toSortedMap(fieldNameComparator)
 
-  public Map<String, Object> map() {
-    return Collections.unmodifiableMap(buffer);
-  }
+  fun map(): Map<String, Any?> = buffer.toMap()
 
-  @Override public void writeString(@NotNull String fieldName, @Nullable String value) {
-    buffer.put(fieldName, value);
-  }
+  override fun writeString(fieldName: String, value: String?) = buffer.set(fieldName, value)
+  override fun writeInt(fieldName: String, value: Int?) = buffer.set(fieldName, value)
+  override fun writeLong(fieldName: String, value: Long?) = buffer.set(fieldName, value)
+  override fun writeDouble(fieldName: String, value: Double?) = buffer.set(fieldName, value)
+  override fun writeNumber(fieldName: String, value: Number?) = buffer.set(fieldName, value)
+  override fun writeBoolean(fieldName: String, value: Boolean?) = buffer.set(fieldName, value)
+  override fun writeCustom(fieldName: String, scalarType: ScalarType, value: Any?) = buffer.set(fieldName, value)
+  override fun writeMap(fieldName: String, value: Map<String, *>?) = buffer.set(fieldName, value)
 
-  @Override public void writeInt(@NotNull String fieldName, @Nullable Integer value) {
-    buffer.put(fieldName, value);
-  }
-
-  @Override public void writeLong(@NotNull String fieldName, @Nullable Long value) {
-    buffer.put(fieldName, value);
-  }
-
-  @Override public void writeDouble(@NotNull String fieldName, @Nullable Double value) {
-    buffer.put(fieldName, value);
-  }
-
-  @Override public void writeNumber(@NotNull String fieldName, @Nullable Number value) {
-    buffer.put(fieldName, value);
-  }
-
-  @Override public void writeBoolean(@NotNull String fieldName, @Nullable Boolean value) {
-    buffer.put(fieldName, value);
-  }
-
-  @Override
-  public void writeCustom(@NotNull String fieldName, @NotNull ScalarType scalarType, @Nullable Object value) {
-    buffer.put(fieldName, value);
-  }
-
-  @Override public void writeObject(@NotNull String fieldName, @Nullable InputFieldMarshaller marshaller) throws IOException {
+  @Throws(IOException::class)
+  override fun writeObject(fieldName: String, marshaller: InputFieldMarshaller?) {
     if (marshaller == null) {
-      buffer.put(fieldName, null);
+      buffer[fieldName] = null
     } else {
-      SortedInputFieldMapWriter nestedWriter = new SortedInputFieldMapWriter(fieldNameComparator);
-      marshaller.marshal(nestedWriter);
-      buffer.put(fieldName, nestedWriter.buffer);
+      val nestedWriter = SortedInputFieldMapWriter(fieldNameComparator)
+      marshaller.marshal(nestedWriter)
+      buffer[fieldName] = nestedWriter.buffer
     }
   }
 
-  @Override
-  public void writeList(@NotNull String fieldName, @Nullable ListWriter listWriter) throws IOException {
+  @Throws(IOException::class)
+  override fun writeList(fieldName: String, listWriter: InputFieldWriter.ListWriter?) {
     if (listWriter == null) {
-      buffer.put(fieldName, null);
+      buffer[fieldName] = null
     } else {
-      ListItemWriter listItemWriter = new ListItemWriter(fieldNameComparator);
-      listWriter.write(listItemWriter);
-      buffer.put(fieldName, listItemWriter.list);
+      val listItemWriter = ListItemWriter(fieldNameComparator)
+      listWriter.write(listItemWriter)
+      buffer[fieldName] = listItemWriter.list
     }
   }
 
-  @Override public void writeMap(@NotNull String fieldName, @Nullable Map<String, ?> value) {
-    buffer.put(fieldName, value);
-  }
+  private class ListItemWriter(
+      val fieldNameComparator: Comparator<String>
+  ) : InputFieldWriter.ListItemWriter {
 
-  @SuppressWarnings("unchecked")
-  private static class ListItemWriter implements InputFieldWriter.ListItemWriter {
-    final Comparator<String> fieldNameComparator;
-    final List list = new ArrayList();
+    internal val list = mutableListOf<Any>()
 
-    ListItemWriter(Comparator<String> fieldNameComparator) {
-      this.fieldNameComparator = fieldNameComparator;
-    }
+    override fun writeString(value: String?) = list.addIfNotNull(value)
+    override fun writeInt(value: Int?) = list.addIfNotNull(value)
+    override fun writeLong(value: Long?) = list.addIfNotNull(value)
+    override fun writeDouble(value: Double?) = list.addIfNotNull(value)
+    override fun writeNumber(value: Number?) = list.addIfNotNull(value)
+    override fun writeBoolean(value: Boolean?) = list.addIfNotNull(value)
+    override fun writeCustom(scalarType: ScalarType, value: Any?) = list.addIfNotNull(value)
+    override fun writeMap(value: Map<String, *>?) = list.addIfNotNull(value)
 
-    @Override public void writeString(@Nullable String value) {
-      if (value != null) {
-        list.add(value);
-      }
-    }
-
-    @Override public void writeInt(@Nullable Integer value) {
-      if (value != null) {
-        list.add(value);
-      }
-    }
-
-    @Override public void writeLong(@Nullable Long value) {
-      if (value != null) {
-        list.add(value);
-      }
-    }
-
-    @Override public void writeDouble(@Nullable Double value) {
-      if (value != null) {
-        list.add(value);
-      }
-    }
-
-    @Override public void writeNumber(@Nullable Number value) {
-      if (value != null) {
-        list.add(value);
-      }
-    }
-
-    @Override public void writeBoolean(@Nullable Boolean value) {
-      if (value != null) {
-        list.add(value);
-      }
-    }
-
-    @Override public void writeCustom(@NotNull ScalarType scalarType, @Nullable Object value) {
-      if (value != null) {
-        list.add(value);
-      }
-    }
-
-    @Override public void writeObject(@Nullable InputFieldMarshaller marshaller) throws IOException {
+    @Throws(IOException::class)
+    override fun writeObject(marshaller: InputFieldMarshaller?) {
       if (marshaller != null) {
-        SortedInputFieldMapWriter nestedWriter = new SortedInputFieldMapWriter(fieldNameComparator);
-        marshaller.marshal(nestedWriter);
-        list.add(nestedWriter.buffer);
+        val nestedWriter = SortedInputFieldMapWriter(fieldNameComparator)
+        marshaller.marshal(nestedWriter)
+        list.add(nestedWriter.buffer)
       }
     }
 
-    @Override public void writeList(@Nullable ListWriter listWriter) throws IOException {
+    @Throws(IOException::class)
+    override fun writeList(listWriter: InputFieldWriter.ListWriter?) {
       if (listWriter != null) {
-        ListItemWriter nestedListItemWriter = new ListItemWriter(fieldNameComparator);
-        listWriter.write(nestedListItemWriter);
-        list.add(nestedListItemWriter.list);
+        val nestedListItemWriter = ListItemWriter(fieldNameComparator)
+        listWriter.write(nestedListItemWriter)
+        list.add(nestedListItemWriter.list)
       }
     }
 
-    @Override public void writeMap(@Nullable Map<String, ?> value) {
+
+    private fun MutableList<Any>.addIfNotNull(value: Any?) {
       if (value != null) {
-        list.add(value);
+        add(value)
       }
     }
   }
