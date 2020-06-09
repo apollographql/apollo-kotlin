@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: Create a bug report 
 title: ''
 labels: 'Type: Bug'
 assignees: ''
@@ -10,8 +10,12 @@ assignees: ''
 **Summary**
 A clear and concise description of what the bug is.
 
-**Description**
-Add any context about the problem here.
-
 **Version**
-Provide a version of library on which the problem occurred.
+Make sure the bug is still happening on the latest version. Enter this version here.
+
+**Description**
+Add context about the problem here. How it happened and how to reproduce it:  
+* If your project is open source, a link to the project is greatly appreciated. 
+* If not, please share as many information as possible to help understanding the problem: schema, queries, sample code, etc...
+* Add things that you already tried.  
+
