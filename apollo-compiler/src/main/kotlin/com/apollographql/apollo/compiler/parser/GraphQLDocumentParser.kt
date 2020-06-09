@@ -242,6 +242,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
     val hasInlineFragments = this?.selection()?.find { it.inlineFragment() != null } != null
     val hasFragments = this?.selection()?.find { it.fragmentSpread() != null } != null
     val hasFields = this?.selection()?.find { it.field() != null } != null
+
     return this
         ?.selection()
         ?.mapNotNull { ctx -> ctx.field()?.parse(schemaType) }
@@ -284,6 +285,16 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
     )
     val arguments = arguments().parse(schemaField)
     val fields = selectionSet().parse(schemaFieldType)
+
+    if (fields.result.isEmpty() && (schemaFieldType.kind == Schema.Kind.INTERFACE ||
+        schemaFieldType.kind == Schema.Kind.OBJECT ||
+        schemaFieldType.kind == Schema.Kind.UNION)) {
+      throw ParseException(
+            message = "Field `$fieldName` of type `${schemaType.name}` must have a selection of sub-fields",
+            token = start
+        )
+    }
+
     val fragmentRefs = selectionSet().fragmentRefs()
     val inlineFragments = selectionSet()?.selection()?.mapNotNull { ctx ->
       ctx.inlineFragment()?.parse(parentSchemaType = schemaFieldType, parentFields = fields)
