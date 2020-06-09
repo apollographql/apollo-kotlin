@@ -10,9 +10,9 @@ import java.util.Collections
 import java.util.Comparator
 import java.util.TreeMap
 
-class SortedInputFieldMapWriter(fieldNameComparator: Comparator<String>) : InputFieldWriter {
-  private val fieldNameComparator: Comparator<String>
-  private val buffer: MutableMap<String, Any?>
+class SortedInputFieldMapWriter(private val fieldNameComparator: Comparator<String>) : InputFieldWriter {
+  private val buffer = TreeMap<String, Any?>(fieldNameComparator)
+
   fun map(): Map<String, Any?> {
     return Collections.unmodifiableMap(buffer)
   }
@@ -139,10 +139,5 @@ class SortedInputFieldMapWriter(fieldNameComparator: Comparator<String>) : Input
       }
     }
 
-  }
-
-  init {
-    this.fieldNameComparator = __checkNotNull(fieldNameComparator, "fieldNameComparator == null")
-    buffer = TreeMap(fieldNameComparator)
   }
 }
