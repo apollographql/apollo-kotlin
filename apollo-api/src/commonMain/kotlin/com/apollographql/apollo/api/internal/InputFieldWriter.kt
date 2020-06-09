@@ -2,6 +2,7 @@ package com.apollographql.apollo.api.internal
 
 import com.apollographql.apollo.api.ScalarType
 import okio.IOException
+import kotlin.jvm.JvmSynthetic
 
 interface InputFieldWriter {
   @Throws(IOException::class)
@@ -47,6 +48,7 @@ interface InputFieldWriter {
     fun write(listItemWriter: ListItemWriter)
 
     companion object {
+      @JvmSynthetic
       inline operator fun invoke(crossinline block: (ListItemWriter) -> Unit): ListWriter {
         return object : ListWriter {
           override fun write(listItemWriter: ListItemWriter) {
