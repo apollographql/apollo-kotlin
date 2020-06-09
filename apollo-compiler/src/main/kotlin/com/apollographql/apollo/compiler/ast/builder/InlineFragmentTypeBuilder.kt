@@ -32,7 +32,7 @@ internal fun InlineFragment.inlineFragmentField(
       name = "As$normalizedClassName",
       schemaTypeName = typeCondition,
       description = description,
-      fragmentRefs = fragmentRefs,
+      fragmentRefs = fragments,
       inlineFragments = emptyList(),
       fields = fields,
       kind = ObjectType.Kind.InlineFragment(

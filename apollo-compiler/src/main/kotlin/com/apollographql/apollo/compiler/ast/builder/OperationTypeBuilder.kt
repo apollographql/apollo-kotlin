@@ -17,7 +17,7 @@ internal fun Operation.ast(
       name = "Data",
       schemaTypeName = "",
       description = "Data from the response after executing this GraphQL operation",
-      fragmentRefs = emptyList(),
+      fragmentRefs = fragments,
       inlineFragments = emptyList(),
       fields = fields,
       singularize = false,

@@ -28,7 +28,7 @@ data class Field(
         description = typeDescription,
         schemaType = type,
         fields = fields,
-        fragmentRefs = fragmentRefs,
+        fragments = fragmentRefs,
         inlineFragments = inlineFragments,
         context = context,
         abstract = abstract

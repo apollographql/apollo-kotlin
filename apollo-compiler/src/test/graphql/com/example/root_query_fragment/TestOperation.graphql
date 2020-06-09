@@ -1,0 +1,10 @@
+query TestQuery {
+  ...QueryFragment
+}
+
+fragment QueryFragment on Query {
+  __typename
+  hero {
+    name
+  }
+}

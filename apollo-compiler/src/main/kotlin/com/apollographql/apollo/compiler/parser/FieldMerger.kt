@@ -58,7 +58,7 @@ private fun List<InlineFragment>.mergeInlineFragments(others: List<InlineFragmen
     if (other != null) {
       fragment.copy(
           fields = fragment.fields.mergeFields(other.fields),
-          fragmentRefs = fragment.fragmentRefs.union(other.fragmentRefs).toList()
+          fragments = fragment.fragments.union(other.fragments).toList()
       )
     } else {
       fragment
