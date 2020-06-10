@@ -25,7 +25,7 @@ Next, between the query's curly braces, start typing `la`. An autocomplete box p
 
 <img src="images/graphiql_autocomplete.png" class="screenshot" alt="Example of autocomplete"/>
 
-GraphiQL is a great tool for building and verifying queries so you don't have to repeatedly rebuild your project in Android Studio to try out changes.
+GraphQL Playground is a great tool for building and verifying queries so you don't have to repeatedly rebuild your project in Android Studio to try out changes.
 
 As the schema indicates, the `launches` query returns a `LaunchConnection` object. This object includes a list of launches, along with fields related to pagination (`cursor` and `hasMore`). The query you write indicates exactly which fields of this `LaunchConnection` object you want to be returned, like so:
 
@@ -38,7 +38,7 @@ query LaunchList {
 }
 ```
 
-If you run this query by pressing the play button in GraphiQL, the query returns results as a JSON object on the right-hand side of the page:
+If you run this query by pressing the Play button in GraphQL Playground, the query returns results as a JSON object on the right-hand side of the page:
 
 <img src="images/completed_basic_query.png" class="screenshot" alt="Query JSON in GraphiQL"/>
 
@@ -92,7 +92,7 @@ query LaunchList {
 
 Build your project to have the Apollo Android plugin generate your first model. The plugin defines a task named `generateApolloSources` to generate the models. You don't need to run it. It will be executed automatically when building your project.
 
-> **Note**: autocomplete won't work until you build your project. That is because autocomplete requires the generated code to work. Each time you change your queries, you should rebuild your project for Android Studio to pick up the modifications.
+> **Note**: Autocomplete won't work until you build your project. That is because autocomplete requires the generated code to work. Each time you change your queries, you should rebuild your project for Android Studio to pick up the modifications.
 
 ## Examine generated code
 
@@ -105,4 +105,3 @@ Try commenting out the `id` property in `LaunchList.graphql`, saving, then build
 Uncomment `id` and rebuild to restore the property.
 
 Now that you've generated code and had a chance to see what's in there, it's time to [execute the query](04-execute-the-query)!
-

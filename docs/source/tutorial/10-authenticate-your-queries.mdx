@@ -2,7 +2,7 @@
 title: "10. Authenticate your queries"
 ---
 
-In this section, you will book a flight 🚀! Booking a flight requires being authenticated to the server so the correct person is sent to space! To do that, and since Apollo Android is using [OkHttp](https://square.github.io/okhttp/) to handle HTTP requests, you will leverage the OkHttp [Interceptors](https://square.github.io/okhttp/interceptors/) to add headers to your GraphQL requests.
+In this section, you will book a flight 🚀! Booking a flight requires being authenticated to the server so the correct person is sent to space! To do that, and since Apollo Android is using [OkHttp](https://square.github.io/okhttp/) to handle HTTP requests, you will use OkHttp [Interceptors](https://square.github.io/okhttp/interceptors/) to add headers to your GraphQL requests.
 
 ## Add the interceptor
 
@@ -20,11 +20,11 @@ private class AuthorizationInterceptor(val context: Context): Interceptor {
 }
 ```
 
-This interceptor will append a `"Authorization: $token"` HTTP header to every request.
+This interceptor appends an `"Authorization: $token"` HTTP header to every request.
 
 ## Use the interceptor
 
-Create a custom OkHttpClient that will use this interceptor and pass it to the ApolloClient:
+Create a custom `OkHttpClient` that will use this interceptor and pass it to the `ApolloClient`:
 
 ```kotlin:title=app/src/main/kotlin/com/example/rocketreserver/Apollo.kt
     instance = ApolloClient.builder()
@@ -36,7 +36,7 @@ Create a custom OkHttpClient that will use this interceptor and pass it to the A
         .build()
 ```
 
-Notice that `Apollo.kt` now requires a context to create the interceptor and read the token from the `EncryptedSharedPreferences`. `apolloClient` cannot be a top level variable anymore so transform it to a top-level method that takes a `context` parameter instead:
+Notice that `Apollo.kt` now requires a context to create the interceptor and read the token from the `EncryptedSharedPreferences`. `apolloClient` cannot be a top level variable anymore, so transform it to a top-level _method_ that takes a `context` parameter instead:
 
 ```kotlin:title=app/src/main/kotlin/com/example/rocketreserver/Apollo.kt
 fun apolloClient(context: Context): ApolloClient {
@@ -64,9 +64,7 @@ apolloClient(requireContext()).mutate(LoginMutation(email = Input.fromNullable(e
 
 ```
 
-Make the `apolloClient` a singleton
-
-There is no need to create a new instance of the apolloClient for each GraphQL request. You can reuse the `apolloClient`:
+There is no need to create a new instance of the apolloClient for each GraphQL request. You can reuse a single instance like so:
 
 ```
 private var instance: ApolloClient? = null
@@ -93,7 +91,7 @@ fun apolloClient(context: Context): ApolloClient {
 }
 ```
 
-**Note**: The singleton is handled here manually for sample purposes. In a real life application, you would certainly use a dependency injection framework such as `Dagger` or `Koin`.
+**Note**: The singleton is handled here manually for sample purposes. In a real-life application, you would certainly use a dependency injection framework such as `Dagger` or `Koin`.
 
 ## Add the BookTrip and CancelTrip mutations
 
@@ -131,7 +129,7 @@ mutation CancelTrip($id:ID!) {
 
 Connect the mutations to the **Book Now** button:
 
-Go back to `LaunchDetailsFragment.kt` and in the button click listener, after checking for the user token, add the following code:
+Go back to `LaunchDetailsFragment.kt`. In the button click listener, after checking for the user token, add the following code:
 
 ```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchDetailsFragment.kt
 binding.bookButton.visibility = View.INVISIBLE
@@ -160,23 +158,21 @@ lifecycleScope.launchWhenResumed {
 }
 ```
 
-This will send the appropriate mutation based on whether the launch is booked or not.
+This sends the appropriate mutation based on whether the launch is booked.
 
 ## Book your trip!
 
 Compile and run your app. You can now book and cancel your trips!
 
-That concludes this tutorial.
+This concludes the tutorial.
 
 ## More resources
 
-Use the rest of this documentation for more advanced topics like [Caching](https://www.apollographql.com/docs/android/essentials/caching/)  or [Gradle configuration](https://www.apollographql.com/docs/android/essentials/plugin-configuration/)
+Use the rest of this documentation for more advanced topics like [Caching](https://www.apollographql.com/docs/android/essentials/caching/)  or [Gradle configuration](https://www.apollographql.com/docs/android/essentials/plugin-configuration/).
 
 Feel free to ask questions by either [opening an issue on our GitHub repo](https://github.com/apollographql/apollo-android/issues) or [stopping by our Spectrum Chat for help](https://spectrum.chat/apollo/apollo-android).
 
-And if you want dig more and see GraphQL in real life apps, you can take a look at these open source projects using Apollo Android:
+And if you want dig more and see GraphQL in real-life apps, you can take a look at these open source projects using Apollo Android:
 
 * https://github.com/BoD/apollo-graphql-android-sample
 * https://github.com/ZacSweers/CatchUp
-
-
