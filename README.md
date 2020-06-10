@@ -51,20 +51,26 @@ dependencies {
 }
 ```
 
-## Downloading a schema.json file
+## Downloading a `schema.json` file
 
 Apollo Android requires your GraphQL server's schema as a `schema.json` file. You can obtain the contents of this file by running an introspection query on your server.
 
 The Apollo Gradle plugin exposes a `downloadApolloSchema` task to help you obtain your schema. Provide this task your server's GraphQL endpoint and the output location for the `schema.json` file:
 
 ```bash
-./gradlew downloadApolloSchema -Pcom.apollographql.apollo.endpoint=https://your.graphql.endpoint -Pcom.apollographql.apollo.schema=src/main/graphql/com/example/schema.json
+./gradlew downloadApolloSchema \
+  -Pcom.apollographql.apollo.endpoint=https://your.graphql.endpoint \
+  -Pcom.apollographql.apollo.schema=src/main/graphql/com/example/schema.json
 ```
 
 If your GraphQL endpoint requires authentication, you can pass custom HTTP headers:
 
-```
-./gradlew downloadApolloSchema -Pcom.apollographql.apollo.endpoint=https://your.graphql.endpoint -Pcom.apollographql.apollo.schema=src/main/graphql/com/example/schema.json  "-Pcom.apollographql.apollo.headers=Authorization=Bearer YOUR_TOKEN" "-Pcom.apollographql.apollo.query_params=key1=value1&key2=value2"
+```bash
+./gradlew downloadApolloSchema \
+  -Pcom.apollographql.apollo.endpoint=https://your.graphql.endpoint \
+  -Pcom.apollographql.apollo.schema=src/main/graphql/com/example/schema.json \
+  "-Pcom.apollographql.apollo.headers=Authorization=Bearer YOUR_TOKEN" \
+  "-Pcom.apollographql.apollo.query_params=key1=value1&key2=value2"
 ```
 
 ## Generating models from your queries
@@ -104,19 +110,19 @@ To make a query using your generated models:
 
 ```kotlin
 val apolloClient = ApolloClient.builder()
-                .serverUrl("https://")
-                .build()
+  .serverUrl("https://")
+  .build()
 
-            apolloClient.query(LaunchDetailsQuery(id = "83"))
-                .enqueue(object : ApolloCall.Callback<LaunchDetailsQuery.Data>() {
-                    override fun onFailure(e: ApolloException) {
-                        Log.e("Apollo", "Error", e)
-                    }
+apolloClient.query(LaunchDetailsQuery(id = "83"))
+  .enqueue(object : ApolloCall.Callback<LaunchDetailsQuery.Data>() {
+    override fun onFailure(e: ApolloException) {
+      Log.e("Apollo", "Error", e)
+    }
 
-                    override fun onResponse(response: Response<LaunchDetailsQuery.Data>) {
-                        Log.e("Apollo", "Launch site: ${response.data?.launch?.site}")
-                    }
-                })
+    override fun onResponse(response: Response<LaunchDetailsQuery.Data>) {
+      Log.e("Apollo", "Launch site: ${response.data?.launch?.site}")
+    }
+  })
 ```
 
 ## Custom scalar types
@@ -125,7 +131,7 @@ Apollo supports [custom scalar types](https://www.apollographql.com/docs/apollo-
 
 You first need to define the mapping in your `build.gradle` file. This maps from the GraphQL type to the Java/Kotlin class to use in code.
 
-```
+```groovy
 // Java
 apollo {
   customTypeMapping = [
@@ -135,33 +141,33 @@ apollo {
 
 // Kotlin
 apollo {
-    customTypeMapping.set(mapOf(
-        "Date" to "java.util.Date"
-    ))
+  customTypeMapping.set(mapOf(
+    "Date" to "java.util.Date"
+  ))
 }
 ```
 
-Next, register your custom adapter and add it to your ApolloClient builder:
+Next, register your custom adapter and add it to your `ApolloClient` builder:
 
 ```kotlin
-    val dateCustomTypeAdapter = object : CustomTypeAdapter<Date> {
-         override fun decode(value: CustomTypeValue<*>): Date {
-             return try {
-                 DATE_FORMAT.parse(value.value.toString())
-             } catch (e: ParseException) {
-                 throw RuntimeException(e)
-             }
-         }
+val dateCustomTypeAdapter = object : CustomTypeAdapter<Date> {
+  override fun decode(value: CustomTypeValue<*>): Date {
+    return try {
+      DATE_FORMAT.parse(value.value.toString())
+    } catch (e: ParseException) {
+      throw RuntimeException(e)
+    }
+  }
     
-         override fun encode(value: Date): CustomTypeValue<*> {
-             return GraphQLString(DATE_FORMAT.format(value))
-         }
-     }
+  override fun encode(value: Date): CustomTypeValue<*> {
+    return GraphQLString(DATE_FORMAT.format(value))
+  }
+}
     
-     ApolloClient.builder()
-         .serverUrl(serverUrl)
-         .addCustomTypeAdapter(CustomType.DATE, dateCustomTypeAdapter)
-         .build()
+ApolloClient.builder()
+  .serverUrl(serverUrl)
+  .addCustomTypeAdapter(CustomType.DATE, dateCustomTypeAdapter)
+  .build()
 ```
 
 ## IntelliJ Plugin
@@ -176,10 +182,10 @@ Releases are hosted on [jcenter](https://jcenter.bintray.com/com/apollographql/a
 
 Latest development changes are available in Sonatype's snapshots repository:
 
-```
-  repositories {
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-  }
+```gradle
+repositories {
+  maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+}
 ```
 
 ## Advanced topics
