@@ -39,7 +39,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, TestQuery.Variables> {
-  public static final String OPERATION_ID = "97c562c4c8d4263171676515bc09d09030313dd3598ad8a061586c899a1cca97";
+  public static final String OPERATION_ID = "1fc50a1808d1ff72f74d821b563ee69df2fc04dd650e41d27d75d90d0413bd65";
 
   public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
     "query TestQuery($withDetails: Boolean!, $skipHumanDetails: Boolean!) {\n"
@@ -53,6 +53,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         + "    ... on Droid @include(if: $withDetails) {\n"
         + "      name\n"
         + "      primaryFunction\n"
+        + "    }\n"
+        + "    ... on Character @include(if: $withDetails) {\n"
+        + "      name\n"
         + "    }\n"
         + "  }\n"
         + "}"
@@ -318,6 +321,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         return visitor.visit((AsDroid) this);
       } else if (this instanceof AsCharacter) {
         return visitor.visit((AsCharacter) this);
+      } else if (this instanceof AsCharacter1) {
+        return visitor.visit((AsCharacter1) this);
       }
       return visitor.visitDefault(this);
     }
@@ -332,6 +337,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
           ResponseField.Condition.booleanCondition("withDetails", false),
           ResponseField.Condition.typeCondition(new String[] {"Droid"})
+        )),
+        ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+          ResponseField.Condition.booleanCondition("withDetails", false),
+          ResponseField.Condition.typeCondition(new String[] {"Human", "Droid"})
         ))
       };
 
@@ -340,6 +349,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final AsDroid.Mapper asDroidFieldMapper = new AsDroid.Mapper();
 
       final AsCharacter.Mapper asCharacterFieldMapper = new AsCharacter.Mapper();
+
+      final AsCharacter1.Mapper asCharacter1FieldMapper = new AsCharacter1.Mapper();
 
       @Override
       public Hero map(ResponseReader reader) {
@@ -361,7 +372,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         if (asDroid != null) {
           return asDroid;
         }
-        return asCharacterFieldMapper.map(reader);
+        final AsCharacter asCharacter = reader.readFragment($responseFields[2], new ResponseReader.ObjectReader<AsCharacter>() {
+          @Override
+          public AsCharacter read(ResponseReader reader) {
+            return asCharacterFieldMapper.map(reader);
+          }
+        });
+        if (asCharacter != null) {
+          return asCharacter;
+        }
+        return asCharacter1FieldMapper.map(reader);
       }
     }
 
@@ -373,6 +393,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       T visit(@NotNull AsDroid asDroid);
 
       T visit(@NotNull AsCharacter asCharacter);
+
+      T visit(@NotNull AsCharacter1 asCharacter1);
     }
   }
 
@@ -640,6 +662,117 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static class AsCharacter implements Hero {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forCustomType("id", "id", null, false, CustomType.ID, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList())
+    };
+
+    final @NotNull String __typename;
+
+    final @NotNull String id;
+
+    final @NotNull String name;
+
+    private transient volatile String $toString;
+
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    public AsCharacter(@NotNull String __typename, @NotNull String id, @NotNull String name) {
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.id = Utils.checkNotNull(id, "id == null");
+      this.name = Utils.checkNotNull(name, "name == null");
+    }
+
+    public @NotNull String __typename() {
+      return this.__typename;
+    }
+
+    /**
+     * The ID of the character
+     */
+    public @NotNull String id() {
+      return this.id;
+    }
+
+    /**
+     * The name of the character
+     */
+    public @NotNull String name() {
+      return this.name;
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeCustom((ResponseField.CustomTypeField) $responseFields[1], id);
+          writer.writeString($responseFields[2], name);
+        }
+      };
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "AsCharacter{"
+          + "__typename=" + __typename + ", "
+          + "id=" + id + ", "
+          + "name=" + name
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof AsCharacter) {
+        AsCharacter that = (AsCharacter) o;
+        return this.__typename.equals(that.__typename)
+         && this.id.equals(that.id)
+         && this.name.equals(that.name);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= __typename.hashCode();
+        h *= 1000003;
+        h ^= id.hashCode();
+        h *= 1000003;
+        h ^= name.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<AsCharacter> {
+      @Override
+      public AsCharacter map(ResponseReader reader) {
+        final String __typename = reader.readString($responseFields[0]);
+        final String id = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[1]);
+        final String name = reader.readString($responseFields[2]);
+        return new AsCharacter(__typename, id, name);
+      }
+    }
+  }
+
+  /**
+   * A character from the Star Wars universe
+   */
+  public static class AsCharacter1 implements Hero {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forCustomType("id", "id", null, false, CustomType.ID, Collections.<ResponseField.Condition>emptyList())
     };
 
@@ -653,7 +786,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public AsCharacter(@NotNull String __typename, @NotNull String id) {
+    public AsCharacter1(@NotNull String __typename, @NotNull String id) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.id = Utils.checkNotNull(id, "id == null");
     }
@@ -683,7 +816,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     @Override
     public String toString() {
       if ($toString == null) {
-        $toString = "AsCharacter{"
+        $toString = "AsCharacter1{"
           + "__typename=" + __typename + ", "
           + "id=" + id
           + "}";
@@ -696,8 +829,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (o == this) {
         return true;
       }
-      if (o instanceof AsCharacter) {
-        AsCharacter that = (AsCharacter) o;
+      if (o instanceof AsCharacter1) {
+        AsCharacter1 that = (AsCharacter1) o;
         return this.__typename.equals(that.__typename)
          && this.id.equals(that.id);
       }
@@ -718,12 +851,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return $hashCode;
     }
 
-    public static final class Mapper implements ResponseFieldMapper<AsCharacter> {
+    public static final class Mapper implements ResponseFieldMapper<AsCharacter1> {
       @Override
-      public AsCharacter map(ResponseReader reader) {
+      public AsCharacter1 map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String id = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[1]);
-        return new AsCharacter(__typename, id);
+        return new AsCharacter1(__typename, id);
       }
     }
   }
