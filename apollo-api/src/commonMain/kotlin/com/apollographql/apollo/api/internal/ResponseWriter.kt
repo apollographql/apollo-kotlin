@@ -2,7 +2,6 @@ package com.apollographql.apollo.api.internal
 
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ScalarType
-import kotlin.jvm.JvmSynthetic
 
 interface ResponseWriter {
   fun writeString(field: ResponseField, value: String?)

@@ -32,7 +32,6 @@ interface InputFieldWriter {
   @Throws(IOException::class)
   fun writeList(fieldName: String, listWriter: ListWriter?)
 
-  @JvmSynthetic
   fun writeList(fieldName: String, block: (ListItemWriter) -> Unit) {
     writeList(fieldName, object : ListWriter {
       override fun write(listItemWriter: ListItemWriter) {
@@ -88,7 +87,6 @@ interface InputFieldWriter {
     @Throws(IOException::class)
     fun writeList(listWriter: ListWriter?)
 
-    @JvmSynthetic
     fun writeList(block: (ListItemWriter) -> Unit) {
       writeList(object : ListWriter {
         override fun write(listItemWriter: ListItemWriter) {
