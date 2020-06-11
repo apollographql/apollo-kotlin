@@ -1,11 +1,19 @@
-package com.apollographql.apollo.network
+package com.apollographql.apollo.network.http
 
 import com.apollographql.apollo.ApolloException
 import com.apollographql.apollo.ApolloHttpException
 import com.apollographql.apollo.ApolloNetworkException
+import com.apollographql.apollo.ApolloParseException
+import com.apollographql.apollo.ApolloSerializationException
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
-import com.apollographql.apollo.api.internal.json.JsonWriter
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.interceptor.ApolloRequest
+import com.apollographql.apollo.interceptor.ApolloResponse
+import com.apollographql.apollo.network.HttpExecutionContext
+import com.apollographql.apollo.network.HttpMethod
+import com.apollographql.apollo.network.NetworkTransport
+import com.apollographql.apollo.network.toNSData
 import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.StableRef
 import kotlinx.cinterop.asStableRef
@@ -38,6 +46,7 @@ import platform.darwin.dispatch_async_f
 import platform.darwin.dispatch_get_main_queue
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlin.native.concurrent.freeze
 
 typealias UrlSessionDataTaskCompletionHandler = (NSData?, NSURLResponse?, NSError?) -> Unit
@@ -65,22 +74,37 @@ actual class ApolloHttpNetworkTransport(
       }
   )
 
-  override fun execute(request: GraphQLRequest, executionContext: ExecutionContext): Flow<GraphQLResponse> {
+  @Suppress("UNCHECKED_CAST")
+  override fun <D : Operation.Data> execute(request: ApolloRequest<D>, executionContext: ExecutionContext): Flow<ApolloResponse<D>> {
     return flow {
       assert(NSThread.isMainThread())
+
+      request.freeze()
 
       val result = suspendCancellableCoroutine<Result> { continuation ->
         val continuationRef = StableRef.create(continuation).asCPointer()
         val delegate = { httpData: NSData?, httpResponse: NSURLResponse?, error: NSError? ->
           initRuntimeIfNeeded()
-          val response = parse(
+
+          parse(
+              request = request,
               data = httpData,
               httpResponse = httpResponse as? NSHTTPURLResponse,
               error = error
-          )
-          response.dispatchOnMain(continuationRef)
+          ).dispatchOnMain(continuationRef)
         }
-        val httpRequest = request.toHttpRequest(executionContext[HttpExecutionContext.Request])
+
+        val httpRequest = try {
+          request.toHttpRequest(executionContext[HttpExecutionContext.Request])
+        } catch (e: Exception) {
+          continuation.resumeWithException(
+              ApolloSerializationException(
+                  message = "Failed to compose GraphQL network request",
+                  cause = e
+              )
+          )
+          return@suspendCancellableCoroutine
+        }
 
         dataTaskFactory(httpRequest.freeze(), delegate.freeze())
             .also { task ->
@@ -92,34 +116,27 @@ actual class ApolloHttpNetworkTransport(
       }
 
       when (result) {
-        is Result.Success -> emit(
-            GraphQLResponse(
-                body = Buffer().write(result.data.toByteString()),
-                executionContext = HttpExecutionContext.Response(
-                    statusCode = result.httpStatusCode,
-                    headers = result.httpHeaders
-                ),
-                requestUuid = request.uuid
-            )
-        )
+        is Result.Success -> emit(result.response as ApolloResponse<D>)
         is Result.Failure -> throw result.cause
       }
     }
   }
 
-  private fun GraphQLRequest.toHttpRequest(httpExecutionContext: HttpExecutionContext.Request?): NSURLRequest {
+  private fun ApolloRequest<*>.toHttpRequest(httpExecutionContext: HttpExecutionContext.Request?): NSURLRequest {
     return when (httpMethod) {
       HttpMethod.Get -> toHttpGetRequest(httpExecutionContext)
       HttpMethod.Post -> toHttpPostRequest(httpExecutionContext)
     }
   }
 
-  private fun GraphQLRequest.toHttpGetRequest(httpExecutionContext: HttpExecutionContext.Request?): NSURLRequest {
+  private fun ApolloRequest<*>.toHttpGetRequest(httpExecutionContext: HttpExecutionContext.Request?): NSURLRequest {
     val urlComponents = NSURLComponents(uRL = serverUrl, resolvingAgainstBaseURL = false)
     urlComponents.queryItems = listOfNotNull(
-        NSURLQueryItem(name = "query", value = document),
-        NSURLQueryItem(name = "operationName", value = operationName),
-        if (variables.isNotEmpty()) NSURLQueryItem(name = "variables", value = variables) else null
+        NSURLQueryItem(name = "query", value = operation.queryDocument()),
+        NSURLQueryItem(name = "operationName", value = operation.name().name()),
+        operation.variables().marshal(scalarTypeAdapters).let { variables ->
+          if (variables.isNotEmpty()) NSURLQueryItem(name = "variables", value = variables) else null
+        }
     )
     return NSMutableURLRequest.requestWithURL(urlComponents.URL!!).apply {
       setHTTPMethod("GET")
@@ -130,18 +147,9 @@ actual class ApolloHttpNetworkTransport(
     }
   }
 
-  private fun GraphQLRequest.toHttpPostRequest(httpExecutionContext: HttpExecutionContext.Request?): NSURLRequest {
+  private fun ApolloRequest<*>.toHttpPostRequest(httpExecutionContext: HttpExecutionContext.Request?): NSURLRequest {
     return NSMutableURLRequest.requestWithURL(serverUrl).apply {
-      val buffer = Buffer()
-      JsonWriter.of(buffer)
-          .beginObject()
-          .name("operationName").value(operationName)
-          .name("query").value(document)
-          .name("variables").jsonValue(variables)
-          .endObject()
-          .close()
-      val postBody = buffer.readByteArray().toNSData()
-
+      val postBody = operation.composeRequestBody(scalarTypeAdapters).toByteArray().toNSData()
       setHTTPMethod("POST")
       headers
           .plus(httpExecutionContext?.headers ?: emptyMap())
@@ -151,7 +159,8 @@ actual class ApolloHttpNetworkTransport(
     }
   }
 
-  private fun parse(
+  private fun <D : Operation.Data> parse(
+      request: ApolloRequest<D>,
       data: NSData?,
       httpResponse: NSHTTPURLResponse?,
       error: NSError?
@@ -188,15 +197,34 @@ actual class ApolloHttpNetworkTransport(
         )
     )
 
-    return Result.Success(
-        data = data,
-        httpStatusCode = httpResponse.statusCode.toInt(),
-        httpHeaders = httpHeaders
-    )
+    return try {
+      val response = request.operation.parse(
+          source = Buffer().write(data.toByteString()).apply { flush() },
+          scalarTypeAdapters = request.scalarTypeAdapters
+      )
+      Result.Success(
+          ApolloResponse(
+              requestUuid = request.requestUuid,
+              response = response,
+              executionContext = request.executionContext + HttpExecutionContext.Response(
+                  statusCode = httpResponse.statusCode.toInt(),
+                  headers = httpHeaders
+              )
+          )
+      )
+    } catch (e: Exception) {
+      Result.Failure(
+          cause = ApolloParseException(
+              message = "Failed to parse GraphQL network response",
+              cause = e
+          )
+      )
+    }
   }
 
   sealed class Result {
-    class Success(val data: NSData, val httpStatusCode: Int, val httpHeaders: Map<String, String>) : Result()
+    class Success(val response: ApolloResponse<*>) : Result()
+
     class Failure(val cause: ApolloException) : Result()
   }
 

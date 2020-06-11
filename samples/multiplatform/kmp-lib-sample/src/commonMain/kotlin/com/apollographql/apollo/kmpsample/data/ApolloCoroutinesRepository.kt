@@ -9,7 +9,7 @@ import com.apollographql.apollo.kmpsample.fragment.RepositoryFragment
 import com.apollographql.apollo.kmpsample.type.OrderDirection
 import com.apollographql.apollo.kmpsample.type.PullRequestState
 import com.apollographql.apollo.kmpsample.type.RepositoryOrderField
-import com.apollographql.apollo.network.ApolloHttpNetworkTransport
+import com.apollographql.apollo.network.http.ApolloHttpNetworkTransport
 import com.apollographql.apollo.network.HttpExecutionContext
 import com.apollographql.apollo.ApolloException
 import kotlinx.coroutines.flow.single

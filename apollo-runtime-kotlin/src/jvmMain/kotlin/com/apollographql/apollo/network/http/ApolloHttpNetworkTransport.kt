@@ -1,12 +1,18 @@
-package com.apollographql.apollo.network
+package com.apollographql.apollo.network.http
 
 import com.apollographql.apollo.ApolloException
 import com.apollographql.apollo.ApolloHttpException
 import com.apollographql.apollo.ApolloNetworkException
 import com.apollographql.apollo.ApolloParseException
+import com.apollographql.apollo.ApolloSerializationException
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
-import com.apollographql.apollo.api.internal.json.JsonWriter
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.interceptor.ApolloRequest
+import com.apollographql.apollo.interceptor.ApolloResponse
+import com.apollographql.apollo.network.HttpExecutionContext
+import com.apollographql.apollo.network.HttpMethod
+import com.apollographql.apollo.network.NetworkTransport
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -23,7 +29,6 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okhttp3.internal.closeQuietly
-import okio.Buffer
 import java.io.IOException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -50,9 +55,9 @@ actual class ApolloHttpNetworkTransport(
       httpMethod = httpMethod
   )
 
-  override fun execute(request: GraphQLRequest, executionContext: ExecutionContext): Flow<GraphQLResponse> {
+  override fun <D : Operation.Data> execute(request: ApolloRequest<D>, executionContext: ExecutionContext): Flow<ApolloResponse<D>> {
     return flow {
-      val response = suspendCancellableCoroutine<GraphQLResponse> { continuation ->
+      val response = suspendCancellableCoroutine<ApolloResponse<D>> { continuation ->
         val httpRequest = request.toHttpRequest(executionContext[HttpExecutionContext.Request])
         httpCallFactory.newCall(httpRequest)
             .also { call ->
@@ -98,7 +103,7 @@ actual class ApolloHttpNetworkTransport(
   }
 
   @Suppress("UNCHECKED_CAST")
-  private fun Response.parse(request: GraphQLRequest): GraphQLResponse {
+  private fun <D : Operation.Data> Response.parse(request: ApolloRequest<D>): ApolloResponse<D> {
     if (!isSuccessful) throw ApolloHttpException(
         statusCode = code,
         headers = headers.toMap(),
@@ -111,28 +116,43 @@ actual class ApolloHttpNetworkTransport(
         message = "Failed to parse GraphQL http network response: EOF"
     )
 
-    return GraphQLResponse(
-        body = responseBody.source(),
-        executionContext = HttpExecutionContext.Response(
+    val response = request.operation.parse(
+        source = responseBody.source(),
+        scalarTypeAdapters = request.scalarTypeAdapters
+    )
+    return ApolloResponse(
+        requestUuid = request.requestUuid,
+        response = response,
+        executionContext = request.executionContext + HttpExecutionContext.Response(
             statusCode = code,
             headers = headers.toMap()
-        ),
-        requestUuid = request.uuid
+        )
     )
   }
 
-  private fun GraphQLRequest.toHttpRequest(httpExecutionContext: HttpExecutionContext.Request?): Request {
-    return when (httpMethod) {
-      HttpMethod.Get -> toHttpGetRequest(httpExecutionContext)
-      HttpMethod.Post -> toHttpPostRequest(httpExecutionContext)
+  private fun <D : Operation.Data> ApolloRequest<D>.toHttpRequest(httpExecutionContext: HttpExecutionContext.Request?): Request {
+    try {
+      return when (httpMethod) {
+        HttpMethod.Get -> toHttpGetRequest(httpExecutionContext)
+        HttpMethod.Post -> toHttpPostRequest(httpExecutionContext)
+      }
+    } catch (e: Exception) {
+      throw ApolloSerializationException(
+          message = "Failed to compose GraphQL network request",
+          cause = e
+      )
     }
   }
 
-  private fun GraphQLRequest.toHttpGetRequest(httpExecutionContext: HttpExecutionContext.Request?): Request {
+  private fun <D : Operation.Data> ApolloRequest<D>.toHttpGetRequest(httpExecutionContext: HttpExecutionContext.Request?): Request {
     val url = serverUrl.newBuilder()
-        .addQueryParameter("query", document)
-        .addQueryParameter("operationName", operationName)
-        .apply { if (variables.isNotEmpty()) addQueryParameter("variables", variables) }
+        .addQueryParameter("query", operation.queryDocument())
+        .addQueryParameter("operationName", operation.name().name())
+        .apply {
+          operation.variables().marshal(scalarTypeAdapters).let { variables ->
+            if (variables.isNotEmpty()) addQueryParameter("variables", variables)
+          }
+        }
         .build()
     return Request.Builder()
         .url(url)
@@ -145,16 +165,8 @@ actual class ApolloHttpNetworkTransport(
         .build()
   }
 
-  private fun GraphQLRequest.toHttpPostRequest(httpExecutionContext: HttpExecutionContext.Request?): Request {
-    val buffer = Buffer()
-    JsonWriter.of(buffer)
-        .beginObject()
-        .name("operationName").value(operationName)
-        .name("query").value(document)
-        .name("variables").jsonValue(variables)
-        .endObject()
-        .close()
-    val requestBody = buffer.readByteArray().toRequestBody(contentType = MEDIA_TYPE.toMediaType())
+  private fun <D : Operation.Data> ApolloRequest<D>.toHttpPostRequest(httpExecutionContext: HttpExecutionContext.Request?): Request {
+    val requestBody = operation.composeRequestBody(scalarTypeAdapters).toRequestBody(contentType = MEDIA_TYPE.toMediaType())
     return Request.Builder()
         .url(serverUrl)
         .headers(headers)

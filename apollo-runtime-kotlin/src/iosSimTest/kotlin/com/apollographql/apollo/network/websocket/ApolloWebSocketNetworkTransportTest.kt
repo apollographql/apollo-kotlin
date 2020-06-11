@@ -2,8 +2,10 @@ package com.apollographql.apollo.network.websocket
 
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
-import com.apollographql.apollo.network.GraphQLRequest
-import com.apollographql.apollo.network.GraphQLResponse
+import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.interceptor.ApolloRequest
+import com.apollographql.apollo.interceptor.ApolloResponse
+import com.apollographql.apollo.mock.MockSubscription
 import com.apollographql.apollo.network.mock.NSWebSocketFactoryMock
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -11,10 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
-import okio.Buffer
-import okio.ByteString.Companion.encodeUtf8
 import platform.Foundation.NSURL
-import platform.Foundation.NSURLRequest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -25,11 +24,10 @@ class ApolloWebSocketNetworkTransportTest {
   @Test
   fun `when happy path, assert all responses delivered and connection closed`() {
     runBlocking {
-      val expectedRequest = GraphQLRequest(
-          operationName = "operationName",
-          operationId = "operationId",
-          document = "subscription { name }",
-          variables = ""
+      val expectedRequest = ApolloRequest(
+          operation = MockSubscription(),
+          scalarTypeAdapters = ScalarTypeAdapters.DEFAULT,
+          executionContext = ExecutionContext.Empty
       )
       val expectedResponses = listOf(
           "{\"data\":{\"name\":\"MockQuery1\"}}",
@@ -40,7 +38,7 @@ class ApolloWebSocketNetworkTransportTest {
           expectedRequest = expectedRequest,
           expectedResponseOnStart = mockGraphQLResponse(
               data = expectedResponses.first(),
-              requestUuid = expectedRequest.uuid
+              requestUuid = expectedRequest.requestUuid
           )
       )
       val apolloWebSocketFactory = ApolloWebSocketFactory(
@@ -58,7 +56,7 @@ class ApolloWebSocketNetworkTransportTest {
     }
   }
 
-  private suspend fun Flow<GraphQLResponse>.assertInOrder(
+  private suspend fun Flow<ApolloResponse<MockSubscription.Data>>.assertInOrder(
       mockWebSocketFactory: NSWebSocketFactoryMock,
       expectedResponses: List<String>
   ) {
@@ -66,7 +64,7 @@ class ApolloWebSocketNetworkTransportTest {
       collectIndexed { index, actualResponse ->
         assertEquals(
             expectedResponses[index],
-            actualResponse.body.readUtf8()
+            actualResponse.response.data?.rawResponse
         )
         if (index + 1 < expectedResponses.size) {
           mockWebSocketFactory.lastSessionWebSocketTask.enqueueResponse(
@@ -82,11 +80,7 @@ class ApolloWebSocketNetworkTransportTest {
     }
   }
 
-  private fun mockGraphQLResponse(data: String, requestUuid: Uuid): GraphQLResponse {
-    return GraphQLResponse(
-        requestUuid = requestUuid,
-        body = Buffer().write("{\"type\":\"data\", \"id\":\"$requestUuid\", \"payload\":$data}".encodeUtf8()),
-        executionContext = ExecutionContext.Empty
-    )
+  private fun mockGraphQLResponse(data: String, requestUuid: Uuid): String {
+    return "{\"type\":\"data\", \"id\":\"$requestUuid\", \"payload\":$data}"
   }
 }

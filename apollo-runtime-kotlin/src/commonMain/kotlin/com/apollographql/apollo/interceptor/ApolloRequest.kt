@@ -4,10 +4,13 @@ import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.benasher44.uuid.uuid4
 
 @ApolloExperimental
-class ApolloRequest<T> constructor(
-    val operation: Operation<*, T, *>,
+class ApolloRequest<D : Operation.Data>(
+    val operation: Operation<D, D, *>,
     val scalarTypeAdapters: ScalarTypeAdapters,
-    val executionContext: ExecutionContext = ExecutionContext.Empty
-)
+    val executionContext: ExecutionContext
+) {
+  val requestUuid = uuid4()
+}

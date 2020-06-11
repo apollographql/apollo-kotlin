@@ -10,3 +10,5 @@ interface ApolloCall<T> {
 interface ApolloQueryCall<T> : ApolloCall<T>
 
 interface ApolloMutationCall<T> : ApolloCall<T>
+
+interface ApolloSubscriptionCall<T> : ApolloCall<T>

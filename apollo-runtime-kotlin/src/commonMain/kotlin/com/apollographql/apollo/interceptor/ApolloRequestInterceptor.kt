@@ -1,13 +1,13 @@
 package com.apollographql.apollo.interceptor
 
 import com.apollographql.apollo.api.ApolloExperimental
-import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.api.Operation
 import kotlinx.coroutines.flow.Flow
 
 @ApolloExperimental
 interface ApolloInterceptorChain {
 
-  fun <T> proceed(request: ApolloRequest<T>): Flow<Response<T>>
+  fun <D : Operation.Data> proceed(request: ApolloRequest<D>): Flow<ApolloResponse<D>>
 
   fun canProceed(): Boolean
 
@@ -15,7 +15,7 @@ interface ApolloInterceptorChain {
 
 @ApolloExperimental
 interface ApolloRequestInterceptor {
-  fun <T> intercept(request: ApolloRequest<T>, interceptorChain: ApolloInterceptorChain): Flow<Response<T>>
+  fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>>
 }
 
 @ApolloExperimental
@@ -29,7 +29,7 @@ internal class RealInterceptorChain private constructor(
       index = 0
   )
 
-  override fun <T> proceed(request: ApolloRequest<T>): Flow<Response<T>> {
+  override fun <D : Operation.Data> proceed(request: ApolloRequest<D>): Flow<ApolloResponse<D>> {
     check(index < interceptors.size)
     return interceptors[index].intercept(request, RealInterceptorChain(interceptors = interceptors, index = index + 1))
   }

@@ -1,7 +1,6 @@
 package com.apollographql.apollo.network.mock
 
-import com.apollographql.apollo.network.GraphQLRequest
-import com.apollographql.apollo.network.GraphQLResponse
+import com.apollographql.apollo.interceptor.ApolloRequest
 import com.apollographql.apollo.network.toNSData
 import com.apollographql.apollo.network.websocket.ApolloGraphQLClientMessage
 import com.apollographql.apollo.network.websocket.WebSocketConnectionListener
@@ -17,8 +16,8 @@ import kotlin.test.fail
 
 @Suppress("EXPERIMENTAL_API_USAGE")
 class NSWebSocketFactoryMock(
-    private val expectedRequest: GraphQLRequest,
-    private val expectedResponseOnStart: GraphQLResponse
+    private val expectedRequest: ApolloRequest<*>,
+    private val expectedResponseOnStart: String
 ) : NSWebSocketFactory {
   lateinit var lastSessionWebSocketTask: ApolloSessionWebSocketTaskMock
 
@@ -33,8 +32,8 @@ class NSWebSocketFactoryMock(
 
 @Suppress("EXPERIMENTAL_API_USAGE")
 class ApolloSessionWebSocketTaskMock(
-    private val expectedRequest: GraphQLRequest,
-    private val expectedResponseOnStart: GraphQLResponse,
+    private val expectedRequest: ApolloRequest<*>,
+    private val expectedResponseOnStart: String,
     private val connectionListener: WebSocketConnectionListener
 ) : NSURLSessionWebSocketTask() {
   private var receiveMessageCompletionHandler: (NSURLSessionWebSocketMessage?, NSError?) -> Unit = { _, _ -> }
@@ -72,13 +71,13 @@ class ApolloSessionWebSocketTaskMock(
         completionHandler(null)
 
         receiveMessageCompletionHandler(
-            NSURLSessionWebSocketMessage(expectedResponseOnStart.body.readByteArray().toNSData()),
+            NSURLSessionWebSocketMessage(expectedResponseOnStart.encodeToByteArray().toNSData()),
             null
         )
       }
 
       !stopSent -> {
-        assertEquals(ApolloGraphQLClientMessage.Stop(expectedRequest.uuid).serialize(), message.data!!.toByteString())
+        assertEquals(ApolloGraphQLClientMessage.Stop(expectedRequest.requestUuid).serialize(), message.data!!.toByteString())
         stopSent = true
       }
 
@@ -86,9 +85,9 @@ class ApolloSessionWebSocketTaskMock(
     }
   }
 
-  fun enqueueResponse(response: GraphQLResponse) {
+  fun enqueueResponse(response: String) {
     receiveMessageCompletionHandler(
-        NSURLSessionWebSocketMessage(response.body.readByteArray().toNSData()),
+        NSURLSessionWebSocketMessage(response.encodeToByteArray().toNSData()),
         null
     )
   }
@@ -96,7 +95,7 @@ class ApolloSessionWebSocketTaskMock(
   fun enqueueComplete() {
     receiveMessageCompletionHandler(
         NSURLSessionWebSocketMessage(
-            "{\"type\": \"complete\", \"id\":\"${expectedRequest.uuid}\"}".commonAsUtf8ToByteArray().toNSData()
+            "{\"type\": \"complete\", \"id\":\"${expectedRequest.requestUuid}\"}".commonAsUtf8ToByteArray().toNSData()
         ),
         null
     )

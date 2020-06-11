@@ -1,16 +1,17 @@
 package com.apollographql.apollo.network.websocket
 
+import com.apollographql.apollo.ApolloParseException
 import com.apollographql.apollo.ApolloWebSocketException
 import com.apollographql.apollo.ApolloWebSocketServerException
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
+import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.json.Utils
-import com.apollographql.apollo.network.GraphQLRequest
-import com.apollographql.apollo.network.GraphQLResponse
+import com.apollographql.apollo.interceptor.ApolloRequest
+import com.apollographql.apollo.interceptor.ApolloResponse
 import com.apollographql.apollo.network.NetworkTransport
 import com.apollographql.apollo.network.websocket.ApolloGraphQLServerMessage.Companion.parse
-import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.BroadcastChannel
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.takeWhile
@@ -46,16 +48,15 @@ class ApolloWebSocketNetworkTransport(
   private val mutex = Mutex()
   private var graphQLWebsocketConnection: GraphQLWebsocketConnection? = null
 
-  override fun execute(request: GraphQLRequest, executionContext: ExecutionContext): Flow<GraphQLResponse> {
+  override fun <D : Operation.Data> execute(request: ApolloRequest<D>, executionContext: ExecutionContext): Flow<ApolloResponse<D>> {
     return getServerConnection().flatMapLatest { serverConnection ->
       serverConnection
           .openSubscription()
           .consumeAsFlow()
           .map { data -> data.parse() }
           .filter { message -> message !is ApolloGraphQLServerMessage.ConnectionAcknowledge }
-          .takeWhile { message -> message !is ApolloGraphQLServerMessage.Complete || message.id != request.uuid.toString() }
-          .map { message -> message.process(request.uuid) }
-          .filterNotNull()
+          .takeWhile { message -> message !is ApolloGraphQLServerMessage.Complete || message.id != request.requestUuid.toString() }
+          .mapNotNull { message -> message.process(request) }
           .onStart {
             serverConnection.send(
                 ApolloGraphQLClientMessage.Start(request)
@@ -63,17 +64,17 @@ class ApolloWebSocketNetworkTransport(
           }.onCompletion { cause ->
             if (cause == null) {
               serverConnection.send(
-                  ApolloGraphQLClientMessage.Stop(request.uuid)
+                  ApolloGraphQLClientMessage.Stop(request.requestUuid)
               )
             }
           }
     }
   }
 
-  private fun ApolloGraphQLServerMessage.process(requestUuid: Uuid): GraphQLResponse? {
+  private fun <D : Operation.Data> ApolloGraphQLServerMessage.process(request: ApolloRequest<D>): ApolloResponse<D>? {
     return when (this) {
       is ApolloGraphQLServerMessage.Error -> {
-        if (id == requestUuid.toString()) {
+        if (id == request.requestUuid.toString()) {
           throw ApolloWebSocketServerException(
               message = "Failed to execute GraphQL operation",
               payload = payload
@@ -83,15 +84,29 @@ class ApolloWebSocketNetworkTransport(
       }
 
       is ApolloGraphQLServerMessage.Data -> {
-        if (id == requestUuid.toString()) {
-          val buffer = Buffer()
-          JsonWriter.of(buffer)
-              .apply { Utils.writeToJson(payload, this) }
-              .flush()
-          GraphQLResponse(
-              body = buffer,
-              executionContext = ExecutionContext.Empty,
-              requestUuid = requestUuid
+        if (id == request.requestUuid.toString()) {
+          val buffer = Buffer().apply {
+            JsonWriter.of(buffer)
+                .apply { Utils.writeToJson(payload, this) }
+                .flush()
+          }
+
+          val response = try {
+            request.operation.parse(
+                source = buffer,
+                scalarTypeAdapters = request.scalarTypeAdapters
+            )
+          } catch (e: Exception) {
+            throw ApolloParseException(
+                message = "Failed to parse GraphQL network response",
+                cause = e
+            )
+          }
+
+          ApolloResponse(
+              requestUuid = request.requestUuid,
+              response = response,
+              executionContext = ExecutionContext.Empty
           )
         } else null
       }
