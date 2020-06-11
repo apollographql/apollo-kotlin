@@ -1,0 +1,62 @@
+---
+title: "5. Connect your queries to your UI"
+---
+
+In this chapter, you are going to display a list of Launch Sites in a [RecyclerView](https://developer.android.com/guide/topics/ui/layout/recyclerview).
+
+## Configure LaunchListAdapter
+
+Open `LaunchListAdapter` and add a `launches` property:
+
+```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchListAdapter.kt
+class LaunchListAdapter(
+    val launches: List<LaunchListQuery.Launch>
+) : RecyclerView.Adapter<LaunchListAdapter.ViewHolder>() {
+```
+
+`LaunchListQuery.Launch` is a typesafe generated model from your LaunchList.graphql query.
+
+## Bind the data to the UI
+
+Use the `launches` property to bind items to your adapter:
+
+```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchListAdapter.kt
+    override fun getItemCount(): Int {
+        return launches.size
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val launch = launches.get(position)
+        holder.binding.site.text = launch.site ?: ""
+    }
+```
+
+## Pass the LaunchListAdapter to the RecyclerView
+
+Create a new Adapter and pass it to your RecyclerView:
+
+```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchListFragment.kt
+        lifecycleScope.launchWhenResumed {
+            val response = try {
+                apolloClient.query(LaunchListQuery()).toDeferred().await()
+            } catch (e: ApolloException) {
+                Log.d("LaunchList", "Failure", e)
+                null
+            }
+
+            val launches = response?.data?.launches?.launches?.filterNotNull()
+            if (launches != null && !response.hasErrors()) {
+                val adapter = LaunchListAdapter(launches)
+                binding.launches.layoutManager = LinearLayoutManager(requireContext())
+                binding.launches.adapter = adapter
+            }
+        }
+```
+
+## Test your query
+
+Hit the **Run** button. You now have a UI connected to your GraphQL queries 🚀
+
+<img src="images/launch_list.png" class="screenshot" alt="A basic list" width="300"/>
+
+It looks a bit plain, though. Next, you'll [add more info](./06-add-more-info) to the list to make it look nicer!

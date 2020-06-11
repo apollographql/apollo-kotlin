@@ -46,7 +46,7 @@ gradlePlugin {
   plugins {
     create("apolloGradlePlugin") {
       id = "com.apollographql.apollo"
-      displayName = "Apollo-Android GraphQL client plugin."
+      displayName = "Apollo Android GraphQL client plugin."
       description = "Automatically generates typesafe java and kotlin models from your GraphQL files."
       implementationClass = "com.apollographql.apollo.gradle.internal.ApolloPlugin"
     }

@@ -1,0 +1,107 @@
+---
+title: "3. Write your first query"
+---
+
+The most common GraphQL operation is the **query**, which requests data from your graph in a structure that conforms to your server's schema. If you return to [the GraphiQL query explorer](https://apollo-fullstack-tutorial.herokuapp.com) for your server, you can see available queries in the Schema tab you opened earlier.
+
+## Prototype your query in GraphiQL
+
+Click on the `launches` query at the top for details about it.
+
+<img src="images/launches_detail.png" class="screenshot" alt="Detail about launches query"/>
+
+In the right panel, you see both the query itself and information about what the query returns. You can use this information to write a query you will eventually add to your app.
+
+In the left pane, start typing an empty query:
+
+```graphql:title=(GraphiQL)
+query LaunchList {
+}
+```
+
+Apollo Android requires every query to have a name (even though this isn't required by the GraphQL spec). The query above has the name `LaunchList`.
+
+Next, between the query's curly braces, start typing `la`. An autocomplete box pops up and shows you options based on what's in the schema:
+
+<img src="images/graphiql_autocomplete.png" class="screenshot" alt="Example of autocomplete"/>
+
+GraphQL Playground is a great tool for building and verifying queries so you don't have to repeatedly rebuild your project in Android Studio to try out changes.
+
+As the schema indicates, the `launches` query returns a `LaunchConnection` object. This object includes a list of launches, along with fields related to pagination (`cursor` and `hasMore`). The query you write indicates exactly which fields of this `LaunchConnection` object you want to be returned, like so:
+
+```graphql:title=(GraphiQL)
+query LaunchList {
+  launches {
+    cursor
+    hasMore
+  }
+}
+```
+
+If you run this query by pressing the Play button in GraphQL Playground, the query returns results as a JSON object on the right-hand side of the page:
+
+<img src="images/completed_basic_query.png" class="screenshot" alt="Query JSON in GraphiQL"/>
+
+This query executes successfully, but it doesn't include any information about the `launches`! That's because we didn't include the necessary field in our query.
+
+Update your query to fetch the `id` and `site` properties for each launch, like so:
+
+```graphql:title=(GraphiQL)
+query LaunchList {
+  launches {
+    cursor
+    hasMore
+    launches {
+      id
+      site
+    }
+  }
+}
+```
+
+Run the query again, and you'll now see that in addition to the information you got back before, you're also getting a list of launches with their ID and site information:
+
+<img src="images/completed_id_query.png" class="screenshot" alt="Updated query JSON in GraphiQL"/>
+
+## Add the query to your project
+
+Now that your query is fetching the right data, head back to Android Studio.
+
+1. Right click on the `src/main/graphql/com/example/rocketserver` folder. This folder should contain your `schema.json`. Select **New > File**:
+
+<img src="images/new_file.png" class="screenshot" alt="New GraphQL file"/>
+
+2. Name the file `LaunchList.graphql`. Make sure it's saved at the same level as your `schema.json` file.
+
+3. Copy your final query from GraphiQL and paste it into `LaunchList.graphql`.
+
+```graphql:title=app/src/main/graphql/com/example/rocketreserver/LaunchList.graphql
+query LaunchList {
+  launches {
+    cursor
+    hasMore
+    launches {
+      id
+      site
+    }
+  }
+}
+```
+
+## Generate the model
+
+Build your project to have the Apollo Android plugin generate your first model. The plugin defines a task named `generateApolloSources` to generate the models. You don't need to run it. It will be executed automatically when building your project.
+
+> **Note**: Autocomplete won't work until you build your project. That is because autocomplete requires the generated code to work. Each time you change your queries, you should rebuild your project for Android Studio to pick up the modifications.
+
+## Examine generated code
+
+From the menu, select **Navigate > Class** and start typing `LaunchList`, Android Studio should suggest to open `LaunchList.kt`. The file should be in `build/generated/source/apollo/debug/service/com/example/rocketreserver/LaunchListQuery.kt`.
+
+The `LaunchListQuery.kt` file defines a root class, `LaunchListQuery`, with many nested classes. If you compare the classes to the JSON data returned in GraphiQL, you see that the structure matches. These classes include properties only for the fields that your query requests.
+
+Try commenting out the `id` property in `LaunchList.graphql`, saving, then building again. When the build completes, the innermost `Launch` now only includes the built-in `__typename` and the requested `site` property.
+
+Uncomment `id` and rebuild to restore the property.
+
+Now that you've generated code and had a chance to see what's in there, it's time to [execute the query](04-execute-the-query)!
