@@ -210,6 +210,49 @@ data class TestQuery(
   /**
    * A character from the Star Wars universe
    */
+  data class AsCharacter(
+    val __typename: String = "Character",
+    /**
+     * The ID of the character
+     */
+    val id: String,
+    /**
+     * The name of the character
+     */
+    val name: String
+  ) : HeroCharacter {
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@AsCharacter.__typename)
+      writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, this@AsCharacter.id)
+      writer.writeString(RESPONSE_FIELDS[2], this@AsCharacter.name)
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
+          ResponseField.forString("name", "name", null, false, null)
+          )
+
+      operator fun invoke(reader: ResponseReader): AsCharacter = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)!!
+        val name = readString(RESPONSE_FIELDS[2])!!
+        AsCharacter(
+          __typename = __typename,
+          id = id,
+          name = name
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<AsCharacter> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
+   * A character from the Star Wars universe
+   */
   data class Hero(
     val __typename: String = "Character",
     /**
@@ -217,13 +260,15 @@ data class TestQuery(
      */
     val id: String,
     val asHuman: AsHuman?,
-    val asDroid: AsDroid?
+    val asDroid: AsDroid?,
+    val asCharacter: AsCharacter?
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@Hero.__typename)
       writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, this@Hero.id)
       writer.writeFragment(this@Hero.asHuman?.marshaller())
       writer.writeFragment(this@Hero.asDroid?.marshaller())
+      writer.writeFragment(this@Hero.asCharacter?.marshaller())
     }
 
     companion object {
@@ -238,6 +283,10 @@ data class TestQuery(
           ResponseField.forFragment("__typename", "__typename", listOf(
             ResponseField.Condition.booleanCondition("withDetails", false),
             ResponseField.Condition.typeCondition(arrayOf("Droid"))
+          )),
+          ResponseField.forFragment("__typename", "__typename", listOf(
+            ResponseField.Condition.booleanCondition("withDetails", false),
+            ResponseField.Condition.typeCondition(arrayOf("Human", "Droid"))
           ))
           )
 
@@ -250,11 +299,15 @@ data class TestQuery(
         val asDroid = readFragment<AsDroid>(RESPONSE_FIELDS[3]) { reader ->
           AsDroid(reader)
         }
+        val asCharacter = readFragment<AsCharacter>(RESPONSE_FIELDS[4]) { reader ->
+          AsCharacter(reader)
+        }
         Hero(
           __typename = __typename,
           id = id,
           asHuman = asHuman,
-          asDroid = asDroid
+          asDroid = asDroid,
+          asCharacter = asCharacter
         )
       }
 
@@ -294,7 +347,7 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "97c562c4c8d4263171676515bc09d09030313dd3598ad8a061586c899a1cca97"
+        "1fc50a1808d1ff72f74d821b563ee69df2fc04dd650e41d27d75d90d0413bd65"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -309,6 +362,9 @@ data class TestQuery(
           |    ... on Droid @include(if: ${'$'}withDetails) {
           |      name
           |      primaryFunction
+          |    }
+          |    ... on Character @include(if: ${'$'}withDetails) {
+          |      name
           |    }
           |  }
           |}

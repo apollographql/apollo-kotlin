@@ -2,12 +2,15 @@ query TestQuery($withDetails: Boolean!, $skipHumanDetails: Boolean!) {
   hero {
     id
     ... on Human @include(if: $withDetails) @skip(if: $skipHumanDetails) {
-        name
-        homePlanet
+      name
+      homePlanet
     }
     ... on Droid @include(if: $withDetails) {
-        name
-        primaryFunction
+      name
+      primaryFunction
+    }
+    ... on Character @include(if: $withDetails) {
+      name
     }
   }
 }

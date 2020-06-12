@@ -297,18 +297,17 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
     }
 
     val fragmentRefs = selectionSet().fragmentRefs()
-    val inlineFragments = selectionSet()?.selection()?.mapNotNull { ctx ->
+    val inlineFragmentsResult = selectionSet()?.selection()?.mapNotNull { ctx ->
       ctx.inlineFragment()?.parse(parentSchemaType = schemaFieldType, parentFields = fields)
     }?.flatten() ?: ParseResult(result = emptyList())
 
-    val inlineFragmentFieldsToMerge = inlineFragments.result
-        .filter { it.typeCondition == schemaFieldType.name }
+    val (inlineFragments, inlineFragmentsToMerge) = inlineFragmentsResult.result.partition {
+      it.typeCondition != schemaFieldType.name || it.conditions.isNotEmpty()
+    }
+    val inlineFragmentFieldsToMerge = inlineFragmentsToMerge
         .flatMap { it.fields }
         .filter { it.responseName != Field.TYPE_NAME_FIELD.responseName }
-    val inlineFragmentRefsToMerge = inlineFragments.result
-        .filter { it.typeCondition == schemaFieldType.name }
-        .flatMap { it.fragments }
-
+    val inlineFragmentRefsToMerge = inlineFragmentsToMerge.flatMap { it.fragments }
     val mergedFields = fields.result.mergeFields(others = inlineFragmentFieldsToMerge)
 
     val conditions = directives().parse()
@@ -322,7 +321,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
             isConditional = conditions.isNotEmpty(),
             fields = mergedFields,
             fragmentRefs = fragmentRefs.union(inlineFragmentRefsToMerge).toList(),
-            inlineFragments = inlineFragments.result.filter { it.typeCondition != schemaFieldType.name }.map {
+            inlineFragments = inlineFragments.map {
               it.copy(
                   fields = it.fields.mergeFields(others = mergedFields)
               )
@@ -336,7 +335,7 @@ class GraphQLDocumentParser(val schema: Schema, private val packageNameProvider:
         usedTypes = setOf(schemaField.type.rawType.name!!)
             .union(arguments.usedTypes)
             .union(fields.usedTypes)
-            .union(inlineFragments.usedTypes)
+            .union(inlineFragmentsResult.usedTypes)
     )
   }
 
