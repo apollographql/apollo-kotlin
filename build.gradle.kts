@@ -86,6 +86,7 @@ subprojects {
   }
 
   this.apply(plugin = "maven-publish")
+  this.apply(plugin = "signing")
 
   repositories {
     maven { url = uri("https://plugins.gradle.org/m2/") }
@@ -292,7 +293,24 @@ fun Project.configurePublishing() {
           password = System.getenv("SONATYPE_NEXUS_PASSWORD")
         }
       }
+
+      maven {
+        name = "ossStaging"
+        url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+        credentials {
+          username = System.getenv("SONATYPE_NEXUS_USERNAME")
+          password = System.getenv("SONATYPE_NEXUS_PASSWORD")
+        }
+      }
     }
+  }
+
+  configure<SigningExtension> {
+    // GPG_PRIVATE_KEY should contain the armoured private key that starts with -----BEGIN PGP PRIVATE KEY BLOCK-----
+    // It can be obtained with gpg --armour --export-secret-keys KEY_ID
+    useInMemoryPgpKeys(System.getenv("GPG_PRIVATE_KEY"), System.getenv("GPG_PRIVATE_KEY_PASSWORD"))
+    val publicationsContainer = (extensions.get("publishing") as PublishingExtension).publications
+    sign(publicationsContainer)
   }
 }
 
