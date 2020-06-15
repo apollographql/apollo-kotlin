@@ -173,32 +173,33 @@ fun Project.configurePublishing() {
    */
   var javadocTask = tasks.findByName("javadoc") as Javadoc?
   var javadocJarTaskProvider: TaskProvider<org.gradle.jvm.tasks.Jar>? = null
+
   if (javadocTask == null && android != null) {
+    // create the Android javadoc if needed
     javadocTask = tasks.create("javadoc", Javadoc::class.java) {
       source = android.sourceSets["main"].java.sourceFiles
       classpath += project.files(android.getBootClasspath().joinToString(File.pathSeparator))
     }
   }
 
-  if (javadocTask != null) {
-    javadocJarTaskProvider = tasks.register("javadocJar", org.gradle.jvm.tasks.Jar::class.java) {
-      archiveClassifier.set("javadoc")
+  javadocJarTaskProvider = tasks.register("javadocJar", org.gradle.jvm.tasks.Jar::class.java) {
+    archiveClassifier.set("javadoc")
+    if (javadocTask != null) {
       dependsOn(javadocTask)
       from(javadocTask.destinationDir)
     }
   }
 
-  var sourcesJarTaskProvider: TaskProvider<org.gradle.jvm.tasks.Jar>? = null
   val javaPluginConvention = project.convention.findPlugin(JavaPluginConvention::class.java)
-  if (javaPluginConvention != null && android == null) {
-    sourcesJarTaskProvider = tasks.register("sourcesJar", org.gradle.jvm.tasks.Jar::class.java) {
-      archiveClassifier.set("sources")
-      from(javaPluginConvention.sourceSets.get("main").allSource)
-    }
-  } else if (android != null) {
-    sourcesJarTaskProvider = tasks.register("sourcesJar", org.gradle.jvm.tasks.Jar::class.java) {
-      archiveClassifier.set("sources")
-      from(android.sourceSets["main"].java.sourceFiles)
+  val sourcesJarTaskProvider = tasks.register("sourcesJar", org.gradle.jvm.tasks.Jar::class.java) {
+    archiveClassifier.set("sources")
+    when {
+      javaPluginConvention != null && android == null -> {
+        from(javaPluginConvention.sourceSets.get("main").allSource)
+      }
+      android != null -> {
+        from(android.sourceSets["main"].java.sourceFiles)
+      }
     }
   }
 
@@ -211,24 +212,20 @@ fun Project.configurePublishing() {
     publications {
       when {
         plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") -> {
-          withType<MavenPublication>().getByName("jvm") {
+          withType<MavenPublication> {
             // multiplatform doesn't add javadoc by default so add it here
-            if (javadocJarTaskProvider != null) {
-              artifact(javadocJarTaskProvider.get())
+            artifact(javadocJarTaskProvider.get())
+            if (name == "kotlinMultiplatform"){
+              // sources are added for each platform but not for the common module
+              artifact(sourcesJarTaskProvider.get())
             }
           }
         }
         plugins.hasPlugin("java-gradle-plugin") -> {
           // java-gradle-plugin doesn't add javadoc/sources by default so add it here
-          withType<MavenPublication>().all {
-            if (name == "pluginMaven") {
-              if (javadocJarTaskProvider != null) {
-                artifact(javadocJarTaskProvider.get())
-              }
-              if (sourcesJarTaskProvider != null) {
-                artifact(sourcesJarTaskProvider.get())
-              }
-            }
+          withType<MavenPublication> {
+            artifact(javadocJarTaskProvider.get())
+            artifact(sourcesJarTaskProvider.get())
           }
         }
         else -> {
@@ -242,12 +239,8 @@ fun Project.configurePublishing() {
               }
             }
 
-            if (javadocJarTaskProvider != null) {
-              artifact(javadocJarTaskProvider.get())
-            }
-            if (sourcesJarTaskProvider != null) {
-              artifact(sourcesJarTaskProvider.get())
-            }
+            artifact(javadocJarTaskProvider.get())
+            artifact(sourcesJarTaskProvider.get())
 
             pom {
               artifactId = findProperty("POM_ARTIFACT_ID") as String?
@@ -323,7 +316,10 @@ fun Project.setDefaultPomFields(mavenPublication: MavenPublication) {
 
   mavenPublication.pom {
     name.set(findProperty("POM_NAME") as String?)
-    packaging = findProperty("POM_PACKAGING") as String?
+    (findProperty("POM_PACKAGING") as String?)?.let {
+      // Do not overwrite packaging if set by the multiplatform plugin
+      packaging = it
+    }
 
     description.set(findProperty("POM_DESCRIPTION") as String?)
     url.set(findProperty("POM_URL") as String?)
