@@ -256,8 +256,8 @@ fun Project.configurePublishing() {
         }
       }
 
-      withType<MavenPublication>() {
-        setDefaultPomFields()
+      withType<MavenPublication> {
+        setDefaultPomFields(this)
       }
     }
 
@@ -317,36 +317,34 @@ fun Project.configurePublishing() {
 /**
  * Set fields which are common to all project, either KMP or non-KMP
  */
-fun PublicationContainer.setDefaultPomFields() {
-  withType<MavenPublication>().all {
-    pom {
-      groupId = findProperty("GROUP") as String?
+fun Project.setDefaultPomFields(mavenPublication: MavenPublication) {
+  mavenPublication.groupId = findProperty("GROUP") as String?
+  mavenPublication.version = findProperty("VERSION_NAME") as String?
 
-      version = findProperty("VERSION_NAME") as String?
-      name.set(findProperty("POM_NAME") as String?)
-      packaging = findProperty("POM_PACKAGING") as String?
+  mavenPublication.pom {
+    name.set(findProperty("POM_NAME") as String?)
+    packaging = findProperty("POM_PACKAGING") as String?
 
-      description.set(findProperty("POM_DESCRIPTION") as String?)
-      url.set(findProperty("POM_URL") as String?)
+    description.set(findProperty("POM_DESCRIPTION") as String?)
+    url.set(findProperty("POM_URL") as String?)
 
-      scm {
-        url.set(findProperty("POM_SCM_URL") as String?)
-        connection.set(findProperty("POM_SCM_CONNECTION") as String?)
-        developerConnection.set(findProperty("POM_SCM_DEV_CONNECTION") as String?)
+    scm {
+      url.set(findProperty("POM_SCM_URL") as String?)
+      connection.set(findProperty("POM_SCM_CONNECTION") as String?)
+      developerConnection.set(findProperty("POM_SCM_DEV_CONNECTION") as String?)
+    }
+
+    licenses {
+      license {
+        name.set(findProperty("POM_LICENCE_NAME") as String?)
+        url.set(findProperty("POM_LICENCE_URL") as String?)
       }
+    }
 
-      licenses {
-        license {
-          name.set(findProperty("POM_LICENCE_NAME") as String?)
-          url.set(findProperty("POM_LICENCE_URL") as String?)
-        }
-      }
-
-      developers {
-        developer {
-          id.set(findProperty("POM_DEVELOPER_ID") as String?)
-          name.set(findProperty("POM_DEVELOPER_NAME") as String?)
-        }
+    developers {
+      developer {
+        id.set(findProperty("POM_DEVELOPER_ID") as String?)
+        name.set(findProperty("POM_DEVELOPER_NAME") as String?)
       }
     }
   }
@@ -354,7 +352,7 @@ fun PublicationContainer.setDefaultPomFields() {
 
 fun subprojectTasks(name: String): List<Task> {
   return subprojects.flatMap { subproject ->
-    subproject.tasks.matching {it.name == name }
+    subproject.tasks.matching { it.name == name }
   }
 }
 
