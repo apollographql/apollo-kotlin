@@ -215,7 +215,7 @@ fun Project.configurePublishing() {
           withType<MavenPublication> {
             // multiplatform doesn't add javadoc by default so add it here
             artifact(javadocJarTaskProvider.get())
-            if (name == "kotlinMultiplatform"){
+            if (name == "kotlinMultiplatform") {
               // sources are added for each platform but not for the common module
               artifact(sourcesJarTaskProvider.get())
             }
@@ -300,10 +300,13 @@ fun Project.configurePublishing() {
 
   configure<SigningExtension> {
     // GPG_PRIVATE_KEY should contain the armoured private key that starts with -----BEGIN PGP PRIVATE KEY BLOCK-----
-    // It can be obtained with gpg --armour --export-secret-keys KEY_ID 
+    // It can be obtained with gpg --armour --export-secret-keys KEY_ID
     useInMemoryPgpKeys(System.getenv("GPG_PRIVATE_KEY"), System.getenv("GPG_PRIVATE_KEY_PASSWORD"))
     val publicationsContainer = (extensions.get("publishing") as PublishingExtension).publications
     sign(publicationsContainer)
+  }
+  tasks.withType<Sign> {
+    isEnabled = !System.getenv("GPG_PRIVATE_KEY").isNullOrBlank()
   }
 }
 
