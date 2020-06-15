@@ -300,7 +300,7 @@ fun Project.configurePublishing() {
 
   configure<SigningExtension> {
     // GPG_PRIVATE_KEY should contain the armoured private key that starts with -----BEGIN PGP PRIVATE KEY BLOCK-----
-    // It can be obtained with gpg --armour --export-secret-keys KEY_ID
+    // It can be obtained with gpg --armour --export-secret-keys KEY_ID 
     useInMemoryPgpKeys(System.getenv("GPG_PRIVATE_KEY"), System.getenv("GPG_PRIVATE_KEY_PASSWORD"))
     val publicationsContainer = (extensions.get("publishing") as PublishingExtension).publications
     sign(publicationsContainer)
