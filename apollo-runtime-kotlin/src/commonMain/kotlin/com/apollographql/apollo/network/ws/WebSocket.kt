@@ -1,4 +1,4 @@
-package com.apollographql.apollo.network.websocket
+package com.apollographql.apollo.network.ws
 
 import kotlinx.coroutines.channels.ReceiveChannel
 import okio.ByteString

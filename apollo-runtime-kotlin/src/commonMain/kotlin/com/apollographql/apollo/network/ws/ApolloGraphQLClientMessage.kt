@@ -1,4 +1,4 @@
-package com.apollographql.apollo.network.websocket
+package com.apollographql.apollo.network.ws
 
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.internal.json.JsonWriter
@@ -28,7 +28,15 @@ sealed class ApolloGraphQLClientMessage {
   class Start(private val request: ApolloRequest<*>) : ApolloGraphQLClientMessage() {
 
     override fun serialize(): ByteString {
-      return request.operation.composeRequestBody(request.scalarTypeAdapters)
+      return okio.Buffer().also { buffer ->
+        JsonWriter.of(buffer)
+            .beginObject()
+            .name("type").value("start")
+            .name("id").value(request.requestUuid.toString())
+            .name("payload").jsonValue(request.operation.composeRequestBody(request.scalarTypeAdapters).utf8())
+            .endObject()
+            .close()
+      }.readByteString()
     }
   }
 

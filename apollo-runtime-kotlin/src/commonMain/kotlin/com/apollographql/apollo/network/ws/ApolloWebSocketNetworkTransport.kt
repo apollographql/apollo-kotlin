@@ -1,4 +1,4 @@
-package com.apollographql.apollo.network.websocket
+package com.apollographql.apollo.network.ws
 
 import com.apollographql.apollo.ApolloParseException
 import com.apollographql.apollo.ApolloWebSocketException
@@ -11,7 +11,7 @@ import com.apollographql.apollo.api.internal.json.Utils
 import com.apollographql.apollo.interceptor.ApolloRequest
 import com.apollographql.apollo.interceptor.ApolloResponse
 import com.apollographql.apollo.network.NetworkTransport
-import com.apollographql.apollo.network.websocket.ApolloGraphQLServerMessage.Companion.parse
+import com.apollographql.apollo.network.ws.ApolloGraphQLServerMessage.Companion.parse
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.BroadcastChannel

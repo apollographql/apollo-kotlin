@@ -1,4 +1,4 @@
-package com.apollographql.apollo.network.websocket
+package com.apollographql.apollo.network.ws
 
 import com.apollographql.apollo.ApolloWebSocketException
 import com.apollographql.apollo.network.toNSData
