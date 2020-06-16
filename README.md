@@ -88,7 +88,7 @@ Apollo Android runs on the following platforms:
 
 * Android API level 15+
 * JDK 8+
-* iOS 13
+* iOS 13+
  
 ## Contributing
 
@@ -96,6 +96,7 @@ If you'd like to contribute, please see [Contributing.md](https://github.com/apo
 
 ## Additional resources
 
+- [A journey to Kotlin multiplatform](https://docs.google.com/presentation/d/e/2PACX-1vQ9ygueESDaSDHB8vnOWlvnHhYoRdLX6tvJAKeSgeKe64ZL0NzRcA2DNuFse-xWwfw87FyIfgrmPVqL/pub?start=false&loop=false&delayms=60000): how the project was moved to Kotlin multiplatform, talk given at Kotliners in June 2020.
 - [#125, Fragmented Podcast](http://fragmentedpodcast.com/episodes/125/): Why's and How's about Apollo Android and the entire journey.
 - [GraphQL.org](http://graphql.org) for an introduction and reference to GraphQL itself.
 - [apollographql.com](http://www.apollographql.com/) to learn about Apollo open-source and commercial tools.
