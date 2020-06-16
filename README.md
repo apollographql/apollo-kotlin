@@ -110,7 +110,7 @@ To make a query using your generated models:
 
 ```kotlin
 val apolloClient = ApolloClient.builder()
-  .serverUrl("https://")
+  .serverUrl("https://your.domain/graphql/endpoint") // replace this with your actual endpoint
   .build()
 
 apolloClient.query(LaunchDetailsQuery(id = "83"))
