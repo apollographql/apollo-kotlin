@@ -50,8 +50,8 @@ import okio.ByteString
 class ApolloWebSocketNetworkTransport(
     private val webSocketFactory: WebSocketFactory,
     private val connectionParams: Map<String, Any?> = emptyMap(),
-    private val connectionAcknowledgeTimeoutMs: Long = 5_000,
-    private val idleTimeoutMs: Long = 5_000
+    private val connectionAcknowledgeTimeoutMs: Long = 10_000,
+    private val idleTimeoutMs: Long = 60_000
 ) : NetworkTransport {
   private val mutex = Mutex()
   private var graphQLWebsocketConnection: GraphQLWebsocketConnection? = null
