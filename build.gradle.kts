@@ -86,6 +86,7 @@ subprojects {
   }
 
   this.apply(plugin = "maven-publish")
+  this.apply(plugin = "signing")
 
   repositories {
     maven { url = uri("https://plugins.gradle.org/m2/") }
@@ -172,32 +173,33 @@ fun Project.configurePublishing() {
    */
   var javadocTask = tasks.findByName("javadoc") as Javadoc?
   var javadocJarTaskProvider: TaskProvider<org.gradle.jvm.tasks.Jar>? = null
+
   if (javadocTask == null && android != null) {
+    // create the Android javadoc if needed
     javadocTask = tasks.create("javadoc", Javadoc::class.java) {
       source = android.sourceSets["main"].java.sourceFiles
       classpath += project.files(android.getBootClasspath().joinToString(File.pathSeparator))
     }
   }
 
-  if (javadocTask != null) {
-    javadocJarTaskProvider = tasks.register("javadocJar", org.gradle.jvm.tasks.Jar::class.java) {
-      archiveClassifier.set("javadoc")
+  javadocJarTaskProvider = tasks.register("javadocJar", org.gradle.jvm.tasks.Jar::class.java) {
+    archiveClassifier.set("javadoc")
+    if (javadocTask != null) {
       dependsOn(javadocTask)
       from(javadocTask.destinationDir)
     }
   }
 
-  var sourcesJarTaskProvider: TaskProvider<org.gradle.jvm.tasks.Jar>? = null
   val javaPluginConvention = project.convention.findPlugin(JavaPluginConvention::class.java)
-  if (javaPluginConvention != null && android == null) {
-    sourcesJarTaskProvider = tasks.register("sourcesJar", org.gradle.jvm.tasks.Jar::class.java) {
-      archiveClassifier.set("sources")
-      from(javaPluginConvention.sourceSets.get("main").allSource)
-    }
-  } else if (android != null) {
-    sourcesJarTaskProvider = tasks.register("sourcesJar", org.gradle.jvm.tasks.Jar::class.java) {
-      archiveClassifier.set("sources")
-      from(android.sourceSets["main"].java.sourceFiles)
+  val sourcesJarTaskProvider = tasks.register("sourcesJar", org.gradle.jvm.tasks.Jar::class.java) {
+    archiveClassifier.set("sources")
+    when {
+      javaPluginConvention != null && android == null -> {
+        from(javaPluginConvention.sourceSets.get("main").allSource)
+      }
+      android != null -> {
+        from(android.sourceSets["main"].java.sourceFiles)
+      }
     }
   }
 
@@ -210,24 +212,20 @@ fun Project.configurePublishing() {
     publications {
       when {
         plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") -> {
-          withType<MavenPublication>().getByName("jvm") {
+          withType<MavenPublication> {
             // multiplatform doesn't add javadoc by default so add it here
-            if (javadocJarTaskProvider != null) {
-              artifact(javadocJarTaskProvider.get())
+            artifact(javadocJarTaskProvider.get())
+            if (name == "kotlinMultiplatform") {
+              // sources are added for each platform but not for the common module
+              artifact(sourcesJarTaskProvider.get())
             }
           }
         }
         plugins.hasPlugin("java-gradle-plugin") -> {
           // java-gradle-plugin doesn't add javadoc/sources by default so add it here
-          withType<MavenPublication>().all {
-            if (name == "pluginMaven") {
-              if (javadocJarTaskProvider != null) {
-                artifact(javadocJarTaskProvider.get())
-              }
-              if (sourcesJarTaskProvider != null) {
-                artifact(sourcesJarTaskProvider.get())
-              }
-            }
+          withType<MavenPublication> {
+            artifact(javadocJarTaskProvider.get())
+            artifact(sourcesJarTaskProvider.get())
           }
         }
         else -> {
@@ -241,12 +239,8 @@ fun Project.configurePublishing() {
               }
             }
 
-            if (javadocJarTaskProvider != null) {
-              artifact(javadocJarTaskProvider.get())
-            }
-            if (sourcesJarTaskProvider != null) {
-              artifact(sourcesJarTaskProvider.get())
-            }
+            artifact(javadocJarTaskProvider.get())
+            artifact(sourcesJarTaskProvider.get())
 
             pom {
               artifactId = findProperty("POM_ARTIFACT_ID") as String?
@@ -255,8 +249,8 @@ fun Project.configurePublishing() {
         }
       }
 
-      withType<MavenPublication>() {
-        setDefaultPomFields()
+      withType<MavenPublication> {
+        setDefaultPomFields(this)
       }
     }
 
@@ -292,43 +286,64 @@ fun Project.configurePublishing() {
           password = System.getenv("SONATYPE_NEXUS_PASSWORD")
         }
       }
+
+      maven {
+        name = "ossStaging"
+        url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+        credentials {
+          username = System.getenv("SONATYPE_NEXUS_USERNAME")
+          password = System.getenv("SONATYPE_NEXUS_PASSWORD")
+        }
+      }
     }
+  }
+
+  configure<SigningExtension> {
+    // GPG_PRIVATE_KEY should contain the armoured private key that starts with -----BEGIN PGP PRIVATE KEY BLOCK-----
+    // It can be obtained with gpg --armour --export-secret-keys KEY_ID
+    useInMemoryPgpKeys(System.getenv("GPG_PRIVATE_KEY"), System.getenv("GPG_PRIVATE_KEY_PASSWORD"))
+    val publicationsContainer = (extensions.get("publishing") as PublishingExtension).publications
+    sign(publicationsContainer)
+  }
+  tasks.withType<Sign> {
+    isEnabled = !System.getenv("GPG_PRIVATE_KEY").isNullOrBlank()
   }
 }
 
 /**
  * Set fields which are common to all project, either KMP or non-KMP
  */
-fun PublicationContainer.setDefaultPomFields() {
-  withType<MavenPublication>().all {
-    pom {
-      groupId = findProperty("GROUP") as String?
+fun Project.setDefaultPomFields(mavenPublication: MavenPublication) {
+  mavenPublication.groupId = findProperty("GROUP") as String?
+  mavenPublication.version = findProperty("VERSION_NAME") as String?
 
-      version = findProperty("VERSION_NAME") as String?
-      name.set(findProperty("POM_NAME") as String?)
-      packaging = findProperty("POM_PACKAGING") as String?
+  mavenPublication.pom {
+    name.set(findProperty("POM_NAME") as String?)
+    (findProperty("POM_PACKAGING") as String?)?.let {
+      // Do not overwrite packaging if set by the multiplatform plugin
+      packaging = it
+    }
 
-      description.set(findProperty("POM_DESCRIPTION") as String?)
-      url.set(findProperty("POM_URL") as String?)
+    description.set(findProperty("POM_DESCRIPTION") as String?)
+    url.set(findProperty("POM_URL") as String?)
 
-      scm {
-        url.set(findProperty("POM_SCM_URL") as String?)
-        connection.set(findProperty("POM_SCM_CONNECTION") as String?)
-        developerConnection.set(findProperty("POM_SCM_DEV_CONNECTION") as String?)
+    scm {
+      url.set(findProperty("POM_SCM_URL") as String?)
+      connection.set(findProperty("POM_SCM_CONNECTION") as String?)
+      developerConnection.set(findProperty("POM_SCM_DEV_CONNECTION") as String?)
+    }
+
+    licenses {
+      license {
+        name.set(findProperty("POM_LICENCE_NAME") as String?)
+        url.set(findProperty("POM_LICENCE_URL") as String?)
       }
+    }
 
-      licenses {
-        license {
-          name.set(findProperty("POM_LICENCE_NAME") as String?)
-          url.set(findProperty("POM_LICENCE_URL") as String?)
-        }
-      }
-
-      developers {
-        developer {
-          id.set(findProperty("POM_DEVELOPER_ID") as String?)
-          name.set(findProperty("POM_DEVELOPER_NAME") as String?)
-        }
+    developers {
+      developer {
+        id.set(findProperty("POM_DEVELOPER_ID") as String?)
+        name.set(findProperty("POM_DEVELOPER_NAME") as String?)
       }
     }
   }
@@ -336,7 +351,7 @@ fun PublicationContainer.setDefaultPomFields() {
 
 fun subprojectTasks(name: String): List<Task> {
   return subprojects.flatMap { subproject ->
-    subproject.tasks.matching {it.name == name }
+    subproject.tasks.matching { it.name == name }
   }
 }
 
