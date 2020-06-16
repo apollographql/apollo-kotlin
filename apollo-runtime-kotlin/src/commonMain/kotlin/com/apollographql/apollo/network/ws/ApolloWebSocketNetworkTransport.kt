@@ -197,7 +197,6 @@ class ApolloWebSocketNetworkTransport(
     }
 
     private suspend fun onSubscribed() {
-      println("onSubscribed")
       mutex.withLock {
         activeSubscriptionCount++
         idleTimeoutJob?.cancel()
@@ -205,28 +204,22 @@ class ApolloWebSocketNetworkTransport(
     }
 
     private suspend fun onUnsubscribed() {
-      println("onUnsubscribed")
       mutex.withLock {
         if (--activeSubscriptionCount == 0) scheduleAutoClose()
       }
     }
 
     private fun scheduleAutoClose() {
-      println("scheduleAutoClose")
       idleTimeoutJob?.cancel()
       if (idleTimeoutMs > 0) {
-        println("scheduleAutoClose2")
         idleTimeoutJob = coroutineScope.launch {
-          println("before delay")
           delay(idleTimeoutMs)
-          println("after delay")
           close()
         }
       }
     }
 
     private suspend fun close() {
-      println("closing")
       mutex.withLock {
         webSocketConnection.close()
       }
