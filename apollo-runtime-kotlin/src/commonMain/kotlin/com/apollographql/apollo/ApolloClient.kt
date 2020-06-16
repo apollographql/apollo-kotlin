@@ -7,10 +7,12 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.Subscription
+import com.apollographql.apollo.dispatcher.ApolloCoroutineDispatcherContext
 import com.apollographql.apollo.interceptor.ApolloRequestInterceptor
 import com.apollographql.apollo.interceptor.NetworkRequestInterceptor
 import com.apollographql.apollo.internal.RealApolloCall
 import com.apollographql.apollo.network.NetworkTransport
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ApolloExperimental
@@ -22,6 +24,8 @@ class ApolloClient(
     private val interceptors: List<ApolloRequestInterceptor> = emptyList(),
     private val executionContext: ExecutionContext = ExecutionContext.Empty
 ) {
+  private val coroutineDispatcherContext = executionContext[ApolloCoroutineDispatcherContext]
+      ?: ApolloCoroutineDispatcherContext(Dispatchers.Default)
 
   fun <D : Operation.Data, V : Operation.Variables> mutate(mutation: Mutation<D, D, V>): ApolloMutationCall<D> {
     return mutation.prepareCall()
@@ -43,7 +47,7 @@ class ApolloClient(
             networkTransport = networkTransport,
             subscriptionNetworkTransport = subscriptionNetworkTransport
         ),
-        executionContext = executionContext
+        executionContext = executionContext + coroutineDispatcherContext
     )
   }
 }

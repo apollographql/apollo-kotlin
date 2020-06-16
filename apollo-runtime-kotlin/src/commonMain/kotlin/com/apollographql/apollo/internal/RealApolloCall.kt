@@ -26,11 +26,12 @@ class RealApolloCall<D : Operation.Data> constructor(
     private val executionContext: ExecutionContext
 ) : ApolloQueryCall<D>, ApolloMutationCall<D>, ApolloSubscriptionCall<D> {
 
-  override fun execute(): Flow<Response<D>> {
+  @ApolloExperimental
+  override fun execute(executionContext: ExecutionContext): Flow<Response<D>> {
     val request = ApolloRequest(
         operation = operation,
         scalarTypeAdapters = scalarTypeAdapters,
-        executionContext = executionContext
+        executionContext = this.executionContext + executionContext
     )
     return flow {
       emit(RealInterceptorChain(interceptors))

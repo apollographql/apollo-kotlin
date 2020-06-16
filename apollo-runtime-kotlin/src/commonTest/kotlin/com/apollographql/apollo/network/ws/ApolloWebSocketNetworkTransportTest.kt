@@ -5,17 +5,19 @@ import com.apollographql.apollo.ApolloWebSocketServerException
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.dispatcher.ApolloCoroutineDispatcherContext
 import com.apollographql.apollo.interceptor.ApolloRequest
 import com.apollographql.apollo.mock.MockSubscription
 import com.apollographql.apollo.runBlocking
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.withTimeout
 import okio.ByteString
 import okio.ByteString.Companion.encodeUtf8
 import kotlin.test.Test
@@ -24,6 +26,7 @@ import kotlin.test.assertTrue
 
 @ApolloExperimental
 @ExperimentalCoroutinesApi
+@InternalCoroutinesApi
 class ApolloWebSocketNetworkTransportTest {
 
   @Test
@@ -32,7 +35,7 @@ class ApolloWebSocketNetworkTransportTest {
       val expectedRequest = ApolloRequest(
           operation = MockSubscription(),
           scalarTypeAdapters = ScalarTypeAdapters.DEFAULT,
-          executionContext = ExecutionContext.Empty
+          executionContext = ApolloCoroutineDispatcherContext(Dispatchers.Unconfined)
       )
       val expectedResponses = listOf(
           "{\"data\":{\"name\":\"MockQuery1\"}}",
@@ -44,21 +47,20 @@ class ApolloWebSocketNetworkTransportTest {
           expectedOnStartResponse = expectedResponses.first()
       )
 
-      withTimeout(1_000) {
-        ApolloWebSocketNetworkTransport(
-            object : WebSocketFactory {
-              override suspend fun open(headers: Map<String, String>): WebSocketConnection = webSocketConnection
-            }
-        ).execute(
-            request = expectedRequest,
-            executionContext = ExecutionContext.Empty
-        ).collectIndexed { index, actualResponse ->
-          assertEquals(expectedResponses[index], actualResponse.response.data?.rawResponse)
-          if (index < expectedResponses.size - 1) {
-            webSocketConnection.enqueueResponse(expectedResponses[index + 1])
-          } else {
-            webSocketConnection.enqueueComplete()
-          }
+      ApolloWebSocketNetworkTransport(
+          webSocketFactory = object : WebSocketFactory {
+            override suspend fun open(headers: Map<String, String>): WebSocketConnection = webSocketConnection
+          },
+          idleTimeoutMs = -1
+      ).execute(
+          request = expectedRequest,
+          executionContext = ExecutionContext.Empty
+      ).collectIndexed { index, actualResponse ->
+        assertEquals(expectedResponses[index], actualResponse.response.data?.rawResponse)
+        if (index < expectedResponses.size - 1) {
+          webSocketConnection.enqueueResponse(expectedResponses[index + 1])
+        } else {
+          webSocketConnection.enqueueComplete()
         }
       }
     }
@@ -70,21 +72,20 @@ class ApolloWebSocketNetworkTransportTest {
       val expectedRequest = ApolloRequest(
           operation = MockSubscription(),
           scalarTypeAdapters = ScalarTypeAdapters.DEFAULT,
-          executionContext = ExecutionContext.Empty
+          executionContext = ApolloCoroutineDispatcherContext(Dispatchers.Unconfined)
       )
 
       val result = runCatching {
-        withTimeout(2_000) {
-          ApolloWebSocketNetworkTransport(
-              webSocketFactory = object : WebSocketFactory {
-                override suspend fun open(headers: Map<String, String>): WebSocketConnection = FrozenWebSocketConnection()
-              },
-              connectionAcknowledgeTimeoutMs = 1_000
-          ).execute(
-              request = expectedRequest,
-              executionContext = ExecutionContext.Empty
-          ).toList()
-        }
+        ApolloWebSocketNetworkTransport(
+            webSocketFactory = object : WebSocketFactory {
+              override suspend fun open(headers: Map<String, String>): WebSocketConnection = FrozenWebSocketConnection()
+            },
+            connectionAcknowledgeTimeoutMs = 1_000,
+            idleTimeoutMs = -1
+        ).execute(
+            request = expectedRequest,
+            executionContext = ApolloCoroutineDispatcherContext(Dispatchers.Unconfined)
+        ).toList()
       }
 
       assertTrue(result.isFailure)
@@ -94,11 +95,11 @@ class ApolloWebSocketNetworkTransportTest {
 
   @Test
   fun `when subscription error, assert completed with exception and payload`() {
-    runBlocking {
+    val result = runBlocking {
       val expectedRequest = ApolloRequest(
           operation = MockSubscription(),
           scalarTypeAdapters = ScalarTypeAdapters.DEFAULT,
-          executionContext = ExecutionContext.Empty
+          executionContext = ApolloCoroutineDispatcherContext(Dispatchers.Unconfined)
       )
       val expectedOnStartResponse = "{\"data\":{\"name\":\"MockQuery\"}}"
       val webSocketConnection = WebSocketConnectionMock(
@@ -106,26 +107,56 @@ class ApolloWebSocketNetworkTransportTest {
           expectedOnStartResponse = expectedOnStartResponse
       )
 
-      val result = runCatching {
-        withTimeout(1_000) {
-          ApolloWebSocketNetworkTransport(
-              object : WebSocketFactory {
-                override suspend fun open(headers: Map<String, String>): WebSocketConnection = webSocketConnection
-              }
-          ).execute(
-              request = expectedRequest,
-              executionContext = ExecutionContext.Empty
-          ).collect { actualResponse ->
-            assertEquals(expectedOnStartResponse, actualResponse.response.data?.rawResponse)
-            webSocketConnection.enqueueError("{\"key1\":\"value1\", \"key2\":\"value2\"}")
-          }
+      runCatching {
+        ApolloWebSocketNetworkTransport(
+            webSocketFactory = object : WebSocketFactory {
+              override suspend fun open(headers: Map<String, String>): WebSocketConnection = webSocketConnection
+            },
+            idleTimeoutMs = -1
+        ).execute(
+            request = expectedRequest,
+            executionContext = ExecutionContext.Empty
+        ).collect { actualResponse ->
+          assertEquals(expectedOnStartResponse, actualResponse.response.data?.rawResponse)
+          webSocketConnection.enqueueError("{\"key1\":\"value1\", \"key2\":\"value2\"}")
         }
       }
+    }
 
-      assertTrue(result.isFailure)
+    assertTrue(result.isFailure)
       assertTrue(result.exceptionOrNull() is ApolloWebSocketServerException)
       assertEquals("value1", (result.exceptionOrNull() as ApolloWebSocketServerException).payload["key1"])
       assertEquals("value2", (result.exceptionOrNull() as ApolloWebSocketServerException).payload["key2"])
+  }
+
+  @Test
+  fun `when no active subscriptions, assert web socket connection closed`() {
+    runBlocking {
+      val expectedRequest = ApolloRequest(
+          operation = MockSubscription(),
+          scalarTypeAdapters = ScalarTypeAdapters.DEFAULT,
+          executionContext = ApolloCoroutineDispatcherContext(Dispatchers.Unconfined)
+      )
+      val expectedOnStartResponse = "{\"data\":{\"name\":\"MockQuery\"}}"
+      val webSocketConnection = WebSocketConnectionMock(
+          expectedRequest = expectedRequest,
+          expectedOnStartResponse = expectedOnStartResponse
+      )
+
+      ApolloWebSocketNetworkTransport(
+          webSocketFactory = object : WebSocketFactory {
+            override suspend fun open(headers: Map<String, String>): WebSocketConnection = webSocketConnection
+          },
+          idleTimeoutMs = 1_000
+      ).execute(
+          request = expectedRequest,
+          executionContext = ExecutionContext.Empty
+      ).collect { actualResponse ->
+        assertEquals(expectedOnStartResponse, actualResponse.response.data?.rawResponse)
+        webSocketConnection.enqueueComplete()
+      }
+
+      webSocketConnection.isClosed.await()
     }
   }
 }

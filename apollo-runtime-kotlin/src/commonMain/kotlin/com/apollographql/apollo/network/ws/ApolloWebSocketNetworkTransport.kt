@@ -8,15 +8,21 @@ import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.json.Utils
+import com.apollographql.apollo.dispatcher.ApolloCoroutineDispatcherContext
 import com.apollographql.apollo.interceptor.ApolloRequest
 import com.apollographql.apollo.interceptor.ApolloResponse
 import com.apollographql.apollo.network.NetworkTransport
 import com.apollographql.apollo.network.ws.ApolloGraphQLServerMessage.Companion.parse
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.broadcast
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.filter
@@ -28,6 +34,7 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.takeWhile
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withTimeout
@@ -43,16 +50,19 @@ import okio.ByteString
 class ApolloWebSocketNetworkTransport(
     private val webSocketFactory: WebSocketFactory,
     private val connectionParams: Map<String, Any?> = emptyMap(),
-    private val connectionAcknowledgeTimeoutMs: Long = 10_000
+    private val connectionAcknowledgeTimeoutMs: Long = 5_000,
+    private val idleTimeoutMs: Long = 5_000
 ) : NetworkTransport {
   private val mutex = Mutex()
   private var graphQLWebsocketConnection: GraphQLWebsocketConnection? = null
 
   override fun <D : Operation.Data> execute(request: ApolloRequest<D>, executionContext: ExecutionContext): Flow<ApolloResponse<D>> {
-    return getServerConnection().flatMapLatest { serverConnection ->
+    val dispatcherContext = requireNotNull(
+        executionContext[ApolloCoroutineDispatcherContext] ?: request.executionContext[ApolloCoroutineDispatcherContext]
+    )
+    return getServerConnection(dispatcherContext).flatMapLatest { serverConnection ->
       serverConnection
-          .openSubscription()
-          .consumeAsFlow()
+          .subscribe()
           .map { data -> data.parse() }
           .filter { message -> message !is ApolloGraphQLServerMessage.ConnectionAcknowledge }
           .takeWhile { message -> message !is ApolloGraphQLServerMessage.Complete || message.id != request.requestUuid.toString() }
@@ -115,11 +125,11 @@ class ApolloWebSocketNetworkTransport(
     }
   }
 
-  private fun getServerConnection(): Flow<GraphQLWebsocketConnection> {
+  private fun getServerConnection(dispatcherContext: ApolloCoroutineDispatcherContext): Flow<GraphQLWebsocketConnection> {
     return flow {
       val connection = mutex.withLock {
-        if (graphQLWebsocketConnection?.isClosedForReceive != false) {
-          graphQLWebsocketConnection = openServerConnection()
+        if (graphQLWebsocketConnection?.isClosedForReceive() != false) {
+          graphQLWebsocketConnection = openServerConnection(dispatcherContext)
         }
         graphQLWebsocketConnection
       }
@@ -127,7 +137,7 @@ class ApolloWebSocketNetworkTransport(
     }.filterNotNull()
   }
 
-  private suspend fun openServerConnection(): GraphQLWebsocketConnection {
+  private suspend fun openServerConnection(dispatcherContext: ApolloCoroutineDispatcherContext): GraphQLWebsocketConnection {
     return try {
       withTimeout(connectionAcknowledgeTimeoutMs) {
         val webSocketConnection = webSocketFactory.open(
@@ -139,7 +149,11 @@ class ApolloWebSocketNetworkTransport(
         while (webSocketConnection.receive().parse() !is ApolloGraphQLServerMessage.ConnectionAcknowledge) {
           // await for connection acknowledgement
         }
-        GraphQLWebsocketConnection(webSocketConnection)
+        GraphQLWebsocketConnection(
+            webSocketConnection = webSocketConnection,
+            idleTimeoutMs = idleTimeoutMs,
+            defaultDispatcher = dispatcherContext.default
+        )
       }
     } catch (e: TimeoutCancellationException) {
       throw ApolloWebSocketException(
@@ -155,14 +169,67 @@ class ApolloWebSocketNetworkTransport(
   }
 
   private class GraphQLWebsocketConnection(
-      val webSocketConnection: WebSocketConnection
-  ) : BroadcastChannel<ByteString> by webSocketConnection.broadcast(Channel.CONFLATED) {
+      val webSocketConnection: WebSocketConnection,
+      val idleTimeoutMs: Long,
+      defaultDispatcher: CoroutineDispatcher
+  ) {
+    private val messageChannel: BroadcastChannel<ByteString> = webSocketConnection.broadcast(Channel.CONFLATED)
+    private val coroutineScope = CoroutineScope(SupervisorJob() + defaultDispatcher)
+    private val mutex = Mutex()
+    private var activeSubscriptionCount = 0
+    private var idleTimeoutJob: Job? = null
 
-    val isClosedForReceive: Boolean
-      get() = webSocketConnection.isClosedForReceive
+    suspend fun isClosedForReceive(): Boolean {
+      return mutex.withLock {
+        webSocketConnection.isClosedForReceive
+      }
+    }
 
     fun send(message: ApolloGraphQLClientMessage) {
       webSocketConnection.send(message.serialize())
+    }
+
+    fun subscribe(): Flow<ByteString> {
+      return messageChannel.openSubscription()
+          .consumeAsFlow()
+          .onStart { onSubscribed() }
+          .onCompletion { onUnsubscribed() }
+    }
+
+    private suspend fun onSubscribed() {
+      println("onSubscribed")
+      mutex.withLock {
+        activeSubscriptionCount++
+        idleTimeoutJob?.cancel()
+      }
+    }
+
+    private suspend fun onUnsubscribed() {
+      println("onUnsubscribed")
+      mutex.withLock {
+        if (--activeSubscriptionCount == 0) scheduleAutoClose()
+      }
+    }
+
+    private fun scheduleAutoClose() {
+      println("scheduleAutoClose")
+      idleTimeoutJob?.cancel()
+      if (idleTimeoutMs > 0) {
+        println("scheduleAutoClose2")
+        idleTimeoutJob = coroutineScope.launch {
+          println("before delay")
+          delay(idleTimeoutMs)
+          println("after delay")
+          close()
+        }
+      }
+    }
+
+    private suspend fun close() {
+      println("closing")
+      mutex.withLock {
+        webSocketConnection.close()
+      }
     }
   }
 }
