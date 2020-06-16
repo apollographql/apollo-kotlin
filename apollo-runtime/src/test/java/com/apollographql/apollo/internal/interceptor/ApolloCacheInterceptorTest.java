@@ -5,6 +5,8 @@ import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.internal.ApolloLogger;
 import com.apollographql.apollo.api.internal.ResponseFieldMapper;
+import com.apollographql.apollo.cache.ApolloCacheHeaders;
+import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
@@ -67,6 +69,31 @@ public class ApolloCacheInterceptorTest {
 
     assertThat(cachedKeys).isEmpty();
     verifyZeroInteractions(apolloStore, logger);
+  }
+
+  @Test
+  public void testCachesErrorResponseWhenStorePartialResponsesCacheHeaderPresent() {
+    Operation<?, ?, ?> operation = mock(Operation.class);
+    Error error = new Error("Error", Collections.emptyList(), Collections.emptyMap());
+    ApolloInterceptor.InterceptorResponse networkResponse = new ApolloInterceptor.InterceptorResponse(
+        okHttpResponse,
+        com.apollographql.apollo.api.Response.builder(operation).errors(Collections.singletonList(error)).build(),
+        new ArrayList<Record>()
+    );
+    ApolloInterceptor.InterceptorRequest request = ApolloInterceptor.InterceptorRequest.builder(operation).cacheHeaders(
+        CacheHeaders.builder()
+            .addHeader(ApolloCacheHeaders.STORE_PARTIAL_RESPONSES, "true")
+            .build()
+    ).build();
+    Set<String> expectedCachedKeys = Collections.singleton("cacheKey");
+
+    when(apolloStore.writeTransaction(any())).thenReturn(expectedCachedKeys);
+
+    Set<String> cachedKeys = interceptor.cacheResponse(networkResponse, request);
+
+    assertThat(cachedKeys).isEqualTo(expectedCachedKeys);
+    verify(apolloStore).writeTransaction(any());
+    verifyZeroInteractions(logger);
   }
 
   @Test
