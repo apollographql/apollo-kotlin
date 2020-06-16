@@ -1,5 +1,5 @@
 
-# Apollo GraphQL Client for Android and the JVM
+# Apollo GraphQL Client for Android, the JVM and Kotlin Multiplatform
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg?maxAge=2592000)](https://raw.githubusercontent.com/apollographql/apollo-android/master/LICENSE) [![Join Spectrum](https://img.shields.io/badge/spectrum-join-orange)](https://spectrum.chat/apollo/apollo-android)
 ![CI](https://github.com/apollographql/apollo-android/workflows/CI/badge.svg)
@@ -7,7 +7,7 @@
 
 Apollo Android is a GraphQL client that generates Java and Kotlin models from GraphQL queries. These models give you a type-safe API to work with GraphQL servers.  Apollo helps you keep your GraphQL query statements together, organized, and easy to access. When you change a query and recompile your project, Apollo codegen rebuilds your data model. Code generation also allows Apollo to read and unmarshal responses from the network without the need for any reflection.
 
-This library is designed primarily with Android in mind, but you can use it in any Java/Kotlin app. All Android-specific functionality (such as using SQLite as a cache or the Android main thread for callbacks) is in `apollo-android-support`.
+This library is designed primarily with Android in mind, but you can use it in any Java/Kotlin app. All Android-specific functionality is in `apollo-android-support`.
 
 ## Features
 
@@ -59,24 +59,23 @@ The Apollo Gradle plugin exposes a `downloadApolloSchema` task to help you obtai
 
 ```bash
 ./gradlew downloadApolloSchema \
-  -Pcom.apollographql.apollo.endpoint=https://your.graphql.endpoint \
-  -Pcom.apollographql.apollo.schema=src/main/graphql/com/example/schema.json
+  --endpoint="https://your.domain/graphql/endpoint" \
+  --schema="src/main/graphql/com/example/schema.json"
 ```
 
 If your GraphQL endpoint requires authentication, you can pass custom HTTP headers:
 
 ```bash
 ./gradlew downloadApolloSchema \
-  -Pcom.apollographql.apollo.endpoint=https://your.graphql.endpoint \
-  -Pcom.apollographql.apollo.schema=src/main/graphql/com/example/schema.json \
-  "-Pcom.apollographql.apollo.headers=Authorization=Bearer YOUR_TOKEN" \
-  "-Pcom.apollographql.apollo.query_params=key1=value1&key2=value2"
+  --endpoint="https://your.domain/graphql/endpoint" \
+  --schema="app/src/main/graphql/com/example" \
+  --header="Authorization: Bearer $TOKEN"
 ```
 
 ## Generating models from your queries
 
 1. Create a directory for your GraphQL files like you would do for Java/Kotlin: `src/main/graphql/com/example/`. Apollo Android will generate models in the `com.apollographql.apollo.sample` package.
-2. Add your `schema.json` to the directory at `src/main/graphql/com/example/schema.json`. If you don't have a `schema.json` file yet, see [Downloading a schema.json file](#downloading-a-schemajson-file). 
+2. Add your `schema.json` to the directory at `src/main/graphql/com/example/schema.json`.  
 3. Put each of your client's GraphQL queries in its own `.graphql` file, such as `src/main/graphql/com/example/LaunchDetails.graphql` for the following query: 
 
 ```graphql
@@ -184,7 +183,9 @@ Latest development changes are available in Sonatype's snapshots repository:
 
 ```gradle
 repositories {
-  maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+  maven { 
+    url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
+  }
 }
 ```
 
