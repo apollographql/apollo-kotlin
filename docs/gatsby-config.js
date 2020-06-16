@@ -14,7 +14,9 @@ module.exports = {
         sidebarCategories: {
           null: [
             'index',
-            'essentials/get-started',
+            'essentials/get-started-kotlin',
+            'essentials/get-started-java',
+            'essentials/get-started-multiplatform',
           ],
           'Tutorial': [
             'tutorial/00-introduction',
@@ -43,8 +45,11 @@ module.exports = {
           Reference: [
             'essentials/plugin-configuration',
             'advanced/android',
-            'essentials/migration',
+            'essentials/custom-scalar-types',
             'advanced/no-runtime',
+            'essentials/fragments',
+            'essentials/inline-fragments',
+            'essentials/migration',
           ],
         }
       }
