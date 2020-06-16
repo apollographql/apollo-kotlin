@@ -5,14 +5,13 @@
 ![CI](https://github.com/apollographql/apollo-android/workflows/CI/badge.svg)
 [![GitHub release](https://img.shields.io/github/release/apollographql/apollo-android.svg)](https://github.com/apollographql/apollo-android/releases/latest)
 
-Apollo Android is a GraphQL client that generates Java and Kotlin models from GraphQL queries. These models give you a type-safe API to work with GraphQL servers.  Apollo helps you keep your GraphQL query statements together, organized, and easy to access. When you change a query and recompile your project, Apollo codegen rebuilds your data model. Code generation also allows Apollo to read and unmarshal responses from the network without the need for any reflection.
+Apollo Android is a GraphQL client that generates Java and Kotlin models from GraphQL queries. These models give you a type-safe API to work with GraphQL servers.  Apollo helps you keep your GraphQL query statements together, organized, and easy to access. 
 
-This library is designed primarily with Android in mind, but you can use it in any Java/Kotlin app. All Android-specific functionality is in `apollo-android-support`.
+This library is designed primarily with Android in mind, but you can use it in any Java/Kotlin app. 
 
 ## Features
 
-* Automatic generation of typesafe models
-* Support for Java and Kotlin code generation
+* Java and Kotlin code generation
 * Queries, Mutations and Subscriptions
 * Reflection-free parsing of responses
 * HTTP cache
@@ -21,7 +20,7 @@ This library is designed primarily with Android in mind, but you can use it in a
 * Custom scalar types
 * Support for RxJava2, RxJava3, and Coroutines
 
-## Adding Apollo to your Project
+## Adding Apollo Android to your Project
 
 The latest Gradle plugin version is [ ![Download](https://api.bintray.com/packages/apollographql/android/apollo/images/download.svg) ](https://bintray.com/apollographql/android/apollo-gradle-plugin/_latestVersion)
 
