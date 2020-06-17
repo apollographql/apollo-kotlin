@@ -28,6 +28,7 @@ module.exports = {
             'tutorial/08-add-a-details-view',
             'tutorial/09-write-your-first-mutation',
             'tutorial/10-authenticate-your-queries',
+            'tutorial/11-subscriptions',
           ],
           'Fetching data': [
             'essentials/queries',
