@@ -3,7 +3,7 @@
 
 set -e
 
-echo -e "---\ntitle: Get started\ndescription: Learn how to quickly set up Apollo Client in your Android app\n---\n\n$(cat ../README.md | grep -v 'the official docs')" > source/essentials/get-started.md
+echo -e "---\ntitle: Introduction\ndescription: A strongly-typed, caching GraphQL client for the JVM, Android and Kotlin multiplatform\n---\n\n$(cat ../README.md | grep -v 'the official docs')" > source/index.md
 
 gatsby build --prefix-paths
 mkdir -p docs/android

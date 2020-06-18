@@ -1,0 +1,19 @@
+
+Apollo Android requires your GraphQL server's schema as a `schema.json` file. You can obtain the contents of this file by running an introspection query on your server.
+
+The Apollo Gradle plugin exposes a `downloadApolloSchema` task to help you obtain your schema. Provide this task your server's GraphQL endpoint and the output location for the `schema.json` file:
+
+```bash:title=(shell)
+./gradlew downloadApolloSchema \
+  --endpoint="https://your.domain/graphql/endpoint" \
+  --schema="src/main/graphql/com/example/schema.json"
+```
+
+If your GraphQL endpoint requires authentication, you can pass custom HTTP headers:
+
+```bash:title=(shell)
+./gradlew downloadApolloSchema \
+  --endpoint="https://your.domain/graphql/endpoint" \
+  --schema="app/src/main/graphql/com/example" \
+  --header="Authorization: Bearer $TOKEN"
+```

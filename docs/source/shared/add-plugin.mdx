@@ -1,0 +1,49 @@
+import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
+
+In your app Gradle file, apply the `com.apollographql.apollo` plugin:
+
+Using the [plugins DSL](https://docs.gradle.org/current/userguide/plugins.html#sec:plugins_block):
+
+<MultiCodeBlock>
+
+```kotlin
+plugins {
+  // ...
+  id("com.apollographql.apollo").version("x.y.z")
+}
+```
+
+```groovy
+plugins {
+  // ...
+  id("com.apollographql.apollo").version("x.y.z")
+}
+```
+
+</MultiCodeBlock>
+
+Or using the [legacy syntax](https://docs.gradle.org/current/userguide/plugins.html#sec:old_plugin_application):
+
+<MultiCodeBlock>
+
+```kotlin
+buildscript {
+  // ...
+  classpath("com.apollographql.apollo:apollo-gradle-plugin:x.y.z")
+}
+
+apply(plugin = "com.apollographql.apollo")
+```
+
+```groovy
+buildscript {
+  // ...
+  classpath("com.apollographql.apollo:apollo-gradle-plugin:x.y.z")
+}
+
+apply plugin: "com.apollographql.apollo"
+```
+
+</MultiCodeBlock>
+
+The plugin is hosted on the Gradle plugin portal, Jcenter and Maven Central.
