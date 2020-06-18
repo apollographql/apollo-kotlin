@@ -18,7 +18,7 @@ open class DefaultApolloExtension(val project: Project)
    * compilationUnits is meant to be consumed by other gradle plugin.
    * The apollo plugin will add the {@link CompilationUnit} as it creates them
    */
-  internal val compilationUnits = project.container(CompilationUnit::class.java)
+  internal val compilationUnits = project.container(DefaultCompilationUnit::class.java)
 
   override fun onCompilationUnit(action: Action<CompilationUnit>) {
     compilationUnits.all(action)

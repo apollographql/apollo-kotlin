@@ -11,21 +11,13 @@ import java.io.File
 
 abstract class ApolloDownloadSchemaTask : DefaultTask() {
   @get:Input
-  @get:Option(option = "endpoint", description = "url of the GraphQL endpoint")
   abstract val endpoint: Property<String>
 
-  @get:Input
-  @get:Optional
-  @get:Option(option = "schema", description = "path where the schema will be downloaded, relative to the current working directory")
-  abstract val schema: Property<String>
-
   @get:Optional
   @get:Input
-  @set:Option(option = "header", description = "headers in the form 'Name: Value'")
   var header = emptyList<String>() // cannot be lazy for @Option to work
 
   @get:Input
-  @get:Optional
   abstract val schemaRelativeToProject: Property<String>
 
   init {
@@ -39,11 +31,7 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
 
   @TaskAction
   fun taskAction() {
-    val schema = when {
-      schema.isPresent -> File(schema.get())
-      schemaRelativeToProject.isPresent -> project.file(schemaRelativeToProject.get())
-      else -> throw IllegalArgumentException("schema or schemaRelativeToProject is required")
-    }
+    val schema = project.file(schemaRelativeToProject.get())
 
     SchemaDownloader.download(
         endpoint = endpoint.get(),

@@ -19,6 +19,7 @@ interface Introspection {
    *
    * empty by default
    */
+  @Deprecated("add query parameters to endpointUrl instead")
   val queryParameters: MapProperty<String, String>
 
   /**

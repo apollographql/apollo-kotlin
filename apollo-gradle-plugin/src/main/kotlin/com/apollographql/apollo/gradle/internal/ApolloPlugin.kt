@@ -47,7 +47,7 @@ open class ApolloPlugin : Plugin<Project> {
       return ret
     }
 
-    private fun registerCodeGenTasks(project: Project, apolloExtension: DefaultApolloExtension) {
+    private fun registerCompilationUnits(project: Project, apolloExtension: DefaultApolloExtension) {
       val androidExtension = project.extensions.findByName("android")
 
       val apolloVariants = when {
@@ -58,19 +58,23 @@ open class ApolloPlugin : Plugin<Project> {
 
       val rootProvider = project.tasks.register("generateApolloSources") {
         it.group = TASK_GROUP
+        it.description = "Generate Apollo models for all services and variants"
+      }
+
+      val services = if (apolloExtension.services.isEmpty()) {
+        listOf(project.objects.newInstance(DefaultService::class.java, project.objects, "service"))
+      } else {
+        apolloExtension.services
       }
 
       apolloVariants.all { apolloVariant ->
         val variantProvider = project.tasks.register("generate${apolloVariant.name.capitalize()}ApolloSources") {
           it.group = TASK_GROUP
+          it.description = "Generate Apollo models for all services and variant '${apolloVariant.name}'"
         }
 
-        val compilationUnits = if (apolloExtension.services.isEmpty()) {
-          listOf(DefaultCompilationUnit.fromFiles(project, apolloExtension, apolloVariant))
-        } else {
-          apolloExtension.services.map {
-            DefaultCompilationUnit.fromService(project, apolloExtension, apolloVariant, it)
-          }
+        val compilationUnits = services.map {
+          DefaultCompilationUnit.createDefaultCompilationUnit(project, apolloExtension, apolloVariant, it)
         }
 
         compilationUnits.forEach { compilationUnit ->
@@ -112,18 +116,7 @@ open class ApolloPlugin : Plugin<Project> {
         it.group = TASK_GROUP
         it.description = "Generate Apollo models for ${compilationUnit.name.capitalize()} GraphQL queries"
 
-        val compilerParams = compilationUnit
-            .withFallback(project.objects, compilationUnit.service)
-            .withFallback(project.objects, compilationUnit.apolloExtension)
-
-        val graphqlSourceDirectorySet = if (compilationUnit.apolloVariant.isTest) {
-          // For tests, reusing sourceDirectorySet from the Service or Extension will
-          // generate duplicate classes so we just skip them
-          compilationUnit.graphqlSourceDirectorySet
-        } else {
-          compilerParams.graphqlSourceDirectorySet
-        }
-        compilationUnit.setSourcesIfNeeded(graphqlSourceDirectorySet, compilerParams.schemaFile)
+        val (compilerParams, graphqlSourceDirectorySet) = compilationUnit.resolveParams(project)
 
         it.graphqlFiles.setFrom(graphqlSourceDirectorySet)
         // I'm not sure if gradle is sensitive to the order of the rootFolders. Sort them just in case.
@@ -186,49 +179,19 @@ open class ApolloPlugin : Plugin<Project> {
             }
             )
             task.header = introspection.headers.get().map {
-                "${it.key}: ${it.value}"
+              "${it.key}: ${it.value}"
             }
           }
         }
       }
 
-      project.tasks.register("downloadApolloSchema", ApolloDownloadSchemaTask::class.java) { task ->
+      project.tasks.register("downloadApolloSchema", ApolloDownloadSchemaCliTask::class.java) { task ->
         task.group = TASK_GROUP
-
-        val schemaProp = project.findProperty("com.apollographql.apollo.schema") as? String
-        if (schemaProp != null) {
-          task.schemaRelativeToProject.set(schemaProp)
-        }
-
-        val endpointProp = project.findProperty("com.apollographql.apollo.endpoint") as? String
-        if (endpointProp != null) {
-          task.endpoint.set(endpointProp)
-        }
-
-        val queryParamsProp = project.findProperty("com.apollographql.apollo.query_params") as? String
-        if (queryParamsProp != null) {
-          val url = task.endpoint.get().toHttpUrl().newBuilder()
-              .apply {
-                toMap(queryParamsProp).entries.forEach {
-                  addQueryParameter(it.key, it.value)
-                }
-              }
-              .build()
-              .toString()
-
-          task.endpoint.set(url)
-        }
-
-        val headersProp = project.findProperty("com.apollographql.apollo.headers") as? String
-        if (headersProp != null) {
-          task.header = toMap(headersProp).entries.map {
-            "${it.key}: ${it.value}"
-          }
-        }
+        task.compilationUnits = apolloExtension.compilationUnits
       }
     }
 
-    private fun toMap(s: String): Map<String, String> {
+    fun toMap(s: String): Map<String, String> {
       return s.split("&")
           .map {
             val keyValue = it.split("=")
@@ -240,7 +203,7 @@ open class ApolloPlugin : Plugin<Project> {
     }
 
     private fun afterEvaluate(project: Project, apolloExtension: DefaultApolloExtension) {
-      registerCodeGenTasks(project, apolloExtension)
+      registerCompilationUnits(project, apolloExtension)
 
       registerDownloadSchemaTasks(project, apolloExtension)
 
