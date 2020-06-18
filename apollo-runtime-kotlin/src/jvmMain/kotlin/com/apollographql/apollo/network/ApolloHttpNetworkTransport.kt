@@ -151,7 +151,7 @@ actual class ApolloHttpNetworkTransport(
         .beginObject()
         .name("operationName").value(operationName)
         .name("query").value(document)
-        .name("variables").value(variables)
+        .name("variables").jsonValue(variables)
         .endObject()
         .close()
     val requestBody = buffer.readByteArray().toRequestBody(contentType = MEDIA_TYPE.toMediaType())
