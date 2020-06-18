@@ -99,7 +99,7 @@ class ApolloHttpNetworkTransportTest {
     val networkTransport = mockApolloHttpNetworkTransport { request, completionHandler ->
       assertEquals("https://apollo.com", request.URL.toString())
       assertEquals(
-          "{\"operationName\":\"TestQuery\",\"query\":\"query { name }\",\"variables\":\"{\\\"key\\\": \\\"value\\\"}\"}",
+          "{\"operationName\":\"TestQuery\",\"query\":\"query { name }\",\"variables\":{\"key\": \"value\"}}",
           request.HTTPBody!!.toByteString().utf8()
       )
 
