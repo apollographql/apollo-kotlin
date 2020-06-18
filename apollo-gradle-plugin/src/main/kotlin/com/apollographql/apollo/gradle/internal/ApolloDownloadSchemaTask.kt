@@ -26,6 +26,7 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
 
   @get:Input
   @get:Optional
+  @get:Option(option = "schemaRelativeToProject", description = "path where the schema will be downloaded, relative to the current working directory")
   abstract val schemaRelativeToProject: Property<String>
 
   init {
