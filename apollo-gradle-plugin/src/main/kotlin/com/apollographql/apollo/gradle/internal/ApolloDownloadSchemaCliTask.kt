@@ -117,7 +117,7 @@ abstract class ApolloDownloadSchemaCliTask : DefaultTask() {
 
     val queryParamsProp = project.findProperty("com.apollographql.apollo.query_params") as? String
     if (queryParamsProp != null) {
-      logger.lifecycle("Using the com.apollographql.apollo.headers property is deprecated. Add parameters to the endpoint instead.")
+logger.lifecycle("Using the com.apollographql.apollo.query_params property is deprecated. Add parameters to the endpoint instead.")
       endpointUrl = endpointUrl.toHttpUrl().newBuilder()
           .apply {
             ApolloPlugin.toMap(queryParamsProp).entries.forEach {
