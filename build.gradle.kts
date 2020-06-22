@@ -279,7 +279,7 @@ fun Project.configurePublishing() {
       }
 
       maven {
-        name = "oss"
+        name = "ossSnapshots"
         url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
         credentials {
           username = System.getenv("SONATYPE_NEXUS_USERNAME")
@@ -355,26 +355,39 @@ fun subprojectTasks(name: String): List<Task> {
   }
 }
 
-tasks.register("publishIfNeeded") {
+fun isTag(): Boolean {
+  val ref = System.getenv("GITHUB_REF")
+
+  return ref?.startsWith("refs/tags/") == true
+}
+
+fun isMaster(): Boolean {
   val eventName = System.getenv("GITHUB_EVENT_NAME")
   val ref = System.getenv("GITHUB_REF")
 
-  doFirst {
-    project.logger.log(LogLevel.LIFECYCLE, "publishIfNeeded eventName=$eventName ref=$ref")
-  }
+  return eventName == "push" && ref == "refs/heads/master"
+}
 
-  if (eventName == "push" && ref == "refs/heads/master") {
+tasks.register("publishIfNeeded") {
+  if (isMaster()) {
     project.logger.log(LogLevel.LIFECYCLE, "Deploying snapshot to OJO...")
     dependsOn(subprojectTasks("publishAllPublicationsToOjoRepository"))
-    project.logger.log(LogLevel.LIFECYCLE, "Deploying snapshot to OSS...")
-    dependsOn(subprojectTasks("publishAllPublicationsToOssRepository"))
+    project.logger.log(LogLevel.LIFECYCLE, "Deploying snapshot to OSS Snapshots...")
+    dependsOn(subprojectTasks("publishAllPublicationsToOssSnapshotsRepository"))
   }
 
-  if (ref?.startsWith("refs/tags/") == true) {
+  if (isTag()) {
     project.logger.log(LogLevel.LIFECYCLE, "Deploying release to Bintray...")
     dependsOn(subprojectTasks("publishAllPublicationsToBintrayRepository"))
 
     project.logger.log(LogLevel.LIFECYCLE, "Deploying release to Gradle Portal...")
     dependsOn(":apollo-gradle-plugin:publishPlugins")
+  }
+}
+
+tasks.register("publishToOssStagingIfNeeded") {
+  if (isTag()) {
+    project.logger.log(LogLevel.LIFECYCLE, "Deploying release to OSS staging...")
+    dependsOn(subprojectTasks("publishAllPublicationsToOssStagingRepository"))
   }
 }
