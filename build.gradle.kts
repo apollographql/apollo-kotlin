@@ -20,6 +20,8 @@ buildscript {
     classpath(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
     classpath(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
     classpath(groovy.util.Eval.x(project, "x.dep.sqldelight.plugin"))
+    // this plugin is added to the classpath but never applied, it is only used for the closeAndRelease code
+    classpath(groovy.util.Eval.x(project, "x.dep.vanniktechPlugin"))
   }
 }
 
@@ -390,4 +392,14 @@ tasks.register("publishToOssStagingIfNeeded") {
     project.logger.log(LogLevel.LIFECYCLE, "Deploying release to OSS staging...")
     dependsOn(subprojectTasks("publishAllPublicationsToOssStagingRepository"))
   }
+}
+
+
+tasks.register("closeAndReleaseRepository") {
+  com.vanniktech.maven.publish.nexus.Nexus(
+      username = System.getenv("SONATYPE_NEXUS_USERNAME"),
+      password = System.getenv("SONATYPE_NEXUS_PASSWORD"),
+      baseUrl = "https://oss.sonatype.org/service/local/",
+      groupId = "com.apollographql"
+  ).closeAndReleaseRepository()
 }

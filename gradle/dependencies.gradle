@@ -57,6 +57,7 @@ ext.dep = [
     errorProneCore        : "com.google.errorprone:error_prone_core:2.1.1",
     gradleJapiCmpPlugin   : "me.champeau.gradle:japicmp-gradle-plugin:0.2.8",
     gradleErrorpronePlugin: "net.ltgt.gradle:gradle-errorprone-plugin:0.0.12",
+    vanniktechPlugin      : "com.vanniktech:gradle-maven-publish-plugin:0.11.1",
     guavaJre              : "com.google.guava:guava:$versions.guava",
     jetbrainsAnnotations  : "org.jetbrains:annotations:$versions.jetbrainsAnnotations",
     junit                 : "junit:junit:$versions.junit",
