@@ -31,7 +31,7 @@ kotlin {
         api(groovy.util.Eval.x(project, "x.dep.okio.okioMultiplatform"))
         api(groovy.util.Eval.x(project, "x.dep.uuid"))
         implementation(kotlin("stdlib-common"))
-        implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines.coreCommon"))
+        api(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines.coreCommon"))
       }
     }
 
@@ -39,7 +39,7 @@ kotlin {
       dependsOn(commonMain)
       dependencies {
         implementation(kotlin("stdlib"))
-        implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp4"))
+        api(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp4"))
         implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines.core"))
       }
     }
