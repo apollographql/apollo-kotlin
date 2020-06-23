@@ -59,7 +59,7 @@ internal class MockQuery : Query<MockQuery.Data, MockQuery.Data, Operation.Varia
     )
     return Response(
         operation = this,
-        data = Data(source.readUtf8())
+        data = Data(data)
     )
   }
 
