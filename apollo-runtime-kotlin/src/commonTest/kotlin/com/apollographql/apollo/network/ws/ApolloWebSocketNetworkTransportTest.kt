@@ -124,9 +124,9 @@ class ApolloWebSocketNetworkTransportTest {
     }
 
     assertTrue(result.isFailure)
-      assertTrue(result.exceptionOrNull() is ApolloWebSocketServerException)
-      assertEquals("value1", (result.exceptionOrNull() as ApolloWebSocketServerException).payload["key1"])
-      assertEquals("value2", (result.exceptionOrNull() as ApolloWebSocketServerException).payload["key2"])
+    assertTrue(result.exceptionOrNull() is ApolloWebSocketServerException)
+    assertEquals("value1", (result.exceptionOrNull() as ApolloWebSocketServerException).payload["key1"])
+    assertEquals("value2", (result.exceptionOrNull() as ApolloWebSocketServerException).payload["key2"])
   }
 
   @Test
@@ -154,6 +154,38 @@ class ApolloWebSocketNetworkTransportTest {
       ).collect { actualResponse ->
         assertEquals(expectedOnStartResponse, actualResponse.response.data?.rawResponse)
         webSocketConnection.enqueueComplete()
+      }
+
+      webSocketConnection.isClosed.await()
+    }
+  }
+
+  @Test
+  fun `when connection keep alive timeout, assert web socket connection closed`() {
+    runBlocking {
+      val expectedRequest = ApolloRequest(
+          operation = MockSubscription(),
+          scalarTypeAdapters = ScalarTypeAdapters.DEFAULT,
+          executionContext = ApolloCoroutineDispatcherContext(Dispatchers.Unconfined)
+      )
+      val expectedOnStartResponse = "{\"data\":{\"name\":\"MockQuery\"}}"
+      val webSocketConnection = WebSocketConnectionMock(
+          expectedRequest = expectedRequest,
+          expectedOnStartResponse = expectedOnStartResponse
+      )
+
+      ApolloWebSocketNetworkTransport(
+          webSocketFactory = object : WebSocketFactory {
+            override suspend fun open(headers: Map<String, String>): WebSocketConnection = webSocketConnection
+          },
+          idleTimeoutMs = -1,
+          connectionKeepAliveTimeoutMs = 1_000
+      ).execute(
+          request = expectedRequest,
+          executionContext = ExecutionContext.Empty
+      ).collect { actualResponse ->
+        assertEquals(expectedOnStartResponse, actualResponse.response.data?.rawResponse)
+        webSocketConnection.enqueueConnectionKeepAlive()
       }
 
       webSocketConnection.isClosed.await()
@@ -192,6 +224,7 @@ private class WebSocketConnectionMock(
 
   override fun close() {
     isClosed.complete(true)
+    receivedMessageChannel.close()
   }
 
   fun enqueueResponse(payload: String) {
@@ -203,6 +236,12 @@ private class WebSocketConnectionMock(
   fun enqueueError(payload: String) {
     receivedMessageChannel.offer(
         "{\"type\":\"error\", \"id\":\"${expectedRequest.requestUuid}\", \"payload\":$payload}".encodeUtf8()
+    )
+  }
+
+  fun enqueueConnectionKeepAlive() {
+    receivedMessageChannel.offer(
+        "{\"type\":\"ka\"}".encodeUtf8()
     )
   }
 
