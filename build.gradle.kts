@@ -396,10 +396,12 @@ tasks.register("publishToOssStagingIfNeeded") {
 
 
 tasks.register("closeAndReleaseRepository") {
-  com.vanniktech.maven.publish.nexus.Nexus(
-      username = System.getenv("SONATYPE_NEXUS_USERNAME"),
-      password = System.getenv("SONATYPE_NEXUS_PASSWORD"),
-      baseUrl = "https://oss.sonatype.org/service/local/",
-      groupId = "com.apollographql"
-  ).closeAndReleaseRepository()
+  doLast {
+    com.vanniktech.maven.publish.nexus.Nexus(
+        username = System.getenv("SONATYPE_NEXUS_USERNAME"),
+        password = System.getenv("SONATYPE_NEXUS_PASSWORD"),
+        baseUrl = "https://oss.sonatype.org/service/local/",
+        groupId = "com.apollographql"
+    ).closeAndReleaseRepository()
+  }
 }
