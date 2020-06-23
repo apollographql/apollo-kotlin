@@ -1,11 +1,17 @@
-package com.apollographql.apollo.network
+package com.apollographql.apollo.network.http
 
 import com.apollographql.apollo.ApolloHttpException
 import com.apollographql.apollo.ApolloNetworkException
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
+import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.interceptor.ApolloRequest
+import com.apollographql.apollo.mock.MockQuery
+import com.apollographql.apollo.network.HttpExecutionContext
+import com.apollographql.apollo.network.HttpMethod
 import com.apollographql.apollo.network.mock.MockHttpResponse
 import com.apollographql.apollo.network.mock.MockSessionDataTask
+import com.apollographql.apollo.network.toNSData
 import com.apollographql.apollo.runBlocking
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.single
@@ -87,7 +93,7 @@ class ApolloHttpNetworkTransportTest {
       networkTransport.execute(request = mockGraphQLRequest(), executionContext = ExecutionContext.Empty).single()
     }
 
-    assertEquals("{\"data\":{\"name\":\"MockQuery\"}}", response.body.readUtf8())
+    assertEquals("{\"data\":{\"name\":\"MockQuery\"}}", response.response.data?.rawResponse)
     assertNotNull(response.executionContext[HttpExecutionContext.Response])
     assertEquals(200, response.executionContext[HttpExecutionContext.Response]?.statusCode)
     assertEquals("header1Value", response.executionContext[HttpExecutionContext.Response]?.headers?.get("header1"))
@@ -98,11 +104,7 @@ class ApolloHttpNetworkTransportTest {
   fun `when http post, assert request GraphQL request body`() {
     val networkTransport = mockApolloHttpNetworkTransport { request, completionHandler ->
       assertEquals("https://apollo.com", request.URL.toString())
-      assertEquals(
-          "{\"operationName\":\"TestQuery\",\"query\":\"query { name }\",\"variables\":{\"key\": \"value\"}}",
-          request.HTTPBody!!.toByteString().utf8()
-      )
-
+      assertEquals(MockQuery().composeRequestBody().utf8(), request.HTTPBody!!.toByteString().utf8())
       MockSessionDataTask(
           completionHandler = completionHandler,
           mockResponse = mockSuccessHttpResponse()
@@ -123,12 +125,11 @@ class ApolloHttpNetworkTransportTest {
     )
   }
 
-  private fun mockGraphQLRequest(): GraphQLRequest {
-    return GraphQLRequest(
-        operationName = "TestQuery",
-        operationId = "123",
-        document = "query { name }",
-        variables = "{\"key\": \"value\"}"
+  private fun mockGraphQLRequest(): ApolloRequest<MockQuery.Data> {
+    return ApolloRequest(
+        operation = MockQuery(),
+        scalarTypeAdapters = ScalarTypeAdapters.DEFAULT,
+        executionContext = ExecutionContext.Empty
     )
   }
 

@@ -2,19 +2,18 @@ package com.apollographql.apollo
 
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.interceptor.ApolloRequest
+import com.apollographql.apollo.interceptor.ApolloResponse
 import com.apollographql.apollo.interceptor.BearerTokenInterceptor
 import com.apollographql.apollo.mock.MockQuery
 import com.apollographql.apollo.mock.TestTokenProvider
-import com.apollographql.apollo.network.GraphQLRequest
-import com.apollographql.apollo.network.GraphQLResponse
 import com.apollographql.apollo.network.HttpExecutionContext
 import com.apollographql.apollo.network.NetworkTransport
-import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.single
-import okio.Buffer
 import okio.ByteString.Companion.encodeUtf8
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -31,26 +30,30 @@ class OauthInterceptorTest {
       const val INVALID_ACCESS_TOKEN = "INVALID_ACCESS_TOKEN"
     }
 
-    override fun execute(request: GraphQLRequest, executionContext: ExecutionContext): Flow<GraphQLResponse> {
+    override fun <D : Operation.Data> execute(request: ApolloRequest<D>, executionContext: ExecutionContext): Flow<ApolloResponse<D>> {
       val authorization = executionContext[HttpExecutionContext.Request]?.headers?.get("Authorization")
 
-      return flowOf(when (authorization) {
-        "Bearer $VALID_ACCESS_TOKEN1",
-        "Bearer $VALID_ACCESS_TOKEN2" -> {
-          GraphQLResponse(
-              body = Buffer().write("{\"data\":{\"name\":\"MockQuery\"}}".encodeUtf8()),
-              executionContext = ExecutionContext.Empty,
-              requestUuid = uuid4()
-          )
+      return flow {
+        when (authorization) {
+          "Bearer $VALID_ACCESS_TOKEN1",
+          "Bearer $VALID_ACCESS_TOKEN2" -> {
+            emit(
+                ApolloResponse(
+                    requestUuid = request.requestUuid,
+                    response = request.operation.parse("{\"data\":{\"name\":\"MockQuery\"}}".encodeUtf8()),
+                    executionContext = ExecutionContext.Empty
+                )
+            )
+          }
+          else -> {
+            throw ApolloHttpException(
+                message = "Http request failed with status code `401`",
+                statusCode = 401,
+                headers = emptyMap<String, String>()
+            )
+          }
         }
-        else -> {
-          throw ApolloHttpException(
-              message = "Http request failed with status code `401`",
-              statusCode = 401,
-              headers = emptyMap()
-          )
-        }
-      })
+      }
     }
   }
 
@@ -75,7 +78,7 @@ class OauthInterceptorTest {
     }
 
     assertNotNull(response.data)
-    assertEquals(expected = MockQuery.Data, actual = response.data)
+    assertEquals(expected = MockQuery.Data("{\"data\":{\"name\":\"MockQuery\"}}"), actual = response.data)
   }
 
   @Test
@@ -103,6 +106,6 @@ class OauthInterceptorTest {
     }
 
     assertNotNull(response.data)
-    assertEquals(expected = MockQuery.Data, actual = response.data)
+    assertEquals(expected = MockQuery.Data("{\"data\":{\"name\":\"MockQuery\"}}"), actual = response.data)
   }
 }

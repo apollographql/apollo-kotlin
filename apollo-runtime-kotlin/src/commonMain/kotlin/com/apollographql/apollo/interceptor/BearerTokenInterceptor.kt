@@ -3,8 +3,10 @@ package com.apollographql.apollo.interceptor
 import com.apollographql.apollo.ApolloHttpException
 import com.apollographql.apollo.ApolloBearerTokenException
 import com.apollographql.apollo.api.ApolloExperimental
-import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.network.HttpExecutionContext
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapConcat
@@ -15,14 +17,14 @@ import kotlinx.coroutines.sync.withLock
 
 @ApolloExperimental
 class BearerTokenInterceptor(private val tokenProvider: TokenProvider) : ApolloRequestInterceptor {
-  val mutex = Mutex()
+  private val mutex = Mutex()
 
-  private fun <T> ApolloRequest<T>.withHeader(name: String, value: String): ApolloRequest<T> {
+  private fun <D : Operation.Data> ApolloRequest<D>.withHeader(name: String, value: String): ApolloRequest<D> {
     val httpRequestContext = (executionContext[HttpExecutionContext.Request]
         ?: HttpExecutionContext.Request(emptyMap()))
-            .let {
-              it.copy(headers = it.headers + (name to value))
-            }
+        .let {
+          it.copy(headers = it.headers + (name to value))
+        }
 
     return ApolloRequest(
         operation = operation,
@@ -31,17 +33,23 @@ class BearerTokenInterceptor(private val tokenProvider: TokenProvider) : ApolloR
     )
   }
 
-  private fun <T> proceedWithToken(request: ApolloRequest<T>, interceptorChain: ApolloInterceptorChain, token: String): Flow<Response<T>> {
+  private fun <D : Operation.Data> proceedWithToken(
+      request: ApolloRequest<D>,
+      interceptorChain: ApolloInterceptorChain,
+      token: String
+  ): Flow<ApolloResponse<D>> {
     val newRequest = request.withHeader("Authorization", "Bearer $token")
     return interceptorChain.proceed(newRequest)
   }
 
-  override fun <T> intercept(request: ApolloRequest<T>, interceptorChain: ApolloInterceptorChain): Flow<Response<T>> {
+  @FlowPreview
+  @ExperimentalCoroutinesApi
+  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return flow {
       val token = mutex.withLock { tokenProvider.currentToken() }
       emit(token)
     }.flatMapConcat { token ->
-      proceedWithToken(request, interceptorChain, token).catch { exception->
+      proceedWithToken(request, chain, token).catch { exception ->
         if (exception is ApolloHttpException && exception.statusCode == 401) {
           throw ApolloBearerTokenException(message = "Request failed with status code `401`", cause = exception, token = token)
         } else {

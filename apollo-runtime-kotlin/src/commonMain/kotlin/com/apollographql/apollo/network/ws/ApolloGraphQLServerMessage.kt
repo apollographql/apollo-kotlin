@@ -1,4 +1,4 @@
-package com.apollographql.apollo.network.websocket
+package com.apollographql.apollo.network.ws
 
 import com.apollographql.apollo.ApolloWebSocketException
 import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
@@ -64,8 +64,10 @@ sealed class ApolloGraphQLServerMessage {
         when (message.type) {
           ConnectionError.TYPE -> ConnectionError(message.payload?.toString())
           ConnectionAcknowledge.TYPE -> ConnectionAcknowledge
-          Data.TYPE -> Data(message.id!!, message.payload as Map<String, Any?>? ?: emptyMap())
-          Error.TYPE -> Error(message.id!!, message.payload as Map<String, Any?>? ?: emptyMap())
+          Data.TYPE -> Data(message.id!!, message.payload as Map<String, Any?>?
+              ?: emptyMap())
+          Error.TYPE -> Error(message.id!!, message.payload as Map<String, Any?>?
+              ?: emptyMap())
           Complete.TYPE -> Complete(message.id!!)
           ConnectionKeepAlive.TYPE -> ConnectionKeepAlive
           else -> Unsupported(utf8())
