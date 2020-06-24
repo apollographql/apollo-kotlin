@@ -241,7 +241,6 @@ class ApolloWebSocketNetworkTransport(
 
     private suspend fun close() {
       mutex.withLock {
-        yield()
         webSocketConnection.close()
       }
     }
