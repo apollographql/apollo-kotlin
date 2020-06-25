@@ -2,7 +2,6 @@ package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.gradle.api.CompilationUnit
 import com.apollographql.apollo.gradle.api.CompilerParams
-import com.apollographql.apollo.gradle.internal.ApolloPlugin.Companion.isKotlinMultiplatform
 import org.gradle.api.Project
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
@@ -103,11 +102,6 @@ abstract class DefaultCompilationUnit @Inject constructor(
     apolloVariant.sourceSetNames.forEach {
       srcDir("src/$it/graphql/$sourceFolder")
     }
-  }
-
-  fun generateKotlinModels(): Boolean = when {
-    project.isKotlinMultiplatform -> true
-    else -> generateKotlinModels.orElse(service.generateKotlinModels).orElse(apolloExtension.generateKotlinModels).getOrElse(false)
   }
 
   companion object {

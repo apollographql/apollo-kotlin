@@ -18,8 +18,8 @@ buildscript {
     }
 }
 
-apply(plugin = "org.jetbrains.kotlin.multiplatform")
-apply(plugin = "com.apollographql.apollo")
+apply(plugin = "org.jetbrains.kotlin.jvm")
+apply(plugin = "com.apollographql.apollo-kotlin")
 
 repositories {
     maven {
@@ -29,22 +29,3 @@ repositories {
     mavenCentral()
 }
 
-configure<KotlinMultiplatformExtension> {
-    iosArm64 {
-        binaries {
-            framework {
-            }
-        }
-    }
-    sourceSets {
-        get("commonMain").apply {
-            dependencies {
-                implementation(groovy.util.Eval.x(project, "x.dep.apollo.api"))
-            }
-        }
-    }
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
-}

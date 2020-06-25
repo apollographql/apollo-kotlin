@@ -31,9 +31,18 @@ dependencies {
 tasks.withType<Test> {
   dependsOn(":apollo-api:publishAllPublicationsToPluginTestRepository")
   dependsOn(":apollo-compiler:publishAllPublicationsToPluginTestRepository")
+
+  dependsOn(":apollo-runtime-kotlin:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":apollo-runtime:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":apollo-normalized-cache:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":apollo-normalized-cache-api:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":apollo-http-cache:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":apollo-http-cache-api:publishAllPublicationsToPluginTestRepository")
+
   dependsOn("publishAllPublicationsToPluginTestRepository")
 
   inputs.dir("src/test/files")
+  inputs.dir("testProjects")
 }
 
 pluginBundle {
@@ -49,6 +58,18 @@ gradlePlugin {
       displayName = "Apollo Android GraphQL client plugin."
       description = "Automatically generates typesafe java and kotlin models from your GraphQL files."
       implementationClass = "com.apollographql.apollo.gradle.internal.ApolloPlugin"
+    }
+    create("apolloGradlePluginKotlin") {
+      id = "com.apollographql.apollo-kotlin"
+      displayName = "Apollo Android GraphQL client plugin."
+      description = "Automatically generates typesafe kotlin models from your GraphQL files."
+      implementationClass = "com.apollographql.apollo.gradle.internal.ApolloPluginKotlin"
+    }
+    create("apolloGradlePluginJava") {
+      id = "com.apollographql.apollo-java"
+      displayName = "Apollo Android GraphQL client plugin."
+      description = "Automatically generates typesafe java models from your GraphQL files."
+      implementationClass = "com.apollographql.apollo.gradle.internal.ApolloPluginJava"
     }
   }
 }

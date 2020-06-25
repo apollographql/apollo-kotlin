@@ -33,7 +33,11 @@ object KotlinMultiplatformTaskConfigurator {
     return container
   }
 
-  fun registerGeneratedDirectory(project: Project, compilationUnit: DefaultCompilationUnit, codeGenProvider: TaskProvider<ApolloGenerateSourcesTask>) {
+  fun registerGeneratedDirectory(
+      project: Project,
+      compilationUnit: DefaultCompilationUnit,
+      codeGenProvider: TaskProvider<ApolloGenerateSourcesTask>
+  ) {
     val variant = compilationUnit.apolloVariant
 
     val sourceDirectorySet = project.kotlinMultiplatformExtension.sourceSets.getByName(variant.name).kotlin

@@ -5,6 +5,7 @@ import com.apollographql.apollo.gradle.api.CompilationUnit
 import com.apollographql.apollo.gradle.api.CompilerParams
 import org.gradle.api.Action
 import org.gradle.api.Project
+import org.gradle.api.provider.Property
 
 open class DefaultApolloExtension(val project: Project)
   : CompilerParams by project.objects.newInstance(DefaultCompilerParams::class.java)
@@ -29,4 +30,6 @@ open class DefaultApolloExtension(val project: Project)
     action.execute(service)
     services.add(service)
   }
+
+  override val addRuntimeDependency: Property<Boolean> = project.objects.property(Boolean::class.java)
 }

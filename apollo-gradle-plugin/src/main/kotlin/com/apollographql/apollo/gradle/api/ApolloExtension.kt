@@ -22,7 +22,6 @@ import org.gradle.api.provider.Property
  * CompilationUnit values override Service values which override the global ApolloExtension values.
  */
 interface ApolloExtension: CompilerParams {
-
   /**
    * registers a new service
    *
@@ -39,4 +38,11 @@ interface ApolloExtension: CompilerParams {
    */
   fun onCompilationUnit(action: Action<CompilationUnit>)
 
+  /**
+   * Whether or not to add by the runtime dependency by default.
+   * Set to false if you don't need the runtime and want to add `apollo-runtime` manually
+   *
+   * Default value: true
+   */
+  val addRuntimeDependency: Property<Boolean>
 }

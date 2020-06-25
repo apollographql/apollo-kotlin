@@ -1,6 +1,6 @@
 package com.apollographql.apollo.gradle.test
 
-import com.apollographql.apollo.gradle.internal.ApolloPlugin.Companion.MIN_GRADLE_VERSION
+import com.apollographql.apollo.gradle.internal.ApolloPluginHelper.Companion.MIN_GRADLE_VERSION
 import com.apollographql.apollo.gradle.internal.child
 import com.apollographql.apollo.gradle.util.TestUtils
 import com.apollographql.apollo.gradle.util.generatedChild

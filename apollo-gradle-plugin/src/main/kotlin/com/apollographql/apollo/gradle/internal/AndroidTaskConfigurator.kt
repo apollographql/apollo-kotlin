@@ -56,10 +56,11 @@ object AndroidTaskConfigurator {
   fun registerGeneratedDirectory(
       project: Project,
       compilationUnit: DefaultCompilationUnit,
-      codegenProvider: TaskProvider<ApolloGenerateSourcesTask>
+      codegenProvider: TaskProvider<ApolloGenerateSourcesTask>,
+      generateKotlinModels: Boolean
   ) {
     val variant = compilationUnit.androidVariant as BaseVariant
-    if (compilationUnit.generateKotlinModels()) {
+    if (generateKotlinModels) {
       // This is apparently needed for intelliJ to find the generated files
       variant.addJavaSourceFoldersToModel(codegenProvider.get().outputDir.get().asFile)
       // Tell the kotlin compiler to compile our files
