@@ -32,12 +32,14 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.yield
 import okio.Buffer
 import okio.ByteString
 
@@ -51,7 +53,8 @@ class ApolloWebSocketNetworkTransport(
     private val webSocketFactory: WebSocketFactory,
     private val connectionParams: Map<String, Any?> = emptyMap(),
     private val connectionAcknowledgeTimeoutMs: Long = 10_000,
-    private val idleTimeoutMs: Long = 60_000
+    private val idleTimeoutMs: Long = 60_000,
+    private val connectionKeepAliveTimeoutMs: Long = -1
 ) : NetworkTransport {
   private val mutex = Mutex()
   private var graphQLWebsocketConnection: GraphQLWebsocketConnection? = null
@@ -63,7 +66,6 @@ class ApolloWebSocketNetworkTransport(
     return getServerConnection(dispatcherContext).flatMapLatest { serverConnection ->
       serverConnection
           .subscribe()
-          .map { data -> data.parse() }
           .filter { message -> message !is ApolloGraphQLServerMessage.ConnectionAcknowledge }
           .takeWhile { message -> message !is ApolloGraphQLServerMessage.Complete || message.id != request.requestUuid.toString() }
           .mapNotNull { message -> message.process(request) }
@@ -152,6 +154,7 @@ class ApolloWebSocketNetworkTransport(
         GraphQLWebsocketConnection(
             webSocketConnection = webSocketConnection,
             idleTimeoutMs = idleTimeoutMs,
+            connectionKeepAliveTimeoutMs = connectionKeepAliveTimeoutMs,
             defaultDispatcher = dispatcherContext.default
         )
       }
@@ -171,6 +174,7 @@ class ApolloWebSocketNetworkTransport(
   private class GraphQLWebsocketConnection(
       val webSocketConnection: WebSocketConnection,
       val idleTimeoutMs: Long,
+      val connectionKeepAliveTimeoutMs: Long,
       defaultDispatcher: CoroutineDispatcher
   ) {
     private val messageChannel: BroadcastChannel<ByteString> = webSocketConnection.broadcast(Channel.CONFLATED)
@@ -178,6 +182,7 @@ class ApolloWebSocketNetworkTransport(
     private val mutex = Mutex()
     private var activeSubscriptionCount = 0
     private var idleTimeoutJob: Job? = null
+    private var connectionKeepAliveTimeoutJob: Job? = null
 
     suspend fun isClosedForReceive(): Boolean {
       return mutex.withLock {
@@ -189,11 +194,15 @@ class ApolloWebSocketNetworkTransport(
       webSocketConnection.send(message.serialize())
     }
 
-    fun subscribe(): Flow<ByteString> {
+    fun subscribe(): Flow<ApolloGraphQLServerMessage> {
       return messageChannel.openSubscription()
           .consumeAsFlow()
           .onStart { onSubscribed() }
           .onCompletion { onUnsubscribed() }
+          .map { data -> data.parse() }
+          .onEach { message ->
+            if (message is ApolloGraphQLServerMessage.ConnectionKeepAlive) onConnectionKeepAlive()
+          }
     }
 
     private suspend fun onSubscribed() {
@@ -205,16 +214,27 @@ class ApolloWebSocketNetworkTransport(
 
     private suspend fun onUnsubscribed() {
       mutex.withLock {
-        if (--activeSubscriptionCount == 0) scheduleAutoClose()
+        if (--activeSubscriptionCount == 0 && idleTimeoutMs > 0) {
+          idleTimeoutJob?.cancel()
+          connectionKeepAliveTimeoutJob?.cancel()
+
+          idleTimeoutJob = coroutineScope.launch {
+            delay(idleTimeoutMs)
+            close()
+          }
+        }
       }
     }
 
-    private fun scheduleAutoClose() {
-      idleTimeoutJob?.cancel()
-      if (idleTimeoutMs > 0) {
-        idleTimeoutJob = coroutineScope.launch {
-          delay(idleTimeoutMs)
-          close()
+    private suspend fun onConnectionKeepAlive() {
+      mutex.withLock {
+        if (activeSubscriptionCount > 0 && connectionKeepAliveTimeoutMs > 0) {
+          connectionKeepAliveTimeoutJob?.cancel()
+
+          connectionKeepAliveTimeoutJob = coroutineScope.launch {
+            delay(idleTimeoutMs)
+            close()
+          }
         }
       }
     }
