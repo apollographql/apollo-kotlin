@@ -5,27 +5,9 @@ buildscript {
   project.apply {
     from(rootProject.file("gradle/dependencies.gradle"))
   }
-
-  repositories {
-    maven { url = uri("https://plugins.gradle.org/m2/") }
-    google()
-    jcenter()
-  }
-
-  dependencies {
-    classpath(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp4"))
-    classpath(groovy.util.Eval.x(project, "x.dep.android.plugin"))
-    classpath(groovy.util.Eval.x(project, "x.dep.gradleErrorpronePlugin"))
-    classpath(groovy.util.Eval.x(project, "x.dep.gradleJapiCmpPlugin"))
-    classpath(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
-    classpath(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
-    classpath(groovy.util.Eval.x(project, "x.dep.sqldelight.plugin"))
-    // this plugin is added to the classpath but never applied, it is only used for the closeAndRelease code
-    classpath(groovy.util.Eval.x(project, "x.dep.vanniktechPlugin"))
-  }
 }
 
-val rootJapiCmp = tasks.register("japicmp")
+ApiCompatibility.apply(rootProject)
 
 abstract class DownloadFileTask : DefaultTask() {
   @get:Input
@@ -101,35 +83,6 @@ subprojects {
 
   configurations.named("errorprone") {
     resolutionStrategy.force(groovy.util.Eval.x(this@subprojects, "x.dep.errorProneCore"))
-  }
-
-  val downloadBaselineJarTaskProvider = tasks.register("downloadBaseLineJar", DownloadFileTask::class.java) {
-    val group = project.property("GROUP") as String
-    val artifact = project.property("POM_ARTIFACT_ID") as String
-    val version = "1.2.1"
-    val jar = "$artifact-$version.jar"
-
-    url.set("https://jcenter.bintray.com/${group.replace(".", "/")}/$artifact/$version/$jar")
-    output.set(File(buildDir, "japicmp/cache/$jar"))
-  }
-
-  // TODO: Make this lazy
-  this@subprojects.afterEvaluate {
-    val jarTask = this@subprojects.tasks.findByName("jar") as? org.gradle.jvm.tasks.Jar
-    if (jarTask != null) {
-      val japiCmp = this@subprojects.tasks.register("japicmp", me.champeau.gradle.japicmp.JapicmpTask::class.java) {
-        dependsOn(downloadBaselineJarTaskProvider)
-        oldClasspath = this@subprojects.files(downloadBaselineJarTaskProvider.get().output.asFile.get())
-        newClasspath = this@subprojects.files(jarTask.archiveFile)
-        ignoreMissingClasses = true
-        packageExcludes = listOf("*.internal*")
-        onlyModified = true
-        txtOutputFile = this@subprojects.file("$buildDir/reports/japi.txt")
-      }
-      rootJapiCmp.configure {
-        dependsOn(japiCmp)
-      }
-    }
   }
 
   group = property("GROUP")!!
