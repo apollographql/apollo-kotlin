@@ -7,6 +7,7 @@ import org.gradle.api.Project
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.file.SourceDirectorySet
+import org.gradle.api.provider.Provider
 import java.io.File
 import javax.inject.Inject
 
@@ -26,82 +27,53 @@ abstract class DefaultCompilationUnit @Inject constructor(
   abstract override val outputDir: DirectoryProperty
   abstract override val operationOutputFile: RegularFileProperty
 
-  private fun resolveSchema(graphqlSourceDirectorySet: SourceDirectorySet): File {
-    if (service.schemaPath.isPresent) {
-      val schemaPath = service.schemaPath.get()
-      if (schemaPath.startsWith(File.separator)) {
-        return project.file(schemaPath)
-      } else if (schemaPath.startsWith("..")) {
-        return project.file("src/main/graphql/$schemaPath").normalize()
-      } else {
-        val all = apolloVariant.sourceSetNames.map {
-          project.file("src/$it/graphql/$schemaPath")
-        }
+  fun resolveParams(project: Project): Pair<CompilerParams, SourceDirectorySet> {
+    val compilerParams = this
+        .withFallback(project.objects, service)
+        .withFallback(project.objects, apolloExtension)
 
-        val candidates = all.filter {
-          it.exists()
-        }
-
-        require(candidates.size <= 1) {
-          "ApolloGraphQL: duplicate(s) schema file(s) found:\n${candidates.map { it.absolutePath }.joinToString("\n")}"
-        }
-        require(candidates.size == 1) {
-          "ApolloGraphQL: cannot find a schema file at $schemaPath. Tried:\n${all.map { it.absolutePath }.joinToString("\n")}"
-        }
-
-        return candidates.first()
-      }
+    val sourceDirectorySet = if (apolloVariant.isTest) {
+      // For tests, reusing sourceDirectorySet from the Service or Extension will
+      // generate duplicate classes so we just skip them
+      graphqlSourceDirectorySet
     } else {
-      val candidates = graphqlSourceDirectorySet.srcDirs.flatMap { srcDir ->
-        srcDir.walkTopDown().filter { it.name == "schema.json" }.toList()
-      }
-
-      require(candidates.size <= 1) {
-        multipleSchemaError(candidates)
-      }
-      require(candidates.size == 1) {
-        "ApolloGraphQL: cannot find schema.json. Please specify it explicitely. Looked under:\n" +
-            graphqlSourceDirectorySet.srcDirs.map { it.absolutePath }.joinToString("\n")
-      }
-      return candidates.first()
+      compilerParams.graphqlSourceDirectorySet
     }
-  }
 
-  fun setSourcesIfNeeded(sourceDirectorySet: SourceDirectorySet, schemaFile: RegularFileProperty) {
     if (sourceDirectorySet.srcDirs.isEmpty()) {
-      sourceDirectorySet.findSources(schemaFile)
+      sourceDirectorySet.findSources(compilerParams.schemaFile)
     }
 
-    if (!schemaFile.isPresent) {
-      schemaFile.set { resolveSchema(sourceDirectorySet) }
+    if (!compilerParams.schemaFile.isPresent) {
+      compilerParams.schemaFile.set {
+        project.file(
+            resolveSchema(project = project,
+                directories = sourceDirectorySet.srcDirs,
+                schemaPathProvider = service.schemaPath,
+                sourceSetNames = apolloVariant.sourceSetNames
+            )
+        )
+      }
     }
+
+    return compilerParams to sourceDirectorySet
   }
 
   private fun SourceDirectorySet.findSources(schemaFile: RegularFileProperty) {
-    when {
+    val directories = when {
       apolloVariant.isTest -> {
         // Tests only search files under its folder else it adds duplicated models
         // Main variant's generated code is already available in test code
-        srcDirFromVariant(apolloVariant, ".")
+        resolveDirectories(project, project.provider { "." }, apolloVariant.sourceSetNames)
       }
-      schemaFile.isPresent -> srcDir(schemaFile.asFile.get().parent)
-      else -> {
-        val sourceFolder = service.sourceFolder.orElse(".").get()
-        when {
-          sourceFolder.startsWith(File.separator) -> srcDir(sourceFolder)
-          sourceFolder.startsWith("..") -> srcDir(project.file("src/main/graphql/$sourceFolder").normalize())
-          else -> srcDirFromVariant(apolloVariant, sourceFolder)
-        }
-      }
+      schemaFile.isPresent -> listOf(schemaFile.asFile.get().parent)
+      else -> resolveDirectories(project, service.sourceFolder, apolloVariant.sourceSetNames)
     }
 
     include("**/*.graphql", "**/*.gql")
     exclude(service.exclude.getOrElse(emptyList()))
-  }
-
-  private fun SourceDirectorySet.srcDirFromVariant(apolloVariant: ApolloVariant, sourceFolder: String) {
-    apolloVariant.sourceSetNames.forEach {
-      srcDir("src/$it/graphql/$sourceFolder")
+    directories.forEach {
+      srcDir(it)
     }
   }
 
@@ -111,7 +83,7 @@ abstract class DefaultCompilationUnit @Inject constructor(
   }
 
   companion object {
-    private fun createDefaultCompilationUnit(
+    fun createDefaultCompilationUnit(
         project: Project,
         apolloExtension: DefaultApolloExtension,
         apolloVariant: ApolloVariant,
@@ -127,15 +99,6 @@ abstract class DefaultCompilationUnit @Inject constructor(
       }
     }
 
-    fun fromService(project: Project, apolloExtension: DefaultApolloExtension, apolloVariant: ApolloVariant, service: DefaultService): DefaultCompilationUnit {
-      return createDefaultCompilationUnit(project, apolloExtension, apolloVariant, service)
-    }
-
-    fun fromFiles(project: Project, apolloExtension: DefaultApolloExtension, apolloVariant: ApolloVariant): DefaultCompilationUnit {
-      val service = project.objects.newInstance(DefaultService::class.java, project.objects, "service")
-      return createDefaultCompilationUnit(project, apolloExtension, apolloVariant, service)
-    }
-
     private fun multipleSchemaError(schemaList: List<File>): String {
       val services = schemaList.joinToString("\n") {
         """|
@@ -145,6 +108,57 @@ abstract class DefaultCompilationUnit @Inject constructor(
         """.trimMargin()
       }
       return "ApolloGraphQL: By default only one schema.json file is supported.\nPlease use multiple services instead:\napollo {\n$services\n}"
+    }
+
+    fun resolveDirectories(project: Project, sourceFolderProvider: Provider<String>, sourceSetNames: List<String>): List<String> {
+      val sourceFolder = sourceFolderProvider.orElse(".").get()
+
+      return when {
+        sourceFolder.startsWith(File.separator) -> listOf(sourceFolder)
+        sourceFolder.startsWith("..") -> listOf(project.file("src/main/graphql/$sourceFolder").normalize().path)
+        else -> sourceSetNames.map { "src/$it/graphql/$sourceFolder" }
+      }
+    }
+
+    fun resolveSchema(project: Project, schemaPathProvider: Provider<String>, directories: Set<File>, sourceSetNames: List<String>): String {
+      if (schemaPathProvider.isPresent) {
+        val schemaPath = schemaPathProvider.get()
+        if (schemaPath.startsWith(File.separator)) {
+          return schemaPath
+        } else if (schemaPath.startsWith("..")) {
+          return project.file("src/main/graphql/$schemaPath").normalize().path
+        } else {
+          val all = sourceSetNames.map {
+            project.file("src/$it/graphql/$schemaPath")
+          }
+
+          val candidates = all.filter {
+            it.exists()
+          }
+
+          require(candidates.size <= 1) {
+            "ApolloGraphQL: duplicate(s) schema file(s) found:\n${candidates.map { it.absolutePath }.joinToString("\n")}"
+          }
+          require(candidates.size == 1) {
+            "ApolloGraphQL: cannot find a schema file at $schemaPath. Tried:\n${all.map { it.absolutePath }.joinToString("\n")}"
+          }
+
+          return candidates.first().path
+        }
+      } else {
+        val candidates = directories.flatMap { srcDir ->
+          srcDir.walkTopDown().filter { it.name == "schema.json" }.toList()
+        }
+
+        require(candidates.size <= 1) {
+          multipleSchemaError(candidates)
+        }
+        require(candidates.size == 1) {
+          "ApolloGraphQL: cannot find schema.json. Please specify it explicitely. Looked under:\n" +
+              directories.map { it.absolutePath }.joinToString("\n")
+        }
+        return candidates.first().path
+      }
     }
   }
 }
