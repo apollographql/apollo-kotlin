@@ -1,0 +1,120 @@
+package com.apollographql.apollo.cache.normalized {
+
+  public abstract interface ApolloStore {
+    method public abstract error.NonExistentClass cacheKeyResolver();
+    method public abstract com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer<error.NonExistentClass> cacheResponseNormalizer();
+    method public abstract com.apollographql.apollo.cache.normalized.ApolloStoreOperation<error.NonExistentClass> clearAll();
+    method public abstract com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer<error.NonExistentClass> networkResponseNormalizer();
+    method public abstract error.NonExistentClass normalizedCache();
+    method public abstract void publish(error.NonExistentClass);
+    method public abstract <D, T, V> com.apollographql.apollo.cache.normalized.ApolloStoreOperation<T> read(error.NonExistentClass);
+    method public abstract <D, T, V> com.apollographql.apollo.cache.normalized.ApolloStoreOperation<error.NonExistentClass> read(error.NonExistentClass, error.NonExistentClass, com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer<error.NonExistentClass>, error.NonExistentClass);
+    method public abstract <F> com.apollographql.apollo.cache.normalized.ApolloStoreOperation<F> read(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
+    method public abstract <R> R readTransaction(com.apollographql.apollo.cache.normalized.internal.Transaction<error.NonExistentClass, R>);
+    method public abstract com.apollographql.apollo.cache.normalized.ApolloStoreOperation<error.NonExistentClass> remove(error.NonExistentClass);
+    method public abstract com.apollographql.apollo.cache.normalized.ApolloStoreOperation<error.NonExistentClass> remove(error.NonExistentClass, error.NonExistentClass);
+    method public abstract com.apollographql.apollo.cache.normalized.ApolloStoreOperation<error.NonExistentClass> remove(error.NonExistentClass);
+    method public abstract com.apollographql.apollo.cache.normalized.ApolloStoreOperation<error.NonExistentClass> rollbackOptimisticUpdates(error.NonExistentClass);
+    method public abstract com.apollographql.apollo.cache.normalized.ApolloStoreOperation<error.NonExistentClass> rollbackOptimisticUpdatesAndPublish(error.NonExistentClass);
+    method public abstract void subscribe(com.apollographql.apollo.cache.normalized.ApolloStore.RecordChangeSubscriber);
+    method public abstract void unsubscribe(com.apollographql.apollo.cache.normalized.ApolloStore.RecordChangeSubscriber);
+    method public abstract <D, T, V> com.apollographql.apollo.cache.normalized.ApolloStoreOperation<error.NonExistentClass> write(error.NonExistentClass, D);
+    method public abstract com.apollographql.apollo.cache.normalized.ApolloStoreOperation<error.NonExistentClass> write(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
+    method public abstract <D, T, V> com.apollographql.apollo.cache.normalized.ApolloStoreOperation<error.NonExistentClass> writeAndPublish(error.NonExistentClass, D);
+    method public abstract com.apollographql.apollo.cache.normalized.ApolloStoreOperation<error.NonExistentClass> writeAndPublish(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
+    method public abstract <D, T, V> com.apollographql.apollo.cache.normalized.ApolloStoreOperation<error.NonExistentClass> writeOptimisticUpdates(error.NonExistentClass, D, error.NonExistentClass);
+    method public abstract <D, T, V> com.apollographql.apollo.cache.normalized.ApolloStoreOperation<error.NonExistentClass> writeOptimisticUpdatesAndPublish(error.NonExistentClass, D, error.NonExistentClass);
+    method public abstract <R> R writeTransaction(com.apollographql.apollo.cache.normalized.internal.Transaction<error.NonExistentClass, R>);
+    field public static final com.apollographql.apollo.cache.normalized.ApolloStore.Companion Companion;
+  }
+
+  public static final class ApolloStore.Companion {
+    method public com.apollographql.apollo.cache.normalized.ApolloStore getNO_APOLLO_STORE();
+    property public final com.apollographql.apollo.cache.normalized.ApolloStore NO_APOLLO_STORE;
+  }
+
+  public static abstract interface ApolloStore.RecordChangeSubscriber {
+    method public abstract void onCacheRecordsChanged(error.NonExistentClass);
+  }
+
+  public abstract class ApolloStoreOperation<T> {
+    ctor protected ApolloStoreOperation(error.NonExistentClass);
+    method public void enqueue(com.apollographql.apollo.cache.normalized.ApolloStoreOperation.Callback<T>);
+    method public final T execute();
+    method public final void notifyFailure(error.NonExistentClass);
+    method public final void notifySuccess(T);
+    method protected abstract T perform();
+    field public static final com.apollographql.apollo.cache.normalized.ApolloStoreOperation.Companion Companion;
+  }
+
+  public static abstract interface ApolloStoreOperation.Callback<T> {
+    method public abstract void onFailure(error.NonExistentClass);
+    method public abstract void onSuccess(T);
+  }
+
+  public static final class ApolloStoreOperation.Companion {
+    method public error.NonExistentClass emptyExecutor();
+    method public <T> com.apollographql.apollo.cache.normalized.ApolloStoreOperation<T> emptyOperation(T);
+  }
+
+  public final class OptimisticNormalizedCache {
+    ctor public OptimisticNormalizedCache();
+    method public void clearAll();
+    method public error.NonExistentClass dump();
+    method public error.NonExistentClass loadRecord(error.NonExistentClass, error.NonExistentClass);
+    method public error.NonExistentClass mergeOptimisticUpdate(error.NonExistentClass);
+    method public error.NonExistentClass mergeOptimisticUpdates(error.NonExistentClass);
+    method public error.NonExistentClass performMerge(error.NonExistentClass, error.NonExistentClass);
+    method public error.NonExistentClass remove(error.NonExistentClass, error.NonExistentClass);
+    method public error.NonExistentClass removeOptimisticUpdates(error.NonExistentClass);
+  }
+
+}
+
+package com.apollographql.apollo.cache.normalized.lru {
+
+  public final class EvictionPolicy {
+    method public error.NonExistentClass expireAfterAccess();
+    method public error.NonExistentClass expireAfterAccessTimeUnit();
+    method public error.NonExistentClass expireAfterWrite();
+    method public error.NonExistentClass expireAfterWriteTimeUnit();
+    method public error.NonExistentClass getExpireAfterAccess();
+    method public error.NonExistentClass getExpireAfterAccessTimeUnit();
+    method public error.NonExistentClass getExpireAfterWrite();
+    method public error.NonExistentClass getExpireAfterWriteTimeUnit();
+    method public error.NonExistentClass getMaxEntries();
+    method public error.NonExistentClass getMaxSizeBytes();
+    method public error.NonExistentClass maxEntries();
+    method public error.NonExistentClass maxSizeBytes();
+    field public static final com.apollographql.apollo.cache.normalized.lru.EvictionPolicy.Companion Companion;
+  }
+
+  public static final class EvictionPolicy.Builder {
+    method public com.apollographql.apollo.cache.normalized.lru.EvictionPolicy build();
+    method public com.apollographql.apollo.cache.normalized.lru.EvictionPolicy.Builder expireAfterAccess(error.NonExistentClass, error.NonExistentClass);
+    method public com.apollographql.apollo.cache.normalized.lru.EvictionPolicy.Builder expireAfterWrite(error.NonExistentClass, error.NonExistentClass);
+    method public com.apollographql.apollo.cache.normalized.lru.EvictionPolicy.Builder maxEntries(error.NonExistentClass);
+    method public com.apollographql.apollo.cache.normalized.lru.EvictionPolicy.Builder maxSizeBytes(error.NonExistentClass);
+  }
+
+  public static final class EvictionPolicy.Companion {
+    method public com.apollographql.apollo.cache.normalized.lru.EvictionPolicy.Builder builder();
+    method public com.apollographql.apollo.cache.normalized.lru.EvictionPolicy getNO_EVICTION();
+    property public final com.apollographql.apollo.cache.normalized.lru.EvictionPolicy NO_EVICTION;
+  }
+
+  public final class LruNormalizedCache {
+    method public void clearAll();
+    method public error.NonExistentClass dump();
+    method public error.NonExistentClass loadRecord(error.NonExistentClass, error.NonExistentClass);
+    method public error.NonExistentClass performMerge(error.NonExistentClass, error.NonExistentClass);
+    method public error.NonExistentClass remove(error.NonExistentClass, error.NonExistentClass);
+  }
+
+  public final class LruNormalizedCacheFactory {
+    ctor public LruNormalizedCacheFactory(com.apollographql.apollo.cache.normalized.lru.EvictionPolicy);
+    method public com.apollographql.apollo.cache.normalized.lru.LruNormalizedCache create(error.NonExistentClass);
+  }
+
+}
+

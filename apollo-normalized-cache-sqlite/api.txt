@@ -1,0 +1,44 @@
+package com.apollographql.apollo.cache.normalized.sql {
+
+  public final deprecated class ApolloSqlHelper {
+    ctor public ApolloSqlHelper(error.NonExistentClass, error.NonExistentClass);
+    field public static final com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper.Companion Companion;
+  }
+
+  public static final class ApolloSqlHelper.Companion {
+    method public com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper create(error.NonExistentClass, error.NonExistentClass);
+  }
+
+  public final class SqlNormalizedCache {
+    method public void clearAll();
+    method public void createRecord(error.NonExistentClass, error.NonExistentClass);
+    method public error.NonExistentClass deleteRecord(error.NonExistentClass);
+    method public error.NonExistentClass loadRecord(error.NonExistentClass, error.NonExistentClass);
+    method public error.NonExistentClass performMerge(error.NonExistentClass, error.NonExistentClass);
+    method public error.NonExistentClass remove(error.NonExistentClass, error.NonExistentClass);
+    method public error.NonExistentClass selectRecordForKey(error.NonExistentClass);
+  }
+
+  public final class SqlNormalizedCacheFactory {
+    ctor public SqlNormalizedCacheFactory();
+    ctor public SqlNormalizedCacheFactory(error.NonExistentClass);
+    method public com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCache create(error.NonExistentClass);
+  }
+
+  public final class SqlNormalizedCacheFactory {
+    ctor public SqlNormalizedCacheFactory(error.NonExistentClass, error.NonExistentClass);
+    method public com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCache create(error.NonExistentClass);
+    field public static final com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCacheFactory.Companion Companion;
+  }
+
+  public static final class SqlNormalizedCacheFactory.Companion {
+  }
+
+  public final class SqlNormalizedCacheFactory {
+    ctor public SqlNormalizedCacheFactory(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
+    ctor public SqlNormalizedCacheFactory(com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper);
+    method public com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCache create(error.NonExistentClass);
+  }
+
+}
+
