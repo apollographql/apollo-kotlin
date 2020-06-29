@@ -37,12 +37,4 @@ interface ApolloExtension: CompilerParams {
    * @param action: the configure action for the [CompilationUnit]
    */
   fun onCompilationUnit(action: Action<CompilationUnit>)
-
-  /**
-   * Whether or not to add by the runtime dependency by default.
-   * Set to false if you don't need the runtime and want to add `apollo-runtime` manually
-   *
-   * Default value: true
-   */
-  val addRuntimeDependency: Property<Boolean>
 }

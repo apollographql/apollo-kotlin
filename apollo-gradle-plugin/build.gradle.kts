@@ -32,13 +32,6 @@ tasks.withType<Test> {
   dependsOn(":apollo-api:publishAllPublicationsToPluginTestRepository")
   dependsOn(":apollo-compiler:publishAllPublicationsToPluginTestRepository")
 
-  dependsOn(":apollo-runtime-kotlin:publishAllPublicationsToPluginTestRepository")
-  dependsOn(":apollo-runtime:publishAllPublicationsToPluginTestRepository")
-  dependsOn(":apollo-normalized-cache:publishAllPublicationsToPluginTestRepository")
-  dependsOn(":apollo-normalized-cache-api:publishAllPublicationsToPluginTestRepository")
-  dependsOn(":apollo-http-cache:publishAllPublicationsToPluginTestRepository")
-  dependsOn(":apollo-http-cache-api:publishAllPublicationsToPluginTestRepository")
-
   dependsOn("publishAllPublicationsToPluginTestRepository")
 
   inputs.dir("src/test/files")

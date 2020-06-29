@@ -30,6 +30,4 @@ open class DefaultApolloExtension(val project: Project)
     action.execute(service)
     services.add(service)
   }
-
-  override val addRuntimeDependency: Property<Boolean> = project.objects.property(Boolean::class.java)
 }

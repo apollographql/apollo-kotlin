@@ -29,3 +29,6 @@ repositories {
     mavenCentral()
 }
 
+dependencies {
+    add("implementation", groovy.util.Eval.x(project, "x.dep.apollo.api"))
+}
