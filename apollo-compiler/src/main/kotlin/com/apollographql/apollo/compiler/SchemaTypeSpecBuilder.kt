@@ -222,7 +222,7 @@ class SchemaTypeSpecBuilder(
     fun responseMarshallerSpec(fieldSpecs: List<FieldSpec>): MethodSpec {
       val code = fieldSpecs
           .map { fieldSpec ->
-            if (fieldSpec.type.isOptional()) {
+            if (fieldSpec.type.isNullable()) {
               CodeBlock.builder()
                   .addStatement("final \$T \$L = \$L", fieldSpec.type.unwrapOptionalType().withoutAnnotations(),
                       "\$${fieldSpec.name}", fieldSpec.type.unwrapOptionalValue(fieldSpec.name))

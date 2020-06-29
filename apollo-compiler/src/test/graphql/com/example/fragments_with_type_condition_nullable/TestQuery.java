@@ -377,8 +377,14 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
         return new ResponseFieldMarshaller() {
           @Override
           public void marshal(ResponseWriter writer) {
-            writer.writeFragment(humanDetails.marshaller());
-            writer.writeFragment(droidDetails.marshaller());
+            final HumanDetails $humanDetails = humanDetails;
+            if ($humanDetails != null) {
+              writer.writeFragment($humanDetails.marshaller());
+            }
+            final DroidDetails $droidDetails = droidDetails;
+            if ($droidDetails != null) {
+              writer.writeFragment($droidDetails.marshaller());
+            }
           }
         };
       }
@@ -575,8 +581,14 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
         return new ResponseFieldMarshaller() {
           @Override
           public void marshal(ResponseWriter writer) {
-            writer.writeFragment(humanDetails.marshaller());
-            writer.writeFragment(droidDetails.marshaller());
+            final HumanDetails $humanDetails = humanDetails;
+            if ($humanDetails != null) {
+              writer.writeFragment($humanDetails.marshaller());
+            }
+            final DroidDetails $droidDetails = droidDetails;
+            if ($droidDetails != null) {
+              writer.writeFragment($droidDetails.marshaller());
+            }
           }
         };
       }

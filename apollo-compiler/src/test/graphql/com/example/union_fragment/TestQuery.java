@@ -363,8 +363,14 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
         return new ResponseFieldMarshaller() {
           @Override
           public void marshal(ResponseWriter writer) {
-            writer.writeFragment(character.marshaller());
-            writer.writeFragment(starship.marshaller());
+            final Character $character = character;
+            if ($character != null) {
+              writer.writeFragment($character.marshaller());
+            }
+            final Starship $starship = starship;
+            if ($starship != null) {
+              writer.writeFragment($starship.marshaller());
+            }
           }
         };
       }
