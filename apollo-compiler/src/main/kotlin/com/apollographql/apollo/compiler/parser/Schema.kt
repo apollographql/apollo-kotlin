@@ -10,7 +10,7 @@ import okio.source
 import java.io.File
 
 @JsonClass(generateAdapter = true)
-class Schema(
+data class Schema(
     val queryType: String = "query",
     val mutationType: String = "mutation",
     val subscriptionType: String = "subscription",

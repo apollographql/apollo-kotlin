@@ -64,7 +64,7 @@ input colorInput {
   red: Int! = 1
 
   """Green color"""
-  green: Float = 0
+  green: Int = 0
 
   """Blue color"""
   blue: Float! = 1.5
@@ -142,7 +142,7 @@ enum Episode {
   DEPRECATED @deprecated(reason: "For test purpose only")
 
   """Test java reserved word"""
-  new @deprecated(reason: "For test purpose only")
+  new
 }
 
 """For testing fragment type coercion"""
@@ -354,7 +354,7 @@ input ReviewInput {
   customScalar: Date = "1984-06-21"
 
   """for test purpose only"""
-  listOfEnums: [Episode]
+  listOfEnums: [Episode] = ["NEWHOPE", "EMPIRE"]
 
   """for test purpose only"""
   listOfInt: [Int] = [1, 2, 3]
@@ -419,3 +419,9 @@ scalar UnsupportedType
 
 """URL for testing"""
 scalar URL
+
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: subscription
+}
