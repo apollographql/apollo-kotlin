@@ -434,6 +434,28 @@ class ConfigurationTests {
   }
 
   @Test
+  fun `changing a dependency checks versions again`() {
+    withSimpleProject { dir ->
+
+      TestUtils.executeTaskAndAssertSuccess(":generateApolloSources", dir)
+
+      val result = TestUtils.executeTask("checkApolloVersions", dir)
+      assert(result.task(":checkApolloVersions")?.outcome == TaskOutcome.UP_TO_DATE)
+
+      File(dir, "build.gradle").replaceInText("dep.apollo.api", "\"com.apollographql.apollo:apollo-api:1.2.0\"")
+
+      var exception: Exception? = null
+      try {
+        TestUtils.executeTask("checkApolloVersions", dir)
+      } catch (e: UnexpectedBuildFailure) {
+        exception = e
+        assertThat(e.message, containsString("All apollo versions should be the same"))
+      }
+      assertNotNull(exception)
+    }
+  }
+
+  @Test
   fun `versions are enforced even in rootProject`() {
     withTestProject("mismatchedVersions") { dir ->
       var exception: Exception? = null

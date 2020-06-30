@@ -4,6 +4,7 @@ import com.apollographql.apollo.gradle.api.ApolloExtension
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.artifacts.ConfigurationContainer
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.util.GradleVersion
@@ -47,7 +48,7 @@ open class ApolloPlugin : Plugin<Project> {
       return ret
     }
 
-    private fun registerCompilationUnits(project: Project, apolloExtension: DefaultApolloExtension) {
+    private fun registerCompilationUnits(project: Project, apolloExtension: DefaultApolloExtension, checkVersionsTask: TaskProvider<Task>) {
       val androidExtension = project.extensions.findByName("android")
 
       val apolloVariants = when {
@@ -78,7 +79,7 @@ open class ApolloPlugin : Plugin<Project> {
         }
 
         compilationUnits.forEach { compilationUnit ->
-          val codegenProvider = registerCodeGenTask(project, compilationUnit)
+          val codegenProvider = registerCodeGenTask(project, compilationUnit, checkVersionsTask)
           variantProvider.configure {
             it.dependsOn(codegenProvider)
           }
@@ -109,12 +110,14 @@ open class ApolloPlugin : Plugin<Project> {
       }
     }
 
-    private fun registerCodeGenTask(project: Project, compilationUnit: DefaultCompilationUnit): TaskProvider<ApolloGenerateSourcesTask> {
+    private fun registerCodeGenTask(project: Project, compilationUnit: DefaultCompilationUnit, checkVersionsTask: TaskProvider<Task>): TaskProvider<ApolloGenerateSourcesTask> {
       val taskName = "generate${compilationUnit.name.capitalize()}ApolloSources"
 
       return project.tasks.register(taskName, ApolloGenerateSourcesTask::class.java) {
         it.group = TASK_GROUP
         it.description = "Generate Apollo models for ${compilationUnit.name.capitalize()} GraphQL queries"
+
+        it.dependsOn(checkVersionsTask)
 
         val (compilerParams, graphqlSourceDirectorySet) = compilationUnit.resolveParams(project)
 
@@ -203,11 +206,10 @@ open class ApolloPlugin : Plugin<Project> {
     }
 
     private fun afterEvaluate(project: Project, apolloExtension: DefaultApolloExtension) {
-      registerCompilationUnits(project, apolloExtension)
+      val checkVersionsTask = registerCheckVersionsTask(project)
+      registerCompilationUnits(project, apolloExtension, checkVersionsTask)
 
       registerDownloadSchemaTasks(project, apolloExtension)
-
-      checkVersions(project)
     }
 
     data class Dep(val name: String, val version: String?)
@@ -223,15 +225,32 @@ open class ApolloPlugin : Plugin<Project> {
       }
     }
 
-    fun checkVersions(project: Project) {
-      val allDeps = getDeps(project.rootProject.buildscript.configurations) +
-          getDeps(project.buildscript.configurations) +
-          getDeps(project.configurations)
+    fun registerCheckVersionsTask(project: Project): TaskProvider<Task> {
+      return project.tasks.register("checkApolloVersions") {
+        val outputFile = project.layout.buildDirectory.file("apollo/versionCheck")
 
-      check(allDeps.mapNotNull { it.version }.distinct().size <= 1) {
-        val found = allDeps.map { "${it.name}:${it.version}" }.distinct().joinToString("\n")
-        "All apollo versions should be the same. Found:\n$found"
+        val allDeps = (
+            getDeps(project.rootProject.buildscript.configurations) +
+                getDeps(project.buildscript.configurations) +
+                getDeps(project.configurations)
+            )
+
+        val allVersions = allDeps.mapNotNull { it.version }.distinct().sorted()
+        it.inputs.property("allVersions", allVersions)
+        it.outputs.file(outputFile)
+
+        it.doLast {
+          check(allVersions.size <= 1) {
+            val found = allDeps.map { "${it.name}:${it.version}" }.distinct().joinToString("\n")
+            "All apollo versions should be the same. Found:\n$found"
+          }
+
+          val version = allVersions.firstOrNull()
+          outputFile.get().asFile.parentFile.mkdirs()
+          outputFile.get().asFile.writeText("All versions are consistent: $version")
+        }
       }
+
     }
   }
 
