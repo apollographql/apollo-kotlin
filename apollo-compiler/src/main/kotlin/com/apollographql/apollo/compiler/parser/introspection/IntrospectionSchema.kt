@@ -1,4 +1,4 @@
-package com.apollographql.apollo.compiler.parser
+package com.apollographql.apollo.compiler.parser.introspection
 
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.JsonReader
@@ -10,11 +10,11 @@ import okio.source
 import java.io.File
 
 @JsonClass(generateAdapter = true)
-data class Schema(
+data class IntrospectionSchema(
     val queryType: String = "query",
     val mutationType: String = "mutation",
     val subscriptionType: String = "subscription",
-    val types: Map<String, Type>) : Map<String, Schema.Type> by types {
+    val types: Map<String, Type>) : Map<String, IntrospectionSchema.Type> by types {
   sealed class Type(val kind: Kind) {
     abstract val name: String
     abstract val description: String?
@@ -121,7 +121,7 @@ data class Schema(
 
     @JvmStatic
     @JvmName("parse")
-    operator fun invoke(schemaFile: File): Schema {
+    operator fun invoke(schemaFile: File): IntrospectionSchema {
       val moshi = Moshi.Builder()
           .add(
               PolymorphicJsonAdapterFactory.of(Type::class.java, "kind")
@@ -173,9 +173,9 @@ data class Schema(
       return schemaJsonReader ?: throw IllegalArgumentException("Failed to locate schema root node `__schema`")
     }
 
-    private fun JsonReader.parseSchema(moshi: Moshi): Schema {
+    private fun JsonReader.parseSchema(moshi: Moshi): IntrospectionSchema {
       val introspectionSchema = moshi.adapter(IntrospectionQuery.Schema::class.java).fromJson(this)!!
-      return Schema(
+      return IntrospectionSchema(
           queryType = introspectionSchema.queryType?.name ?: "query",
           mutationType = introspectionSchema.mutationType?.name ?: "mutation",
           subscriptionType = introspectionSchema.subscriptionType?.name ?: "subscription",
@@ -200,6 +200,6 @@ object IntrospectionQuery {
       val queryType: QueryType?,
       val mutationType: MutationType?,
       val subscriptionType: SubscriptionType?,
-      val types: List<com.apollographql.apollo.compiler.parser.Schema.Type>
+      val types: List<com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Type>
   )
 }

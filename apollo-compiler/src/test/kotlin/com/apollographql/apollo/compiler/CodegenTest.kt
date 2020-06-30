@@ -1,7 +1,7 @@
 package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo.compiler.parser.GraphQLDocumentParser
-import com.apollographql.apollo.compiler.parser.Schema
+import com.apollographql.apollo.compiler.parser.graphql.GraphQLDocumentParser
+import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.google.common.truth.Truth.assertAbout
 import com.google.testing.compile.JavaFileObjects
 import com.google.testing.compile.JavaSourcesSubjectFactory.javaSources
@@ -159,7 +159,7 @@ class CodeGenTest(private val folder: File) {
 
       val schemaJson = folder.listFiles()!!.find { it.isFile && it.name == "schema.json" }
           ?: File("src/test/graphql/schema.json")
-      val schema = Schema(schemaJson)
+      val schema = IntrospectionSchema(schemaJson)
       val graphQLFile = File(folder, "TestOperation.graphql")
 
       val packageNameProvider = DefaultPackageNameProvider(
