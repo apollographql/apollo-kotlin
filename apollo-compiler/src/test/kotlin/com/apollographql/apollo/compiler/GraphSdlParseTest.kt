@@ -1,28 +1,33 @@
 package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo.compiler.parser.sdl.GraphSDLSchemaParser.parse
+import com.apollographql.apollo.compiler.parser.Schema
+import com.apollographql.apollo.compiler.parser.sdl.GraphSdlSchema
+import com.apollographql.apollo.compiler.parser.sdl.toIntrospectionSchema
+import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.Parameterized
 import java.io.File
 
-@Suppress("UNUSED_PARAMETER")
-@RunWith(Parameterized::class)
-class GraphSdlParseTest(name: String, private val schemaFile: File) {
+class GraphSdlParseTest() {
 
   @Test
-  fun testParseSuccessfully() {
-    schemaFile.parse()
+  fun `SDL schema parsed successfully and produced the same introspection schema`() {
+    val actualSchema = GraphSdlSchema(File("src/test/sdl/schema.graphql")).toIntrospectionSchema().normalize()
+    val expectedSchema = Schema(File("src/test/sdl/schema.json")).normalize()
+    assertEquals(actualSchema.toString(), expectedSchema.toString())
   }
 
-  companion object {
-    @JvmStatic
-    @Parameterized.Parameters(name = "{0}")
-    fun data(): Collection<Array<Any>> {
-      return File("src/test/sdl")
-          .listFiles()!!
-          .filter { it.extension == "graphql" }
-          .map { arrayOf(it.nameWithoutExtension, it) }
+  private fun Schema.normalize(): Schema {
+    return copy(types = toSortedMap().mapValues { (_, type) -> type.normalize() })
+  }
+
+  private fun Schema.Type.normalize(): Schema.Type {
+    return when (this) {
+      is Schema.Type.Scalar -> this
+      is Schema.Type.Object -> copy(fields = fields?.sortedBy { field -> field.name })
+      is Schema.Type.Interface -> copy(fields = fields?.sortedBy { field -> field.name })
+      is Schema.Type.Union -> copy(fields = fields?.sortedBy { field -> field.name })
+      is Schema.Type.Enum -> this
+      is Schema.Type.InputObject -> copy(inputFields = inputFields.sortedBy { field -> field.name })
     }
   }
 }

@@ -286,7 +286,7 @@ directiveArgument
 SCHEMA: 'schema';
 QUERY: 'query';
 MUTATION: 'mutation';
-SUBSCRIPTION:'subscsription';
+SUBSCRIPTION:'subscription';
 ENUM: 'enum';
 TYPE: 'type';
 IMPLEMENTS: 'implements';

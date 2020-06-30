@@ -3,6 +3,7 @@ package com.apollographql.apollo.compiler.parser.sdl
 import com.apollographql.apollo.compiler.ir.SourceLocation
 import com.apollographql.apollo.compiler.parser.antlr.GraphSDLLexer
 import com.apollographql.apollo.compiler.parser.antlr.GraphSDLParser
+import com.apollographql.apollo.compiler.parser.invoke
 import org.antlr.v4.runtime.ANTLRInputStream
 import org.antlr.v4.runtime.BaseErrorListener
 import org.antlr.v4.runtime.CommonTokenStream
@@ -14,7 +15,7 @@ import java.io.File
 import java.io.IOException
 import java.util.Locale
 
-object GraphSDLSchemaParser {
+internal object GraphSDLSchemaParser {
 
   fun File.parse(): GraphSdlSchema {
     val document = try {
@@ -83,9 +84,11 @@ object GraphSDLSchemaParser {
         schema = GraphSdlSchema.Schema(
             description = schemaDefinition?.description()?.parse(),
             directives = schemaDefinition?.directives().parse(),
-            queryRootOperationType = GraphSdlSchema.TypeRef.Named(operationRootTypes["query"] ?: "query"),
-            mutationRootOperationType = GraphSdlSchema.TypeRef.Named(operationRootTypes["mutation"] ?: "mutation"),
-            subscriptionRootOperationType = GraphSdlSchema.TypeRef.Named(operationRootTypes["subscription"] ?: "subscription")
+            queryRootOperationType = GraphSdlSchema.TypeRef.Named(operationRootTypes["query"] ?: "Query", SourceLocation(start)),
+            mutationRootOperationType = GraphSdlSchema.TypeRef.Named(operationRootTypes["mutation"] ?: "Mutation", SourceLocation(start)),
+            subscriptionRootOperationType = GraphSdlSchema.TypeRef.Named(
+                operationRootTypes["subscription"] ?: "Subscription", SourceLocation(start)
+            )
         ),
         typeDefinitions = typeDefinitions ?: emptyMap()
     )
@@ -94,7 +97,7 @@ object GraphSDLSchemaParser {
   private fun GraphSDLParser.OperationTypesDefinitionContext?.parse(): Map<String, String> {
     return this
         ?.operationTypeDefinition()
-        ?.map { it.operationType().text to it.operationType().text }
+        ?.map { it.operationType().text to it.namedType().text }
         ?.toMap()
         ?: emptyMap()
   }
@@ -126,7 +129,7 @@ object GraphSDLSchemaParser {
   private fun GraphSDLParser.ObjectTypeDefinitionContext.parse(): GraphSdlSchema.TypeDefinition.Object {
     return GraphSdlSchema.TypeDefinition.Object(
         name = name().text,
-        description = description()?.text,
+        description = description().parse(),
         directives = directives().parse(),
         fields = fieldsDefinition().parse(),
         interfaces = implementsIntefaces().parse()
@@ -136,7 +139,7 @@ object GraphSDLSchemaParser {
   private fun GraphSDLParser.InterfaceTypeDefinitionContext.parse(): GraphSdlSchema.TypeDefinition.Interface {
     return GraphSdlSchema.TypeDefinition.Interface(
         name = name().text,
-        description = description()?.text,
+        description = description().parse(),
         directives = directives().parse(),
         fields = fieldsDefinition().parse()
     )
@@ -145,7 +148,7 @@ object GraphSDLSchemaParser {
   private fun GraphSDLParser.InputObjectDefinitionContext.parse(): GraphSdlSchema.TypeDefinition.InputObject {
     return GraphSdlSchema.TypeDefinition.InputObject(
         name = name().text,
-        description = description()?.text,
+        description = description().parse(),
         directives = directives().parse(),
         fields = inputValuesDefinition().parse()
     )
@@ -154,7 +157,7 @@ object GraphSDLSchemaParser {
   private fun GraphSDLParser.UnionTypeDefinitionContext.parse(): GraphSdlSchema.TypeDefinition.Union {
     return GraphSdlSchema.TypeDefinition.Union(
         name = name().text,
-        description = description()?.text,
+        description = description().parse(),
         directives = directives().parse(),
         typeRefs = unionMemberTypes()?.unionMemberType()?.map { it.namedType().parse() } ?: emptyList()
     )
@@ -163,7 +166,7 @@ object GraphSDLSchemaParser {
   private fun GraphSDLParser.ScalarTypeDefinitionContext.parse(): GraphSdlSchema.TypeDefinition.Scalar {
     return GraphSdlSchema.TypeDefinition.Scalar(
         name = name().text,
-        description = description()?.text,
+        description = description().parse(),
         directives = directives().parse()
     )
   }
@@ -171,7 +174,7 @@ object GraphSDLSchemaParser {
   private fun GraphSDLParser.ImplementsIntefacesContext?.parse(): List<GraphSdlSchema.TypeRef.Named> {
     return this
         ?.implementsInteface()
-        ?.map { GraphSdlSchema.TypeRef.Named(it.namedType().text) }
+        ?.map { GraphSdlSchema.TypeRef.Named(it.namedType().text, SourceLocation(start)) }
         ?: emptyList()
   }
 
@@ -185,7 +188,7 @@ object GraphSDLSchemaParser {
   private fun GraphSDLParser.FieldDefinitionContext.parse(): GraphSdlSchema.TypeDefinition.Field {
     return GraphSdlSchema.TypeDefinition.Field(
         name = name().text,
-        description = description()?.text,
+        description = description().parse(),
         directives = directives().parse(),
         type = type().parse(),
         arguments = argumentsDefinition().parse()
@@ -202,7 +205,7 @@ object GraphSDLSchemaParser {
   private fun GraphSDLParser.ArgumentDefinitionContext.parse(): GraphSdlSchema.TypeDefinition.Field.Argument {
     return GraphSdlSchema.TypeDefinition.Field.Argument(
         name = name().text,
-        description = description()?.text,
+        description = description().parse(),
         directives = directives().parse(),
         type = type().parse(),
         defaultValue = defaultValue()?.value()?.parse()
@@ -219,7 +222,7 @@ object GraphSDLSchemaParser {
   private fun GraphSDLParser.InputValueDefinitionContext.parse(): GraphSdlSchema.TypeDefinition.InputField {
     return GraphSdlSchema.TypeDefinition.InputField(
         name = name().text,
-        description = description()?.text,
+        description = description().parse(),
         directives = directives().parse(),
         type = type().parse(),
         defaultValue = defaultValue()?.value()?.parse()
@@ -232,7 +235,7 @@ object GraphSDLSchemaParser {
       floatValue() != null -> floatValue().FLOAT().text.toDouble()
       booleanValue() != null -> booleanValue().text == "true"
       enumValue() != null -> enumValue().name().text
-      listValue() != null -> text
+      listValue() != null -> listValue().value().map { it.parse() }
       objectValue() != null -> text
       stringValue() != null -> text
       nullValue() != null -> null
@@ -256,7 +259,7 @@ object GraphSDLSchemaParser {
   }
 
   private fun GraphSDLParser.NamedTypeContext.parse(): GraphSdlSchema.TypeRef.Named {
-    return GraphSdlSchema.TypeRef.Named(name().text)
+    return GraphSdlSchema.TypeRef.Named(name().text, sourceLocation = SourceLocation(start))
   }
 
   private fun GraphSDLParser.ListTypeContext.parse(): GraphSdlSchema.TypeRef.List {
@@ -274,9 +277,10 @@ object GraphSDLSchemaParser {
     }
   }
 
-  private fun GraphSDLParser.DescriptionContext?.parse(): String? {
-    return this?.STRING()?.text?.removePrefix("\"")?.removeSuffix("\"")
-        ?: this?.BLOCK_STRING()?.text?.removePrefix("\"\"\"\n")?.removeSuffix("\n\"\"\"")
+  private fun GraphSDLParser.DescriptionContext?.parse(): String {
+    return this?.STRING()?.text?.removePrefix("\"")?.removePrefix("\n")?.removeSuffix("\"")?.removeSuffix("\n")
+        ?: this?.BLOCK_STRING()?.text?.removePrefix("\"\"\"")?.removePrefix("\n")?.removeSuffix("\"\"\"")?.removeSuffix("\n")
+        ?: ""
   }
 
   private fun GraphSDLParser.DirectivesContext?.parse(): List<GraphSdlSchema.Directive> {
