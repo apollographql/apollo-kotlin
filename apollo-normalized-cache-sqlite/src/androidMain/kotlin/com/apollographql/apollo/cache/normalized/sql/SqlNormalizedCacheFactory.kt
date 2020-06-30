@@ -34,6 +34,6 @@ actual class SqlNormalizedCacheFactory internal actual constructor(
   private val apolloDatabase = ApolloDatabase(driver)
 
   override fun create(recordFieldAdapter: RecordFieldJsonAdapter) =
-      SqlNormalizedCache(recordFieldAdapter, apolloDatabase.cacheQueries)
+      SqlNormalizedCache(recordFieldAdapter, apolloDatabase, apolloDatabase.cacheQueries)
 
 }
