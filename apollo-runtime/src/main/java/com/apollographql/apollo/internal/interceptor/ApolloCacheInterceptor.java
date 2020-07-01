@@ -70,17 +70,21 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
             @Override public void onResponse(@NotNull InterceptorResponse networkResponse) {
               if (disposed) return;
 
-              try {
-                Set<String> networkResponseCacheKeys = cacheResponse(networkResponse, request);
-                Set<String> rolledBackCacheKeys = rollbackOptimisticUpdates(request);
-                Set<String> changedCacheKeys = new HashSet<>();
-                changedCacheKeys.addAll(rolledBackCacheKeys);
-                changedCacheKeys.addAll(networkResponseCacheKeys);
-                publishCacheKeys(changedCacheKeys);
-              } catch (Exception rethrow) {
-                rollbackOptimisticUpdatesAndPublish(request);
-                throw rethrow;
-              }
+              dispatcher.execute(new Runnable() {
+                @Override public void run() {
+                  try {
+                    Set<String> networkResponseCacheKeys = cacheResponse(networkResponse, request);
+                    Set<String> rolledBackCacheKeys = rollbackOptimisticUpdates(request);
+                    Set<String> changedCacheKeys = new HashSet<>();
+                    changedCacheKeys.addAll(rolledBackCacheKeys);
+                    changedCacheKeys.addAll(networkResponseCacheKeys);
+                    publishCacheKeys(changedCacheKeys);
+                  } catch (Exception rethrow) {
+                    rollbackOptimisticUpdatesAndPublish(request);
+                    throw rethrow;
+                  }
+                }
+              });
 
               callBack.onResponse(networkResponse);
               callBack.onCompleted();
