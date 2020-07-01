@@ -10,6 +10,7 @@ import okio.IOException
 
 class SqlNormalizedCache internal constructor(
     private val recordFieldAdapter: RecordFieldJsonAdapter,
+    private val database: ApolloDatabase,
     private val cacheQueries: CacheQueries
 ) : NormalizedCache() {
 
@@ -43,6 +44,14 @@ class SqlNormalizedCache internal constructor(
     } else {
       deleteRecord(cacheKey.key)
     }
+  }
+
+  override fun merge(recordSet: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
+    lateinit var records: Set<String>
+    database.transaction {
+      records = super.merge(recordSet, cacheHeaders)
+    }
+    return records
   }
 
   override fun performMerge(apolloRecord: Record, cacheHeaders: CacheHeaders): Set<String> {
