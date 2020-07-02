@@ -17,7 +17,6 @@ import okhttp3.WebSocketListener;
 import okio.ByteString;
 
 import static com.google.common.truth.Truth.assertThat;
-import static junit.framework.TestCase.fail;
 
 public class WebSocketSubscriptionTransportTest {
   private Request webSocketRequest;
@@ -66,23 +65,34 @@ public class WebSocketSubscriptionTransportTest {
   }
 
   @Test public void send() {
-    try {
-      subscriptionTransport.send(new OperationClientMessage.Init(Collections.<String, Object>emptyMap()));
-      fail("expected IllegalStateException");
-    } catch (IllegalStateException expected) {
-      // expected
-    }
+    final AtomicReference<Throwable> callbackFailure = new AtomicReference<>();
+
+    subscriptionTransport = new WebSocketSubscriptionTransport(webSocketRequest, webSocketFactory, new SubscriptionTransport.Callback() {
+      @Override public void onConnected() {
+      }
+
+      @Override public void onFailure(Throwable t) {
+        callbackFailure.set(t);
+      }
+
+      @Override public void onMessage(OperationServerMessage message) {
+      }
+
+      @Override public void onClosed() {
+      }
+    });
+
+    subscriptionTransport.send(new OperationClientMessage.Init(Collections.<String, Object>emptyMap()));
+    assertThat(callbackFailure.get()).isInstanceOf(IllegalStateException.class);
+    callbackFailure.set(null);
 
     subscriptionTransport.connect();
     subscriptionTransport.send(new OperationClientMessage.Init(Collections.<String, Object>emptyMap()));
+    assertThat(callbackFailure.get()).isNull();
     subscriptionTransport.disconnect(new OperationClientMessage.Terminate());
 
-    try {
-      subscriptionTransport.send(new OperationClientMessage.Init(Collections.<String, Object>emptyMap()));
-      fail("expected IllegalStateException");
-    } catch (IllegalStateException expected) {
-      // expected
-    }
+    subscriptionTransport.send(new OperationClientMessage.Init(Collections.<String, Object>emptyMap()));
+    assertThat(callbackFailure.get()).isInstanceOf(IllegalStateException.class);
   }
 
   @Test public void subscriptionTransportCallback() {
