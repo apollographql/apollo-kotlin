@@ -5,7 +5,9 @@ import com.apollographql.apollo.gradle.util.TestUtils
 import com.apollographql.apollo.gradle.util.TestUtils.withProject
 import com.apollographql.apollo.gradle.util.generatedChild
 import org.gradle.testkit.runner.UnexpectedBuildFailure
+import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.MatcherAssert
 import org.junit.Assert.*
 import org.junit.Test
 import java.io.File
@@ -30,14 +32,15 @@ class MultipleServicesTests {
   @Test
   fun `multiple schema files without using service is not supported`() {
     withMultipleServicesProject("") { dir ->
-      var exception: Exception? = null
       try {
         TestUtils.executeTask("generateApolloSources", dir)
+        fail("expected to fail")
       } catch (e: UnexpectedBuildFailure) {
-        exception = e
-        assertThat(e.message, containsString("By default only one schema.json file is supported."))
+        MatcherAssert.assertThat(
+            e.message,
+            containsString("ApolloGraphQL: By default only one schema.[json | sdl] file is supported.")
+        )
       }
-      assertNotNull(exception)
     }
   }
 

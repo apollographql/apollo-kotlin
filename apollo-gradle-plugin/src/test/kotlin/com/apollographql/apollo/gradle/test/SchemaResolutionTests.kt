@@ -38,7 +38,7 @@ class SchemaResolutionTests {
 
       projectDir.child("src", "main", "graphql", "schema.json").delete()
 
-      executeTask("build", projectDir)
+      executeTask("generateApolloSources", projectDir)
 
       assertTrue(projectDir.generatedChild("main/api/FeedRepositoryQuery.kt").isFile)
     }
@@ -67,7 +67,7 @@ class SchemaResolutionTests {
       val target = projectDir.child("src", "main", "graphql")
       fixturesDir.child("sdl").copyRecursively(target = target, overwrite = true)
 
-      executeTask("build", projectDir)
+      executeTask("generateApolloSources", projectDir)
 
       assertTrue(projectDir.generatedChild("main/api/FeedRepositoryQuery.kt").isFile)
     }
@@ -96,7 +96,7 @@ class SchemaResolutionTests {
       fixturesDir.child("sdl").copyRecursively(target = target, overwrite = true)
 
       try {
-        executeTask("build", projectDir)
+        executeTask("generateApolloSources", projectDir)
         fail("expected to fail")
       } catch (e: UnexpectedBuildFailure) {
         MatcherAssert.assertThat(
