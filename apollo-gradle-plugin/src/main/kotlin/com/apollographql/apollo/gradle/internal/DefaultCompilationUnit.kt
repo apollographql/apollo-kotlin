@@ -107,7 +107,8 @@ abstract class DefaultCompilationUnit @Inject constructor(
           |  }
         """.trimMargin()
       }
-      return "ApolloGraphQL: By default only one schema.json file is supported.\nPlease use multiple services instead:\napollo {\n$services\n}"
+      return "ApolloGraphQL: By default only one schema.[json | sdl] file is supported.\n" +
+          "Please use multiple services instead:\napollo {\n$services\n}"
     }
 
     fun resolveDirectories(project: Project, sourceFolderProvider: Provider<String>, sourceSetNames: List<String>): List<String> {
@@ -147,16 +148,18 @@ abstract class DefaultCompilationUnit @Inject constructor(
         }
       } else {
         val candidates = directories.flatMap { srcDir ->
-          srcDir.walkTopDown().filter { it.name == "schema.json" }.toList()
+          srcDir.walkTopDown().filter { it.name == "schema.json" || it.name == "schema.sdl" }.toList()
         }
 
         require(candidates.size <= 1) {
           multipleSchemaError(candidates)
         }
+
         require(candidates.size == 1) {
-          "ApolloGraphQL: cannot find schema.json. Please specify it explicitely. Looked under:\n" +
-              directories.map { it.absolutePath }.joinToString("\n")
+          "ApolloGraphQL: cannot find schema.[json | sdl]. Please specify it explicitely. Looked under:\n" +
+              directories.joinToString("\n") { it.absolutePath }
         }
+
         return candidates.first().path
       }
     }

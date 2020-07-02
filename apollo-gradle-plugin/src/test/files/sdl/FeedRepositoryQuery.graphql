@@ -1,0 +1,7 @@
+query FeedRepositoryQuery($type: FeedType!, $limit: Int!) {
+  feed(type: $type, limit: $limit) {
+    repository {
+      name
+    }
+  }
+}

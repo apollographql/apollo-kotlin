@@ -5,9 +5,8 @@ import com.apollographql.apollo.compiler.parser.error.ParseException
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.parser.sdl.GraphSDLSchemaParser.parse
 import java.io.File
-import java.util.Locale
 
-internal data class GraphSdlSchema(
+data class GraphSdlSchema(
     val schema: Schema,
     val typeDefinitions: Map<String, TypeDefinition>
 ) {
@@ -122,7 +121,7 @@ internal data class GraphSdlSchema(
   }
 }
 
-internal fun GraphSdlSchema.toIntrospectionSchema(): IntrospectionSchema {
+fun GraphSdlSchema.toIntrospectionSchema(): IntrospectionSchema {
   return IntrospectionSchema(
       queryType = schema.queryRootOperationType.typeName,
       mutationType = schema.mutationRootOperationType.typeName,
@@ -226,35 +225,13 @@ private fun GraphSdlSchema.TypeDefinition.Scalar.toIntrospectionType(): Introspe
 private fun GraphSdlSchema.TypeRef.toIntrospectionType(schema: GraphSdlSchema): IntrospectionSchema.TypeRef {
   return when (this) {
     is GraphSdlSchema.TypeRef.Named -> {
-      when (typeName.toLowerCase(Locale.ENGLISH)) {
-        "int" -> IntrospectionSchema.TypeRef(
-            kind = IntrospectionSchema.Kind.SCALAR,
-            name = "Int"
-        )
-        "float" -> IntrospectionSchema.TypeRef(
-            kind = IntrospectionSchema.Kind.SCALAR,
-            name = "Float"
-        )
-        "string" -> IntrospectionSchema.TypeRef(
-            kind = IntrospectionSchema.Kind.SCALAR,
-            name = "String"
-        )
-        "boolean" -> IntrospectionSchema.TypeRef(
-            kind = IntrospectionSchema.Kind.SCALAR,
-            name = "Boolean"
-        )
-        "id" -> IntrospectionSchema.TypeRef(
-            kind = IntrospectionSchema.Kind.SCALAR,
-            name = "ID"
-        )
-        else -> IntrospectionSchema.TypeRef(
-            kind = schema.typeDefinitions[typeName]?.toIntrospectionType() ?: throw ParseException(
-                message = "Undefined GraphQL schema type `$typeName`",
-                sourceLocation = sourceLocation
-            ),
-            name = typeName
-        )
-      }
+      IntrospectionSchema.TypeRef(
+          kind = schema.typeDefinitions[typeName]?.toIntrospectionType() ?: throw ParseException(
+              message = "Undefined GraphQL schema type `$typeName`",
+              sourceLocation = sourceLocation
+          ),
+          name = typeName
+      )
     }
 
     is GraphSdlSchema.TypeRef.NonNull -> IntrospectionSchema.TypeRef(
