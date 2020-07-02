@@ -1,4 +1,4 @@
-package com.apollographql.apollo.compiler.parser
+package com.apollographql.apollo.compiler.parser.graphql
 
 import com.apollographql.apollo.compiler.parser.antlr.GraphQLParser
 import org.antlr.v4.runtime.ParserRuleContext

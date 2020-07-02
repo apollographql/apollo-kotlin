@@ -3,7 +3,8 @@ package com.apollographql.apollo.compiler.parser.sdl
 import com.apollographql.apollo.compiler.ir.SourceLocation
 import com.apollographql.apollo.compiler.parser.antlr.GraphSDLLexer
 import com.apollographql.apollo.compiler.parser.antlr.GraphSDLParser
-import com.apollographql.apollo.compiler.parser.invoke
+import com.apollographql.apollo.compiler.parser.error.DocumentParseException
+import com.apollographql.apollo.compiler.parser.error.ParseException
 import org.antlr.v4.runtime.ANTLRInputStream
 import org.antlr.v4.runtime.BaseErrorListener
 import org.antlr.v4.runtime.CommonTokenStream
@@ -41,7 +42,7 @@ internal object GraphSDLSchemaParser {
                 msg: String?,
                 e: RecognitionException?
             ) {
-              throw GraphSdlDocumentParseException(
+              throw DocumentParseException(
                   message = "Unsupported token `${(offendingSymbol as? Token)?.text ?: offendingSymbol.toString()}`",
                   filePath = absolutePath,
                   sourceLocation = SourceLocation(
@@ -56,8 +57,8 @@ internal object GraphSDLSchemaParser {
 
     try {
       return parser.document().parse()
-    } catch (e: GraphSdlParseException) {
-      throw GraphSdlDocumentParseException(
+    } catch (e: ParseException) {
+      throw DocumentParseException(
           parseException = e,
           filePath = absolutePath
       )
@@ -239,7 +240,7 @@ internal object GraphSDLSchemaParser {
       objectValue() != null -> text
       stringValue() != null -> text
       nullValue() != null -> null
-      else -> throw GraphSdlParseException(
+      else -> throw ParseException(
           message = "Illegal default value `$text`",
           token = start
       )
@@ -251,7 +252,7 @@ internal object GraphSDLSchemaParser {
       namedType() != null -> namedType().parse()
       listType() != null -> listType().parse()
       nonNullType() != null -> nonNullType().parse()
-      else -> throw GraphSdlParseException(
+      else -> throw ParseException(
           message = "Illegal type reference",
           token = start
       )
@@ -270,7 +271,7 @@ internal object GraphSDLSchemaParser {
     return when {
       namedType() != null -> GraphSdlSchema.TypeRef.NonNull(namedType().parse())
       listType() != null -> GraphSdlSchema.TypeRef.NonNull(listType().parse())
-      else -> throw GraphSdlParseException(
+      else -> throw ParseException(
           message = "Illegal type reference",
           token = this.start
       )
@@ -305,3 +306,8 @@ internal object GraphSDLSchemaParser {
         ?: emptyMap()
   }
 }
+
+private operator fun SourceLocation.Companion.invoke(token: Token) = SourceLocation(
+    line = token.line,
+    position = token.charPositionInLine
+)

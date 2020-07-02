@@ -1,7 +1,17 @@
-package com.apollographql.apollo.compiler.parser
+package com.apollographql.apollo.compiler.parser.graphql
 
 import com.apollographql.apollo.compiler.PackageNameProvider
-import com.apollographql.apollo.compiler.ir.*
+import com.apollographql.apollo.compiler.ir.Field
+import com.apollographql.apollo.compiler.ir.Fragment
+import com.apollographql.apollo.compiler.ir.Operation
+import com.apollographql.apollo.compiler.ir.ScalarType
+import com.apollographql.apollo.compiler.ir.SourceLocation
+import com.apollographql.apollo.compiler.parser.error.DocumentParseException
+import com.apollographql.apollo.compiler.parser.error.ParseException
+import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
+import com.apollographql.apollo.compiler.parser.introspection.asGraphQLType
+import com.apollographql.apollo.compiler.parser.introspection.isAssignableFrom
+import com.apollographql.apollo.compiler.parser.introspection.resolveType
 
 internal fun List<Operation>.checkMultipleOperationDefinitions(packageNameProvider: PackageNameProvider) {
   groupBy { packageNameProvider.operationPackageName(it.filePath) + it.operationName }
@@ -9,7 +19,7 @@ internal fun List<Operation>.checkMultipleOperationDefinitions(packageNameProvid
       .find { it.size > 1 }
       ?.last()
       ?.run {
-        throw GraphQLParseException("$filePath: There can be only one operation named `$operationName`")
+        throw ParseException("$filePath: There can be only one operation named `$operationName`")
       }
 }
 
@@ -18,41 +28,41 @@ internal fun List<Fragment>.checkMultipleFragmentDefinitions() {
       .values
       .find { it.size > 1 }
       ?.last()
-      ?.run { throw GraphQLParseException("$filePath: There can be only one fragment named `$fragmentName`") }
+      ?.run { throw ParseException("$filePath: There can be only one fragment named `$fragmentName`") }
 }
 
-internal fun Operation.validateArguments(schema: Schema) {
+internal fun Operation.validateArguments(schema: IntrospectionSchema) {
   try {
     fields.validateArguments(operation = this, schema = schema)
   } catch (e: ParseException) {
-    throw GraphQLDocumentParseException(
+    throw DocumentParseException(
         message = e.message!!,
         sourceLocation = e.sourceLocation,
-        graphQLFilePath = filePath
+        filePath = filePath
     )
   }
 }
 
-internal fun Fragment.validateArguments(operation: Operation, schema: Schema) {
+internal fun Fragment.validateArguments(operation: Operation, schema: IntrospectionSchema) {
   try {
     fields.validateArguments(operation = operation, schema = schema)
   } catch (e: ParseException) {
-    throw GraphQLDocumentParseException(
+    throw DocumentParseException(
         message = "${e.message!!}\nOperation `${operation.operationName}` declaration [${operation.filePath}]",
-        sourceLocation = e.sourceLocation,
-        graphQLFilePath = filePath
+        sourceLocation = if (e.sourceLocation == SourceLocation.UNKNOWN) sourceLocation else e.sourceLocation,
+        filePath = filePath
     )
   }
 }
 
-private fun List<Field>.validateArguments(operation: Operation, schema: Schema) {
+private fun List<Field>.validateArguments(operation: Operation, schema: IntrospectionSchema) {
   forEach { field ->
     field.validateArguments(operation = operation, schema = schema)
     field.fields.forEach { it.validateArguments(operation = operation, schema = schema) }
   }
 }
 
-private fun Field.validateArguments(operation: Operation, schema: Schema) {
+private fun Field.validateArguments(operation: Operation, schema: IntrospectionSchema) {
   args.forEach { arg ->
     try {
       val argumentTypeRef = schema.resolveType(arg.type)
@@ -62,10 +72,10 @@ private fun Field.validateArguments(operation: Operation, schema: Schema) {
           operation = operation,
           schema = schema
       )
-    } catch (e: GraphQLParseException) {
+    } catch (e: ParseException) {
       throw ParseException(
           message = e.message!!,
-          sourceLocation = arg.sourceLocation
+          sourceLocation = if (e.sourceLocation == SourceLocation.UNKNOWN) arg.sourceLocation else e.sourceLocation
       )
     }
   }
@@ -98,18 +108,18 @@ private fun Field.validateConditions(operation: Operation) {
 }
 
 @Suppress("NAME_SHADOWING")
-private fun Schema.TypeRef.validateArgumentValue(
+private fun IntrospectionSchema.TypeRef.validateArgumentValue(
     fieldName: String,
     value: Pair<Any?, Boolean>,
     operation: Operation,
-    schema: Schema
+    schema: IntrospectionSchema
 ) {
   val (value, defined) = value
   when (kind) {
-    Schema.Kind.NON_NULL -> {
+    IntrospectionSchema.Kind.NON_NULL -> {
       if (value == null) {
         if (defined) {
-          throw GraphQLParseException("Input field `$fieldName` is non optional")
+          throw ParseException("Input field `$fieldName` is non optional")
         }
       } else if (value is Map<*, *>) {
         val variableName = value.extractVariableName()
@@ -137,8 +147,8 @@ private fun Schema.TypeRef.validateArgumentValue(
       }
     }
 
-    Schema.Kind.ENUM,
-    Schema.Kind.SCALAR -> {
+    IntrospectionSchema.Kind.ENUM,
+    IntrospectionSchema.Kind.SCALAR -> {
       if (value is Map<*, *>) {
         val variableName = value.extractVariableName()
         if (variableName != null) {
@@ -148,14 +158,14 @@ private fun Schema.TypeRef.validateArgumentValue(
               schema = schema
           )
         } else {
-          throw GraphQLParseException("Expected scalar value for input field `$fieldName`, but found object")
+          throw ParseException("Expected scalar value for input field `$fieldName`, but found object")
         }
       } else if (value is List<*>) {
-        throw GraphQLParseException("Expected scalar value for input field `$fieldName`, but found list")
+        throw ParseException("Expected scalar value for input field `$fieldName`, but found list")
       }
     }
 
-    Schema.Kind.INPUT_OBJECT -> {
+    IntrospectionSchema.Kind.INPUT_OBJECT -> {
       if (value is Map<*, *>) {
         val variableName = value.extractVariableName()
         if (variableName != null) {
@@ -165,7 +175,7 @@ private fun Schema.TypeRef.validateArgumentValue(
               schema = schema
           )
         } else {
-          (schema[name] as Schema.Type.InputObject).inputFields.forEach { field ->
+          (schema[name] as IntrospectionSchema.Type.InputObject).inputFields.forEach { field ->
             field.type.validateArgumentValue(
                 fieldName = "$fieldName.${field.name}",
                 value = value[field.name] to value.containsKey(field.name),
@@ -175,13 +185,13 @@ private fun Schema.TypeRef.validateArgumentValue(
           }
         }
       } else if (value is List<*>) {
-        throw GraphQLParseException("Expected input object value for input field `$fieldName`, but found list")
+        throw ParseException("Expected input object value for input field `$fieldName`, but found list")
       } else if (value != null) {
-        throw GraphQLParseException("Expected input object value for input field `$fieldName`, but found scalar")
+        throw ParseException("Expected input object value for input field `$fieldName`, but found scalar")
       }
     }
 
-    Schema.Kind.LIST -> {
+    IntrospectionSchema.Kind.LIST -> {
       if (value is List<*>) {
         value.forEach { item ->
           ofType?.validateArgumentValue(
@@ -200,14 +210,14 @@ private fun Schema.TypeRef.validateArgumentValue(
               schema = schema
           )
         } else {
-          throw GraphQLParseException("Expected array value for input field `$fieldName`, but found object")
+          throw ParseException("Expected array value for input field `$fieldName`, but found object")
         }
       } else if (value != null) {
-        throw GraphQLParseException("Expected array value for input field `$fieldName`, but found scalar")
+        throw ParseException("Expected array value for input field `$fieldName`, but found scalar")
       }
     }
 
-    else -> throw GraphQLParseException("Unsupported input field `$fieldName` type `${asGraphQLType()}`")
+    else -> throw ParseException("Unsupported input field `$fieldName` type `${asGraphQLType()}`")
   }
 }
 
@@ -219,13 +229,13 @@ private fun Map<*, *>.extractVariableName(): String? {
   }
 }
 
-private fun Operation.validateVariableType(name: String, expectedType: Schema.TypeRef, schema: Schema) {
-  val variable = variables.find { it.name == name } ?: throw GraphQLParseException(
+private fun Operation.validateVariableType(name: String, expectedType: IntrospectionSchema.TypeRef, schema: IntrospectionSchema) {
+  val variable = variables.find { it.name == name } ?: throw ParseException(
       "Variable `$name` is not defined by operation `${operationName}`"
   )
   val variableType = schema.resolveType(variable.type)
   if (!expectedType.isAssignableFrom(other = variableType, schema = schema)) {
-    throw GraphQLParseException(
+    throw ParseException(
         "Variable `$name` of type `${variableType.asGraphQLType()}` used in position expecting type `${expectedType.asGraphQLType()}`"
     )
   }

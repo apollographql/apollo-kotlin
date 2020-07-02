@@ -1,7 +1,8 @@
-package com.apollographql.apollo.compiler.parser
+package com.apollographql.apollo.compiler.parser.graphql
 
 import com.apollographql.apollo.compiler.ir.Field
 import com.apollographql.apollo.compiler.ir.InlineFragment
+import com.apollographql.apollo.compiler.parser.error.ParseException
 
 internal fun List<Field>.mergeFields(others: List<Field>): List<Field> {
   val (missing, conflicted) = others.partition { otherField ->

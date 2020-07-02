@@ -4,8 +4,8 @@ import com.apollographql.apollo.compiler.DefaultPackageNameProvider
 import com.apollographql.apollo.compiler.GraphQLCompiler
 import com.apollographql.apollo.compiler.NullableValueType
 import com.apollographql.apollo.compiler.OperationIdGenerator
-import com.apollographql.apollo.compiler.parser.GraphQLDocumentParser
-import com.apollographql.apollo.compiler.parser.Schema
+import com.apollographql.apollo.compiler.parser.graphql.GraphQLDocumentParser
+import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
@@ -110,7 +110,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
     outputDir.get().asFile.deleteRecursively()
 
-    val schema = Schema.invoke(realSchemaFile)
+    val schema = IntrospectionSchema.invoke(realSchemaFile)
 
     val packageNameProvider = DefaultPackageNameProvider(
         rootFolders = rootFolders.get().map { project.file(it) },

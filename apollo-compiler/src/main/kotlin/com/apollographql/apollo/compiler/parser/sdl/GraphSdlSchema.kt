@@ -1,10 +1,11 @@
 package com.apollographql.apollo.compiler.parser.sdl
 
 import com.apollographql.apollo.compiler.ir.SourceLocation
+import com.apollographql.apollo.compiler.parser.error.ParseException
+import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.parser.sdl.GraphSDLSchemaParser.parse
 import java.io.File
 import java.util.Locale
-import com.apollographql.apollo.compiler.parser.Schema as IntrospectionSchema
 
 internal data class GraphSdlSchema(
     val schema: Schema,
@@ -247,8 +248,8 @@ private fun GraphSdlSchema.TypeRef.toIntrospectionType(schema: GraphSdlSchema): 
             name = "ID"
         )
         else -> IntrospectionSchema.TypeRef(
-            kind = schema.typeDefinitions[typeName]?.toIntrospectionType() ?: throw GraphSdlParseException(
-                "Undefined GraphQL schema type `$typeName`",
+            kind = schema.typeDefinitions[typeName]?.toIntrospectionType() ?: throw ParseException(
+                message = "Undefined GraphQL schema type `$typeName`",
                 sourceLocation = sourceLocation
             ),
             name = typeName
