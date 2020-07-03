@@ -42,7 +42,7 @@ public class ApolloStoreTest {
           }
 
           @NotNull @Override
-          protected Set<String> performMerge(@NotNull Record apolloRecord, @NotNull CacheHeaders cacheHeaders) {
+          protected Set<String> performMerge(@NotNull Record apolloRecord, @Nullable Record oldRecord, @NotNull CacheHeaders cacheHeaders) {
             return emptySet();
           }
         },
