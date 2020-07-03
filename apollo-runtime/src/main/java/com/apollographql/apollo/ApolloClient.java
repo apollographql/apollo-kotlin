@@ -94,6 +94,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   private final ApolloCallTracker tracker = new ApolloCallTracker();
   private final List<ApolloInterceptor> applicationInterceptors;
   private final List<ApolloInterceptorFactory> applicationInterceptorFactories;
+  private final ApolloInterceptorFactory autoPersistedOperationsInterceptorFactory;
   private final boolean enableAutoPersistedQueries;
   private final SubscriptionManager subscriptionManager;
   private final boolean useHttpGetMethodForQueries;
@@ -112,6 +113,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       ApolloLogger logger,
       List<ApolloInterceptor> applicationInterceptors,
       List<ApolloInterceptorFactory> applicationInterceptorFactories,
+      ApolloInterceptorFactory autoPersistedOperationsInterceptorFactory,
       boolean enableAutoPersistedQueries,
       SubscriptionManager subscriptionManager,
       boolean useHttpGetMethodForQueries,
@@ -133,6 +135,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     }
     this.applicationInterceptors = applicationInterceptors;
     this.applicationInterceptorFactories = applicationInterceptorFactories;
+    this.autoPersistedOperationsInterceptorFactory = autoPersistedOperationsInterceptorFactory;
     this.enableAutoPersistedQueries = enableAutoPersistedQueries;
     this.subscriptionManager = subscriptionManager;
     this.useHttpGetMethodForQueries = useHttpGetMethodForQueries;
@@ -323,6 +326,13 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   }
 
   /**
+   * @return The {@link ApolloInterceptor} used for auto persisted operations
+   */
+  public ApolloInterceptorFactory getAutoPersistedOperationsInterceptorFactory() {
+    return autoPersistedOperationsInterceptorFactory;
+  }
+
+  /**
    * Sets the idleResourceCallback which will be called when this ApolloClient is idle.
    */
   public void idleCallback(IdleResourceCallback idleResourceCallback) {
@@ -368,6 +378,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         .logger(logger)
         .applicationInterceptors(applicationInterceptors)
         .applicationInterceptorFactories(applicationInterceptorFactories)
+        .autoPersistedOperationsInterceptorFactory(autoPersistedOperationsInterceptorFactory)
         .tracker(tracker)
         .refetchQueries(Collections.<Query>emptyList())
         .refetchQueryNames(Collections.<OperationName>emptyList())
@@ -395,6 +406,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     Logger logger = null;
     final List<ApolloInterceptor> applicationInterceptors = new ArrayList<>();
     final List<ApolloInterceptorFactory> applicationInterceptorFactories = new ArrayList<>();
+    @Nullable
+    ApolloInterceptorFactory autoPersistedOperationsInterceptorFactory = null;
     boolean enableAutoPersistedQueries;
     SubscriptionManager subscriptionManager = new NoOpSubscriptionManager();
     boolean enableAutoPersistedSubscriptions;
@@ -422,6 +435,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       logger = apolloClient.logger.getLogger();
       applicationInterceptors.addAll(apolloClient.applicationInterceptors);
       applicationInterceptorFactories.addAll(apolloClient.applicationInterceptorFactories);
+      autoPersistedOperationsInterceptorFactory = apolloClient.getAutoPersistedOperationsInterceptorFactory();
       enableAutoPersistedQueries = apolloClient.enableAutoPersistedQueries;
       subscriptionManager = apolloClient.subscriptionManager;
       useHttpGetMethodForQueries = apolloClient.useHttpGetMethodForQueries;
@@ -620,9 +634,21 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     }
 
     /**
-     * @param enableAutoPersistedQueries True if ApolloClient should enable Automatic Persisted Queries support. Default: false.
+     * <p>Sets the interceptor to use for auto persisted operations.</p>
+     *
+     *
+     * @param interceptorFactory interceptor to set
      * @return The {@link Builder} object to be used for chaining method calls
      */
+    public Builder setAutoPersistedOperationsInterceptorFactory(@Nullable ApolloInterceptorFactory interceptorFactory) {
+      autoPersistedOperationsInterceptorFactory = interceptorFactory;
+      return this;
+    }
+
+    /**
+       * @param enableAutoPersistedQueries True if ApolloClient should enable Automatic Persisted Queries support. Default: false.
+       * @return The {@link Builder} object to be used for chaining method calls
+       */
     public Builder enableAutoPersistedQueries(boolean enableAutoPersistedQueries) {
       this.enableAutoPersistedQueries = enableAutoPersistedQueries;
       return this;
@@ -774,6 +800,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
           apolloLogger,
           Collections.unmodifiableList(applicationInterceptors),
           Collections.unmodifiableList(applicationInterceptorFactories),
+          autoPersistedOperationsInterceptorFactory,
           enableAutoPersistedQueries,
           subscriptionManager,
           useHttpGetMethodForQueries,

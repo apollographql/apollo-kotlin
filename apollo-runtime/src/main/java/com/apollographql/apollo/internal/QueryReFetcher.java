@@ -54,6 +54,7 @@ final class QueryReFetcher {
           .logger(builder.logger)
           .applicationInterceptors(builder.applicationInterceptors)
           .applicationInterceptorFactories(builder.applicationInterceptorFactories)
+          .autoPersistedOperationsInterceptorFactory(builder.autoPersistedOperationsInterceptorFactory)
           .tracker(builder.callTracker)
           .dispatcher(builder.dispatcher)
           .build());
@@ -126,6 +127,7 @@ final class QueryReFetcher {
     ApolloLogger logger;
     List<ApolloInterceptor> applicationInterceptors;
     List<ApolloInterceptorFactory> applicationInterceptorFactories;
+    ApolloInterceptorFactory autoPersistedOperationsInterceptorFactory;
     ApolloCallTracker callTracker;
 
     Builder queries(List<Query> queries) {
@@ -180,6 +182,11 @@ final class QueryReFetcher {
 
     Builder applicationInterceptorFactories(List<ApolloInterceptorFactory> applicationInterceptorFactories) {
       this.applicationInterceptorFactories = applicationInterceptorFactories;
+      return this;
+    }
+
+    Builder autoPersistedOperationsInterceptorFactory(ApolloInterceptorFactory interceptorFactories) {
+      this.autoPersistedOperationsInterceptorFactory = interceptorFactories;
       return this;
     }
 

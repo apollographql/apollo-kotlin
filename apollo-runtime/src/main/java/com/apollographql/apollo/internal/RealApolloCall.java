@@ -67,6 +67,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   final ApolloCallTracker tracker;
   final List<ApolloInterceptor> applicationInterceptors;
   final List<ApolloInterceptorFactory> applicationInterceptorFactories;
+  final ApolloInterceptorFactory autoPersistedOperationsInterceptorFactory;
   final List<OperationName> refetchQueryNames;
   final List<Query> refetchQueries;
   final Optional<QueryReFetcher> queryReFetcher;
@@ -98,6 +99,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     logger = builder.logger;
     applicationInterceptors = builder.applicationInterceptors;
     applicationInterceptorFactories = builder.applicationInterceptorFactories;
+    autoPersistedOperationsInterceptorFactory = builder.autoPersistedOperationsInterceptorFactory;
     refetchQueryNames = builder.refetchQueryNames;
     refetchQueries = builder.refetchQueries;
     tracker = builder.tracker;
@@ -117,6 +119,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
           .logger(builder.logger)
           .applicationInterceptors(builder.applicationInterceptors)
           .applicationInterceptorFactories(builder.applicationInterceptorFactories)
+          .autoPersistedOperationsInterceptorFactory(builder.autoPersistedOperationsInterceptorFactory)
           .callTracker(builder.tracker)
           .build());
     }
@@ -315,6 +318,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         .logger(logger)
         .applicationInterceptors(applicationInterceptors)
         .applicationInterceptorFactories(applicationInterceptorFactories)
+        .autoPersistedOperationsInterceptorFactory(autoPersistedOperationsInterceptorFactory)
         .tracker(tracker)
         .refetchQueryNames(refetchQueryNames)
         .refetchQueries(refetchQueries)
@@ -398,10 +402,16 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         responseFieldMapper,
         dispatcher,
         logger,
-        writeToNormalizedCacheAsynchronously)
-    );
-    if (operation instanceof Query && enableAutoPersistedQueries) {
-      interceptors.add(new ApolloAutoPersistedOperationInterceptor(logger, useHttpGetMethodForPersistedQueries));
+        writeToNormalizedCacheAsynchronously));
+    if (autoPersistedOperationsInterceptorFactory != null) {
+      ApolloInterceptor interceptor = autoPersistedOperationsInterceptorFactory.newInterceptor(logger, operation);
+      if (interceptor != null) {
+        interceptors.add(interceptor);
+      }
+    } else {
+      if (operation instanceof Query && enableAutoPersistedQueries) {
+        interceptors.add(new ApolloAutoPersistedOperationInterceptor(logger, useHttpGetMethodForPersistedQueries));
+      }
     }
     interceptors.add(new ApolloParseInterceptor(httpCache, apolloStore.networkResponseNormalizer(), responseFieldMapper,
         scalarTypeAdapters, logger));
@@ -427,6 +437,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     ApolloLogger logger;
     List<ApolloInterceptor> applicationInterceptors;
     List<ApolloInterceptorFactory> applicationInterceptorFactories;
+    ApolloInterceptorFactory autoPersistedOperationsInterceptorFactory;
     List<OperationName> refetchQueryNames = emptyList();
     List<Query> refetchQueries = emptyList();
     ApolloCallTracker tracker;
@@ -516,6 +527,10 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
       return this;
     }
 
+    public Builder<T> autoPersistedOperationsInterceptorFactory(ApolloInterceptorFactory interceptorFactory) {
+      this.autoPersistedOperationsInterceptorFactory = interceptorFactory;
+      return this;
+    }
     public Builder<T> refetchQueryNames(List<OperationName> refetchQueryNames) {
       this.refetchQueryNames = refetchQueryNames != null ? new ArrayList<>(refetchQueryNames)
           : Collections.<OperationName>emptyList();
