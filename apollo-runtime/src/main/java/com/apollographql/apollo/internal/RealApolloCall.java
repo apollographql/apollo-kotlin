@@ -23,7 +23,7 @@ import com.apollographql.apollo.fetcher.ResponseFetcher;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.interceptor.ApolloInterceptorFactory;
-import com.apollographql.apollo.internal.interceptor.ApolloAutoPersistedQueryInterceptor;
+import com.apollographql.apollo.interceptor.ApolloAutoPersistedOperationInterceptor;
 import com.apollographql.apollo.internal.interceptor.ApolloCacheInterceptor;
 import com.apollographql.apollo.internal.interceptor.ApolloParseInterceptor;
 import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor;
@@ -401,7 +401,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         writeToNormalizedCacheAsynchronously)
     );
     if (operation instanceof Query && enableAutoPersistedQueries) {
-      interceptors.add(new ApolloAutoPersistedQueryInterceptor(logger, useHttpGetMethodForPersistedQueries));
+      interceptors.add(new ApolloAutoPersistedOperationInterceptor(logger, useHttpGetMethodForPersistedQueries));
     }
     interceptors.add(new ApolloParseInterceptor(httpCache, apolloStore.networkResponseNormalizer(), responseFieldMapper,
         scalarTypeAdapters, logger));

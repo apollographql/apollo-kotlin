@@ -1,19 +1,19 @@
-package com.apollographql.apollo.internal.interceptor;
+package com.apollographql.apollo.interceptor;
 
 import com.apollographql.apollo.api.Error;
+import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.internal.ApolloLogger;
 import com.apollographql.apollo.api.internal.Function;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.exception.ApolloException;
-import com.apollographql.apollo.interceptor.ApolloInterceptor;
-import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.concurrent.Executor;
 
-public class ApolloAutoPersistedQueryInterceptor implements ApolloInterceptor {
+public class ApolloAutoPersistedOperationInterceptor implements ApolloInterceptor {
   private static final String PROTOCOL_NEGOTIATION_ERROR_QUERY_NOT_FOUND = "PersistedQueryNotFound";
   private static final String PROTOCOL_NEGOTIATION_ERROR_NOT_SUPPORTED = "PersistedQueryNotSupported";
 
@@ -22,7 +22,7 @@ public class ApolloAutoPersistedQueryInterceptor implements ApolloInterceptor {
 
   final boolean useHttpGetMethodForPersistedOperations;
 
-  public ApolloAutoPersistedQueryInterceptor(@NotNull ApolloLogger logger,
+  public ApolloAutoPersistedOperationInterceptor(@NotNull ApolloLogger logger,
                                              boolean useHttpGetMethodForPersistedOperations) {
     this.logger = logger;
     this.useHttpGetMethodForPersistedOperations = useHttpGetMethodForPersistedOperations;
@@ -107,5 +107,22 @@ public class ApolloAutoPersistedQueryInterceptor implements ApolloInterceptor {
       }
     }
     return false;
+  }
+
+  static class Factory implements ApolloInterceptorFactory {
+
+    final boolean useHttpGet;
+
+    Factory(boolean useHttpGet) {
+      this.useHttpGet = useHttpGet;
+    }
+
+    Factory() {
+      this(false);
+    }
+
+    @Nullable @Override public ApolloInterceptor newInterceptor(@NotNull ApolloLogger logger, @NotNull Operation<?, ?, ?> operation) {
+      return new ApolloAutoPersistedOperationInterceptor(logger, useHttpGet);
+    }
   }
 }
