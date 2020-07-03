@@ -4,9 +4,9 @@ plugins {
 }
 
 dependencies {
-  implementation(project(":apollo-runtime"))
-  implementation(project(":apollo-api"))
-  implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines.core"))
+  api(project(":apollo-runtime"))
+  api(project(":apollo-api"))
+  api(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines.core"))
   implementation(groovy.util.Eval.x(project, "x.dep.kotlin.stdLib"))
 
   testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
