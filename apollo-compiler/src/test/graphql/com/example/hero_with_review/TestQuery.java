@@ -139,6 +139,13 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
     return OperationRequestBodyComposer.compose(this, false, true, ScalarTypeAdapters.DEFAULT);
   }
 
+  @Override
+  @NotNull
+  public ByteString composeRequestBody(final boolean autoPersistQueries,
+      final boolean withQueryDocument, @NotNull final ScalarTypeAdapters scalarTypeAdapters) {
+    return OperationRequestBodyComposer.compose(this, autoPersistQueries, withQueryDocument, scalarTypeAdapters);
+  }
+
   public static final class Builder {
     private @NotNull Episode ep;
 
