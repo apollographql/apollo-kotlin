@@ -9,6 +9,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class SqlNormalizedCacheTest {
 
@@ -104,6 +105,19 @@ class SqlNormalizedCacheTest {
     val nullRecord = cache.loadRecord(STANDARD_KEY, CacheHeaders.builder()
         .addHeader(ApolloCacheHeaders.EVICT_AFTER_READ, "true").build())
     assertNull(nullRecord)
+  }
+
+  @Test
+  fun testHeader_evictAfterBatchRead() {
+    createRecord(STANDARD_KEY)
+    createRecord(QUERY_ROOT_KEY)
+    val selectionSet = setOf(STANDARD_KEY, QUERY_ROOT_KEY)
+    val records = cache.loadRecords(selectionSet, CacheHeaders.builder()
+        .addHeader(ApolloCacheHeaders.EVICT_AFTER_READ, "true").build())
+    assertEquals(records.size, 2)
+    val emptyRecords = cache.loadRecords(selectionSet, CacheHeaders.builder()
+        .addHeader(ApolloCacheHeaders.EVICT_AFTER_READ, "true").build())
+    assertTrue(emptyRecords.isEmpty())
   }
 
   @Test

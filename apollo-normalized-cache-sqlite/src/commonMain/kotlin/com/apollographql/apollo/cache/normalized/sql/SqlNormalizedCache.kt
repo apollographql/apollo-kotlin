@@ -27,7 +27,11 @@ class SqlNormalizedCache internal constructor(
   }
 
   override fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
-    return selectRecordsForKey(keys)
+    val records = selectRecordsForKey(keys)
+    if (cacheHeaders.hasHeader(EVICT_AFTER_READ)) {
+      deleteRecords(records.map { it.key })
+    }
+    return records
   }
 
   override fun clearAll() {
@@ -118,6 +122,15 @@ class SqlNormalizedCache internal constructor(
       changes = cacheQueries.changes().executeAsOne()
     }
     return changes > 0
+  }
+
+  fun deleteRecords(keys: Collection<String>): Boolean {
+    var changes = 0L
+    cacheQueries.transaction {
+      cacheQueries.deleteRecords(keys)
+      changes = cacheQueries.changes().executeAsOne()
+    }
+    return changes == keys.size.toLong()
   }
 
   fun createRecord(key: String, fields: String) {
