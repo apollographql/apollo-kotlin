@@ -9,6 +9,9 @@ CREATE INDEX idx_records_key ON records(key);
 recordForKey:
 SELECT key, record FROM records WHERE key=?;
 
+recordsForKeys:
+SELECT key, record FROM records WHERE key IN ?;
+
 insert:
 INSERT INTO records (key, record) VALUES (?,?);
 
@@ -17,6 +20,9 @@ UPDATE records SET record=:record WHERE key=:key;
 
 delete:
 DELETE FROM records WHERE key=?;
+
+deleteRecords:
+DELETE FROM records WHERE key IN ?;
 
 changes:
 SELECT changes();

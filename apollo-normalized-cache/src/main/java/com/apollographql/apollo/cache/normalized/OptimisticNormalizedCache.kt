@@ -13,16 +13,16 @@ class OptimisticNormalizedCache : NormalizedCache() {
   override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? {
     return try {
       val nonOptimisticRecord = nextCache?.loadRecord(key, cacheHeaders)
-      val journal = lruCache.getIfPresent(key)
-      if (journal != null) {
-        nonOptimisticRecord?.toBuilder()?.build()?.apply {
-          mergeWith(journal.snapshot)
-        } ?: journal.snapshot.toBuilder().build()
-      } else {
-        nonOptimisticRecord
-      }
+      nonOptimisticRecord.mergeJournalRecord(key)
     } catch (ignore: Exception) {
       null
+    }
+  }
+
+  override fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
+    val nonOptimisticRecords = nextCache?.loadRecords(keys, cacheHeaders)?.associateBy { it.key } ?: emptyMap()
+    return keys.mapNotNull { key ->
+      nonOptimisticRecords[key].mergeJournalRecord(key)
     }
   }
 
@@ -76,7 +76,7 @@ class OptimisticNormalizedCache : NormalizedCache() {
     return changedCacheKeys
   }
 
-  override fun performMerge(apolloRecord: Record, cacheHeaders: CacheHeaders): Set<String> {
+  override fun performMerge(apolloRecord: Record, oldRecord: Record?, cacheHeaders: CacheHeaders): Set<String> {
     return emptySet()
   }
 
@@ -87,6 +87,17 @@ class OptimisticNormalizedCache : NormalizedCache() {
         lruCache.asMap().mapValues { it.value.snapshot }
     )
     putAll(nextCache?.dump().orEmpty())
+  }
+
+  private fun Record?.mergeJournalRecord(key: String): Record? {
+    val journal = lruCache.getIfPresent(key)
+    return if (journal != null) {
+      this?.toBuilder()?.build()?.apply {
+        mergeWith(journal.snapshot)
+      } ?: journal.snapshot.toBuilder().build()
+    } else {
+      this
+    }
   }
 
   private class RecordJournal(mutationRecord: Record) {

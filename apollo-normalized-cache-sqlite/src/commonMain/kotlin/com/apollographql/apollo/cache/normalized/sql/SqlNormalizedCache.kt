@@ -26,6 +26,10 @@ class SqlNormalizedCache internal constructor(
     return nextCache?.loadRecord(key, cacheHeaders)
   }
 
+  override fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
+    return selectRecordsForKey(keys)
+  }
+
   override fun clearAll() {
     nextCache?.clearAll()
     cacheQueries.deleteAll()
@@ -54,8 +58,7 @@ class SqlNormalizedCache internal constructor(
     return records
   }
 
-  override fun performMerge(apolloRecord: Record, cacheHeaders: CacheHeaders): Set<String> {
-    val oldRecord = selectRecordForKey(apolloRecord.key)
+  override fun performMerge(apolloRecord: Record, oldRecord: Record?, cacheHeaders: CacheHeaders): Set<String> {
     return if (oldRecord == null) {
       cacheQueries.insert(key = apolloRecord.key, record = recordFieldAdapter.toJson(apolloRecord.fields))
       emptySet()
@@ -65,6 +68,23 @@ class SqlNormalizedCache internal constructor(
           cacheQueries.update(record = recordFieldAdapter.toJson(oldRecord.fields), key = oldRecord.key)
         }
       }
+    }
+  }
+
+  fun selectRecordsForKey(keys: Collection<String>): List<Record> {
+    return try {
+      // sqllite has a limit of 999 named arguments.
+      keys.chunked(999).flatMap { chunkedKeys ->
+        cacheQueries.recordsForKeys(chunkedKeys)
+            .executeAsList()
+            .map {
+              Record.builder(it.key)
+                  .addFields(recordFieldAdapter.from(it.record)!!)
+                  .build()
+            }
+      }
+    } catch (e: IOException) {
+      emptyList()
     }
   }
 

@@ -79,8 +79,7 @@ class LruNormalizedCache internal constructor(evictionPolicy: EvictionPolicy) : 
     lruCache.invalidateAll()
   }
 
-  override fun performMerge(apolloRecord: Record, cacheHeaders: CacheHeaders): Set<String> {
-    val oldRecord = lruCache.getIfPresent(apolloRecord.key)
+  override fun performMerge(apolloRecord: Record, oldRecord: Record?, cacheHeaders: CacheHeaders): Set<String> {
     return if (oldRecord == null) {
       lruCache.put(apolloRecord.key, apolloRecord)
       apolloRecord.keys()

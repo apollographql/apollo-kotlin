@@ -40,6 +40,16 @@ class SqlNormalizedCacheTest {
   }
 
   @Test
+  fun testMultipleRecordSelection() {
+    createRecord(STANDARD_KEY)
+    createRecord(QUERY_ROOT_KEY)
+    val selectionKeys = setOf(STANDARD_KEY, QUERY_ROOT_KEY)
+    val records = cache.selectRecordsForKey(selectionKeys)
+    val selectedKeys = records.map { it.key }.toSet()
+    assertEquals(selectionKeys, selectedKeys)
+  }
+
+  @Test
   fun testRecordSelection_root() {
     createRecord(QUERY_ROOT_KEY)
     val record = requireNotNull(cache.selectRecordForKey(QUERY_ROOT_KEY))
