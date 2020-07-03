@@ -209,11 +209,7 @@ public final class ApolloServerInterceptor implements ApolloInterceptor {
 
   static ByteString httpPostRequestBody(Operation operation, ScalarTypeAdapters scalarTypeAdapters,
       boolean writeQueryDocument, boolean autoPersistQueries) throws IOException {
-    if (operation instanceof Query) {
-      return ((Query) operation).composeRequestBody(autoPersistQueries, writeQueryDocument, scalarTypeAdapters);
-    } else {
-      return operation.composeRequestBody(scalarTypeAdapters);
-    }
+    return operation.composeRequestBody(autoPersistQueries, writeQueryDocument, scalarTypeAdapters);
   }
 
   static HttpUrl httpGetUrl(HttpUrl serverUrl, Operation operation,

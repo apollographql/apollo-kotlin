@@ -56,9 +56,7 @@ class OperationTypeSpecBuilder(
         .addMethod(parseByteStringMethodWithDefaultScalarTypeAdapters(context))
         .addMethod(composeRequestBody())
         .addMethod(composeRequestBodyWithDefaultScalarTypeAdapters())
-        .applyIf(operation.isQuery()) {
-          addMethod(composeRequestBodyForQuery())
-        }
+        .addMethod(composeRequestBodyForQuery())
         .build()
         .flatten(excludeTypeNames = listOf(
             VISITOR_CLASSNAME,

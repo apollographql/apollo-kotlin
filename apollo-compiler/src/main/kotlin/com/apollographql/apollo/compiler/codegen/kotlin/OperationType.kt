@@ -106,9 +106,7 @@ internal fun OperationType.typeSpec(targetPackage: String, generateAsInternal: B
     .addFunction(parseByteStringFunSpec())
     .addFunction(composeRequestBodyFunSpec())
     .addFunction(composeRequestBodyWithDefaultAdaptersFunSpec())
-    .applyIf(type == OperationType.Type.QUERY) {
-      addFunction(composeRequestBodyFunSpecForQuery())
-    }
+    .addFunction(composeRequestBodyFunSpecForQuery())
     .addTypes(nestedObjects.map { (ref, type) ->
       if (ref == data) {
         type.toOperationDataTypeSpec(name = data.name, generateAsInternal = generateAsInternal)
