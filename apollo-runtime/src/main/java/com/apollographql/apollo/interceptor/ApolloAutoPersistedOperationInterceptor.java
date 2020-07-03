@@ -77,7 +77,11 @@ public class ApolloAutoPersistedOperationInterceptor implements ApolloIntercepto
             logger.w("GraphQL server couldn't find Automatic Persisted Query for operation name: "
                 + request.operation.name().name() + " id: " + request.operation.operationId());
 
-            return Optional.of(request);
+            InterceptorRequest retryRequest = request.toBuilder()
+                .autoPersistQueries(true)
+                .sendQueryDocument(true)
+                .build();
+            return Optional.of(retryRequest);
           }
 
           if (isPersistedQueryNotSupported(response.getErrors())) {
@@ -109,15 +113,15 @@ public class ApolloAutoPersistedOperationInterceptor implements ApolloIntercepto
     return false;
   }
 
-  static class Factory implements ApolloInterceptorFactory {
+  public static class Factory implements ApolloInterceptorFactory {
 
     final boolean useHttpGet;
 
-    Factory(boolean useHttpGet) {
+    public Factory(boolean useHttpGet) {
       this.useHttpGet = useHttpGet;
     }
 
-    Factory() {
+    public Factory() {
       this(false);
     }
 

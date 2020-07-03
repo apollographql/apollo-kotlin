@@ -149,7 +149,6 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         .fetchFromCache(false)
         .optimisticUpdates(optimisticUpdates)
         .useHttpGetMethodForQueries(useHttpGetMethodForQueries)
-        .autoPersistQueries(enableAutoPersistedQueries)
         .build();
     interceptorChain.proceedAsync(request, dispatcher, interceptorCallbackProxy());
   }
