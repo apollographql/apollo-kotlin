@@ -385,7 +385,10 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     List<ApolloInterceptor> interceptors = new ArrayList<>();
 
     for (ApolloInterceptorFactory factory : applicationInterceptorFactories) {
-      interceptors.add(factory.newInterceptor());
+      ApolloInterceptor interceptor = factory.newInterceptor(logger, operation);
+      if (interceptor != null) {
+        interceptors.add(interceptor);
+      }
     }
     interceptors.addAll(applicationInterceptors);
 

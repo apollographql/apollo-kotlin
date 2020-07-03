@@ -20,12 +20,12 @@ public class ApolloAutoPersistedQueryInterceptor implements ApolloInterceptor {
   private final ApolloLogger logger;
   private volatile boolean disposed;
 
-  final boolean useHttpGetMethodForPersistedQueries;
+  final boolean useHttpGetMethodForPersistedOperations;
 
   public ApolloAutoPersistedQueryInterceptor(@NotNull ApolloLogger logger,
-                                             boolean useHttpGetMethodForPersistedQueries) {
+                                             boolean useHttpGetMethodForPersistedOperations) {
     this.logger = logger;
-    this.useHttpGetMethodForPersistedQueries = useHttpGetMethodForPersistedQueries;
+    this.useHttpGetMethodForPersistedOperations = useHttpGetMethodForPersistedOperations;
   }
 
   @Override
@@ -35,7 +35,7 @@ public class ApolloAutoPersistedQueryInterceptor implements ApolloInterceptor {
     InterceptorRequest newRequest = request.toBuilder()
             .sendQueryDocument(false)
             .autoPersistQueries(true)
-            .useHttpGetMethodForQueries(request.useHttpGetMethodForQueries || useHttpGetMethodForPersistedQueries)
+            .useHttpGetMethodForQueries(request.useHttpGetMethodForQueries || useHttpGetMethodForPersistedOperations)
             .build();
     chain.proceedAsync(newRequest, dispatcher, new CallBack() {
       @Override public void onResponse(@NotNull InterceptorResponse response) {
