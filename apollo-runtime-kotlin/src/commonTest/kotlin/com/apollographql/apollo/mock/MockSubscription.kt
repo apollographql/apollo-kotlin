@@ -13,6 +13,13 @@ import okio.ByteString.Companion.encodeUtf8
 
 internal class MockSubscription : Subscription<MockSubscription.Data, MockSubscription.Data, Operation.Variables> {
 
+  override fun composeRequestBody(
+      autoPersistQueries: Boolean,
+      withQueryDocument: Boolean,
+      scalarTypeAdapters: ScalarTypeAdapters): ByteString {
+    return composeRequestBody()
+  }
+
   override fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters): ByteString {
     return composeRequestBody()
   }

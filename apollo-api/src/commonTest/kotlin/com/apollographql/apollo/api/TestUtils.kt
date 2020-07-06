@@ -23,4 +23,5 @@ val EMPTY_OPERATION: Operation<*, *, *> = object : Operation<Operation.Data, Any
   override fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters) = throw UnsupportedOperationException()
   override fun composeRequestBody() = throw UnsupportedOperationException()
   override fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters) = throw UnsupportedOperationException()
+  override fun composeRequestBody(autoPersistQueries: Boolean, withQueryDocument: Boolean, scalarTypeAdapters: ScalarTypeAdapters) = throw UnsupportedOperationException()
 }
