@@ -80,7 +80,7 @@ abstract class DefaultCompilationUnit @Inject constructor(
 
   fun generateKotlinModels(): Boolean = when {
     project.isKotlinMultiplatform -> true
-    else -> generateKotlinModels.orElse(service.generateKotlinModels).orElse(apolloExtension.generateKotlinModels).getOrElse(project.isKotlin)
+    else -> generateKotlinModels.orElse(service.generateKotlinModels).orElse(apolloExtension.generateKotlinModels).getOrElse(false)
   }
 
   companion object {

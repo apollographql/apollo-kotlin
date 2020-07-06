@@ -16,13 +16,6 @@ open class ApolloPlugin : Plugin<Project> {
     const val MIN_GRADLE_VERSION = "6.0"
 
     val Project.isKotlinMultiplatform get() = pluginManager.hasPlugin("org.jetbrains.kotlin.multiplatform")
-    val Project.isKotlin
-      get() = when {
-        pluginManager.hasPlugin("org.jetbrains.kotlin.multiplatform") -> true
-        pluginManager.hasPlugin("org.jetbrains.kotlin.jvm") -> true
-        pluginManager.hasPlugin("org.jetbrains.kotlin.android") -> true
-        else -> false
-      }
 
     private fun registerCompilationUnits(project: Project, apolloExtension: DefaultApolloExtension, checkVersionsTask: TaskProvider<Task>) {
       val androidExtension = project.extensions.findByName("android")
