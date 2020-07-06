@@ -6,6 +6,8 @@ import com.apollographql.apollo.compiler.NullableValueType
 import com.apollographql.apollo.compiler.OperationIdGenerator
 import com.apollographql.apollo.compiler.parser.graphql.GraphQLDocumentParser
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
+import com.apollographql.apollo.compiler.parser.sdl.GraphSdlSchema
+import com.apollographql.apollo.compiler.parser.sdl.toIntrospectionSchema
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
@@ -105,12 +107,13 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @TaskAction
   fun taskAction() {
-
     val realSchemaFile = schemaFile.get().asFile
 
-    outputDir.get().asFile.deleteRecursively()
-
-    val schema = IntrospectionSchema.invoke(realSchemaFile)
+    val introspectionSchema = if (realSchemaFile.extension == "json") {
+      IntrospectionSchema.invoke(realSchemaFile)
+    } else {
+      GraphSdlSchema(realSchemaFile).toIntrospectionSchema()
+    }
 
     val packageNameProvider = DefaultPackageNameProvider(
         rootFolders = rootFolders.get().map { project.file(it) },
@@ -127,7 +130,9 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
           NullableValueType.values().joinToString(separator = "\n") { it.value })
     }
 
-    val codeGenerationIR = GraphQLDocumentParser(schema, packageNameProvider).parse(files)
+    outputDir.get().asFile.deleteRecursively()
+
+    val codeGenerationIR = GraphQLDocumentParser(introspectionSchema, packageNameProvider).parse(files)
     val args = GraphQLCompiler.Arguments(
         ir = codeGenerationIR,
         outputDir = outputDir.get().asFile,
