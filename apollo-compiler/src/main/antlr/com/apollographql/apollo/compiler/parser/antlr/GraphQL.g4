@@ -28,7 +28,7 @@ package com.apollographql.apollo.compiler.parser.antlr;
 }
 
 document
-   : definition+
+   : definition*
    ;
 
 definition
