@@ -52,7 +52,8 @@ public final class WebSocketSubscriptionTransport implements SubscriptionTranspo
   public void send(OperationClientMessage message) {
     WebSocket socket = webSocket.get();
     if (socket == null) {
-      throw new IllegalStateException("Not connected");
+      callback.onFailure(new IllegalStateException("Send attempted on closed connection"));
+      return;
     }
     socket.send(message.toJsonString());
   }
