@@ -1,0 +1,24 @@
+package com.apollographql.apollo {
+
+  public final class ApolloCallback<T> {
+    ctor public ApolloCallback(ApolloCall.Callback<T>, Handler);
+    method public void onFailure(ApolloException);
+    method public void onHttpError(ApolloHttpException);
+    method public void onNetworkError(ApolloNetworkException);
+    method public void onParseError(ApolloParseException);
+    method public void onResponse(Response<T>);
+    method public void onStatusEvent(ApolloCall.StatusEvent);
+    method public static <T> com.apollographql.apollo.ApolloCallback<T> wrap(ApolloCall.Callback<T>, Handler);
+  }
+
+  public final class ApolloPrefetchCallback {
+    ctor public ApolloPrefetchCallback(ApolloPrefetch.Callback, Handler);
+    method public void onFailure(ApolloException);
+    method public void onHttpError(ApolloHttpException);
+    method public void onNetworkError(ApolloNetworkException);
+    method public void onSuccess();
+    method public static <T> com.apollographql.apollo.ApolloPrefetchCallback wrap(ApolloPrefetch.Callback, Handler);
+  }
+
+}
+

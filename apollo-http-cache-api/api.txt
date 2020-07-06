@@ -1,0 +1,88 @@
+package com.apollographql.apollo.api.cache.http {
+
+  public abstract interface HttpCache {
+    method public abstract void clear();
+    method public abstract error.NonExistentClass interceptor();
+    method public abstract error.NonExistentClass read(error.NonExistentClass);
+    method public abstract error.NonExistentClass read(error.NonExistentClass, error.NonExistentClass);
+    method public abstract void remove(error.NonExistentClass);
+    method public abstract void removeQuietly(error.NonExistentClass);
+    field public static final java.lang.String CACHE_DO_NOT_STORE = "X-APOLLO-CACHE-DO-NOT-STORE";
+    field public static final java.lang.String CACHE_EXPIRE_AFTER_READ_HEADER = "X-APOLLO-EXPIRE-AFTER-READ";
+    field public static final java.lang.String CACHE_EXPIRE_TIMEOUT_HEADER = "X-APOLLO-EXPIRE-TIMEOUT";
+    field public static final java.lang.String CACHE_FETCH_STRATEGY_HEADER = "X-APOLLO-CACHE-FETCH-STRATEGY";
+    field public static final java.lang.String CACHE_KEY_HEADER = "X-APOLLO-CACHE-KEY";
+    field public static final java.lang.String CACHE_PREFETCH_HEADER = "X-APOLLO-PREFETCH";
+    field public static final java.lang.String CACHE_SERVED_DATE_HEADER = "X-APOLLO-SERVED-DATE";
+    field public static final com.apollographql.apollo.api.cache.http.HttpCache.Companion Companion;
+    field public static final java.lang.String FROM_CACHE = "X-APOLLO-FROM-CACHE";
+  }
+
+  public static final class HttpCache.Companion {
+    field public static final java.lang.String CACHE_DO_NOT_STORE = "X-APOLLO-CACHE-DO-NOT-STORE";
+    field public static final java.lang.String CACHE_EXPIRE_AFTER_READ_HEADER = "X-APOLLO-EXPIRE-AFTER-READ";
+    field public static final java.lang.String CACHE_EXPIRE_TIMEOUT_HEADER = "X-APOLLO-EXPIRE-TIMEOUT";
+    field public static final java.lang.String CACHE_FETCH_STRATEGY_HEADER = "X-APOLLO-CACHE-FETCH-STRATEGY";
+    field public static final java.lang.String CACHE_KEY_HEADER = "X-APOLLO-CACHE-KEY";
+    field public static final java.lang.String CACHE_PREFETCH_HEADER = "X-APOLLO-PREFETCH";
+    field public static final java.lang.String CACHE_SERVED_DATE_HEADER = "X-APOLLO-SERVED-DATE";
+    field public static final java.lang.String FROM_CACHE = "X-APOLLO-FROM-CACHE";
+  }
+
+  public final class HttpCachePolicy {
+    method public com.apollographql.apollo.api.cache.http.HttpCachePolicy.ExpirePolicy getCACHE_FIRST();
+    method public com.apollographql.apollo.api.cache.http.HttpCachePolicy.ExpirePolicy getCACHE_ONLY();
+    method public com.apollographql.apollo.api.cache.http.HttpCachePolicy.ExpirePolicy getNETWORK_FIRST();
+    method public com.apollographql.apollo.api.cache.http.HttpCachePolicy.Policy getNETWORK_ONLY();
+    property public final com.apollographql.apollo.api.cache.http.HttpCachePolicy.ExpirePolicy CACHE_FIRST;
+    property public final com.apollographql.apollo.api.cache.http.HttpCachePolicy.ExpirePolicy CACHE_ONLY;
+    property public final com.apollographql.apollo.api.cache.http.HttpCachePolicy.ExpirePolicy NETWORK_FIRST;
+    property public final com.apollographql.apollo.api.cache.http.HttpCachePolicy.Policy NETWORK_ONLY;
+    field public static final com.apollographql.apollo.api.cache.http.HttpCachePolicy INSTANCE;
+  }
+
+  public static final class HttpCachePolicy.ExpirePolicy extends com.apollographql.apollo.api.cache.http.HttpCachePolicy.Policy {
+    method public com.apollographql.apollo.api.cache.http.HttpCachePolicy.ExpirePolicy expireAfter(error.NonExistentClass, error.NonExistentClass);
+    method public com.apollographql.apollo.api.cache.http.HttpCachePolicy.ExpirePolicy expireAfterRead();
+  }
+
+  public static class HttpCachePolicy.FetchStrategy {
+    method public static com.apollographql.apollo.api.cache.http.HttpCachePolicy.FetchStrategy valueOf(java.lang.String);
+    method public static final com.apollographql.apollo.api.cache.http.HttpCachePolicy.FetchStrategy[] values();
+    enum_constant public static final com.apollographql.apollo.api.cache.http.HttpCachePolicy.FetchStrategy CACHE_FIRST;
+    enum_constant public static final com.apollographql.apollo.api.cache.http.HttpCachePolicy.FetchStrategy CACHE_ONLY;
+    enum_constant public static final com.apollographql.apollo.api.cache.http.HttpCachePolicy.FetchStrategy NETWORK_FIRST;
+    enum_constant public static final com.apollographql.apollo.api.cache.http.HttpCachePolicy.FetchStrategy NETWORK_ONLY;
+  }
+
+  public static class HttpCachePolicy.Policy {
+    ctor public HttpCachePolicy.Policy(com.apollographql.apollo.api.cache.http.HttpCachePolicy.FetchStrategy, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
+    method public final error.NonExistentClass expireTimeoutMs();
+    method public final error.NonExistentClass getExpireAfterRead();
+    method public final error.NonExistentClass getExpireTimeUnit();
+    method public final error.NonExistentClass getExpireTimeout();
+    method public final com.apollographql.apollo.api.cache.http.HttpCachePolicy.FetchStrategy getFetchStrategy();
+  }
+
+  public abstract interface HttpCacheRecord {
+    method public abstract error.NonExistentClass bodySource();
+    method public abstract void close();
+    method public abstract error.NonExistentClass headerSource();
+  }
+
+  public abstract interface HttpCacheRecordEditor {
+    method public abstract void abort();
+    method public abstract error.NonExistentClass bodySink();
+    method public abstract void commit();
+    method public abstract error.NonExistentClass headerSink();
+  }
+
+  public abstract interface HttpCacheStore {
+    method public abstract com.apollographql.apollo.api.cache.http.HttpCacheRecord cacheRecord(error.NonExistentClass);
+    method public abstract com.apollographql.apollo.api.cache.http.HttpCacheRecordEditor cacheRecordEditor(error.NonExistentClass);
+    method public abstract void delete();
+    method public abstract void remove(error.NonExistentClass);
+  }
+
+}
+

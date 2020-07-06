@@ -1,0 +1,11 @@
+package com.apollographql.apollo.test.espresso {
+
+  public final class ApolloIdlingResource {
+    method public static com.apollographql.apollo.test.espresso.ApolloIdlingResource create(String, ApolloClient);
+    method public String getName();
+    method public boolean isIdleNow();
+    method public void registerIdleTransitionCallback(ResourceCallback);
+  }
+
+}
+

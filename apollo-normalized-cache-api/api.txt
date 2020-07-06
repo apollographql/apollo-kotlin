@@ -1,0 +1,161 @@
+package com.apollographql.apollo.cache {
+
+  public final class ApolloCacheHeaders {
+    field public static final java.lang.String DO_NOT_STORE = "do-not-store";
+    field public static final java.lang.String EVICT_AFTER_READ = "evict-after-read";
+    field public static final com.apollographql.apollo.cache.ApolloCacheHeaders INSTANCE;
+    field public static final java.lang.String STORE_PARTIAL_RESPONSES = "store-partial-responses";
+  }
+
+  public final class CacheHeaders {
+    method public error.NonExistentClass hasHeader(error.NonExistentClass);
+    method public error.NonExistentClass headerValue(error.NonExistentClass);
+    method public com.apollographql.apollo.cache.CacheHeaders.Builder toBuilder();
+    field public static final com.apollographql.apollo.cache.CacheHeaders.Companion Companion;
+  }
+
+  public static final class CacheHeaders.Builder {
+    ctor public CacheHeaders.Builder();
+    method public error.NonExistentClass addHeader(error.NonExistentClass, error.NonExistentClass);
+    method public error.NonExistentClass addHeaders(error.NonExistentClass);
+    method public com.apollographql.apollo.cache.CacheHeaders build();
+  }
+
+  public static final class CacheHeaders.Companion {
+    method public com.apollographql.apollo.cache.CacheHeaders.Builder builder();
+    method public com.apollographql.apollo.cache.CacheHeaders getNONE();
+    property public final com.apollographql.apollo.cache.CacheHeaders NONE;
+  }
+
+}
+
+package com.apollographql.apollo.cache.normalized {
+
+  public final class CacheKey {
+    ctor public CacheKey(error.NonExistentClass);
+    method public error.NonExistentClass equals(error.NonExistentClass);
+    method public error.NonExistentClass getKey();
+    method public error.NonExistentClass hashCode();
+    method public error.NonExistentClass key();
+    method public error.NonExistentClass toString();
+    field public static final com.apollographql.apollo.cache.normalized.CacheKey.Companion Companion;
+  }
+
+  public static final class CacheKey.Companion {
+    method public com.apollographql.apollo.cache.normalized.CacheKey from(error.NonExistentClass);
+    method public com.apollographql.apollo.cache.normalized.CacheKey getNO_KEY();
+    property public final com.apollographql.apollo.cache.normalized.CacheKey NO_KEY;
+  }
+
+  public abstract class CacheKeyResolver {
+    ctor public CacheKeyResolver();
+    method public abstract com.apollographql.apollo.cache.normalized.CacheKey fromFieldArguments(error.NonExistentClass, error.NonExistentClass);
+    method public abstract com.apollographql.apollo.cache.normalized.CacheKey fromFieldRecordSet(error.NonExistentClass, error.NonExistentClass);
+    field public static final com.apollographql.apollo.cache.normalized.CacheKeyResolver.Companion Companion;
+  }
+
+  public static final class CacheKeyResolver.Companion {
+    method public com.apollographql.apollo.cache.normalized.CacheKeyResolver getDEFAULT();
+    method public com.apollographql.apollo.cache.normalized.CacheKey rootKeyForOperation(error.NonExistentClass);
+    property public final com.apollographql.apollo.cache.normalized.CacheKeyResolver DEFAULT;
+  }
+
+  public final class CacheReference {
+    ctor public CacheReference(error.NonExistentClass);
+    method public error.NonExistentClass equals(error.NonExistentClass);
+    method public error.NonExistentClass getKey();
+    method public error.NonExistentClass hashCode();
+    method public error.NonExistentClass key();
+    method public error.NonExistentClass serialize();
+    method public error.NonExistentClass toString();
+    field public static final com.apollographql.apollo.cache.normalized.CacheReference.Companion Companion;
+  }
+
+  public static final class CacheReference.Companion {
+    method public error.NonExistentClass canDeserialize(error.NonExistentClass);
+    method public com.apollographql.apollo.cache.normalized.CacheReference deserialize(error.NonExistentClass);
+  }
+
+  public abstract class NormalizedCache {
+    ctor public NormalizedCache();
+    method public final error.NonExistentClass chain(com.apollographql.apollo.cache.normalized.NormalizedCache);
+    method public abstract void clearAll();
+    method public error.NonExistentClass dump();
+    method public final com.apollographql.apollo.cache.normalized.NormalizedCache getNextCache();
+    method public abstract com.apollographql.apollo.cache.normalized.Record loadRecord(error.NonExistentClass, com.apollographql.apollo.cache.CacheHeaders);
+    method public final error.NonExistentClass loadRecords(error.NonExistentClass, com.apollographql.apollo.cache.CacheHeaders);
+    method public error.NonExistentClass merge(com.apollographql.apollo.cache.normalized.Record, com.apollographql.apollo.cache.CacheHeaders);
+    method public error.NonExistentClass merge(error.NonExistentClass, com.apollographql.apollo.cache.CacheHeaders);
+    method protected abstract error.NonExistentClass performMerge(com.apollographql.apollo.cache.normalized.Record, com.apollographql.apollo.cache.CacheHeaders);
+    method public final error.NonExistentClass remove(com.apollographql.apollo.cache.normalized.CacheKey);
+    method public abstract error.NonExistentClass remove(com.apollographql.apollo.cache.normalized.CacheKey, error.NonExistentClass);
+    property public final com.apollographql.apollo.cache.normalized.NormalizedCache nextCache;
+    field public static final com.apollographql.apollo.cache.normalized.NormalizedCache.Companion Companion;
+  }
+
+  public static final class NormalizedCache.Companion {
+    method public error.NonExistentClass prettifyDump(error.NonExistentClass);
+  }
+
+  public abstract class NormalizedCacheFactory<T extends com.apollographql.apollo.cache.normalized.NormalizedCache> {
+    ctor public NormalizedCacheFactory();
+    method public final error.NonExistentClass chain(com.apollographql.apollo.cache.normalized.NormalizedCacheFactory<?>);
+    method public abstract T create(com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter);
+    method public final com.apollographql.apollo.cache.normalized.NormalizedCache createChain(com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter);
+  }
+
+  public final class Record {
+    method public com.apollographql.apollo.cache.normalized.Record clone();
+    method public error.NonExistentClass field(error.NonExistentClass);
+    method public error.NonExistentClass fields();
+    method public error.NonExistentClass getFields();
+    method public error.NonExistentClass getKey();
+    method public error.NonExistentClass getMutationId();
+    method public error.NonExistentClass hasField(error.NonExistentClass);
+    method public error.NonExistentClass key();
+    method public error.NonExistentClass keys();
+    method public error.NonExistentClass mergeWith(com.apollographql.apollo.cache.normalized.Record);
+    method public error.NonExistentClass mutationId();
+    method public error.NonExistentClass referencedFields();
+    method public error.NonExistentClass sizeEstimateBytes();
+    method public com.apollographql.apollo.cache.normalized.Record.Builder toBuilder();
+    method public error.NonExistentClass toString();
+    property public final error.NonExistentClass fields;
+    property public final error.NonExistentClass mutationId;
+    field public static final com.apollographql.apollo.cache.normalized.Record.Companion Companion;
+  }
+
+  public static final class Record.Builder {
+    ctor public Record.Builder(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
+    method public com.apollographql.apollo.cache.normalized.Record.Builder addField(error.NonExistentClass, error.NonExistentClass);
+    method public com.apollographql.apollo.cache.normalized.Record.Builder addFields(error.NonExistentClass);
+    method public com.apollographql.apollo.cache.normalized.Record build();
+    method public error.NonExistentClass getKey();
+    method public error.NonExistentClass key();
+    method public com.apollographql.apollo.cache.normalized.Record.Builder mutationId(error.NonExistentClass);
+  }
+
+  public static final class Record.Companion {
+    method public com.apollographql.apollo.cache.normalized.Record.Builder builder(error.NonExistentClass);
+  }
+
+  public final class RecordFieldJsonAdapter {
+    ctor public RecordFieldJsonAdapter();
+    method public error.NonExistentClass from(error.NonExistentClass);
+    method public error.NonExistentClass toJson(error.NonExistentClass);
+    field public static final com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter.Companion Companion;
+  }
+
+  public static final class RecordFieldJsonAdapter.Companion {
+    method public com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter create();
+  }
+
+  public final class RecordSet {
+    ctor public RecordSet();
+    method public error.NonExistentClass allRecords();
+    method public operator com.apollographql.apollo.cache.normalized.Record get(error.NonExistentClass);
+    method public error.NonExistentClass merge(com.apollographql.apollo.cache.normalized.Record);
+  }
+
+}
+
