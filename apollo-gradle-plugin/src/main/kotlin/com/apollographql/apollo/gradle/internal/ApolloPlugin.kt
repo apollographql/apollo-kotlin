@@ -17,37 +17,6 @@ open class ApolloPlugin : Plugin<Project> {
 
     val Project.isKotlinMultiplatform get() = pluginManager.hasPlugin("org.jetbrains.kotlin.multiplatform")
 
-    private fun useService(project: Project, schemaFilePath: String?, outputPackageName: String? = null, exclude: String? = null): String {
-
-      var ret = """
-      |Please use a service instead:
-      |apollo {
-      |  service("github") {
-      """.trimMargin()
-
-      if (schemaFilePath != null) {
-        val match = Regex("src/.*/graphql/(.*)").matchEntire(schemaFilePath)
-        val schemaPath = if (match != null) {
-          match.groupValues[1]
-        } else {
-          project.file(schemaFilePath).absolutePath
-        }
-        ret += "\n    schemaPath = \"$schemaPath\""
-      }
-      if (outputPackageName != null) {
-        ret += "\n    rootPackageName = \"$outputPackageName\""
-      }
-      if (exclude != null) {
-        ret += "\n    exclude = $exclude"
-      }
-      ret += """
-      |
-      |  }
-      |}
-    """.trimMargin()
-      return ret
-    }
-
     private fun registerCompilationUnits(project: Project, apolloExtension: DefaultApolloExtension, checkVersionsTask: TaskProvider<Task>) {
       val androidExtension = project.extensions.findByName("android")
 
