@@ -83,10 +83,10 @@ package com.apollographql.apollo.cache.normalized {
     method public error.NonExistentClass dump();
     method public final com.apollographql.apollo.cache.normalized.NormalizedCache getNextCache();
     method public abstract com.apollographql.apollo.cache.normalized.Record loadRecord(error.NonExistentClass, com.apollographql.apollo.cache.CacheHeaders);
-    method public final error.NonExistentClass loadRecords(error.NonExistentClass, com.apollographql.apollo.cache.CacheHeaders);
+    method public error.NonExistentClass loadRecords(error.NonExistentClass, com.apollographql.apollo.cache.CacheHeaders);
     method public error.NonExistentClass merge(com.apollographql.apollo.cache.normalized.Record, com.apollographql.apollo.cache.CacheHeaders);
     method public error.NonExistentClass merge(error.NonExistentClass, com.apollographql.apollo.cache.CacheHeaders);
-    method protected abstract error.NonExistentClass performMerge(com.apollographql.apollo.cache.normalized.Record, com.apollographql.apollo.cache.CacheHeaders);
+    method protected abstract error.NonExistentClass performMerge(com.apollographql.apollo.cache.normalized.Record, com.apollographql.apollo.cache.normalized.Record, com.apollographql.apollo.cache.CacheHeaders);
     method public final error.NonExistentClass remove(com.apollographql.apollo.cache.normalized.CacheKey);
     method public abstract error.NonExistentClass remove(com.apollographql.apollo.cache.normalized.CacheKey, error.NonExistentClass);
     property public final com.apollographql.apollo.cache.normalized.NormalizedCache nextCache;

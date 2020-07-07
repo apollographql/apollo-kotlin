@@ -62,9 +62,10 @@ package com.apollographql.apollo.cache.normalized {
     method public void clearAll();
     method public error.NonExistentClass dump();
     method public error.NonExistentClass loadRecord(error.NonExistentClass, error.NonExistentClass);
+    method public error.NonExistentClass loadRecords(error.NonExistentClass, error.NonExistentClass);
     method public error.NonExistentClass mergeOptimisticUpdate(error.NonExistentClass);
     method public error.NonExistentClass mergeOptimisticUpdates(error.NonExistentClass);
-    method public error.NonExistentClass performMerge(error.NonExistentClass, error.NonExistentClass);
+    method public error.NonExistentClass performMerge(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
     method public error.NonExistentClass remove(error.NonExistentClass, error.NonExistentClass);
     method public error.NonExistentClass removeOptimisticUpdates(error.NonExistentClass);
   }
@@ -107,7 +108,7 @@ package com.apollographql.apollo.cache.normalized.lru {
     method public void clearAll();
     method public error.NonExistentClass dump();
     method public error.NonExistentClass loadRecord(error.NonExistentClass, error.NonExistentClass);
-    method public error.NonExistentClass performMerge(error.NonExistentClass, error.NonExistentClass);
+    method public error.NonExistentClass performMerge(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
     method public error.NonExistentClass remove(error.NonExistentClass, error.NonExistentClass);
   }
 
