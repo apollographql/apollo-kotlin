@@ -39,7 +39,7 @@ abstract class NormalizedCache {
    * @param keys         The set of [Record] keys to read.
    * @param cacheHeaders The cache headers associated with the request which generated this record.
    */
-  fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
+  open fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
     val records: MutableList<Record> = ArrayList(keys.size)
     for (key in keys) {
       val record = loadRecord(key, cacheHeaders)
@@ -60,7 +60,7 @@ abstract class NormalizedCache {
       return emptySet<String>()
     }
     val nextCacheChangedKeys = nextCache?.merge(record, cacheHeaders).orEmpty()
-    val currentCacheChangedKeys = performMerge(record, cacheHeaders)
+    val currentCacheChangedKeys = performMerge(record, loadRecord(record.key, cacheHeaders), cacheHeaders)
     val changedKeys: MutableSet<String?> = HashSet()
     changedKeys.addAll(nextCacheChangedKeys)
     changedKeys.addAll(currentCacheChangedKeys)
@@ -81,8 +81,10 @@ abstract class NormalizedCache {
     }
     val nextCacheChangedKeys = nextCache?.merge(recordSet, cacheHeaders).orEmpty()
     val currentCacheChangedKeys: MutableSet<String> = HashSet()
+    val oldRecords = loadRecords(recordSet.map { it.key }, cacheHeaders).associateBy { it.key }
     for (record in recordSet) {
-      currentCacheChangedKeys.addAll(performMerge(record, cacheHeaders))
+      val oldRecord = oldRecords[record.key]
+      currentCacheChangedKeys.addAll(performMerge(record, oldRecord, cacheHeaders))
     }
     val changedKeys: MutableSet<String> = HashSet()
     changedKeys.addAll(nextCacheChangedKeys)
@@ -90,7 +92,13 @@ abstract class NormalizedCache {
     return changedKeys
   }
 
-  protected abstract fun performMerge(apolloRecord: Record, cacheHeaders: CacheHeaders): Set<String>
+  /**
+   * @param apolloRecord The new record to merge into [existingRecord]
+   * @param oldRecord The current record before merge. Null if no record exists.
+   *
+   * @return A set of record field keys that have changed. This set should be computed by [Record.mergeWith].
+   */
+  protected abstract fun performMerge(apolloRecord: Record, oldRecord: Record?, cacheHeaders: CacheHeaders): Set<String>
 
   /**
    * Clears all records from the cache.
