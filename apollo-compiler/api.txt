@@ -856,16 +856,20 @@ package com.apollographql.apollo.compiler.operationoutput {
 
 }
 
-package com.apollographql.apollo.compiler.parser {
+package com.apollographql.apollo.compiler.parser.graphql {
 
   public final class FieldMergerKt {
     ctor public FieldMergerKt();
   }
 
   public final class GraphQLDocumentParser {
-    ctor public GraphQLDocumentParser(com.apollographql.apollo.compiler.parser.Schema, com.apollographql.apollo.compiler.PackageNameProvider);
-    method public com.apollographql.apollo.compiler.parser.Schema getSchema();
+    ctor public GraphQLDocumentParser(com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema, com.apollographql.apollo.compiler.PackageNameProvider);
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema getSchema();
     method public com.apollographql.apollo.compiler.ir.CodeGenerationIR parse(error.NonExistentClass);
+  }
+
+  public final class GraphQLDocumentParserKt {
+    ctor public GraphQLDocumentParserKt();
   }
 
   public final class GraphQLDocumentSourceBuilder {
@@ -873,17 +877,25 @@ package com.apollographql.apollo.compiler.parser {
     method public error.NonExistentClass getGraphQLDocumentSource(error.NonExistentClass);
     property public final error.NonExistentClass graphQLDocumentSource;
     property public final error.NonExistentClass graphQLDocumentSource;
-    field public static final com.apollographql.apollo.compiler.parser.GraphQLDocumentSourceBuilder INSTANCE;
+    field public static final com.apollographql.apollo.compiler.parser.graphql.GraphQLDocumentSourceBuilder INSTANCE;
   }
 
+  public final class ValidationKt {
+    ctor public ValidationKt();
+  }
+
+}
+
+package com.apollographql.apollo.compiler.parser.introspection {
+
   public final class IntrospectionQuery {
-    field public static final com.apollographql.apollo.compiler.parser.IntrospectionQuery INSTANCE;
+    field public static final com.apollographql.apollo.compiler.parser.introspection.IntrospectionQuery INSTANCE;
   }
 
   public static final class IntrospectionQuery.MutationType {
     ctor public IntrospectionQuery.MutationType(error.NonExistentClass);
     method public error.NonExistentClass component1();
-    method public com.apollographql.apollo.compiler.parser.IntrospectionQuery.MutationType copy(error.NonExistentClass);
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionQuery.MutationType copy(error.NonExistentClass);
     method public boolean equals(java.lang.Object);
     method public error.NonExistentClass getName();
     method public int hashCode();
@@ -893,7 +905,7 @@ package com.apollographql.apollo.compiler.parser {
   public static final class IntrospectionQuery.QueryType {
     ctor public IntrospectionQuery.QueryType(error.NonExistentClass);
     method public error.NonExistentClass component1();
-    method public com.apollographql.apollo.compiler.parser.IntrospectionQuery.QueryType copy(error.NonExistentClass);
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionQuery.QueryType copy(error.NonExistentClass);
     method public boolean equals(java.lang.Object);
     method public error.NonExistentClass getName();
     method public int hashCode();
@@ -901,16 +913,16 @@ package com.apollographql.apollo.compiler.parser {
   }
 
   public static final class IntrospectionQuery.Schema {
-    ctor public IntrospectionQuery.Schema(com.apollographql.apollo.compiler.parser.IntrospectionQuery.QueryType, com.apollographql.apollo.compiler.parser.IntrospectionQuery.MutationType, com.apollographql.apollo.compiler.parser.IntrospectionQuery.SubscriptionType, error.NonExistentClass);
-    method public com.apollographql.apollo.compiler.parser.IntrospectionQuery.QueryType component1();
-    method public com.apollographql.apollo.compiler.parser.IntrospectionQuery.MutationType component2();
-    method public com.apollographql.apollo.compiler.parser.IntrospectionQuery.SubscriptionType component3();
+    ctor public IntrospectionQuery.Schema(com.apollographql.apollo.compiler.parser.introspection.IntrospectionQuery.QueryType, com.apollographql.apollo.compiler.parser.introspection.IntrospectionQuery.MutationType, com.apollographql.apollo.compiler.parser.introspection.IntrospectionQuery.SubscriptionType, error.NonExistentClass);
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionQuery.QueryType component1();
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionQuery.MutationType component2();
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionQuery.SubscriptionType component3();
     method public error.NonExistentClass component4();
-    method public com.apollographql.apollo.compiler.parser.IntrospectionQuery.Schema copy(com.apollographql.apollo.compiler.parser.IntrospectionQuery.QueryType, com.apollographql.apollo.compiler.parser.IntrospectionQuery.MutationType, com.apollographql.apollo.compiler.parser.IntrospectionQuery.SubscriptionType, error.NonExistentClass);
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionQuery.Schema copy(com.apollographql.apollo.compiler.parser.introspection.IntrospectionQuery.QueryType, com.apollographql.apollo.compiler.parser.introspection.IntrospectionQuery.MutationType, com.apollographql.apollo.compiler.parser.introspection.IntrospectionQuery.SubscriptionType, error.NonExistentClass);
     method public boolean equals(java.lang.Object);
-    method public com.apollographql.apollo.compiler.parser.IntrospectionQuery.MutationType getMutationType();
-    method public com.apollographql.apollo.compiler.parser.IntrospectionQuery.QueryType getQueryType();
-    method public com.apollographql.apollo.compiler.parser.IntrospectionQuery.SubscriptionType getSubscriptionType();
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionQuery.MutationType getMutationType();
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionQuery.QueryType getQueryType();
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionQuery.SubscriptionType getSubscriptionType();
     method public error.NonExistentClass getTypes();
     method public int hashCode();
     method public java.lang.String toString();
@@ -919,113 +931,121 @@ package com.apollographql.apollo.compiler.parser {
   public static final class IntrospectionQuery.SubscriptionType {
     ctor public IntrospectionQuery.SubscriptionType(error.NonExistentClass);
     method public error.NonExistentClass component1();
-    method public com.apollographql.apollo.compiler.parser.IntrospectionQuery.SubscriptionType copy(error.NonExistentClass);
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionQuery.SubscriptionType copy(error.NonExistentClass);
     method public boolean equals(java.lang.Object);
     method public error.NonExistentClass getName();
     method public int hashCode();
     method public java.lang.String toString();
   }
 
-  public final class Schema {
-    ctor public Schema(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
-    method public error.NonExistentClass getMutationType();
-    method public error.NonExistentClass getQueryType();
-    method public error.NonExistentClass getSubscriptionType();
-    method public error.NonExistentClass getTypes();
-    field public static final com.apollographql.apollo.compiler.parser.Schema.Companion Companion;
-  }
-
-  public static final class Schema.Companion {
-    method public operator com.apollographql.apollo.compiler.parser.Schema invoke(error.NonExistentClass);
-  }
-
-  public static final class Schema.Field {
-    ctor public Schema.Field(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, com.apollographql.apollo.compiler.parser.Schema.TypeRef, error.NonExistentClass);
+  public final class IntrospectionSchema {
+    ctor public IntrospectionSchema(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
     method public error.NonExistentClass component1();
     method public error.NonExistentClass component2();
     method public error.NonExistentClass component3();
     method public error.NonExistentClass component4();
-    method public com.apollographql.apollo.compiler.parser.Schema.TypeRef component5();
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema copy(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
+    method public boolean equals(java.lang.Object);
+    method public error.NonExistentClass getMutationType();
+    method public error.NonExistentClass getQueryType();
+    method public error.NonExistentClass getSubscriptionType();
+    method public error.NonExistentClass getTypes();
+    method public int hashCode();
+    method public java.lang.String toString();
+    field public static final com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Companion Companion;
+  }
+
+  public static final class IntrospectionSchema.Companion {
+    method public operator com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema invoke(error.NonExistentClass);
+  }
+
+  public static final class IntrospectionSchema.Field {
+    ctor public IntrospectionSchema.Field(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.TypeRef, error.NonExistentClass);
+    method public error.NonExistentClass component1();
+    method public error.NonExistentClass component2();
+    method public error.NonExistentClass component3();
+    method public error.NonExistentClass component4();
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.TypeRef component5();
     method public error.NonExistentClass component6();
-    method public com.apollographql.apollo.compiler.parser.Schema.Field copy(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, com.apollographql.apollo.compiler.parser.Schema.TypeRef, error.NonExistentClass);
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Field copy(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.TypeRef, error.NonExistentClass);
     method public boolean equals(java.lang.Object);
     method public error.NonExistentClass getArgs();
     method public error.NonExistentClass getDeprecationReason();
     method public error.NonExistentClass getDescription();
     method public error.NonExistentClass getName();
-    method public com.apollographql.apollo.compiler.parser.Schema.TypeRef getType();
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.TypeRef getType();
     method public int hashCode();
     method public error.NonExistentClass isDeprecated();
     method public java.lang.String toString();
   }
 
-  public static final class Schema.Field.Argument {
-    ctor public Schema.Field.Argument(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, com.apollographql.apollo.compiler.parser.Schema.TypeRef, error.NonExistentClass);
+  public static final class IntrospectionSchema.Field.Argument {
+    ctor public IntrospectionSchema.Field.Argument(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.TypeRef, error.NonExistentClass);
     method public error.NonExistentClass component1();
     method public error.NonExistentClass component2();
     method public error.NonExistentClass component3();
     method public error.NonExistentClass component4();
-    method public com.apollographql.apollo.compiler.parser.Schema.TypeRef component5();
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.TypeRef component5();
     method public error.NonExistentClass component6();
-    method public com.apollographql.apollo.compiler.parser.Schema.Field.Argument copy(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, com.apollographql.apollo.compiler.parser.Schema.TypeRef, error.NonExistentClass);
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Field.Argument copy(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.TypeRef, error.NonExistentClass);
     method public boolean equals(java.lang.Object);
     method public error.NonExistentClass getDefaultValue();
     method public error.NonExistentClass getDeprecationReason();
     method public error.NonExistentClass getDescription();
     method public error.NonExistentClass getName();
-    method public com.apollographql.apollo.compiler.parser.Schema.TypeRef getType();
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.TypeRef getType();
     method public int hashCode();
     method public error.NonExistentClass isDeprecated();
     method public java.lang.String toString();
   }
 
-  public static final class Schema.InputField {
-    ctor public Schema.InputField(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, com.apollographql.apollo.compiler.parser.Schema.TypeRef, error.NonExistentClass);
+  public static final class IntrospectionSchema.InputField {
+    ctor public IntrospectionSchema.InputField(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.TypeRef, error.NonExistentClass);
     method public error.NonExistentClass component1();
     method public error.NonExistentClass component2();
     method public error.NonExistentClass component3();
     method public error.NonExistentClass component4();
-    method public com.apollographql.apollo.compiler.parser.Schema.TypeRef component5();
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.TypeRef component5();
     method public error.NonExistentClass component6();
-    method public com.apollographql.apollo.compiler.parser.Schema.InputField copy(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, com.apollographql.apollo.compiler.parser.Schema.TypeRef, error.NonExistentClass);
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.InputField copy(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.TypeRef, error.NonExistentClass);
     method public boolean equals(java.lang.Object);
     method public error.NonExistentClass getDefaultValue();
     method public error.NonExistentClass getDeprecationReason();
     method public error.NonExistentClass getDescription();
     method public error.NonExistentClass getName();
-    method public com.apollographql.apollo.compiler.parser.Schema.TypeRef getType();
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.TypeRef getType();
     method public int hashCode();
     method public error.NonExistentClass isDeprecated();
     method public java.lang.String toString();
   }
 
-  public static class Schema.Kind {
-    method public static com.apollographql.apollo.compiler.parser.Schema.Kind valueOf(java.lang.String);
-    method public static final com.apollographql.apollo.compiler.parser.Schema.Kind[] values();
-    enum_constant public static final com.apollographql.apollo.compiler.parser.Schema.Kind ENUM;
-    enum_constant public static final com.apollographql.apollo.compiler.parser.Schema.Kind INPUT_OBJECT;
-    enum_constant public static final com.apollographql.apollo.compiler.parser.Schema.Kind INTERFACE;
-    enum_constant public static final com.apollographql.apollo.compiler.parser.Schema.Kind LIST;
-    enum_constant public static final com.apollographql.apollo.compiler.parser.Schema.Kind NON_NULL;
-    enum_constant public static final com.apollographql.apollo.compiler.parser.Schema.Kind OBJECT;
-    enum_constant public static final com.apollographql.apollo.compiler.parser.Schema.Kind SCALAR;
-    enum_constant public static final com.apollographql.apollo.compiler.parser.Schema.Kind UNION;
+  public static class IntrospectionSchema.Kind {
+    method public static com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Kind valueOf(java.lang.String);
+    method public static final com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Kind[] values();
+    enum_constant public static final com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Kind ENUM;
+    enum_constant public static final com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Kind INPUT_OBJECT;
+    enum_constant public static final com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Kind INTERFACE;
+    enum_constant public static final com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Kind LIST;
+    enum_constant public static final com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Kind NON_NULL;
+    enum_constant public static final com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Kind OBJECT;
+    enum_constant public static final com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Kind SCALAR;
+    enum_constant public static final com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Kind UNION;
   }
 
-  public static sealed abstract class Schema.Type {
+  public static sealed abstract class IntrospectionSchema.Type {
     method public abstract error.NonExistentClass getDescription();
-    method public final com.apollographql.apollo.compiler.parser.Schema.Kind getKind();
+    method public final com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Kind getKind();
     method public abstract error.NonExistentClass getName();
     property public abstract error.NonExistentClass description;
     property public abstract error.NonExistentClass name;
   }
 
-  public static final class Schema.Type.Enum extends com.apollographql.apollo.compiler.parser.Schema.Type {
-    ctor public Schema.Type.Enum(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
+  public static final class IntrospectionSchema.Type.Enum extends com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Type {
+    ctor public IntrospectionSchema.Type.Enum(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
     method public error.NonExistentClass component1();
     method public error.NonExistentClass component2();
     method public error.NonExistentClass component3();
-    method public com.apollographql.apollo.compiler.parser.Schema.Type.Enum copy(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Type.Enum copy(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
     method public boolean equals(java.lang.Object);
     method public error.NonExistentClass getDescription();
     method public error.NonExistentClass getEnumValues();
@@ -1034,13 +1054,13 @@ package com.apollographql.apollo.compiler.parser {
     method public java.lang.String toString();
   }
 
-  public static final class Schema.Type.Enum.Value {
-    ctor public Schema.Type.Enum.Value(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
+  public static final class IntrospectionSchema.Type.Enum.Value {
+    ctor public IntrospectionSchema.Type.Enum.Value(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
     method public error.NonExistentClass component1();
     method public error.NonExistentClass component2();
     method public error.NonExistentClass component3();
     method public error.NonExistentClass component4();
-    method public com.apollographql.apollo.compiler.parser.Schema.Type.Enum.Value copy(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Type.Enum.Value copy(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
     method public boolean equals(java.lang.Object);
     method public error.NonExistentClass getDeprecationReason();
     method public error.NonExistentClass getDescription();
@@ -1050,12 +1070,12 @@ package com.apollographql.apollo.compiler.parser {
     method public java.lang.String toString();
   }
 
-  public static final class Schema.Type.InputObject extends com.apollographql.apollo.compiler.parser.Schema.Type {
-    ctor public Schema.Type.InputObject(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
+  public static final class IntrospectionSchema.Type.InputObject extends com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Type {
+    ctor public IntrospectionSchema.Type.InputObject(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
     method public error.NonExistentClass component1();
     method public error.NonExistentClass component2();
     method public error.NonExistentClass component3();
-    method public com.apollographql.apollo.compiler.parser.Schema.Type.InputObject copy(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Type.InputObject copy(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
     method public boolean equals(java.lang.Object);
     method public error.NonExistentClass getDescription();
     method public error.NonExistentClass getInputFields();
@@ -1064,13 +1084,13 @@ package com.apollographql.apollo.compiler.parser {
     method public java.lang.String toString();
   }
 
-  public static final class Schema.Type.Interface extends com.apollographql.apollo.compiler.parser.Schema.Type {
-    ctor public Schema.Type.Interface(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
+  public static final class IntrospectionSchema.Type.Interface extends com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Type {
+    ctor public IntrospectionSchema.Type.Interface(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
     method public error.NonExistentClass component1();
     method public error.NonExistentClass component2();
     method public error.NonExistentClass component3();
     method public error.NonExistentClass component4();
-    method public com.apollographql.apollo.compiler.parser.Schema.Type.Interface copy(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Type.Interface copy(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
     method public boolean equals(java.lang.Object);
     method public error.NonExistentClass getDescription();
     method public error.NonExistentClass getFields();
@@ -1080,12 +1100,12 @@ package com.apollographql.apollo.compiler.parser {
     method public java.lang.String toString();
   }
 
-  public static final class Schema.Type.Object extends com.apollographql.apollo.compiler.parser.Schema.Type {
-    ctor public Schema.Type.Object(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
+  public static final class IntrospectionSchema.Type.Object extends com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Type {
+    ctor public IntrospectionSchema.Type.Object(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
     method public error.NonExistentClass component1();
     method public error.NonExistentClass component2();
     method public error.NonExistentClass component3();
-    method public com.apollographql.apollo.compiler.parser.Schema.Type.Object copy(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Type.Object copy(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
     method public boolean equals(java.lang.Object);
     method public error.NonExistentClass getDescription();
     method public error.NonExistentClass getFields();
@@ -1094,11 +1114,11 @@ package com.apollographql.apollo.compiler.parser {
     method public java.lang.String toString();
   }
 
-  public static final class Schema.Type.Scalar extends com.apollographql.apollo.compiler.parser.Schema.Type {
-    ctor public Schema.Type.Scalar(error.NonExistentClass, error.NonExistentClass);
+  public static final class IntrospectionSchema.Type.Scalar extends com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Type {
+    ctor public IntrospectionSchema.Type.Scalar(error.NonExistentClass, error.NonExistentClass);
     method public error.NonExistentClass component1();
     method public error.NonExistentClass component2();
-    method public com.apollographql.apollo.compiler.parser.Schema.Type.Scalar copy(error.NonExistentClass, error.NonExistentClass);
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Type.Scalar copy(error.NonExistentClass, error.NonExistentClass);
     method public boolean equals(java.lang.Object);
     method public error.NonExistentClass getDescription();
     method public error.NonExistentClass getName();
@@ -1106,13 +1126,13 @@ package com.apollographql.apollo.compiler.parser {
     method public java.lang.String toString();
   }
 
-  public static final class Schema.Type.Union extends com.apollographql.apollo.compiler.parser.Schema.Type {
-    ctor public Schema.Type.Union(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
+  public static final class IntrospectionSchema.Type.Union extends com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Type {
+    ctor public IntrospectionSchema.Type.Union(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
     method public error.NonExistentClass component1();
     method public error.NonExistentClass component2();
     method public error.NonExistentClass component3();
     method public error.NonExistentClass component4();
-    method public com.apollographql.apollo.compiler.parser.Schema.Type.Union copy(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Type.Union copy(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
     method public boolean equals(java.lang.Object);
     method public error.NonExistentClass getDescription();
     method public error.NonExistentClass getFields();
@@ -1122,37 +1142,32 @@ package com.apollographql.apollo.compiler.parser {
     method public java.lang.String toString();
   }
 
-  public static final class Schema.TypeRef {
-    ctor public Schema.TypeRef(com.apollographql.apollo.compiler.parser.Schema.Kind, error.NonExistentClass, com.apollographql.apollo.compiler.parser.Schema.TypeRef);
-    method public com.apollographql.apollo.compiler.parser.Schema.Kind component1();
+  public static final class IntrospectionSchema.TypeRef {
+    ctor public IntrospectionSchema.TypeRef(com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Kind, error.NonExistentClass, com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.TypeRef);
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Kind component1();
     method public error.NonExistentClass component2();
-    method public com.apollographql.apollo.compiler.parser.Schema.TypeRef component3();
-    method public com.apollographql.apollo.compiler.parser.Schema.TypeRef copy(com.apollographql.apollo.compiler.parser.Schema.Kind, error.NonExistentClass, com.apollographql.apollo.compiler.parser.Schema.TypeRef);
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.TypeRef component3();
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.TypeRef copy(com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Kind, error.NonExistentClass, com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.TypeRef);
     method public boolean equals(java.lang.Object);
-    method public com.apollographql.apollo.compiler.parser.Schema.Kind getKind();
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Kind getKind();
     method public error.NonExistentClass getName();
-    method public com.apollographql.apollo.compiler.parser.Schema.TypeRef getOfType();
-    method public com.apollographql.apollo.compiler.parser.Schema.TypeRef getRawType();
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.TypeRef getOfType();
+    method public com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.TypeRef getRawType();
     method public int hashCode();
     method public java.lang.String toString();
-    property public final com.apollographql.apollo.compiler.parser.Schema.TypeRef rawType;
+    property public final com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.TypeRef rawType;
   }
 
   public final class UtilsKt {
     ctor public UtilsKt();
   }
 
-  public final class ValidationKt {
-    ctor public ValidationKt();
-  }
-
 }
 
 package com.apollographql.apollo.compiler.parser.sdl {
 
-  public final class GraphSDLSchemaParser {
-    method public com.apollographql.apollo.compiler.parser.sdl.GraphSdlSchema parse(error.NonExistentClass);
-    field public static final com.apollographql.apollo.compiler.parser.sdl.GraphSDLSchemaParser INSTANCE;
+  public final class GraphSDLSchemaParserKt {
+    ctor public GraphSDLSchemaParserKt();
   }
 
   public final class GraphSdlSchema {
@@ -1165,6 +1180,11 @@ package com.apollographql.apollo.compiler.parser.sdl {
     method public error.NonExistentClass getTypeDefinitions();
     method public int hashCode();
     method public java.lang.String toString();
+    field public static final com.apollographql.apollo.compiler.parser.sdl.GraphSdlSchema.Companion Companion;
+  }
+
+  public static final class GraphSdlSchema.Companion {
+    method public operator com.apollographql.apollo.compiler.parser.sdl.GraphSdlSchema invoke(error.NonExistentClass);
   }
 
   public static final class GraphSdlSchema.Directive {
@@ -1384,10 +1404,12 @@ package com.apollographql.apollo.compiler.parser.sdl {
   }
 
   public static final class GraphSdlSchema.TypeRef.Named extends com.apollographql.apollo.compiler.parser.sdl.GraphSdlSchema.TypeRef {
-    ctor public GraphSdlSchema.TypeRef.Named(error.NonExistentClass);
+    ctor public GraphSdlSchema.TypeRef.Named(error.NonExistentClass, com.apollographql.apollo.compiler.ir.SourceLocation);
     method public error.NonExistentClass component1();
-    method public com.apollographql.apollo.compiler.parser.sdl.GraphSdlSchema.TypeRef.Named copy(error.NonExistentClass);
+    method public com.apollographql.apollo.compiler.ir.SourceLocation component2();
+    method public com.apollographql.apollo.compiler.parser.sdl.GraphSdlSchema.TypeRef.Named copy(error.NonExistentClass, com.apollographql.apollo.compiler.ir.SourceLocation);
     method public boolean equals(java.lang.Object);
+    method public com.apollographql.apollo.compiler.ir.SourceLocation getSourceLocation();
     method public error.NonExistentClass getTypeName();
     method public int hashCode();
     method public java.lang.String toString();
@@ -1401,6 +1423,11 @@ package com.apollographql.apollo.compiler.parser.sdl {
     method public com.apollographql.apollo.compiler.parser.sdl.GraphSdlSchema.TypeRef getTypeRef();
     method public int hashCode();
     method public java.lang.String toString();
+  }
+
+  public final class GraphSdlSchemaKt {
+    ctor public GraphSdlSchemaKt();
+    method public static com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema toIntrospectionSchema(com.apollographql.apollo.compiler.parser.sdl.GraphSdlSchema);
   }
 
 }
