@@ -302,3 +302,24 @@ One big advantage of using a normalized cache is that your UI can now react to c
 ```
 
 </MultiCodeBlock>
+
+## Interacting with the cache
+
+To manipulate the cache directly, `ApolloStore` exposes `read()` and `write()` methods:
+
+```kotlin
+  // Reading data from the store
+  val data = apolloClient.apolloStore.read(BookWithAuthorName()).execute()
+
+  // Create data to write
+  val data = BookWithAuthorName.Data(
+    id = "book1",
+    title = "Les guerriers du silence",
+    author = BookWithAuthorName.Author(
+      id = "author1",
+      name = "Pierre Bordage"
+    )
+  )
+  // Write to the store. All watchers will be notified
+  apolloClient.apolloStore.writeAndPublish(BookWithAuthorName(), data).execute()
+```
