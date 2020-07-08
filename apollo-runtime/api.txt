@@ -42,6 +42,7 @@ package com.apollographql.apollo {
     method public ApolloStore getApolloStore();
     method public List<ApolloInterceptorFactory> getApplicationInterceptorFactories();
     method public List<ApolloInterceptor> getApplicationInterceptors();
+    method public com.apollographql.apollo.interceptor.ApolloInterceptorFactory getAutoPersistedOperationsInterceptorFactory();
     method public CacheHeaders getDefaultCacheHeaders();
     method public HttpCache getHttpCache();
     method public ScalarTypeAdapters getScalarTypeAdapters();
@@ -78,6 +79,7 @@ package com.apollographql.apollo {
     method public com.apollographql.apollo.ApolloClient.Builder okHttpClient(OkHttpClient);
     method public com.apollographql.apollo.ApolloClient.Builder serverUrl(HttpUrl);
     method public com.apollographql.apollo.ApolloClient.Builder serverUrl(String);
+    method public com.apollographql.apollo.ApolloClient.Builder setAutoPersistedOperationsInterceptorFactory(com.apollographql.apollo.interceptor.ApolloInterceptorFactory);
     method public com.apollographql.apollo.ApolloClient.Builder subscriptionConnectionParams(com.apollographql.apollo.subscription.SubscriptionConnectionParams);
     method public com.apollographql.apollo.ApolloClient.Builder subscriptionConnectionParams(com.apollographql.apollo.subscription.SubscriptionConnectionParamsProvider);
     method public com.apollographql.apollo.ApolloClient.Builder subscriptionHeartbeatTimeout(long, TimeUnit);
@@ -236,6 +238,18 @@ package com.apollographql.apollo.http {
 
 package com.apollographql.apollo.interceptor {
 
+  public class ApolloAutoPersistedOperationInterceptor implements com.apollographql.apollo.interceptor.ApolloInterceptor {
+    ctor public ApolloAutoPersistedOperationInterceptor(ApolloLogger, boolean);
+    method public void dispose();
+    method public void interceptAsync(com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorRequest, com.apollographql.apollo.interceptor.ApolloInterceptorChain, Executor, com.apollographql.apollo.interceptor.ApolloInterceptor.CallBack);
+  }
+
+  public static class ApolloAutoPersistedOperationInterceptor.Factory implements com.apollographql.apollo.interceptor.ApolloInterceptorFactory {
+    ctor public ApolloAutoPersistedOperationInterceptor.Factory(boolean, boolean, boolean);
+    ctor public ApolloAutoPersistedOperationInterceptor.Factory();
+    method public com.apollographql.apollo.interceptor.ApolloInterceptor newInterceptor(ApolloLogger, Operation<?, ?, ?>);
+  }
+
   public abstract interface ApolloInterceptor {
     method public abstract void dispose();
     method public abstract void interceptAsync(com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorRequest, com.apollographql.apollo.interceptor.ApolloInterceptorChain, Executor, com.apollographql.apollo.interceptor.ApolloInterceptor.CallBack);
@@ -295,7 +309,7 @@ package com.apollographql.apollo.interceptor {
   }
 
   public abstract interface ApolloInterceptorFactory {
-    method public abstract com.apollographql.apollo.interceptor.ApolloInterceptor newInterceptor();
+    method public abstract com.apollographql.apollo.interceptor.ApolloInterceptor newInterceptor(error.NonExistentClass, error.NonExistentClass);
   }
 
 }

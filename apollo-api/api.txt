@@ -178,6 +178,7 @@ package com.apollographql.apollo.api {
   }
 
   public abstract interface Operation<D extends com.apollographql.apollo.api.Operation.Data, T, V extends com.apollographql.apollo.api.Operation.Variables> {
+    method public abstract error.NonExistentClass composeRequestBody(error.NonExistentClass, error.NonExistentClass, com.apollographql.apollo.api.ScalarTypeAdapters);
     method public abstract error.NonExistentClass composeRequestBody(com.apollographql.apollo.api.ScalarTypeAdapters);
     method public abstract error.NonExistentClass composeRequestBody();
     method public abstract com.apollographql.apollo.api.OperationName name();
@@ -220,7 +221,6 @@ package com.apollographql.apollo.api {
   }
 
   public abstract interface Query<D extends com.apollographql.apollo.api.Operation.Data, T, V extends com.apollographql.apollo.api.Operation.Variables> implements com.apollographql.apollo.api.Operation {
-    method public abstract error.NonExistentClass composeRequestBody(error.NonExistentClass, error.NonExistentClass, com.apollographql.apollo.api.ScalarTypeAdapters);
   }
 
   public final class Response<T> {
