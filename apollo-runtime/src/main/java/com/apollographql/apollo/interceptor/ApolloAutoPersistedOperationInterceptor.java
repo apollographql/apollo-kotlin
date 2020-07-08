@@ -1,7 +1,9 @@
 package com.apollographql.apollo.interceptor;
 
 import com.apollographql.apollo.api.Error;
+import com.apollographql.apollo.api.Mutation;
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.internal.ApolloLogger;
 import com.apollographql.apollo.api.internal.Function;
@@ -116,16 +118,26 @@ public class ApolloAutoPersistedOperationInterceptor implements ApolloIntercepto
   public static class Factory implements ApolloInterceptorFactory {
 
     final boolean useHttpGet;
+    final boolean persistQueries;
+    final boolean persistMutations;
 
-    public Factory(boolean useHttpGet) {
+    public Factory(boolean useHttpGet, boolean persistQueries, boolean persistMutations) {
       this.useHttpGet = useHttpGet;
+      this.persistQueries = persistQueries;
+      this.persistMutations = persistMutations;
     }
 
     public Factory() {
-      this(false);
+      this(false, true, true);
     }
 
     @Nullable @Override public ApolloInterceptor newInterceptor(@NotNull ApolloLogger logger, @NotNull Operation<?, ?, ?> operation) {
+      if (operation instanceof Query && !persistQueries) {
+        return null;
+      }
+      if (operation instanceof Mutation && !persistMutations) {
+        return null;
+      }
       return new ApolloAutoPersistedOperationInterceptor(logger, useHttpGet);
     }
   }
