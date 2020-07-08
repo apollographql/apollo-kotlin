@@ -1,15 +1,14 @@
 package com.apollographql.apollo.cache.normalized
 
 import com.apollographql.apollo.api.BigDecimal
-import com.apollographql.apollo.cache.normalized.Record.Companion.builder
 import kotlin.test.Test
-import kotlin.test.assertNotEquals
+import kotlin.test.assertEquals
 
 class RecordWeigherTest {
 
   @Test
   fun testRecordWeigher() {
-    val recordBuilder = builder("root")
+    val recordBuilder = Record.builder("root")
     val expectedBigDecimal = BigDecimal(1.23)
     val expectedStringValue = "StringValue"
     val expectedBooleanValue = true
@@ -24,8 +23,7 @@ class RecordWeigherTest {
     recordBuilder.addField("referenceList", expectedCacheReferenceList)
     val record = recordBuilder.build()
     record.sizeEstimateBytes()
-
-    //It's difficult to say what the "right" size estimate is, so just checking it is has been calculate at all.
-    assertNotEquals(actual = record.sizeEstimateBytes(), illegal = -1)
+    
+    assertEquals(actual = record.sizeEstimateBytes(), expected = 246)
   }
 }

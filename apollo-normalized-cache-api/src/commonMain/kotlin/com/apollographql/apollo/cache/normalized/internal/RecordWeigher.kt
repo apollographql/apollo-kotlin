@@ -38,7 +38,7 @@ object RecordWeigher {
         SIZE_OF_ARRAY_OVERHEAD + field.sumBy { weighField(it) }
       }
       is CacheReference -> {
-        SIZE_OF_CACHE_REFERENCE_OVERHEAD; +field.key.commonAsUtf8ToByteArray().size
+        SIZE_OF_CACHE_REFERENCE_OVERHEAD + field.key.commonAsUtf8ToByteArray().size
       }
       else -> error("Unknown field type in Record. ${field::class.qualifiedName}")
     }
