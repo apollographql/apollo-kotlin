@@ -4,9 +4,7 @@ import com.apollographql.apollo.api.Mutation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.cache.CacheHeaders;
-import com.apollographql.apollo.fetcher.ResponseFetcher;
 import com.apollographql.apollo.request.RequestHeaders;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

@@ -2,12 +2,10 @@ package com.apollographql.apollo;
 
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
-import com.apollographql.apollo.cache.ApolloCacheHeaders;
-import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
+import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
 import com.apollographql.apollo.request.RequestHeaders;
-
 import org.jetbrains.annotations.NotNull;
 
 /**
