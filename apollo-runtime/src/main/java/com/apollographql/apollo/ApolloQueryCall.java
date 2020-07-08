@@ -2,6 +2,7 @@ package com.apollographql.apollo;
 
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
+import com.apollographql.apollo.cache.ApolloCacheHeaders;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
@@ -46,7 +47,7 @@ public interface ApolloQueryCall<T> extends ApolloCall<T> {
    * @param fetcher the {@link ResponseFetcher} to use.
    * @return The ApolloCall object with the provided CacheControl strategy
    */
-  @NotNull ApolloQueryCall<T> responseFetcher(@NotNull ResponseFetcher fetcher);
+  @Deprecated @NotNull ApolloQueryCall<T> responseFetcher(@NotNull ResponseFetcher fetcher);
 
   /**
    * Sets the {@link RequestHeaders} to use for this call. These headers will be added to the HTTP request when
@@ -56,9 +57,52 @@ public interface ApolloQueryCall<T> extends ApolloCall<T> {
    * @param requestHeaders The {@link RequestHeaders} to use for this request.
    * @return The ApolloCall object with the provided {@link RequestHeaders}.
    */
-  @NotNull ApolloQueryCall<T> requestHeaders(@NotNull RequestHeaders requestHeaders);
+  @Deprecated @NotNull ApolloQueryCall<T> requestHeaders(@NotNull RequestHeaders requestHeaders);
 
   @NotNull @Override ApolloQueryCall<T> clone();
+
+  @NotNull @Override Builder<T> toBuilder();
+
+  interface Builder<T> extends ApolloCall.Builder<T> {
+    @NotNull @Override ApolloQueryCall<T> build();
+
+    /**
+     * Sets the {@link CacheHeaders} to use for this call. {@link com.apollographql.apollo.interceptor.FetchOptions} will
+     * be configured with this headers, and will be accessible from the {@link ResponseFetcher} used for this call.
+     *
+     * @param cacheHeaders the {@link CacheHeaders} that will be passed with records generated from this request to {@link
+     *                     com.apollographql.apollo.cache.normalized.NormalizedCache}. Standardized cache headers are
+     *                     defined in {@link com.apollographql.apollo.cache.ApolloCacheHeaders}.
+     * @return The ApolloCall object with the provided {@link CacheHeaders}.
+     */
+    @NotNull @Override Builder<T> cacheHeaders(@NotNull CacheHeaders cacheHeaders);
+
+    /**
+     * Sets the http cache policy for response/request cache.
+     *
+     * @param httpCachePolicy {@link HttpCachePolicy.Policy} to set
+     * @return {@link ApolloQueryCall} with the provided {@link HttpCachePolicy.Policy}
+     */
+    @NotNull Builder<T> httpCachePolicy(@NotNull HttpCachePolicy.Policy httpCachePolicy);
+
+    /**
+     * Sets the {@link ResponseFetcher} strategy for an ApolloCall object.
+     *
+     * @param fetcher the {@link ResponseFetcher} to use.
+     * @return The ApolloCall object with the provided CacheControl strategy
+     */
+    @NotNull Builder<T> responseFetcher(@NotNull ResponseFetcher fetcher);
+
+    /**
+     * Sets the {@link RequestHeaders} to use for this call. These headers will be added to the HTTP request when
+     * it is issued. These headers will be applied after any headers applied by application-level interceptors
+     * and will override those if necessary.
+     *
+     * @param requestHeaders The {@link RequestHeaders} to use for this request.
+     * @return The Builder
+     */
+    @NotNull Builder<T> requestHeaders(@NotNull RequestHeaders requestHeaders);
+  }
 
   /**
    * Factory for creating {@link ApolloQueryCall} calls.
