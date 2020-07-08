@@ -79,14 +79,10 @@ actual class ApolloWebSocketFactory(
       }
     })
 
-    try {
-      return WebSocketConnectionImpl(
-          webSocket = webSocketConnectionDeferred.await(),
-          messageChannel = messageChannel
-      )
-    } finally {
-      webSocket.cancel()
-    }
+    return WebSocketConnectionImpl(
+        webSocket = webSocketConnectionDeferred.await(),
+        messageChannel = messageChannel
+    )
   }
 }
 
