@@ -26,6 +26,7 @@ import com.example.mutation_create_review.type.ReviewInput
 import java.util.Date
 import kotlin.Any
 import kotlin.Array
+import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
@@ -92,6 +93,17 @@ internal data class CreateReviewForEpisode(
     autoPersistQueries = false,
     withQueryDocument = true,
     scalarTypeAdapters = DEFAULT
+  )
+
+  override fun composeRequestBody(
+    autoPersistQueries: Boolean,
+    withQueryDocument: Boolean,
+    scalarTypeAdapters: ScalarTypeAdapters
+  ): ByteString = OperationRequestBodyComposer.compose(
+    operation = this,
+    autoPersistQueries = autoPersistQueries,
+    withQueryDocument = withQueryDocument,
+    scalarTypeAdapters = scalarTypeAdapters
   )
 
   /**

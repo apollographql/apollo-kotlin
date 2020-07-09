@@ -24,6 +24,7 @@ import com.example.mutation_create_review_semantic_naming.type.Episode
 import com.example.mutation_create_review_semantic_naming.type.ReviewInput
 import kotlin.Any
 import kotlin.Array
+import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
@@ -90,6 +91,17 @@ data class CreateReviewForEpisodeMutation(
     autoPersistQueries = false,
     withQueryDocument = true,
     scalarTypeAdapters = DEFAULT
+  )
+
+  override fun composeRequestBody(
+    autoPersistQueries: Boolean,
+    withQueryDocument: Boolean,
+    scalarTypeAdapters: ScalarTypeAdapters
+  ): ByteString = OperationRequestBodyComposer.compose(
+    operation = this,
+    autoPersistQueries = autoPersistQueries,
+    withQueryDocument = withQueryDocument,
+    scalarTypeAdapters = scalarTypeAdapters
   )
 
   /**

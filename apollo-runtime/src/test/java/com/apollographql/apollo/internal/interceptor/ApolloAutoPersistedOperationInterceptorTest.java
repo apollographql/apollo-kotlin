@@ -8,6 +8,7 @@ import com.apollographql.apollo.api.internal.ApolloLogger;
 import com.apollographql.apollo.api.internal.ResponseFieldMapper;
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller;
 import com.apollographql.apollo.cache.normalized.Record;
+import com.apollographql.apollo.interceptor.ApolloAutoPersistedOperationInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import okhttp3.MediaType;
@@ -37,12 +38,12 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-public class ApolloAutoPersistedQueryInterceptorTest {
-  private ApolloAutoPersistedQueryInterceptor interceptor =
-      new ApolloAutoPersistedQueryInterceptor(new ApolloLogger(null), false);
+public class ApolloAutoPersistedOperationInterceptorTest {
+  private ApolloAutoPersistedOperationInterceptor interceptor =
+      new ApolloAutoPersistedOperationInterceptor(new ApolloLogger(null), false);
 
-  private ApolloAutoPersistedQueryInterceptor interceptorWithGetMethod =
-      new ApolloAutoPersistedQueryInterceptor(new ApolloLogger(null), true);
+  private ApolloAutoPersistedOperationInterceptor interceptorWithGetMethod =
+      new ApolloAutoPersistedOperationInterceptor(new ApolloLogger(null), true);
 
   private ApolloInterceptor.InterceptorRequest request = ApolloInterceptor.InterceptorRequest.builder(new MockOperation())
       .autoPersistQueries(true)
@@ -328,6 +329,13 @@ public class ApolloAutoPersistedQueryInterceptorTest {
         @NotNull ByteString byteString,
         @NotNull ScalarTypeAdapters scalarTypeAdapters
     ) {
+      throw new UnsupportedOperationException();
+    }
+
+    @NotNull @Override public ByteString composeRequestBody(
+        boolean autoPersistQueries,
+        boolean withQueryDocument,
+        @NotNull ScalarTypeAdapters scalarTypeAdapters) {
       throw new UnsupportedOperationException();
     }
 

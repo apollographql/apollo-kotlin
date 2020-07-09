@@ -276,6 +276,13 @@ public class WebSocketSubscriptionTransportMessageTest {
       throw new UnsupportedOperationException();
     }
 
+    @NotNull @Override public ByteString composeRequestBody(
+        boolean autoPersistQueries,
+        boolean withQueryDocument,
+        @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+      throw new UnsupportedOperationException();
+    }
+
     @NotNull @Override public ByteString composeRequestBody(@NotNull ScalarTypeAdapters scalarTypeAdapters) {
       throw new UnsupportedOperationException();
     }

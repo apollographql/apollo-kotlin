@@ -1,31 +1,33 @@
-package com.apollographql.apollo.internal.interceptor;
+package com.apollographql.apollo.interceptor;
 
 import com.apollographql.apollo.api.Error;
+import com.apollographql.apollo.api.Mutation;
+import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.internal.ApolloLogger;
 import com.apollographql.apollo.api.internal.Function;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.exception.ApolloException;
-import com.apollographql.apollo.interceptor.ApolloInterceptor;
-import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.concurrent.Executor;
 
-public class ApolloAutoPersistedQueryInterceptor implements ApolloInterceptor {
+public class ApolloAutoPersistedOperationInterceptor implements ApolloInterceptor {
   private static final String PROTOCOL_NEGOTIATION_ERROR_QUERY_NOT_FOUND = "PersistedQueryNotFound";
   private static final String PROTOCOL_NEGOTIATION_ERROR_NOT_SUPPORTED = "PersistedQueryNotSupported";
 
   private final ApolloLogger logger;
   private volatile boolean disposed;
 
-  final boolean useHttpGetMethodForPersistedQueries;
+  final boolean useHttpGetMethodForPersistedOperations;
 
-  public ApolloAutoPersistedQueryInterceptor(@NotNull ApolloLogger logger,
-                                             boolean useHttpGetMethodForPersistedQueries) {
+  public ApolloAutoPersistedOperationInterceptor(@NotNull ApolloLogger logger,
+                                             boolean useHttpGetMethodForPersistedOperations) {
     this.logger = logger;
-    this.useHttpGetMethodForPersistedQueries = useHttpGetMethodForPersistedQueries;
+    this.useHttpGetMethodForPersistedOperations = useHttpGetMethodForPersistedOperations;
   }
 
   @Override
@@ -35,7 +37,7 @@ public class ApolloAutoPersistedQueryInterceptor implements ApolloInterceptor {
     InterceptorRequest newRequest = request.toBuilder()
             .sendQueryDocument(false)
             .autoPersistQueries(true)
-            .useHttpGetMethodForQueries(request.useHttpGetMethodForQueries || useHttpGetMethodForPersistedQueries)
+            .useHttpGetMethodForQueries(request.useHttpGetMethodForQueries || useHttpGetMethodForPersistedOperations)
             .build();
     chain.proceedAsync(newRequest, dispatcher, new CallBack() {
       @Override public void onResponse(@NotNull InterceptorResponse response) {
@@ -77,7 +79,11 @@ public class ApolloAutoPersistedQueryInterceptor implements ApolloInterceptor {
             logger.w("GraphQL server couldn't find Automatic Persisted Query for operation name: "
                 + request.operation.name().name() + " id: " + request.operation.operationId());
 
-            return Optional.of(request);
+            InterceptorRequest retryRequest = request.toBuilder()
+                .autoPersistQueries(true)
+                .sendQueryDocument(true)
+                .build();
+            return Optional.of(retryRequest);
           }
 
           if (isPersistedQueryNotSupported(response.getErrors())) {
@@ -107,5 +113,32 @@ public class ApolloAutoPersistedQueryInterceptor implements ApolloInterceptor {
       }
     }
     return false;
+  }
+
+  public static class Factory implements ApolloInterceptorFactory {
+
+    final boolean useHttpGet;
+    final boolean persistQueries;
+    final boolean persistMutations;
+
+    public Factory(boolean useHttpGet, boolean persistQueries, boolean persistMutations) {
+      this.useHttpGet = useHttpGet;
+      this.persistQueries = persistQueries;
+      this.persistMutations = persistMutations;
+    }
+
+    public Factory() {
+      this(false, true, true);
+    }
+
+    @Nullable @Override public ApolloInterceptor newInterceptor(@NotNull ApolloLogger logger, @NotNull Operation<?, ?, ?> operation) {
+      if (operation instanceof Query && !persistQueries) {
+        return null;
+      }
+      if (operation instanceof Mutation && !persistMutations) {
+        return null;
+      }
+      return new ApolloAutoPersistedOperationInterceptor(logger, useHttpGet);
+    }
   }
 }
