@@ -98,6 +98,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   private final SubscriptionManager subscriptionManager;
   private final boolean useHttpGetMethodForQueries;
   private final boolean useHttpGetMethodForPersistedQueries;
+  private final boolean writeToNormalizedCacheAsynchronously;
 
   ApolloClient(HttpUrl serverUrl,
       Call.Factory httpCallFactory,
@@ -114,7 +115,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       boolean enableAutoPersistedQueries,
       SubscriptionManager subscriptionManager,
       boolean useHttpGetMethodForQueries,
-      boolean useHttpGetMethodForPersistedQueries) {
+      boolean useHttpGetMethodForPersistedQueries,
+      boolean writeToNormalizedCacheAsynchronously) {
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
     this.httpCache = httpCache;
@@ -135,6 +137,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     this.subscriptionManager = subscriptionManager;
     this.useHttpGetMethodForQueries = useHttpGetMethodForQueries;
     this.useHttpGetMethodForPersistedQueries = useHttpGetMethodForPersistedQueries;
+    this.writeToNormalizedCacheAsynchronously = writeToNormalizedCacheAsynchronously;
   }
 
   @Override
@@ -371,6 +374,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .useHttpGetMethodForQueries(useHttpGetMethodForQueries)
         .useHttpGetMethodForPersistedQueries(useHttpGetMethodForPersistedQueries)
+        .writeToNormalizedCacheAsynchronously(writeToNormalizedCacheAsynchronously)
         .build();
   }
 
@@ -400,6 +404,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     long subscriptionHeartbeatTimeout = -1;
     boolean useHttpGetMethodForQueries;
     boolean useHttpGetMethodForPersistedQueries;
+    boolean writeToNormalizedCacheAsynchronously;
 
     Builder() {
     }
@@ -421,6 +426,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       subscriptionManager = apolloClient.subscriptionManager;
       useHttpGetMethodForQueries = apolloClient.useHttpGetMethodForQueries;
       useHttpGetMethodForPersistedQueries = apolloClient.useHttpGetMethodForPersistedQueries;
+      writeToNormalizedCacheAsynchronously = apolloClient.writeToNormalizedCacheAsynchronously;
     }
 
     /**
@@ -494,8 +500,24 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
      */
     public Builder normalizedCache(@NotNull NormalizedCacheFactory normalizedCacheFactory,
         @NotNull CacheKeyResolver keyResolver) {
+        return normalizedCache(normalizedCacheFactory, keyResolver, false);
+    }
+
+    /**
+     * Set the configuration to be used for normalized cache.
+     *
+     * @param normalizedCacheFactory the {@link NormalizedCacheFactory} used to construct a {@link NormalizedCache}.
+     * @param keyResolver the {@link CacheKeyResolver} to use to normalize records
+     * @param writeToCacheAsynchronously If true returning response data will not wait on the normalized cache write. This can
+     * improve request performance, but means that subsequent requests are not guaranteed to hit the cache for data contained
+     * in previously received requests.
+     * @return The {@link Builder} object to be used for chaining method calls
+     */
+    public Builder normalizedCache(@NotNull NormalizedCacheFactory normalizedCacheFactory,
+        @NotNull CacheKeyResolver keyResolver, boolean writeToCacheAsynchronously) {
       cacheFactory = Optional.fromNullable(checkNotNull(normalizedCacheFactory, "normalizedCacheFactory == null"));
       cacheKeyResolver = Optional.fromNullable(checkNotNull(keyResolver, "cacheKeyResolver == null"));
+      this.writeToNormalizedCacheAsynchronously = writeToCacheAsynchronously;
       return this;
     }
 
@@ -755,7 +777,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
           enableAutoPersistedQueries,
           subscriptionManager,
           useHttpGetMethodForQueries,
-          useHttpGetMethodForPersistedQueries);
+          useHttpGetMethodForPersistedQueries,
+          writeToNormalizedCacheAsynchronously);
     }
 
     private Executor defaultDispatcher() {
