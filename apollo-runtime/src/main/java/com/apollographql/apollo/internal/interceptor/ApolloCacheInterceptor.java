@@ -37,15 +37,17 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
   final ApolloStore apolloStore;
   private final ResponseFieldMapper responseFieldMapper;
   private final Executor dispatcher;
+  private final boolean writeToCacheAsynchronously;
   final ApolloLogger logger;
   volatile boolean disposed;
 
   public ApolloCacheInterceptor(@NotNull ApolloStore apolloStore, @NotNull ResponseFieldMapper responseFieldMapper,
-      @NotNull Executor dispatcher, @NotNull ApolloLogger logger) {
+      @NotNull Executor dispatcher, @NotNull ApolloLogger logger, boolean writeToCacheAsynchronously) {
     this.apolloStore = checkNotNull(apolloStore, "cache == null");
     this.responseFieldMapper = checkNotNull(responseFieldMapper, "responseFieldMapper == null");
     this.dispatcher = checkNotNull(dispatcher, "dispatcher == null");
     this.logger = checkNotNull(logger, "logger == null");
+    this.writeToCacheAsynchronously = writeToCacheAsynchronously;
   }
 
   @Override
@@ -69,19 +71,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
           chain.proceedAsync(request, dispatcher, new CallBack() {
             @Override public void onResponse(@NotNull InterceptorResponse networkResponse) {
               if (disposed) return;
-
-              try {
-                Set<String> networkResponseCacheKeys = cacheResponse(networkResponse, request);
-                Set<String> rolledBackCacheKeys = rollbackOptimisticUpdates(request);
-                Set<String> changedCacheKeys = new HashSet<>();
-                changedCacheKeys.addAll(rolledBackCacheKeys);
-                changedCacheKeys.addAll(networkResponseCacheKeys);
-                publishCacheKeys(changedCacheKeys);
-              } catch (Exception rethrow) {
-                rollbackOptimisticUpdatesAndPublish(request);
-                throw rethrow;
-              }
-
+              cacheResponseAndPublish(request, networkResponse, writeToCacheAsynchronously);
               callBack.onResponse(networkResponse);
               callBack.onCompleted();
             }
@@ -155,6 +145,32 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
     } catch (Exception e) {
       logger.e("Failed to cache operation response", e);
       return Collections.emptySet();
+    }
+  }
+
+  void cacheResponseAndPublish(InterceptorRequest request, InterceptorResponse networkResponse, boolean async) {
+    if (async) {
+      dispatcher.execute(new Runnable() {
+        @Override public void run() {
+          cacheResponseAndPublishSynchronously(request, networkResponse);
+        }
+      });
+    } else {
+      cacheResponseAndPublishSynchronously(request, networkResponse);
+    }
+  }
+
+  void cacheResponseAndPublishSynchronously(InterceptorRequest request, InterceptorResponse networkResponse) {
+    try {
+      Set<String> networkResponseCacheKeys = cacheResponse(networkResponse, request);
+      Set<String> rolledBackCacheKeys = rollbackOptimisticUpdates(request);
+      Set<String> changedCacheKeys = new HashSet<>();
+      changedCacheKeys.addAll(rolledBackCacheKeys);
+      changedCacheKeys.addAll(networkResponseCacheKeys);
+      publishCacheKeys(changedCacheKeys);
+    } catch (Exception rethrow) {
+      rollbackOptimisticUpdatesAndPublish(request);
+      throw rethrow;
     }
   }
 
