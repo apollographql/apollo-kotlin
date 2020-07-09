@@ -390,7 +390,13 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     interceptors.addAll(applicationInterceptors);
 
     interceptors.add(responseFetcher.provideInterceptor(logger));
-    interceptors.add(new ApolloCacheInterceptor(apolloStore, responseFieldMapper, dispatcher, logger, writeToNormalizedCacheAsynchronously));
+    interceptors.add(new ApolloCacheInterceptor(
+        apolloStore,
+        responseFieldMapper,
+        dispatcher,
+        logger,
+        writeToNormalizedCacheAsynchronously)
+    );
     if (operation instanceof Query && enableAutoPersistedQueries) {
       interceptors.add(new ApolloAutoPersistedQueryInterceptor(logger, useHttpGetMethodForPersistedQueries));
     }
