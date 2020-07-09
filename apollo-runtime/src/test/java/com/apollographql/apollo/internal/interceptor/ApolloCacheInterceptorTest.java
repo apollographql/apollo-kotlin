@@ -51,7 +51,13 @@ public class ApolloCacheInterceptorTest {
         .body(ResponseBody.create(MediaType.parse("text/plain; charset=utf-8"), "fakeResponse"))
         .build();
 
-    interceptor = new ApolloCacheInterceptor(apolloStore, mock(ResponseFieldMapper.class), mock(Executor.class), new ApolloLogger(logger), false);
+    interceptor = new ApolloCacheInterceptor(
+        apolloStore,
+        mock(ResponseFieldMapper.class),
+        mock(Executor.class),
+        new ApolloLogger(logger),
+        false
+    );
   }
 
   @Test
