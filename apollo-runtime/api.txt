@@ -74,6 +74,7 @@ package com.apollographql.apollo {
     method public com.apollographql.apollo.ApolloClient.Builder logger(Logger);
     method public com.apollographql.apollo.ApolloClient.Builder normalizedCache(NormalizedCacheFactory);
     method public com.apollographql.apollo.ApolloClient.Builder normalizedCache(NormalizedCacheFactory, CacheKeyResolver);
+    method public com.apollographql.apollo.ApolloClient.Builder normalizedCache(NormalizedCacheFactory, CacheKeyResolver, boolean);
     method public com.apollographql.apollo.ApolloClient.Builder okHttpClient(OkHttpClient);
     method public com.apollographql.apollo.ApolloClient.Builder serverUrl(HttpUrl);
     method public com.apollographql.apollo.ApolloClient.Builder serverUrl(String);
