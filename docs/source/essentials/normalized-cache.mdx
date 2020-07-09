@@ -325,3 +325,19 @@ To manipulate the cache directly, `ApolloStore` exposes `read()` and `write()` m
   // Write to the store. All watchers will be notified
   apolloClient.apolloStore.writeAndPublish(BookWithAuthorName(), data).execute()
 ```
+
+For debug/diagnostics, you can dump the contents of the cache:
+
+<MultiCodeBlock>
+
+```kotlin
+val dump = apolloClient.getApolloStore().normalizedCache().dump();
+NormalizedCache.prettifyDump(dump)
+```
+
+```java
+Map<KClass<?>, Map<String, Record>> dump = apolloClient.getApolloStore().normalizedCache().dump();
+NormalizedCache.prettifyDump(dump)
+```
+
+</MultiCodeBlock>
