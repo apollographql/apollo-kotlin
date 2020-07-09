@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
@@ -71,11 +70,10 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
             @Override public void onResponse(@NotNull InterceptorResponse networkResponse) {
               if (disposed) return;
 
-              final CountDownLatch cacheWriteStarted = new CountDownLatch(1);
               dispatcher.execute(new Runnable() {
                 @Override public void run() {
                   try {
-                    Set<String> networkResponseCacheKeys = cacheResponse(networkResponse, request, cacheWriteStarted);
+                    Set<String> networkResponseCacheKeys = cacheResponse(networkResponse, request);
                     Set<String> rolledBackCacheKeys = rollbackOptimisticUpdates(request);
                     Set<String> changedCacheKeys = new HashSet<>();
                     changedCacheKeys.addAll(rolledBackCacheKeys);
@@ -87,12 +85,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
                   }
                 }
               });
-              // Guarantee that a cache write has started before returning data.
-              try {
-                cacheWriteStarted.await();
-              } catch (InterruptedException e) {
-                throw (new RuntimeException(e));
-              }
+
               callBack.onResponse(networkResponse);
               callBack.onCompleted();
             }
@@ -134,12 +127,11 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
   }
 
   Set<String> cacheResponse(final InterceptorResponse networkResponse,
-      final InterceptorRequest request, final CountDownLatch cacheWriteStarted) {
+      final InterceptorRequest request) {
     if (networkResponse.parsedResponse.isPresent()
         && networkResponse.parsedResponse.get().hasErrors()
         && !request.cacheHeaders.hasHeader(ApolloCacheHeaders.STORE_PARTIAL_RESPONSES)
     ) {
-        cacheWriteStarted.countDown();
         return Collections.emptySet();
     }
     final Optional<List<Record>> records = networkResponse.cacheRecords.map(
@@ -155,19 +147,16 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
     );
 
     if (!records.isPresent()) {
-      cacheWriteStarted.countDown();
       return Collections.emptySet();
     }
 
     try {
       return apolloStore.writeTransaction(new Transaction<WriteableStore, Set<String>>() {
         @Nullable @Override public Set<String> execute(WriteableStore cache) {
-          cacheWriteStarted.countDown();
           return cache.merge(records.get(), request.cacheHeaders);
         }
       });
     } catch (Exception e) {
-      cacheWriteStarted.countDown();
       logger.e("Failed to cache operation response", e);
       return Collections.emptySet();
     }
