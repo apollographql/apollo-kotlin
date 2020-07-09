@@ -71,17 +71,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
           chain.proceedAsync(request, dispatcher, new CallBack() {
             @Override public void onResponse(@NotNull InterceptorResponse networkResponse) {
               if (disposed) return;
-
-              if (writeToCacheAsynchronously) {
-                dispatcher.execute(new Runnable() {
-                  @Override public void run() {
-                    cacheResponseAndPublish(request, networkResponse);
-                  }
-                });
-              } else {
-                cacheResponseAndPublish(request, networkResponse);
-              }
-
+              cacheResponseAndPublish(request, networkResponse, writeToCacheAsynchronously);
               callBack.onResponse(networkResponse);
               callBack.onCompleted();
             }
@@ -158,7 +148,19 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
     }
   }
 
-  void cacheResponseAndPublish(InterceptorRequest request, InterceptorResponse networkResponse) {
+  void cacheResponseAndPublish(InterceptorRequest request, InterceptorResponse networkResponse, boolean async) {
+    if (async) {
+      dispatcher.execute(new Runnable() {
+        @Override public void run() {
+          cacheResponseAndPublishSynchronously(request, networkResponse);
+        }
+      });
+    } else {
+      cacheResponseAndPublishSynchronously(request, networkResponse);
+    }
+  }
+
+  void cacheResponseAndPublishSynchronously(InterceptorRequest request, InterceptorResponse networkResponse) {
     try {
       Set<String> networkResponseCacheKeys = cacheResponse(networkResponse, request);
       Set<String> rolledBackCacheKeys = rollbackOptimisticUpdates(request);
