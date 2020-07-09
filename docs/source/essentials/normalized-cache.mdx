@@ -31,7 +31,9 @@ query AuthorById($id: String!) {
 }
 ```
 
-In the above example, requesting the author of your favorite book with the `AuthorById` query will return a result from the cache if you requested your favorite book before. This is because the author is stored only once in the cache.
+In the above example, requesting the author of your favorite book with the `AuthorById` query will return a result from the cache if you requested your favorite book before. This works because the author is stored only once in the cache and all the fields where retrieved in the initial BookWithAuthorName query. If you were to request more fields, like `birthdate` for an example, that wouldn't work anymore.BookWithAuthorName
+
+To learn more about the process of normalization, check this [blog post](https://www.apollographql.com/blog/the-concepts-of-graphql-bc68bd819be3)
 
 ## Storing your data in memory
 
