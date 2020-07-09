@@ -3,6 +3,7 @@ package com.apollographql.apollo.compiler.parser.graphql
 import com.apollographql.apollo.compiler.parser.antlr.GraphQLParser
 import org.antlr.v4.runtime.ParserRuleContext
 import org.antlr.v4.runtime.misc.Interval
+import kotlin.math.max
 
 object GraphQLDocumentSourceBuilder {
 
@@ -89,7 +90,7 @@ object GraphQLDocumentSourceBuilder {
     get() {
       var indent = 0
       return lines().joinToString(separator = "\n") { line ->
-        if (line.endsWith("}")) indent -= 2
+        if (line.endsWith("}")) indent = max(0, indent - 2)
         (" ".repeat(indent) + line).also {
           if (line.endsWith("{")) indent += 2
         }
