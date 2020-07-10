@@ -1,14 +1,14 @@
 ---
-title: HTTP Cache
+title: HTTP cache
 ---
 
 import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
 
-Apollo Android has 2 different kinds of caches: HTTP cache and normalized cache. The HTTP cache is easier to setup but also has more limitations. This page focuses on the HTTP cache. If you want to deduplicate the storage of your objects and/or notify your UI when your data changes, take a look at the [normalized cache](./normalized-cache) instead.
+Apollo Android provides two different kinds of caches: an HTTP cache and a normalized cache. The HTTP cache is easier to set up but also has more limitations. This page focuses on the HTTP cache. If you want to deduplicate the storage of your objects and/or notify your UI when your data changes, take a look at the [normalized cache](./normalized-cache) instead.
 
-## Http Cache
+## HTTP cache
 
-To enable HTTP Cache support, add the dependency to your project's build.gradle file. The latest version is
+To enable HTTP cache support, add the dependency to your project's `build.gradle file. The latest version is
 [![Download](https://api.bintray.com/packages/apollographql/android/apollo/images/download.svg)](https://bintray.com/apollographql/android/apollo-http-cache/_latestVersion)
 
 ```kotlin:title=build.gradle
@@ -17,7 +17,7 @@ dependencies {
 }
 ```
 
-### Raw HTTP Response Cache
+### Raw HTTP reesponse cache
 
 <MultiCodeBlock>
 
@@ -88,9 +88,9 @@ apolloClient
 
 There are four available cache policies `HttpCachePolicy`:
 
+- `NETWORK_ONLY` - Fetch a response from the network only, ignoring any cached responses. This is the default.
 - `CACHE_ONLY` - Fetch a response from the cache only, ignoring the network. If the cached response doesn't exist or is expired, then
 return an error.
-- `NETWORK_ONLY` - Fetch a response from the network only, ignoring any cached responses.
 - `CACHE_FIRST` - Fetch a response from the cache first. If the response doesn't exist or is expired, then fetch a response from the
 network.
 - `NETWORK_FIRST` - Fetch a response from the network first. If the network fails and the cached response isn't expired, then return cached

@@ -4,7 +4,7 @@ title: Normalized cache
 
 import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
 
-Apollo Android has 2 different kinds of caches: HTTP cache and normalized cache. The HTTP cache is easier to setup but also has more limitations. This page focuses on the normalized cache. If you're looking for a simpler albeit coarser cache, take a look at the [HTTP cache](http-cache).
+Apollo Android provides two different kinds of caches: an HTTP cache and a normalized cache. The HTTP cache is easier to set up but also has more limitations. This page focuses on the normalized cache. If you're looking for a simpler albeit coarser cache, take a look at the [HTTP cache](http-cache).
 
 ## Data Normalization:
 
@@ -37,7 +37,7 @@ To learn more about the process of normalization, check this [blog post](https:/
 
 ## Storing your data in memory
 
-Apollo Android comes with a `LruNormalizedCache` that will store your data in memory:
+Apollo Android comes with an `LruNormalizedCache` that will store your data in memory:
 
 <MultiCodeBlock>
 
@@ -139,7 +139,7 @@ ApolloClient apolloClient = ApolloClient.builder()
 
 ## Chaining caches
 
-To get the best of both caches, you can chain a `LruNormalizedCacheFactory` with a `SqlNormalizedCacheFactory`:
+To get the best of both caches, you can chain an `LruNormalizedCacheFactory` with a `SqlNormalizedCacheFactory`:
 
 <MultiCodeBlock>
 
@@ -196,7 +196,7 @@ This will store the following records:
 * `"author("id": "author1")"`: `{"id": "author1", "name": "Pierre Bordage"}`
 * `"QUERY_ROOT"`: `{"favoriteBook": "ApolloCacheReference{favoriteBook}", "author(\"id\": \"author1\")": "ApolloCacheReference{author(\"id\": \"author1\")}"}`
 
-As you can see, the author is stored twice. This is unfortunate because it takes more space but also because changing data in one place will not notify other watchers. What we want instead is this:
+This is undesirable, both because it takes more space, and because modifying one of those objects will not notify the watchers of the other. What you want instead is this:
 
 * `"book1"`: `{"id": "book1", "title": "Les guerriers du silence", "author": "ApolloCacheReference{author1}"}`
 * `"author1"`: `{"id": "author1", name": "Pierre Bordage"}`
@@ -255,7 +255,7 @@ ApolloClient apolloClient = ApolloClient.builder()
 
 </MultiCodeBlock>
 
-For this resolver to work, every object in your graph needs to have a globally unique ID. If some of them don't have one, you can fallback to using the path as cache key by returning `CacheKey.NO_KEY`.
+For this resolver to work, every object in your graph needs to have a globally unique ID. If some of them don't have one, you can fall back to using the path as cache key by returning `CacheKey.NO_KEY`.
 
 ## Using the cache with your queries
 
@@ -277,7 +277,7 @@ ApolloCall apolloCall = apolloClient().query(new BookWithAuthorName()).responseF
 
 </MultiCodeBlock>
 
-Other possibilities are CACHE_ONLY, NETWORK_ONLY, CACHE_AND_NETWORK_ONLY, NETWORK_FIST. See to the [`ResponseFetchers` class](https://github.com/apollographql/apollo-android/blob/master/apollo-runtime/src/main/java/com/apollographql/apollo/fetcher/ApolloResponseFetchers.java) for more details.
+Other possibilities are `CACHE_ONLY`, `NETWORK_ONLY`, `CACHE_AND_NETWORK_ONLY` and `NETWORK_FIST`. See to the [`ResponseFetchers` class](https://github.com/apollographql/apollo-android/blob/master/apollo-runtime/src/main/java/com/apollographql/apollo/fetcher/ApolloResponseFetchers.java) for more details.
 
 ## Reacting to changes in the cache
 
@@ -344,7 +344,7 @@ NormalizedCache.prettifyDump(dump)
 
 </MultiCodeBlock>
 
-Make sure that no data is duplicated in the dump. If it is the case, it probably means that some objects have a wrong CacheKey. Make sure to provide a CacheKeyResolver that can work with your graph. All objects should have a unique and stable ID. That means that the ID should be the same no matter what path the object is in the graph. That also mean you have to include the identifier field in your queries to be able to use in from the `CacheKeyResolver`.
+Make sure that no data is duplicated in the dump. If it is the case, it probably means that some objects have a wrong `CacheKey`. Make sure to provide a `CacheKeyResolver` that can work with your graph. All objects should have a unique and stable ID. That means that the ID should be the same no matter what path the object is in the graph. That also mean you have to include the identifier field in your queries to be able to use in from the `CacheKeyResolver`.
 
 Finally, make sure to design your queries so that you can reuse fields. A single missing field in the cache for a query will trigger a network fetch. Sometimes it might be useful to query an extra field early on so that it can be reused by other later queries.
 
