@@ -35,7 +35,8 @@ module.exports = {
           'Fetching data': [
             'essentials/queries',
             'essentials/mutations',
-            'essentials/caching',
+            'essentials/normalized-cache',
+            'essentials/http-cache',
             'advanced/persisted-queries',
           ],
           'Languages & Extensions': [
