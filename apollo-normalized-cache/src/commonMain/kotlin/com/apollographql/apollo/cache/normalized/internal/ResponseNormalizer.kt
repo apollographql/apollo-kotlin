@@ -9,7 +9,7 @@ import com.apollographql.apollo.cache.normalized.CacheReference
 import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.Record.Companion.builder
 import com.apollographql.apollo.cache.normalized.RecordSet
-import java.util.*
+import kotlin.jvm.JvmField
 
 abstract class ResponseNormalizer<R> : ResolveDelegate<R> {
   private lateinit var pathStack: SimpleStack<MutableList<String>>
@@ -90,7 +90,7 @@ abstract class ResponseNormalizer<R> : ResolveDelegate<R> {
   }
 
   override fun willResolveElement(atIndex: Int) {
-    path.add(Integer.toString(atIndex))
+    path.add(atIndex.toString())
   }
 
   override fun didResolveElement(atIndex: Int) {
