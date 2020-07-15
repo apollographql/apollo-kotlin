@@ -98,38 +98,46 @@ class NoOpApolloStore : ApolloStore, ReadableStore, WriteableStore {
 
   override fun <D : Operation.Data, T, V : Operation.Variables> write(
       operation: Operation<D, T, V>, operationData: D): ApolloStoreOperation<Set<String>> {
-    error("Cannot write operation: no cache configured")
+    // Should we throw here instead?
+    return emptyOperation(emptySet())
   }
 
   override fun <D : Operation.Data, T, V : Operation.Variables> writeAndPublish(
       operation: Operation<D, T, V>, operationData: D): ApolloStoreOperation<Boolean> {
-    error("Cannot writeAndPublish operation: no cache configured")
+    // Should we throw here instead?
+    return emptyOperation(false)
   }
 
   override fun write(fragment: GraphqlFragment, cacheKey: CacheKey,
                      variables: Operation.Variables): ApolloStoreOperation<Set<String>> {
-    error("Cannot write fragment: no cache configured")
+    // Should we throw here instead?
+    return emptyOperation(emptySet())
   }
 
   override fun writeAndPublish(fragment: GraphqlFragment, cacheKey: CacheKey,
                                variables: Operation.Variables): ApolloStoreOperation<Boolean> {
-    error("Cannot writeAndPublish fragment: no cache configured")
+    // Should we throw here instead?
+    return emptyOperation(false)
   }
 
   override fun <D : Operation.Data, T, V : Operation.Variables> writeOptimisticUpdates(operation: Operation<D, T, V>, operationData: D, mutationId: UUID): ApolloStoreOperation<Set<String>> {
+    // Should we throw here instead?
     return emptyOperation(emptySet())
   }
 
   override fun <D : Operation.Data, T, V : Operation.Variables> writeOptimisticUpdatesAndPublish(operation: Operation<D, T, V>, operationData: D,
                                                                                                    mutationId: UUID): ApolloStoreOperation<Boolean> {
+    // Should we throw here instead?
     return emptyOperation(java.lang.Boolean.FALSE)
   }
 
   override fun rollbackOptimisticUpdatesAndPublish(mutationId: UUID): ApolloStoreOperation<Boolean> {
+    // Should we throw here instead?
     return emptyOperation(java.lang.Boolean.FALSE)
   }
 
   override fun rollbackOptimisticUpdates(mutationId: UUID): ApolloStoreOperation<Set<String>> {
+    // Should we throw here instead?
     return emptyOperation(emptySet())
   }
 }
