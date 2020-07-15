@@ -30,7 +30,7 @@ public final class OperationResponseParser<D extends Operation.Data, W> {
 
   @SuppressWarnings("unchecked") public OperationResponseParser(Operation<D, W, ?> operation,
       ResponseFieldMapper responseFieldMapper, ScalarTypeAdapters scalarTypeAdapters) {
-    this(operation, responseFieldMapper, scalarTypeAdapters, ResponseNormalizer.NO_OP_NORMALIZER);
+    this(operation, responseFieldMapper, scalarTypeAdapters, (ResponseNormalizer<Map<String, Object>>) ResponseNormalizer.NO_OP_NORMALIZER);
   }
 
   public OperationResponseParser(Operation<D, W, ?> operation, ResponseFieldMapper responseFieldMapper,

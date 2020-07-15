@@ -6,6 +6,7 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.internal.ApolloLogger;
+import com.apollographql.apollo.api.internal.ResolveDelegate;
 import com.apollographql.apollo.api.internal.ResponseFieldMapper;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
@@ -366,8 +367,8 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
         CacheFieldValueResolver fieldValueResolver = new CacheFieldValueResolver(cache, operation.variables(),
             cacheKeyResolver(), CacheHeaders.NONE, cacheKeyBuilder);
         //noinspection unchecked
-        RealResponseReader<Record> responseReader = new RealResponseReader<>(operation.variables(), rootRecord,
-            fieldValueResolver, scalarTypeAdapters, ResponseNormalizer.NO_OP_NORMALIZER);
+        RealResponseReader<Record> responseReader = new RealResponseReader<Record>(operation.variables(), rootRecord,
+            fieldValueResolver, scalarTypeAdapters, (ResolveDelegate<Record>) ResponseNormalizer.NO_OP_NORMALIZER);
         return operation.wrapData(responseFieldMapper.map(responseReader));
       }
     });
@@ -415,8 +416,8 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
         CacheFieldValueResolver fieldValueResolver = new CacheFieldValueResolver(cache, variables,
             cacheKeyResolver(), CacheHeaders.NONE, cacheKeyBuilder);
         //noinspection unchecked
-        RealResponseReader<Record> responseReader = new RealResponseReader<>(variables, rootRecord,
-            fieldValueResolver, scalarTypeAdapters, ResponseNormalizer.NO_OP_NORMALIZER);
+        RealResponseReader<Record> responseReader = new RealResponseReader<Record>(variables, rootRecord,
+            fieldValueResolver, scalarTypeAdapters, (ResolveDelegate<Record>) ResponseNormalizer.NO_OP_NORMALIZER);
         return responseFieldMapper.map(responseReader);
       }
     });
