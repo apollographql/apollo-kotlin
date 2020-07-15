@@ -69,12 +69,12 @@ public final class NoOpApolloStore implements ApolloStore, ReadableStore, Writea
 
   @Override public ResponseNormalizer<Map<String, Object>> networkResponseNormalizer() {
     //noinspection unchecked
-    return ResponseNormalizer.NO_OP_NORMALIZER;
+    return (ResponseNormalizer<Map<String, Object>>) ResponseNormalizer.NO_OP_NORMALIZER;
   }
 
   @Override public ResponseNormalizer<Record> cacheResponseNormalizer() {
     //noinspection unchecked
-    return ResponseNormalizer.NO_OP_NORMALIZER;
+    return (ResponseNormalizer<Record>) ResponseNormalizer.NO_OP_NORMALIZER;
   }
 
   @Override public <R> R readTransaction(Transaction<ReadableStore, R> transaction) {

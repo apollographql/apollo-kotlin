@@ -1,36 +1,31 @@
-package com.apollographql.apollo.cache.normalized.internal;
+package com.apollographql.apollo.cache.normalized.internal
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList
 
 /**
  * Simple stack data structure which accepts null elements. Backed by list.
  * @param <E>
- */
-public class SimpleStack<E> {
+</E> */
+class SimpleStack<E> {
+  private var backing: MutableList<E>
 
-  private List<E> backing;
-
-  public SimpleStack() {
-    backing = new ArrayList<>();
+  constructor() {
+    backing = ArrayList()
   }
 
-  public SimpleStack(int initialSize) {
-    backing = new ArrayList<>(initialSize);
+  constructor(initialSize: Int) {
+    backing = ArrayList(initialSize)
   }
 
-  public void push(E element) {
-    backing.add(element);
+  fun push(element: E) {
+    backing.add(element)
   }
 
-  public E pop() {
-    if (isEmpty()) {
-      throw new IllegalStateException("Stack is empty.");
-    }
-    return backing.remove(backing.size() - 1);
+  fun pop(): E {
+    check(!isEmpty) { "Stack is empty." }
+    return backing.removeAt(backing.size - 1)
   }
 
-  public boolean isEmpty() {
-    return backing.isEmpty();
-  }
+  val isEmpty: Boolean
+    get() = backing.isEmpty()
 }
