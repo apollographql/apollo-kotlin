@@ -6,6 +6,12 @@ package com.apollographql.apollo {
     method public abstract com.apollographql.apollo.ApolloCall<T> clone();
     method public abstract void enqueue(com.apollographql.apollo.ApolloCall.Callback<T>);
     method public abstract Operation operation();
+    method public abstract com.apollographql.apollo.ApolloCall.Builder<T> toBuilder();
+  }
+
+  public static abstract interface ApolloCall.Builder<T> {
+    method public abstract com.apollographql.apollo.ApolloCall<T> build();
+    method public abstract com.apollographql.apollo.ApolloCall.Builder<T> cacheHeaders(CacheHeaders);
   }
 
   public static abstract class ApolloCall.Callback<T> {
@@ -96,6 +102,14 @@ package com.apollographql.apollo {
     method public abstract com.apollographql.apollo.ApolloMutationCall<T> requestHeaders(com.apollographql.apollo.request.RequestHeaders);
   }
 
+  public static abstract interface ApolloMutationCall.Builder<T> implements com.apollographql.apollo.ApolloCall.Builder {
+    method public abstract com.apollographql.apollo.ApolloMutationCall<T> build();
+    method public abstract com.apollographql.apollo.ApolloMutationCall.Builder<T> cacheHeaders(CacheHeaders);
+    method public abstract com.apollographql.apollo.ApolloMutationCall.Builder<T> refetchQueries(List<Query>);
+    method public abstract com.apollographql.apollo.ApolloMutationCall.Builder<T> refetchQueryNames(List<OperationName>);
+    method public abstract com.apollographql.apollo.ApolloMutationCall.Builder<T> requestHeaders(com.apollographql.apollo.request.RequestHeaders);
+  }
+
   public static abstract interface ApolloMutationCall.Factory {
     method public abstract <D extends Mutation.Data, T, V extends Mutation.Variables> com.apollographql.apollo.ApolloMutationCall<T> mutate(Mutation<D, T, V>);
     method public abstract <D extends Mutation.Data, T, V extends Mutation.Variables> com.apollographql.apollo.ApolloMutationCall<T> mutate(Mutation<D, T, V>, D);
@@ -127,7 +141,16 @@ package com.apollographql.apollo {
     method public abstract com.apollographql.apollo.ApolloQueryCall<T> httpCachePolicy(HttpCachePolicy.Policy);
     method public abstract com.apollographql.apollo.ApolloQueryCall<T> requestHeaders(com.apollographql.apollo.request.RequestHeaders);
     method public abstract com.apollographql.apollo.ApolloQueryCall<T> responseFetcher(com.apollographql.apollo.fetcher.ResponseFetcher);
+    method public abstract com.apollographql.apollo.ApolloQueryCall.Builder<T> toBuilder();
     method public abstract com.apollographql.apollo.ApolloQueryWatcher<T> watcher();
+  }
+
+  public static abstract interface ApolloQueryCall.Builder<T> implements com.apollographql.apollo.ApolloCall.Builder {
+    method public abstract com.apollographql.apollo.ApolloQueryCall<T> build();
+    method public abstract com.apollographql.apollo.ApolloQueryCall.Builder<T> cacheHeaders(CacheHeaders);
+    method public abstract com.apollographql.apollo.ApolloQueryCall.Builder<T> httpCachePolicy(HttpCachePolicy.Policy);
+    method public abstract com.apollographql.apollo.ApolloQueryCall.Builder<T> requestHeaders(com.apollographql.apollo.request.RequestHeaders);
+    method public abstract com.apollographql.apollo.ApolloQueryCall.Builder<T> responseFetcher(com.apollographql.apollo.fetcher.ResponseFetcher);
   }
 
   public static abstract interface ApolloQueryCall.Factory {
