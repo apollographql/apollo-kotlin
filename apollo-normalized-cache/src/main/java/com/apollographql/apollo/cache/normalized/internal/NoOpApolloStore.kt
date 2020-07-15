@@ -1,160 +1,133 @@
-package com.apollographql.apollo.cache.normalized.internal;
+package com.apollographql.apollo.cache.normalized.internal
 
-import com.apollographql.apollo.api.GraphqlFragment;
-import com.apollographql.apollo.api.Operation;
-import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.api.internal.ResponseFieldMapper;
-import com.apollographql.apollo.cache.CacheHeaders;
-import com.apollographql.apollo.cache.normalized.ApolloStore;
-import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
-import com.apollographql.apollo.cache.normalized.CacheKey;
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
-import com.apollographql.apollo.cache.normalized.NormalizedCache;
-import com.apollographql.apollo.cache.normalized.Record;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.api.Response.Companion.builder
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
+import com.apollographql.apollo.cache.CacheHeaders
+import com.apollographql.apollo.cache.normalized.ApolloStore
+import com.apollographql.apollo.cache.normalized.ApolloStoreOperation
+import com.apollographql.apollo.cache.normalized.ApolloStoreOperation.Companion.emptyOperation
+import com.apollographql.apollo.cache.normalized.CacheKey
+import com.apollographql.apollo.cache.normalized.CacheKeyResolver
+import com.apollographql.apollo.cache.normalized.NormalizedCache
+import com.apollographql.apollo.cache.normalized.Record
+import java.util.UUID
 
 /**
  * An alternative to RealApolloStore for when a no-operation cache is needed.
  */
-public final class NoOpApolloStore implements ApolloStore, ReadableStore, WriteableStore {
-
-  @Override public Set<String> merge(@NotNull Collection<Record> recordCollection, @NotNull CacheHeaders cacheHeaders) {
-    return Collections.emptySet();
+class NoOpApolloStore : ApolloStore, ReadableStore, WriteableStore {
+  override fun merge(recordCollection: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
+    return emptySet()
   }
 
-  @Override public Set<String> merge(Record record, @NotNull CacheHeaders cacheHeaders) {
-    return Collections.emptySet();
+  override fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
+    return emptySet()
   }
 
-  @Nullable @Override public Record read(@NotNull String key, @NotNull CacheHeaders cacheHeaders) {
-    return null;
+  override fun read(key: String, cacheHeaders: CacheHeaders): Record? {
+    return null
   }
 
-  @Override public Collection<Record> read(@NotNull Collection<String> keys, @NotNull CacheHeaders cacheHeaders) {
-    return Collections.emptySet();
+  override fun read(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
+    return emptySet()
   }
 
-  @Override public void subscribe(RecordChangeSubscriber subscriber) {
+  override fun subscribe(subscriber: ApolloStore.RecordChangeSubscriber) {}
+  override fun unsubscribe(subscriber: ApolloStore.RecordChangeSubscriber) {}
+  override fun publish(keys: Set<String>) {}
+  override fun clearAll(): ApolloStoreOperation<Boolean> {
+    return emptyOperation(java.lang.Boolean.FALSE)
   }
 
-  @Override public void unsubscribe(RecordChangeSubscriber subscriber) {
+  override fun remove(cacheKey: CacheKey, cascade: Boolean): ApolloStoreOperation<Boolean> {
+    return emptyOperation(java.lang.Boolean.FALSE)
   }
 
-  @Override public void publish(Set<String> keys) {
+  override fun remove(cacheKey: CacheKey): ApolloStoreOperation<Boolean> {
+    return emptyOperation(java.lang.Boolean.FALSE)
   }
 
-  @NotNull @Override public ApolloStoreOperation<Boolean> clearAll() {
-    return ApolloStoreOperation.emptyOperation(Boolean.FALSE);
+  override fun remove(cacheKeys: List<CacheKey>): ApolloStoreOperation<Int> {
+    return emptyOperation(0)
   }
 
-  @NotNull @Override public ApolloStoreOperation<Boolean> remove(@NotNull CacheKey cacheKey, boolean cascade) {
-    return ApolloStoreOperation.emptyOperation(Boolean.FALSE);
+  override fun networkResponseNormalizer(): ResponseNormalizer<Map<String, Any>> {
+    return ResponseNormalizer.NO_OP_NORMALIZER as ResponseNormalizer<Map<String, Any>>
   }
 
-  @NotNull @Override public ApolloStoreOperation<Boolean> remove(@NotNull CacheKey cacheKey) {
-    return ApolloStoreOperation.emptyOperation(Boolean.FALSE);
+  override fun cacheResponseNormalizer(): ResponseNormalizer<Record> {
+    return ResponseNormalizer.NO_OP_NORMALIZER as ResponseNormalizer<Record>
   }
 
-  @NotNull @Override public ApolloStoreOperation<Integer> remove(@NotNull List<CacheKey> cacheKeys) {
-    return ApolloStoreOperation.emptyOperation(0);
+  override fun <R> readTransaction(transaction: Transaction<ReadableStore, R>): R {
+    return transaction.execute(this)
   }
 
-  @Override public ResponseNormalizer<Map<String, Object>> networkResponseNormalizer() {
-    //noinspection unchecked
-    return (ResponseNormalizer<Map<String, Object>>) ResponseNormalizer.NO_OP_NORMALIZER;
+  override fun <R> writeTransaction(transaction: Transaction<WriteableStore, R>): R {
+    return transaction.execute(this)
   }
 
-  @Override public ResponseNormalizer<Record> cacheResponseNormalizer() {
-    //noinspection unchecked
-    return (ResponseNormalizer<Record>) ResponseNormalizer.NO_OP_NORMALIZER;
+  override fun normalizedCache(): NormalizedCache {
+    return null
   }
 
-  @Override public <R> R readTransaction(Transaction<ReadableStore, R> transaction) {
-    return transaction.execute(this);
+  override fun cacheKeyResolver(): CacheKeyResolver {
+    return null
   }
 
-  @Override public <R> R writeTransaction(Transaction<WriteableStore, R> transaction) {
-    return transaction.execute(this);
+  override fun <D : Operation.Data?, T, V : Operation.Variables?> read(
+      operation: Operation<D, T, V>): ApolloStoreOperation<T> {
+    return emptyOperation(null)
   }
 
-  @Override public NormalizedCache normalizedCache() {
-    return null;
+  override fun <D : Operation.Data?, T, V : Operation.Variables?> read(
+      operation: Operation<D, T, V>, responseFieldMapper: ResponseFieldMapper<D>,
+      responseNormalizer: ResponseNormalizer<Record>, cacheHeaders: CacheHeaders): ApolloStoreOperation<Response<T>> {
+    return emptyOperation(builder<T>(operation).build())
   }
 
-  @Override public CacheKeyResolver cacheKeyResolver() {
-    return null;
+  override fun <F : GraphqlFragment?> read(fieldMapper: ResponseFieldMapper<F>,
+                                           cacheKey: CacheKey, variables: Operation.Variables): ApolloStoreOperation<F> {
+    return emptyOperation(null)
   }
 
-  @NotNull @Override
-  public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<T> read(
-      @NotNull Operation<D, T, V> operation) {
-    return ApolloStoreOperation.emptyOperation(null);
+  override fun <D : Operation.Data?, T, V : Operation.Variables?> write(
+      operation: Operation<D, T, V>, operationData: D): ApolloStoreOperation<Set<String>> {
+    return emptyOperation(emptySet())
   }
 
-  @NotNull @Override
-  public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Response<T>> read(
-      @NotNull Operation<D, T, V> operation, @NotNull ResponseFieldMapper<D> responseFieldMapper,
-      @NotNull ResponseNormalizer<Record> responseNormalizer, @NotNull CacheHeaders cacheHeaders) {
-    return ApolloStoreOperation.emptyOperation(Response.<T>builder(operation).build());
+  override fun <D : Operation.Data?, T, V : Operation.Variables?> writeAndPublish(
+      operation: Operation<D, T, V>, operationData: D): ApolloStoreOperation<Boolean> {
+    return emptyOperation(java.lang.Boolean.FALSE)
   }
 
-  @NotNull @Override
-  public <F extends GraphqlFragment> ApolloStoreOperation<F> read(@NotNull ResponseFieldMapper<F> fieldMapper,
-      @NotNull CacheKey cacheKey, @NotNull Operation.Variables variables) {
-    return ApolloStoreOperation.emptyOperation(null);
+  override fun write(fragment: GraphqlFragment, cacheKey: CacheKey,
+                     variables: Operation.Variables): ApolloStoreOperation<Set<String>> {
+    return emptyOperation(emptySet())
   }
 
-  @NotNull @Override
-  public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Set<String>> write(
-      @NotNull Operation<D, T, V> operation, @NotNull D operationData) {
-    return ApolloStoreOperation.emptyOperation(Collections.<String>emptySet());
+  override fun writeAndPublish(fragment: GraphqlFragment, cacheKey: CacheKey,
+                               variables: Operation.Variables): ApolloStoreOperation<Boolean> {
+    return emptyOperation(java.lang.Boolean.FALSE)
   }
 
-  @NotNull @Override
-  public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Boolean> writeAndPublish(
-      @NotNull Operation<D, T, V> operation, @NotNull D operationData) {
-    return ApolloStoreOperation.emptyOperation(Boolean.FALSE);
+  override fun <D : Operation.Data?, T, V : Operation.Variables?> writeOptimisticUpdates(operation: Operation<D, T, V>, operationData: D, mutationId: UUID): ApolloStoreOperation<Set<String>> {
+    return emptyOperation(emptySet())
   }
 
-  @NotNull @Override
-  public ApolloStoreOperation<Set<String>> write(@NotNull GraphqlFragment fragment, @NotNull CacheKey cacheKey,
-      @NotNull Operation.Variables variables) {
-    return ApolloStoreOperation.emptyOperation(Collections.<String>emptySet());
+  override fun <D : Operation.Data?, T, V : Operation.Variables?> writeOptimisticUpdatesAndPublish(operation: Operation<D, T, V>, operationData: D,
+                                                                                                   mutationId: UUID): ApolloStoreOperation<Boolean> {
+    return emptyOperation(java.lang.Boolean.FALSE)
   }
 
-  @NotNull @Override
-  public ApolloStoreOperation<Boolean> writeAndPublish(@NotNull GraphqlFragment fragment, @NotNull CacheKey cacheKey,
-      @NotNull Operation.Variables variables) {
-    return ApolloStoreOperation.emptyOperation(Boolean.FALSE);
+  override fun rollbackOptimisticUpdatesAndPublish(mutationId: UUID): ApolloStoreOperation<Boolean> {
+    return emptyOperation(java.lang.Boolean.FALSE)
   }
 
-  @NotNull @Override
-  public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Set<String>>
-  writeOptimisticUpdates(@NotNull Operation<D, T, V> operation, @NotNull D operationData, @NotNull UUID mutationId) {
-    return ApolloStoreOperation.emptyOperation(Collections.<String>emptySet());
-  }
-
-  @NotNull @Override
-  public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Boolean>
-  writeOptimisticUpdatesAndPublish(@NotNull Operation<D, T, V> operation, @NotNull D operationData,
-      @NotNull UUID mutationId) {
-    return ApolloStoreOperation.emptyOperation(Boolean.FALSE);
-  }
-
-  @NotNull @Override
-  public ApolloStoreOperation<Boolean> rollbackOptimisticUpdatesAndPublish(@NotNull UUID mutationId) {
-    return ApolloStoreOperation.emptyOperation(Boolean.FALSE);
-  }
-
-  @NotNull @Override public ApolloStoreOperation<Set<String>> rollbackOptimisticUpdates(@NotNull UUID mutationId) {
-    return ApolloStoreOperation.emptyOperation(Collections.<String>emptySet());
+  override fun rollbackOptimisticUpdates(mutationId: UUID): ApolloStoreOperation<Set<String>> {
+    return emptyOperation(emptySet())
   }
 }
