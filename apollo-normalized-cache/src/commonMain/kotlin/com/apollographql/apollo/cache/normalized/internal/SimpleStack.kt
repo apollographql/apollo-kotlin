@@ -1,7 +1,5 @@
 package com.apollographql.apollo.cache.normalized.internal
 
-import java.util.ArrayList
-
 /**
  * Simple stack data structure which accepts null elements. Backed by list.
  * @param <E>
