@@ -63,62 +63,62 @@ class NoOpApolloStore : ApolloStore, ReadableStore, WriteableStore {
   }
 
   override fun <R> readTransaction(transaction: Transaction<ReadableStore, R>): R {
-    return transaction.execute(this)
+    return transaction.execute(this)!!
   }
 
   override fun <R> writeTransaction(transaction: Transaction<WriteableStore, R>): R {
-    return transaction.execute(this)
+    return transaction.execute(this)!!
   }
 
   override fun normalizedCache(): NormalizedCache {
-    return null
+    error("Cannot get normalizedCache: no cache configured")
   }
 
   override fun cacheKeyResolver(): CacheKeyResolver {
-    return null
+    error("Cannot get cacheKeyResolver: no cache configured")
   }
 
-  override fun <D : Operation.Data?, T, V : Operation.Variables?> read(
+  override fun <D : Operation.Data, T, V : Operation.Variables> read(
       operation: Operation<D, T, V>): ApolloStoreOperation<T> {
-    return emptyOperation(null)
+    error("Cannot read operation: no cache configured")
   }
 
-  override fun <D : Operation.Data?, T, V : Operation.Variables?> read(
+  override fun <D : Operation.Data, T, V : Operation.Variables> read(
       operation: Operation<D, T, V>, responseFieldMapper: ResponseFieldMapper<D>,
       responseNormalizer: ResponseNormalizer<Record>, cacheHeaders: CacheHeaders): ApolloStoreOperation<Response<T>> {
-    return emptyOperation(builder<T>(operation).build())
+    error("Cannot read operation: no cache configured")
   }
 
-  override fun <F : GraphqlFragment?> read(fieldMapper: ResponseFieldMapper<F>,
+  override fun <F : GraphqlFragment> read(fieldMapper: ResponseFieldMapper<F>,
                                            cacheKey: CacheKey, variables: Operation.Variables): ApolloStoreOperation<F> {
-    return emptyOperation(null)
+    error("Cannot read fragment: no cache configured")
   }
 
-  override fun <D : Operation.Data?, T, V : Operation.Variables?> write(
+  override fun <D : Operation.Data, T, V : Operation.Variables> write(
       operation: Operation<D, T, V>, operationData: D): ApolloStoreOperation<Set<String>> {
-    return emptyOperation(emptySet())
+    error("Cannot write operation: no cache configured")
   }
 
-  override fun <D : Operation.Data?, T, V : Operation.Variables?> writeAndPublish(
+  override fun <D : Operation.Data, T, V : Operation.Variables> writeAndPublish(
       operation: Operation<D, T, V>, operationData: D): ApolloStoreOperation<Boolean> {
-    return emptyOperation(java.lang.Boolean.FALSE)
+    error("Cannot writeAndPublish operation: no cache configured")
   }
 
   override fun write(fragment: GraphqlFragment, cacheKey: CacheKey,
                      variables: Operation.Variables): ApolloStoreOperation<Set<String>> {
-    return emptyOperation(emptySet())
+    error("Cannot write fragment: no cache configured")
   }
 
   override fun writeAndPublish(fragment: GraphqlFragment, cacheKey: CacheKey,
                                variables: Operation.Variables): ApolloStoreOperation<Boolean> {
-    return emptyOperation(java.lang.Boolean.FALSE)
+    error("Cannot writeAndPublish fragment: no cache configured")
   }
 
-  override fun <D : Operation.Data?, T, V : Operation.Variables?> writeOptimisticUpdates(operation: Operation<D, T, V>, operationData: D, mutationId: UUID): ApolloStoreOperation<Set<String>> {
+  override fun <D : Operation.Data, T, V : Operation.Variables> writeOptimisticUpdates(operation: Operation<D, T, V>, operationData: D, mutationId: UUID): ApolloStoreOperation<Set<String>> {
     return emptyOperation(emptySet())
   }
 
-  override fun <D : Operation.Data?, T, V : Operation.Variables?> writeOptimisticUpdatesAndPublish(operation: Operation<D, T, V>, operationData: D,
+  override fun <D : Operation.Data, T, V : Operation.Variables> writeOptimisticUpdatesAndPublish(operation: Operation<D, T, V>, operationData: D,
                                                                                                    mutationId: UUID): ApolloStoreOperation<Boolean> {
     return emptyOperation(java.lang.Boolean.FALSE)
   }
