@@ -40,14 +40,14 @@ public interface ApolloCall<T> extends Cancelable {
    *                     defined in {@link ApolloCacheHeaders}.
    * @return The ApolloCall object with the provided {@link CacheHeaders}.
    */
-  @NotNull ApolloCall<T> cacheHeaders(@NotNull CacheHeaders cacheHeaders);
+  @Deprecated @NotNull ApolloCall<T> cacheHeaders(@NotNull CacheHeaders cacheHeaders);
 
   /**
    * Creates a new, identical call to this one which can be enqueued or executed even if this call has already been.
    *
    * @return The cloned ApolloCall object.
    */
-  @NotNull ApolloCall<T> clone();
+  @Deprecated @NotNull ApolloCall<T> clone();
 
   /**
    * Returns GraphQL operation this call executes
@@ -62,6 +62,23 @@ public interface ApolloCall<T> extends Cancelable {
    * The call will attempt to abort and release resources, if possible.
    */
   @Override void cancel();
+
+  @NotNull Builder<T> toBuilder();
+
+  interface Builder<T> {
+    @NotNull ApolloCall<T> build();
+
+    /**
+     * Sets the {@link CacheHeaders} to use for this call. {@link com.apollographql.apollo.interceptor.FetchOptions} will
+     * be configured with this headers, and will be accessible from the {@link ResponseFetcher} used for this call.
+     *
+     * @param cacheHeaders the {@link CacheHeaders} that will be passed with records generated from this request to {@link
+     *                     com.apollographql.apollo.cache.normalized.NormalizedCache}. Standardized cache headers are
+     *                     defined in {@link ApolloCacheHeaders}.
+     * @return The builder
+     */
+    @NotNull Builder<T> cacheHeaders(@NotNull CacheHeaders cacheHeaders);
+  }
 
   /**
    * Communicates responses from a server or offline requests.
