@@ -86,7 +86,9 @@ class NoOpApolloStore : ApolloStore, ReadableStore, WriteableStore {
   override fun <D : Operation.Data, T, V : Operation.Variables> read(
       operation: Operation<D, T, V>, responseFieldMapper: ResponseFieldMapper<D>,
       responseNormalizer: ResponseNormalizer<Record>, cacheHeaders: CacheHeaders): ApolloStoreOperation<Response<T>> {
-    error("Cannot read operation: no cache configured")
+    // This is called in the default path when no cache is configured, do not trigger an error
+    // Instead return an empty response. This will be seen as a cache MISS and the request will go to the network.
+    return emptyOperation(Response.builder<T>(operation).build())
   }
 
   override fun <F : GraphqlFragment> read(fieldMapper: ResponseFieldMapper<F>,
