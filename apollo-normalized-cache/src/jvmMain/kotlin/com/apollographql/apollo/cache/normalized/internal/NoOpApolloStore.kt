@@ -3,7 +3,6 @@ package com.apollographql.apollo.cache.normalized.internal
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.Response.Companion.builder
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore
