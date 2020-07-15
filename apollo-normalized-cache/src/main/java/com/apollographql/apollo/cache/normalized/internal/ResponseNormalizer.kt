@@ -1,190 +1,165 @@
-package com.apollographql.apollo.cache.normalized.internal;
+package com.apollographql.apollo.cache.normalized.internal
 
-import com.apollographql.apollo.api.Operation;
-import com.apollographql.apollo.api.ResponseField;
-import com.apollographql.apollo.api.internal.ResolveDelegate;
-import com.apollographql.apollo.cache.normalized.CacheKey;
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
-import com.apollographql.apollo.cache.normalized.CacheReference;
-import com.apollographql.apollo.cache.normalized.Record;
-import com.apollographql.apollo.cache.normalized.RecordSet;
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.ResolveDelegate
+import com.apollographql.apollo.cache.normalized.CacheKey
+import com.apollographql.apollo.cache.normalized.CacheKeyResolver.Companion.rootKeyForOperation
+import com.apollographql.apollo.cache.normalized.CacheReference
+import com.apollographql.apollo.cache.normalized.Record
+import com.apollographql.apollo.cache.normalized.Record.Companion.builder
+import com.apollographql.apollo.cache.normalized.RecordSet
+import java.util.*
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+abstract class ResponseNormalizer<R> : ResolveDelegate<R> {
+  private lateinit var pathStack: SimpleStack<MutableList<String>>
+  private lateinit var recordStack: SimpleStack<Record>
+  private lateinit  var valueStack: SimpleStack<Any?>
+  private lateinit var path: MutableList<String>
+  private lateinit var currentRecordBuilder: Record.Builder
+  private var recordSet = RecordSet()
+  private var dependentKeys = mutableSetOf<String>()
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-public abstract class ResponseNormalizer<R> implements ResolveDelegate<R> {
-  private SimpleStack<List<String>> pathStack;
-  private SimpleStack<Record> recordStack;
-  private SimpleStack<Object> valueStack;
-  private List<String> path;
-  private Record.Builder currentRecordBuilder;
-
-  private RecordSet recordSet = new RecordSet();
-  private Set<String> dependentKeys = Collections.emptySet();
-
-  public Collection<Record> records() {
-    return recordSet.allRecords();
+  open fun records(): Collection<Record?>? {
+    return recordSet.allRecords()
   }
 
-  public Set<String> dependentKeys() {
-    return dependentKeys;
+  open fun dependentKeys(): Set<String> {
+    return dependentKeys
   }
 
-  @Override public void willResolveRootQuery(Operation operation) {
-    willResolveRecord(CacheKeyResolver.rootKeyForOperation(operation));
+  override fun willResolveRootQuery(operation: Operation<*, *, *>) {
+    willResolveRecord(rootKeyForOperation(operation))
   }
 
-  @Override public void willResolve(ResponseField field, Operation.Variables variables, @Nullable Object value) {
-    String key = cacheKeyBuilder().build(field, variables);
-    path.add(key);
+  override fun willResolve(field: ResponseField, variables: Operation.Variables, value: Any?) {
+    val key = cacheKeyBuilder().build(field, variables)
+    path.add(key)
   }
 
-  @Override public void didResolve(ResponseField field, Operation.Variables variables) {
-    path.remove(path.size() - 1);
-    Object value = valueStack.pop();
-    String cacheKey = cacheKeyBuilder().build(field, variables);
-    String dependentKey = currentRecordBuilder.getKey() + "." + cacheKey;
-    dependentKeys.add(dependentKey);
-    currentRecordBuilder.addField(cacheKey, value);
-
-    if (recordStack.isEmpty()) {
-      recordSet.merge(currentRecordBuilder.build());
+  override fun didResolve(field: ResponseField, variables: Operation.Variables) {
+    path.removeAt(path.size - 1)
+    val value = valueStack.pop()
+    val cacheKey = cacheKeyBuilder().build(field, variables)
+    val dependentKey = currentRecordBuilder.key + "." + cacheKey
+    dependentKeys.add(dependentKey)
+    currentRecordBuilder.addField(cacheKey, value)
+    if (recordStack.isEmpty) {
+      recordSet.merge(currentRecordBuilder.build())
     }
   }
 
-  @Override public void didResolveScalar(@Nullable Object value) {
-    valueStack.push(value);
+  override fun didResolveScalar(value: Any?) {
+    valueStack.push(value)
   }
 
-  @Override public void willResolveObject(ResponseField field, @Nullable R objectSource) {
-    pathStack.push(path);
-
-    CacheKey cacheKey = objectSource != null ? resolveCacheKey(field, objectSource) : CacheKey.NO_KEY;
-    String cacheKeyValue = cacheKey.key();
+  override fun willResolveObject(objectField: ResponseField, objectSource: R?) {
+    pathStack.push(path)
+    val cacheKey = objectSource?.let { resolveCacheKey(objectField, it) } ?: CacheKey.NO_KEY
+    var cacheKeyValue = cacheKey.key()
     if (cacheKey.equals(CacheKey.NO_KEY)) {
-      cacheKeyValue = pathToString();
+      cacheKeyValue = pathToString()
     } else {
-      path = new ArrayList<>();
-      path.add(cacheKeyValue);
+      path = ArrayList()
+      path.add(cacheKeyValue)
     }
-    recordStack.push(currentRecordBuilder.build());
-    currentRecordBuilder = Record.builder(cacheKeyValue);
+    recordStack.push(currentRecordBuilder.build())
+    currentRecordBuilder = builder(cacheKeyValue)
   }
 
-  @Override public void didResolveObject(ResponseField field, @Nullable R objectSource) {
-    path = pathStack.pop();
+  override fun didResolveObject(objectField: ResponseField, objectSource: R?) {
+    path = pathStack.pop()
     if (objectSource != null) {
-      Record completedRecord = currentRecordBuilder.build();
-      valueStack.push(new CacheReference(completedRecord.key()));
-      dependentKeys.add(completedRecord.key());
-      recordSet.merge(completedRecord);
+      val completedRecord = currentRecordBuilder.build()
+      valueStack.push(CacheReference(completedRecord.key()))
+      dependentKeys.add(completedRecord.key())
+      recordSet.merge(completedRecord)
     }
-    currentRecordBuilder = recordStack.pop().toBuilder();
+    currentRecordBuilder = recordStack.pop().toBuilder()
   }
 
-  @Override public void didResolveList(List array) {
-    List<Object> parsedArray = new ArrayList<>(array.size());
-    for (int i = 0, size = array.size(); i < size; i++) {
-      parsedArray.add(0, valueStack.pop());
+  override fun didResolveList(array: List<*>) {
+    val parsedArray = ArrayList<Any?>(array.size)
+    var i = 0
+    val size = array.size
+    while (i < size) {
+      parsedArray.add(0, valueStack.pop())
+      i++
     }
-    valueStack.push(parsedArray);
+    valueStack.push(parsedArray)
   }
 
-  @Override public void willResolveElement(int atIndex) {
-    path.add(Integer.toString(atIndex));
+  override fun willResolveElement(atIndex: Int) {
+    path.add(Integer.toString(atIndex))
   }
 
-  @Override public void didResolveElement(int atIndex) {
-    path.remove(path.size() - 1);
+  override fun didResolveElement(atIndex: Int) {
+    path.removeAt(path.size - 1)
   }
 
-  @Override public void didResolveNull() {
-    valueStack.push(null);
+  override fun didResolveNull() {
+    valueStack.push(null)
   }
 
-  @NotNull public abstract CacheKey resolveCacheKey(@NotNull ResponseField field, @NotNull R record);
-
-  @NotNull public abstract CacheKeyBuilder cacheKeyBuilder();
-
-  public void willResolveRecord(CacheKey cacheKey) {
-    pathStack = new SimpleStack<>();
-    recordStack = new SimpleStack<>();
-    valueStack = new SimpleStack<>();
-    dependentKeys = new HashSet<>();
-
-    path = new ArrayList<>();
-    currentRecordBuilder = Record.builder(cacheKey.key());
-    recordSet = new RecordSet();
+  abstract fun resolveCacheKey(field: ResponseField, record: R): CacheKey
+  abstract fun cacheKeyBuilder(): CacheKeyBuilder
+  fun willResolveRecord(cacheKey: CacheKey) {
+    pathStack = SimpleStack()
+    recordStack = SimpleStack()
+    valueStack = SimpleStack()
+    dependentKeys = HashSet()
+    path = ArrayList()
+    currentRecordBuilder = builder(cacheKey.key())
+    recordSet = RecordSet()
   }
 
-  private String pathToString() {
-    StringBuilder stringBuilder = new StringBuilder();
-    for (int i = 0, size = path.size(); i < size; i++) {
-      String pathPiece = path.get(i);
-      stringBuilder.append(pathPiece);
+  private fun pathToString(): String {
+    val stringBuilder = StringBuilder()
+    var i = 0
+    val size = path.size
+    while (i < size) {
+      val pathPiece = path[i]
+      stringBuilder.append(pathPiece)
       if (i < size - 1) {
-        stringBuilder.append(".");
+        stringBuilder.append(".")
+      }
+      i++
+    }
+    return stringBuilder.toString()
+  }
+
+  companion object {
+    @JvmField
+    val NO_OP_NORMALIZER: ResponseNormalizer<*> = object : ResponseNormalizer<Any?>() {
+      override fun willResolveRootQuery(operation: Operation<*, *, *>) {}
+      override fun willResolve(field: ResponseField, variables: Operation.Variables, value: Any?) {}
+      override fun didResolve(field: ResponseField, variables: Operation.Variables) {}
+      override fun didResolveScalar(value: Any?) {}
+      override fun willResolveObject(objectField: ResponseField, objectSource: Any?) {}
+      override fun didResolveObject(objectField: ResponseField, objectSource: Any?) {}
+      override fun didResolveList(array: List<*>) {}
+      override fun willResolveElement(atIndex: Int) {}
+      override fun didResolveElement(atIndex: Int) {}
+      override fun didResolveNull() {}
+      override fun records(): Collection<Record?>? {
+        return emptyList()
+      }
+
+      override fun dependentKeys(): Set<String> {
+        return emptySet()
+      }
+
+      override fun resolveCacheKey(field: ResponseField, record: Any?): CacheKey {
+        return CacheKey.NO_KEY
+      }
+
+      override fun cacheKeyBuilder(): CacheKeyBuilder {
+        return object : CacheKeyBuilder {
+          override fun build(field: ResponseField, variables: Operation.Variables): String {
+            return CacheKey.NO_KEY.key()
+          }
+        }
       }
     }
-    return stringBuilder.toString();
   }
-
-  @SuppressWarnings("unchecked") public static final ResponseNormalizer NO_OP_NORMALIZER = new ResponseNormalizer() {
-    @Override public void willResolveRootQuery(Operation operation) {
-    }
-
-    @Override public void willResolve(ResponseField field, Operation.Variables variables, @Nullable Object value) {
-    }
-
-    @Override public void didResolve(ResponseField field, Operation.Variables variables) {
-    }
-
-    @Override public void didResolveScalar(Object value) {
-    }
-
-    @Override public void willResolveObject(ResponseField field, @Nullable Object objectSource) {
-    }
-
-    @Override public void didResolveObject(ResponseField field, @Nullable Object objectSource) {
-    }
-
-    @Override public void didResolveList(List array) {
-    }
-
-    @Override public void willResolveElement(int atIndex) {
-    }
-
-    @Override public void didResolveElement(int atIndex) {
-    }
-
-    @Override public void didResolveNull() {
-    }
-
-    @Override public Collection<Record> records() {
-      return Collections.emptyList();
-    }
-
-    @Override public Set<String> dependentKeys() {
-      return Collections.emptySet();
-    }
-
-    @NotNull @Override public CacheKey resolveCacheKey(@NotNull ResponseField field, @NotNull Object record) {
-      return CacheKey.NO_KEY;
-    }
-
-    @NotNull @Override public CacheKeyBuilder cacheKeyBuilder() {
-      return new CacheKeyBuilder() {
-        @NotNull @Override public String build(@NotNull ResponseField field, @NotNull Operation.Variables variables) {
-          return CacheKey.NO_KEY.key();
-        }
-      };
-    }
-  };
 }
