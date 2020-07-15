@@ -3,18 +3,14 @@ package com.apollographql.apollo.cache.normalized.internal
 import com.apollographql.apollo.api.ScalarType
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.InputFieldWriter
-import com.apollographql.apollo.api.internal.Utils.__checkNotNull
-import java.io.IOException
-import java.util.ArrayList
-import java.util.Collections
-import java.util.Comparator
-import java.util.TreeMap
+import com.apollographql.apollo.api.internal.Throws
+import okio.IOException
 
-class SortedInputFieldMapWriter(private val fieldNameComparator: Comparator<String>) : InputFieldWriter {
-  private val buffer = TreeMap<String, Any?>(fieldNameComparator)
+class SortedInputFieldMapWriter() : InputFieldWriter {
+  private val buffer = mutableMapOf<String, Any?>()
 
   fun map(): Map<String, Any?> {
-    return Collections.unmodifiableMap(buffer)
+    return buffer.toList().sortedBy { it.first }.toMap()
   }
 
   override fun writeString(fieldName: String, value: String?) {
@@ -50,9 +46,9 @@ class SortedInputFieldMapWriter(private val fieldNameComparator: Comparator<Stri
     if (marshaller == null) {
       buffer[fieldName] = null
     } else {
-      val nestedWriter = SortedInputFieldMapWriter(fieldNameComparator)
+      val nestedWriter = SortedInputFieldMapWriter()
       marshaller.marshal(nestedWriter)
-      buffer[fieldName] = nestedWriter.buffer
+      buffer[fieldName] = nestedWriter.map()
     }
   }
 
@@ -61,7 +57,7 @@ class SortedInputFieldMapWriter(private val fieldNameComparator: Comparator<Stri
     if (listWriter == null) {
       buffer[fieldName] = null
     } else {
-      val listItemWriter = ListItemWriter(fieldNameComparator)
+      val listItemWriter = ListItemWriter()
       listWriter.write(listItemWriter)
       buffer[fieldName] = listItemWriter.list
     }
@@ -71,8 +67,8 @@ class SortedInputFieldMapWriter(private val fieldNameComparator: Comparator<Stri
     buffer[fieldName] = value
   }
 
-  private open class ListItemWriter internal constructor(val fieldNameComparator: Comparator<String>) : InputFieldWriter.ListItemWriter {
-    val list: MutableList<Any?> = ArrayList<Any?>()
+  private open class ListItemWriter internal constructor() : InputFieldWriter.ListItemWriter {
+    val list = ArrayList<Any?>()
     override fun writeString(value: String?) {
       if (value != null) {
         list.add(value)
@@ -118,16 +114,16 @@ class SortedInputFieldMapWriter(private val fieldNameComparator: Comparator<Stri
     @Throws(IOException::class)
     override fun writeObject(marshaller: InputFieldMarshaller?) {
       if (marshaller != null) {
-        val nestedWriter = SortedInputFieldMapWriter(fieldNameComparator)
+        val nestedWriter = SortedInputFieldMapWriter()
         marshaller.marshal(nestedWriter)
-        list.add(nestedWriter.buffer)
+        list.add(nestedWriter.map())
       }
     }
 
     @Throws(IOException::class)
     override fun writeList(listWriter: InputFieldWriter.ListWriter?) {
       if (listWriter != null) {
-        val nestedListItemWriter = ListItemWriter(fieldNameComparator)
+        val nestedListItemWriter = ListItemWriter()
         listWriter.write(nestedListItemWriter)
         list.add(nestedListItemWriter.list)
       }

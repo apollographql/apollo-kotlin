@@ -54,7 +54,7 @@ class RealCacheKeyBuilder : CacheKeyBuilder {
       null -> null
       is Map<*, *> -> resolveArguments(resolvedVariable as Map<String, Any?>, variables)
       is InputType -> {
-        val inputFieldMapWriter = SortedInputFieldMapWriter(Comparator { o1, o2 -> o1.compareTo(o2) })
+        val inputFieldMapWriter = SortedInputFieldMapWriter()
         resolvedVariable.marshaller().marshal(inputFieldMapWriter)
         resolveArguments(inputFieldMapWriter.map(), variables)
       }
