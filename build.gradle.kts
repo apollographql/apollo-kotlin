@@ -124,6 +124,13 @@ fun Project.configurePublishing() {
     javadocTask = tasks.create("javadoc", Javadoc::class.java) {
       source = android.sourceSets["main"].java.sourceFiles
       classpath += project.files(android.getBootClasspath().joinToString(File.pathSeparator))
+
+      (android as? com.android.build.gradle.LibraryExtension)?.libraryVariants?.configureEach {
+        if (name != "release") {
+          return@configureEach
+        }
+        classpath += getCompileClasspath(null)
+      }
     }
   }
 
