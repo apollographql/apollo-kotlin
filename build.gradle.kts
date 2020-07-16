@@ -97,10 +97,6 @@ subprojects {
     classpath = files()
   }
 
-  tasks.withType<JavaCompile>().configureEach {
-    options.compilerArgs.add("-XepDisableWarningsInGeneratedCode")
-  }
-
   afterEvaluate {
     tasks.findByName("check")?.dependsOn("checkstyle")
   }
