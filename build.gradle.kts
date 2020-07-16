@@ -79,12 +79,6 @@ subprojects {
     maven { url = uri("https://jitpack.io") }
   }
 
-  apply(plugin = "net.ltgt.errorprone")
-
-  configurations.named("errorprone") {
-    resolutionStrategy.force(groovy.util.Eval.x(this@subprojects, "x.dep.errorProneCore"))
-  }
-
   group = property("GROUP")!!
   version = property("VERSION_NAME")!!
 

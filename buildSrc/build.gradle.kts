@@ -29,7 +29,6 @@ dependencies {
   implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp4"))
   implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
   implementation(groovy.util.Eval.x(project, "x.dep.android.plugin"))
-  implementation(groovy.util.Eval.x(project, "x.dep.gradleErrorpronePlugin"))
   implementation(groovy.util.Eval.x(project, "x.dep.gradleJapiCmpPlugin"))
   implementation(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
   implementation(groovy.util.Eval.x(project, "x.dep.sqldelight.plugin"))
