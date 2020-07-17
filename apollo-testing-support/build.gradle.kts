@@ -25,8 +25,7 @@ kotlin {
     val commonMain by getting {
       dependencies {
         api(project(":apollo-api"))
-        api(groovy.util.Eval.x(project, "x.dep.okio"))
-        api(groovy.util.Eval.x(project, "x.dep.uuid"))
+        api(project(":apollo-runtime-kotlin"))
         api(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
       }
     }
@@ -34,7 +33,6 @@ kotlin {
     val jvmMain by getting {
       dependsOn(commonMain)
       dependencies {
-        api(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp4"))
       }
     }
 
@@ -52,7 +50,6 @@ kotlin {
       dependencies {
         implementation(kotlin("test-common"))
         implementation(kotlin("test-annotations-common"))
-        implementation(project(":apollo-testing-support"))
       }
     }
 
@@ -60,7 +57,6 @@ kotlin {
       dependencies {
         implementation(kotlin("test-junit"))
         implementation(groovy.util.Eval.x(project, "x.dep.truth"))
-        implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
       }
     }
 
@@ -70,12 +66,3 @@ kotlin {
   }
 }
 
-tasks.register("iOSSimTest") {
-  dependsOn("iosSimTestBinaries")
-  doLast {
-    val binary = kotlin.targets.getByName<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>("iosSim").binaries.getTest("DEBUG").outputFile
-    exec {
-      commandLine = listOf("xcrun", "simctl", "spawn", "iPhone 8", binary.absolutePath)
-    }
-  }
-}

@@ -1,8 +1,9 @@
 package com.apollographql.apollo
 
-import com.apollographql.apollo.mock.MockNetworkTransport
-import com.apollographql.apollo.mock.MockQuery
-import com.apollographql.apollo.mock.TestLoggerExecutor
+import com.apollographql.apollo.testing.MockNetworkTransport
+import com.apollographql.apollo.testing.MockQuery
+import com.apollographql.apollo.testing.TestLoggerExecutor
+import com.apollographql.apollo.testing.runBlocking
 import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.flow.single
 import kotlin.test.BeforeTest

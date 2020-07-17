@@ -6,10 +6,11 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.interceptor.ApolloRequest
 import com.apollographql.apollo.interceptor.ApolloResponse
 import com.apollographql.apollo.interceptor.BearerTokenInterceptor
-import com.apollographql.apollo.mock.MockQuery
-import com.apollographql.apollo.mock.TestTokenProvider
+import com.apollographql.apollo.testing.MockQuery
+import com.apollographql.apollo.testing.TestTokenProvider
 import com.apollographql.apollo.network.HttpExecutionContext
 import com.apollographql.apollo.network.NetworkTransport
+import com.apollographql.apollo.testing.runBlocking
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

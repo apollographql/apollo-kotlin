@@ -12,7 +12,8 @@ include("apollo-http-cache-api")
 include("apollo-normalized-cache")
 include("apollo-normalized-cache-api")
 include("apollo-runtime-kotlin")
-
+include("apollo-cache-interceptor")
+include("apollo-testing-support")
 include("apollo-normalized-cache-sqlite")
 
 if (System.getProperty("idea.sync.active") == null) {

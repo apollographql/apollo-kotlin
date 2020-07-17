@@ -7,8 +7,8 @@ import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.dispatcher.ApolloCoroutineDispatcherContext
 import com.apollographql.apollo.interceptor.ApolloRequest
-import com.apollographql.apollo.mock.MockSubscription
-import com.apollographql.apollo.runBlocking
+import com.apollographql.apollo.testing.MockSubscription
+import com.apollographql.apollo.testing.runBlocking
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
