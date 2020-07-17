@@ -1,6 +1,6 @@
 package com.apollographql.apollo.internal.response
 
-import com.apollographql.apollo.api.CustomTypeAdapter
+import com.apollographql.apollo.api.BigDecimal
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ScalarType
@@ -8,9 +8,6 @@ import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.internal.ResolveDelegate
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseWriter
-import java.math.BigDecimal
-import java.util.ArrayList
-import java.util.LinkedHashMap
 
 class RealResponseWriter(private val operationVariables: Operation.Variables, private val scalarTypeAdapters: ScalarTypeAdapters) : ResponseWriter {
   val buffer: MutableMap<String, FieldDescriptor> = LinkedHashMap()
@@ -19,15 +16,15 @@ class RealResponseWriter(private val operationVariables: Operation.Variables, pr
   }
 
   override fun writeInt(field: ResponseField, value: Int?) {
-    writeScalarFieldValue(field, if (value != null) BigDecimal.valueOf(value.toLong()) else null)
+    writeScalarFieldValue(field, if (value != null) BigDecimal(value.toLong()) else null)
   }
 
   override fun writeLong(field: ResponseField, value: Long?) {
-    writeScalarFieldValue(field, if (value != null) BigDecimal.valueOf(value) else null)
+    writeScalarFieldValue(field, if (value != null) BigDecimal(value) else null)
   }
 
   override fun writeDouble(field: ResponseField, value: Double?) {
-    writeScalarFieldValue(field, if (value != null) BigDecimal.valueOf(value) else null)
+    writeScalarFieldValue(field, if (value != null) BigDecimal(value) else null)
   }
 
   override fun writeBoolean(field: ResponseField, value: Boolean?) {
@@ -177,15 +174,15 @@ class RealResponseWriter(private val operationVariables: Operation.Variables, pr
     }
 
     override fun writeInt(value: Int?) {
-      accumulator.add(if (value != null) BigDecimal.valueOf(value.toLong()) else null)
+      accumulator.add(if (value != null) BigDecimal(value.toLong()) else null)
     }
 
     override fun writeLong(value: Long?) {
-      accumulator.add(if (value != null) BigDecimal.valueOf(value) else null)
+      accumulator.add(if (value != null) BigDecimal(value) else null)
     }
 
     override fun writeDouble(value: Double?) {
-      accumulator.add(if (value != null) BigDecimal.valueOf(value) else null)
+      accumulator.add(if (value != null) BigDecimal(value) else null)
     }
 
     override fun writeBoolean(value: Boolean?) {
@@ -220,10 +217,8 @@ class RealResponseWriter(private val operationVariables: Operation.Variables, pr
   companion object {
     private fun checkFieldValue(field: ResponseField, value: Any?) {
       if (!field.optional && value == null) {
-        throw NullPointerException(String.format("Mandatory response field `%s` resolved with null value",
-            field.responseName))
+        throw NullPointerException("Mandatory response field `${field.responseName}` resolved with null value")
       }
     }
   }
-
 }

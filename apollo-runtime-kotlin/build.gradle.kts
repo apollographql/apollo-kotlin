@@ -28,6 +28,7 @@ kotlin {
     val commonMain by getting {
       dependencies {
         api(project(":apollo-api"))
+        api(project(":apollo-normalized-cache"))
         api(groovy.util.Eval.x(project, "x.dep.okio.okioMultiplatform"))
         api(groovy.util.Eval.x(project, "x.dep.uuid"))
         implementation(kotlin("stdlib-common"))
