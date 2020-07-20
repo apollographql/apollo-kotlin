@@ -79,12 +79,6 @@ subprojects {
     maven { url = uri("https://jitpack.io") }
   }
 
-  apply(plugin = "net.ltgt.errorprone")
-
-  configurations.named("errorprone") {
-    resolutionStrategy.force(groovy.util.Eval.x(this@subprojects, "x.dep.errorProneCore"))
-  }
-
   group = property("GROUP")!!
   version = property("VERSION_NAME")!!
 
@@ -101,10 +95,6 @@ subprojects {
     source("src/main/java")
     include("**/*.java")
     classpath = files()
-  }
-
-  tasks.withType<JavaCompile>().configureEach {
-    options.compilerArgs.add("-XepDisableWarningsInGeneratedCode")
   }
 
   afterEvaluate {
@@ -134,6 +124,13 @@ fun Project.configurePublishing() {
     javadocTask = tasks.create("javadoc", Javadoc::class.java) {
       source = android.sourceSets["main"].java.sourceFiles
       classpath += project.files(android.getBootClasspath().joinToString(File.pathSeparator))
+
+      (android as? com.android.build.gradle.LibraryExtension)?.libraryVariants?.configureEach {
+        if (name != "release") {
+          return@configureEach
+        }
+        classpath += getCompileClasspath(null)
+      }
     }
   }
 
