@@ -7,7 +7,7 @@ import com.apollographql.apollo.api.ResponseField.Companion.isArgumentValueVaria
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.json.Utils
 import okio.Buffer
-import java.io.IOException
+import okio.IOException
 
 class RealCacheKeyBuilder : CacheKeyBuilder {
 
@@ -22,7 +22,7 @@ class RealCacheKeyBuilder : CacheKeyBuilder {
       jsonWriter.serializeNulls = true
       Utils.writeToJson(resolvedArguments, jsonWriter)
       jsonWriter.close()
-      String.format("%s(%s)", field.fieldName, buffer.readUtf8())
+      "${field.fieldName}(${buffer.readUtf8()})"
     } catch (e: IOException) {
       throw RuntimeException(e)
     }
@@ -41,7 +41,9 @@ class RealCacheKeyBuilder : CacheKeyBuilder {
       } else {
         value
       }
-    }.toSortedMap()
+    }.toList()
+        .sortedBy { it.first }
+        .toMap()
   }
 
   @Suppress("UNCHECKED_CAST")
@@ -52,7 +54,7 @@ class RealCacheKeyBuilder : CacheKeyBuilder {
       null -> null
       is Map<*, *> -> resolveArguments(resolvedVariable as Map<String, Any?>, variables)
       is InputType -> {
-        val inputFieldMapWriter = SortedInputFieldMapWriter(Comparator { o1, o2 -> o1.compareTo(o2) })
+        val inputFieldMapWriter = SortedInputFieldMapWriter()
         resolvedVariable.marshaller().marshal(inputFieldMapWriter)
         resolveArguments(inputFieldMapWriter.map(), variables)
       }
