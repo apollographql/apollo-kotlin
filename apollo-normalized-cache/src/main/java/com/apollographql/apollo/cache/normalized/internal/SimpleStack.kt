@@ -7,7 +7,7 @@ import java.util.ArrayList
  * @param <E>
 </E> */
 class SimpleStack<E> {
-  private var backing: MutableList<E>
+  private val backing: MutableList<E>
 
   constructor() {
     backing = ArrayList()
