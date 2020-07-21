@@ -328,7 +328,9 @@ To manipulate the cache directly, `ApolloStore` exposes `read()` and `write()` m
 
 ## Troubleshooting
 
-If the cache does not behave like you would expect and you are experiencing cache misses, you can dump the contents of the cache:
+If you are experiencing cache misses, check your cache size and eviction policy. Some records might have been removed from the cache. Increasing the cache size and/or retention period will help hitting your cache more consistently. 
+
+If you are still experiencing cache misses, you can dump the contents of the cache:
 
 <MultiCodeBlock>
 
