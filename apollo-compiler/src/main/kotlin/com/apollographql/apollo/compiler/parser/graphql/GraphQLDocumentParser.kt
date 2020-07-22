@@ -45,7 +45,9 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
           )
         },
         fragments = fragments,
-        typesUsed = typeDeclarations
+        typesUsed = typeDeclarations,
+        fragmentsPackageName = packageNameProvider.fragmentsPackageName,
+        typesPackageName = packageNameProvider.typesPackageName
     )
   }
 
@@ -141,6 +143,7 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
     }
     val operation = Operation(
         operationName = operationName,
+        packageName = packageNameProvider.operationPackageName(graphQLFilePath),
         operationType = operationType,
         description = description,
         variables = variables.result,

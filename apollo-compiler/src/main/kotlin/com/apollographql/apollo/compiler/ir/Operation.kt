@@ -10,6 +10,7 @@ import javax.lang.model.element.Modifier
 @JsonClass(generateAdapter = true)
 data class Operation(
     val operationName: String,
+    val packageName: String,
     val operationType: String,
     val description: String,
     val variables: List<Variable>,
