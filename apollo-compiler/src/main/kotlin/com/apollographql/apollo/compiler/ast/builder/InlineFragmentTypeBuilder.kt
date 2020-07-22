@@ -33,7 +33,7 @@ internal fun InlineFragment.inlineFragmentField(
       schemaTypeName = typeCondition,
       description = description,
       fragmentRefs = fragments,
-      inlineFragments = emptyList(),
+      inlineFragments = inlineFragments,
       fields = fields,
       kind = ObjectType.Kind.InlineFragment(
           superInterface = fragmentSuper,

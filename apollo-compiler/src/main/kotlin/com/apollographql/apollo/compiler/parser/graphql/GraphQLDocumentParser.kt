@@ -459,6 +459,10 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
       )
     }
 
+    val inlineFragmentsResult = selectionSet()?.selection()?.mapNotNull { ctx ->
+      ctx.inlineFragment()?.parse(parentSchemaType = schemaType, parentFields = fields)
+    }?.flatten() ?: ParseResult(result = emptyList())
+
     val possibleTypes = schemaType.possibleTypes(schema).toList()
     return ParseResult(
         result = InlineFragment(
@@ -466,6 +470,7 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
             possibleTypes = possibleTypes,
             description = schemaType.description ?: "",
             fields = fields.result,
+            inlineFragments = inlineFragmentsResult.result,
             fragments = selectionSet().fragmentRefs(),
             sourceLocation = SourceLocation(start),
             conditions = directives().parse()

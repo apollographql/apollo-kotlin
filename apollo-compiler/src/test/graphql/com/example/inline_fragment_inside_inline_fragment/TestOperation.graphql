@@ -1,0 +1,13 @@
+query TestQuery {
+  search(text: "bla-bla") {
+    ... on Character {
+      name
+      ...on Human {
+        homePlanet
+      }
+      ...on Droid {
+        primaryFunction
+      }
+    }
+  }
+}

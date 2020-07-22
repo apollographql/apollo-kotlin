@@ -12,6 +12,7 @@ data class InlineFragment(
     val possibleTypes: List<String> = emptyList(),
     val description: String,
     val fields: List<Field>,
+    val inlineFragments: List<InlineFragment>,
     val fragments: List<FragmentRef>,
     val sourceLocation: SourceLocation,
     val conditions: List<Condition> = emptyList()
@@ -21,9 +22,10 @@ data class InlineFragment(
     return SchemaTypeSpecBuilder(
         typeName = formatClassName(),
         description = description,
+        schemaType = typeCondition,
         fields = fields,
         fragments = fragments,
-        inlineFragments = emptyList(),
+        inlineFragments = inlineFragments,
         context = context,
         abstract = abstract
     )
