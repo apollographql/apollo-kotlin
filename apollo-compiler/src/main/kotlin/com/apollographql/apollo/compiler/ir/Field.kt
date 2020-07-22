@@ -2,8 +2,10 @@ package com.apollographql.apollo.compiler.ir
 
 import com.apollographql.apollo.compiler.*
 import com.squareup.javapoet.*
+import com.squareup.moshi.JsonClass
 import javax.lang.model.element.Modifier
 
+@JsonClass(generateAdapter = true)
 data class Field(
     val responseName: String,
     val fieldName: String,

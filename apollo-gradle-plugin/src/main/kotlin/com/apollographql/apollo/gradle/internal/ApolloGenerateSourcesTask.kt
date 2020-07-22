@@ -4,6 +4,7 @@ import com.apollographql.apollo.compiler.DefaultPackageNameProvider
 import com.apollographql.apollo.compiler.GraphQLCompiler
 import com.apollographql.apollo.compiler.NullableValueType
 import com.apollographql.apollo.compiler.OperationIdGenerator
+import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.parser.graphql.GraphQLDocumentParser
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.parser.sdl.GraphSdlSchema
@@ -31,6 +32,10 @@ import java.io.File
 
 @CacheableTask
 abstract class ApolloGenerateSourcesTask : DefaultTask() {
+  @get:InputFile
+  @get:PathSensitive(PathSensitivity.RELATIVE)
+  abstract val irFile: RegularFileProperty
+
   @get:Input
   @get:Optional
   abstract val customTypeMapping: MapProperty<String, String>
@@ -70,22 +75,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Optional
   abstract val generateVisitorForPolymorphicDatatypes: Property<Boolean>
 
-  @get:Input
-  @get:Optional
-  abstract val rootPackageName: Property<String>
-
-  @get:InputFiles
-  @get:SkipWhenEmpty
-  @get:PathSensitive(PathSensitivity.RELATIVE)
-  abstract val graphqlFiles: ConfigurableFileCollection
-
-  @get:InputFile
-  @get:PathSensitive(PathSensitivity.RELATIVE)
-  abstract val schemaFile: RegularFileProperty
-
-  @get:Input
-  abstract val rootFolders: ListProperty<String>
-
   @get:OutputDirectory
   abstract val outputDir: DirectoryProperty
 
@@ -107,22 +96,16 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @TaskAction
   fun taskAction() {
-    val realSchemaFile = schemaFile.get().asFile
+    sanityChecks()
 
-    val introspectionSchema = if (realSchemaFile.extension == "json") {
-      IntrospectionSchema.invoke(realSchemaFile)
-    } else {
-      GraphSdlSchema(realSchemaFile).toIntrospectionSchema()
+    outputDir.get().asFile.deleteRecursively()
+
+    val realIRFile = irFile.asFile.get()
+    val codeGenerationIR = try {
+      CodeGenerationIR.fromJson(realIRFile.readText())!!
+    } catch (e: Exception) {
+      throw RuntimeException("Failed to parse GraphQL schema introspection query from `$realIRFile`", e)
     }
-
-    val packageNameProvider = DefaultPackageNameProvider(
-        rootFolders = rootFolders.get().map { project.file(it) },
-        rootPackageName = rootPackageName.getOrElse(""),
-        schemaFile = realSchemaFile
-    )
-
-    val files = graphqlFiles.files
-    sanityChecks(packageNameProvider, files)
 
     val nullableValueTypeEnum = NullableValueType.values().find { it.value == nullableValueType.getOrElse(NullableValueType.ANNOTATED.value) }
     if (nullableValueTypeEnum == null) {
@@ -130,9 +113,13 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
           NullableValueType.values().joinToString(separator = "\n") { it.value })
     }
 
-    outputDir.get().asFile.deleteRecursively()
+    TODO("fixme")
+    val packageNameProvider = DefaultPackageNameProvider(
+        rootFolders = emptySet(),
+        rootPackageName = "",
+        schemaFile = project.file(".")
+    )
 
-    val codeGenerationIR = GraphQLDocumentParser(introspectionSchema, packageNameProvider).parse(files)
     val args = GraphQLCompiler.Arguments(
         ir = codeGenerationIR,
         outputDir = outputDir.get().asFile,
@@ -155,7 +142,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
     GraphQLCompiler().write(args)
   }
 
-  private fun sanityChecks(packageNameProvider: DefaultPackageNameProvider, files: Set<File>) {
+  private fun sanityChecks() {
     if (generateKotlinModels.getOrElse(false) && generateModelBuilder.getOrElse(false)) {
       throw IllegalArgumentException("""
         ApolloGraphQL: Using `generateModelBuilder = true` does not make sense with `generateKotlinModels = true`. You can use .copy() as models are data classes.
@@ -172,15 +159,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       throw IllegalArgumentException("""
         ApolloGraphQL: Using `nullableValueType` does not make sense with `generateKotlinModels = true`
       """.trimIndent())
-    }
-
-    val map = files.groupBy { packageNameProvider.filePackageName(it.normalize().absolutePath) to it.nameWithoutExtension }
-
-    map.values.forEach {
-      require(it.size == 1) {
-        "ApolloGraphQL: duplicate(s) graphql file(s) found:\n" +
-            it.map { it.absolutePath }.joinToString("\n")
-      }
     }
   }
 }

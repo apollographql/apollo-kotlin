@@ -5,8 +5,10 @@ import com.apollographql.apollo.compiler.VisitorSpec.VISITOR_CLASSNAME
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.TypeSpec
+import com.squareup.moshi.JsonClass
 import javax.lang.model.element.Modifier
 
+@JsonClass(generateAdapter = true)
 data class Fragment(
     val fragmentName: String,
     val source: String,

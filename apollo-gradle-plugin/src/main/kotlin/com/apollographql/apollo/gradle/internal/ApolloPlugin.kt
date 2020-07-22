@@ -1,5 +1,6 @@
 package com.apollographql.apollo.gradle.internal
 
+import com.android.build.gradle.internal.tasks.factory.dependsOn
 import com.apollographql.apollo.gradle.api.ApolloExtension
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.gradle.api.Plugin
@@ -48,7 +49,15 @@ open class ApolloPlugin : Plugin<Project> {
         }
 
         compilationUnits.forEach { compilationUnit ->
-          val codegenProvider = registerCodeGenTask(project, compilationUnit, checkVersionsTask)
+          val irTaskProvider = registerIRGenTask(project, compilationUnit)
+
+          val codegenProvider = registerCodeGenTask(project, compilationUnit)
+
+          codegenProvider.configure {
+            it.dependsOn(checkVersionsTask)
+            it.irFile.set(irTaskProvider.flatMap { it.irFile })
+          }
+
           variantProvider.configure {
             it.dependsOn(codegenProvider)
           }
@@ -79,14 +88,12 @@ open class ApolloPlugin : Plugin<Project> {
       }
     }
 
-    private fun registerCodeGenTask(project: Project, compilationUnit: DefaultCompilationUnit, checkVersionsTask: TaskProvider<Task>): TaskProvider<ApolloGenerateSourcesTask> {
-      val taskName = "generate${compilationUnit.name.capitalize()}ApolloSources"
+    private fun registerIRGenTask(project: Project, compilationUnit: DefaultCompilationUnit): TaskProvider<ApolloGenerateIRTask> {
+      val taskName = "generate${compilationUnit.name.capitalize()}ApolloIR"
 
-      return project.tasks.register(taskName, ApolloGenerateSourcesTask::class.java) {
+      return project.tasks.register(taskName, ApolloGenerateIRTask::class.java) {
         it.group = TASK_GROUP
-        it.description = "Generate Apollo models for ${compilationUnit.name.capitalize()} GraphQL queries"
-
-        it.dependsOn(checkVersionsTask)
+        it.description = "Generate IR for ${compilationUnit.name.capitalize()} GraphQL queries"
 
         val (compilerParams, graphqlSourceDirectorySet) = compilationUnit.resolveParams(project)
 
@@ -94,6 +101,20 @@ open class ApolloPlugin : Plugin<Project> {
         // I'm not sure if gradle is sensitive to the order of the rootFolders. Sort them just in case.
         it.rootFolders.set(project.provider { graphqlSourceDirectorySet.srcDirs.map { it.relativeTo(project.projectDir).path }.sorted() })
         it.schemaFile.set(compilerParams.schemaFile)
+
+        it.rootPackageName.set(compilerParams.rootPackageName)
+        it.irFile.set(project.layout.buildDirectory.file("apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}/ir.json"))
+      }
+    }
+
+    private fun registerCodeGenTask(project: Project, compilationUnit: DefaultCompilationUnit): TaskProvider<ApolloGenerateSourcesTask> {
+      val taskName = "generate${compilationUnit.name.capitalize()}ApolloSources"
+
+      return project.tasks.register(taskName, ApolloGenerateSourcesTask::class.java) {
+        it.group = TASK_GROUP
+        it.description = "Generate Apollo models for ${compilationUnit.name.capitalize()} GraphQL queries"
+
+        val (compilerParams, _) = compilationUnit.resolveParams(project)
 
         it.nullableValueType.set(compilerParams.nullableValueType)
         it.useSemanticNaming.set(compilerParams.useSemanticNaming)
@@ -103,7 +124,6 @@ open class ApolloPlugin : Plugin<Project> {
         it.generateKotlinModels.set(compilationUnit.generateKotlinModels())
         it.generateVisitorForPolymorphicDatatypes.set(compilerParams.generateVisitorForPolymorphicDatatypes)
         it.customTypeMapping.set(compilerParams.customTypeMapping)
-        it.rootPackageName.set(compilerParams.rootPackageName)
         it.outputDir.apply {
           set(project.layout.buildDirectory.map {
             it.dir("generated/source/apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}")
@@ -121,7 +141,6 @@ open class ApolloPlugin : Plugin<Project> {
         it.operationIdGenerator.set(compilerParams.operationIdGenerator)
         it.kotlinMultiPlatformProject.set(project.isKotlinMultiplatform)
         it.sealedClassesForEnumsMatching.set(compilerParams.sealedClassesForEnumsMatching)
-        Unit
       }
     }
 

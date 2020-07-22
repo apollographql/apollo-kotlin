@@ -5,8 +5,10 @@ import com.apollographql.apollo.compiler.ClassNames
 import com.apollographql.apollo.compiler.InputTypeSpecBuilder
 import com.apollographql.apollo.compiler.escapeJavaReservedWord
 import com.squareup.javapoet.*
+import com.squareup.moshi.JsonClass
 import javax.lang.model.element.Modifier
 
+@JsonClass(generateAdapter = true)
 data class TypeDeclaration(
     val kind: String,
     val name: String,
