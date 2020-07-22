@@ -34,6 +34,7 @@ internal fun Operation.ast(
 
   return OperationType(
       name = operationClassName,
+      packageName = packageName,
       type = operationType,
       operationName = operationName,
       description = description,

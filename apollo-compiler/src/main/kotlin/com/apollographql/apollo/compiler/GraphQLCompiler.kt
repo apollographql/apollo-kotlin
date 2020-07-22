@@ -35,7 +35,6 @@ class GraphQLCompiler {
           customTypeMap = args.customTypeMap,
           operationIdGenerator = args.operationIdGenerator,
           useSemanticNaming = args.useSemanticNaming,
-          packageNameProvider = args.packageNameProvider,
           generateAsInternal = args.generateAsInternal,
           kotlinMultiPlatformProject = args.kotlinMultiPlatformProject,
           enumAsSealedClassPatternFilters = args.enumAsSealedClassPatternFilters.map { it.toRegex() }

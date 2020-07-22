@@ -13,7 +13,6 @@ import java.io.File
 class GraphQLKompiler(
     private val ir: CodeGenerationIR,
     private val customTypeMap: Map<String, String>,
-    private val packageNameProvider: PackageNameProvider,
     private val useSemanticNaming: Boolean,
     private val generateAsInternal: Boolean = false,
     private val operationIdGenerator: OperationIdGenerator,
@@ -24,13 +23,14 @@ class GraphQLKompiler(
     val customTypeMap = customTypeMap.supportedCustomTypes(ir.typesUsed)
     val schema = ir.ast(
         customTypeMap = customTypeMap,
-        typesPackageName = packageNameProvider.typesPackageName,
-        fragmentsPackage = packageNameProvider.fragmentsPackageName,
+        typesPackageName = ir.typesPackageName,
+        fragmentsPackage = ir.fragmentsPackageName,
         useSemanticNaming = useSemanticNaming,
         operationIdGenerator = operationIdGenerator
     )
     val schemaCodegen = SchemaCodegen(
-        packageNameProvider = packageNameProvider,
+        typesPackageName = ir.typesPackageName,
+        fragmentsPackageName = ir.fragmentsPackageName,
         generateAsInternal = generateAsInternal,
         kotlinMultiPlatformProject = kotlinMultiPlatformProject,
         enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters
