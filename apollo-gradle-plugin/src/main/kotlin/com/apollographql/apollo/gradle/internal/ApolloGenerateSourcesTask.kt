@@ -113,13 +113,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
           NullableValueType.values().joinToString(separator = "\n") { it.value })
     }
 
-    TODO("fixme")
-    val packageNameProvider = DefaultPackageNameProvider(
-        rootFolders = emptySet(),
-        rootPackageName = "",
-        schemaFile = project.file(".")
-    )
-
     val args = GraphQLCompiler.Arguments(
         ir = codeGenerationIR,
         outputDir = outputDir.get().asFile,
@@ -132,7 +125,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         suppressRawTypesWarning = suppressRawTypesWarning.getOrElse(false),
         generateKotlinModels = generateKotlinModels.getOrElse(false),
         generateVisitorForPolymorphicDatatypes = generateVisitorForPolymorphicDatatypes.getOrElse(false),
-        packageNameProvider = packageNameProvider,
         operationOutputFile = operationOutputFile.orNull?.asFile,
         generateAsInternal = generateAsInternal.getOrElse(false),
         kotlinMultiPlatformProject = kotlinMultiPlatformProject.getOrElse(false),

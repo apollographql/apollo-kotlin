@@ -116,7 +116,6 @@ class GraphQLCompiler {
       val customTypeMap: Map<String, String>,
       val operationIdGenerator: OperationIdGenerator = OperationIdGenerator.Sha256(),
       val useSemanticNaming: Boolean,
-      val packageNameProvider: PackageNameProvider,
       val generateKotlinModels: Boolean = false,
       val operationOutputFile: File? = null,
       val generateAsInternal: Boolean = false,
