@@ -17,7 +17,6 @@ class GraphQLCompiler {
     val context = CodeGenerationContext(
         reservedTypeNames = emptyList(),
         typeDeclarations = ir.typesUsed,
-        packageNameProvider = args.packageNameProvider,
         customTypeMap = customTypeMap,
         operationIdGenerator = operationIdGenerator,
         nullableValueType = args.nullableValueType,
@@ -59,7 +58,7 @@ class GraphQLCompiler {
     fragments.forEach {
       val typeSpec = it.toTypeSpec(context.copy())
       JavaFile
-          .builder(context.packageNameProvider.fragmentsPackageName, typeSpec)
+          .builder(context.ir.fragmentsPackageName, typeSpec)
           .addFileComment(AUTO_GENERATED_FILE)
           .build()
           .writeTo(outputDir)
@@ -68,7 +67,7 @@ class GraphQLCompiler {
     typesUsed.supportedTypeDeclarations().forEach {
       val typeSpec = it.toTypeSpec(context.copy())
       JavaFile
-          .builder(context.packageNameProvider.typesPackageName, typeSpec)
+          .builder(context.ir.typesPackageName, typeSpec)
           .addFileComment(AUTO_GENERATED_FILE)
           .build()
           .writeTo(outputDir)
@@ -77,7 +76,7 @@ class GraphQLCompiler {
     if (context.customTypeMap.isNotEmpty()) {
       val typeSpec = CustomEnumTypeSpecBuilder(context.copy()).build()
       JavaFile
-          .builder(context.packageNameProvider.typesPackageName, typeSpec)
+          .builder(context.ir.typesPackageName, typeSpec)
           .addFileComment(AUTO_GENERATED_FILE)
           .build()
           .writeTo(outputDir)
@@ -85,7 +84,7 @@ class GraphQLCompiler {
 
     operations.map { OperationTypeSpecBuilder(it, fragments, context.useSemanticNaming) }
         .forEach {
-          val packageName = context.packageNameProvider.operationPackageName(it.operation.filePath)
+          val packageName = it.operation.packageName
           val typeSpec = it.toTypeSpec(context.copy())
           JavaFile
               .builder(packageName, typeSpec)

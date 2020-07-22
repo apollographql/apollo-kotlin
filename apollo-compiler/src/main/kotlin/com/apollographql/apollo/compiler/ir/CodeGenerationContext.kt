@@ -15,6 +15,5 @@ data class CodeGenerationContext(
     val generateModelBuilder: Boolean,
     val useJavaBeansSemanticNaming: Boolean,
     val suppressRawTypesWarning: Boolean,
-    val generateVisitorForPolymorphicDatatypes: Boolean,
-    val packageNameProvider: PackageNameProvider
+    val generateVisitorForPolymorphicDatatypes: Boolean
 )
