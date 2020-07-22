@@ -33,7 +33,8 @@ import java.io.File
 @CacheableTask
 abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:InputFile
-  @get:PathSensitive(PathSensitivity.RELATIVE)
+  // this file will not be set if there are not input files
+  @get:Optional
   abstract val irFile: RegularFileProperty
 
   @get:Input
@@ -99,6 +100,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
     sanityChecks()
 
     outputDir.get().asFile.deleteRecursively()
+
+    if (!irFile.isPresent) {
+      return
+    }
 
     val realIRFile = irFile.asFile.get()
     val codeGenerationIR = try {

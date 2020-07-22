@@ -5,6 +5,7 @@ import com.apollographql.apollo.compiler.parser.graphql.GraphQLDocumentParser
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.parser.sdl.GraphSdlSchema
 import com.apollographql.apollo.compiler.parser.sdl.toIntrospectionSchema
+import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
@@ -21,7 +22,7 @@ import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 
-abstract class ApolloGenerateIRTask : SourceTask() {
+abstract class ApolloGenerateIRTask : DefaultTask() {
   @get:InputFile
   @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val schemaFile: RegularFileProperty

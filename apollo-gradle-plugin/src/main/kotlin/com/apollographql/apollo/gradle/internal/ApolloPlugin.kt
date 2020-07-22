@@ -103,7 +103,9 @@ open class ApolloPlugin : Plugin<Project> {
         it.schemaFile.set(compilerParams.schemaFile)
 
         it.rootPackageName.set(compilerParams.rootPackageName)
-        it.irFile.set(project.layout.buildDirectory.file("apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}/ir.json"))
+        if (!graphqlSourceDirectorySet.isEmpty) {
+          it.irFile.set(project.layout.buildDirectory.file("apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}/ir.json"))
+        }
       }
     }
 
