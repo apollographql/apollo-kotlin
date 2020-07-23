@@ -30,6 +30,7 @@ interface CompilerParams {
    *
    * Default value: false
    */
+  @Deprecated("this is not used anymore as operationOutput will always be written")
   val generateOperationOutput: Property<Boolean>
 
 

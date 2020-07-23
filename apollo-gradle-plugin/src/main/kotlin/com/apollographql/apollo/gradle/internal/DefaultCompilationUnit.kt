@@ -26,6 +26,7 @@ abstract class DefaultCompilationUnit @Inject constructor(
 
   abstract override val outputDir: DirectoryProperty
   abstract override val operationOutputFile: RegularFileProperty
+  abstract override val operationDescriptorListFile: RegularFileProperty
 
   fun resolveParams(project: Project): Pair<CompilerParams, SourceDirectorySet> {
     val compilerParams = this

@@ -1,14 +1,19 @@
 package com.apollographql.apollo.gradle.internal
 
-import com.android.build.gradle.internal.tasks.factory.dependsOn
+import com.apollographql.apollo.compiler.OperationIdGenerator
+import com.apollographql.apollo.compiler.ir.CodeGenerationIR
+import com.apollographql.apollo.compiler.operationoutput.OperationDescriptorList
 import com.apollographql.apollo.gradle.api.ApolloExtension
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.ConfigurationContainer
+import org.gradle.api.file.RegularFile
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.util.GradleVersion
+import java.io.File
 import java.net.URLDecoder
 
 open class ApolloPlugin : Plugin<Project> {
@@ -51,11 +56,14 @@ open class ApolloPlugin : Plugin<Project> {
         compilationUnits.forEach { compilationUnit ->
           val irTaskProvider = registerIRGenTask(project, compilationUnit)
 
-          val codegenProvider = registerCodeGenTask(project, compilationUnit)
+          compilationUnit.operationDescriptorListFile.set(irTaskProvider.flatMap { it.operationDescriptorListFile })
+
+          val idgenProvider = registerIdGenTask(project, compilationUnit, irTaskProvider.flatMap { it.irFile })
+
+          val codegenProvider = registerCodeGenTask(project, compilationUnit, irTaskProvider.flatMap { it.irFile })
 
           codegenProvider.configure {
             it.dependsOn(checkVersionsTask)
-            it.irFile.set(irTaskProvider.flatMap { it.irFile })
           }
 
           variantProvider.configure {
@@ -63,7 +71,6 @@ open class ApolloPlugin : Plugin<Project> {
           }
 
           compilationUnit.outputDir.set(codegenProvider.flatMap { it.outputDir })
-          compilationUnit.operationOutputFile.set(codegenProvider.flatMap { it.operationOutputFile })
 
           /**
            * Order matters here. See https://github.com/apollographql/apollo-android/issues/1970
@@ -105,11 +112,26 @@ open class ApolloPlugin : Plugin<Project> {
         it.rootPackageName.set(compilerParams.rootPackageName)
         if (!graphqlSourceDirectorySet.isEmpty) {
           it.irFile.set(project.layout.buildDirectory.file("apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}/ir.json"))
+          it.operationDescriptorListFile.set(project.layout.buildDirectory.file("apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}/operationDescriptorList.json"))
         }
       }
     }
 
-    private fun registerCodeGenTask(project: Project, compilationUnit: DefaultCompilationUnit): TaskProvider<ApolloGenerateSourcesTask> {
+    private fun registerIdGenTask(project: Project, compilationUnit: DefaultCompilationUnit, operationDescriptorListFile: Provider<RegularFile>): TaskProvider<ApolloGenerateDefaultOperationIdsTask> {
+      val taskName = "generate${compilationUnit.name.capitalize()}ApolloOperationIDs"
+
+      return project.tasks.register(taskName, ApolloGenerateDefaultOperationIdsTask::class.java) {
+        it.group = TASK_GROUP
+        it.description = "Generate Apollo operation IDs for ${compilationUnit.name.capitalize()} GraphQL queries"
+
+        val (compilerParams, _) = compilationUnit.resolveParams(project)
+        it.operationIdGenerator = compilerParams.operationIdGenerator.orElse(OperationIdGenerator.Sha256()).get()
+        it.operationDescriptorListFile.set(operationDescriptorListFile)
+        it.operationOutputFile.set(compilationUnit.operationOutputFile)
+      }
+    }
+
+    private fun registerCodeGenTask(project: Project, compilationUnit: DefaultCompilationUnit, irFileProvider: Provider<RegularFile>): TaskProvider<ApolloGenerateSourcesTask> {
       val taskName = "generate${compilationUnit.name.capitalize()}ApolloSources"
 
       return project.tasks.register(taskName, ApolloGenerateSourcesTask::class.java) {
@@ -127,24 +149,26 @@ open class ApolloPlugin : Plugin<Project> {
         it.generateVisitorForPolymorphicDatatypes.set(compilerParams.generateVisitorForPolymorphicDatatypes)
         it.customTypeMapping.set(compilerParams.customTypeMapping)
         it.outputDir.apply {
-          set(project.layout.buildDirectory.map {
-            it.dir("generated/source/apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}")
-          })
+          set(project.layout.buildDirectory.dir("generated/source/apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}"))
           disallowChanges()
         }
+        it.irFile.set(irFileProvider)
         it.operationOutputFile.apply {
-          if (compilerParams.generateOperationOutput.getOrElse(false)) {
-            set(project.layout.buildDirectory.file("generated/operationOutput/apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}/OperationOutput.json"))
-          }
+          set(compilationUnit.operationOutputFile.orElse { defaultOperationOutput(project, irFileProvider.get().asFile, compilationUnit.operationIdGenerator.orElse(OperationIdGenerator.Sha256()).get()) })
           disallowChanges()
         }
 
         it.generateAsInternal.set(compilerParams.generateAsInternal)
-        it.operationIdGenerator.set(compilerParams.operationIdGenerator)
+
         it.kotlinMultiPlatformProject.set(project.isKotlinMultiplatform)
         it.sealedClassesForEnumsMatching.set(compilerParams.sealedClassesForEnumsMatching)
       }
     }
+
+    private fun defaultOperationOutput(project: Project, irFile: File, operationIdGenerator: OperationIdGenerator): File {
+      val codegenerationIR = CodeGenerationIR(irFile)
+    }
+
 
     private fun registerDownloadSchemaTasks(project: Project, apolloExtension: DefaultApolloExtension) {
       apolloExtension.services.forEach { service ->

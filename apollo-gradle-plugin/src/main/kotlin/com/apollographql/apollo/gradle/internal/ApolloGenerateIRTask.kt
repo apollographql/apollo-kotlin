@@ -1,6 +1,9 @@
 package com.apollographql.apollo.gradle.internal
 
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.compiler.DefaultPackageNameProvider
+import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
+import com.apollographql.apollo.compiler.operationoutput.toJson
 import com.apollographql.apollo.compiler.parser.graphql.GraphQLDocumentParser
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.parser.sdl.GraphSdlSchema
@@ -18,7 +21,6 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.SkipWhenEmpty
-import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 
@@ -30,6 +32,10 @@ abstract class ApolloGenerateIRTask : DefaultTask() {
   @get:OutputFile
   @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val irFile: RegularFileProperty
+
+  @get:OutputFile
+  @get:PathSensitive(PathSensitivity.RELATIVE)
+  abstract val operationDescriptorListFile: RegularFileProperty
 
   @get:Input
   abstract val rootFolders: ListProperty<String>
@@ -62,9 +68,19 @@ abstract class ApolloGenerateIRTask : DefaultTask() {
     val files = graphqlFiles.files
     sanityChecks(packageNameProvider, files)
 
-    val codeGenerationIR = GraphQLDocumentParser(introspectionSchema, packageNameProvider).parse(files).toJson()
+    val codeGenerationIR = GraphQLDocumentParser(introspectionSchema, packageNameProvider).parse(files)
 
-    irFile.asFile.get().writeText(codeGenerationIR)
+    irFile.asFile.get().writeText(codeGenerationIR.toJson())
+
+    operationDescriptorListFile.get().asFile.writeText(
+        codeGenerationIR.operations.map {
+          OperationDescriptor(
+              name = it.operationName,
+              packageName = it.packageName,
+              filePath = it.filePath,
+              source = QueryDocumentMinifier.minify(it.sourceWithFragments)
+          )
+        }.toJson("    "))
   }
 
   companion object {

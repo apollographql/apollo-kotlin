@@ -5,7 +5,7 @@ import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.ir.ScalarType
 import com.apollographql.apollo.compiler.ir.TypeDeclaration
-import com.apollographql.apollo.compiler.operationoutput.OperationOutputWriter
+import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import com.squareup.javapoet.JavaFile
 import java.io.File
 
@@ -13,12 +13,11 @@ class GraphQLCompiler {
   fun write(args: Arguments) {
     val ir = args.ir
     val customTypeMap = args.customTypeMap.supportedTypeMap(ir.typesUsed)
-    val operationIdGenerator = args.operationIdGenerator
     val context = CodeGenerationContext(
         reservedTypeNames = emptyList(),
         typeDeclarations = ir.typesUsed,
         customTypeMap = customTypeMap,
-        operationIdGenerator = operationIdGenerator,
+        operationOutput = args.operationOutput,
         nullableValueType = args.nullableValueType,
         ir = ir,
         useSemanticNaming = args.useSemanticNaming,
@@ -32,7 +31,7 @@ class GraphQLCompiler {
       GraphQLKompiler(
           ir = ir,
           customTypeMap = args.customTypeMap,
-          operationIdGenerator = args.operationIdGenerator,
+          operationOutput = args.operationOutput,
           useSemanticNaming = args.useSemanticNaming,
           generateAsInternal = args.generateAsInternal,
           kotlinMultiPlatformProject = args.kotlinMultiPlatformProject,
@@ -43,14 +42,6 @@ class GraphQLCompiler {
           context = context,
           outputDir = args.outputDir
       )
-    }
-
-    args.operationOutputFile?.let { operationOutputFile ->
-      val dir = operationOutputFile.parentFile
-      dir.mkdirs()
-
-      val operationOutput = OperationOutputWriter(args.operationIdGenerator)
-      operationOutput.apply { visit(ir) }.writeTo(operationOutputFile)
     }
   }
 
@@ -114,10 +105,9 @@ class GraphQLCompiler {
       val ir: CodeGenerationIR,
       val outputDir: File,
       val customTypeMap: Map<String, String>,
-      val operationIdGenerator: OperationIdGenerator = OperationIdGenerator.Sha256(),
+      val operationOutput: OperationOutput,
       val useSemanticNaming: Boolean,
       val generateKotlinModels: Boolean = false,
-      val operationOutputFile: File? = null,
       val generateAsInternal: Boolean = false,
       // only if generateKotlinModels = true
       val enumAsSealedClassPatternFilters: List<String>,

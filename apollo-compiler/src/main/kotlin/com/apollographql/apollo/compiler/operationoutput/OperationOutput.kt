@@ -12,12 +12,16 @@ import java.io.File
 @JsonClass(generateAdapter = true)
 class OperationDescriptor(
     val name: String,
+    val packageName: String,
+    val filePath: String,
     val source: String
 )
 
 typealias OperationOutput = Map<String, OperationDescriptor>
 
-fun adapter(indent: String? = null): JsonAdapter<OperationOutput> {
+typealias OperationDescriptorList = List<OperationDescriptor>
+
+private fun operationOutputAdapter(indent: String? = null): JsonAdapter<OperationOutput> {
   val moshi = Moshi.Builder().build()
   val type = Types.newParameterizedType(Map::class.java, String::class.java, OperationDescriptor::class.java)
   return moshi.adapter<OperationOutput>(type).applyIf(indent != null) {
@@ -26,11 +30,45 @@ fun adapter(indent: String? = null): JsonAdapter<OperationOutput> {
 }
 
 fun OperationOutput(file: File): OperationOutput {
-  return file.source().buffer().use {
-    adapter().fromJson(it)!!
+  return try {
+    file.source().buffer().use {
+      operationOutputAdapter().fromJson(it)!!
+    }
+  } catch (e: Exception) {
+    throw IllegalArgumentException("cannot parse operation output $file")
   }
 }
 
 fun OperationOutput.toJson(indent: String? = null): String {
-  return adapter(indent).toJson(this)
+  return operationOutputAdapter(indent).toJson(this)
+}
+
+private fun operationDescriptorListAdapter(indent: String? = null): JsonAdapter<OperationDescriptorList> {
+  val moshi = Moshi.Builder().build()
+  val type = Types.newParameterizedType(List::class.java, OperationDescriptor::class.java)
+  return moshi.adapter<OperationDescriptorList>(type).applyIf(indent != null) {
+    this.indent(indent!!)
+  }
+}
+
+fun OperationDescriptorList(file: File): OperationDescriptorList {
+  return try {
+    file.source().buffer().use {
+      operationDescriptorListAdapter().fromJson(it)!!
+    }
+  } catch (e: Exception) {
+    throw IllegalArgumentException("cannot parse operation output $file")
+  }
+}
+
+fun OperationDescriptorList.toJson(indent: String? = null): String {
+  return operationDescriptorListAdapter(indent).toJson(this)
+}
+
+fun OperationOutput.findOperationId(name: String, packageName: String): String {
+  val id = entries.find { it.value.name == name && it.value.packageName == packageName }?.key
+  check(id != null) {
+    "cannot find operation ID for '$packageName.$name', check your operation output json"
+  }
+  return id
 }

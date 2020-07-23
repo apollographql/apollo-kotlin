@@ -13,6 +13,7 @@ import com.apollographql.apollo.compiler.ir.CodeGenerator
 import com.apollographql.apollo.compiler.ir.Fragment
 import com.apollographql.apollo.compiler.ir.Operation
 import com.apollographql.apollo.compiler.ir.Variable
+import com.apollographql.apollo.compiler.operationoutput.findOperationId
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
@@ -83,7 +84,7 @@ class OperationTypeSpecBuilder(
   }
 
   private fun TypeSpec.Builder.addOperationId(operation: Operation, context: CodeGenerationContext): TypeSpec.Builder {
-    val id = context.operationIdGenerator.apply(QueryDocumentMinifier.minify(operation.sourceWithFragments), operation.filePath)
+    val id = context.operationOutput.findOperationId(operation.operationName, operation.packageName)
 
     addField(FieldSpec.builder(ClassNames.STRING, OPERATION_ID_FIELD_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)

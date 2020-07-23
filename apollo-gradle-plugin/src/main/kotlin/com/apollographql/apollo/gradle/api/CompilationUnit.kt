@@ -1,6 +1,7 @@
 package com.apollographql.apollo.gradle.api
 
 import org.gradle.api.file.Directory
+import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Provider
 
@@ -29,12 +30,18 @@ interface CompilationUnit: CompilerParams {
   val androidVariant: Any?
 
   /**
+   * A json file containing a list of [com.apollographql.apollo.compiler.operationoutput.OperationDescriptor]
+   */
+  val operationDescriptorListFile: Provider<RegularFile>
+
+  /**
+   * A json file containing a  [Map]<[String], [com.apollographql.apollo.compiler.operationoutput.OperationDescriptor]>
+   * To register operations on your backend, you can read [operationDescriptorsFile] and write [operationOutputFile]
+   */
+  val operationOutputFile: Provider<RegularFile>
+
+  /**
    * The directory where the generated models will be written
    */
   val outputDir: Provider<Directory>
-
-  /**
-   * The file where the operation output json will be written
-   */
-  val operationOutputFile: RegularFileProperty
 }

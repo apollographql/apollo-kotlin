@@ -2,6 +2,7 @@ package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
+import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.TypeName
 import org.junit.Assert
@@ -17,11 +18,10 @@ class JavaTypeResolverTest {
   private val defaultContext = CodeGenerationContext(
       reservedTypeNames = emptyList(),
       typeDeclarations = emptyList(),
-      packageNameProvider = packageNameProvider,
       customTypeMap = emptyMap(),
-      operationIdGenerator = OperationIdGenerator.Sha256(),
+      operationOutput = emptyMap(),
       nullableValueType = NullableValueType.APOLLO_OPTIONAL,
-      ir = CodeGenerationIR(emptyList(), emptyList(), emptyList()),
+      ir = CodeGenerationIR(emptyList(), emptyList(), emptyList(), "", ""),
       useSemanticNaming = false,
       generateModelBuilder = false,
       useJavaBeansSemanticNaming = false,
