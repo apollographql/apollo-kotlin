@@ -279,7 +279,7 @@ public interface HeroDetails extends GraphqlFragment {
     }
 
     public static class Fragments {
-      final Optional<DroidDetails> droidDetails;
+      final @NotNull DroidDetails droidDetails;
 
       private transient volatile String $toString;
 
@@ -287,11 +287,11 @@ public interface HeroDetails extends GraphqlFragment {
 
       private transient volatile boolean $hashCodeMemoized;
 
-      public Fragments(@Nullable DroidDetails droidDetails) {
-        this.droidDetails = Optional.fromNullable(droidDetails);
+      public Fragments(@NotNull DroidDetails droidDetails) {
+        this.droidDetails = Utils.checkNotNull(droidDetails, "droidDetails == null");
       }
 
-      public Optional<DroidDetails> droidDetails() {
+      public @NotNull DroidDetails droidDetails() {
         return this.droidDetails;
       }
 
@@ -299,10 +299,7 @@ public interface HeroDetails extends GraphqlFragment {
         return new ResponseFieldMarshaller() {
           @Override
           public void marshal(ResponseWriter writer) {
-            final DroidDetails $droidDetails = droidDetails.isPresent() ? droidDetails.get() : null;
-            if ($droidDetails != null) {
-              writer.writeFragment($droidDetails.marshaller());
-            }
+            writer.writeFragment(droidDetails.marshaller());
           }
         };
       }
@@ -343,7 +340,7 @@ public interface HeroDetails extends GraphqlFragment {
 
       public Builder toBuilder() {
         Builder builder = new Builder();
-        builder.droidDetails = droidDetails.isPresent() ? droidDetails.get() : null;
+        builder.droidDetails = droidDetails;
         return builder;
       }
 
@@ -353,9 +350,7 @@ public interface HeroDetails extends GraphqlFragment {
 
       public static final class Mapper implements ResponseFieldMapper<Fragments> {
         static final ResponseField[] $responseFields = {
-          ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
-            ResponseField.Condition.typeCondition(new String[] {"Droid"})
-          ))
+          ResponseField.forFragment("__typename", "__typename", Collections.<ResponseField.Condition>emptyList())
         };
 
         final DroidDetails.Mapper droidDetailsFieldMapper = new DroidDetails.Mapper();
@@ -373,17 +368,18 @@ public interface HeroDetails extends GraphqlFragment {
       }
 
       public static final class Builder {
-        private @Nullable DroidDetails droidDetails;
+        private @NotNull DroidDetails droidDetails;
 
         Builder() {
         }
 
-        public Builder droidDetails(@Nullable DroidDetails droidDetails) {
+        public Builder droidDetails(@NotNull DroidDetails droidDetails) {
           this.droidDetails = droidDetails;
           return this;
         }
 
         public Fragments build() {
+          Utils.checkNotNull(droidDetails, "droidDetails == null");
           return new Fragments(droidDetails);
         }
       }
