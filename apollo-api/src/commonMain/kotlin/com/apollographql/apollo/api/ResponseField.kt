@@ -1,5 +1,6 @@
 package com.apollographql.apollo.api
 
+import kotlin.js.JsName
 import kotlin.jvm.JvmStatic
 
 /**
@@ -22,31 +23,37 @@ open class ResponseField internal constructor(
 ) {
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "type"))
+  @JsName("type_deprecated")
   fun type(): Type {
     return type
   }
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "responseName"))
+  @JsName("responseName_deprecated")
   fun responseName(): String {
     return responseName
   }
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "fieldName"))
+  @JsName("fieldName_deprecated")
   fun fieldName(): String {
     return fieldName
   }
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "arguments"))
+  @JsName("arguments_deprecated")
   fun arguments(): Map<String, Any?> {
     return arguments
   }
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "optional"))
+  @JsName("optional_deprecated")
   fun optional(): Boolean {
     return optional
   }
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "conditions"))
+  @JsName("conditions_deprecated")
   fun conditions(): List<Condition> {
     return conditions
   }
@@ -126,6 +133,7 @@ open class ResponseField internal constructor(
   ) {
 
     @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "scalarType"))
+    @JsName("scalarType_deprecated")
     fun scalarType(): ScalarType {
       return scalarType
     }
@@ -177,6 +185,7 @@ open class ResponseField internal constructor(
       val typeNames: List<String>
   ) : Condition() {
     @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "typeNames"))
+    @JsName("typeNames_deprecated")
     fun typeNames(): List<String> {
       return typeNames
     }
@@ -203,11 +212,13 @@ open class ResponseField internal constructor(
       val inverted: Boolean
   ) : Condition() {
     @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "variableName"))
+    @JsName("variableName_deprecated")
     fun variableName(): String {
       return variableName
     }
 
     @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "inverted"))
+    @JsName("inverted_deprecated")
     fun inverted(): Boolean {
       return inverted
     }

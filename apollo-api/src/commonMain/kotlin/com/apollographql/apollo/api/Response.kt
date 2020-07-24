@@ -1,5 +1,6 @@
 package com.apollographql.apollo.api
 
+import kotlin.js.JsName
 import kotlin.jvm.JvmStatic
 
 /**
@@ -55,17 +56,21 @@ data class Response<T>(
   )
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "operation"))
+  @JsName("operation_deprecated")
   fun operation(): Operation<*, *, *> {
     return operation
   }
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "data"))
+  @JsName("data_deprecated")
   fun data(): T? = data
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "errors"))
+  @JsName("errors_deprecated")
   fun errors(): List<Error>? = errors
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "dependentKeys"))
+  @JsName("dependentKeys_deprecated")
   fun dependentKeys(): Set<String> {
     return dependentKeys
   }
@@ -73,11 +78,13 @@ data class Response<T>(
   fun hasErrors(): Boolean = !errors.isNullOrEmpty()
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "fromCache"))
+  @JsName("fromCache_deprecated")
   fun fromCache(): Boolean {
     return fromCache
   }
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "extensions"))
+  @JsName("extensions_deprecated")
   fun extensions(): Map<String, Any?> {
     return extensions
   }

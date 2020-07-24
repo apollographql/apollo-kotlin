@@ -24,6 +24,8 @@ kotlin {
     withJava()
   }
 
+  js().browser()
+
   sourceSets {
     val commonMain by getting {
       dependencies {
@@ -47,6 +49,14 @@ kotlin {
       dependsOn(iosMain)
     }
 
+    val jsMain by getting {
+      dependsOn(commonMain)
+      dependencies {
+        implementation(kotlin("stdlib-js"))
+        implementation("com.ionspin.kotlin:bignum-js:0.1.5")
+      }
+    }
+
     val commonTest by getting {
       dependencies {
         implementation(kotlin("test-common"))
@@ -60,6 +70,14 @@ kotlin {
         implementation(kotlin("test-junit"))
         implementation(groovy.util.Eval.x(project, "x.dep.truth"))
         implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
+      }
+    }
+
+    val jsTest by getting {
+      dependsOn(jsMain)
+
+      dependencies {
+        implementation(kotlin("test-js"))
       }
     }
   }
