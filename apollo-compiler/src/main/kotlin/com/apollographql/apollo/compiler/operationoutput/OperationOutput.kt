@@ -57,7 +57,7 @@ fun OperationDescriptorList(file: File): OperationDescriptorList {
       operationDescriptorListAdapter().fromJson(it)!!
     }
   } catch (e: Exception) {
-    throw IllegalArgumentException("cannot parse operation output $file")
+    throw IllegalArgumentException("cannot parse operation descriptor list $file")
   }
 }
 

@@ -6,6 +6,7 @@ import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.FileCollection
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.MapProperty
@@ -13,19 +14,41 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
+import org.gradle.api.tasks.SkipWhenEmpty
 import org.gradle.api.tasks.TaskAction
 
 @CacheableTask
 abstract class ApolloGenerateSourcesTask : DefaultTask() {
-  @get:InputFile
-  // if no operation is defined, irFile is not written
-  @get:Optional
+  // This is not declared as input so we can skip the task if the file does not exist.
+  // See https://github.com/gradle/gradle/issues/2919
+  @get:Internal
   abstract val irFile: RegularFileProperty
 
-  @get:InputFile
+  // This is not declared as input so we can skip the task if the file does not exist.
+  // See https://github.com/gradle/gradle/issues/2919
+  @get:Internal
   abstract val operationOutputFile: RegularFileProperty
+
+  @get:InputFiles
+  @get:SkipWhenEmpty
+  @get:PathSensitive(PathSensitivity.RELATIVE)
+  val filesUsedForUpToDateChecks: FileCollection
+    get() {
+      return project.files().apply {
+        listOf(operationOutputFile, irFile).forEach {
+          if (it.get().asFile.exists()) {
+            from(it.get().asFile)
+          }
+        }
+      }
+    }
+
 
   @get:Input
   @get:Optional

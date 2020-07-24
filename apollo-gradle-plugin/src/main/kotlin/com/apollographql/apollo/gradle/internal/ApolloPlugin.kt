@@ -81,7 +81,7 @@ open class ApolloPlugin : Plugin<Project> {
               ApolloGenerateDefaultOperationIdsTask::operationOutputFile
           )
 
-          generateIdsTaskInfo.input(irTaskProvider.map { it.operationDescriptorListFile.get() })
+          generateIdsTaskInfo.input(irTaskProvider, irTaskProvider.map { it.operationDescriptorListFile.get() })
           generateIdsTaskInfo.output(
               project.layout.buildDirectory.file(
                   "apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}/operationOutput.json"
@@ -89,6 +89,7 @@ open class ApolloPlugin : Plugin<Project> {
           )
           codegenProvider.configure {
             it.operationOutputFile.set(generateIdsTaskInfo.output())
+            it.dependsOn(generateIdsTaskInfo.taskProvider)
           }
 
           when {

@@ -33,10 +33,11 @@ abstract class DefaultCompilationUnit @Inject constructor(
 
   var generateIdsTaskInfo: GenerateIdsTaskInfo<*>? = null
 
-  class GenerateIdsTaskInfo<T : Task>(private val taskProvider: TaskProvider<T>,
+  class GenerateIdsTaskInfo<T : Task>(val taskProvider: TaskProvider<T>,
                                       private val taskInput: (T) -> RegularFileProperty,
                                       private val taskOutput: (T) -> RegularFileProperty) {
-    fun input(input: Provider<RegularFile>) = taskProvider.configure {
+    fun input(input1: TaskProvider<ApolloGenerateIRTask>, input: Provider<RegularFile>) = taskProvider.configure {
+      it.dependsOn(input1)
       taskInput(it).set(input)
     }
     fun output(output: Provider<RegularFile>) = taskProvider.configure {

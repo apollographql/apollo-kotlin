@@ -27,6 +27,7 @@ import java.io.File
 
 abstract class ApolloGenerateIRTask : DefaultTask() {
   @get:InputFiles
+  @get:SkipWhenEmpty
   @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val graphqlFiles: ConfigurableFileCollection
 
