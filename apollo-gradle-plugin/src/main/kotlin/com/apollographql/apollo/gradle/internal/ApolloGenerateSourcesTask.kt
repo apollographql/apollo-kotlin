@@ -79,7 +79,8 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
     sanityChecks()
 
     outputDir.get().asFile.deleteRecursively()
-
+    outputDir.get().asFile.mkdirs()
+    
     if (!irFile.isPresent) {
       return
     }

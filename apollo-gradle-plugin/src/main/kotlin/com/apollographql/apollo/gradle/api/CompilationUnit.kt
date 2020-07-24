@@ -1,9 +1,11 @@
 package com.apollographql.apollo.gradle.api
 
+import org.gradle.api.Task
 import org.gradle.api.file.Directory
 import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.TaskProvider
 
 /**
  * A [CompilationUnit] is a single invocation of the compiler. It is used by
@@ -44,4 +46,10 @@ interface CompilationUnit: CompilerParams {
    * The directory where the generated models will be written
    */
   val outputDir: Provider<Directory>
+
+  fun <T: Task> wireGenerateIDsTask(
+      taskProvider: TaskProvider<T>,
+      taskInput: (T) -> RegularFileProperty,
+      taskOutput: (T) -> RegularFileProperty
+  )
 }

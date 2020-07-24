@@ -2,6 +2,7 @@ package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.compiler.DefaultPackageNameProvider
+import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.operationoutput.toJson
 import com.apollographql.apollo.compiler.parser.graphql.GraphQLDocumentParser
@@ -25,7 +26,12 @@ import org.gradle.api.tasks.TaskAction
 import java.io.File
 
 abstract class ApolloGenerateIRTask : DefaultTask() {
+  @get:InputFiles
+  @get:PathSensitive(PathSensitivity.RELATIVE)
+  abstract val graphqlFiles: ConfigurableFileCollection
+
   @get:InputFile
+  @get:Optional
   @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val schemaFile: RegularFileProperty
 
@@ -44,32 +50,39 @@ abstract class ApolloGenerateIRTask : DefaultTask() {
   @get:Optional
   abstract val rootPackageName: Property<String>
 
-  @get:InputFiles
-  @get:SkipWhenEmpty
-  @get:PathSensitive(PathSensitivity.RELATIVE)
-  abstract val graphqlFiles: ConfigurableFileCollection
-
   @TaskAction
   fun taskAction() {
-    val realSchemaFile = schemaFile.get().asFile
+    val codeGenerationIR = if (schemaFile.isPresent) {
+      val realSchemaFile = schemaFile.get().asFile
 
-    val introspectionSchema = if (realSchemaFile.extension == "json") {
-      IntrospectionSchema.invoke(realSchemaFile)
+      val introspectionSchema = if (realSchemaFile.extension == "json") {
+        IntrospectionSchema.invoke(realSchemaFile)
+      } else {
+        GraphSdlSchema(realSchemaFile).toIntrospectionSchema()
+      }
+
+      val packageNameProvider = DefaultPackageNameProvider(
+          rootFolders = rootFolders.get().map { project.file(it) },
+          rootPackageName = rootPackageName.getOrElse(""),
+          schemaFile = realSchemaFile
+      )
+
+      val files = graphqlFiles.files
+      sanityChecks(packageNameProvider, files)
+
+      GraphQLDocumentParser(introspectionSchema, packageNameProvider).parse(files)
     } else {
-      GraphSdlSchema(realSchemaFile).toIntrospectionSchema()
+      // No schema found, this happens if no schema.json is set, for an exemple for tests
+      CodeGenerationIR(
+          operations = emptyList(),
+          fragments = emptyList(),
+          typesUsed = emptyList(),
+          typesPackageName = "",
+          fragmentsPackageName = ""
+      )
     }
 
-    val packageNameProvider = DefaultPackageNameProvider(
-        rootFolders = rootFolders.get().map { project.file(it) },
-        rootPackageName = rootPackageName.getOrElse(""),
-        schemaFile = realSchemaFile
-    )
-
-    val files = graphqlFiles.files
-    sanityChecks(packageNameProvider, files)
-
-    val codeGenerationIR = GraphQLDocumentParser(introspectionSchema, packageNameProvider).parse(files)
-
+    irFile.asFile.get().parentFile.mkdirs()
     irFile.asFile.get().writeText(codeGenerationIR.toJson())
 
     operationDescriptorListFile.get().asFile.writeText(

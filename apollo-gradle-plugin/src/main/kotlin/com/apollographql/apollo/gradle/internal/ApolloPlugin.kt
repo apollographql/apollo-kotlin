@@ -1,8 +1,6 @@
 package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.compiler.OperationIdGenerator
-import com.apollographql.apollo.compiler.ir.CodeGenerationIR
-import com.apollographql.apollo.compiler.operationoutput.OperationDescriptorList
 import com.apollographql.apollo.gradle.api.ApolloExtension
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.gradle.api.Plugin
@@ -13,7 +11,6 @@ import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.util.GradleVersion
-import java.io.File
 import java.net.URLDecoder
 
 open class ApolloPlugin : Plugin<Project> {
@@ -58,8 +55,6 @@ open class ApolloPlugin : Plugin<Project> {
 
           compilationUnit.operationDescriptorListFile.set(irTaskProvider.flatMap { it.operationDescriptorListFile })
 
-          val idgenProvider = registerIdGenTask(project, compilationUnit, irTaskProvider.flatMap { it.irFile })
-
           val codegenProvider = registerCodeGenTask(project, compilationUnit, irTaskProvider.flatMap { it.irFile })
 
           codegenProvider.configure {
@@ -79,6 +74,22 @@ open class ApolloPlugin : Plugin<Project> {
            * correctly set
            */
           apolloExtension.compilationUnits.add(compilationUnit)
+
+          val generateIdsTaskInfo = compilationUnit.generateIdsTaskInfo ?: DefaultCompilationUnit.GenerateIdsTaskInfo(
+              registerIdGenTask(project, compilationUnit),
+              ApolloGenerateDefaultOperationIdsTask::operationDescriptorListFile,
+              ApolloGenerateDefaultOperationIdsTask::operationOutputFile
+          )
+
+          generateIdsTaskInfo.input(irTaskProvider.map { it.operationDescriptorListFile.get() })
+          generateIdsTaskInfo.output(
+              project.layout.buildDirectory.file(
+                  "apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}/operationOutput.json"
+              )
+          )
+          codegenProvider.configure {
+            it.operationOutputFile.set(generateIdsTaskInfo.output())
+          }
 
           when {
             project.isKotlinMultiplatform -> {
@@ -110,14 +121,22 @@ open class ApolloPlugin : Plugin<Project> {
         it.schemaFile.set(compilerParams.schemaFile)
 
         it.rootPackageName.set(compilerParams.rootPackageName)
-        if (!graphqlSourceDirectorySet.isEmpty) {
-          it.irFile.set(project.layout.buildDirectory.file("apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}/ir.json"))
-          it.operationDescriptorListFile.set(project.layout.buildDirectory.file("apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}/operationDescriptorList.json"))
-        }
+        it.irFile.set(
+            project.layout.buildDirectory.file(
+                "apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}/ir.json"
+            )
+        )
+        it.operationDescriptorListFile.set(
+            project.layout.buildDirectory.file(
+                "apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}/operationDescriptorList.json"
+            )
+        )
       }
     }
 
-    private fun registerIdGenTask(project: Project, compilationUnit: DefaultCompilationUnit, operationDescriptorListFile: Provider<RegularFile>): TaskProvider<ApolloGenerateDefaultOperationIdsTask> {
+    private fun registerIdGenTask(project: Project,
+                                  compilationUnit: DefaultCompilationUnit)
+        : TaskProvider<ApolloGenerateDefaultOperationIdsTask> {
       val taskName = "generate${compilationUnit.name.capitalize()}ApolloOperationIDs"
 
       return project.tasks.register(taskName, ApolloGenerateDefaultOperationIdsTask::class.java) {
@@ -126,8 +145,6 @@ open class ApolloPlugin : Plugin<Project> {
 
         val (compilerParams, _) = compilationUnit.resolveParams(project)
         it.operationIdGenerator = compilerParams.operationIdGenerator.orElse(OperationIdGenerator.Sha256()).get()
-        it.operationDescriptorListFile.set(operationDescriptorListFile)
-        it.operationOutputFile.set(compilationUnit.operationOutputFile)
       }
     }
 
@@ -153,10 +170,6 @@ open class ApolloPlugin : Plugin<Project> {
           disallowChanges()
         }
         it.irFile.set(irFileProvider)
-        it.operationOutputFile.apply {
-          set(compilationUnit.operationOutputFile.orElse { defaultOperationOutput(project, irFileProvider.get().asFile, compilationUnit.operationIdGenerator.orElse(OperationIdGenerator.Sha256()).get()) })
-          disallowChanges()
-        }
 
         it.generateAsInternal.set(compilerParams.generateAsInternal)
 
@@ -164,11 +177,6 @@ open class ApolloPlugin : Plugin<Project> {
         it.sealedClassesForEnumsMatching.set(compilerParams.sealedClassesForEnumsMatching)
       }
     }
-
-    private fun defaultOperationOutput(project: Project, irFile: File, operationIdGenerator: OperationIdGenerator): File {
-      val codegenerationIR = CodeGenerationIR(irFile)
-    }
-
 
     private fun registerDownloadSchemaTasks(project: Project, apolloExtension: DefaultApolloExtension) {
       apolloExtension.services.forEach { service ->

@@ -4,10 +4,13 @@ import com.apollographql.apollo.gradle.api.CompilationUnit
 import com.apollographql.apollo.gradle.api.CompilerParams
 import com.apollographql.apollo.gradle.internal.ApolloPlugin.Companion.isKotlinMultiplatform
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.TaskProvider
 import java.io.File
 import javax.inject.Inject
 
@@ -28,6 +31,20 @@ abstract class DefaultCompilationUnit @Inject constructor(
   abstract override val operationOutputFile: RegularFileProperty
   abstract override val operationDescriptorListFile: RegularFileProperty
 
+  var generateIdsTaskInfo: GenerateIdsTaskInfo<*>? = null
+
+  class GenerateIdsTaskInfo<T : Task>(private val taskProvider: TaskProvider<T>,
+                                      private val taskInput: (T) -> RegularFileProperty,
+                                      private val taskOutput: (T) -> RegularFileProperty) {
+    fun input(input: Provider<RegularFile>) = taskProvider.configure {
+      taskInput(it).set(input)
+    }
+    fun output(output: Provider<RegularFile>) = taskProvider.configure {
+      taskOutput(it).set(output)
+    }
+    fun output() = taskProvider.map { taskOutput(it).get() }
+  }
+
   fun resolveParams(project: Project): Pair<CompilerParams, SourceDirectorySet> {
     val compilerParams = this
         .withFallback(project.objects, service)
@@ -45,7 +62,7 @@ abstract class DefaultCompilationUnit @Inject constructor(
       sourceDirectorySet.findSources(compilerParams.schemaFile)
     }
 
-    if (!compilerParams.schemaFile.isPresent) {
+    if (!sourceDirectorySet.isEmpty && !compilerParams.schemaFile.isPresent) {
       compilerParams.schemaFile.set {
         project.file(
             resolveSchema(project = project,
@@ -164,6 +181,16 @@ abstract class DefaultCompilationUnit @Inject constructor(
         return candidates.first().path
       }
     }
+  }
+
+  override fun <T : Task> wireGenerateIDsTask(taskProvider: TaskProvider<T>,
+                                              taskInput: (T) -> RegularFileProperty,
+                                              taskOutput: (T) -> RegularFileProperty) {
+    generateIdsTaskInfo = GenerateIdsTaskInfo(
+        taskProvider,
+        taskInput,
+        taskOutput
+    )
   }
 }
 

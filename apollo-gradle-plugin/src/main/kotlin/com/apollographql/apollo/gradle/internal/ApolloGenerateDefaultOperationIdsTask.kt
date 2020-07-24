@@ -14,8 +14,8 @@ abstract class ApolloGenerateDefaultOperationIdsTask : ApolloGenerateOperationId
   @get: Internal
   lateinit var operationIdGenerator: OperationIdGenerator
 
-  @get:Input
-  val operationIdGeneratorVersion = operationIdGenerator.version
+  @Input
+  fun operationIdGeneratorVersion() = operationIdGenerator.version
 
   override fun generateOperationOutput(operationDescriptorList: OperationDescriptorList): OperationOutput {
     return operationDescriptorList.map {
