@@ -83,7 +83,7 @@ class CustomIdGeneratorTests {
 
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
 
-      File(dir, "build.gradle").replaceInText("operationDocument.length()", "(operationDocument.length() * 2)")
+      File(dir, "build.gradle").replaceInText("queryString.length().toString()", "queryString.length().toString() + \"(modified)\"")
       File(dir, "build.gradle").replaceInText("MyIdGenerator-v1", "MyIdGenerator-v2")
 
       result = TestUtils.executeTask("generateApolloSources", dir)

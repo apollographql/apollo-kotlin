@@ -39,11 +39,9 @@ abstract class ApolloGenerateIRTask : DefaultTask() {
   abstract val schemaFile: RegularFileProperty
 
   @get:OutputFile
-  @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val irFile: RegularFileProperty
 
   @get:OutputFile
-  @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val operationDescriptorListFile: RegularFileProperty
 
   @get:Input

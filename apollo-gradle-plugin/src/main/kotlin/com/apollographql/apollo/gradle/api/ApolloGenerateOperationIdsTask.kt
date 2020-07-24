@@ -37,7 +37,6 @@ abstract class ApolloGenerateOperationIdsTask : DefaultTask() {
     }
 
   @get:OutputFile
-  @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val operationOutputFile: RegularFileProperty
 
   @TaskAction
