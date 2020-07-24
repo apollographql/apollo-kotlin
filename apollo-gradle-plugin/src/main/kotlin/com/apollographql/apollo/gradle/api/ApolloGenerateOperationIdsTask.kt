@@ -6,6 +6,7 @@ import com.apollographql.apollo.compiler.operationoutput.toJson
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.FileCollection
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputFile
@@ -14,6 +15,7 @@ import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.SkipWhenEmpty
 import org.gradle.api.tasks.TaskAction
 
+@CacheableTask
 abstract class ApolloGenerateOperationIdsTask : DefaultTask() {
   @get:Internal
   @get:PathSensitive(PathSensitivity.RELATIVE)
