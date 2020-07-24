@@ -46,7 +46,7 @@ class CustomIdGeneratorTests {
     val apolloConfiguration = """
       class MyIdGenerator implements OperationIdGenerator {
           String apply(String queryString, String queryFilepath) {
-              return "someQueryId";
+              return queryFilepath;
           }
           String version = "MyIdGenerator-v1"
       }
@@ -68,7 +68,7 @@ class CustomIdGeneratorTests {
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
 
       val queryJavaFile = dir.generatedChild("main/service/com/example/DroidDetailsQuery.java")
-      Assert.assertThat(queryJavaFile.readText(), CoreMatchers.containsString("someQueryId"))
+      Assert.assertThat(queryJavaFile.readText(), CoreMatchers.containsString("com/example/DroidDetails.graphql"))
     }
   }
 

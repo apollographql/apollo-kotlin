@@ -123,6 +123,11 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
     val operationOuput = OperationOutput(operationOutputFile.asFile.get())
 
+    check (operationOuput.size == codeGenerationIR.operations.size) {
+      """The number of operation IDs (${operationOuput.size}) should match the number of operations (${codeGenerationIR.operations.size}).
+        |Check that all your IDs are unique.
+      """.trimMargin()
+    }
     val args = GraphQLCompiler.Arguments(
         ir = codeGenerationIR,
         outputDir = outputDir.get().asFile,
