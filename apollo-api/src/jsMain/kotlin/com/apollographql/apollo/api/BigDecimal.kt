@@ -2,12 +2,12 @@ package com.apollographql.apollo.api
 
 @JsModule("big.js")
 @JsNonModule
-external fun jsBig(raw: dynamic): Big
+internal external fun jsBig(raw: dynamic): Big
 
 @JsName("Number")
-external fun jsNumber(raw: dynamic): Number
+internal external fun jsNumber(raw: dynamic): Number
 
-external class Big {
+internal external class Big {
   fun plus(other: Big): Big
   fun minus(other: Big): Big
   fun times(other: Big): Big
@@ -20,7 +20,7 @@ external class Big {
 actual class BigDecimal {
   internal val raw: Big
 
-  constructor(raw: Big) {
+  internal constructor(raw: Big) {
     this.raw = raw
   }
 
