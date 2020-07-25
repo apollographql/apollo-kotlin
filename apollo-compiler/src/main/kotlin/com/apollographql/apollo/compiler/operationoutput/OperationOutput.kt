@@ -19,7 +19,7 @@ class OperationDescriptor(
 
 typealias OperationOutput = Map<String, OperationDescriptor>
 
-typealias OperationDescriptorList = List<OperationDescriptor>
+typealias OperationList = List<OperationDescriptor>
 
 private fun operationOutputAdapter(indent: String? = null): JsonAdapter<OperationOutput> {
   val moshi = Moshi.Builder().build()
@@ -43,32 +43,32 @@ fun OperationOutput.toJson(indent: String? = null): String {
   return operationOutputAdapter(indent).toJson(this)
 }
 
-private fun operationDescriptorListAdapter(indent: String? = null): JsonAdapter<OperationDescriptorList> {
+private fun operationList(indent: String? = null): JsonAdapter<OperationList> {
   val moshi = Moshi.Builder().build()
   val type = Types.newParameterizedType(List::class.java, OperationDescriptor::class.java)
-  return moshi.adapter<OperationDescriptorList>(type).applyIf(indent != null) {
+  return moshi.adapter<OperationList>(type).applyIf(indent != null) {
     this.indent(indent!!)
   }
 }
 
-fun OperationDescriptorList(file: File): OperationDescriptorList {
+fun OperationList(file: File): OperationList {
   return try {
     file.source().buffer().use {
-      operationDescriptorListAdapter().fromJson(it)!!
+      operationList().fromJson(it)!!
     }
   } catch (e: Exception) {
     throw IllegalArgumentException("cannot parse operation descriptor list $file")
   }
 }
 
-fun OperationDescriptorList.toJson(indent: String? = null): String {
-  return operationDescriptorListAdapter(indent).toJson(this)
+fun OperationList.toJson(indent: String? = null): String {
+  return operationList(indent).toJson(this)
 }
 
 fun OperationOutput.findOperationId(name: String, packageName: String): String {
   val id = entries.find { it.value.name == name && it.value.packageName == packageName }?.key
   check(id != null) {
-    "cannot find operation ID for '$packageName.$name', check your operation output json"
+    "cannot find operation ID for '$packageName.$name', check your operationOutput.json"
   }
   return id
 }

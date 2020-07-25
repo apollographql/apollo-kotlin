@@ -1,5 +1,6 @@
 package com.apollographql.apollo.gradle.internal
 
+import com.apollographql.apollo.gradle.api.ApolloGenerateOperationIdsTask
 import com.apollographql.apollo.gradle.api.CompilationUnit
 import com.apollographql.apollo.gradle.api.CompilerParams
 import com.apollographql.apollo.gradle.internal.ApolloPlugin.Companion.isKotlinMultiplatform
@@ -29,17 +30,17 @@ abstract class DefaultCompilationUnit @Inject constructor(
 
   abstract override val outputDir: DirectoryProperty
   abstract override val operationOutputFile: RegularFileProperty
-  abstract override val operationDescriptorListFile: RegularFileProperty
 
-  var generateIdsTaskInfo: GenerateIdsTaskInfo<*>? = null
+  internal var generateIdsTaskInfo: GenerateIdsTaskInfo<*>? = null
 
   class GenerateIdsTaskInfo<T : Task>(val taskProvider: TaskProvider<T>,
                                       private val taskInput: (T) -> RegularFileProperty,
                                       private val taskOutput: (T) -> RegularFileProperty) {
-    fun input(input1: TaskProvider<ApolloGenerateIRTask>, input: Provider<RegularFile>) = taskProvider.configure {
-      it.dependsOn(input1)
+    fun input(inputTaskProvider: TaskProvider<ApolloGenerateIRTask>, input: Provider<RegularFile>) = this.taskProvider.configure {
+      it.dependsOn(inputTaskProvider)
       taskInput(it).set(input)
     }
+
     fun output(output: Provider<RegularFile>) = taskProvider.configure {
       taskOutput(it).set(output)
     }
@@ -184,13 +185,23 @@ abstract class DefaultCompilationUnit @Inject constructor(
     }
   }
 
-  override fun <T : Task> wireGenerateIDsTask(taskProvider: TaskProvider<T>,
-                                              taskInput: (T) -> RegularFileProperty,
-                                              taskOutput: (T) -> RegularFileProperty) {
+  override fun <T : Task> setGenerateOperationIdsTaskProvider(taskProvider: TaskProvider<T>,
+                                                              taskInput: (T) -> RegularFileProperty,
+                                                              taskOutput: (T) -> RegularFileProperty) {
     generateIdsTaskInfo = GenerateIdsTaskInfo(
         taskProvider,
         taskInput,
         taskOutput
+    )
+  }
+
+  override fun <T: ApolloGenerateOperationIdsTask> setGenerateOperationIdsTaskProvider(
+      apolloTaskProvider: TaskProvider<T>
+  ) {
+    generateIdsTaskInfo = GenerateIdsTaskInfo(
+        apolloTaskProvider,
+        ApolloGenerateOperationIdsTask::operationList,
+        ApolloGenerateOperationIdsTask::operationOutput
     )
   }
 }

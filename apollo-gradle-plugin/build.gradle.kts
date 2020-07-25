@@ -35,6 +35,7 @@ tasks.withType<Test> {
   dependsOn("publishAllPublicationsToPluginTestRepository")
 
   inputs.dir("src/test/files")
+  inputs.dir("testProjects")
 }
 
 pluginBundle {

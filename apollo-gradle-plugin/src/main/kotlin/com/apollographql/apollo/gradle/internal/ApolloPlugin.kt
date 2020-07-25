@@ -7,6 +7,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.ConfigurationContainer
+import org.gradle.api.file.Directory
 import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskProvider
@@ -19,6 +20,35 @@ open class ApolloPlugin : Plugin<Project> {
     const val MIN_GRADLE_VERSION = "6.0"
 
     val Project.isKotlinMultiplatform get() = pluginManager.hasPlugin("org.jetbrains.kotlin.multiplatform")
+
+    private fun operationOuputLocation(project: Project, compilationUnit: DefaultCompilationUnit): Provider<RegularFile> {
+      return project.layout.buildDirectory.file(
+          "generated/operationOutput/apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}/operationOutput.json"
+      )
+    }
+
+    private fun sourcesLocation(project: Project, compilationUnit: DefaultCompilationUnit): Provider<Directory> {
+      return project.layout.buildDirectory.dir(
+          "generated/source/apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}"
+      )
+    }
+
+    private fun irLocation(project: Project, compilationUnit: DefaultCompilationUnit): Provider<RegularFile> {
+      return project.layout.buildDirectory.file(
+          "generated/ir/apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}/ir.json"
+      )
+    }
+
+    private fun operationListLocation(project: Project, compilationUnit: DefaultCompilationUnit): Provider<RegularFile> {
+      return project.layout.buildDirectory.file(
+          "generated/ir/apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}/operationList.json"
+      )
+    }
+
+    private fun versionCheckLocation(project: Project): Provider<RegularFile> {
+      return project.layout.buildDirectory.file("generated/versionCheck/apollo/versionCheck")
+    }
+
 
     private fun registerCompilationUnits(project: Project, apolloExtension: DefaultApolloExtension, checkVersionsTask: TaskProvider<Task>) {
       val androidExtension = project.extensions.findByName("android")
@@ -52,10 +82,7 @@ open class ApolloPlugin : Plugin<Project> {
 
         compilationUnits.forEach { compilationUnit ->
           val irTaskProvider = registerIRGenTask(project, compilationUnit)
-
-          compilationUnit.operationDescriptorListFile.set(irTaskProvider.flatMap { it.operationDescriptorListFile })
-
-          val codegenProvider = registerCodeGenTask(project, compilationUnit, irTaskProvider.flatMap { it.irFile })
+          val codegenProvider = registerCodeGenTask(project, compilationUnit, irTaskProvider.map { it.irFile.get() })
 
           codegenProvider.configure {
             it.dependsOn(checkVersionsTask)
@@ -65,7 +92,7 @@ open class ApolloPlugin : Plugin<Project> {
             it.dependsOn(codegenProvider)
           }
 
-          compilationUnit.outputDir.set(codegenProvider.flatMap { it.outputDir })
+          compilationUnit.outputDir.set(codegenProvider.map { it.outputDir.get() })
 
           /**
            * Order matters here. See https://github.com/apollographql/apollo-android/issues/1970
@@ -75,18 +102,14 @@ open class ApolloPlugin : Plugin<Project> {
            */
           apolloExtension.compilationUnits.add(compilationUnit)
 
-          val generateIdsTaskInfo = compilationUnit.generateIdsTaskInfo ?: DefaultCompilationUnit.GenerateIdsTaskInfo(
-              registerIdGenTask(project, compilationUnit),
-              ApolloGenerateDefaultOperationIdsTask::operationDescriptorListFile,
-              ApolloGenerateDefaultOperationIdsTask::operationOutputFile
-          )
+          if (compilationUnit.generateIdsTaskInfo == null) {
+            compilationUnit.setGenerateOperationIdsTaskProvider(registerIdGenTask(project, compilationUnit))
+          }
+          val generateIdsTaskInfo = compilationUnit.generateIdsTaskInfo!!
 
           generateIdsTaskInfo.input(irTaskProvider, irTaskProvider.map { it.operationDescriptorListFile.get() })
-          generateIdsTaskInfo.output(
-              project.layout.buildDirectory.file(
-                  "apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}/operationOutput.json"
-              )
-          )
+          generateIdsTaskInfo.output(operationOuputLocation(project, compilationUnit))
+
           codegenProvider.configure {
             it.operationOutputFile.set(generateIdsTaskInfo.output())
             it.dependsOn(generateIdsTaskInfo.taskProvider)
@@ -123,14 +146,10 @@ open class ApolloPlugin : Plugin<Project> {
 
         it.rootPackageName.set(compilerParams.rootPackageName)
         it.irFile.set(
-            project.layout.buildDirectory.file(
-                "apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}/ir.json"
-            )
+            irLocation(project, compilationUnit)
         )
         it.operationDescriptorListFile.set(
-            project.layout.buildDirectory.file(
-                "apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}/operationDescriptorList.json"
-            )
+            operationListLocation(project, compilationUnit)
         )
       }
     }
@@ -167,7 +186,7 @@ open class ApolloPlugin : Plugin<Project> {
         it.generateVisitorForPolymorphicDatatypes.set(compilerParams.generateVisitorForPolymorphicDatatypes)
         it.customTypeMapping.set(compilerParams.customTypeMapping)
         it.outputDir.apply {
-          set(project.layout.buildDirectory.dir("generated/source/apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}"))
+          set(sourcesLocation(project, compilationUnit))
           disallowChanges()
         }
         it.irFile.set(irFileProvider)
@@ -250,7 +269,7 @@ open class ApolloPlugin : Plugin<Project> {
 
     fun registerCheckVersionsTask(project: Project): TaskProvider<Task> {
       return project.tasks.register("checkApolloVersions") {
-        val outputFile = project.layout.buildDirectory.file("apollo/versionCheck")
+        val outputFile = versionCheckLocation(project)
 
         val allDeps = (
             getDeps(project.rootProject.buildscript.configurations) +

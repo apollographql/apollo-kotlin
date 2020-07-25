@@ -2,6 +2,7 @@ package com.apollographql.apollo.gradle.test
 
 import com.apollographql.apollo.gradle.util.TestUtils
 import com.apollographql.apollo.gradle.util.TestUtils.withSimpleProject
+import com.apollographql.apollo.gradle.util.TestUtils.withTestProject
 import com.apollographql.apollo.gradle.util.generatedChild
 import com.apollographql.apollo.gradle.util.replaceInText
 import org.gradle.testkit.runner.TaskOutcome
@@ -118,6 +119,29 @@ class CustomIdGeneratorTests {
       result = TestUtils.executeTask("generateMainServiceApolloSources", dir, "--build-cache", "-i")
 
       Assert.assertEquals(TaskOutcome.FROM_CACHE, result.task(":generateMainServiceApolloSources")!!.outcome)
+    }
+  }
+
+  @Test
+  fun `setGenerateOperationIdsTaskProvider is working as expected`() {
+    withTestProject("operationIds") { dir ->
+
+      var result = TestUtils.executeTask("generateApolloSources", dir)
+
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainServiceApolloSources")!!.outcome)
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainServiceOperationIds")!!.outcome)
+
+      Assert.assertThat(dir.generatedChild("main/service/com/example/GreetingQuery.java").readText(), CoreMatchers.containsString("com/example/TestQuery.graphql"))
+
+      // Change the implementation of the operation ID generator and check again
+      File(dir,"build.gradle.kts").replaceInText("it.filePath", "\"someCustomId\"")
+
+      result = TestUtils.executeTask("generateApolloSources", dir)
+
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainServiceApolloSources")!!.outcome)
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainServiceOperationIds")!!.outcome)
+
+      Assert.assertThat(dir.generatedChild("main/service/com/example/GreetingQuery.java").readText(), CoreMatchers.containsString("someCustomId"))
     }
   }
 }

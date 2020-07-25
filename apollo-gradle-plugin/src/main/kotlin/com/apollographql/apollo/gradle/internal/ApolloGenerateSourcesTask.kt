@@ -25,12 +25,12 @@ import org.gradle.api.tasks.TaskAction
 
 @CacheableTask
 abstract class ApolloGenerateSourcesTask : DefaultTask() {
-  // This is not declared as input so we can skip the task if the file does not exist.
+  // We do not declare this as input so we can skip the task if the file does not exist.
   // See https://github.com/gradle/gradle/issues/2919
   @get:Internal
   abstract val irFile: RegularFileProperty
 
-  // This is not declared as input so we can skip the task if the file does not exist.
+  // We do not declare this as input so we can skip the task if the file does not exist.
   // See https://github.com/gradle/gradle/issues/2919
   @get:Internal
   abstract val operationOutputFile: RegularFileProperty
@@ -48,7 +48,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         }
       }
     }
-
 
   @get:Input
   @get:Optional

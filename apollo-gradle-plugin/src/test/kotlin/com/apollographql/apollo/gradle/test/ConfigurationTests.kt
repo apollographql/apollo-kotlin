@@ -494,7 +494,7 @@ class ConfigurationTests {
 
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
       val expectedOperationId = "260dd8d889c94e78b975e435300929027d0ad10ea55b63695b13894eb8cd8578"
-      val operationOutput = dir.child("build/apollo/main/service/operationOutput.json")
+      val operationOutput = dir.child("build/generated/operationOutput/apollo/main/service/operationOutput.json")
       assertThat(operationOutput.readText(), containsString(expectedOperationId))
 
       val queryJavaFile = dir.generatedChild("main/service/com/example/DroidDetailsQuery.java")
