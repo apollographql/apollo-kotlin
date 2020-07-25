@@ -115,6 +115,8 @@ open class ApolloPlugin : Plugin<Project> {
             it.dependsOn(generateIdsTaskInfo.taskProvider)
           }
 
+          compilationUnit.operationOutputFile.set(generateIdsTaskInfo.output())
+
           when {
             project.isKotlinMultiplatform -> {
               KotlinMultiplatformTaskConfigurator.registerGeneratedDirectory(project, compilationUnit, codegenProvider)
@@ -157,7 +159,7 @@ open class ApolloPlugin : Plugin<Project> {
     private fun registerIdGenTask(project: Project,
                                   compilationUnit: DefaultCompilationUnit)
         : TaskProvider<ApolloGenerateDefaultOperationIdsTask> {
-      val taskName = "generate${compilationUnit.name.capitalize()}ApolloOperationIDs"
+      val taskName = "generate${compilationUnit.name.capitalize()}ApolloOperationIds"
 
       return project.tasks.register(taskName, ApolloGenerateDefaultOperationIdsTask::class.java) {
         it.group = TASK_GROUP

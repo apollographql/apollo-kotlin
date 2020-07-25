@@ -515,9 +515,9 @@ class ConfigurationTests {
         }
       }
     """.trimIndent()) { dir ->
-      val result = TestUtils.executeTask("customTaskMainservice", dir)
+      val result = TestUtils.executeTask("customTaskMainService", dir)
 
-      assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainServiceApolloSources")!!.outcome)
+      assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainServiceApolloOperationIds")!!.outcome)
     }
   }
 
