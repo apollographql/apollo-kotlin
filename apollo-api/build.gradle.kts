@@ -24,6 +24,12 @@ kotlin {
     withJava()
   }
 
+  js {
+    useCommonJs()
+    browser()
+    nodejs()
+  }
+
   sourceSets {
     val commonMain by getting {
       dependencies {
@@ -45,6 +51,21 @@ kotlin {
 
     val iosSimMain by getting {
       dependsOn(iosMain)
+    }
+
+    val jsMain by getting {
+      dependsOn(commonMain)
+      dependencies {
+        implementation(kotlin("stdlib-js"))
+        implementation(npm("big.js", "5.2.2"))
+      }
+    }
+
+    val jsTest by getting {
+      dependencies {
+        implementation(kotlin("stdlib-js"))
+        implementation(kotlin("test-js"))
+      }
     }
 
     val commonTest by getting {

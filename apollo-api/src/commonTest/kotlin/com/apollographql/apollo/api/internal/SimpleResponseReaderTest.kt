@@ -170,7 +170,7 @@ class SimpleResponseReaderTest {
       }
 
       override fun className(): String {
-        return Map::class.qualifiedName!!
+        return "kotlin.collections.Map"
       }
     }
     val successField = ResponseField.forCustomType("successFieldResponseName", "successFieldName", null,
@@ -205,7 +205,7 @@ class SimpleResponseReaderTest {
       }
 
       override fun className(): String {
-        return List::class.qualifiedName!!
+        return "kotlin.collections.List"
       }
     }
     val successField = ResponseField.forCustomType("successFieldResponseName", "successFieldName", null,
@@ -224,19 +224,19 @@ class SimpleResponseReaderTest {
   @Test
   fun readCustomWithDefaultAdapter() {
     val stringField = ResponseField.forCustomType("stringField", "stringField", null, false,
-        scalarTypeFor(String::class), noConditions)
+        scalarTypeFor(String::class, "kotlin.String"), noConditions)
     val booleanField = ResponseField.forCustomType("booleanField", "booleanField", null, false,
-        scalarTypeFor(Boolean::class), noConditions)
+        scalarTypeFor(Boolean::class, "kotlin.Boolean"), noConditions)
     val integerField = ResponseField.forCustomType("integerField", "integerField", null, false,
-        scalarTypeFor(Int::class), noConditions)
+        scalarTypeFor(Int::class, "kotlin.Int"), noConditions)
     val longField = ResponseField.forCustomType("longField", "longField", null, false,
-        scalarTypeFor(Long::class), noConditions)
+        scalarTypeFor(Long::class, "kotlin.Long"), noConditions)
     val floatField = ResponseField.forCustomType("floatField", "floatField", null, false,
-        scalarTypeFor(Float::class), noConditions)
+        scalarTypeFor(Float::class, "kotlin.Float"), noConditions)
     val doubleField = ResponseField.forCustomType("doubleField", "doubleField", null, false,
-        scalarTypeFor(Double::class), noConditions)
+        scalarTypeFor(Double::class, "kotlin.Double"), noConditions)
     val unsupportedField = ResponseField.forCustomType("unsupportedField", "unsupportedField", null, false,
-        scalarTypeFor(RuntimeException::class), noConditions)
+        scalarTypeFor(RuntimeException::class, "kotlin.RuntimeException"), noConditions)
     val recordSet: MutableMap<String, Any> = HashMap()
     recordSet[stringField.responseName] = "string"
     recordSet[booleanField.responseName] = true
@@ -527,14 +527,14 @@ class SimpleResponseReaderTest {
       return SimpleResponseReader(recordSet, EMPTY_OPERATION.variables(), ScalarTypeAdapters(customTypeAdapters))
     }
 
-    private fun scalarTypeFor(clazz: KClass<*>): ScalarType {
+    private fun scalarTypeFor(clazz: KClass<*>, className: String): ScalarType {
       return object : ScalarType {
         override fun typeName(): String {
           return clazz.simpleName!!
         }
 
         override fun className(): String {
-          return clazz.qualifiedName!!
+          return className
         }
       }
     }
@@ -545,7 +545,7 @@ class SimpleResponseReaderTest {
       }
 
       override fun className(): String {
-        return String::class.qualifiedName!!
+        return "kotlin.String"
       }
     }
   }

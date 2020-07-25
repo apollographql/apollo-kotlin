@@ -98,6 +98,7 @@ sealed class CustomTypeValue<T>(@JvmField val value: T) {
         is Map<*, *> -> GraphQLJsonObject(value as Map<String, Any>)
         is List<*> -> GraphQLJsonList(value as List<Any>)
         is Boolean -> GraphQLBoolean(value)
+        is BigDecimal -> GraphQLNumber(value.toNumber())
         is Number -> GraphQLNumber(value)
         else -> GraphQLString(value.toString())
       }

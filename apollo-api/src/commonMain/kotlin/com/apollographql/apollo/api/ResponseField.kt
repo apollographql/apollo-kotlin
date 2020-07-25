@@ -1,5 +1,6 @@
 package com.apollographql.apollo.api
 
+import kotlin.js.JsName
 import kotlin.jvm.JvmStatic
 
 /**
@@ -22,31 +23,37 @@ open class ResponseField internal constructor(
 ) {
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "type"))
+  @JsName("getType")
   fun type(): Type {
     return type
   }
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "responseName"))
+  @JsName("getResponseName")
   fun responseName(): String {
     return responseName
   }
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "fieldName"))
+  @JsName("getFieldName")
   fun fieldName(): String {
     return fieldName
   }
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "arguments"))
+  @JsName("getArguments")
   fun arguments(): Map<String, Any?> {
     return arguments
   }
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "optional"))
+  @JsName("getOptional")
   fun optional(): Boolean {
     return optional
   }
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "conditions"))
+  @JsName("getConditions")
   fun conditions(): List<Condition> {
     return conditions
   }
@@ -126,6 +133,7 @@ open class ResponseField internal constructor(
   ) {
 
     @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "scalarType"))
+    @JsName("getScalarType")
     fun scalarType(): ScalarType {
       return scalarType
     }
@@ -177,6 +185,7 @@ open class ResponseField internal constructor(
       val typeNames: List<String>
   ) : Condition() {
     @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "typeNames"))
+    @JsName("getTypeNames")
     fun typeNames(): List<String> {
       return typeNames
     }
@@ -203,11 +212,13 @@ open class ResponseField internal constructor(
       val inverted: Boolean
   ) : Condition() {
     @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "variableName"))
+    @JsName("getVariableName")
     fun variableName(): String {
       return variableName
     }
 
     @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "inverted"))
+    @JsName("getInverted")
     fun inverted(): Boolean {
       return inverted
     }
