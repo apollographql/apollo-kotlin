@@ -89,20 +89,6 @@ public class ScalarTypeAdaptersTest {
   }
 
   @Test
-  public void defaultLongAdapter() {
-    final CustomTypeAdapter<Long> adapter = defaultAdapter(Long.class);
-    assertThat(adapter.decode(CustomTypeValue.fromRawValue(100L))).isEqualTo(100L);
-    assertThat(adapter.encode(100L).value).isEqualTo(100L);
-  }
-
-  @Test
-  public void defaultFloatAdapter() {
-    final CustomTypeAdapter<Float> adapter = defaultAdapter(Float.class);
-    assertThat(adapter.decode(CustomTypeValue.fromRawValue(10.10f))).isWithin(0.0f).of(10.10f);
-    assertThat(adapter.encode(10.10f).value).isEqualTo(10.10f);
-  }
-
-  @Test
   public void defaultDoubleAdapter() {
     final CustomTypeAdapter<Double> adapter = defaultAdapter(Double.class);
     assertThat(adapter.decode(CustomTypeValue.fromRawValue(10.10d))).isWithin(0.0d).of(10.10d);
