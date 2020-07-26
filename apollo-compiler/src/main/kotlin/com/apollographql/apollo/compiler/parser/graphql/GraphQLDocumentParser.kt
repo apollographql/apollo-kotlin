@@ -9,6 +9,7 @@ import com.apollographql.apollo.compiler.ir.Fragment
 import com.apollographql.apollo.compiler.ir.FragmentRef
 import com.apollographql.apollo.compiler.ir.InlineFragment
 import com.apollographql.apollo.compiler.ir.Operation
+import com.apollographql.apollo.compiler.ir.ParsedFragment
 import com.apollographql.apollo.compiler.ir.ParsedOperation
 import com.apollographql.apollo.compiler.ir.ScalarType
 import com.apollographql.apollo.compiler.ir.SourceLocation
@@ -71,7 +72,19 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
           fragmentsReferenced = referencedFragmentNames.toList()
           )
         },
-        fragments = fragments,
+        fragments = fragments.map {
+          Fragment(
+              fragmentName = it.fragmentName,
+          source = it.source,
+          description = it.description,
+          typeCondition = it.typeCondition,
+          possibleTypes = it.possibleTypes,
+          fields = it.fields,
+          fragmentRefs = it.fragmentRefs,
+          inlineFragments = it.inlineFragments,
+          sourceLocation = it.sourceLocation
+          )
+        },
         typesUsed = typeDeclarations,
         fragmentsPackageName = packageNameProvider.fragmentsPackageName,
         typesPackageName = packageNameProvider.typesPackageName
@@ -502,7 +515,7 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
     )
   }
 
-  private fun GraphQLParser.FragmentDefinitionContext.parse(tokenStream: CommonTokenStream, graphQLFilePath: String): ParseResult<Fragment> {
+  private fun GraphQLParser.FragmentDefinitionContext.parse(tokenStream: CommonTokenStream, graphQLFilePath: String): ParseResult<ParsedFragment> {
     val fragmentKeyword = fragmentKeyword().text
     if (fragmentKeyword != "fragment") {
       throw ParseException(
@@ -547,7 +560,7 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
       token.text.trim().removePrefix("#")
     }
     return ParseResult(
-        result = Fragment(
+        result = ParsedFragment(
             fragmentName = fragmentName,
             typeCondition = typeCondition,
             source = graphQLDocumentSource,
@@ -776,13 +789,13 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
       usedTypes = flatMap { (_, usedTypes) -> usedTypes }.toSet()
   )
 
-  private fun List<Field>.referencedFragmentNames(fragments: List<Fragment>, filePath: String): Set<String> {
+  private fun List<Field>.referencedFragmentNames(fragments: List<ParsedFragment>, filePath: String): Set<String> {
     return flatMap { it.referencedFragmentNames(fragments = fragments, filePath = filePath) }
         .union(flatMap { it.fields.referencedFragmentNames(fragments = fragments, filePath = filePath) })
         .union(flatMap { it.inlineFragments.flatMap { it.referencedFragments(fragments = fragments, filePath = filePath) } })
   }
 
-  private fun Field.referencedFragmentNames(fragments: List<Fragment>, filePath: String): Set<String> {
+  private fun Field.referencedFragmentNames(fragments: List<ParsedFragment>, filePath: String): Set<String> {
     val rawFieldType = type.replace("!", "").replace("[", "").replace("]", "")
     val referencedFragments = fragmentRefs.findFragments(
         typeCondition = rawFieldType,
@@ -793,7 +806,7 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
         .union(referencedFragments.flatMap { it.referencedFragments(fragments) })
   }
 
-  private fun InlineFragment.referencedFragments(fragments: List<Fragment>, filePath: String): Set<String> {
+  private fun InlineFragment.referencedFragments(fragments: List<ParsedFragment>, filePath: String): Set<String> {
     val referencedFragments = this.fragments.findFragments(
         typeCondition = typeCondition,
         fragments = fragments,
@@ -804,7 +817,7 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
         .union(referencedFragments.flatMap { it.referencedFragments(fragments) })
   }
 
-  private fun Fragment.referencedFragments(fragments: List<Fragment>): Set<String> {
+  private fun ParsedFragment.referencedFragments(fragments: List<ParsedFragment>): Set<String> {
     val referencedFragments = fragmentRefs.findFragments(
         typeCondition = typeCondition,
         fragments = fragments,
@@ -816,7 +829,7 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
         .union(referencedFragments.flatMap { it.referencedFragments(fragments) })
   }
 
-  private fun List<FragmentRef>.findFragments(typeCondition: String, fragments: List<Fragment>, filePath: String): List<Fragment> {
+  private fun List<FragmentRef>.findFragments(typeCondition: String, fragments: List<ParsedFragment>, filePath: String): List<ParsedFragment> {
     return map { ref ->
       val fragment = fragments.find { fragment -> fragment.fragmentName == ref.name }
           ?: throw DocumentParseException(
@@ -847,7 +860,7 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
 
 private data class DocumentParseResult(
     val operations: List<ParsedOperation> = emptyList(),
-    val fragments: List<Fragment> = emptyList(),
+    val fragments: List<ParsedFragment> = emptyList(),
     val usedTypes: Set<String> = emptySet()
 )
 
