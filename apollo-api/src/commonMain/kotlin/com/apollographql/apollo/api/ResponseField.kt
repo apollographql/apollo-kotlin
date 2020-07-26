@@ -200,31 +200,34 @@ open class ResponseField internal constructor(
    */
   class BooleanCondition internal constructor(
       val variableName: String,
-      val inverted: Boolean
+      val isInverted: Boolean
   ) : Condition() {
     @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "variableName"))
     fun variableName(): String {
       return variableName
     }
 
-    @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "inverted"))
+    @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "isInverted"))
     fun inverted(): Boolean {
-      return inverted
+      return isInverted
     }
+
+    @Deprecated(message = "Use isInverted instead", replaceWith = ReplaceWith(expression = "isInverted"))
+    val inverted = isInverted
 
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is BooleanCondition) return false
 
       if (variableName != other.variableName) return false
-      if (inverted != other.inverted) return false
+      if (isInverted != other.isInverted) return false
 
       return true
     }
 
     override fun hashCode(): Int {
       var result = variableName.hashCode()
-      result = 31 * result + inverted.hashCode()
+      result = 31 * result + isInverted.hashCode()
       return result
     }
   }
