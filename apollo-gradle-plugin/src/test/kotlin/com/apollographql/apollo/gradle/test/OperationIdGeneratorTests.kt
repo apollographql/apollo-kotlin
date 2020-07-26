@@ -69,7 +69,7 @@ class CustomIdGeneratorTests {
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
 
       val queryJavaFile = dir.generatedChild("main/service/com/example/DroidDetailsQuery.java")
-      Assert.assertThat(queryJavaFile.readText(), CoreMatchers.containsString("com/example/DroidDetails.graphql"))
+      Assert.assertThat(queryJavaFile.readText(), CoreMatchers.containsString("OPERATION_ID = \"DroidDetails\";"))
     }
   }
 
@@ -131,7 +131,7 @@ class CustomIdGeneratorTests {
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainServiceApolloSources")!!.outcome)
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainServiceOperationIds")!!.outcome)
 
-      Assert.assertThat(dir.generatedChild("main/service/com/example/GreetingQuery.java").readText(), CoreMatchers.containsString("com/example/TestQuery.graphql"))
+      Assert.assertThat(dir.generatedChild("main/service/com/example/GreetingQuery.java").readText(), CoreMatchers.containsString("OPERATION_ID = \"Greeting\";"))
 
       // Change the implementation of the operation ID generator and check again
       File(dir,"build.gradle.kts").replaceInText("it.name", "\"someCustomId\"")
