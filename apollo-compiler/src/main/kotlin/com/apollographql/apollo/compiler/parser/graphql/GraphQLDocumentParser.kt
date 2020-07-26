@@ -1,17 +1,36 @@
 package com.apollographql.apollo.compiler.parser.graphql
 
 import com.apollographql.apollo.compiler.PackageNameProvider
-import com.apollographql.apollo.compiler.ir.*
-import com.apollographql.apollo.compiler.parser.graphql.GraphQLDocumentSourceBuilder.graphQLDocumentSource
+import com.apollographql.apollo.compiler.ir.Argument
+import com.apollographql.apollo.compiler.ir.CodeGenerationIR
+import com.apollographql.apollo.compiler.ir.Condition
+import com.apollographql.apollo.compiler.ir.Field
+import com.apollographql.apollo.compiler.ir.Fragment
+import com.apollographql.apollo.compiler.ir.FragmentRef
+import com.apollographql.apollo.compiler.ir.InlineFragment
+import com.apollographql.apollo.compiler.ir.Operation
+import com.apollographql.apollo.compiler.ir.ParsedOperation
+import com.apollographql.apollo.compiler.ir.ScalarType
+import com.apollographql.apollo.compiler.ir.SourceLocation
+import com.apollographql.apollo.compiler.ir.TypeDeclaration
+import com.apollographql.apollo.compiler.ir.TypeDeclarationField
+import com.apollographql.apollo.compiler.ir.TypeDeclarationValue
+import com.apollographql.apollo.compiler.ir.Variable
 import com.apollographql.apollo.compiler.parser.antlr.GraphQLLexer
 import com.apollographql.apollo.compiler.parser.antlr.GraphQLParser
 import com.apollographql.apollo.compiler.parser.error.DocumentParseException
 import com.apollographql.apollo.compiler.parser.error.ParseException
+import com.apollographql.apollo.compiler.parser.graphql.GraphQLDocumentSourceBuilder.graphQLDocumentSource
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.parser.introspection.asGraphQLType
 import com.apollographql.apollo.compiler.parser.introspection.isAssignableFrom
 import com.apollographql.apollo.compiler.parser.introspection.possibleTypes
-import org.antlr.v4.runtime.*
+import org.antlr.v4.runtime.ANTLRInputStream
+import org.antlr.v4.runtime.BaseErrorListener
+import org.antlr.v4.runtime.CommonTokenStream
+import org.antlr.v4.runtime.RecognitionException
+import org.antlr.v4.runtime.Recognizer
+import org.antlr.v4.runtime.Token
 import org.antlr.v4.runtime.atn.PredictionMode
 import java.io.File
 import java.io.IOException
@@ -39,9 +58,17 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
           referencedFragments.forEach { it.validateArguments(operation = operation, schema = schema) }
 
           val fragmentSource = referencedFragments.joinToString(separator = "\n") { it.source }
-          operation.copy(
-              sourceWithFragments = operation.source + if (fragmentSource.isNotBlank()) "\n$fragmentSource" else "",
-              fragmentsReferenced = referencedFragmentNames.toList()
+          Operation(
+              operationName = operation.operationName,
+          packageName = operation.packageName,
+          operationType = operation.operationType,
+          description = operation.description,
+          variables = operation.variables,
+          source = operation.source,
+          sourceWithFragments = operation.source + if (fragmentSource.isNotBlank()) "\n$fragmentSource" else "",
+          fields = operation.fields,
+          fragments = operation.fragments,
+          fragmentsReferenced = referencedFragmentNames.toList()
           )
         },
         fragments = fragments,
@@ -120,7 +147,7 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
     )
   }
 
-  private fun GraphQLParser.OperationDefinitionContext.parse(tokenStream: CommonTokenStream, graphQLFilePath: String): ParseResult<Operation> {
+  private fun GraphQLParser.OperationDefinitionContext.parse(tokenStream: CommonTokenStream, graphQLFilePath: String): ParseResult<ParsedOperation> {
     val operationType = operationType().text
     val operationName = NAME()?.text ?: throw ParseException(
         message = "Apollo does not support anonymous operations",
@@ -141,17 +168,15 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
     val description = commentTokens.joinToString(separator = "\n") { token ->
       token.text.trim().removePrefix("#")
     }
-    val operation = Operation(
+    val operation = ParsedOperation(
         operationName = operationName,
         packageName = packageNameProvider.operationPackageName(graphQLFilePath),
         operationType = operationType,
         description = description,
         variables = variables.result,
         source = graphQLDocumentSource,
-        sourceWithFragments = graphQLDocumentSource,
         fields = fields.result.filterNot { it.responseName == Field.TYPE_NAME_FIELD.responseName },
         fragments = selectionSet().fragmentRefs(),
-        fragmentsReferenced = emptyList(),
         filePath = graphQLFilePath
     ).also { it.validateArguments(schema = schema) }
 
@@ -821,7 +846,7 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
 }
 
 private data class DocumentParseResult(
-    val operations: List<Operation> = emptyList(),
+    val operations: List<ParsedOperation> = emptyList(),
     val fragments: List<Fragment> = emptyList(),
     val usedTypes: Set<String> = emptySet()
 )
