@@ -21,6 +21,7 @@ class GradleBuildCacheTests {
       File(System.getProperty("user.dir"), "testProjects/buildCache").copyRecursively(project2)
 
       File(project2, "build.gradle.kts").replaceInText("../../../../", "../../../../../")
+      File(project2, "settings.gradle.kts").replaceInText("../buildCache", "../../buildCache")
       System.out.println("building project1")
       var result = TestUtils.executeTask("generateMainServiceApolloSources", project1, "--build-cache")
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":module:generateMainServiceApolloSources")!!.outcome)
