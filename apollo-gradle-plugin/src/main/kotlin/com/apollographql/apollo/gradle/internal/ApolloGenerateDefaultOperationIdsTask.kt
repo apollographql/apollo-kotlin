@@ -16,7 +16,7 @@ abstract class ApolloGenerateDefaultOperationIdsTask : ApolloGenerateOperationId
 
   override fun generateOperationOutput(operationList: OperationList): OperationOutput {
     return operationList.map {
-      operationIdGenerator.apply(it.source, it.filePath) to it
+      operationIdGenerator.apply(it.source, it.name, it.packageName) to it
     }.toMap()
   }
 }

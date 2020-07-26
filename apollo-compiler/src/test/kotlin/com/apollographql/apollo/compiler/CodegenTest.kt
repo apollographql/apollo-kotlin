@@ -1,5 +1,7 @@
 package com.apollographql.apollo.compiler
 
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
+import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.parser.graphql.GraphQLDocumentParser
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.google.common.truth.Truth.assertAbout
@@ -170,7 +172,7 @@ class CodeGenTest(private val folder: File) {
 
       val operationIdGenerator = when (folder.name) {
         "operation_id_generator" -> object : OperationIdGenerator {
-          override fun apply(operationDocument: String, operationFilepath: String): String {
+          override fun apply(operationDocument: String, operationName: String, operationPackageName: String): String {
             return "hash"
           }
 
@@ -188,10 +190,18 @@ class CodeGenTest(private val folder: File) {
 
       val ir = GraphQLDocumentParser(schema, packageNameProvider).parse(setOf(graphQLFile))
       val language = if (generateKotlinModels) "kotlin" else "java"
+
+      val operationOutput = ir.operations.map {
+        operationIdGenerator.apply(QueryDocumentMinifier.minify(it.sourceWithFragments), it.operationName, it.packageName) to OperationDescriptor(
+            it.operationName,
+            it.packageName,
+            QueryDocumentMinifier.minify(it.sourceWithFragments)
+        )
+      }.toMap()
+
       return GraphQLCompiler.Arguments(
           ir = ir,
           outputDir = File("build/generated/test/${folder.name}/$language"),
-          operationIdGenerator = operationIdGenerator,
           customTypeMap = customTypeMap,
           generateKotlinModels = generateKotlinModels,
           nullableValueType = nullableValueType,
@@ -200,10 +210,10 @@ class CodeGenTest(private val folder: File) {
           useJavaBeansSemanticNaming = useJavaBeansSemanticNaming,
           suppressRawTypesWarning = suppressRawTypesWarning,
           generateVisitorForPolymorphicDatatypes = generateVisitorForPolymorphicDatatypes,
-          packageNameProvider = packageNameProvider,
           generateAsInternal = generateAsInternal,
           kotlinMultiPlatformProject = true,
-          enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters
+          enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters,
+          operationOutput = operationOutput
       )
     }
 

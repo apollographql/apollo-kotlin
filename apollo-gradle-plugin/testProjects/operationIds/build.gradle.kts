@@ -34,7 +34,7 @@ repositories {
 abstract class GenerateCustomOperationIdsTask: ApolloGenerateOperationIdsTask() {
   override fun generateOperationOutput(operationList: OperationList): OperationOutput {
     return operationList.map {
-      it.filePath to it
+      it.name to it
     }.toMap()
   }
 }

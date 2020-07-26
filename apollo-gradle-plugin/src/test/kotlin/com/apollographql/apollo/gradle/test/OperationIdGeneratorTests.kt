@@ -14,7 +14,7 @@ import java.io.File
 class CustomIdGeneratorTests {
   val apolloConfiguration = """
       class MyIdGenerator implements OperationIdGenerator {
-          String apply(String queryString, String queryFilepath) {
+          String apply(String queryString, String operationName, String operationPackageName) {
               return queryString.length().toString();
           }
           String version = "MyIdGenerator-v1"
@@ -46,8 +46,8 @@ class CustomIdGeneratorTests {
   fun `operationIdGenerator can be set from onCompilationUnit`() {
     val apolloConfiguration = """
       class MyIdGenerator implements OperationIdGenerator {
-          String apply(String queryString, String queryFilepath) {
-              return queryFilepath;
+          String apply(String queryString, String operationName, String operationPackageName) {
+              return operationName;
           }
           String version = "MyIdGenerator-v1"
       }
@@ -134,7 +134,7 @@ class CustomIdGeneratorTests {
       Assert.assertThat(dir.generatedChild("main/service/com/example/GreetingQuery.java").readText(), CoreMatchers.containsString("com/example/TestQuery.graphql"))
 
       // Change the implementation of the operation ID generator and check again
-      File(dir,"build.gradle.kts").replaceInText("it.filePath", "\"someCustomId\"")
+      File(dir,"build.gradle.kts").replaceInText("it.name", "\"someCustomId\"")
 
       result = TestUtils.executeTask("generateApolloSources", dir)
 
