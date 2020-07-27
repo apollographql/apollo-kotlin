@@ -50,10 +50,9 @@ kotlin {
     }
 
     val jsMain by getting {
-      dependsOn(commonMain)
       dependencies {
         implementation(kotlin("stdlib-js"))
-        implementation("com.ionspin.kotlin:bignum-js:0.1.5")
+        implementation(groovy.util.Eval.x(project, "x.dep.bignum"))
       }
     }
 
@@ -81,6 +80,28 @@ kotlin {
       }
     }
   }
+}
+
+// Workaround to https://youtrack.jetbrains.com/issue/KT-17345
+tasks.create("jsPatch") {
+  dependsOn("compileTestKotlinJs")
+  mustRunAfter("jsTestClasses")
+
+  doLast {
+    val kotlinJs = File(rootProject.buildDir, "js/packages_imported/kotlin/1.3.72/kotlin.js")
+
+    val patch = "package\$kotlin.Number = Number;"
+    val applyAfter = "var package\$kotlin = _.kotlin || (_.kotlin = {});"
+    val fileContent = kotlinJs.readText()
+
+    if (patch !in fileContent) {
+      kotlinJs.writeText(fileContent.replace(applyAfter, "$applyAfter\n\t$patch\n"))
+    }
+  }
+}
+
+tasks.named("jsBrowserTest").configure {
+  setDependsOn(listOf("jsPatch"))
 }
 
 tasks.withType<Checkstyle> {

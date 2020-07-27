@@ -104,6 +104,7 @@ ext.dep = [
     ],
     truth                 : "com.google.truth:truth:$versions.truth",
     uuid                  : "com.benasher44:uuid:0.1.0",
+    bignum                : "com.ionspin.kotlin:bignum-js:0.1.5",
 ]
 ext.androidConfig = [
     compileSdkVersion: 28,
