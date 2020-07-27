@@ -11,8 +11,21 @@ object ApiCompatibility {
     }
 
     project.subprojects {
-      it.configureJapiCmp()
-      it.configureMetalava(downloadMetalavaJar)
+      when(it.name) {
+        "apollo-compiler" -> {
+          // apollo-compiler is for now considered an internal artifact consumed by the Gradle plugin so we allow API changes there.
+          return@subprojects
+        }
+        "apollo-runtime-kotlin" -> {
+          // apollo-runtime-kotlin is still under development. Include the check once it is stable enough.
+          return@subprojects
+        }
+        else -> {
+          it.configureJapiCmp()
+          it.configureMetalava(downloadMetalavaJar)
+
+        }
+      }
     }
   }
 }
