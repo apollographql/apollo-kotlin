@@ -18,7 +18,6 @@ import org.gradle.api.tasks.TaskAction
 @CacheableTask
 abstract class ApolloGenerateOperationIdsTask : DefaultTask() {
   @get:Internal
-  @get:PathSensitive(PathSensitivity.RELATIVE)
   // We do not declare this as input so we can skip the task if the file does not exist.
   // See https://github.com/gradle/gradle/issues/2919
   abstract val operationList: RegularFileProperty
