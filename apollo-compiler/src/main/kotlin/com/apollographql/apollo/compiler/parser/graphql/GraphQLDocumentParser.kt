@@ -61,28 +61,28 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
           val fragmentSource = referencedFragments.joinToString(separator = "\n") { it.source }
           Operation(
               operationName = operation.operationName,
-          packageName = operation.packageName,
-          operationType = operation.operationType,
-          description = operation.description,
-          variables = operation.variables,
-          source = operation.source,
-          sourceWithFragments = operation.source + if (fragmentSource.isNotBlank()) "\n$fragmentSource" else "",
-          fields = operation.fields,
-          fragments = operation.fragments,
-          fragmentsReferenced = referencedFragmentNames.toList()
+              packageName = operation.packageName,
+              operationType = operation.operationType,
+              description = operation.description,
+              variables = operation.variables,
+              source = operation.source,
+              sourceWithFragments = operation.source + if (fragmentSource.isNotBlank()) "\n$fragmentSource" else "",
+              fields = operation.fields,
+              fragments = operation.fragments,
+              fragmentsReferenced = referencedFragmentNames.toList()
           )
         },
         fragments = fragments.map {
           Fragment(
               fragmentName = it.fragmentName,
-          source = it.source,
-          description = it.description,
-          typeCondition = it.typeCondition,
-          possibleTypes = it.possibleTypes,
-          fields = it.fields,
-          fragmentRefs = it.fragmentRefs,
-          inlineFragments = it.inlineFragments,
-          sourceLocation = it.sourceLocation
+              source = it.source,
+              description = it.description,
+              typeCondition = it.typeCondition,
+              possibleTypes = it.possibleTypes,
+              fields = it.fields,
+              fragmentRefs = it.fragmentRefs,
+              inlineFragments = it.inlineFragments,
+              sourceLocation = it.sourceLocation
           )
         },
         typesUsed = typeDeclarations,
