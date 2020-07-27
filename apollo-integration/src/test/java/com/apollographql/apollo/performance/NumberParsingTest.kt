@@ -31,9 +31,7 @@ data class Data(
 @OptIn(ExperimentalTime::class)
 class NumberParsingTest {
   /**
-   * A test to benchmark the parsing of integers in Json. At the time of writing, it takes 19.5s on the JVM
-   *
-   * This could be divided by ~2 by using the parsing from BufferedSourceJsonReader directly. Right now, we parse Ints twice.
+   * A test to benchmark the parsing of integers in Json.
    */
   @Test
   fun parseInts() {
@@ -66,7 +64,7 @@ class NumberParsingTest {
   }
 
   /**
-   * A test to benchmark the parsing of floats in Json. At the time of writing, it takes ~21s on the JVM
+   * A test to benchmark the parsing of floats in Json. At the time of writing, it takes ~21s on my MacBook
    *
    * From the first tests, Switching to Double instead of BigDecimal isn't way faster but makes a bit less allocations
    * Number of GC is down to 228 with Double (from 274 with BigDecimal) so it might be worth at some point.
