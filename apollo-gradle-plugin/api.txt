@@ -5,6 +5,18 @@ package com.apollographql.apollo.gradle.api {
     method public abstract void service(error.NonExistentClass, error.NonExistentClass);
   }
 
+  public abstract class ApolloGenerateOperationIdsTask {
+    ctor public ApolloGenerateOperationIdsTask();
+    method public abstract error.NonExistentClass generateOperationOutput(error.NonExistentClass);
+    method public final error.NonExistentClass getFilesUsedForUpToDateChecks();
+    method public abstract error.NonExistentClass getOperationList();
+    method public abstract error.NonExistentClass getOperationOutput();
+    method public final void taskAction();
+    property public final error.NonExistentClass filesUsedForUpToDateChecks;
+    property public abstract error.NonExistentClass operationList;
+    property public abstract error.NonExistentClass operationOutput;
+  }
+
   public abstract interface CompilationUnit implements com.apollographql.apollo.gradle.api.CompilerParams {
     method public abstract error.NonExistentClass getAndroidVariant();
     method public abstract error.NonExistentClass getName();
@@ -12,6 +24,8 @@ package com.apollographql.apollo.gradle.api {
     method public abstract error.NonExistentClass getOutputDir();
     method public abstract error.NonExistentClass getServiceName();
     method public abstract error.NonExistentClass getVariantName();
+    method public abstract <T> void setGenerateOperationIdsTaskProvider(error.NonExistentClass, kotlin.jvm.functions.Function1<? super T, ? extends error.NonExistentClass>, kotlin.jvm.functions.Function1<? super T, ? extends error.NonExistentClass>);
+    method public abstract <T extends com.apollographql.apollo.gradle.api.ApolloGenerateOperationIdsTask> void setGenerateOperationIdsTaskProvider(error.NonExistentClass);
     property public abstract error.NonExistentClass androidVariant;
     property public abstract error.NonExistentClass name;
     property public abstract error.NonExistentClass operationOutputFile;
