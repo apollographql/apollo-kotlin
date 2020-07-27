@@ -1,0 +1,262 @@
+# This file is not used, but it is a useful reference to recreate testSchema.json by running
+#
+# const { buildSchema, getIntrospectionQuery, graphql } = require('graphql')
+#
+# const schema = buildSchema(...)
+# graphql(schema, getIntrospectionQuery()).then(result => console.log(JSON.stringify(result, null, 2)))
+
+# Star Wars schema
+
+interface Character {
+  id: ID!
+  name: String!
+}
+
+interface Thing {
+  price: Float
+  owner: Being
+}
+
+interface Being {
+  name: String!
+  possessions: [Thing!]!
+  lifeExpectancy: Float
+  friends: [Being!]!
+  optionalFriends: [Being]
+  isRebel: Boolean!
+  isFamous: Boolean
+}
+
+interface Alien {
+  homePlanet: String!
+  race: Race!
+}
+
+interface AbstractWookie {
+  hairLength: Float
+  friends: [Being!]!
+}
+
+type Droid implements Character & Thing {
+  id: ID!
+  name: String!
+  price: Float
+  owner: Being
+  primaryFunction: String
+}
+
+type Human implements Character & Being {
+  id: ID!
+  name: String!
+  profilePictureUrls: [String]
+  profilePictureUrl: String
+  possessions: [Thing!]!
+  lifeExpectancy: Float
+  friends: [Being!]!
+  optionalFriends: [Being]
+  favoriteSport: Sport
+  parents: [Human!]!
+  isRebel: Boolean!
+  isFamous: Boolean
+  appearsIn: [Episode!]!
+  appearsInOptional: [Episode]
+}
+
+type Wookie implements Character & Being & Alien & AbstractWookie {
+  id: ID!
+  race: Race!
+  name: String!
+  possessions: [Thing!]!
+  lifeExpectancy: Float
+  friends: [Being!]!
+  optionalFriends: [Being]
+  homePlanet: String!
+  hairLength: Float
+  isRebel: Boolean!
+  isFamous: Boolean
+}
+
+type Ship implements Thing {
+  id: ID!
+  price: Float
+  owner: Being
+  speed: Float
+}
+
+type TypeWithAllSortsOfFields {
+  id: ID!
+  optionalId: ID
+  ids1: [ID]
+  ids2: [ID!]
+  ids3: [ID]!
+  ids4: [ID!]!
+
+  long: Long!
+  optionalLong: Long
+  longs1: [Long]
+  longs2: [Long!]
+  longs3: [Long]!
+  longs4: [Long!]!
+
+  episode: Episode!
+  optionalEpisode: Episode
+  episodes1: [Episode]
+  episodes2: [Episode!]
+  episodes3: [Episode]!
+  episodes4: [Episode!]!
+
+  string: String!
+  optionalString: String
+  strings1: [String]
+  strings2: [String!]
+  strings3: [String]!
+  strings4: [String!]!
+
+  object: Human!
+  optionalObject: Human
+  objects1: [Human]
+  objects2: [Human!]
+  objects3: [Human]!
+  objects4: [Human!]!
+}
+
+
+enum Sport {
+  Soccer
+  SpeedRacing
+  LightSaberFight
+}
+
+enum Episode {
+  A_NEW_HOPE
+  THE_EMPIRE_STRIKE_BACK
+  RETURN_OF_THE_JEDI
+}
+
+enum Race {
+  WOOKIE
+  GUMGAN
+  EWOK
+}
+
+union Anything = Human | Wookie | Droid | Ship
+
+input AlienInput {
+  episode: Episode!
+  planet: String
+}
+
+input InputWithAllSortsOfFields {
+  id: ID!
+  optionalId: ID
+  ids1: [ID]
+  ids2: [ID!]
+  ids3: [ID]!
+  ids4: [ID!]!
+
+  long: Long!
+  optionalLong: Long
+  longs1: [Long]
+  longs2: [Long!]
+  longs3: [Long]!
+  longs4: [Long!]!
+
+  episode: Episode!
+  optionalEpisode: Episode
+  episodes1: [Episode]
+  episodes2: [Episode!]
+  episodes3: [Episode]!
+  episodes4: [Episode!]!
+
+  string: String!
+  optionalString: String
+  strings1: [String]
+  strings2: [String!]
+  strings3: [String]!
+  strings4: [String!]!
+
+  object: AlienInput!
+  optionalObject: AlienInput
+  objects1: [AlienInput]
+  objects2: [AlienInput!]
+  objects3: [AlienInput]!
+  objects4: [AlienInput!]!
+}
+
+# Some of Merlin schema
+
+scalar Long
+
+type MerlinQuery {
+  homesPdp(request: MerlinHomesPdpRequestInput!): MerlinHomesPdpResponse
+}
+
+input MerlinHomesPdpRequestInput {
+  adults: Long
+  causeId: Long
+  checkIn: String
+  checkOut: String
+  children: Long
+  disasterId: Long
+  fieldSelector: String
+  homeCollection: Int
+  infants: Long
+  listingId: Long!
+  priceDropSource: String
+  promotionUuid: String
+  searchContext: String
+  tierOverride: Int
+  debugMode: Boolean
+  fetchEmptyResponse: Boolean
+  translateUgc: Boolean
+}
+
+type MerlinHomesPdpResponse {
+  pdpListingDetail: MerlinPdpListingDetailForNativeResponse
+}
+
+type MerlinPdpListingDetailForNativeResponse {
+  bedroomLabel: String!
+  guestLabel: String!
+  id: Long!
+  lat: Float
+  lng: Float
+  minNights: Int
+  p3SummaryTitle: String
+  sectionedDescription: MerlinPdpListingDescriptionNestedWithinListing
+}
+
+type MerlinPdpListingDescriptionNestedWithinListing {
+  neighborhoodOverview: String
+  summary: String
+}
+
+# Final schema stitching
+
+type Query {
+  hero(episode: Episode): Character
+  luke: Human!
+  random: Anything!
+  being(id : ID!) : Being
+  droid(id: ID!): Droid
+  alien(id: ID!): Alien
+  alienWithInput(input: AlienInput!): Alien
+  abstractWookie(id: ID!): AbstractWookie
+  wookie(id: ID!): Wookie
+  charactersInEpisod(episode: Episode!): [Character!]!
+  anything(id: ID!): Anything
+  getPossessions(beingId: ID!): [Thing!]!
+  merlin: MerlinQuery
+  humanWithInput(input1:[String!]!, input2:[ID!], input3: [Episode]!, input4: [String]): Human
+  anyAlienWithInput(input: AlienInput, id: ID): Alien
+  allFieldTypes(input: InputWithAllSortsOfFields): [TypeWithAllSortsOfFields!]!
+}
+
+type Mutation {
+  changeCharacterName(id : ID!, name: String!): Character
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}

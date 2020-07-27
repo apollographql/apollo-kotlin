@@ -1,0 +1,19 @@
+query TestOperation {
+  random {
+    ... on Being {
+      friends {
+          name
+      }
+    }
+    ... on Alien {
+      homePlanet
+    }
+    ... on Human {
+      name
+      lifeExpectancy
+      friends {
+        isFamous
+      }
+    }
+  }
+}

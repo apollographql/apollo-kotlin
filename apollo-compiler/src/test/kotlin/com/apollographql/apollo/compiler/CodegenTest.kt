@@ -2,6 +2,9 @@ package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.compiler.parser.graphql.GraphQLDocumentParser
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
+import com.apollographql.apollo.compiler.parser.sdl.GraphSDLSchemaParser
+import com.apollographql.apollo.compiler.parser.sdl.GraphSDLSchemaParser.parse
+import com.apollographql.apollo.compiler.parser.sdl.toIntrospectionSchema
 import com.google.common.truth.Truth.assertAbout
 import com.google.testing.compile.JavaFileObjects
 import com.google.testing.compile.JavaSourcesSubjectFactory.javaSources
@@ -18,7 +21,7 @@ import java.lang.Exception
 class CodeGenTest(private val folder: File) {
   @Test
   fun generateExpectedClasses() {
-    generateExpectedClasses(arguments(folder = folder, generateKotlinModels = false))
+//    generateExpectedClasses(arguments(folder = folder, generateKotlinModels = false))
     generateExpectedClasses(arguments(folder = folder, generateKotlinModels = true))
   }
 
@@ -157,14 +160,14 @@ class CodeGenTest(private val folder: File) {
         else -> false
       }
 
-      val schemaJson = folder.listFiles()!!.find { it.isFile && it.name == "schema.json" }
+      val schemaFile = folder.listFiles()!!.find { it.isFile && (it.name == "schema.json" || it.name == "schema.sdl") }
           ?: File("src/test/graphql/schema.json")
-      val schema = IntrospectionSchema(schemaJson)
+      val schema = if (schemaFile.extension == "sdl") schemaFile.parse().toIntrospectionSchema() else IntrospectionSchema(schemaFile)
       val graphQLFile = File(folder, "TestOperation.graphql")
 
       val packageNameProvider = DefaultPackageNameProvider(
           rootFolders = listOf(folder),
-          schemaFile = schemaJson,
+          schemaFile = schemaFile,
           rootPackageName = "com.example.${folder.name}"
       )
 
@@ -189,6 +192,7 @@ class CodeGenTest(private val folder: File) {
       val ir = GraphQLDocumentParser(schema, packageNameProvider).parse(setOf(graphQLFile))
       val language = if (generateKotlinModels) "kotlin" else "java"
       return GraphQLCompiler.Arguments(
+          schema = schema,
           ir = ir,
           outputDir = File("build/generated/test/${folder.name}/$language"),
           operationIdGenerator = operationIdGenerator,
@@ -212,7 +216,7 @@ class CodeGenTest(private val folder: File) {
     fun data(): Collection<File> {
       return File("src/test/graphql/com/example/")
           .listFiles()!!
-          .filter { it.isDirectory }
+          .filter { it.isDirectory && it.name == "inline_fragment_complex" }
     }
 
     private fun shouldUpdateTestFixtures(): Boolean {
