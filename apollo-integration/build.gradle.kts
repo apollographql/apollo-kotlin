@@ -4,6 +4,7 @@ import com.apollographql.apollo.gradle.api.ApolloExtension
 apply(plugin = "com.android.library")
 apply(plugin = "com.apollographql.apollo")
 apply(plugin = "kotlin-android")
+apply(plugin = "kotlinx-serialization")
 
 extensions.findByType(BaseExtension::class.java)!!.apply {
   compileSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt())
@@ -40,6 +41,8 @@ dependencies {
   add("implementation", "com.apollographql.apollo:apollo-http-cache")
   add("implementation", "com.apollographql.apollo:apollo-compiler")
 
+  add("testImplementation", kotlin("test-junit"))
+  add("testImplementation", groovy.util.Eval.x(project, "x.dep.kotlin.serialization.runtimeJvm"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.junit"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.truth"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer"))
@@ -72,5 +75,17 @@ configure<ApolloExtension> {
   service("subscription") {
     sourceFolder.set("com/apollographql/apollo/integration/subscription")
     rootPackageName.set("com.apollographql.apollo.integration.subscription")
+  }
+  service("performance") {
+    sourceFolder.set("com/apollographql/apollo/integration/performance")
+    rootPackageName.set("com.apollographql.apollo.integration.performance")
+  }
+}
+
+tasks.withType(Test::class.java) {
+  if (System.getProperty("runPerformanceTests") == null) {
+    // Exclude performance test from CI as they take some time and their results wouldn't have a lot of meaning since the instances
+    // where tests run can change without warning.
+    this.exclude("com.apollographql.apollo.performance.**")
   }
 }
