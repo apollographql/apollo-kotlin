@@ -210,6 +210,10 @@ interface JsonReader : Closeable {
      */
     NUMBER,
     /**
+     * A JSON number represented in this API by a `long`.
+     */
+    LONG,
+    /**
      * A JSON `true` or `false`.
      */
     BOOLEAN,

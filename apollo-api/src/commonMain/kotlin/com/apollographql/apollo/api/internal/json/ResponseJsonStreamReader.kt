@@ -20,6 +20,16 @@ open class ResponseJsonStreamReader(
   }
 
   @Throws(IOException::class)
+  fun nextLong(optional: Boolean): Long? {
+    checkNextValue(optional)
+    return if (jsonReader.peek() === JsonReader.Token.NULL) {
+      jsonReader.nextNull()
+    } else {
+      jsonReader.nextLong()
+    }
+  }
+
+  @Throws(IOException::class)
   fun nextString(optional: Boolean): String? {
     checkNextValue(optional)
     return if (jsonReader.peek() === JsonReader.Token.NULL) {
@@ -74,6 +84,7 @@ open class ResponseJsonStreamReader(
     return when {
       isNextNull -> skipNext().let { null }
       isNextBoolean -> nextBoolean(false)
+      isNextLong -> BigDecimal(nextLong(false)!!)
       isNextNumber -> BigDecimal(nextString(false)!!)
       else -> nextString(false)
     }
@@ -136,6 +147,10 @@ open class ResponseJsonStreamReader(
   @get:Throws(IOException::class)
   private val isNextNumber: Boolean
     get() = jsonReader.peek() === JsonReader.Token.NUMBER
+
+  @get:Throws(IOException::class)
+  private val isNextLong: Boolean
+    get() = jsonReader.peek() === JsonReader.Token.LONG
 
   @Throws(IOException::class)
   private fun checkNextValue(optional: Boolean) {
