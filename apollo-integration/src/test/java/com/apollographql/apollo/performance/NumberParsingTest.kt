@@ -5,6 +5,7 @@ import com.apollographql.apollo.Utils.immediateExecutor
 import com.apollographql.apollo.Utils.immediateExecutorService
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers
+import com.apollographql.apollo.integration.performance.GetFloatsQuery
 import com.apollographql.apollo.integration.performance.GetIntsQuery
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.JsonArray
@@ -23,8 +24,17 @@ data class Data(
     val randomInts: List<Int>
 )
 
+/**
+ * These tests are disabled by default. Set the `runPerformanceTests` property to run them:
+ * ./gradlew :apollo-integration:testDebug --tests '*parseFloats*' -DrunPerformanceTests=true
+ */
+@OptIn(ExperimentalTime::class)
 class NumberParsingTest {
-  @OptIn(ExperimentalTime::class)
+  /**
+   * A test to benchmark the parsing of integers in Json. At the time of writing, it takes 19.5s on the JVM
+   *
+   * This could be divided by ~2 by using the parsing from BufferedSourceJsonReader directly. Right now, we parse Ints twice.
+   */
   @Test
   fun parseInts() {
 
@@ -49,10 +59,47 @@ class NumberParsingTest {
     val time = measureTime {
       val operation = GetIntsQuery()
       repeat(10000) {
-        val data = operation.parse(json)
-        //println(data)
+        operation.parse(json)
       }
     }
-    println("IntParsing: ${time}")
+    println("parseInts: ${time}")
+  }
+
+  /**
+   * A test to benchmark the parsing of floats in Json. At the time of writing, it takes ~21s on the JVM
+   *
+   * From the first tests, Switching to Double instead of BigDecimal isn't way faster but makes a bit less allocations
+   * Number of GC is down to 228 with Double (from 274 with BigDecimal) so it might be worth at some point.
+   */
+  @Test
+  fun parseFloats() {
+
+    val random = Random.Default
+
+    val data = JsonObject(
+        mapOf(
+            "data" to JsonObject(
+                mapOf(
+                    "randomFloats" to JsonArray(
+                        0.until(10000).map {
+                          JsonPrimitive(random.nextDouble())
+                        }
+                    )
+                )
+            )
+        )
+    )
+
+    val json = data.toString().encodeUtf8()
+
+    Runtime.getRuntime().gc()
+    val time = measureTime {
+      val operation = GetFloatsQuery()
+      repeat(4000) {
+        operation.parse(json)
+      }
+    }
+    Runtime.getRuntime().gc()
+    println("parseFloats: ${time}")
   }
 }

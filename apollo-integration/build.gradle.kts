@@ -86,6 +86,9 @@ tasks.withType(Test::class.java) {
   if (System.getProperty("runPerformanceTests") == null) {
     // Exclude performance test from CI as they take some time and their results wouldn't have a lot of meaning since the instances
     // where tests run can change without warning.
-    this.exclude("com.apollographql.apollo.performance.**")
+    exclude("**/performance/**")
+  } else {
+    // Enable some GC monitoring tools
+    jvmArgs = listOf("-verbose:gc", "-Xloggc:gc.log", "-XX:+PrintGC", "-XX:+PrintGCDetails", "-XX:+PrintGCTimeStamps")
   }
 }
