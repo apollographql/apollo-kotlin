@@ -35,6 +35,8 @@ public interface ApolloCall<T> extends Cancelable {
    * Sets the {@link CacheHeaders} to use for this call. {@link com.apollographql.apollo.interceptor.FetchOptions} will
    * be configured with this headers, and will be accessible from the {@link ResponseFetcher} used for this call.
    *
+   * Deprecated, use {@link #toBuilder()} to mutate the ApolloCall
+   *
    * @param cacheHeaders the {@link CacheHeaders} that will be passed with records generated from this request to {@link
    *                     com.apollographql.apollo.cache.normalized.NormalizedCache}. Standardized cache headers are
    *                     defined in {@link ApolloCacheHeaders}.
@@ -44,6 +46,8 @@ public interface ApolloCall<T> extends Cancelable {
 
   /**
    * Creates a new, identical call to this one which can be enqueued or executed even if this call has already been.
+   *
+   * Deprecated, use {@link #toBuilder()} to mutate the ApolloCall
    *
    * @return The cloned ApolloCall object.
    */
