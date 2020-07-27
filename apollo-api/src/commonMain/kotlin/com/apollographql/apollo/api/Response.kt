@@ -31,7 +31,7 @@ data class Response<T>(
     /**
      * Indicates if response is resolved from the cache.
      */
-    val fromCache: Boolean = false,
+    val isFromCache: Boolean = false,
 
     /**
      * Extensions of GraphQL protocol, arbitrary map of key [String] / value [Any] sent by server along with the response.
@@ -49,7 +49,7 @@ data class Response<T>(
       data = builder.data,
       errors = builder.errors,
       dependentKeys = builder.dependentKeys.orEmpty(),
-      fromCache = builder.fromCache,
+      isFromCache = builder.fromCache,
       extensions = builder.extensions.orEmpty(),
       executionContext = builder.executionContext
   )
@@ -72,10 +72,13 @@ data class Response<T>(
 
   fun hasErrors(): Boolean = !errors.isNullOrEmpty()
 
-  @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "fromCache"))
+  @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "isFromCache"))
   fun fromCache(): Boolean {
-    return fromCache
+    return isFromCache
   }
+
+  @Deprecated(message = "Use isFromCache Instead", replaceWith = ReplaceWith(expression = "isFromCache"))
+  val fromCache = isFromCache
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "extensions"))
   fun extensions(): Map<String, Any?> {
@@ -86,7 +89,7 @@ data class Response<T>(
       .data(data)
       .errors(errors)
       .dependentKeys(dependentKeys)
-      .fromCache(fromCache)
+      .fromCache(isFromCache)
       .extensions(extensions)
       .executionContext(executionContext)
 
@@ -98,7 +101,7 @@ data class Response<T>(
     if (data != other.data) return false
     if (errors != other.errors) return false
     if (dependentKeys != other.dependentKeys) return false
-    if (fromCache != other.fromCache) return false
+    if (isFromCache != other.isFromCache) return false
     if (extensions != other.extensions) return false
     if (executionContext != other.executionContext) return false
 
@@ -110,7 +113,7 @@ data class Response<T>(
     result = 31 * result + (data?.hashCode() ?: 0)
     result = 31 * result + (errors?.hashCode() ?: 0)
     result = 31 * result + dependentKeys.hashCode()
-    result = 31 * result + fromCache.hashCode()
+    result = 31 * result + isFromCache.hashCode()
     result = 31 * result + extensions.hashCode()
     return result
   }
