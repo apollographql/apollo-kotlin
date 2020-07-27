@@ -30,36 +30,6 @@ open class ResponseJsonStreamReader(
   }
 
   @Throws(IOException::class)
-  fun nextInt(optional: Boolean): Int? {
-    checkNextValue(optional)
-    return if (jsonReader.peek() === JsonReader.Token.NULL) {
-      jsonReader.nextNull()
-    } else {
-      jsonReader.nextInt()
-    }
-  }
-
-  @Throws(IOException::class)
-  fun nextLong(optional: Boolean): Long? {
-    checkNextValue(optional)
-    return if (jsonReader.peek() === JsonReader.Token.NULL) {
-      jsonReader.nextNull()
-    } else {
-      jsonReader.nextLong()
-    }
-  }
-
-  @Throws(IOException::class)
-  fun nextDouble(optional: Boolean): Double? {
-    checkNextValue(optional)
-    return if (jsonReader.peek() === JsonReader.Token.NULL) {
-      jsonReader.nextNull()
-    } else {
-      jsonReader.nextDouble()
-    }
-  }
-
-  @Throws(IOException::class)
   fun nextBoolean(optional: Boolean): Boolean? {
     checkNextValue(optional)
     return if (jsonReader.peek() === JsonReader.Token.NULL) {
