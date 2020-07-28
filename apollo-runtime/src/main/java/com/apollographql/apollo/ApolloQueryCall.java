@@ -42,6 +42,8 @@ public interface ApolloQueryCall<T> extends ApolloCall<T> {
   /**
    * Sets the {@link ResponseFetcher} strategy for an ApolloCall object.
    *
+   * Deprecated, use {@link #toBuilder()} to mutate the ApolloCall
+   *
    * @param fetcher the {@link ResponseFetcher} to use.
    * @return The ApolloCall object with the provided CacheControl strategy
    */
@@ -51,6 +53,8 @@ public interface ApolloQueryCall<T> extends ApolloCall<T> {
    * Sets the {@link RequestHeaders} to use for this call. These headers will be added to the HTTP request when
    * it is issued. These headers will be applied after any headers applied by application-level interceptors
    * and will override those if necessary.
+   *
+   * Deprecated, use {@link #toBuilder()} to mutate the ApolloCall
    *
    * @param requestHeaders The {@link RequestHeaders} to use for this request.
    * @return The ApolloCall object with the provided {@link RequestHeaders}.
