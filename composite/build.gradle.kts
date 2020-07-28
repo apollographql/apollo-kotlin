@@ -12,7 +12,6 @@ buildscript {
   dependencies {
     classpath(groovy.util.Eval.x(project, "x.dep.android.plugin"))
     classpath(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
-    classpath(groovy.util.Eval.x(project, "x.dep.kotlin.serialization.plugin"))
     classpath("com.apollographql.apollo:apollo-gradle-plugin")
   }
 }

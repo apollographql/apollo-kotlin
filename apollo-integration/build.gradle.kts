@@ -4,7 +4,6 @@ import com.apollographql.apollo.gradle.api.ApolloExtension
 apply(plugin = "com.android.library")
 apply(plugin = "com.apollographql.apollo")
 apply(plugin = "kotlin-android")
-apply(plugin = "kotlinx-serialization")
 
 extensions.findByType(BaseExtension::class.java)!!.apply {
   compileSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt())
@@ -42,7 +41,6 @@ dependencies {
   add("implementation", "com.apollographql.apollo:apollo-compiler")
 
   add("testImplementation", kotlin("test-junit"))
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.kotlin.serialization.runtimeJvm"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.junit"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.truth"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer"))

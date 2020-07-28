@@ -68,11 +68,7 @@ ext.dep = [
             coreCommon: "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$versions.kotlinCoroutines",
             coreNative: "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$versions.kotlinCoroutines",
             android   : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.kotlinCoroutines"
-        ],
-        serialization      : [
-            plugin    : "org.jetbrains.kotlin:kotlin-serialization:$versions.kotlin",
-            runtimeJvm: "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0",
-        ],
+        ]
     ],
     mockito               : "org.mockito:mockito-all:$versions.mockito",
     moshi                 : [
