@@ -1,0 +1,84 @@
+---
+title: Generated models names
+---
+
+When generating code, Apollo Android uses the name of your fields to generate matching typesafe models. This works great for the vast majority of cases. More particularly, it works better than using the schema type because an object can have multiple fields of the same type but different [selection sets](https://spec.graphql.org/draft/#sec-Selection-Sets). For an example:
+
+```graphql:title=GetContact.graphql
+query GetContact {
+  contact(name: "Byron") {
+    # The generated model will be named `HomeAddress`
+    homeAddress {
+      street
+    }
+    # The generated model will be named `WorkAddress`
+    workAddress {
+      country
+    }
+  }
+}
+```
+
+If `homeAddress` and `workAddress` were named after their schema type (`Address`), it would be impossible to represent the fact that both models have different selection sets. One only queries the `street` field. The other queries the `country` field so they cannot be represented by the same model. Using the field name as the basis for the generated models makes sure these cases do not happen.
+
+Apollo Android also generates a flat hierarchy to avoid deeply nested names. In pseudo code, Apollo Android will generate something like:
+
+```kotlin
+class GetContact {
+  class Data { ... }
+  class Contact { ... }
+  class HomeAddress { ... }
+  class WorkAddress { ... }
+}
+```
+
+While that work well for most cases, there are a few cases where you might want to fine tune your queries to have a nicer looking generated code.
+
+# Aliasing name clashes
+
+Since the class hierarchy is flat, having two fields with the same name in two different parts of the query tree could lead to name clashes. Having relay-style pagination with lots of `nodes` or `edges` fields, might typically trigger name clashes. To avoid them, Apollo Android will append a numeric suffix to your models:
+
+```graphql:title=GetContact.graphql
+query GetContacts {
+  contact(name: "Byron") {
+    # The generated model will be named `HomeAddress`
+    homeAddress {
+      street
+    }
+  }
+  emergencyContact {
+    # The generated model will be named `HomeAddress1` by default
+    homeAddress {
+      street
+    }
+  }
+}
+```
+
+While that works great and avoids the name clash, it feels a bit out of place and it's hard to remember what `HomeAddress1` is about. To workaround this issue, you can use [aliases](https://graphql.org/learn/queries/#aliases):
+
+```graphql:title=GetContact.graphql
+query GetContacts {
+  contact(name: "Byron") {
+    # The generated model will be named `HomeAddress`
+    homeAddress {
+      street
+    }
+  }
+  emergencyContact {
+    # With an alias, the generated model will be named `EmergencyAddress`
+    emergencyAddress: homeAddress {
+      street
+    }
+  }
+}
+```
+
+# Singularization
+
+When a field is of `List` type, Apollo singularizes the field name so that using it will look more natural. For an example, it will generate `List<Edge>` (and not `List<Edges>`).
+
+The [singularization code](https://github.com/martinbonnin/apollo-android/blob/master/apollo-compiler/src/main/kotlin/com/apollographql/apollo/compiler/Inflector.kt) works most of time but might miss some cases.
+
+If it's the case, you can also use an alias to tune the model name.
+
