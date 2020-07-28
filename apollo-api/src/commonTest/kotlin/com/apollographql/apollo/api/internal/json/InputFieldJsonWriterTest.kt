@@ -7,6 +7,7 @@ import com.apollographql.apollo.api.ScalarType
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.InputFieldWriter
+import com.apollographql.apollo.api.internal.qualifiedName2
 import okio.Buffer
 import kotlin.reflect.KClass
 import kotlin.test.Test
@@ -194,7 +195,7 @@ class InputFieldJsonWriterTest {
     }
 
     override fun className(): String {
-      return clazz.qualifiedName!!
+      return clazz.qualifiedName2!!
     }
   }
 

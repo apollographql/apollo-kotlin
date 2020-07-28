@@ -52,7 +52,7 @@ kotlin {
     val jsMain by getting {
       dependencies {
         implementation(kotlin("stdlib-js"))
-        implementation(groovy.util.Eval.x(project, "x.dep.bignum"))
+        implementation(groovy.util.Eval.x(project, "x.dep.kbignum"))
       }
     }
 
@@ -90,17 +90,17 @@ tasks.create("jsPatch") {
   doLast {
     val kotlinJs = File(rootProject.buildDir, "js/packages_imported/kotlin/1.3.72/kotlin.js")
 
-    val patch = "package\$kotlin.Number = Number;"
+    val patch = "package\$kotlin.Number = Number; _.isNumber = function (a) { return typeof a == 'number' || a instanceof Kotlin.Long || a.constructor.name == 'BigDecimal'; };"
     val applyAfter = "var package\$kotlin = _.kotlin || (_.kotlin = {});"
     val fileContent = kotlinJs.readText()
 
     if (patch !in fileContent) {
-      kotlinJs.writeText(fileContent.replace(applyAfter, "$applyAfter\n\t$patch\n"))
+      kotlinJs.writeText(fileContent.replace(applyAfter, "$applyAfter\n\t\t$patch\n"))
     }
   }
 }
 
-tasks.named("jsBrowserTest").configure {
+tasks.named("jsBrowserTest") {
   setDependsOn(listOf("jsPatch"))
 }
 

@@ -170,7 +170,7 @@ class SimpleResponseReaderTest {
       }
 
       override fun className(): String {
-        return Map::class.qualifiedName!!
+        return Map::class.qualifiedName2!!
       }
     }
     val successField = ResponseField.forCustomType("successFieldResponseName", "successFieldName", null,
@@ -205,7 +205,7 @@ class SimpleResponseReaderTest {
       }
 
       override fun className(): String {
-        return List::class.qualifiedName!!
+        return List::class.qualifiedName2!!
       }
     }
     val successField = ResponseField.forCustomType("successFieldResponseName", "successFieldName", null,
@@ -534,7 +534,7 @@ class SimpleResponseReaderTest {
         }
 
         override fun className(): String {
-          return clazz.qualifiedName!!
+          return clazz.qualifiedName2!!
         }
       }
     }
@@ -545,7 +545,7 @@ class SimpleResponseReaderTest {
       }
 
       override fun className(): String {
-        return String::class.qualifiedName!!
+        return String::class.qualifiedName2!!
       }
     }
   }
