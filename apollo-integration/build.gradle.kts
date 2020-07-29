@@ -1,4 +1,3 @@
-import com.android.build.gradle.BaseExtension
 import com.apollographql.apollo.gradle.api.ApolloExtension
 
 apply(plugin = "com.apollographql.apollo")
