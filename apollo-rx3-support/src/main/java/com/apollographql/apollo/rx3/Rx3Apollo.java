@@ -212,12 +212,16 @@ public class Rx3Apollo {
         operation.enqueue(new ApolloStoreOperation.Callback<T>() {
           @Override
           public void onSuccess(T result) {
-            emitter.onSuccess(result);
+            if (!emitter.isDisposed()) {
+              emitter.onSuccess(result);
+            }
           }
 
           @Override
           public void onFailure(Throwable t) {
-            emitter.onError(t);
+            if (!emitter.isDisposed()) {
+              emitter.onError(t);
+            }
           }
         });
       }

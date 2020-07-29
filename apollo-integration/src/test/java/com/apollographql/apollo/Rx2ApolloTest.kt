@@ -243,7 +243,8 @@ class Rx2ApolloTest {
 
     testObserver.dispose()
 
-    Thread.sleep(500)
+    // Since there is no cancellation mechanism for the ApolloStoreOperation, the only way to see if an error is thrown is to wait here
+    Thread.sleep(200)
     Truth.assertThat(undeliverableException == null).isTrue()
     RxJavaPlugins.setErrorHandler(savedHandler)
   }
