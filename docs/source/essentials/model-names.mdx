@@ -1,8 +1,8 @@
 ---
-title: Generated models names
+title: Using aliases
 ---
 
-When generating code, Apollo Android uses the name of your fields to generate matching typesafe models. This works great for the vast majority of cases. More particularly, it works better than using the schema type because an object can have multiple fields of the same type but different [selection sets](https://spec.graphql.org/draft/#sec-Selection-Sets). For an example:
+When generating code, Apollo Android uses the name of your fields to generate matching typesafe models using a flat hierarchy. The following query:
 
 ```graphql:title=GetContact.graphql
 query GetContact {
@@ -19,9 +19,7 @@ query GetContact {
 }
 ```
 
-If `homeAddress` and `workAddress` were named after their schema type (`Address`), it would be impossible to represent the fact that both models have different selection sets. One only queries the `street` field. The other queries the `country` field so they cannot be represented by the same model. Using the field name as the basis for the generated models makes sure these cases do not happen.
-
-Apollo Android also generates a flat hierarchy to avoid deeply nested names. In pseudo code, Apollo Android will generate something like:
+will generate models like this:
 
 ```kotlin
 class GetContact {
@@ -32,9 +30,14 @@ class GetContact {
 }
 ```
 
-While that work well for most cases, there are a few cases where you might want to fine tune your queries to have a nicer looking generated code.
+The driving principles behind the naming conventions are:
+* Use the field name for naming models: using the schema type name would make a lot of conflicts. In the example above, we would have two `Address` classes.
+* Keep a flat hierarchy of classes: we considered using nested classes but that can lead to very long names.
+* Singularize the field name when it is a list: if your query contains a `nodes` fields, it makes more sense to generate a `List<Node>` than a `List<Nodes>`.
 
-# Aliasing name clashes
+These principles work great for the vast majority of cases but can't account for name clashes or peculiar singularization rules. To workaround this, you can use GraphQL [aliases](https://graphql.org/learn/queries/#aliases).
+
+# Using aliases to avoid name clashes
 
 Since the class hierarchy is flat, having two fields with the same name in two different parts of the query tree could lead to name clashes. Having relay-style pagination with lots of `nodes` or `edges` fields, might typically trigger name clashes. To avoid them, Apollo Android will append a numeric suffix to your models:
 
@@ -55,7 +58,7 @@ query GetContacts {
 }
 ```
 
-While that works great and avoids the name clash, it feels a bit out of place and it's hard to remember what `HomeAddress1` is about. To workaround this issue, you can use [aliases](https://graphql.org/learn/queries/#aliases):
+Suffixing avoids the name clash but feels a bit out of place and it's hard to remember what `HomeAddress1` is about. To workaround this issue, you can alias the field:
 
 ```graphql:title=GetContact.graphql
 query GetContacts {
@@ -74,11 +77,9 @@ query GetContacts {
 }
 ```
 
-# Singularization
+# Using aliases to fix singularization rules
 
-When a field is of `List` type, Apollo singularizes the field name so that using it will look more natural. For an example, it will generate `List<Edge>` (and not `List<Edges>`).
+The [singularization code](https://github.com/martinbonnin/apollo-android/blob/master/apollo-compiler/src/main/kotlin/com/apollographql/apollo/compiler/Inflector.kt) works most of time but does not contain all exceptions in the english dictionnary.
 
-The [singularization code](https://github.com/martinbonnin/apollo-android/blob/master/apollo-compiler/src/main/kotlin/com/apollographql/apollo/compiler/Inflector.kt) works most of time but might miss some cases.
-
-If it's the case, you can also use an alias to tune the model name.
+If it's the case, please let me know so I can put a valid example here (we usually fix issues as we go but you might still encounter some). And also use an alias.
 
