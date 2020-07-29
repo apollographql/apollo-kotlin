@@ -31,11 +31,11 @@ class GetContact {
 ```
 
 The driving principles behind the naming conventions are:
-* Use the field name for naming models: using the schema type name would make a lot of conflicts. In the example above, we would have two `Address` classes.
-* Keep a flat hierarchy of classes: we considered using nested classes but that can lead to very long names.
-* Singularize the field name when it is a list: if your query contains a `nodes` fields, it makes more sense to generate a `List<Node>` than a `List<Nodes>`.
+* Use the field name for model names: we considered using the schema type name instead but that would make a lot of conflicts. In the example above, for an example, we would have two different `Address` classes.
+* Keep a flat hierarchy of classes: we considered using nested classes but that can lead to very long names and a flat hierarchy is easier to read.
+* Singularize the field name when it is a list: if your query contains a List fields, such as `nodes` for an example, it makes more sense to generate a `List<Node>` than a `List<Nodes>`.
 
-These principles work great for the vast majority of cases but can't account for name clashes or peculiar singularization rules. To workaround this, you can use GraphQL [aliases](https://graphql.org/learn/queries/#aliases).
+These principles work great for the vast majority of cases but can't account for name clashes or peculiar singularization rules. To workaround these, you can use GraphQL [aliases](https://graphql.org/learn/queries/#aliases).
 
 # Using aliases to avoid name clashes
 
@@ -79,7 +79,7 @@ query GetContacts {
 
 # Using aliases to fix singularization rules
 
-The [singularization code](https://github.com/martinbonnin/apollo-android/blob/master/apollo-compiler/src/main/kotlin/com/apollographql/apollo/compiler/Inflector.kt) works most of time but does not contain all exceptions in the english dictionnary.
+The [singularization code](https://github.com/martinbonnin/apollo-android/blob/master/apollo-compiler/src/main/kotlin/com/apollographql/apollo/compiler/Inflector.kt) works most of time but does not contain all the exceptions in the english dictionnary.
 
-If it's the case, please let me know so I can put a valid example here (we usually fix issues as we go but you might still encounter some). And also use an alias.
+If you encouter one, please let me know so I can put a valid example here (we usually fix those issues as we go but there certainly are a few left in the wild). Until we fix it in the singularization code, you can use an alias to control the name of the model in your code.
 
