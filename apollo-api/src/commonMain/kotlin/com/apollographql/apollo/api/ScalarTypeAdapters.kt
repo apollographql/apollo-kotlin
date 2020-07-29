@@ -53,6 +53,20 @@ class ScalarTypeAdapters(val customAdapters: Map<ScalarType, CustomTypeAdapter<*
             else -> throw IllegalArgumentException("Can't decode: $value into Integer")
           }
         } +
+        createDefaultScalarTypeAdapter("java.lang.Long", "kotlin.Long", "long") { value ->
+          when (value) {
+            is GraphQLNumber -> value.value.toLong()
+            is GraphQLString -> value.value.toLong()
+            else -> throw IllegalArgumentException("Can't decode: $value into Long")
+          }
+        } +
+        createDefaultScalarTypeAdapter("java.lang.Float", "kotlin.Float", "float") { value ->
+          when (value) {
+            is GraphQLNumber -> value.value.toFloat()
+            is GraphQLString -> value.value.toFloat()
+            else -> throw IllegalArgumentException("Can't decode: $value into Float")
+          }
+        } +
         createDefaultScalarTypeAdapter("java.lang.Double", "kotlin.Double", "double") { value ->
           when (value) {
             is GraphQLNumber -> value.value.toDouble()

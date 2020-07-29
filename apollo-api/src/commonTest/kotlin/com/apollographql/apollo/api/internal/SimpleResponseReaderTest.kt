@@ -229,6 +229,10 @@ class SimpleResponseReaderTest {
         scalarTypeFor(Boolean::class), noConditions)
     val integerField = ResponseField.forCustomType("integerField", "integerField", null, false,
         scalarTypeFor(Int::class), noConditions)
+    val longField = ResponseField.forCustomType("longField", "longField", null, false,
+        scalarTypeFor(Long::class), noConditions)
+    val floatField = ResponseField.forCustomType("floatField", "floatField", null, false,
+        scalarTypeFor(Float::class), noConditions)
     val doubleField = ResponseField.forCustomType("doubleField", "doubleField", null, false,
         scalarTypeFor(Double::class), noConditions)
     val unsupportedField = ResponseField.forCustomType("unsupportedField", "unsupportedField", null, false,
@@ -237,12 +241,16 @@ class SimpleResponseReaderTest {
     recordSet[stringField.responseName] = "string"
     recordSet[booleanField.responseName] = true
     recordSet[integerField.responseName] = BigDecimal(1)
+    recordSet[longField.responseName] = BigDecimal(2)
+    recordSet[floatField.responseName] = BigDecimal("3.99")
     recordSet[doubleField.responseName] = BigDecimal("4.99")
     recordSet[unsupportedField.responseName] = "smth"
     val responseReader = responseReader(recordSet)
     assertEquals(expected = "string", actual = responseReader.readCustomType(stringField)!!)
     assertEquals(expected = true, actual = responseReader.readCustomType(booleanField)!!)
     assertEquals(expected = 1, actual = responseReader.readCustomType(integerField)!!)
+    assertEquals(expected = 2L, actual = responseReader.readCustomType(longField)!!)
+    assertEquals(expected = 3.99f, actual = responseReader.readCustomType(floatField)!!)
     assertEquals(expected = 4.99, actual = responseReader.readCustomType(doubleField)!!)
     try {
       responseReader.readCustomType<Any>(unsupportedField)
