@@ -40,6 +40,7 @@ dependencies {
   add("implementation", "com.apollographql.apollo:apollo-http-cache")
   add("implementation", "com.apollographql.apollo:apollo-compiler")
 
+  add("testImplementation", kotlin("test-junit"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.junit"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.truth"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer"))
@@ -72,5 +73,20 @@ configure<ApolloExtension> {
   service("subscription") {
     sourceFolder.set("com/apollographql/apollo/integration/subscription")
     rootPackageName.set("com.apollographql.apollo.integration.subscription")
+  }
+  service("performance") {
+    sourceFolder.set("com/apollographql/apollo/integration/performance")
+    rootPackageName.set("com.apollographql.apollo.integration.performance")
+  }
+}
+
+tasks.withType(Test::class.java) {
+  if (System.getProperty("runPerformanceTests") == null) {
+    // Exclude performance test from CI as they take some time and their results wouldn't have a lot of meaning since the instances
+    // where tests run can change without warning.
+    exclude("**/performance/**")
+  } else {
+    // Enable some GC monitoring tools
+    jvmArgs = listOf("-verbose:gc", "-Xloggc:gc.log", "-XX:+PrintGC", "-XX:+PrintGCDetails", "-XX:+PrintGCTimeStamps")
   }
 }
