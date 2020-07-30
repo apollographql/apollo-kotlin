@@ -131,7 +131,7 @@ class SimpleResponseReader private constructor(
     for (condition in field.conditions) {
       if (condition is ResponseField.BooleanCondition) {
         val conditionValue = variableValues[condition.variableName] as Boolean
-        if (condition.inverted) {
+        if (condition.isInverted) {
           // means it's a skip directive
           if (conditionValue) {
             return true

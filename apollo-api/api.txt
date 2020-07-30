@@ -284,9 +284,11 @@ package com.apollographql.apollo.api {
     method public com.apollographql.apollo.api.Operation<?, ?, ?> getOperation();
     method public error.NonExistentClass hasErrors();
     method public error.NonExistentClass hashCode();
+    method public error.NonExistentClass isFromCache();
     method public com.apollographql.apollo.api.Operation<?, ?, ?> operation();
     method public com.apollographql.apollo.api.Response.Builder<T> toBuilder();
     method public java.lang.String toString();
+    property public final error.NonExistentClass fromCache;
     field public static final com.apollographql.apollo.api.Response.Companion Companion;
   }
 
@@ -330,7 +332,9 @@ package com.apollographql.apollo.api {
     method public error.NonExistentClass getVariableName();
     method public error.NonExistentClass hashCode();
     method public error.NonExistentClass inverted();
+    method public error.NonExistentClass isInverted();
     method public error.NonExistentClass variableName();
+    property public final error.NonExistentClass inverted;
   }
 
   public static final class ResponseField.Companion {
