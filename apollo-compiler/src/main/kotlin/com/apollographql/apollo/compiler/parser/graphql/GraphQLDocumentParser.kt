@@ -732,9 +732,9 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
     return when (type.kind) {
       IntrospectionSchema.Kind.SCALAR -> {
         when (ScalarType.forName(type.name ?: "")) {
-          ScalarType.INT -> toString().trim().toInt()
-          ScalarType.BOOLEAN -> toString().trim().toBoolean()
-          ScalarType.FLOAT -> toString().trim().toDouble()
+          ScalarType.INT -> toString().trim().takeIf { it != "null" }?.toInt()
+          ScalarType.BOOLEAN -> toString().trim().takeIf { it != "null" }?.toBoolean()
+          ScalarType.FLOAT -> toString().trim().takeIf { it != "null" }?.toDouble()
           else -> toString()
         }
       }
