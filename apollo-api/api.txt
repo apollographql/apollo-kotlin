@@ -27,7 +27,30 @@ package com.apollographql.apollo.api {
     ctor public BigDecimal(error.NonExistentClass);
     ctor public BigDecimal(error.NonExistentClass);
     method public com.apollographql.apollo.api.BigDecimal add(com.apollographql.apollo.api.BigDecimal);
-    method public error.NonExistentClass compareTo(com.apollographql.apollo.api.BigDecimal);
+    method public com.apollographql.apollo.api.BigDecimal divide(com.apollographql.apollo.api.BigDecimal);
+    method public error.NonExistentClass equals(error.NonExistentClass);
+    method public error.NonExistentClass hashCode();
+    method public com.apollographql.apollo.api.BigDecimal multiply(com.apollographql.apollo.api.BigDecimal);
+    method public com.apollographql.apollo.api.BigDecimal negate();
+    method public error.NonExistentClass signum();
+    method public com.apollographql.apollo.api.BigDecimal subtract(com.apollographql.apollo.api.BigDecimal);
+    method public error.NonExistentClass toByte();
+    method public error.NonExistentClass toChar();
+    method public error.NonExistentClass toDouble();
+    method public error.NonExistentClass toFloat();
+    method public error.NonExistentClass toInt();
+    method public error.NonExistentClass toLong();
+    method public error.NonExistentClass toShort();
+    method public error.NonExistentClass toString();
+  }
+
+  public final class BigDecimal {
+    ctor public BigDecimal();
+    ctor public BigDecimal(error.NonExistentClass);
+    ctor public BigDecimal(error.NonExistentClass);
+    ctor public BigDecimal(error.NonExistentClass);
+    ctor public BigDecimal(error.NonExistentClass);
+    method public com.apollographql.apollo.api.BigDecimal add(com.apollographql.apollo.api.BigDecimal);
     method public com.apollographql.apollo.api.BigDecimal divide(com.apollographql.apollo.api.BigDecimal);
     method public error.NonExistentClass equals(error.NonExistentClass);
     method public error.NonExistentClass hashCode();
@@ -47,6 +70,17 @@ package com.apollographql.apollo.api {
 
   public final class BigDecimalKt {
     ctor public BigDecimalKt();
+    method public static error.NonExistentClass toNumber(com.apollographql.apollo.api.BigDecimal);
+  }
+
+  public final class BigDecimalKt {
+    ctor public BigDecimalKt();
+    method public static error.NonExistentClass toNumber(com.apollographql.apollo.api.BigDecimal);
+  }
+
+  public final class BigDecimalKt {
+    ctor public BigDecimalKt();
+    method public static error.NonExistentClass toNumber(com.apollographql.apollo.api.BigDecimal);
   }
 
   public abstract interface CustomTypeAdapter<T> {
