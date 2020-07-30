@@ -37,7 +37,7 @@ The driving principles behind the naming conventions are:
 
 These principles work great for the vast majority of cases but can't account for name clashes or peculiar singularization rules. To workaround these, you can use GraphQL [aliases](https://graphql.org/learn/queries/#aliases).
 
-# Using aliases to avoid name clashes
+## Using aliases to avoid name clashes
 
 Since the class hierarchy is flat, having two fields with the same name in two different parts of the query tree could lead to name clashes. Having relay-style pagination with lots of `nodes` or `edges` fields, might typically trigger name clashes. To avoid them, Apollo Android will append a numeric suffix to your models:
 
@@ -77,7 +77,7 @@ query GetContacts {
 }
 ```
 
-# Using aliases to fix singularization rules
+## Using aliases to fix singularization rules
 
 The [singularization code](https://github.com/martinbonnin/apollo-android/blob/master/apollo-compiler/src/main/kotlin/com/apollographql/apollo/compiler/Inflector.kt) works most of time but does not contain all the exceptions in the english dictionnary.
 

@@ -38,7 +38,7 @@ module.exports = {
             'essentials/normalized-cache',
             'essentials/http-cache',
             'advanced/persisted-queries',
-            'essentials/model-names',
+            'essentials/using-aliases',
           ],
           'Languages & Extensions': [
             'advanced/coroutines',
