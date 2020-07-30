@@ -99,11 +99,13 @@ abstract class DefaultCompilationUnit @Inject constructor(
       }
     }
 
-    private fun multipleSchemaError(schemaList: List<File>): String {
+    private fun multipleSchemaError(project: Project, schemaList: List<File>): String {
       val services = schemaList.joinToString("\n") {
+        val name = it.parentFile.name
         """|
-          |  service("${it.parentFile.name}") {
-          |    sourceFolder = "${it.parentFile.normalize().absolutePath}"
+          |  service("$name") {
+          |    sourceFolder.set("com/$name)"
+          |    rootPackageName.set("com.$name)
           |  }
         """.trimMargin()
       }
@@ -152,7 +154,7 @@ abstract class DefaultCompilationUnit @Inject constructor(
         }
 
         require(candidates.size <= 1) {
-          multipleSchemaError(candidates)
+          multipleSchemaError(project, candidates)
         }
 
         require(candidates.size == 1) {
