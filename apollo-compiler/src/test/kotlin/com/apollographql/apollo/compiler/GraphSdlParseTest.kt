@@ -45,19 +45,4 @@ class GraphSdlParseTest() {
       assertThat(e.message).contains("Object `Cat` cannot implement non-interface `Animal`")
     }
   }
-
-  @JsonClass(generateAdapter = true)
-  data class NullableList(
-      val nullableField: String?
-  )
-
-  @Test
-  fun testMoshi() {
-    val adapter = Moshi.Builder().build().adapter(NullableList::class.java)
-
-    println(adapter.fromJson("{}"))
-    println(adapter.fromJson("""{"nullableField":null}"""))
-    println(adapter.fromJson("""{"nullableField":"value"}"""))
-  }
-
 }
