@@ -116,7 +116,24 @@ data class GraphSdlSchema(
     @JvmStatic
     @JvmName("parse")
     operator fun invoke(schemaFile: File): GraphSdlSchema {
-      return schemaFile.parse()
+      return schemaFile.parse().apply {
+        validate()
+      }
+    }
+
+    private fun GraphSdlSchema.validate() {
+      typeDefinitions.values
+          .filterIsInstance<TypeDefinition.Object>()
+          .forEach { o  ->
+        o.interfaces.forEach { i ->
+          if (typeDefinitions.get(i.typeName) !is TypeDefinition.Interface) {
+            throw ParseException(
+                message = "Object `${o.name}` cannot implement non-interface `${i.typeName}`",
+                sourceLocation = i.sourceLocation
+            )
+          }
+        }
+      }
     }
   }
 }

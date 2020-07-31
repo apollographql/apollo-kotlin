@@ -1,0 +1,11 @@
+type Animal {
+  species: String
+}
+
+type Cat implements Animal {
+  mustaches: Int
+}
+
+type Query {
+  randomAnimal: Animal
+}

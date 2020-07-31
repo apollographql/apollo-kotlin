@@ -50,14 +50,14 @@ enumValueDefinition
   ;
 
 objectTypeDefinition
-  : description? TYPE name implementsIntefaces? directives? fieldsDefinition
+  : description? TYPE name implementsInterfaces? directives? fieldsDefinition
   ;
 
-implementsIntefaces
-  : IMPLEMENTS implementsInteface*
+implementsInterfaces
+  : IMPLEMENTS implementsInterface*
   ;
 
-implementsInteface
+implementsInterface
   : '&'? namedType
   ;
 
@@ -139,8 +139,8 @@ typeExtension
   ;
 
 objectTypeExtensionDefinition
-  : EXTEND TYPE name implementsIntefaces? directives? fieldsDefinition
-  | EXTEND TYPE name implementsIntefaces? directives?
+  : EXTEND TYPE name implementsInterfaces? directives? fieldsDefinition
+  | EXTEND TYPE name implementsInterfaces? directives?
   ;
 
 interfaceTypeExtensionDefinition
