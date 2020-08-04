@@ -100,17 +100,20 @@ abstract class DefaultCompilationUnit @Inject constructor(
     }
 
     private fun multipleSchemaError(project: Project, schemaList: List<File>): String {
-      val services = schemaList.joinToString("\n") {
-        val name = it.parentFile.name
-        """|
-          |  service("$name") {
-          |    sourceFolder.set("com/$name)"
-          |    rootPackageName.set("com.$name)
+      val services = """|
+          |  service("service1") {
+          |    sourceFolder.set("com/service1)"
+          |    rootPackageName.set("com.service1)
+          |  }
+          |  
+          |  service("service2") {
+          |    sourceFolder.set("com/service2)"
+          |    rootPackageName.set("com.service2)
           |  }
         """.trimMargin()
-      }
       return "ApolloGraphQL: By default only one schema.[json | sdl] file is supported.\n" +
-          "Please use multiple services instead:\napollo {\n$services\n}"
+          "Please use multiple services instead:\napollo {\n$services\n}" +
+          "See https://www.apollographql.com/docs/android/essentials/plugin-configuration/#apolloextension-services-and-compilationunit for more details."
     }
 
     fun resolveDirectories(project: Project, sourceFolderProvider: Provider<String>, sourceSetNames: List<String>): List<String> {
