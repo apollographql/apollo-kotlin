@@ -99,7 +99,7 @@ abstract class DefaultCompilationUnit @Inject constructor(
       }
     }
 
-    private fun multipleSchemaError(project: Project, schemaList: List<File>): String {
+    private fun multipleSchemaError(): String {
       val services = """|
           |  service("service1") {
           |    sourceFolder.set("com/service1)"
@@ -157,7 +157,7 @@ abstract class DefaultCompilationUnit @Inject constructor(
         }
 
         require(candidates.size <= 1) {
-          multipleSchemaError(project, candidates)
+          multipleSchemaError()
         }
 
         require(candidates.size == 1) {
