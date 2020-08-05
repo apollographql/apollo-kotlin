@@ -10,7 +10,10 @@ import com.apollographql.apollo.gradle.util.replaceInText
 import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.hamcrest.CoreMatchers.containsString
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertThat
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.File
 import java.nio.file.Files
@@ -517,7 +520,7 @@ class ConfigurationTests {
     """.trimIndent()) { dir ->
       val result = TestUtils.executeTask("customTaskMainService", dir)
 
-      assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainServiceApolloOperationIds")!!.outcome)
+      assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainServiceApolloSources")!!.outcome)
     }
   }
 

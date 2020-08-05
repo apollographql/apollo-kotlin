@@ -1,7 +1,7 @@
 import com.apollographql.apollo.gradle.api.ApolloExtension
-import com.apollographql.apollo.gradle.api.ApolloGenerateOperationIdsTask
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
-import com.apollographql.apollo.compiler.operationoutput.OperationList
+import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
+import com.apollographql.apollo.compiler.OperationOutputGenerator
 
 buildscript {
   apply(from = "../../../gradle/dependencies.gradle")
@@ -31,17 +31,16 @@ repositories {
   mavenCentral()
 }
 
-abstract class GenerateCustomOperationIdsTask: ApolloGenerateOperationIdsTask() {
-  override fun generateOperationOutput(operationList: OperationList): OperationOutput {
-    return operationList.map {
-      it.name to it
-    }.toMap()
-  }
-}
-
 configure<ApolloExtension> {
-  onCompilationUnit {
-    val task = tasks.register("generate${name.capitalize()}OperationIds", GenerateCustomOperationIdsTask::class.java)
-    setGenerateOperationIdsTaskProvider(task)
+  val customOperationOutputGenerator = object: OperationOutputGenerator {
+    override fun generate(operationDescriptorList: List<OperationDescriptor>): OperationOutput {
+      return operationDescriptorList.map {
+        "${it.name}CustomId" to it
+      }.toMap()
+    }
+
+    override val version = "OperationOutputGenerator-v1"
   }
+
+  operationOutputGenerator.set(customOperationOutputGenerator)
 }

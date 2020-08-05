@@ -40,28 +40,4 @@ interface CompilationUnit: CompilerParams {
    * The directory where the generated models will be written
    */
   val outputDir: Provider<Directory>
-
-  /**
-   * Replaces the default task for generating IDs with a custom one.
-   *
-   * @param taskProvider: the task that will generate the IDs
-   * @param operationList: the [RegularFileProperty] where the task will read the [com.apollographql.apollo.compiler.operationoutput.OperationList].
-   * If that file does not exist, the task must not write in [operationOutput]
-   * @param operationOutput: the [RegularFileProperty] where the task will write the [com.apollographql.apollo.compiler.operationoutput.OperationOutput].
-   * If [operationList] does not exist, the task must not write in [operationOutput]
-   */
-  fun <T: Task> setGenerateOperationIdsTaskProvider(
-      taskProvider: TaskProvider<T>,
-      operationList: (T) -> RegularFileProperty,
-      operationOutput: (T) -> RegularFileProperty
-  )
-
-  /**
-   * Convenience method to replace the default task for generating IDs with a [ApolloGenerateOperationIdsTask].
-   *
-   * See [setGenerateOperationIdsTaskProvider]
-   */
-  fun <T: ApolloGenerateOperationIdsTask> setGenerateOperationIdsTaskProvider(
-      apolloTaskProvider: TaskProvider<T>
-  )
 }

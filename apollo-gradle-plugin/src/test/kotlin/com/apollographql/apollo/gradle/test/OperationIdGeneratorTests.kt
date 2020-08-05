@@ -11,7 +11,7 @@ import org.junit.Assert
 import org.junit.Test
 import java.io.File
 
-class CustomIdGeneratorTests {
+class OperationIdGeneratorTests {
   val apolloConfiguration = """
       class MyIdGenerator implements OperationIdGenerator {
           String apply(String queryString, String operationName, String operationPackageName) {
@@ -123,25 +123,30 @@ class CustomIdGeneratorTests {
   }
 
   @Test
-  fun `setGenerateOperationIdsTaskProvider is working as expected`() {
+  fun `operationOutputGenerator is working as expected`() {
     withTestProject("operationIds") { dir ->
 
       var result = TestUtils.executeTask("generateApolloSources", dir)
 
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainServiceApolloSources")!!.outcome)
-      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainServiceOperationIds")!!.outcome)
 
-      Assert.assertThat(dir.generatedChild("main/service/com/example/GreetingQuery.java").readText(), CoreMatchers.containsString("OPERATION_ID = \"Greeting\";"))
+      Assert.assertThat(
+          dir.generatedChild("main/service/com/example/GreetingQuery.java").readText(),
+          CoreMatchers.containsString("OPERATION_ID = \"GreetingCustomId\";")
+      )
 
       // Change the implementation of the operation ID generator and check again
-      File(dir,"build.gradle.kts").replaceInText("it.name", "\"someCustomId\"")
+      File(dir,"build.gradle.kts").replaceInText("CustomId", "anotherCustomId")
+      File(dir,"build.gradle.kts").replaceInText("OperationOutputGenerator-v1", "OperationOutputGenerator-v2")
 
       result = TestUtils.executeTask("generateApolloSources", dir)
 
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainServiceApolloSources")!!.outcome)
-      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainServiceOperationIds")!!.outcome)
 
-      Assert.assertThat(dir.generatedChild("main/service/com/example/GreetingQuery.java").readText(), CoreMatchers.containsString("someCustomId"))
+      Assert.assertThat(
+          dir.generatedChild("main/service/com/example/GreetingQuery.java").readText(),
+          CoreMatchers.containsString("anotherCustomId")
+      )
     }
   }
 }

@@ -1,6 +1,7 @@
 package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.compiler.OperationIdGenerator
+import com.apollographql.apollo.compiler.OperationOutputGenerator
 import com.apollographql.apollo.gradle.api.ApolloExtension
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.gradle.api.Plugin
@@ -81,8 +82,7 @@ open class ApolloPlugin : Plugin<Project> {
         }
 
         compilationUnits.forEach { compilationUnit ->
-          val irTaskProvider = registerIRGenTask(project, compilationUnit)
-          val codegenProvider = registerCodeGenTask(project, compilationUnit, irTaskProvider.map { it.irFile.get() })
+          val codegenProvider = registerCodeGenTask(project, compilationUnit)
 
           codegenProvider.configure {
             it.dependsOn(checkVersionsTask)
@@ -93,6 +93,7 @@ open class ApolloPlugin : Plugin<Project> {
           }
 
           compilationUnit.outputDir.set(codegenProvider.map { it.outputDir.get() })
+          compilationUnit.operationOutputFile.set(codegenProvider.flatMap { it.operationOutputFile })
 
           /**
            * Order matters here. See https://github.com/apollographql/apollo-android/issues/1970
@@ -101,21 +102,6 @@ open class ApolloPlugin : Plugin<Project> {
            * correctly set
            */
           apolloExtension.compilationUnits.add(compilationUnit)
-
-          if (compilationUnit.generateIdsTaskInfo == null) {
-            compilationUnit.setGenerateOperationIdsTaskProvider(registerIdGenTask(project, compilationUnit))
-          }
-          val generateIdsTaskInfo = compilationUnit.generateIdsTaskInfo!!
-
-          generateIdsTaskInfo.input(irTaskProvider, irTaskProvider.map { it.operationDescriptorListFile.get() })
-          generateIdsTaskInfo.output(operationOuputLocation(project, compilationUnit))
-
-          codegenProvider.configure {
-            it.operationOutputFile.set(generateIdsTaskInfo.output())
-            it.dependsOn(generateIdsTaskInfo.taskProvider)
-          }
-
-          compilationUnit.operationOutputFile.set(generateIdsTaskInfo.output())
 
           when {
             project.isKotlinMultiplatform -> {
@@ -132,52 +118,14 @@ open class ApolloPlugin : Plugin<Project> {
       }
     }
 
-    private fun registerIRGenTask(project: Project, compilationUnit: DefaultCompilationUnit): TaskProvider<ApolloGenerateIRTask> {
-      val taskName = "generate${compilationUnit.name.capitalize()}ApolloIR"
-
-      return project.tasks.register(taskName, ApolloGenerateIRTask::class.java) {
-        it.group = TASK_GROUP
-        it.description = "Generate IR for ${compilationUnit.name.capitalize()} GraphQL queries"
-
-        val (compilerParams, graphqlSourceDirectorySet) = compilationUnit.resolveParams(project)
-
-        it.graphqlFiles.setFrom(graphqlSourceDirectorySet)
-        // I'm not sure if gradle is sensitive to the order of the rootFolders. Sort them just in case.
-        it.rootFolders.set(project.provider { graphqlSourceDirectorySet.srcDirs.map { it.relativeTo(project.projectDir).path }.sorted() })
-        it.schemaFile.set(compilerParams.schemaFile)
-
-        it.rootPackageName.set(compilerParams.rootPackageName)
-        it.irFile.set(
-            irLocation(project, compilationUnit)
-        )
-        it.operationDescriptorListFile.set(
-            operationListLocation(project, compilationUnit)
-        )
-      }
-    }
-
-    private fun registerIdGenTask(project: Project,
-                                  compilationUnit: DefaultCompilationUnit)
-        : TaskProvider<ApolloGenerateDefaultOperationIdsTask> {
-      val taskName = "generate${compilationUnit.name.capitalize()}ApolloOperationIds"
-
-      return project.tasks.register(taskName, ApolloGenerateDefaultOperationIdsTask::class.java) {
-        it.group = TASK_GROUP
-        it.description = "Generate Apollo operation IDs for ${compilationUnit.name.capitalize()} GraphQL queries"
-
-        val (compilerParams, _) = compilationUnit.resolveParams(project)
-        it.operationIdGenerator = compilerParams.operationIdGenerator.orElse(OperationIdGenerator.Sha256()).get()
-      }
-    }
-
-    private fun registerCodeGenTask(project: Project, compilationUnit: DefaultCompilationUnit, irFileProvider: Provider<RegularFile>): TaskProvider<ApolloGenerateSourcesTask> {
+    private fun registerCodeGenTask(project: Project, compilationUnit: DefaultCompilationUnit): TaskProvider<ApolloGenerateSourcesTask> {
       val taskName = "generate${compilationUnit.name.capitalize()}ApolloSources"
 
       return project.tasks.register(taskName, ApolloGenerateSourcesTask::class.java) {
         it.group = TASK_GROUP
         it.description = "Generate Apollo models for ${compilationUnit.name.capitalize()} GraphQL queries"
 
-        val (compilerParams, _) = compilationUnit.resolveParams(project)
+        val (compilerParams, graphqlSourceDirectorySet) = compilationUnit.resolveParams(project)
 
         it.nullableValueType.set(compilerParams.nullableValueType)
         it.useSemanticNaming.set(compilerParams.useSemanticNaming)
@@ -191,10 +139,23 @@ open class ApolloPlugin : Plugin<Project> {
           set(sourcesLocation(project, compilationUnit))
           disallowChanges()
         }
-        it.irFile.set(irFileProvider)
-
+        if (compilerParams.generateOperationOutput.getOrElse(false)) {
+          it.operationOutputFile.apply {
+            set(operationOuputLocation(project, compilationUnit))
+            disallowChanges()
+          }
+        }
+        it.graphqlFiles.setFrom(graphqlSourceDirectorySet)
+        // I'm not sure if gradle is sensitive to the order of the rootFolders. Sort them just in case.
+        it.rootFolders.set(project.provider { graphqlSourceDirectorySet.srcDirs.map { it.relativeTo(project.projectDir).path }.sorted() })
+        it.schemaFile.set(compilerParams.schemaFile)
+        it.operationOutputGenerator = compilerParams.operationOutputGenerator.getOrElse(
+            OperationOutputGenerator.DefaultOperationOuputGenerator(
+                compilerParams.operationIdGenerator.orElse(OperationIdGenerator.Sha256()).get()
+            )
+        )
+        it.rootPackageName.set(compilerParams.rootPackageName)
         it.generateAsInternal.set(compilerParams.generateAsInternal)
-
         it.kotlinMultiPlatformProject.set(project.isKotlinMultiplatform)
         it.sealedClassesForEnumsMatching.set(compilerParams.sealedClassesForEnumsMatching)
       }

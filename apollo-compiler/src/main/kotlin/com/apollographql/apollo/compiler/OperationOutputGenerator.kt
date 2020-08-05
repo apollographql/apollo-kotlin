@@ -1,0 +1,21 @@
+package com.apollographql.apollo.compiler
+
+import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
+import com.apollographql.apollo.compiler.operationoutput.OperationOutput
+
+
+interface OperationOutputGenerator {
+  fun generate(operationDescriptorList: List<OperationDescriptor>): OperationOutput
+
+  val version: String
+
+  class DefaultOperationOuputGenerator(val operationIdGenerator: OperationIdGenerator) : OperationOutputGenerator {
+    override fun generate(operationDescriptorList: List<OperationDescriptor>): OperationOutput {
+      return operationDescriptorList.map {
+        operationIdGenerator.apply(it.source, it.name, it.packageName) to it
+      }.toMap()
+    }
+
+    override val version = operationIdGenerator.version
+  }
+}
