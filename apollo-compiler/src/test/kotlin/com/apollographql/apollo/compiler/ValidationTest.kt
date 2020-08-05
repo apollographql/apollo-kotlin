@@ -19,14 +19,14 @@ class ValidationTest(name: String, private val graphQLFile: File) {
   fun testValidation() {
     val schemaFile = File("src/test/validation/schema.json")
     val schema = IntrospectionSchema(schemaFile)
-    val packageNameProvider = DefaultPackageNameProvider(
+    val packageNameProvider = DefaultPackageNameProvider.of(
         rootFolders = listOf(graphQLFile.parentFile),
-        schemaFile = schemaFile,
+        schemaPackageName = "",
         rootPackageName = ""
     )
 
     try {
-      GraphQLDocumentParser(schema, packageNameProvider).parse(setOf(graphQLFile))
+      GraphQLDocumentParser(schema, packageNameProvider, exportAllTypes = false).parse(setOf(graphQLFile))
       fail("parse expected to fail but was successful")
     } catch (e: Exception) {
       if (e is DocumentParseException || e is ParseException) {

@@ -12,8 +12,10 @@ import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeName
 import com.squareup.javapoet.TypeSpec
+import com.squareup.moshi.JsonClass
 import javax.lang.model.element.Modifier
 
+@JsonClass(generateAdapter = true)
 data class Field(
     val responseName: String,
     val fieldName: String,

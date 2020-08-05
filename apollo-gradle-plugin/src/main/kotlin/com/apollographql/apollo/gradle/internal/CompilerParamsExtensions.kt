@@ -27,6 +27,7 @@ fun CompilerParams.withFallback(objects: ObjectFactory, other: CompilerParams): 
   merge.operationIdGenerator.set(this.operationIdGenerator.orElse(other.operationIdGenerator))
   merge.operationOutputGenerator.set(this.operationOutputGenerator.orElse(other.operationOutputGenerator))
   merge.sealedClassesForEnumsMatching.set(this.sealedClassesForEnumsMatching.orElse(other.sealedClassesForEnumsMatching))
+  merge.generateApolloMetadata.set(this.generateApolloMetadata.orElse(other.generateApolloMetadata))
 
   return merge
 }

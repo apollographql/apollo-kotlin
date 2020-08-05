@@ -4,55 +4,44 @@ import com.apollographql.apollo.compiler.OperationIdGenerator
 import com.apollographql.apollo.compiler.OperationOutputGenerator
 import com.apollographql.apollo.gradle.api.ApolloExtension
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import org.gradle.api.Named
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ConfigurationContainer
-import org.gradle.api.file.Directory
-import org.gradle.api.file.RegularFile
-import org.gradle.api.provider.Provider
+import org.gradle.api.attributes.Attribute
+import org.gradle.api.attributes.Usage
 import org.gradle.api.tasks.TaskProvider
+import org.gradle.api.tasks.bundling.Zip
 import org.gradle.util.GradleVersion
 import java.net.URLDecoder
 
 open class ApolloPlugin : Plugin<Project> {
-  companion object {
+  internal interface Variant: Named {
+    companion object {
+      val APOLLO_VARIANT_ATTRIBUTE = Attribute.of("com.apollographql.variant", Variant::class.java)
+    }
+  }
+  internal interface Service: Named {
+    companion object {
+      val APOLLO_SERVICE_ATTRIBUTE = Attribute.of("com.apollographql.service", Service::class.java)
+    }
+  }
+
+  internal companion object {
     const val TASK_GROUP = "apollo"
     const val MIN_GRADLE_VERSION = "6.0"
 
+    const val CONFIGURATION_CONSUMER = "apollo"
+    const val USAGE_APOLLO_METADATA = "apollo-metadata"
+
     val Project.isKotlinMultiplatform get() = pluginManager.hasPlugin("org.jetbrains.kotlin.multiplatform")
-
-    private fun operationOuputLocation(project: Project, compilationUnit: DefaultCompilationUnit): Provider<RegularFile> {
-      return project.layout.buildDirectory.file(
-          "generated/operationOutput/apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}/operationOutput.json"
-      )
-    }
-
-    private fun sourcesLocation(project: Project, compilationUnit: DefaultCompilationUnit): Provider<Directory> {
-      return project.layout.buildDirectory.dir(
-          "generated/source/apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}"
-      )
-    }
-
-    private fun irLocation(project: Project, compilationUnit: DefaultCompilationUnit): Provider<RegularFile> {
-      return project.layout.buildDirectory.file(
-          "generated/ir/apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}/ir.json"
-      )
-    }
-
-    private fun operationListLocation(project: Project, compilationUnit: DefaultCompilationUnit): Provider<RegularFile> {
-      return project.layout.buildDirectory.file(
-          "generated/ir/apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}/operationList.json"
-      )
-    }
-
-    private fun versionCheckLocation(project: Project): Provider<RegularFile> {
-      return project.layout.buildDirectory.file("generated/versionCheck/apollo/versionCheck")
-    }
-
 
     private fun registerCompilationUnits(project: Project, apolloExtension: DefaultApolloExtension, checkVersionsTask: TaskProvider<Task>) {
       val androidExtension = project.extensions.findByName("android")
+
+      val apolloConfiguration = project.configurations.getByName(ModelNames.consumerConfiguration())
 
       val apolloVariants = when {
         project.isKotlinMultiplatform -> KotlinMultiplatformTaskConfigurator.getVariants(project)
@@ -60,7 +49,7 @@ open class ApolloPlugin : Plugin<Project> {
         else -> JvmTaskConfigurator.getVariants(project)
       }
 
-      val rootProvider = project.tasks.register("generateApolloSources") {
+      val rootProvider = project.tasks.register(ModelNames.generateApolloSources()) {
         it.group = TASK_GROUP
         it.description = "Generate Apollo models for all services and variants"
       }
@@ -72,7 +61,7 @@ open class ApolloPlugin : Plugin<Project> {
       }
 
       apolloVariants.all { apolloVariant ->
-        val variantProvider = project.tasks.register("generate${apolloVariant.name.capitalize()}ApolloSources") {
+        val variantProvider = project.tasks.register(ModelNames.generateApolloSources(apolloVariant)) {
           it.group = TASK_GROUP
           it.description = "Generate Apollo models for all services and variant '${apolloVariant.name}'"
         }
@@ -82,10 +71,53 @@ open class ApolloPlugin : Plugin<Project> {
         }
 
         compilationUnits.forEach { compilationUnit ->
-          val codegenProvider = registerCodeGenTask(project, compilationUnit)
+          val producerConfigurationName = ModelNames.producerConfiguration(compilationUnit)
+          project.configurations.create(producerConfigurationName) {
+            it.isCanBeConsumed = true
+            it.isCanBeResolved = false
+
+            it.attributes {
+              it.attribute(Usage.USAGE_ATTRIBUTE, project.objects.named(Usage::class.java, USAGE_APOLLO_METADATA))
+              it.attribute(Variant.APOLLO_VARIANT_ATTRIBUTE, project.objects.named(Variant::class.java, compilationUnit.variantName))
+              it.attribute(Service.APOLLO_SERVICE_ATTRIBUTE, project.objects.named(Service::class.java, compilationUnit.serviceName))
+            }
+          }
+
+          val consumerConfiguration = project.configurations.create(ModelNames.consumerConfiguration(compilationUnit)) {
+            it.isCanBeResolved = true
+            it.isCanBeConsumed = false
+
+            it.extendsFrom(apolloConfiguration)
+
+            it.attributes {
+              it.attribute(Usage.USAGE_ATTRIBUTE, project.objects.named(Usage::class.java, USAGE_APOLLO_METADATA))
+              it.attribute(Variant.APOLLO_VARIANT_ATTRIBUTE, project.objects.named(Variant::class.java, compilationUnit.variantName))
+              it.attribute(Service.APOLLO_SERVICE_ATTRIBUTE, project.objects.named(Service::class.java, compilationUnit.serviceName))
+            }
+          }
+
+          val codegenProvider = registerCodeGenTask(project, compilationUnit, consumerConfiguration)
+
+          val zipMetadataTaskProvider = project.tasks.register(ModelNames.zipMetadata(compilationUnit), Zip::class.java) {
+            it.group = TASK_GROUP
+            it.description = "Generate apolloMetadata.zip for multi-module builds"
+
+            val file = BuildDirLayout.metadataZip(project, compilationUnit).get().asFile
+            it.destinationDirectory.set(file.parentFile)
+            it.archiveFileName.set(file.name)
+            it.from(codegenProvider.map { it.metadataOutputDir }) {
+              it.into("metadata")
+            }
+            it.dependsOn(rootProvider)
+          }
+
+          project.artifacts {
+            it.add(producerConfigurationName, zipMetadataTaskProvider)
+          }
 
           codegenProvider.configure {
             it.dependsOn(checkVersionsTask)
+            it.dependsOn(consumerConfiguration)
           }
 
           variantProvider.configure {
@@ -118,47 +150,50 @@ open class ApolloPlugin : Plugin<Project> {
       }
     }
 
-    private fun registerCodeGenTask(project: Project, compilationUnit: DefaultCompilationUnit): TaskProvider<ApolloGenerateSourcesTask> {
-      val taskName = "generate${compilationUnit.name.capitalize()}ApolloSources"
-
-      return project.tasks.register(taskName, ApolloGenerateSourcesTask::class.java) {
-        it.group = TASK_GROUP
-        it.description = "Generate Apollo models for ${compilationUnit.name.capitalize()} GraphQL queries"
+    private fun registerCodeGenTask(project: Project, compilationUnit: DefaultCompilationUnit, consumerConfiguration: Configuration): TaskProvider<ApolloGenerateSourcesTask> {
+      return project.tasks.register(ModelNames.generateApolloSources(compilationUnit), ApolloGenerateSourcesTask::class.java) { task ->
+        task.group = TASK_GROUP
+        task.description = "Generate Apollo models for ${compilationUnit.name} GraphQL queries"
 
         val (compilerParams, graphqlSourceDirectorySet) = compilationUnit.resolveParams(project)
 
-        it.graphqlFiles.setFrom(graphqlSourceDirectorySet)
+        task.graphqlFiles.setFrom(graphqlSourceDirectorySet)
         // I'm not sure if gradle is sensitive to the order of the rootFolders. Sort them just in case.
-        it.rootFolders.set(project.provider { graphqlSourceDirectorySet.srcDirs.map { it.relativeTo(project.projectDir).path }.sorted() })
-        it.schemaFile.set(compilerParams.schemaFile)
-        it.operationOutputGenerator = compilerParams.operationOutputGenerator.getOrElse(
+        task.rootFolders.set(project.provider { graphqlSourceDirectorySet.srcDirs.map { it.relativeTo(project.projectDir).path }.sorted() })
+        task.schemaFile.set(compilerParams.schemaFile)
+        task.operationOutputGenerator = compilerParams.operationOutputGenerator.getOrElse(
             OperationOutputGenerator.DefaultOperationOuputGenerator(
                 compilerParams.operationIdGenerator.orElse(OperationIdGenerator.Sha256()).get()
             )
         )
 
-        it.nullableValueType.set(compilerParams.nullableValueType)
-        it.useSemanticNaming.set(compilerParams.useSemanticNaming)
-        it.generateModelBuilder.set(compilerParams.generateModelBuilder)
-        it.useJavaBeansSemanticNaming.set(compilerParams.useJavaBeansSemanticNaming)
-        it.suppressRawTypesWarning.set(compilerParams.suppressRawTypesWarning)
-        it.generateKotlinModels.set(compilationUnit.generateKotlinModels())
-        it.generateVisitorForPolymorphicDatatypes.set(compilerParams.generateVisitorForPolymorphicDatatypes)
-        it.customTypeMapping.set(compilerParams.customTypeMapping)
-        it.outputDir.apply {
-          set(sourcesLocation(project, compilationUnit))
+        task.nullableValueType.set(compilerParams.nullableValueType)
+        task.useSemanticNaming.set(compilerParams.useSemanticNaming)
+        task.generateModelBuilder.set(compilerParams.generateModelBuilder)
+        task.useJavaBeansSemanticNaming.set(compilerParams.useJavaBeansSemanticNaming)
+        task.suppressRawTypesWarning.set(compilerParams.suppressRawTypesWarning)
+        task.generateKotlinModels.set(compilationUnit.generateKotlinModels())
+        task.generateVisitorForPolymorphicDatatypes.set(compilerParams.generateVisitorForPolymorphicDatatypes)
+        task.customTypeMapping.set(compilerParams.customTypeMapping)
+        task.outputDir.apply {
+          set(BuildDirLayout.sources(project, compilationUnit))
           disallowChanges()
         }
         if (compilerParams.generateOperationOutput.getOrElse(false)) {
-          it.operationOutputFile.apply {
-            set(operationOuputLocation(project, compilationUnit))
+          task.operationOutputFile.apply {
+            set(BuildDirLayout.operationOuput(project, compilationUnit))
             disallowChanges()
           }
         }
-        it.rootPackageName.set(compilerParams.rootPackageName)
-        it.generateAsInternal.set(compilerParams.generateAsInternal)
-        it.kotlinMultiPlatformProject.set(project.isKotlinMultiplatform)
-        it.sealedClassesForEnumsMatching.set(compilerParams.sealedClassesForEnumsMatching)
+        task.metadataOutputDir.set(BuildDirLayout.metadata(project, compilationUnit))
+
+        task.metadataConfiguration = consumerConfiguration
+
+        task.rootPackageName.set(compilerParams.rootPackageName)
+        task.generateAsInternal.set(compilerParams.generateAsInternal)
+        task.kotlinMultiPlatformProject.set(project.isKotlinMultiplatform)
+        task.sealedClassesForEnumsMatching.set(compilerParams.sealedClassesForEnumsMatching)
+        task.generateApolloMetadata.set(compilerParams.generateApolloMetadata)
       }
     }
 
@@ -166,7 +201,7 @@ open class ApolloPlugin : Plugin<Project> {
       apolloExtension.services.forEach { service ->
         val introspection = service.introspection
         if (introspection != null) {
-          project.tasks.register("download${service.name.capitalize()}ApolloSchema", ApolloDownloadSchemaTask::class.java) { task ->
+          project.tasks.register(ModelNames.downloadApolloSchema(service), ApolloDownloadSchemaTask::class.java) { task ->
 
             val sourceSetName = introspection.sourceSetName.orElse("main")
             task.group = TASK_GROUP
@@ -194,7 +229,7 @@ open class ApolloPlugin : Plugin<Project> {
         }
       }
 
-      project.tasks.register("downloadApolloSchema", ApolloDownloadSchemaCliTask::class.java) { task ->
+      project.tasks.register(ModelNames.downloadApolloSchema(), ApolloDownloadSchemaCliTask::class.java) { task ->
         task.group = TASK_GROUP
         task.compilationUnits = apolloExtension.compilationUnits
       }
@@ -232,8 +267,8 @@ open class ApolloPlugin : Plugin<Project> {
     }
 
     fun registerCheckVersionsTask(project: Project): TaskProvider<Task> {
-      return project.tasks.register("checkApolloVersions") {
-        val outputFile = versionCheckLocation(project)
+      return project.tasks.register(ModelNames.checkApolloVersions()) {
+        val outputFile = BuildDirLayout.versionCheck(project)
 
         val allDeps = (
             getDeps(project.rootProject.buildscript.configurations) +
@@ -266,6 +301,15 @@ open class ApolloPlugin : Plugin<Project> {
     }
 
     val apolloExtension = project.extensions.create(ApolloExtension::class.java, "apollo", DefaultApolloExtension::class.java, project) as DefaultApolloExtension
+
+    project.configurations.create(ModelNames.consumerConfiguration()) {
+      it.isCanBeConsumed = false
+      it.isCanBeResolved = true
+
+      it.attributes {
+        it.attribute(Usage.USAGE_ATTRIBUTE, project.objects.named(Usage::class.java, USAGE_APOLLO_METADATA))
+      }
+    }
 
     // the extension block has not been evaluated yet, register a callback once the project has been evaluated
     project.afterEvaluate {

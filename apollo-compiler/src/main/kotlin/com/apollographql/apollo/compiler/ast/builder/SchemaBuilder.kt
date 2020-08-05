@@ -1,6 +1,5 @@
 package com.apollographql.apollo.compiler.ast.builder
 
-import com.apollographql.apollo.compiler.OperationIdGenerator
 import com.apollographql.apollo.compiler.ast.CustomTypes
 import com.apollographql.apollo.compiler.ast.EnumType
 import com.apollographql.apollo.compiler.ast.FieldType
@@ -28,7 +27,7 @@ internal fun CodeGenerationIR.ast(
     )
   }
   val irFragments = fragments.associateBy { it.fragmentName }
-  val fragments = fragments.map {
+  val fragments = fragments.filter { it.filePath != null }.map {
     it.ast(
         Context(
             customTypeMap = customTypeMap,

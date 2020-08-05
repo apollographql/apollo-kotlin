@@ -4,10 +4,12 @@ import com.squareup.moshi.JsonClass
 import com.squareup.moshi.JsonReader
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
+import okio.BufferedSink
 import okio.ByteString.Companion.decodeHex
 import okio.buffer
 import okio.source
 import java.io.File
+import java.io.InputStream
 
 @JsonClass(generateAdapter = true)
 data class IntrospectionSchema(
@@ -119,10 +121,8 @@ data class IntrospectionSchema(
   companion object {
     private val UTF8_BOM = "EFBBBF".decodeHex()
 
-    @JvmStatic
-    @JvmName("parse")
-    operator fun invoke(schemaFile: File): IntrospectionSchema {
-      val moshi = Moshi.Builder()
+    private fun moshi(): Moshi {
+      return Moshi.Builder()
           .add(
               PolymorphicJsonAdapterFactory.of(Type::class.java, "kind")
                   .withSubtype(Type.Scalar::class.java, Kind.SCALAR.name)
@@ -133,11 +133,14 @@ data class IntrospectionSchema(
                   .withSubtype(Type.InputObject::class.java, Kind.INPUT_OBJECT.name)
           )
           .build()
+    }
+
+    operator fun invoke(inputStream: InputStream, origin: String = ""): IntrospectionSchema {
 
       val source = try {
-        schemaFile.inputStream().source().buffer()
+        inputStream.source().buffer()
       } catch (e: Exception) {
-        throw RuntimeException("Failed to parse GraphQL schema introspection query from `$schemaFile`", e)
+        throw RuntimeException("Failed to parse GraphQL schema introspection query $origin", e)
       }
 
       if (source.rangeEquals(0, UTF8_BOM)) {
@@ -146,13 +149,17 @@ data class IntrospectionSchema(
 
       val jsonReader = JsonReader.of(source)
       return try {
-        jsonReader.locateSchemaRootNode().parseSchema(moshi)
+        jsonReader.locateSchemaRootNode().parseSchema(moshi())
       } catch (e: Exception) {
-        throw RuntimeException("Failed to parse GraphQL schema introspection query from `$schemaFile`", e)
+        throw RuntimeException("Failed to parse GraphQL schema introspection query $origin", e)
       } finally {
         jsonReader.close()
       }
     }
+
+    @JvmStatic
+    @JvmName("parse")
+    operator fun invoke(schemaFile: File) = IntrospectionSchema(schemaFile.inputStream(), "from `$schemaFile`")
 
     private fun JsonReader.locateSchemaRootNode(): JsonReader {
       beginObject()
@@ -182,6 +189,19 @@ data class IntrospectionSchema(
           types = introspectionSchema.types.associateBy { it.name }
       )
     }
+
+    fun IntrospectionSchema.toJson(bufferedSink: BufferedSink) {
+      val wrapper = IntrospectionQuery.Wrapper(
+          __schema = IntrospectionQuery.Schema(
+              queryType = IntrospectionQuery.QueryType(this.queryType),
+              mutationType = IntrospectionQuery.MutationType(this.mutationType),
+              subscriptionType = IntrospectionQuery.SubscriptionType(this.subscriptionType),
+              types = types.values.toList()
+          )
+      )
+
+      moshi().adapter(IntrospectionQuery.Wrapper::class.java).toJson(bufferedSink, wrapper)
+    }
   }
 }
 
@@ -200,6 +220,11 @@ object IntrospectionQuery {
       val queryType: QueryType?,
       val mutationType: MutationType?,
       val subscriptionType: SubscriptionType?,
-      val types: List<com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Type>
+      val types: List<IntrospectionSchema.Type>
+  )
+
+  @JsonClass(generateAdapter = true)
+  data class Wrapper(
+      val __schema: Schema
   )
 }

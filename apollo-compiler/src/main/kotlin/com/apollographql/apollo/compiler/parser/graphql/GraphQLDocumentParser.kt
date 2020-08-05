@@ -1,24 +1,48 @@
 package com.apollographql.apollo.compiler.parser.graphql
 
 import com.apollographql.apollo.compiler.PackageNameProvider
-import com.apollographql.apollo.compiler.ir.*
-import com.apollographql.apollo.compiler.parser.graphql.GraphQLDocumentSourceBuilder.graphQLDocumentSource
+import com.apollographql.apollo.compiler.ir.Argument
+import com.apollographql.apollo.compiler.ir.CodeGenerationIR
+import com.apollographql.apollo.compiler.ir.Condition
+import com.apollographql.apollo.compiler.ir.Field
+import com.apollographql.apollo.compiler.ir.Fragment
+import com.apollographql.apollo.compiler.ir.FragmentRef
+import com.apollographql.apollo.compiler.ir.InlineFragment
+import com.apollographql.apollo.compiler.ir.Operation
+import com.apollographql.apollo.compiler.ir.ScalarType
+import com.apollographql.apollo.compiler.ir.SourceLocation
+import com.apollographql.apollo.compiler.ir.TypeDeclaration
+import com.apollographql.apollo.compiler.ir.TypeDeclarationField
+import com.apollographql.apollo.compiler.ir.TypeDeclarationValue
+import com.apollographql.apollo.compiler.ir.Variable
 import com.apollographql.apollo.compiler.parser.antlr.GraphQLLexer
 import com.apollographql.apollo.compiler.parser.antlr.GraphQLParser
 import com.apollographql.apollo.compiler.parser.error.DocumentParseException
 import com.apollographql.apollo.compiler.parser.error.ParseException
+import com.apollographql.apollo.compiler.parser.graphql.GraphQLDocumentSourceBuilder.graphQLDocumentSource
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.parser.introspection.asGraphQLType
 import com.apollographql.apollo.compiler.parser.introspection.isAssignableFrom
 import com.apollographql.apollo.compiler.parser.introspection.possibleTypes
-import org.antlr.v4.runtime.*
+import org.antlr.v4.runtime.ANTLRInputStream
+import org.antlr.v4.runtime.BaseErrorListener
+import org.antlr.v4.runtime.CommonTokenStream
+import org.antlr.v4.runtime.RecognitionException
+import org.antlr.v4.runtime.Recognizer
+import org.antlr.v4.runtime.Token
 import org.antlr.v4.runtime.atn.PredictionMode
 import java.io.File
 import java.io.IOException
 
-class GraphQLDocumentParser(val schema: IntrospectionSchema, private val packageNameProvider: PackageNameProvider) {
+class GraphQLDocumentParser(val schema: IntrospectionSchema,
+                            private val packageNameProvider: PackageNameProvider,
+                            private val inheritedFragments: List<Fragment> = emptyList(),
+                            private val exportAllTypes: Boolean) {
   fun parse(graphQLFiles: Collection<File>): CodeGenerationIR {
-    val (operations, fragments, usedTypes) = graphQLFiles.fold(DocumentParseResult()) { acc, graphQLFile ->
+    val inheritedResults = DocumentParseResult(
+        fragments = inheritedFragments
+    )
+    val (operations, fragments, usedTypes) = graphQLFiles.fold(inheritedResults) { acc, graphQLFile ->
       val result = graphQLFile.parse()
       DocumentParseResult(
           operations = acc.operations + result.operations,
@@ -30,7 +54,12 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
     operations.checkMultipleOperationDefinitions(packageNameProvider)
     fragments.checkMultipleFragmentDefinitions()
 
-    val typeDeclarations = usedTypes.usedTypeDeclarations()
+    val exportedTypes = if (exportAllTypes) {
+      schema.types.values.map { it.name }.toSet()
+    } else {
+      usedTypes
+    }
+    val typeDeclarations = exportedTypes.usedTypeDeclarations()
 
     return CodeGenerationIR(
         operations = operations.map { operation ->
@@ -788,11 +817,11 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
     val referencedFragments = fragmentRefs.findFragments(
         typeCondition = typeCondition,
         fragments = fragments,
-        filePath = filePath
+        filePath = filePath ?: ""
     )
     return fragmentRefs.map { it.name }
-        .union(fields.referencedFragmentNames(fragments = fragments, filePath = filePath))
-        .union(inlineFragments.flatMap { it.referencedFragments(fragments = fragments, filePath = filePath) })
+        .union(fields.referencedFragmentNames(fragments = fragments, filePath = filePath ?: ""))
+        .union(inlineFragments.flatMap { it.referencedFragments(fragments = fragments, filePath = filePath ?: "") })
         .union(referencedFragments.flatMap { it.referencedFragments(fragments) })
   }
 

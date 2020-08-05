@@ -33,7 +33,6 @@ interface CompilerParams {
    */
   val generateOperationOutput: Property<Boolean>
 
-
   /**
    * For custom scalar types like Date, map from the GraphQL type to the jvm/kotlin type.
    *
@@ -193,4 +192,12 @@ interface CompilerParams {
    * the client was compiled against an older schema that doesn't have knowledge of the new enums.
    */
   val sealedClassesForEnumsMatching: ListProperty<String>
+
+  /**
+   * Whether or not to generate Apollo metadata. Apollo metadata is used for multi-module support. Set this to true if you want other
+   * modules to be able to re-use fragments and types from this module
+   *
+   * Default value: false
+   */
+  val generateApolloMetadata: Property<Boolean>
 }

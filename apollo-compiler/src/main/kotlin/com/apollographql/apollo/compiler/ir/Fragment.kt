@@ -9,8 +9,10 @@ import com.apollographql.apollo.compiler.withBuilder
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.TypeSpec
+import com.squareup.moshi.JsonClass
 import javax.lang.model.element.Modifier
 
+@JsonClass(generateAdapter = true)
 data class Fragment(
     val fragmentName: String,
     val source: String,
@@ -20,7 +22,7 @@ data class Fragment(
     val fields: List<Field>,
     val fragmentRefs: List<FragmentRef>,
     val inlineFragments: List<InlineFragment>,
-    val filePath: String,
+    val filePath: String?, // might be null if coming from another module
     val sourceLocation: SourceLocation
 ) : CodeGenerator {
 

@@ -27,6 +27,7 @@ internal fun List<Fragment>.checkMultipleFragmentDefinitions() {
   groupBy { it.fragmentName }
       .values
       .find { it.size > 1 }
+      ?.sortedBy { if (it.filePath != null) 1 else 0 }
       ?.last()
       ?.run { throw ParseException("$filePath: There can be only one fragment named `$fragmentName`") }
 }
@@ -50,7 +51,7 @@ internal fun Fragment.validateArguments(operation: Operation, schema: Introspect
     throw DocumentParseException(
         message = "${e.message!!}\nOperation `${operation.operationName}` declaration [${operation.filePath}]",
         sourceLocation = if (e.sourceLocation == SourceLocation.UNKNOWN) sourceLocation else e.sourceLocation,
-        filePath = filePath
+        filePath = filePath ?: ""
     )
   }
 }
