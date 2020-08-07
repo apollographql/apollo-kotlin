@@ -33,7 +33,7 @@ repositories {
 
 configure<ApolloExtension> {
   val customOperationOutputGenerator = object: OperationOutputGenerator {
-    override fun generate(operationDescriptorList: List<OperationDescriptor>): OperationOutput {
+    override fun generate(operationDescriptorList: Collection<OperationDescriptor>): OperationOutput {
       return operationDescriptorList.map {
         "${it.name}CustomId" to it
       }.toMap()
