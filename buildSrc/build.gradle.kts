@@ -1,16 +1,29 @@
-plugins {
-  kotlin("jvm") version "1.3.72"
+buildscript {
+  repositories {
+    mavenCentral()
+    maven {
+      url = uri("https://dl.bintray.com/kotlin/kotlin-eap")
+    }
+  }
+  dependencies {
+    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4-M3")
+  }
 }
+
+apply(plugin = "org.jetbrains.kotlin.jvm")
 
 project.apply {
   from(file("../gradle/dependencies.gradle"))
 }
 
 repositories {
-  maven { url = uri("https://plugins.gradle.org/m2/") }
+  gradlePluginPortal()
   google()
   jcenter()
   mavenCentral()
+  maven {
+    url = uri("https://dl.bintray.com/kotlin/kotlin-eap")
+  }
 }
 
 dependencies {

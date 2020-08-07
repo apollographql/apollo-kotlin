@@ -14,14 +14,6 @@ subprojects {
     from(rootProject.file("gradle/dependencies.gradle"))
   }
 
-  buildscript {
-    repositories {
-      maven { url = uri("https://plugins.gradle.org/m2/") }
-      maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
-      google()
-    }
-  }
-
   plugins.withType(com.android.build.gradle.BasePlugin::class.java) {
     (project.extensions.getByName("android") as com.android.build.gradle.BaseExtension).compileOptions {
       sourceCompatibility = JavaVersion.VERSION_1_8
@@ -53,10 +45,12 @@ subprojects {
   this.apply(plugin = "signing")
 
   repositories {
-    maven { url = uri("https://plugins.gradle.org/m2/") }
-    maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
     google()
-    maven { url = uri("https://jitpack.io") }
+    maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
+    //maven { url = uri("https://plugins.gradle.org/m2/") }
+    maven {
+      url = uri("https://dl.bintray.com/kotlin/kotlin-eap")
+    }
   }
 
   group = property("GROUP")!!
