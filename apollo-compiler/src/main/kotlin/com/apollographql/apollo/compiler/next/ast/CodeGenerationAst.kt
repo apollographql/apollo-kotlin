@@ -2,12 +2,21 @@ package com.apollographql.apollo.compiler.next.ast
 
 internal typealias ObjectTypeContainer = Map<CodeGenerationAst.TypeRef, CodeGenerationAst.ObjectType>
 
+internal typealias CustomTypes = Map<String, CodeGenerationAst.CustomType>
+
 internal data class CodeGenerationAst(
     val operationTypes: List<OperationType>,
     val fragmentTypes: List<FragmentType>,
     val inputTypes: List<InputType>,
-    val enumTypes: List<EnumType>
+    val enumTypes: List<EnumType>,
+    val customTypes: CustomTypes
 ) {
+
+  data class CustomType(
+      val name: String,
+      val schemaType: String,
+      val mappedType: String
+  )
 
   data class OperationType(
       val name: String,
@@ -42,12 +51,14 @@ internal data class CodeGenerationAst(
       val deprecationReason: String,
       val abstract: Boolean,
       val fields: List<Field>,
-      val implements: Set<TypeRef>
+      val implements: Set<TypeRef>,
+      val schemaType: String?
   )
 
   data class Field(
       val name: String,
       val responseName: String,
+      val schemaName: String,
       val type: FieldType,
       val description: String,
       val deprecated: Boolean,
@@ -127,7 +138,11 @@ internal data class CodeGenerationAst(
     }
 
     sealed class Scalar : FieldType() {
-      data class ID(override val nullable: kotlin.Boolean) : Scalar()
+      data class ID(
+          override val nullable: kotlin.Boolean,
+          val type: kotlin.String,
+          val customEnumType: TypeRef
+      ) : Scalar()
 
       data class String(override val nullable: kotlin.Boolean) : Scalar()
 
@@ -145,7 +160,8 @@ internal data class CodeGenerationAst(
       data class Custom(
           override val nullable: kotlin.Boolean,
           val schemaType: kotlin.String,
-          val type: kotlin.String
+          val type: kotlin.String,
+          val customEnumType: TypeRef
       ) : Scalar()
     }
 
@@ -172,4 +188,13 @@ internal data class CodeGenerationAst(
       val packageName: String = "",
       val enclosingType: TypeRef? = null
   )
+
+  companion object {
+    fun customTypeRef(typesPackageName: String): TypeRef {
+      return TypeRef(
+          name = "CustomType",
+          packageName = typesPackageName
+      )
+    }
+  }
 }

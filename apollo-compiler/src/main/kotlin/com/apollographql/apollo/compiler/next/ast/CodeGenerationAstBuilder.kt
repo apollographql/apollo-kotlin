@@ -2,7 +2,6 @@ package com.apollographql.apollo.compiler.next.ast
 
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.compiler.OperationIdGenerator
-import com.apollographql.apollo.compiler.ast.CustomTypes
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.ir.Operation
@@ -13,7 +12,7 @@ import com.apollographql.apollo.compiler.ir.Fragment as IrFragment
 
 internal fun CodeGenerationIR.buildCodeGenerationAst(
     schema: IntrospectionSchema,
-    customTypeMap: CustomTypes,
+    customTypeMap: Map<String, String>,
     typesPackageName: String,
     fragmentsPackage: String,
     useSemanticNaming: Boolean,
@@ -31,7 +30,7 @@ internal fun CodeGenerationIR.buildCodeGenerationAst(
 
 private class CodeGenerationAstBuilder(
     private val schema: IntrospectionSchema,
-    private val customTypeMap: CustomTypes,
+    private val customTypeMap: Map<String, String>,
     private val typesPackageName: String,
     private val fragmentsPackage: String,
     private val useSemanticNaming: Boolean,
@@ -43,24 +42,36 @@ private class CodeGenerationAstBuilder(
         .filter { typeUsed -> typeUsed.kind == TypeDeclaration.KIND_ENUM }
         .map { type -> type.buildEnumType() }
 
+    val customTypes = customTypeMap.mapValues { (schemaType, mappedType) ->
+      CodeGenerationAst.CustomType(
+          name = schemaType.escapeKotlinReservedWord().toUpperCase(),
+          schemaType = schemaType,
+          mappedType = mappedType
+      )
+    }
+
     val inputTypes = ir.typesUsed
         .filter { typeUsed -> typeUsed.kind == TypeDeclaration.KIND_INPUT_OBJECT_TYPE }
         .map { type ->
           type.buildInputType(
               schema = schema,
               typesPackageName = typesPackageName,
-              customTypeMap = customTypeMap
+              customTypes = customTypes
           )
         }
 
     val fragmentTypes = ir.fragments.map { fragment ->
-      fragment.buildFragmentType(ir.fragments)
+      fragment.buildFragmentType(
+          irFragments = ir.fragments,
+          customTypes = customTypes
+      )
     }
 
     val operations = ir.operations.map { operation ->
       operation.buildOperationType(
           irFragments = ir.fragments,
-          fragmentTypes = fragmentTypes
+          fragmentTypes = fragmentTypes,
+          customTypes = customTypes
       )
     }
 
@@ -68,7 +79,8 @@ private class CodeGenerationAstBuilder(
         operationTypes = operations,
         fragmentTypes = fragmentTypes,
         inputTypes = inputTypes,
-        enumTypes = enums
+        enumTypes = enums,
+        customTypes = customTypes
     )
   }
 
@@ -89,7 +101,7 @@ private class CodeGenerationAstBuilder(
   private fun TypeDeclaration.buildInputType(
       schema: IntrospectionSchema,
       typesPackageName: String,
-      customTypeMap: CustomTypes
+      customTypes: CustomTypes
   ): CodeGenerationAst.InputType {
     return CodeGenerationAst.InputType(
         name = name.capitalize().escapeKotlinReservedWord(),
@@ -100,7 +112,7 @@ private class CodeGenerationAstBuilder(
           val fieldType = resolveInputFieldType(
               schemaTypeRef = schema.resolveType(schema.resolveType(name)).resolveInputField(field.name).type,
               typesPackageName = typesPackageName,
-              customTypeMap = customTypeMap
+              customTypes = customTypes
           )
           CodeGenerationAst.InputField(
               name = field.name.decapitalize().escapeKotlinReservedWord(),
@@ -117,7 +129,8 @@ private class CodeGenerationAstBuilder(
 
   private fun Operation.buildOperationType(
       irFragments: List<IrFragment>,
-      fragmentTypes: List<CodeGenerationAst.FragmentType>
+      fragmentTypes: List<CodeGenerationAst.FragmentType>,
+      customTypes: CustomTypes
   ): CodeGenerationAst.OperationType {
     val operationType = when {
       isQuery() -> CodeGenerationAst.OperationType.Type.QUERY
@@ -125,12 +138,14 @@ private class CodeGenerationAstBuilder(
       isSubscription() -> CodeGenerationAst.OperationType.Type.SUBSCRIPTION
       else -> throw IllegalArgumentException("Unsupported GraphQL operation type: $operationType")
     }
-    val operationDataType = buildOperationDataType(
-        irFragments = irFragments,
-        fragmentTypes = fragmentTypes
-    )
     val operationId = operationIdGenerator.apply(QueryDocumentMinifier.minify(sourceWithFragments), filePath)
     val operationClassName = normalizedOperationName(useSemanticNaming).capitalize()
+    val operationDataType = buildOperationDataType(
+        operationClassName = operationClassName,
+        irFragments = irFragments,
+        fragmentTypes = fragmentTypes,
+        customTypes = customTypes
+    )
     return CodeGenerationAst.OperationType(
         name = operationClassName,
         type = operationType,
@@ -142,7 +157,7 @@ private class CodeGenerationAstBuilder(
           val fieldType = resolveInputFieldType(
               schemaTypeRef = variable.type.toIntrospectionTypeRef(schema),
               typesPackageName = typesPackageName,
-              customTypeMap = customTypeMap
+              customTypes = customTypes
           )
           CodeGenerationAst.InputField(
               name = variable.name.decapitalize().escapeKotlinReservedWord(),
@@ -183,7 +198,7 @@ private class CodeGenerationAstBuilder(
   private fun resolveInputFieldType(
       schemaTypeRef: IntrospectionSchema.TypeRef,
       typesPackageName: String,
-      customTypeMap: CustomTypes
+      customTypes: CustomTypes
   ): CodeGenerationAst.FieldType {
     return when (schemaTypeRef.kind) {
       IntrospectionSchema.Kind.ENUM -> CodeGenerationAst.FieldType.Scalar.Enum(
@@ -200,18 +215,26 @@ private class CodeGenerationAstBuilder(
           "INT" -> CodeGenerationAst.FieldType.Scalar.Int(nullable = true)
           "BOOLEAN" -> CodeGenerationAst.FieldType.Scalar.Boolean(nullable = true)
           "FLOAT" -> CodeGenerationAst.FieldType.Scalar.Float(nullable = true)
-          else -> CodeGenerationAst.FieldType.Scalar.Custom(
-              nullable = true,
-              schemaType = schemaTypeRef.name,
-              type = customTypeMap[schemaTypeRef.name]!!
-          )
+          else -> {
+            val customType = checkNotNull(customTypes[schemaTypeRef.name])
+            CodeGenerationAst.FieldType.Scalar.Custom(
+                nullable = true,
+                schemaType = schemaTypeRef.name,
+                type = customType.mappedType,
+                customEnumType = CodeGenerationAst.TypeRef(
+                    name = customType.name,
+                    packageName = typesPackageName,
+                    enclosingType = CodeGenerationAst.customTypeRef(typesPackageName)
+                )
+            )
+          }
         }
       }
 
       IntrospectionSchema.Kind.NON_NULL -> resolveInputFieldType(
           schemaTypeRef = schemaTypeRef.ofType!!,
           typesPackageName = typesPackageName,
-          customTypeMap = customTypeMap
+          customTypes = customTypes
       ).nonNullable()
 
       IntrospectionSchema.Kind.LIST -> CodeGenerationAst.FieldType.Array(
@@ -219,7 +242,7 @@ private class CodeGenerationAstBuilder(
           rawType = resolveInputFieldType(
               schemaTypeRef = schemaTypeRef.ofType!!,
               typesPackageName = typesPackageName,
-              customTypeMap = customTypeMap
+              customTypes = customTypes
           )
       )
 
@@ -230,8 +253,10 @@ private class CodeGenerationAstBuilder(
   }
 
   private fun Operation.buildOperationDataType(
+      operationClassName: String,
       irFragments: List<IrFragment>,
-      fragmentTypes: List<CodeGenerationAst.FragmentType>
+      fragmentTypes: List<CodeGenerationAst.FragmentType>,
+      customTypes: CustomTypes
   ): CodeGenerationAst.OperationDataType {
     val operationSchemaType = when {
       isQuery() -> schema.resolveType(schema.resolveType(schema.queryType))
@@ -244,13 +269,17 @@ private class CodeGenerationAstBuilder(
     }
     val nestedTypeContainer = ObjectTypeContainerBuilder(packageName = "")
 
-    val rootType = nestedTypeContainer.registerObjectType(typeName = "Data", enclosingType = null) { typeRef ->
+    val rootType = nestedTypeContainer.registerObjectType(
+        typeName = "Data",
+        enclosingType = CodeGenerationAst.TypeRef(name = operationClassName)
+    ) { typeRef ->
       buildObjectType(
           typeRef = typeRef,
+          enclosingType = CodeGenerationAst.TypeRef(name = operationClassName),
           schemaType = operationSchemaType,
           fields = fields,
           schema = schema,
-          customTypeMap = customTypeMap,
+          customTypes = customTypes,
           typesPackageName = typesPackageName,
           fragmentsPackage = fragmentsPackage,
           irFragments = irFragments,
@@ -263,7 +292,10 @@ private class CodeGenerationAstBuilder(
     )
   }
 
-  private fun IrFragment.buildFragmentType(irFragments: List<IrFragment>): CodeGenerationAst.FragmentType {
+  private fun IrFragment.buildFragmentType(
+      irFragments: List<IrFragment>,
+      customTypes: CustomTypes
+  ): CodeGenerationAst.FragmentType {
     val nestedTypeContainer = ObjectTypeContainerBuilder(packageName = fragmentsPackage)
     val rootType = nestedTypeContainer.registerObjectType(typeName = fragmentName, enclosingType = null) { typeRef ->
       buildInterfaceType(
@@ -271,7 +303,7 @@ private class CodeGenerationAstBuilder(
           schemaType = schema.resolveType(schema.resolveType(typeCondition)),
           fields = fields,
           schema = schema,
-          customTypeMap = customTypeMap,
+          customTypes = customTypes,
           typesPackageName = typesPackageName,
           fragmentsPackage = fragmentsPackage,
           irFragments = irFragments,

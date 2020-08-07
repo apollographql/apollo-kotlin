@@ -30,25 +30,24 @@ private class TypeHierarchyPatcher(typeContainer: ObjectTypeContainer) {
     val parentTypeFields = type.implements
         .flatMap { parentType -> (patchedTypeContainer[parentType] as CodeGenerationAst.ObjectType).fields }
 
-    val patchedFields = type.fields.map { field ->
-      if (field.type.nullable) {
-        val nonNullableParentField = parentTypeFields.find { parentField ->
-          parentField.name == field.name && !parentField.type.nullable
-        }
-        check(nonNullableParentField == null) {
-          "Nullable field `${field.responseName}` of type `${field.type}` defined on object `${name}` is not a subtype of non nullable " +
-              "overridden field. Please use field alias instead."
-        }
-      }
-
-      if (field.override) {
-        field
-      } else {
-        field.copy(override = parentTypeFields.find { parentField -> parentField.name == field.name } != null)
-      }
+    val (newFields, overrideFields) = parentTypeFields.partition { parentTypeField ->
+      type.fields.find { field -> field.name == parentTypeField.name } == null
     }
 
-    patchedTypeContainer[this] = type.copy(fields = patchedFields)
+    val patchedFields = type.fields.map { field ->
+      val parentField = overrideFields.find { parentField ->
+        parentField.name == field.name && !parentField.type.nullable
+      }
+
+      if (field.type.nullable && parentField?.type?.nullable == false) {
+        "Nullable field `${field.responseName}` of type `${field.type}` defined on object `${name}` is not a subtype of non nullable " +
+            "overridden field. Please use field alias instead."
+      }
+
+      field.takeIf { parentField == null } ?: field.copy(override = true)
+    }
+
+    patchedTypeContainer[this] = type.copy(fields = newFields.map { it.copy(override = true) } + patchedFields)
 
     patchedFields.forEach { field ->
       val parentFieldTypes = parentTypeFields.mapNotNull { parentField ->

@@ -1,6 +1,5 @@
 package com.apollographql.apollo.compiler.next.ast
 
-import com.apollographql.apollo.compiler.ast.CustomTypes
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo.compiler.ir.Condition
 import com.apollographql.apollo.compiler.ir.Field
@@ -16,7 +15,7 @@ internal fun buildInterfaceType(
     schemaType: IntrospectionSchema.Type,
     fields: List<Field>,
     schema: IntrospectionSchema,
-    customTypeMap: CustomTypes,
+    customTypes: CustomTypes,
     typesPackageName: String,
     fragmentsPackage: String,
     irFragments: List<IrFragment>,
@@ -24,7 +23,7 @@ internal fun buildInterfaceType(
 ): CodeGenerationAst.ObjectType {
   return ObjectTypeBuilder(
       schema = schema,
-      customTypeMap = customTypeMap,
+      customTypes = customTypes,
       typesPackageName = typesPackageName,
       fragmentsPackage = fragmentsPackage,
       irFragments = irFragments.associateBy { it.fragmentName },
@@ -40,10 +39,11 @@ internal fun buildInterfaceType(
 
 internal fun buildObjectType(
     typeRef: CodeGenerationAst.TypeRef,
+    enclosingType: CodeGenerationAst.TypeRef,
     schemaType: IntrospectionSchema.Type,
     fields: List<Field>,
     schema: IntrospectionSchema,
-    customTypeMap: CustomTypes,
+    customTypes: CustomTypes,
     typesPackageName: String,
     fragmentsPackage: String,
     irFragments: List<IrFragment>,
@@ -51,12 +51,12 @@ internal fun buildObjectType(
 ): CodeGenerationAst.ObjectType {
   return ObjectTypeBuilder(
       schema = schema,
-      customTypeMap = customTypeMap,
+      customTypes = customTypes,
       typesPackageName = typesPackageName,
       fragmentsPackage = fragmentsPackage,
       irFragments = irFragments.associateBy { it.fragmentName },
       nestedTypeContainer = nestedTypeContainer,
-      enclosingType = typeRef
+      enclosingType = enclosingType
   ).buildObjectType(
       typeRef = typeRef,
       schemaType = schemaType,
@@ -67,7 +67,7 @@ internal fun buildObjectType(
 
 private class ObjectTypeBuilder(
     private val schema: IntrospectionSchema,
-    private val customTypeMap: CustomTypes,
+    private val customTypes: CustomTypes,
     private val typesPackageName: String,
     private val fragmentsPackage: String,
     private val irFragments: Map<String, com.apollographql.apollo.compiler.ir.Fragment>,
@@ -96,7 +96,8 @@ private class ObjectTypeBuilder(
               abstract = abstract
           )
         },
-        implements = emptySet()
+        implements = emptySet(),
+        schemaType = schemaType.name
     )
   }
 
@@ -128,7 +129,8 @@ private class ObjectTypeBuilder(
                 abstract = abstract
             )
           },
-          implements = implements.toSet()
+          implements = implements.toSet(),
+          schemaType = schemaType.name
       )
     }
   }
@@ -141,6 +143,7 @@ private class ObjectTypeBuilder(
     val schemaField = schemaType.resolveField(field.fieldName) ?: return null
     return CodeGenerationAst.Field(
         name = field.responseName.escapeKotlinReservedWord(),
+        schemaName = field.fieldName,
         responseName = field.responseName,
         type = resolveFieldType(
             field = field,
@@ -201,13 +204,19 @@ private class ObjectTypeBuilder(
           "INT" -> CodeGenerationAst.FieldType.Scalar.Int(nullable = true)
           "BOOLEAN" -> CodeGenerationAst.FieldType.Scalar.Boolean(nullable = true)
           "FLOAT" -> CodeGenerationAst.FieldType.Scalar.Float(nullable = true)
-          else -> CodeGenerationAst.FieldType.Scalar.Custom(
-              nullable = true,
-              schemaType = schemaTypeRef.name,
-              type = requireNotNull(customTypeMap[schemaTypeRef.name]) {
-                "Missing type mapping for custom scalar`${schemaTypeRef.name}` GraphQL type. "
-              }
-          )
+          else -> {
+            val customType = checkNotNull(customTypes[schemaTypeRef.name])
+            CodeGenerationAst.FieldType.Scalar.Custom(
+                nullable = true,
+                schemaType = schemaTypeRef.name,
+                type = customType.mappedType,
+                customEnumType = CodeGenerationAst.TypeRef(
+                    name = customType.name,
+                    packageName = typesPackageName,
+                    enclosingType = CodeGenerationAst.customTypeRef(typesPackageName)
+                )
+            )
+          }
         }
       }
 
@@ -350,7 +359,8 @@ private class ObjectTypeBuilder(
           deprecationReason = "",
           abstract = false,
           fields = fields,
-          implements = mapNotNull { fragment -> fragmentInterfaceTypes[fragment] }.toSet()
+          implements = mapNotNull { fragment -> fragmentInterfaceTypes[fragment] }.toSet(),
+          schemaType = null
       )
     }
   }
@@ -401,8 +411,11 @@ private class ObjectTypeBuilder(
           isDeprecated = false,
           deprecationReason = null,
           type = IntrospectionSchema.TypeRef(
-              kind = IntrospectionSchema.Kind.SCALAR,
-              name = "String"
+              kind = IntrospectionSchema.Kind.NON_NULL,
+              ofType = IntrospectionSchema.TypeRef(
+                  kind = IntrospectionSchema.Kind.SCALAR,
+                  name = "String"
+              )
           )
       )
     }
