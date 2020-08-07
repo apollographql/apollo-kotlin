@@ -56,6 +56,8 @@ public interface ApolloMutationCall<T> extends ApolloCall<T> {
 
   @Deprecated @NotNull @Override ApolloMutationCall<T> clone();
 
+  @NotNull @Override ApolloMutationCall.Builder<T> toBuilder();
+
   interface Builder<T> extends ApolloCall.Builder<T> {
     @NotNull @Override ApolloMutationCall<T> build();
 
