@@ -14,7 +14,7 @@ import java.io.File
 class OperationIdGeneratorTests {
   val apolloConfiguration = """
       class MyIdGenerator implements OperationIdGenerator {
-          String apply(String queryString, String operationName, String operationPackageName) {
+          String apply(String queryString, String queryFilepath) {
               return queryString.length().toString();
           }
           String version = "MyIdGenerator-v1"
@@ -46,8 +46,8 @@ class OperationIdGeneratorTests {
   fun `operationIdGenerator can be set from onCompilationUnit`() {
     val apolloConfiguration = """
       class MyIdGenerator implements OperationIdGenerator {
-          String apply(String queryString, String operationName, String operationPackageName) {
-              return operationName;
+          String apply(String queryString, String queryFilepath) {
+              return queryFilepath;
           }
           String version = "MyIdGenerator-v1"
       }
@@ -69,7 +69,7 @@ class OperationIdGeneratorTests {
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
 
       val queryJavaFile = dir.generatedChild("main/service/com/example/DroidDetailsQuery.java")
-      Assert.assertThat(queryJavaFile.readText(), CoreMatchers.containsString("OPERATION_ID = \"DroidDetails\";"))
+      Assert.assertThat(queryJavaFile.readText(), CoreMatchers.containsString("com/example/DroidDetails.graphql"))
     }
   }
 

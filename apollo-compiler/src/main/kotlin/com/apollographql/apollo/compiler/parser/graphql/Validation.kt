@@ -4,8 +4,6 @@ import com.apollographql.apollo.compiler.PackageNameProvider
 import com.apollographql.apollo.compiler.ir.Field
 import com.apollographql.apollo.compiler.ir.Fragment
 import com.apollographql.apollo.compiler.ir.Operation
-import com.apollographql.apollo.compiler.ir.ParsedFragment
-import com.apollographql.apollo.compiler.ir.ParsedOperation
 import com.apollographql.apollo.compiler.ir.ScalarType
 import com.apollographql.apollo.compiler.ir.SourceLocation
 import com.apollographql.apollo.compiler.parser.error.DocumentParseException
@@ -15,7 +13,7 @@ import com.apollographql.apollo.compiler.parser.introspection.asGraphQLType
 import com.apollographql.apollo.compiler.parser.introspection.isAssignableFrom
 import com.apollographql.apollo.compiler.parser.introspection.resolveType
 
-internal fun List<ParsedOperation>.checkMultipleOperationDefinitions(packageNameProvider: PackageNameProvider) {
+internal fun List<Operation>.checkMultipleOperationDefinitions(packageNameProvider: PackageNameProvider) {
   groupBy { packageNameProvider.operationPackageName(it.filePath) + it.operationName }
       .values
       .find { it.size > 1 }
@@ -25,7 +23,7 @@ internal fun List<ParsedOperation>.checkMultipleOperationDefinitions(packageName
       }
 }
 
-internal fun List<ParsedFragment>.checkMultipleFragmentDefinitions() {
+internal fun List<Fragment>.checkMultipleFragmentDefinitions() {
   groupBy { it.fragmentName }
       .values
       .find { it.size > 1 }
@@ -33,7 +31,7 @@ internal fun List<ParsedFragment>.checkMultipleFragmentDefinitions() {
       ?.run { throw ParseException("$filePath: There can be only one fragment named `$fragmentName`") }
 }
 
-internal fun ParsedOperation.validateArguments(schema: IntrospectionSchema) {
+internal fun Operation.validateArguments(schema: IntrospectionSchema) {
   try {
     fields.validateArguments(operation = this, schema = schema)
   } catch (e: ParseException) {
@@ -45,7 +43,7 @@ internal fun ParsedOperation.validateArguments(schema: IntrospectionSchema) {
   }
 }
 
-internal fun ParsedFragment.validateArguments(operation: ParsedOperation, schema: IntrospectionSchema) {
+internal fun Fragment.validateArguments(operation: Operation, schema: IntrospectionSchema) {
   try {
     fields.validateArguments(operation = operation, schema = schema)
   } catch (e: ParseException) {
@@ -57,14 +55,14 @@ internal fun ParsedFragment.validateArguments(operation: ParsedOperation, schema
   }
 }
 
-private fun List<Field>.validateArguments(operation: ParsedOperation, schema: IntrospectionSchema) {
+private fun List<Field>.validateArguments(operation: Operation, schema: IntrospectionSchema) {
   forEach { field ->
     field.validateArguments(operation = operation, schema = schema)
     field.fields.forEach { it.validateArguments(operation = operation, schema = schema) }
   }
 }
 
-private fun Field.validateArguments(operation: ParsedOperation, schema: IntrospectionSchema) {
+private fun Field.validateArguments(operation: Operation, schema: IntrospectionSchema) {
   args.forEach { arg ->
     try {
       val argumentTypeRef = schema.resolveType(arg.type)
@@ -92,7 +90,7 @@ private fun Field.validateArguments(operation: ParsedOperation, schema: Introspe
   validateConditions(operation)
 }
 
-private fun Field.validateConditions(operation: ParsedOperation) {
+private fun Field.validateConditions(operation: Operation) {
   conditions.forEach { condition ->
     val variable = operation.variables.find { it.name == condition.variableName } ?: throw ParseException(
         message = "Variable `${condition.variableName}` is not defined by operation `${operation.operationName}`",
@@ -113,7 +111,7 @@ private fun Field.validateConditions(operation: ParsedOperation) {
 private fun IntrospectionSchema.TypeRef.validateArgumentValue(
     fieldName: String,
     value: Pair<Any?, Boolean>,
-    operation: ParsedOperation,
+    operation: Operation,
     schema: IntrospectionSchema
 ) {
   val (value, defined) = value
@@ -231,7 +229,7 @@ private fun Map<*, *>.extractVariableName(): String? {
   }
 }
 
-private fun ParsedOperation.validateVariableType(name: String, expectedType: IntrospectionSchema.TypeRef, schema: IntrospectionSchema) {
+private fun Operation.validateVariableType(name: String, expectedType: IntrospectionSchema.TypeRef, schema: IntrospectionSchema) {
   val variable = variables.find { it.name == name } ?: throw ParseException(
       "Variable `$name` is not defined by operation `${operationName}`"
   )

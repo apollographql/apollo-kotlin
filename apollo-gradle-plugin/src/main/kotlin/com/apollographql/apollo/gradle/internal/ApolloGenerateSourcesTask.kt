@@ -140,6 +140,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       OperationDescriptor(
           name = it.operationName,
           packageName = it.packageName,
+          filePath = it.filePath,
           source = QueryDocumentMinifier.minify(it.sourceWithFragments)
       )
     }.let {

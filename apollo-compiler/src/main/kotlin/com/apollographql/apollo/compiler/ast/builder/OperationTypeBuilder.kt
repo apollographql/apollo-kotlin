@@ -62,6 +62,7 @@ internal fun Operation.ast(
           }
       ),
       data = dataTypeRef,
-      nestedObjects = context
+      nestedObjects = context,
+      filePath = filePath
   )
 }

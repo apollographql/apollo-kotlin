@@ -45,7 +45,8 @@ internal data class OperationType(
     val queryDocument: String,
     val variables: InputType,
     val data: TypeRef,
-    val nestedObjects: Map<TypeRef, ObjectType>
+    val nestedObjects: Map<TypeRef, ObjectType>,
+    val filePath: String
 ) {
   enum class Type {
     QUERY, MUTATION, SUBSCRIPTION

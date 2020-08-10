@@ -1,9 +1,9 @@
 package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.parser.graphql.GraphQLDocumentParser
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.google.common.truth.Truth.assertAbout
 import com.google.testing.compile.JavaFileObjects
 import com.google.testing.compile.JavaSourcesSubjectFactory.javaSources
@@ -172,7 +172,7 @@ class CodeGenTest(private val folder: File) {
 
       val operationIdGenerator = when (folder.name) {
         "operation_id_generator" -> object : OperationIdGenerator {
-          override fun apply(operationDocument: String, operationName: String, operationPackageName: String): String {
+          override fun apply(operationDocument: String, operationFilepath: String): String {
             return "hash"
           }
 
@@ -189,19 +189,21 @@ class CodeGenTest(private val folder: File) {
       }
 
       val ir = GraphQLDocumentParser(schema, packageNameProvider).parse(setOf(graphQLFile))
-      val language = if (generateKotlinModels) "kotlin" else "java"
 
       val operationOutput = ir.operations.map {
-        operationIdGenerator.apply(QueryDocumentMinifier.minify(it.sourceWithFragments), it.operationName, it.packageName) to OperationDescriptor(
-            it.operationName,
-            it.packageName,
-            QueryDocumentMinifier.minify(it.sourceWithFragments)
+        operationIdGenerator.apply(QueryDocumentMinifier.minify(it.sourceWithFragments), it.filePath) to OperationDescriptor(
+            name = it.operationName,
+            packageName = it.packageName,
+            filePath = it.filePath,
+            source = QueryDocumentMinifier.minify(it.sourceWithFragments)
         )
       }.toMap()
 
+      val language = if (generateKotlinModels) "kotlin" else "java"
       return GraphQLCompiler.Arguments(
           ir = ir,
           outputDir = File("build/generated/test/${folder.name}/$language"),
+          operationOutput = operationOutput,
           customTypeMap = customTypeMap,
           generateKotlinModels = generateKotlinModels,
           nullableValueType = nullableValueType,
@@ -212,8 +214,7 @@ class CodeGenTest(private val folder: File) {
           generateVisitorForPolymorphicDatatypes = generateVisitorForPolymorphicDatatypes,
           generateAsInternal = generateAsInternal,
           kotlinMultiPlatformProject = true,
-          enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters,
-          operationOutput = operationOutput
+          enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters
       )
     }
 

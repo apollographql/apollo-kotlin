@@ -7,18 +7,6 @@ import com.squareup.javapoet.TypeSpec
 import com.squareup.moshi.JsonClass
 import javax.lang.model.element.Modifier
 
-data class ParsedOperation(
-    val operationName: String,
-    val packageName: String,
-    val operationType: String,
-    val description: String,
-    val variables: List<Variable>,
-    val source: String,
-    val fields: List<Field>,
-    val filePath: String,
-    val fragments: List<FragmentRef>
-)
-
 @JsonClass(generateAdapter = true)
 data class Operation(
     val operationName: String,
@@ -29,6 +17,7 @@ data class Operation(
     val source: String,
     val sourceWithFragments: String,
     val fields: List<Field>,
+    val filePath: String,
     val fragments: List<FragmentRef>,
     val fragmentsReferenced: List<String>
 ) : CodeGenerator {

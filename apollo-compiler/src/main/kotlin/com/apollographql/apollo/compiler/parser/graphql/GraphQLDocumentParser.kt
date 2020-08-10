@@ -1,37 +1,17 @@
 package com.apollographql.apollo.compiler.parser.graphql
 
 import com.apollographql.apollo.compiler.PackageNameProvider
-import com.apollographql.apollo.compiler.ir.Argument
-import com.apollographql.apollo.compiler.ir.CodeGenerationIR
-import com.apollographql.apollo.compiler.ir.Condition
-import com.apollographql.apollo.compiler.ir.Field
-import com.apollographql.apollo.compiler.ir.Fragment
-import com.apollographql.apollo.compiler.ir.FragmentRef
-import com.apollographql.apollo.compiler.ir.InlineFragment
-import com.apollographql.apollo.compiler.ir.Operation
-import com.apollographql.apollo.compiler.ir.ParsedFragment
-import com.apollographql.apollo.compiler.ir.ParsedOperation
-import com.apollographql.apollo.compiler.ir.ScalarType
-import com.apollographql.apollo.compiler.ir.SourceLocation
-import com.apollographql.apollo.compiler.ir.TypeDeclaration
-import com.apollographql.apollo.compiler.ir.TypeDeclarationField
-import com.apollographql.apollo.compiler.ir.TypeDeclarationValue
-import com.apollographql.apollo.compiler.ir.Variable
+import com.apollographql.apollo.compiler.ir.*
+import com.apollographql.apollo.compiler.parser.graphql.GraphQLDocumentSourceBuilder.graphQLDocumentSource
 import com.apollographql.apollo.compiler.parser.antlr.GraphQLLexer
 import com.apollographql.apollo.compiler.parser.antlr.GraphQLParser
 import com.apollographql.apollo.compiler.parser.error.DocumentParseException
 import com.apollographql.apollo.compiler.parser.error.ParseException
-import com.apollographql.apollo.compiler.parser.graphql.GraphQLDocumentSourceBuilder.graphQLDocumentSource
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.parser.introspection.asGraphQLType
 import com.apollographql.apollo.compiler.parser.introspection.isAssignableFrom
 import com.apollographql.apollo.compiler.parser.introspection.possibleTypes
-import org.antlr.v4.runtime.ANTLRInputStream
-import org.antlr.v4.runtime.BaseErrorListener
-import org.antlr.v4.runtime.CommonTokenStream
-import org.antlr.v4.runtime.RecognitionException
-import org.antlr.v4.runtime.Recognizer
-import org.antlr.v4.runtime.Token
+import org.antlr.v4.runtime.*
 import org.antlr.v4.runtime.atn.PredictionMode
 import java.io.File
 import java.io.IOException
@@ -59,32 +39,12 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
           referencedFragments.forEach { it.validateArguments(operation = operation, schema = schema) }
 
           val fragmentSource = referencedFragments.joinToString(separator = "\n") { it.source }
-          Operation(
-              operationName = operation.operationName,
-              packageName = operation.packageName,
-              operationType = operation.operationType,
-              description = operation.description,
-              variables = operation.variables,
-              source = operation.source,
+          operation.copy(
               sourceWithFragments = operation.source + if (fragmentSource.isNotBlank()) "\n$fragmentSource" else "",
-              fields = operation.fields,
-              fragments = operation.fragments,
               fragmentsReferenced = referencedFragmentNames.toList()
           )
         },
-        fragments = fragments.map {
-          Fragment(
-              fragmentName = it.fragmentName,
-              source = it.source,
-              description = it.description,
-              typeCondition = it.typeCondition,
-              possibleTypes = it.possibleTypes,
-              fields = it.fields,
-              fragmentRefs = it.fragmentRefs,
-              inlineFragments = it.inlineFragments,
-              sourceLocation = it.sourceLocation
-          )
-        },
+        fragments = fragments,
         typesUsed = typeDeclarations,
         fragmentsPackageName = packageNameProvider.fragmentsPackageName,
         typesPackageName = packageNameProvider.typesPackageName
@@ -160,7 +120,7 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
     )
   }
 
-  private fun GraphQLParser.OperationDefinitionContext.parse(tokenStream: CommonTokenStream, graphQLFilePath: String): ParseResult<ParsedOperation> {
+  private fun GraphQLParser.OperationDefinitionContext.parse(tokenStream: CommonTokenStream, graphQLFilePath: String): ParseResult<Operation> {
     val operationType = operationType().text
     val operationName = NAME()?.text ?: throw ParseException(
         message = "Apollo does not support anonymous operations",
@@ -181,15 +141,17 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
     val description = commentTokens.joinToString(separator = "\n") { token ->
       token.text.trim().removePrefix("#")
     }
-    val operation = ParsedOperation(
+    val operation = Operation(
         operationName = operationName,
         packageName = packageNameProvider.operationPackageName(graphQLFilePath),
         operationType = operationType,
         description = description,
         variables = variables.result,
         source = graphQLDocumentSource,
+        sourceWithFragments = graphQLDocumentSource,
         fields = fields.result.filterNot { it.responseName == Field.TYPE_NAME_FIELD.responseName },
         fragments = selectionSet().fragmentRefs(),
+        fragmentsReferenced = emptyList(),
         filePath = graphQLFilePath
     ).also { it.validateArguments(schema = schema) }
 
@@ -515,7 +477,7 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
     )
   }
 
-  private fun GraphQLParser.FragmentDefinitionContext.parse(tokenStream: CommonTokenStream, graphQLFilePath: String): ParseResult<ParsedFragment> {
+  private fun GraphQLParser.FragmentDefinitionContext.parse(tokenStream: CommonTokenStream, graphQLFilePath: String): ParseResult<Fragment> {
     val fragmentKeyword = fragmentKeyword().text
     if (fragmentKeyword != "fragment") {
       throw ParseException(
@@ -560,7 +522,7 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
       token.text.trim().removePrefix("#")
     }
     return ParseResult(
-        result = ParsedFragment(
+        result = Fragment(
             fragmentName = fragmentName,
             typeCondition = typeCondition,
             source = graphQLDocumentSource,
@@ -789,13 +751,13 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
       usedTypes = flatMap { (_, usedTypes) -> usedTypes }.toSet()
   )
 
-  private fun List<Field>.referencedFragmentNames(fragments: List<ParsedFragment>, filePath: String): Set<String> {
+  private fun List<Field>.referencedFragmentNames(fragments: List<Fragment>, filePath: String): Set<String> {
     return flatMap { it.referencedFragmentNames(fragments = fragments, filePath = filePath) }
         .union(flatMap { it.fields.referencedFragmentNames(fragments = fragments, filePath = filePath) })
         .union(flatMap { it.inlineFragments.flatMap { it.referencedFragments(fragments = fragments, filePath = filePath) } })
   }
 
-  private fun Field.referencedFragmentNames(fragments: List<ParsedFragment>, filePath: String): Set<String> {
+  private fun Field.referencedFragmentNames(fragments: List<Fragment>, filePath: String): Set<String> {
     val rawFieldType = type.replace("!", "").replace("[", "").replace("]", "")
     val referencedFragments = fragmentRefs.findFragments(
         typeCondition = rawFieldType,
@@ -806,7 +768,7 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
         .union(referencedFragments.flatMap { it.referencedFragments(fragments) })
   }
 
-  private fun InlineFragment.referencedFragments(fragments: List<ParsedFragment>, filePath: String): Set<String> {
+  private fun InlineFragment.referencedFragments(fragments: List<Fragment>, filePath: String): Set<String> {
     val referencedFragments = this.fragments.findFragments(
         typeCondition = typeCondition,
         fragments = fragments,
@@ -817,7 +779,7 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
         .union(referencedFragments.flatMap { it.referencedFragments(fragments) })
   }
 
-  private fun ParsedFragment.referencedFragments(fragments: List<ParsedFragment>): Set<String> {
+  private fun Fragment.referencedFragments(fragments: List<Fragment>): Set<String> {
     val referencedFragments = fragmentRefs.findFragments(
         typeCondition = typeCondition,
         fragments = fragments,
@@ -829,7 +791,7 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
         .union(referencedFragments.flatMap { it.referencedFragments(fragments) })
   }
 
-  private fun List<FragmentRef>.findFragments(typeCondition: String, fragments: List<ParsedFragment>, filePath: String): List<ParsedFragment> {
+  private fun List<FragmentRef>.findFragments(typeCondition: String, fragments: List<Fragment>, filePath: String): List<Fragment> {
     return map { ref ->
       val fragment = fragments.find { fragment -> fragment.fragmentName == ref.name }
           ?: throw DocumentParseException(
@@ -859,8 +821,8 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
 }
 
 private data class DocumentParseResult(
-    val operations: List<ParsedOperation> = emptyList(),
-    val fragments: List<ParsedFragment> = emptyList(),
+    val operations: List<Operation> = emptyList(),
+    val fragments: List<Fragment> = emptyList(),
     val usedTypes: Set<String> = emptySet()
 )
 
