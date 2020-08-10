@@ -23,21 +23,25 @@ public interface ApolloQueryCall<T> extends ApolloCall<T> {
   /**
    * Sets the http cache policy for response/request cache.
    *
+   * Deprecated, use {@link #toBuilder()} to mutate the ApolloCall
+   *
    * @param httpCachePolicy {@link HttpCachePolicy.Policy} to set
    * @return {@link ApolloQueryCall} with the provided {@link HttpCachePolicy.Policy}
    */
-  @NotNull ApolloQueryCall<T> httpCachePolicy(@NotNull HttpCachePolicy.Policy httpCachePolicy);
+  @Deprecated @NotNull ApolloQueryCall<T> httpCachePolicy(@NotNull HttpCachePolicy.Policy httpCachePolicy);
 
   /**
    * Sets the {@link CacheHeaders} to use for this call. {@link com.apollographql.apollo.interceptor.FetchOptions} will
    * be configured with this headers, and will be accessible from the {@link ResponseFetcher} used for this call.
+   *
+   * Deprecated, use {@link #toBuilder()} to mutate the ApolloCall
    *
    * @param cacheHeaders the {@link CacheHeaders} that will be passed with records generated from this request to {@link
    *                     com.apollographql.apollo.cache.normalized.NormalizedCache}. Standardized cache headers are
    *                     defined in {@link com.apollographql.apollo.cache.ApolloCacheHeaders}.
    * @return The ApolloCall object with the provided {@link CacheHeaders}.
    */
-  @NotNull @Override ApolloQueryCall<T> cacheHeaders(@NotNull CacheHeaders cacheHeaders);
+  @Deprecated @NotNull @Override ApolloQueryCall<T> cacheHeaders(@NotNull CacheHeaders cacheHeaders);
 
   /**
    * Sets the {@link ResponseFetcher} strategy for an ApolloCall object.
@@ -61,7 +65,7 @@ public interface ApolloQueryCall<T> extends ApolloCall<T> {
    */
   @Deprecated @NotNull ApolloQueryCall<T> requestHeaders(@NotNull RequestHeaders requestHeaders);
 
-  @NotNull @Override ApolloQueryCall<T> clone();
+  @Deprecated @NotNull @Override ApolloQueryCall<T> clone();
 
   @NotNull @Override Builder<T> toBuilder();
 
