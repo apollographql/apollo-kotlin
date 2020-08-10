@@ -1,6 +1,7 @@
 package com.apollographql.apollo.compiler.ir
 
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.compiler.withBuilder
 import com.apollographql.apollo.compiler.SchemaTypeSpecBuilder
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
