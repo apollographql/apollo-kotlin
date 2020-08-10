@@ -8,10 +8,4 @@ data class CodeGenerationIR(
     val typesUsed: List<TypeDeclaration>,
     val fragmentsPackageName: String,
     val typesPackageName: String
-) {
-  fun toJson() = Moshi.Builder().build().adapter(CodeGenerationIR::class.java).toJson(this)
-
-  companion object {
-    fun fromJson(json: String) = Moshi.Builder().build().adapter(CodeGenerationIR::class.java).fromJson(json)
-  }
-}
+)
