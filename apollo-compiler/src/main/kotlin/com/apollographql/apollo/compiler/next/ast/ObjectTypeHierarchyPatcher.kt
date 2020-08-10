@@ -36,10 +36,10 @@ private class TypeHierarchyPatcher(typeContainer: ObjectTypeContainer) {
 
     val patchedFields = type.fields.map { field ->
       val parentField = overrideFields.find { parentField ->
-        parentField.name == field.name && !parentField.type.nullable
+        parentField.name == field.name
       }
 
-      if (field.type.nullable && parentField?.type?.nullable == false) {
+      check(parentField == null || parentField.type.nullable || !field.type.nullable) {
         "Nullable field `${field.responseName}` of type `${field.type}` defined on object `${name}` is not a subtype of non nullable " +
             "overridden field. Please use field alias instead."
       }

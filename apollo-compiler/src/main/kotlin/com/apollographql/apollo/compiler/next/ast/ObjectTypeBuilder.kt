@@ -385,7 +385,7 @@ private class ObjectTypeBuilder(
         implements = listOf(parentType),
         singularizeName = singularizeName
     )
-    val fragments = inlineFragments.toFragments()
+    val fragments = inlineFragments.toFragments() + fragmentRefs.map { fragmentRef -> fragmentRef.toFragment() }
     return CodeGenerationAst.FieldType.Fragment(
         nullable = false,
         defaultType = defaultImplType,
@@ -451,7 +451,7 @@ private class ObjectTypeBuilder(
                 interfaceType = null
             )
         ) + fragment.fragments.map { it.toFragment() }
-      } + flatMap { it.inlineFragments }.toFragments()
+      } + flatMap { fragment -> fragment.inlineFragments }.toFragments()
     }
   }
 
