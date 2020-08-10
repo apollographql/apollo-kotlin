@@ -44,7 +44,7 @@ abstract class DefaultCompilationUnit @Inject constructor(
       sourceDirectorySet.findSources(compilerParams.schemaFile)
     }
 
-    if (!sourceDirectorySet.isEmpty && !compilerParams.schemaFile.isPresent) {
+    if (!compilerParams.schemaFile.isPresent) {
       compilerParams.schemaFile.set {
         project.file(
             resolveSchema(project = project,

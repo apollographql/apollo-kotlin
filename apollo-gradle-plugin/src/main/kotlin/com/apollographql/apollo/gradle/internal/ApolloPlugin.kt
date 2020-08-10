@@ -127,6 +127,16 @@ open class ApolloPlugin : Plugin<Project> {
 
         val (compilerParams, graphqlSourceDirectorySet) = compilationUnit.resolveParams(project)
 
+        it.graphqlFiles.setFrom(graphqlSourceDirectorySet)
+        // I'm not sure if gradle is sensitive to the order of the rootFolders. Sort them just in case.
+        it.rootFolders.set(project.provider { graphqlSourceDirectorySet.srcDirs.map { it.relativeTo(project.projectDir).path }.sorted() })
+        it.schemaFile.set(compilerParams.schemaFile)
+        it.operationOutputGenerator = compilerParams.operationOutputGenerator.getOrElse(
+            OperationOutputGenerator.DefaultOperationOuputGenerator(
+                compilerParams.operationIdGenerator.orElse(OperationIdGenerator.Sha256()).get()
+            )
+        )
+
         it.nullableValueType.set(compilerParams.nullableValueType)
         it.useSemanticNaming.set(compilerParams.useSemanticNaming)
         it.generateModelBuilder.set(compilerParams.generateModelBuilder)
@@ -145,15 +155,6 @@ open class ApolloPlugin : Plugin<Project> {
             disallowChanges()
           }
         }
-        it.graphqlFiles.setFrom(graphqlSourceDirectorySet)
-        // I'm not sure if gradle is sensitive to the order of the rootFolders. Sort them just in case.
-        it.rootFolders.set(project.provider { graphqlSourceDirectorySet.srcDirs.map { it.relativeTo(project.projectDir).path }.sorted() })
-        it.schemaFile.set(compilerParams.schemaFile)
-        it.operationOutputGenerator = compilerParams.operationOutputGenerator.getOrElse(
-            OperationOutputGenerator.DefaultOperationOuputGenerator(
-                compilerParams.operationIdGenerator.orElse(OperationIdGenerator.Sha256()).get()
-            )
-        )
         it.rootPackageName.set(compilerParams.rootPackageName)
         it.generateAsInternal.set(compilerParams.generateAsInternal)
         it.kotlinMultiPlatformProject.set(project.isKotlinMultiplatform)
