@@ -1,7 +1,5 @@
 package com.apollographql.apollo.compiler.ir
 
-import com.squareup.moshi.Moshi
-
 data class CodeGenerationIR(
     val operations: List<Operation>,
     val fragments: List<Fragment>,
