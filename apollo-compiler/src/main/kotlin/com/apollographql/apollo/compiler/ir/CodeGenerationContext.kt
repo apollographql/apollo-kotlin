@@ -1,8 +1,6 @@
 package com.apollographql.apollo.compiler.ir
 
 import com.apollographql.apollo.compiler.NullableValueType
-import com.apollographql.apollo.compiler.PackageNameProvider
-import com.apollographql.apollo.compiler.OperationIdGenerator
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 
 data class CodeGenerationContext(

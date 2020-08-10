@@ -1,6 +1,5 @@
 package com.apollographql.apollo.compiler.ir
 
-import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 
 data class CodeGenerationIR(

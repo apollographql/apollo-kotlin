@@ -1,8 +1,17 @@
 package com.apollographql.apollo.compiler.ir
 
-import com.apollographql.apollo.compiler.*
-import com.squareup.javapoet.*
-import com.squareup.moshi.JsonClass
+import com.apollographql.apollo.compiler.ClassNames
+import com.apollographql.apollo.compiler.JavaTypeResolver
+import com.apollographql.apollo.compiler.SchemaTypeSpecBuilder
+import com.apollographql.apollo.compiler.escapeJavaReservedWord
+import com.apollographql.apollo.compiler.singularize
+import com.apollographql.apollo.compiler.toJavaBeansSemanticNaming
+import com.apollographql.apollo.compiler.withBuilder
+import com.squareup.javapoet.CodeBlock
+import com.squareup.javapoet.FieldSpec
+import com.squareup.javapoet.MethodSpec
+import com.squareup.javapoet.TypeName
+import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
 data class Field(
