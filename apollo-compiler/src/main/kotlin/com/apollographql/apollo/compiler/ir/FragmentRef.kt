@@ -2,7 +2,6 @@ package com.apollographql.apollo.compiler.ir
 
 import com.squareup.moshi.JsonClass
 
-@JsonClass(generateAdapter = true)
 data class FragmentRef(
     val name: String,
     val conditions: List<Condition>,

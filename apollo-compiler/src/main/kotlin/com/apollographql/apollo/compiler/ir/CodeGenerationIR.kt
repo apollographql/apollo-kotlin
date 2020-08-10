@@ -3,7 +3,6 @@ package com.apollographql.apollo.compiler.ir
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 
-@JsonClass(generateAdapter = true)
 data class CodeGenerationIR(
     val operations: List<Operation>,
     val fragments: List<Fragment>,
