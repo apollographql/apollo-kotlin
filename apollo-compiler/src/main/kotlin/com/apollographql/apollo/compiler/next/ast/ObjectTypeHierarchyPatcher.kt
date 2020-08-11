@@ -1,41 +1,44 @@
 package com.apollographql.apollo.compiler.next.ast
 
-internal fun ObjectTypeContainer.patchTypeHierarchy(
-    rootType: CodeGenerationAst.TypeRef,
-    fragmentTypes: List<CodeGenerationAst.FragmentType>
-): ObjectTypeContainer {
+internal fun ObjectTypeContainer.patchTypeHierarchy(fragmentTypes: List<CodeGenerationAst.FragmentType>): ObjectTypeContainer {
   val fragmentTypeContainer = fragmentTypes.fold(emptyMap<CodeGenerationAst.TypeRef, CodeGenerationAst.ObjectType>()) { acc, fragmentType ->
     acc + fragmentType.nestedTypes
   }
   return TypeHierarchyPatcher(this + fragmentTypeContainer)
-      .patch(rootType)
+      .patch()
       .minus(fragmentTypeContainer.keys)
 }
 
 private class TypeHierarchyPatcher(typeContainer: ObjectTypeContainer) {
   private val patchedTypeContainer = typeContainer.toMutableMap()
+  private val patchedTypes = mutableListOf<CodeGenerationAst.TypeRef>()
 
-  fun patch(rootType: CodeGenerationAst.TypeRef): Map<CodeGenerationAst.TypeRef, CodeGenerationAst.ObjectType> {
-    rootType.patch()
+  fun patch(): Map<CodeGenerationAst.TypeRef, CodeGenerationAst.ObjectType> {
+    patchedTypeContainer.keys.forEach { typeRef ->
+      typeRef.takeUnless { patchedTypes.contains(it) }?.patch()
+    }
     return patchedTypeContainer
   }
 
   private fun CodeGenerationAst.TypeRef.patch() {
+    patchedTypes.add(this)
+
     val type = requireNotNull(patchedTypeContainer[this]) {
       "Can't resolve type, unknown type reference `$this`"
     }
 
-    type.implements.forEach { parentType -> parentType.patch() }
+    type.implements.forEach { interfaceType -> interfaceType.patch() }
 
-    val parentTypeFields = type.implements
-        .flatMap { parentType -> (patchedTypeContainer[parentType] as CodeGenerationAst.ObjectType).fields }
+    val inheritedFields = type.implements.flatMap { parentType ->
+      (patchedTypeContainer[parentType] as CodeGenerationAst.ObjectType).fields
+    }
 
-    val (newFields, overrideFields) = parentTypeFields.partition { parentTypeField ->
+    val (newFields, parentFields) = inheritedFields.partition { parentTypeField ->
       type.fields.find { field -> field.name == parentTypeField.name } == null
     }
 
     val patchedFields = type.fields.map { field ->
-      val parentField = overrideFields.find { parentField ->
+      val parentField = parentFields.find { parentField ->
         parentField.name == field.name
       }
 
@@ -50,29 +53,11 @@ private class TypeHierarchyPatcher(typeContainer: ObjectTypeContainer) {
     patchedTypeContainer[this] = type.copy(fields = newFields.map { it.copy(override = true) } + patchedFields)
 
     patchedFields.forEach { field ->
-      val parentFieldTypes = parentTypeFields.mapNotNull { parentField ->
+      val parentFieldTypes = parentFields.mapNotNull { parentField ->
         parentField.takeIf { it.name == field.name }?.type
       }
-      when {
-        parentFieldTypes.isEmpty() -> field.type.patch()
-        else -> field.type.patch(parentFieldTypes)
-      }
-    }
-  }
-
-  private fun CodeGenerationAst.FieldType.patch() {
-    when (this) {
-      is CodeGenerationAst.FieldType.Object -> {
-        typeRef.patch()
-      }
-
-      is CodeGenerationAst.FieldType.Array -> {
-        rawType.patch()
-      }
-
-      is CodeGenerationAst.FieldType.Fragment -> {
-        defaultType.patch()
-        possibleTypes.values.forEach { type -> type.patch() }
+      if (parentFieldTypes.isNotEmpty()) {
+        field.type.patch(parentFieldTypes)
       }
     }
   }
@@ -83,8 +68,6 @@ private class TypeHierarchyPatcher(typeContainer: ObjectTypeContainer) {
         parentFieldTypes.forEach { parentFieldType ->
           if (parentFieldType is CodeGenerationAst.FieldType.Object) {
             patch(parentFieldType)
-          } else if (parentFieldType is CodeGenerationAst.FieldType.Fragment) {
-            patch(parentFieldType)
           }
         }
       }
@@ -94,67 +77,26 @@ private class TypeHierarchyPatcher(typeContainer: ObjectTypeContainer) {
           patch(parentFieldType as CodeGenerationAst.FieldType.Array)
         }
       }
+    }
+  }
 
-      is CodeGenerationAst.FieldType.Fragment -> {
-        parentFieldTypes.forEach { parentFieldType ->
-          if (parentFieldType is CodeGenerationAst.FieldType.Object) {
-            patch(parentFieldType)
-          } else if (parentFieldType is CodeGenerationAst.FieldType.Fragment) {
-            patch(parentFieldType)
-          }
+  private fun CodeGenerationAst.FieldType.Object.patch(
+      parentFieldType: CodeGenerationAst.FieldType.Object
+  ) {
+    val objectTypeToPatch = patchedTypeContainer[typeRef] as CodeGenerationAst.ObjectType
+    patchedTypeContainer[typeRef] = objectTypeToPatch.copy(implements = objectTypeToPatch.implements + parentFieldType.typeRef)
+
+    if (objectTypeToPatch.kind is CodeGenerationAst.ObjectType.Kind.Fragment) {
+      objectTypeToPatch.kind.defaultImplementation.patch()
+      objectTypeToPatch.kind.possibleImplementations.values.forEach { typeRef ->
+        patchedTypeContainer[typeRef] = with(patchedTypeContainer[typeRef] as CodeGenerationAst.ObjectType) {
+          copy(implements = implements + parentFieldType.typeRef)
         }
+        typeRef.patch()
       }
     }
-  }
 
-  private fun CodeGenerationAst.FieldType.Object.patch(
-      parentFieldType: CodeGenerationAst.FieldType.Object
-  ) {
-    patchedTypeContainer[typeRef] = with(patchedTypeContainer[typeRef] as CodeGenerationAst.ObjectType) {
-      copy(implements = implements + parentFieldType.typeRef)
-    }
     typeRef.patch()
-  }
-
-  private fun CodeGenerationAst.FieldType.Object.patch(
-      parentFieldType: CodeGenerationAst.FieldType.Fragment
-  ) {
-    patchedTypeContainer[typeRef] = with(patchedTypeContainer[typeRef] as CodeGenerationAst.ObjectType) {
-      copy(implements = implements + parentFieldType.rawType)
-    }
-    typeRef.patch()
-  }
-
-  private fun CodeGenerationAst.FieldType.Fragment.patch(
-      parentFieldType: CodeGenerationAst.FieldType.Object
-  ) {
-    patchedTypeContainer[defaultType] = with(patchedTypeContainer[defaultType] as CodeGenerationAst.ObjectType) {
-      copy(implements = implements + parentFieldType.typeRef)
-    }
-    defaultType.patch()
-
-    possibleTypes.values.forEach { typeRef ->
-      patchedTypeContainer[typeRef] = with(patchedTypeContainer[typeRef] as CodeGenerationAst.ObjectType) {
-        copy(implements = implements + parentFieldType.typeRef)
-      }
-      typeRef.patch()
-    }
-  }
-
-  private fun CodeGenerationAst.FieldType.Fragment.patch(
-      parentFieldType: CodeGenerationAst.FieldType.Fragment
-  ) {
-    patchedTypeContainer[defaultType] = with(patchedTypeContainer[defaultType] as CodeGenerationAst.ObjectType) {
-      copy(implements = implements + parentFieldType.rawType)
-    }
-    defaultType.patch()
-
-    possibleTypes.values.forEach { typeRef ->
-      patchedTypeContainer[typeRef] = with(patchedTypeContainer[typeRef] as CodeGenerationAst.ObjectType) {
-        copy(implements = implements + parentFieldType.rawType)
-      }
-      typeRef.patch()
-    }
   }
 
   private fun CodeGenerationAst.FieldType.Array.patch(
@@ -163,10 +105,6 @@ private class TypeHierarchyPatcher(typeContainer: ObjectTypeContainer) {
     when (rawType) {
       is CodeGenerationAst.FieldType.Object -> {
         if (parentFieldType.rawType is CodeGenerationAst.FieldType.Object) {
-          rawType.patch(
-              parentFieldType = parentFieldType.rawType
-          )
-        } else if (parentFieldType.rawType is CodeGenerationAst.FieldType.Fragment) {
           rawType.patch(
               parentFieldType = parentFieldType.rawType
           )

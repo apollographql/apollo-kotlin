@@ -49,11 +49,24 @@ internal data class CodeGenerationAst(
       val description: String,
       val deprecated: Boolean,
       val deprecationReason: String,
-      val abstract: Boolean,
       val fields: List<Field>,
       val implements: Set<TypeRef>,
-      val schemaType: String?
-  )
+      val schemaType: String?,
+      val kind: Kind
+  ) {
+    val abstract: Boolean = kind == Kind.Interface || kind is Kind.Fragment
+
+    sealed class Kind {
+      object Interface : Kind()
+
+      object Object : Kind()
+
+      data class Fragment(
+          val defaultImplementation: TypeRef,
+          val possibleImplementations: Map<String, TypeRef>
+      ) : Kind()
+    }
+  }
 
   data class Field(
       val name: String,
@@ -118,7 +131,6 @@ internal data class CodeGenerationAst(
         is Scalar.Custom -> copy(nullable = false)
         is Object -> copy(nullable = false)
         is Array -> copy(nullable = false)
-        is Fragment -> copy(nullable = false)
       }
     }
 
@@ -133,7 +145,6 @@ internal data class CodeGenerationAst(
         is Scalar.Custom -> copy(nullable = true)
         is Object -> copy(nullable = true)
         is Array -> copy(nullable = true)
-        is Fragment -> copy(nullable = true)
       }
     }
 
@@ -174,13 +185,6 @@ internal data class CodeGenerationAst(
         override val nullable: Boolean,
         val rawType: FieldType
     ) : FieldType()
-
-    data class Fragment(
-        override val nullable: Boolean,
-        val rawType: TypeRef,
-        val defaultType: TypeRef,
-        val possibleTypes: Map<String, TypeRef>
-    ) : FieldType()
   }
 
   data class TypeRef(
@@ -196,5 +200,18 @@ internal data class CodeGenerationAst(
           packageName = typesPackageName
       )
     }
+
+    val typenameField = Field(
+        name = "__typename",
+        responseName = "__typename",
+        schemaName = "__typename",
+        type = FieldType.Scalar.String(nullable = false),
+        description = "",
+        deprecated = false,
+        deprecationReason = "",
+        arguments = emptyMap(),
+        conditions = emptySet(),
+        override = false
+    )
   }
 }

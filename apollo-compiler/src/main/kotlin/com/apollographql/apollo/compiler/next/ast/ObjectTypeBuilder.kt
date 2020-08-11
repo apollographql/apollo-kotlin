@@ -8,64 +8,8 @@ import com.apollographql.apollo.compiler.ir.InlineFragment
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.parser.introspection.resolveType
 import com.apollographql.apollo.compiler.singularize
-import com.apollographql.apollo.compiler.ir.Fragment as IrFragment
 
-internal fun buildInterfaceType(
-    typeRef: CodeGenerationAst.TypeRef,
-    schemaType: IntrospectionSchema.Type,
-    fields: List<Field>,
-    schema: IntrospectionSchema,
-    customTypes: CustomTypes,
-    typesPackageName: String,
-    fragmentsPackage: String,
-    irFragments: List<IrFragment>,
-    nestedTypeContainer: ObjectTypeContainerBuilder
-): CodeGenerationAst.ObjectType {
-  return ObjectTypeBuilder(
-      schema = schema,
-      customTypes = customTypes,
-      typesPackageName = typesPackageName,
-      fragmentsPackage = fragmentsPackage,
-      irFragments = irFragments.associateBy { it.fragmentName },
-      nestedTypeContainer = nestedTypeContainer,
-      enclosingType = typeRef
-  ).buildObjectType(
-      typeRef = typeRef,
-      schemaType = schemaType,
-      fields = fields,
-      abstract = true
-  )
-}
-
-internal fun buildObjectType(
-    typeRef: CodeGenerationAst.TypeRef,
-    enclosingType: CodeGenerationAst.TypeRef,
-    schemaType: IntrospectionSchema.Type,
-    fields: List<Field>,
-    schema: IntrospectionSchema,
-    customTypes: CustomTypes,
-    typesPackageName: String,
-    fragmentsPackage: String,
-    irFragments: List<IrFragment>,
-    nestedTypeContainer: ObjectTypeContainerBuilder
-): CodeGenerationAst.ObjectType {
-  return ObjectTypeBuilder(
-      schema = schema,
-      customTypes = customTypes,
-      typesPackageName = typesPackageName,
-      fragmentsPackage = fragmentsPackage,
-      irFragments = irFragments.associateBy { it.fragmentName },
-      nestedTypeContainer = nestedTypeContainer,
-      enclosingType = enclosingType
-  ).buildObjectType(
-      typeRef = typeRef,
-      schemaType = schemaType,
-      fields = fields,
-      abstract = false
-  )
-}
-
-private class ObjectTypeBuilder(
+internal class ObjectTypeBuilder(
     private val schema: IntrospectionSchema,
     private val customTypes: CustomTypes,
     private val typesPackageName: String,
@@ -86,7 +30,6 @@ private class ObjectTypeBuilder(
         description = schemaType.description ?: "",
         deprecated = false,
         deprecationReason = "",
-        abstract = abstract,
         fields = fields.mapNotNull { field ->
           // ignore any fields that don't belong to schemaType because they were merged during parsing inline fragments
           // the way how this merge works is required by old codegen
@@ -97,7 +40,8 @@ private class ObjectTypeBuilder(
           )
         },
         implements = emptySet(),
-        schemaType = schemaType.name
+        schemaType = schemaType.name,
+        kind = CodeGenerationAst.ObjectType.Kind.Interface.takeIf { abstract } ?: CodeGenerationAst.ObjectType.Kind.Object
     )
   }
 
@@ -119,7 +63,6 @@ private class ObjectTypeBuilder(
           description = schemaType.description ?: "",
           deprecated = false,
           deprecationReason = "",
-          abstract = abstract,
           fields = fields.mapNotNull { field ->
             // ignore any fields that don't belong to schemaType because they were merged during parsing inline fragments
             // the way how this merge works is required by old codegen
@@ -130,7 +73,8 @@ private class ObjectTypeBuilder(
             )
           },
           implements = implements.toSet(),
-          schemaType = schemaType.name
+          schemaType = schemaType.name,
+          kind = CodeGenerationAst.ObjectType.Kind.Interface.takeIf { abstract } ?: CodeGenerationAst.ObjectType.Kind.Object
       )
     }
   }
@@ -239,11 +183,11 @@ private class ObjectTypeBuilder(
 
       else -> throw IllegalArgumentException("Unsupported selection field type `$schemaTypeRef`")
     }.let { type ->
-      if (field.isConditional && type !is CodeGenerationAst.FieldType.Fragment) type.nullable() else type
+      if (field.isConditional) type.nullable() else type
     }
   }
 
-  private fun List<Fragment>.buildFragmentFieldPossibleTypes(
+  private fun List<Fragment>.buildFragmentPossibleTypes(
       parentType: CodeGenerationAst.TypeRef
   ): Map<String, CodeGenerationAst.TypeRef> {
     val (fragmentOnObjects, fragmentOnInterfaces) = partition { fragment ->
@@ -357,10 +301,10 @@ private class ObjectTypeBuilder(
           description = "",
           deprecated = false,
           deprecationReason = "",
-          abstract = false,
           fields = fields,
           implements = mapNotNull { fragment -> fragmentInterfaceTypes[fragment] }.toSet(),
-          schemaType = null
+          schemaType = null,
+          kind = CodeGenerationAst.ObjectType.Kind.Object
       )
     }
   }
@@ -368,29 +312,50 @@ private class ObjectTypeBuilder(
   private fun Field.resolveFragmentFieldType(
       schemaTypeRef: IntrospectionSchema.TypeRef,
       singularizeName: Boolean
-  ): CodeGenerationAst.FieldType.Fragment {
-    val parentType = buildObjectType(
-        name = responseName,
-        schemaType = schema.resolveType(schemaTypeRef),
-        fields = fields,
-        abstract = true,
-        implements = emptyList(),
+  ): CodeGenerationAst.FieldType.Object {
+    val fragmentRootInterfaceType = nestedTypeContainer.registerObjectType(
+        typeName = responseName,
+        enclosingType = enclosingType,
         singularizeName = singularizeName
-    )
-    val defaultImplType = buildObjectType(
-        name = "${responseName.singularize()}Impl",
-        schemaType = schema.resolveType(schemaTypeRef),
-        fields = fields,
-        abstract = false,
-        implements = listOf(parentType),
-        singularizeName = singularizeName
-    )
-    val fragments = inlineFragments.toFragments() + fragmentRefs.map { fragmentRef -> fragmentRef.toFragment() }
-    return CodeGenerationAst.FieldType.Fragment(
-        nullable = false,
-        defaultType = defaultImplType,
-        rawType = parentType,
-        possibleTypes = fragments.buildFragmentFieldPossibleTypes(parentType)
+    ) { fragmentRootInterfaceType ->
+      val schemaType = schema.resolveType(schemaTypeRef)
+
+      val defaultImplementationType = buildObjectType(
+          name = "${responseName.singularize()}Impl",
+          schemaType = schema.resolveType(schemaTypeRef),
+          fields = fields,
+          abstract = false,
+          implements = listOf(fragmentRootInterfaceType),
+          singularizeName = singularizeName
+      )
+
+      val possibleImplementations = inlineFragments.toFragments()
+          .plus(fragmentRefs.map { fragmentRef -> fragmentRef.toFragment() })
+          .buildFragmentPossibleTypes(fragmentRootInterfaceType)
+
+      CodeGenerationAst.ObjectType(
+          name = fragmentRootInterfaceType.name,
+          description = schemaType.description ?: "",
+          deprecated = false,
+          deprecationReason = "",
+          fields = fields.mapNotNull { field ->
+            buildField(
+                field = field,
+                schemaType = schemaType,
+                abstract = true
+            )
+          },
+          implements = emptySet(),
+          schemaType = schemaType.name,
+          kind = CodeGenerationAst.ObjectType.Kind.Fragment(
+              defaultImplementation = defaultImplementationType,
+              possibleImplementations = possibleImplementations
+          )
+      )
+    }
+    return CodeGenerationAst.FieldType.Object(
+        nullable = isOptional(),
+        typeRef = fragmentRootInterfaceType
     )
   }
 

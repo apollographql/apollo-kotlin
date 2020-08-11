@@ -273,22 +273,24 @@ private class CodeGenerationAstBuilder(
         typeName = "Data",
         enclosingType = CodeGenerationAst.TypeRef(name = operationClassName)
     ) { typeRef ->
-      buildObjectType(
-          typeRef = typeRef,
-          enclosingType = CodeGenerationAst.TypeRef(name = operationClassName),
-          schemaType = operationSchemaType,
-          fields = fields,
+      ObjectTypeBuilder(
           schema = schema,
           customTypes = customTypes,
           typesPackageName = typesPackageName,
           fragmentsPackage = fragmentsPackage,
-          irFragments = irFragments,
-          nestedTypeContainer = nestedTypeContainer
+          irFragments = irFragments.associateBy { it.fragmentName },
+          nestedTypeContainer = nestedTypeContainer,
+          enclosingType = CodeGenerationAst.TypeRef(name = operationClassName)
+      ).buildObjectType(
+          typeRef = typeRef,
+          schemaType = operationSchemaType,
+          fields = fields,
+          abstract = false
       )
     }
     return CodeGenerationAst.OperationDataType(
         rootType = rootType,
-        nestedTypes = nestedTypeContainer.typeContainer.patchTypeHierarchy(rootType, fragmentTypes)
+        nestedTypes = nestedTypeContainer.typeContainer.patchTypeHierarchy(fragmentTypes)
     )
   }
 
@@ -298,16 +300,19 @@ private class CodeGenerationAstBuilder(
   ): CodeGenerationAst.FragmentType {
     val nestedTypeContainer = ObjectTypeContainerBuilder(packageName = fragmentsPackage)
     val rootType = nestedTypeContainer.registerObjectType(typeName = fragmentName, enclosingType = null) { typeRef ->
-      buildInterfaceType(
-          typeRef = typeRef,
-          schemaType = schema.resolveType(schema.resolveType(typeCondition)),
-          fields = fields,
+      ObjectTypeBuilder(
           schema = schema,
           customTypes = customTypes,
           typesPackageName = typesPackageName,
           fragmentsPackage = fragmentsPackage,
-          irFragments = irFragments,
-          nestedTypeContainer = nestedTypeContainer
+          irFragments = irFragments.associateBy { it.fragmentName },
+          nestedTypeContainer = nestedTypeContainer,
+          enclosingType = typeRef
+      ).buildObjectType(
+          typeRef = typeRef,
+          schemaType = schema.resolveType(schema.resolveType(typeCondition)),
+          fields = fields,
+          abstract = true
       )
     }
     return CodeGenerationAst.FragmentType(
