@@ -171,8 +171,8 @@ actual class ApolloHttpNetworkTransport(
         .url(serverUrl)
         .headers(headers)
         .apply {
-          httpExecutionContext?.headers?.entries?.forEach {
-            header(name = it.key, value = it.value)
+          httpExecutionContext?.headers?.forEach { (name, value) ->
+            header(name = name, value = value)
           }
         }
         .post(requestBody)
