@@ -2,6 +2,7 @@ package com.apollographql.apollo.internal;
 
 import com.apollographql.apollo.ApolloMutationCall;
 import com.apollographql.apollo.ApolloQueryCall;
+import com.apollographql.apollo.api.Mutation;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
@@ -407,8 +408,10 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         interceptors.add(interceptor);
       }
     } else {
-      if (operation instanceof Query && enableAutoPersistedQueries) {
-        interceptors.add(new ApolloAutoPersistedOperationInterceptor(logger, useHttpGetMethodForPersistedQueries));
+      if (enableAutoPersistedQueries && (operation instanceof Query || operation instanceof Mutation)) {
+        interceptors.add(new ApolloAutoPersistedOperationInterceptor(
+            logger,
+            useHttpGetMethodForPersistedQueries && !(operation instanceof Mutation)));
       }
     }
     interceptors.add(new ApolloParseInterceptor(httpCache, apolloStore.networkResponseNormalizer(), responseFieldMapper,
