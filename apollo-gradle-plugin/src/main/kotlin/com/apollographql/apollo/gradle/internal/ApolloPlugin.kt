@@ -1,11 +1,16 @@
 package com.apollographql.apollo.gradle.internal
 
+import com.apollographql.apollo.compiler.OperationIdGenerator
+import com.apollographql.apollo.compiler.OperationOutputGenerator
 import com.apollographql.apollo.gradle.api.ApolloExtension
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.ConfigurationContainer
+import org.gradle.api.file.Directory
+import org.gradle.api.file.RegularFile
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.util.GradleVersion
 import java.net.URLDecoder
@@ -16,6 +21,35 @@ open class ApolloPlugin : Plugin<Project> {
     const val MIN_GRADLE_VERSION = "6.0"
 
     val Project.isKotlinMultiplatform get() = pluginManager.hasPlugin("org.jetbrains.kotlin.multiplatform")
+
+    private fun operationOuputLocation(project: Project, compilationUnit: DefaultCompilationUnit): Provider<RegularFile> {
+      return project.layout.buildDirectory.file(
+          "generated/operationOutput/apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}/operationOutput.json"
+      )
+    }
+
+    private fun sourcesLocation(project: Project, compilationUnit: DefaultCompilationUnit): Provider<Directory> {
+      return project.layout.buildDirectory.dir(
+          "generated/source/apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}"
+      )
+    }
+
+    private fun irLocation(project: Project, compilationUnit: DefaultCompilationUnit): Provider<RegularFile> {
+      return project.layout.buildDirectory.file(
+          "generated/ir/apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}/ir.json"
+      )
+    }
+
+    private fun operationListLocation(project: Project, compilationUnit: DefaultCompilationUnit): Provider<RegularFile> {
+      return project.layout.buildDirectory.file(
+          "generated/ir/apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}/operationList.json"
+      )
+    }
+
+    private fun versionCheckLocation(project: Project): Provider<RegularFile> {
+      return project.layout.buildDirectory.file("generated/versionCheck/apollo/versionCheck")
+    }
+
 
     private fun registerCompilationUnits(project: Project, apolloExtension: DefaultApolloExtension, checkVersionsTask: TaskProvider<Task>) {
       val androidExtension = project.extensions.findByName("android")
@@ -48,12 +82,17 @@ open class ApolloPlugin : Plugin<Project> {
         }
 
         compilationUnits.forEach { compilationUnit ->
-          val codegenProvider = registerCodeGenTask(project, compilationUnit, checkVersionsTask)
+          val codegenProvider = registerCodeGenTask(project, compilationUnit)
+
+          codegenProvider.configure {
+            it.dependsOn(checkVersionsTask)
+          }
+
           variantProvider.configure {
             it.dependsOn(codegenProvider)
           }
 
-          compilationUnit.outputDir.set(codegenProvider.flatMap { it.outputDir })
+          compilationUnit.outputDir.set(codegenProvider.map { it.outputDir.get() })
           compilationUnit.operationOutputFile.set(codegenProvider.flatMap { it.operationOutputFile })
 
           /**
@@ -79,14 +118,12 @@ open class ApolloPlugin : Plugin<Project> {
       }
     }
 
-    private fun registerCodeGenTask(project: Project, compilationUnit: DefaultCompilationUnit, checkVersionsTask: TaskProvider<Task>): TaskProvider<ApolloGenerateSourcesTask> {
+    private fun registerCodeGenTask(project: Project, compilationUnit: DefaultCompilationUnit): TaskProvider<ApolloGenerateSourcesTask> {
       val taskName = "generate${compilationUnit.name.capitalize()}ApolloSources"
 
       return project.tasks.register(taskName, ApolloGenerateSourcesTask::class.java) {
         it.group = TASK_GROUP
         it.description = "Generate Apollo models for ${compilationUnit.name.capitalize()} GraphQL queries"
-
-        it.dependsOn(checkVersionsTask)
 
         val (compilerParams, graphqlSourceDirectorySet) = compilationUnit.resolveParams(project)
 
@@ -94,6 +131,11 @@ open class ApolloPlugin : Plugin<Project> {
         // I'm not sure if gradle is sensitive to the order of the rootFolders. Sort them just in case.
         it.rootFolders.set(project.provider { graphqlSourceDirectorySet.srcDirs.map { it.relativeTo(project.projectDir).path }.sorted() })
         it.schemaFile.set(compilerParams.schemaFile)
+        it.operationOutputGenerator = compilerParams.operationOutputGenerator.getOrElse(
+            OperationOutputGenerator.DefaultOperationOuputGenerator(
+                compilerParams.operationIdGenerator.orElse(OperationIdGenerator.Sha256()).get()
+            )
+        )
 
         it.nullableValueType.set(compilerParams.nullableValueType)
         it.useSemanticNaming.set(compilerParams.useSemanticNaming)
@@ -103,25 +145,20 @@ open class ApolloPlugin : Plugin<Project> {
         it.generateKotlinModels.set(compilationUnit.generateKotlinModels())
         it.generateVisitorForPolymorphicDatatypes.set(compilerParams.generateVisitorForPolymorphicDatatypes)
         it.customTypeMapping.set(compilerParams.customTypeMapping)
-        it.rootPackageName.set(compilerParams.rootPackageName)
         it.outputDir.apply {
-          set(project.layout.buildDirectory.map {
-            it.dir("generated/source/apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}")
-          })
+          set(sourcesLocation(project, compilationUnit))
           disallowChanges()
         }
-        it.operationOutputFile.apply {
-          if (compilerParams.generateOperationOutput.getOrElse(false)) {
-            set(project.layout.buildDirectory.file("generated/operationOutput/apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}/OperationOutput.json"))
+        if (compilerParams.generateOperationOutput.getOrElse(false)) {
+          it.operationOutputFile.apply {
+            set(operationOuputLocation(project, compilationUnit))
+            disallowChanges()
           }
-          disallowChanges()
         }
-
+        it.rootPackageName.set(compilerParams.rootPackageName)
         it.generateAsInternal.set(compilerParams.generateAsInternal)
-        it.operationIdGenerator.set(compilerParams.operationIdGenerator)
         it.kotlinMultiPlatformProject.set(project.isKotlinMultiplatform)
         it.sealedClassesForEnumsMatching.set(compilerParams.sealedClassesForEnumsMatching)
-        Unit
       }
     }
 
@@ -196,7 +233,7 @@ open class ApolloPlugin : Plugin<Project> {
 
     fun registerCheckVersionsTask(project: Project): TaskProvider<Task> {
       return project.tasks.register("checkApolloVersions") {
-        val outputFile = project.layout.buildDirectory.file("apollo/versionCheck")
+        val outputFile = versionCheckLocation(project)
 
         val allDeps = (
             getDeps(project.rootProject.buildscript.configurations) +

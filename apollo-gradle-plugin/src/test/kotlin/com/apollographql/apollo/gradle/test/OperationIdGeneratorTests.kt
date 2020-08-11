@@ -2,6 +2,7 @@ package com.apollographql.apollo.gradle.test
 
 import com.apollographql.apollo.gradle.util.TestUtils
 import com.apollographql.apollo.gradle.util.TestUtils.withSimpleProject
+import com.apollographql.apollo.gradle.util.TestUtils.withTestProject
 import com.apollographql.apollo.gradle.util.generatedChild
 import com.apollographql.apollo.gradle.util.replaceInText
 import org.gradle.testkit.runner.TaskOutcome
@@ -10,7 +11,7 @@ import org.junit.Assert
 import org.junit.Test
 import java.io.File
 
-class CustomIdGeneratorTests {
+class OperationIdGeneratorTests {
   val apolloConfiguration = """
       class MyIdGenerator implements OperationIdGenerator {
           String apply(String queryString, String queryFilepath) {
@@ -46,7 +47,7 @@ class CustomIdGeneratorTests {
     val apolloConfiguration = """
       class MyIdGenerator implements OperationIdGenerator {
           String apply(String queryString, String queryFilepath) {
-              return "someQueryId";
+              return queryFilepath;
           }
           String version = "MyIdGenerator-v1"
       }
@@ -68,7 +69,7 @@ class CustomIdGeneratorTests {
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
 
       val queryJavaFile = dir.generatedChild("main/service/com/example/DroidDetailsQuery.java")
-      Assert.assertThat(queryJavaFile.readText(), CoreMatchers.containsString("someQueryId"))
+      Assert.assertThat(queryJavaFile.readText(), CoreMatchers.containsString("com/example/DroidDetails.graphql"))
     }
   }
 
@@ -83,7 +84,7 @@ class CustomIdGeneratorTests {
 
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
 
-      File(dir, "build.gradle").replaceInText("operationDocument.length()", "(operationDocument.length() * 2)")
+      File(dir, "build.gradle").replaceInText("queryString.length().toString()", "queryString.length().toString() + \"(modified)\"")
       File(dir, "build.gradle").replaceInText("MyIdGenerator-v1", "MyIdGenerator-v2")
 
       result = TestUtils.executeTask("generateApolloSources", dir)
@@ -118,6 +119,34 @@ class CustomIdGeneratorTests {
       result = TestUtils.executeTask("generateMainServiceApolloSources", dir, "--build-cache", "-i")
 
       Assert.assertEquals(TaskOutcome.FROM_CACHE, result.task(":generateMainServiceApolloSources")!!.outcome)
+    }
+  }
+
+  @Test
+  fun `operationOutputGenerator is working as expected`() {
+    withTestProject("operationIds") { dir ->
+
+      var result = TestUtils.executeTask("generateApolloSources", dir)
+
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainServiceApolloSources")!!.outcome)
+
+      Assert.assertThat(
+          dir.generatedChild("main/service/com/example/GreetingQuery.java").readText(),
+          CoreMatchers.containsString("OPERATION_ID = \"GreetingCustomId\";")
+      )
+
+      // Change the implementation of the operation ID generator and check again
+      File(dir,"build.gradle.kts").replaceInText("CustomId", "anotherCustomId")
+      File(dir,"build.gradle.kts").replaceInText("OperationOutputGenerator-v1", "OperationOutputGenerator-v2")
+
+      result = TestUtils.executeTask("generateApolloSources", dir)
+
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainServiceApolloSources")!!.outcome)
+
+      Assert.assertThat(
+          dir.generatedChild("main/service/com/example/GreetingQuery.java").readText(),
+          CoreMatchers.containsString("anotherCustomId")
+      )
     }
   }
 }

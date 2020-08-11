@@ -13,7 +13,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath(groovy.util.Eval.x(project, "x.dep.kotlin.multiplatformPlugin"))
+        classpath(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
         classpath(groovy.util.Eval.x(project, "x.dep.apollo.plugin"))
     }
 }

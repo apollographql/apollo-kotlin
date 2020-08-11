@@ -97,7 +97,7 @@ class UpToDateTests {
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
 
       val schemaFile = dir.child("src", "main", "graphql", "com", "example", "schema.json")
-      schemaFile.writeText(schemaFile.readText() + "fezfze\n\n")
+      schemaFile.replaceInText("The ID of an object", "The ID of an object (modified)")
 
       result = TestUtils.executeTask("generateApolloSources", dir, "-i")
 

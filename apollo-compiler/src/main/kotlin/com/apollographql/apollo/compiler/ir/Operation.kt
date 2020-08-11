@@ -1,13 +1,14 @@
 package com.apollographql.apollo.compiler.ir
 
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.compiler.SchemaTypeSpecBuilder
 import com.apollographql.apollo.compiler.withBuilder
+import com.apollographql.apollo.compiler.SchemaTypeSpecBuilder
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
 data class Operation(
     val operationName: String,
+    val packageName: String,
     val operationType: String,
     val description: String,
     val variables: List<Variable>,

@@ -5,7 +5,7 @@ import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.ir.ScalarType
 import com.apollographql.apollo.compiler.ir.TypeDeclaration
-import com.apollographql.apollo.compiler.operationoutput.OperationOutputWriter
+import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import com.squareup.javapoet.JavaFile
 import java.io.File
 
@@ -13,13 +13,11 @@ class GraphQLCompiler {
   fun write(args: Arguments) {
     val ir = args.ir
     val customTypeMap = args.customTypeMap.supportedTypeMap(ir.typesUsed)
-    val operationIdGenerator = args.operationIdGenerator
     val context = CodeGenerationContext(
         reservedTypeNames = emptyList(),
         typeDeclarations = ir.typesUsed,
-        packageNameProvider = args.packageNameProvider,
         customTypeMap = customTypeMap,
-        operationIdGenerator = operationIdGenerator,
+        operationOutput = args.operationOutput,
         nullableValueType = args.nullableValueType,
         ir = ir,
         useSemanticNaming = args.useSemanticNaming,
@@ -33,9 +31,8 @@ class GraphQLCompiler {
       GraphQLKompiler(
           ir = ir,
           customTypeMap = args.customTypeMap,
-          operationIdGenerator = args.operationIdGenerator,
+          operationOutput = args.operationOutput,
           useSemanticNaming = args.useSemanticNaming,
-          packageNameProvider = args.packageNameProvider,
           generateAsInternal = args.generateAsInternal,
           kotlinMultiPlatformProject = args.kotlinMultiPlatformProject,
           enumAsSealedClassPatternFilters = args.enumAsSealedClassPatternFilters.map { it.toRegex() }
@@ -46,21 +43,13 @@ class GraphQLCompiler {
           outputDir = args.outputDir
       )
     }
-
-    args.operationOutputFile?.let { operationOutputFile ->
-      val dir = operationOutputFile.parentFile
-      dir.mkdirs()
-
-      val operationOutput = OperationOutputWriter(args.operationIdGenerator)
-      operationOutput.apply { visit(ir) }.writeTo(operationOutputFile)
-    }
   }
 
   private fun CodeGenerationIR.writeJavaFiles(context: CodeGenerationContext, outputDir: File) {
     fragments.forEach {
       val typeSpec = it.toTypeSpec(context.copy())
       JavaFile
-          .builder(context.packageNameProvider.fragmentsPackageName, typeSpec)
+          .builder(context.ir.fragmentsPackageName, typeSpec)
           .addFileComment(AUTO_GENERATED_FILE)
           .build()
           .writeTo(outputDir)
@@ -69,7 +58,7 @@ class GraphQLCompiler {
     typesUsed.supportedTypeDeclarations().forEach {
       val typeSpec = it.toTypeSpec(context.copy())
       JavaFile
-          .builder(context.packageNameProvider.typesPackageName, typeSpec)
+          .builder(context.ir.typesPackageName, typeSpec)
           .addFileComment(AUTO_GENERATED_FILE)
           .build()
           .writeTo(outputDir)
@@ -78,7 +67,7 @@ class GraphQLCompiler {
     if (context.customTypeMap.isNotEmpty()) {
       val typeSpec = CustomEnumTypeSpecBuilder(context.copy()).build()
       JavaFile
-          .builder(context.packageNameProvider.typesPackageName, typeSpec)
+          .builder(context.ir.typesPackageName, typeSpec)
           .addFileComment(AUTO_GENERATED_FILE)
           .build()
           .writeTo(outputDir)
@@ -86,7 +75,7 @@ class GraphQLCompiler {
 
     operations.map { OperationTypeSpecBuilder(it, fragments, context.useSemanticNaming) }
         .forEach {
-          val packageName = context.packageNameProvider.operationPackageName(it.operation.filePath)
+          val packageName = it.operation.packageName
           val typeSpec = it.toTypeSpec(context.copy())
           JavaFile
               .builder(packageName, typeSpec)
@@ -116,11 +105,9 @@ class GraphQLCompiler {
       val ir: CodeGenerationIR,
       val outputDir: File,
       val customTypeMap: Map<String, String>,
-      val operationIdGenerator: OperationIdGenerator = OperationIdGenerator.Sha256(),
+      val operationOutput: OperationOutput,
       val useSemanticNaming: Boolean,
-      val packageNameProvider: PackageNameProvider,
       val generateKotlinModels: Boolean = false,
-      val operationOutputFile: File? = null,
       val generateAsInternal: Boolean = false,
       // only if generateKotlinModels = true
       val enumAsSealedClassPatternFilters: List<String>,

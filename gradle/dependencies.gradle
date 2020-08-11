@@ -62,7 +62,6 @@ ext.dep = [
     kotlin                : [
         stdLib             : "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin",
         plugin             : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
-        multiplatformPlugin: "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
         coroutines         : [
             core      : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.kotlinCoroutines",
             coreCommon: "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$versions.kotlinCoroutines",

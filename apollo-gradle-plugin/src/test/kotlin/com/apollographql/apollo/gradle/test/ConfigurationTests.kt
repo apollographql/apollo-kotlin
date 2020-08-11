@@ -10,7 +10,10 @@ import com.apollographql.apollo.gradle.util.replaceInText
 import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.hamcrest.CoreMatchers.containsString
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertThat
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.File
 import java.nio.file.Files
@@ -494,7 +497,7 @@ class ConfigurationTests {
 
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
       val expectedOperationId = "260dd8d889c94e78b975e435300929027d0ad10ea55b63695b13894eb8cd8578"
-      val operationOutput = dir.child("build", "generated", "operationOutput", "apollo", "main", "service", "OperationOutput.json")
+      val operationOutput = dir.child("build/generated/operationOutput/apollo/main/service/operationOutput.json")
       assertThat(operationOutput.readText(), containsString(expectedOperationId))
 
       val queryJavaFile = dir.generatedChild("main/service/com/example/DroidDetailsQuery.java")
@@ -515,7 +518,7 @@ class ConfigurationTests {
         }
       }
     """.trimIndent()) { dir ->
-      val result = TestUtils.executeTask("customTaskMainservice", dir)
+      val result = TestUtils.executeTask("customTaskMainService", dir)
 
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainServiceApolloSources")!!.outcome)
     }

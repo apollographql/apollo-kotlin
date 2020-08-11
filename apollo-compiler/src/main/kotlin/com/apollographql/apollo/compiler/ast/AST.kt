@@ -37,6 +37,7 @@ internal sealed class FieldType {
 
 internal data class OperationType(
     val name: String,
+    val packageName: String,
     val type: Type,
     val operationName: String,
     val description: String,
