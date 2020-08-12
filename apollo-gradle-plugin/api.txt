@@ -22,6 +22,7 @@ package com.apollographql.apollo.gradle.api {
 
   public abstract interface CompilerParams {
     method public abstract error.NonExistentClass getCustomTypeMapping();
+    method public abstract error.NonExistentClass getGenerateApolloMetadata();
     method public abstract error.NonExistentClass getGenerateAsInternal();
     method public abstract error.NonExistentClass getGenerateKotlinModels();
     method public abstract error.NonExistentClass getGenerateModelBuilder();
@@ -38,6 +39,7 @@ package com.apollographql.apollo.gradle.api {
     method public abstract error.NonExistentClass getUseJavaBeansSemanticNaming();
     method public abstract error.NonExistentClass getUseSemanticNaming();
     property public abstract error.NonExistentClass customTypeMapping;
+    property public abstract error.NonExistentClass generateApolloMetadata;
     property public abstract error.NonExistentClass generateAsInternal;
     property public abstract error.NonExistentClass generateKotlinModels;
     property public abstract error.NonExistentClass generateModelBuilder;
