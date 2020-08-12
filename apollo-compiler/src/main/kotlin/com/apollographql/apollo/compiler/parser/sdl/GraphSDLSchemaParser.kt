@@ -166,7 +166,7 @@ internal object GraphSDLSchemaParser {
         description = description().parse(),
         directives = directives().parse(),
         fields = fieldsDefinition().parse(),
-        interfaces = implementsIntefaces().parse()
+        interfaces = implementsInterfaces().parse()
     )
   }
 
@@ -205,9 +205,9 @@ internal object GraphSDLSchemaParser {
     )
   }
 
-  private fun GraphSDLParser.ImplementsIntefacesContext?.parse(): List<GraphSdlSchema.TypeRef.Named> {
+  private fun GraphSDLParser.ImplementsInterfacesContext?.parse(): List<GraphSdlSchema.TypeRef.Named> {
     return this
-        ?.implementsInteface()
+        ?.implementsInterface()
         ?.map { GraphSdlSchema.TypeRef.Named(it.namedType().text, SourceLocation(start)) }
         ?: emptyList()
   }
