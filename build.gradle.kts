@@ -300,27 +300,12 @@ fun isMaster(): Boolean {
   return eventName == "push" && ref == "refs/heads/master"
 }
 
-tasks.register("publishIfNeeded") {
+tasks.register("publishSnapshotsIfNeeded") {
   if (isMaster()) {
     project.logger.log(LogLevel.LIFECYCLE, "Deploying snapshot to OJO...")
     dependsOn(subprojectTasks("publishAllPublicationsToOjoRepository"))
     project.logger.log(LogLevel.LIFECYCLE, "Deploying snapshot to OSS Snapshots...")
     dependsOn(subprojectTasks("publishAllPublicationsToOssSnapshotsRepository"))
-  }
-
-  if (isTag()) {
-    project.logger.log(LogLevel.LIFECYCLE, "Deploying release to Bintray...")
-    dependsOn(subprojectTasks("publishAllPublicationsToBintrayRepository"))
-
-    project.logger.log(LogLevel.LIFECYCLE, "Deploying release to Gradle Portal...")
-    dependsOn(":apollo-gradle-plugin:publishPlugins")
-  }
-}
-
-tasks.register("publishToOssStagingIfNeeded") {
-  if (isTag()) {
-    project.logger.log(LogLevel.LIFECYCLE, "Deploying release to OSS staging...")
-    dependsOn(subprojectTasks("publishAllPublicationsToOssStagingRepository"))
   }
 }
 
