@@ -47,9 +47,6 @@ subprojects {
   repositories {
     google()
     mavenCentral()
-    maven {
-      url = uri("https://dl.bintray.com/kotlin/kotlin-eap")
-    }
   }
 
   group = property("GROUP")!!

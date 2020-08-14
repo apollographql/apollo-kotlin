@@ -1,12 +1,9 @@
 buildscript {
   repositories {
     mavenCentral()
-    maven {
-      url = uri("https://dl.bintray.com/kotlin/kotlin-eap")
-    }
   }
   dependencies {
-    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4-M3")
+    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.0")
   }
 }
 
@@ -21,9 +18,6 @@ repositories {
   google()
   jcenter()
   mavenCentral()
-  maven {
-    url = uri("https://dl.bintray.com/kotlin/kotlin-eap")
-  }
 }
 
 dependencies {
