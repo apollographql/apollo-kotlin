@@ -16,31 +16,24 @@ internal class SchemaCodegen(
     private val fragmentsPackageName: String,
     private val generateAsInternal: Boolean = false,
     private val kotlinMultiPlatformProject: Boolean,
-    private val writeTypes: Boolean = true,
     private val enumAsSealedClassPatternFilters: List<Regex>
 ) : SchemaVisitor {
   private var fileSpecs: List<FileSpec> = emptyList()
 
   override fun visit(customTypes: CustomTypes) {
-    if (writeTypes) {
-      fileSpecs = fileSpecs + customTypes.typeSpec(generateAsInternal).fileSpec(typesPackageName)
-    }
+    fileSpecs = fileSpecs + customTypes.typeSpec(generateAsInternal).fileSpec(typesPackageName)
   }
 
   override fun visit(enumType: EnumType) {
-    if (writeTypes) {
-      fileSpecs = fileSpecs + enumType.typeSpec(
-          generateAsInternal = generateAsInternal,
-          enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters
-      ).fileSpec(typesPackageName)
-    }
+    fileSpecs = fileSpecs + enumType.typeSpec(
+        generateAsInternal = generateAsInternal,
+        enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters
+    ).fileSpec(typesPackageName)
   }
 
   override fun visit(inputType: InputType) {
-    if (writeTypes) {
-      val inputTypeSpec = inputType.typeSpec(generateAsInternal)
-      fileSpecs = fileSpecs + inputTypeSpec.fileSpec(typesPackageName)
-    }
+    val inputTypeSpec = inputType.typeSpec(generateAsInternal)
+    fileSpecs = fileSpecs + inputTypeSpec.fileSpec(typesPackageName)
   }
 
   override fun visit(fragmentType: ObjectType) {

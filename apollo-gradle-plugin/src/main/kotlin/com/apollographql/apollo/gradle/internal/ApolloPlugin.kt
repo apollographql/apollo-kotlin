@@ -108,7 +108,6 @@ open class ApolloPlugin : Plugin<Project> {
             it.from(codegenProvider.map { it.metadataOutputDir }) {
               it.into("metadata")
             }
-            it.dependsOn(rootProvider)
           }
 
           project.artifacts {
@@ -185,7 +184,12 @@ open class ApolloPlugin : Plugin<Project> {
             disallowChanges()
           }
         }
-        task.metadataOutputDir.set(BuildDirLayout.metadata(project, compilationUnit))
+        if (compilerParams.generateApolloMetadata.getOrElse(false)) {
+          task.metadataOutputDir.apply {
+            set(BuildDirLayout.metadata(project, compilationUnit))
+            disallowChanges()
+          }
+        }
 
         task.metadataConfiguration = consumerConfiguration
 
@@ -194,6 +198,7 @@ open class ApolloPlugin : Plugin<Project> {
         task.kotlinMultiPlatformProject.set(project.isKotlinMultiplatform)
         task.sealedClassesForEnumsMatching.set(compilerParams.sealedClassesForEnumsMatching)
         task.generateApolloMetadata.set(compilerParams.generateApolloMetadata)
+        task.alwaysGenerateTypesMatching.set(compilerParams.alwaysGenerateTypesMatching)
       }
     }
 

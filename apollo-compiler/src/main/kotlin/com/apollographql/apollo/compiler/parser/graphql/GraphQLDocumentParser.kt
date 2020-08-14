@@ -36,13 +36,11 @@ import java.io.IOException
 
 class GraphQLDocumentParser(val schema: IntrospectionSchema,
                             private val packageNameProvider: PackageNameProvider,
-                            private val inheritedFragments: List<Fragment> = emptyList(),
-                            private val exportAllTypes: Boolean) {
+                            private val incomingFragments: List<Fragment> = emptyList(),
+                            private val incomingTypes: Set<String> = emptySet(),
+                            private val extraTypes: Set<String> = emptySet()) {
   fun parse(graphQLFiles: Collection<File>): CodeGenerationIR {
-    val inheritedResults = DocumentParseResult(
-        fragments = inheritedFragments
-    )
-    val (operations, fragments, usedTypes) = graphQLFiles.fold(inheritedResults) { acc, graphQLFile ->
+    val (operations, fragments, usedTypes) = graphQLFiles.fold(DocumentParseResult()) { acc, graphQLFile ->
       val result = graphQLFile.parse()
       DocumentParseResult(
           operations = acc.operations + result.operations,
@@ -51,20 +49,19 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema,
       )
     }
 
+    val allFragments = incomingFragments + fragments
     operations.checkMultipleOperationDefinitions(packageNameProvider)
-    fragments.checkMultipleFragmentDefinitions()
+    allFragments.checkMultipleFragmentDefinitions()
 
-    val exportedTypes = if (exportAllTypes) {
-      schema.types.values.map { it.name }.toSet()
-    } else {
-      usedTypes
+    val typeDeclarations = (usedTypes + extraTypes).usedTypeDeclarations().filter {
+      // If the type is already generated upstream, do not generate it here
+      !incomingTypes.contains(it.name)
     }
-    val typeDeclarations = exportedTypes.usedTypeDeclarations()
 
     return CodeGenerationIR(
         operations = operations.map { operation ->
-          val referencedFragmentNames = operation.fields.referencedFragmentNames(fragments = fragments, filePath = operation.filePath)
-          val referencedFragments = referencedFragmentNames.mapNotNull { fragmentName -> fragments.find { it.fragmentName == fragmentName } }
+          val referencedFragmentNames = operation.fields.referencedFragmentNames(fragments = allFragments, filePath = operation.filePath)
+          val referencedFragments = referencedFragmentNames.mapNotNull { fragmentName -> allFragments.find { it.fragmentName == fragmentName } }
           referencedFragments.forEach { it.validateArguments(operation = operation, schema = schema) }
 
           val fragmentSource = referencedFragments.joinToString(separator = "\n") { it.source }

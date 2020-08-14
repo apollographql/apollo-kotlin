@@ -7,6 +7,7 @@ import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.SetProperty
 
 /**
  * CompilerParams contains all the parameters needed to invoke the apollo compiler.
@@ -200,4 +201,15 @@ interface CompilerParams {
    * Default value: false
    */
   val generateApolloMetadata: Property<Boolean>
+
+  /**
+   * A list of [Regex] patterns for input/scalar/enum types that should be generated whether or not they are used by queries/fragments
+   * in this module. When using multiple modules, Apollo Android will generate all the types by default in the root module
+   * because the root module doesn't know what types are going to be used by dependent modules. This can be prohibitive in terms
+   * of compilation speed for large projects. If that's the case, opt-in the types that are used by multiple dependent modules here.
+   * You don't need to add types that are used by a single dependent module.
+   *
+   * Default value: if (generateApolloMetadata) listOf(".*") else listOf()
+   */
+  val alwaysGenerateTypesMatching: SetProperty<String>
 }

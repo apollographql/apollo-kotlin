@@ -27,7 +27,6 @@ internal fun List<Fragment>.checkMultipleFragmentDefinitions() {
   groupBy { it.fragmentName }
       .values
       .find { it.size > 1 }
-      ?.sortedBy { if (it.filePath != null) 1 else 0 }
       ?.last()
       ?.run { throw ParseException("$filePath: There can be only one fragment named `$fragmentName`") }
 }

@@ -27,7 +27,7 @@ internal fun CodeGenerationIR.ast(
     )
   }
   val irFragments = fragments.associateBy { it.fragmentName }
-  val fragments = fragments.filter { it.filePath != null }.map {
+  val fragments = fragments.map {
     it.ast(
         Context(
             customTypeMap = customTypeMap,

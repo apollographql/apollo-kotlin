@@ -22,7 +22,7 @@ data class Fragment(
     val fields: List<Field>,
     val fragmentRefs: List<FragmentRef>,
     val inlineFragments: List<InlineFragment>,
-    val filePath: String?, // might be null if coming from another module
+    val filePath: String,
     val sourceLocation: SourceLocation
 ) : CodeGenerator {
 

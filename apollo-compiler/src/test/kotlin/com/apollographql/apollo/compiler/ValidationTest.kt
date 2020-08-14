@@ -26,7 +26,7 @@ class ValidationTest(name: String, private val graphQLFile: File) {
     )
 
     try {
-      GraphQLDocumentParser(schema, packageNameProvider, exportAllTypes = false).parse(setOf(graphQLFile))
+      GraphQLDocumentParser(schema, packageNameProvider).parse(setOf(graphQLFile))
       fail("parse expected to fail but was successful")
     } catch (e: Exception) {
       if (e is DocumentParseException || e is ParseException) {
