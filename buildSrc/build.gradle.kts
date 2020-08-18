@@ -21,7 +21,6 @@ repositories {
 }
 
 dependencies {
-  implementation(groovy.util.Eval.x(project, "x.dep.kotlin.stdLib"))
   implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp4"))
   implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
   implementation(groovy.util.Eval.x(project, "x.dep.android.plugin"))

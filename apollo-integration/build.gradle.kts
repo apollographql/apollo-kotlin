@@ -4,8 +4,7 @@ apply(plugin = "com.apollographql.apollo")
 apply(plugin = "org.jetbrains.kotlin.jvm")
 
 dependencies {
-  add("implementation", groovy.util.Eval.x(project, "x.dep.kotlin.coroutines.core"))
-  add("implementation", groovy.util.Eval.x(project, "x.dep.kotlin.stdLib"))
+  add("implementation", groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
 
   add("implementation", "com.apollographql.apollo:apollo-runtime")
   add("implementation", "com.apollographql.apollo:apollo-rx2-support")

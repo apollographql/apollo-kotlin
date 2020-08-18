@@ -129,8 +129,6 @@ object TestUtils {
       }
 
       if (hasKotlin) {
-        buildscript = buildscript.replace("// ADD DEPENDENCIES HERE", "implementation dep.kotlin.stdLib")
-
         buildscript += """
           tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
               kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8

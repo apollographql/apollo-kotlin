@@ -12,7 +12,7 @@ def versions = [
     jetbrainsAnnotations  : '13.0',
     junit                 : '4.12',
     kotlin                : '1.4.0',
-    kotlinCoroutines      : '1.3.5',
+    kotlinCoroutines      : '1.3.9',
     kotlinPoet            : '1.5.0',
     mockito               : '1.9.5',
     moshi                 : '1.9.2',
@@ -60,14 +60,8 @@ ext.dep = [
     jetbrainsAnnotations  : "org.jetbrains:annotations:$versions.jetbrainsAnnotations",
     junit                 : "junit:junit:$versions.junit",
     kotlin                : [
-        stdLib             : "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin",
         plugin             : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
-        coroutines         : [
-            core      : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.kotlinCoroutines",
-            coreCommon: "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$versions.kotlinCoroutines",
-            coreNative: "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$versions.kotlinCoroutines",
-            android   : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.kotlinCoroutines"
-        ]
+        coroutines         : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.kotlinCoroutines"
     ],
     mockito               : "org.mockito:mockito-all:$versions.mockito",
     moshi                 : [
@@ -82,10 +76,7 @@ ext.dep = [
         okHttp4      : "com.squareup.okhttp3:okhttp:$versions.okHttp4",
         logging      : "com.squareup.okhttp3:logging-interceptor:$versions.okHttp",
     ],
-    okio                  : [
-        okio             : "com.squareup.okio:okio:$versions.okio",
-        okioMultiplatform: "com.squareup.okio:okio-multiplatform:$versions.okio",
-    ],
+    okio                  : "com.squareup.okio:okio-multiplatform:$versions.okio",
     poet                  : [
         java  : "com.squareup:javapoet:$versions.javaPoet",
         kotlin: "com.squareup:kotlinpoet:$versions.kotlinPoet",
@@ -102,7 +93,7 @@ ext.dep = [
         plugin : "com.squareup.sqldelight:gradle-plugin:$versions.sqldelight"
     ],
     truth                 : "com.google.truth:truth:$versions.truth",
-    uuid                  : "com.benasher44:uuid:0.1.0",
+    uuid                  : "com.benasher44:uuid:0.2.0",
 ]
 ext.androidConfig = [
     compileSdkVersion: 28,
