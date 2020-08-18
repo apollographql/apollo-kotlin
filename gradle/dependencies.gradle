@@ -18,7 +18,7 @@ def versions = [
     moshi                 : '1.9.2',
     okHttp4               : '4.5.0',
     okHttp                : '3.12.11',
-    okio                  : '2.7.0',
+    okio                  : '2.8.0',
     rxjava                : '2.0.5',
     rxjava3               : '3.0.4',
     rxandroid             : '2.0.1',
