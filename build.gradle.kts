@@ -47,6 +47,7 @@ subprojects {
   repositories {
     google()
     mavenCentral()
+    jcenter() // for trove4j
   }
 
   group = property("GROUP")!!
