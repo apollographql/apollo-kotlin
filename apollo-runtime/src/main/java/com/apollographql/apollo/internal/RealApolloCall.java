@@ -322,6 +322,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         .refetchQueryNames(refetchQueryNames)
         .refetchQueries(refetchQueries)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
+        .useHttpGetMethodForQueries(useHttpGetMethodForQueries)
         .useHttpGetMethodForPersistedQueries(useHttpGetMethodForPersistedQueries)
         .optimisticUpdates(optimisticUpdates)
         .writeToNormalizedCacheAsynchronously(writeToNormalizedCacheAsynchronously);
