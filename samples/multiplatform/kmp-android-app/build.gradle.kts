@@ -37,6 +37,6 @@ dependencies {
 
     implementation(groovy.util.Eval.x(project, "x.dep.androidx.appcompat"))
     implementation(groovy.util.Eval.x(project, "x.dep.androidx.recyclerView"))
-    implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines.android"))
+    implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutinesAndroid"))
     implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
 }
