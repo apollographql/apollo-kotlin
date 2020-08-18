@@ -7,7 +7,7 @@ buildscript {
   }
 }
 
-ApiCompatibility.apply(rootProject)
+ApiCompatibility.configure(rootProject)
 
 subprojects {
   apply {
