@@ -24,6 +24,7 @@ import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.SkipWhenEmpty
 import org.gradle.api.tasks.TaskAction
+import java.io.File
 
 @CacheableTask
 abstract class ApolloGenerateSourcesTask : DefaultTask() {
@@ -32,8 +33,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   abstract val operationOutputFile: RegularFileProperty
 
   @get:OutputDirectory
-  @get:Optional
   abstract val metadataOutputDir: DirectoryProperty
+
+  @get:Input
+  abstract val generateMetadata: Property<Boolean>
 
   @get:InputFiles
   @get:SkipWhenEmpty
@@ -123,6 +126,12 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
           NullableValueType.values().joinToString(separator = "\n") { it.value })
     }
 
+    var metadataOutputDir: File? = metadataOutputDir.asFile.get()
+    metadataOutputDir?.mkdirs()
+    if (!generateMetadata.getOrElse(false)) {
+      metadataOutputDir = null
+    }
+
     val args = GraphQLCompiler.Arguments(
         rootFolders = rootFolders.get().map { project.file(it) },
         graphqlFiles = graphqlFiles.files,
@@ -130,7 +139,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         outputDir = outputDir.asFile.get(),
 
         metadata = metadataConfiguration.incoming.artifacts.artifacts.map { it.file },
-        metadataOutputDir = metadataOutputDir.asFile.orNull,
+        metadataOutputDir = metadataOutputDir,
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching.orNull,
         moduleName = project.name,
         rootProjectDir = project.rootDir,

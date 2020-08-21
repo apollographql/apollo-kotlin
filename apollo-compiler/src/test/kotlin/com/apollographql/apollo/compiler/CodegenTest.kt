@@ -17,7 +17,7 @@ import org.junit.runners.Parameterized
 import java.io.File
 
 @RunWith(Parameterized::class)
-class CodeGenTest(private val folder: File, private val testLanguage: TestLanguage) {
+class CodegenTest(private val folder: File, private val testLanguage: TestLanguage) {
   enum class TestLanguage {
     Java,
     Kotlin
@@ -81,39 +81,11 @@ class CodeGenTest(private val folder: File, private val testLanguage: TestLangua
 
     // And that they compile
     if (!args.generateKotlinModels) {
-      val javaFileObjects = actualFiles.map {
-        val qualifiedName = it.path
-            .substringBeforeLast(".")
-            .split(File.separator)
-            .joinToString(".")
-
-        JavaFileObjects.forSourceLines(qualifiedName,
-            it.readLines())
-      }.toList()
-
-      assertAbout(javaSources()).that(javaFileObjects).compilesWithoutError()
+      JavaCompiler.assertCompiles(actualFiles.toSet())
     } else {
-      val kotlinFiles = actualFiles.map {
-        SourceFile.kotlin(it.name, it.readText())
-      }.toList()
-
-      val result = KotlinCompilation().apply {
-        jvmTarget = "1.8"
-        sources = kotlinFiles
-
-        val expectedWarnings = folder.name in listOf("deprecation", "custom_scalar_type_warnings", "arguments_complex", "arguments_simple")
-        allWarningsAsErrors = false // TODO: enable again when kotlin-test-compile targets Kotlin 1.4 (was expectedWarnings.not())
-        inheritClassPath = true
-        messageOutputStream = System.out // see diagnostics in real time
-      }.compile()
-
-      if (result.exitCode != KotlinCompilation.ExitCode.OK) {
-        val compilationErrorMessages = "\\ne: .*\\n+".toRegex().find(result.messages)?.groupValues ?: emptyList()
-        val errorMessages = compilationErrorMessages.joinToString(prefix = "\n", separator = "\n", postfix = "\n") {
-          "`${it.replace("\n", "")}`"
-        }
-        fail("Failed to compile generated Kotlin files due to compiler errors: $errorMessages")
-      }
+      val expectedWarnings = false // TODO: enable again when kotlin-test-compile targets Kotlin 1.4
+      //  folder.name in listOf("deprecation", "custom_scalar_type_warnings", "arguments_complex", "arguments_simple")
+      KotlinCompiler.assertCompiles(actualFiles.toSet(), !expectedWarnings)
     }
   }
 
@@ -217,7 +189,11 @@ class CodeGenTest(private val folder: File, private val testLanguage: TestLangua
           .flatMap { listOf(
               arrayOf(it, TestLanguage.Java),
               arrayOf(it, TestLanguage.Kotlin)
-          ) }
+          ) }.filter {
+            it[0].toString().endsWith( "hero_details")
+                && it[1] == TestLanguage.Kotlin
+                || true
+          }
     }
   }
 }

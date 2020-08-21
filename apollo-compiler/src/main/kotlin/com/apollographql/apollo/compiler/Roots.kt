@@ -2,6 +2,14 @@ package com.apollographql.apollo.compiler
 
 import java.io.File
 
+/**
+ * A helper class to get a package name from a list of root folders
+ *
+ * Given:
+ * - a list of root folders like "src/main/graphql/", "src/debug/graphql/", etc...
+ * - an absolute file path like "/User/lee/projects/app/src/main/graphql/com/example/Query.graphql
+ * will return "com.example"
+ */
 class Roots(rootFolders: Collection<File>) {
   private val roots = rootFolders.map { File(it.absolutePath).normalize() }
 

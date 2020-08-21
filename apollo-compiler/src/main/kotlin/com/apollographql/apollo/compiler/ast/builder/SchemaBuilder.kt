@@ -18,8 +18,16 @@ internal fun CodeGenerationIR.ast(
     useSemanticNaming: Boolean,
     operationOutput: OperationOutput
 ): Schema {
-  val enums = typesUsed.filter { it.kind == TypeDeclaration.KIND_ENUM }.map { it.ast() }
-  val inputTypes = typesUsed.filter { it.kind == TypeDeclaration.KIND_INPUT_OBJECT_TYPE }.map {
+  val enums = typeDeclarations.filter {
+    it.kind == TypeDeclaration.KIND_ENUM
+        // && enumsToGenerate.contains(it.name) // filtering is done later as the rest of the codegen needs all enums
+  }.map {
+    it.ast()
+  }
+  val inputTypes = typeDeclarations.filter {
+    it.kind == TypeDeclaration.KIND_INPUT_OBJECT_TYPE
+        && inputObjectsToGenerate.contains(it.name)
+  }.map {
     it.ast(
         enums = enums,
         customTypeMap = customTypeMap,
@@ -27,7 +35,9 @@ internal fun CodeGenerationIR.ast(
     )
   }
   val irFragments = fragments.associateBy { it.fragmentName }
-  val fragments = fragments.map {
+  val fragments = fragments.filter {
+    fragmentsToGenerate.contains(it.fragmentName)
+  }.map {
     it.ast(
         Context(
             customTypeMap = customTypeMap,
@@ -51,9 +61,14 @@ internal fun CodeGenerationIR.ast(
         operationOutput = operationOutput
     )
   }
+
+  val generatedCustomTypes = customTypeMap.filterKeys {
+    scalarsToGenerate.contains(it)
+  }
+  val capitalizedEnums = enumsToGenerate.map { it.capitalize() }
   return Schema(
-      enums = enums,
-      customTypes = customTypeMap,
+      enums = enums.filter { capitalizedEnums.contains(it.name) },
+      customTypes = CustomTypes(generatedCustomTypes),
       inputTypes = inputTypes,
       fragments = fragments,
       operations = operations

@@ -46,7 +46,7 @@ data class ApolloMetadata(
         fragments = fragments.map {
           // Remove absolute paths from the artifacts
           val relativePath = try {
-            File(it.filePath).relativeTo(rootProjectDir).path
+            File(it.filePath).relativeTo(rootProjectDir.absoluteFile).path
           } catch (e: IllegalArgumentException) {
             println("Apollo: ${it.filePath} and $rootProjectDir don't share the same root, build cache will not work")
             // fallback to absolute
@@ -120,7 +120,7 @@ data class ApolloMetadata(
         zipFile.getInputStream(it).fromJson<Options>()
       }
       val fragments = zipFile.getEntry("metadata/fragments.json")!!.let {
-        zipFile.getInputStream(it).fromJsonList<List<Fragment>>()
+        zipFile.getInputStream(it).fromJsonList<Fragment>()
       }
 
       return ApolloMetadata(
@@ -139,7 +139,7 @@ data class ApolloMetadata(
         IntrospectionSchema(it.inputStream(), "from $it")
       }
       val options = dir.options.inputStream().fromJson<Options>()
-      val fragments = dir.fragments.inputStream().fromJsonList<List<Fragment>>()
+      val fragments = dir.fragments.inputStream().fromJsonList<Fragment>()
 
       return ApolloMetadata(
           schema = schema,

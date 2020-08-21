@@ -2,8 +2,6 @@ package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.squareup.javapoet.*
-import java.nio.charset.StandardCharsets
-import java.security.MessageDigest
 import javax.lang.model.element.Modifier
 
 private val JAVA_RESERVED_WORDS = arrayOf(

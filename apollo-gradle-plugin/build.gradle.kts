@@ -27,6 +27,8 @@ dependencies {
   kapt(groovy.util.Eval.x(project, "x.dep.moshi.kotlinCodegen"))
 
   testImplementation(dep("junit"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
+
   testImplementation(dep("okHttp").dot("mockWebServer4"))
 }
 

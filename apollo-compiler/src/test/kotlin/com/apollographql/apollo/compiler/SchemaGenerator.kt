@@ -53,4 +53,12 @@ input MessageInput42 {
 
     return stringBuilder.toString()
   }
+
+  fun generateMutation(): String {
+    return """
+      mutation sendMessage(      ${'$'}input      : MessageInput0) {
+          sendMessage0(input:       ${'$'}input      )
+      }
+    """.trimIndent()
+  }
 }

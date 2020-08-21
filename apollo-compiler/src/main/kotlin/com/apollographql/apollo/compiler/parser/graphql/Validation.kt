@@ -13,8 +13,8 @@ import com.apollographql.apollo.compiler.parser.introspection.asGraphQLType
 import com.apollographql.apollo.compiler.parser.introspection.isAssignableFrom
 import com.apollographql.apollo.compiler.parser.introspection.resolveType
 
-internal fun List<Operation>.checkMultipleOperationDefinitions(packageNameProvider: PackageNameProvider) {
-  groupBy { packageNameProvider.operationPackageName(it.filePath) + it.operationName }
+internal fun List<Operation>.checkMultipleOperationDefinitions() {
+  groupBy { it.packageName + it.operationName }
       .values
       .find { it.size > 1 }
       ?.last()

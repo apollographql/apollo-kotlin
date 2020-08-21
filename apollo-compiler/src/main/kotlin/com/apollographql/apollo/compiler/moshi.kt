@@ -28,7 +28,7 @@ val MOSHI: Moshi by lazy {
 
 inline fun <reified T> getJsonAdapter() = MOSHI.adapter(T::class.java)
 
-inline fun <reified T> getJsonListAdapter(): JsonAdapter<T> {
+inline fun <reified T> getJsonListAdapter(): JsonAdapter<List<T>> {
   val type = Types.newParameterizedType(List::class.java, T::class.java)
   return MOSHI.adapter(type)
 }
@@ -51,17 +51,17 @@ inline fun <reified T> File.fromJson(): T {
   return inputStream().fromJson()
 }
 
-inline fun <reified T> String.fromJsonList(): T {
+inline fun <reified T> String.fromJsonList(): List<T> {
   return getJsonListAdapter<T>().fromJson(this)!!
 }
 
-inline fun <reified T> InputStream.fromJsonList(): T {
+inline fun <reified T> InputStream.fromJsonList(): List<T> {
   use {
     return getJsonListAdapter<T>().fromJson(it.source().buffer())!!
   }
 }
 
-inline fun <reified T> File.fromJsonList(): T {
+inline fun <reified T> File.fromJsonList(): List<T> {
   return inputStream().fromJsonList<T>()
 }
 

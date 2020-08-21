@@ -5,7 +5,10 @@ import com.apollographql.apollo.compiler.ApolloMetadata.Companion.merge
 import com.apollographql.apollo.compiler.codegen.kotlin.GraphQLKompiler
 import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
-import com.apollographql.apollo.compiler.ir.TypeDeclaration
+import com.apollographql.apollo.compiler.ir.IRBuilder
+import com.apollographql.apollo.compiler.ir.ScalarType
+import com.apollographql.apollo.compiler.ir.TypeDeclaration.Companion.KIND_ENUM
+import com.apollographql.apollo.compiler.ir.TypeDeclaration.Companion.KIND_INPUT_OBJECT_TYPE
 import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.operationoutput.toJson
 import com.apollographql.apollo.compiler.parser.graphql.GraphQLDocumentParser
@@ -13,102 +16,39 @@ import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchem
 import com.apollographql.apollo.compiler.parser.sdl.GraphSdlSchema
 import com.apollographql.apollo.compiler.parser.sdl.toIntrospectionSchema
 import com.squareup.javapoet.JavaFile
+import com.squareup.kotlinpoet.asClassName
 import java.io.File
 
 class GraphQLCompiler {
-  private data class SchemaInfo(val introspectionSchema: IntrospectionSchema, val schemaPackageName: String)
-
-  private fun getSchemaInfo(roots: Roots, schemaFile: File?, metadata: ApolloMetadata?): SchemaInfo {
-    check(schemaFile != null || metadata != null) {
-      "ApolloGraphQL: cannot find schema.[json | sdl]"
-    }
-    check(schemaFile == null || metadata == null) {
-      "ApolloGraphQL: You can't define a schema in ${schemaFile?.absolutePath} as one is already defined in a dependency. " +
-          "Either remove the schema or the dependency"
-    }
-
-    if (schemaFile != null) {
-      val introspectionSchema = if (schemaFile.extension == "json") {
-        IntrospectionSchema(schemaFile)
-      } else {
-        GraphSdlSchema(schemaFile).toIntrospectionSchema()
-      }
-
-      val schemaPackageName = try {
-        roots.filePackageName(schemaFile.absolutePath)
-      } catch (e: IllegalArgumentException) {
-        // Can happen if the schema is not a child of roots
-        ""
-      }
-      return SchemaInfo(introspectionSchema, schemaPackageName)
-    } else if (metadata != null) {
-      return SchemaInfo(metadata.schema!!, metadata.options.schemaPackageName!!)
-    } else {
-      throw IllegalStateException("There should at least be metadata or schemaFile")
-    }
-  }
-
-
   fun write(args: Arguments) {
     args.outputDir.deleteRecursively()
     args.outputDir.mkdirs()
 
     val roots = Roots(args.rootFolders)
-    val metadata = args.metadata.map {
-      if (it.isDirectory) {
-        ApolloMetadata.readFromDirectory(it)
-      } else
-        ApolloMetadata.readFromZip(it).apply {
-          if (args.rootProjectDir != null) {
-            withResolvedFragments(args.rootProjectDir)
-          }
-        }
-    }.merge()
+    val metadata = collectMetadata(args.metadata, args.rootProjectDir)
 
-    val (introspectionSchema, schemaPackageName) = getSchemaInfo(roots, args.schemaFile, metadata)
+    val (introspectionSchema, schemaPackageName) = getSchemaInfo(roots, args.rootPackageName, args.schemaFile, metadata)
 
     val packageNameProvider = DefaultPackageNameProvider(
         roots = roots,
-        rootPackageName = args.rootPackageName,
-        schemaPackageName = schemaPackageName
+        rootPackageName = args.rootPackageName
     )
 
     val files = args.graphqlFiles
     checkDuplicateFiles(roots, files)
 
-    val defaultAlwaysGenerateTypesMatching: List<String>
-    val generateAllScalars: Boolean
-    if (metadata == null && args.metadataOutputDir != null) {
-      defaultAlwaysGenerateTypesMatching = listOf(".*")
-      generateAllScalars = true
-    } else {
-      defaultAlwaysGenerateTypesMatching = emptyList()
-      generateAllScalars = false
-    }
-
-    val alwaysGenerateTypesMatching = args.alwaysGenerateTypesMatching ?: defaultAlwaysGenerateTypesMatching
-    val extraTypes = introspectionSchema.types.values.filter {
-      when (it.kind) {
-        IntrospectionSchema.Kind.INPUT_OBJECT,
-        IntrospectionSchema.Kind.ENUM -> {
-          alwaysGenerateTypesMatching.any { pattern ->
-            Regex(pattern).matches(it.name)
-          }
-        }
-        IntrospectionSchema.Kind.SCALAR -> generateAllScalars
-        else -> false
-      }
-    }
-        .map { it.name }
-        .toSet()
-
-    val ir = GraphQLDocumentParser(
+    val parseResult = GraphQLDocumentParser(
         schema = introspectionSchema,
-        packageNameProvider = packageNameProvider,
-        incomingFragments = metadata?.fragments ?: emptyList(),
-        incomingTypes = metadata?.options?.generatedTypes ?: emptySet(),
-        extraTypes = extraTypes
+        packageNameProvider = packageNameProvider
     ).parse(files)
+
+    val ir = IRBuilder(
+        schema = introspectionSchema,
+        schemaPackageName = schemaPackageName,
+        incomingMetadata = metadata,
+        alwaysGenerateTypesMatching = args.alwaysGenerateTypesMatching,
+        generateMetadata = args.metadataOutputDir != null
+    ).build(parseResult)
 
     val operationOutput = ir.operations.map {
       OperationDescriptor(
@@ -120,6 +60,7 @@ class GraphQLCompiler {
     }.let {
       args.operationOutputGenerator.generate(it)
     }
+
     check(operationOutput.size == ir.operations.size) {
       """The number of operation IDs (${operationOutput.size}) should match the number of operations (${ir.operations.size}).
         |Check that all your IDs are unique.
@@ -130,27 +71,15 @@ class GraphQLCompiler {
       args.operationOutputFile.writeText(operationOutput.toJson("  "))
     }
 
-    if (args.metadataOutputDir != null) {
-      val outgoingMetadata = ApolloMetadata(
-          schema = if (metadata == null) introspectionSchema else null,
-          options = ApolloMetadata.Options(
-              schemaPackageName = schemaPackageName,
-              moduleName = args.moduleName,
-              generatedTypes = ir.typesUsed.map { it.name }.toSet()
-          ),
-          fragments = ir.fragments
-      ).apply {
-        if (args.rootProjectDir != null) {
-          withRelativeFragments(args.rootProjectDir)
-        }
-      }
-      outgoingMetadata.writeTo(args.metadataOutputDir)
-    }
+    val customTypeMap = (introspectionSchema.types.values.filter {
+      it is IntrospectionSchema.Type.Scalar && ScalarType.forName(it.name) == null
+    }.map { it.name } + ScalarType.ID.name)
+        .supportedTypeMap(args.customTypeMap, args.generateKotlinModels)
 
     if (args.generateKotlinModels) {
       GraphQLKompiler(
           ir = ir,
-          customTypeMap = args.customTypeMap,
+          customTypeMap = customTypeMap,
           operationOutput = operationOutput,
           useSemanticNaming = args.useSemanticNaming,
           generateAsInternal = args.generateAsInternal,
@@ -158,10 +87,9 @@ class GraphQLCompiler {
           enumAsSealedClassPatternFilters = args.enumAsSealedClassPatternFilters.map { it.toRegex() }
       ).write(args.outputDir)
     } else {
-      val customTypeMap = args.customTypeMap.supportedTypeMap(ir.typesUsed)
       val context = CodeGenerationContext(
           reservedTypeNames = emptyList(),
-          typeDeclarations = ir.typesUsed,
+          typeDeclarations = ir.typeDeclarations,
           customTypeMap = customTypeMap,
           operationOutput = operationOutput,
           nullableValueType = args.nullableValueType,
@@ -178,10 +106,59 @@ class GraphQLCompiler {
           outputDir = args.outputDir
       )
     }
+
+    if (args.metadataOutputDir != null) {
+      val outgoingMetadata = ApolloMetadata(
+          schema = if (metadata == null) introspectionSchema else null,
+          options = ApolloMetadata.Options(
+              schemaPackageName = schemaPackageName,
+              moduleName = args.moduleName,
+              generatedTypes = ir.enumsToGenerate + ir.inputObjectsToGenerate
+          ),
+          fragments = ir.fragments.filter { ir.fragmentsToGenerate.contains(it.fragmentName) }
+      ).let {
+        if (args.rootProjectDir != null) {
+          it.withRelativeFragments(args.rootProjectDir)
+        } else {
+          it
+        }
+      }
+      outgoingMetadata.writeTo(args.metadataOutputDir)
+    }
   }
 
+  private fun idClassName(generateKotlinModels: Boolean) = if (generateKotlinModels) {
+    String::class.asClassName().toString()
+  } else {
+    ClassNames.STRING.toString()
+  }
+
+  private fun anyClassName(generateKotlinModels: Boolean) = if (generateKotlinModels) {
+    Any::class.asClassName().toString()
+  } else {
+    ClassNames.OBJECT.toString()
+  }
+
+  private fun List<String>.supportedTypeMap(customTypeMap: Map<String, String>, generateKotlinModels: Boolean): Map<String, String> {
+    return associate {
+      val userClassName = customTypeMap[it]
+      val className = when {
+        userClassName != null -> userClassName
+        // map ID to String by default
+        it == ScalarType.ID.name -> idClassName(generateKotlinModels)
+        // unknown scalars will be mapped to Object/Any
+        else -> anyClassName(generateKotlinModels)
+      }
+
+      it to className
+    }
+  }
+
+
   private fun CodeGenerationIR.writeJavaFiles(context: CodeGenerationContext, outputDir: File) {
-    fragments.forEach {
+    fragments.filter {
+      fragmentsToGenerate.contains(it.fragmentName)
+    }.forEach {
       val typeSpec = it.toTypeSpec(context.copy())
       JavaFile
           .builder(context.ir.fragmentsPackageName, typeSpec)
@@ -190,7 +167,10 @@ class GraphQLCompiler {
           .writeTo(outputDir)
     }
 
-    typesUsed.supportedTypeDeclarations().forEach {
+    typeDeclarations.filter {
+      (it.kind == KIND_INPUT_OBJECT_TYPE || it.kind == KIND_ENUM)
+          && (enumsToGenerate + inputObjectsToGenerate).contains(it.name)
+    }.forEach {
       val typeSpec = it.toTypeSpec(context.copy())
       JavaFile
           .builder(context.ir.typesPackageName, typeSpec)
@@ -199,8 +179,8 @@ class GraphQLCompiler {
           .writeTo(outputDir)
     }
 
-    if (context.customTypeMap.isNotEmpty()) {
-      val typeSpec = CustomEnumTypeSpecBuilder(context.copy()).build()
+    if (scalarsToGenerate.isNotEmpty()) {
+      val typeSpec = CustomEnumTypeSpecBuilder(context.copy(), scalarsToGenerate).build()
       JavaFile
           .builder(context.ir.typesPackageName, typeSpec)
           .addFileComment(AUTO_GENERATED_FILE)
@@ -220,18 +200,59 @@ class GraphQLCompiler {
         }
   }
 
-  private fun List<TypeDeclaration>.supportedTypeDeclarations() =
-      filter { it.kind == TypeDeclaration.KIND_ENUM || it.kind == TypeDeclaration.KIND_INPUT_OBJECT_TYPE }
-
-  private fun Map<String, String>.supportedTypeMap(typeDeclarations: List<TypeDeclaration>): Map<String, String> {
-    return typeDeclarations.filter { it.kind == TypeDeclaration.KIND_SCALAR_TYPE }
-        .associate { it.name to (this[it.name] ?: ClassNames.OBJECT.toString()) }
-  }
-
   companion object {
     private const val AUTO_GENERATED_FILE = "AUTO-GENERATED FILE. DO NOT MODIFY.\n\n" +
         "This class was automatically generated by Apollo GraphQL plugin from the GraphQL queries it found.\n" +
         "It should not be modified by hand.\n"
+
+    private fun collectMetadata(metadata: List<File>, rootProjectDir: File?): ApolloMetadata? {
+      return metadata.map {
+        if (it.isDirectory) {
+          ApolloMetadata.readFromDirectory(it)
+        } else {
+          ApolloMetadata.readFromZip(it)
+        }.let {
+          if (rootProjectDir != null) {
+            it.withResolvedFragments(rootProjectDir)
+          } else {
+            it
+          }
+        }
+      }.merge()
+    }
+
+    private data class SchemaInfo(val introspectionSchema: IntrospectionSchema, val schemaPackageName: String)
+
+    private fun getSchemaInfo(roots: Roots, rootPackageName: String, schemaFile: File?, metadata: ApolloMetadata?): SchemaInfo {
+      check(schemaFile != null || metadata != null) {
+        "ApolloGraphQL: cannot find schema.[json | sdl]"
+      }
+      check(schemaFile == null || metadata == null) {
+        "ApolloGraphQL: You can't define a schema in ${schemaFile?.absolutePath} as one is already defined in a dependency. " +
+            "Either remove the schema or the dependency"
+      }
+
+      if (schemaFile != null) {
+        val introspectionSchema = if (schemaFile.extension == "json") {
+          IntrospectionSchema(schemaFile)
+        } else {
+          GraphSdlSchema(schemaFile).toIntrospectionSchema()
+        }
+
+        val packageName = try {
+          roots.filePackageName(schemaFile.absolutePath)
+        } catch (e: IllegalArgumentException) {
+          // Can happen if the schema is not a child of roots
+          ""
+        }
+        val schemaPackageName = "$rootPackageName.$packageName".removePrefix(".").removeSuffix(".")
+        return SchemaInfo(introspectionSchema, schemaPackageName)
+      } else if (metadata != null) {
+        return SchemaInfo(metadata.schema!!, metadata.options.schemaPackageName!!)
+      } else {
+        throw IllegalStateException("There should at least be metadata or schemaFile")
+      }
+    }
 
     /**
      * Check for duplicates files. This can happen with Android variants

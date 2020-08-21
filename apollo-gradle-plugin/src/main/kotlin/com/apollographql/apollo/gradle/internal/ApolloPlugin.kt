@@ -31,7 +31,7 @@ open class ApolloPlugin : Plugin<Project> {
 
   internal companion object {
     const val TASK_GROUP = "apollo"
-    const val MIN_GRADLE_VERSION = "6.0"
+    const val MIN_GRADLE_VERSION = "6.2"
 
     const val CONFIGURATION_CONSUMER = "apollo"
     const val USAGE_APOLLO_METADATA = "apollo-metadata"
@@ -184,12 +184,14 @@ open class ApolloPlugin : Plugin<Project> {
             disallowChanges()
           }
         }
-        if (compilerParams.generateApolloMetadata.getOrElse(false)) {
-          task.metadataOutputDir.apply {
-            set(BuildDirLayout.metadata(project, compilationUnit))
-            disallowChanges()
-          }
+        // always set `metadataOutputDir` as the `zipMetadata` task is part of `assemble` (see https://github.com/gradle/gradle/issues/14065)
+        // and we don't want it to fail if it is ever called by the user
+        task.metadataOutputDir.apply {
+          set(BuildDirLayout.metadata(project, compilationUnit))
+          disallowChanges()
         }
+
+        task.generateMetadata.set(compilerParams.generateApolloMetadata.getOrElse(false))
 
         task.metadataConfiguration = consumerConfiguration
 
@@ -197,7 +199,6 @@ open class ApolloPlugin : Plugin<Project> {
         task.generateAsInternal.set(compilerParams.generateAsInternal)
         task.kotlinMultiPlatformProject.set(project.isKotlinMultiplatform)
         task.sealedClassesForEnumsMatching.set(compilerParams.sealedClassesForEnumsMatching)
-        task.generateApolloMetadata.set(compilerParams.generateApolloMetadata)
         task.alwaysGenerateTypesMatching.set(compilerParams.alwaysGenerateTypesMatching)
       }
     }

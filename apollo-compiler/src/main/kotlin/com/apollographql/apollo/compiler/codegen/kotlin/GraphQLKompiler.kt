@@ -18,9 +18,8 @@ class GraphQLKompiler(
     private val enumAsSealedClassPatternFilters: List<Regex>
 ) {
   fun write(outputDir: File) {
-    val customTypeMap = customTypeMap.supportedCustomTypes(ir.typesUsed)
     val schema = ir.ast(
-        customTypeMap = customTypeMap,
+        customTypeMap = CustomTypes(customTypeMap),
         typesPackageName = ir.typesPackageName,
         fragmentsPackage = ir.fragmentsPackageName,
         useSemanticNaming = useSemanticNaming,
@@ -34,13 +33,5 @@ class GraphQLKompiler(
         enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters
     )
     schemaCodegen.apply(schema::accept).writeTo(outputDir)
-  }
-
-  private fun Map<String, String>.supportedCustomTypes(typeDeclarations: List<TypeDeclaration>): CustomTypes {
-    return CustomTypes(
-        typeDeclarations
-            .filter { it.kind == TypeDeclaration.KIND_SCALAR_TYPE }
-            .associate { it.name to (this[it.name] ?: Any::class.asClassName().canonicalName) }
-    )
   }
 }

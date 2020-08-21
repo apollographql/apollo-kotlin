@@ -1,0 +1,11 @@
+query GetHero {
+    heroDetailQuery {
+      ...CharacterFragment
+    }
+}
+
+fragment CharacterFragment on Human {
+  name
+  id
+  appearsIn
+}
