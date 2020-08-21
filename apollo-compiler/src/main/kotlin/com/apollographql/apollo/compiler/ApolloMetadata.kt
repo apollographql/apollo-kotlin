@@ -44,7 +44,7 @@ data class ApolloMetadata(
   fun withRelativeFragments(rootProjectDir: File): ApolloMetadata {
     return copy(
         fragments = fragments.map {
-          // Remove absolute paths from the artifacts
+          // Remove absolute paths from the artifacts in order to not break gradle build cache
           val relativePath = try {
             File(it.filePath).relativeTo(rootProjectDir.absoluteFile).path
           } catch (e: IllegalArgumentException) {
@@ -95,7 +95,7 @@ data class ApolloMetadata(
         }
       }
 
-      // no need to validate distinct fragment names, this will be done in GraphQLDocumentParser
+      // no need to validate distinct fragment names, this will be done later when aggregating the Fragments
       return ApolloMetadata(
           schema = rootMetadataList.first().schema!!,
           fragments = flatMap { it.fragments },

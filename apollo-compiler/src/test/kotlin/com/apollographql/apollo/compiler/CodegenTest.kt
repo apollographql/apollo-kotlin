@@ -189,11 +189,7 @@ class CodegenTest(private val folder: File, private val testLanguage: TestLangua
           .flatMap { listOf(
               arrayOf(it, TestLanguage.Java),
               arrayOf(it, TestLanguage.Kotlin)
-          ) }.filter {
-            it[0].toString().endsWith( "hero_details")
-                && it[1] == TestLanguage.Kotlin
-                || true
-          }
+          ) }
     }
   }
 }
