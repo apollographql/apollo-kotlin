@@ -472,6 +472,7 @@ class ConfigurationTests {
     }
   }
 
+  @Test
   fun `generateOperationOutput generates queries with __typename`() {
     withSimpleProject("""
       apollo {
@@ -481,7 +482,11 @@ class ConfigurationTests {
       val result = TestUtils.executeTask("generateApolloSources", dir)
 
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
-      val operationOutput = dir.child("build", "generated", "operationOutput", "apollo", "main", "service", "OperationOutput.json")
+      val operationOutput = dir.child("build/generated/operationOutput/apollo/main/service/OperationOutput.json")
+
+      // Check that the filename case did not change. See https://github.com/apollographql/apollo-android/issues/2533
+      assertTrue(operationOutput.canonicalFile.path.endsWith("build/generated/operationOutput/apollo/main/service/operationOutput.json"))
+
       assertThat(operationOutput.readText(), containsString("__typename"))
     }
   }
