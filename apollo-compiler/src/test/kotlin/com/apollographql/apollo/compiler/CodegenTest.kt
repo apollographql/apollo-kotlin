@@ -99,7 +99,7 @@ class CodeGenTest(private val folder: File) {
         sources = kotlinFiles
 
         val expectedWarnings = folder.name in listOf("deprecation", "custom_scalar_type_warnings", "arguments_complex", "arguments_simple")
-        allWarningsAsErrors = false // (enable again when kotlin-test-compile targets Kotlin 1.4) expectedWarnings.not()
+        allWarningsAsErrors = false // TODO: enable again when kotlin-test-compile targets Kotlin 1.4 (was expectedWarnings.not())
         inheritClassPath = true
         messageOutputStream = System.out // see diagnostics in real time
       }.compile()
