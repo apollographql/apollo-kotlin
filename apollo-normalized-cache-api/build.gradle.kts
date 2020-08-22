@@ -20,10 +20,8 @@ kotlin {
     }
   }
 
-  jvm {
-    withJava()
-  }
-
+  jvm()
+  
   sourceSets {
     val commonMain by getting {
       dependencies {
