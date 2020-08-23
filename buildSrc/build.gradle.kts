@@ -1,20 +1,26 @@
-plugins {
-  kotlin("jvm") version "1.3.72"
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.0")
+  }
 }
+
+apply(plugin = "org.jetbrains.kotlin.jvm")
 
 project.apply {
   from(file("../gradle/dependencies.gradle"))
 }
 
 repositories {
-  maven { url = uri("https://plugins.gradle.org/m2/") }
+  gradlePluginPortal()
   google()
   jcenter()
   mavenCentral()
 }
 
 dependencies {
-  implementation(groovy.util.Eval.x(project, "x.dep.kotlin.stdLib"))
   implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp4"))
   implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
   implementation(groovy.util.Eval.x(project, "x.dep.android.plugin"))

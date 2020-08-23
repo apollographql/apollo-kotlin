@@ -3,7 +3,7 @@ import MetalavaHelper.configureMetalava
 import org.gradle.api.Project
 
 object ApiCompatibility {
-  fun apply(project: Project) {
+  fun configure(project: Project) {
 
     val downloadMetalavaJar = project.tasks.register("downloadMetalava", DownloadFileTask::class.java) {
       it.url.set("https://storage.googleapis.com/android-ci/metalava-full-1.3.0-SNAPSHOT.jar")

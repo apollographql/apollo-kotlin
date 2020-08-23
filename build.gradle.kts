@@ -7,19 +7,11 @@ buildscript {
   }
 }
 
-ApiCompatibility.apply(rootProject)
+ApiCompatibility.configure(rootProject)
 
 subprojects {
   apply {
     from(rootProject.file("gradle/dependencies.gradle"))
-  }
-
-  buildscript {
-    repositories {
-      maven { url = uri("https://plugins.gradle.org/m2/") }
-      maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
-      google()
-    }
   }
 
   plugins.withType(com.android.build.gradle.BasePlugin::class.java) {
@@ -53,10 +45,9 @@ subprojects {
   this.apply(plugin = "signing")
 
   repositories {
-    maven { url = uri("https://plugins.gradle.org/m2/") }
-    maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
     google()
-    maven { url = uri("https://jitpack.io") }
+    mavenCentral()
+    jcenter() // for trove4j
   }
 
   group = property("GROUP")!!
