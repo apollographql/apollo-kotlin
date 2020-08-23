@@ -23,7 +23,7 @@ interface CompilerParams {
   val generateKotlinModels: Property<Boolean>
 
   /**
-   * Whether to generate OperationOutput.json. OperationOutput.json contains information such as
+   * Whether to generate operationOutput.json. operationOutput.json contains information such as
    * operation id, name and complete source sent to the server. This can be used to upload
    * a query's exact content to a server that doesn't support automatic persisted queries.
    *
