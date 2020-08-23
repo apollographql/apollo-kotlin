@@ -1,5 +1,7 @@
 package com.apollographql.apollo.api
 
+import kotlin.js.JsName
+
 /**
  * Represents an error response returned from the GraphQL server
  */
@@ -24,18 +26,21 @@ class Error(
    * Returns server error message.
    */
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "message"))
+  @JsName("getMessage")
   fun message(): String? = message
 
   /**
    * Returns the location of the error in the GraphQL operation.
    */
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "locations"))
+  @JsName("getLocations")
   fun locations(): List<Location> = locations
 
   /**
    * Returns custom attributes associated with this error
    */
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "customAttributes"))
+  @JsName("getCustomAttributes")
   fun customAttributes(): Map<String, Any?> = customAttributes
 
   override fun equals(other: Any?): Boolean {
@@ -76,12 +81,14 @@ class Error(
      * Returns the line number of the error location.
      */
     @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "line"))
+    @JsName("getLine")
     fun line(): Long = line
 
     /**
      * Returns the column number of the error location.
      */
     @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "column"))
+    @JsName("getColumn")
     fun column(): Long = column
 
     override fun equals(other: Any?): Boolean {

@@ -201,7 +201,7 @@ class RealResponseReader<R>(
     for (condition in field.conditions) {
       if (condition is ResponseField.BooleanCondition) {
         val conditionValue = variableValues[condition.variableName] as Boolean?
-        if (condition.inverted) {
+        if (condition.isInverted) {
           // means it's a skip directive
           if (conditionValue == true) {
             return true

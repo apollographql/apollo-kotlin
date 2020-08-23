@@ -20,7 +20,7 @@ dependencies {
   compileOnly(dep("android").dot("minPlugin"))
 
   api(project(":apollo-compiler"))
-  implementation(dep("kotlin").dot("stdLib"))
+  implementation(project(":apollo-api")) // for QueryDocumentMinifier
   implementation(dep("okHttp").dot("okHttp4"))
   implementation(dep("moshi").dot("moshi"))
   
@@ -34,6 +34,7 @@ tasks.withType<Test> {
   dependsOn("publishAllPublicationsToPluginTestRepository")
 
   inputs.dir("src/test/files")
+  inputs.dir("testProjects")
 }
 
 pluginBundle {

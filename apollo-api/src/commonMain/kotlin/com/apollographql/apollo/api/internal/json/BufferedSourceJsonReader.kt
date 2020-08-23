@@ -124,7 +124,8 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
       PEEKED_TRUE, PEEKED_FALSE -> JsonReader.Token.BOOLEAN
       PEEKED_NULL -> JsonReader.Token.NULL
       PEEKED_SINGLE_QUOTED, PEEKED_DOUBLE_QUOTED, PEEKED_UNQUOTED, PEEKED_BUFFERED -> JsonReader.Token.STRING
-      PEEKED_LONG, PEEKED_NUMBER -> JsonReader.Token.NUMBER
+      PEEKED_LONG -> JsonReader.Token.LONG
+      PEEKED_NUMBER -> JsonReader.Token.NUMBER
       PEEKED_EOF -> JsonReader.Token.END_DOCUMENT
       else -> throw AssertionError()
     }

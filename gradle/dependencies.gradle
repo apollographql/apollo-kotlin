@@ -11,18 +11,18 @@ def versions = [
     javaPoet              : '1.9.0',
     jetbrainsAnnotations  : '13.0',
     junit                 : '4.12',
-    kotlin                : '1.3.72',
-    kotlinCoroutines      : '1.3.5',
+    kotlin                : '1.4.0',
+    kotlinCoroutines      : '1.3.9',
     kotlinPoet            : '1.5.0',
     mockito               : '1.9.5',
     moshi                 : '1.9.2',
     okHttp4               : '4.5.0',
     okHttp                : '3.12.11',
-    okio                  : '2.5.0',
+    okio                  : '2.8.0',
     rxjava                : '2.0.5',
     rxjava3               : '3.0.4',
     rxandroid             : '2.0.1',
-    sqldelight            : '1.3.0',
+    sqldelight            : '1.4.1',
     testRunner            : '0.5',
     truth                 : '0.30'
 ]
@@ -52,7 +52,7 @@ ext.dep = [
         api    : "com.apollographql.apollo:apollo-api:$versions.apollo",
     ],
     compiletesting        : "com.google.testing.compile:compile-testing:$versions.compiletesting",
-    kotlinCompileTesting  : "com.github.tschuchortdev:kotlin-compile-testing:1.2.8",
+    kotlinCompileTesting  : "com.github.tschuchortdev:kotlin-compile-testing:1.2.9",
     cache                 : "com.nytimes.android:cache:$versions.cache",
     gradleJapiCmpPlugin   : "me.champeau.gradle:japicmp-gradle-plugin:0.2.8",
     vanniktechPlugin      : "com.vanniktech:gradle-maven-publish-plugin:0.11.1",
@@ -60,15 +60,9 @@ ext.dep = [
     jetbrainsAnnotations  : "org.jetbrains:annotations:$versions.jetbrainsAnnotations",
     junit                 : "junit:junit:$versions.junit",
     kotlin                : [
-        stdLib             : "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin",
         plugin             : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
-        multiplatformPlugin: "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
-        coroutines         : [
-            core      : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.kotlinCoroutines",
-            coreCommon: "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$versions.kotlinCoroutines",
-            coreNative: "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$versions.kotlinCoroutines",
-            android   : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.kotlinCoroutines"
-        ],
+        coroutines         : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.kotlinCoroutines",
+        coroutinesAndroid  : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.kotlinCoroutines"
     ],
     mockito               : "org.mockito:mockito-all:$versions.mockito",
     moshi                 : [
@@ -83,10 +77,7 @@ ext.dep = [
         okHttp4      : "com.squareup.okhttp3:okhttp:$versions.okHttp4",
         logging      : "com.squareup.okhttp3:logging-interceptor:$versions.okHttp",
     ],
-    okio                  : [
-        okio             : "com.squareup.okio:okio:$versions.okio",
-        okioMultiplatform: "com.squareup.okio:okio-multiplatform:$versions.okio",
-    ],
+    okio                  : "com.squareup.okio:okio-multiplatform:$versions.okio",
     poet                  : [
         java  : "com.squareup:javapoet:$versions.javaPoet",
         kotlin: "com.squareup:kotlinpoet:$versions.kotlinPoet",
@@ -103,7 +94,7 @@ ext.dep = [
         plugin : "com.squareup.sqldelight:gradle-plugin:$versions.sqldelight"
     ],
     truth                 : "com.google.truth:truth:$versions.truth",
-    uuid                  : "com.benasher44:uuid:0.1.0",
+    uuid                  : "com.benasher44:uuid:0.2.0",
 ]
 ext.androidConfig = [
     compileSdkVersion: 28,

@@ -26,6 +26,7 @@ configure<ApolloExtension> {
     }
   }
 
+
   @Test
   fun `configuring compilation unit input carries task dependencies`() {
 
@@ -33,18 +34,15 @@ configure<ApolloExtension> {
 abstract class InstallGraphQLFilesTask: DefaultTask() {
   @get:OutputDirectory
   abstract val outputDir: DirectoryProperty
-
   @TaskAction
   fun taskAction() {
     println("installing graphql files")
     project.file( "src/main/graphql/com/example").copyRecursively(outputDir.asFile.get())
   }
 }
-
 val installTask = tasks.register("installTask", InstallGraphQLFilesTask::class.java) {
   outputDir.set(project.file("build/toto"))
 }
-
 configure<ApolloExtension> {
   onCompilationUnit {
     graphqlSourceDirectorySet.srcDir(installTask.flatMap { it.outputDir })

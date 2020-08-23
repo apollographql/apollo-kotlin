@@ -1,22 +1,49 @@
 import com.squareup.moshi.Moshi
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.gradle.api.DefaultTask
 import org.gradle.api.Project
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.TaskAction
 import java.io.File
 
 object JapiCmp {
+  abstract class DownloadBaselineJar: DefaultTask() {
+    @get:Input
+    lateinit var artifact: String
+
+    @get:OutputFile
+    abstract val output: RegularFileProperty
+
+    @TaskAction
+    fun taskAction() {
+      val version = (project.findProperty("japicmpBaselineVersion") as? String) ?: latestVersion()
+
+
+      val jar = "$artifact-$version.jar"
+
+      val url = "https://jcenter.bintray.com/com/apollographql/apollo/$artifact/$version/$jar"
+      val client = OkHttpClient()
+      val request = Request.Builder().get().url(url).build()
+
+      client.newCall(request).execute().body!!.byteStream().use { body ->
+        output.asFile.get().outputStream().buffered().use { file ->
+          body.copyTo(file)
+        }
+      }
+    }
+  }
   fun Project.configureJapiCmp() {
-    val downloadBaselineJarTaskProvider = tasks.register("downloadBaseLineJar", DownloadFileTask::class.java) {
+    val downloadBaselineJarTaskProvider = tasks.register("downloadBaseLineJar", DownloadBaselineJar::class.java) {
       val artifact = when  {
         project.pluginManager.hasPlugin("org.jetbrains.kotlin.multiplatform") -> "${project.name}-jvm"
         else -> project.name
       }
 
-      val version = project.findProperty("japicmpBaselineVersion") ?: latestVersion()
-      val jar = "$artifact-$version.jar"
-
-      it.url.set("https://jcenter.bintray.com/com/apollographql/apollo/$artifact/$version/$jar")
-      it.output.set(File(buildDir, "japicmp/cache/$jar"))
+      it.artifact = artifact
+      it.output.set(File(buildDir, "japicmp/cache/$artifact"))
     }
 
     // TODO: Make this lazy

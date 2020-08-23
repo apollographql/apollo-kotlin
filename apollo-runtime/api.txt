@@ -100,6 +100,7 @@ package com.apollographql.apollo {
     method public abstract com.apollographql.apollo.ApolloMutationCall<T> refetchQueries(OperationName...);
     method public abstract com.apollographql.apollo.ApolloMutationCall<T> refetchQueries(Query...);
     method public abstract com.apollographql.apollo.ApolloMutationCall<T> requestHeaders(com.apollographql.apollo.request.RequestHeaders);
+    method public abstract com.apollographql.apollo.ApolloMutationCall.Builder<T> toBuilder();
   }
 
   public static abstract interface ApolloMutationCall.Builder<T> implements com.apollographql.apollo.ApolloCall.Builder {

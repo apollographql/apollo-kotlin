@@ -35,24 +35,26 @@ You use an instance of the `ApolloClient` class to interact with your server and
 
 To make a query using your generated models:
 
-```kotlin
+```java
 // First, create an `ApolloClient`
 // Replace the serverUrl with your GraphQL endpoint
-val apolloClient = ApolloClient.builder()
-  .serverUrl("https://your.domain/graphql/endpoint")
-  .build()
+ApolloClient apolloClient = ApolloClient.builder()
+        .serverUrl("https://your.domain/graphql/endpoint")
+        .build();
 
 // Then enqueue your query
-apolloClient.query(LaunchDetailsQuery(id = "83"))
-  .enqueue(object : ApolloCall.Callback<LaunchDetailsQuery.Data>() {
-    override fun onFailure(e: ApolloException) {
-      Log.e("Apollo", "Error", e)
-    }
+apolloClient.query(new LaunchDetailsQuery("83"))
+        .enqueue(new ApolloCall.Callback<LaunchDetailsQuery.Data>() {
+            @Override
+            public void onResponse(@NotNull Response<LaunchDetailsQuery.Data> response) {
+                Log.e("Apollo", "Launch site: " + response.getData().launch.site);
+            }
 
-    override fun onResponse(response: Response<LaunchDetailsQuery.Data>) {
-      Log.e("Apollo", "Launch site: ${response.data?.launch?.site}")
-    }
-  })
+            @Override
+            public void onFailure(@NotNull ApolloException e) {
+                Log.e("Apollo", "Error", e);
+            }
+        });
 ```
 
 ## What's next

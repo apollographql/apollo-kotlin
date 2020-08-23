@@ -1,6 +1,9 @@
 package com.apollographql.apollo.api
 
-expect class BigDecimal : Number {
+// BigDecimal cannot subclass `Number` in JS, as it will cause runtime trap in any compiled Kotlin/JS product in the module initialization
+// script.
+
+expect class BigDecimal {
   constructor(strVal: String)
   constructor(doubleVal: Double)
   constructor(intVal: Int)
@@ -13,3 +16,5 @@ expect class BigDecimal : Number {
   fun negate(): BigDecimal
   fun signum(): Int
 }
+
+expect fun BigDecimal.toNumber(): Number

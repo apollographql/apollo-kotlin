@@ -1,8 +1,11 @@
 package com.apollographql.apollo.gradle.api
 
+import org.gradle.api.Task
 import org.gradle.api.file.Directory
+import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.TaskProvider
 
 /**
  * A [CompilationUnit] is a single invocation of the compiler. It is used by
@@ -29,12 +32,12 @@ interface CompilationUnit: CompilerParams {
   val androidVariant: Any?
 
   /**
+   * A json file containing a [Map]<[String], [com.apollographql.apollo.compiler.operationoutput.OperationDescriptor]>
+   */
+  val operationOutputFile: Provider<RegularFile>
+
+  /**
    * The directory where the generated models will be written
    */
   val outputDir: Provider<Directory>
-
-  /**
-   * The file where the operation output json will be written
-   */
-  val operationOutputFile: RegularFileProperty
 }

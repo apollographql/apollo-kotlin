@@ -29,14 +29,12 @@ kotlin {
       dependencies {
         api(project(":apollo-api"))
         api(project(":apollo-normalized-cache-api"))
-        implementation(kotlin("stdlib-common"))
       }
     }
 
     val jvmMain by getting {
       dependsOn(commonMain)
       dependencies {
-        implementation(kotlin("stdlib"))
         implementation(groovy.util.Eval.x(project, "x.dep.cache"))
       }
     }

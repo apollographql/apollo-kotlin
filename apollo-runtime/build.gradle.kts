@@ -7,7 +7,6 @@ dependencies {
   api(project(":apollo-api"))
   api(project(":apollo-normalized-cache"))
   api(project(":apollo-http-cache-api"))
-  api(groovy.util.Eval.x(project, "x.dep.kotlin.stdLib"))
   api(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
 
   add("testCompileOnly", groovy.util.Eval.x(project, "x.dep.jetbrainsAnnotations"))

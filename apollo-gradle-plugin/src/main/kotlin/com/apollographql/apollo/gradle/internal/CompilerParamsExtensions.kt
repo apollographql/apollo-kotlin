@@ -25,6 +25,7 @@ fun CompilerParams.withFallback(objects: ObjectFactory, other: CompilerParams): 
   merge.rootPackageName.set(this.rootPackageName.orElse(other.rootPackageName))
   merge.generateAsInternal.set(this.generateAsInternal.orElse(other.generateAsInternal))
   merge.operationIdGenerator.set(this.operationIdGenerator.orElse(other.operationIdGenerator))
+  merge.operationOutputGenerator.set(this.operationOutputGenerator.orElse(other.operationOutputGenerator))
   merge.sealedClassesForEnumsMatching.set(this.sealedClassesForEnumsMatching.orElse(other.sealedClassesForEnumsMatching))
 
   return merge

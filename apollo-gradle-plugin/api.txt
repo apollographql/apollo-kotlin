@@ -30,6 +30,7 @@ package com.apollographql.apollo.gradle.api {
     method public abstract error.NonExistentClass getGraphqlSourceDirectorySet();
     method public abstract error.NonExistentClass getNullableValueType();
     method public abstract error.NonExistentClass getOperationIdGenerator();
+    method public abstract error.NonExistentClass getOperationOutputGenerator();
     method public abstract error.NonExistentClass getRootPackageName();
     method public abstract error.NonExistentClass getSchemaFile();
     method public abstract error.NonExistentClass getSealedClassesForEnumsMatching();
@@ -45,6 +46,7 @@ package com.apollographql.apollo.gradle.api {
     property public abstract error.NonExistentClass graphqlSourceDirectorySet;
     property public abstract error.NonExistentClass nullableValueType;
     property public abstract error.NonExistentClass operationIdGenerator;
+    property public abstract error.NonExistentClass operationOutputGenerator;
     property public abstract error.NonExistentClass rootPackageName;
     property public abstract error.NonExistentClass schemaFile;
     property public abstract error.NonExistentClass sealedClassesForEnumsMatching;

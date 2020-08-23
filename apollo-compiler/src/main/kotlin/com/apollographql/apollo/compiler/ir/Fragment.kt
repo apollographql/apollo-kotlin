@@ -1,7 +1,11 @@
 package com.apollographql.apollo.compiler.ir
 
-import com.apollographql.apollo.compiler.*
+import com.apollographql.apollo.compiler.ClassNames
+import com.apollographql.apollo.compiler.SchemaTypeSpecBuilder
+import com.apollographql.apollo.compiler.Util
 import com.apollographql.apollo.compiler.VisitorSpec.VISITOR_CLASSNAME
+import com.apollographql.apollo.compiler.flatten
+import com.apollographql.apollo.compiler.withBuilder
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.TypeSpec

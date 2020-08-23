@@ -6,6 +6,7 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ScalarType
 import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.toNumber
 
 class SimpleResponseReader private constructor(
     private val recordSet: Map<String, Any?>,
@@ -35,7 +36,7 @@ class SimpleResponseReader private constructor(
 
     val value = valueFor<BigDecimal>(recordSet, field)
     checkValue(field, value)
-    return value?.toInt()
+    return value?.toNumber()?.toInt()
   }
 
   override fun readLong(field: ResponseField): Long? {
@@ -45,7 +46,7 @@ class SimpleResponseReader private constructor(
 
     val value = valueFor<BigDecimal>(recordSet, field)
     checkValue(field, value)
-    return value?.toLong()
+    return value?.toNumber()?.toLong()
   }
 
   override fun readDouble(field: ResponseField): Double? {
@@ -55,7 +56,7 @@ class SimpleResponseReader private constructor(
 
     val value = valueFor<BigDecimal>(recordSet, field)
     checkValue(field, value)
-    return value?.toDouble()
+    return value?.toNumber()?.toDouble()
   }
 
   override fun readBoolean(field: ResponseField): Boolean? {
@@ -130,7 +131,7 @@ class SimpleResponseReader private constructor(
     for (condition in field.conditions) {
       if (condition is ResponseField.BooleanCondition) {
         val conditionValue = variableValues[condition.variableName] as Boolean
-        if (condition.inverted) {
+        if (condition.isInverted) {
           // means it's a skip directive
           if (conditionValue) {
             return true
@@ -164,15 +165,15 @@ class SimpleResponseReader private constructor(
     }
 
     override fun readInt(): Int {
-      return (value as BigDecimal).toInt()
+      return (value as BigDecimal).toNumber().toInt()
     }
 
     override fun readLong(): Long {
-      return (value as BigDecimal).toLong()
+      return (value as BigDecimal).toNumber().toLong()
     }
 
     override fun readDouble(): Double {
-      return (value as BigDecimal).toDouble()
+      return (value as BigDecimal).toNumber().toDouble()
     }
 
     override fun readBoolean(): Boolean {

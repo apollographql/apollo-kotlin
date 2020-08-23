@@ -1,7 +1,9 @@
 package com.apollographql.apollo.compiler
 
+import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.parser.graphql.GraphQLDocumentParser
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
+import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.google.common.truth.Truth.assertAbout
 import com.google.testing.compile.JavaFileObjects
 import com.google.testing.compile.JavaSourcesSubjectFactory.javaSources
@@ -97,7 +99,7 @@ class CodeGenTest(private val folder: File) {
         sources = kotlinFiles
 
         val expectedWarnings = folder.name in listOf("deprecation", "custom_scalar_type_warnings", "arguments_complex", "arguments_simple")
-        allWarningsAsErrors = expectedWarnings.not()
+        allWarningsAsErrors = false // TODO: enable again when kotlin-test-compile targets Kotlin 1.4 (was expectedWarnings.not())
         inheritClassPath = true
         messageOutputStream = System.out // see diagnostics in real time
       }.compile()
@@ -187,11 +189,21 @@ class CodeGenTest(private val folder: File) {
       }
 
       val ir = GraphQLDocumentParser(schema, packageNameProvider).parse(setOf(graphQLFile))
+
+      val operationOutput = ir.operations.map {
+        operationIdGenerator.apply(QueryDocumentMinifier.minify(it.sourceWithFragments), it.filePath) to OperationDescriptor(
+            name = it.operationName,
+            packageName = it.packageName,
+            filePath = it.filePath,
+            source = QueryDocumentMinifier.minify(it.sourceWithFragments)
+        )
+      }.toMap()
+
       val language = if (generateKotlinModels) "kotlin" else "java"
       return GraphQLCompiler.Arguments(
           ir = ir,
           outputDir = File("build/generated/test/${folder.name}/$language"),
-          operationIdGenerator = operationIdGenerator,
+          operationOutput = operationOutput,
           customTypeMap = customTypeMap,
           generateKotlinModels = generateKotlinModels,
           nullableValueType = nullableValueType,
@@ -200,7 +212,6 @@ class CodeGenTest(private val folder: File) {
           useJavaBeansSemanticNaming = useJavaBeansSemanticNaming,
           suppressRawTypesWarning = suppressRawTypesWarning,
           generateVisitorForPolymorphicDatatypes = generateVisitorForPolymorphicDatatypes,
-          packageNameProvider = packageNameProvider,
           generateAsInternal = generateAsInternal,
           kotlinMultiPlatformProject = true,
           enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters

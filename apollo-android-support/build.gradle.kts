@@ -21,7 +21,6 @@ android {
 
 dependencies {
   api(project(":apollo-normalized-cache-sqlite")) // TODO remove with removal of deprecated ApolloSqlHelper
-  implementation(kotlin("stdlib"))
   implementation(project(":apollo-runtime"))
 }
 

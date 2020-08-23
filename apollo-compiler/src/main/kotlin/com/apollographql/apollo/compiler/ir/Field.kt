@@ -1,7 +1,17 @@
 package com.apollographql.apollo.compiler.ir
 
-import com.apollographql.apollo.compiler.*
-import com.squareup.javapoet.*
+import com.apollographql.apollo.compiler.ClassNames
+import com.apollographql.apollo.compiler.JavaTypeResolver
+import com.apollographql.apollo.compiler.SchemaTypeSpecBuilder
+import com.apollographql.apollo.compiler.escapeJavaReservedWord
+import com.apollographql.apollo.compiler.singularize
+import com.apollographql.apollo.compiler.toJavaBeansSemanticNaming
+import com.apollographql.apollo.compiler.withBuilder
+import com.squareup.javapoet.CodeBlock
+import com.squareup.javapoet.FieldSpec
+import com.squareup.javapoet.MethodSpec
+import com.squareup.javapoet.TypeName
+import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
 data class Field(
@@ -134,7 +144,7 @@ data class Field(
   }
 
   private fun toTypeName(responseType: String, context: CodeGenerationContext): TypeName {
-    val packageName = if (isNonScalar()) "" else context.packageNameProvider.typesPackageName
+    val packageName = if (isNonScalar()) "" else context.ir.typesPackageName
     return JavaTypeResolver(context, packageName, isDeprecated).resolve(responseType, isOptional())
   }
 

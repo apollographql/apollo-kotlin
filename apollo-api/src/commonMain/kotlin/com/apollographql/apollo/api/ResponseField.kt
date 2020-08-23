@@ -1,5 +1,6 @@
 package com.apollographql.apollo.api
 
+import kotlin.js.JsName
 import kotlin.jvm.JvmStatic
 
 /**
@@ -22,31 +23,37 @@ open class ResponseField internal constructor(
 ) {
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "type"))
+  @JsName("getType")
   fun type(): Type {
     return type
   }
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "responseName"))
+  @JsName("getResponseName")
   fun responseName(): String {
     return responseName
   }
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "fieldName"))
+  @JsName("getFieldName")
   fun fieldName(): String {
     return fieldName
   }
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "arguments"))
+  @JsName("getArguments")
   fun arguments(): Map<String, Any?> {
     return arguments
   }
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "optional"))
+  @JsName("getOptional")
   fun optional(): Boolean {
     return optional
   }
 
   @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "conditions"))
+  @JsName("getConditions")
   fun conditions(): List<Condition> {
     return conditions
   }
@@ -126,6 +133,7 @@ open class ResponseField internal constructor(
   ) {
 
     @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "scalarType"))
+    @JsName("getScalarType")
     fun scalarType(): ScalarType {
       return scalarType
     }
@@ -177,6 +185,7 @@ open class ResponseField internal constructor(
       val typeNames: List<String>
   ) : Condition() {
     @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "typeNames"))
+    @JsName("getTypeNames")
     fun typeNames(): List<String> {
       return typeNames
     }
@@ -200,31 +209,36 @@ open class ResponseField internal constructor(
    */
   class BooleanCondition internal constructor(
       val variableName: String,
-      val inverted: Boolean
+      val isInverted: Boolean
   ) : Condition() {
     @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "variableName"))
+    @JsName("getVariableName")
     fun variableName(): String {
       return variableName
     }
 
-    @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "inverted"))
+    @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "isInverted"))
+    @JsName("getInverted")
     fun inverted(): Boolean {
-      return inverted
+      return isInverted
     }
+
+    @Deprecated(message = "Use isInverted instead", replaceWith = ReplaceWith(expression = "isInverted"))
+    val inverted = isInverted
 
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is BooleanCondition) return false
 
       if (variableName != other.variableName) return false
-      if (inverted != other.inverted) return false
+      if (isInverted != other.isInverted) return false
 
       return true
     }
 
     override fun hashCode(): Int {
       var result = variableName.hashCode()
-      result = 31 * result + inverted.hashCode()
+      result = 31 * result + isInverted.hashCode()
       return result
     }
   }

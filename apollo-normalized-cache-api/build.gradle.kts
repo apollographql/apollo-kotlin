@@ -20,16 +20,13 @@ kotlin {
     }
   }
 
-  jvm {
-    withJava()
-  }
-
+  jvm()
+  
   sourceSets {
     val commonMain by getting {
       dependencies {
         api(project(":apollo-api"))
-        implementation(kotlin("stdlib-common"))
-        implementation(groovy.util.Eval.x(project, "x.dep.okio.okioMultiplatform"))
+        implementation(groovy.util.Eval.x(project, "x.dep.okio"))
         api(groovy.util.Eval.x(project, "x.dep.uuid"))
       }
     }
@@ -37,7 +34,6 @@ kotlin {
     val jvmMain by getting {
       dependsOn(commonMain)
       dependencies {
-        implementation(kotlin("stdlib"))
       }
     }
 

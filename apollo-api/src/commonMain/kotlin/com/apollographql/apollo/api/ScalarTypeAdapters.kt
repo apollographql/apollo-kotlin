@@ -14,8 +14,16 @@ class ScalarTypeAdapters(val customAdapters: Map<ScalarType, CustomTypeAdapter<*
 
   @Suppress("UNCHECKED_CAST")
   fun <T : Any> adapterFor(scalarType: ScalarType): CustomTypeAdapter<T> {
+    /**
+     * Look in user-registered adapters by scalar type name first
+     */
     var customTypeAdapter: CustomTypeAdapter<*>? = customTypeAdapters[scalarType.typeName()]
     if (customTypeAdapter == null) {
+      /**
+       * If none is found, provide a default adapter based on the implementation class name
+       * This saves the user the hassle of registering a scalar adapter for mapping to widespread such as Long, Map, etc...
+       * The ScalarType must still be declared in the Gradle plugin configuration.
+       */
       customTypeAdapter = DEFAULT_ADAPTERS[scalarType.className()]
     }
     return requireNotNull(customTypeAdapter) {

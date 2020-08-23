@@ -1,6 +1,7 @@
 package com.apollographql.apollo.gradle.api
 
 import com.apollographql.apollo.compiler.OperationIdGenerator
+import com.apollographql.apollo.compiler.OperationOutputGenerator
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.provider.ListProperty
@@ -22,7 +23,7 @@ interface CompilerParams {
   val generateKotlinModels: Property<Boolean>
 
   /**
-   * Whether to generate OperationOutput.json. OperationOutput.json contains information such as
+   * Whether to generate operationOutput.json. operationOutput.json contains information such as
    * operation id, name and complete source sent to the server. This can be used to upload
    * a query's exact content to a server that doesn't support automatic persisted queries.
    *
@@ -67,6 +68,34 @@ interface CompilerParams {
    * Default value: [OperationIdGenerator.Sha256]
    */
   val operationIdGenerator: Property<OperationIdGenerator>
+
+  /**
+   * A generator to generate the operation output from a list of operations.
+   * OperationOutputGenerator is similar to [OperationIdGenerator] but can work on lists. This is useful if you need
+   * to register/whitelist your operations on your server all at once.
+   *
+   * Example Md5 hash generator:
+   * ```groovy
+   * import com.apollographql.apollo.compiler.OperationIdGenerator
+   *
+   * apollo {
+   *   operationOutputGenerator = new OperationIdGenerator() {
+   *     String apply(List<operation operationDocument, String operationFilepath) {
+   *       return operationDocument.md5()
+   *     }
+   *
+   *     /**
+   *      * Use this version override to indicate an update to the implementation.
+   *      * This invalidates the current cache.
+   *      */
+   *     String version = "v1"
+   *   }
+   * }
+   * ```
+   *
+   * Default value: [OperationIdGenerator.Sha256]
+   */
+  val operationOutputGenerator: Property<OperationOutputGenerator>
 
   /**
    * The custom types code generate some warnings that might make the build fail.

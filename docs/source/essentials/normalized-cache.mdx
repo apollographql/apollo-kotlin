@@ -147,7 +147,7 @@ To get the best of both caches, you can chain an `LruNormalizedCacheFactory` wit
 
 val sqlCacheFactory = SqlNormalizedCacheFactory(context, "db_name")
 val memoryFirstThenSqlCacheFactory = LruNormalizedCacheFactory(
-    EvictionPolicy.builder().maxSizeBytes(10 * 1024).build()
+    EvictionPolicy.builder().maxSizeBytes(10 * 1024 * 1024).build()
 ).chain(sqlCacheFactory)
 
 ```
@@ -156,7 +156,7 @@ val memoryFirstThenSqlCacheFactory = LruNormalizedCacheFactory(
 
 NormalizedCacheFactory sqlCacheFactory = new SqlNormalizedCacheFactory(context, "db_name");
 NormalizedCacheFactory memoryFirstThenSqlCacheFactory = new LruNormalizedCacheFactory(
-  EvictionPolicy.builder().maxSizeBytes(10 * 1024).build()
+  EvictionPolicy.builder().maxSizeBytes(10 * 1024 * 1024).build()
 ).chain(sqlCacheFactory);
 
 ```

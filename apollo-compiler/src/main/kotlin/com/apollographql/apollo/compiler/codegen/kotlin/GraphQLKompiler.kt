@@ -7,16 +7,16 @@ import com.apollographql.apollo.compiler.ast.builder.ast
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.ir.ScalarType
 import com.apollographql.apollo.compiler.ir.TypeDeclaration
+import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import com.squareup.kotlinpoet.asClassName
 import java.io.File
 
 class GraphQLKompiler(
     private val ir: CodeGenerationIR,
     private val customTypeMap: Map<String, String>,
-    private val packageNameProvider: PackageNameProvider,
     private val useSemanticNaming: Boolean,
     private val generateAsInternal: Boolean = false,
-    private val operationIdGenerator: OperationIdGenerator,
+    private val operationOutput: OperationOutput,
     private val kotlinMultiPlatformProject: Boolean,
     private val enumAsSealedClassPatternFilters: List<Regex>
 ) {
@@ -24,13 +24,14 @@ class GraphQLKompiler(
     val customTypeMap = customTypeMap.supportedCustomTypes(ir.typesUsed)
     val schema = ir.ast(
         customTypeMap = customTypeMap,
-        typesPackageName = packageNameProvider.typesPackageName,
-        fragmentsPackage = packageNameProvider.fragmentsPackageName,
+        typesPackageName = ir.typesPackageName,
+        fragmentsPackage = ir.fragmentsPackageName,
         useSemanticNaming = useSemanticNaming,
-        operationIdGenerator = operationIdGenerator
+        operationOutput = operationOutput
     )
     val schemaCodegen = SchemaCodegen(
-        packageNameProvider = packageNameProvider,
+        typesPackageName = ir.typesPackageName,
+        fragmentsPackageName = ir.fragmentsPackageName,
         generateAsInternal = generateAsInternal,
         kotlinMultiPlatformProject = kotlinMultiPlatformProject,
         enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters

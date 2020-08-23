@@ -2,7 +2,7 @@ package com.apollographql.apollo.api
 
 import platform.Foundation.NSDecimalNumber
 
-actual class BigDecimal internal constructor(private val raw: NSDecimalNumber) : Number(), Comparable<BigDecimal> {
+actual class BigDecimal internal constructor(private val raw: NSDecimalNumber) : Number() {
 
   actual constructor(strVal: String) : this(NSDecimalNumber(strVal))
 
@@ -48,7 +48,9 @@ actual class BigDecimal internal constructor(private val raw: NSDecimalNumber) :
   }
 
   override fun toChar(): Char {
-    return raw.charValue.toChar()
+    // Convert to `Int` first and then `Char` (unsigned 16-bit integer).
+    // UShort is experimental, and stdlib does not provide direct UShort -> Char conversion.
+    return raw.intValue.toChar()
   }
 
   override fun toDouble(): Double {
@@ -65,7 +67,7 @@ actual class BigDecimal internal constructor(private val raw: NSDecimalNumber) :
 
   override fun hashCode(): Int = raw.hashCode()
 
-  override fun compareTo(other: BigDecimal): Int = raw.compare(other.raw).toInt()
-
   override fun toString(): String = raw.stringValue
 }
+
+actual fun BigDecimal.toNumber(): Number = this

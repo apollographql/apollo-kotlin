@@ -7,39 +7,11 @@ buildscript {
   }
 }
 
-ApiCompatibility.apply(rootProject)
-
-abstract class DownloadFileTask : DefaultTask() {
-  @get:Input
-  abstract val url: Property<String>
-
-  @get:org.gradle.api.tasks.OutputFile
-  abstract val output: RegularFileProperty
-
-  @TaskAction
-  fun taskAction() {
-    val client = okhttp3.OkHttpClient()
-    val request = okhttp3.Request.Builder().get().url(url.get()).build()
-
-    client.newCall(request).execute().body!!.byteStream().use { body ->
-      output.asFile.get().outputStream().buffered().use { file ->
-        body.copyTo(file)
-      }
-    }
-  }
-}
+ApiCompatibility.configure(rootProject)
 
 subprojects {
   apply {
     from(rootProject.file("gradle/dependencies.gradle"))
-  }
-
-  buildscript {
-    repositories {
-      maven { url = uri("https://plugins.gradle.org/m2/") }
-      maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
-      google()
-    }
   }
 
   plugins.withType(com.android.build.gradle.BasePlugin::class.java) {
@@ -73,10 +45,9 @@ subprojects {
   this.apply(plugin = "signing")
 
   repositories {
-    maven { url = uri("https://plugins.gradle.org/m2/") }
-    maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
     google()
-    maven { url = uri("https://jitpack.io") }
+    mavenCentral()
+    jcenter() // for trove4j
   }
 
   group = property("GROUP")!!
@@ -320,27 +291,12 @@ fun isMaster(): Boolean {
   return eventName == "push" && ref == "refs/heads/master"
 }
 
-tasks.register("publishIfNeeded") {
+tasks.register("publishSnapshotsIfNeeded") {
   if (isMaster()) {
     project.logger.log(LogLevel.LIFECYCLE, "Deploying snapshot to OJO...")
     dependsOn(subprojectTasks("publishAllPublicationsToOjoRepository"))
     project.logger.log(LogLevel.LIFECYCLE, "Deploying snapshot to OSS Snapshots...")
     dependsOn(subprojectTasks("publishAllPublicationsToOssSnapshotsRepository"))
-  }
-
-  if (isTag()) {
-    project.logger.log(LogLevel.LIFECYCLE, "Deploying release to Bintray...")
-    dependsOn(subprojectTasks("publishAllPublicationsToBintrayRepository"))
-
-    project.logger.log(LogLevel.LIFECYCLE, "Deploying release to Gradle Portal...")
-    dependsOn(":apollo-gradle-plugin:publishPlugins")
-  }
-}
-
-tasks.register("publishToOssStagingIfNeeded") {
-  if (isTag()) {
-    project.logger.log(LogLevel.LIFECYCLE, "Deploying release to OSS staging...")
-    dependsOn(subprojectTasks("publishAllPublicationsToOssStagingRepository"))
   }
 }
 
