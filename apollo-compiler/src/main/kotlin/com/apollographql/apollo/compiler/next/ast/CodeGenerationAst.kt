@@ -41,7 +41,9 @@ internal data class CodeGenerationAst(
 
   data class FragmentType(
       val rootType: TypeRef,
-      val nestedTypes: ObjectTypeContainer
+      val defaultImplementation: TypeRef,
+      val nestedTypes: ObjectTypeContainer,
+      val fragmentDefinition: String
   )
 
   data class ObjectType(

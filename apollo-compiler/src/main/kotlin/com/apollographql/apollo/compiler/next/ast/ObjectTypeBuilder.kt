@@ -23,7 +23,8 @@ internal class ObjectTypeBuilder(
       typeRef: CodeGenerationAst.TypeRef,
       schemaType: IntrospectionSchema.Type,
       fields: List<Field>,
-      abstract: Boolean
+      abstract: Boolean,
+      implements: Set<CodeGenerationAst.TypeRef> = emptySet()
   ): CodeGenerationAst.ObjectType {
     return CodeGenerationAst.ObjectType(
         name = typeRef.name,
@@ -39,7 +40,7 @@ internal class ObjectTypeBuilder(
               abstract = abstract
           )
         },
-        implements = emptySet(),
+        implements = implements,
         schemaType = schemaType.name,
         kind = CodeGenerationAst.ObjectType.Kind.Interface.takeIf { abstract } ?: CodeGenerationAst.ObjectType.Kind.Object
     )
@@ -121,7 +122,7 @@ internal class ObjectTypeBuilder(
       IntrospectionSchema.Kind.INTERFACE,
       IntrospectionSchema.Kind.OBJECT,
       IntrospectionSchema.Kind.UNION -> {
-        if (field.inlineFragments.isEmpty()) {
+        if (field.inlineFragments.isEmpty() && field.fragmentRefs.isEmpty()) {
           val typeRef = buildObjectType(
               name = field.responseName,
               schemaType = schema.resolveType(schemaTypeRef),
@@ -135,9 +136,10 @@ internal class ObjectTypeBuilder(
               typeRef = typeRef
           )
         } else {
-          field.resolveFragmentFieldType(
+          field.resolveFieldWithFragmentsType(
               schemaTypeRef = schemaTypeRef,
-              singularizeName = singularizeName
+              singularizeName = singularizeName,
+              abstract = abstract
           )
         }
       }
@@ -188,7 +190,8 @@ internal class ObjectTypeBuilder(
   }
 
   private fun List<Fragment>.buildFragmentPossibleTypes(
-      parentType: CodeGenerationAst.TypeRef
+      parentType: CodeGenerationAst.TypeRef,
+      parentFields: List<Field>
   ): Map<String, CodeGenerationAst.TypeRef> {
     val (fragmentOnObjects, fragmentOnInterfaces) = partition { fragment ->
       val typeConditionSchemaType = schema.resolveType(schema.resolveType(fragment.typeCondition))
@@ -227,13 +230,15 @@ internal class ObjectTypeBuilder(
 
     // build object types for all fragments defined on concrete types
     val fragmentOnObjectTypes = fragmentOnObjects.map { fragment ->
+      val fragmentOnInterfaceTypesToImplement = fragmentOnInterfaceTypes
+          .filter { (fragmentOnInterface, _) -> fragmentOnInterface.possibleTypes.contains(fragment.typeCondition) }
+      val fieldsToMerge = fragmentOnInterfaceTypesToImplement.keys.flatMap { it.fields }
       fragment.typeCondition to buildObjectType(
           name = fragment.interfaceType?.name?.let { "${it}Impl" } ?: fragment.typeCondition,
           schemaType = schema.resolveType(schema.resolveType(fragment.typeCondition)),
-          fields = fragment.fields,
+          fields = fragment.fields.merge(parentFields + fieldsToMerge),
           abstract = false,
-          implements = fragmentOnInterfaceTypes
-              .filter { (fragmentOnInterface, _) -> fragmentOnInterface.possibleTypes.contains(fragment.typeCondition) }
+          implements = fragmentOnInterfaceTypesToImplement
               .map { (_, superInterfaceTypeRef) -> superInterfaceTypeRef }
               .plus(parentType)
               .plus(listOfNotNull(fragment.interfaceType))
@@ -309,9 +314,10 @@ internal class ObjectTypeBuilder(
     }
   }
 
-  private fun Field.resolveFragmentFieldType(
+  private fun Field.resolveFieldWithFragmentsType(
       schemaTypeRef: IntrospectionSchema.TypeRef,
-      singularizeName: Boolean
+      singularizeName: Boolean,
+      abstract: Boolean
   ): CodeGenerationAst.FieldType.Object {
     val fragmentRootInterfaceType = nestedTypeContainer.registerObjectType(
         typeName = responseName,
@@ -320,18 +326,23 @@ internal class ObjectTypeBuilder(
     ) { fragmentRootInterfaceType ->
       val schemaType = schema.resolveType(schemaTypeRef)
 
-      val defaultImplementationType = buildObjectType(
-          name = "${responseName.singularize()}Impl",
-          schemaType = schema.resolveType(schemaTypeRef),
-          fields = fields,
-          abstract = false,
-          implements = listOf(fragmentRootInterfaceType),
-          singularizeName = singularizeName
-      )
+      val defaultImplementationType =
+        buildObjectType(
+            name = "${responseName.singularize()}Impl",
+            schemaType = schema.resolveType(schemaTypeRef),
+            fields = fields,
+            abstract = false,
+            implements = listOf(fragmentRootInterfaceType),
+            singularizeName = singularizeName
+        )
 
-      val possibleImplementations = inlineFragments.toFragments()
-          .plus(fragmentRefs.map { fragmentRef -> fragmentRef.toFragment() })
-          .buildFragmentPossibleTypes(fragmentRootInterfaceType)
+      val possibleImplementations =
+        inlineFragments.toFragments()
+            .plus(fragmentRefs.map { fragmentRef -> fragmentRef.toFragment() })
+            .buildFragmentPossibleTypes(
+                parentType = fragmentRootInterfaceType,
+                parentFields = fields
+            )
 
       CodeGenerationAst.ObjectType(
           name = fragmentRootInterfaceType.name,
@@ -369,8 +380,8 @@ internal class ObjectTypeBuilder(
   }
 
   private fun IntrospectionSchema.Type.resolveField(name: String): IntrospectionSchema.Field? {
-    if (name == "__typename") {
-      return IntrospectionSchema.Field(
+    return if (name == "__typename") {
+      IntrospectionSchema.Field(
           name = "__typename",
           description = null,
           isDeprecated = false,
@@ -383,8 +394,9 @@ internal class ObjectTypeBuilder(
               )
           )
       )
+    } else {
+      fields().find { field -> field.name == name }
     }
-    return fields().find { field -> field.name == name }
   }
 
   private val Field.normalizedConditions: List<CodeGenerationAst.Field.Condition>
@@ -405,17 +417,17 @@ internal class ObjectTypeBuilder(
     return if (isEmpty()) {
       emptyList()
     } else {
-      flatMap { fragment ->
+      flatMap { inlineFragment ->
         listOf(
             Fragment(
-                typeCondition = fragment.typeCondition,
-                possibleTypes = fragment.possibleTypes,
-                description = fragment.description,
-                fields = fragment.fields,
-                fragments = fragment.fragments,
+                typeCondition = inlineFragment.typeCondition,
+                possibleTypes = inlineFragment.possibleTypes,
+                description = inlineFragment.description,
+                fields = inlineFragment.fields,
+                fragments = inlineFragment.fragments,
                 interfaceType = null
             )
-        ) + fragment.fragments.map { it.toFragment() }
+        ) + inlineFragment.fragments.map { it.toFragment() }
       } + flatMap { fragment -> fragment.inlineFragments }.toFragments()
     }
   }

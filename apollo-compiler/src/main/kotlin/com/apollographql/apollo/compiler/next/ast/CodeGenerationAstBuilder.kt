@@ -25,7 +25,7 @@ internal fun CodeGenerationIR.buildCodeGenerationAst(
       fragmentsPackage = fragmentsPackage,
       useSemanticNaming = useSemanticNaming,
       operationIdGenerator = operationIdGenerator
-  ).build(this)
+  ).build(this.flattenInlineFragments())
 }
 
 private class CodeGenerationAstBuilder(
@@ -65,6 +65,12 @@ private class CodeGenerationAstBuilder(
           irFragments = ir.fragments,
           customTypes = customTypes
       )
+    }.let { fragmentTypes ->
+      fragmentTypes.map { fragmentType ->
+        fragmentType.copy(
+            nestedTypes = fragmentType.nestedTypes.patchTypeHierarchy(fragmentTypes.minus(fragmentType))
+        )
+      }
     }
 
     val operations = ir.operations.map { operation ->
@@ -315,9 +321,31 @@ private class CodeGenerationAstBuilder(
           abstract = true
       )
     }
+    val defaultImplementation = nestedTypeContainer.registerObjectType(
+        typeName = "DefaultImpl",
+        enclosingType = rootType
+    ) { typeRef ->
+      ObjectTypeBuilder(
+          schema = schema,
+          customTypes = customTypes,
+          typesPackageName = typesPackageName,
+          fragmentsPackage = fragmentsPackage,
+          irFragments = irFragments.associateBy { it.fragmentName },
+          nestedTypeContainer = nestedTypeContainer,
+          enclosingType = rootType
+      ).buildObjectType(
+          typeRef = typeRef,
+          schemaType = schema.resolveType(schema.resolveType(typeCondition)),
+          fields = fields,
+          abstract = false,
+          implements = setOf(rootType)
+      )
+    }
     return CodeGenerationAst.FragmentType(
         rootType = rootType,
-        nestedTypes = nestedTypeContainer.typeContainer
+        defaultImplementation = defaultImplementation,
+        nestedTypes = nestedTypeContainer.typeContainer,
+        fragmentDefinition = source
     )
   }
 }
