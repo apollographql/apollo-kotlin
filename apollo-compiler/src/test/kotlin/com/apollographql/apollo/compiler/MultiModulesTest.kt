@@ -205,7 +205,7 @@ class MultiModulesTest {
   }
 
   @Test
-  fun `fragments multiple`() {
+  fun `fragments in both parent and child`() {
     fragmentTest("fragment-multiple")
 
     rootSourcesDir.assertContents(

@@ -31,7 +31,7 @@ open class ApolloPlugin : Plugin<Project> {
 
   internal companion object {
     const val TASK_GROUP = "apollo"
-    const val MIN_GRADLE_VERSION = "6.2"
+    const val MIN_GRADLE_VERSION = "6.0"
 
     const val CONFIGURATION_CONSUMER = "apollo"
     const val USAGE_APOLLO_METADATA = "apollo-metadata"

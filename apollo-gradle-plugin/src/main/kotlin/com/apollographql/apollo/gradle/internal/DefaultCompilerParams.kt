@@ -43,9 +43,10 @@ abstract class DefaultCompilerParams @Inject constructor(objects: ObjectFactory)
 
   init {
     // see https://github.com/gradle/gradle/issues/7485
-    customTypeMapping.convention(null as Map<String, String>?)
-    sealedClassesForEnumsMatching.convention(null as List<String>?)
-    alwaysGenerateTypesMatching.convention(null as Set<String>?)
+    // TODO replace with `convention(null)` when we can target Gradle 6.2
+    customTypeMapping.set(null as Map<String, String>?)
+    sealedClassesForEnumsMatching.set(null as List<String>?)
+    alwaysGenerateTypesMatching.set(null as Set<String>?)
   }
 
 }
