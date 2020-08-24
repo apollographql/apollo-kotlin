@@ -65,7 +65,7 @@ class SqlNormalizedCache internal constructor(
   override fun performMerge(apolloRecord: Record, oldRecord: Record?, cacheHeaders: CacheHeaders): Set<String> {
     return if (oldRecord == null) {
       cacheQueries.insert(key = apolloRecord.key, record = recordFieldAdapter.toJson(apolloRecord.fields))
-      emptySet()
+      apolloRecord.keys()
     } else {
       oldRecord.mergeWith(apolloRecord).also {
         if (it.isNotEmpty()) {
