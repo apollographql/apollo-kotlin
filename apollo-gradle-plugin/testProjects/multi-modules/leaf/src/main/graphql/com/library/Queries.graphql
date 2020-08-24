@@ -1,0 +1,15 @@
+query GetAnimal {
+  randomAnimal {
+    ...CatFragment
+  }
+}
+
+query GetPlant($size: Int!) {
+  randomPlant {
+    ...PlantFragment
+  }
+}
+
+mutation registerAnimal($input: AnimalInput!) {
+  registerAnimal(input: $input)
+}

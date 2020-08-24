@@ -1,4 +1,4 @@
 rootProject.name = "multi-modules"
 
-include(":root", ":leaf")
+include(":root", ":node", "leaf")
 

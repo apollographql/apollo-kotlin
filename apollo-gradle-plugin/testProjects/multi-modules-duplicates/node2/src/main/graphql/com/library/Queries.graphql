@@ -1,0 +1,6 @@
+query GetAnimal {
+  randomAnimal {
+    ...CatFragment
+  }
+}
+

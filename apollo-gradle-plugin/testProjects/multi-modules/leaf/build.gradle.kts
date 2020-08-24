@@ -9,12 +9,12 @@ dependencies {
   implementation(groovy.util.Eval.x(project, "x.dep.apollo.api"))
   testImplementation(kotlin("test-junit"))
 
-  implementation(project(":lib"))
-  apollo(project(":lib"))
+  implementation(project(":root"))
+  apollo(project(":root"))
 }
 
 application {
-  mainClass.set("MainCliKt")
+  mainClass.set("LeafKt")
 }
 
 apollo {
