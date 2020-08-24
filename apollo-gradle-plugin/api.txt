@@ -1,8 +1,10 @@
 package com.apollographql.apollo.gradle.api {
 
   public abstract interface ApolloExtension implements com.apollographql.apollo.gradle.api.CompilerParams {
+    method public abstract error.NonExistentClass getRelaxGradleVersionCheck();
     method public abstract void onCompilationUnit(error.NonExistentClass);
     method public abstract void service(error.NonExistentClass, error.NonExistentClass);
+    property public abstract error.NonExistentClass relaxGradleVersionCheck;
   }
 
   public abstract interface CompilationUnit implements com.apollographql.apollo.gradle.api.CompilerParams {
