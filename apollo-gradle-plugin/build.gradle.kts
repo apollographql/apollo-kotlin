@@ -1,3 +1,5 @@
+import org.gradle.api.internal.artifacts.dsl.dependencies.DependencyFactory
+
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
   id("java-gradle-plugin")
@@ -10,7 +12,7 @@ kotlin {
   sourceSets {
     val jvmMain by getting {
       dependencies {
-        //compileOnly(gradleApi())
+        compileOnly(DependencyFactory.ClassPathNotation.GRADLE_API)
         compileOnly(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
         compileOnly(groovy.util.Eval.x(project, "x.dep.android.minPlugin"))
 
