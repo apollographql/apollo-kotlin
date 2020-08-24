@@ -261,14 +261,14 @@ open class ApolloPlugin : Plugin<Project> {
   }
 
   override fun apply(project: Project) {
-    require(GradleVersion.current().compareTo(GradleVersion.version(MIN_GRADLE_VERSION)) >= 0) {
-      "apollo-android requires Gradle version $MIN_GRADLE_VERSION or greater"
-    }
-
     val apolloExtension = project.extensions.create(ApolloExtension::class.java, "apollo", DefaultApolloExtension::class.java, project) as DefaultApolloExtension
 
     // the extension block has not been evaluated yet, register a callback once the project has been evaluated
     project.afterEvaluate {
+      require(apolloExtension.skipGradleVersionCheck.getOrElse(false) || GradleVersion.current().compareTo(GradleVersion.version(MIN_GRADLE_VERSION)) >= 0) {
+        "apollo-android requires Gradle version $MIN_GRADLE_VERSION or greater"
+      }
+
       afterEvaluate(it, apolloExtension)
     }
   }

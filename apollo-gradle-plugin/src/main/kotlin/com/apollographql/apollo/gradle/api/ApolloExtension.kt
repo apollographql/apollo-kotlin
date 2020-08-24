@@ -39,4 +39,5 @@ interface ApolloExtension: CompilerParams {
    */
   fun onCompilationUnit(action: Action<CompilationUnit>)
 
+  val skipGradleVersionCheck: Property<Boolean>
 }
