@@ -1,32 +1,36 @@
 plugins {
-  id("java")
-  id("org.jetbrains.kotlin.jvm")
+  id("org.jetbrains.kotlin.multiplatform")
   id("java-gradle-plugin")
   id("com.gradle.plugin-publish") version "0.11.0"
 }
 
-// groovy strings with double quotes are GString.
-// groovy strings with single quotes are java.lang.String
-// In all cases, gradle APIs take Any so just feed them whatever is returned
-fun dep(key: String) = (extra["dep"] as Map<*, *>)[key]!!
+kotlin {
+  jvm()
 
-fun Any.dot(key: String): Any {
-  return (this as Map<String, *>)[key]!!
+  sourceSets {
+    val jvmMain by getting {
+      dependencies {
+        //compileOnly(gradleApi())
+        compileOnly(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
+        compileOnly(groovy.util.Eval.x(project, "x.dep.android.minPlugin"))
+
+        implementation(project(":apollo-api")) // for QueryDocumentMinifier
+        implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp4"))
+        implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
+
+        api(project(":apollo-compiler"))
+      }
+    }
+
+    val jvmTest by getting {
+      dependencies {
+        implementation(groovy.util.Eval.x(project, "x.dep.junit"))
+        implementation(groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer4"))
+      }
+    }
+  }
 }
 
-dependencies {
-  compileOnly(gradleApi())
-  compileOnly(dep("kotlin").dot("plugin"))
-  compileOnly(dep("android").dot("minPlugin"))
-
-  api(project(":apollo-compiler"))
-  implementation(project(":apollo-api")) // for QueryDocumentMinifier
-  implementation(dep("okHttp").dot("okHttp4"))
-  implementation(dep("moshi").dot("moshi"))
-  
-  testImplementation(dep("junit"))
-  testImplementation(dep("okHttp").dot("mockWebServer4"))
-}
 
 tasks.withType<Test> {
   dependsOn(":apollo-api:publishAllPublicationsToPluginTestRepository")

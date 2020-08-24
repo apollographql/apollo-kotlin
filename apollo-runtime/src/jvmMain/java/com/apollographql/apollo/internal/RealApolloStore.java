@@ -25,6 +25,7 @@ import com.apollographql.apollo.cache.normalized.internal.Transaction;
 import com.apollographql.apollo.cache.normalized.internal.WriteableStore;
 import com.apollographql.apollo.internal.response.RealResponseReader;
 import com.apollographql.apollo.internal.response.RealResponseWriter;
+import com.benasher44.uuid.UuidKt;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
