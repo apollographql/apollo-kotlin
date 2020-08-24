@@ -176,7 +176,8 @@ class CodegenTest(private val folder: File, private val testLanguage: TestLangua
           generateVisitorForPolymorphicDatatypes = generateVisitorForPolymorphicDatatypes,
           generateAsInternal = generateAsInternal,
           kotlinMultiPlatformProject = true,
-          enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters
+          enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters,
+          metadataOutputFile = File("build/generated/test/${folder.name}/metadata/$language"),
       )
     }
 
