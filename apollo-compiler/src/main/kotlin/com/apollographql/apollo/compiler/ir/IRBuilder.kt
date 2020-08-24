@@ -43,7 +43,7 @@ class IRBuilder(private val schema: IntrospectionSchema,
 
     val fragmentsToGenerate = documentParseResult.fragments.map { it.fragmentName }
 
-    val incomingTypes = incomingMetadata?.options?.generatedTypes ?: emptySet()
+    val incomingTypes = incomingMetadata?.types ?: emptySet()
     val extraTypes = extraTypes()
 
     val typeDeclarations = (documentParseResult.usedTypes + extraTypes) .usedTypeDeclarations()

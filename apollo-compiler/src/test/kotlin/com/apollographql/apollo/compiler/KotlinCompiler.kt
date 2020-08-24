@@ -15,7 +15,7 @@ object KotlinCompiler {
       jvmTarget = "1.8"
       sources = kotlinFiles
 
-      allWarningsAsErrors = allWarningAsErrors
+      allWarningsAsErrors = false // TODO: enable again when kotlin-test-compile targets Kotlin 1.4 allWarningAsErrors
       inheritClassPath = true
       messageOutputStream = System.out // see diagnostics in real time
     }.compile()

@@ -83,8 +83,7 @@ class CodegenTest(private val folder: File, private val testLanguage: TestLangua
     if (!args.generateKotlinModels) {
       JavaCompiler.assertCompiles(actualFiles.toSet())
     } else {
-      val expectedWarnings = false // TODO: enable again when kotlin-test-compile targets Kotlin 1.4
-      //  folder.name in listOf("deprecation", "custom_scalar_type_warnings", "arguments_complex", "arguments_simple")
+      val expectedWarnings = folder.name in listOf("deprecation", "custom_scalar_type_warnings", "arguments_complex", "arguments_simple")
       KotlinCompiler.assertCompiles(actualFiles.toSet(), !expectedWarnings)
     }
   }
