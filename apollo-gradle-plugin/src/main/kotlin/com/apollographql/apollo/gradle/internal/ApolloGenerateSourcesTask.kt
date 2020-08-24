@@ -32,8 +32,8 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Optional
   abstract val operationOutputFile: RegularFileProperty
 
-  @get:OutputDirectory
-  abstract val metadataOutputDir: DirectoryProperty
+  @get:OutputFile
+  abstract val metadataOutputFile: RegularFileProperty
 
   @get:Input
   abstract val generateMetadata: Property<Boolean>
@@ -126,12 +126,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
           NullableValueType.values().joinToString(separator = "\n") { it.value })
     }
 
-    var metadataOutputDir: File? = metadataOutputDir.asFile.get()
-    metadataOutputDir?.mkdirs()
-    if (!generateMetadata.getOrElse(false)) {
-      metadataOutputDir = null
-    }
-
     val args = GraphQLCompiler.Arguments(
         rootFolders = rootFolders.get().map { project.file(it) },
         graphqlFiles = graphqlFiles.files,
@@ -139,7 +133,8 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         outputDir = outputDir.asFile.get(),
 
         metadata = metadataConfiguration.incoming.artifacts.artifacts.map { it.file },
-        metadataOutputDir = metadataOutputDir,
+        metadataOutputFile = metadataOutputFile.asFile.get(),
+        generateMetadata = generateMetadata.getOrElse(false),
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching.orNull,
         moduleName = project.name,
         rootProjectDir = project.rootDir,

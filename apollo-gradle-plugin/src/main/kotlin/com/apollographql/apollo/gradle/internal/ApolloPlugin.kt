@@ -98,20 +98,8 @@ open class ApolloPlugin : Plugin<Project> {
 
           val codegenProvider = registerCodeGenTask(project, compilationUnit, consumerConfiguration)
 
-          val zipMetadataTaskProvider = project.tasks.register(ModelNames.zipMetadata(compilationUnit), Zip::class.java) {
-            it.group = TASK_GROUP
-            it.description = "Generate apolloMetadata.zip for multi-module builds"
-
-            val file = BuildDirLayout.metadataZip(project, compilationUnit).get().asFile
-            it.destinationDirectory.set(file.parentFile)
-            it.archiveFileName.set(file.name)
-            it.from(codegenProvider.map { it.metadataOutputDir }) {
-              it.into("metadata")
-            }
-          }
-
           project.artifacts {
-            it.add(producerConfigurationName, zipMetadataTaskProvider)
+            it.add(producerConfigurationName, codegenProvider.flatMap { it.metadataOutputFile })
           }
 
           codegenProvider.configure {
@@ -184,9 +172,9 @@ open class ApolloPlugin : Plugin<Project> {
             disallowChanges()
           }
         }
-        // always set `metadataOutputDir` as the `zipMetadata` task is part of `assemble` (see https://github.com/gradle/gradle/issues/14065)
+        // always set `metadataOutputFile` as the `metadata` task is part of `assemble` (see https://github.com/gradle/gradle/issues/14065)
         // and we don't want it to fail if it is ever called by the user
-        task.metadataOutputDir.apply {
+        task.metadataOutputFile.apply {
           set(BuildDirLayout.metadata(project, compilationUnit))
           disallowChanges()
         }

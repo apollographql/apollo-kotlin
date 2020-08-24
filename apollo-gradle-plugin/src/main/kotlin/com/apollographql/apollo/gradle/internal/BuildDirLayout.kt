@@ -18,9 +18,9 @@ object BuildDirLayout {
     )
   }
 
-  internal fun metadata(project: Project, compilationUnit: DefaultCompilationUnit): Provider<Directory> {
-    return project.layout.buildDirectory.dir(
-        "generated/metadata/apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}"
+  internal fun metadata(project: Project, compilationUnit: DefaultCompilationUnit): Provider<RegularFile> {
+    return project.layout.buildDirectory.file(
+        "generated/metadata/apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}/metadata.json"
     )
   }
 

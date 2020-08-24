@@ -1,23 +1,30 @@
 package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.compiler.ir.Fragment
+import com.apollographql.apollo.compiler.parser.introspection.IntrospectionQuery
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Companion.wrap
 import com.squareup.moshi.JsonClass
 import java.io.File
 import java.util.zip.ZipFile
 
+@JsonClass(generateAdapter = true)
 data class ApolloMetadata(
-    val schema: IntrospectionSchema?,
-    val options: Options,
-    val fragments: List<Fragment>
+    val schema: IntrospectionQuery.Wrapper?,
+    /**
+     * The fragments, in IR format
+     */
+    val fragments: List<Fragment>,
+    /**
+     * The generated input objects, enums
+     */
+    val types: Set<String>,
+    val schemaPackageName: String?,
+    /**
+     * The module name, for debug
+     */
+    val moduleName: String,
 ) {
-  @JsonClass(generateAdapter = true)
-  data class Options(
-      val schemaPackageName: String?,
-      val moduleName: String,
-      val generatedTypes: Set<String>
-  )
 
   fun withResolvedFragments(projectDir: File): ApolloMetadata {
     return copy(
@@ -57,22 +64,11 @@ data class ApolloMetadata(
     )
   }
 
-  fun writeTo(dir: File) {
-    dir.deleteRecursively()
-    dir.mkdirs()
-    schema?.wrap().toJson(dir.schema)
-    options.toJson(dir.options)
-    fragments.toJson(dir.fragments)
+  fun writeTo(file: File) {
+    this.toJson(file)
   }
 
   companion object {
-    private val File.schema
-      get() = File(this, "schema.json")
-    private val File.options
-      get() = File(this, "options.json")
-    private val File.fragments
-      get() = File(this, "fragments.json")
-
     fun List<ApolloMetadata>.merge(): ApolloMetadata? {
       if (isEmpty()) {
         return null
@@ -80,16 +76,16 @@ data class ApolloMetadata(
       // ensure a single schema
       val rootMetadataList = filter { it.schema != null }
       check(rootMetadataList.size <= 1) {
-        "Apollo: A schema is define in multiple modules: ${rootMetadataList.map { it.options.moduleName }.joinToString(", ")}.\n" +
+        "Apollo: A schema is define in multiple modules: ${rootMetadataList.map { it.moduleName }.joinToString(", ")}.\n" +
             "There should be only one root module defining the schema, check your dependencies."
       }
       check(rootMetadataList.isNotEmpty()) {
-        "Apollo: Cannot find a schema in parent modules. Searched in ${map { it.options.moduleName }.joinToString(", ")}"
+        "Apollo: Cannot find a schema in parent modules. Searched in ${map { it.moduleName }.joinToString(", ")}"
       }
       val rootMetadata = rootMetadataList.first()
 
       // ensure the same schemaPackageName
-      map { it.options.schemaPackageName }.filterNotNull().distinct().let {
+      map { it.schemaPackageName }.filterNotNull().distinct().let {
         check(it.size == 1) {
           "Apollo: All modules should have the same schemaPackageName. Found:" + it.joinToString(", ")
         }
@@ -97,55 +93,16 @@ data class ApolloMetadata(
 
       // no need to validate distinct fragment names, this will be done later when aggregating the Fragments
       return ApolloMetadata(
-          schema = rootMetadataList.first().schema!!,
+          schema = rootMetadata.schema!!,
           fragments = flatMap { it.fragments },
-          options = rootMetadata.options.copy(
-              moduleName = "*",
-              generatedTypes = flatMap { it.options.generatedTypes }.toSet()
-          )
+          moduleName = "*",
+          schemaPackageName = rootMetadata.schemaPackageName,
+          types = flatMap { it.types }.toSet(),
       )
     }
 
-    fun readFromZip(zip: File): ApolloMetadata {
-      check(zip.exists()) {
-        "Apollo: Cannot find ${zip}, make sure to define apollo { generateApolloMetadata.set(true) } in the parent module"
-      }
-
-      val zipFile = ZipFile(zip)
-
-      val schema = zipFile.getEntry("metadata/schema.json")?.let {
-        IntrospectionSchema(zipFile.getInputStream(it), "from metadata/schema.json")
-      }
-      val options = zipFile.getEntry("metadata/options.json")!!.let {
-        zipFile.getInputStream(it).fromJson<Options>()
-      }
-      val fragments = zipFile.getEntry("metadata/fragments.json")!!.let {
-        zipFile.getInputStream(it).fromJsonList<Fragment>()
-      }
-
-      return ApolloMetadata(
-          schema = schema,
-          options = options,
-          fragments = fragments
-      )
-    }
-
-    fun readFromDirectory(dir: File): ApolloMetadata {
-      check(dir.exists()) {
-        "Apollo: Cannot find ${dir}, make sure to define apollo { generateApolloMetadata.set(true) } in the parent module"
-      }
-
-      val schema = dir.schema.takeIf { it.exists() } ?.let {
-        IntrospectionSchema(it.inputStream(), "from $it")
-      }
-      val options = dir.options.inputStream().fromJson<Options>()
-      val fragments = dir.fragments.inputStream().fromJsonList<Fragment>()
-
-      return ApolloMetadata(
-          schema = schema,
-          options = options,
-          fragments = fragments
-      )
+    fun readFrom(file: File): ApolloMetadata {
+      return file.fromJson()
     }
   }
 }

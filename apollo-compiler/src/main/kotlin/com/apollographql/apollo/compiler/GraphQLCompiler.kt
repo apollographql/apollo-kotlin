@@ -13,6 +13,8 @@ import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.operationoutput.toJson
 import com.apollographql.apollo.compiler.parser.graphql.GraphQLDocumentParser
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
+import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Companion.toIntrospectionSchema
+import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Companion.wrap
 import com.apollographql.apollo.compiler.parser.sdl.GraphSdlSchema
 import com.apollographql.apollo.compiler.parser.sdl.toIntrospectionSchema
 import com.squareup.javapoet.JavaFile
@@ -47,7 +49,7 @@ class GraphQLCompiler {
         schemaPackageName = schemaPackageName,
         incomingMetadata = metadata,
         alwaysGenerateTypesMatching = args.alwaysGenerateTypesMatching,
-        generateMetadata = args.metadataOutputDir != null
+        generateMetadata = args.generateMetadata
     ).build(parseResult)
 
     val operationOutput = ir.operations.map {
@@ -107,14 +109,13 @@ class GraphQLCompiler {
       )
     }
 
-    if (args.metadataOutputDir != null) {
+    args.metadataOutputFile.parentFile.mkdirs()
+    if (args.generateMetadata) {
       val outgoingMetadata = ApolloMetadata(
-          schema = if (metadata == null) introspectionSchema else null,
-          options = ApolloMetadata.Options(
-              schemaPackageName = schemaPackageName,
-              moduleName = args.moduleName,
-              generatedTypes = ir.enumsToGenerate + ir.inputObjectsToGenerate
-          ),
+          schema = if (metadata == null) introspectionSchema.wrap() else null,
+          schemaPackageName = schemaPackageName,
+          moduleName = args.moduleName,
+          types = ir.enumsToGenerate + ir.inputObjectsToGenerate,
           fragments = ir.fragments.filter { ir.fragmentsToGenerate.contains(it.fragmentName) }
       ).let {
         if (args.rootProjectDir != null) {
@@ -123,7 +124,10 @@ class GraphQLCompiler {
           it
         }
       }
-      outgoingMetadata.writeTo(args.metadataOutputDir)
+      outgoingMetadata.writeTo(args.metadataOutputFile)
+    } else {
+      // write a dummy metadata because the file is required as part as the `assemble` target
+      args.metadataOutputFile.writeText("")
     }
   }
 
@@ -207,11 +211,7 @@ class GraphQLCompiler {
 
     private fun collectMetadata(metadata: List<File>, rootProjectDir: File?): ApolloMetadata? {
       return metadata.map {
-        if (it.isDirectory) {
-          ApolloMetadata.readFromDirectory(it)
-        } else {
-          ApolloMetadata.readFromZip(it)
-        }.let {
+        ApolloMetadata.readFrom(it).let {
           if (rootProjectDir != null) {
             it.withResolvedFragments(rootProjectDir)
           } else {
@@ -248,7 +248,7 @@ class GraphQLCompiler {
         val schemaPackageName = "$rootPackageName.$packageName".removePrefix(".").removeSuffix(".")
         return SchemaInfo(introspectionSchema, schemaPackageName)
       } else if (metadata != null) {
-        return SchemaInfo(metadata.schema!!, metadata.options.schemaPackageName!!)
+        return SchemaInfo(metadata.schema!!.__schema.toIntrospectionSchema(), metadata.schemaPackageName!!)
       } else {
         throw IllegalStateException("There should at least be metadata or schemaFile")
       }
@@ -311,9 +311,10 @@ class GraphQLCompiler {
        */
       val rootProjectDir: File? = null,
       /**
-       * The directory where to write the metadata
+       * The file where to write the metadata
        */
-      val metadataOutputDir: File? = null,
+      val metadataOutputFile: File,
+      val generateMetadata: Boolean = false,
       /**
        * Additional types to generate. This will generate this type and all types this type depends on.
        */

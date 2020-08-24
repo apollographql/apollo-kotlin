@@ -13,10 +13,10 @@ class MultiModulesTest {
   private val rootGraphqlDir = File(buildDir, "root/graphql")
   private val rootSchemaFile = File(buildDir, "root/graphql/schema.sdl")
   private val rootSourcesDir = File(buildDir, "root/sources")
-  private val rootMetadataDir = File(buildDir, "root/metadata")
+  private val rootMetadataFile = File(buildDir, "root/metadata/metadata.zip")
   private val leafGraphqlDir = File(buildDir, "leaf/graphql")
   private val leafSourcesDir = File(buildDir, "leaf/sources")
-  private val leafMetadataDir = File(buildDir, "leaf/metadata")
+  private val leafMetadataFile = File(buildDir, "leaf/metadata/metadata.zip")
 
   @Before
   fun before() {
@@ -37,7 +37,8 @@ class MultiModulesTest {
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
         outputDir = rootSourcesDir,
         generateKotlinModels = true,
-        metadataOutputDir = rootMetadataDir
+        metadataOutputFile = rootMetadataFile,
+        generateMetadata = true
     )
     GraphQLCompiler().write(rootArgs)
 
@@ -49,10 +50,11 @@ class MultiModulesTest {
         rootFolders = leafFolders,
         graphqlFiles = leafFolders.graphqlFiles(),
         schemaFile = null,
-        metadata = listOf(rootMetadataDir),
+        metadata = listOf(rootMetadataFile),
         outputDir = leafSourcesDir,
         generateKotlinModels = true,
-        metadataOutputDir = null
+        metadataOutputFile = leafMetadataFile,
+        generateMetadata = false
     )
     GraphQLCompiler().write(leafArgs)
 
@@ -127,7 +129,8 @@ class MultiModulesTest {
         alwaysGenerateTypesMatching = null,
         outputDir = rootSourcesDir,
         generateKotlinModels = true,
-        metadataOutputDir = rootMetadataDir,
+        metadataOutputFile = rootMetadataFile,
+        generateMetadata = true,
         rootProjectDir = folder
     )
     GraphQLCompiler().write(rootArgs)
@@ -136,10 +139,10 @@ class MultiModulesTest {
         rootFolders = listOf(folder),
         graphqlFiles = setOf(File(folder, "leaf.graphql")),
         schemaFile = null,
-        metadata = listOf(rootMetadataDir),
+        metadata = listOf(rootMetadataFile),
         outputDir = leafSourcesDir,
         generateKotlinModels = true,
-        metadataOutputDir = null,
+        metadataOutputFile = leafMetadataFile,
         rootProjectDir = folder
     )
     GraphQLCompiler().write(leafArgs)
@@ -178,7 +181,7 @@ class MultiModulesTest {
       Truth.assertThat(actualMessage).isEqualTo(expectedMessage)
     }
 
-    val apolloMetadata = ApolloMetadata.readFromDirectory(rootMetadataDir)
+    val apolloMetadata = ApolloMetadata.readFrom(rootMetadataFile)
     // Make sure the metadata does not contain absolute paths
     apolloMetadata.fragments.forEach {
       Truth.assertThat(it.filePath).isEqualTo("root.graphql")
