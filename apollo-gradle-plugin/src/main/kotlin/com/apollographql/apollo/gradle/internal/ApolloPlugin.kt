@@ -19,6 +19,9 @@ open class ApolloPlugin : Plugin<Project> {
   companion object {
     const val TASK_GROUP = "apollo"
     const val MIN_GRADLE_VERSION = "6.0"
+    // the plugin should work with 5.6 although it's largely untested
+    // anything below 5.6 will not work due to missing Property APIs such as org.gradle.api.provider.Property.orElse
+    const val MIN_GRADLE_VERSION_RELAXED = "5.6"
 
     val Project.isKotlinMultiplatform get() = pluginManager.hasPlugin("org.jetbrains.kotlin.multiplatform")
 
@@ -265,7 +268,8 @@ open class ApolloPlugin : Plugin<Project> {
 
     // the extension block has not been evaluated yet, register a callback once the project has been evaluated
     project.afterEvaluate {
-      require(apolloExtension.skipGradleVersionCheck.getOrElse(false) || GradleVersion.current().compareTo(GradleVersion.version(MIN_GRADLE_VERSION)) >= 0) {
+      require(apolloExtension.relaxGradleVersionCheck.getOrElse(false) && GradleVersion.current().compareTo(GradleVersion.version(MIN_GRADLE_VERSION_RELAXED)) >= 0
+          || GradleVersion.current().compareTo(GradleVersion.version(MIN_GRADLE_VERSION)) >= 0) {
         "apollo-android requires Gradle version $MIN_GRADLE_VERSION or greater"
       }
 

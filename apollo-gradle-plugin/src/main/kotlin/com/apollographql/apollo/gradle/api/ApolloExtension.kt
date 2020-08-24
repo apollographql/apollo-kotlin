@@ -39,5 +39,8 @@ interface ApolloExtension: CompilerParams {
    */
   fun onCompilationUnit(action: Action<CompilationUnit>)
 
-  val skipGradleVersionCheck: Property<Boolean>
+  /**
+   * The gradle plugin works with Gradle 5.6
+   */
+  val relaxGradleVersionCheck: Property<Boolean>
 }
