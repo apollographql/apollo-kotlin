@@ -1,5 +1,6 @@
 package com.apollographql.apollo.gradle.api
 
+import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.compiler.OperationIdGenerator
 import com.apollographql.apollo.compiler.OperationOutputGenerator
 import org.gradle.api.file.RegularFileProperty
@@ -196,10 +197,13 @@ interface CompilerParams {
 
   /**
    * Whether or not to generate Apollo metadata. Apollo metadata is used for multi-module support. Set this to true if you want other
-   * modules to be able to re-use fragments and types from this module
+   * modules to be able to re-use fragments and types from this module.
+   *
+   * This is currently experimental and this API might change in the future.
    *
    * Default value: false
    */
+  @ApolloExperimental
   val generateApolloMetadata: Property<Boolean>
 
   /**
@@ -209,7 +213,10 @@ interface CompilerParams {
    * of compilation speed for large projects. If that's the case, opt-in the types that are used by multiple dependent modules here.
    * You don't need to add types that are used by a single dependent module.
    *
+   * This is currently experimental and this API might change in the future.
+   *
    * Default value: if (generateApolloMetadata) listOf(".*") else listOf()
    */
+  @ApolloExperimental
   val alwaysGenerateTypesMatching: SetProperty<String>
 }
