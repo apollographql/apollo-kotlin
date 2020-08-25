@@ -13,7 +13,6 @@ import org.gradle.api.artifacts.ConfigurationContainer
 import org.gradle.api.attributes.Attribute
 import org.gradle.api.attributes.Usage
 import org.gradle.api.tasks.TaskProvider
-import org.gradle.api.tasks.bundling.Zip
 import org.gradle.util.GradleVersion
 import java.net.URLDecoder
 
@@ -41,7 +40,7 @@ open class ApolloPlugin : Plugin<Project> {
     private fun registerCompilationUnits(project: Project, apolloExtension: DefaultApolloExtension, checkVersionsTask: TaskProvider<Task>) {
       val androidExtension = project.extensions.findByName("android")
 
-      val apolloConfiguration = project.configurations.getByName(ModelNames.consumerConfiguration())
+      val apolloConfiguration = project.configurations.getByName(ModelNames.apolloConfiguration())
 
       val apolloVariants = when {
         project.isKotlinMultiplatform -> KotlinMultiplatformTaskConfigurator.getVariants(project)
@@ -75,6 +74,8 @@ open class ApolloPlugin : Plugin<Project> {
           project.configurations.create(producerConfigurationName) {
             it.isCanBeConsumed = true
             it.isCanBeResolved = false
+
+            it.extendsFrom(apolloConfiguration)
 
             it.attributes {
               it.attribute(Usage.USAGE_ATTRIBUTE, project.objects.named(Usage::class.java, USAGE_APOLLO_METADATA))
@@ -296,9 +297,9 @@ open class ApolloPlugin : Plugin<Project> {
 
     val apolloExtension = project.extensions.create(ApolloExtension::class.java, "apollo", DefaultApolloExtension::class.java, project) as DefaultApolloExtension
 
-    project.configurations.create(ModelNames.consumerConfiguration()) {
+    project.configurations.create(ModelNames.apolloConfiguration()) {
       it.isCanBeConsumed = false
-      it.isCanBeResolved = true
+      it.isCanBeResolved = false
 
       it.attributes {
         it.attribute(Usage.USAGE_ATTRIBUTE, project.objects.named(Usage::class.java, USAGE_APOLLO_METADATA))

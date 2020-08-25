@@ -13,10 +13,10 @@ class MultiModulesTest {
   private val rootGraphqlDir = File(buildDir, "root/graphql")
   private val rootSchemaFile = File(buildDir, "root/graphql/schema.sdl")
   private val rootSourcesDir = File(buildDir, "root/sources")
-  private val rootMetadataFile = File(buildDir, "root/metadata/metadata.zip")
+  private val rootMetadataFile = File(buildDir, "root/metadata/metadata.json")
   private val leafGraphqlDir = File(buildDir, "leaf/graphql")
   private val leafSourcesDir = File(buildDir, "leaf/sources")
-  private val leafMetadataFile = File(buildDir, "leaf/metadata/metadata.zip")
+  private val leafMetadataFile = File(buildDir, "leaf/metadata/metadata.json")
 
   @Before
   fun before() {

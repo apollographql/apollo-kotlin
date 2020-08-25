@@ -12,12 +12,6 @@ object BuildDirLayout {
     )
   }
 
-  internal fun metadataZip(project: Project, compilationUnit: DefaultCompilationUnit): Provider<RegularFile> {
-    return project.layout.buildDirectory.file(
-        "generated/zip/apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}/apolloMetadata.zip"
-    )
-  }
-
   internal fun metadata(project: Project, compilationUnit: DefaultCompilationUnit): Provider<RegularFile> {
     return project.layout.buildDirectory.file(
         "generated/metadata/apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}/metadata.json"

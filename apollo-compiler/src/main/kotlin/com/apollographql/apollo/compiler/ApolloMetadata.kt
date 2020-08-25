@@ -2,11 +2,8 @@ package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.compiler.ir.Fragment
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionQuery
-import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
-import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Companion.wrap
 import com.squareup.moshi.JsonClass
 import java.io.File
-import java.util.zip.ZipFile
 
 @JsonClass(generateAdapter = true)
 data class ApolloMetadata(

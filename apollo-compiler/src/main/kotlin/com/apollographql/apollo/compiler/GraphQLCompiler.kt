@@ -295,7 +295,7 @@ class GraphQLCompiler {
       //========== multi-module ============
 
       /**
-       * A list of zip files or directories containing metadata from previous compilations
+       * A list of files containing metadata from previous compilations
        */
       val metadata: List<File> = emptyList(),
       /**

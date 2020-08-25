@@ -10,7 +10,6 @@ dependencies {
 
   implementation(project(":node"))
   apollo(project(":node"))
-  apollo(project(":root"))
 }
 
 application {
