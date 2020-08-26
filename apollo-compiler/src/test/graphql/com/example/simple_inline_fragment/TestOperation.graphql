@@ -1,6 +1,8 @@
 query TestQuery {
   hero {
-    name
+    ... on Character {
+      name
+    }
     ... on Human {
       height
     }

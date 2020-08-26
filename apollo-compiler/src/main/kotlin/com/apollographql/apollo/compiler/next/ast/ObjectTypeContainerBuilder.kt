@@ -3,9 +3,12 @@ package com.apollographql.apollo.compiler.next.ast
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo.compiler.singularize
 
-internal class ObjectTypeContainerBuilder(private val packageName: String) {
+internal class ObjectTypeContainerBuilder(
+    private val packageName: String,
+    reservedTypeNames: Set<String> = emptySet()
+) {
 
-  private val usedTypeNames = HashSet<String>()
+  private val usedTypeNames = HashSet<String>(reservedTypeNames)
   private val container = LinkedHashMap<CodeGenerationAst.TypeRef, CodeGenerationAst.ObjectType>()
 
   val typeContainer: ObjectTypeContainer

@@ -12,7 +12,8 @@ object GraphQLDocumentSourceBuilder {
       val operationName = NAME().text
       val variables = variableDefinitions()?.source ?: ""
       val directives = directives()?.source?.let { "$it " } ?: ""
-      val fields = selectionSet()?.format(addTypeName = false)?.let { "{\n$it\n}" } ?: ""
+      val hasFragments = selectionSet().selection()?.mapNotNull { ctx -> ctx.fragmentSpread() }?.isNotEmpty() ?: false
+      val fields = selectionSet()?.format(addTypeName = hasFragments)?.let { "{\n$it\n}" } ?: ""
       return "$operationType $operationName$variables $directives$fields".withIndents
     }
 

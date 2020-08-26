@@ -30,7 +30,8 @@ import okio.ByteString
 import okio.IOException
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
-    "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
+    "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
+    "RemoveRedundantQualifierName")
 class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   override fun operationId(): String = OPERATION_ID
   override fun queryDocument(): String = QUERY_DOCUMENT
@@ -85,20 +86,25 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
    * Data from the response after executing this GraphQL operation
    */
   data class Data(
+    val __typename: String,
     val fragments: Fragments
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@Data.__typename)
       this@Data.fragments.marshaller().marshal(writer)
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("__typename", "__typename", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
         val fragments = Fragments(reader)
         Data(
+          __typename = __typename,
           fragments = fragments
         )
       }
@@ -138,11 +144,12 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "921d636e4792da2e443d2fe7e19744a5dcfb76782f644e2543bef53154d013b8"
+        "f25706f188798126adb53f98428eecccd673936a413afa5b3ae155d18f46eae2"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery {
+          |  __typename
           |  ...QueryFragment
           |}
           """.trimMargin()

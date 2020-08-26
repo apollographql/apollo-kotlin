@@ -34,8 +34,8 @@ internal object KotlinCodeGen {
 
   val suppressWarningsAnnotation = AnnotationSpec
       .builder(Suppress::class)
-      .addMember("%S, %S, %S, %S, %S", "NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
-          "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
+      .addMember("%S, %S, %S, %S, %S, %S, %S", "NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
+          "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName", "RemoveRedundantQualifierName")
       .build()
 
   fun deprecatedAnnotation(message: String) = AnnotationSpec
@@ -454,7 +454,18 @@ internal object KotlinCodeGen {
   }
 
   fun TypeSpec.patchKotlinNativeOptionalArrayProperties(): TypeSpec {
-    val patchedNestedTypes = typeSpecs.map { it.patchKotlinNativeOptionalArrayProperties() }
+    if (kind != TypeSpec.Kind.CLASS) {
+      return this
+    }
+
+    val patchedNestedTypes = typeSpecs.map { type ->
+      if (type.kind == TypeSpec.Kind.CLASS) {
+        type.patchKotlinNativeOptionalArrayProperties()
+      } else {
+        type
+      }
+    }
+
     val nonOptionalListPropertyAccessors = propertySpecs
         .filter { propertySpec ->
           val propertyType = propertySpec.type

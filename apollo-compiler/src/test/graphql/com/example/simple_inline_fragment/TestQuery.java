@@ -35,13 +35,15 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "40e95b8824cd8b5da64969cc5fc32d89ee15fde55084fd41513967e521a8a687";
+  public static final String OPERATION_ID = "5474e96626eb1bd3adbb1a3bc28419597638a648778d634ed80a485b9586ec89";
 
   public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
     "query TestQuery {\n"
         + "  hero {\n"
         + "    __typename\n"
-        + "    name\n"
+        + "    ... on Character {\n"
+        + "      name\n"
+        + "    }\n"
         + "    ... on Human {\n"
         + "      height\n"
         + "    }\n"
@@ -320,15 +322,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static class AsHuman implements Hero {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forDouble("height", "height", null, true, Collections.<ResponseField.Condition>emptyList())
+      ResponseField.forDouble("height", "height", null, true, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @NotNull String __typename;
 
-    final @NotNull String name;
-
     final Optional<Double> height;
+
+    final @NotNull String name;
 
     private transient volatile String $toString;
 
@@ -336,21 +338,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public AsHuman(@NotNull String __typename, @NotNull String name, @Nullable Double height) {
+    public AsHuman(@NotNull String __typename, @Nullable Double height, @NotNull String name) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
-      this.name = Utils.checkNotNull(name, "name == null");
       this.height = Optional.fromNullable(height);
+      this.name = Utils.checkNotNull(name, "name == null");
     }
 
     public @NotNull String __typename() {
       return this.__typename;
-    }
-
-    /**
-     * What this human calls themselves
-     */
-    public @NotNull String name() {
-      return this.name;
     }
 
     /**
@@ -360,14 +355,21 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.height;
     }
 
+    /**
+     * The name of the character
+     */
+    public @NotNull String name() {
+      return this.name;
+    }
+
     @SuppressWarnings({"rawtypes", "unchecked"})
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
-          writer.writeString($responseFields[1], name);
-          writer.writeDouble($responseFields[2], height.isPresent() ? height.get() : null);
+          writer.writeDouble($responseFields[1], height.isPresent() ? height.get() : null);
+          writer.writeString($responseFields[2], name);
         }
       };
     }
@@ -377,8 +379,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if ($toString == null) {
         $toString = "AsHuman{"
           + "__typename=" + __typename + ", "
-          + "name=" + name + ", "
-          + "height=" + height
+          + "height=" + height + ", "
+          + "name=" + name
           + "}";
       }
       return $toString;
@@ -392,8 +394,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (o instanceof AsHuman) {
         AsHuman that = (AsHuman) o;
         return this.__typename.equals(that.__typename)
-         && this.name.equals(that.name)
-         && this.height.equals(that.height);
+         && this.height.equals(that.height)
+         && this.name.equals(that.name);
       }
       return false;
     }
@@ -405,9 +407,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         h *= 1000003;
         h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= name.hashCode();
-        h *= 1000003;
         h ^= height.hashCode();
+        h *= 1000003;
+        h ^= name.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -418,9 +420,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       @Override
       public AsHuman map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
-        final String name = reader.readString($responseFields[1]);
-        final Double height = reader.readDouble($responseFields[2]);
-        return new AsHuman(__typename, name, height);
+        final Double height = reader.readDouble($responseFields[1]);
+        final String name = reader.readString($responseFields[2]);
+        return new AsHuman(__typename, height, name);
       }
     }
   }
@@ -431,15 +433,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static class AsDroid implements Hero {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forString("primaryFunction", "primaryFunction", null, true, Collections.<ResponseField.Condition>emptyList())
+      ResponseField.forString("primaryFunction", "primaryFunction", null, true, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @NotNull String __typename;
 
-    final @NotNull String name;
-
     final Optional<String> primaryFunction;
+
+    final @NotNull String name;
 
     private transient volatile String $toString;
 
@@ -447,22 +449,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public AsDroid(@NotNull String __typename, @NotNull String name,
-        @Nullable String primaryFunction) {
+    public AsDroid(@NotNull String __typename, @Nullable String primaryFunction,
+        @NotNull String name) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
-      this.name = Utils.checkNotNull(name, "name == null");
       this.primaryFunction = Optional.fromNullable(primaryFunction);
+      this.name = Utils.checkNotNull(name, "name == null");
     }
 
     public @NotNull String __typename() {
       return this.__typename;
-    }
-
-    /**
-     * What others call this droid
-     */
-    public @NotNull String name() {
-      return this.name;
     }
 
     /**
@@ -472,14 +467,21 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.primaryFunction;
     }
 
+    /**
+     * The name of the character
+     */
+    public @NotNull String name() {
+      return this.name;
+    }
+
     @SuppressWarnings({"rawtypes", "unchecked"})
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
-          writer.writeString($responseFields[1], name);
-          writer.writeString($responseFields[2], primaryFunction.isPresent() ? primaryFunction.get() : null);
+          writer.writeString($responseFields[1], primaryFunction.isPresent() ? primaryFunction.get() : null);
+          writer.writeString($responseFields[2], name);
         }
       };
     }
@@ -489,8 +491,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if ($toString == null) {
         $toString = "AsDroid{"
           + "__typename=" + __typename + ", "
-          + "name=" + name + ", "
-          + "primaryFunction=" + primaryFunction
+          + "primaryFunction=" + primaryFunction + ", "
+          + "name=" + name
           + "}";
       }
       return $toString;
@@ -504,8 +506,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (o instanceof AsDroid) {
         AsDroid that = (AsDroid) o;
         return this.__typename.equals(that.__typename)
-         && this.name.equals(that.name)
-         && this.primaryFunction.equals(that.primaryFunction);
+         && this.primaryFunction.equals(that.primaryFunction)
+         && this.name.equals(that.name);
       }
       return false;
     }
@@ -517,9 +519,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         h *= 1000003;
         h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= name.hashCode();
-        h *= 1000003;
         h ^= primaryFunction.hashCode();
+        h *= 1000003;
+        h ^= name.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -530,9 +532,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       @Override
       public AsDroid map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
-        final String name = reader.readString($responseFields[1]);
-        final String primaryFunction = reader.readString($responseFields[2]);
-        return new AsDroid(__typename, name, primaryFunction);
+        final String primaryFunction = reader.readString($responseFields[1]);
+        final String name = reader.readString($responseFields[2]);
+        return new AsDroid(__typename, primaryFunction, name);
       }
     }
   }

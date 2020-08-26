@@ -30,7 +30,8 @@ import okio.ByteString
 import okio.IOException
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
-    "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
+    "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
+    "RemoveRedundantQualifierName")
 class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   override fun operationId(): String = OPERATION_ID
   override fun queryDocument(): String = QUERY_DOCUMENT
@@ -91,35 +92,35 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   data class AsHuman(
     val __typename: String = "Human",
     /**
-     * What this human calls themselves
-     */
-    val name: String,
-    /**
      * Height in the preferred unit, default is meters
      */
-    val height: Double?
+    val height: Double?,
+    /**
+     * The name of the character
+     */
+    val name: String
   ) : HeroCharacter {
     override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@AsHuman.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], this@AsHuman.name)
-      writer.writeDouble(RESPONSE_FIELDS[2], this@AsHuman.height)
+      writer.writeDouble(RESPONSE_FIELDS[1], this@AsHuman.height)
+      writer.writeString(RESPONSE_FIELDS[2], this@AsHuman.name)
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("name", "name", null, false, null),
-          ResponseField.forDouble("height", "height", null, true, null)
+          ResponseField.forDouble("height", "height", null, true, null),
+          ResponseField.forString("name", "name", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): AsHuman = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        val height = readDouble(RESPONSE_FIELDS[2])
+        val height = readDouble(RESPONSE_FIELDS[1])
+        val name = readString(RESPONSE_FIELDS[2])!!
         AsHuman(
           __typename = __typename,
-          name = name,
-          height = height
+          height = height,
+          name = name
         )
       }
 
@@ -134,35 +135,35 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   data class AsDroid(
     val __typename: String = "Droid",
     /**
-     * What others call this droid
-     */
-    val name: String,
-    /**
      * This droid's primary function
      */
-    val primaryFunction: String?
+    val primaryFunction: String?,
+    /**
+     * The name of the character
+     */
+    val name: String
   ) : HeroCharacter {
     override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@AsDroid.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], this@AsDroid.name)
-      writer.writeString(RESPONSE_FIELDS[2], this@AsDroid.primaryFunction)
+      writer.writeString(RESPONSE_FIELDS[1], this@AsDroid.primaryFunction)
+      writer.writeString(RESPONSE_FIELDS[2], this@AsDroid.name)
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("name", "name", null, false, null),
-          ResponseField.forString("primaryFunction", "primaryFunction", null, true, null)
+          ResponseField.forString("primaryFunction", "primaryFunction", null, true, null),
+          ResponseField.forString("name", "name", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): AsDroid = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        val primaryFunction = readString(RESPONSE_FIELDS[2])
+        val primaryFunction = readString(RESPONSE_FIELDS[1])
+        val name = readString(RESPONSE_FIELDS[2])!!
         AsDroid(
           __typename = __typename,
-          name = name,
-          primaryFunction = primaryFunction
+          primaryFunction = primaryFunction,
+          name = name
         )
       }
 
@@ -255,14 +256,16 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "40e95b8824cd8b5da64969cc5fc32d89ee15fde55084fd41513967e521a8a687"
+        "5474e96626eb1bd3adbb1a3bc28419597638a648778d634ed80a485b9586ec89"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery {
           |  hero {
           |    __typename
-          |    name
+          |    ... on Character {
+          |      name
+          |    }
           |    ... on Human {
           |      height
           |    }
