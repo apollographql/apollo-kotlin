@@ -68,7 +68,7 @@ class SqliteNormalizedCacheTest {
       Truth.assertThat(responses[0].isFromCache).isEqualTo(false)
 
       withTimeout(1000) {
-        while(watchedResponses.isEmpty()) {
+        while(watchedResponses.size < 2) {
           delay(100)
         }
         Truth.assertThat(watchedResponses.size).isEqualTo(2)
