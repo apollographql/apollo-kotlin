@@ -45,7 +45,6 @@ class SqliteNormalizedCacheTest {
 
   @Test
   fun `populating the cache triggers the watcher`() {
-    println("HERE")
     runBlocking {
       val query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build()
       server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"))
