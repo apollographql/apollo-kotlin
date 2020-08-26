@@ -89,7 +89,7 @@ internal fun InputType.Field.writeCodeBlock(thisRef: String): CodeBlock {
       is FieldType.Scalar.Int -> {
         if (isOptional) {
           CodeBlock.builder()
-              .addStatement("if·(this@%L.%L.defined)·{", thisRef, schemaName)
+              .addStatement("if·(this@%L.%L.defined)·{", thisRef, name)
               .indent()
               .addStatement("writer.writeInt(%S, this@%L.%L.value)", name, thisRef, name)
               .unindent()
