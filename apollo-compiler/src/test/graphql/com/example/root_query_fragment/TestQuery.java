@@ -35,10 +35,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "921d636e4792da2e443d2fe7e19744a5dcfb76782f644e2543bef53154d013b8";
+  public static final String OPERATION_ID = "f25706f188798126adb53f98428eecccd673936a413afa5b3ae155d18f46eae2";
 
   public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
     "query TestQuery {\n"
+        + "  __typename\n"
         + "  ...QueryFragment\n"
         + "}"
   );
@@ -151,8 +152,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
    */
   public static class Data implements Operation.Data {
     static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList())
     };
+
+    final @NotNull String __typename;
 
     private final @NotNull Fragments fragments;
 
@@ -162,8 +166,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Data(@NotNull Fragments fragments) {
+    public Data(@NotNull String __typename, @NotNull Fragments fragments) {
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.fragments = Utils.checkNotNull(fragments, "fragments == null");
+    }
+
+    public @NotNull String __typename() {
+      return this.__typename;
     }
 
     public @NotNull Fragments fragments() {
@@ -175,6 +184,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
+          writer.writeString($responseFields[0], __typename);
           fragments.marshaller().marshal(writer);
         }
       };
@@ -184,6 +194,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "Data{"
+          + "__typename=" + __typename + ", "
           + "fragments=" + fragments
           + "}";
       }
@@ -197,7 +208,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Data) {
         Data that = (Data) o;
-        return this.fragments.equals(that.fragments);
+        return this.__typename.equals(that.__typename)
+         && this.fragments.equals(that.fragments);
       }
       return false;
     }
@@ -206,6 +218,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= fragments.hashCode();
         $hashCode = h;
@@ -304,8 +318,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public Data map(ResponseReader reader) {
+        final String __typename = reader.readString($responseFields[0]);
         final Fragments fragments = fragmentsFieldMapper.map(reader);
-        return new Data(fragments);
+        return new Data(__typename, fragments);
       }
     }
   }
