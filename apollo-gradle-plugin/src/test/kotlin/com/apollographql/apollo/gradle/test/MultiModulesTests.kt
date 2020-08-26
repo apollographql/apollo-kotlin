@@ -9,10 +9,16 @@ class MultiModulesTests {
   @Test
   fun `multi-modules project compiles`() {
     TestUtils.withTestProject("multi-modules") { dir ->
+      val result = TestUtils.executeTask(":leaf:assemble", dir)
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":leaf:assemble")!!.outcome)
+    }
+  }
 
-      val result = TestUtils.executeTask(":cli:assemble", dir)
-
-      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":cli:assemble")!!.outcome)
+  @Test
+  fun `multi-modules project can use transitive dependencies`() {
+    TestUtils.withTestProject("multi-modules-transitive") { dir ->
+      val result = TestUtils.executeTask(":leaf:generateApolloSources", dir)
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":leaf:generateApolloSources")!!.outcome)
     }
   }
 }
