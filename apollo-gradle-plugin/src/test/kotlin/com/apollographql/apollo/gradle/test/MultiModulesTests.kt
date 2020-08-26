@@ -21,4 +21,15 @@ class MultiModulesTests {
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":leaf:generateApolloSources")!!.outcome)
     }
   }
+
+  @Test
+  fun `transitive dependencies are only included once`() {
+    /**
+     * A dimaond shaped hierarchy does not include the schema multiple times
+     */
+    TestUtils.withTestProject("multi-modules-duplicate") { dir ->
+      val result = TestUtils.executeTask(":leaf:generateApolloSources", dir)
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":leaf:generateApolloSources")!!.outcome)
+    }
+  }
 }

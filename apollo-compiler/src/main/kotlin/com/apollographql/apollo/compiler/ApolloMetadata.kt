@@ -99,7 +99,11 @@ data class ApolloMetadata(
     }
 
     fun readFrom(file: File): ApolloMetadata {
-      return file.fromJson()
+      return try {
+        file.fromJson()
+      } catch (e: Exception) {
+        throw IllegalArgumentException("ApolloGraphQL: Cannot find metadata in ${file.absolutePath}, did you set generateApolloMetadata.set(true) ?")
+      }
     }
   }
 }

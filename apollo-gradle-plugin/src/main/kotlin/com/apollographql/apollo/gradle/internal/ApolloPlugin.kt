@@ -180,7 +180,7 @@ open class ApolloPlugin : Plugin<Project> {
           disallowChanges()
         }
 
-        task.generateMetadata.set(compilerParams.generateApolloMetadata.getOrElse(false))
+        task.generateMetadata.set(compilerParams.generateApolloMetadata.orElse(project.provider { !consumerConfiguration.isEmpty }))
 
         task.metadataConfiguration = consumerConfiguration
 
