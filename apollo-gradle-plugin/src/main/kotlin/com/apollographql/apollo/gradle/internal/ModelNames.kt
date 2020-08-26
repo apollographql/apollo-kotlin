@@ -18,9 +18,11 @@ object ModelNames {
   fun downloadApolloSchema() = camelCase("downloadApolloSchema")
   fun downloadApolloSchema(service: DefaultService) = camelCase("download", service.name, "ApolloSchema")
   fun checkApolloVersions() = "checkApolloVersions"
+  fun checkApolloDuplicates(compilationUnit: DefaultCompilationUnit)= camelCase("check", compilationUnit.variantName, compilationUnit.serviceName, "ApolloDuplicates")
 
   // Configuration names
   fun apolloConfiguration() = "apollo"
   fun producerConfiguration(compilationUnit: DefaultCompilationUnit) = camelCase("apollo", compilationUnit.variantName, compilationUnit.serviceName, "Producer")
   fun consumerConfiguration(compilationUnit: DefaultCompilationUnit) = camelCase("apollo", compilationUnit.variantName, compilationUnit.serviceName, "Consumer")
+  fun duplicatesConsumerConfiguration(compilationUnit: DefaultCompilationUnit) = camelCase("apollo", compilationUnit.variantName, compilationUnit.serviceName, "DuplicatesConsumer")
 }

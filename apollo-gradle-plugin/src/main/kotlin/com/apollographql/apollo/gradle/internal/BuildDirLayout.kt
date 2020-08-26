@@ -26,7 +26,13 @@ object BuildDirLayout {
 
   internal fun versionCheck(project: Project): Provider<RegularFile> {
     return project.layout.buildDirectory.file(
-        "generated/versionCheck/apollo/versionCheck"
+        "generated/checks/apollo/versionCheck"
+    )
+  }
+
+  internal fun duplicatesCheck(project: Project, compilationUnit: DefaultCompilationUnit): Provider<RegularFile> {
+    return project.layout.buildDirectory.file(
+        "generated/checks/apollo/${compilationUnit.variantName}/${compilationUnit.serviceName}/duplicatesCheck"
     )
   }
 }

@@ -21,6 +21,9 @@ data class ApolloMetadata(
      * The module name, for debug
      */
     val moduleName: String,
+    val generateKotlinModels: Boolean,
+    val pluginVersion: String,
+    val customTypesMap: Map<String, String>
 ) {
 
   fun withResolvedFragments(projectDir: File): ApolloMetadata {
@@ -88,12 +91,24 @@ data class ApolloMetadata(
         }
       }
 
+      // ensure the same generateKotlinModels
+      map { it.generateKotlinModels }.distinct().let {
+        check(it.size == 1) {
+          "Apollo: All modules should have the same generateKotlinModels. Found:" + it.joinToString(", ")
+        }
+      }
+
+      // ensure the same pluginVersion
+      map { it.pluginVersion }.distinct().let {
+        check(it.size == 1) {
+          "Apollo: All modules should be generated with the same apollo version. Found:" + it.joinToString(", ")
+        }
+      }
+
       // no need to validate distinct fragment names, this will be done later when aggregating the Fragments
-      return ApolloMetadata(
-          schema = rootMetadata.schema!!,
+      return rootMetadata.copy(
           fragments = flatMap { it.fragments },
           moduleName = "*",
-          schemaPackageName = rootMetadata.schemaPackageName,
           types = flatMap { it.types }.toSet(),
       )
     }

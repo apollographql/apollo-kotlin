@@ -31,6 +31,9 @@ class GraphQLCompiler {
 
     val (introspectionSchema, schemaPackageName) = getSchemaInfo(roots, args.rootPackageName, args.schemaFile, metadata)
 
+    val generateKotlinModels = metadata?.generateKotlinModels ?: args.generateKotlinModels
+    val userCustomTypesMap = metadata?.customTypesMap ?: args.customTypeMap
+
     val packageNameProvider = DefaultPackageNameProvider(
         roots = roots,
         rootPackageName = args.rootPackageName
@@ -76,9 +79,9 @@ class GraphQLCompiler {
     val customTypeMap = (introspectionSchema.types.values.filter {
       it is IntrospectionSchema.Type.Scalar && ScalarType.forName(it.name) == null
     }.map { it.name } + ScalarType.ID.name)
-        .supportedTypeMap(args.customTypeMap, args.generateKotlinModels)
+        .supportedTypeMap(userCustomTypesMap, generateKotlinModels)
 
-    if (args.generateKotlinModels) {
+    if (generateKotlinModels) {
       GraphQLKompiler(
           ir = ir,
           customTypeMap = customTypeMap,
@@ -116,7 +119,10 @@ class GraphQLCompiler {
           schemaPackageName = schemaPackageName,
           moduleName = args.moduleName,
           types = ir.enumsToGenerate + ir.inputObjectsToGenerate,
-          fragments = ir.fragments.filter { ir.fragmentsToGenerate.contains(it.fragmentName) }
+          fragments = ir.fragments.filter { ir.fragmentsToGenerate.contains(it.fragmentName) },
+          generateKotlinModels = generateKotlinModels,
+          customTypesMap = args.customTypeMap,
+          pluginVersion = com.apollographql.apollo.compiler.VERSION
       ).let {
         if (args.rootProjectDir != null) {
           it.withRelativeFragments(args.rootProjectDir)

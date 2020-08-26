@@ -17,26 +17,7 @@ type Cat implements Animal {
   dateOfBirth: Date!
 }
 
-type Plant {
-  name: String!
-  picture(size: Int!): String!
-}
-
 type Query {
   randomAnimal: Animal!
-
-  randomPlant: Plant!
-
-  animal(class: Class!): Animal!
 }
-
-input AnimalInput {
-  class: Class!
-  name: String!
-}
-
-type Mutation {
-  registerAnimal(input: AnimalInput!): Boolean!
-}
-
 

@@ -1,5 +1,4 @@
-query GetAnimal {
-  randomAnimal {
-    ...CatFragment
-  }
+fragment CatFragment on Cat {
+  mustaches
 }
+
