@@ -62,6 +62,8 @@ public final class ReviewInput implements InputType {
 
   private final Input<String> capitalizedField;
 
+  private final Input<Integer> capitalizedInt;
+
   private transient volatile int $hashCode;
 
   private transient volatile boolean $hashCodeMemoized;
@@ -75,7 +77,8 @@ public final class ReviewInput implements InputType {
       Input<List<ColorInput>> listOfInputTypes, Input<Boolean> booleanWithDefaultValue,
       Input<List<List<String>>> listOfListOfString, Input<List<List<Episode>>> listOfListOfEnum,
       Input<List<List<Object>>> listOfListOfCustom,
-      Input<List<List<ColorInput>>> listOfListOfObject, Input<String> capitalizedField) {
+      Input<List<List<ColorInput>>> listOfListOfObject, Input<String> capitalizedField,
+      Input<Integer> capitalizedInt) {
     this.stars = stars;
     this.nullableIntFieldWithDefaultValue = nullableIntFieldWithDefaultValue;
     this.commentary = commentary;
@@ -96,6 +99,7 @@ public final class ReviewInput implements InputType {
     this.listOfListOfCustom = listOfListOfCustom;
     this.listOfListOfObject = listOfListOfObject;
     this.capitalizedField = capitalizedField;
+    this.capitalizedInt = capitalizedInt;
   }
 
   /**
@@ -236,6 +240,13 @@ public final class ReviewInput implements InputType {
    */
   public @Nullable String capitalizedField() {
     return this.capitalizedField.value;
+  }
+
+  /**
+   * for test purpose only
+   */
+  public @Nullable Integer capitalizedInt() {
+    return this.capitalizedInt.value;
   }
 
   public static Builder builder() {
@@ -401,6 +412,9 @@ public final class ReviewInput implements InputType {
         if (capitalizedField.defined) {
           writer.writeString("CapitalizedField", capitalizedField.value);
         }
+        if (capitalizedInt.defined) {
+          writer.writeInt("CapitalizedInt", capitalizedInt.value);
+        }
       }
     };
   }
@@ -449,6 +463,8 @@ public final class ReviewInput implements InputType {
       h ^= listOfListOfObject.hashCode();
       h *= 1000003;
       h ^= capitalizedField.hashCode();
+      h *= 1000003;
+      h ^= capitalizedInt.hashCode();
       $hashCode = h;
       $hashCodeMemoized = true;
     }
@@ -481,7 +497,8 @@ public final class ReviewInput implements InputType {
        && this.listOfListOfEnum.equals(that.listOfListOfEnum)
        && this.listOfListOfCustom.equals(that.listOfListOfCustom)
        && this.listOfListOfObject.equals(that.listOfListOfObject)
-       && this.capitalizedField.equals(that.capitalizedField);
+       && this.capitalizedField.equals(that.capitalizedField)
+       && this.capitalizedInt.equals(that.capitalizedInt);
     }
     return false;
   }
@@ -526,6 +543,8 @@ public final class ReviewInput implements InputType {
     private Input<List<List<ColorInput>>> listOfListOfObject = Input.absent();
 
     private Input<String> capitalizedField = Input.absent();
+
+    private Input<Integer> capitalizedInt = Input.absent();
 
     Builder() {
     }
@@ -693,6 +712,14 @@ public final class ReviewInput implements InputType {
     /**
      * for test purpose only
      */
+    public Builder capitalizedInt(@Nullable Integer capitalizedInt) {
+      this.capitalizedInt = Input.fromNullable(capitalizedInt);
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
     public Builder nullableIntFieldWithDefaultValueInput(@NotNull Input<Integer> nullableIntFieldWithDefaultValue) {
       this.nullableIntFieldWithDefaultValue = Utils.checkNotNull(nullableIntFieldWithDefaultValue, "nullableIntFieldWithDefaultValue == null");
       return this;
@@ -818,11 +845,19 @@ public final class ReviewInput implements InputType {
       return this;
     }
 
+    /**
+     * for test purpose only
+     */
+    public Builder capitalizedIntInput(@NotNull Input<Integer> capitalizedInt) {
+      this.capitalizedInt = Utils.checkNotNull(capitalizedInt, "capitalizedInt == null");
+      return this;
+    }
+
     public ReviewInput build() {
       Utils.checkNotNull(favoriteColor, "favoriteColor == null");
       Utils.checkNotNull(nonNullableEnumWithDefaultValue, "nonNullableEnumWithDefaultValue == null");
       Utils.checkNotNull(listOfStringNonOptional, "listOfStringNonOptional == null");
-      return new ReviewInput(stars, nullableIntFieldWithDefaultValue, commentary, favoriteColor, enumWithDefaultValue, nonNullableEnumWithDefaultValue, nullableEnum, listOfCustomScalar, customScalar, listOfEnums, listOfInt, listOfString, listOfStringNonOptional, listOfInputTypes, booleanWithDefaultValue, listOfListOfString, listOfListOfEnum, listOfListOfCustom, listOfListOfObject, capitalizedField);
+      return new ReviewInput(stars, nullableIntFieldWithDefaultValue, commentary, favoriteColor, enumWithDefaultValue, nonNullableEnumWithDefaultValue, nullableEnum, listOfCustomScalar, customScalar, listOfEnums, listOfInt, listOfString, listOfStringNonOptional, listOfInputTypes, booleanWithDefaultValue, listOfListOfString, listOfListOfEnum, listOfListOfCustom, listOfListOfObject, capitalizedField, capitalizedInt);
     }
   }
 }

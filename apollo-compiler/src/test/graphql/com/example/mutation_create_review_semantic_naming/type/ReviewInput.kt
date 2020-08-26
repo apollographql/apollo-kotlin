@@ -102,7 +102,11 @@ data class ReviewInput(
   /**
    * for test purpose only
    */
-  val capitalizedField: Input<String> = Input.absent()
+  val capitalizedField: Input<String> = Input.absent(),
+  /**
+   * for test purpose only
+   */
+  val capitalizedInt: Input<Int> = Input.absent()
 ) : InputType {
   override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
     writer.writeInt("stars", this@ReviewInput.stars)
@@ -237,6 +241,9 @@ data class ReviewInput(
     }
     if (this@ReviewInput.capitalizedField.defined) {
       writer.writeString("CapitalizedField", this@ReviewInput.capitalizedField.value)
+    }
+    if (this@ReviewInput.capitalizedInt.defined) {
+      writer.writeInt("capitalizedInt", this@ReviewInput.capitalizedInt.value)
     }
   }
 }

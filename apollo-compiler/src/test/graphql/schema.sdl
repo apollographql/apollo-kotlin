@@ -354,7 +354,7 @@ input ReviewInput {
   customScalar: Date = "1984-06-21"
 
   """for test purpose only"""
-  listOfEnums: [Episode]
+  listOfEnums: [Episode] = [NEWHOPE, EMPIRE]
 
   """for test purpose only"""
   listOfInt: [Int] = [1, 2, 3]

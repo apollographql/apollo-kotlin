@@ -286,7 +286,7 @@ data class TestQuery(
           )),
           ResponseField.forFragment("__typename", "__typename", listOf(
             ResponseField.Condition.booleanCondition("withDetails", false),
-            ResponseField.Condition.typeCondition(arrayOf("Human", "Droid"))
+            ResponseField.Condition.typeCondition(arrayOf("Droid", "Human"))
           ))
           )
 
