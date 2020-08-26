@@ -11,6 +11,7 @@ dependencies {
   add("implementation", "com.apollographql.apollo:apollo-rx3-support")
   add("implementation", "com.apollographql.apollo:apollo-coroutines-support")
   add("implementation", "com.apollographql.apollo:apollo-http-cache")
+  add("implementation", "com.apollographql.apollo:apollo-normalized-cache-sqlite")
   add("implementation", "com.apollographql.apollo:apollo-compiler")
 
   add("testImplementation", kotlin("test-junit"))
@@ -50,6 +51,12 @@ configure<ApolloExtension> {
   service("performance") {
     sourceFolder.set("com/apollographql/apollo/integration/performance")
     rootPackageName.set("com.apollographql.apollo.integration.performance")
+  }
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
+  kotlinOptions {
+    freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
   }
 }
 
