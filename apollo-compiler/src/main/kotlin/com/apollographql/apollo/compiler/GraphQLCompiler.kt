@@ -6,6 +6,7 @@ import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.ir.ScalarType
 import com.apollographql.apollo.compiler.ir.TypeDeclaration
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
+import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.squareup.javapoet.JavaFile
 import java.io.File
 
@@ -102,6 +103,7 @@ class GraphQLCompiler {
   }
 
   data class Arguments(
+      val schema: IntrospectionSchema,
       val ir: CodeGenerationIR,
       val outputDir: File,
       val customTypeMap: Map<String, String>,

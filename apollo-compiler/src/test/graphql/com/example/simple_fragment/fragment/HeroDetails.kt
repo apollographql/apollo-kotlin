@@ -19,7 +19,8 @@ import kotlin.Suppress
  *  with multi lines support
  */
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
-    "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
+    "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
+    "RemoveRedundantQualifierName")
 internal data class HeroDetails(
   val __typename: String = "Character",
   /**

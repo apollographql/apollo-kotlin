@@ -17,7 +17,8 @@ import kotlin.Suppress
 import kotlin.collections.List
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
-    "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
+    "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
+    "RemoveRedundantQualifierName")
 data class StarshipFragment(
   val __typename: String = "Starship",
   /**

@@ -11,7 +11,6 @@ import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
-import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.joinToCode
 
@@ -52,7 +51,16 @@ internal fun CodeGenerationAst.ObjectType.typeSpec(
           )
         }
       }
-      .applyIf(!abstract) { addFunction(fields.marshallerFunSpec(thisRef = name, override = true)) }
+      .applyIf(!abstract) {
+        addFunction(
+            fields.marshallerFunSpec(
+                thisRef = name,
+                // not ideal but there is no better way of doing this
+                // we assume if generated class implements any interface, marshaller function is overridden
+                override = implements.isNotEmpty()
+            )
+        )
+      }
       .applyIf(abstract) {
         addFunction(
             FunSpec.builder("marshaller")
@@ -96,11 +104,10 @@ private val CodeGenerationAst.ObjectType.primaryConstructorSpec: FunSpec
   get() {
     return FunSpec.constructorBuilder()
         .addParameters(fields.map { field ->
-          val typeName = field.type.asTypeName()
           ParameterSpec
               .builder(
                   name = field.name,
-                  type = if (field.type.nullable) typeName.copy(nullable = true) else typeName
+                  type = field.type.asTypeName()
               )
               .applyIf(
                   field.responseName == Field.TYPE_NAME_FIELD.fieldName &&

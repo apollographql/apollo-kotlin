@@ -18,7 +18,8 @@ import kotlin.Suppress
  *  Fragment with Java / Kotlin docs generation
  */
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
-    "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
+    "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
+    "RemoveRedundantQualifierName")
 internal data class HumanDetails(
   val __typename: String = "Human",
   /**

@@ -155,11 +155,12 @@ private val CodeGenerationAst.OperationType.primaryConstructorSpec: FunSpec
     return FunSpec
         .constructorBuilder()
         .addParameters(variables.map { variable ->
-          val typeName = variable.type.asTypeName()
           ParameterSpec
               .builder(
                   name = variable.name,
-                  type = if (variable.type.nullable) Input::class.asClassName().parameterizedBy(typeName) else typeName
+                  type = variable.type.asTypeName().let { type ->
+                    if (type.isNullable) Input::class.asClassName().parameterizedBy(type.copy(nullable = false)) else type
+                  }
               )
               .applyIf(variable.type.nullable) { defaultValue("%T.absent()", Input::class.asClassName()) }
               .build()

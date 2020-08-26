@@ -1,0 +1,17 @@
+query namedFragmentOnOneConcreteType {
+   random {
+       ... on Being {
+           name
+           friends {
+               name
+           }
+           ... HumanFrag
+       }
+   }
+}
+fragment HumanFrag on Human {
+   profilePictureUrl
+   friends {
+      isFamous
+   }
+}

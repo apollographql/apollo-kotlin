@@ -19,8 +19,9 @@ internal fun CodeGenerationAst.InputField.asPropertySpec(initializer: CodeBlock)
   return PropertySpec
       .builder(
           name = name,
-          type = if (type.nullable) Input::class.asClassName().parameterizedBy(
-              type.asTypeName()) else type.asTypeName()
+          type = type.asTypeName().let { type ->
+            type.takeUnless { type.isNullable } ?: Input::class.asClassName().parameterizedBy(type.copy(nullable = false))
+          }
       )
       .apply { if (description.isNotBlank()) addKdoc("%L\n", description) }
       .apply { initializer(initializer) }
@@ -50,9 +51,8 @@ private val CodeGenerationAst.InputType.primaryConstructorSpec: FunSpec
 
 private fun CodeGenerationAst.InputField.parameterSpec(): ParameterSpec {
   val rawTypeName = type.asTypeName()
-  val typeName = when {
-    type.nullable -> Input::class.asClassName().parameterizedBy(rawTypeName)
-    else -> rawTypeName
+  val typeName = type.asTypeName().let { type ->
+    type.takeUnless { type.isNullable } ?: Input::class.asClassName().parameterizedBy(type.copy(nullable = false))
   }
   val defaultValue = defaultValue
       ?.toDefaultValueCodeBlock(typeName = rawTypeName, fieldType = type)
@@ -201,7 +201,7 @@ internal fun CodeGenerationAst.InputField.writeCodeBlock(thisRef: String): CodeB
             .indent()
             .beginControlFlow("%T { listItemWriter ->", InputFieldWriter.ListWriter::class)
             .beginControlFlow("value.forEach { value ->")
-            .add(type.rawType.writeListItem(type.nullable))
+            .add(type.rawType.writeListItem())
             .endControlFlow()
             .endControlFlow()
             .unindent()
@@ -211,7 +211,7 @@ internal fun CodeGenerationAst.InputField.writeCodeBlock(thisRef: String): CodeB
         codeBlockBuilder
             .beginControlFlow("writer.writeList(%S) { listItemWriter ->", schemaName)
             .beginControlFlow("this@%L.%L.forEach { value ->", thisRef, name)
-            .add(type.rawType.writeListItem(type.nullable))
+            .add(type.rawType.writeListItem())
             .endControlFlow()
             .endControlFlow()
       }
@@ -221,7 +221,7 @@ internal fun CodeGenerationAst.InputField.writeCodeBlock(thisRef: String): CodeB
   }
 }
 
-private fun CodeGenerationAst.FieldType.writeListItem(isOptional: Boolean): CodeBlock {
+private fun CodeGenerationAst.FieldType.writeListItem(): CodeBlock {
   return when (this) {
     is CodeGenerationAst.FieldType.Scalar -> when (this) {
       is CodeGenerationAst.FieldType.Scalar.ID -> CodeBlock.of(
@@ -231,18 +231,20 @@ private fun CodeGenerationAst.FieldType.writeListItem(isOptional: Boolean): Code
       is CodeGenerationAst.FieldType.Scalar.Int -> CodeBlock.of("listItemWriter.writeInt(value)\n")
       is CodeGenerationAst.FieldType.Scalar.Boolean -> CodeBlock.of("listItemWriter.writeBoolean(value)\n")
       is CodeGenerationAst.FieldType.Scalar.Float -> CodeBlock.of("listItemWriter.writeDouble(value)\n")
-      is CodeGenerationAst.FieldType.Scalar.Enum -> CodeBlock.of("listItemWriter.writeString(value%L.rawValue)\n", if (isOptional) "?" else "")
+      is CodeGenerationAst.FieldType.Scalar.Enum -> CodeBlock.of(
+          "listItemWriter.writeString(value%L.rawValue)\n", if (nullable) "?" else ""
+      )
       is CodeGenerationAst.FieldType.Scalar.Custom -> CodeBlock.of(
           "listItemWriter.writeCustom(%T, value)\n", customEnumType.asTypeName()
       )
     }
     is CodeGenerationAst.FieldType.Object -> {
-      CodeBlock.of("listItemWriter.writeObject(value%L.marshaller())\n", if (isOptional) "?" else "")
+      CodeBlock.of("listItemWriter.writeObject(value%L.marshaller())\n", if (nullable) "?" else "")
     }
     is CodeGenerationAst.FieldType.Array -> CodeBlock.builder()
         .beginControlFlow("listItemWriter.writeList { listItemWriter ->")
-        .beginControlFlow("value%L.forEach { value ->", if (isOptional) "?" else "")
-        .add(rawType.writeListItem(nullable))
+        .beginControlFlow("value%L.forEach { value ->", if (nullable) "?" else "")
+        .add(rawType.writeListItem())
         .endControlFlow()
         .endControlFlow()
         .build()

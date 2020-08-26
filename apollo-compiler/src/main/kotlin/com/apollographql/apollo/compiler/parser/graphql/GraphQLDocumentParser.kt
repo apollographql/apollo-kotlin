@@ -141,6 +141,7 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
     val description = commentTokens.joinToString(separator = "\n") { token ->
       token.text.trim().removePrefix("#")
     }
+    val hasFragments = selectionSet().fragmentRefs().isNotEmpty()
     val operation = Operation(
         operationName = operationName,
         packageName = packageNameProvider.operationPackageName(graphQLFilePath),
@@ -149,7 +150,7 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
         variables = variables.result,
         source = graphQLDocumentSource,
         sourceWithFragments = graphQLDocumentSource,
-        fields = fields.result.filterNot { it.responseName == Field.TYPE_NAME_FIELD.responseName },
+        fields = fields.result.filter { hasFragments || it.responseName != Field.TYPE_NAME_FIELD.responseName},
         fragments = selectionSet().fragmentRefs(),
         fragmentsReferenced = emptyList(),
         filePath = graphQLFilePath

@@ -163,6 +163,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
     }
     val args = GraphQLCompiler.Arguments(
         ir = codeGenerationIR,
+        schema = introspectionSchema,
         outputDir = outputDir.get().asFile,
         customTypeMap = customTypeMapping.getOrElse(emptyMap()),
         operationOutput = operationOutput,

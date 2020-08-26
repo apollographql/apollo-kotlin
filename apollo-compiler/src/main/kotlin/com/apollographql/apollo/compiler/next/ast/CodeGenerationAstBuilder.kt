@@ -4,7 +4,9 @@ import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.compiler.OperationIdGenerator
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
+import com.apollographql.apollo.compiler.ir.Field
 import com.apollographql.apollo.compiler.ir.Operation
+import com.apollographql.apollo.compiler.ir.SourceLocation
 import com.apollographql.apollo.compiler.ir.TypeDeclaration
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.parser.introspection.resolveType
@@ -127,10 +129,18 @@ private class CodeGenerationAstBuilder(
               deprecationReason = "",
               type = fieldType,
               description = field.description,
-              defaultValue = if (fieldType is CodeGenerationAst.FieldType.Scalar.Custom) null else field.defaultValue
+              defaultValue = if (fieldType.isCustomScalarField()) null else field.defaultValue
           )
         }
     )
+  }
+
+  private fun CodeGenerationAst.FieldType.isCustomScalarField(): Boolean {
+    return when (this) {
+      is CodeGenerationAst.FieldType.Scalar.Custom -> true
+      is CodeGenerationAst.FieldType.Array -> rawType.isCustomScalarField()
+      else -> false
+    }
   }
 
   private fun Operation.buildOperationType(
@@ -194,7 +204,7 @@ private class CodeGenerationAstBuilder(
 
       startsWith("[") && endsWith("]") -> IntrospectionSchema.TypeRef(
           kind = IntrospectionSchema.Kind.LIST,
-          ofType = removeSuffix("!").toIntrospectionTypeRef(schema)
+          ofType = removePrefix("[").removeSuffix("]").toIntrospectionTypeRef(schema)
       )
 
       else -> schema.resolveType(this)
@@ -252,6 +262,16 @@ private class CodeGenerationAstBuilder(
           )
       )
 
+      IntrospectionSchema.Kind.INPUT_OBJECT -> {
+        CodeGenerationAst.FieldType.Object(
+            nullable = true,
+            typeRef = CodeGenerationAst.TypeRef(
+                name = schemaTypeRef.name!!.capitalize().escapeKotlinReservedWord(),
+                packageName = typesPackageName
+            )
+        )
+      }
+
       else -> throw IllegalArgumentException(
           "Unsupported input field type `$schemaTypeRef`"
       )
@@ -265,37 +285,42 @@ private class CodeGenerationAstBuilder(
       customTypes: CustomTypes
   ): CodeGenerationAst.OperationDataType {
     val operationSchemaType = when {
-      isQuery() -> schema.resolveType(schema.resolveType(schema.queryType))
+      isQuery() -> schema.queryType
 
-      isMutation() -> schema.resolveType(schema.resolveType(schema.mutationType))
+      isMutation() -> schema.mutationType
 
-      isSubscription() -> schema.resolveType(schema.resolveType(schema.subscriptionType))
+      isSubscription() -> schema.subscriptionType
 
       else -> throw IllegalArgumentException("Unsupported GraphQL operation type: `$operationType`")
     }
-    val nestedTypeContainer = ObjectTypeContainerBuilder(packageName = "")
-
-    val rootType = nestedTypeContainer.registerObjectType(
-        typeName = "Data",
+    val nestedTypeContainer = ObjectTypeContainerBuilder(
+        packageName = "",
+        reservedTypeNames = setOf(operationClassName)
+    )
+    val objectTypeBuilder = ObjectTypeBuilder(
+        schema = schema,
+        customTypes = customTypes,
+        typesPackageName = typesPackageName,
+        fragmentsPackage = fragmentsPackage,
+        irFragments = irFragments.associateBy { it.fragmentName },
+        nestedTypeContainer = nestedTypeContainer,
         enclosingType = CodeGenerationAst.TypeRef(name = operationClassName)
-    ) { typeRef ->
-      ObjectTypeBuilder(
-          schema = schema,
-          customTypes = customTypes,
-          typesPackageName = typesPackageName,
-          fragmentsPackage = fragmentsPackage,
-          irFragments = irFragments.associateBy { it.fragmentName },
-          nestedTypeContainer = nestedTypeContainer,
-          enclosingType = CodeGenerationAst.TypeRef(name = operationClassName)
-      ).buildObjectType(
-          typeRef = typeRef,
-          schemaType = operationSchemaType,
+    )
+    val dataFieldType = objectTypeBuilder.resolveFieldType(
+        field = Field(
+          responseName = "data",
+          fieldName = "data",
+          type = operationSchemaType,
+          typeDescription = "",
+          sourceLocation = SourceLocation.UNKNOWN,
           fields = fields,
-          abstract = false
-      )
-    }
+          fragmentRefs = fragments
+      ),
+        schemaTypeRef = schema.resolveType(operationSchemaType),
+        abstract = false
+    ) as CodeGenerationAst.FieldType.Object
     return CodeGenerationAst.OperationDataType(
-        rootType = rootType,
+        rootType = dataFieldType.typeRef,
         nestedTypes = nestedTypeContainer.typeContainer.patchTypeHierarchy(fragmentTypes)
     )
   }
