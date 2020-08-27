@@ -21,7 +21,7 @@ abstract class ApolloCheckDuplicatesTask : DefaultTask() {
 
   @TaskAction
   fun taskAction() {
-    val metadataList = metadataConfiguration.incoming.artifacts.artifacts.map { ApolloMetadata.readFrom(it.file) }
+    val metadataList = metadataConfiguration.incoming.artifacts.artifacts.mapNotNull { ApolloMetadata.readFrom(it.file) }
 
     metadataList.flatMap { metadata ->
       metadata.fragments.map { it.fragmentName to metadata.moduleName }

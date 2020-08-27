@@ -1,4 +1,4 @@
-fragment CatFragment2 on Cat {
+fragment CatFragment on Cat {
   mustaches
 }
 

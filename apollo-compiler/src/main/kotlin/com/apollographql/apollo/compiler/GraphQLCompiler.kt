@@ -216,8 +216,8 @@ class GraphQLCompiler {
         "It should not be modified by hand.\n"
 
     private fun collectMetadata(metadata: List<File>, rootProjectDir: File?): ApolloMetadata? {
-      return metadata.map {
-        ApolloMetadata.readFrom(it).let {
+      return metadata.mapNotNull {
+        ApolloMetadata.readFrom(it)?.let {
           if (rootProjectDir != null) {
             it.withResolvedFragments(rootProjectDir)
           } else {
