@@ -4,6 +4,10 @@ import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.parser.graphql.GraphQLDocumentParser
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
+import com.apollographql.apollo.compiler.TestUtils.checkTestFixture
+import com.apollographql.apollo.compiler.TestUtils.shouldUpdateTestFixtures
+import com.apollographql.apollo.compiler.parser.sdl.GraphSdlSchema
+import com.apollographql.apollo.compiler.parser.sdl.toIntrospectionSchema
 import com.google.common.truth.Truth.assertAbout
 import com.google.testing.compile.JavaFileObjects
 import com.google.testing.compile.JavaSourcesSubjectFactory.javaSources
@@ -159,14 +163,14 @@ class CodeGenTest(private val folder: File) {
         else -> false
       }
 
-      val schemaJson = folder.listFiles()!!.find { it.isFile && it.name == "schema.json" }
-          ?: File("src/test/graphql/schema.json")
-      val schema = IntrospectionSchema(schemaJson)
+      val schemaFile = folder.listFiles()!!.find { it.isFile && it.name == "schema.sdl" }
+          ?: File("src/test/graphql/schema.sdl")
+      val schema = GraphSdlSchema(schemaFile).toIntrospectionSchema()
       val graphQLFile = File(folder, "TestOperation.graphql")
 
       val packageNameProvider = DefaultPackageNameProvider(
           rootFolders = listOf(folder),
-          schemaFile = schemaJson,
+          schemaFile = schemaFile,
           rootPackageName = "com.example.${folder.name}"
       )
 
@@ -224,30 +228,6 @@ class CodeGenTest(private val folder: File) {
       return File("src/test/graphql/com/example/")
           .listFiles()!!
           .filter { it.isDirectory }
-    }
-
-    private fun shouldUpdateTestFixtures(): Boolean {
-      return when (System.getProperty("updateTestFixtures")?.trim()) {
-        "on", "true", "1" -> true
-        else -> false
-      }
-    }
-
-    fun checkTestFixture(actual: File, expected: File) {
-      val actualText = actual.readText()
-      val expectedText = expected.readText()
-
-      if (actualText != expectedText) {
-        if (shouldUpdateTestFixtures()) {
-          expected.writeText(actualText)
-        } else {
-          throw Exception("""generatedFile content doesn't match the expectedFile content.
-      |If you changed the compiler recently, you need to update the testFixtures.
-      |Run the tests with `-DupdateTestFixtures=true` to do so.
-      |generatedFile: ${actual.path}
-      |expectedFile: ${expected.path}""".trimMargin())
-        }
-      }
     }
   }
 }

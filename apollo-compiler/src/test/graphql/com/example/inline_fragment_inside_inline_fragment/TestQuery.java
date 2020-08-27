@@ -274,7 +274,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     final class Mapper implements ResponseFieldMapper<Search> {
       static final ResponseField[] $responseFields = {
         ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
-          ResponseField.Condition.typeCondition(new String[] {"Human", "Droid"})
+          ResponseField.Condition.typeCondition(new String[] {"Droid", "Human"})
         ))
       };
 

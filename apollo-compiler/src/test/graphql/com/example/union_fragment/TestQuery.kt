@@ -123,7 +123,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       companion object {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField.forFragment("__typename", "__typename", listOf(
-              ResponseField.Condition.typeCondition(arrayOf("Human", "Droid"))
+              ResponseField.Condition.typeCondition(arrayOf("Droid", "Human"))
             )),
             ResponseField.forFragment("__typename", "__typename", listOf(
               ResponseField.Condition.typeCondition(arrayOf("Starship"))
