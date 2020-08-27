@@ -14,27 +14,58 @@ import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
 
+/**
+ * A humanoid creature from the Star Wars universe
+ */
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-data class HumanDetails(
-  val __typename: String = "Human",
+interface HumanDetails : GraphqlFragment {
+  val __typename: String
+
   /**
    * The home planet of the human, or null if unknown
    */
   val homePlanet: String?
-) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-    writer.writeString(RESPONSE_FIELDS[0], this@HumanDetails.__typename)
-    writer.writeString(RESPONSE_FIELDS[1], this@HumanDetails.homePlanet)
+
+  /**
+   * A humanoid creature from the Star Wars universe
+   */
+  data class DefaultImpl(
+    override val __typename: String = "Human",
+    /**
+     * The home planet of the human, or null if unknown
+     */
+    override val homePlanet: String?
+  ) : HumanDetails {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@DefaultImpl.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@DefaultImpl.homePlanet)
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("homePlanet", "homePlanet", null, true, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): DefaultImpl = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val homePlanet = readString(RESPONSE_FIELDS[1])
+        DefaultImpl(
+          __typename = __typename,
+          homePlanet = homePlanet
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<DefaultImpl> = ResponseFieldMapper { invoke(it) }
+    }
   }
 
   companion object {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("homePlanet", "homePlanet", null, true, null)
-        )
-
     val FRAGMENT_DEFINITION: String = """
         |fragment HumanDetails on Human {
         |  __typename
@@ -42,16 +73,13 @@ data class HumanDetails(
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader): HumanDetails = reader.run {
-      val __typename = readString(RESPONSE_FIELDS[0])!!
-      val homePlanet = readString(RESPONSE_FIELDS[1])
-      HumanDetails(
+    operator fun invoke(__typename: String, homePlanet: String?): HumanDetails {
+      return DefaultImpl(
         __typename = __typename,
         homePlanet = homePlanet
       )
     }
 
-    @Suppress("FunctionName")
-    fun Mapper(): ResponseFieldMapper<HumanDetails> = ResponseFieldMapper { invoke(it) }
+    operator fun invoke(reader: ResponseReader): HumanDetails = DefaultImpl(reader)
   }
 }

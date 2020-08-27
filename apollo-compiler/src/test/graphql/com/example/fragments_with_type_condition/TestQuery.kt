@@ -23,6 +23,7 @@ import com.example.fragments_with_type_condition.fragment.DroidDetails
 import com.example.fragments_with_type_condition.fragment.HumanDetails
 import kotlin.Array
 import kotlin.Boolean
+import kotlin.Double
 import kotlin.String
 import kotlin.Suppress
 import okio.Buffer
@@ -86,68 +87,142 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   /**
    * A character from the Star Wars universe
    */
-  data class R2(
-    val __typename: String = "Character",
-    val fragments: Fragments
-  ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeString(RESPONSE_FIELDS[0], this@R2.__typename)
-      this@R2.fragments.marshaller().marshal(writer)
+  data class R2Impl(
+    override val __typename: String = "Character"
+  ) : R2 {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@R2Impl.__typename)
+      }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("__typename", "__typename", null, false, null)
-          )
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
 
-      operator fun invoke(reader: ResponseReader): R2 = reader.run {
+      operator fun invoke(reader: ResponseReader): R2Impl = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
-        val fragments = Fragments(reader)
-        R2(
-          __typename = __typename,
-          fragments = fragments
+        R2Impl(
+          __typename = __typename
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<R2> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<R2Impl> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
+   * A humanoid creature from the Star Wars universe
+   */
+  data class HumanDetailsImpl(
+    /**
+     * What this human calls themselves
+     */
+    override val name: String,
+    /**
+     * Height in the preferred unit, default is meters
+     */
+    override val height: Double?,
+    override val __typename: String = "Human"
+  ) : R2, HumanDetails {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@HumanDetailsImpl.name)
+        writer.writeDouble(RESPONSE_FIELDS[1], this@HumanDetailsImpl.height)
+        writer.writeString(RESPONSE_FIELDS[2], this@HumanDetailsImpl.__typename)
+      }
     }
 
-    data class Fragments(
-      val humanDetails: HumanDetails?,
-      val droidDetails: DroidDetails?
-    ) {
-      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-        writer.writeFragment(this@Fragments.humanDetails?.marshaller())
-        writer.writeFragment(this@Fragments.droidDetails?.marshaller())
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forDouble("height", "height", null, true, null),
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): HumanDetailsImpl = reader.run {
+        val name = readString(RESPONSE_FIELDS[0])!!
+        val height = readDouble(RESPONSE_FIELDS[1])
+        val __typename = readString(RESPONSE_FIELDS[2])!!
+        HumanDetailsImpl(
+          name = name,
+          height = height,
+          __typename = __typename
+        )
       }
 
-      companion object {
-        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField.forFragment("__typename", "__typename", listOf(
-              ResponseField.Condition.typeCondition(arrayOf("Human"))
-            )),
-            ResponseField.forFragment("__typename", "__typename", listOf(
-              ResponseField.Condition.typeCondition(arrayOf("Droid"))
-            ))
-            )
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<HumanDetailsImpl> = ResponseFieldMapper { invoke(it) }
+    }
+  }
 
-        operator fun invoke(reader: ResponseReader): Fragments = reader.run {
-          val humanDetails = readFragment<HumanDetails>(RESPONSE_FIELDS[0]) { reader ->
-            HumanDetails(reader)
-          }
-          val droidDetails = readFragment<DroidDetails>(RESPONSE_FIELDS[1]) { reader ->
-            DroidDetails(reader)
-          }
-          Fragments(
-            humanDetails = humanDetails,
-            droidDetails = droidDetails
-          )
+  /**
+   * An autonomous mechanical character in the Star Wars universe
+   */
+  data class DroidDetailsImpl(
+    /**
+     * What others call this droid
+     */
+    override val name: String,
+    /**
+     * This droid's primary function
+     */
+    override val primaryFunction: String?,
+    override val __typename: String = "Droid"
+  ) : R2, DroidDetails {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@DroidDetailsImpl.name)
+        writer.writeString(RESPONSE_FIELDS[1], this@DroidDetailsImpl.primaryFunction)
+        writer.writeString(RESPONSE_FIELDS[2], this@DroidDetailsImpl.__typename)
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forString("primaryFunction", "primaryFunction", null, true, null),
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): DroidDetailsImpl = reader.run {
+        val name = readString(RESPONSE_FIELDS[0])!!
+        val primaryFunction = readString(RESPONSE_FIELDS[1])
+        val __typename = readString(RESPONSE_FIELDS[2])!!
+        DroidDetailsImpl(
+          name = name,
+          primaryFunction = primaryFunction,
+          __typename = __typename
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<DroidDetailsImpl> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
+   * A character from the Star Wars universe
+   */
+  interface R2 {
+    val __typename: String
+
+    fun marshaller(): ResponseFieldMarshaller
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): R2 {
+        val typename = reader.readString(RESPONSE_FIELDS[0])
+        return when(typename) {
+          "Human" -> HumanDetailsImpl(reader)
+          "Droid" -> DroidDetailsImpl(reader)
+          else -> R2Impl(reader)
         }
-
-        @Suppress("FunctionName")
-        fun Mapper(): ResponseFieldMapper<Fragments> = ResponseFieldMapper { invoke(it) }
       }
     }
   }
@@ -155,68 +230,142 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   /**
    * A character from the Star Wars universe
    */
-  data class Luke(
-    val __typename: String = "Character",
-    val fragments: Fragments
-  ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeString(RESPONSE_FIELDS[0], this@Luke.__typename)
-      this@Luke.fragments.marshaller().marshal(writer)
+  data class LukeImpl(
+    override val __typename: String = "Character"
+  ) : Luke {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@LukeImpl.__typename)
+      }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("__typename", "__typename", null, false, null)
-          )
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
 
-      operator fun invoke(reader: ResponseReader): Luke = reader.run {
+      operator fun invoke(reader: ResponseReader): LukeImpl = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
-        val fragments = Fragments(reader)
-        Luke(
-          __typename = __typename,
-          fragments = fragments
+        LukeImpl(
+          __typename = __typename
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Luke> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<LukeImpl> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
+   * A humanoid creature from the Star Wars universe
+   */
+  data class HumanDetailsImpl1(
+    /**
+     * What this human calls themselves
+     */
+    override val name: String,
+    /**
+     * Height in the preferred unit, default is meters
+     */
+    override val height: Double?,
+    override val __typename: String = "Human"
+  ) : Luke, HumanDetails {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@HumanDetailsImpl1.name)
+        writer.writeDouble(RESPONSE_FIELDS[1], this@HumanDetailsImpl1.height)
+        writer.writeString(RESPONSE_FIELDS[2], this@HumanDetailsImpl1.__typename)
+      }
     }
 
-    data class Fragments(
-      val humanDetails: HumanDetails?,
-      val droidDetails: DroidDetails?
-    ) {
-      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-        writer.writeFragment(this@Fragments.humanDetails?.marshaller())
-        writer.writeFragment(this@Fragments.droidDetails?.marshaller())
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forDouble("height", "height", null, true, null),
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): HumanDetailsImpl1 = reader.run {
+        val name = readString(RESPONSE_FIELDS[0])!!
+        val height = readDouble(RESPONSE_FIELDS[1])
+        val __typename = readString(RESPONSE_FIELDS[2])!!
+        HumanDetailsImpl1(
+          name = name,
+          height = height,
+          __typename = __typename
+        )
       }
 
-      companion object {
-        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField.forFragment("__typename", "__typename", listOf(
-              ResponseField.Condition.typeCondition(arrayOf("Human"))
-            )),
-            ResponseField.forFragment("__typename", "__typename", listOf(
-              ResponseField.Condition.typeCondition(arrayOf("Droid"))
-            ))
-            )
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<HumanDetailsImpl1> = ResponseFieldMapper { invoke(it) }
+    }
+  }
 
-        operator fun invoke(reader: ResponseReader): Fragments = reader.run {
-          val humanDetails = readFragment<HumanDetails>(RESPONSE_FIELDS[0]) { reader ->
-            HumanDetails(reader)
-          }
-          val droidDetails = readFragment<DroidDetails>(RESPONSE_FIELDS[1]) { reader ->
-            DroidDetails(reader)
-          }
-          Fragments(
-            humanDetails = humanDetails,
-            droidDetails = droidDetails
-          )
+  /**
+   * An autonomous mechanical character in the Star Wars universe
+   */
+  data class DroidDetailsImpl1(
+    /**
+     * What others call this droid
+     */
+    override val name: String,
+    /**
+     * This droid's primary function
+     */
+    override val primaryFunction: String?,
+    override val __typename: String = "Droid"
+  ) : Luke, DroidDetails {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@DroidDetailsImpl1.name)
+        writer.writeString(RESPONSE_FIELDS[1], this@DroidDetailsImpl1.primaryFunction)
+        writer.writeString(RESPONSE_FIELDS[2], this@DroidDetailsImpl1.__typename)
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forString("primaryFunction", "primaryFunction", null, true, null),
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): DroidDetailsImpl1 = reader.run {
+        val name = readString(RESPONSE_FIELDS[0])!!
+        val primaryFunction = readString(RESPONSE_FIELDS[1])
+        val __typename = readString(RESPONSE_FIELDS[2])!!
+        DroidDetailsImpl1(
+          name = name,
+          primaryFunction = primaryFunction,
+          __typename = __typename
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<DroidDetailsImpl1> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
+   * A character from the Star Wars universe
+   */
+  interface Luke {
+    val __typename: String
+
+    fun marshaller(): ResponseFieldMarshaller
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): Luke {
+        val typename = reader.readString(RESPONSE_FIELDS[0])
+        return when(typename) {
+          "Human" -> HumanDetailsImpl1(reader)
+          "Droid" -> DroidDetailsImpl1(reader)
+          else -> LukeImpl(reader)
         }
-
-        @Suppress("FunctionName")
-        fun Mapper(): ResponseFieldMapper<Fragments> = ResponseFieldMapper { invoke(it) }
       }
     }
   }
@@ -228,16 +377,18 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val r2: R2?,
     val luke: Luke?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeObject(RESPONSE_FIELDS[0], this@Data.r2?.marshaller())
-      writer.writeObject(RESPONSE_FIELDS[1], this@Data.luke?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeObject(RESPONSE_FIELDS[0], this@Data.r2?.marshaller())
+        writer.writeObject(RESPONSE_FIELDS[1], this@Data.luke?.marshaller())
+      }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forObject("r2", "hero", null, true, null),
-          ResponseField.forObject("luke", "hero", null, true, null)
-          )
+        ResponseField.forObject("r2", "hero", null, true, null),
+        ResponseField.forObject("luke", "hero", null, true, null)
+      )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {
         val r2 = readObject<R2>(RESPONSE_FIELDS[0]) { reader ->

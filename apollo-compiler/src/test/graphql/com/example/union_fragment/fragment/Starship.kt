@@ -17,24 +17,49 @@ import kotlin.Suppress
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-data class Starship(
-  val __typename: String = "Starship",
+interface Starship : GraphqlFragment {
+  val __typename: String
+
   /**
    * The name of the starship
    */
   val name: String
-) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-    writer.writeString(RESPONSE_FIELDS[0], this@Starship.__typename)
-    writer.writeString(RESPONSE_FIELDS[1], this@Starship.name)
+
+  data class DefaultImpl(
+    override val __typename: String = "Starship",
+    /**
+     * The name of the starship
+     */
+    override val name: String
+  ) : Starship {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@DefaultImpl.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@DefaultImpl.name)
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("name", "name", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): DefaultImpl = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
+        DefaultImpl(
+          __typename = __typename,
+          name = name
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<DefaultImpl> = ResponseFieldMapper { invoke(it) }
+    }
   }
 
   companion object {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null)
-        )
-
     val FRAGMENT_DEFINITION: String = """
         |fragment Starship on Starship {
         |  __typename
@@ -42,16 +67,13 @@ data class Starship(
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader): Starship = reader.run {
-      val __typename = readString(RESPONSE_FIELDS[0])!!
-      val name = readString(RESPONSE_FIELDS[1])!!
-      Starship(
+    operator fun invoke(__typename: String, name: String): Starship {
+      return DefaultImpl(
         __typename = __typename,
         name = name
       )
     }
 
-    @Suppress("FunctionName")
-    fun Mapper(): ResponseFieldMapper<Starship> = ResponseFieldMapper { invoke(it) }
+    operator fun invoke(reader: ResponseReader): Starship = DefaultImpl(reader)
   }
 }

@@ -101,25 +101,27 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val firstAppearsIn: Episode
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeString(RESPONSE_FIELDS[0], this@Hero.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], this@Hero.name)
-      writer.writeList(RESPONSE_FIELDS[2], this@Hero.appearsIn) { value, listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeString(value?.rawValue)}
+    fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@Hero.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@Hero.name)
+        writer.writeList(RESPONSE_FIELDS[2], this@Hero.appearsIn) { value, listItemWriter ->
+          value?.forEach { value ->
+            listItemWriter.writeString(value?.rawValue)}
+        }
+        writer.writeString(RESPONSE_FIELDS[3], this@Hero.firstAppearsIn.rawValue)
       }
-      writer.writeString(RESPONSE_FIELDS[3], this@Hero.firstAppearsIn.rawValue)
     }
 
     fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("name", "name", null, false, null),
-          ResponseField.forList("appearsIn", "appearsIn", null, false, null),
-          ResponseField.forEnum("firstAppearsIn", "firstAppearsIn", null, false, null)
-          )
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forList("appearsIn", "appearsIn", null, false, null),
+        ResponseField.forEnum("firstAppearsIn", "firstAppearsIn", null, false, null)
+      )
 
       operator fun invoke(reader: ResponseReader): Hero = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
@@ -147,14 +149,16 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   data class Data(
     val hero: Hero?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeObject(RESPONSE_FIELDS[0], this@Data.hero?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeObject(RESPONSE_FIELDS[0], this@Data.hero?.marshaller())
+      }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forObject("hero", "hero", null, true, null)
-          )
+        ResponseField.forObject("hero", "hero", null, true, null)
+      )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {
         val hero = readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->

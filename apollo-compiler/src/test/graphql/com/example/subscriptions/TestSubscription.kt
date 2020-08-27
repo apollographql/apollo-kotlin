@@ -113,18 +113,20 @@ data class TestSubscription(
      */
     val content: String
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeString(RESPONSE_FIELDS[0], this@CommentAdded.__typename)
-      writer.writeInt(RESPONSE_FIELDS[1], this@CommentAdded.id)
-      writer.writeString(RESPONSE_FIELDS[2], this@CommentAdded.content)
+    fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@CommentAdded.__typename)
+        writer.writeInt(RESPONSE_FIELDS[1], this@CommentAdded.id)
+        writer.writeString(RESPONSE_FIELDS[2], this@CommentAdded.content)
+      }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forInt("id", "id", null, false, null),
-          ResponseField.forString("content", "content", null, false, null)
-          )
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forInt("id", "id", null, false, null),
+        ResponseField.forString("content", "content", null, false, null)
+      )
 
       operator fun invoke(reader: ResponseReader): CommentAdded = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
@@ -151,17 +153,19 @@ data class TestSubscription(
      */
     val commentAdded: CommentAdded?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeObject(RESPONSE_FIELDS[0], this@Data.commentAdded?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeObject(RESPONSE_FIELDS[0], this@Data.commentAdded?.marshaller())
+      }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forObject("commentAdded", "commentAdded", mapOf<String, Any>(
-            "repoFullName" to mapOf<String, Any>(
-              "kind" to "Variable",
-              "variableName" to "repo")), true, null)
-          )
+        ResponseField.forObject("commentAdded", "commentAdded", mapOf<String, Any>(
+          "repoFullName" to mapOf<String, Any>(
+            "kind" to "Variable",
+            "variableName" to "repo")), true, null)
+      )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {
         val commentAdded = readObject<CommentAdded>(RESPONSE_FIELDS[0]) { reader ->

@@ -16,34 +16,72 @@ import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
 
+/**
+ * A character from the Star Wars universe
+ */
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-data class CharacterDetails(
-  val __typename: String = "Character",
+interface CharacterDetails : GraphqlFragment {
+  val __typename: String
+
   /**
    * The name of the character
    */
-  val name: String,
+  val name: String
+
   /**
    * The date character was born.
    */
   val birthDate: Any
-) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-    writer.writeString(RESPONSE_FIELDS[0], this@CharacterDetails.__typename)
-    writer.writeString(RESPONSE_FIELDS[1], this@CharacterDetails.name)
-    writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField,
-        this@CharacterDetails.birthDate)
-  }
 
-  companion object {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+  /**
+   * A character from the Star Wars universe
+   */
+  data class DefaultImpl(
+    override val __typename: String = "Character",
+    /**
+     * The name of the character
+     */
+    override val name: String,
+    /**
+     * The date character was born.
+     */
+    override val birthDate: Any
+  ) : CharacterDetails {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@DefaultImpl.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@DefaultImpl.name)
+        writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField,
+            this@DefaultImpl.birthDate)
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forCustomType("birthDate", "birthDate", null, false, CustomType.DATE, null)
-        )
+      )
 
+      operator fun invoke(reader: ResponseReader): DefaultImpl = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
+        val birthDate = readCustomType<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)!!
+        DefaultImpl(
+          __typename = __typename,
+          name = name,
+          birthDate = birthDate
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<DefaultImpl> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  companion object {
     val FRAGMENT_DEFINITION: String = """
         |fragment CharacterDetails on Character {
         |  __typename
@@ -52,18 +90,18 @@ data class CharacterDetails(
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader): CharacterDetails = reader.run {
-      val __typename = readString(RESPONSE_FIELDS[0])!!
-      val name = readString(RESPONSE_FIELDS[1])!!
-      val birthDate = readCustomType<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)!!
-      CharacterDetails(
+    operator fun invoke(
+      __typename: String,
+      name: String,
+      birthDate: Any
+    ): CharacterDetails {
+      return DefaultImpl(
         __typename = __typename,
         name = name,
         birthDate = birthDate
       )
     }
 
-    @Suppress("FunctionName")
-    fun Mapper(): ResponseFieldMapper<CharacterDetails> = ResponseFieldMapper { invoke(it) }
+    operator fun invoke(reader: ResponseReader): CharacterDetails = DefaultImpl(reader)
   }
 }

@@ -97,18 +97,20 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val name: String
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeString(RESPONSE_FIELDS[0], this@Yield_.__typename)
-      writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, this@Yield_.it_)
-      writer.writeString(RESPONSE_FIELDS[2], this@Yield_.name)
+    fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@Yield_.__typename)
+        writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, this@Yield_.it_)
+        writer.writeString(RESPONSE_FIELDS[2], this@Yield_.name)
+      }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forCustomType("it", "id", null, false, CustomType.ID, null),
-          ResponseField.forString("name", "name", null, false, null)
-          )
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forCustomType("it", "id", null, false, CustomType.ID, null),
+        ResponseField.forString("name", "name", null, false, null)
+      )
 
       operator fun invoke(reader: ResponseReader): Yield_ = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
@@ -126,75 +128,98 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
   }
 
-  interface ObjectSearchResult {
-    fun marshaller(): ResponseFieldMarshaller
+  data class ObjectImpl(
+    override val __typename: String = "SearchResult"
+  ) : Object {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@ObjectImpl.__typename)
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): ObjectImpl = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        ObjectImpl(
+          __typename = __typename
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<ObjectImpl> = ResponseFieldMapper { invoke(it) }
+    }
   }
 
   /**
    * A character from the Star Wars universe
    */
-  data class AsCharacter(
-    val __typename: String = "Character",
+  interface Character : Object {
+    override val __typename: String
+
     /**
      * The name of the character
      */
     val name: String
-  ) : ObjectSearchResult {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeString(RESPONSE_FIELDS[0], this@AsCharacter.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], this@AsCharacter.name)
+
+    override fun marshaller(): ResponseFieldMarshaller
+  }
+
+  data class CharacterImpl(
+    override val __typename: String,
+    /**
+     * The name of the character
+     */
+    override val name: String
+  ) : Character, Object {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@CharacterImpl.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@CharacterImpl.name)
+      }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("name", "name", null, false, null)
-          )
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("name", "name", null, false, null)
+      )
 
-      operator fun invoke(reader: ResponseReader): AsCharacter = reader.run {
+      operator fun invoke(reader: ResponseReader): CharacterImpl = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
         val name = readString(RESPONSE_FIELDS[1])!!
-        AsCharacter(
+        CharacterImpl(
           __typename = __typename,
           name = name
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<AsCharacter> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<CharacterImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 
-  data class Object(
-    val __typename: String = "SearchResult",
-    val asCharacter: AsCharacter?
-  ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeString(RESPONSE_FIELDS[0], this@Object.__typename)
-      writer.writeFragment(this@Object.asCharacter?.marshaller())
-    }
+  interface Object {
+    val __typename: String
+
+    fun marshaller(): ResponseFieldMarshaller
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forFragment("__typename", "__typename", listOf(
-            ResponseField.Condition.typeCondition(arrayOf("Human", "Droid"))
-          ))
-          )
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
 
-      operator fun invoke(reader: ResponseReader): Object = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val asCharacter = readFragment<AsCharacter>(RESPONSE_FIELDS[1]) { reader ->
-          AsCharacter(reader)
+      operator fun invoke(reader: ResponseReader): Object {
+        val typename = reader.readString(RESPONSE_FIELDS[0])
+        return when(typename) {
+          "Human" -> CharacterImpl(reader)
+          "Droid" -> CharacterImpl(reader)
+          else -> ObjectImpl(reader)
         }
-        Object(
-          __typename = __typename,
-          asCharacter = asCharacter
-        )
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Object> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -205,11 +230,13 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val yield_: Yield_?,
     val objects: List<Object?>?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeObject(RESPONSE_FIELDS[0], this@Data.yield_?.marshaller())
-      writer.writeList(RESPONSE_FIELDS[1], this@Data.objects) { value, listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeObject(value?.marshaller())}
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeObject(RESPONSE_FIELDS[0], this@Data.yield_?.marshaller())
+        writer.writeList(RESPONSE_FIELDS[1], this@Data.objects) { value, listItemWriter ->
+          value?.forEach { value ->
+            listItemWriter.writeObject(value?.marshaller())}
+        }
       }
     }
 
@@ -217,10 +244,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forObject("yield", "hero", null, true, null),
-          ResponseField.forList("objects", "search", mapOf<String, Any>(
-            "text" to "abc"), true, null)
-          )
+        ResponseField.forObject("yield", "hero", null, true, null),
+        ResponseField.forList("objects", "search", mapOf<String, Any>(
+          "text" to "abc"), true, null)
+      )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {
         val yield_ = readObject<Yield_>(RESPONSE_FIELDS[0]) { reader ->

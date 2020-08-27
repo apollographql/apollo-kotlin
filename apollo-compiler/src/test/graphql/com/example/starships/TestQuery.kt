@@ -113,15 +113,17 @@ data class TestQuery(
     val name: String,
     val coordinates: List<List<Double>>?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeString(RESPONSE_FIELDS[0], this@Starship.__typename)
-      writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, this@Starship.id)
-      writer.writeString(RESPONSE_FIELDS[2], this@Starship.name)
-      writer.writeList(RESPONSE_FIELDS[3], this@Starship.coordinates) { value, listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeList(value) { value, listItemWriter ->
-            value?.forEach { value ->
-              listItemWriter.writeDouble(value)}
+    fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@Starship.__typename)
+        writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, this@Starship.id)
+        writer.writeString(RESPONSE_FIELDS[2], this@Starship.name)
+        writer.writeList(RESPONSE_FIELDS[3], this@Starship.coordinates) { value, listItemWriter ->
+          value?.forEach { value ->
+            listItemWriter.writeList(value) { value, listItemWriter ->
+              value?.forEach { value ->
+                listItemWriter.writeDouble(value)}
+            }
           }
         }
       }
@@ -129,11 +131,11 @@ data class TestQuery(
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
-          ResponseField.forString("name", "name", null, false, null),
-          ResponseField.forList("coordinates", "coordinates", null, true, null)
-          )
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forList("coordinates", "coordinates", null, true, null)
+      )
 
       operator fun invoke(reader: ResponseReader): Starship = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
@@ -163,17 +165,19 @@ data class TestQuery(
   data class Data(
     val starship: Starship?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeObject(RESPONSE_FIELDS[0], this@Data.starship?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeObject(RESPONSE_FIELDS[0], this@Data.starship?.marshaller())
+      }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forObject("starship", "starship", mapOf<String, Any>(
-            "id" to mapOf<String, Any>(
-              "kind" to "Variable",
-              "variableName" to "id")), true, null)
-          )
+        ResponseField.forObject("starship", "starship", mapOf<String, Any>(
+          "id" to mapOf<String, Any>(
+            "kind" to "Variable",
+            "variableName" to "id")), true, null)
+      )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {
         val starship = readObject<Starship>(RESPONSE_FIELDS[0]) { reader ->

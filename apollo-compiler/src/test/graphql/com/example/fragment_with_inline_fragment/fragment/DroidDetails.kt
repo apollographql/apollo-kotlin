@@ -14,33 +14,71 @@ import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
 
+/**
+ * An autonomous mechanical character in the Star Wars universe
+ */
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-data class DroidDetails(
-  val __typename: String = "Droid",
+interface DroidDetails : GraphqlFragment {
+  val __typename: String
+
   /**
    * What others call this droid
    */
-  val name: String,
+  val name: String
+
   /**
    * This droid's primary function
    */
   val primaryFunction: String?
-) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-    writer.writeString(RESPONSE_FIELDS[0], this@DroidDetails.__typename)
-    writer.writeString(RESPONSE_FIELDS[1], this@DroidDetails.name)
-    writer.writeString(RESPONSE_FIELDS[2], this@DroidDetails.primaryFunction)
-  }
 
-  companion object {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+  /**
+   * An autonomous mechanical character in the Star Wars universe
+   */
+  data class DefaultImpl(
+    override val __typename: String = "Droid",
+    /**
+     * What others call this droid
+     */
+    override val name: String,
+    /**
+     * This droid's primary function
+     */
+    override val primaryFunction: String?
+  ) : DroidDetails {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@DefaultImpl.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@DefaultImpl.name)
+        writer.writeString(RESPONSE_FIELDS[2], this@DefaultImpl.primaryFunction)
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forString("primaryFunction", "primaryFunction", null, true, null)
-        )
+      )
 
+      operator fun invoke(reader: ResponseReader): DefaultImpl = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
+        val primaryFunction = readString(RESPONSE_FIELDS[2])
+        DefaultImpl(
+          __typename = __typename,
+          name = name,
+          primaryFunction = primaryFunction
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<DefaultImpl> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  companion object {
     val FRAGMENT_DEFINITION: String = """
         |fragment DroidDetails on Droid {
         |  __typename
@@ -49,18 +87,18 @@ data class DroidDetails(
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader): DroidDetails = reader.run {
-      val __typename = readString(RESPONSE_FIELDS[0])!!
-      val name = readString(RESPONSE_FIELDS[1])!!
-      val primaryFunction = readString(RESPONSE_FIELDS[2])
-      DroidDetails(
+    operator fun invoke(
+      __typename: String,
+      name: String,
+      primaryFunction: String?
+    ): DroidDetails {
+      return DefaultImpl(
         __typename = __typename,
         name = name,
         primaryFunction = primaryFunction
       )
     }
 
-    @Suppress("FunctionName")
-    fun Mapper(): ResponseFieldMapper<DroidDetails> = ResponseFieldMapper { invoke(it) }
+    operator fun invoke(reader: ResponseReader): DroidDetails = DefaultImpl(reader)
   }
 }

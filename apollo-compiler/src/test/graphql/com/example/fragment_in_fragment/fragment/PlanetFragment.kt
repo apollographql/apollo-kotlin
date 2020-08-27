@@ -14,27 +14,60 @@ import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
 
+/**
+ * A large mass, planet or planetoid in the Star Wars Universe, at the time of
+ * 0 ABY.
+ */
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-data class PlanetFragment(
-  val __typename: String = "Planet",
+interface PlanetFragment : GraphqlFragment {
+  val __typename: String
+
   /**
    * The name of this planet.
    */
   val name: String?
-) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-    writer.writeString(RESPONSE_FIELDS[0], this@PlanetFragment.__typename)
-    writer.writeString(RESPONSE_FIELDS[1], this@PlanetFragment.name)
+
+  /**
+   * A large mass, planet or planetoid in the Star Wars Universe, at the time of
+   * 0 ABY.
+   */
+  data class DefaultImpl(
+    override val __typename: String = "Planet",
+    /**
+     * The name of this planet.
+     */
+    override val name: String?
+  ) : PlanetFragment {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@DefaultImpl.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@DefaultImpl.name)
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("name", "name", null, true, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): DefaultImpl = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])
+        DefaultImpl(
+          __typename = __typename,
+          name = name
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<DefaultImpl> = ResponseFieldMapper { invoke(it) }
+    }
   }
 
   companion object {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, true, null)
-        )
-
     val FRAGMENT_DEFINITION: String = """
         |fragment planetFragment on Planet {
         |  __typename
@@ -42,16 +75,13 @@ data class PlanetFragment(
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader): PlanetFragment = reader.run {
-      val __typename = readString(RESPONSE_FIELDS[0])!!
-      val name = readString(RESPONSE_FIELDS[1])
-      PlanetFragment(
+    operator fun invoke(__typename: String, name: String?): PlanetFragment {
+      return DefaultImpl(
         __typename = __typename,
         name = name
       )
     }
 
-    @Suppress("FunctionName")
-    fun Mapper(): ResponseFieldMapper<PlanetFragment> = ResponseFieldMapper { invoke(it) }
+    operator fun invoke(reader: ResponseReader): PlanetFragment = DefaultImpl(reader)
   }
 }

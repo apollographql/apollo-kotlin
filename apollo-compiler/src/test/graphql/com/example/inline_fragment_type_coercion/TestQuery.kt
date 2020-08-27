@@ -81,85 +81,110 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     scalarTypeAdapters = scalarTypeAdapters
   )
 
-  interface FooFoo {
-    fun marshaller(): ResponseFieldMarshaller
+  /**
+   * For testing fragment type coercion
+   */
+  data class FooImpl(
+    override val __typename: String = "Foo",
+    override val foo: String
+  ) : Foo {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@FooImpl.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@FooImpl.foo)
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("foo", "foo", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): FooImpl = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val foo = readString(RESPONSE_FIELDS[1])!!
+        FooImpl(
+          __typename = __typename,
+          foo = foo
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<FooImpl> = ResponseFieldMapper { invoke(it) }
+    }
   }
 
   /**
    * For testing fragment type coercion
    */
-  data class AsBar(
-    val __typename: String = "Bar",
-    val foo: String,
+  interface Bar : Foo {
+    override val __typename: String
+
     val bar: String
-  ) : FooFoo {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeString(RESPONSE_FIELDS[0], this@AsBar.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], this@AsBar.foo)
-      writer.writeString(RESPONSE_FIELDS[2], this@AsBar.bar)
+
+    override fun marshaller(): ResponseFieldMarshaller
+  }
+
+  data class BarImpl(
+    override val __typename: String,
+    override val bar: String,
+    override val foo: String
+  ) : Bar, Foo {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@BarImpl.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@BarImpl.bar)
+        writer.writeString(RESPONSE_FIELDS[2], this@BarImpl.foo)
+      }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("foo", "foo", null, false, null),
-          ResponseField.forString("bar", "bar", null, false, null)
-          )
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("bar", "bar", null, false, null),
+        ResponseField.forString("foo", "foo", null, false, null)
+      )
 
-      operator fun invoke(reader: ResponseReader): AsBar = reader.run {
+      operator fun invoke(reader: ResponseReader): BarImpl = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
-        val foo = readString(RESPONSE_FIELDS[1])!!
-        val bar = readString(RESPONSE_FIELDS[2])!!
-        AsBar(
+        val bar = readString(RESPONSE_FIELDS[1])!!
+        val foo = readString(RESPONSE_FIELDS[2])!!
+        BarImpl(
           __typename = __typename,
-          foo = foo,
-          bar = bar
+          bar = bar,
+          foo = foo
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<AsBar> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<BarImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 
   /**
    * For testing fragment type coercion
    */
-  data class Foo(
-    val __typename: String = "Foo",
-    val foo: String,
-    val asBar: AsBar?
-  ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeString(RESPONSE_FIELDS[0], this@Foo.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], this@Foo.foo)
-      writer.writeFragment(this@Foo.asBar?.marshaller())
-    }
+  interface Foo {
+    val __typename: String
+
+    val foo: String
+
+    fun marshaller(): ResponseFieldMarshaller
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("foo", "foo", null, false, null),
-          ResponseField.forFragment("__typename", "__typename", listOf(
-            ResponseField.Condition.typeCondition(arrayOf("BarObject", "FooBar"))
-          ))
-          )
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
 
-      operator fun invoke(reader: ResponseReader): Foo = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val foo = readString(RESPONSE_FIELDS[1])!!
-        val asBar = readFragment<AsBar>(RESPONSE_FIELDS[2]) { reader ->
-          AsBar(reader)
+      operator fun invoke(reader: ResponseReader): Foo {
+        val typename = reader.readString(RESPONSE_FIELDS[0])
+        return when(typename) {
+          "BarObject" -> BarImpl(reader)
+          "FooBar" -> BarImpl(reader)
+          else -> FooImpl(reader)
         }
-        Foo(
-          __typename = __typename,
-          foo = foo,
-          asBar = asBar
-        )
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Foo> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -172,14 +197,16 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val foo: Foo?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeObject(RESPONSE_FIELDS[0], this@Data.foo?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeObject(RESPONSE_FIELDS[0], this@Data.foo?.marshaller())
+      }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forObject("foo", "foo", null, true, null)
-          )
+        ResponseField.forObject("foo", "foo", null, true, null)
+      )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {
         val foo = readObject<Foo>(RESPONSE_FIELDS[0]) { reader ->

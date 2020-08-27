@@ -83,61 +83,126 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   )
 
   /**
-   * Data from the response after executing this GraphQL operation
+   * The query type, represents all of the entry points into our object graph
    */
-  data class Data(
-    val __typename: String,
-    val fragments: Fragments
-  ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeString(RESPONSE_FIELDS[0], this@Data.__typename)
-      this@Data.fragments.marshaller().marshal(writer)
+  data class DataImpl(
+    override val __typename: String = "Query"
+  ) : Data {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@DataImpl.__typename)
+      }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("__typename", "__typename", null, false, null)
-          )
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
 
-      operator fun invoke(reader: ResponseReader): Data = reader.run {
+      operator fun invoke(reader: ResponseReader): DataImpl = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
-        val fragments = Fragments(reader)
-        Data(
-          __typename = __typename,
-          fragments = fragments
+        DataImpl(
+          __typename = __typename
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<DataImpl> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
+   * A character from the Star Wars universe
+   */
+  data class Hero(
+    override val __typename: String = "Character",
+    /**
+     * The name of the character
+     */
+    override val name: String
+  ) : QueryFragment.Hero {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@Hero.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@Hero.name)
+      }
     }
 
-    data class Fragments(
-      val queryFragment: QueryFragment?
-    ) {
-      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-        writer.writeFragment(this@Fragments.queryFragment?.marshaller())
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("name", "name", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): Hero = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
+        Hero(
+          __typename = __typename,
+          name = name
+        )
       }
 
-      companion object {
-        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField.forFragment("__typename", "__typename", listOf(
-              ResponseField.Condition.typeCondition(arrayOf("Query"))
-            ))
-            )
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Hero> = ResponseFieldMapper { invoke(it) }
+    }
+  }
 
-        operator fun invoke(reader: ResponseReader): Fragments = reader.run {
-          val queryFragment = readFragment<QueryFragment>(RESPONSE_FIELDS[0]) { reader ->
-            QueryFragment(reader)
-          }
-          Fragments(
-            queryFragment = queryFragment
-          )
+  /**
+   * The query type, represents all of the entry points into our object graph
+   */
+  data class QueryFragmentImpl(
+    override val hero: Hero?,
+    override val __typename: String = "Query"
+  ) : Data, QueryFragment {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeObject(RESPONSE_FIELDS[0], this@QueryFragmentImpl.hero?.marshaller())
+        writer.writeString(RESPONSE_FIELDS[1], this@QueryFragmentImpl.__typename)
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forObject("hero", "hero", null, true, null),
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): QueryFragmentImpl = reader.run {
+        val hero = readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
+          Hero(reader)
         }
+        val __typename = readString(RESPONSE_FIELDS[1])!!
+        QueryFragmentImpl(
+          hero = hero,
+          __typename = __typename
+        )
+      }
 
-        @Suppress("FunctionName")
-        fun Mapper(): ResponseFieldMapper<Fragments> = ResponseFieldMapper { invoke(it) }
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<QueryFragmentImpl> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
+   * Data from the response after executing this GraphQL operation
+   */
+  interface Data : Operation.Data {
+    val __typename: String
+
+    override fun marshaller(): ResponseFieldMarshaller
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): Data {
+        val typename = reader.readString(RESPONSE_FIELDS[0])
+        return when(typename) {
+          "Query" -> QueryFragmentImpl(reader)
+          else -> DataImpl(reader)
+        }
       }
     }
   }
