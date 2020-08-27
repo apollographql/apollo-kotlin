@@ -13,9 +13,6 @@ include("apollo-normalized-cache")
 include("apollo-normalized-cache-api")
 include("apollo-runtime-kotlin")
 
-val skipAndroidModules:String? by settings
-if (skipAndroidModules != "true") {
-  include("apollo-idling-resource")
-  include("apollo-normalized-cache-sqlite")
-  include("apollo-android-support")
-}
+include("apollo-idling-resource")
+include("apollo-normalized-cache-sqlite")
+include("apollo-android-support")
