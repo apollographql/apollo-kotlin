@@ -16,7 +16,7 @@ internal class ObjectTypeBuilder(
     private val fragmentsPackage: String,
     private val irFragments: Map<String, com.apollographql.apollo.compiler.ir.Fragment>,
     private val nestedTypeContainer: ObjectTypeContainerBuilder,
-    private val enclosingType: CodeGenerationAst.TypeRef
+    private val enclosingType: CodeGenerationAst.TypeRef?
 ) {
 
   fun buildObjectType(

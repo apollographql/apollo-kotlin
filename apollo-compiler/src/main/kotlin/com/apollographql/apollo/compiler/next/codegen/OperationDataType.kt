@@ -9,6 +9,7 @@ internal fun CodeGenerationAst.OperationDataType.toOperationDataTypeSpec(): Type
     "Failed to resolve operation root data type"
   }
   return dataType.copy(
+      description = "Data from the response after executing this GraphQL operation",
       implements = setOf(
           CodeGenerationAst.TypeRef(
               name = "Data",

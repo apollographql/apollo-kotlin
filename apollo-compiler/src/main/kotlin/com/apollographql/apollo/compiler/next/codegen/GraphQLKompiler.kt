@@ -1,13 +1,12 @@
 package com.apollographql.apollo.compiler.next.codegen
 
-import com.apollographql.apollo.compiler.OperationIdGenerator
-import com.apollographql.apollo.compiler.PackageNameProvider
 import com.apollographql.apollo.compiler.ast.CustomTypes
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.patchKotlinNativeOptionalArrayProperties
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.ir.ScalarType
 import com.apollographql.apollo.compiler.ir.TypeDeclaration
 import com.apollographql.apollo.compiler.next.ast.buildCodeGenerationAst
+import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.TypeSpec
@@ -18,10 +17,9 @@ class GraphQLKompiler(
     private val ir: CodeGenerationIR,
     private val schema: IntrospectionSchema,
     private val customTypes: Map<String, String>,
-    private val packageNameProvider: PackageNameProvider,
     private val useSemanticNaming: Boolean,
     private val generateAsInternal: Boolean = false,
-    private val operationIdGenerator: OperationIdGenerator,
+    private val operationOutput: OperationOutput,
     private val kotlinMultiPlatformProject: Boolean,
     private val enumAsSealedClassPatternFilters: List<Regex>
 ) {
@@ -30,15 +28,15 @@ class GraphQLKompiler(
     val ast = ir.buildCodeGenerationAst(
         schema = schema,
         customTypeMap = customTypeMap,
-        operationIdGenerator = operationIdGenerator,
+        operationOutput = operationOutput,
         useSemanticNaming = useSemanticNaming,
-        typesPackageName = packageNameProvider.typesPackageName,
-        fragmentsPackage = packageNameProvider.fragmentsPackageName
+        typesPackageName = ir.typesPackageName,
+        fragmentsPackage = ir.fragmentsPackageName
     )
 
     customTypeMap
         .typeSpec(generateAsInternal)
-        .fileSpec(packageNameProvider.typesPackageName)
+        .fileSpec(ir.typesPackageName)
         .writeTo(outputDir)
 
     ast.enumTypes.forEach { enumType ->
@@ -47,22 +45,21 @@ class GraphQLKompiler(
               generateAsInternal = generateAsInternal,
               enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters
           )
-          .fileSpec(packageNameProvider.typesPackageName)
+          .fileSpec(ir.typesPackageName)
           .writeTo(outputDir)
     }
 
     ast.inputTypes.forEach { inputType ->
       inputType
           .typeSpec(generateAsInternal)
-          .fileSpec(packageNameProvider.typesPackageName)
+          .fileSpec(ir.typesPackageName)
           .writeTo(outputDir)
     }
 
     ast.operationTypes.forEach { operationType ->
-      val targetPackage = packageNameProvider.operationPackageName(operationType.filePath)
       operationType
           .typeSpec(
-              targetPackage = targetPackage,
+              targetPackage = operationType.packageName,
               generateAsInternal = generateAsInternal
           )
           .let {
@@ -70,14 +67,14 @@ class GraphQLKompiler(
               it.patchKotlinNativeOptionalArrayProperties()
             } else it
           }
-          .fileSpec(targetPackage)
+          .fileSpec(operationType.packageName)
           .writeTo(outputDir)
     }
 
     ast.fragmentTypes.forEach { fragmentType ->
       fragmentType
           .typeSpec(generateAsInternal)
-          .fileSpec(packageNameProvider.fragmentsPackageName)
+          .fileSpec(ir.fragmentsPackageName)
           .writeTo(outputDir)
     }
   }

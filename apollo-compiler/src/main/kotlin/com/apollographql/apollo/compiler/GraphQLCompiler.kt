@@ -1,6 +1,6 @@
 package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo.compiler.codegen.kotlin.GraphQLKompiler
+import com.apollographql.apollo.compiler.next.codegen.GraphQLKompiler
 import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.ir.ScalarType
@@ -31,7 +31,8 @@ class GraphQLCompiler {
     if (args.generateKotlinModels) {
       GraphQLKompiler(
           ir = ir,
-          customTypeMap = args.customTypeMap,
+          schema = args.schema,
+          customTypes = args.customTypeMap,
           operationOutput = args.operationOutput,
           useSemanticNaming = args.useSemanticNaming,
           generateAsInternal = args.generateAsInternal,
