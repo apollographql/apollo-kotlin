@@ -25,7 +25,7 @@ class MultiModulesTests {
     TestUtils.withTestProject("multi-modules-transitive") { dir ->
       val result = TestUtils.executeTask(":leaf:assemble", dir)
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":leaf:assemble")!!.outcome)
-      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":leaf:generateApolloSources")!!.outcome)
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":leaf:generateMainServiceApolloSources")!!.outcome)
     }
   }
 

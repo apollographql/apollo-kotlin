@@ -5,6 +5,8 @@ plugins {
 }
 
 dependencies {
+  implementation(groovy.util.Eval.x(project, "x.dep.apollo.api"))
+
   implementation(kotlin("stdlib"))
   testImplementation(kotlin("test-junit"))
 

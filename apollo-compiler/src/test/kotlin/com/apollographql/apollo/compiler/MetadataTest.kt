@@ -8,7 +8,7 @@ import org.junit.Before
 import org.junit.Test
 import java.io.File
 
-class MultiModulesTest {
+class MetadataTest {
   private val buildDir = File("build/multi-module-test/")
   private val rootGraphqlDir = File(buildDir, "root/graphql")
   private val rootSchemaFile = File(buildDir, "root/graphql/schema.sdl")
@@ -67,15 +67,17 @@ class MultiModulesTest {
 
     // All types are generated
     rootSourcesDir.assertContents(
-            "MessageInput0.kt",
-            "Body0.kt",
-            "User0.kt",
-            "MessageInput1.kt",
-            "Body1.kt",
-            "User1.kt",
-            "CustomType.kt",
-            "Encoding.kt"
-        )
+        "MessageInput0.kt",
+        "Body0.kt",
+        "User0.kt",
+        "MessageInput1.kt",
+        "Body1.kt",
+        "User1.kt",
+        "CustomType.kt",
+        "Encoding.kt",
+        "__TypeKind.kt",
+        "__DirectiveLocation.kt",
+    )
 
     // Only the mutation is generated in the leaf
     leafSourcesDir.assertContents("SendMessageMutation.kt")
@@ -120,7 +122,7 @@ class MultiModulesTest {
     )
   }
 
-  fun fragmentTest(dirName: String) {
+  private fun fragmentTest(dirName: String) {
     val folder = File("src/test/multi-modules/$dirName/")
     val rootArgs = GraphQLCompiler.Arguments(
         rootFolders = listOf(folder),
@@ -160,7 +162,9 @@ class MultiModulesTest {
         "Episode.kt",
         "CustomType.kt",
         "LengthUnit.kt",
-        "CharacterFragment.kt"
+        "CharacterFragment.kt",
+        "__TypeKind.kt",
+        "__DirectiveLocation.kt",
     )
 
     // Leaf contains the query but not the fragment
@@ -181,7 +185,7 @@ class MultiModulesTest {
       Truth.assertThat(actualMessage).isEqualTo(expectedMessage)
     }
 
-    val apolloMetadata = ApolloMetadata.readFrom(rootMetadataFile)
+    val apolloMetadata = ApolloMetadata.readFrom(rootMetadataFile)!!
     // Make sure the metadata does not contain absolute paths
     apolloMetadata.fragments.forEach {
       Truth.assertThat(it.filePath).isEqualTo("root.graphql")
@@ -216,7 +220,9 @@ class MultiModulesTest {
         "Episode.kt",
         "CustomType.kt",
         "LengthUnit.kt",
-        "CharacterFragment.kt"
+        "CharacterFragment.kt",
+        "__TypeKind.kt",
+        "__DirectiveLocation.kt",
     )
 
     leafSourcesDir.assertContents(

@@ -16,7 +16,6 @@ abstract class ApolloCheckDuplicatesTask : DefaultTask() {
   lateinit var metadataConfiguration: Configuration
 
   @get:OutputFile
-  @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val outputFile: RegularFileProperty
 
   @TaskAction
