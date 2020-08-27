@@ -1,0 +1,63 @@
+---
+title: Multi Modules
+---
+
+For multi-modules projects, Apollo Android allows to define queries in a feature module and reuse fragments and types from another base module. 
+
+To to so, declare your base module as a dependency of your feature module:
+
+```kotlin
+// feature/build.gradle.kts
+dependencies {
+    implementation("com.apollographql.apollo:apollo-runtime:xyz")
+    //...
+    apollo(project(":base"))
+}
+```
+
+And configure your base module to generate Apollo metadata:
+
+```kotlin
+// base/build.gradle.kts
+apollo {
+    generateApolloMetadata.set(true)
+}
+```
+
+## Schema and Scalar Types
+
+When using multiple modules, all modules should use the same schema. Therefor an error will happen if multiple schema.[json | sdl] are found. Similarly, `customTypeMapping` should be defined only once in the module that defines the schema.
+
+
+## Input Objects and Enums
+
+One big difference when using multi-module support is that Apollo Android will generate all possible Input Types and Enums in the base module, and not only the used ones. This is because there is no way to know from the base module what types are going to be used in feature modules. By default:
+
+* All Input Objects and Enums are generated in the base module.
+* Fragments, Queries and Mutations are generated in the module where they are defined.
+
+ 
+If your schema contains a lot of Input Objects, it can generate a lot of source files and increase compilation times. To mitigate this, you have the option to control what types are generated with the `alwaysGenerateTypesMatching` option:
+
+```kotlin
+// base/build.gradle.kts
+apollo {
+    generateApolloMetadata.set(true)
+    // For the base module, this defaults to [".*"]
+    // When an empty list is passed, the plugin will only generate the types that are used in this module
+    alwaysGenerateTypesMatching.set(emptyList())
+}
+```
+
+If the same type is used in two sibling modules, an error will happen that you can fix by instructing an upstream module to generate the common type
+
+
+```kotlin
+// common/build.gradle.kts
+apollo {
+    generateApolloMetadata.set(true)
+    // Generate common types here
+    // Here we specify the exact names of the schema types but this also works with regexes
+    alwaysGenerateTypesMatching.set(listOf("CommonInputType1", "CommonEnum1"))
+}
+```
