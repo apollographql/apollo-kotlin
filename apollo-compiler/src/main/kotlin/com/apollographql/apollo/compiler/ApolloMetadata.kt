@@ -76,7 +76,7 @@ data class ApolloMetadata(
       // ensure a single schema
       val rootMetadataList = filter { it.schema != null }
       check(rootMetadataList.size <= 1) {
-        "Apollo: A schema is define in multiple modules: ${rootMetadataList.map { it.moduleName }.joinToString(", ")}.\n" +
+        "Apollo: A schema is defined in multiple modules: ${rootMetadataList.map { it.moduleName }.joinToString(", ")}.\n" +
             "There should be only one root module defining the schema, check your dependencies."
       }
       check(rootMetadataList.isNotEmpty()) {
