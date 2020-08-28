@@ -38,6 +38,4 @@ interface ApolloExtension: CompilerParams {
    * @param action: the configure action for the [CompilationUnit]
    */
   fun onCompilationUnit(action: Action<CompilationUnit>)
-
-  val relaxGradleVersionCheck: Property<Boolean>
 }
