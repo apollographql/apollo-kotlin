@@ -18,7 +18,7 @@ import java.net.URLDecoder
 open class ApolloPlugin : Plugin<Project> {
   companion object {
     const val TASK_GROUP = "apollo"
-    const val MIN_GRADLE_VERSION = "6.0"
+    const val MIN_GRADLE_VERSION = "5.6"
 
     val Project.isKotlinMultiplatform get() = pluginManager.hasPlugin("org.jetbrains.kotlin.multiplatform")
 
@@ -269,6 +269,7 @@ open class ApolloPlugin : Plugin<Project> {
 
     // the extension block has not been evaluated yet, register a callback once the project has been evaluated
     project.afterEvaluate {
+
       afterEvaluate(it, apolloExtension)
     }
   }
