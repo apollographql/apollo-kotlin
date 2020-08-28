@@ -190,7 +190,7 @@ fun Project.configurePublishing() {
 
       maven {
         name = "bintray"
-        url = uri("https://api.bintray.com/maven/apollographql/android/apollo/")
+        url = uri("https://api.bintray.com/maven/apollographql/android/apollo/;override=1")
         credentials {
           username = System.getenv("BINTRAY_USER")
           password = System.getenv("BINTRAY_API_KEY")
@@ -319,17 +319,17 @@ tasks.register("sonatypeCloseAndReleaseRepository") {
 
 tasks.register("bintrayPublish") {
   doLast {
-    val response = "{\"publish_wait_for_secs\": -1}".toRequestBody("application/json".toMediaType()).let {
+    "{\"publish_wait_for_secs\": -1}".toRequestBody("application/json".toMediaType()).let {
       okhttp3.Request.Builder()
           .post(it)
           .url("https://api.bintray.com//content/apollographql/android/apollo/$version/publish")
           .build()
     }.let {
       okhttp3.OkHttpClient().newCall(it).execute()
-    }
-
-    check(response.isSuccessful) {
-      "Cannot publish to bintray: ${response.code}"
+    }.use {
+      check(it.isSuccessful) {
+        "Cannot publish to bintray: ${it.code}"
+      }
     }
   }
 }
