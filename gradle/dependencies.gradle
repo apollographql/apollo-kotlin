@@ -52,7 +52,7 @@ ext.dep = [
         api    : "com.apollographql.apollo:apollo-api:$versions.apollo",
     ],
     compiletesting        : "com.google.testing.compile:compile-testing:$versions.compiletesting",
-    kotlinCompileTesting  : "com.github.tschuchortdev:kotlin-compile-testing:1.2.9",
+    kotlinCompileTesting  : "com.github.tschuchortdev:kotlin-compile-testing:1.2.10",
     cache                 : "com.nytimes.android:cache:$versions.cache",
     gradleJapiCmpPlugin   : "me.champeau.gradle:japicmp-gradle-plugin:0.2.8",
     vanniktechPlugin      : "com.vanniktech:gradle-maven-publish-plugin:0.11.1",
