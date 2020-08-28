@@ -132,6 +132,7 @@ query HeroAndFriendsNames($episode: Episode) {
 Apollo Android will generate a typesafe model looking like this (details are omitted to focus on the class structure):
 
 <MultiCodeBlock>
+
 ```kotlin
 class HeroAndFriendsNamesQuery {
   data class Data(val hero: Hero)
@@ -154,6 +155,7 @@ class HeroAndFriendsNamesQuery {
   }
 }
 ```
+
 </MultiCodeBlock>
 
 You can fetch results data using the following code. Apollo will parse the response and expose a typesafe model:
