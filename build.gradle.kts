@@ -30,6 +30,9 @@ subprojects {
 
   tasks.withType<KotlinCompile> {
     kotlinOptions {
+      // Gradle forces 1.3.72 for the time being so compile against 1.3 stdlib for the time being
+      // See https://issuetracker.google.com/issues/166582569
+      apiVersion = "1.3"
       jvmTarget = JavaVersion.VERSION_1_8.toString()
       freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
     }
