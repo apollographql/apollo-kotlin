@@ -730,7 +730,7 @@
         {
           "kind": "SCALAR",
           "name": "URL",
-          "description": "URL for testing",
+          "description": "",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
