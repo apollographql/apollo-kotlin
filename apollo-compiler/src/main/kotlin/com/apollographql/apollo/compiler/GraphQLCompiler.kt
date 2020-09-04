@@ -11,6 +11,8 @@ import com.apollographql.apollo.compiler.ir.TypeDeclaration.Companion.KIND_ENUM
 import com.apollographql.apollo.compiler.ir.TypeDeclaration.Companion.KIND_INPUT_OBJECT_TYPE
 import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.operationoutput.toJson
+import com.apollographql.apollo.compiler.parser.error.DocumentParseException
+import com.apollographql.apollo.compiler.parser.error.ParseException
 import com.apollographql.apollo.compiler.parser.graphql.GraphQLDocumentParser
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Companion.toIntrospectionSchema
@@ -242,7 +244,11 @@ class GraphQLCompiler {
         val introspectionSchema = if (schemaFile.extension == "json") {
           IntrospectionSchema(schemaFile)
         } else {
-          GraphSdlSchema(schemaFile).toIntrospectionSchema()
+          try {
+            GraphSdlSchema(schemaFile).toIntrospectionSchema()
+          } catch (e: ParseException) {
+            throw DocumentParseException(e, schemaFile.absolutePath)
+          }
         }
 
         val packageName = try {
