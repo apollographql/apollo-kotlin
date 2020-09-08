@@ -46,11 +46,11 @@ val upvotePostMutation = UpvotePostMutation(votes = 3)
 apolloClient
     .mutate(upvotePostMutation)
     .enqueue(object: ApolloCall.Callback<UpvotePost.Data>() {
-            override fun onFailure(e: ApolloException) {
+            override fun onResponse(response: Response<UpvotePost.Data>) {
                 Log.i(TAG, response.toString());
             }
-
-            override fun onResponse(response: Response<UpvotePost.Data>) {
+            
+            override fun onFailure(e: ApolloException) {
                 Log.e(TAG, e.getMessage(), e);
             }
         }
