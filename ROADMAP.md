@@ -12,7 +12,7 @@ This document was last updated on September 9th, 2020. For a more detailed and c
 
 - **Multi-modules support** ([#1973](https://github.com/apollographql/apollo-android/issues/1973)): Big codebase use Gradle modules for better separation of concern as well as to improve build speed. Currently, the recommendation is to put all the GraphQL queries in a common module but that scales poorly. Multi-modules support will allow defining operations in the module they are used as well as sharing GraphQL Fragments between multiple modules.  
     
-- **Gradle configuration cache** ([#2524](https://github.com/apollographql/apollo-android/issues/)2524): Gradle 6.6 introduced [configuration caching](https://docs.gradle.org/current/userguide/configuration_cache.html) as an incubating feature. We want to support that to make builds faster.
+- **Gradle configuration cache** ([#2524](https://github.com/apollographql/apollo-android/issues/2524)): Gradle 6.6 introduced [configuration caching](https://docs.gradle.org/current/userguide/configuration_cache.html) as an incubating feature. We want to support that to make builds faster.
 
 - **General bug-bashing**: We'll be dealing with any new issues and small feature requests as they come up.
 
