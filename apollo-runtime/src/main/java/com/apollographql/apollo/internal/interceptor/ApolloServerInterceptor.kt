@@ -317,7 +317,7 @@ class ApolloServerInterceptor(serverUrl: HttpUrl, httpCallFactory: Call.Factory,
         } else {
           multipartBodyBuilder.addFormDataPart(
               i.toString(),
-              null,
+              fileUploadMeta.fileUpload.fileName(),
               object : RequestBody() {
                 override fun contentType() = mimetype
                 override fun contentLength() = fileUploadMeta.fileUpload.contentLength()
