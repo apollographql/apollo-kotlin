@@ -1,3 +1,4 @@
+# simple queries that use fragments and input types from root
 query GetAnimal {
   randomAnimal {
     ...CatFragment

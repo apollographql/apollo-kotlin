@@ -1,4 +1,0 @@
-fragment CatFragment on Cat {
-  mustaches
-}
-

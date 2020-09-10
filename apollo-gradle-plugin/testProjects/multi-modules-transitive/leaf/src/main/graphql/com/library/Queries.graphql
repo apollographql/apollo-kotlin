@@ -1,9 +1,0 @@
-query GetPlantAndAnimal($size: Int!) {
-  randomPlant {
-    ...PlantFragment
-  }
-  randomAnimal {
-    ...CatFragment
-  }
-}
-
