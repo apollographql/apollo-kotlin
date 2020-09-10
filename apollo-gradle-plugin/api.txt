@@ -1,5 +1,19 @@
 package com.apollographql.apollo.gradle.api {
 
+  public final class ApolloAttributes {
+    method public error.NonExistentClass getAPOLLO_SERVICE_ATTRIBUTE();
+    method public error.NonExistentClass getAPOLLO_VARIANT_ATTRIBUTE();
+    property public final error.NonExistentClass APOLLO_SERVICE_ATTRIBUTE;
+    property public final error.NonExistentClass APOLLO_VARIANT_ATTRIBUTE;
+    field public static final com.apollographql.apollo.gradle.api.ApolloAttributes INSTANCE;
+  }
+
+  public static abstract interface ApolloAttributes.Service {
+  }
+
+  public static abstract interface ApolloAttributes.Variant {
+  }
+
   public abstract interface ApolloExtension implements com.apollographql.apollo.gradle.api.CompilerParams {
     method public abstract void onCompilationUnit(error.NonExistentClass);
     method public abstract void service(error.NonExistentClass, error.NonExistentClass);
