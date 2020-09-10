@@ -1,5 +1,6 @@
 package com.apollographql.apollo.gradle.api
 
+import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.compiler.OperationIdGenerator
 import com.apollographql.apollo.compiler.OperationOutputGenerator
 import org.gradle.api.file.RegularFileProperty
@@ -7,6 +8,7 @@ import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.SetProperty
 
 /**
  * CompilerParams contains all the parameters needed to invoke the apollo compiler.
@@ -32,7 +34,6 @@ interface CompilerParams {
    * Default value: false
    */
   val generateOperationOutput: Property<Boolean>
-
 
   /**
    * For custom scalar types like Date, map from the GraphQL type to the jvm/kotlin type.
@@ -193,4 +194,29 @@ interface CompilerParams {
    * the client was compiled against an older schema that doesn't have knowledge of the new enums.
    */
   val sealedClassesForEnumsMatching: ListProperty<String>
+
+  /**
+   * Whether or not to generate Apollo metadata. Apollo metadata is used for multi-module support. Set this to true if you want other
+   * modules to be able to re-use fragments and types from this module.
+   *
+   * This is currently experimental and this API might change in the future.
+   *
+   * Default value: false
+   */
+  @ApolloExperimental
+  val generateApolloMetadata: Property<Boolean>
+
+  /**
+   * A list of [Regex] patterns for input/scalar/enum types that should be generated whether or not they are used by queries/fragments
+   * in this module. When using multiple modules, Apollo Android will generate all the types by default in the root module
+   * because the root module doesn't know what types are going to be used by dependent modules. This can be prohibitive in terms
+   * of compilation speed for large projects. If that's the case, opt-in the types that are used by multiple dependent modules here.
+   * You don't need to add types that are used by a single dependent module.
+   *
+   * This is currently experimental and this API might change in the future.
+   *
+   * Default value: if (generateApolloMetadata) listOf(".*") else listOf()
+   */
+  @ApolloExperimental
+  val alwaysGenerateTypesMatching: SetProperty<String>
 }

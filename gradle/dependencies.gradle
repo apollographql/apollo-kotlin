@@ -56,6 +56,7 @@ ext.dep = [
     cache                 : "com.nytimes.android:cache:$versions.cache",
     gradleJapiCmpPlugin   : "me.champeau.gradle:japicmp-gradle-plugin:0.2.8",
     vanniktechPlugin      : "com.vanniktech:gradle-maven-publish-plugin:0.11.1",
+    gradlePublishPlugin   : "com.gradle.publish:plugin-publish-plugin:0.12.0",
     guavaJre              : "com.google.guava:guava:$versions.guava",
     jetbrainsAnnotations  : "org.jetbrains:annotations:$versions.jetbrainsAnnotations",
     junit                 : "junit:junit:$versions.junit",

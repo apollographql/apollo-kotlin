@@ -7,6 +7,7 @@ import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.SetProperty
 import javax.inject.Inject
 
 abstract class DefaultCompilerParams @Inject constructor(objects: ObjectFactory) : CompilerParams {
@@ -19,12 +20,6 @@ abstract class DefaultCompilerParams @Inject constructor(objects: ObjectFactory)
   abstract override val customTypeMapping: MapProperty<String, String>
 
   abstract override val operationIdGenerator: Property<OperationIdGenerator>
-
-  init {
-    // see https://github.com/gradle/gradle/issues/7485
-    customTypeMapping.set(null as Map<String, String>?)
-    sealedClassesForEnumsMatching.set(null as List<String>?)
-  }
 
   abstract override val suppressRawTypesWarning : Property<Boolean>
 
@@ -43,4 +38,15 @@ abstract class DefaultCompilerParams @Inject constructor(objects: ObjectFactory)
   abstract override val generateAsInternal: Property<Boolean>
 
   abstract override val sealedClassesForEnumsMatching: ListProperty<String>
+
+  abstract override val alwaysGenerateTypesMatching: SetProperty<String>
+
+  init {
+    // see https://github.com/gradle/gradle/issues/7485
+    // TODO replace with `convention(null)` when we can target Gradle 6.2
+    customTypeMapping.set(null as Map<String, String>?)
+    sealedClassesForEnumsMatching.set(null as List<String>?)
+    alwaysGenerateTypesMatching.set(null as Set<String>?)
+  }
+
 }

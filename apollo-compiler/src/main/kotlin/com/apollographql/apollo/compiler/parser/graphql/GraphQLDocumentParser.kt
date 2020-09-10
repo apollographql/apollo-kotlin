@@ -1,24 +1,40 @@
 package com.apollographql.apollo.compiler.parser.graphql
 
 import com.apollographql.apollo.compiler.PackageNameProvider
-import com.apollographql.apollo.compiler.ir.*
-import com.apollographql.apollo.compiler.parser.graphql.GraphQLDocumentSourceBuilder.graphQLDocumentSource
+import com.apollographql.apollo.compiler.ir.Argument
+import com.apollographql.apollo.compiler.ir.Condition
+import com.apollographql.apollo.compiler.ir.Field
+import com.apollographql.apollo.compiler.ir.Fragment
+import com.apollographql.apollo.compiler.ir.FragmentRef
+import com.apollographql.apollo.compiler.ir.InlineFragment
+import com.apollographql.apollo.compiler.ir.Operation
+import com.apollographql.apollo.compiler.ir.ScalarType
+import com.apollographql.apollo.compiler.ir.SourceLocation
+import com.apollographql.apollo.compiler.ir.Variable
 import com.apollographql.apollo.compiler.parser.antlr.GraphQLLexer
 import com.apollographql.apollo.compiler.parser.antlr.GraphQLParser
 import com.apollographql.apollo.compiler.parser.error.DocumentParseException
 import com.apollographql.apollo.compiler.parser.error.ParseException
+import com.apollographql.apollo.compiler.parser.graphql.GraphQLDocumentSourceBuilder.graphQLDocumentSource
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.parser.introspection.asGraphQLType
 import com.apollographql.apollo.compiler.parser.introspection.isAssignableFrom
 import com.apollographql.apollo.compiler.parser.introspection.possibleTypes
-import org.antlr.v4.runtime.*
+import org.antlr.v4.runtime.ANTLRInputStream
+import org.antlr.v4.runtime.BaseErrorListener
+import org.antlr.v4.runtime.CommonTokenStream
+import org.antlr.v4.runtime.RecognitionException
+import org.antlr.v4.runtime.Recognizer
+import org.antlr.v4.runtime.Token
 import org.antlr.v4.runtime.atn.PredictionMode
 import java.io.File
 import java.io.IOException
 
-class GraphQLDocumentParser(val schema: IntrospectionSchema, private val packageNameProvider: PackageNameProvider) {
-  fun parse(graphQLFiles: Collection<File>): CodeGenerationIR {
-    val (operations, fragments, usedTypes) = graphQLFiles.fold(DocumentParseResult()) { acc, graphQLFile ->
+class GraphQLDocumentParser(val schema: IntrospectionSchema,
+                            private val packageNameProvider: PackageNameProvider
+) {
+  fun parse(graphQLFiles: Collection<File>): DocumentParseResult {
+    return graphQLFiles.fold(DocumentParseResult()) { acc, graphQLFile ->
       val result = graphQLFile.parse()
       DocumentParseResult(
           operations = acc.operations + result.operations,
@@ -26,29 +42,6 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
           usedTypes = acc.usedTypes.union(result.usedTypes)
       )
     }
-
-    operations.checkMultipleOperationDefinitions(packageNameProvider)
-    fragments.checkMultipleFragmentDefinitions()
-
-    val typeDeclarations = usedTypes.usedTypeDeclarations()
-
-    return CodeGenerationIR(
-        operations = operations.map { operation ->
-          val referencedFragmentNames = operation.fields.referencedFragmentNames(fragments = fragments, filePath = operation.filePath)
-          val referencedFragments = referencedFragmentNames.mapNotNull { fragmentName -> fragments.find { it.fragmentName == fragmentName } }
-          referencedFragments.forEach { it.validateArguments(operation = operation, schema = schema) }
-
-          val fragmentSource = referencedFragments.joinToString(separator = "\n") { it.source }
-          operation.copy(
-              sourceWithFragments = operation.source + if (fragmentSource.isNotBlank()) "\n$fragmentSource" else "",
-              fragmentsReferenced = referencedFragmentNames.toList()
-          )
-        },
-        fragments = fragments,
-        typesUsed = typeDeclarations,
-        fragmentsPackageName = packageNameProvider.fragmentsPackageName,
-        typesPackageName = packageNameProvider.typesPackageName
-    )
   }
 
   private fun File.parse(): DocumentParseResult {
@@ -639,81 +632,6 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
     )
   }
 
-  private fun Set<String>.usedTypeDeclarations(): List<TypeDeclaration> {
-    return usedSchemaTypes().map { type ->
-      TypeDeclaration(
-          kind = when (type.kind) {
-            IntrospectionSchema.Kind.SCALAR -> "ScalarType"
-            IntrospectionSchema.Kind.ENUM -> "EnumType"
-            IntrospectionSchema.Kind.INPUT_OBJECT -> "InputObjectType"
-            else -> null
-          }!!,
-          name = type.name,
-          description = type.description?.trim() ?: "",
-          values = (type as? IntrospectionSchema.Type.Enum)?.enumValues?.map { value ->
-            TypeDeclarationValue(
-                name = value.name,
-                description = value.description?.trim() ?: "",
-                isDeprecated = value.isDeprecated || !value.deprecationReason.isNullOrBlank(),
-                deprecationReason = value.deprecationReason ?: ""
-            )
-          } ?: emptyList(),
-          fields = (type as? IntrospectionSchema.Type.InputObject)?.inputFields?.map { field ->
-            TypeDeclarationField(
-                name = field.name,
-                description = field.description?.trim() ?: "",
-                type = field.type.asGraphQLType(),
-                defaultValue = field.defaultValue.normalizeValue(field.type)
-            )
-          } ?: emptyList()
-      )
-    }
-  }
-
-  private fun Set<String>.usedSchemaTypes(): Set<IntrospectionSchema.Type> {
-    if (isEmpty()) {
-      return emptySet()
-    }
-
-    val (scalarTypes, inputObjectTypes) = filter { ScalarType.forName(it) == null }
-        .map { schema[it] ?: throw ParseException(message = "Undefined schema type `$it`") }
-        .filter { type -> type.kind == IntrospectionSchema.Kind.SCALAR || type.kind == IntrospectionSchema.Kind.ENUM || type.kind == IntrospectionSchema.Kind.INPUT_OBJECT }
-        .partition { type -> type.kind == IntrospectionSchema.Kind.SCALAR || type.kind == IntrospectionSchema.Kind.ENUM }
-        .let { (scalarTypes, inputObjectTypes) ->
-          @Suppress("UNCHECKED_CAST")
-          scalarTypes to (inputObjectTypes as List<IntrospectionSchema.Type.InputObject>)
-        }
-
-    val usedTypes = (scalarTypes + inputObjectTypes).toMutableSet()
-    val visitedTypeNames = scalarTypes.map { it.name }.toMutableSet()
-
-    val inputTypesToVisit = inputObjectTypes.toMutableList()
-    while (inputTypesToVisit.isNotEmpty()) {
-      val inputType = inputTypesToVisit.removeAt(inputTypesToVisit.lastIndex).also {
-        usedTypes.add(it)
-        visitedTypeNames.add(it.name)
-      }
-      val (nestedScalarTypes, nestedInputTypes) = inputType
-          .inputFields
-          .asSequence()
-          .map { field -> field.type.rawType.name!! }
-          .filterNot { type -> visitedTypeNames.contains(type) }
-          .map { schema[it] ?: throw ParseException(message = "Undefined schema type `$it`") }
-          .filter { type -> type.kind == IntrospectionSchema.Kind.SCALAR || type.kind == IntrospectionSchema.Kind.ENUM || type.kind == IntrospectionSchema.Kind.INPUT_OBJECT }
-          .partition { type -> type.kind == IntrospectionSchema.Kind.SCALAR || type.kind == IntrospectionSchema.Kind.ENUM }
-          .let { (scalarTypes, inputTypes) ->
-            @Suppress("UNCHECKED_CAST")
-            scalarTypes.filter { ScalarType.forName(it.name) == null } to (inputTypes as List<IntrospectionSchema.Type.InputObject>)
-          }
-
-      usedTypes.addAll(nestedScalarTypes)
-      visitedTypeNames.addAll(nestedScalarTypes.map { it.name })
-
-      inputTypesToVisit.addAll(nestedInputTypes)
-    }
-    return usedTypes
-  }
-
   private fun List<Field>.union(other: List<Field>): List<Field> {
     val fieldNames = map { it.responseName + ":" + it.fieldName }
     return map { targetField ->
@@ -728,104 +646,13 @@ class GraphQLDocumentParser(val schema: IntrospectionSchema, private val package
     } + other.filter { (it.responseName + ":" + it.fieldName) !in fieldNames }
   }
 
-  private fun Any?.normalizeValue(type: IntrospectionSchema.TypeRef): Any? {
-    if (this == null) {
-      return null
-    }
-    return when (type.kind) {
-      IntrospectionSchema.Kind.SCALAR -> {
-        when (ScalarType.forName(type.name ?: "")) {
-          ScalarType.INT -> toString().trim().takeIf { it != "null" }?.toInt()
-          ScalarType.BOOLEAN -> toString().trim().takeIf { it != "null" }?.toBoolean()
-          ScalarType.FLOAT -> toString().trim().takeIf { it != "null" }?.toDouble()
-          else -> toString()
-        }
-      }
-      IntrospectionSchema.Kind.NON_NULL -> normalizeValue(type.ofType!!)
-      IntrospectionSchema.Kind.LIST -> {
-        toString().removePrefix("[").removeSuffix("]").split(',').filter { it.isNotBlank() }.map { value ->
-          value.trim().replace("\"", "").normalizeValue(type.ofType!!)
-        }
-      }
-      else -> toString()
-    }
-  }
-
   private fun <T> List<ParseResult<T>>.flatten() = ParseResult(
       result = map { (result, _) -> result },
       usedTypes = flatMap { (_, usedTypes) -> usedTypes }.toSet()
   )
-
-  private fun List<Field>.referencedFragmentNames(fragments: List<Fragment>, filePath: String): Set<String> {
-    return flatMap { it.referencedFragmentNames(fragments = fragments, filePath = filePath) }
-        .union(flatMap { it.fields.referencedFragmentNames(fragments = fragments, filePath = filePath) })
-        .union(flatMap { it.inlineFragments.flatMap { it.referencedFragments(fragments = fragments, filePath = filePath) } })
-  }
-
-  private fun Field.referencedFragmentNames(fragments: List<Fragment>, filePath: String): Set<String> {
-    val rawFieldType = type.replace("!", "").replace("[", "").replace("]", "")
-    val referencedFragments = fragmentRefs.findFragments(
-        typeCondition = rawFieldType,
-        fragments = fragments,
-        filePath = filePath
-    )
-    return fragmentRefs.map { it.name }
-        .union(referencedFragments.flatMap { it.referencedFragments(fragments) })
-  }
-
-  private fun InlineFragment.referencedFragments(fragments: List<Fragment>, filePath: String): Set<String> {
-    val referencedFragments = this.fragments.findFragments(
-        typeCondition = typeCondition,
-        fragments = fragments,
-        filePath = filePath
-    )
-    return this.fragments.map { it.name }
-        .union(fields.referencedFragmentNames(fragments = fragments, filePath = filePath))
-        .union(referencedFragments.flatMap { it.referencedFragments(fragments) })
-  }
-
-  private fun Fragment.referencedFragments(fragments: List<Fragment>): Set<String> {
-    val referencedFragments = fragmentRefs.findFragments(
-        typeCondition = typeCondition,
-        fragments = fragments,
-        filePath = filePath
-    )
-    return fragmentRefs.map { it.name }
-        .union(fields.referencedFragmentNames(fragments = fragments, filePath = filePath))
-        .union(inlineFragments.flatMap { it.referencedFragments(fragments = fragments, filePath = filePath) })
-        .union(referencedFragments.flatMap { it.referencedFragments(fragments) })
-  }
-
-  private fun List<FragmentRef>.findFragments(typeCondition: String, fragments: List<Fragment>, filePath: String): List<Fragment> {
-    return map { ref ->
-      val fragment = fragments.find { fragment -> fragment.fragmentName == ref.name }
-          ?: throw DocumentParseException(
-              message = "Unknown fragment `${ref.name}`",
-              sourceLocation = ref.sourceLocation,
-              filePath = filePath
-          )
-
-      when (val schemaType = schema[typeCondition]) {
-        is IntrospectionSchema.Type.Object -> schemaType.possibleTypes(schema)
-        is IntrospectionSchema.Type.Interface -> schemaType.possibleTypes(schema)
-        is IntrospectionSchema.Type.Union -> schemaType.possibleTypes(schema)
-        else -> emptySet()
-      }.also { possibleTypes ->
-        if (fragment.possibleTypes.intersect(possibleTypes).isEmpty()) {
-          throw DocumentParseException(
-              message = "Fragment `${ref.name}` can't be spread here as result can never be of type `${fragment.typeCondition}`",
-              sourceLocation = ref.sourceLocation,
-              filePath = filePath
-          )
-        }
-      }
-
-      fragment
-    }
-  }
 }
 
-private data class DocumentParseResult(
+data class DocumentParseResult(
     val operations: List<Operation> = emptyList(),
     val fragments: List<Fragment> = emptyList(),
     val usedTypes: Set<String> = emptySet()

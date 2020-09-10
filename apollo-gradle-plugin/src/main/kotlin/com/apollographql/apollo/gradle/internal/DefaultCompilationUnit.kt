@@ -45,16 +45,28 @@ abstract class DefaultCompilationUnit @Inject constructor(
     }
 
     if (!compilerParams.schemaFile.isPresent) {
-      compilerParams.schemaFile.set {
-        project.file(
+      // This needs to be lazy for:
+      // - test variants that don't have a schema
+      // - chained dependencies where the schema might not be written yet when we come here
+      val provider = project.layout.file(
+          project.provider {
+            if (sourceDirectorySet.isEmpty) {
+              // No sources at all, do not bother looking for a schema. Happens for test variants
+              return@provider null
+            }
             resolveSchema(project = project,
                 directories = sourceDirectorySet.srcDirs,
                 schemaPathProvider = service.schemaPath,
                 sourceSetNames = apolloVariant.sourceSetNames
-            )
-        )
-      }
+            )?.let {
+              project.file(it)
+            }
+          }
+      )
+      // Gradle lazy magic above. We need to be able to represent a "not set" schema if none is found
+      compilerParams.schemaFile.set(provider)
     }
+
 
     return compilerParams to sourceDirectorySet
   }
@@ -126,7 +138,7 @@ abstract class DefaultCompilationUnit @Inject constructor(
       }
     }
 
-    fun resolveSchema(project: Project, schemaPathProvider: Provider<String>, directories: Set<File>, sourceSetNames: List<String>): String {
+    fun resolveSchema(project: Project, schemaPathProvider: Provider<String>, directories: Set<File>, sourceSetNames: List<String>): String? {
       if (schemaPathProvider.isPresent) {
         val schemaPath = schemaPathProvider.get()
         if (schemaPath.startsWith(File.separator)) {
@@ -160,12 +172,7 @@ abstract class DefaultCompilationUnit @Inject constructor(
           multipleSchemaError()
         }
 
-        require(candidates.size == 1) {
-          "ApolloGraphQL: cannot find schema.[json | sdl]. Please specify it explicitely. Looked under:\n" +
-              directories.joinToString("\n") { it.absolutePath }
-        }
-
-        return candidates.first().path
+        return candidates.firstOrNull()?.path
       }
     }
   }

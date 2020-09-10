@@ -1,0 +1,5 @@
+# this fragment is also defined in node1 and should raise an error
+fragment CatFragment on Cat {
+  mustaches
+}
+

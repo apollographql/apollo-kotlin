@@ -1,5 +1,19 @@
 package com.apollographql.apollo.gradle.api {
 
+  public final class ApolloAttributes {
+    method public error.NonExistentClass getAPOLLO_SERVICE_ATTRIBUTE();
+    method public error.NonExistentClass getAPOLLO_VARIANT_ATTRIBUTE();
+    property public final error.NonExistentClass APOLLO_SERVICE_ATTRIBUTE;
+    property public final error.NonExistentClass APOLLO_VARIANT_ATTRIBUTE;
+    field public static final com.apollographql.apollo.gradle.api.ApolloAttributes INSTANCE;
+  }
+
+  public static abstract interface ApolloAttributes.Service {
+  }
+
+  public static abstract interface ApolloAttributes.Variant {
+  }
+
   public abstract interface ApolloExtension implements com.apollographql.apollo.gradle.api.CompilerParams {
     method public abstract void onCompilationUnit(error.NonExistentClass);
     method public abstract void service(error.NonExistentClass, error.NonExistentClass);
@@ -21,7 +35,9 @@ package com.apollographql.apollo.gradle.api {
   }
 
   public abstract interface CompilerParams {
+    method public abstract error.NonExistentClass getAlwaysGenerateTypesMatching();
     method public abstract error.NonExistentClass getCustomTypeMapping();
+    method public abstract error.NonExistentClass getGenerateApolloMetadata();
     method public abstract error.NonExistentClass getGenerateAsInternal();
     method public abstract error.NonExistentClass getGenerateKotlinModels();
     method public abstract error.NonExistentClass getGenerateModelBuilder();
@@ -37,7 +53,9 @@ package com.apollographql.apollo.gradle.api {
     method public abstract error.NonExistentClass getSuppressRawTypesWarning();
     method public abstract error.NonExistentClass getUseJavaBeansSemanticNaming();
     method public abstract error.NonExistentClass getUseSemanticNaming();
+    property public abstract error.NonExistentClass alwaysGenerateTypesMatching;
     property public abstract error.NonExistentClass customTypeMapping;
+    property public abstract error.NonExistentClass generateApolloMetadata;
     property public abstract error.NonExistentClass generateAsInternal;
     property public abstract error.NonExistentClass generateKotlinModels;
     property public abstract error.NonExistentClass generateModelBuilder;

@@ -1,8 +1,5 @@
 package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
-import com.apollographql.apollo.compiler.parser.graphql.GraphQLDocumentParser
-import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.compiler.TestUtils.checkTestFixture
 import com.apollographql.apollo.compiler.TestUtils.shouldUpdateTestFixtures
@@ -18,17 +15,19 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import java.io.File
-import java.lang.Exception
 
 @RunWith(Parameterized::class)
-class CodeGenTest(private val folder: File) {
-  @Test
-  fun generateExpectedClasses() {
-    generateExpectedClasses(arguments(folder = folder, generateKotlinModels = false))
-    generateExpectedClasses(arguments(folder = folder, generateKotlinModels = true))
+class CodegenTest(private val folder: File, private val testLanguage: TestLanguage) {
+  enum class TestLanguage {
+    Java,
+    Kotlin
   }
 
-  data class GeneratedFile(val expected: File, val actual: File, val relativePath: String)
+  @Test
+  fun generateExpectedClasses() {
+    val args = arguments(folder = folder, generateKotlinModels = testLanguage == TestLanguage.Kotlin)
+    generateExpectedClasses(args)
+  }
 
   private fun generateExpectedClasses(args: GraphQLCompiler.Arguments) {
     args.outputDir.deleteRecursively()
@@ -82,39 +81,10 @@ class CodeGenTest(private val folder: File) {
 
     // And that they compile
     if (!args.generateKotlinModels) {
-      val javaFileObjects = actualFiles.map {
-        val qualifiedName = it.path
-            .substringBeforeLast(".")
-            .split(File.separator)
-            .joinToString(".")
-
-        JavaFileObjects.forSourceLines(qualifiedName,
-            it.readLines())
-      }.toList()
-
-      assertAbout(javaSources()).that(javaFileObjects).compilesWithoutError()
+      JavaCompiler.assertCompiles(actualFiles.toSet())
     } else {
-      val kotlinFiles = actualFiles.map {
-        SourceFile.kotlin(it.name, it.readText())
-      }.toList()
-
-      val result = KotlinCompilation().apply {
-        jvmTarget = "1.8"
-        sources = kotlinFiles
-
-        val expectedWarnings = folder.name in listOf("deprecation", "custom_scalar_type_warnings", "arguments_complex", "arguments_simple")
-        allWarningsAsErrors = expectedWarnings.not()
-        inheritClassPath = true
-        messageOutputStream = System.out // see diagnostics in real time
-      }.compile()
-
-      if (result.exitCode != KotlinCompilation.ExitCode.OK) {
-        val compilationErrorMessages = "\\ne: .*\\n+".toRegex().find(result.messages)?.groupValues ?: emptyList()
-        val errorMessages = compilationErrorMessages.joinToString(prefix = "\n", separator = "\n", postfix = "\n") {
-          "`${it.replace("\n", "")}`"
-        }
-        fail("Failed to compile generated Kotlin files due to compiler errors: $errorMessages")
-      }
+      val expectedWarnings = folder.name in listOf("deprecation", "custom_scalar_type_warnings", "arguments_complex", "arguments_simple")
+      KotlinCompiler.assertCompiles(actualFiles.toSet(), !expectedWarnings)
     }
   }
 
@@ -163,17 +133,6 @@ class CodeGenTest(private val folder: File) {
         else -> false
       }
 
-      val schemaFile = folder.listFiles()!!.find { it.isFile && it.name == "schema.sdl" }
-          ?: File("src/test/graphql/schema.sdl")
-      val schema = GraphSdlSchema(schemaFile).toIntrospectionSchema()
-      val graphQLFile = File(folder, "TestOperation.graphql")
-
-      val packageNameProvider = DefaultPackageNameProvider(
-          rootFolders = listOf(folder),
-          schemaFile = schemaFile,
-          rootPackageName = "com.example.${folder.name}"
-      )
-
       val operationIdGenerator = when (folder.name) {
         "operation_id_generator" -> object : OperationIdGenerator {
           override fun apply(operationDocument: String, operationFilepath: String): String {
@@ -186,28 +145,26 @@ class CodeGenTest(private val folder: File) {
       }
 
       val enumAsSealedClassPatternFilters = when(folder.name) {
-        "arguments_complex" -> listOf(".*") // test all pattern matching
-        "arguments_simple" -> listOf("Bla-bla", "Yada-yada", "Ep.*de") // test multiple pattern matching
-        "enum_type" -> listOf("Bla") // test not matching
-        else -> emptyList()
+        "arguments_complex" -> setOf(".*") // test all pattern matching
+        "arguments_simple" -> setOf("Bla-bla", "Yada-yada", "Ep.*de") // test multiple pattern matching
+        "enum_type" -> setOf("Bla") // test not matching
+        else -> emptySet()
       }
 
-      val ir = GraphQLDocumentParser(schema, packageNameProvider).parse(setOf(graphQLFile))
-
-      val operationOutput = ir.operations.map {
-        operationIdGenerator.apply(QueryDocumentMinifier.minify(it.sourceWithFragments), it.filePath) to OperationDescriptor(
-            name = it.operationName,
-            packageName = it.packageName,
-            filePath = it.filePath,
-            source = QueryDocumentMinifier.minify(it.sourceWithFragments)
-        )
-      }.toMap()
+      val schemaFile = folder.listFiles()!!.find { it.isFile && it.name == "schema.sdl" }
+          ?: File("src/test/graphql/schema.sdl")
+      
+      val graphqlFiles = setOf(File(folder, "TestOperation.graphql"))
+      val operationOutputGenerator = OperationOutputGenerator.DefaultOperationOuputGenerator(operationIdGenerator)
 
       val language = if (generateKotlinModels) "kotlin" else "java"
       return GraphQLCompiler.Arguments(
-          ir = ir,
+          rootPackageName = "com.example.${folder.name}",
+          rootFolders = listOf(folder),
+          graphqlFiles = graphqlFiles,
+          schemaFile = schemaFile,
           outputDir = File("build/generated/test/${folder.name}/$language"),
-          operationOutput = operationOutput,
+          operationOutputGenerator = operationOutputGenerator,
           customTypeMap = customTypeMap,
           generateKotlinModels = generateKotlinModels,
           nullableValueType = nullableValueType,
@@ -218,16 +175,21 @@ class CodeGenTest(private val folder: File) {
           generateVisitorForPolymorphicDatatypes = generateVisitorForPolymorphicDatatypes,
           generateAsInternal = generateAsInternal,
           kotlinMultiPlatformProject = true,
-          enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters
+          enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters,
+          metadataOutputFile = File("build/generated/test/${folder.name}/metadata/$language"),
       )
     }
 
     @JvmStatic
-    @Parameterized.Parameters(name = "{0}")
-    fun data(): Collection<File> {
+    @Parameterized.Parameters(name = "{0}-{1}")
+    fun data(): Collection<Array<Any>> {
       return File("src/test/graphql/com/example/")
           .listFiles()!!
           .filter { it.isDirectory }
+          .flatMap { listOf(
+              arrayOf(it, TestLanguage.Java),
+              arrayOf(it, TestLanguage.Kotlin)
+          ) }
     }
   }
 }
