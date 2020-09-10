@@ -9,7 +9,7 @@ import org.junit.Test
 import java.io.File
 
 class MetadataTest {
-  private val buildDir = File("build/multi-module-test/")
+  private val buildDir = File("build/metadata-test/")
   private val rootGraphqlDir = File(buildDir, "root/graphql")
   private val rootSchemaFile = File(buildDir, "root/graphql/schema.sdl")
   private val rootSourcesDir = File(buildDir, "root/sources")
@@ -123,11 +123,11 @@ class MetadataTest {
   }
 
   private fun fragmentTest(dirName: String) {
-    val folder = File("src/test/multi-modules/$dirName/")
+    val folder = File("src/test/metadata/$dirName/")
     val rootArgs = GraphQLCompiler.Arguments(
         rootFolders = listOf(folder),
         graphqlFiles = setOf(File(folder, "root.graphql")),
-        schemaFile = File("src/test/multi-modules/schema.sdl"),
+        schemaFile = File("src/test/metadata/schema.sdl"),
         alwaysGenerateTypesMatching = null,
         outputDir = rootSourcesDir,
         generateKotlinModels = true,
@@ -179,8 +179,8 @@ class MetadataTest {
       fragmentTest("fragment-variable-error")
       fail("Parsing the fragment should have failed")
     } catch (e: DocumentParseException) {
-      val actualMessage = e.message?.replace(File("src/test/multi-modules/fragment-variable-error/").absolutePath, "") ?: ""
-      val expectedMessage = File("src/test/multi-modules/fragment-variable-error/error").readText()
+      val actualMessage = e.message?.replace(File("src/test/metadata/fragment-variable-error/").absolutePath, "") ?: ""
+      val expectedMessage = File("src/test/metadata/fragment-variable-error/error").readText()
 
       Truth.assertThat(actualMessage).isEqualTo(expectedMessage)
     }
@@ -201,8 +201,8 @@ class MetadataTest {
       fragmentTest("fragment-nameclash-error")
       fail("Parsing the fragment should have failed")
     } catch (e: ParseException) {
-      val actualMessage = e.message?.replace(File("src/test/multi-modules/fragment-nameclash-error/").absolutePath, "") ?: ""
-      val expectedMessage = File("src/test/multi-modules/fragment-nameclash-error/error").readText()
+      val actualMessage = e.message?.replace(File("src/test/metadata/fragment-nameclash-error/").absolutePath, "") ?: ""
+      val expectedMessage = File("src/test/metadata/fragment-nameclash-error/error").readText()
 
       Truth.assertThat(actualMessage).isEqualTo(expectedMessage)
     }
