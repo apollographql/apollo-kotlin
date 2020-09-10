@@ -25,7 +25,7 @@ dependencies {
     // more regular dependencies
     
     // Apollo dependencies
-    apollo(project(":parent"))
+    apolloMetadata(project(":parent"))
 }
 ```
 
@@ -42,13 +42,13 @@ Another important thing to note is that all modules must share the same schema. 
 // This module must not have a schema
 // This module can use fragments and types from 'shared' and 'root'
 dependencies {
-    apollo(project(":shared"))
+    apolloMetadata(project(":shared"))
 }
 
 // shared/build.gradle.kts
 // This module can use fragments and types from 'root'
 dependencies {
-    apollo(project(":root"))
+    apolloMetadata(project(":root"))
     generateApolloMetadata.set(true)
 }
 
