@@ -8,12 +8,7 @@ import okio.BufferedSink
  *
  * This class is heavily inspired by [okhttp3.RequestBody]
  */
-open class FileUpload
-@Deprecated(
-    "Replace with FileUpload.create(mimetype, filePath)",
-    ReplaceWith("FileUpload.create(mimetype, filePath)")
-)
-constructor(val mimetype: String, val filePath: String? = null) {
+open class FileUpload(val mimetype: String, val filePath: String? = null) {
   /**
    * Returns the number of bytes that will be written to `sink` in a call to [.writeTo],
    * or -1 if that count is unknown.
