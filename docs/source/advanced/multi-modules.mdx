@@ -26,6 +26,8 @@ dependencies {
     
     // Apollo dependencies
     apolloMetadata(project(":parent"))
+    // You still need to declare the parent module as a regular dependency
+    implementation(project(":parent"))
 }
 ```
 
