@@ -2,54 +2,91 @@
 title: Multi Modules (experimental)
 ---
 
-For multi-modules projects, Apollo Android allows to define queries in a feature module and reuse fragments and types from another base module. 
+For multi-modules projects, Apollo Android allows to define queries in a feature module and reuse fragments and types from another parent module. 
 
-To to so, declare your base module as a dependency of your feature module:
+
+## Setup
+
+Configure your parent module to generate Apollo metadata:
+
+```kotlin
+// parent/build.gradle.kts
+apollo {
+    generateApolloMetadata.set(true)
+}
+```
+
+And declare your parent module as a dependency of your feature module:
 
 ```kotlin
 // feature/build.gradle.kts
 dependencies {
     implementation("com.apollographql.apollo:apollo-runtime:xyz")
-    //...
-    apollo(project(":base"))
+    // more regular dependencies
+    
+    // Apollo dependencies
+    apollo(project(":parent"))
 }
 ```
 
-And configure your base module to generate Apollo metadata:
+## Resolving Apollo dependencies
+
+A feature module can have any number of parent modules. Parent modules themselves can also have parents, creating a graph of dependencies. 
+
+Transitive Apollo dependencies will always expose their fragments and types to the modules downstream. In other words, there is no `implementation` vs `api` concept like there is for regular dependencies. Apollo dependencies will always expose everything downstream (i.e are treated as `api`). 
+
+Another important thing to note is that all modules must share the same schema. Place schema.[json | sdl] in the root module, the module that is the higher up in the dependencies graph:
 
 ```kotlin
-// base/build.gradle.kts
-apollo {
+// feature/build.gradle.kts
+// This module must not have a schema
+// This module can use fragments and types from 'shared' and 'root'
+dependencies {
+    apollo(project(":shared"))
+}
+
+// shared/build.gradle.kts
+// This module can use fragments and types from 'root'
+dependencies {
+    apollo(project(":root"))
+    generateApolloMetadata.set(true)
+}
+
+// root/build.gradle.kts
+// This module is the root module
+// Place the schema in this module 
+dependencies {
     generateApolloMetadata.set(true)
 }
 ```
 
-## Schema and Scalar Types
+Summary of different constraints:
 
-When using multiple modules, all modules should use the same schema. Therefor an error will happen if multiple schema.[json | sdl] are found. Similarly, `customTypeMapping` should be defined only once in the module that defines the schema.
+* The root module and only the root module must define schema.[json | sdl]
+* The root module and only the root module must define `customTypeMapping`
+* The root module and only the root module must define `generateKotlinModels`
+* All modules must apply the same version of the Apollo Gradle Plugin
 
+## Big schemas
 
-## Input Objects and Enums
+When using multiple modules, Apollo Android will generate all possible Input Types and Enums in the root module, and not only the used ones. This is because there is no way to know from the parent module what types are going to be used in feature modules. By default:
 
-One big difference when using multi-module support is that Apollo Android will generate all possible Input Types and Enums in the base module, and not only the used ones. This is because there is no way to know from the base module what types are going to be used in feature modules. By default:
+* All input objects and enums are generated in the root module.
+* Fragments, queries, mutations and subscriptions are generated in the module where they are defined.
 
-* All Input Objects and Enums are generated in the base module.
-* Fragments, Queries and Mutations are generated in the module where they are defined.
-
- 
-If your schema contains a lot of Input Objects, it can generate a lot of source files and increase compilation times. To mitigate this, you have the option to control what types are generated with the `alwaysGenerateTypesMatching` option:
+If your schema contains a lot of input objects, it can generate a lot of source files and increase compilation time beyond what's acceptable. To mitigate this, you have the option to control what types are generated with the `alwaysGenerateTypesMatching` option:
 
 ```kotlin
-// base/build.gradle.kts
+// parent/build.gradle.kts
 apollo {
     generateApolloMetadata.set(true)
-    // For the base module, this defaults to [".*"]
-    // When an empty list is passed, the plugin will only generate the types that are used in this module
+    // For the root module, this defaults to [".*"]
+    // To use the single-module behaviour of only generating types that are actually used, pass en empty list
     alwaysGenerateTypesMatching.set(emptyList())
 }
 ```
 
-If the same type is used in two sibling modules, an error will happen that you can fix by instructing an upstream module to generate the common type
+If the same input object or enum is used in two sibling modules, the same type would end up being generated twice and an error will happen. You can fix this by instructing an upstream module to generate the common type:
 
 
 ```kotlin
@@ -57,7 +94,9 @@ If the same type is used in two sibling modules, an error will happen that you c
 apollo {
     generateApolloMetadata.set(true)
     // Generate common types here
-    // Here we specify the exact names of the schema types but this also works with regexes
-    alwaysGenerateTypesMatching.set(listOf("CommonInputType1", "CommonEnum1"))
+    // Here we specify the names of the types 
+    alwaysGenerateTypesMatching.set(listOf("CommonInputType", "CommonEnum"))
+    // It also works with regexes
+    alwaysGenerateTypesMatching.set(listOf(".*Input"))
 }
 ```
