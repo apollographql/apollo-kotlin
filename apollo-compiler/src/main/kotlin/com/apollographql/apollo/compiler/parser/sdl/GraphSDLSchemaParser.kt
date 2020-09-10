@@ -166,7 +166,7 @@ internal object GraphSDLSchemaParser {
         name = name().text,
         description = description().parse(),
         directives = directives().parse(),
-        typeRefs = unionMemberTypes()?.unionMemberType()?.map { it.namedType().parse() } ?: emptyList()
+        typeRefs = unionMemberTypes()?.namedType()?.map { it.parse() } ?: emptyList()
     )
   }
 
