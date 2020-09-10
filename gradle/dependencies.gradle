@@ -22,7 +22,7 @@ def versions = [
     rxjava                : '2.0.5',
     rxjava3               : '3.0.4',
     rxandroid             : '2.0.1',
-    sqldelight            : '1.4.1',
+    sqldelight            : '1.4.3',
     testRunner            : '0.5',
     truth                 : '0.30'
 ]
@@ -52,7 +52,7 @@ ext.dep = [
         api    : "com.apollographql.apollo:apollo-api:$versions.apollo",
     ],
     compiletesting        : "com.google.testing.compile:compile-testing:$versions.compiletesting",
-    kotlinCompileTesting  : "com.github.tschuchortdev:kotlin-compile-testing:1.2.9",
+    kotlinCompileTesting  : "com.github.tschuchortdev:kotlin-compile-testing:1.2.10",
     cache                 : "com.nytimes.android:cache:$versions.cache",
     gradleJapiCmpPlugin   : "me.champeau.gradle:japicmp-gradle-plugin:0.2.8",
     vanniktechPlugin      : "com.vanniktech:gradle-maven-publish-plugin:0.11.1",

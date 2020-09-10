@@ -31,7 +31,7 @@ open class ApolloPlugin : Plugin<Project> {
 
   internal companion object {
     const val TASK_GROUP = "apollo"
-    const val MIN_GRADLE_VERSION = "6.0"
+    const val MIN_GRADLE_VERSION = "5.6"
 
     const val CONFIGURATION_CONSUMER = "apollo"
     const val USAGE_APOLLO_METADATA = "apollo-metadata"
@@ -146,208 +146,208 @@ open class ApolloPlugin : Plugin<Project> {
             else -> JvmTaskConfigurator.registerGeneratedDirectory(project, compilationUnit, codegenProvider)
           }
 
-      }
+        }
 
-      rootProvider.configure {
-        it.dependsOn(variantProvider)
-      }
-    }
-  }
-
-  private fun maybeRegisterCheckDuplicates(rootProject: Project, compilationUnit: DefaultCompilationUnit): TaskProvider<ApolloCheckDuplicatesTask> {
-    val taskName = ModelNames.checkApolloDuplicates(compilationUnit)
-    return try {
-      rootProject.tasks.named(taskName) as TaskProvider<ApolloCheckDuplicatesTask>
-    } catch (e: Exception) {
-      val configuration = rootProject.configurations.create(ModelNames.duplicatesConsumerConfiguration(compilationUnit)) {
-        it.isCanBeResolved = true
-        it.isCanBeConsumed = false
-
-        it.attributes {
-          it.attribute(Usage.USAGE_ATTRIBUTE, rootProject.objects.named(Usage::class.java, USAGE_APOLLO_METADATA))
-          it.attribute(Variant.APOLLO_VARIANT_ATTRIBUTE, rootProject.objects.named(Variant::class.java, compilationUnit.variantName))
-          it.attribute(Service.APOLLO_SERVICE_ATTRIBUTE, rootProject.objects.named(Service::class.java, compilationUnit.serviceName))
+        rootProvider.configure {
+          it.dependsOn(variantProvider)
         }
       }
+    }
 
-      rootProject.tasks.register(taskName, ApolloCheckDuplicatesTask::class.java) {
-        it.outputFile.set(BuildDirLayout.duplicatesCheck(rootProject, compilationUnit))
-        it.metadataConfiguration = configuration
+    private fun maybeRegisterCheckDuplicates(rootProject: Project, compilationUnit: DefaultCompilationUnit): TaskProvider<ApolloCheckDuplicatesTask> {
+      val taskName = ModelNames.checkApolloDuplicates(compilationUnit)
+      return try {
+        rootProject.tasks.named(taskName) as TaskProvider<ApolloCheckDuplicatesTask>
+      } catch (e: Exception) {
+        val configuration = rootProject.configurations.create(ModelNames.duplicatesConsumerConfiguration(compilationUnit)) {
+          it.isCanBeResolved = true
+          it.isCanBeConsumed = false
+
+          it.attributes {
+            it.attribute(Usage.USAGE_ATTRIBUTE, rootProject.objects.named(Usage::class.java, USAGE_APOLLO_METADATA))
+            it.attribute(Variant.APOLLO_VARIANT_ATTRIBUTE, rootProject.objects.named(Variant::class.java, compilationUnit.variantName))
+            it.attribute(Service.APOLLO_SERVICE_ATTRIBUTE, rootProject.objects.named(Service::class.java, compilationUnit.serviceName))
+          }
+        }
+
+        rootProject.tasks.register(taskName, ApolloCheckDuplicatesTask::class.java) {
+          it.outputFile.set(BuildDirLayout.duplicatesCheck(rootProject, compilationUnit))
+          it.metadataConfiguration = configuration
+        }
       }
     }
-  }
 
-  private fun registerCodeGenTask(project: Project, compilationUnit: DefaultCompilationUnit, consumerConfiguration: Configuration): TaskProvider<ApolloGenerateSourcesTask> {
-    return project.tasks.register(ModelNames.generateApolloSources(compilationUnit), ApolloGenerateSourcesTask::class.java) { task ->
-      task.group = TASK_GROUP
-      task.description = "Generate Apollo models for ${compilationUnit.name} GraphQL queries"
+    private fun registerCodeGenTask(project: Project, compilationUnit: DefaultCompilationUnit, consumerConfiguration: Configuration): TaskProvider<ApolloGenerateSourcesTask> {
+      return project.tasks.register(ModelNames.generateApolloSources(compilationUnit), ApolloGenerateSourcesTask::class.java) { task ->
+        task.group = TASK_GROUP
+        task.description = "Generate Apollo models for ${compilationUnit.name} GraphQL queries"
 
-      val (compilerParams, graphqlSourceDirectorySet) = compilationUnit.resolveParams(project)
+        val (compilerParams, graphqlSourceDirectorySet) = compilationUnit.resolveParams(project)
 
-      task.graphqlFiles.setFrom(graphqlSourceDirectorySet)
-      // I'm not sure if gradle is sensitive to the order of the rootFolders. Sort them just in case.
-      task.rootFolders.set(project.provider { graphqlSourceDirectorySet.srcDirs.map { it.relativeTo(project.projectDir).path }.sorted() })
-      task.schemaFile.set(compilerParams.schemaFile)
-      task.operationOutputGenerator = compilerParams.operationOutputGenerator.getOrElse(
-          OperationOutputGenerator.DefaultOperationOuputGenerator(
-              compilerParams.operationIdGenerator.orElse(OperationIdGenerator.Sha256()).get()
-          )
-      )
+        task.graphqlFiles.setFrom(graphqlSourceDirectorySet)
+        // I'm not sure if gradle is sensitive to the order of the rootFolders. Sort them just in case.
+        task.rootFolders.set(project.provider { graphqlSourceDirectorySet.srcDirs.map { it.relativeTo(project.projectDir).path }.sorted() })
+        task.schemaFile.set(compilerParams.schemaFile)
+        task.operationOutputGenerator = compilerParams.operationOutputGenerator.getOrElse(
+            OperationOutputGenerator.DefaultOperationOuputGenerator(
+                compilerParams.operationIdGenerator.orElse(OperationIdGenerator.Sha256()).get()
+            )
+        )
 
-      task.nullableValueType.set(compilerParams.nullableValueType)
-      task.useSemanticNaming.set(compilerParams.useSemanticNaming)
-      task.generateModelBuilder.set(compilerParams.generateModelBuilder)
-      task.useJavaBeansSemanticNaming.set(compilerParams.useJavaBeansSemanticNaming)
-      task.suppressRawTypesWarning.set(compilerParams.suppressRawTypesWarning)
-      task.generateKotlinModels.set(compilationUnit.generateKotlinModels())
-      task.generateVisitorForPolymorphicDatatypes.set(compilerParams.generateVisitorForPolymorphicDatatypes)
-      task.customTypeMapping.set(compilerParams.customTypeMapping)
-      task.outputDir.apply {
-        set(BuildDirLayout.sources(project, compilationUnit))
-        disallowChanges()
-      }
-      if (compilerParams.generateOperationOutput.getOrElse(false)) {
-        task.operationOutputFile.apply {
-          set(BuildDirLayout.operationOuput(project, compilationUnit))
+        task.nullableValueType.set(compilerParams.nullableValueType)
+        task.useSemanticNaming.set(compilerParams.useSemanticNaming)
+        task.generateModelBuilder.set(compilerParams.generateModelBuilder)
+        task.useJavaBeansSemanticNaming.set(compilerParams.useJavaBeansSemanticNaming)
+        task.suppressRawTypesWarning.set(compilerParams.suppressRawTypesWarning)
+        task.generateKotlinModels.set(compilationUnit.generateKotlinModels())
+        task.generateVisitorForPolymorphicDatatypes.set(compilerParams.generateVisitorForPolymorphicDatatypes)
+        task.customTypeMapping.set(compilerParams.customTypeMapping)
+        task.outputDir.apply {
+          set(BuildDirLayout.sources(project, compilationUnit))
           disallowChanges()
         }
+        if (compilerParams.generateOperationOutput.getOrElse(false)) {
+          task.operationOutputFile.apply {
+            set(BuildDirLayout.operationOuput(project, compilationUnit))
+            disallowChanges()
+          }
+        }
+        // always set `metadataOutputFile` as the `metadata` task is part of `assemble` (see https://github.com/gradle/gradle/issues/14065)
+        // and we don't want it to fail if it is ever called by the user
+        task.metadataOutputFile.apply {
+          set(BuildDirLayout.metadata(project, compilationUnit))
+          disallowChanges()
+        }
+
+        task.generateMetadata.set(compilerParams.generateApolloMetadata.orElse(project.provider { !consumerConfiguration.isEmpty }))
+
+        task.metadataConfiguration = consumerConfiguration
+
+        task.rootPackageName.set(compilerParams.rootPackageName)
+        task.generateAsInternal.set(compilerParams.generateAsInternal)
+        task.kotlinMultiPlatformProject.set(project.isKotlinMultiplatform)
+        task.sealedClassesForEnumsMatching.set(compilerParams.sealedClassesForEnumsMatching)
+        task.alwaysGenerateTypesMatching.set(compilerParams.alwaysGenerateTypesMatching)
       }
-      // always set `metadataOutputFile` as the `metadata` task is part of `assemble` (see https://github.com/gradle/gradle/issues/14065)
-      // and we don't want it to fail if it is ever called by the user
-      task.metadataOutputFile.apply {
-        set(BuildDirLayout.metadata(project, compilationUnit))
-        disallowChanges()
-      }
-
-      task.generateMetadata.set(compilerParams.generateApolloMetadata.orElse(project.provider { !consumerConfiguration.isEmpty }))
-
-      task.metadataConfiguration = consumerConfiguration
-
-      task.rootPackageName.set(compilerParams.rootPackageName)
-      task.generateAsInternal.set(compilerParams.generateAsInternal)
-      task.kotlinMultiPlatformProject.set(project.isKotlinMultiplatform)
-      task.sealedClassesForEnumsMatching.set(compilerParams.sealedClassesForEnumsMatching)
-      task.alwaysGenerateTypesMatching.set(compilerParams.alwaysGenerateTypesMatching)
     }
-  }
 
-  private fun registerDownloadSchemaTasks(project: Project, apolloExtension: DefaultApolloExtension) {
-    apolloExtension.services.forEach { service ->
-      val introspection = service.introspection
-      if (introspection != null) {
-        project.tasks.register(ModelNames.downloadApolloSchema(service), ApolloDownloadSchemaTask::class.java) { task ->
+    private fun registerDownloadSchemaTasks(project: Project, apolloExtension: DefaultApolloExtension) {
+      apolloExtension.services.forEach { service ->
+        val introspection = service.introspection
+        if (introspection != null) {
+          project.tasks.register(ModelNames.downloadApolloSchema(service), ApolloDownloadSchemaTask::class.java) { task ->
 
-          val sourceSetName = introspection.sourceSetName.orElse("main")
-          task.group = TASK_GROUP
-          task.schemaRelativeToProject.set(
-              service.schemaPath.map {
-                "src/${sourceSetName.get()}/graphql/$it"
-              }
-          )
-
-          task.endpoint.set(introspection.endpointUrl.map {
-            it.toHttpUrl().newBuilder()
-                .apply {
-                  introspection.queryParameters.get().entries.forEach {
-                    addQueryParameter(it.key, it.value)
-                  }
+            val sourceSetName = introspection.sourceSetName.orElse("main")
+            task.group = TASK_GROUP
+            task.schemaRelativeToProject.set(
+                service.schemaPath.map {
+                  "src/${sourceSetName.get()}/graphql/$it"
                 }
-                .build()
-                .toString()
-          }
-          )
-          task.header = introspection.headers.get().map {
-            "${it.key}: ${it.value}"
+            )
+
+            task.endpoint.set(introspection.endpointUrl.map {
+              it.toHttpUrl().newBuilder()
+                  .apply {
+                    introspection.queryParameters.get().entries.forEach {
+                      addQueryParameter(it.key, it.value)
+                    }
+                  }
+                  .build()
+                  .toString()
+            }
+            )
+            task.header = introspection.headers.get().map {
+              "${it.key}: ${it.value}"
+            }
           }
         }
       }
-    }
 
-    project.tasks.register(ModelNames.downloadApolloSchema(), ApolloDownloadSchemaCliTask::class.java) { task ->
-      task.group = TASK_GROUP
-      task.compilationUnits = apolloExtension.compilationUnits
-    }
-  }
-
-  fun toMap(s: String): Map<String, String> {
-    return s.split("&")
-        .map {
-          val keyValue = it.split("=")
-          val key = URLDecoder.decode(keyValue[0], "UTF-8")
-          val value = URLDecoder.decode(keyValue[1], "UTF-8")
-
-          key to value
-        }.toMap()
-  }
-
-  private fun afterEvaluate(project: Project, apolloExtension: DefaultApolloExtension) {
-    val checkVersionsTask = registerCheckVersionsTask(project)
-    registerCompilationUnits(project, apolloExtension, checkVersionsTask)
-
-    registerDownloadSchemaTasks(project, apolloExtension)
-  }
-
-  data class Dep(val name: String, val version: String?)
-
-  fun getDeps(configurations: ConfigurationContainer): List<Dep> {
-    return configurations.flatMap { configuration ->
-      configuration.incoming.dependencies
-          .filter {
-            it.group == "com.apollographql.apollo"
-          }.map { dependency ->
-            Dep(dependency.name, dependency.version)
-          }
-    }
-  }
-
-  fun registerCheckVersionsTask(project: Project): TaskProvider<Task> {
-    return project.tasks.register(ModelNames.checkApolloVersions()) {
-      val outputFile = BuildDirLayout.versionCheck(project)
-
-      val allDeps = (
-          getDeps(project.rootProject.buildscript.configurations) +
-              getDeps(project.buildscript.configurations) +
-              getDeps(project.configurations)
-          )
-
-      val allVersions = allDeps.mapNotNull { it.version }.distinct().sorted()
-      it.inputs.property("allVersions", allVersions)
-      it.outputs.file(outputFile)
-
-      it.doLast {
-        check(allVersions.size <= 1) {
-          val found = allDeps.map { "${it.name}:${it.version}" }.distinct().joinToString("\n")
-          "All apollo versions should be the same. Found:\n$found"
-        }
-
-        val version = allVersions.firstOrNull()
-        outputFile.get().asFile.parentFile.mkdirs()
-        outputFile.get().asFile.writeText("All versions are consistent: $version")
+      project.tasks.register(ModelNames.downloadApolloSchema(), ApolloDownloadSchemaCliTask::class.java) { task ->
+        task.group = TASK_GROUP
+        task.compilationUnits = apolloExtension.compilationUnits
       }
     }
 
-  }
-}
+    fun toMap(s: String): Map<String, String> {
+      return s.split("&")
+          .map {
+            val keyValue = it.split("=")
+            val key = URLDecoder.decode(keyValue[0], "UTF-8")
+            val value = URLDecoder.decode(keyValue[1], "UTF-8")
 
-override fun apply(project: Project) {
-  require(GradleVersion.current().compareTo(GradleVersion.version(MIN_GRADLE_VERSION)) >= 0) {
-    "apollo-android requires Gradle version $MIN_GRADLE_VERSION or greater"
-  }
+            key to value
+          }.toMap()
+    }
 
-  val apolloExtension = project.extensions.create(ApolloExtension::class.java, "apollo", DefaultApolloExtension::class.java, project) as DefaultApolloExtension
+    private fun afterEvaluate(project: Project, apolloExtension: DefaultApolloExtension) {
+      val checkVersionsTask = registerCheckVersionsTask(project)
+      registerCompilationUnits(project, apolloExtension, checkVersionsTask)
 
-  project.configurations.create(ModelNames.apolloConfiguration()) {
-    it.isCanBeConsumed = false
-    it.isCanBeResolved = false
+      registerDownloadSchemaTasks(project, apolloExtension)
+    }
 
-    it.attributes {
-      it.attribute(Usage.USAGE_ATTRIBUTE, project.objects.named(Usage::class.java, USAGE_APOLLO_METADATA))
+    data class Dep(val name: String, val version: String?)
+
+    fun getDeps(configurations: ConfigurationContainer): List<Dep> {
+      return configurations.flatMap { configuration ->
+        configuration.incoming.dependencies
+            .filter {
+              it.group == "com.apollographql.apollo"
+            }.map { dependency ->
+              Dep(dependency.name, dependency.version)
+            }
+      }
+    }
+
+    fun registerCheckVersionsTask(project: Project): TaskProvider<Task> {
+      return project.tasks.register(ModelNames.checkApolloVersions()) {
+        val outputFile = BuildDirLayout.versionCheck(project)
+
+        val allDeps = (
+            getDeps(project.rootProject.buildscript.configurations) +
+                getDeps(project.buildscript.configurations) +
+                getDeps(project.configurations)
+            )
+
+        val allVersions = allDeps.mapNotNull { it.version }.distinct().sorted()
+        it.inputs.property("allVersions", allVersions)
+        it.outputs.file(outputFile)
+
+        it.doLast {
+          check(allVersions.size <= 1) {
+            val found = allDeps.map { "${it.name}:${it.version}" }.distinct().joinToString("\n")
+            "All apollo versions should be the same. Found:\n$found"
+          }
+
+          val version = allVersions.firstOrNull()
+          outputFile.get().asFile.parentFile.mkdirs()
+          outputFile.get().asFile.writeText("All versions are consistent: $version")
+        }
+      }
+
     }
   }
 
-  // the extension block has not been evaluated yet, register a callback once the project has been evaluated
-  project.afterEvaluate {
-    afterEvaluate(it, apolloExtension)
+  override fun apply(project: Project) {
+    require(GradleVersion.current().compareTo(GradleVersion.version(MIN_GRADLE_VERSION)) >= 0) {
+      "apollo-android requires Gradle version $MIN_GRADLE_VERSION or greater"
+    }
+
+    val apolloExtension = project.extensions.create(ApolloExtension::class.java, "apollo", DefaultApolloExtension::class.java, project) as DefaultApolloExtension
+
+    project.configurations.create(ModelNames.apolloConfiguration()) {
+      it.isCanBeConsumed = false
+      it.isCanBeResolved = false
+
+      it.attributes {
+        it.attribute(Usage.USAGE_ATTRIBUTE, project.objects.named(Usage::class.java, USAGE_APOLLO_METADATA))
+      }
+    }
+
+    // the extension block has not been evaluated yet, register a callback once the project has been evaluated
+    project.afterEvaluate {
+      afterEvaluate(it, apolloExtension)
+    }
   }
-}
 }
