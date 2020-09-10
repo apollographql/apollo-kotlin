@@ -7,7 +7,7 @@ dependencies {
   implementation(groovy.util.Eval.x(project, "x.dep.apollo.api"))
 
   api(project(":root"))
-  apollo(project(":root"))
+  apolloMetadata(project(":root"))
 }
 
 apollo {

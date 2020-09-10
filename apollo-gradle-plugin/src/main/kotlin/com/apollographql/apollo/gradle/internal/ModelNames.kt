@@ -21,7 +21,7 @@ object ModelNames {
   fun checkApolloDuplicates(compilationUnit: DefaultCompilationUnit)= camelCase("check", compilationUnit.variantName, compilationUnit.serviceName, "ApolloDuplicates")
 
   // Configuration names
-  fun apolloConfiguration() = "apollo"
+  fun apolloConfiguration() = "apolloMetadata" // not just 'apollo' to avoid name clashing with the apollo {} extension
   fun producerConfiguration(compilationUnit: DefaultCompilationUnit) = camelCase("apollo", compilationUnit.variantName, compilationUnit.serviceName, "Producer")
   fun consumerConfiguration(compilationUnit: DefaultCompilationUnit) = camelCase("apollo", compilationUnit.variantName, compilationUnit.serviceName, "Consumer")
   fun duplicatesConsumerConfiguration(compilationUnit: DefaultCompilationUnit) = camelCase("apollo", compilationUnit.variantName, compilationUnit.serviceName, "DuplicatesConsumer")

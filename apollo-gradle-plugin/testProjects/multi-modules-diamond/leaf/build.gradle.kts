@@ -13,8 +13,8 @@ dependencies {
   implementation(project(":node2"))
   implementation(project(":root"))
 
-  apollo(project(":node1"))
-  apollo(project(":node2"))
+  apolloMetadata(project(":node1"))
+  apolloMetadata(project(":node2"))
 }
 
 application {

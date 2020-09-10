@@ -11,7 +11,7 @@ dependencies {
   testImplementation(kotlin("test-junit"))
 
   implementation(project(":node"))
-  apollo(project(":node"))
+  apolloMetadata(project(":node"))
 }
 
 application {

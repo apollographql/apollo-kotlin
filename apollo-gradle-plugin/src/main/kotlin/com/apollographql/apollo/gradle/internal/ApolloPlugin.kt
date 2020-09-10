@@ -2,33 +2,20 @@ package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.compiler.OperationIdGenerator
 import com.apollographql.apollo.compiler.OperationOutputGenerator
+import com.apollographql.apollo.gradle.api.ApolloAttributes
 import com.apollographql.apollo.gradle.api.ApolloExtension
 import okhttp3.HttpUrl.Companion.toHttpUrl
-import org.gradle.api.Named
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ConfigurationContainer
-import org.gradle.api.attributes.Attribute
 import org.gradle.api.attributes.Usage
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.util.GradleVersion
 import java.net.URLDecoder
 
 open class ApolloPlugin : Plugin<Project> {
-  internal interface Variant : Named {
-    companion object {
-      val APOLLO_VARIANT_ATTRIBUTE = Attribute.of("com.apollographql.variant", Variant::class.java)
-    }
-  }
-
-  internal interface Service : Named {
-    companion object {
-      val APOLLO_SERVICE_ATTRIBUTE = Attribute.of("com.apollographql.service", Service::class.java)
-    }
-  }
-
   internal companion object {
     const val TASK_GROUP = "apollo"
     const val MIN_GRADLE_VERSION = "5.6"
@@ -80,8 +67,8 @@ open class ApolloPlugin : Plugin<Project> {
 
             it.attributes {
               it.attribute(Usage.USAGE_ATTRIBUTE, project.objects.named(Usage::class.java, USAGE_APOLLO_METADATA))
-              it.attribute(Variant.APOLLO_VARIANT_ATTRIBUTE, project.objects.named(Variant::class.java, compilationUnit.variantName))
-              it.attribute(Service.APOLLO_SERVICE_ATTRIBUTE, project.objects.named(Service::class.java, compilationUnit.serviceName))
+              it.attribute(ApolloAttributes.APOLLO_VARIANT_ATTRIBUTE, project.objects.named(ApolloAttributes.Variant::class.java, compilationUnit.variantName))
+              it.attribute(ApolloAttributes.APOLLO_SERVICE_ATTRIBUTE, project.objects.named(ApolloAttributes.Service::class.java, compilationUnit.serviceName))
             }
           }
 
@@ -93,8 +80,8 @@ open class ApolloPlugin : Plugin<Project> {
 
             it.attributes {
               it.attribute(Usage.USAGE_ATTRIBUTE, project.objects.named(Usage::class.java, USAGE_APOLLO_METADATA))
-              it.attribute(Variant.APOLLO_VARIANT_ATTRIBUTE, project.objects.named(Variant::class.java, compilationUnit.variantName))
-              it.attribute(Service.APOLLO_SERVICE_ATTRIBUTE, project.objects.named(Service::class.java, compilationUnit.serviceName))
+              it.attribute(ApolloAttributes.APOLLO_VARIANT_ATTRIBUTE, project.objects.named(ApolloAttributes.Variant::class.java, compilationUnit.variantName))
+              it.attribute(ApolloAttributes.APOLLO_SERVICE_ATTRIBUTE, project.objects.named(ApolloAttributes.Service::class.java, compilationUnit.serviceName))
             }
           }
 
@@ -165,8 +152,8 @@ open class ApolloPlugin : Plugin<Project> {
 
           it.attributes {
             it.attribute(Usage.USAGE_ATTRIBUTE, rootProject.objects.named(Usage::class.java, USAGE_APOLLO_METADATA))
-            it.attribute(Variant.APOLLO_VARIANT_ATTRIBUTE, rootProject.objects.named(Variant::class.java, compilationUnit.variantName))
-            it.attribute(Service.APOLLO_SERVICE_ATTRIBUTE, rootProject.objects.named(Service::class.java, compilationUnit.serviceName))
+            it.attribute(ApolloAttributes.APOLLO_VARIANT_ATTRIBUTE, rootProject.objects.named(ApolloAttributes.Variant::class.java, compilationUnit.variantName))
+            it.attribute(ApolloAttributes.APOLLO_SERVICE_ATTRIBUTE, rootProject.objects.named(ApolloAttributes.Service::class.java, compilationUnit.serviceName))
           }
         }
 

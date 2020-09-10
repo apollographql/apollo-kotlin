@@ -10,7 +10,7 @@ dependencies {
   testImplementation(kotlin("test-junit"))
 
   implementation(project(":root"))
-  apollo(project(":root"))
+  apolloMetadata(project(":root"))
 }
 
 application {
