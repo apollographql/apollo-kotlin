@@ -55,9 +55,9 @@ class MultiModulesTests {
   @Test
   fun `changing a module does not recompile siblings`() {
     TestUtils.withTestProject("multi-modules-duplicates") { dir ->
-      File(dir, "node1/src/main/graphql/com/library/Queries.graphql").replaceInText("CatFragment", "CatFragment1")
+      File(dir, "node1/src/main/graphql/com/library/operations.graphql").replaceInText("CatFragment", "CatFragment1")
       TestUtils.executeTaskAndAssertSuccess(":node1:generateApolloSources", dir)
-      File(dir, "node1/src/main/graphql/com/library/Queries.graphql").replaceInText("CatFragment", "CatFragment2")
+      File(dir, "node1/src/main/graphql/com/library/operations.graphql").replaceInText("CatFragment", "CatFragment2")
       val result = TestUtils.executeTask(":node1:jar", dir)
 
       Truth.assertThat(result.task(":node1:generateMainServiceApolloSources")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
