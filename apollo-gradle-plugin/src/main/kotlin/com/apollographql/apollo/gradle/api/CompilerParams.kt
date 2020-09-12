@@ -25,6 +25,20 @@ interface CompilerParams {
   val generateKotlinModels: Property<Boolean>
 
   /**
+   * Warn if using a deprecated field
+   *
+   * Default value: true
+   */
+  val warnOnDeprecatedUsages: Property<Boolean>
+
+  /**
+   * Fail the build if there are warnings. This is not named `allWarningAsErrors` to avoid nameclashes with the Kotlin options
+   *
+   * Default value: false
+   */
+  val failOnWarnings: Property<Boolean>
+
+  /**
    * Whether to generate operationOutput.json. operationOutput.json contains information such as
    * operation id, name and complete source sent to the server. This can be used to upload
    * a query's exact content to a server that doesn't support automatic persisted queries.

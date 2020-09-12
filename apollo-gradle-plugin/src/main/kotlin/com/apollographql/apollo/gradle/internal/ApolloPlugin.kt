@@ -187,6 +187,8 @@ open class ApolloPlugin : Plugin<Project> {
         task.useJavaBeansSemanticNaming.set(compilerParams.useJavaBeansSemanticNaming)
         task.suppressRawTypesWarning.set(compilerParams.suppressRawTypesWarning)
         task.generateKotlinModels.set(compilationUnit.generateKotlinModels())
+        task.warnOnDeprecatedUsages.set(compilerParams.warnOnDeprecatedUsages)
+        task.failOnWarnings.set(compilerParams.failOnWarnings)
         task.generateVisitorForPolymorphicDatatypes.set(compilerParams.generateVisitorForPolymorphicDatatypes)
         task.customTypeMapping.set(compilerParams.customTypeMapping)
         task.outputDir.apply {

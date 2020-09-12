@@ -97,6 +97,9 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Optional
   abstract val generateKotlinModels: Property<Boolean>
 
+  abstract val warnOnDeprecatedUsages: Property<Boolean>
+  abstract val failOnWarnings: Property<Boolean>
+
   @get:Input
   @get:Optional
   abstract val generateVisitorForPolymorphicDatatypes: Property<Boolean>
@@ -151,13 +154,22 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         useJavaBeansSemanticNaming = useJavaBeansSemanticNaming.getOrElse(false),
         suppressRawTypesWarning = suppressRawTypesWarning.getOrElse(false),
         generateKotlinModels = generateKotlinModels.getOrElse(false),
+        warnOnDeprecatedUsages = warnOnDeprecatedUsages.getOrElse(true),
+        failOnWarnings = failOnWarnings.getOrElse(false),
         generateVisitorForPolymorphicDatatypes = generateVisitorForPolymorphicDatatypes.getOrElse(false),
         generateAsInternal = generateAsInternal.getOrElse(false),
         kotlinMultiPlatformProject = kotlinMultiPlatformProject.getOrElse(false),
-        enumAsSealedClassPatternFilters = sealedClassesForEnumsMatching.getOrElse(emptyList()).toSet()
+        enumAsSealedClassPatternFilters = sealedClassesForEnumsMatching.getOrElse(emptyList()).toSet(),
+
     )
 
-    GraphQLCompiler().write(args)
+    val logger = object :GraphQLCompiler.Logger {
+      override fun warning(message: String) {
+        logger.lifecycle(message)
+      }
+    }
+
+    GraphQLCompiler(logger).write(args)
   }
 
   private fun checkParameters() {
