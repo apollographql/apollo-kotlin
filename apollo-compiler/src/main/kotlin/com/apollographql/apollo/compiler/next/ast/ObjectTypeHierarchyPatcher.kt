@@ -4,12 +4,10 @@ internal fun ObjectTypeContainer.patchTypeHierarchy(fragmentTypes: List<CodeGene
   val fragmentTypeContainer = fragmentTypes.fold(emptyMap<CodeGenerationAst.TypeRef, CodeGenerationAst.ObjectType>()) { acc, fragmentType ->
     acc + fragmentType.nestedTypes
   }
-  return TypeHierarchyPatcher(this + fragmentTypeContainer)
-      .patch()
-      .minus(fragmentTypeContainer.keys)
+  return TypeHierarchyPatcher(typeContainer = this, fragmentTypeContainer = fragmentTypeContainer).patch()
 }
 
-private class TypeHierarchyPatcher(typeContainer: ObjectTypeContainer) {
+private class TypeHierarchyPatcher(typeContainer: ObjectTypeContainer, private val fragmentTypeContainer: ObjectTypeContainer) {
   private val patchedTypeContainer = typeContainer.toMutableMap()
   private val patchedTypes = mutableListOf<CodeGenerationAst.TypeRef>()
 
@@ -23,9 +21,7 @@ private class TypeHierarchyPatcher(typeContainer: ObjectTypeContainer) {
   private fun CodeGenerationAst.TypeRef.patch() {
     patchedTypes.add(this)
 
-    val type = requireNotNull(patchedTypeContainer[this]) {
-      "Can't resolve type, unknown type reference `$this`"
-    }
+    val type = patchedTypeContainer[this] ?: return
 
     // patch all interfaces first
     type.implements.forEach { interfaceType -> interfaceType.patch() }
@@ -33,10 +29,10 @@ private class TypeHierarchyPatcher(typeContainer: ObjectTypeContainer) {
     // collect all fields from the all interfaces
     val inheritedFields = type.implements.collectFields()
 
-    // merge existing fields with collected interfaces fields
+    // set override flag for any existing field from collected interfaces fields
     val mergedFields = type.fields.map { field ->
       val parentField = inheritedFields.find { inheritedField -> inheritedField.name == field.name }
-      field.takeIf { parentField == null || field.override } ?: field.copy(override = true)
+      field.takeIf { parentField == null } ?: field.copy(override = true)
     }
 
     // patch type with new set of fields and update it in type container
@@ -78,9 +74,6 @@ private class TypeHierarchyPatcher(typeContainer: ObjectTypeContainer) {
     if (objectTypeToPatch.kind is CodeGenerationAst.ObjectType.Kind.Fragment) {
       objectTypeToPatch.kind.defaultImplementation.patch()
       objectTypeToPatch.kind.possibleImplementations.values.forEach { typeRef ->
-        patchedTypeContainer[typeRef] = with(patchedTypeContainer[typeRef] as CodeGenerationAst.ObjectType) {
-          copy(implements = implements + interfaceType)
-        }
         typeRef.patch()
       }
     }
@@ -107,7 +100,7 @@ private class TypeHierarchyPatcher(typeContainer: ObjectTypeContainer) {
 
   private fun Set<CodeGenerationAst.TypeRef>.collectFields(): List<CodeGenerationAst.Field> {
     return flatMap { type ->
-      patchedTypeContainer[type]?.fields ?: emptyList()
+      (patchedTypeContainer[type] ?: fragmentTypeContainer[type])?.fields ?: emptyList()
     }
   }
 }

@@ -184,7 +184,7 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
      */
     override val name: String?,
     override val __typename: String = "Planet"
-  ) : Homeworld, PlanetFragment, PilotFragment.Homeworld {
+  ) : Homeworld, PlanetFragment {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
         writer.writeString(RESPONSE_FIELDS[0], this@PlanetFragmentImpl.name)
@@ -249,7 +249,7 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
      */
     override val homeworld: Homeworld?,
     override val __typename: String = "Person"
-  ) : Node1, PilotFragment, StarshipFragment.Node {
+  ) : Node1, PilotFragment {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
         writer.writeString(RESPONSE_FIELDS[0], this@PilotFragmentImpl.name)

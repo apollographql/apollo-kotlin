@@ -106,7 +106,7 @@ interface StarshipFragment : GraphqlFragment {
      */
     override val name: String?,
     override val __typename: String = "Planet"
-  ) : Homeworld, PlanetFragment, PilotFragment.Homeworld {
+  ) : Homeworld, PlanetFragment {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
         writer.writeString(RESPONSE_FIELDS[0], this@PlanetFragmentImpl.name)
@@ -325,7 +325,7 @@ interface StarshipFragment : GraphqlFragment {
      */
     override val name: String?,
     override val __typename: String = "Planet"
-  ) : Homeworld1, PlanetFragment, PilotFragment.Homeworld {
+  ) : Homeworld1, PlanetFragment {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
         writer.writeString(RESPONSE_FIELDS[0], this@PlanetFragmentImpl1.name)
@@ -390,7 +390,7 @@ interface StarshipFragment : GraphqlFragment {
      */
     override val homeworld: Homeworld1?,
     override val __typename: String = "Person"
-  ) : Node1, PilotFragment, Node {
+  ) : Node1, PilotFragment {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
         writer.writeString(RESPONSE_FIELDS[0], this@PilotFragmentImpl1.name)

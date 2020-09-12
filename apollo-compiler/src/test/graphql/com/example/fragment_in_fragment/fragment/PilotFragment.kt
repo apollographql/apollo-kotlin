@@ -165,7 +165,7 @@ interface PilotFragment : GraphqlFragment {
      */
     override val name: String?,
     override val __typename: String = "Planet"
-  ) : Homeworld1, PlanetFragment, Homeworld {
+  ) : Homeworld1, PlanetFragment {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
         writer.writeString(RESPONSE_FIELDS[0], this@PlanetFragmentImpl1.name)

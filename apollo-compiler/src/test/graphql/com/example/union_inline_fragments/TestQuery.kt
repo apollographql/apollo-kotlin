@@ -489,7 +489,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      * The name of the character
      */
     override val name: String
-  ) : Friend3, Friend {
+  ) : Friend3 {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
         writer.writeString(RESPONSE_FIELDS[0], this@Human1.homePlanet)
@@ -588,7 +588,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      * The name of the character
      */
     override val name: String
-  ) : Friend3, Friend {
+  ) : Friend3 {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
         writer.writeString(RESPONSE_FIELDS[0], this@Droid1.primaryFunction)
