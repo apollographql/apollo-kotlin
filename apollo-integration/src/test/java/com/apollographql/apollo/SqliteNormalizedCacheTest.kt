@@ -4,7 +4,6 @@ import com.apollographql.apollo.Utils.mockResponse
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.internal.OperationRequestBodyComposer
 import com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCacheFactory
-import com.apollographql.apollo.coroutines.toDeferred
 import com.apollographql.apollo.coroutines.toFlow
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo.fetcher.ResponseFetcher

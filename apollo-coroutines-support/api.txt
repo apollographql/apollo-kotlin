@@ -2,6 +2,8 @@ package com.apollographql.apollo.coroutines {
 
   public final class CoroutinesExtensionsKt {
     ctor public CoroutinesExtensionsKt();
+    method public static suspend <T> java.lang.Object await(error.NonExistentClass, java.lang.Object);
+    method public static suspend java.lang.Object await(error.NonExistentClass, java.lang.Object);
     method public static <T> error.NonExistentClass toDeferred(error.NonExistentClass);
     method public static <T> error.NonExistentClass toFlow(error.NonExistentClass);
     method public static <T> error.NonExistentClass toFlow(error.NonExistentClass);
