@@ -87,94 +87,6 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
   )
 
   /**
-   * A single transport craft that has hyperdrive capability.
-   */
-  data class NodeImpl(
-    override val __typename: String = "Starship"
-  ) : Node {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@NodeImpl.__typename)
-      }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null)
-      )
-
-      operator fun invoke(reader: ResponseReader): NodeImpl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        NodeImpl(
-          __typename = __typename
-        )
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<NodeImpl> = ResponseFieldMapper { invoke(it) }
-    }
-  }
-
-  /**
-   * An individual person or character within the Star Wars universe.
-   */
-  data class NodeImpl1(
-    override val __typename: String = "Person"
-  ) : Node1 {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@NodeImpl1.__typename)
-      }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null)
-      )
-
-      operator fun invoke(reader: ResponseReader): NodeImpl1 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        NodeImpl1(
-          __typename = __typename
-        )
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<NodeImpl1> = ResponseFieldMapper { invoke(it) }
-    }
-  }
-
-  /**
-   * A large mass, planet or planetoid in the Star Wars Universe, at the time of
-   * 0 ABY.
-   */
-  data class HomeworldImpl(
-    override val __typename: String = "Planet"
-  ) : Homeworld {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@HomeworldImpl.__typename)
-      }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null)
-      )
-
-      operator fun invoke(reader: ResponseReader): HomeworldImpl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        HomeworldImpl(
-          __typename = __typename
-        )
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<HomeworldImpl> = ResponseFieldMapper { invoke(it) }
-    }
-  }
-
-  /**
    * A large mass, planet or planetoid in the Star Wars Universe, at the time of
    * 0 ABY.
    */
@@ -216,8 +128,13 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
    * A large mass, planet or planetoid in the Star Wars Universe, at the time of
    * 0 ABY.
    */
-  interface Homeworld : PilotFragment.Homeworld {
+  interface Homeworld : PlanetFragment, Homeworld1, PilotFragment.Homeworld {
     override val __typename: String
+
+    /**
+     * The name of this planet.
+     */
+    override val name: String?
 
     override fun marshaller(): ResponseFieldMarshaller
 
@@ -226,13 +143,7 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Homeworld {
-        val typename = reader.readString(RESPONSE_FIELDS[0])
-        return when(typename) {
-          "Planet" -> PlanetFragmentImpl(reader)
-          else -> HomeworldImpl(reader)
-        }
-      }
+      operator fun invoke(reader: ResponseReader): Homeworld = PlanetFragmentImpl(reader)
     }
   }
 
@@ -284,10 +195,55 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
   }
 
   /**
-   * An individual person or character within the Star Wars universe.
+   * A large mass, planet or planetoid in the Star Wars Universe, at the time of
+   * 0 ABY.
    */
-  interface Node1 : StarshipFragment.Node {
+  data class PlanetFragmentImpl1(
+    /**
+     * The name of this planet.
+     */
+    override val name: String?,
+    override val __typename: String = "Planet"
+  ) : Homeworld1, PlanetFragment {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@PlanetFragmentImpl1.name)
+        writer.writeString(RESPONSE_FIELDS[1], this@PlanetFragmentImpl1.__typename)
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("name", "name", null, true, null),
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): PlanetFragmentImpl1 = reader.run {
+        val name = readString(RESPONSE_FIELDS[0])
+        val __typename = readString(RESPONSE_FIELDS[1])!!
+        PlanetFragmentImpl1(
+          name = name,
+          __typename = __typename
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<PlanetFragmentImpl1> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
+   * A large mass, planet or planetoid in the Star Wars Universe, at the time of
+   * 0 ABY.
+   */
+  interface Homeworld1 : PlanetFragment, PilotFragment.Homeworld, Homeworld3,
+      StarshipFragment.Homeworld1 {
     override val __typename: String
+
+    /**
+     * The name of this planet.
+     */
+    override val name: String?
 
     override fun marshaller(): ResponseFieldMarshaller
 
@@ -296,13 +252,34 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Node1 {
-        val typename = reader.readString(RESPONSE_FIELDS[0])
-        return when(typename) {
-          "Person" -> PilotFragmentImpl(reader)
-          else -> NodeImpl1(reader)
-        }
-      }
+      operator fun invoke(reader: ResponseReader): Homeworld1 = PlanetFragmentImpl1(reader)
+    }
+  }
+
+  /**
+   * An individual person or character within the Star Wars universe.
+   */
+  interface Node1 : PilotFragment, Node2, StarshipFragment.Node {
+    override val __typename: String
+
+    /**
+     * The name of this person.
+     */
+    override val name: String?
+
+    /**
+     * A planet that this person was born on or inhabits.
+     */
+    override val homeworld: Homeworld1?
+
+    override fun marshaller(): ResponseFieldMarshaller
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): Node1 = PilotFragmentImpl(reader)
     }
   }
 
@@ -315,7 +292,7 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
      * The item at the end of the edge
      */
     override val node: Node1?
-  ) : StarshipFragment.Edge {
+  ) : Edge2, StarshipFragment.Edge {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
         writer.writeString(RESPONSE_FIELDS[0], this@Edge1.__typename)
@@ -354,7 +331,7 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
      * A list of edges.
      */
     override val edges: List<Edge1?>?
-  ) : StarshipFragment.PilotConnection {
+  ) : PilotConnection1, StarshipFragment.PilotConnection {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
         writer.writeString(RESPONSE_FIELDS[0], this@PilotConnection.__typename)
@@ -446,25 +423,255 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
   }
 
   /**
-   * A single transport craft that has hyperdrive capability.
+   * A large mass, planet or planetoid in the Star Wars Universe, at the time of
+   * 0 ABY.
    */
-  interface Node {
-    val __typename: String
+  data class PlanetFragmentImpl2(
+    /**
+     * The name of this planet.
+     */
+    override val name: String?,
+    override val __typename: String = "Planet"
+  ) : Homeworld2, PlanetFragment {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@PlanetFragmentImpl2.name)
+        writer.writeString(RESPONSE_FIELDS[1], this@PlanetFragmentImpl2.__typename)
+      }
+    }
 
-    fun marshaller(): ResponseFieldMarshaller
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("name", "name", null, true, null),
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): PlanetFragmentImpl2 = reader.run {
+        val name = readString(RESPONSE_FIELDS[0])
+        val __typename = readString(RESPONSE_FIELDS[1])!!
+        PlanetFragmentImpl2(
+          name = name,
+          __typename = __typename
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<PlanetFragmentImpl2> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
+   * A large mass, planet or planetoid in the Star Wars Universe, at the time of
+   * 0 ABY.
+   */
+  interface Homeworld2 : PlanetFragment, Homeworld3, PilotFragment.Homeworld {
+    override val __typename: String
+
+    /**
+     * The name of this planet.
+     */
+    override val name: String?
+
+    override fun marshaller(): ResponseFieldMarshaller
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Node {
-        val typename = reader.readString(RESPONSE_FIELDS[0])
-        return when(typename) {
-          "Starship" -> StarshipFragmentImpl(reader)
-          else -> NodeImpl(reader)
-        }
+      operator fun invoke(reader: ResponseReader): Homeworld2 = PlanetFragmentImpl2(reader)
+    }
+  }
+
+  /**
+   * An individual person or character within the Star Wars universe.
+   */
+  data class PilotFragmentImpl1(
+    /**
+     * The name of this person.
+     */
+    override val name: String?,
+    /**
+     * A planet that this person was born on or inhabits.
+     */
+    override val homeworld: Homeworld2?,
+    override val __typename: String = "Person"
+  ) : Node2, PilotFragment {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@PilotFragmentImpl1.name)
+        writer.writeObject(RESPONSE_FIELDS[1], this@PilotFragmentImpl1.homeworld?.marshaller())
+        writer.writeString(RESPONSE_FIELDS[2], this@PilotFragmentImpl1.__typename)
       }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("name", "name", null, true, null),
+        ResponseField.forObject("homeworld", "homeworld", null, true, null),
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): PilotFragmentImpl1 = reader.run {
+        val name = readString(RESPONSE_FIELDS[0])
+        val homeworld = readObject<Homeworld2>(RESPONSE_FIELDS[1]) { reader ->
+          Homeworld2(reader)
+        }
+        val __typename = readString(RESPONSE_FIELDS[2])!!
+        PilotFragmentImpl1(
+          name = name,
+          homeworld = homeworld,
+          __typename = __typename
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<PilotFragmentImpl1> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
+   * A large mass, planet or planetoid in the Star Wars Universe, at the time of
+   * 0 ABY.
+   */
+  data class PlanetFragmentImpl3(
+    /**
+     * The name of this planet.
+     */
+    override val name: String?,
+    override val __typename: String = "Planet"
+  ) : Homeworld3, PlanetFragment {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@PlanetFragmentImpl3.name)
+        writer.writeString(RESPONSE_FIELDS[1], this@PlanetFragmentImpl3.__typename)
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("name", "name", null, true, null),
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): PlanetFragmentImpl3 = reader.run {
+        val name = readString(RESPONSE_FIELDS[0])
+        val __typename = readString(RESPONSE_FIELDS[1])!!
+        PlanetFragmentImpl3(
+          name = name,
+          __typename = __typename
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<PlanetFragmentImpl3> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
+   * A large mass, planet or planetoid in the Star Wars Universe, at the time of
+   * 0 ABY.
+   */
+  interface Homeworld3 : PlanetFragment, PilotFragment.Homeworld, StarshipFragment.Homeworld1 {
+    override val __typename: String
+
+    /**
+     * The name of this planet.
+     */
+    override val name: String?
+
+    override fun marshaller(): ResponseFieldMarshaller
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): Homeworld3 = PlanetFragmentImpl3(reader)
+    }
+  }
+
+  /**
+   * An individual person or character within the Star Wars universe.
+   */
+  interface Node2 : PilotFragment, StarshipFragment.Node {
+    override val __typename: String
+
+    /**
+     * The name of this person.
+     */
+    override val name: String?
+
+    /**
+     * A planet that this person was born on or inhabits.
+     */
+    override val homeworld: Homeworld3?
+
+    override fun marshaller(): ResponseFieldMarshaller
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): Node2 = PilotFragmentImpl1(reader)
+    }
+  }
+
+  /**
+   * An edge in a connection.
+   */
+  interface Edge2 : StarshipFragment.Edge {
+    override val __typename: String
+
+    /**
+     * The item at the end of the edge
+     */
+    override val node: Node2?
+
+    override fun marshaller(): ResponseFieldMarshaller
+  }
+
+  /**
+   * A connection to a list of items.
+   */
+  interface PilotConnection1 : StarshipFragment.PilotConnection {
+    override val __typename: String
+
+    /**
+     * A list of edges.
+     */
+    override val edges: List<Edge2?>?
+
+    override fun marshaller(): ResponseFieldMarshaller
+  }
+
+  /**
+   * A single transport craft that has hyperdrive capability.
+   */
+  interface Node : StarshipFragment {
+    override val __typename: String
+
+    /**
+     * The ID of an object
+     */
+    override val id: String
+
+    /**
+     * The name of this starship. The common name, such as "Death Star".
+     */
+    override val name: String?
+
+    override val pilotConnection: PilotConnection1?
+
+    override fun marshaller(): ResponseFieldMarshaller
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): Node = StarshipFragmentImpl(reader)
     }
   }
 

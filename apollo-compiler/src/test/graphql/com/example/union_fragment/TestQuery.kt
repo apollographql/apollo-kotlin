@@ -85,32 +85,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     scalarTypeAdapters = scalarTypeAdapters
   )
 
-  data class SearchImpl(
-    override val __typename: String = "SearchResult"
-  ) : Search {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@SearchImpl.__typename)
-      }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null)
-      )
-
-      operator fun invoke(reader: ResponseReader): SearchImpl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        SearchImpl(
-          __typename = __typename
-        )
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<SearchImpl> = ResponseFieldMapper { invoke(it) }
-    }
-  }
-
   data class CharacterImpl(
     override val __typename: String,
     /**
@@ -185,6 +159,32 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
       @Suppress("FunctionName")
       fun Mapper(): ResponseFieldMapper<StarshipImpl> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  data class SearchImpl(
+    override val __typename: String = "SearchResult"
+  ) : Search {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@SearchImpl.__typename)
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): SearchImpl = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        SearchImpl(
+          __typename = __typename
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<SearchImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 

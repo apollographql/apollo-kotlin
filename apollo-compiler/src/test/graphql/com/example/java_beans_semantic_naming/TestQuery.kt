@@ -88,58 +88,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   /**
    * A character from the Star Wars universe
    */
-  data class HeroImpl(
-    override val __typename: String = "Character",
-    /**
-     * The name of the character
-     */
-    override val name: String,
-    /**
-     * The movies this character appears in
-     */
-    override val appearsIn: List<Episode?>
-  ) : Hero {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@HeroImpl.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@HeroImpl.name)
-        writer.writeList(RESPONSE_FIELDS[2], this@HeroImpl.appearsIn) { value, listItemWriter ->
-          value?.forEach { value ->
-            listItemWriter.writeString(value?.rawValue)}
-        }
-      }
-    }
-
-    fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forList("appearsIn", "appearsIn", null, false, null)
-      )
-
-      operator fun invoke(reader: ResponseReader): HeroImpl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        val appearsIn = readList<Episode>(RESPONSE_FIELDS[2]) { reader ->
-          Episode.safeValueOf(reader.readString())
-        }!!
-        HeroImpl(
-          __typename = __typename,
-          name = name,
-          appearsIn = appearsIn
-        )
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<HeroImpl> = ResponseFieldMapper { invoke(it) }
-    }
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
   data class Node(
     override val __typename: String = "Character",
     /**
@@ -377,6 +325,58 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
       @Suppress("FunctionName")
       fun Mapper(): ResponseFieldMapper<HeroDetailsImpl> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
+   * A character from the Star Wars universe
+   */
+  data class HeroImpl(
+    override val __typename: String = "Character",
+    /**
+     * The name of the character
+     */
+    override val name: String,
+    /**
+     * The movies this character appears in
+     */
+    override val appearsIn: List<Episode?>
+  ) : Hero {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@HeroImpl.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@HeroImpl.name)
+        writer.writeList(RESPONSE_FIELDS[2], this@HeroImpl.appearsIn) { value, listItemWriter ->
+          value?.forEach { value ->
+            listItemWriter.writeString(value?.rawValue)}
+        }
+      }
+    }
+
+    fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forList("appearsIn", "appearsIn", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): HeroImpl = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
+        val appearsIn = readList<Episode>(RESPONSE_FIELDS[2]) { reader ->
+          Episode.safeValueOf(reader.readString())
+        }!!
+        HeroImpl(
+          __typename = __typename,
+          name = name,
+          appearsIn = appearsIn
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<HeroImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 

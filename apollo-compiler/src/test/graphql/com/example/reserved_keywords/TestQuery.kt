@@ -128,32 +128,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
   }
 
-  data class ObjectImpl(
-    override val __typename: String = "SearchResult"
-  ) : Object {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@ObjectImpl.__typename)
-      }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null)
-      )
-
-      operator fun invoke(reader: ResponseReader): ObjectImpl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        ObjectImpl(
-          __typename = __typename
-        )
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<ObjectImpl> = ResponseFieldMapper { invoke(it) }
-    }
-  }
-
   /**
    * A character from the Star Wars universe
    */
@@ -199,6 +173,32 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
       @Suppress("FunctionName")
       fun Mapper(): ResponseFieldMapper<CharacterImpl> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  data class ObjectImpl(
+    override val __typename: String = "SearchResult"
+  ) : Object {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@ObjectImpl.__typename)
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): ObjectImpl = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        ObjectImpl(
+          __typename = __typename
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<ObjectImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 

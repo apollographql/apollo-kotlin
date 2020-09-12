@@ -84,40 +84,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   /**
    * For testing fragment type coercion
    */
-  data class FooImpl(
-    override val __typename: String = "Foo",
-    override val foo: String
-  ) : Foo {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@FooImpl.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@FooImpl.foo)
-      }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("foo", "foo", null, false, null)
-      )
-
-      operator fun invoke(reader: ResponseReader): FooImpl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val foo = readString(RESPONSE_FIELDS[1])!!
-        FooImpl(
-          __typename = __typename,
-          foo = foo
-        )
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<FooImpl> = ResponseFieldMapper { invoke(it) }
-    }
-  }
-
-  /**
-   * For testing fragment type coercion
-   */
   interface Bar : Foo {
     override val __typename: String
 
@@ -159,6 +125,40 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
       @Suppress("FunctionName")
       fun Mapper(): ResponseFieldMapper<BarImpl> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
+   * For testing fragment type coercion
+   */
+  data class FooImpl(
+    override val __typename: String = "Foo",
+    override val foo: String
+  ) : Foo {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@FooImpl.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@FooImpl.foo)
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("foo", "foo", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): FooImpl = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val foo = readString(RESPONSE_FIELDS[1])!!
+        FooImpl(
+          __typename = __typename,
+          foo = foo
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<FooImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 

@@ -85,35 +85,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   )
 
   /**
-   * A character from the Star Wars universe
-   */
-  data class R2Impl(
-    override val __typename: String = "Character"
-  ) : R2 {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@R2Impl.__typename)
-      }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null)
-      )
-
-      operator fun invoke(reader: ResponseReader): R2Impl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        R2Impl(
-          __typename = __typename
-        )
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<R2Impl> = ResponseFieldMapper { invoke(it) }
-    }
-  }
-
-  /**
    * A humanoid creature from the Star Wars universe
    */
   data class HumanDetailsImpl(
@@ -206,6 +177,35 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   /**
    * A character from the Star Wars universe
    */
+  data class R2Impl(
+    override val __typename: String = "Character"
+  ) : R2 {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@R2Impl.__typename)
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): R2Impl = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        R2Impl(
+          __typename = __typename
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<R2Impl> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
+   * A character from the Star Wars universe
+   */
   interface R2 {
     val __typename: String
 
@@ -224,35 +224,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           else -> R2Impl(reader)
         }
       }
-    }
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
-  data class LukeImpl(
-    override val __typename: String = "Character"
-  ) : Luke {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@LukeImpl.__typename)
-      }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null)
-      )
-
-      operator fun invoke(reader: ResponseReader): LukeImpl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        LukeImpl(
-          __typename = __typename
-        )
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<LukeImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -343,6 +314,35 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
       @Suppress("FunctionName")
       fun Mapper(): ResponseFieldMapper<DroidDetailsImpl1> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
+   * A character from the Star Wars universe
+   */
+  data class LukeImpl(
+    override val __typename: String = "Character"
+  ) : Luke {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@LukeImpl.__typename)
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): LukeImpl = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        LukeImpl(
+          __typename = __typename
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<LukeImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 

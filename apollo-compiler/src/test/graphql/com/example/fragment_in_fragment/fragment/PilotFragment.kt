@@ -37,36 +37,6 @@ interface PilotFragment : GraphqlFragment {
    * A large mass, planet or planetoid in the Star Wars Universe, at the time of
    * 0 ABY.
    */
-  data class HomeworldImpl(
-    override val __typename: String = "Planet"
-  ) : Homeworld {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@HomeworldImpl.__typename)
-      }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null)
-      )
-
-      operator fun invoke(reader: ResponseReader): HomeworldImpl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        HomeworldImpl(
-          __typename = __typename
-        )
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<HomeworldImpl> = ResponseFieldMapper { invoke(it) }
-    }
-  }
-
-  /**
-   * A large mass, planet or planetoid in the Star Wars Universe, at the time of
-   * 0 ABY.
-   */
   data class PlanetFragmentImpl(
     /**
      * The name of this planet.
@@ -105,53 +75,22 @@ interface PilotFragment : GraphqlFragment {
    * A large mass, planet or planetoid in the Star Wars Universe, at the time of
    * 0 ABY.
    */
-  interface Homeworld {
-    val __typename: String
+  interface Homeworld : PlanetFragment {
+    override val __typename: String
 
-    fun marshaller(): ResponseFieldMarshaller
+    /**
+     * The name of this planet.
+     */
+    override val name: String?
 
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null)
-      )
-
-      operator fun invoke(reader: ResponseReader): Homeworld {
-        val typename = reader.readString(RESPONSE_FIELDS[0])
-        return when(typename) {
-          "Planet" -> PlanetFragmentImpl(reader)
-          else -> HomeworldImpl(reader)
-        }
-      }
-    }
-  }
-
-  /**
-   * A large mass, planet or planetoid in the Star Wars Universe, at the time of
-   * 0 ABY.
-   */
-  data class HomeworldImpl1(
-    override val __typename: String = "Planet"
-  ) : Homeworld1 {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@HomeworldImpl1.__typename)
-      }
-    }
+    override fun marshaller(): ResponseFieldMarshaller
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): HomeworldImpl1 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        HomeworldImpl1(
-          __typename = __typename
-        )
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<HomeworldImpl1> = ResponseFieldMapper { invoke(it) }
+      operator fun invoke(reader: ResponseReader): Homeworld = PlanetFragmentImpl(reader)
     }
   }
 
@@ -197,8 +136,13 @@ interface PilotFragment : GraphqlFragment {
    * A large mass, planet or planetoid in the Star Wars Universe, at the time of
    * 0 ABY.
    */
-  interface Homeworld1 : Homeworld {
+  interface Homeworld1 : PlanetFragment, Homeworld {
     override val __typename: String
+
+    /**
+     * The name of this planet.
+     */
+    override val name: String?
 
     override fun marshaller(): ResponseFieldMarshaller
 
@@ -207,13 +151,7 @@ interface PilotFragment : GraphqlFragment {
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Homeworld1 {
-        val typename = reader.readString(RESPONSE_FIELDS[0])
-        return when(typename) {
-          "Planet" -> PlanetFragmentImpl1(reader)
-          else -> HomeworldImpl1(reader)
-        }
-      }
+      operator fun invoke(reader: ResponseReader): Homeworld1 = PlanetFragmentImpl1(reader)
     }
   }
 

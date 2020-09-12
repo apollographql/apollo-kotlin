@@ -83,35 +83,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   )
 
   /**
-   * The query type, represents all of the entry points into our object graph
-   */
-  data class DataImpl(
-    override val __typename: String = "Query"
-  ) : Data {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@DataImpl.__typename)
-      }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null)
-      )
-
-      operator fun invoke(reader: ResponseReader): DataImpl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        DataImpl(
-          __typename = __typename
-        )
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<DataImpl> = ResponseFieldMapper { invoke(it) }
-    }
-  }
-
-  /**
    * A character from the Star Wars universe
    */
   data class Hero(
@@ -120,7 +91,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      * The name of the character
      */
     override val name: String
-  ) : QueryFragment.Hero {
+  ) : Hero1, QueryFragment.Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
         writer.writeString(RESPONSE_FIELDS[0], this@Hero.__typename)
@@ -185,10 +156,26 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   /**
+   * A character from the Star Wars universe
+   */
+  interface Hero1 : QueryFragment.Hero {
+    override val __typename: String
+
+    /**
+     * The name of the character
+     */
+    override val name: String
+
+    override fun marshaller(): ResponseFieldMarshaller
+  }
+
+  /**
    * Data from the response after executing this GraphQL operation
    */
-  interface Data : Operation.Data {
-    val __typename: String
+  interface Data : QueryFragment, Operation.Data {
+    override val __typename: String
+
+    override val hero: Hero1?
 
     override fun marshaller(): ResponseFieldMarshaller
 
@@ -197,13 +184,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Data {
-        val typename = reader.readString(RESPONSE_FIELDS[0])
-        return when(typename) {
-          "Query" -> QueryFragmentImpl(reader)
-          else -> DataImpl(reader)
-        }
-      }
+      operator fun invoke(reader: ResponseReader): Data = QueryFragmentImpl(reader)
     }
   }
 
