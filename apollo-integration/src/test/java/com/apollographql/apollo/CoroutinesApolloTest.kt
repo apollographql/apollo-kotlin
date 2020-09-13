@@ -7,9 +7,10 @@ import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
-import com.apollographql.apollo.coroutines.toDeferred
+import com.apollographql.apollo.coroutines.await
 import com.apollographql.apollo.coroutines.toFlow
 import com.apollographql.apollo.coroutines.toJob
+import com.apollographql.apollo.coroutines.toDeferred
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo.integration.normalizer.HeroNameQuery
@@ -17,6 +18,7 @@ import com.apollographql.apollo.integration.normalizer.HeroNameWithIdQuery
 import com.apollographql.apollo.integration.normalizer.type.Episode
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.flow.single
@@ -29,6 +31,7 @@ import okhttp3.mockwebserver.MockWebServer
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.util.concurrent.TimeUnit
 
 class CoroutinesApolloTest {
   private lateinit var apolloClient: ApolloClient
@@ -51,13 +54,24 @@ class CoroutinesApolloTest {
   }
 
   @Test
-  fun callDeferredProducesValue() {
+  fun callAwaitProducesValue() {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
     runBlocking {
       val response: Response<EpisodeHeroNameQuery.Data> =
-          apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toDeferred().await()
+      apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).await()
       assertThat(response.data!!.hero()!!.name()).isEqualTo("R2-D2")
+    }
+  }
+
+  @Test
+  fun callDeferredProducesValue() {
+    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
+
+    runBlocking {
+        val response: Response<EpisodeHeroNameQuery.Data> =
+        apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toDeferred().await()
+        assertThat(response.data!!.hero()!!.name()).isEqualTo("R2-D2")
     }
   }
 
@@ -66,13 +80,26 @@ class CoroutinesApolloTest {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
     runBlocking {
-      val job = apolloClient.prefetch(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toJob()
-      job.join()
+      apolloClient.prefetch(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).await()
     }
   }
 
   @Test
-  fun prefetchIsCanceledWhenDisposed() {
+  fun await_prefetchIsCanceledWhenDisposed() {
+    // Block for 5 seconds.
+    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID).throttleBody(1, 5000, TimeUnit.MILLISECONDS))
+
+    runBlocking {
+      val prefetchCall = apolloClient.prefetch(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
+      val job = async {
+        prefetchCall.await()
+      }
+      job.cancel()
+    }
+  }
+
+  @Test
+  fun toJob_prefetchIsCanceledWhenDisposed() {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
     runBlocking {

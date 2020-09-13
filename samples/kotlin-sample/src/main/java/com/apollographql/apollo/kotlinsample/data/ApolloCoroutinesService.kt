@@ -1,7 +1,7 @@
 package com.apollographql.apollo.kotlinsample.data
 
 import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.coroutines.toDeferred
+import com.apollographql.apollo.coroutines.await
 import com.apollographql.apollo.kotlinsample.GithubRepositoriesQuery
 import com.apollographql.apollo.kotlinsample.GithubRepositoryCommitsQuery
 import com.apollographql.apollo.kotlinsample.GithubRepositoryDetailQuery
@@ -30,7 +30,7 @@ class ApolloCoroutinesService(
 
     job = CoroutineScope(processContext).launch {
       try {
-        val response = apolloClient.query(repositoriesQuery).toDeferred().await()
+        val response = apolloClient.query(repositoriesQuery).await()
         withContext(resultContext) {
           repositoriesSubject.onNext(mapRepositoriesResponseToRepositories(response))
         }
@@ -48,7 +48,7 @@ class ApolloCoroutinesService(
 
     job = CoroutineScope(processContext).launch {
       try {
-        val response = apolloClient.query(repositoryDetailQuery).toDeferred().await()
+        val response = apolloClient.query(repositoryDetailQuery).await()
 
         withContext(resultContext) {
           repositoryDetailSubject.onNext(response)
@@ -66,7 +66,7 @@ class ApolloCoroutinesService(
 
     job = CoroutineScope(processContext).launch {
       try {
-        val response = apolloClient.query(commitsQuery).toDeferred().await()
+        val response = apolloClient.query(commitsQuery).await()
         val headCommit = response.data?.viewer?.repository?.ref?.target?.asCommit
         val commits = headCommit?.history?.edges?.filterNotNull().orEmpty()
 
