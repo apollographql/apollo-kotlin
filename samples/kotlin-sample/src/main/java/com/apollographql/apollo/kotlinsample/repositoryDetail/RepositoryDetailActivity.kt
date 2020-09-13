@@ -8,6 +8,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.kotlinsample.GithubRepositoryDetailQuery
+import com.apollographql.apollo.kotlinsample.fragment.RepositoryDetail
 import com.apollographql.apollo.kotlinsample.KotlinSampleApp
 import com.apollographql.apollo.kotlinsample.R
 import com.apollographql.apollo.kotlinsample.commits.CommitsActivity
@@ -79,7 +80,7 @@ class RepositoryDetailActivity : AppCompatActivity() {
 
   @SuppressLint("SetTextI18n")
   private fun updateUI(response: Response<GithubRepositoryDetailQuery.Data>) {
-    response.data?.viewer?.repository?.fragments?.repositoryDetail?.run {
+    (response.data?.viewer?.repository as RepositoryDetail?)?.run {
       tvRepositoryName.text = name
       tvRepositoryDescription.text = description
       tvRepositoryForks.text = "$forkCount Forks"

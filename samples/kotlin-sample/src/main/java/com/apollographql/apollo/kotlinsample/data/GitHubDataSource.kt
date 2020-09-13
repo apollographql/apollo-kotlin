@@ -31,6 +31,6 @@ abstract class  GitHubDataSource(protected val apolloClient: ApolloClient) {
   abstract fun cancelFetching()
 
   protected fun mapRepositoriesResponseToRepositories(response: Response<GithubRepositoriesQuery.Data>): List<RepositoryFragment> {
-    return response.data?.viewer?.repositories?.nodes?.mapNotNull { it?.fragments?.repositoryFragment } ?: emptyList()
+    return response.data?.viewer?.repositories?.nodes?.mapNotNull { it as RepositoryFragment? } ?: emptyList()
   }
 }
