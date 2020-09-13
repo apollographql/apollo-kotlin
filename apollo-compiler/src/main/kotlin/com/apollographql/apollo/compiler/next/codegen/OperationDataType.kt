@@ -12,10 +12,8 @@ internal fun CodeGenerationAst.OperationDataType.toOperationDataTypeSpec(): Type
       description = "Data from the response after executing this GraphQL operation",
       implements = dataType.implements + CodeGenerationAst.TypeRef(
           name = "Data",
-          enclosingType = CodeGenerationAst.TypeRef(
-              name = Operation::class.java.simpleName,
-              packageName = Operation::class.java.`package`.name
-          )
+          packageName = Operation::class.java.`package`.name,
+          enclosingType = CodeGenerationAst.TypeRef(name = Operation::class.java.simpleName)
       )
   ).typeSpec()
 }

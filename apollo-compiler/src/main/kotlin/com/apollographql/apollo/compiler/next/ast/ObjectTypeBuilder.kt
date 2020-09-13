@@ -331,7 +331,7 @@ internal class ObjectTypeBuilder(
           fragments.first().typeCondition == this.type &&
           fragments.first().interfaceType != null) {
         // - make generated root interface to implement named fragment interface
-        fragmentRootInterfaceImplements = setOfNotNull(fragments.first().interfaceType)
+        fragmentRootInterfaceImplements = fragments.first().interfaceType?.let { setOf(it) } ?: emptySet()
 
         // - skip default implementation generation and use implementation for this fragment as default implementation
         fragmentRootInterfaceTypeKind = CodeGenerationAst.ObjectType.Kind.Fragment(
