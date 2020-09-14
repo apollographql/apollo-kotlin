@@ -63,7 +63,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
         // antlr is 0-indexed but IntelliJ is 1-indexed. Add 1 so that clicking the link will land on the correct location
         val column = it.sourceLocation.position + 1
         // Using this format, IntelliJ will parse the warning and display it in the 'run' panel
-        logger.warning("w: ${it.filePath}:${it.sourceLocation.line}:${column}: ApolloGraphQL: Use of deprecated field '${it.field.responseName}'")
+        logger.warning("w: ${it.filePath}:${it.sourceLocation.line}:${column}: ApolloGraphQL: Use of deprecated field '${it.field.fieldName}'")
       }
       if (args.failOnWarnings && deprecatedUsages.isNotEmpty()) {
         throw IllegalStateException("ApolloGraphQL: Warnings found and 'failOnWarnings' is true, aborting.")
