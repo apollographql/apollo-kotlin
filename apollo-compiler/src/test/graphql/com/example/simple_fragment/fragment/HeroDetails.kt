@@ -15,33 +15,57 @@ import kotlin.String
 import kotlin.Suppress
 
 /**
- *  Fragment with Java / Kotlin docs generation
- *  with multi lines support
+ * A character from the Star Wars universe
  */
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-internal data class HeroDetails(
-  val __typename: String = "Character",
+internal interface HeroDetails : GraphqlFragment {
+  val __typename: String
+
   /**
    * The name of the character
    */
-  val name: String,
-  val fragments: Fragments
-) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-    writer.writeString(RESPONSE_FIELDS[0], this@HeroDetails.__typename)
-    writer.writeString(RESPONSE_FIELDS[1], this@HeroDetails.name)
-    this@HeroDetails.fragments.marshaller().marshal(writer)
+  val name: String
+
+  /**
+   * A character from the Star Wars universe
+   */
+  data class DefaultImpl(
+    override val __typename: String = "Character",
+    /**
+     * The name of the character
+     */
+    override val name: String
+  ) : HeroDetails {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@DefaultImpl.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@DefaultImpl.name)
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("name", "name", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): DefaultImpl = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
+        DefaultImpl(
+          __typename = __typename,
+          name = name
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<DefaultImpl> = ResponseFieldMapper { invoke(it) }
+    }
   }
 
   companion object {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forString("__typename", "__typename", null, false, null)
-        )
-
     val FRAGMENT_DEFINITION: String = """
         |fragment HeroDetails on Character {
         |  __typename
@@ -50,46 +74,13 @@ internal data class HeroDetails(
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader): HeroDetails = reader.run {
-      val __typename = readString(RESPONSE_FIELDS[0])!!
-      val name = readString(RESPONSE_FIELDS[1])!!
-      val fragments = Fragments(reader)
-      HeroDetails(
+    operator fun invoke(__typename: String, name: String): HeroDetails {
+      return DefaultImpl(
         __typename = __typename,
-        name = name,
-        fragments = fragments
+        name = name
       )
     }
 
-    @Suppress("FunctionName")
-    fun Mapper(): ResponseFieldMapper<HeroDetails> = ResponseFieldMapper { invoke(it) }
-  }
-
-  internal data class Fragments(
-    val humanDetails: HumanDetails?
-  ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeFragment(this@Fragments.humanDetails?.marshaller())
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forFragment("__typename", "__typename", listOf(
-            ResponseField.Condition.typeCondition(arrayOf("Human"))
-          ))
-          )
-
-      operator fun invoke(reader: ResponseReader): Fragments = reader.run {
-        val humanDetails = readFragment<HumanDetails>(RESPONSE_FIELDS[0]) { reader ->
-          HumanDetails(reader)
-        }
-        Fragments(
-          humanDetails = humanDetails
-        )
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Fragments> = ResponseFieldMapper { invoke(it) }
-    }
+    operator fun invoke(reader: ResponseReader): HeroDetails = DefaultImpl(reader)
   }
 }

@@ -15,33 +15,71 @@ import kotlin.Double
 import kotlin.String
 import kotlin.Suppress
 
+/**
+ * A humanoid creature from the Star Wars universe
+ */
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-data class HumanDetails(
-  val __typename: String = "Human",
+interface HumanDetails : GraphqlFragment {
+  val __typename: String
+
   /**
    * What this human calls themselves
    */
-  val name: String,
+  val name: String
+
   /**
    * Height in the preferred unit, default is meters
    */
   val height: Double?
-) : GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-    writer.writeString(RESPONSE_FIELDS[0], this@HumanDetails.__typename)
-    writer.writeString(RESPONSE_FIELDS[1], this@HumanDetails.name)
-    writer.writeDouble(RESPONSE_FIELDS[2], this@HumanDetails.height)
-  }
 
-  companion object {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+  /**
+   * A humanoid creature from the Star Wars universe
+   */
+  data class DefaultImpl(
+    override val __typename: String = "Human",
+    /**
+     * What this human calls themselves
+     */
+    override val name: String,
+    /**
+     * Height in the preferred unit, default is meters
+     */
+    override val height: Double?
+  ) : HumanDetails {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@DefaultImpl.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@DefaultImpl.name)
+        writer.writeDouble(RESPONSE_FIELDS[2], this@DefaultImpl.height)
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forDouble("height", "height", null, true, null)
-        )
+      )
 
+      operator fun invoke(reader: ResponseReader): DefaultImpl = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
+        val height = readDouble(RESPONSE_FIELDS[2])
+        DefaultImpl(
+          __typename = __typename,
+          name = name,
+          height = height
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<DefaultImpl> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  companion object {
     val FRAGMENT_DEFINITION: String = """
         |fragment HumanDetails on Human {
         |  __typename
@@ -50,18 +88,18 @@ data class HumanDetails(
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader): HumanDetails = reader.run {
-      val __typename = readString(RESPONSE_FIELDS[0])!!
-      val name = readString(RESPONSE_FIELDS[1])!!
-      val height = readDouble(RESPONSE_FIELDS[2])
-      HumanDetails(
+    operator fun invoke(
+      __typename: String,
+      name: String,
+      height: Double?
+    ): HumanDetails {
+      return DefaultImpl(
         __typename = __typename,
         name = name,
         height = height
       )
     }
 
-    @Suppress("FunctionName")
-    fun Mapper(): ResponseFieldMapper<HumanDetails> = ResponseFieldMapper { invoke(it) }
+    operator fun invoke(reader: ResponseReader): HumanDetails = DefaultImpl(reader)
   }
 }

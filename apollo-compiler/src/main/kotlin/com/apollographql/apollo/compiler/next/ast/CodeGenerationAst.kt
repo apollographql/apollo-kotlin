@@ -20,6 +20,7 @@ internal data class CodeGenerationAst(
 
   data class OperationType(
       val name: String,
+      val packageName: String,
       val type: Type,
       val operationName: String,
       val description: String,

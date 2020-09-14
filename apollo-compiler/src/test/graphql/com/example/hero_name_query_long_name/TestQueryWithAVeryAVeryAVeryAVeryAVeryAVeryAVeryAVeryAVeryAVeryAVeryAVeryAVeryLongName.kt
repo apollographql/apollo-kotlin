@@ -120,18 +120,20 @@ data class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryA
     val nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName:
         String
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeString(RESPONSE_FIELDS[0], this@HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.__typename)
-      writer.writeString(RESPONSE_FIELDS[1],
-          this@HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName)
+    fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.__typename)
+        writer.writeString(RESPONSE_FIELDS[1],
+            this@HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName)
+      }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName",
-              "name", null, false, null)
-          )
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName",
+            "name", null, false, null)
+      )
 
       operator fun invoke(reader: ResponseReader): HeroAVeryAVeryAVeryAVeryAVeryAVeryAV =
           reader.run {
@@ -157,21 +159,22 @@ data class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryA
   data class Data(
     val heroAVeryAVeryAVeryAVeryAVeryAVeryAV: HeroAVeryAVeryAVeryAVeryAVeryAVeryAV?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeObject(RESPONSE_FIELDS[0],
-          this@Data.heroAVeryAVeryAVeryAVeryAVeryAVeryAV?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeObject(RESPONSE_FIELDS[0],
+            this@Data.heroAVeryAVeryAVeryAVeryAVeryAVeryAV?.marshaller())
+      }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forObject("heroAVeryAVeryAVeryAVeryAVeryAVeryAV", "hero", mapOf<String,
-              Any>(
-            "episode" to mapOf<String, Any>(
-              "kind" to "Variable",
-              "variableName" to
-              "episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")),
-              true, null)
-          )
+        ResponseField.forObject("heroAVeryAVeryAVeryAVeryAVeryAVeryAV", "hero", mapOf<String, Any>(
+          "episode" to mapOf<String, Any>(
+            "kind" to "Variable",
+            "variableName" to
+            "episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")),
+            true, null)
+      )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {
         val heroAVeryAVeryAVeryAVeryAVeryAVeryAV =

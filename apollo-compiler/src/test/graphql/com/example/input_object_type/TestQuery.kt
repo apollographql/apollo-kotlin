@@ -118,18 +118,20 @@ data class TestQuery(
      */
     val commentary: String?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeString(RESPONSE_FIELDS[0], this@CreateReview.__typename)
-      writer.writeInt(RESPONSE_FIELDS[1], this@CreateReview.stars)
-      writer.writeString(RESPONSE_FIELDS[2], this@CreateReview.commentary)
+    fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@CreateReview.__typename)
+        writer.writeInt(RESPONSE_FIELDS[1], this@CreateReview.stars)
+        writer.writeString(RESPONSE_FIELDS[2], this@CreateReview.commentary)
+      }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forInt("stars", "stars", null, false, null),
-          ResponseField.forString("commentary", "commentary", null, true, null)
-          )
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forInt("stars", "stars", null, false, null),
+        ResponseField.forString("commentary", "commentary", null, true, null)
+      )
 
       operator fun invoke(reader: ResponseReader): CreateReview = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
@@ -153,20 +155,22 @@ data class TestQuery(
   data class Data(
     val createReview: CreateReview?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeObject(RESPONSE_FIELDS[0], this@Data.createReview?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeObject(RESPONSE_FIELDS[0], this@Data.createReview?.marshaller())
+      }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forObject("createReview", "createReview", mapOf<String, Any>(
-            "episode" to mapOf<String, Any>(
-              "kind" to "Variable",
-              "variableName" to "ep"),
-            "review" to mapOf<String, Any>(
-              "kind" to "Variable",
-              "variableName" to "review")), true, null)
-          )
+        ResponseField.forObject("createReview", "createReview", mapOf<String, Any>(
+          "episode" to mapOf<String, Any>(
+            "kind" to "Variable",
+            "variableName" to "ep"),
+          "review" to mapOf<String, Any>(
+            "kind" to "Variable",
+            "variableName" to "review")), true, null)
+      )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {
         val createReview = readObject<CreateReview>(RESPONSE_FIELDS[0]) { reader ->

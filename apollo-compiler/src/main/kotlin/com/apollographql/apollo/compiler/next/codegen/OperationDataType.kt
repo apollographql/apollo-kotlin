@@ -9,14 +9,11 @@ internal fun CodeGenerationAst.OperationDataType.toOperationDataTypeSpec(): Type
     "Failed to resolve operation root data type"
   }
   return dataType.copy(
-      implements = setOf(
-          CodeGenerationAst.TypeRef(
-              name = "Data",
-              enclosingType = CodeGenerationAst.TypeRef(
-                  name = Operation::class.java.simpleName,
-                  packageName = Operation::class.java.`package`.name
-              )
-          )
+      description = "Data from the response after executing this GraphQL operation",
+      implements = dataType.implements + CodeGenerationAst.TypeRef(
+          name = "Data",
+          packageName = Operation::class.java.`package`.name,
+          enclosingType = CodeGenerationAst.TypeRef(name = Operation::class.java.simpleName)
       )
   ).typeSpec()
 }

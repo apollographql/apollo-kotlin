@@ -67,7 +67,7 @@ class ApolloCoroutinesService(
     job = CoroutineScope(processContext).launch {
       try {
         val response = apolloClient.query(commitsQuery).toDeferred().await()
-        val headCommit = response.data?.viewer?.repository?.ref?.target?.asCommit
+        val headCommit = response.data?.viewer?.repository?.ref?.target as GithubRepositoryCommitsQuery.Commit?
         val commits = headCommit?.history?.edges?.filterNotNull().orEmpty()
 
         withContext(resultContext) {

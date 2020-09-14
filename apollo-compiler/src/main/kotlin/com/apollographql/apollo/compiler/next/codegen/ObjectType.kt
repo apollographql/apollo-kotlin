@@ -86,15 +86,20 @@ private fun CodeGenerationAst.ObjectType.fragmentCompanionTypeSpec(
               .addModifiers(KModifier.OPERATOR)
               .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
               .returns(ClassName("", name))
-              .addStatement("val typename = reader.readString(RESPONSE_FIELDS[0])")
-              .beginControlFlow("return·when(typename)·{")
-              .addCode(
-                  possibleImplementations
-                      .map { (typeCondition, type) -> CodeBlock.of("%S·-> %T(reader)", typeCondition, type.asTypeName()) }
-                      .joinToCode(separator = "\n", suffix = "\n")
-              )
-              .addStatement("else·->·%T(reader)", defaultImplementation.asTypeName())
-              .endControlFlow()
+              .applyIf(possibleImplementations.isEmpty()) {
+                addStatement("return %T(reader)", defaultImplementation.asTypeName())
+              }
+              .applyIf(possibleImplementations.isNotEmpty()) {
+                addStatement("val typename = reader.readString(RESPONSE_FIELDS[0])")
+                beginControlFlow("return·when(typename)·{")
+                addCode(
+                    possibleImplementations
+                        .map { (typeCondition, type) -> CodeBlock.of("%S·-> %T(reader)", typeCondition, type.asTypeName()) }
+                        .joinToCode(separator = "\n", suffix = "\n")
+                )
+                addStatement("else·->·%T(reader)", defaultImplementation.asTypeName())
+                endControlFlow()
+              }
               .build()
       )
       .build()

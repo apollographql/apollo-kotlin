@@ -117,16 +117,18 @@ internal data class CreateReviewForEpisode(
      */
     val name: String
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeString(RESPONSE_FIELDS[0], this@ListOfListOfObject.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], this@ListOfListOfObject.name)
+    fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@ListOfListOfObject.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@ListOfListOfObject.name)
+      }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("name", "name", null, false, null)
-          )
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("name", "name", null, false, null)
+      )
 
       operator fun invoke(reader: ResponseReader): ListOfListOfObject = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
@@ -172,43 +174,45 @@ internal data class CreateReviewForEpisode(
      */
     val listOfListOfObject: List<List<ListOfListOfObject>>?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeString(RESPONSE_FIELDS[0], this@CreateReview.__typename)
-      writer.writeInt(RESPONSE_FIELDS[1], this@CreateReview.stars)
-      writer.writeString(RESPONSE_FIELDS[2], this@CreateReview.commentary)
-      writer.writeList(RESPONSE_FIELDS[3], this@CreateReview.listOfListOfString) { value,
-          listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeList(value) { value, listItemWriter ->
-            value?.forEach { value ->
-              listItemWriter.writeString(value)}
+    fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@CreateReview.__typename)
+        writer.writeInt(RESPONSE_FIELDS[1], this@CreateReview.stars)
+        writer.writeString(RESPONSE_FIELDS[2], this@CreateReview.commentary)
+        writer.writeList(RESPONSE_FIELDS[3],
+            this@CreateReview.listOfListOfString) { value, listItemWriter ->
+          value?.forEach { value ->
+            listItemWriter.writeList(value) { value, listItemWriter ->
+              value?.forEach { value ->
+                listItemWriter.writeString(value)}
+            }
           }
         }
-      }
-      writer.writeList(RESPONSE_FIELDS[4], this@CreateReview.listOfListOfEnum) { value,
-          listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeList(value) { value, listItemWriter ->
-            value?.forEach { value ->
-              listItemWriter.writeString(value.rawValue)}
+        writer.writeList(RESPONSE_FIELDS[4],
+            this@CreateReview.listOfListOfEnum) { value, listItemWriter ->
+          value?.forEach { value ->
+            listItemWriter.writeList(value) { value, listItemWriter ->
+              value?.forEach { value ->
+                listItemWriter.writeString(value.rawValue)}
+            }
           }
         }
-      }
-      writer.writeList(RESPONSE_FIELDS[5], this@CreateReview.listOfListOfCustom) { value,
-          listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeList(value) { value, listItemWriter ->
-            value?.forEach { value ->
-              listItemWriter.writeCustom(CustomType.DATE, value)}
+        writer.writeList(RESPONSE_FIELDS[5],
+            this@CreateReview.listOfListOfCustom) { value, listItemWriter ->
+          value?.forEach { value ->
+            listItemWriter.writeList(value) { value, listItemWriter ->
+              value?.forEach { value ->
+                listItemWriter.writeCustom(CustomType.DATE, value)}
+            }
           }
         }
-      }
-      writer.writeList(RESPONSE_FIELDS[6], this@CreateReview.listOfListOfObject) { value,
-          listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeList(value) { value, listItemWriter ->
-            value?.forEach { value ->
-              listItemWriter.writeObject(value.marshaller())}
+        writer.writeList(RESPONSE_FIELDS[6],
+            this@CreateReview.listOfListOfObject) { value, listItemWriter ->
+          value?.forEach { value ->
+            listItemWriter.writeList(value) { value, listItemWriter ->
+              value?.forEach { value ->
+                listItemWriter.writeObject(value.marshaller())}
+            }
           }
         }
       }
@@ -216,14 +220,14 @@ internal data class CreateReviewForEpisode(
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forInt("stars", "stars", null, false, null),
-          ResponseField.forString("commentary", "commentary", null, true, null),
-          ResponseField.forList("listOfListOfString", "listOfListOfString", null, true, null),
-          ResponseField.forList("listOfListOfEnum", "listOfListOfEnum", null, true, null),
-          ResponseField.forList("listOfListOfCustom", "listOfListOfCustom", null, true, null),
-          ResponseField.forList("listOfListOfObject", "listOfListOfObject", null, true, null)
-          )
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forInt("stars", "stars", null, false, null),
+        ResponseField.forString("commentary", "commentary", null, true, null),
+        ResponseField.forList("listOfListOfString", "listOfListOfString", null, true, null),
+        ResponseField.forList("listOfListOfEnum", "listOfListOfEnum", null, true, null),
+        ResponseField.forList("listOfListOfCustom", "listOfListOfCustom", null, true, null),
+        ResponseField.forList("listOfListOfObject", "listOfListOfObject", null, true, null)
+      )
 
       operator fun invoke(reader: ResponseReader): CreateReview = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
@@ -273,20 +277,22 @@ internal data class CreateReviewForEpisode(
   data class Data(
     val createReview: CreateReview?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeObject(RESPONSE_FIELDS[0], this@Data.createReview?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeObject(RESPONSE_FIELDS[0], this@Data.createReview?.marshaller())
+      }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forObject("createReview", "createReview", mapOf<String, Any>(
-            "episode" to mapOf<String, Any>(
-              "kind" to "Variable",
-              "variableName" to "ep"),
-            "review" to mapOf<String, Any>(
-              "kind" to "Variable",
-              "variableName" to "review")), true, null)
-          )
+        ResponseField.forObject("createReview", "createReview", mapOf<String, Any>(
+          "episode" to mapOf<String, Any>(
+            "kind" to "Variable",
+            "variableName" to "ep"),
+          "review" to mapOf<String, Any>(
+            "kind" to "Variable",
+            "variableName" to "review")), true, null)
+      )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {
         val createReview = readObject<CreateReview>(RESPONSE_FIELDS[0]) { reader ->

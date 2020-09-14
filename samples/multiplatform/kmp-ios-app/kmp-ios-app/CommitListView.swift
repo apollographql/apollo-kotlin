@@ -21,7 +21,7 @@ struct CommitListView: View {
 
 struct CommitListView_Previews: PreviewProvider {
     static var previews: some View {
-        let repo = RepositoryFragment(__typename: "__typename",
+        let repo = RepositoryFragmentDefaultImpl(__typename: "__typename",
                                       id: "1",
                                       name: "TestRepo",
                                       repoDescription: "a test repo")

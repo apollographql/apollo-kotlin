@@ -95,16 +95,18 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val __typename: String = "__Type",
     val name: String?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeString(RESPONSE_FIELDS[0], this@QueryType.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], this@QueryType.name)
+    fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@QueryType.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@QueryType.name)
+      }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("name", "name", null, true, null)
-          )
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("name", "name", null, true, null)
+      )
 
       operator fun invoke(reader: ResponseReader): QueryType = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
@@ -133,16 +135,18 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val __typename: String = "__Type",
     val name: String?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeString(RESPONSE_FIELDS[0], this@Type.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], this@Type.name)
+    fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@Type.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@Type.name)
+      }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("name", "name", null, true, null)
-          )
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("name", "name", null, true, null)
+      )
 
       operator fun invoke(reader: ResponseReader): Type = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
@@ -174,21 +178,23 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val types: List<Type>
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeString(RESPONSE_FIELDS[0], this@__Schema.__typename)
-      writer.writeObject(RESPONSE_FIELDS[1], this@__Schema.queryType.marshaller())
-      writer.writeList(RESPONSE_FIELDS[2], this@__Schema.types) { value, listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeObject(value.marshaller())}
+    fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@__Schema.__typename)
+        writer.writeObject(RESPONSE_FIELDS[1], this@__Schema.queryType.marshaller())
+        writer.writeList(RESPONSE_FIELDS[2], this@__Schema.types) { value, listItemWriter ->
+          value?.forEach { value ->
+            listItemWriter.writeObject(value.marshaller())}
+        }
       }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forObject("queryType", "queryType", null, false, null),
-          ResponseField.forList("types", "types", null, false, null)
-          )
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forObject("queryType", "queryType", null, false, null),
+        ResponseField.forList("types", "types", null, false, null)
+      )
 
       operator fun invoke(reader: ResponseReader): __Schema = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
@@ -213,72 +219,28 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   /**
-   * The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in
-   * GraphQL as represented by the `__TypeKind` enum.
-   *
-   * Depending on the kind of a type, certain fields describe information about that type. Scalar
-   * types provide no information beyond a name and description, while Enum types provide their values.
-   * Object and Interface types provide the fields they describe. Abstract types, Union and Interface,
-   * provide the Object types possible at runtime. List and NonNull types compose other types.
-   */
-  data class __Type(
-    val __typename: String = "__Type",
-    val name: String?
-  ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeString(RESPONSE_FIELDS[0], this@__Type.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], this@__Type.name)
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("name", "name", null, true, null)
-          )
-
-      operator fun invoke(reader: ResponseReader): __Type = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])
-        __Type(
-          __typename = __typename,
-          name = name
-        )
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<__Type> = ResponseFieldMapper { invoke(it) }
-    }
-  }
-
-  /**
    * Data from the response after executing this GraphQL operation
    */
   data class Data(
-    val __schema: __Schema,
-    val __type: __Type?
+    val __schema: __Schema
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeObject(RESPONSE_FIELDS[0], this@Data.__schema.marshaller())
-      writer.writeObject(RESPONSE_FIELDS[1], this@Data.__type?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeObject(RESPONSE_FIELDS[0], this@Data.__schema.marshaller())
+      }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forObject("__schema", "__schema", null, false, null),
-          ResponseField.forObject("__type", "__type", mapOf<String, Any>(
-            "name" to "Vehicle"), true, null)
-          )
+        ResponseField.forObject("__schema", "__schema", null, false, null)
+      )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {
         val __schema = readObject<__Schema>(RESPONSE_FIELDS[0]) { reader ->
           __Schema(reader)
         }!!
-        val __type = readObject<__Type>(RESPONSE_FIELDS[1]) { reader ->
-          __Type(reader)
-        }
         Data(
-          __schema = __schema,
-          __type = __type
+          __schema = __schema
         )
       }
 

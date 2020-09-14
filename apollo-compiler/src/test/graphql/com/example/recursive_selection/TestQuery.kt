@@ -89,16 +89,18 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val __typename: String = "Tree",
     val name: String
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeString(RESPONSE_FIELDS[0], this@Child.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], this@Child.name)
+    fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@Child.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@Child.name)
+      }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("name", "name", null, false, null)
-          )
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("name", "name", null, false, null)
+      )
 
       operator fun invoke(reader: ResponseReader): Child = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
@@ -121,16 +123,18 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val __typename: String = "Tree",
     val name: String
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeString(RESPONSE_FIELDS[0], this@Parent.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], this@Parent.name)
+    fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@Parent.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@Parent.name)
+      }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("name", "name", null, false, null)
-          )
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("name", "name", null, false, null)
+      )
 
       operator fun invoke(reader: ResponseReader): Parent = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
@@ -155,23 +159,25 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val children: List<Child>,
     val parent: Parent?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeString(RESPONSE_FIELDS[0], this@Tree.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], this@Tree.name)
-      writer.writeList(RESPONSE_FIELDS[2], this@Tree.children) { value, listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeObject(value.marshaller())}
+    fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@Tree.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@Tree.name)
+        writer.writeList(RESPONSE_FIELDS[2], this@Tree.children) { value, listItemWriter ->
+          value?.forEach { value ->
+            listItemWriter.writeObject(value.marshaller())}
+        }
+        writer.writeObject(RESPONSE_FIELDS[3], this@Tree.parent?.marshaller())
       }
-      writer.writeObject(RESPONSE_FIELDS[3], this@Tree.parent?.marshaller())
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("name", "name", null, false, null),
-          ResponseField.forList("children", "children", null, false, null),
-          ResponseField.forObject("parent", "parent", null, true, null)
-          )
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forList("children", "children", null, false, null),
+        ResponseField.forObject("parent", "parent", null, true, null)
+      )
 
       operator fun invoke(reader: ResponseReader): Tree = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
@@ -203,14 +209,16 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   data class Data(
     val tree: Tree?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeObject(RESPONSE_FIELDS[0], this@Data.tree?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeObject(RESPONSE_FIELDS[0], this@Data.tree?.marshaller())
+      }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forObject("tree", "tree", null, true, null)
-          )
+        ResponseField.forObject("tree", "tree", null, true, null)
+      )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {
         val tree = readObject<Tree>(RESPONSE_FIELDS[0]) { reader ->

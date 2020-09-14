@@ -16,7 +16,7 @@ internal class ObjectTypeBuilder(
     private val fragmentsPackage: String,
     private val irFragments: Map<String, com.apollographql.apollo.compiler.ir.Fragment>,
     private val nestedTypeContainer: ObjectTypeContainerBuilder,
-    private val enclosingType: CodeGenerationAst.TypeRef
+    private val enclosingType: CodeGenerationAst.TypeRef?
 ) {
 
   fun buildObjectType(
@@ -311,43 +311,74 @@ internal class ObjectTypeBuilder(
     ) { fragmentRootInterfaceType ->
       val fragmentRootSchemaType = schema.resolveType(schemaTypeRef)
 
-      val defaultImplementationType =
-          buildObjectType(
-              name = "${responseName.singularize()}Impl",
-              schemaType = schema.resolveType(schemaTypeRef),
-              fields = fields,
-              abstract = false,
-              implements = listOf(fragmentRootInterfaceType),
-              singularizeName = singularizeName
-          )
+      val fragments = inlineFragments
+          .toFragments()
+          .plus(fragmentRefs.map { fragmentRef -> fragmentRef.toFragment() })
 
-      val possibleImplementations =
-          inlineFragments.toFragments()
-              .plus(fragmentRefs.map { fragmentRef -> fragmentRef.toFragment() })
-              .buildFragmentPossibleTypes(
-                  rootFragmentInterfaceType = fragmentRootInterfaceType,
-                  rootFragmentInterfaceSchemaType = schemaTypeRef,
-                  rootFragmentInterfaceFields = fields
-              )
+      val possibleImplementations = fragments.buildFragmentPossibleTypes(
+            rootFragmentInterfaceType = fragmentRootInterfaceType,
+            rootFragmentInterfaceSchemaType = schemaTypeRef,
+            rootFragmentInterfaceFields = fields
+        )
+
+      val fragmentRootInterfaceImplements: Set<CodeGenerationAst.TypeRef>
+      val fragmentRootInterfaceTypeKind: CodeGenerationAst.ObjectType.Kind
+      val fragmentRootInterfaceFields: List<CodeGenerationAst.Field>
+
+      // if there is only 1 named fragment defined on object type that is the same as field type
+      if (fragmentRootSchemaType.kind == IntrospectionSchema.Kind.OBJECT &&
+          fragments.size == 1 &&
+          fragments.first().typeCondition == this.type &&
+          fragments.first().interfaceType != null) {
+        // - make generated root interface to implement named fragment interface
+        fragmentRootInterfaceImplements = fragments.first().interfaceType?.let { setOf(it) } ?: emptySet()
+
+        // - skip default implementation generation and use implementation for this fragment as default implementation
+        fragmentRootInterfaceTypeKind = CodeGenerationAst.ObjectType.Kind.Fragment(
+            defaultImplementation = possibleImplementations.values.first(),
+            possibleImplementations = emptyMap()
+        )
+
+        // - merge fields from this named fragment
+        fragmentRootInterfaceFields = fields.merge(fragments.first().fields).mapNotNull { field ->
+          buildField(
+              field = field,
+              schemaType = fragmentRootSchemaType,
+              abstract = true
+          )
+        }
+      } else {
+        val defaultImplementationType = buildObjectType(
+            name = "${responseName.singularize()}Impl",
+            schemaType = schema.resolveType(schemaTypeRef),
+            fields = fields,
+            abstract = false,
+            implements = listOf(fragmentRootInterfaceType),
+            singularizeName = singularizeName
+        )
+        fragmentRootInterfaceImplements = emptySet()
+        fragmentRootInterfaceTypeKind = CodeGenerationAst.ObjectType.Kind.Fragment(
+            defaultImplementation = defaultImplementationType,
+            possibleImplementations = possibleImplementations
+        )
+        fragmentRootInterfaceFields = fields.mapNotNull { field ->
+          buildField(
+              field = field,
+              schemaType = fragmentRootSchemaType,
+              abstract = true
+          )
+        }
+      }
 
       CodeGenerationAst.ObjectType(
           name = fragmentRootInterfaceType.name,
           description = fragmentRootSchemaType.description ?: "",
           deprecated = false,
           deprecationReason = "",
-          fields = fields.mapNotNull { field ->
-            buildField(
-                field = field,
-                schemaType = fragmentRootSchemaType,
-                abstract = true
-            )
-          },
-          implements = emptySet(),
+          fields = fragmentRootInterfaceFields,
+          implements = fragmentRootInterfaceImplements,
           schemaType = fragmentRootSchemaType.name,
-          kind = CodeGenerationAst.ObjectType.Kind.Fragment(
-              defaultImplementation = defaultImplementationType,
-              possibleImplementations = possibleImplementations
-          )
+          kind = fragmentRootInterfaceTypeKind
       )
     }
     return CodeGenerationAst.FieldType.Object(

@@ -21,6 +21,7 @@ import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.api.internal.Throws
 import com.example.union_fragment.fragment.Character
 import com.example.union_fragment.fragment.Starship
+import com.example.union_fragment.type.CustomType
 import kotlin.Array
 import kotlin.Boolean
 import kotlin.String
@@ -84,68 +85,127 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     scalarTypeAdapters = scalarTypeAdapters
   )
 
-  data class Search(
-    val __typename: String = "SearchResult",
-    val fragments: Fragments
-  ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeString(RESPONSE_FIELDS[0], this@Search.__typename)
-      this@Search.fragments.marshaller().marshal(writer)
+  data class CharacterImpl(
+    override val __typename: String,
+    /**
+     * The ID of the character
+     */
+    override val id: String,
+    /**
+     * The name of the character
+     */
+    override val name: String
+  ) : Character, Search {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@CharacterImpl.__typename)
+        writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField,
+            this@CharacterImpl.id)
+        writer.writeString(RESPONSE_FIELDS[2], this@CharacterImpl.name)
+      }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("__typename", "__typename", null, false, null)
-          )
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
+        ResponseField.forString("name", "name", null, false, null)
+      )
 
-      operator fun invoke(reader: ResponseReader): Search = reader.run {
+      operator fun invoke(reader: ResponseReader): CharacterImpl = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
-        val fragments = Fragments(reader)
-        Search(
+        val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)!!
+        val name = readString(RESPONSE_FIELDS[2])!!
+        CharacterImpl(
           __typename = __typename,
-          fragments = fragments
+          id = id,
+          name = name
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Search> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<CharacterImpl> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  data class StarshipImpl(
+    /**
+     * The name of the starship
+     */
+    override val name: String,
+    override val __typename: String = "Starship"
+  ) : Search, Starship {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@StarshipImpl.name)
+        writer.writeString(RESPONSE_FIELDS[1], this@StarshipImpl.__typename)
+      }
     }
 
-    data class Fragments(
-      val character: Character?,
-      val starship: Starship?
-    ) {
-      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-        writer.writeFragment(this@Fragments.character?.marshaller())
-        writer.writeFragment(this@Fragments.starship?.marshaller())
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): StarshipImpl = reader.run {
+        val name = readString(RESPONSE_FIELDS[0])!!
+        val __typename = readString(RESPONSE_FIELDS[1])!!
+        StarshipImpl(
+          name = name,
+          __typename = __typename
+        )
       }
 
-      companion object {
-        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField.forFragment("__typename", "__typename", listOf(
-              ResponseField.Condition.typeCondition(arrayOf("Human", "Droid"))
-            )),
-            ResponseField.forFragment("__typename", "__typename", listOf(
-              ResponseField.Condition.typeCondition(arrayOf("Starship"))
-            ))
-            )
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<StarshipImpl> = ResponseFieldMapper { invoke(it) }
+    }
+  }
 
-        operator fun invoke(reader: ResponseReader): Fragments = reader.run {
-          val character = readFragment<Character>(RESPONSE_FIELDS[0]) { reader ->
-            Character(reader)
-          }
-          val starship = readFragment<Starship>(RESPONSE_FIELDS[1]) { reader ->
-            Starship(reader)
-          }
-          Fragments(
-            character = character,
-            starship = starship
-          )
+  data class SearchImpl(
+    override val __typename: String = "SearchResult"
+  ) : Search {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@SearchImpl.__typename)
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): SearchImpl = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        SearchImpl(
+          __typename = __typename
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<SearchImpl> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  interface Search {
+    val __typename: String
+
+    fun marshaller(): ResponseFieldMarshaller
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): Search {
+        val typename = reader.readString(RESPONSE_FIELDS[0])
+        return when(typename) {
+          "Human" -> CharacterImpl(reader)
+          "Droid" -> CharacterImpl(reader)
+          "Starship" -> StarshipImpl(reader)
+          else -> SearchImpl(reader)
         }
-
-        @Suppress("FunctionName")
-        fun Mapper(): ResponseFieldMapper<Fragments> = ResponseFieldMapper { invoke(it) }
       }
     }
   }
@@ -156,10 +216,12 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   data class Data(
     val search: List<Search?>?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeList(RESPONSE_FIELDS[0], this@Data.search) { value, listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeObject(value?.marshaller())}
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeList(RESPONSE_FIELDS[0], this@Data.search) { value, listItemWriter ->
+          value?.forEach { value ->
+            listItemWriter.writeObject(value?.marshaller())}
+        }
       }
     }
 
@@ -167,9 +229,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forList("search", "search", mapOf<String, Any>(
-            "text" to "test"), true, null)
-          )
+        ResponseField.forList("search", "search", mapOf<String, Any>(
+          "text" to "test"), true, null)
+      )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {
         val search = readList<Search>(RESPONSE_FIELDS[0]) { reader ->

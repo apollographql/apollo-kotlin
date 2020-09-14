@@ -1,13 +1,13 @@
 package com.apollographql.apollo.compiler.next.ast
 
-import com.apollographql.apollo.api.internal.QueryDocumentMinifier
-import com.apollographql.apollo.compiler.OperationIdGenerator
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.ir.Field
 import com.apollographql.apollo.compiler.ir.Operation
 import com.apollographql.apollo.compiler.ir.SourceLocation
 import com.apollographql.apollo.compiler.ir.TypeDeclaration
+import com.apollographql.apollo.compiler.operationoutput.OperationOutput
+import com.apollographql.apollo.compiler.operationoutput.findOperationId
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.parser.introspection.resolveType
 import com.apollographql.apollo.compiler.ir.Fragment as IrFragment
@@ -18,7 +18,7 @@ internal fun CodeGenerationIR.buildCodeGenerationAst(
     typesPackageName: String,
     fragmentsPackage: String,
     useSemanticNaming: Boolean,
-    operationIdGenerator: OperationIdGenerator
+    operationOutput: OperationOutput
 ): CodeGenerationAst {
   return CodeGenerationAstBuilder(
       schema = schema,
@@ -26,7 +26,7 @@ internal fun CodeGenerationIR.buildCodeGenerationAst(
       typesPackageName = typesPackageName,
       fragmentsPackage = fragmentsPackage,
       useSemanticNaming = useSemanticNaming,
-      operationIdGenerator = operationIdGenerator
+      operationOutput = operationOutput
   ).build(this.flattenInlineFragments())
 }
 
@@ -36,7 +36,7 @@ private class CodeGenerationAstBuilder(
     private val typesPackageName: String,
     private val fragmentsPackage: String,
     private val useSemanticNaming: Boolean,
-    private val operationIdGenerator: OperationIdGenerator
+    private val operationOutput: OperationOutput
 ) {
 
   fun build(ir: CodeGenerationIR): CodeGenerationAst {
@@ -154,7 +154,7 @@ private class CodeGenerationAstBuilder(
       isSubscription() -> CodeGenerationAst.OperationType.Type.SUBSCRIPTION
       else -> throw IllegalArgumentException("Unsupported GraphQL operation type: $operationType")
     }
-    val operationId = operationIdGenerator.apply(QueryDocumentMinifier.minify(sourceWithFragments), filePath)
+    val operationId = operationOutput.findOperationId(operationName, packageName)
     val operationClassName = normalizedOperationName(useSemanticNaming).capitalize()
     val operationDataType = buildOperationDataType(
         operationClassName = operationClassName,
@@ -164,6 +164,7 @@ private class CodeGenerationAstBuilder(
     )
     return CodeGenerationAst.OperationType(
         name = operationClassName,
+        packageName = packageName,
         type = operationType,
         operationName = operationName,
         description = description,
@@ -304,7 +305,7 @@ private class CodeGenerationAstBuilder(
         fragmentsPackage = fragmentsPackage,
         irFragments = irFragments.associateBy { it.fragmentName },
         nestedTypeContainer = nestedTypeContainer,
-        enclosingType = CodeGenerationAst.TypeRef(name = operationClassName)
+        enclosingType = null
     )
     val dataFieldType = objectTypeBuilder.resolveFieldType(
         field = Field(

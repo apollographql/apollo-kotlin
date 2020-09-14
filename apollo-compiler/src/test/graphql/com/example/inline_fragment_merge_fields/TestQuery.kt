@@ -94,16 +94,18 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val name: String
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeString(RESPONSE_FIELDS[0], this@Node.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], this@Node.name)
+    fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@Node.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@Node.name)
+      }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("name", "name", null, false, null)
-          )
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("name", "name", null, false, null)
+      )
 
       operator fun invoke(reader: ResponseReader): Node = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
@@ -129,16 +131,18 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val node: Node?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeString(RESPONSE_FIELDS[0], this@Edge.__typename)
-      writer.writeObject(RESPONSE_FIELDS[1], this@Edge.node?.marshaller())
+    fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@Edge.__typename)
+        writer.writeObject(RESPONSE_FIELDS[1], this@Edge.node?.marshaller())
+      }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forObject("node", "node", null, true, null)
-          )
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forObject("node", "node", null, true, null)
+      )
 
       operator fun invoke(reader: ResponseReader): Edge = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
@@ -166,11 +170,14 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val edges: List<Edge?>?
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeString(RESPONSE_FIELDS[0], this@FriendsConnection.__typename)
-      writer.writeList(RESPONSE_FIELDS[1], this@FriendsConnection.edges) { value, listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeObject(value?.marshaller())}
+    fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@FriendsConnection.__typename)
+        writer.writeList(RESPONSE_FIELDS[1],
+            this@FriendsConnection.edges) { value, listItemWriter ->
+          value?.forEach { value ->
+            listItemWriter.writeObject(value?.marshaller())}
+        }
       }
     }
 
@@ -178,9 +185,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forList("edges", "edges", null, true, null)
-          )
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forList("edges", "edges", null, true, null)
+      )
 
       operator fun invoke(reader: ResponseReader): FriendsConnection = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
@@ -218,21 +225,23 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val profileLink: Any
   ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeString(RESPONSE_FIELDS[0], this@Hero.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], this@Hero.name)
-      writer.writeObject(RESPONSE_FIELDS[2], this@Hero.friendsConnection.marshaller())
-      writer.writeCustom(RESPONSE_FIELDS[3] as ResponseField.CustomTypeField, this@Hero.profileLink)
+    fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@Hero.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@Hero.name)
+        writer.writeObject(RESPONSE_FIELDS[2], this@Hero.friendsConnection.marshaller())
+        writer.writeCustom(RESPONSE_FIELDS[3] as ResponseField.CustomTypeField,
+            this@Hero.profileLink)
+      }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("name", "name", null, false, null),
-          ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null),
-          ResponseField.forCustomType("profileLink", "profileLink", null, false, CustomType.URL,
-              null)
-          )
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null),
+        ResponseField.forCustomType("profileLink", "profileLink", null, false, CustomType.URL, null)
+      )
 
       operator fun invoke(reader: ResponseReader): Hero = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
@@ -260,14 +269,16 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   data class Data(
     val hero: Hero?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeObject(RESPONSE_FIELDS[0], this@Data.hero?.marshaller())
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeObject(RESPONSE_FIELDS[0], this@Data.hero?.marshaller())
+      }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forObject("hero", "hero", null, true, null)
-          )
+        ResponseField.forObject("hero", "hero", null, true, null)
+      )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {
         val hero = readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->

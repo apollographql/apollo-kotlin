@@ -61,7 +61,7 @@ class KotlinCodegenTests {
       assertThat(dir.generatedChild("main/service/com/example/type/CustomType.kt").readText(), CoreMatchers.containsString("internal enum class"))
 
       assertTrue(dir.generatedChild("main/service/com/example/fragment/SpeciesInformation.kt").isFile)
-      assertThat(dir.generatedChild("main/service/com/example/fragment/SpeciesInformation.kt").readText(), CoreMatchers.containsString("internal data class"))
+      assertThat(dir.generatedChild("main/service/com/example/fragment/SpeciesInformation.kt").readText(), CoreMatchers.containsString("internal interface"))
     }
   }
 
