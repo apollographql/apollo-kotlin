@@ -97,7 +97,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Optional
   abstract val generateKotlinModels: Property<Boolean>
 
+  @get:Internal
   abstract val warnOnDeprecatedUsages: Property<Boolean>
+
+  @get:Internal
   abstract val failOnWarnings: Property<Boolean>
 
   @get:Input
