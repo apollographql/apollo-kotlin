@@ -34,6 +34,11 @@ class GraphQLKompiler(
     )
 
     customTypeMap
+        .filterKeys {
+          ir.scalarsToGenerate.contains(it)
+        }.let {
+          CustomTypes(it)
+        }
         .typeSpec(generateAsInternal)
         .fileSpec(ir.typesPackageName)
         .writeTo(outputDir)

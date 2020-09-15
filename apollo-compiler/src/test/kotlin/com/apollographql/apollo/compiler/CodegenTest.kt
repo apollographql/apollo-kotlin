@@ -182,7 +182,7 @@ class CodegenTest(private val folder: File, private val testLanguage: TestLangua
 
     @JvmStatic
     @Parameterized.Parameters(name = "{0}-{1}")
-    fun data(): Collection<Array<Any>> {
+    fun data(): Collection<Array<*>> {
       return File("src/test/graphql/com/example/")
           .listFiles()!!
           .filter { it.isDirectory }
@@ -190,6 +190,9 @@ class CodegenTest(private val folder: File, private val testLanguage: TestLangua
               arrayOf(it, TestLanguage.Java),
               arrayOf(it, TestLanguage.Kotlin)
           ) }
+          .filter {
+            true || it[0].toString().contains("hero_with_review") && it[1] == TestLanguage.Kotlin
+          }
     }
   }
 }

@@ -45,13 +45,14 @@ private class CodeGenerationAstBuilder(
         .filter { typeUsed -> ir.enumsToGenerate.contains(typeUsed.name) }
         .map { type -> type.buildEnumType() }
 
-    val customTypes = customTypeMap.mapValues { (schemaType, mappedType) ->
-      CodeGenerationAst.CustomType(
-          name = schemaType.escapeKotlinReservedWord().toUpperCase(),
-          schemaType = schemaType,
-          mappedType = mappedType
-      )
-    }
+    val customTypes = customTypeMap
+        .mapValues { (schemaType, mappedType) ->
+          CodeGenerationAst.CustomType(
+              name = schemaType.escapeKotlinReservedWord().toUpperCase(),
+              schemaType = schemaType,
+              mappedType = mappedType
+          )
+        }
 
     val inputTypes = ir.typeDeclarations
         .filter { typeUsed -> typeUsed.kind == TypeDeclaration.KIND_INPUT_OBJECT_TYPE }
@@ -80,7 +81,6 @@ private class CodeGenerationAstBuilder(
         }
 
     val operations = ir.operations
-        .filter { ir.fragmentsToGenerate.contains(it.operationName) }
         .map { operation ->
           operation.buildOperationType(
               irFragments = ir.fragments,

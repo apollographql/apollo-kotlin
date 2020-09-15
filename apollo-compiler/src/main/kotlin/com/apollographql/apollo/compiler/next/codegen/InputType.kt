@@ -116,7 +116,7 @@ internal fun CodeGenerationAst.InputField.writeCodeBlock(thisRef: String): CodeB
       is CodeGenerationAst.FieldType.Scalar.Int -> {
         if (type.nullable) {
           CodeBlock.builder()
-              .addStatement("if·(this@%L.%L.defined)·{", thisRef, schemaName)
+              .addStatement("if·(this@%L.%L.defined)·{", thisRef, name)
               .indent()
               .addStatement("writer.writeInt(%S, this@%L.%L.value)", name, thisRef, name)
               .unindent()
