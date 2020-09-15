@@ -40,8 +40,9 @@ private class CodeGenerationAstBuilder(
 ) {
 
   fun build(ir: CodeGenerationIR): CodeGenerationAst {
-    val enums = ir.typesUsed
+    val enums = ir.typeDeclarations
         .filter { typeUsed -> typeUsed.kind == TypeDeclaration.KIND_ENUM }
+
         .map { type -> type.buildEnumType() }
 
     val customTypes = customTypeMap.mapValues { (schemaType, mappedType) ->
@@ -52,8 +53,9 @@ private class CodeGenerationAstBuilder(
       )
     }
 
-    val inputTypes = ir.typesUsed
+    val inputTypes = ir.typeDeclarations
         .filter { typeUsed -> typeUsed.kind == TypeDeclaration.KIND_INPUT_OBJECT_TYPE }
+        .filter { typeUsed -> ir.inputObjectsToGenerate.contains(typeUsed.name) }
         .map { type ->
           type.buildInputType(
               schema = schema,
@@ -62,26 +64,30 @@ private class CodeGenerationAstBuilder(
           )
         }
 
-    val fragmentTypes = ir.fragments.map { fragment ->
-      fragment.buildFragmentType(
-          irFragments = ir.fragments,
-          customTypes = customTypes
-      )
-    }.let { fragmentTypes ->
-      fragmentTypes.map { fragmentType ->
-        fragmentType.copy(
-            nestedTypes = fragmentType.nestedTypes.patchTypeHierarchy(fragmentTypes.minus(fragmentType))
-        )
-      }
-    }
+    val fragmentTypes = ir.fragments
+        .filter { ir.fragmentsToGenerate.contains(it.fragmentName) }
+        .map { fragment ->
+          fragment.buildFragmentType(
+              irFragments = ir.fragments,
+              customTypes = customTypes
+          )
+        }.let { fragmentTypes ->
+          fragmentTypes.map { fragmentType ->
+            fragmentType.copy(
+                nestedTypes = fragmentType.nestedTypes.patchTypeHierarchy(fragmentTypes.minus(fragmentType))
+            )
+          }
+        }
 
-    val operations = ir.operations.map { operation ->
-      operation.buildOperationType(
-          irFragments = ir.fragments,
-          fragmentTypes = fragmentTypes,
-          customTypes = customTypes
-      )
-    }
+    val operations = ir.operations
+        .filter { ir.fragmentsToGenerate.contains(it.operationName) }
+        .map { operation ->
+          operation.buildOperationType(
+              irFragments = ir.fragments,
+              fragmentTypes = fragmentTypes,
+              customTypes = customTypes
+          )
+        }
 
     return CodeGenerationAst(
         operationTypes = operations,
@@ -309,14 +315,14 @@ private class CodeGenerationAstBuilder(
     )
     val dataFieldType = objectTypeBuilder.resolveFieldType(
         field = Field(
-          responseName = "data",
-          fieldName = "data",
-          type = operationSchemaType,
-          typeDescription = "",
-          sourceLocation = SourceLocation.UNKNOWN,
-          fields = fields,
-          fragmentRefs = fragments
-      ),
+            responseName = "data",
+            fieldName = "data",
+            type = operationSchemaType,
+            typeDescription = "",
+            sourceLocation = SourceLocation.UNKNOWN,
+            fields = fields,
+            fragmentRefs = fragments
+        ),
         schemaTypeRef = schema.resolveType(operationSchemaType),
         abstract = false
     ) as CodeGenerationAst.FieldType.Object
