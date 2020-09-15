@@ -306,8 +306,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
       operator fun invoke(reader: ResponseReader): Friend1 {
         val typename = reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
-          "Human" -> HeroDetailsImpl(reader)
           "Droid" -> HeroDetailsImpl(reader)
+          "Human" -> HeroDetailsImpl(reader)
           else -> FriendImpl(reader)
         }
       }

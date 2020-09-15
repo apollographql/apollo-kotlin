@@ -22,8 +22,7 @@ internal object TestUtils {
         throw Exception("""generatedFile content doesn't match the expectedFile content.
       |If you changed the compiler recently, you need to update the testFixtures.
       |Run the tests with `-DupdateTestFixtures=true` to do so.
-      |generatedFile: ${actual.path}
-      |expectedFile: ${expected.path}""".trimMargin())
+      |diff ${expected.path} ${actual.path}""".trimMargin())
       }
     }
   }
