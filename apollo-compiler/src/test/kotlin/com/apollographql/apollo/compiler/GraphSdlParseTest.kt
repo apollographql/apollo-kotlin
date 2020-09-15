@@ -5,8 +5,6 @@ import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchem
 import com.apollographql.apollo.compiler.parser.sdl.GraphSdlSchema
 import com.apollographql.apollo.compiler.parser.sdl.toIntrospectionSchema
 import com.google.common.truth.Truth.assertThat
-import com.squareup.moshi.JsonClass
-import com.squareup.moshi.Moshi
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Test
@@ -16,13 +14,30 @@ class GraphSdlParseTest() {
 
   @Test
   fun `SDL schema parsed successfully and produced the same introspection schema`() {
+    /**
+     * Things to watch out:
+     * - leading/trailing spaces in descriptions
+     * - defaultValue coercion
+     */
     val actualSchema = GraphSdlSchema(File("src/test/sdl/schema.sdl")).toIntrospectionSchema().normalize()
     val expectedSchema = IntrospectionSchema(File("src/test/sdl/schema.json")).normalize()
+
     assertEquals(actualSchema.toString(), expectedSchema.toString())
   }
 
   private fun IntrospectionSchema.normalize(): IntrospectionSchema {
     return copy(types = toSortedMap().mapValues { (_, type) -> type.normalize() })
+  }
+
+  /**
+   * GraphQL has Int and Float, json has only Number, map everything to Double
+   */
+  private fun Any?.normalizeNumbers(): Any? {
+    return when (this) {
+      is List<*> -> this.map { it?.normalizeNumbers() }
+      is Number -> this.toDouble()
+      else -> this
+    }
   }
 
   private fun IntrospectionSchema.Type.normalize(): IntrospectionSchema.Type {
@@ -32,7 +47,9 @@ class GraphSdlParseTest() {
       is IntrospectionSchema.Type.Interface -> copy(fields = fields?.sortedBy { field -> field.name })
       is IntrospectionSchema.Type.Union -> copy(fields = fields?.sortedBy { field -> field.name })
       is IntrospectionSchema.Type.Enum -> this
-      is IntrospectionSchema.Type.InputObject -> copy(inputFields = inputFields.sortedBy { field -> field.name })
+      is IntrospectionSchema.Type.InputObject -> copy(inputFields = inputFields.map {
+        it.copy(defaultValue = it.defaultValue.normalizeNumbers())
+      }.sortedBy { field -> field.name })
     }
   }
 

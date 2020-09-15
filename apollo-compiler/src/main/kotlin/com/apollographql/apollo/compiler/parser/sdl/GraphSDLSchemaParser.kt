@@ -17,39 +17,6 @@ import java.io.IOException
 import java.util.Locale
 
 internal object GraphSDLSchemaParser {
-  private val builtInScalarTypes = listOf(
-      GraphSdlSchema.TypeDefinition.Scalar(
-          name = "Int",
-          description = "The `Int` scalar type represents non-fractional signed whole numeric values. " +
-              "Int can represent values between -(2^31) and 2^31 - 1. ",
-          directives = emptyList()
-      ),
-      GraphSdlSchema.TypeDefinition.Scalar(
-          name = "Float",
-          description = "The `Float` scalar type represents signed double-precision fractional values as specified by " +
-              "[IEEE 754](http://en.wikipedia.org/wiki/IEEE_floating_point).",
-          directives = emptyList()
-      ),
-      GraphSdlSchema.TypeDefinition.Scalar(
-          name = "String",
-          description = "The `String` scalar type represents textual data, represented as UTF-8 character sequences. " +
-              "The String type is most often used by GraphQL to represent free-form human-readable text.",
-          directives = emptyList()
-      ),
-      GraphSdlSchema.TypeDefinition.Scalar(
-          name = "Boolean",
-          description = "The `Boolean` scalar type represents `true` or `false`.",
-          directives = emptyList()
-      ),
-      GraphSdlSchema.TypeDefinition.Scalar(
-          name = "ID",
-          description = "The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. " +
-              "The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. " +
-              "When expected as an input type, any string (such as `\"4\"`) or integer (such as `4`) input value will be accepted as an ID.",
-          directives = emptyList()
-      )
-  )
-
   fun File.parse(): GraphSdlSchema {
     val document = try {
       readText()
@@ -97,19 +64,25 @@ internal object GraphSDLSchemaParser {
     }
   }
 
+  private fun List<GraphSDLParser.TypeDefinitionContext>.parse() = flatMap { ctx ->
+    listOfNotNull(
+        ctx.enumTypeDefinition()?.parse(),
+        ctx.objectTypeDefinition()?.parse(),
+        ctx.interfaceTypeDefinition()?.parse(),
+        ctx.inputObjectDefinition()?.parse(),
+        ctx.unionTypeDefinition()?.parse(),
+        ctx.scalarTypeDefinition()?.parse()
+    )
+  }
+
+  private fun builtInTypeDefinitions() = javaClass.getResourceAsStream("/builtins.sdl").use { inputStream ->
+    GraphSDLParser(CommonTokenStream(GraphSDLLexer(ANTLRInputStream(inputStream)))).document()
+        .typeDefinition().parse()
+  }
+
   private fun GraphSDLParser.DocumentContext.parse(): GraphSdlSchema {
-    val typeDefinitions = typeDefinition()
-        ?.flatMap { ctx ->
-          listOfNotNull(
-              ctx.enumTypeDefinition()?.parse(),
-              ctx.objectTypeDefinition()?.parse(),
-              ctx.interfaceTypeDefinition()?.parse(),
-              ctx.inputObjectDefinition()?.parse(),
-              ctx.unionTypeDefinition()?.parse(),
-              ctx.scalarTypeDefinition()?.parse()
-          )
-        }
-        ?.plus(builtInScalarTypes)
+    val typeDefinitions = typeDefinition()?.parse()
+        ?.plus(builtInTypeDefinitions())
         ?.associateBy { it.name }
 
     val schemaDefinition = schemaDefinition().firstOrNull()
@@ -193,7 +166,7 @@ internal object GraphSDLSchemaParser {
         name = name().text,
         description = description().parse(),
         directives = directives().parse(),
-        typeRefs = unionMemberTypes()?.unionMemberType()?.map { it.namedType().parse() } ?: emptyList()
+        typeRefs = unionMemberTypes()?.namedType()?.map { it.parse() } ?: emptyList()
     )
   }
 
@@ -271,7 +244,7 @@ internal object GraphSDLSchemaParser {
       enumValue() != null -> enumValue().name().text
       listValue() != null -> listValue().value().map { it.parse() }
       objectValue() != null -> text
-      stringValue() != null -> text
+      stringValue() != null -> text.removePrefix("\"").removeSuffix("\"")
       nullValue() != null -> null
       else -> throw ParseException(
           message = "Illegal default value `$text`",
@@ -312,8 +285,13 @@ internal object GraphSDLSchemaParser {
   }
 
   private fun GraphSDLParser.DescriptionContext?.parse(): String {
+    /**
+     * Block strings should strip their leading spaces.
+     * See https://spec.graphql.org/June2018/#sec-String-Value
+     */
+
     return this?.STRING()?.text?.removePrefix("\"")?.removePrefix("\n")?.removeSuffix("\"")?.removeSuffix("\n")
-        ?: this?.BLOCK_STRING()?.text?.removePrefix("\"\"\"")?.removePrefix("\n")?.removeSuffix("\"\"\"")?.removeSuffix("\n")
+        ?: this?.BLOCK_STRING()?.text?.removePrefix("\"\"\"")?.removeSuffix("\"\"\"")?.trimIndent()
         ?: ""
   }
 

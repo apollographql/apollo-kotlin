@@ -1,15 +1,14 @@
 package com.apollographql.apollo.compiler.parser.introspection
 
+import com.apollographql.apollo.compiler.fromJson
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.JsonReader
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
 import okio.ByteString.Companion.decodeHex
 import okio.buffer
 import okio.source
 import java.io.File
+import java.io.InputStream
 
-@JsonClass(generateAdapter = true)
 data class IntrospectionSchema(
     val queryType: String = "query",
     val mutationType: String = "mutation",
@@ -119,25 +118,11 @@ data class IntrospectionSchema(
   companion object {
     private val UTF8_BOM = "EFBBBF".decodeHex()
 
-    @JvmStatic
-    @JvmName("parse")
-    operator fun invoke(schemaFile: File): IntrospectionSchema {
-      val moshi = Moshi.Builder()
-          .add(
-              PolymorphicJsonAdapterFactory.of(Type::class.java, "kind")
-                  .withSubtype(Type.Scalar::class.java, Kind.SCALAR.name)
-                  .withSubtype(Type.Object::class.java, Kind.OBJECT.name)
-                  .withSubtype(Type.Interface::class.java, Kind.INTERFACE.name)
-                  .withSubtype(Type.Union::class.java, Kind.UNION.name)
-                  .withSubtype(Type.Enum::class.java, Kind.ENUM.name)
-                  .withSubtype(Type.InputObject::class.java, Kind.INPUT_OBJECT.name)
-          )
-          .build()
-
+    operator fun invoke(inputStream: InputStream, origin: String = ""): IntrospectionSchema {
       val source = try {
-        schemaFile.inputStream().source().buffer()
+        inputStream.source().buffer()
       } catch (e: Exception) {
-        throw RuntimeException("Failed to parse GraphQL schema introspection query from `$schemaFile`", e)
+        throw RuntimeException("Failed to parse GraphQL schema introspection query $origin", e)
       }
 
       if (source.rangeEquals(0, UTF8_BOM)) {
@@ -146,13 +131,15 @@ data class IntrospectionSchema(
 
       val jsonReader = JsonReader.of(source)
       return try {
-        jsonReader.locateSchemaRootNode().parseSchema(moshi)
+        jsonReader.locateSchemaRootNode().fromJson<IntrospectionQuery.Schema>().toIntrospectionSchema()
       } catch (e: Exception) {
-        throw RuntimeException("Failed to parse GraphQL schema introspection query from `$schemaFile`", e)
+        throw RuntimeException("Failed to parse GraphQL schema introspection query $origin", e)
       } finally {
         jsonReader.close()
       }
     }
+
+    operator fun invoke(schemaFile: File) = IntrospectionSchema(schemaFile.inputStream(), "from `$schemaFile`")
 
     private fun JsonReader.locateSchemaRootNode(): JsonReader {
       beginObject()
@@ -173,13 +160,23 @@ data class IntrospectionSchema(
       return schemaJsonReader ?: throw IllegalArgumentException("Failed to locate schema root node `__schema`")
     }
 
-    private fun JsonReader.parseSchema(moshi: Moshi): IntrospectionSchema {
-      val introspectionSchema = moshi.adapter(IntrospectionQuery.Schema::class.java).fromJson(this)!!
+    fun IntrospectionQuery.Schema.toIntrospectionSchema(): IntrospectionSchema {
       return IntrospectionSchema(
-          queryType = introspectionSchema.queryType?.name ?: "query",
-          mutationType = introspectionSchema.mutationType?.name ?: "mutation",
-          subscriptionType = introspectionSchema.subscriptionType?.name ?: "subscription",
-          types = introspectionSchema.types.associateBy { it.name }
+          queryType = queryType?.name ?: "query",
+          mutationType = mutationType?.name ?: "mutation",
+          subscriptionType = subscriptionType?.name ?: "subscription",
+          types = types.associateBy { it.name }
+      )
+    }
+
+    fun IntrospectionSchema.wrap(): IntrospectionQuery.Wrapper {
+      return IntrospectionQuery.Wrapper(
+          __schema = IntrospectionQuery.Schema(
+              queryType = IntrospectionQuery.QueryType(this.queryType),
+              mutationType = IntrospectionQuery.MutationType(this.mutationType),
+              subscriptionType = IntrospectionQuery.SubscriptionType(this.subscriptionType),
+              types = types.values.toList()
+          )
       )
     }
   }
@@ -195,11 +192,19 @@ object IntrospectionQuery {
   @JsonClass(generateAdapter = true)
   data class SubscriptionType(val name: String)
 
+  /**
+   * An intermediate class that matches the introspection query results
+   */
   @JsonClass(generateAdapter = true)
   data class Schema(
       val queryType: QueryType?,
       val mutationType: MutationType?,
       val subscriptionType: SubscriptionType?,
-      val types: List<com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Type>
+      val types: List<IntrospectionSchema.Type>
+  )
+
+  @JsonClass(generateAdapter = true)
+  data class Wrapper(
+      val __schema: Schema
   )
 }

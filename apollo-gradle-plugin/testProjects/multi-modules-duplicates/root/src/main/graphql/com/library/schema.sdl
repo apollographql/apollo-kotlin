@@ -1,0 +1,23 @@
+enum Class {
+  MAMMAL
+  FISH
+  BIRD
+  INSECT
+}
+
+scalar Date
+
+interface Animal {
+  class: Class!
+}
+
+type Cat implements Animal {
+  class: Class!
+  mustaches: Int!
+  dateOfBirth: Date!
+}
+
+type Query {
+  randomAnimal: Animal!
+}
+

@@ -1,0 +1,13 @@
+query GetHero {
+    heroDetailQuery {
+      ...CharacterFragment
+      ...HumanFragment
+    }
+}
+
+fragment HumanFragment on Human {
+  name
+  appearsIn
+  id
+  homePlanet
+}

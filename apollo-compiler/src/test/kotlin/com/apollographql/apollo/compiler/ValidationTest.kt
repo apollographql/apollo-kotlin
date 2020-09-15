@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler
 
+import com.apollographql.apollo.compiler.ir.IRBuilder
 import com.apollographql.apollo.compiler.parser.error.DocumentParseException
 import com.apollographql.apollo.compiler.parser.error.ParseException
 import com.apollographql.apollo.compiler.parser.graphql.GraphQLDocumentParser
@@ -20,13 +21,13 @@ class ValidationTest(name: String, private val graphQLFile: File) {
     val schemaFile = File("src/test/validation/schema.json")
     val schema = IntrospectionSchema(schemaFile)
     val packageNameProvider = DefaultPackageNameProvider(
-        rootFolders = listOf(graphQLFile.parentFile),
-        schemaFile = schemaFile,
+        roots = Roots(listOf(graphQLFile.parentFile)),
         rootPackageName = ""
     )
 
     try {
-      GraphQLDocumentParser(schema, packageNameProvider).parse(setOf(graphQLFile))
+      val documentParseResult = GraphQLDocumentParser(schema, packageNameProvider).parse(setOf(graphQLFile))
+      IRBuilder(schema, "", null, null, false).build(documentParseResult)
       fail("parse expected to fail but was successful")
     } catch (e: Exception) {
       if (e is DocumentParseException || e is ParseException) {

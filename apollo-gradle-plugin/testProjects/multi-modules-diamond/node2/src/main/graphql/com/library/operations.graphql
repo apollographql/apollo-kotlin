@@ -1,0 +1,4 @@
+fragment CatFragment2 on Cat {
+  class
+}
+

@@ -86,12 +86,7 @@ unionTypeDefinition
   ;
 
 unionMemberTypes
-  : '=' unionMemberType*
-  ;
-
-unionMemberType
-  : '|'? namedType
-  ;
+  : '=' '|'?  namedType ('|'namedType)* ;
 
 scalarTypeDefinition
   : description? SCALAR name directives?

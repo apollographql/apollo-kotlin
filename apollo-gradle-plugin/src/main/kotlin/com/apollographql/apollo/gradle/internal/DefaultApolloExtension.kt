@@ -6,7 +6,7 @@ import com.apollographql.apollo.gradle.api.CompilerParams
 import org.gradle.api.Action
 import org.gradle.api.Project
 
-open class DefaultApolloExtension(val project: Project)
+abstract class DefaultApolloExtension(val project: Project)
   : CompilerParams by project.objects.newInstance(DefaultCompilerParams::class.java)
     , ApolloExtension {
   /**

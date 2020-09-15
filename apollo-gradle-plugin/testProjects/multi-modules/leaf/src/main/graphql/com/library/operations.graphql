@@ -1,0 +1,16 @@
+# simple queries that use fragments and input types from root
+query GetAnimal {
+  randomAnimal {
+    ...CatFragment
+  }
+}
+
+query GetPlant($size: Int!) {
+  randomPlant {
+    ...PlantFragment
+  }
+}
+
+mutation registerAnimal($input: AnimalInput!) {
+  registerAnimal(input: $input)
+}

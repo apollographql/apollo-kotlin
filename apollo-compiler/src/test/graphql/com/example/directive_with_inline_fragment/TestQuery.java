@@ -340,7 +340,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         )),
         ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
           ResponseField.Condition.booleanCondition("withDetails", false),
-          ResponseField.Condition.typeCondition(new String[] {"Human", "Droid"})
+          ResponseField.Condition.typeCondition(new String[] {"Droid", "Human"})
         ))
       };
 
