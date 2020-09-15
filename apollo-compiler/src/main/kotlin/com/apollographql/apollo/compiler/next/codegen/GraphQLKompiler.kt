@@ -36,12 +36,19 @@ class GraphQLKompiler(
     customTypeMap
         .filterKeys {
           ir.scalarsToGenerate.contains(it)
-        }.let {
+        }.takeIf {
+          /**
+           * Skip generating the ScalarType enum if it's empty
+           * This happens in multi-module for leaf modules
+           */
+          it.isNotEmpty()
+        }
+        ?.let {
           CustomTypes(it)
         }
-        .typeSpec(generateAsInternal)
-        .fileSpec(ir.typesPackageName)
-        .writeTo(outputDir)
+        ?.typeSpec(generateAsInternal)
+        ?.fileSpec(ir.typesPackageName)
+        ?.writeTo(outputDir)
 
     ast.enumTypes.forEach { enumType ->
       enumType
