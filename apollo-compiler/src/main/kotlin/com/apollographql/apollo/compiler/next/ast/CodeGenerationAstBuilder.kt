@@ -42,7 +42,7 @@ private class CodeGenerationAstBuilder(
   fun build(ir: CodeGenerationIR): CodeGenerationAst {
     val enums = ir.typeDeclarations
         .filter { typeUsed -> typeUsed.kind == TypeDeclaration.KIND_ENUM }
-
+        .filter { typeUsed -> ir.enumsToGenerate.contains(typeUsed.name) }
         .map { type -> type.buildEnumType() }
 
     val customTypes = customTypeMap.mapValues { (schemaType, mappedType) ->

@@ -1,6 +1,6 @@
 package com.apollographql.apollo.compiler.ast
 
-internal class CustomTypes(map: Map<String, String>) : Map<String, String> by map
+class CustomTypes(map: Map<String, String>) : Map<String, String> by map
 
 internal data class TypeRef(val name: String, val packageName: String = "")
 

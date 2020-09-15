@@ -16,7 +16,7 @@ import java.io.File
 class GraphQLKompiler(
     private val ir: CodeGenerationIR,
     private val schema: IntrospectionSchema,
-    private val customTypes: Map<String, String>,
+    private val customTypeMap: CustomTypes,
     private val useSemanticNaming: Boolean,
     private val generateAsInternal: Boolean = false,
     private val operationOutput: OperationOutput,
@@ -24,7 +24,6 @@ class GraphQLKompiler(
     private val enumAsSealedClassPatternFilters: List<Regex>
 ) {
   fun write(outputDir: File) {
-    val customTypeMap = customTypes.supportedCustomTypes(ir.typesUsed)
     val ast = ir.buildCodeGenerationAst(
         schema = schema,
         customTypeMap = customTypeMap,
@@ -77,16 +76,6 @@ class GraphQLKompiler(
           .fileSpec(ir.fragmentsPackageName)
           .writeTo(outputDir)
     }
-  }
-
-  private fun Map<String, String>.supportedCustomTypes(typeDeclarations: List<TypeDeclaration>): CustomTypes {
-    val idScalarTypeMap = ScalarType.ID.name to (this[ScalarType.ID.name] ?: String::class.asClassName().toString())
-    return CustomTypes(
-        typeDeclarations
-            .filter { it.kind == TypeDeclaration.KIND_SCALAR_TYPE }
-            .associate { it.name to (this[it.name] ?: Any::class.asClassName().canonicalName) }
-            .plus(idScalarTypeMap)
-    )
   }
 
   private fun TypeSpec.fileSpec(packageName: String) =
