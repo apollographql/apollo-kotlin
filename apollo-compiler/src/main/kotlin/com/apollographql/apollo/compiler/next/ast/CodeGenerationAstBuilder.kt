@@ -42,7 +42,6 @@ private class CodeGenerationAstBuilder(
   fun build(ir: CodeGenerationIR): CodeGenerationAst {
     val enums = ir.typeDeclarations
         .filter { typeUsed -> typeUsed.kind == TypeDeclaration.KIND_ENUM }
-        .filter { typeUsed -> ir.enumsToGenerate.contains(typeUsed.name) }
         .map { type -> type.buildEnumType() }
 
     val customTypes = customTypeMap
@@ -56,7 +55,6 @@ private class CodeGenerationAstBuilder(
 
     val inputTypes = ir.typeDeclarations
         .filter { typeUsed -> typeUsed.kind == TypeDeclaration.KIND_INPUT_OBJECT_TYPE }
-        .filter { typeUsed -> ir.inputObjectsToGenerate.contains(typeUsed.name) }
         .map { type ->
           type.buildInputType(
               schema = schema,
@@ -66,7 +64,6 @@ private class CodeGenerationAstBuilder(
         }
 
     val fragmentTypes = ir.fragments
-        .filter { ir.fragmentsToGenerate.contains(it.fragmentName) }
         .map { fragment ->
           fragment.buildFragmentType(
               irFragments = ir.fragments,
@@ -99,6 +96,7 @@ private class CodeGenerationAstBuilder(
   }
 
   private fun TypeDeclaration.buildEnumType() = CodeGenerationAst.EnumType(
+      graphqlName = name,
       name = name.capitalize().escapeKotlinReservedWord(),
       description = description,
       consts = values.map { value ->
@@ -118,6 +116,7 @@ private class CodeGenerationAstBuilder(
       customTypes: CustomTypes
   ): CodeGenerationAst.InputType {
     return CodeGenerationAst.InputType(
+        graphqlName = name,
         name = name.capitalize().escapeKotlinReservedWord(),
         description = description,
         deprecated = false,
@@ -374,6 +373,7 @@ private class CodeGenerationAstBuilder(
       )
     }
     return CodeGenerationAst.FragmentType(
+        graphqlName = fragmentName,
         rootType = rootType,
         defaultImplementation = defaultImplementation,
         nestedTypes = nestedTypeContainer.typeContainer,

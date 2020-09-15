@@ -3,14 +3,11 @@ package com.apollographql.apollo.compiler.next.codegen
 import com.apollographql.apollo.compiler.ast.CustomTypes
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.patchKotlinNativeOptionalArrayProperties
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
-import com.apollographql.apollo.compiler.ir.ScalarType
-import com.apollographql.apollo.compiler.ir.TypeDeclaration
 import com.apollographql.apollo.compiler.next.ast.buildCodeGenerationAst
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.asClassName
 import java.io.File
 
 class GraphQLKompiler(
@@ -50,22 +47,35 @@ class GraphQLKompiler(
         ?.fileSpec(ir.typesPackageName)
         ?.writeTo(outputDir)
 
-    ast.enumTypes.forEach { enumType ->
-      enumType
-          .typeSpec(
-              generateAsInternal = generateAsInternal,
-              enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters
-          )
-          .fileSpec(ir.typesPackageName)
-          .writeTo(outputDir)
-    }
+    ast.enumTypes
+        .filter { ir.enumsToGenerate.contains(it.graphqlName) }
+        .forEach { enumType ->
+          enumType
+              .typeSpec(
+                  generateAsInternal = generateAsInternal,
+                  enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters
+              )
+              .fileSpec(ir.typesPackageName)
+              .writeTo(outputDir)
+        }
 
-    ast.inputTypes.forEach { inputType ->
+    ast.inputTypes
+        .filter { ir.inputObjectsToGenerate.contains(it.graphqlName) }
+        .forEach { inputType ->
       inputType
           .typeSpec(generateAsInternal)
           .fileSpec(ir.typesPackageName)
           .writeTo(outputDir)
     }
+
+    ast.fragmentTypes
+        .filter { ir.fragmentsToGenerate.contains(it.graphqlName) }
+        .forEach { fragmentType ->
+          fragmentType
+              .typeSpec(generateAsInternal)
+              .fileSpec(ir.fragmentsPackageName)
+              .writeTo(outputDir)
+        }
 
     ast.operationTypes.forEach { operationType ->
       operationType
@@ -79,13 +89,6 @@ class GraphQLKompiler(
             } else it
           }
           .fileSpec(operationType.packageName)
-          .writeTo(outputDir)
-    }
-
-    ast.fragmentTypes.forEach { fragmentType ->
-      fragmentType
-          .typeSpec(generateAsInternal)
-          .fileSpec(ir.fragmentsPackageName)
           .writeTo(outputDir)
     }
   }
