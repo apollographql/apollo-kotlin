@@ -55,7 +55,7 @@ public class Rx2Apollo {
       @Override public void subscribe(final ObservableEmitter<Response<T>> emitter) throws Exception {
         cancelOnObservableDisposed(emitter, watcher);
 
-        watcher.enqueueAndWatch(new ApolloCall.Callback<T>() {
+        watcher.clone().enqueueAndWatch(new ApolloCall.Callback<T>() {
           @Override public void onResponse(@NotNull Response<T> response) {
             if (!emitter.isDisposed()) {
               emitter.onNext(response);
@@ -90,7 +90,7 @@ public class Rx2Apollo {
     return Observable.create(new ObservableOnSubscribe<Response<T>>() {
       @Override public void subscribe(final ObservableEmitter<Response<T>> emitter) throws Exception {
         cancelOnObservableDisposed(emitter, call);
-        call.enqueue(new ApolloCall.Callback<T>() {
+        call.clone().enqueue(new ApolloCall.Callback<T>() {
           @Override public void onResponse(@NotNull Response<T> response) {
             if (!emitter.isDisposed()) {
               emitter.onNext(response);
@@ -129,7 +129,7 @@ public class Rx2Apollo {
     return Completable.create(new CompletableOnSubscribe() {
       @Override public void subscribe(final CompletableEmitter emitter) {
         cancelOnCompletableDisposed(emitter, prefetch);
-        prefetch.enqueue(new ApolloPrefetch.Callback() {
+        prefetch.clone().enqueue(new ApolloPrefetch.Callback() {
           @Override public void onSuccess() {
             if (!emitter.isDisposed()) {
               emitter.onComplete();
@@ -162,7 +162,7 @@ public class Rx2Apollo {
     return Flowable.create(new FlowableOnSubscribe<Response<T>>() {
       @Override public void subscribe(final FlowableEmitter<Response<T>> emitter) throws Exception {
         cancelOnFlowableDisposed(emitter, call);
-        call.execute(
+        call.clone().execute(
             new ApolloSubscriptionCall.Callback<T>() {
               @Override public void onResponse(@NotNull Response<T> response) {
                 if (!emitter.isCancelled()) {
