@@ -68,11 +68,6 @@ class GraphSdlParseTest() {
 
   @Test
   fun `writing SDL and parsing again yields identical schemas`() {
-    /**
-     * Things to watch out:
-     * - leading/trailing spaces in descriptions
-     * - defaultValue coercion
-     */
     val initialSchema = IntrospectionSchema(File("src/test/sdl/schema.json")).normalize()
     val sdlFile = File("build/sdl-test/schema.sdl")
     sdlFile.parentFile.deleteRecursively()
