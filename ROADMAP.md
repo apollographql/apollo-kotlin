@@ -2,9 +2,9 @@
 
 This document is meant to give the community some idea of where we're going with Apollo Android in the short and longer term. 
 
-This document was last updated on September 9th, 2020. For a more detailed and certainly more up-to-date view, check the project's [milestones](https://github.com/apollographql/apollo-android/milestones?direction=asc&sort=title&state=open).
- 
+Please open issues or comment/upvote the existing ones for items you'd like to see added here. Feedback is very welcome! We'd love to learn more about how you're using Apollo Android and what you'd like to see in the future.
 
+This document was last updated on September 9th, 2020. For a more detailed and certainly more up-to-date view, check the project's [milestones](https://github.com/apollographql/apollo-android/milestones?direction=asc&sort=title&state=open).
 
 ## `main` branch (versions 2.x)
 
@@ -19,7 +19,7 @@ This document was last updated on September 9th, 2020. For a more detailed and c
 
 ## `dev-3x` branch (versions 3.x)
 
-`dev-3x` is the branch for the next major version of Apollo Android. Most of the changes listed below will require breaking changes and will land in `dev-3x`. The current target is to get a feature complete alpha release `3.0.0-alpha1` by the end of 2020. Including:
+`dev-3x` is the branch for the next major version of Apollo Android. Most of the changes listed below will require breaking changes and will land in `dev-3x`. The current target is to get a `3.0.0-alpha1` by the end of 2020 including:
 
 - **Fragments as interfaces** (#1854): As of today, GraphQL fragments are generated as separate classes. While this works well, accessing fragments is verbose: `hero.fragments.humanDetails?.homePlanet`. Having fragments generated as interface will make the code more concise: `(hero as? Human)?.homePlanet`, possibly `hero.homePlanet` if the type condition is always verified.
 
