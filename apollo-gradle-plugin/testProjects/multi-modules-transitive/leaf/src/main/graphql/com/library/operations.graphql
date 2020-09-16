@@ -1,0 +1,11 @@
+# this leaf query uses fragments from root by adding project(":node") as a dependency
+# project(":root") will be added transitively
+query GetPlantAndAnimal($size: Int!) {
+  randomPlant {
+    ...PlantFragment
+  }
+  randomAnimal {
+    ...CatFragment
+  }
+}
+

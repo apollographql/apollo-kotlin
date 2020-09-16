@@ -40,19 +40,20 @@ private class CodeGenerationAstBuilder(
 ) {
 
   fun build(ir: CodeGenerationIR): CodeGenerationAst {
-    val enums = ir.typesUsed
+    val enums = ir.typeDeclarations
         .filter { typeUsed -> typeUsed.kind == TypeDeclaration.KIND_ENUM }
         .map { type -> type.buildEnumType() }
 
-    val customTypes = customTypeMap.mapValues { (schemaType, mappedType) ->
-      CodeGenerationAst.CustomType(
-          name = schemaType.escapeKotlinReservedWord().toUpperCase(),
-          schemaType = schemaType,
-          mappedType = mappedType
-      )
-    }
+    val customTypes = customTypeMap
+        .mapValues { (schemaType, mappedType) ->
+          CodeGenerationAst.CustomType(
+              name = schemaType.escapeKotlinReservedWord().toUpperCase(),
+              schemaType = schemaType,
+              mappedType = mappedType
+          )
+        }
 
-    val inputTypes = ir.typesUsed
+    val inputTypes = ir.typeDeclarations
         .filter { typeUsed -> typeUsed.kind == TypeDeclaration.KIND_INPUT_OBJECT_TYPE }
         .map { type ->
           type.buildInputType(
@@ -62,26 +63,28 @@ private class CodeGenerationAstBuilder(
           )
         }
 
-    val fragmentTypes = ir.fragments.map { fragment ->
-      fragment.buildFragmentType(
-          irFragments = ir.fragments,
-          customTypes = customTypes
-      )
-    }.let { fragmentTypes ->
-      fragmentTypes.map { fragmentType ->
-        fragmentType.copy(
-            nestedTypes = fragmentType.nestedTypes.patchTypeHierarchy(fragmentTypes.minus(fragmentType))
-        )
-      }
-    }
+    val fragmentTypes = ir.fragments
+        .map { fragment ->
+          fragment.buildFragmentType(
+              irFragments = ir.fragments,
+              customTypes = customTypes
+          )
+        }.let { fragmentTypes ->
+          fragmentTypes.map { fragmentType ->
+            fragmentType.copy(
+                nestedTypes = fragmentType.nestedTypes.patchTypeHierarchy(fragmentTypes.minus(fragmentType))
+            )
+          }
+        }
 
-    val operations = ir.operations.map { operation ->
-      operation.buildOperationType(
-          irFragments = ir.fragments,
-          fragmentTypes = fragmentTypes,
-          customTypes = customTypes
-      )
-    }
+    val operations = ir.operations
+        .map { operation ->
+          operation.buildOperationType(
+              irFragments = ir.fragments,
+              fragmentTypes = fragmentTypes,
+              customTypes = customTypes
+          )
+        }
 
     return CodeGenerationAst(
         operationTypes = operations,
@@ -93,6 +96,7 @@ private class CodeGenerationAstBuilder(
   }
 
   private fun TypeDeclaration.buildEnumType() = CodeGenerationAst.EnumType(
+      graphqlName = name,
       name = name.capitalize().escapeKotlinReservedWord(),
       description = description,
       consts = values.map { value ->
@@ -112,6 +116,7 @@ private class CodeGenerationAstBuilder(
       customTypes: CustomTypes
   ): CodeGenerationAst.InputType {
     return CodeGenerationAst.InputType(
+        graphqlName = name,
         name = name.capitalize().escapeKotlinReservedWord(),
         description = description,
         deprecated = false,
@@ -309,14 +314,14 @@ private class CodeGenerationAstBuilder(
     )
     val dataFieldType = objectTypeBuilder.resolveFieldType(
         field = Field(
-          responseName = "data",
-          fieldName = "data",
-          type = operationSchemaType,
-          typeDescription = "",
-          sourceLocation = SourceLocation.UNKNOWN,
-          fields = fields,
-          fragmentRefs = fragments
-      ),
+            responseName = "data",
+            fieldName = "data",
+            type = operationSchemaType,
+            typeDescription = "",
+            sourceLocation = SourceLocation.UNKNOWN,
+            fields = fields,
+            fragmentRefs = fragments
+        ),
         schemaTypeRef = schema.resolveType(operationSchemaType),
         abstract = false
     ) as CodeGenerationAst.FieldType.Object
@@ -368,6 +373,7 @@ private class CodeGenerationAstBuilder(
       )
     }
     return CodeGenerationAst.FragmentType(
+        graphqlName = fragmentName,
         rootType = rootType,
         defaultImplementation = defaultImplementation,
         nestedTypes = nestedTypeContainer.typeContainer,

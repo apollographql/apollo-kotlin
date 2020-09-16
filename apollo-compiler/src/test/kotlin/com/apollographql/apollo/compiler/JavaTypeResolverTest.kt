@@ -2,7 +2,6 @@ package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
-import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.TypeName
 import org.junit.Assert
@@ -10,18 +9,22 @@ import org.junit.Test
 import java.util.Date
 
 class JavaTypeResolverTest {
-  private val packageNameProvider = object : PackageNameProvider {
-    override val fragmentsPackageName: String = ""
-    override val typesPackageName: String = ""
-    override fun operationPackageName(filePath: String): String = ""
-  }
   private val defaultContext = CodeGenerationContext(
       reservedTypeNames = emptyList(),
       typeDeclarations = emptyList(),
       customTypeMap = emptyMap(),
       operationOutput = emptyMap(),
       nullableValueType = NullableValueType.APOLLO_OPTIONAL,
-      ir = CodeGenerationIR(emptyList(), emptyList(), emptyList(), "", ""),
+      ir = CodeGenerationIR(
+          emptyList(),
+          emptyList(),
+          emptyList(),
+          emptySet(),
+          emptySet(),
+          emptySet(),
+          emptySet(),
+          "",
+          ""),
       useSemanticNaming = false,
       generateModelBuilder = false,
       useJavaBeansSemanticNaming = false,

@@ -215,8 +215,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       operator fun invoke(reader: ResponseReader): Object {
         val typename = reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
-          "Human" -> CharacterImpl(reader)
           "Droid" -> CharacterImpl(reader)
+          "Human" -> CharacterImpl(reader)
           else -> ObjectImpl(reader)
         }
       }

@@ -129,7 +129,36 @@ query HeroAndFriendsNames($episode: Episode) {
 }
 ```
 
-You can fetch results and access data using the following code:
+Apollo Android will generate a typesafe model looking like this (details are omitted to focus on the class structure):
+
+<MultiCodeBlock>
+
+```kotlin
+class HeroAndFriendsNamesQuery {
+  data class Data(val hero: Hero)
+  data class Hero(val name: String, friends: List<Friend>)
+  data class Friend(val name: String)
+}
+```
+
+```java
+class HeroAndFriendsNamesQuery {
+  class Data {
+    Hero hero();
+  }
+  class Hero {
+    String name;
+    List<Friend> friends;
+  }
+  class Friend {
+    String name;
+  }
+}
+```
+
+</MultiCodeBlock>
+
+You can fetch results data using the following code. Apollo will parse the response and expose a typesafe model:
 
 <MultiCodeBlock>
 
@@ -137,12 +166,12 @@ You can fetch results and access data using the following code:
 val heroAndFriendsQuery = HeroAndFriendsNames(episode = NEWHOPE)
 
 apolloClient().query(heroAndFriendsQuery)
-    .enqueue(object: ApolloCall.Callback<FeedQuery.Data>() {
-         override fun onFailure(e: ApolloException) {
-             Log.i(TAG, response.toString());
+    .enqueue(object: ApolloCall.Callback<HeroAndFriendsNames.Data>() {
+         override fun onResponse(response: Response<HeroAndFriendsNames.Data>) {
+             Log.i(TAG, response.data?.hero?.name);
          }
 
-         override fun onResponse(response: Response<UpvotePost.Data>) {
+         override fun onFailure(e: ApolloException) {
              Log.e(TAG, e.getMessage(), e);
          }
      }, uiHandler);
@@ -157,7 +186,7 @@ final HeroAndFriendsNames heroAndFriendsQuery = HeroAndFriendsNames.builder()
 apolloClient().query(heroAndFriendsQuery)
     .enqueue(new ApolloCallback<>(new ApolloCall.Callback<HeroAndFriendsNames.Data>() {
       @Override public void onResponse(@NotNull Response<HeroAndFriendsNames.Data> response) {
-        Log.i(TAG, response.toString());
+         Log.i(TAG, response.data().hero().name();
       }
 
       @Override public void onFailure(@NotNull ApolloException e) {

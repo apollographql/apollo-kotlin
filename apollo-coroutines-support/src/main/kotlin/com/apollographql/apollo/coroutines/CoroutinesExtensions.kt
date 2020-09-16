@@ -13,6 +13,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.suspendCancellableCoroutine
+import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.resume
 
 
 /**
@@ -73,12 +77,48 @@ fun <T> ApolloQueryWatcher<T>.toFlow(): Flow<Response<T>> = callbackFlow {
 
 
 /**
+ * Suspends the [ApolloCall] until it completes and returns the value on success or throws an exception on failure.
+ * The [ApolloCall] is cancelled when the coroutine running the operation is cancelled as well.
+ *
+ * This is a convenience method that will only return the first value emitted. If more than one
+ * response is required, for an example to retrieve cached and network response, use [toFlow] instead.
+ *
+ * @param <T>  the value type.
+ * @return the response on success.
+ * @throws ApolloException on failure.
+ */
+suspend fun <T> ApolloCall<T>.await(): Response<T> = suspendCancellableCoroutine { cont ->
+
+  cont.invokeOnCancellation {
+    cancel()
+  }
+
+  enqueue(object : ApolloCall.Callback<T>() {
+
+    private val wasCalled = AtomicBoolean(false)
+
+    override fun onResponse(response: Response<T>) {
+      if (!wasCalled.getAndSet(true)) {
+        cont.resume(response)
+      }
+    }
+
+    override fun onFailure(e: ApolloException) {
+      if (!wasCalled.getAndSet(true)) {
+        cont.resumeWithException(e)
+      }
+    }
+  })
+}
+
+/**
  * Converts an [ApolloCall] to an [Deferred]. This is a convenience method that will only return the first value emitted.
  * If the more than one response is required, for an example to retrieve cached and network response, use [toFlow] instead.
  *
  * @param <T>  the value type.
  * @return the deferred
  */
+@Deprecated("Use await() instead.")
 fun <T> ApolloCall<T>.toDeferred(): Deferred<Response<T>> {
   val deferred = CompletableDeferred<Response<T>>()
 
@@ -141,11 +181,44 @@ fun <T> ApolloSubscriptionCall<T>.toFlow(): Flow<Response<T>> = callbackFlow {
 }
 
 /**
+ * Suspends the [ApolloPrefetch] until it completes and returns the value on success or throws an exception on failure.
+ * The [ApolloPrefetch] is cancelled when the coroutine running the operation is cancelled as well.
+ *
+ * @param <T>  the value type.
+ * @return the response on success.
+ * @throws ApolloException on failure.
+ */
+suspend fun ApolloPrefetch.await(): Unit = suspendCancellableCoroutine { cont ->
+
+  cont.invokeOnCancellation {
+    cancel()
+  }
+
+  enqueue(object : ApolloPrefetch.Callback() {
+
+    private val wasCalled = AtomicBoolean(false)
+
+    override fun onSuccess() {
+      if (!wasCalled.getAndSet(true)) {
+        cont.resume(Unit)
+      }
+    }
+
+    override fun onFailure(e: ApolloException) {
+      if (!wasCalled.getAndSet(true)) {
+        cont.resumeWithException(e)
+      }
+    }
+  })
+}
+
+/**
  * Converts an [ApolloPrefetch] to [Job].
  *
  * @param <T>  the value type.
  * @return the converted job
  */
+@Deprecated("Use await() instead.")
 fun ApolloPrefetch.toJob(): Job {
   val deferred = CompletableDeferred<Unit>()
 
@@ -171,5 +244,4 @@ fun ApolloPrefetch.toJob(): Job {
 
   return deferred
 }
-
 

@@ -394,6 +394,9 @@ input ReviewRefInput {
 
 union SearchResult = Human | Droid | Starship
 
+#URL for testing
+scalar URL
+
 type Starship {
   coordinates: [[Float!]!]
 
@@ -416,9 +419,6 @@ type Tree {
 
 """UnsupportedType for testing"""
 scalar UnsupportedType
-
-"""URL for testing"""
-scalar URL
 
 schema {
   query: Query

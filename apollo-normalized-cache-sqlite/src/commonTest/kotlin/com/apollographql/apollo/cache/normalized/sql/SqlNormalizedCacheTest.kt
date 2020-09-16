@@ -130,11 +130,12 @@ class SqlNormalizedCacheTest {
 
   @Test
   fun testRecordMerge_noOldRecord() {
-    cache.merge(Record.builder(STANDARD_KEY)
+    val changedKeys = cache.merge(Record.builder(STANDARD_KEY)
         .addField("fieldKey", "valueUpdated")
         .addField("newFieldKey", true).build(), CacheHeaders.NONE)
     val record = cache.selectRecordForKey(STANDARD_KEY)
     assertNotNull(record)
+    assertEquals(expected = setOf("$STANDARD_KEY.fieldKey", "$STANDARD_KEY.newFieldKey"), actual = changedKeys)
     assertEquals(expected = "valueUpdated", actual = record.fields["fieldKey"])
     assertEquals(expected = true, actual = record.fields["newFieldKey"])
   }

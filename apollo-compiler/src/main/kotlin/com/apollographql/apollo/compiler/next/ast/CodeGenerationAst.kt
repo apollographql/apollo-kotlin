@@ -41,6 +41,7 @@ internal data class CodeGenerationAst(
   )
 
   data class FragmentType(
+      val graphqlName: String,
       val rootType: TypeRef,
       val defaultImplementation: TypeRef,
       val nestedTypes: ObjectTypeContainer,
@@ -89,6 +90,7 @@ internal data class CodeGenerationAst(
   }
 
   data class InputType(
+      val graphqlName: String,
       val name: String,
       val description: String,
       val deprecated: Boolean,
@@ -107,6 +109,7 @@ internal data class CodeGenerationAst(
   )
 
   data class EnumType(
+      val graphqlName: String,
       val name: String,
       val description: String,
       val consts: List<EnumConst>
