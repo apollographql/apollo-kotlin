@@ -1,6 +1,5 @@
 package com.apollographql.apollo.compiler.parser.introspection
 
-import okio.Buffer
 import okio.BufferedSink
 import okio.buffer
 import okio.sink
@@ -44,7 +43,7 @@ fun IntrospectionSchema.toSDL(sink: BufferedSink) {
 private fun BufferedSink.writeDescription(description: String?, indent: String = "") {
   if (!description.isNullOrBlank()) {
     writeUtf8(
-"""${indent}${"\"\"\""}
+        """${indent}${"\"\"\""}
 ${indent}$description
 ${indent}${"\"\"\""}
 """
@@ -71,7 +70,7 @@ private fun IntrospectionSchema.Type.Enum.toSDL(sink: BufferedSink) {
   sink.writeUtf8("enum $name {\n")
   enumValues.forEach {
     it.toSDL(sink)
-    sink.writeUtf8("\n\n")
+    sink.writeUtf8("\n")
   }
   sink.writeUtf8("}\n")
 }
@@ -87,7 +86,7 @@ private fun IntrospectionSchema.Type.InputObject.toSDL(sink: BufferedSink) {
   sink.writeUtf8("input $name {\n")
   inputFields.forEach {
     it.toSDL(sink)
-    sink.writeUtf8("\n\n")
+    sink.writeUtf8("\n")
   }
   sink.writeUtf8("}\n")
 }
@@ -96,7 +95,7 @@ private fun IntrospectionSchema.Type.InputObject.toSDL(sink: BufferedSink) {
  * Writes the Json element returned by the Json parser as a GraphQL value
  */
 private fun BufferedSink.writeValue(value: Any?) {
-  when(value) {
+  when (value) {
     null -> writeUtf8("null")
     is Long -> writeUtf8(value.toString())
     is Double -> writeUtf8(value.toString())
@@ -114,7 +113,7 @@ private fun BufferedSink.writeValue(value: Any?) {
     }
     is Map<*, *> -> {
       writeUtf8("[")
-      value.entries.forEachIndexed {  index, entry ->
+      value.entries.forEachIndexed { index, entry ->
         writeUtf8("${entry.key}: ")
         writeValue(entry.value)
         if (index != value.size - 1) {
@@ -134,7 +133,6 @@ private fun IntrospectionSchema.InputField.toSDL(sink: BufferedSink) {
     sink.writeValue(defaultValue)
   }
   sink.writeDeprecatedDirective(isDeprecated, deprecationReason)
-  sink.writeUtf8("\n")
 }
 
 private fun IntrospectionSchema.Type.Interface.toSDL(sink: BufferedSink) {
@@ -142,7 +140,7 @@ private fun IntrospectionSchema.Type.Interface.toSDL(sink: BufferedSink) {
   sink.writeUtf8("interface $name {\n")
   fields?.forEach {
     it.toSDL(sink)
-    sink.writeUtf8("\n\n")
+    sink.writeUtf8("\n")
   }
   sink.writeUtf8("}\n")
 }
@@ -152,8 +150,11 @@ private fun IntrospectionSchema.Field.toSDL(sink: BufferedSink) {
   sink.writeUtf8("  $name")
   if (args.isNotEmpty()) {
     sink.writeUtf8("(")
-    args.forEach {arg ->
+    args.forEachIndexed { index, arg ->
       arg.toSDL(sink)
+      if (index != args.size - 1) {
+        sink.writeUtf8(", ")
+      }
     }
     sink.writeUtf8(")")
   }
@@ -162,8 +163,11 @@ private fun IntrospectionSchema.Field.toSDL(sink: BufferedSink) {
 }
 
 private fun IntrospectionSchema.Field.Argument.toSDL(sink: BufferedSink) {
-  sink.writeDescription(description, "  ")
-  sink.writeUtf8("  $name: ${type.asGraphQLType()}")
+  if (!description.isNullOrBlank()) {
+    // Write the description inline
+    sink.writeUtf8("\"$description\" ")
+  }
+  sink.writeUtf8("$name: ${type.asGraphQLType()}")
   if (defaultValue != null) {
     sink.writeUtf8(" = ")
     sink.writeValue(defaultValue)
@@ -185,7 +189,7 @@ private fun IntrospectionSchema.Type.Object.toSDL(sink: BufferedSink, interfaces
     it.name
   }
 
-  if (interfaces.isNotEmpty()) {
+  if (implements.isNotEmpty()) {
     sink.writeUtf8(" implements ")
     sink.writeUtf8(implements.joinToString(" & "))
   }
@@ -193,7 +197,7 @@ private fun IntrospectionSchema.Type.Object.toSDL(sink: BufferedSink, interfaces
 
   fields?.forEach {
     it.toSDL(sink)
-    sink.writeUtf8("\n\n")
+    sink.writeUtf8("\n")
   }
 
   sink.writeUtf8("}\n")
