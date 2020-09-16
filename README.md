@@ -104,10 +104,3 @@ If you'd like to contribute, please see [Contributing.md](https://github.com/apo
 - [The Apollo blog](https://www.apollographql.com/blog/) for long-form articles about GraphQL, feature announcements for Apollo, and guest articles from the community.
 - [The Apollo Twitter account](https://twitter.com/apollographql) for in-the-moment news.
 
-## License
-
-```
-The MIT License (MIT)
-
-Copyright (c) 2020 Meteor Development Group, Inc.
-```
