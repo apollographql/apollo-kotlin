@@ -131,6 +131,20 @@ class InputFieldJsonWriterTest {
   }
 
   @Test
+  fun writeCustomNull() {
+    val customTypeAdapters: MutableMap<ScalarType, CustomTypeAdapter<*>> = HashMap()
+    val scalarType = MockCustomScalarType(CustomTypeValue.GraphQLNumber::class, "com.apollographql.apollo.api.CustomTypeValue.GraphQLNull")
+    customTypeAdapters[scalarType] = object : MockCustomTypeAdapter() {
+      override fun encode(value: Any?): CustomTypeValue<*> {
+        return CustomTypeValue.GraphQLNull
+      }
+    }
+    val inputFieldJsonWriter = InputFieldJsonWriter(jsonWriter, ScalarTypeAdapters(customTypeAdapters))
+    inputFieldJsonWriter.writeCustom("someField", scalarType, null)
+    assertEquals("{\"someField\":null", jsonBuffer.readUtf8())
+  }
+
+  @Test
   fun writeCustomJsonObject() {
     val value = mapOf(
         "stringField" to "string",
