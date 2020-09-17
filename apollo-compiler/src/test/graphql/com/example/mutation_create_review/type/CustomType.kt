@@ -18,6 +18,6 @@ internal enum class CustomType : ScalarType {
   ID {
     override fun typeName(): String = "ID"
 
-    override fun className(): String = "kotlin.Int"
+    override fun className(): String = "java.lang.Integer"
   }
 }

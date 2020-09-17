@@ -109,11 +109,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     /**
      * Profile link
      */
-    val profileLink: String,
+    val profileLink: java.lang.String,
     /**
      * Links
      */
-    val links: List<String>
+    val links: List<java.lang.String>
   ) {
     fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
@@ -157,10 +157,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         }!!.map { it!! }
         val fieldWithUnsupportedType = readCustomType<Any>(RESPONSE_FIELDS[4] as
             ResponseField.CustomTypeField)!!
-        val profileLink = readCustomType<String>(RESPONSE_FIELDS[5] as
+        val profileLink = readCustomType<java.lang.String>(RESPONSE_FIELDS[5] as
             ResponseField.CustomTypeField)!!
-        val links = readList<String>(RESPONSE_FIELDS[6]) { reader ->
-          reader.readCustomType<String>(CustomType.URL)
+        val links = readList<java.lang.String>(RESPONSE_FIELDS[6]) { reader ->
+          reader.readCustomType<java.lang.String>(CustomType.URL)
         }!!.map { it!! }
         Hero(
           __typename = __typename,

@@ -3,29 +3,17 @@ package com.apollographql.apollo.compiler
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.compiler.TestUtils.checkTestFixture
 import com.apollographql.apollo.compiler.TestUtils.shouldUpdateTestFixtures
-import com.apollographql.apollo.compiler.parser.sdl.GraphSdlSchema
-import com.apollographql.apollo.compiler.parser.sdl.toIntrospectionSchema
-import com.google.common.truth.Truth.assertAbout
-import com.google.testing.compile.JavaFileObjects
-import com.google.testing.compile.JavaSourcesSubjectFactory.javaSources
-import com.tschuchort.compiletesting.KotlinCompilation
-import com.tschuchort.compiletesting.SourceFile
-import org.junit.Assert.fail
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import java.io.File
 
 @RunWith(Parameterized::class)
-class CodegenTest(private val folder: File, private val testLanguage: TestLanguage) {
-  enum class TestLanguage {
-    Java,
-    Kotlin
-  }
+class CodegenTest(private val folder: File) {
 
   @Test
   fun generateExpectedClasses() {
-    val args = arguments(folder = folder, generateKotlinModels = testLanguage == TestLanguage.Kotlin)
+    val args = arguments(folder = folder)
     generateExpectedClasses(args)
   }
 
@@ -33,21 +21,13 @@ class CodegenTest(private val folder: File, private val testLanguage: TestLangua
     args.outputDir.deleteRecursively()
     GraphQLCompiler().write(args)
 
-    val extension = if (args.generateKotlinModels) {
-      "kt"
-    } else {
-      "java"
-    }
-
     val expectedRoot = folder.parentFile.parentFile.parentFile
-    val expectedFiles = folder.walk().filter {
-      it.isFile && it.extension == extension
-    }
+    val expectedFiles = folder.walk().filter { it.isFile && it.extension == "kt" }
 
     val actualRoot = args.outputDir
     val actualFiles = actualRoot.walk().filter {
       // extension should always be the correct one, it's a bug else
-      it.isFile
+      it.isFile && it.name != "metadata"
     }
 
     expectedFiles.forEach { expected ->
@@ -80,22 +60,14 @@ class CodegenTest(private val folder: File, private val testLanguage: TestLangua
     }
 
     // And that they compile
-    if (!args.generateKotlinModels) {
-      JavaCompiler.assertCompiles(actualFiles.toSet())
-    } else {
-      val expectedWarnings = folder.name in listOf("deprecation", "custom_scalar_type_warnings", "arguments_complex", "arguments_simple")
-      KotlinCompiler.assertCompiles(actualFiles.toSet(), !expectedWarnings)
-    }
+    val expectedWarnings = folder.name in listOf("deprecation", "custom_scalar_type_warnings", "arguments_complex", "arguments_simple")
+    KotlinCompiler.assertCompiles(actualFiles.toSet(), !expectedWarnings)
   }
 
   companion object {
-    fun arguments(folder: File, generateKotlinModels: Boolean): GraphQLCompiler.Arguments {
+    fun arguments(folder: File): GraphQLCompiler.Arguments {
       val customTypeMap = if (folder.name in listOf("custom_scalar_type", "input_object_type", "mutation_create_review")) {
-        if (generateKotlinModels) {
-          mapOf("Date" to "java.util.Date", "URL" to "kotlin.String", "ID" to "kotlin.Int")
-        } else {
-          mapOf("Date" to "java.util.Date", "URL" to "java.lang.String", "ID" to "java.lang.Integer")
-        }
+        mapOf("Date" to "java.util.Date", "URL" to "java.lang.String", "ID" to "java.lang.Integer")
       } else {
         emptyMap()
       }
@@ -116,10 +88,6 @@ class CodegenTest(private val folder: File, private val testLanguage: TestLangua
         "fragment_with_inline_fragment" -> true
         else -> false
       }
-      val useJavaBeansSemanticNaming = when (folder.name) {
-        "java_beans_semantic_naming" -> true
-        else -> false
-      }
       val suppressRawTypesWarning = when (folder.name) {
         "custom_scalar_type_warnings" -> true
         else -> false
@@ -132,7 +100,6 @@ class CodegenTest(private val folder: File, private val testLanguage: TestLangua
         "mutation_create_review", "simple_fragment" -> true
         else -> false
       }
-
       val operationIdGenerator = when (folder.name) {
         "operation_id_generator" -> object : OperationIdGenerator {
           override fun apply(operationDocument: String, operationFilepath: String): String {
@@ -144,7 +111,7 @@ class CodegenTest(private val folder: File, private val testLanguage: TestLangua
         else -> OperationIdGenerator.Sha256()
       }
 
-      val enumAsSealedClassPatternFilters = when(folder.name) {
+      val enumAsSealedClassPatternFilters = when (folder.name) {
         "arguments_complex" -> setOf(".*") // test all pattern matching
         "arguments_simple" -> setOf("Bla-bla", "Yada-yada", "Ep.*de") // test multiple pattern matching
         "enum_type" -> setOf("Bla") // test not matching
@@ -153,46 +120,38 @@ class CodegenTest(private val folder: File, private val testLanguage: TestLangua
 
       val schemaFile = folder.listFiles()!!.find { it.isFile && it.name == "schema.sdl" }
           ?: File("src/test/graphql/schema.sdl")
-      
+
       val graphqlFiles = setOf(File(folder, "TestOperation.graphql"))
       val operationOutputGenerator = OperationOutputGenerator.DefaultOperationOuputGenerator(operationIdGenerator)
 
-      val language = if (generateKotlinModels) "kotlin" else "java"
       return GraphQLCompiler.Arguments(
           rootPackageName = "com.example.${folder.name}",
           rootFolders = listOf(folder),
           graphqlFiles = graphqlFiles,
           schemaFile = schemaFile,
-          outputDir = File("build/generated/test/${folder.name}/$language"),
+          outputDir = File("build/generated/test/${folder.name}"),
           operationOutputGenerator = operationOutputGenerator,
           customTypeMap = customTypeMap,
-          generateKotlinModels = generateKotlinModels,
+          generateKotlinModels = true,
           nullableValueType = nullableValueType,
           useSemanticNaming = useSemanticNaming,
           generateModelBuilder = generateModelBuilder,
-          useJavaBeansSemanticNaming = useJavaBeansSemanticNaming,
+          useJavaBeansSemanticNaming = false,
           suppressRawTypesWarning = suppressRawTypesWarning,
           generateVisitorForPolymorphicDatatypes = generateVisitorForPolymorphicDatatypes,
           generateAsInternal = generateAsInternal,
           kotlinMultiPlatformProject = true,
           enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters,
-          metadataOutputFile = File("build/generated/test/${folder.name}/metadata/$language"),
+          metadataOutputFile = File("build/generated/test/${folder.name}/metadata"),
       )
     }
 
     @JvmStatic
-    @Parameterized.Parameters(name = "{0}-{1}")
-    fun data(): Collection<Array<*>> {
+    @Parameterized.Parameters(name = "{0}")
+    fun data(): Collection<*> {
       return File("src/test/graphql/com/example/")
           .listFiles()!!
           .filter { it.isDirectory }
-          .flatMap { listOf(
-              arrayOf(it, TestLanguage.Java),
-              arrayOf(it, TestLanguage.Kotlin)
-          ) }
-          .filter {
-            true || it[0].toString().contains("hero_with_review") && it[1] == TestLanguage.Kotlin
-          }
     }
   }
 }
