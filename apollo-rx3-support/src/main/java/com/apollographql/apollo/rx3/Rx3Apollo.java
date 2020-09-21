@@ -52,9 +52,10 @@ public class Rx3Apollo {
     checkNotNull(watcher, "watcher == null");
     return Observable.create(new ObservableOnSubscribe<Response<T>>() {
       @Override public void subscribe(final ObservableEmitter<Response<T>> emitter) throws Exception {
-        cancelOnObservableDisposed(emitter, watcher);
+        ApolloQueryWatcher<T> clone = watcher.clone();
+        cancelOnObservableDisposed(emitter, clone);
 
-        watcher.enqueueAndWatch(new ApolloCall.Callback<T>() {
+        clone.enqueueAndWatch(new ApolloCall.Callback<T>() {
           @Override public void onResponse(@NotNull Response<T> response) {
             if (!emitter.isDisposed()) {
               emitter.onNext(response);
@@ -88,8 +89,9 @@ public class Rx3Apollo {
 
     return Observable.create(new ObservableOnSubscribe<Response<T>>() {
       @Override public void subscribe(final ObservableEmitter<Response<T>> emitter) throws Exception {
-        cancelOnObservableDisposed(emitter, call);
-        call.enqueue(new ApolloCall.Callback<T>() {
+        ApolloCall<T> clone = call.clone();
+        cancelOnObservableDisposed(emitter, clone);
+        clone.enqueue(new ApolloCall.Callback<T>() {
           @Override public void onResponse(@NotNull Response<T> response) {
             if (!emitter.isDisposed()) {
               emitter.onNext(response);
@@ -127,8 +129,9 @@ public class Rx3Apollo {
 
     return Completable.create(new CompletableOnSubscribe() {
       @Override public void subscribe(final CompletableEmitter emitter) {
-        cancelOnCompletableDisposed(emitter, prefetch);
-        prefetch.enqueue(new ApolloPrefetch.Callback() {
+        ApolloPrefetch clone = prefetch.clone();
+        cancelOnCompletableDisposed(emitter, clone);
+        clone.enqueue(new ApolloPrefetch.Callback() {
           @Override public void onSuccess() {
             if (!emitter.isDisposed()) {
               emitter.onComplete();
@@ -160,8 +163,9 @@ public class Rx3Apollo {
     checkNotNull(backpressureStrategy, "backpressureStrategy == null");
     return Flowable.create(new FlowableOnSubscribe<Response<T>>() {
       @Override public void subscribe(final FlowableEmitter<Response<T>> emitter) throws Exception {
-        cancelOnFlowableDisposed(emitter, call);
-        call.execute(
+        ApolloSubscriptionCall<T> clone = call.clone();
+        cancelOnFlowableDisposed(emitter, clone);
+        clone.execute(
             new ApolloSubscriptionCall.Callback<T>() {
               @Override public void onResponse(@NotNull Response<T> response) {
                 if (!emitter.isCancelled()) {
