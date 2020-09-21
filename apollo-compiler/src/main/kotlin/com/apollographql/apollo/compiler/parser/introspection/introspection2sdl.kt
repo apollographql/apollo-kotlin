@@ -123,6 +123,7 @@ private fun BufferedSink.writeValue(value: Any?) {
       }
       writeUtf8("]")
     }
+    else -> throw IllegalStateException("ApolloGraphQL: Cannot write SDL value: $value")
   }
 }
 
