@@ -1,8 +1,7 @@
-package com.apollographql.apollo.compiler.next.codegen
+package com.apollographql.apollo.compiler.codegen
 
 import com.apollographql.apollo.compiler.applyIf
-import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen
-import com.apollographql.apollo.compiler.next.ast.CodeGenerationAst
+import com.apollographql.apollo.compiler.ast.CodeGenerationAst
 import com.squareup.kotlinpoet.*
 
 internal fun CodeGenerationAst.EnumType.typeSpec(
@@ -49,7 +48,7 @@ private val CodeGenerationAst.EnumConst.enumConstTypeSpec: TypeSpec
     return TypeSpec
         .anonymousClassBuilder()
         .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }
-        .applyIf(isDeprecated) { addAnnotation(KotlinCodeGen.deprecatedAnnotation(deprecationReason)) }
+        .applyIf(isDeprecated) { addAnnotation(deprecatedAnnotation(deprecationReason)) }
         .addSuperclassConstructorParameter("%S", value)
         .build()
   }
@@ -98,7 +97,7 @@ private fun CodeGenerationAst.EnumType.toSealedClassTypeSpec(generateAsInternal:
 private fun CodeGenerationAst.EnumConst.toObjectTypeSpec(superClass: TypeName): TypeSpec {
   return TypeSpec.objectBuilder(constName)
       .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }
-      .applyIf(isDeprecated) { addAnnotation(KotlinCodeGen.deprecatedAnnotation(deprecationReason)) }
+      .applyIf(isDeprecated) { addAnnotation(deprecatedAnnotation(deprecationReason)) }
       .superclass(superClass)
       .addSuperclassConstructorParameter("rawValue = %S", value)
       .build()

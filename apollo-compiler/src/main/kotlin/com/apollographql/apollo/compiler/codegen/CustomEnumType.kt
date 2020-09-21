@@ -1,9 +1,9 @@
-package com.apollographql.apollo.compiler.next.codegen
+package com.apollographql.apollo.compiler.codegen
 
 import com.apollographql.apollo.api.ScalarType
 import com.apollographql.apollo.compiler.applyIf
-import com.apollographql.apollo.compiler.next.ast.CodeGenerationAst
-import com.apollographql.apollo.compiler.next.ast.CustomTypes
+import com.apollographql.apollo.compiler.ast.CodeGenerationAst
+import com.apollographql.apollo.compiler.ast.CustomTypes
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeSpec

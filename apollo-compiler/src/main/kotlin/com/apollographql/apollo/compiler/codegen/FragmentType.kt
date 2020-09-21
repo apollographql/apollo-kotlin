@@ -1,10 +1,9 @@
-package com.apollographql.apollo.compiler.next.codegen
+package com.apollographql.apollo.compiler.codegen
 
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.compiler.applyIf
-import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen
-import com.apollographql.apollo.compiler.next.ast.CodeGenerationAst
+import com.apollographql.apollo.compiler.ast.CodeGenerationAst
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -12,7 +11,6 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
 
 internal fun CodeGenerationAst.FragmentType.typeSpec(generateAsInternal: Boolean): TypeSpec {
@@ -23,7 +21,7 @@ internal fun CodeGenerationAst.FragmentType.typeSpec(generateAsInternal: Boolean
   val defaultImplementationTypeSpec = nestedTypeSpecs.find { typeSpec -> typeSpec.name == defaultImplementation.name }!!
   return TypeSpec
       .interfaceBuilder(fragmentType.name)
-      .addAnnotation(KotlinCodeGen.suppressWarningsAnnotation)
+      .addAnnotation(suppressWarningsAnnotation)
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .addSuperinterface(GraphqlFragment::class)
       .applyIf(fragmentType.description.isNotBlank()) { addKdoc("%L\n", fragmentType.description) }
