@@ -243,15 +243,20 @@ data class TestQuery(
           ResponseField.forObject("hero", "hero", mapOf<String, Any>(
             "episode" to mapOf<String, Any>(
               "kind" to "Variable",
-              "variableName" to "episode"),
+              "variableName" to "episode"
+            ),
             "listOfListOfStringArgs" to mapOf<String, Any>(
               "kind" to "Variable",
-              "variableName" to "listOfListOfStringArgs")), true, null),
+              "variableName" to "listOfListOfStringArgs"
+            )
+          ), true, null),
           ResponseField.forObject("heroWithReview", "heroWithReview", mapOf<String, Any>(
             "episode" to mapOf<String, Any>(
               "kind" to "Variable",
-              "variableName" to "episode"),
-            "review" to emptyMap<String, Any>()), true, null)
+              "variableName" to "episode"
+            ),
+            "review" to emptyMap<String, Any>()
+          ), true, null)
           )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {

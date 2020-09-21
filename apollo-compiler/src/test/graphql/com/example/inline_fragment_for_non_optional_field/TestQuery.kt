@@ -185,7 +185,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forObject("nonOptionalHero", "nonOptionalHero", mapOf<String, Any>(
-            "episode" to "EMPIRE"), false, null)
+            "episode" to "EMPIRE"
+          ), false, null)
           )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {

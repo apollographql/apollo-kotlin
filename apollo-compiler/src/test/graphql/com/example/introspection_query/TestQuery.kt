@@ -265,7 +265,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forObject("__schema", "__schema", null, false, null),
           ResponseField.forObject("__type", "__type", mapOf<String, Any>(
-            "name" to "Vehicle"), true, null)
+            "name" to "Vehicle"
+          ), true, null)
           )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {

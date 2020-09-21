@@ -171,7 +171,9 @@ data class TestQuery(
           ResponseField.forObject("starship", "starship", mapOf<String, Any>(
             "id" to mapOf<String, Any>(
               "kind" to "Variable",
-              "variableName" to "id")), true, null)
+              "variableName" to "id"
+            )
+          ), true, null)
           )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {

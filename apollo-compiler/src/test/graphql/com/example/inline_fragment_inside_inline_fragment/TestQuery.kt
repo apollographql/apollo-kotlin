@@ -279,7 +279,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forList("search", "search", mapOf<String, Any>(
-            "text" to "bla-bla"), true, null)
+            "text" to "bla-bla"
+          ), true, null)
           )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {

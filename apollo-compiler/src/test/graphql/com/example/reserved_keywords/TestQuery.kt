@@ -218,7 +218,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forObject("yield", "hero", null, true, null),
           ResponseField.forList("objects", "search", mapOf<String, Any>(
-            "text" to "abc"), true, null)
+            "text" to "abc"
+          ), true, null)
           )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {

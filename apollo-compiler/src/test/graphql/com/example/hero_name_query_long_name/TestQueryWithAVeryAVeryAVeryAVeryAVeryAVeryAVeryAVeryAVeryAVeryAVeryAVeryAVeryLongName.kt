@@ -168,8 +168,9 @@ data class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryA
             "episode" to mapOf<String, Any>(
               "kind" to "Variable",
               "variableName" to
-              "episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")),
-              true, null)
+                  "episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName"
+            )
+          ), true, null)
           )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {

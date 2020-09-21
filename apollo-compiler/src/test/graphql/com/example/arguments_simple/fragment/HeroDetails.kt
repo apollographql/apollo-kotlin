@@ -36,7 +36,9 @@ data class HeroDetails(
         ResponseField.forObject("friendsConnection", "friendsConnection", mapOf<String, Any>(
           "first" to mapOf<String, Any>(
             "kind" to "Variable",
-            "variableName" to "friendsCount")), false, null)
+            "variableName" to "friendsCount"
+          )
+        ), false, null)
         )
 
     val FRAGMENT_DEFINITION: String = """
