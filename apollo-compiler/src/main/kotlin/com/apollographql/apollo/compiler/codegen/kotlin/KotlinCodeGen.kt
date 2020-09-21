@@ -452,7 +452,7 @@ internal object KotlinCodeGen {
           .add(")")
           .build()
       this is String -> CodeBlock.of("%S", this)
-      this is Number -> CodeBlock.of("%L", this)
+      this is Number -> CodeBlock.of("%S", this.toString())
       else -> throw IllegalStateException("Cannot generate code for $this")
     }
   }
