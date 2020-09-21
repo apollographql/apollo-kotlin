@@ -432,25 +432,29 @@ internal object KotlinCodeGen {
 
   fun TypeRef.asTypeName() = ClassName(packageName, name.capitalize())
 
-  private fun Map<String, Any?>?.toCode(): CodeBlock? {
+  private fun Any?.toCode(): CodeBlock {
     return when {
-      this == null -> null
-      this.isEmpty() -> CodeBlock.of("emptyMap<%T, Any>()", String::class.asTypeName())
-      else -> CodeBlock.builder()
+      this == null -> CodeBlock.of("null")
+      this is Map<*, *> && this.isEmpty() -> CodeBlock.of("emptyMap<%T, Any>()", String::class.asTypeName())
+      this is Map<*, *> -> CodeBlock.builder()
           .add("mapOf<%T, Any>(\n", String::class.asTypeName())
           .indent()
-          .add(map { it.toCode() }.joinToCode(separator = ",\n"))
+          .add(map { CodeBlock.of("%S to %L", it.key, it.value.toCode()) }.joinToCode(separator = ",\n", suffix = "\n"))
           .unindent()
           .add(")")
           .build()
+      this is List<*> && this.isEmpty() -> CodeBlock.of("emptyList<Any>()")
+      this is List<*> -> CodeBlock.builder()
+          .add("listOf<Any>(\n")
+          .indent()
+          .add(map { it.toCode() }.joinToCode(separator = ",\n", suffix = "\n"))
+          .unindent()
+          .add(")")
+          .build()
+      this is String -> CodeBlock.of("%S", this)
+      this is Number -> CodeBlock.of("%L", this)
+      else -> throw IllegalStateException("Cannot generate code for $this")
     }
-  }
-
-  @Suppress("UNCHECKED_CAST")
-  private fun Map.Entry<String, Any?>.toCode() = when (value) {
-    is Map<*, *> -> CodeBlock.of("%S to %L", key, (value as Map<String, Any>).toCode())
-    null -> CodeBlock.of("%S to null", key)
-    else -> CodeBlock.of("%S to %S", key, value)
   }
 
   fun TypeSpec.patchKotlinNativeOptionalArrayProperties(): TypeSpec {
