@@ -56,7 +56,7 @@ class RealCacheKeyBuilder : CacheKeyBuilder {
       is InputType -> {
         val inputFieldMapWriter = SortedInputFieldMapWriter()
         resolvedVariable.marshaller().marshal(inputFieldMapWriter)
-        resolveArguments(inputFieldMapWriter.map(), variables)
+        inputFieldMapWriter.map()
       }
       else -> resolvedVariable
     }
