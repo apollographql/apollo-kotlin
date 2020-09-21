@@ -5,14 +5,17 @@ import com.apollographql.apollo.compiler.ApolloMetadata.Companion.merge
 import com.apollographql.apollo.compiler.codegen.kotlin.GraphQLKompiler
 import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
+import com.apollographql.apollo.compiler.ir.Field
 import com.apollographql.apollo.compiler.ir.IRBuilder
 import com.apollographql.apollo.compiler.ir.ScalarType
+import com.apollographql.apollo.compiler.ir.SourceLocation
 import com.apollographql.apollo.compiler.ir.TypeDeclaration.Companion.KIND_ENUM
 import com.apollographql.apollo.compiler.ir.TypeDeclaration.Companion.KIND_INPUT_OBJECT_TYPE
 import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.operationoutput.toJson
 import com.apollographql.apollo.compiler.parser.error.DocumentParseException
 import com.apollographql.apollo.compiler.parser.error.ParseException
+import com.apollographql.apollo.compiler.parser.graphql.DocumentParseResult
 import com.apollographql.apollo.compiler.parser.graphql.GraphQLDocumentParser
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Companion.toIntrospectionSchema
@@ -23,7 +26,12 @@ import com.squareup.javapoet.JavaFile
 import com.squareup.kotlinpoet.asClassName
 import java.io.File
 
-class GraphQLCompiler {
+class GraphQLCompiler(val logger: Logger = NoOpLogger) {
+
+  interface Logger {
+    fun warning(message: String)
+  }
+
   fun write(args: Arguments) {
     args.outputDir.deleteRecursively()
     args.outputDir.mkdirs()
@@ -48,6 +56,19 @@ class GraphQLCompiler {
         schema = introspectionSchema,
         packageNameProvider = packageNameProvider
     ).parse(files)
+
+    if (args.warnOnDeprecatedUsages) {
+      val deprecatedUsages = parseResult.collectDeprecatedUsages()
+      deprecatedUsages.forEach {
+        // antlr is 0-indexed but IntelliJ is 1-indexed. Add 1 so that clicking the link will land on the correct location
+        val column = it.sourceLocation.position + 1
+        // Using this format, IntelliJ will parse the warning and display it in the 'run' panel
+        logger.warning("w: ${it.filePath}:${it.sourceLocation.line}:${column}: ApolloGraphQL: Use of deprecated field '${it.field.fieldName}'")
+      }
+      if (args.failOnWarnings && deprecatedUsages.isNotEmpty()) {
+        throw IllegalStateException("ApolloGraphQL: Warnings found and 'failOnWarnings' is true, aborting.")
+      }
+    }
 
     val ir = IRBuilder(
         schema = introspectionSchema,
@@ -137,6 +158,31 @@ class GraphQLCompiler {
       // write a dummy metadata because the file is required as part as the `assemble` target
       args.metadataOutputFile.writeText("")
     }
+  }
+
+  private class DeprecatedUsage(val filePath: String, val sourceLocation: SourceLocation, val field: Field)
+
+  private fun DocumentParseResult.collectDeprecatedUsages(): List<DeprecatedUsage> {
+    return operations.flatMap { it.fields.collectDeprecatedUsages(it.filePath) } +
+        fragments.flatMap { it.fields.collectDeprecatedUsages(it.filePath) }
+  }
+
+  /**
+   * walk the list and return any deprecated fields
+   * TODO: add support for deprecated enums
+   */
+  private fun List<Field>.collectDeprecatedUsages(filePath: String): List<DeprecatedUsage> {
+    val fieldsToVisit = mutableListOf<Field>()
+    val deprecatedUsages = mutableListOf<DeprecatedUsage>()
+    fieldsToVisit.addAll(this)
+    while (fieldsToVisit.isNotEmpty()) {
+      val field = fieldsToVisit.removeAt(fieldsToVisit.lastIndex)
+      if (field.isDeprecated) {
+        deprecatedUsages.add(DeprecatedUsage(filePath, field.sourceLocation, field))
+      }
+      fieldsToVisit.addAll(field.fields)
+    }
+    return deprecatedUsages
   }
 
   private fun idClassName(generateKotlinModels: Boolean) = if (generateKotlinModels) {
@@ -279,6 +325,10 @@ class GraphQLCompiler {
         }
       }
     }
+    val NoOpLogger = object: Logger {
+      override fun warning(message: String) {
+      }
+    }
   }
 
   /**
@@ -351,6 +401,8 @@ class GraphQLCompiler {
       val customTypeMap: Map<String, String> = emptyMap(),
       val useSemanticNaming: Boolean = true,
       val generateAsInternal: Boolean = false,
+      val warnOnDeprecatedUsages: Boolean = true,
+      val failOnWarnings: Boolean = false,
 
       //========== Kotlin codegen options ============
 

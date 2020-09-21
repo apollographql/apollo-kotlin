@@ -1,0 +1,14 @@
+type Query {
+  user: User
+}
+
+type Address {
+  street: String!
+  number: Int! @deprecated(reason: "use something else")
+  country: String!
+}
+
+type User {
+  name: String! @deprecated
+  address: Address
+}
