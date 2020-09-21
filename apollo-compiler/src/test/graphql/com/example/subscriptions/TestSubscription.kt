@@ -159,9 +159,7 @@ data class TestSubscription(
           ResponseField.forObject("commentAdded", "commentAdded", mapOf<String, Any>(
             "repoFullName" to mapOf<String, Any>(
               "kind" to "Variable",
-              "variableName" to "repo"
-            )
-          ), true, null)
+              "variableName" to "repo")), true, null)
           )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {

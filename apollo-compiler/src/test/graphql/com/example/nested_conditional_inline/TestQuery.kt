@@ -138,8 +138,7 @@ data class TestQuery(
           ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, false, null),
           ResponseField.forDouble("height", "height", mapOf<String, Any>(
-            "unit" to "FOOT"
-          ), true, null)
+            "unit" to "FOOT"), true, null)
           )
 
       operator fun invoke(reader: ResponseReader): AsHuman1 = reader.run {
@@ -283,8 +282,7 @@ data class TestQuery(
           ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, false, null),
           ResponseField.forDouble("height", "height", mapOf<String, Any>(
-            "unit" to "METER"
-          ), true, null)
+            "unit" to "METER"), true, null)
           )
 
       operator fun invoke(reader: ResponseReader): AsHuman2 = reader.run {
@@ -467,9 +465,7 @@ data class TestQuery(
           ResponseField.forObject("hero", "hero", mapOf<String, Any>(
             "episode" to mapOf<String, Any>(
               "kind" to "Variable",
-              "variableName" to "episode"
-            )
-          ), true, null)
+              "variableName" to "episode")), true, null)
           )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {

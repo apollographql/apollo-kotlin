@@ -144,9 +144,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forList("reviews", "reviews", mapOf<String, Any>(
             "episode" to "JEDI",
-            "starsInt" to 10,
-            "starsFloat" to 9.9
-          ), true, null)
+            "starsInt" to "10",
+            "starsFloat" to "9.9"), true, null)
           )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {

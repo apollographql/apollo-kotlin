@@ -161,13 +161,10 @@ data class TestQuery(
           ResponseField.forObject("createReview", "createReview", mapOf<String, Any>(
             "episode" to mapOf<String, Any>(
               "kind" to "Variable",
-              "variableName" to "ep"
-            ),
+              "variableName" to "ep"),
             "review" to mapOf<String, Any>(
               "kind" to "Variable",
-              "variableName" to "review"
-            )
-          ), true, null)
+              "variableName" to "review")), true, null)
           )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {

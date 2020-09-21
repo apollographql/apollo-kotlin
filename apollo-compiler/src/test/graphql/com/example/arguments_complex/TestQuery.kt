@@ -136,8 +136,7 @@ data class TestQuery(
           ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, false, null),
           ResponseField.forDouble("height", "height", mapOf<String, Any>(
-            "unit" to "FOOT"
-          ), true, null)
+            "unit" to "FOOT"), true, null)
           )
 
       operator fun invoke(reader: ResponseReader): HeroWithReview = reader.run {
@@ -171,34 +170,25 @@ data class TestQuery(
           ResponseField.forObject("heroWithReview", "heroWithReview", mapOf<String, Any>(
             "episode" to mapOf<String, Any>(
               "kind" to "Variable",
-              "variableName" to "episode"
-            ),
+              "variableName" to "episode"),
             "review" to mapOf<String, Any>(
               "stars" to mapOf<String, Any>(
                 "kind" to "Variable",
-                "variableName" to "stars"
-              ),
+                "variableName" to "stars"),
               "favoriteColor" to mapOf<String, Any>(
-                "red" to 0,
+                "red" to "0",
                 "green" to mapOf<String, Any>(
                   "kind" to "Variable",
-                  "variableName" to "greenValue"
-                ),
-                "blue" to 0.0
-              ),
-              "listOfStringNonOptional" to emptyList<Any>()
-            ),
+                  "variableName" to "greenValue"),
+                "blue" to "0.0"),
+              "listOfStringNonOptional" to emptyList<Any>()),
             "listOfInts" to listOf<Any>(
               mapOf<String, Any>(
                 "kind" to "Variable",
-                "variableName" to "stars"
-              ),
+                "variableName" to "stars"),
               mapOf<String, Any>(
                 "kind" to "Variable",
-                "variableName" to "stars"
-              )
-            )
-          ), true, null)
+                "variableName" to "stars"))), true, null)
           )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {
