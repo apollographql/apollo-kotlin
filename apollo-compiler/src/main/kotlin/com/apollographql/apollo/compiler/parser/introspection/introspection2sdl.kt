@@ -97,7 +97,8 @@ private fun IntrospectionSchema.Type.InputObject.toSDL(sink: BufferedSink) {
 private fun BufferedSink.writeValue(value: Any?) {
   when (value) {
     null -> writeUtf8("null")
-    is Long -> writeUtf8(value.toString())
+    is Int -> writeUtf8(value.toString()) // We get Ints coming from the SDL parsers
+    is Long -> writeUtf8(value.toString()) // And Longs coming from moshi, be robust to both
     is Double -> writeUtf8(value.toString())
     is Boolean -> writeUtf8(value.toString())
     is String -> writeUtf8("\"$value\"") // enums will fall in this case as there is no way to express an enum in Json
