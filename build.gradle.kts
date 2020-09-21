@@ -287,15 +287,15 @@ fun isTag(): Boolean {
   return ref?.startsWith("refs/tags/") == true
 }
 
-fun isMaster(): Boolean {
+fun isMain(): Boolean {
   val eventName = System.getenv("GITHUB_EVENT_NAME")
   val ref = System.getenv("GITHUB_REF")
 
-  return eventName == "push" && ref == "refs/heads/master"
+  return eventName == "push" && ref == "refs/heads/main"
 }
 
 tasks.register("publishSnapshotsIfNeeded") {
-  if (isMaster()) {
+  if (isMain()) {
     project.logger.log(LogLevel.LIFECYCLE, "Deploying snapshot to OJO...")
     dependsOn(subprojectTasks("publishAllPublicationsToOjoRepository"))
     project.logger.log(LogLevel.LIFECYCLE, "Deploying snapshot to OSS Snapshots...")
