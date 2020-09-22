@@ -1,3 +1,5 @@
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -188,7 +190,7 @@ fun Project.configurePublishing() {
 
       maven {
         name = "bintray"
-        url = uri("https://api.bintray.com/maven/apollographql/android/apollo/;publish=1;override=1")
+        url = uri("https://api.bintray.com/maven/apollographql/android/apollo/;override=1")
         credentials {
           username = System.getenv("BINTRAY_USER")
           password = System.getenv("BINTRAY_API_KEY")
@@ -304,7 +306,7 @@ tasks.register("publishSnapshotsIfNeeded") {
 }
 
 
-tasks.register("closeAndReleaseRepository") {
+tasks.register("sonatypeCloseAndReleaseRepository") {
   doLast {
     com.vanniktech.maven.publish.nexus.Nexus(
         username = System.getenv("SONATYPE_NEXUS_USERNAME"),
@@ -312,5 +314,22 @@ tasks.register("closeAndReleaseRepository") {
         baseUrl = "https://oss.sonatype.org/service/local/",
         groupId = "com.apollographql"
     ).closeAndReleaseRepository()
+  }
+}
+
+tasks.register("bintrayPublish") {
+  doLast {
+    "{\"publish_wait_for_secs\": -1}".toRequestBody("application/json".toMediaType()).let {
+      okhttp3.Request.Builder()
+          .post(it)
+          .url("https://api.bintray.com//content/apollographql/android/apollo/$version/publish")
+          .build()
+    }.let {
+      okhttp3.OkHttpClient().newCall(it).execute()
+    }.use {
+      check(it.isSuccessful) {
+        "Cannot publish to bintray: ${it.code}"
+      }
+    }
   }
 }
