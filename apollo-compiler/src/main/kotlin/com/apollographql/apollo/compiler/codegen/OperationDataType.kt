@@ -1,7 +1,7 @@
-package com.apollographql.apollo.compiler.next.codegen
+package com.apollographql.apollo.compiler.codegen
 
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.compiler.next.ast.CodeGenerationAst
+import com.apollographql.apollo.compiler.ast.CodeGenerationAst
 import com.squareup.kotlinpoet.TypeSpec
 
 internal fun CodeGenerationAst.OperationDataType.toOperationDataTypeSpec(): TypeSpec {

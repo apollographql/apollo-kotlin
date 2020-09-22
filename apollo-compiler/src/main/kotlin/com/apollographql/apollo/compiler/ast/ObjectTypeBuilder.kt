@@ -1,4 +1,4 @@
-package com.apollographql.apollo.compiler.next.ast
+package com.apollographql.apollo.compiler.ast
 
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo.compiler.ir.Condition

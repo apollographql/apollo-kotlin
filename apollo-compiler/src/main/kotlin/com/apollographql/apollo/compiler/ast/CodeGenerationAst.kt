@@ -1,4 +1,4 @@
-package com.apollographql.apollo.compiler.next.ast
+package com.apollographql.apollo.compiler.ast
 
 internal typealias ObjectTypeContainer = Map<CodeGenerationAst.TypeRef, CodeGenerationAst.ObjectType>
 

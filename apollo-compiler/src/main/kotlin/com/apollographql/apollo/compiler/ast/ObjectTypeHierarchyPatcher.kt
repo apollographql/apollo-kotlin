@@ -1,4 +1,4 @@
-package com.apollographql.apollo.compiler.next.ast
+package com.apollographql.apollo.compiler.ast
 
 internal fun ObjectTypeContainer.patchTypeHierarchy(fragmentTypes: List<CodeGenerationAst.FragmentType>): ObjectTypeContainer {
   val fragmentTypeContainer = fragmentTypes.fold(emptyMap<CodeGenerationAst.TypeRef, CodeGenerationAst.ObjectType>()) { acc, fragmentType ->

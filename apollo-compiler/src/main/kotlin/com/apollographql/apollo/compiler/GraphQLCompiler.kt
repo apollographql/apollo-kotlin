@@ -2,8 +2,7 @@ package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.compiler.ApolloMetadata.Companion.merge
-import com.apollographql.apollo.compiler.ast.CustomTypes
-import com.apollographql.apollo.compiler.next.codegen.GraphQLKompiler
+import com.apollographql.apollo.compiler.codegen.GraphQLKompiler
 import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.ir.IRBuilder
@@ -88,7 +87,7 @@ class GraphQLCompiler {
       GraphQLKompiler(
           ir = ir,
           schema = introspectionSchema,
-          customTypeMap = CustomTypes(customTypeMap),
+          customTypeMap = customTypeMap,
           operationOutput = operationOutput,
           useSemanticNaming = args.useSemanticNaming,
           generateAsInternal = args.generateAsInternal,

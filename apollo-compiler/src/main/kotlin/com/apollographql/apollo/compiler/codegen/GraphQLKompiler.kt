@@ -1,9 +1,7 @@
-package com.apollographql.apollo.compiler.next.codegen
+package com.apollographql.apollo.compiler.codegen
 
-import com.apollographql.apollo.compiler.ast.CustomTypes
-import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.patchKotlinNativeOptionalArrayProperties
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
-import com.apollographql.apollo.compiler.next.ast.buildCodeGenerationAst
+import com.apollographql.apollo.compiler.ast.buildCodeGenerationAst
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.squareup.kotlinpoet.FileSpec
@@ -13,7 +11,7 @@ import java.io.File
 class GraphQLKompiler(
     private val ir: CodeGenerationIR,
     private val schema: IntrospectionSchema,
-    private val customTypeMap: CustomTypes,
+    private val customTypeMap: Map<String, String>,
     private val useSemanticNaming: Boolean,
     private val generateAsInternal: Boolean = false,
     private val operationOutput: OperationOutput,
@@ -30,7 +28,7 @@ class GraphQLKompiler(
         fragmentsPackage = ir.fragmentsPackageName
     )
 
-    customTypeMap
+    ast.customTypes
         .filterKeys {
           ir.scalarsToGenerate.contains(it)
         }.takeIf {
@@ -39,11 +37,7 @@ class GraphQLKompiler(
            * This happens in multi-module for leaf modules
            */
           it.isNotEmpty()
-        }
-        ?.let {
-          CustomTypes(it)
-        }
-        ?.typeSpec(generateAsInternal)
+        }?.typeSpec(generateAsInternal)
         ?.fileSpec(ir.typesPackageName)
         ?.writeTo(outputDir)
 
@@ -62,11 +56,11 @@ class GraphQLKompiler(
     ast.inputTypes
         .filter { ir.inputObjectsToGenerate.contains(it.graphqlName) }
         .forEach { inputType ->
-      inputType
-          .typeSpec(generateAsInternal)
-          .fileSpec(ir.typesPackageName)
-          .writeTo(outputDir)
-    }
+          inputType
+              .typeSpec(generateAsInternal)
+              .fileSpec(ir.typesPackageName)
+              .writeTo(outputDir)
+        }
 
     ast.fragmentTypes
         .filter { ir.fragmentsToGenerate.contains(it.graphqlName) }
