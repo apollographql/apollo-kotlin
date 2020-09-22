@@ -1,5 +1,9 @@
+import okhttp3.Credentials.basic
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
+import okhttp3.Route
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -319,16 +323,27 @@ tasks.register("sonatypeCloseAndReleaseRepository") {
 
 tasks.register("bintrayPublish") {
   doLast {
+    val version = findProperty("VERSION_NAME") as String?
     "{\"publish_wait_for_secs\": -1}".toRequestBody("application/json".toMediaType()).let {
-      okhttp3.Request.Builder()
+      val credentials = basic(System.getenv("BINTRAY_USER"), System.getenv("BINTRAY_API_KEY"))
+      Request.Builder()
           .post(it)
+          .header("Authorization", credentials)
           .url("https://api.bintray.com//content/apollographql/android/apollo/$version/publish")
           .build()
     }.let {
-      okhttp3.OkHttpClient().newCall(it).execute()
+      /**
+       * Do the actual publishing with increased timeouts because the API might take a long time to reply
+       * If it times out, the files are published but apparently not the version. Making the call again seems to fix it
+       */
+      okhttp3.OkHttpClient.Builder()
+              .readTimeout(1, TimeUnit.HOURS)
+              .build()
+              .newCall(it)
+              .execute()
     }.use {
       check(it.isSuccessful) {
-        "Cannot publish to bintray: ${it.code}"
+        "Cannot publish to bintray: ${it.code}\n: ${it.body?.string()}"
       }
     }
   }
