@@ -212,3 +212,38 @@ Call your mutation with mimetype and a valid `File`.
 
 </MultiCodeBlock>
 
+If you don't have a `File`, you can also subclass `FileUpload`:
+
+<MultiCodeBlock>
+
+```kotlin
+  object upload : FileUpload(mimetype) {
+    override fun contentLength(): Long {
+      TODO("return contentLength here")
+    }
+    override fun fileName(): String? {
+      TODO("return fileName to use in the multipart request here")
+    }
+    override fun writeTo(sink: BufferedSink) {
+      TODO("write the data here")
+    }
+  }
+```
+
+```java
+  FileUpload upload = new FileUpload(mimetype) {
+    @Override Long contentLength() {
+      // return contentLength here
+    }
+
+    @Override String fileName() {
+      // return fileName here
+    }
+
+    @Override void writeTo(sink: BufferedSink)() {
+      // write the data here
+    }
+  };
+```
+
+</MultiCodeBlock>
