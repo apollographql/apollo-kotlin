@@ -105,11 +105,11 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
         responseNormalizer, request.cacheHeaders);
     Response cachedResponse = apolloStoreOperation.execute();
     if (cachedResponse.getData() != null) {
-      logger.d("Cache HIT for operation %s", request.operation);
+      logger.d("Cache HIT for operation %s", request.operation.name().name());
       return new InterceptorResponse(null, cachedResponse, responseNormalizer.records());
     }
-    logger.d("Cache MISS for operation %s", request.operation);
-    throw new ApolloException(String.format("Cache miss for operation %s", request.operation));
+    logger.d("Cache MISS for operation %s", request.operation.name().name());
+    throw new ApolloException(String.format("Cache miss for operation %s", request.operation.name().name()));
   }
 
   Set<String> cacheResponse(final InterceptorResponse networkResponse,
