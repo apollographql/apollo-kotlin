@@ -94,6 +94,13 @@ package com.apollographql.apollo {
     method public com.apollographql.apollo.ApolloClient.Builder useHttpGetMethodForQueries(boolean);
   }
 
+  public final class ApolloClientAwarenessInterceptor {
+    ctor public ApolloClientAwarenessInterceptor(error.NonExistentClass, error.NonExistentClass);
+    method public error.NonExistentClass getClientName();
+    method public error.NonExistentClass getClientVersion();
+    method public error.NonExistentClass intercept(error.NonExistentClass);
+  }
+
   public abstract interface ApolloMutationCall<T> implements com.apollographql.apollo.ApolloCall {
     method public abstract com.apollographql.apollo.ApolloMutationCall<T> cacheHeaders(CacheHeaders);
     method public abstract com.apollographql.apollo.ApolloMutationCall<T> clone();
