@@ -96,7 +96,7 @@ public final class ApolloParseInterceptor implements ApolloInterceptor {
         }
         return new InterceptorResponse(httpResponse, parsedResponse, normalizer.records());
       } catch (Exception rethrown) {
-        logger.e(rethrown, "Failed to parse network response for operation: %s", operation);
+        logger.e(rethrown, "Failed to parse network response for operation: %s", operation.name().name());
         closeQuietly(httpResponse);
         if (httpCache != null) {
           httpCache.removeQuietly(cacheKey);
