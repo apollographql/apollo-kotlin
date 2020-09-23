@@ -86,5 +86,5 @@ internal fun IntrospectionSchema.resolveType(graphqlType: String): Introspection
 } ?: throw ParseException("Unknown type `$graphqlType`")
 
 internal fun IntrospectionSchema.resolveType(typeRef: IntrospectionSchema.TypeRef): IntrospectionSchema.Type {
-  return this[typeRef.name] ?: throw ParseException("Unknown type `${typeRef.name}`")
+  return this[typeRef.name] ?: throw ParseException("Unknown type `${typeRef}`")
 }

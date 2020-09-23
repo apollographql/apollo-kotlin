@@ -129,36 +129,12 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   data class StarshipImpl(
-    /**
-     * The name of the starship
-     */
-    override val name: String,
-    override val __typename: String = "Starship"
-  ) : Search, Starship {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@StarshipImpl.name)
-        writer.writeString(RESPONSE_FIELDS[1], this@StarshipImpl.__typename)
-      }
-    }
-
+    val starshipDelegate: Starship
+  ) : Search, Starship by starshipDelegate {
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forString("__typename", "__typename", null, false, null)
-      )
-
-      operator fun invoke(reader: ResponseReader): StarshipImpl = reader.run {
-        val name = readString(RESPONSE_FIELDS[0])!!
-        val __typename = readString(RESPONSE_FIELDS[1])!!
-        StarshipImpl(
-          name = name,
-          __typename = __typename
-        )
+      operator fun invoke(reader: ResponseReader): StarshipImpl {
+        return StarshipImpl(Starship(reader))
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<StarshipImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 

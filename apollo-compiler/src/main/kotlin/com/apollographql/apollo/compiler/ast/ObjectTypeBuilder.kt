@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler.ast
 
+import com.apollographql.apollo.compiler.codegen.normalizeGraphQLType
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo.compiler.ir.Condition
 import com.apollographql.apollo.compiler.ir.Field
@@ -137,8 +138,8 @@ internal class ObjectTypeBuilder(
           )
         } else {
           field.resolveFieldWithFragmentsType(
-              schemaTypeRef = schemaTypeRef,
-              singularizeName = singularizeName
+              singularizeName = singularizeName,
+              abstract = abstract
           )
         }
       }
@@ -235,18 +236,10 @@ internal class ObjectTypeBuilder(
 
     // build object types for all fragments defined on concrete types
     val fragmentOnObjectTypes = fragmentOnObjects.map { fragment ->
-      val fragmentOnInterfaceTypesToImplement = fragmentOnInterfaceTypes
-          .filter { (fragmentOnInterface, _) -> fragmentOnInterface.possibleTypes.contains(fragment.typeCondition) }
-      val fieldsToMerge = fragmentOnInterfaceTypesToImplement.keys.flatMap { it.fields }
-      fragment.typeCondition to buildObjectType(
-          name = fragment.interfaceType?.name?.let { "${it}Impl" } ?: fragment.typeCondition,
-          schemaType = schema.resolveType(schema.resolveType(fragment.typeCondition)),
-          fields = fragment.fields.merge(rootFragmentInterfaceFields + fieldsToMerge),
-          abstract = false,
-          implements = fragmentOnInterfaceTypesToImplement
-              .map { (_, superInterfaceTypeRef) -> superInterfaceTypeRef }
-              .plus(rootFragmentInterfaceType)
-              .plus(listOfNotNull(fragment.interfaceType))
+      fragment.typeCondition to fragment.buildImplementationType(
+          rootFragmentInterfaceType = rootFragmentInterfaceType,
+          rootFragmentInterfaceFields = rootFragmentInterfaceFields,
+          fragmentInterfaceTypes = fragmentOnInterfaceTypes
       )
     }
 
@@ -300,91 +293,146 @@ internal class ObjectTypeBuilder(
     }
   }
 
-  private fun Field.resolveFieldWithFragmentsType(
-      schemaTypeRef: IntrospectionSchema.TypeRef,
-      singularizeName: Boolean
-  ): CodeGenerationAst.FieldType.Object {
-    val fragmentRootInterfaceType = nestedTypeContainer.registerObjectType(
-        typeName = responseName,
-        enclosingType = enclosingType,
-        singularizeName = singularizeName
-    ) { fragmentRootInterfaceType ->
-      val fragmentRootSchemaType = schema.resolveType(schemaTypeRef)
-
-      val fragments = inlineFragments
-          .toFragments()
-          .plus(fragmentRefs.map { fragmentRef -> fragmentRef.toFragment() })
-
-      val possibleImplementations = fragments.buildFragmentPossibleTypes(
-            rootFragmentInterfaceType = fragmentRootInterfaceType,
-            rootFragmentInterfaceSchemaType = schemaTypeRef,
-            rootFragmentInterfaceFields = fields
+  private fun Fragment.buildImplementationType(
+      rootFragmentInterfaceType: CodeGenerationAst.TypeRef,
+      rootFragmentInterfaceFields: List<Field>,
+      fragmentInterfaceTypes: Map<Fragment, CodeGenerationAst.TypeRef>
+  ): CodeGenerationAst.TypeRef {
+    val fragmentOnInterfaceTypesToImplement = fragmentInterfaceTypes
+        .filter { (fragmentOnInterface, _) -> fragmentOnInterface.possibleTypes.contains(this.typeCondition) }
+    val schemaType = schema.resolveType(schema.resolveType(this.typeCondition))
+    val fieldsToMerge = rootFragmentInterfaceFields + fragmentOnInterfaceTypesToImplement.keys.flatMap { it.fields }
+    return if (
+        fieldsToMerge.size == 1 &&
+        fieldsToMerge.single() == Field.TYPE_NAME_FIELD &&
+        this.interfaceType != null
+    ) {
+      // if named fragment used without mixing additional fields except `__typename` it's safe to skip fragment implementation generation
+      // and use delegation to default implementation of this fragment instead
+      nestedTypeContainer.registerObjectType(
+          typeName = "${this.interfaceType.name}Impl",
+          enclosingType = enclosingType,
+          singularizeName = true
+      ) { typeRef ->
+        CodeGenerationAst.ObjectType(
+            name = typeRef.name,
+            description = schemaType.description ?: "",
+            deprecated = false,
+            deprecationReason = "",
+            fields = emptyList(),
+            implements = fragmentOnInterfaceTypesToImplement
+                .map { (_, superInterfaceTypeRef) -> superInterfaceTypeRef }
+                .plus(rootFragmentInterfaceType)
+                .plus(listOfNotNull(this.interfaceType))
+                .toSet(),
+            schemaType = schemaType.name,
+            kind = CodeGenerationAst.ObjectType.Kind.FragmentDelegate(this.interfaceType),
         )
-
-      val fragmentRootInterfaceImplements: Set<CodeGenerationAst.TypeRef>
-      val fragmentRootInterfaceTypeKind: CodeGenerationAst.ObjectType.Kind
-      val fragmentRootInterfaceFields: List<CodeGenerationAst.Field>
-
-      // if there is only 1 named fragment defined on object type that is the same as field type
-      if (fragmentRootSchemaType.kind == IntrospectionSchema.Kind.OBJECT &&
-          fragments.size == 1 &&
-          fragments.first().typeCondition == this.type &&
-          fragments.first().interfaceType != null) {
-        // - make generated root interface to implement named fragment interface
-        fragmentRootInterfaceImplements = fragments.first().interfaceType?.let { setOf(it) } ?: emptySet()
-
-        // - skip default implementation generation and use implementation for this fragment as default implementation
-        fragmentRootInterfaceTypeKind = CodeGenerationAst.ObjectType.Kind.Fragment(
-            defaultImplementation = possibleImplementations.values.first(),
-            possibleImplementations = emptyMap()
-        )
-
-        // - merge fields from this named fragment
-        fragmentRootInterfaceFields = fields.merge(fragments.first().fields).mapNotNull { field ->
-          buildField(
-              field = field,
-              schemaType = fragmentRootSchemaType,
-              abstract = true
-          )
-        }
-      } else {
-        val defaultImplementationType = buildObjectType(
-            name = "${responseName.singularize()}Impl",
-            schemaType = schema.resolveType(schemaTypeRef),
-            fields = fields,
-            abstract = false,
-            implements = listOf(fragmentRootInterfaceType),
-            singularizeName = singularizeName
-        )
-        fragmentRootInterfaceImplements = emptySet()
-        fragmentRootInterfaceTypeKind = CodeGenerationAst.ObjectType.Kind.Fragment(
-            defaultImplementation = defaultImplementationType,
-            possibleImplementations = possibleImplementations
-        )
-        fragmentRootInterfaceFields = fields.mapNotNull { field ->
-          buildField(
-              field = field,
-              schemaType = fragmentRootSchemaType,
-              abstract = true
-          )
-        }
       }
-
-      CodeGenerationAst.ObjectType(
-          name = fragmentRootInterfaceType.name,
-          description = fragmentRootSchemaType.description ?: "",
-          deprecated = false,
-          deprecationReason = "",
-          fields = fragmentRootInterfaceFields,
-          implements = fragmentRootInterfaceImplements,
-          schemaType = fragmentRootSchemaType.name,
-          kind = fragmentRootInterfaceTypeKind
+    } else {
+      buildObjectType(
+          name = this.interfaceType?.name?.let { "${it}Impl" } ?: this.typeCondition,
+          schemaType = schema.resolveType(schema.resolveType(this.typeCondition)),
+          fields = this.fields.merge(fieldsToMerge),
+          abstract = false,
+          implements = fragmentOnInterfaceTypesToImplement
+              .map { (_, superInterfaceTypeRef) -> superInterfaceTypeRef }
+              .plus(rootFragmentInterfaceType)
+              .plus(listOfNotNull(this.interfaceType))
       )
     }
-    return CodeGenerationAst.FieldType.Object(
-        nullable = isOptional(),
-        typeRef = fragmentRootInterfaceType
-    )
+  }
+
+  private fun Field.resolveFieldWithFragmentsType(
+      singularizeName: Boolean,
+      abstract: Boolean
+  ): CodeGenerationAst.FieldType.Object {
+    val fieldSchemaTypeRef = schema.resolveType(this.type).rawType
+    val fieldSchemaType = schema.resolveType(fieldSchemaTypeRef)
+
+    val fragments = inlineFragments
+        .toFragments()
+        .plus(fragmentRefs.map { fragmentRef -> fragmentRef.toFragment() })
+    return when {
+      // when we generate just interfaces (in case of named fragments) skip fragment generation entirely
+      abstract -> {
+        val typeRef = buildObjectType(
+            name = responseName,
+            schemaType = fieldSchemaType,
+            fields = fields,
+            abstract = abstract,
+            implements = emptyList(),
+            singularizeName = singularizeName
+        )
+        CodeGenerationAst.FieldType.Object(
+            nullable = true,
+            typeRef = typeRef
+        )
+      }
+
+      // when there is only one fragment and type condition aligns with field type
+      // that means there is no need to generate fragment implementation but rather merge fields from this fragment
+      fragments.size == 1 && fragments.first().typeCondition == this.type.normalizeGraphQLType() -> {
+        val typeRef = buildObjectType(
+            name = responseName,
+            schemaType = fieldSchemaType,
+            fields = fields.merge(fragments.first().fields),
+            abstract = abstract,
+            implements = listOfNotNull(fragments.first().interfaceType),
+            singularizeName = singularizeName
+        )
+        CodeGenerationAst.FieldType.Object(
+            nullable = true,
+            typeRef = typeRef
+        )
+      }
+
+      else -> {
+        val fragmentRootInterfaceType = nestedTypeContainer.registerObjectType(
+            typeName = responseName,
+            enclosingType = enclosingType,
+            singularizeName = singularizeName
+        ) { fragmentRootInterfaceType ->
+          val fragmentRootSchemaType = fieldSchemaType
+          val possibleImplementations = fragments.buildFragmentPossibleTypes(
+              rootFragmentInterfaceType = fragmentRootInterfaceType,
+              rootFragmentInterfaceSchemaType = fieldSchemaTypeRef,
+              rootFragmentInterfaceFields = fields
+          )
+          val defaultImplementationType = buildObjectType(
+              name = "${responseName.singularize()}Impl",
+              schemaType = fragmentRootSchemaType,
+              fields = fields,
+              abstract = false,
+              implements = listOf(fragmentRootInterfaceType),
+              singularizeName = singularizeName
+          )
+          CodeGenerationAst.ObjectType(
+              name = fragmentRootInterfaceType.name,
+              description = fragmentRootSchemaType.description ?: "",
+              deprecated = false,
+              deprecationReason = "",
+              fields = fields.mapNotNull { field ->
+                buildField(
+                    field = field,
+                    schemaType = fragmentRootSchemaType,
+                    abstract = true
+                )
+              },
+              implements = emptySet(),
+              schemaType = fragmentRootSchemaType.name,
+              kind = CodeGenerationAst.ObjectType.Kind.Fragment(
+                  defaultImplementation = defaultImplementationType,
+                  possibleImplementations = possibleImplementations
+              )
+          )
+        }
+        CodeGenerationAst.FieldType.Object(
+            nullable = isOptional(),
+            typeRef = fragmentRootInterfaceType
+        )
+      }
+    }
   }
 
   private fun IntrospectionSchema.Type.fields(): List<IntrospectionSchema.Field> {
