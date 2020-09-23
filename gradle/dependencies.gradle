@@ -63,7 +63,8 @@ ext.dep = [
     kotlin                : [
         plugin             : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
         coroutines         : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.kotlinCoroutines",
-        coroutinesAndroid  : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.kotlinCoroutines"
+        coroutinesAndroid  : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.kotlinCoroutines",
+        reflect            : "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin"
     ],
     mockito               : "org.mockito:mockito-all:$versions.mockito",
     moshi                 : [
