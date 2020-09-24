@@ -73,6 +73,8 @@ dependencies {
 }
 ```
 
+## Snapshots
+
 Latest development changes are available in Sonatype's snapshots repository:
 
 ```gradle:title=build.gradle.kts
