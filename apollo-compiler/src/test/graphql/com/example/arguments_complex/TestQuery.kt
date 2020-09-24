@@ -181,10 +181,14 @@ data class TestQuery(
                   "kind" to "Variable",
                   "variableName" to "greenValue"),
                 "blue" to "0.0"),
-              "listOfStringNonOptional" to "[]"),
-            "listOfInts" to
-              "[{kind=Variable, variableName=stars}, {kind=Variable, variableName=stars}]"), true,
-              null)
+              "listOfStringNonOptional" to emptyList<Any>()),
+            "listOfInts" to listOf<Any>(
+              mapOf<String, Any>(
+                "kind" to "Variable",
+                "variableName" to "stars"),
+              mapOf<String, Any>(
+                "kind" to "Variable",
+                "variableName" to "stars"))), true, null)
           )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {

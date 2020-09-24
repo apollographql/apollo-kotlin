@@ -15,7 +15,7 @@ class RealCacheKeyBuilder : CacheKeyBuilder {
     if (field.arguments.isEmpty()) {
       return field.fieldName
     }
-    val resolvedArguments: Any = resolveArguments(field.arguments, variables)
+    val resolvedArguments = resolveVariables(field.arguments, variables)
     return try {
       val buffer = Buffer()
       val jsonWriter = JsonWriter.of(buffer)
@@ -29,34 +29,39 @@ class RealCacheKeyBuilder : CacheKeyBuilder {
   }
 
   @Suppress("UNCHECKED_CAST")
-  private fun resolveArguments(objectMap: Map<String, Any?>, variables: Operation.Variables): Map<String, Any?> {
-    return objectMap.mapValues { (_, value) ->
-      if (value is Map<*, *>) {
-        val nestedObjectMap = value as Map<String, Any?>
-        if (isArgumentValueVariableType(nestedObjectMap)) {
-          resolveVariableArgument(nestedObjectMap, variables)
+  private fun resolveVariables(value: Any?, variables: Operation.Variables): Any? {
+    return when (value) {
+      null -> null
+      is Map<*, *> -> {
+        value as Map<String, Any?>
+        if (isArgumentValueVariableType(value)) {
+          resolveVariable(value, variables)
         } else {
-          resolveArguments(nestedObjectMap, variables)
+          value.mapValues {
+            resolveVariables(it.value, variables)
+          }.toList()
+              .sortedBy { it.first }
+              .toMap()
         }
-      } else {
-        value
       }
-    }.toList()
-        .sortedBy { it.first }
-        .toMap()
+      is List<*> -> {
+        value.map {
+          resolveVariables(it, variables)
+        }
+      }
+      else -> value
+    }
   }
 
   @Suppress("UNCHECKED_CAST")
-  private fun resolveVariableArgument(objectMap: Map<String, Any?>, variables: Operation.Variables): Any? {
+  private fun resolveVariable(objectMap: Map<String, Any?>, variables: Operation.Variables): Any? {
     val variable = objectMap[ResponseField.VARIABLE_NAME_KEY]
 
     return when (val resolvedVariable = variables.valueMap()[variable]) {
-      null -> null
-      is Map<*, *> -> resolveArguments(resolvedVariable as Map<String, Any?>, variables)
       is InputType -> {
         val inputFieldMapWriter = SortedInputFieldMapWriter()
         resolvedVariable.marshaller().marshal(inputFieldMapWriter)
-        resolveArguments(inputFieldMapWriter.map(), variables)
+        inputFieldMapWriter.map()
       }
       else -> resolvedVariable
     }
