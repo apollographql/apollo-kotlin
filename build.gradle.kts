@@ -329,7 +329,7 @@ tasks.register("bintrayPublish") {
       Request.Builder()
           .post(it)
           .header("Authorization", credentials)
-          .url("https://api.bintray.com//content/apollographql/android/apollo/$version/publish")
+          .url("https://api.bintray.com/content/apollographql/android/apollo/$version/publish")
           .build()
     }.let {
       /**
