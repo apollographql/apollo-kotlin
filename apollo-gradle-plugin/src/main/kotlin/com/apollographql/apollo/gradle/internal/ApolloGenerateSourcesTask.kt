@@ -129,8 +129,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Input
   abstract val projectName: Property<String>
 
-  @get:InputDirectory
-  @get:PathSensitive(PathSensitivity.RELATIVE)
+  @get:Internal // The generated models do not depend on the location on the project
   abstract val projectRootDir: DirectoryProperty
 
   @TaskAction
