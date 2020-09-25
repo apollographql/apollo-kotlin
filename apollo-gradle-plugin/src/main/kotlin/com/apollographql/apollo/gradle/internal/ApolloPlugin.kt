@@ -1,5 +1,6 @@
 package com.apollographql.apollo.gradle.internal
 
+import com.apollographql.apollo.compiler.ApolloMetadata
 import com.apollographql.apollo.compiler.OperationIdGenerator
 import com.apollographql.apollo.compiler.OperationOutputGenerator
 import com.apollographql.apollo.gradle.api.ApolloAttributes
@@ -159,7 +160,7 @@ open class ApolloPlugin : Plugin<Project> {
 
         rootProject.tasks.register(taskName, ApolloCheckDuplicatesTask::class.java) {
           it.outputFile.set(BuildDirLayout.duplicatesCheck(rootProject, compilationUnit))
-          it.metadataConfiguration = configuration
+          it.metadataFiles.setFrom(configuration.incoming.artifacts.artifacts.map {it.file })
         }
       }
     }
@@ -217,6 +218,8 @@ open class ApolloPlugin : Plugin<Project> {
         task.kotlinMultiPlatformProject.set(project.isKotlinMultiplatform)
         task.sealedClassesForEnumsMatching.set(compilerParams.sealedClassesForEnumsMatching)
         task.alwaysGenerateTypesMatching.set(compilerParams.alwaysGenerateTypesMatching)
+        task.projectName.set(project.name)
+        task.projectRootDir.set(project.rootProject.rootDir)
       }
     }
 

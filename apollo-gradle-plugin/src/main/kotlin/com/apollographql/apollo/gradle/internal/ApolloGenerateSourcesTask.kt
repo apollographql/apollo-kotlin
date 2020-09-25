@@ -7,12 +7,14 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.SetProperty
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Internal
@@ -23,6 +25,7 @@ import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.SkipWhenEmpty
 import org.gradle.api.tasks.TaskAction
+import javax.inject.Inject
 
 @CacheableTask
 abstract class ApolloGenerateSourcesTask : DefaultTask() {
@@ -120,6 +123,16 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Optional
   abstract val sealedClassesForEnumsMatching: ListProperty<String>
 
+  @get:Inject
+  abstract val objectFactory: ObjectFactory
+
+  @get:Input
+  abstract val projectName: Property<String>
+
+  @get:InputDirectory
+  @get:PathSensitive(PathSensitivity.RELATIVE)
+  abstract val projectRootDir: DirectoryProperty
+
   @TaskAction
   fun taskAction() {
     checkParameters()
@@ -131,7 +144,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
     }
 
     val args = GraphQLCompiler.Arguments(
-        rootFolders = rootFolders.get().map { project.file(it) },
+        rootFolders = objectFactory.fileCollection().from(rootFolders).files.toList(),
         graphqlFiles = graphqlFiles.files,
         schemaFile = schemaFile.asFile.orNull,
         outputDir = outputDir.asFile.get(),
@@ -140,8 +153,8 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         metadataOutputFile = metadataOutputFile.asFile.get(),
         generateMetadata = generateMetadata.getOrElse(false),
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching.orNull,
-        moduleName = project.name,
-        rootProjectDir = project.rootDir,
+        moduleName = projectName.get(),
+        rootProjectDir = projectRootDir.get().asFile,
 
         operationOutputFile = operationOutputFile.asFile.orNull,
         operationOutputGenerator = operationOutputGenerator,
