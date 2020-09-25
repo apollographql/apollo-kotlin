@@ -160,7 +160,7 @@ open class ApolloPlugin : Plugin<Project> {
 
         rootProject.tasks.register(taskName, ApolloCheckDuplicatesTask::class.java) {
           it.outputFile.set(BuildDirLayout.duplicatesCheck(rootProject, compilationUnit))
-          it.metadataFiles.setFrom(configuration.incoming.artifacts.artifacts.map {it.file })
+          it.metadataFiles.from(configuration)
         }
       }
     }
@@ -210,8 +210,7 @@ open class ApolloPlugin : Plugin<Project> {
         }
 
         task.generateMetadata.set(compilerParams.generateApolloMetadata.orElse(project.provider { !consumerConfiguration.isEmpty }))
-
-        task.metadataFiles.setFrom(consumerConfiguration.incoming.artifacts.artifacts.map { it.file })
+        task.metadataFiles.from(consumerConfiguration)
 
         task.rootPackageName.set(compilerParams.rootPackageName)
         task.generateAsInternal.set(compilerParams.generateAsInternal)
