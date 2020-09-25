@@ -44,14 +44,16 @@ private fun InlineFragment.flatten(): List<InlineFragment> {
 }
 
 internal fun List<Field>.merge(others: List<Field>): List<Field> {
-  return others.fold(this) { mergedFields, field ->
-    val existingField = mergedFields.find { existingField -> existingField.responseName == field.responseName }
-    if (existingField == null) {
-      mergedFields + field
+  return others.fold(this.toMutableList()) { mergedFields, field ->
+    val existingFieldIndex = mergedFields.indexOfFirst{ existingField -> existingField.responseName == field.responseName }
+    if (existingFieldIndex == -1) {
+      mergedFields.add(field)
     } else {
-      mergedFields.minus(existingField) + existingField.copy(
+      val existingField = mergedFields[existingFieldIndex]
+      mergedFields[existingFieldIndex] = existingField.copy(
           fields = existingField.fields.merge(field.fields)
       )
     }
+    mergedFields
   }
 }

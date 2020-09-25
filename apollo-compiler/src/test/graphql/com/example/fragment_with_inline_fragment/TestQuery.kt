@@ -220,15 +220,15 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
    * A character from the Star Wars universe
    */
   data class Hero(
-    /**
-     * The movies this character appears in
-     */
-    val appearsIn: List<Episode?>,
     override val __typename: String = "Character",
     /**
      * The name of the character
      */
     override val name: String,
+    /**
+     * The movies this character appears in
+     */
+    val appearsIn: List<Episode?>,
     /**
      * The friends of the character exposed as a connection with edges
      */
@@ -236,12 +236,12 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   ) : HeroDetails {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeList(RESPONSE_FIELDS[0], this@Hero.appearsIn) { value, listItemWriter ->
+        writer.writeString(RESPONSE_FIELDS[0], this@Hero.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@Hero.name)
+        writer.writeList(RESPONSE_FIELDS[2], this@Hero.appearsIn) { value, listItemWriter ->
           value?.forEach { value ->
             listItemWriter.writeString(value?.rawValue)}
         }
-        writer.writeString(RESPONSE_FIELDS[1], this@Hero.__typename)
-        writer.writeString(RESPONSE_FIELDS[2], this@Hero.name)
         writer.writeObject(RESPONSE_FIELDS[3], this@Hero.friendsConnection.marshaller())
       }
     }
@@ -250,25 +250,25 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forList("appearsIn", "appearsIn", null, false, null),
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forList("appearsIn", "appearsIn", null, false, null),
         ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
       )
 
       operator fun invoke(reader: ResponseReader): Hero = reader.run {
-        val appearsIn = readList<Episode>(RESPONSE_FIELDS[0]) { reader ->
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
+        val appearsIn = readList<Episode>(RESPONSE_FIELDS[2]) { reader ->
           Episode.safeValueOf(reader.readString())
         }!!
-        val __typename = readString(RESPONSE_FIELDS[1])!!
-        val name = readString(RESPONSE_FIELDS[2])!!
         val friendsConnection = readObject<FriendsConnection>(RESPONSE_FIELDS[3]) { reader ->
           FriendsConnection(reader)
         }!!
         Hero(
-          appearsIn = appearsIn,
           __typename = __typename,
           name = name,
+          appearsIn = appearsIn,
           friendsConnection = friendsConnection
         )
       }

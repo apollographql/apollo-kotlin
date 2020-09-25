@@ -261,11 +261,11 @@ data class TestQuery(
    * A character from the Star Wars universe
    */
   data class Hero(
+    override val __typename: String = "Character",
     /**
      * The name of the character
      */
     val name: String?,
-    override val __typename: String = "Character",
     /**
      * The friends of the character exposed as a connection with edges
      */
@@ -273,18 +273,18 @@ data class TestQuery(
   ) : HeroDetails {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Hero.name)
-        writer.writeString(RESPONSE_FIELDS[1], this@Hero.__typename)
+        writer.writeString(RESPONSE_FIELDS[0], this@Hero.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@Hero.name)
         writer.writeObject(RESPONSE_FIELDS[2], this@Hero.friendsConnection.marshaller())
       }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, true, listOf(
           ResponseField.Condition.booleanCondition("IncludeName", false)
         )),
-        ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forObject("friendsConnection", "friendsConnection", mapOf<String, Any>(
           "first" to mapOf<String, Any>(
             "kind" to "Variable",
@@ -292,14 +292,14 @@ data class TestQuery(
       )
 
       operator fun invoke(reader: ResponseReader): Hero = reader.run {
-        val name = readString(RESPONSE_FIELDS[0])
-        val __typename = readString(RESPONSE_FIELDS[1])!!
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])
         val friendsConnection = readObject<FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
           FriendsConnection(reader)
         }!!
         Hero(
-          name = name,
           __typename = __typename,
+          name = name,
           friendsConnection = friendsConnection
         )
       }

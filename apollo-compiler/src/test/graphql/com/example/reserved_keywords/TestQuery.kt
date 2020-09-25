@@ -142,8 +142,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     override fun marshaller(): ResponseFieldMarshaller
   }
 
+  /**
+   * A character from the Star Wars universe
+   */
   data class CharacterImpl(
-    override val __typename: String,
+    override val __typename: String = "Character",
     /**
      * The name of the character
      */

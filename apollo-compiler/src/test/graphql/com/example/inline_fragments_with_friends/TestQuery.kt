@@ -133,6 +133,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
    * A humanoid creature from the Star Wars universe
    */
   data class Human(
+    override val __typename: String = "Human",
+    /**
+     * What this human calls themselves
+     */
+    override val name: String,
     /**
      * Height in the preferred unit, default is meters
      */
@@ -140,22 +145,17 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     /**
      * This human's friends, or an empty list if they have none
      */
-    val friends: List<Friend?>?,
-    override val __typename: String = "Human",
-    /**
-     * What this human calls themselves
-     */
-    override val name: String
+    val friends: List<Friend?>?
   ) : Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeDouble(RESPONSE_FIELDS[0], this@Human.height)
-        writer.writeList(RESPONSE_FIELDS[1], this@Human.friends) { value, listItemWriter ->
+        writer.writeString(RESPONSE_FIELDS[0], this@Human.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@Human.name)
+        writer.writeDouble(RESPONSE_FIELDS[2], this@Human.height)
+        writer.writeList(RESPONSE_FIELDS[3], this@Human.friends) { value, listItemWriter ->
           value?.forEach { value ->
             listItemWriter.writeObject(value?.marshaller())}
         }
-        writer.writeString(RESPONSE_FIELDS[2], this@Human.__typename)
-        writer.writeString(RESPONSE_FIELDS[3], this@Human.name)
       }
     }
 
@@ -163,26 +163,26 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forDouble("height", "height", null, true, null),
-        ResponseField.forList("friends", "friends", null, true, null),
         ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null)
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forDouble("height", "height", null, true, null),
+        ResponseField.forList("friends", "friends", null, true, null)
       )
 
       operator fun invoke(reader: ResponseReader): Human = reader.run {
-        val height = readDouble(RESPONSE_FIELDS[0])
-        val friends = readList<Friend>(RESPONSE_FIELDS[1]) { reader ->
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
+        val height = readDouble(RESPONSE_FIELDS[2])
+        val friends = readList<Friend>(RESPONSE_FIELDS[3]) { reader ->
           reader.readObject<Friend> { reader ->
             Friend(reader)
           }
         }
-        val __typename = readString(RESPONSE_FIELDS[2])!!
-        val name = readString(RESPONSE_FIELDS[3])!!
         Human(
-          height = height,
-          friends = friends,
           __typename = __typename,
-          name = name
+          name = name,
+          height = height,
+          friends = friends
         )
       }
 
@@ -232,6 +232,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
    * An autonomous mechanical character in the Star Wars universe
    */
   data class Droid(
+    override val __typename: String = "Droid",
+    /**
+     * What others call this droid
+     */
+    override val name: String,
     /**
      * This droid's primary function
      */
@@ -239,22 +244,17 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     /**
      * This droid's friends, or an empty list if they have none
      */
-    val friends: List<Friend1?>?,
-    override val __typename: String = "Droid",
-    /**
-     * What others call this droid
-     */
-    override val name: String
+    val friends: List<Friend1?>?
   ) : Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Droid.primaryFunction)
-        writer.writeList(RESPONSE_FIELDS[1], this@Droid.friends) { value, listItemWriter ->
+        writer.writeString(RESPONSE_FIELDS[0], this@Droid.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@Droid.name)
+        writer.writeString(RESPONSE_FIELDS[2], this@Droid.primaryFunction)
+        writer.writeList(RESPONSE_FIELDS[3], this@Droid.friends) { value, listItemWriter ->
           value?.forEach { value ->
             listItemWriter.writeObject(value?.marshaller())}
         }
-        writer.writeString(RESPONSE_FIELDS[2], this@Droid.__typename)
-        writer.writeString(RESPONSE_FIELDS[3], this@Droid.name)
       }
     }
 
@@ -262,26 +262,26 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("primaryFunction", "primaryFunction", null, true, null),
-        ResponseField.forList("friends", "friends", null, true, null),
         ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null)
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forString("primaryFunction", "primaryFunction", null, true, null),
+        ResponseField.forList("friends", "friends", null, true, null)
       )
 
       operator fun invoke(reader: ResponseReader): Droid = reader.run {
-        val primaryFunction = readString(RESPONSE_FIELDS[0])
-        val friends = readList<Friend1>(RESPONSE_FIELDS[1]) { reader ->
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
+        val primaryFunction = readString(RESPONSE_FIELDS[2])
+        val friends = readList<Friend1>(RESPONSE_FIELDS[3]) { reader ->
           reader.readObject<Friend1> { reader ->
             Friend1(reader)
           }
         }
-        val __typename = readString(RESPONSE_FIELDS[2])!!
-        val name = readString(RESPONSE_FIELDS[3])!!
         Droid(
-          primaryFunction = primaryFunction,
-          friends = friends,
           __typename = __typename,
-          name = name
+          name = name,
+          primaryFunction = primaryFunction,
+          friends = friends
         )
       }
 

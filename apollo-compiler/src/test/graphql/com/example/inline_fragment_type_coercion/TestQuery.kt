@@ -87,39 +87,44 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   interface Bar : Foo {
     override val __typename: String
 
+    override val foo: String
+
     val bar: String
 
     override fun marshaller(): ResponseFieldMarshaller
   }
 
+  /**
+   * For testing fragment type coercion
+   */
   data class BarImpl(
-    override val __typename: String,
-    override val bar: String,
-    override val foo: String
+    override val __typename: String = "Bar",
+    override val foo: String,
+    override val bar: String
   ) : Bar, Foo {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
         writer.writeString(RESPONSE_FIELDS[0], this@BarImpl.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@BarImpl.bar)
-        writer.writeString(RESPONSE_FIELDS[2], this@BarImpl.foo)
+        writer.writeString(RESPONSE_FIELDS[1], this@BarImpl.foo)
+        writer.writeString(RESPONSE_FIELDS[2], this@BarImpl.bar)
       }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("bar", "bar", null, false, null),
-        ResponseField.forString("foo", "foo", null, false, null)
+        ResponseField.forString("foo", "foo", null, false, null),
+        ResponseField.forString("bar", "bar", null, false, null)
       )
 
       operator fun invoke(reader: ResponseReader): BarImpl = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
-        val bar = readString(RESPONSE_FIELDS[1])!!
-        val foo = readString(RESPONSE_FIELDS[2])!!
+        val foo = readString(RESPONSE_FIELDS[1])!!
+        val bar = readString(RESPONSE_FIELDS[2])!!
         BarImpl(
           __typename = __typename,
-          bar = bar,
-          foo = foo
+          foo = foo,
+          bar = bar
         )
       }
 

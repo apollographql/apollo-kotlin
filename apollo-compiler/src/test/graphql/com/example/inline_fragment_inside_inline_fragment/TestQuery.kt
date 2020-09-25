@@ -100,39 +100,39 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
    * A humanoid creature from the Star Wars universe
    */
   data class Human(
-    /**
-     * The home planet of the human, or null if unknown
-     */
-    val homePlanet: String?,
     override val __typename: String = "Human",
     /**
      * What this human calls themselves
      */
-    override val name: String
+    override val name: String,
+    /**
+     * The home planet of the human, or null if unknown
+     */
+    val homePlanet: String?
   ) : Character, Search {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Human.homePlanet)
-        writer.writeString(RESPONSE_FIELDS[1], this@Human.__typename)
-        writer.writeString(RESPONSE_FIELDS[2], this@Human.name)
+        writer.writeString(RESPONSE_FIELDS[0], this@Human.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@Human.name)
+        writer.writeString(RESPONSE_FIELDS[2], this@Human.homePlanet)
       }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("homePlanet", "homePlanet", null, true, null),
         ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null)
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forString("homePlanet", "homePlanet", null, true, null)
       )
 
       operator fun invoke(reader: ResponseReader): Human = reader.run {
-        val homePlanet = readString(RESPONSE_FIELDS[0])
-        val __typename = readString(RESPONSE_FIELDS[1])!!
-        val name = readString(RESPONSE_FIELDS[2])!!
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
+        val homePlanet = readString(RESPONSE_FIELDS[2])
         Human(
-          homePlanet = homePlanet,
           __typename = __typename,
-          name = name
+          name = name,
+          homePlanet = homePlanet
         )
       }
 
@@ -145,39 +145,39 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
    * An autonomous mechanical character in the Star Wars universe
    */
   data class Droid(
-    /**
-     * This droid's primary function
-     */
-    val primaryFunction: String?,
     override val __typename: String = "Droid",
     /**
      * What others call this droid
      */
-    override val name: String
+    override val name: String,
+    /**
+     * This droid's primary function
+     */
+    val primaryFunction: String?
   ) : Character, Search {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Droid.primaryFunction)
-        writer.writeString(RESPONSE_FIELDS[1], this@Droid.__typename)
-        writer.writeString(RESPONSE_FIELDS[2], this@Droid.name)
+        writer.writeString(RESPONSE_FIELDS[0], this@Droid.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@Droid.name)
+        writer.writeString(RESPONSE_FIELDS[2], this@Droid.primaryFunction)
       }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("primaryFunction", "primaryFunction", null, true, null),
         ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null)
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forString("primaryFunction", "primaryFunction", null, true, null)
       )
 
       operator fun invoke(reader: ResponseReader): Droid = reader.run {
-        val primaryFunction = readString(RESPONSE_FIELDS[0])
-        val __typename = readString(RESPONSE_FIELDS[1])!!
-        val name = readString(RESPONSE_FIELDS[2])!!
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
+        val primaryFunction = readString(RESPONSE_FIELDS[2])
         Droid(
-          primaryFunction = primaryFunction,
           __typename = __typename,
-          name = name
+          name = name,
+          primaryFunction = primaryFunction
         )
       }
 

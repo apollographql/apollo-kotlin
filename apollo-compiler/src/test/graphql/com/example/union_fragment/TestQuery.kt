@@ -85,8 +85,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     scalarTypeAdapters = scalarTypeAdapters
   )
 
+  /**
+   * A character from the Star Wars universe
+   */
   data class CharacterImpl(
-    override val __typename: String,
+    override val __typename: String = "Character",
     /**
      * The ID of the character
      */
