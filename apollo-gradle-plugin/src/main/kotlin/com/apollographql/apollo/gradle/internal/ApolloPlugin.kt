@@ -210,7 +210,7 @@ open class ApolloPlugin : Plugin<Project> {
 
         task.generateMetadata.set(compilerParams.generateApolloMetadata.orElse(project.provider { !consumerConfiguration.isEmpty }))
 
-        task.metadataConfiguration = consumerConfiguration
+        task.metadataFiles.setFrom(consumerConfiguration.incoming.artifacts.artifacts.map { it.file })
 
         task.rootPackageName.set(compilerParams.rootPackageName)
         task.generateAsInternal.set(compilerParams.generateAsInternal)

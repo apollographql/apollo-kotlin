@@ -4,7 +4,6 @@ import com.apollographql.apollo.compiler.GraphQLCompiler
 import com.apollographql.apollo.compiler.NullableValueType
 import com.apollographql.apollo.compiler.OperationOutputGenerator
 import org.gradle.api.DefaultTask
-import org.gradle.api.artifacts.Configuration
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
@@ -24,7 +23,6 @@ import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.SkipWhenEmpty
 import org.gradle.api.tasks.TaskAction
-import java.io.File
 
 @CacheableTask
 abstract class ApolloGenerateSourcesTask : DefaultTask() {
@@ -50,7 +48,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @get:InputFiles
   @get:PathSensitive(PathSensitivity.RELATIVE)
-  lateinit var metadataConfiguration: Configuration
+  abstract val metadataFiles: ConfigurableFileCollection
 
   @get:Input
   abstract val rootFolders: ListProperty<String>
@@ -138,7 +136,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         schemaFile = schemaFile.asFile.orNull,
         outputDir = outputDir.asFile.get(),
 
-        metadata = metadataConfiguration.incoming.artifacts.artifacts.map { it.file },
+        metadata = metadataFiles.files.toList(),
         metadataOutputFile = metadataOutputFile.asFile.get(),
         generateMetadata = generateMetadata.getOrElse(false),
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching.orNull,
