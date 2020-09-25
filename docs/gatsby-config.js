@@ -40,6 +40,7 @@ module.exports = {
             'advanced/persisted-queries',
             'essentials/using-aliases',
             'advanced/multi-modules',
+            'advanced/client-awareness'
           ],
           'Languages & Extensions': [
             'advanced/coroutines',

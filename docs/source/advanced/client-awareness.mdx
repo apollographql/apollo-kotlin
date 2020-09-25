@@ -1,0 +1,22 @@
+---
+title: Client Awareness
+---
+
+Apollo Studio users can opt-in [Client Awareness](https://www.apollographql.com/docs/studio/client-awareness/). Client Awareness allows you to view operation metrics split per client, helping you understand how each one interacts with your data graph.
+
+Client Awareness uses `apollographql-client-name` and `apollographql-client-version` custom HTTP headers to report client usage.
+
+Enable it by adding an `ApolloClientAwarenessInterceptor` to your `OkHttpClient`:
+
+```kotlin
+    val okHttpClient = OkHttpClient.Builder()
+        .addInterceptor(ApolloClientAwarenessInterceptor(BuildConfig.APPLICATION_ID, BuildConfig.VERSION_NAME))
+        .build()
+
+    instance = ApolloClient.builder()
+        .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/graphql")
+        .okHttpClient(okHttpClient)
+        .build()
+```
+
+**Note**: This example uses `BuildConfig` to set the applicationId as client name and app version as client version but you can override this. Especially, if your iOS and Android apps use the same package name, it's useful to customize it to allow differentiating the clients
