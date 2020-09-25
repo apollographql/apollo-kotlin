@@ -83,6 +83,7 @@ subprojects {
 
   tasks.withType<Test>().configureEach {
     systemProperty("updateTestFixtures", System.getProperty("updateTestFixtures"))
+    systemProperty("codegenTests", System.getProperty("codegenTests"))
   }
 
   afterEvaluate {
