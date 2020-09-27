@@ -453,6 +453,7 @@ internal object KotlinCodeGen {
           .build()
       this is String -> CodeBlock.of("%S", this)
       this is Number -> CodeBlock.of("%S", this.toString()) // TODO: replace with actual numbers instead of relying on coercion
+      this is Boolean -> CodeBlock.of("%S", this.toString())
       else -> throw IllegalStateException("Cannot generate code for $this")
     }
   }

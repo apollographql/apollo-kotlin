@@ -372,6 +372,9 @@ input ReviewInput {
   booleanWithDefaultValue: Boolean = true
 
   """for test purpose only"""
+  booleanNonOptional: Boolean
+
+  """for test purpose only"""
   listOfListOfString: [[String!]!]
 
   """for test purpose only"""
