@@ -86,6 +86,10 @@ data class ReviewInput(
   /**
    * for test purpose only
    */
+  val booleanNonOptional: Input<Boolean> = Input.absent(),
+  /**
+   * for test purpose only
+   */
   val listOfListOfString: Input<List<List<String>>> = Input.absent(),
   /**
    * for test purpose only
@@ -183,6 +187,9 @@ data class ReviewInput(
     }
     if (this@ReviewInput.booleanWithDefaultValue.defined) {
       writer.writeBoolean("booleanWithDefaultValue", this@ReviewInput.booleanWithDefaultValue.value)
+    }
+    if (this@ReviewInput.booleanNonOptional.defined) {
+      writer.writeBoolean("booleanNonOptional", this@ReviewInput.booleanNonOptional.value)
     }
     if (this@ReviewInput.listOfListOfString.defined) {
       writer.writeList("listOfListOfString", this@ReviewInput.listOfListOfString.value?.let {

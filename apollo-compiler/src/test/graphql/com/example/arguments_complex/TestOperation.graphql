@@ -8,6 +8,7 @@ query TestQuery($episode: Episode, $stars: Int!, $greenValue: Float!) {
         green: $greenValue
         blue: 0
       }
+      booleanNonOptional: false
       listOfStringNonOptional: []
     },
     listOfInts: [$stars, $stars]

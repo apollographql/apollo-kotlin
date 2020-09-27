@@ -41,11 +41,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, TestQuery.Variables> {
-  public static final String OPERATION_ID = "ea0219363b8af60b029b30af551861cbae30648978be2060651eacc0e34a79d0";
+  public static final String OPERATION_ID = "9bfee0998b66f8adeed48e612153400401690d904e272d69289721b6f39aca5f";
 
   public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
     "query TestQuery($episode: Episode, $stars: Int!, $greenValue: Float!) {\n"
-        + "  heroWithReview(episode: $episode, review: {stars: $stars, favoriteColor: {red: 0, green: $greenValue, blue: 0}, listOfStringNonOptional: []}, listOfInts: [$stars, $stars]) {\n"
+        + "  heroWithReview(episode: $episode, review: {stars: $stars, favoriteColor: {red: 0, green: $greenValue, blue: 0}, booleanNonOptional: false, listOfStringNonOptional: []}, listOfInts: [$stars, $stars]) {\n"
         + "    __typename\n"
         + "    name\n"
         + "    height(unit: FOOT)\n"
@@ -245,7 +245,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         .put("kind", "Variable")
         .put("variableName", "episode")
         .build())
-      .put("review", new UnmodifiableMapBuilder<String, Object>(3)
+      .put("review", new UnmodifiableMapBuilder<String, Object>(4)
         .put("stars", new UnmodifiableMapBuilder<String, Object>(2)
           .put("kind", "Variable")
           .put("variableName", "stars")
@@ -258,6 +258,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
             .build())
           .put("blue", "0.0")
           .build())
+        .put("booleanNonOptional", "false")
         .put("listOfStringNonOptional", "[]")
         .build())
       .put("listOfInts", "[{kind=Variable, variableName=stars}, {kind=Variable, variableName=stars}]")
