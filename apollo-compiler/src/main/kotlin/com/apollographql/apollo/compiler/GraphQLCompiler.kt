@@ -89,14 +89,14 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
       args.operationOutputGenerator.generate(it)
     }
 
+    if (args.operationOutputFile != null) {
+      args.operationOutputFile.writeText(operationOutput.toJson("  "))
+    }
+
     check(operationOutput.size == ir.operations.size) {
       """The number of operation IDs (${operationOutput.size}) should match the number of operations (${ir.operations.size}).
         |Check that all your IDs are unique.
       """.trimMargin()
-    }
-
-    if (args.operationOutputFile != null) {
-      args.operationOutputFile.writeText(operationOutput.toJson("  "))
     }
 
     val customTypeMap = (introspectionSchema.types.values.filter {
