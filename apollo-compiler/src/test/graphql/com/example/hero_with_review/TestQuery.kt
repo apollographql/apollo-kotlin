@@ -159,39 +159,24 @@ data class TestQuery(
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-<<<<<<< HEAD
         ResponseField.forObject("createReview", "createReview", mapOf<String, Any>(
           "episode" to mapOf<String, Any>(
             "kind" to "Variable",
             "variableName" to "ep"),
           "review" to mapOf<String, Any>(
             "stars" to "5",
-            "listOfEnums" to "[JEDI, EMPIRE, NEWHOPE]",
-            "listOfStringNonOptional" to "[1, 2, 3]",
+            "listOfEnums" to listOf<Any>(
+              "JEDI",
+              "EMPIRE",
+              "NEWHOPE"),
+            "listOfStringNonOptional" to listOf<Any>(
+              "1",
+              "2",
+              "3"),
             "favoriteColor" to mapOf<String, Any>(
               "red" to "1",
               "blue" to "1.0"))), true, null)
       )
-=======
-          ResponseField.forObject("createReview", "createReview", mapOf<String, Any>(
-            "episode" to mapOf<String, Any>(
-              "kind" to "Variable",
-              "variableName" to "ep"),
-            "review" to mapOf<String, Any>(
-              "stars" to "5",
-              "listOfEnums" to listOf<Any>(
-                "JEDI",
-                "EMPIRE",
-                "NEWHOPE"),
-              "listOfStringNonOptional" to listOf<Any>(
-                "1",
-                "2",
-                "3"),
-              "favoriteColor" to mapOf<String, Any>(
-                "red" to "1",
-                "blue" to "1.0"))), true, null)
-          )
->>>>>>> main
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {
         val createReview = readObject<CreateReview>(RESPONSE_FIELDS[0]) { reader ->

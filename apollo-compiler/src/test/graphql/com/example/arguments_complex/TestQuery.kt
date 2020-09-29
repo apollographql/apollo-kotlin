@@ -184,33 +184,18 @@ data class TestQuery(
               "red" to "0",
               "green" to mapOf<String, Any>(
                 "kind" to "Variable",
-<<<<<<< HEAD
                 "variableName" to "greenValue"),
               "blue" to "0.0"),
-            "listOfStringNonOptional" to "[]"),
-          "listOfInts" to
-            "[{kind=Variable, variableName=stars}, {kind=Variable, variableName=stars}]"), true,
-            null)
+            "booleanNonOptional" to "false",
+            "listOfStringNonOptional" to emptyList<Any>()),
+          "listOfInts" to listOf<Any>(
+            mapOf<String, Any>(
+              "kind" to "Variable",
+              "variableName" to "stars"),
+            mapOf<String, Any>(
+              "kind" to "Variable",
+              "variableName" to "stars"))), true, null)
       )
-=======
-                "variableName" to "stars"),
-              "favoriteColor" to mapOf<String, Any>(
-                "red" to "0",
-                "green" to mapOf<String, Any>(
-                  "kind" to "Variable",
-                  "variableName" to "greenValue"),
-                "blue" to "0.0"),
-              "booleanNonOptional" to "false",
-              "listOfStringNonOptional" to emptyList<Any>()),
-            "listOfInts" to listOf<Any>(
-              mapOf<String, Any>(
-                "kind" to "Variable",
-                "variableName" to "stars"),
-              mapOf<String, Any>(
-                "kind" to "Variable",
-                "variableName" to "stars"))), true, null)
-          )
->>>>>>> main
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {
         val heroWithReview = readObject<HeroWithReview>(RESPONSE_FIELDS[0]) { reader ->
