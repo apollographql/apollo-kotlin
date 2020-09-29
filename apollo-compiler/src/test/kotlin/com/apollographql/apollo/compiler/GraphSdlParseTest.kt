@@ -2,8 +2,11 @@ package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.compiler.parser.error.ParseException
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
+import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Companion.wrap
+import com.apollographql.apollo.compiler.parser.introspection.toSDL
 import com.apollographql.apollo.compiler.parser.sdl.GraphSdlSchema
 import com.apollographql.apollo.compiler.parser.sdl.toIntrospectionSchema
+import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
@@ -61,5 +64,26 @@ class GraphSdlParseTest() {
     } catch (e: ParseException) {
       assertThat(e.message).contains("Object `Cat` cannot implement non-interface `Animal`")
     }
+  }
+
+  @Test
+  fun `writing SDL and parsing again yields identical schemas`() {
+    val initialSchema = IntrospectionSchema(File("src/test/sdl/schema.json")).normalize()
+    val sdlFile = File("build/sdl-test/schema.sdl")
+    sdlFile.parentFile.deleteRecursively()
+    sdlFile.parentFile.mkdirs()
+    initialSchema.toSDL(sdlFile)
+    val finalSchema = GraphSdlSchema(sdlFile).toIntrospectionSchema().normalize()
+
+    dumpSchemas(initialSchema, finalSchema)
+    assertEquals(initialSchema, finalSchema)
+  }
+
+  /**
+   * use to make easier diffs
+   */
+  private fun dumpSchemas(expected: IntrospectionSchema, actual: IntrospectionSchema) {
+    actual.wrap().toJson(File("build/sdl-test/actual.json"), "  ")
+    expected.wrap().toJson(File("build/sdl-test/expected.json"), "  ")
   }
 }

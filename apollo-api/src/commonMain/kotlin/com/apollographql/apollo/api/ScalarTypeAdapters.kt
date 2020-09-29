@@ -84,11 +84,12 @@ class ScalarTypeAdapters(val customAdapters: Map<ScalarType, CustomTypeAdapter<*
         } +
         mapOf("com.apollographql.apollo.api.FileUpload" to object : CustomTypeAdapter<FileUpload> {
           override fun decode(value: CustomTypeValue<*>): FileUpload {
+            // TODO: is there a valid use case for decoding a FileUpload or should we throw here?
             return FileUpload("", value.value?.toString() ?: "")
           }
 
           override fun encode(value: FileUpload): CustomTypeValue<*> {
-            return GraphQLString(value.mimetype)
+            return GraphQLNull
           }
         }) +
         createDefaultScalarTypeAdapter("java.util.Map", "kotlin.collections.Map") { value ->

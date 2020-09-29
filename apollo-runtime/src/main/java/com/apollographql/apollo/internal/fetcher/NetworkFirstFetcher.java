@@ -39,7 +39,7 @@ public final class NetworkFirstFetcher implements ResponseFetcher {
 
         @Override public void onFailure(@NotNull final ApolloException networkException) {
           logger.d(networkException, "Failed to fetch network response for operation %s, trying to return cached one",
-              request.operation);
+              request.operation.name().name());
           if (!disposed) {
             InterceptorRequest cacheRequest = request.toBuilder().fetchFromCache(true).build();
             chain.proceedAsync(cacheRequest, dispatcher,  new CallBack() {

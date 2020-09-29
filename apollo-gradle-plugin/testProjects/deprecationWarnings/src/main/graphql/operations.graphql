@@ -1,0 +1,10 @@
+query GetUser {
+  user {
+    name
+    address {
+      street
+      number
+      country
+    }
+  }
+}

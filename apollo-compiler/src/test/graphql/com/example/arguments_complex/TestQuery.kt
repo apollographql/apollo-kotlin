@@ -186,10 +186,15 @@ data class TestQuery(
                 "kind" to "Variable",
                 "variableName" to "greenValue"),
               "blue" to "0.0"),
-            "listOfStringNonOptional" to "[]"),
-          "listOfInts" to
-            "[{kind=Variable, variableName=stars}, {kind=Variable, variableName=stars}]"), true,
-            null)
+            "booleanNonOptional" to "false",
+            "listOfStringNonOptional" to emptyList<Any>()),
+          "listOfInts" to listOf<Any>(
+            mapOf<String, Any>(
+              "kind" to "Variable",
+              "variableName" to "stars"),
+            mapOf<String, Any>(
+              "kind" to "Variable",
+              "variableName" to "stars"))), true, null)
       )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {
@@ -208,12 +213,12 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "ea0219363b8af60b029b30af551861cbae30648978be2060651eacc0e34a79d0"
+        "9bfee0998b66f8adeed48e612153400401690d904e272d69289721b6f39aca5f"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery(${'$'}episode: Episode, ${'$'}stars: Int!, ${'$'}greenValue: Float!) {
-          |  heroWithReview(episode: ${'$'}episode, review: {stars: ${'$'}stars, favoriteColor: {red: 0, green: ${'$'}greenValue, blue: 0}, listOfStringNonOptional: []}, listOfInts: [${'$'}stars, ${'$'}stars]) {
+          |  heroWithReview(episode: ${'$'}episode, review: {stars: ${'$'}stars, favoriteColor: {red: 0, green: ${'$'}greenValue, blue: 0}, booleanNonOptional: false, listOfStringNonOptional: []}, listOfInts: [${'$'}stars, ${'$'}stars]) {
           |    __typename
           |    name
           |    height(unit: FOOT)

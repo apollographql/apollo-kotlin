@@ -1,5 +1,7 @@
 package com.apollographql.apollo.gradle.internal
 
+import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
+import com.apollographql.apollo.compiler.parser.introspection.toSDL
 import com.squareup.moshi.JsonWriter
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
@@ -51,7 +53,14 @@ object SchemaDownloader {
     }
 
     schema.parentFile?.mkdirs()
-    schema.writeText(response.body!!.string())
+
+    response.body.use { responseBody ->
+      if (schema.extension.toLowerCase() == "json") {
+        schema.writeText(responseBody!!.string())
+      } else {
+        IntrospectionSchema(responseBody!!.byteStream()).toSDL(schema)
+      }
+    }
   }
 
   val introspectionQuery = """

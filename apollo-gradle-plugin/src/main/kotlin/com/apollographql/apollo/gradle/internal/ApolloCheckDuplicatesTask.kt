@@ -3,6 +3,7 @@ package com.apollographql.apollo.gradle.internal
 import com.apollographql.apollo.compiler.ApolloMetadata
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputFile
@@ -13,14 +14,14 @@ import org.gradle.api.tasks.TaskAction
 abstract class ApolloCheckDuplicatesTask : DefaultTask() {
   @get:InputFiles
   @get:PathSensitive(PathSensitivity.RELATIVE)
-  lateinit var metadataConfiguration: Configuration
+  abstract val metadataFiles: ConfigurableFileCollection
 
   @get:OutputFile
   abstract val outputFile: RegularFileProperty
 
   @TaskAction
   fun taskAction() {
-    val metadataList = metadataConfiguration.incoming.artifacts.artifacts.mapNotNull { ApolloMetadata.readFrom(it.file) }
+    val metadataList = metadataFiles.files.mapNotNull { ApolloMetadata.readFrom(it) }
 
     metadataList.flatMap { metadata ->
       metadata.fragments.map { it.fragmentName to metadata.moduleName }

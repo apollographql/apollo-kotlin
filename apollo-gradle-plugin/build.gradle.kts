@@ -19,6 +19,8 @@ dependencies {
   compileOnly(gradleApi())
   compileOnly(dep("kotlin").dot("plugin"))
   compileOnly(dep("android").dot("minPlugin"))
+  // kotlin-reflect is transitively pulled by ythe android plugin, make it explicit so that it uses the same version as the rest of kotlin libs
+  compileOnly(dep("kotlin").dot("reflect"))
 
   api(project(":apollo-compiler"))
   implementation(project(":apollo-api")) // for QueryDocumentMinifier

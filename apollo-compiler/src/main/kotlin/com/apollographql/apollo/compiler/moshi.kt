@@ -74,3 +74,9 @@ inline fun <reified T> T.toJson(file: File) {
     return getJsonAdapter<T>().toJson(it, this)
   }
 }
+
+inline fun <reified T> T.toJson(file: File, indent: String) {
+  file.outputStream().sink().buffer().use {
+    return getJsonAdapter<T>().indent(indent).toJson(it, this)
+  }
+}

@@ -30,6 +30,7 @@ import io.reactivex.rxjava3.plugins.RxJavaPlugins
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockWebServer
+import okhttp3.mockwebserver.MockResponse
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -127,6 +128,24 @@ class Rx3ApolloTest {
         }
         .assertValueAt(1) { data ->
           assertThat(data?.hero()?.name()).isEqualTo("Artoo")
+          true
+        }
+  }
+
+  @Test
+  @Throws(Exception::class)
+  fun retryDoesNotThrow() {
+    server.enqueue(MockResponse().setResponseCode(500))
+    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
+    val observer: TestObserver<EpisodeHeroNameQuery.Data> = TestObserver<EpisodeHeroNameQuery.Data>()
+    Rx3Apollo
+        .from(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
+        .retry(1)
+        .map({ response -> response.data() })
+        .subscribeWith(observer)
+    observer.assertValueCount(1)
+        .assertValueAt(0) { data ->
+          assertThat(data?.hero()?.name()).isEqualTo("R2-D2")
           true
         }
   }

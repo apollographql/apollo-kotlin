@@ -178,7 +178,13 @@ apollo {
 }
 ```
 
-**Note** You don't need to register custom type adapter for `FileUpload`.
+**Note1** You don't need to register custom type adapter for `FileUpload`.
+
+**Note2** While Apollo Android doesn't use reflection for regular operations, file upload is. If you're using Proguard/R8, you need to keep everything inheriting from `InputType`:
+
+```proguard:title=proguard-rules.pro
+-keep class * implements com.apollographql.apollo.api.InputType { *; }
+```
 
 In this example, the GraphQL schema uses custom scalar type named `Upload` for file upload. 
 Change it to match your GraphQL schema.
@@ -212,3 +218,38 @@ Call your mutation with mimetype and a valid `File`.
 
 </MultiCodeBlock>
 
+If you don't have a `File`, you can also subclass `FileUpload`:
+
+<MultiCodeBlock>
+
+```kotlin
+  object upload : FileUpload(mimetype) {
+    override fun contentLength(): Long {
+      TODO("return contentLength here")
+    }
+    override fun fileName(): String? {
+      TODO("return fileName to use in the multipart request here")
+    }
+    override fun writeTo(sink: BufferedSink) {
+      TODO("write the data here")
+    }
+  }
+```
+
+```java
+  FileUpload upload = new FileUpload(mimetype) {
+    @Override Long contentLength() {
+      // return contentLength here
+    }
+
+    @Override String fileName() {
+      // return fileName here
+    }
+
+    @Override void writeTo(sink: BufferedSink)() {
+      // write the data here
+    }
+  };
+```
+
+</MultiCodeBlock>

@@ -30,9 +30,10 @@ import org.antlr.v4.runtime.atn.PredictionMode
 import java.io.File
 import java.io.IOException
 
-class GraphQLDocumentParser(val schema: IntrospectionSchema,
-                            private val packageNameProvider: PackageNameProvider
-) {
+class GraphQLDocumentParser(
+    private val schema: IntrospectionSchema,
+    private val packageNameProvider: PackageNameProvider,
+    ) {
   fun parse(graphQLFiles: Collection<File>): DocumentParseResult {
     return graphQLFiles.fold(DocumentParseResult()) { acc, graphQLFile ->
       val result = graphQLFile.parse()

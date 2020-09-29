@@ -1,13 +1,6 @@
-buildscript {
-  repositories {
-    mavenCentral()
-  }
-  dependencies {
-    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.10")
-  }
+plugins {
+  id("org.jetbrains.kotlin.jvm").version("1.4.10")
 }
-
-apply(plugin = "org.jetbrains.kotlin.jvm")
 
 project.apply {
   from(file("../gradle/dependencies.gradle"))

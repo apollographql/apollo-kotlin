@@ -1,1 +1,1 @@
-{"operationName":"MultipleUpload","variables":{"files":["image/jpg","image/png"]},"query":"mutation MultipleUpload($files: [Upload!]!) { multipleUpload(files: $files) { __typename id path filename mimetype } }"}
+{"operationName":"MultipleUpload","variables":{"files":[null,null]},"query":"mutation MultipleUpload($files: [Upload!]!) { multipleUpload(files: $files) { __typename id path filename mimetype } }"}
