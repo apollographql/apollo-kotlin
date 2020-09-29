@@ -115,6 +115,10 @@ package com.apollographql.apollo.api {
     method public error.NonExistentClass hashCode();
   }
 
+  public static final class CustomTypeValue.GraphQLNull extends com.apollographql.apollo.api.CustomTypeValue {
+    field public static final com.apollographql.apollo.api.CustomTypeValue.GraphQLNull INSTANCE;
+  }
+
   public static final class CustomTypeValue.GraphQLNumber extends com.apollographql.apollo.api.CustomTypeValue {
     ctor public CustomTypeValue.GraphQLNumber(error.NonExistentClass);
     method public error.NonExistentClass equals(error.NonExistentClass);
@@ -173,12 +177,22 @@ package com.apollographql.apollo.api {
   public static abstract interface ExecutionContext.Key<E extends com.apollographql.apollo.api.ExecutionContext.Element> {
   }
 
-  public final class FileUpload {
+  public class FileUpload {
     ctor public FileUpload(error.NonExistentClass, error.NonExistentClass);
-    method public error.NonExistentClass equals(error.NonExistentClass);
-    method public error.NonExistentClass getFilePath();
-    method public error.NonExistentClass getMimetype();
-    method public error.NonExistentClass hashCode();
+    method public error.NonExistentClass contentLength();
+    method public error.NonExistentClass fileName();
+    method public final error.NonExistentClass getFilePath();
+    method public final error.NonExistentClass getMimetype();
+    method public void writeTo(error.NonExistentClass);
+    field public static final com.apollographql.apollo.api.FileUpload.Companion Companion;
+  }
+
+  public static final class FileUpload.Companion {
+  }
+
+  public final class FileuploadKt {
+    ctor public FileuploadKt();
+    method public static com.apollographql.apollo.api.FileUpload create(com.apollographql.apollo.api.FileUpload.Companion, error.NonExistentClass, error.NonExistentClass);
   }
 
   public abstract interface GraphqlFragment {

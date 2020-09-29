@@ -5,7 +5,17 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class Argument(
     val name: String,
+    /**
+     * The value of the argument
+     * - Input objects will be represented as Maps
+     * - Built-in scalars as their primitive type
+     * - Variables as a map: {"kind": "Variable", "variableName": name}
+     */
     val value: Any?,
+    /**
+     * The type of the argument as it would appear in a query
+     * For an example: String, [String!]!, SomeInputObject, SomeEnum
+     */
     val type: String,
     val sourceLocation: SourceLocation
 ) {

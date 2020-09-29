@@ -1,0 +1,109 @@
+---
+title: Multi Modules (experimental)
+---
+
+For multi-modules projects, Apollo Android allows to define queries in a feature module and reuse fragments and types from another parent module. This helps with better separation of concerns and build times.
+
+Support for multi-modules build is currently experimental and we'd love to have your feedback on it. Things that worked well, things that can be improved, etc.. You can reach out either through [Github issues](https://github.com/apollographql/apollo-android/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md&title=[Multi-Modules]) or the [Kotlinlang slack channel](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ). We're looking forward to hearing from you!
+
+
+## Setup
+
+Configure your parent module to generate Apollo metadata:
+
+```kotlin
+// parent/build.gradle.kts
+apollo {
+    generateApolloMetadata.set(true)
+}
+```
+
+And declare your parent module as a dependency of your feature module:
+
+```kotlin
+// feature/build.gradle.kts
+dependencies {
+    implementation("com.apollographql.apollo:apollo-runtime:xyz")
+    // more regular dependencies
+    
+    // Apollo dependencies
+    apolloMetadata(project(":parent"))
+    // You still need to declare the parent module as a regular dependency
+    implementation(project(":parent"))
+}
+```
+
+## Resolving Apollo dependencies
+
+A feature module can have any number of parent modules. Parent modules themselves can also have parents, creating a graph of dependencies. 
+
+Transitive Apollo dependencies will always expose their fragments and types to the modules downstream. In other words, there is no `implementation` vs `api` concept like there is for regular dependencies. Apollo dependencies will always expose everything downstream (i.e are treated as `api`). 
+
+Another important thing to note is that all modules must share the same schema. Place schema.[json | sdl] in the root module, the module that is the higher up in the dependencies graph:
+
+```kotlin
+// feature/build.gradle.kts
+// This module must not have a schema
+// This module can use fragments and types from 'shared' and 'root'
+dependencies {
+    apolloMetadata(project(":shared"))
+}
+
+// shared/build.gradle.kts
+// This module can use fragments and types from 'root'
+dependencies {
+    apolloMetadata(project(":root"))
+    generateApolloMetadata.set(true)
+}
+
+// root/build.gradle.kts
+// This module is the root module
+// Place the schema in this module 
+dependencies {
+    generateApolloMetadata.set(true)
+}
+```
+
+Summary of different constraints:
+
+* The root module and only the root module must define schema.[json | sdl]
+* The root module and only the root module must define `customTypeMapping`
+* The root module and only the root module must define `generateKotlinModels`
+* All modules must apply the same version of the Apollo Gradle Plugin
+* Either all modules must apply the Android plugin or no module should apply it
+
+## Big schemas
+
+When using multiple modules, Apollo Android will generate all possible Input Types and Enums in the root module, and not only the used ones. This is because there is no way to know from the parent module what types are going to be used in feature modules. By default:
+
+* All input objects and enums are generated in the root module.
+* Fragments, queries, mutations and subscriptions are generated in the module where they are defined.
+
+If your schema contains a lot of input objects, it can generate a lot of source files and increase compilation time beyond what's acceptable. To mitigate this, you have the option to control what types are generated with the `alwaysGenerateTypesMatching` option:
+
+```kotlin
+// parent/build.gradle.kts
+apollo {
+    generateApolloMetadata.set(true)
+    // For the root module, this defaults to [".*"]
+    // To use the single-module behaviour of only generating types that are actually used, pass en empty list
+    alwaysGenerateTypesMatching.set(emptyList())
+}
+```
+
+If the same input object or enum is used in two sibling modules, the same type would end up being generated twice and an error will happen. You can fix this by instructing an upstream module to generate the common type:
+
+
+```kotlin
+// common/build.gradle.kts
+apollo {
+    generateApolloMetadata.set(true)
+    // Generate common types here
+    // Here we specify the names of the types 
+    alwaysGenerateTypesMatching.set(listOf("CommonInputType", "CommonEnum"))
+    // It also works with regexes
+    alwaysGenerateTypesMatching.set(listOf(".*Input"))
+}
+```
+
+For a more complete exemple, check the [multi-modules](https://github.com/apollographql/apollo-android-tutorial/tree/multi-modules) branch of the Apollo Android tutorial.

@@ -1,36 +1,10 @@
 ---
-title: Android support
+title: UI Tests
 ---
 
 import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
 
-Apollo Android has support artifacts to help with caching and testing.
-
-## SqlNormalizedCacheFactory
-
-Add the following `dependency`:
-
-```groovy
-implementation("com.apollographql.apollo:apollo-android-support:x.y.z")
-```
-
-SqlNormalizedCacheFactory uses the Android framework [SQLiteDatabase](https://developer.android.com/reference/android/database/sqlite/SQLiteDatabase) databse to provide and instance of a `NormalizedCacheFactory`.
-
-<MultiCodeBlock>
-
-```kotlin
-val apolloSqlHelper = ApolloSqlHelper.create(context, "db_name")
-val cacheFactory = SqlNormalizedCacheFactory(apolloSqlHelper)
-```
-
-```java
-ApolloSqlHelper apolloSqlHelper = ApolloSqlHelper.create(context, "db_name");
-NormalizedCacheFactory cacheFactory = new SqlNormalizedCacheFactory(apolloSqlHelper);
-```
-
-</MultiCodeBlock>
-
-## ApolloIdlingResource
+Apollo Android offers a built-in [IdlingResource](https://developer.android.com/reference/androidx/test/espresso/IdlingResource) to help writing UI tests with Espresso. The `ApolloIdlingResource` will make sure that your tests wait for your GraphQL queries terminate before moving on with testing.
 
 Add the following `dependency`:
 
@@ -39,9 +13,7 @@ Add the following `dependency`:
 implementation("com.apollographql.apollo:apollo-idling-resource:x.y.z")
 ```
 
-The Apollo GraphQL client comes with a [IdlingResource](https://developer.android.com/training/testing/espresso/idling-resource) to use
- during your Android Espresso UI tests. It needs to be created and registered per ApolloClient instance. Register several IdlingResources
- with the same name will crash.
+If you have multiple `ApolloClients` you need to create and register multiple `ApolloIdlingResource` with different names. Registering several IdlingResources with the same name will crash.
 
 <MultiCodeBlock>
 

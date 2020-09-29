@@ -366,4 +366,28 @@ class CacheKeyBuilderTest {
         arguments,
         false, emptyList())
   }
+
+  @Test
+  fun testFieldWithVariablesInLists() {
+    val arguments = mutableMapOf<String, Any?>().apply {
+      put("where", mutableMapOf<String, Any?>().apply {
+        put("and", mutableListOf<Any?>().apply {
+          add(mutableMapOf<String, Any?>().apply {
+            put("kind", "Variable")
+            put("variableName", "stars")
+          })
+        })
+      })
+    }
+
+    val field = createResponseField("hero", "hero", arguments)
+    val variables0: Operation.Variables = object : Operation.Variables() {
+      override fun valueMap() = mapOf("stars" to listOf(0))
+    }
+    val variables1: Operation.Variables = object : Operation.Variables() {
+      override fun valueMap() = mapOf("stars" to listOf(1))
+    }
+
+    Truth.assertThat(cacheKeyBuilder.build(field, variables0)).isNotEqualTo(cacheKeyBuilder.build(field, variables1))
+  }
 }

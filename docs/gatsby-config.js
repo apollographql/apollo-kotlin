@@ -39,6 +39,7 @@ module.exports = {
             'essentials/http-cache',
             'advanced/persisted-queries',
             'essentials/using-aliases',
+            'advanced/multi-modules',
           ],
           'Languages & Extensions': [
             'advanced/coroutines',
@@ -47,7 +48,7 @@ module.exports = {
           ],
           Reference: [
             'essentials/plugin-configuration',
-            'advanced/android',
+            'advanced/ui-tests',
             'essentials/custom-scalar-types',
             'advanced/no-runtime',
             'essentials/fragments',

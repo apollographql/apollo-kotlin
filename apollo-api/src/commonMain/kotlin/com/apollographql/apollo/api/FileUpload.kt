@@ -1,19 +1,37 @@
 package com.apollographql.apollo.api
 
-class FileUpload(val mimetype: String, val filePath: String) {
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other !is FileUpload) return false
+import okio.BufferedSink
 
-    if (mimetype != other.mimetype) return false
-    if (filePath != other.filePath) return false
-
-    return true
+/**
+ * A class that represents a file upload in a multipart upload
+ * See https://github.com/jaydenseric/graphql-multipart-request-spec
+ *
+ * This class is heavily inspired by [okhttp3.RequestBody]
+ */
+open class FileUpload(val mimetype: String, val filePath: String? = null) {
+  /**
+   * Returns the number of bytes that will be written to `sink` in a call to [.writeTo],
+   * or -1 if that count is unknown.
+   */
+  open fun contentLength(): Long {
+    return -1
   }
 
-  override fun hashCode(): Int {
-    var result = mimetype.hashCode()
-    result = 31 * result + filePath.hashCode()
-    return result
+  /**
+   *  Writes the content of this request to `sink`.
+   */
+  open fun writeTo(sink: BufferedSink) {
+    throw UnsupportedOperationException("ApolloGraphQL: if you're not passing a `filePath` parameter, you must override `FileUpload.writeTo`")
+  }
+
+  /**
+   * The fileName to send to the server. Might be null
+   */
+  open fun fileName(): String? {
+    throw UnsupportedOperationException("ApolloGraphQL: if you're not passing a `filePath` parameter, you must override `FileUpload.fileName`")
+  }
+
+  companion object {
+
   }
 }
