@@ -149,7 +149,7 @@ class CodegenTest(private val folder: File) {
     @JvmStatic
     @Parameterized.Parameters(name = "{0}")
     fun data(): Collection<*> {
-      val filterRegex = System.getProperty("codegenTests")?.trim()?.let { Regex(it) }
+      val filterRegex = System.getProperty("codegenTests")?.takeIf { it.isNotEmpty() }?.trim()?.let { Regex(it) }
       return File("src/test/graphql/com/example/")
           .listFiles()!!
           .filter { file ->

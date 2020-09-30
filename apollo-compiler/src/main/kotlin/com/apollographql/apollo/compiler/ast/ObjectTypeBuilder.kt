@@ -172,13 +172,7 @@ internal class ObjectTypeBuilder(
       rootFragmentInterfaceType: CodeGenerationAst.TypeRef,
       rootFragmentInterfaceFields: List<Field>
   ): Map<String, CodeGenerationAst.TypeRef> {
-    val (fragmentOnObjects, fragmentOnInterfaces) = partition { fragment ->
-      val typeConditionSchemaType = schema.resolveType(schema.resolveType(fragment.typeCondition))
-      typeConditionSchemaType.kind == IntrospectionSchema.Kind.OBJECT
-    }
-
-    // build interfaces for all fragments defined on non concrete types if needed
-    val fragmentOnInterfaceTypes = fragmentOnInterfaces.map { fragment ->
+    val fragmentInterfaceTypes = this.map { fragment ->
       fragment to (fragment.interfaceType ?: buildObjectType(
           name = fragment.typeCondition,
           schemaType = schema.resolveType(schema.resolveType(fragment.typeCondition)),
@@ -188,13 +182,11 @@ internal class ObjectTypeBuilder(
       ))
     }.toMap()
 
-    val fragmentOnObjectsPossibleTypes = fragmentOnObjects.map { it.typeCondition }
-    val fragmentOnInterfacesPossibleTypes = fragmentOnInterfaces.flatMap { it.possibleTypes - fragmentOnObjectsPossibleTypes }
+    val fragmentPossibleTypes = this.flatMap { fragment -> fragment.possibleTypes }
 
-    // for all fragments defined on non concrete types build implementation types
-    val fragmentImplementationTypes = fragmentOnInterfacesPossibleTypes
+    return fragmentPossibleTypes
         // for each possible type find all possible fragments defined on it
-        .map { possibleType -> possibleType to fragmentOnInterfaces.filter { fragment -> fragment.possibleTypes.contains(possibleType) } }
+        .map { possibleType -> possibleType to this.filter { fragment -> fragment.possibleTypes.contains(possibleType) } }
         // group possible types by the same set of fragments
         .fold(emptyMap<List<Fragment>, List<String>>()) { acc, (possibleType, fragment) ->
           acc + (fragment to (acc[fragment]?.plus(possibleType) ?: listOf(possibleType)))
@@ -204,30 +196,19 @@ internal class ObjectTypeBuilder(
             1 -> fragments.single().buildImplementationType(
                 rootFragmentInterfaceType = rootFragmentInterfaceType,
                 rootFragmentInterfaceFields = rootFragmentInterfaceFields,
-                fragmentInterfaceTypes = fragmentOnInterfaceTypes
+                fragmentInterfaceTypes = fragmentInterfaceTypes
             )
 
             else -> fragments.buildImplementationType(
                 rootFragmentInterfaceType = rootFragmentInterfaceType,
                 rootFragmentInterfaceFields = rootFragmentInterfaceFields,
-                fragmentInterfaceTypes = fragmentOnInterfaceTypes
+                fragmentInterfaceTypes = fragmentInterfaceTypes
             )
           }
           // associate each possible type with implementation type
           possibleTypes.map { it to implementationType }
         }
         .toMap()
-
-    // build object types for all fragments defined on concrete types
-    val fragmentOnObjectTypes = fragmentOnObjects.map { fragment ->
-      fragment.typeCondition to fragment.buildImplementationType(
-          rootFragmentInterfaceType = rootFragmentInterfaceType,
-          rootFragmentInterfaceFields = rootFragmentInterfaceFields,
-          fragmentInterfaceTypes = fragmentOnInterfaceTypes
-      )
-    }
-
-    return fragmentImplementationTypes + fragmentOnObjectTypes
   }
 
   private fun List<Fragment>.buildImplementationType(
@@ -269,11 +250,10 @@ internal class ObjectTypeBuilder(
       fragmentInterfaceTypes: Map<Fragment, CodeGenerationAst.TypeRef>
   ): CodeGenerationAst.TypeRef {
     val fragmentOnInterfaceTypesToImplement = fragmentInterfaceTypes
-        .filter { (fragmentOnInterface, _) ->
-          fragmentOnInterface.possibleTypes.contains(this.typeCondition) || fragmentOnInterface.typeCondition == this.typeCondition
-        }
+        .filter { (fragment, _) -> fragment.possibleTypes.contains(this.typeCondition) || fragment.typeCondition == this.typeCondition }
     val schemaType = schema.resolveType(schema.resolveType(this.typeCondition))
-    val fieldsToMerge = rootFragmentInterfaceFields + fragmentOnInterfaceTypesToImplement.keys.flatMap { it.fields }
+    val fieldsToMerge = rootFragmentInterfaceFields +
+        fragmentOnInterfaceTypesToImplement.keys.filter { fragment -> fragment != this }.flatMap { it.fields }
     return if (
         fieldsToMerge.size == 1 &&
         fieldsToMerge.single() == Field.TYPE_NAME_FIELD &&
