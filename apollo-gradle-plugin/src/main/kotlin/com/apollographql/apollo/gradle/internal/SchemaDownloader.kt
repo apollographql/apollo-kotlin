@@ -1,8 +1,6 @@
 package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.compiler.fromJson
-import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
-import com.apollographql.apollo.compiler.parser.introspection.toSDL
 import com.squareup.moshi.JsonWriter
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
@@ -12,7 +10,6 @@ import okhttp3.Response
 import okio.buffer
 import okio.sink
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.util.concurrent.TimeUnit
 
 object SchemaDownloader {
@@ -25,13 +22,17 @@ object SchemaDownloader {
         .build()
   }
 
-  private fun executeQuery(query: String, url: String, headers: Map<String, String>): Response {
+  private fun executeQuery(query: String, variables: String? = null, url: String, headers: Map<String, String>): Response {
     val byteArrayOutputStream = ByteArrayOutputStream()
     JsonWriter.of(byteArrayOutputStream.sink().buffer())
         .apply {
           beginObject()
           name("query")
           value(query)
+          if (variables != null) {
+            name("variables")
+            value(variables)
+          }
           endObject()
           flush()
         }
@@ -44,6 +45,8 @@ object SchemaDownloader {
             addHeader(it.key, it.value)
           }
         }
+        .header("apollographql-client-name", "apollo-gradle-plugin")
+        .header("apollographql-client-version", com.apollographql.apollo.compiler.VERSION)
         .url(url)
         .build()
 
@@ -51,8 +54,8 @@ object SchemaDownloader {
         .newCall(request)
         .execute()
 
-    if (!response.isSuccessful) {
-      throw Exception("cannot get schema: ${response.code}:\n${response.body?.string()}")
+    check(response.isSuccessful) {
+      "cannot get schema from $url: ${response.code}:\n${response.body?.string()}"
     }
 
     return response
@@ -63,7 +66,7 @@ object SchemaDownloader {
       headers: Map<String, String>
   ): String {
 
-    val response = executeQuery(introspectionQuery, endpoint, headers)
+    val response = executeQuery(introspectionQuery, null, endpoint, headers)
 
     return response.body.use { responseBody ->
       responseBody!!.string()
@@ -71,25 +74,43 @@ object SchemaDownloader {
   }
 
   fun downloadRegistry(graph: String, key: String, variant: String): String? {
-    val registryQuery = """
-    query {
-      service(id: "$graph") {
-        schema(tag: "$variant") {
-          document
+    val query = """
+    query DownloadSchema(${'$'}graphID: ID!, ${'$'}variant: String!) {
+      service(id: ${'$'}graphID) {
+        variant(name: ${'$'}variant) {
+          activeSchemaPublish {
+            schema {
+              document
+            }
+          }
         }
       }
     }
   """.trimIndent()
+    val variables = """
+      {
+        "graphID": "$graph",
+        "variant": "$variant"
+      }
+    """.trimIndent()
 
-    val response = executeQuery(registryQuery, "https://engine-graphql.apollographql.com/api/graphql", mapOf("x-api-key" to key))
+    val response = executeQuery(query, variables, "https://engine-graphql.apollographql.com/api/graphql", mapOf("x-api-key" to key))
 
-    return response.body.use {
-      it!!.byteStream().fromJson<Map<String, *>>()
-          .get("data").cast<Map<String, *>>()
-          ?.get("service").cast<Map<String, *>>()
-          ?.get("schema").cast<Map<String, *>>()
-          ?.get("document").cast<String>()
-    }!!
+    val responseString = response.body.use { it?.string() }
+
+    val document = responseString
+        ?.fromJson<Map<String, *>>()
+        ?.get("data").cast<Map<String, *>>()
+        ?.get("service").cast<Map<String, *>>()
+        ?.get("variant").cast<Map<String, *>>()
+        ?.get("activeSchemaPublish").cast<Map<String, *>>()
+        ?.get("schema").cast<Map<String, *>>()
+        ?.get("document").cast<String>()
+
+    check(document != null) {
+      "Cannot retrieve document from $responseString\nCheck graph id and variant"
+    }
+    return document
   }
 
   inline fun <reified T> Any?.cast() = this as? T
