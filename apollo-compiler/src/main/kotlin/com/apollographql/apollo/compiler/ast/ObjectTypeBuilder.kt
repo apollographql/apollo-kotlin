@@ -172,25 +172,32 @@ internal class ObjectTypeBuilder(
       rootFragmentInterfaceType: CodeGenerationAst.TypeRef,
       rootFragmentInterfaceFields: List<Field>
   ): Map<String, CodeGenerationAst.TypeRef> {
-    val fragmentInterfaceTypes = this.map { fragment ->
-      fragment to (fragment.interfaceType ?: buildObjectType(
-          name = fragment.typeCondition,
-          schemaType = schema.resolveType(schema.resolveType(fragment.typeCondition)),
-          fields = fragment.fields,
-          abstract = true,
-          implements = listOf(rootFragmentInterfaceType)
-      ))
-    }.toMap()
 
     val fragmentPossibleTypes = this.flatMap { fragment -> fragment.possibleTypes }
-
-    return fragmentPossibleTypes
+        .toSet()
         // for each possible type find all possible fragments defined on it
         .map { possibleType -> possibleType to this.filter { fragment -> fragment.possibleTypes.contains(possibleType) } }
         // group possible types by the same set of fragments
-        .fold(emptyMap<List<Fragment>, List<String>>()) { acc, (possibleType, fragment) ->
-          acc + (fragment to (acc[fragment]?.plus(possibleType) ?: listOf(possibleType)))
+        .fold(emptyMap<List<Fragment>, List<String>>()) { acc, (possibleType, fragments) ->
+          acc + (fragments to (acc[fragments]?.plus(possibleType) ?: listOf(possibleType)))
         }
+
+    // generate interface types only for fragments that intersect with other fragments
+    val fragmentInterfaceTypes = fragmentPossibleTypes
+        .filter { (fragments, _) -> fragments.size > 1 }
+        .keys
+        .flatten()
+        .map { fragment ->
+          fragment to (fragment.interfaceType ?: buildObjectType(
+              name = fragment.typeCondition,
+              schemaType = schema.resolveType(schema.resolveType(fragment.typeCondition)),
+              fields = fragment.fields,
+              abstract = true,
+              implements = listOf(rootFragmentInterfaceType)
+          ))
+        }.toMap()
+
+    return fragmentPossibleTypes
         .flatMap { (fragments, possibleTypes) ->
           val implementationType = when (fragments.size) {
             1 -> fragments.single().buildImplementationType(

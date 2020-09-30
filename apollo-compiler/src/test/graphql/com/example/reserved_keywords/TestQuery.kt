@@ -131,27 +131,13 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   /**
    * A character from the Star Wars universe
    */
-  interface Character : Object {
-    override val __typename: String
-
-    /**
-     * The name of the character
-     */
-    val name: String
-
-    override fun marshaller(): ResponseFieldMarshaller
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
   data class CharacterImpl(
     override val __typename: String = "Character",
     /**
      * The name of the character
      */
-    override val name: String
-  ) : Character, Object {
+    val name: String
+  ) : Object {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
         writer.writeString(RESPONSE_FIELDS[0], this@CharacterImpl.__typename)

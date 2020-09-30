@@ -84,24 +84,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   /**
    * For testing fragment type coercion
    */
-  interface Bar : Foo {
-    override val __typename: String
-
-    override val foo: String
-
-    val bar: String
-
-    override fun marshaller(): ResponseFieldMarshaller
-  }
-
-  /**
-   * For testing fragment type coercion
-   */
   data class BarImpl(
     override val __typename: String = "Bar",
     override val foo: String,
-    override val bar: String
-  ) : Bar, Foo {
+    val bar: String
+  ) : Foo {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
         writer.writeString(RESPONSE_FIELDS[0], this@BarImpl.__typename)
