@@ -14,7 +14,6 @@ class KotlinDSLTests {
   fun `generated accessors work as expected`() {
     val apolloConfiguration = """
       apollo {
-        nullableValueType.set("annotated")
       }
     """.trimIndent()
 
@@ -47,15 +46,8 @@ class KotlinDSLTests {
   fun `parameters do not throw`() {
     val apolloConfiguration = """
       configure<ApolloExtension> {
-        nullableValueType.set("annotated")
-        useJavaBeansSemanticNaming.set(false)
-        generateModelBuilder.set(false)
         useSemanticNaming.set(false)
-        useJavaBeansSemanticNaming.set(false)
-        suppressRawTypesWarning.set(false)
-        generateVisitorForPolymorphicDatatypes.set(false)
         customTypeMapping.set(mapOf("DateTime" to "java.util.Date"))
-        generateKotlinModels.set(false)
         generateOperationOutput.set(false)
         
         service("starwars") {
@@ -69,12 +61,12 @@ class KotlinDSLTests {
 
     TestUtils.withProject(
         usesKotlinDsl = true,
-        plugins = listOf(TestUtils.javaPlugin, TestUtils.apolloPlugin),
+        plugins = listOf(TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin),
         apolloConfiguration = apolloConfiguration
     ) { dir ->
       val result = TestUtils.executeTask("generateApolloSources", dir)
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
-      Assert.assertTrue(dir.generatedChild("main/starwars/com/starwars/DroidDetails.java").isFile)
+      Assert.assertTrue(dir.generatedChild("main/starwars/com/starwars/DroidDetails.kt").isFile)
     }
   }
 }

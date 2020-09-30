@@ -182,15 +182,10 @@ open class ApolloPlugin : Plugin<Project> {
             )
         )
 
-        task.nullableValueType.set(compilerParams.nullableValueType)
         task.useSemanticNaming.set(compilerParams.useSemanticNaming)
-        task.generateModelBuilder.set(compilerParams.generateModelBuilder)
-        task.useJavaBeansSemanticNaming.set(compilerParams.useJavaBeansSemanticNaming)
-        task.suppressRawTypesWarning.set(compilerParams.suppressRawTypesWarning)
-        task.generateKotlinModels.set(compilationUnit.generateKotlinModels())
+        task.generateKotlinModels.set(true)
         task.warnOnDeprecatedUsages.set(compilerParams.warnOnDeprecatedUsages)
         task.failOnWarnings.set(compilerParams.failOnWarnings)
-        task.generateVisitorForPolymorphicDatatypes.set(compilerParams.generateVisitorForPolymorphicDatatypes)
         task.customTypeMapping.set(compilerParams.customTypeMapping)
         task.outputDir.apply {
           set(BuildDirLayout.sources(project, compilationUnit))

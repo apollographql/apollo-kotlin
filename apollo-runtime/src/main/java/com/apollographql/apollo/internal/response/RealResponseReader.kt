@@ -54,22 +54,6 @@ class RealResponseReader<R>(
     return value?.toInt()
   }
 
-  override fun readLong(field: ResponseField): Long? {
-    if (shouldSkip(field)) {
-      return null
-    }
-    val value = fieldValueResolver.valueFor<BigDecimal>(recordSet, field)
-    checkValue(field, value)
-    willResolve(field, value)
-    if (value == null) {
-      resolveDelegate.didResolveNull()
-    } else {
-      resolveDelegate.didResolveScalar(value)
-    }
-    didResolve(field)
-    return value?.toLong()
-  }
-
   override fun readDouble(field: ResponseField): Double? {
     if (shouldSkip(field)) {
       return null
@@ -168,35 +152,6 @@ class RealResponseReader<R>(
     return result
   }
 
-  override fun <T : Any> readFragment(field: ResponseField, objectReader: ResponseReader.ObjectReader<T>): T? {
-    if (shouldSkip(field)) {
-      return null
-    }
-    val value = fieldValueResolver.valueFor<String>(recordSet, field)
-    checkValue(field, value)
-    willResolve(field, value)
-    return if (value == null) {
-      resolveDelegate.didResolveNull()
-      didResolve(field)
-      null
-    } else {
-      resolveDelegate.didResolveScalar(value)
-      didResolve(field)
-      if (field.type === ResponseField.Type.FRAGMENT) {
-        for (condition in field.conditions) {
-          if (condition is ResponseField.TypeNameCondition) {
-            if (!condition.typeNames.contains(value)) {
-              return null
-            }
-          }
-        }
-        objectReader.read(this)
-      } else {
-        null
-      }
-    }
-  }
-
   private fun shouldSkip(field: ResponseField): Boolean {
     for (condition in field.conditions) {
       if (condition is ResponseField.BooleanCondition) {
@@ -244,11 +199,6 @@ class RealResponseReader<R>(
     override fun readInt(): Int {
       resolveDelegate.didResolveScalar(value)
       return (value as BigDecimal).toInt()
-    }
-
-    override fun readLong(): Long {
-      resolveDelegate.didResolveScalar(value)
-      return (value as BigDecimal).toLong()
     }
 
     override fun readDouble(): Double {

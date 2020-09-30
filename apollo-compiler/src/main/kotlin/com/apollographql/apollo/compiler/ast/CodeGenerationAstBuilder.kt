@@ -4,6 +4,9 @@ import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.ir.Field
 import com.apollographql.apollo.compiler.ir.Operation
+import com.apollographql.apollo.compiler.ir.Operation.Companion.TYPE_MUTATION
+import com.apollographql.apollo.compiler.ir.Operation.Companion.TYPE_QUERY
+import com.apollographql.apollo.compiler.ir.Operation.Companion.TYPE_SUBSCRIPTION
 import com.apollographql.apollo.compiler.ir.SourceLocation
 import com.apollographql.apollo.compiler.ir.TypeDeclaration
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
@@ -146,6 +149,21 @@ private class CodeGenerationAstBuilder(
       is CodeGenerationAst.FieldType.Array -> rawType.isCustomScalarField()
       else -> false
     }
+  }
+
+  private fun Operation.normalizedOperationName(useSemanticNaming: Boolean, operationNameSuffix: String): String {
+    return if (useSemanticNaming && !operationName.endsWith(operationNameSuffix)) {
+      operationName.capitalize() + operationNameSuffix
+    } else {
+      operationName.capitalize()
+    }
+  }
+
+  private fun Operation.normalizedOperationName(useSemanticNaming: Boolean): String = when (operationType) {
+    TYPE_MUTATION -> normalizedOperationName(useSemanticNaming, "Mutation")
+    TYPE_QUERY -> normalizedOperationName(useSemanticNaming, "Query")
+    TYPE_SUBSCRIPTION -> normalizedOperationName(useSemanticNaming, "Subscription")
+    else -> throw IllegalArgumentException("Unknown operation type $operationType")
   }
 
   private fun Operation.buildOperationType(

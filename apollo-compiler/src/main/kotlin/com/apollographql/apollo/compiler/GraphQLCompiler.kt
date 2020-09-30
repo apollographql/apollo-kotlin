@@ -3,14 +3,10 @@ package com.apollographql.apollo.compiler
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.compiler.ApolloMetadata.Companion.merge
 import com.apollographql.apollo.compiler.codegen.GraphQLKompiler
-import com.apollographql.apollo.compiler.ir.CodeGenerationContext
-import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.ir.Field
 import com.apollographql.apollo.compiler.ir.IRBuilder
 import com.apollographql.apollo.compiler.ir.ScalarType
 import com.apollographql.apollo.compiler.ir.SourceLocation
-import com.apollographql.apollo.compiler.ir.TypeDeclaration.Companion.KIND_ENUM
-import com.apollographql.apollo.compiler.ir.TypeDeclaration.Companion.KIND_INPUT_OBJECT_TYPE
 import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.operationoutput.toJson
 import com.apollographql.apollo.compiler.parser.error.DocumentParseException
@@ -22,7 +18,6 @@ import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchem
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Companion.wrap
 import com.apollographql.apollo.compiler.parser.sdl.GraphSdlSchema
 import com.apollographql.apollo.compiler.parser.sdl.toIntrospectionSchema
-import com.squareup.javapoet.JavaFile
 import com.squareup.kotlinpoet.asClassName
 import java.io.File
 
@@ -104,37 +99,16 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
     }.map { it.name } + ScalarType.ID.name)
         .supportedTypeMap(userCustomTypesMap, generateKotlinModels)
 
-    if (generateKotlinModels) {
-      GraphQLKompiler(
-          ir = ir,
-          schema = introspectionSchema,
-          customTypeMap = customTypeMap,
-          operationOutput = operationOutput,
-          useSemanticNaming = args.useSemanticNaming,
-          generateAsInternal = args.generateAsInternal,
-          kotlinMultiPlatformProject = args.kotlinMultiPlatformProject,
-          enumAsSealedClassPatternFilters = args.enumAsSealedClassPatternFilters.map { it.toRegex() }
-      ).write(args.outputDir)
-    } else {
-      val context = CodeGenerationContext(
-          reservedTypeNames = emptyList(),
-          typeDeclarations = ir.typeDeclarations,
-          customTypeMap = customTypeMap,
-          operationOutput = operationOutput,
-          nullableValueType = args.nullableValueType,
-          ir = ir,
-          useSemanticNaming = args.useSemanticNaming,
-          generateModelBuilder = args.generateModelBuilder,
-          useJavaBeansSemanticNaming = args.useJavaBeansSemanticNaming,
-          suppressRawTypesWarning = args.suppressRawTypesWarning,
-          generateVisitorForPolymorphicDatatypes = args.generateVisitorForPolymorphicDatatypes
-      )
-
-      ir.writeJavaFiles(
-          context = context,
-          outputDir = args.outputDir
-      )
-    }
+    GraphQLKompiler(
+        ir = ir,
+        schema = introspectionSchema,
+        customTypeMap = customTypeMap,
+        operationOutput = operationOutput,
+        useSemanticNaming = args.useSemanticNaming,
+        generateAsInternal = args.generateAsInternal,
+        kotlinMultiPlatformProject = args.kotlinMultiPlatformProject,
+        enumAsSealedClassPatternFilters = args.enumAsSealedClassPatternFilters.map { it.toRegex() }
+    ).write(args.outputDir)
 
     args.metadataOutputFile.parentFile.mkdirs()
     if (args.generateMetadata) {
@@ -189,13 +163,13 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
   private fun idClassName(generateKotlinModels: Boolean) = if (generateKotlinModels) {
     String::class.asClassName().toString()
   } else {
-    ClassNames.STRING.toString()
+    TODO("ClassNames.STRING.toString()")
   }
 
   private fun anyClassName(generateKotlinModels: Boolean) = if (generateKotlinModels) {
     Any::class.asClassName().toString()
   } else {
-    ClassNames.OBJECT.toString()
+    TODO("ClassNames.OBJECT.toString()")
   }
 
   private fun List<String>.supportedTypeMap(customTypeMap: Map<String, String>, generateKotlinModels: Boolean): Map<String, String> {
@@ -211,52 +185,6 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
 
       it to className
     }
-  }
-
-
-  private fun CodeGenerationIR.writeJavaFiles(context: CodeGenerationContext, outputDir: File) {
-    fragments.filter {
-      fragmentsToGenerate.contains(it.fragmentName)
-    }.forEach {
-      val typeSpec = it.toTypeSpec(context.copy())
-      JavaFile
-          .builder(context.ir.fragmentsPackageName, typeSpec)
-          .addFileComment(AUTO_GENERATED_FILE)
-          .build()
-          .writeTo(outputDir)
-    }
-
-    typeDeclarations.filter {
-      (it.kind == KIND_INPUT_OBJECT_TYPE || it.kind == KIND_ENUM)
-          && (enumsToGenerate + inputObjectsToGenerate).contains(it.name)
-    }.forEach {
-      val typeSpec = it.toTypeSpec(context.copy())
-      JavaFile
-          .builder(context.ir.typesPackageName, typeSpec)
-          .addFileComment(AUTO_GENERATED_FILE)
-          .build()
-          .writeTo(outputDir)
-    }
-
-    if (scalarsToGenerate.isNotEmpty()) {
-      val typeSpec = CustomEnumTypeSpecBuilder(context.copy(), scalarsToGenerate).build()
-      JavaFile
-          .builder(context.ir.typesPackageName, typeSpec)
-          .addFileComment(AUTO_GENERATED_FILE)
-          .build()
-          .writeTo(outputDir)
-    }
-
-    operations.map { OperationTypeSpecBuilder(it, fragments, context.useSemanticNaming) }
-        .forEach {
-          val packageName = it.operation.packageName
-          val typeSpec = it.toTypeSpec(context.copy())
-          JavaFile
-              .builder(packageName, typeSpec)
-              .addFileComment(AUTO_GENERATED_FILE)
-              .build()
-              .writeTo(outputDir)
-        }
   }
 
   companion object {
@@ -409,13 +337,5 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
 
       val kotlinMultiPlatformProject: Boolean = false,
       val enumAsSealedClassPatternFilters: Set<String> = emptySet(),
-
-      //========== Java codegen options ============
-
-      val nullableValueType: NullableValueType = NullableValueType.ANNOTATED,
-      val generateModelBuilder: Boolean = false,
-      val useJavaBeansSemanticNaming: Boolean = false,
-      val suppressRawTypesWarning: Boolean = false,
-      val generateVisitorForPolymorphicDatatypes: Boolean = false
   )
 }

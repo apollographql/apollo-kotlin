@@ -14,13 +14,10 @@ class KotlinCodegenTests {
   @Test
   fun `generates and compiles kotlin`() {
     val apolloConfiguration = """
-      apollo {
-        generateKotlinModels = true
-      }
     """.trimIndent()
     withProject(usesKotlinDsl = false,
         apolloConfiguration = apolloConfiguration,
-        plugins = listOf(TestUtils.javaPlugin, TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin)) { dir ->
+        plugins = listOf(TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin)) { dir ->
 
       val source = TestUtils.fixturesDirectory()
       source.child("kotlin").copyRecursively(dir.child("src", "main", "kotlin"))
@@ -38,7 +35,6 @@ class KotlinCodegenTests {
   fun `when generateAsInternal set to true - generated models are internal`() {
     val apolloConfiguration = """
       apollo {
-        generateKotlinModels = true
         generateAsInternal = true
       }
     """.trimIndent()
@@ -46,7 +42,7 @@ class KotlinCodegenTests {
     withProject(
         usesKotlinDsl = false,
         apolloConfiguration = apolloConfiguration,
-        plugins = listOf(TestUtils.javaPlugin, TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin)
+        plugins = listOf(TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin)
     ) { dir ->
 
       val source = TestUtils.fixturesDirectory()
@@ -72,14 +68,13 @@ class KotlinCodegenTests {
         service("githunt") {
           sourceFolder = "githunt"
         }
-        generateKotlinModels = true
         sealedClassesForEnumsMatching = [".*"]
       }
     """.trimIndent()
     withProject(
         usesKotlinDsl = false,
         apolloConfiguration = apolloConfiguration,
-        plugins = listOf(TestUtils.javaPlugin, TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin)
+        plugins = listOf(TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin)
     ) { dir ->
       val source = TestUtils.fixturesDirectory()
 

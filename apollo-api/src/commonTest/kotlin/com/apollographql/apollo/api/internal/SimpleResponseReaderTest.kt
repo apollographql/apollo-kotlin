@@ -57,25 +57,6 @@ class SimpleResponseReaderTest {
   }
 
   @Test
-  fun readLong() {
-    val successField = ResponseField.forLong("successFieldResponseName", "successFieldName", null, false, noConditions)
-    val classCastExceptionField = ResponseField.forLong("classCastExceptionField", "classCastExceptionField", null, false,
-        noConditions)
-    val recordSet: MutableMap<String, Any> = HashMap()
-    recordSet["successFieldResponseName"] = BigDecimal(1)
-    recordSet["successFieldName"] = BigDecimal(2)
-    recordSet["classCastExceptionField"] = "anything"
-    val responseReader = responseReader(recordSet)
-    assertEquals(expected = 1, actual = responseReader.readLong(successField) as Long)
-    try {
-      responseReader.readLong(classCastExceptionField)
-      fail("expected ClassCastException")
-    } catch (expected: ClassCastException) {
-      // expected
-    }
-  }
-
-  @Test
   fun readDouble() {
     val successField = ResponseField.forDouble("successFieldResponseName", "successFieldName", null, false, noConditions)
     val classCastExceptionField = ResponseField.forDouble("classCastExceptionField", "classCastExceptionField", null, false,
@@ -139,27 +120,6 @@ class SimpleResponseReaderTest {
     } catch (expected: ClassCastException) {
       // expected
     }
-  }
-
-  @Test
-  fun readFragment() {
-    val responseObject = Any()
-    val successFragmentField = ResponseField.forFragment("__typename", "__typename", listOf<ResponseField.Condition>(typeCondition(arrayOf("Fragment1"))))
-    val skipFragmentField = ResponseField.forFragment("__typename", "__typename", listOf<ResponseField.Condition>(typeCondition(arrayOf("Fragment2"))))
-    val recordSet: MutableMap<String, Any> = HashMap()
-    recordSet["__typename"] = "Fragment1"
-    val responseReader = responseReader(recordSet)
-    assertEquals(
-        expected = responseObject,
-        actual = responseReader.readFragment(successFragmentField, object : ResponseReader.ObjectReader<Any> {
-          override fun read(reader: ResponseReader): Any = responseObject
-        })
-    )
-    assertNull(
-        responseReader.readFragment(skipFragmentField, object : ResponseReader.ObjectReader<Any> {
-          override fun read(reader: ResponseReader): Any = responseObject
-        })
-    )
   }
 
   @Test
@@ -422,7 +382,6 @@ class SimpleResponseReaderTest {
     val responseReader = responseReader(emptyMap())
     responseReader.readString(ResponseField.forString("stringField", "stringField", null, true, noConditions))
     responseReader.readInt(ResponseField.forInt("intField", "intField", null, true, noConditions))
-    responseReader.readLong(ResponseField.forLong("longField", "longField", null, true, noConditions))
     responseReader.readDouble(ResponseField.forDouble("doubleField", "doubleField", null, true, noConditions))
     responseReader.readBoolean(ResponseField.forBoolean("booleanField", "booleanField", null, true, noConditions))
     responseReader.readObject(ResponseField.forObject("objectField", "objectField", null, true, noConditions)) { null!! }
@@ -440,12 +399,6 @@ class SimpleResponseReaderTest {
     }
     try {
       responseReader.readInt(ResponseField.forInt("intField", "intField", null, false, noConditions))
-      fail("expected NullPointerException")
-    } catch (expected: NullPointerException) {
-      //expected
-    }
-    try {
-      responseReader.readLong(ResponseField.forLong("longField", "longField", null, false, noConditions))
       fail("expected NullPointerException")
     } catch (expected: NullPointerException) {
       //expected

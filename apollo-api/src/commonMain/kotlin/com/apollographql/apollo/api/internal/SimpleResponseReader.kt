@@ -39,16 +39,6 @@ class SimpleResponseReader private constructor(
     return value?.toNumber()?.toInt()
   }
 
-  override fun readLong(field: ResponseField): Long? {
-    if (shouldSkip(field)) {
-      return null
-    }
-
-    val value = valueFor<BigDecimal>(recordSet, field)
-    checkValue(field, value)
-    return value?.toNumber()?.toLong()
-  }
-
   override fun readDouble(field: ResponseField): Double? {
     if (shouldSkip(field)) {
       return null
@@ -109,24 +99,6 @@ class SimpleResponseReader private constructor(
     }
   }
 
-  override fun <T : Any> readFragment(field: ResponseField, objectReader: ResponseReader.ObjectReader<T>): T? {
-    if (shouldSkip(field)) {
-      return null
-    }
-
-    val value = valueFor<String>(recordSet, field)
-    checkValue<String?>(field, value)
-
-    return value?.let { typename ->
-      field.conditions
-          .mapNotNull { condition -> condition as? ResponseField.TypeNameCondition }
-          .all { condition -> condition.typeNames.contains(typename) }
-          .let { matchAllTypeConditions ->
-            if (matchAllTypeConditions) objectReader.read(this) else null
-          }
-    }
-  }
-
   private fun shouldSkip(field: ResponseField): Boolean {
     for (condition in field.conditions) {
       if (condition is ResponseField.BooleanCondition) {
@@ -166,10 +138,6 @@ class SimpleResponseReader private constructor(
 
     override fun readInt(): Int {
       return (value as BigDecimal).toNumber().toInt()
-    }
-
-    override fun readLong(): Long {
-      return (value as BigDecimal).toNumber().toLong()
     }
 
     override fun readDouble(): Double {

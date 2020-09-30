@@ -19,7 +19,6 @@ class SchemaResolutionTests {
     val apolloConfiguration = """
       apollo {
         service("api") {
-          generateKotlinModels = true
         }
       }
     """.trimIndent()
@@ -27,7 +26,7 @@ class SchemaResolutionTests {
     withProject(
         usesKotlinDsl = false,
         apolloConfiguration = apolloConfiguration,
-        plugins = listOf(TestUtils.javaPlugin, TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin)
+        plugins = listOf(TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin)
     ) { projectDir ->
       projectDir.child("src", "main", "graphql", "com").deleteRecursively()
 
@@ -50,7 +49,6 @@ class SchemaResolutionTests {
       apollo {
         service("api") {
           schemaPath = "schema.sdl"
-          generateKotlinModels = true
         }
       }
     """.trimIndent()
@@ -58,7 +56,7 @@ class SchemaResolutionTests {
     withProject(
         usesKotlinDsl = false,
         apolloConfiguration = apolloConfiguration,
-        plugins = listOf(TestUtils.javaPlugin, TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin)
+        plugins = listOf(TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin)
     ) { projectDir ->
       projectDir.child("src", "main", "graphql", "com").deleteRecursively()
 
@@ -78,7 +76,6 @@ class SchemaResolutionTests {
     val apolloConfiguration = """
       apollo {
         service("api") {
-          generateKotlinModels = true
         }
       }
     """.trimIndent()
@@ -86,7 +83,7 @@ class SchemaResolutionTests {
     withProject(
         usesKotlinDsl = false,
         apolloConfiguration = apolloConfiguration,
-        plugins = listOf(TestUtils.javaPlugin, TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin)
+        plugins = listOf(TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin)
     ) { projectDir ->
       projectDir.child("src", "main", "graphql", "com").deleteRecursively()
 

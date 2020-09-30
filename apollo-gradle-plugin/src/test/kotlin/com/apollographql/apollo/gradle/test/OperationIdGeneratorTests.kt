@@ -68,7 +68,7 @@ class OperationIdGeneratorTests {
 
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
 
-      val queryJavaFile = dir.generatedChild("main/service/com/example/DroidDetailsQuery.java")
+      val queryJavaFile = dir.generatedChild("main/service/com/example/DroidDetailsQuery.kt")
       Assert.assertThat(queryJavaFile.readText(), CoreMatchers.containsString("com/example/DroidDetails.graphql"))
     }
   }
@@ -131,8 +131,8 @@ class OperationIdGeneratorTests {
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainServiceApolloSources")!!.outcome)
 
       Assert.assertThat(
-          dir.generatedChild("main/service/com/example/GreetingQuery.java").readText(),
-          CoreMatchers.containsString("OPERATION_ID = \"GreetingCustomId\";")
+          dir.generatedChild("main/service/com/example/GreetingQuery.kt").readText(),
+          CoreMatchers.containsString("OPERATION_ID: String = \"GreetingCustomId\"")
       )
 
       // Change the implementation of the operation ID generator and check again
@@ -144,7 +144,7 @@ class OperationIdGeneratorTests {
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainServiceApolloSources")!!.outcome)
 
       Assert.assertThat(
-          dir.generatedChild("main/service/com/example/GreetingQuery.java").readText(),
+          dir.generatedChild("main/service/com/example/GreetingQuery.kt").readText(),
           CoreMatchers.containsString("anotherCustomId")
       )
     }
