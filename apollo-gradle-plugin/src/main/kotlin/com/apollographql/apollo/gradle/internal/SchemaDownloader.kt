@@ -94,7 +94,7 @@ object SchemaDownloader {
       }
     """.trimIndent()
 
-    val response = executeQuery(query, variables, "https://engine-graphql.apollographql.com/api/graphql", mapOf("x-api-key" to key))
+    val response = executeQuery(query, variables, "https://graphql.api.apollographql.com/api/graphql", mapOf("x-api-key" to key))
 
     val responseString = response.body.use { it?.string() }
 
