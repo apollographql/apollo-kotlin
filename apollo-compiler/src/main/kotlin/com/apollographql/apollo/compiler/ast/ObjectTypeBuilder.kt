@@ -4,6 +4,7 @@ import com.apollographql.apollo.compiler.codegen.normalizeGraphQLType
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo.compiler.ir.Condition
 import com.apollographql.apollo.compiler.ir.Field
+import com.apollographql.apollo.compiler.ir.Fragment as IrFragment
 import com.apollographql.apollo.compiler.ir.FragmentRef
 import com.apollographql.apollo.compiler.ir.InlineFragment
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
@@ -15,7 +16,7 @@ internal class ObjectTypeBuilder(
     private val customTypes: CustomTypes,
     private val typesPackageName: String,
     private val fragmentsPackage: String,
-    private val irFragments: Map<String, com.apollographql.apollo.compiler.ir.Fragment>,
+    private val irFragments: Map<String, IrFragment>,
     private val nestedTypeContainer: ObjectTypeContainerBuilder,
     private val enclosingType: CodeGenerationAst.TypeRef?
 ) {
@@ -315,7 +316,21 @@ internal class ObjectTypeBuilder(
     val fieldSchemaType = schema.resolveType(fieldSchemaTypeRef)
     val fragments = inlineFragments
         .toFragments()
-        .plus(fragmentRefs.map { fragmentRef -> fragmentRef.toFragment() })
+        .plus(
+            fragmentRefs
+                .plus(
+                    fragmentRefs.flatMap { fragmentRef ->
+                      fragmentRef.resolveIrFragment().fragmentRefs
+                    }
+                )
+                .toSet()
+                .map { fragmentRef -> fragmentRef.toFragment() }
+                .plus(
+                    fragmentRefs.flatMap { fragmentRef ->
+                      fragmentRef.resolveIrFragment().inlineFragments.toFragments()
+                    }
+                )
+        )
     return when {
       // when we generate just interfaces (in case of named fragments) skip fragment generation entirely
       abstract -> {
@@ -423,10 +438,12 @@ internal class ObjectTypeBuilder(
     }
   }
 
+  private fun FragmentRef.resolveIrFragment(): IrFragment = requireNotNull(irFragments[name]) {
+    "Unknown fragment `${name}` reference"
+  }
+
   private fun FragmentRef.toFragment(): Fragment {
-    val fragment = requireNotNull(irFragments[name]) {
-      "Unknown fragment `${name}` reference"
-    }
+    val fragment = resolveIrFragment()
     return Fragment(
         typeCondition = fragment.typeCondition,
         possibleTypes = fragment.possibleTypes,

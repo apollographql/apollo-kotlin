@@ -19,7 +19,9 @@ import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.api.internal.Throws
+import com.example.fragment_with_inline_fragment.fragment.DroidDetails
 import com.example.fragment_with_inline_fragment.fragment.HeroDetails
+import com.example.fragment_with_inline_fragment.fragment.HumanDetails
 import com.example.fragment_with_inline_fragment.type.Episode
 import kotlin.Array
 import kotlin.Boolean
@@ -88,17 +90,83 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   /**
    * A character from the Star Wars universe
    */
-  data class Node(
+  interface Node {
+    val __typename: String
+
+    /**
+     * The name of the character
+     */
+    val name: String
+
+    fun marshaller(): ResponseFieldMarshaller
+  }
+
+  /**
+   * An edge object for a character's friends
+   */
+  interface Edge {
+    val __typename: String
+
+    /**
+     * The character represented by this friendship edge
+     */
+    val node: Node?
+
+    fun marshaller(): ResponseFieldMarshaller
+  }
+
+  /**
+   * A connection object for a character's friends
+   */
+  interface FriendsConnection {
+    val __typename: String
+
+    /**
+     * The total number of friends
+     */
+    val totalCount: Int?
+
+    /**
+     * The edges for each of the character's friends.
+     */
+    val edges: List<Edge?>?
+
+    fun marshaller(): ResponseFieldMarshaller
+  }
+
+  /**
+   * An autonomous mechanical character in the Star Wars universe
+   */
+  interface Droid : Hero {
+    override val __typename: String
+
+    /**
+     * What others call this droid
+     */
+    override val name: String
+
+    /**
+     * The friends of the droid exposed as a connection with edges
+     */
+    val friendsConnection: FriendsConnection
+
+    override fun marshaller(): ResponseFieldMarshaller
+  }
+
+  /**
+   * A character from the Star Wars universe
+   */
+  data class Node1(
     override val __typename: String = "Character",
     /**
      * The name of the character
      */
     override val name: String
-  ) : HeroDetails.Node {
+  ) : HeroDetails.Node, Node {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Node.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@Node.name)
+        writer.writeString(RESPONSE_FIELDS[0], this@Node1.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@Node1.name)
       }
     }
 
@@ -108,34 +176,34 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Node = reader.run {
+      operator fun invoke(reader: ResponseReader): Node1 = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
         val name = readString(RESPONSE_FIELDS[1])!!
-        Node(
+        Node1(
           __typename = __typename,
           name = name
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Node> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<Node1> = ResponseFieldMapper { invoke(it) }
     }
   }
 
   /**
    * An edge object for a character's friends
    */
-  data class Edge(
+  data class Edge1(
     override val __typename: String = "FriendsEdge",
     /**
      * The character represented by this friendship edge
      */
-    override val node: Node?
-  ) : HeroDetails.Edge {
+    override val node: Node1?
+  ) : HeroDetails.Edge, Edge {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Edge.__typename)
-        writer.writeObject(RESPONSE_FIELDS[1], this@Edge.node?.marshaller())
+        writer.writeString(RESPONSE_FIELDS[0], this@Edge1.__typename)
+        writer.writeObject(RESPONSE_FIELDS[1], this@Edge1.node?.marshaller())
       }
     }
 
@@ -145,26 +213,26 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forObject("node", "node", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Edge = reader.run {
+      operator fun invoke(reader: ResponseReader): Edge1 = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
-        val node = readObject<Node>(RESPONSE_FIELDS[1]) { reader ->
-          Node(reader)
+        val node = readObject<Node1>(RESPONSE_FIELDS[1]) { reader ->
+          Node1(reader)
         }
-        Edge(
+        Edge1(
           __typename = __typename,
           node = node
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Edge> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<Edge1> = ResponseFieldMapper { invoke(it) }
     }
   }
 
   /**
    * A connection object for a character's friends
    */
-  data class FriendsConnection(
+  data class FriendsConnection1(
     override val __typename: String = "FriendsConnection",
     /**
      * The total number of friends
@@ -173,21 +241,21 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     /**
      * The edges for each of the character's friends.
      */
-    override val edges: List<Edge?>?
-  ) : HeroDetails.FriendsConnection {
+    override val edges: List<Edge1?>?
+  ) : HeroDetails.FriendsConnection, FriendsConnection {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@FriendsConnection.__typename)
-        writer.writeInt(RESPONSE_FIELDS[1], this@FriendsConnection.totalCount)
+        writer.writeString(RESPONSE_FIELDS[0], this@FriendsConnection1.__typename)
+        writer.writeInt(RESPONSE_FIELDS[1], this@FriendsConnection1.totalCount)
         writer.writeList(RESPONSE_FIELDS[2],
-            this@FriendsConnection.edges) { value, listItemWriter ->
+            this@FriendsConnection1.edges) { value, listItemWriter ->
           value?.forEach { value ->
             listItemWriter.writeObject(value?.marshaller())}
         }
       }
     }
 
-    fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
+    fun edgesFilterNotNull(): List<Edge1>? = edges?.filterNotNull()
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
@@ -196,15 +264,15 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forList("edges", "edges", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): FriendsConnection = reader.run {
+      operator fun invoke(reader: ResponseReader): FriendsConnection1 = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
         val totalCount = readInt(RESPONSE_FIELDS[1])
-        val edges = readList<Edge>(RESPONSE_FIELDS[2]) { reader ->
-          reader.readObject<Edge> { reader ->
-            Edge(reader)
+        val edges = readList<Edge1>(RESPONSE_FIELDS[2]) { reader ->
+          reader.readObject<Edge1> { reader ->
+            Edge1(reader)
           }
         }
-        FriendsConnection(
+        FriendsConnection1(
           __typename = __typename,
           totalCount = totalCount,
           edges = edges
@@ -212,37 +280,42 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<FriendsConnection> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<FriendsConnection1> = ResponseFieldMapper { invoke(it) }
     }
   }
 
-  /**
-   * A character from the Star Wars universe
-   */
-  data class Hero(
-    override val __typename: String = "Character",
+  data class HeroDetailsDroidDroidDetailsImpl(
+    override val __typename: String,
     /**
      * The name of the character
      */
     override val name: String,
     /**
-     * The movies this character appears in
-     */
-    val appearsIn: List<Episode?>,
-    /**
      * The friends of the character exposed as a connection with edges
      */
-    override val friendsConnection: FriendsConnection
-  ) : HeroDetails {
+    override val friendsConnection: FriendsConnection1,
+    /**
+     * This droid's primary function
+     */
+    override val primaryFunction: String?,
+    /**
+     * The movies this character appears in
+     */
+    override val appearsIn: List<Episode?>
+  ) : HeroDetails, Droid, DroidDetails, Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Hero.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@Hero.name)
-        writer.writeList(RESPONSE_FIELDS[2], this@Hero.appearsIn) { value, listItemWriter ->
+        writer.writeString(RESPONSE_FIELDS[0], this@HeroDetailsDroidDroidDetailsImpl.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@HeroDetailsDroidDroidDetailsImpl.name)
+        writer.writeObject(RESPONSE_FIELDS[2],
+            this@HeroDetailsDroidDroidDetailsImpl.friendsConnection.marshaller())
+        writer.writeString(RESPONSE_FIELDS[3],
+            this@HeroDetailsDroidDroidDetailsImpl.primaryFunction)
+        writer.writeList(RESPONSE_FIELDS[4],
+            this@HeroDetailsDroidDroidDetailsImpl.appearsIn) { value, listItemWriter ->
           value?.forEach { value ->
             listItemWriter.writeString(value?.rawValue)}
         }
-        writer.writeObject(RESPONSE_FIELDS[3], this@Hero.friendsConnection.marshaller())
       }
     }
 
@@ -252,29 +325,312 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forList("appearsIn", "appearsIn", null, false, null),
-        ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
+        ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null),
+        ResponseField.forString("primaryFunction", "primaryFunction", null, true, null),
+        ResponseField.forList("appearsIn", "appearsIn", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Hero = reader.run {
+      operator fun invoke(reader: ResponseReader): HeroDetailsDroidDroidDetailsImpl = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
+        val friendsConnection = readObject<FriendsConnection1>(RESPONSE_FIELDS[2]) { reader ->
+          FriendsConnection1(reader)
+        }!!
+        val primaryFunction = readString(RESPONSE_FIELDS[3])
+        val appearsIn = readList<Episode>(RESPONSE_FIELDS[4]) { reader ->
+          Episode.safeValueOf(reader.readString())
+        }!!
+        HeroDetailsDroidDroidDetailsImpl(
+          __typename = __typename,
+          name = name,
+          friendsConnection = friendsConnection,
+          primaryFunction = primaryFunction,
+          appearsIn = appearsIn
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<HeroDetailsDroidDroidDetailsImpl> = ResponseFieldMapper {
+          invoke(it) }
+    }
+  }
+
+  /**
+   * A character from the Star Wars universe
+   */
+  data class Node2(
+    override val __typename: String = "Character",
+    /**
+     * The name of the character
+     */
+    override val name: String
+  ) : HeroDetails.Node {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@Node2.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@Node2.name)
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("name", "name", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): Node2 = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
+        Node2(
+          __typename = __typename,
+          name = name
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Node2> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
+   * An edge object for a character's friends
+   */
+  data class Edge2(
+    override val __typename: String = "FriendsEdge",
+    /**
+     * The character represented by this friendship edge
+     */
+    override val node: Node2?
+  ) : HeroDetails.Edge {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@Edge2.__typename)
+        writer.writeObject(RESPONSE_FIELDS[1], this@Edge2.node?.marshaller())
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forObject("node", "node", null, true, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): Edge2 = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val node = readObject<Node2>(RESPONSE_FIELDS[1]) { reader ->
+          Node2(reader)
+        }
+        Edge2(
+          __typename = __typename,
+          node = node
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Edge2> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
+   * A connection object for a character's friends
+   */
+  data class FriendsConnection2(
+    override val __typename: String = "FriendsConnection",
+    /**
+     * The total number of friends
+     */
+    override val totalCount: Int?,
+    /**
+     * The edges for each of the character's friends.
+     */
+    override val edges: List<Edge2?>?
+  ) : HeroDetails.FriendsConnection {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@FriendsConnection2.__typename)
+        writer.writeInt(RESPONSE_FIELDS[1], this@FriendsConnection2.totalCount)
+        writer.writeList(RESPONSE_FIELDS[2],
+            this@FriendsConnection2.edges) { value, listItemWriter ->
+          value?.forEach { value ->
+            listItemWriter.writeObject(value?.marshaller())}
+        }
+      }
+    }
+
+    fun edgesFilterNotNull(): List<Edge2>? = edges?.filterNotNull()
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forInt("totalCount", "totalCount", null, true, null),
+        ResponseField.forList("edges", "edges", null, true, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): FriendsConnection2 = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val totalCount = readInt(RESPONSE_FIELDS[1])
+        val edges = readList<Edge2>(RESPONSE_FIELDS[2]) { reader ->
+          reader.readObject<Edge2> { reader ->
+            Edge2(reader)
+          }
+        }
+        FriendsConnection2(
+          __typename = __typename,
+          totalCount = totalCount,
+          edges = edges
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<FriendsConnection2> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  data class HeroDetailsHumanDetailsImpl(
+    override val __typename: String,
+    /**
+     * The name of the character
+     */
+    override val name: String,
+    /**
+     * The friends of the character exposed as a connection with edges
+     */
+    override val friendsConnection: FriendsConnection2,
+    /**
+     * The movies this character appears in
+     */
+    override val appearsIn: List<Episode?>
+  ) : HeroDetails, HumanDetails, Hero {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@HeroDetailsHumanDetailsImpl.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@HeroDetailsHumanDetailsImpl.name)
+        writer.writeObject(RESPONSE_FIELDS[2],
+            this@HeroDetailsHumanDetailsImpl.friendsConnection.marshaller())
+        writer.writeList(RESPONSE_FIELDS[3],
+            this@HeroDetailsHumanDetailsImpl.appearsIn) { value, listItemWriter ->
+          value?.forEach { value ->
+            listItemWriter.writeString(value?.rawValue)}
+        }
+      }
+    }
+
+    fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null),
+        ResponseField.forList("appearsIn", "appearsIn", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): HeroDetailsHumanDetailsImpl = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
+        val friendsConnection = readObject<FriendsConnection2>(RESPONSE_FIELDS[2]) { reader ->
+          FriendsConnection2(reader)
+        }!!
+        val appearsIn = readList<Episode>(RESPONSE_FIELDS[3]) { reader ->
+          Episode.safeValueOf(reader.readString())
+        }!!
+        HeroDetailsHumanDetailsImpl(
+          __typename = __typename,
+          name = name,
+          friendsConnection = friendsConnection,
+          appearsIn = appearsIn
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<HeroDetailsHumanDetailsImpl> = ResponseFieldMapper {
+          invoke(it) }
+    }
+  }
+
+  /**
+   * A character from the Star Wars universe
+   */
+  data class HeroImpl(
+    override val __typename: String = "Character",
+    /**
+     * The name of the character
+     */
+    override val name: String,
+    /**
+     * The movies this character appears in
+     */
+    override val appearsIn: List<Episode?>
+  ) : Hero {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@HeroImpl.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@HeroImpl.name)
+        writer.writeList(RESPONSE_FIELDS[2], this@HeroImpl.appearsIn) { value, listItemWriter ->
+          value?.forEach { value ->
+            listItemWriter.writeString(value?.rawValue)}
+        }
+      }
+    }
+
+    fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forList("appearsIn", "appearsIn", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): HeroImpl = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
         val name = readString(RESPONSE_FIELDS[1])!!
         val appearsIn = readList<Episode>(RESPONSE_FIELDS[2]) { reader ->
           Episode.safeValueOf(reader.readString())
         }!!
-        val friendsConnection = readObject<FriendsConnection>(RESPONSE_FIELDS[3]) { reader ->
-          FriendsConnection(reader)
-        }!!
-        Hero(
+        HeroImpl(
           __typename = __typename,
           name = name,
-          appearsIn = appearsIn,
-          friendsConnection = friendsConnection
+          appearsIn = appearsIn
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Hero> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<HeroImpl> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
+   * A character from the Star Wars universe
+   */
+  interface Hero {
+    val __typename: String
+
+    /**
+     * The name of the character
+     */
+    val name: String
+
+    /**
+     * The movies this character appears in
+     */
+    val appearsIn: List<Episode?>
+
+    fun marshaller(): ResponseFieldMarshaller
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): Hero {
+        val typename = reader.readString(RESPONSE_FIELDS[0])
+        return when(typename) {
+          "Droid" -> HeroDetailsDroidDroidDetailsImpl(reader)
+          "Human" -> HeroDetailsHumanDetailsImpl(reader)
+          else -> HeroImpl(reader)
+        }
+      }
     }
   }
 
