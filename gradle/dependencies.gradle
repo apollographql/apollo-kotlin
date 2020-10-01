@@ -78,6 +78,7 @@ ext.dep = [
         okHttp       : "com.squareup.okhttp3:okhttp:$versions.okHttp",
         okHttp4      : "com.squareup.okhttp3:okhttp:$versions.okHttp4",
         logging      : "com.squareup.okhttp3:logging-interceptor:$versions.okHttp",
+        logging4      : "com.squareup.okhttp3:logging-interceptor:$versions.okHttp4",
     ],
     okio                  : "com.squareup.okio:okio-multiplatform:$versions.okio",
     poet                  : [

@@ -1,19 +1,25 @@
 package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo.gradle.api.CompilationUnit
+import com.apollographql.apollo.compiler.parser.antlr.GraphSDLParser
+import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
+import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Companion.wrap
+import com.apollographql.apollo.compiler.parser.introspection.toSDL
+import com.apollographql.apollo.compiler.parser.sdl.GraphSDLSchemaParser.parse
+import com.apollographql.apollo.compiler.parser.sdl.toIntrospectionSchema
+import com.apollographql.apollo.compiler.toJson
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import okio.Buffer
 import org.gradle.api.DefaultTask
 import org.gradle.api.NamedDomainObjectContainer
-import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
 import java.io.File
+import java.nio.charset.Charset
+import java.util.Locale
 
 /**
  * This task is very similar to [ApolloDownloadSchemaTask] except it allows to override parameters from the command line
@@ -23,6 +29,21 @@ abstract class ApolloDownloadSchemaCliTask : DefaultTask() {
   @get:Input
   @get:Option(option = "endpoint", description = "url of the GraphQL endpoint")
   abstract val endpoint: Property<String>
+
+  @get:Optional
+  @get:Input
+  @get:Option(option = "graph", description = "The identifier of the Apollo graph used to download the schema.")
+  abstract val graph: Property<String>
+
+  @get:Optional
+  @get:Input
+  @get:Option(option = "key", description = "The Apollo API key. See https://www.apollographql.com/docs/studio/api-keys/ for more information on how to get your API key.")
+  abstract val key: Property<String>
+
+  @get:Optional
+  @get:Input
+  @get:Option(option = "graphVariant", description = "The variant of the Apollo graph used to download the schema.")
+  abstract val graphVariant: Property<String>
 
   @get:Input
   @get:Optional
@@ -56,6 +77,12 @@ abstract class ApolloDownloadSchemaCliTask : DefaultTask() {
     outputs.cacheIf { false }
   }
 
+  private fun Property<String>.orProperty(name: String) = orElse(project.provider {
+    (project.findProperty("com.apollographql.apollo.$name") as? String)?.also {
+      logger.lifecycle("Using the com.apollographql.apollo.$name property is deprecated. Use --$name instead.")
+    }
+  }).orNull
+
   @TaskAction
   fun taskAction() {
     val candidates = compilationUnits.filter {
@@ -83,28 +110,15 @@ abstract class ApolloDownloadSchemaCliTask : DefaultTask() {
 
     val (compilerParams, _) = compilationUnit.resolveParams(project)
 
-    val endpointProp = project.findProperty("com.apollographql.apollo.endpoint") as? String
-    var endpointUrl = when {
-      endpoint.isPresent -> endpoint.get()
-      endpointProp != null -> {
-        logger.lifecycle("Using the com.apollographql.apollo.endpoint property is deprecated. Use --endpoint instead.")
-        endpointProp
-      }
-      else -> compilationUnit.service.introspection?.endpointUrl?.get()
-    }
-    check(endpointUrl != null) {
-      "Specify the endpoint either with --endpoint or the introspection {} block"
-    }
+    var endpointUrl = endpoint.orProperty("endpoint") ?: compilationUnit.service.introspection?.endpointUrl?.get()
 
-    val schemaProp = project.findProperty("com.apollographql.apollo.schema") as? String
-    val schemaFile = when {
-      schema.isPresent -> File(schema.get())
-      schemaProp != null -> {
-        logger.lifecycle("Using the com.apollographql.apollo.schema property is deprecated. Use --schema instead.")
-        project.file(schemaProp)
+    val schema = schema.orProperty("schema")?.let {
+      if (schema.isPresent) {
+        File(it) // commandline is resolved relative to cwd
+      } else {
+        project.file(it) // relative to project. This is not super consistent but 🤷‍
       }
-      else -> compilerParams.schemaFile.asFile.get()
-    }
+    } ?: compilerParams.schemaFile.asFile.get()
 
     val headersProp = project.findProperty("com.apollographql.apollo.headers") as? String
     val headers = when {
@@ -117,7 +131,10 @@ abstract class ApolloDownloadSchemaCliTask : DefaultTask() {
 
     val queryParamsProp = project.findProperty("com.apollographql.apollo.query_params") as? String
     if (queryParamsProp != null) {
-logger.lifecycle("Using the com.apollographql.apollo.query_params property is deprecated. Add parameters to the endpoint instead.")
+      logger.lifecycle("Using the com.apollographql.apollo.query_params property is deprecated. Add parameters to the endpoint instead.")
+      check (endpointUrl != null) {
+        "ApolloGraphql: adding query_params without endpoint makes not sense. Either remove them or specify --endpoint"
+      }
       endpointUrl = endpointUrl.toHttpUrl().newBuilder()
           .apply {
             ApolloPlugin.toMap(queryParamsProp).entries.forEach {
@@ -128,13 +145,48 @@ logger.lifecycle("Using the com.apollographql.apollo.query_params property is de
           .toString()
     }
 
-    SchemaDownloader.download(
-        endpoint = endpointUrl,
-        schema = schemaFile,
-        headers = headers,
-        connectTimeoutSeconds = System.getProperty("okHttp.connectTimeout", "600").toLong(),
-        readTimeoutSeconds = System.getProperty("okHttp.readTimeout", "600").toLong()
-    )
+    var introspectionSchema: String? = null
+    var sdlSchema: String? = null
+
+    val key = key.orProperty("key")
+    var graph = graph.orProperty("graph")
+    val graphVariant = graphVariant.orProperty("graph-variant")
+
+    if (graph == null && key != null && key.startsWith("service:")) {
+      graph = key.split(":")[1]
+    }
+
+    if (endpointUrl != null) {
+      introspectionSchema = SchemaDownloader.downloadIntrospection(
+          endpoint = endpointUrl,
+          headers = headers,
+      )
+    } else if (graph != null) {
+      check (key != null) {
+        "please define key"
+      }
+      sdlSchema = SchemaDownloader.downloadRegistry(
+          graph = graph,
+          key = key,
+          variant = graphVariant ?: "current"
+      )
+    }
+
+    schema.parentFile?.mkdirs()
+
+    if (schema.extension.toLowerCase() == "json") {
+      if (introspectionSchema == null) {
+        introspectionSchema = sdlSchema!!.parse().toIntrospectionSchema().wrap().toJson()
+      }
+      schema.writeText(introspectionSchema)
+    } else {
+      if (sdlSchema == null) {
+        val buffer = Buffer()
+        IntrospectionSchema(introspectionSchema!!.byteInputStream()).toSDL(buffer)
+        sdlSchema = buffer.readString(Charset.defaultCharset())
+      }
+      schema.writeText(sdlSchema)
+    }
   }
 
   private fun List<String>.toMap(): Map<String, String> {
