@@ -177,7 +177,7 @@ internal fun InputType.Field.writeCodeBlock(thisRef: String): CodeBlock {
             .add("writer.writeList(%S, this@%L.%L.value?.let { value ->\n", schemaName, thisRef, name)
             .indent()
             .beginControlFlow("%T { listItemWriter ->", InputFieldWriter.ListWriter::class)
-            .beginControlFlow("value.forEach { value ->")
+            .beginControlFlow("value.forEach·{ value ->")
             .add(type.rawType.writeListItem(type.isOptional))
             .endControlFlow()
             .endControlFlow()
@@ -187,7 +187,7 @@ internal fun InputType.Field.writeCodeBlock(thisRef: String): CodeBlock {
       } else {
         codeBlockBuilder
             .beginControlFlow("writer.writeList(%S) { listItemWriter ->", schemaName)
-            .beginControlFlow("this@%L.%L.forEach { value ->", thisRef, name)
+            .beginControlFlow("this@%L.%L.forEach·{ value ->", thisRef, name)
             .add(type.rawType.writeListItem(type.isOptional))
             .endControlFlow()
             .endControlFlow()
@@ -213,7 +213,7 @@ private fun FieldType.writeListItem(isOptional: Boolean): CodeBlock {
     }
     is FieldType.Array -> CodeBlock.builder()
         .beginControlFlow("listItemWriter.writeList { listItemWriter ->")
-        .beginControlFlow("value%L.forEach { value ->", if (isOptional) "?" else "")
+        .beginControlFlow("value%L.forEach·{ value ->", if (isOptional) "?" else "")
         .add(rawType.writeListItem(this.isOptional))
         .endControlFlow()
         .endControlFlow()
