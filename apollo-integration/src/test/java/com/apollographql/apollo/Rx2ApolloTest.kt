@@ -63,7 +63,7 @@ class Rx2ApolloTest {
         .assertNoErrors()
         .assertComplete()
         .assertValue({ response ->
-          assertThat(response.data()?.hero()?.name()).isEqualTo("R2-D2")
+          assertThat(response.data?.hero?.name).isEqualTo("R2-D2")
           true
         })
   }
@@ -115,11 +115,11 @@ class Rx2ApolloTest {
     Rx2Apollo
         .from(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
         .retry(1)
-        .map({ response -> response.data() })
+        .map({ response -> response.data })
         .subscribeWith(observer)
     observer.assertValueCount(1)
         .assertValueAt(0) { data ->
-          assertThat(data?.hero()?.name()).isEqualTo("R2-D2")
+          assertThat(data?.hero?.name).isEqualTo("R2-D2")
           true
         }
   }
@@ -131,7 +131,7 @@ class Rx2ApolloTest {
     val observer: TestObserver<EpisodeHeroNameQuery.Data> = TestObserver<EpisodeHeroNameQuery.Data>()
     Rx2Apollo
         .from(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
-        .map({ response -> response.data() })
+        .map({ response -> response.data })
         .subscribeWith(observer)
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE))
     apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE)))
@@ -139,11 +139,11 @@ class Rx2ApolloTest {
         .enqueue(null)
     observer.assertValueCount(2)
         .assertValueAt(0) { data ->
-          assertThat(data?.hero()?.name()).isEqualTo("R2-D2")
+          assertThat(data?.hero?.name).isEqualTo("R2-D2")
           true
         }
         .assertValueAt(1) { data ->
-          assertThat(data?.hero()?.name()).isEqualTo("Artoo")
+          assertThat(data?.hero?.name).isEqualTo("Artoo")
           true
         }
   }
@@ -155,7 +155,7 @@ class Rx2ApolloTest {
     val observer: TestObserver<EpisodeHeroNameQuery.Data> = TestObserver<EpisodeHeroNameQuery.Data>()
     Rx2Apollo
         .from(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
-        .map({ response -> response.data() })
+        .map({ response -> response.data })
         .subscribeWith(observer)
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
     apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).responseFetcher(NETWORK_ONLY)
@@ -163,7 +163,7 @@ class Rx2ApolloTest {
     observer
         .assertValueCount(1)
         .assertValueAt(0) { data ->
-          assertThat(data?.hero()?.name()).isEqualTo("R2-D2")
+          assertThat(data?.hero?.name).isEqualTo("R2-D2")
           true
         }
   }
@@ -175,18 +175,18 @@ class Rx2ApolloTest {
     val observer: TestObserver<EpisodeHeroNameQuery.Data> = TestObserver<EpisodeHeroNameQuery.Data>()
     Rx2Apollo
         .from(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
-        .map({ response -> response.data() })
+        .map({ response -> response.data })
         .subscribeWith(observer)
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"))
     apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(NEWHOPE))).enqueue(null)
     observer
         .assertValueCount(2)
         .assertValueAt(0) { data ->
-          assertThat(data?.hero()?.name()).isEqualTo("R2-D2")
+          assertThat(data?.hero?.name).isEqualTo("R2-D2")
           true
         }
         .assertValueAt(1) { data ->
-          assertThat(data?.hero()?.name()).isEqualTo("Artoo")
+          assertThat(data?.hero?.name).isEqualTo("Artoo")
           true
         }
   }
@@ -199,7 +199,7 @@ class Rx2ApolloTest {
     val scheduler = TestScheduler()
     val disposable: Disposable = Rx2Apollo
         .from(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
-        .map({ response -> response.data() })
+        .map({ response -> response.data })
         .observeOn(scheduler)
         .subscribeWith(testObserver)
     scheduler.triggerActions()
@@ -211,7 +211,7 @@ class Rx2ApolloTest {
     testObserver
         .assertValueCount(1)
         .assertValueAt(0) { data ->
-          assertThat(data?.hero()?.name()).isEqualTo("R2-D2")
+          assertThat(data?.hero?.name).isEqualTo("R2-D2")
           true
         }
   }

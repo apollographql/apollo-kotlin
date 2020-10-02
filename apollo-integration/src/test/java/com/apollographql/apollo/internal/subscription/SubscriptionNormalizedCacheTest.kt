@@ -190,9 +190,9 @@ class SubscriptionNormalizedCacheTest {
     assertThat(this!!.fromCache).isEqualTo(expectedFromCache)
     assertThat(data).isNotNull()
     with(data!!) {
-      assertThat(commentAdded()!!.id()).isEqualTo(100)
-      assertThat(commentAdded()!!.content()).isEqualTo(expectedContent)
-      assertThat(commentAdded()!!.postedBy()!!.login()).isEqualTo("user@user.com")
+      assertThat(commentAdded!!.id).isEqualTo(100)
+      assertThat(commentAdded!!.content).isEqualTo(expectedContent)
+      assertThat(commentAdded!!.postedBy!!.login).isEqualTo("user@user.com")
     }
   }
 }

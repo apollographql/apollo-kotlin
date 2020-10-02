@@ -11,6 +11,6 @@ class OperationOutputTest {
   fun operationOutputMatchesTheModels() {
     val operationOutputFile = File("build/generated/operationOutput/apollo/main/httpcache/operationOutput.json")
     val source = OperationOutput(operationOutputFile).values.first { it.name == "AllFilms"}.source
-    assertThat(AllFilmsQuery.builder().build().queryDocument()).isEqualTo(source)
+    assertThat(AllFilmsQuery().queryDocument()).isEqualTo(source)
   }
 }

@@ -60,7 +60,7 @@ class CoroutinesApolloTest {
     runBlocking {
       val response: Response<EpisodeHeroNameQuery.Data> =
       apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).await()
-      assertThat(response.data!!.hero()!!.name()).isEqualTo("R2-D2")
+      assertThat(response.data!!.hero!!.name).isEqualTo("R2-D2")
     }
   }
 
@@ -71,7 +71,7 @@ class CoroutinesApolloTest {
     runBlocking {
         val response: Response<EpisodeHeroNameQuery.Data> =
         apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toDeferred().await()
-        assertThat(response.data!!.hero()!!.name()).isEqualTo("R2-D2")
+        assertThat(response.data!!.hero!!.name).isEqualTo("R2-D2")
     }
   }
 
@@ -120,7 +120,7 @@ class CoroutinesApolloTest {
       val result = mutableListOf<Response<EpisodeHeroNameQuery.Data>>()
       flow.toList(result)
       assertThat(result.size).isEqualTo(1)
-      assertThat(result[0].data?.hero()?.name()).isEqualTo("R2-D2")
+      assertThat(result[0].data?.hero?.name).isEqualTo("R2-D2")
     }
   }
 
@@ -157,7 +157,7 @@ class CoroutinesApolloTest {
           .single()
     }
 
-    assertThat(response.data!!.hero()!!.name()).isEqualTo("R2-D2")
+    assertThat(response.data!!.hero!!.name).isEqualTo("R2-D2")
   }
 
   @Test
@@ -175,7 +175,7 @@ class CoroutinesApolloTest {
           .first()
     }
 
-    assertThat(response.data!!.hero()!!.name()).isEqualTo("R2-D2")
+    assertThat(response.data!!.hero!!.name).isEqualTo("R2-D2")
   }
 
   @Test

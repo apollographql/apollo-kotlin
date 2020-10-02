@@ -1,8 +1,6 @@
 rootProject.name = "apollo-composite"
 
 // Samples
-include(":java-sample")
-project(":java-sample").projectDir = file("../samples/java-sample")
 include(":kotlin-sample")
 project(":kotlin-sample").projectDir = file("../samples/kotlin-sample")
 include(":multiplatform")
