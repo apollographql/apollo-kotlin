@@ -90,18 +90,6 @@ interface CharacterDetails : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(
-      __typename: String,
-      name: String,
-      birthDate: Any
-    ): CharacterDetails {
-      return DefaultImpl(
-        __typename = __typename,
-        name = name,
-        birthDate = birthDate
-      )
-    }
-
     operator fun invoke(reader: ResponseReader): CharacterDetails = DefaultImpl(reader)
   }
 }

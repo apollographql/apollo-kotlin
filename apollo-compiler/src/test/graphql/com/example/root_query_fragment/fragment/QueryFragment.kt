@@ -123,13 +123,6 @@ interface QueryFragment : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(__typename: String, hero: Hero1?): QueryFragment {
-      return DefaultImpl(
-        __typename = __typename,
-        hero = hero
-      )
-    }
-
     operator fun invoke(reader: ResponseReader): QueryFragment = DefaultImpl(reader)
   }
 }

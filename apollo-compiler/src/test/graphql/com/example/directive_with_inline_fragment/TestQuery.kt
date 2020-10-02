@@ -293,7 +293,7 @@ data class TestQuery(
   /**
    * A character from the Star Wars universe
    */
-  data class HeroImpl(
+  data class Otherhero(
     override val __typename: String = "Character",
     /**
      * The ID of the character
@@ -302,8 +302,8 @@ data class TestQuery(
   ) : Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@HeroImpl.__typename)
-        writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, this@HeroImpl.id)
+        writer.writeString(RESPONSE_FIELDS[0], this@Otherhero.__typename)
+        writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, this@Otherhero.id)
       }
     }
 
@@ -313,17 +313,17 @@ data class TestQuery(
         ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null)
       )
 
-      operator fun invoke(reader: ResponseReader): HeroImpl = reader.run {
+      operator fun invoke(reader: ResponseReader): Otherhero = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
         val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)!!
-        HeroImpl(
+        Otherhero(
           __typename = __typename,
           id = id
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<HeroImpl> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<Otherhero> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -350,7 +350,7 @@ data class TestQuery(
         return when(typename) {
           "Human" -> HumanCharacterImpl(reader)
           "Droid" -> DroidCharacterImpl(reader)
-          else -> HeroImpl(reader)
+          else -> Otherhero(reader)
         }
       }
     }

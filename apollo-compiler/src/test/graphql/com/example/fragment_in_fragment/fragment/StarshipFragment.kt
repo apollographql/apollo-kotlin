@@ -313,20 +313,6 @@ interface StarshipFragment : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(
-      __typename: String,
-      id: String,
-      name: String?,
-      pilotConnection: PilotConnection1?
-    ): StarshipFragment {
-      return DefaultImpl(
-        __typename = __typename,
-        id = id,
-        name = name,
-        pilotConnection = pilotConnection
-      )
-    }
-
     operator fun invoke(reader: ResponseReader): StarshipFragment = DefaultImpl(reader)
   }
 }

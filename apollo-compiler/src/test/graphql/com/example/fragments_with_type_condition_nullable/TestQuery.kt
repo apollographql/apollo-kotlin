@@ -112,12 +112,12 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   /**
    * A character from the Star Wars universe
    */
-  data class R2Impl(
+  data class Otherr2(
     override val __typename: String = "Character"
   ) : R2 {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@R2Impl.__typename)
+        writer.writeString(RESPONSE_FIELDS[0], this@Otherr2.__typename)
       }
     }
 
@@ -126,15 +126,15 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): R2Impl = reader.run {
+      operator fun invoke(reader: ResponseReader): Otherr2 = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
-        R2Impl(
+        Otherr2(
           __typename = __typename
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<R2Impl> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<Otherr2> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -156,7 +156,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         return when(typename) {
           "Human" -> HumanDetailsImpl(reader)
           "Droid" -> DroidDetailsImpl(reader)
-          else -> R2Impl(reader)
+          else -> Otherr2(reader)
         }
       }
     }
@@ -191,12 +191,12 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   /**
    * A character from the Star Wars universe
    */
-  data class LukeImpl(
+  data class Otherluke(
     override val __typename: String = "Character"
   ) : Luke {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@LukeImpl.__typename)
+        writer.writeString(RESPONSE_FIELDS[0], this@Otherluke.__typename)
       }
     }
 
@@ -205,15 +205,15 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): LukeImpl = reader.run {
+      operator fun invoke(reader: ResponseReader): Otherluke = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
-        LukeImpl(
+        Otherluke(
           __typename = __typename
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<LukeImpl> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<Otherluke> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -235,7 +235,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         return when(typename) {
           "Human" -> HumanDetailsImpl1(reader)
           "Droid" -> DroidDetailsImpl1(reader)
-          else -> LukeImpl(reader)
+          else -> Otherluke(reader)
         }
       }
     }

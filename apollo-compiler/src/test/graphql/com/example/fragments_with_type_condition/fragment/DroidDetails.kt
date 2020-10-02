@@ -87,18 +87,6 @@ interface DroidDetails : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(
-      __typename: String,
-      name: String,
-      primaryFunction: String?
-    ): DroidDetails {
-      return DefaultImpl(
-        __typename = __typename,
-        name = name,
-        primaryFunction = primaryFunction
-      )
-    }
-
     operator fun invoke(reader: ResponseReader): DroidDetails = DefaultImpl(reader)
   }
 }

@@ -85,17 +85,83 @@ interface HeroDetails : GraphqlFragment {
   /**
    * A character from the Star Wars universe
    */
-  data class Node1(
+  interface Node1 : Node5 {
+    override val __typename: String
+
+    /**
+     * The name of the character
+     */
+    override val name: String
+
+    override fun marshaller(): ResponseFieldMarshaller
+  }
+
+  /**
+   * An edge object for a character's friends
+   */
+  interface Edge1 : Edge5 {
+    override val __typename: String
+
+    /**
+     * The character represented by this friendship edge
+     */
+    override val node: Node1?
+
+    override fun marshaller(): ResponseFieldMarshaller
+  }
+
+  /**
+   * A connection object for a character's friends
+   */
+  interface FriendsConnection1 : FriendsConnection5 {
+    override val __typename: String
+
+    /**
+     * The total number of friends
+     */
+    override val totalCount: Int?
+
+    /**
+     * The edges for each of the character's friends.
+     */
+    override val edges: List<Edge1?>?
+
+    override fun marshaller(): ResponseFieldMarshaller
+  }
+
+  /**
+   * An autonomous mechanical character in the Star Wars universe
+   */
+  interface Droid : DefaultImpl {
+    override val __typename: String
+
+    /**
+     * What others call this droid
+     */
+    override val name: String
+
+    /**
+     * The friends of the droid exposed as a connection with edges
+     */
+    override val friendsConnection: FriendsConnection1
+
+    override fun marshaller(): ResponseFieldMarshaller
+  }
+
+  /**
+   * A character from the Star Wars universe
+   */
+  data class Node2(
     override val __typename: String = "Character",
     /**
      * The name of the character
      */
     override val name: String
-  ) : Node {
+  ) : Node1, Node5 {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Node1.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@Node1.name)
+        writer.writeString(RESPONSE_FIELDS[0], this@Node2.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@Node2.name)
       }
     }
 
@@ -105,34 +171,34 @@ interface HeroDetails : GraphqlFragment {
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Node1 = reader.run {
+      operator fun invoke(reader: ResponseReader): Node2 = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
         val name = readString(RESPONSE_FIELDS[1])!!
-        Node1(
+        Node2(
           __typename = __typename,
           name = name
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Node1> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<Node2> = ResponseFieldMapper { invoke(it) }
     }
   }
 
   /**
    * An edge object for a character's friends
    */
-  data class Edge1(
+  data class Edge2(
     override val __typename: String = "FriendsEdge",
     /**
      * The character represented by this friendship edge
      */
-    override val node: Node1?
-  ) : Edge {
+    override val node: Node2?
+  ) : Edge1, Edge5 {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Edge1.__typename)
-        writer.writeObject(RESPONSE_FIELDS[1], this@Edge1.node?.marshaller())
+        writer.writeString(RESPONSE_FIELDS[0], this@Edge2.__typename)
+        writer.writeObject(RESPONSE_FIELDS[1], this@Edge2.node?.marshaller())
       }
     }
 
@@ -142,26 +208,26 @@ interface HeroDetails : GraphqlFragment {
         ResponseField.forObject("node", "node", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Edge1 = reader.run {
+      operator fun invoke(reader: ResponseReader): Edge2 = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
-        val node = readObject<Node1>(RESPONSE_FIELDS[1]) { reader ->
-          Node1(reader)
+        val node = readObject<Node2>(RESPONSE_FIELDS[1]) { reader ->
+          Node2(reader)
         }
-        Edge1(
+        Edge2(
           __typename = __typename,
           node = node
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Edge1> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<Edge2> = ResponseFieldMapper { invoke(it) }
     }
   }
 
   /**
    * A connection object for a character's friends
    */
-  data class FriendsConnection1(
+  data class FriendsConnection2(
     override val __typename: String = "FriendsConnection",
     /**
      * The total number of friends
@@ -170,14 +236,14 @@ interface HeroDetails : GraphqlFragment {
     /**
      * The edges for each of the character's friends.
      */
-    override val edges: List<Edge1?>?
-  ) : FriendsConnection {
+    override val edges: List<Edge2?>?
+  ) : FriendsConnection1, FriendsConnection5 {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@FriendsConnection1.__typename)
-        writer.writeInt(RESPONSE_FIELDS[1], this@FriendsConnection1.totalCount)
+        writer.writeString(RESPONSE_FIELDS[0], this@FriendsConnection2.__typename)
+        writer.writeInt(RESPONSE_FIELDS[1], this@FriendsConnection2.totalCount)
         writer.writeList(RESPONSE_FIELDS[2],
-            this@FriendsConnection1.edges) { value, listItemWriter ->
+            this@FriendsConnection2.edges) { value, listItemWriter ->
           value?.forEach { value ->
             listItemWriter.writeObject(value?.marshaller())}
         }
@@ -191,15 +257,15 @@ interface HeroDetails : GraphqlFragment {
         ResponseField.forList("edges", "edges", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): FriendsConnection1 = reader.run {
+      operator fun invoke(reader: ResponseReader): FriendsConnection2 = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
         val totalCount = readInt(RESPONSE_FIELDS[1])
-        val edges = readList<Edge1>(RESPONSE_FIELDS[2]) { reader ->
-          reader.readObject<Edge1> { reader ->
-            Edge1(reader)
+        val edges = readList<Edge2>(RESPONSE_FIELDS[2]) { reader ->
+          reader.readObject<Edge2> { reader ->
+            Edge2(reader)
           }
         }
-        FriendsConnection1(
+        FriendsConnection2(
           __typename = __typename,
           totalCount = totalCount,
           edges = edges
@@ -207,29 +273,211 @@ interface HeroDetails : GraphqlFragment {
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<FriendsConnection1> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<FriendsConnection2> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  data class DroidDroidDetailsImpl(
+    override val __typename: String,
+    /**
+     * What others call this droid
+     */
+    override val name: String,
+    /**
+     * The friends of the droid exposed as a connection with edges
+     */
+    override val friendsConnection: FriendsConnection2,
+    /**
+     * This droid's primary function
+     */
+    override val primaryFunction: String?
+  ) : Droid, DroidDetails, DefaultImpl {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@DroidDroidDetailsImpl.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@DroidDroidDetailsImpl.name)
+        writer.writeObject(RESPONSE_FIELDS[2],
+            this@DroidDroidDetailsImpl.friendsConnection.marshaller())
+        writer.writeString(RESPONSE_FIELDS[3], this@DroidDroidDetailsImpl.primaryFunction)
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null),
+        ResponseField.forString("primaryFunction", "primaryFunction", null, true, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): DroidDroidDetailsImpl = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
+        val friendsConnection = readObject<FriendsConnection2>(RESPONSE_FIELDS[2]) { reader ->
+          FriendsConnection2(reader)
+        }!!
+        val primaryFunction = readString(RESPONSE_FIELDS[3])
+        DroidDroidDetailsImpl(
+          __typename = __typename,
+          name = name,
+          friendsConnection = friendsConnection,
+          primaryFunction = primaryFunction
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<DroidDroidDetailsImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 
   /**
    * A character from the Star Wars universe
    */
-  data class DefaultImpl(
+  data class Node3(
     override val __typename: String = "Character",
     /**
      * The name of the character
+     */
+    override val name: String
+  ) : Node5 {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@Node3.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@Node3.name)
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("name", "name", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): Node3 = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
+        Node3(
+          __typename = __typename,
+          name = name
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Node3> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
+   * An edge object for a character's friends
+   */
+  data class Edge3(
+    override val __typename: String = "FriendsEdge",
+    /**
+     * The character represented by this friendship edge
+     */
+    override val node: Node3?
+  ) : Edge5 {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@Edge3.__typename)
+        writer.writeObject(RESPONSE_FIELDS[1], this@Edge3.node?.marshaller())
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forObject("node", "node", null, true, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): Edge3 = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val node = readObject<Node3>(RESPONSE_FIELDS[1]) { reader ->
+          Node3(reader)
+        }
+        Edge3(
+          __typename = __typename,
+          node = node
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Edge3> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
+   * A connection object for a character's friends
+   */
+  data class FriendsConnection3(
+    override val __typename: String = "FriendsConnection",
+    /**
+     * The total number of friends
+     */
+    override val totalCount: Int?,
+    /**
+     * The edges for each of the character's friends.
+     */
+    override val edges: List<Edge3?>?
+  ) : FriendsConnection5 {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@FriendsConnection3.__typename)
+        writer.writeInt(RESPONSE_FIELDS[1], this@FriendsConnection3.totalCount)
+        writer.writeList(RESPONSE_FIELDS[2],
+            this@FriendsConnection3.edges) { value, listItemWriter ->
+          value?.forEach { value ->
+            listItemWriter.writeObject(value?.marshaller())}
+        }
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forInt("totalCount", "totalCount", null, true, null),
+        ResponseField.forList("edges", "edges", null, true, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): FriendsConnection3 = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val totalCount = readInt(RESPONSE_FIELDS[1])
+        val edges = readList<Edge3>(RESPONSE_FIELDS[2]) { reader ->
+          reader.readObject<Edge3> { reader ->
+            Edge3(reader)
+          }
+        }
+        FriendsConnection3(
+          __typename = __typename,
+          totalCount = totalCount,
+          edges = edges
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<FriendsConnection3> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
+   * A humanoid creature from the Star Wars universe
+   */
+  data class HumanDetailsImpl(
+    override val __typename: String = "Human",
+    /**
+     * What this human calls themselves
      */
     override val name: String,
     /**
      * The friends of the character exposed as a connection with edges
      */
-    override val friendsConnection: FriendsConnection1
-  ) : HeroDetails {
+    override val friendsConnection: FriendsConnection3
+  ) : DefaultImpl, HumanDetails {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@DefaultImpl.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@DefaultImpl.name)
-        writer.writeObject(RESPONSE_FIELDS[2], this@DefaultImpl.friendsConnection.marshaller())
+        writer.writeString(RESPONSE_FIELDS[0], this@HumanDetailsImpl.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@HumanDetailsImpl.name)
+        writer.writeObject(RESPONSE_FIELDS[2], this@HumanDetailsImpl.friendsConnection.marshaller())
       }
     }
 
@@ -240,13 +488,13 @@ interface HeroDetails : GraphqlFragment {
         ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): DefaultImpl = reader.run {
+      operator fun invoke(reader: ResponseReader): HumanDetailsImpl = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
         val name = readString(RESPONSE_FIELDS[1])!!
-        val friendsConnection = readObject<FriendsConnection1>(RESPONSE_FIELDS[2]) { reader ->
-          FriendsConnection1(reader)
+        val friendsConnection = readObject<FriendsConnection3>(RESPONSE_FIELDS[2]) { reader ->
+          FriendsConnection3(reader)
         }!!
-        DefaultImpl(
+        HumanDetailsImpl(
           __typename = __typename,
           name = name,
           friendsConnection = friendsConnection
@@ -254,7 +502,264 @@ interface HeroDetails : GraphqlFragment {
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<DefaultImpl> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<HumanDetailsImpl> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
+   * A character from the Star Wars universe
+   */
+  data class Node4(
+    override val __typename: String = "Character",
+    /**
+     * The name of the character
+     */
+    override val name: String
+  ) : Node, Node5 {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@Node4.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@Node4.name)
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("name", "name", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): Node4 = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
+        Node4(
+          __typename = __typename,
+          name = name
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Node4> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
+   * An edge object for a character's friends
+   */
+  data class Edge4(
+    override val __typename: String = "FriendsEdge",
+    /**
+     * The character represented by this friendship edge
+     */
+    override val node: Node4?
+  ) : Edge, Edge5 {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@Edge4.__typename)
+        writer.writeObject(RESPONSE_FIELDS[1], this@Edge4.node?.marshaller())
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forObject("node", "node", null, true, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): Edge4 = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val node = readObject<Node4>(RESPONSE_FIELDS[1]) { reader ->
+          Node4(reader)
+        }
+        Edge4(
+          __typename = __typename,
+          node = node
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Edge4> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
+   * A connection object for a character's friends
+   */
+  data class FriendsConnection4(
+    override val __typename: String = "FriendsConnection",
+    /**
+     * The total number of friends
+     */
+    override val totalCount: Int?,
+    /**
+     * The edges for each of the character's friends.
+     */
+    override val edges: List<Edge4?>?
+  ) : FriendsConnection, FriendsConnection5 {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@FriendsConnection4.__typename)
+        writer.writeInt(RESPONSE_FIELDS[1], this@FriendsConnection4.totalCount)
+        writer.writeList(RESPONSE_FIELDS[2],
+            this@FriendsConnection4.edges) { value, listItemWriter ->
+          value?.forEach { value ->
+            listItemWriter.writeObject(value?.marshaller())}
+        }
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forInt("totalCount", "totalCount", null, true, null),
+        ResponseField.forList("edges", "edges", null, true, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): FriendsConnection4 = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val totalCount = readInt(RESPONSE_FIELDS[1])
+        val edges = readList<Edge4>(RESPONSE_FIELDS[2]) { reader ->
+          reader.readObject<Edge4> { reader ->
+            Edge4(reader)
+          }
+        }
+        FriendsConnection4(
+          __typename = __typename,
+          totalCount = totalCount,
+          edges = edges
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<FriendsConnection4> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
+   * A character from the Star Wars universe
+   */
+  data class OtherDefaultImpl(
+    override val __typename: String = "Character",
+    /**
+     * The name of the character
+     */
+    override val name: String,
+    /**
+     * The friends of the character exposed as a connection with edges
+     */
+    override val friendsConnection: FriendsConnection4
+  ) : HeroDetails, DefaultImpl {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@OtherDefaultImpl.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@OtherDefaultImpl.name)
+        writer.writeObject(RESPONSE_FIELDS[2], this@OtherDefaultImpl.friendsConnection.marshaller())
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): OtherDefaultImpl = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
+        val friendsConnection = readObject<FriendsConnection4>(RESPONSE_FIELDS[2]) { reader ->
+          FriendsConnection4(reader)
+        }!!
+        OtherDefaultImpl(
+          __typename = __typename,
+          name = name,
+          friendsConnection = friendsConnection
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<OtherDefaultImpl> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
+   * A character from the Star Wars universe
+   */
+  interface Node5 : Node {
+    override val __typename: String
+
+    /**
+     * The name of the character
+     */
+    override val name: String
+
+    override fun marshaller(): ResponseFieldMarshaller
+  }
+
+  /**
+   * An edge object for a character's friends
+   */
+  interface Edge5 : Edge {
+    override val __typename: String
+
+    /**
+     * The character represented by this friendship edge
+     */
+    override val node: Node5?
+
+    override fun marshaller(): ResponseFieldMarshaller
+  }
+
+  /**
+   * A connection object for a character's friends
+   */
+  interface FriendsConnection5 : FriendsConnection {
+    override val __typename: String
+
+    /**
+     * The total number of friends
+     */
+    override val totalCount: Int?
+
+    /**
+     * The edges for each of the character's friends.
+     */
+    override val edges: List<Edge5?>?
+
+    override fun marshaller(): ResponseFieldMarshaller
+  }
+
+  /**
+   * A character from the Star Wars universe
+   */
+  interface DefaultImpl : HeroDetails {
+    override val __typename: String
+
+    /**
+     * The name of the character
+     */
+    override val name: String
+
+    /**
+     * The friends of the character exposed as a connection with edges
+     */
+    override val friendsConnection: FriendsConnection5
+
+    override fun marshaller(): ResponseFieldMarshaller
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): DefaultImpl {
+        val typename = reader.readString(RESPONSE_FIELDS[0])
+        return when(typename) {
+          "Droid" -> DroidDroidDetailsImpl(reader)
+          "Human" -> HumanDetailsImpl(reader)
+          else -> OtherDefaultImpl(reader)
+        }
+      }
     }
   }
 
@@ -280,18 +785,6 @@ interface HeroDetails : GraphqlFragment {
         |  }
         |}
         """.trimMargin()
-
-    operator fun invoke(
-      __typename: String,
-      name: String,
-      friendsConnection: FriendsConnection1
-    ): HeroDetails {
-      return DefaultImpl(
-        __typename = __typename,
-        name = name,
-        friendsConnection = friendsConnection
-      )
-    }
 
     operator fun invoke(reader: ResponseReader): HeroDetails = DefaultImpl(reader)
   }

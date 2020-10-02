@@ -285,7 +285,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   /**
    * A character from the Star Wars universe
    */
-  data class FriendImpl(
+  data class Otherfriend(
     override val __typename: String = "Character",
     /**
      * The name of the character
@@ -294,8 +294,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   ) : Friend {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@FriendImpl.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@FriendImpl.name)
+        writer.writeString(RESPONSE_FIELDS[0], this@Otherfriend.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@Otherfriend.name)
       }
     }
 
@@ -305,17 +305,17 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): FriendImpl = reader.run {
+      operator fun invoke(reader: ResponseReader): Otherfriend = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
         val name = readString(RESPONSE_FIELDS[1])!!
-        FriendImpl(
+        Otherfriend(
           __typename = __typename,
           name = name
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<FriendImpl> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<Otherfriend> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -342,7 +342,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         return when(typename) {
           "Human" -> Human(reader)
           "Droid" -> Droid(reader)
-          else -> FriendImpl(reader)
+          else -> Otherfriend(reader)
         }
       }
     }
@@ -445,12 +445,12 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
   }
 
-  data class SearchImpl(
+  data class Othersearch(
     override val __typename: String = "SearchResult"
   ) : Search {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@SearchImpl.__typename)
+        writer.writeString(RESPONSE_FIELDS[0], this@Othersearch.__typename)
       }
     }
 
@@ -459,15 +459,15 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): SearchImpl = reader.run {
+      operator fun invoke(reader: ResponseReader): Othersearch = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
-        SearchImpl(
+        Othersearch(
           __typename = __typename
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<SearchImpl> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<Othersearch> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -487,7 +487,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           "Droid" -> CharacterImpl(reader)
           "Human" -> CharacterImpl(reader)
           "Starship" -> Starship(reader)
-          else -> SearchImpl(reader)
+          else -> Othersearch(reader)
         }
       }
     }

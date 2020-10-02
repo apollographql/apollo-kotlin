@@ -277,18 +277,6 @@ interface HeroDetails : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(
-      __typename: String,
-      name: String,
-      friendsConnection: FriendsConnection1
-    ): HeroDetails {
-      return DefaultImpl(
-        __typename = __typename,
-        name = name,
-        friendsConnection = friendsConnection
-      )
-    }
-
     operator fun invoke(reader: ResponseReader): HeroDetails = DefaultImpl(reader)
   }
 }

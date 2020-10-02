@@ -88,18 +88,6 @@ interface Character : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(
-      __typename: String,
-      id: String,
-      name: String
-    ): Character {
-      return DefaultImpl(
-        __typename = __typename,
-        id = id,
-        name = name
-      )
-    }
-
     operator fun invoke(reader: ResponseReader): Character = DefaultImpl(reader)
   }
 }

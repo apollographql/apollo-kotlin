@@ -140,18 +140,6 @@ interface PilotFragment : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(
-      __typename: String,
-      name: String?,
-      homeworld: Homeworld1?
-    ): PilotFragment {
-      return DefaultImpl(
-        __typename = __typename,
-        name = name,
-        homeworld = homeworld
-      )
-    }
-
     operator fun invoke(reader: ResponseReader): PilotFragment = DefaultImpl(reader)
   }
 }

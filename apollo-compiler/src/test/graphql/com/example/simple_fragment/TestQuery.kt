@@ -103,7 +103,7 @@ internal class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Varia
   data class HeroDetailsHumanDetailsImpl(
     override val __typename: String,
     /**
-     * The name of the character
+     * What this human calls themselves
      */
     override val name: String
   ) : HeroDetails, HumanDetails, Hero {
@@ -138,12 +138,12 @@ internal class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Varia
   /**
    * A character from the Star Wars universe
    */
-  data class HeroImpl(
+  data class Otherhero(
     override val __typename: String = "Character"
   ) : Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@HeroImpl.__typename)
+        writer.writeString(RESPONSE_FIELDS[0], this@Otherhero.__typename)
       }
     }
 
@@ -152,15 +152,15 @@ internal class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Varia
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): HeroImpl = reader.run {
+      operator fun invoke(reader: ResponseReader): Otherhero = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
-        HeroImpl(
+        Otherhero(
           __typename = __typename
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<HeroImpl> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<Otherhero> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -182,7 +182,7 @@ internal class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Varia
         return when(typename) {
           "Droid" -> HeroDetailsImpl(reader)
           "Human" -> HeroDetailsHumanDetailsImpl(reader)
-          else -> HeroImpl(reader)
+          else -> Otherhero(reader)
         }
       }
     }
@@ -221,7 +221,7 @@ internal class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Varia
 
   companion object {
     const val OPERATION_ID: String =
-        "11b6156b253df199195798f2de386724580e3882c9888f7e5d1685c42b64e0cf"
+        "95135aa737d9042a7c2cc9351f54a92e59d89636a90762022269c562078efb65"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -234,7 +234,6 @@ internal class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Varia
           |}
           |fragment HeroDetails on Character {
           |  __typename
-          |  name
           |  ... HumanDetails
           |}
           |fragment HumanDetails on Human {

@@ -337,7 +337,7 @@ private class CodeGenerationAstBuilder(
   ): CodeGenerationAst.FragmentType {
     val nestedTypeContainer = ObjectTypeContainerBuilder(packageName = fragmentsPackage)
     val rootType = nestedTypeContainer.registerObjectType(typeName = fragmentName, enclosingType = null) { typeRef ->
-      ObjectTypeBuilder(
+      val objectTypeBuilder = ObjectTypeBuilder(
           schema = schema,
           customTypes = customTypes,
           typesPackageName = typesPackageName,
@@ -345,29 +345,45 @@ private class CodeGenerationAstBuilder(
           irFragments = irFragments.associateBy { it.fragmentName },
           nestedTypeContainer = nestedTypeContainer,
           enclosingType = typeRef
-      ).buildObjectType(
+      )
+      objectTypeBuilder.buildObjectType(
           typeRef = typeRef,
           schemaType = schema.resolveType(schema.resolveType(typeCondition)),
           fields = fields,
           abstract = true
       )
     }
-    val defaultImplementation = nestedTypeContainer.registerObjectType(
-        typeName = "DefaultImpl",
+
+    val objectTypeBuilder = ObjectTypeBuilder(
+        schema = schema,
+        customTypes = customTypes,
+        typesPackageName = typesPackageName,
+        fragmentsPackage = fragmentsPackage,
+        irFragments = irFragments.associateBy { it.fragmentName },
+        nestedTypeContainer = nestedTypeContainer,
         enclosingType = rootType
-    ) { typeRef ->
-      ObjectTypeBuilder(
-          schema = schema,
-          customTypes = customTypes,
-          typesPackageName = typesPackageName,
-          fragmentsPackage = fragmentsPackage,
-          irFragments = irFragments.associateBy { it.fragmentName },
-          nestedTypeContainer = nestedTypeContainer,
+    )
+    val defaultImplementationType = if (inlineFragments.isEmpty() && fragmentRefs.isEmpty()) {
+      nestedTypeContainer.registerObjectType(
+          typeName = "DefaultImpl",
           enclosingType = rootType
-      ).buildObjectType(
-          typeRef = typeRef,
+      ) { typeRef ->
+        objectTypeBuilder.buildObjectType(
+            typeRef = typeRef,
+            schemaType = schema.resolveType(schema.resolveType(typeCondition)),
+            fields = fields,
+            abstract = false,
+            implements = setOf(rootType)
+        )
+      }
+    } else {
+      objectTypeBuilder.buildObjectTypeWithFragments(
           schemaType = schema.resolveType(schema.resolveType(typeCondition)),
+          typeName = "DefaultImpl",
           fields = fields,
+          inlineFragments = inlineFragments,
+          fragmentRefs = fragmentRefs,
+          singularizeName = false,
           abstract = false,
           implements = setOf(rootType)
       )
@@ -375,7 +391,7 @@ private class CodeGenerationAstBuilder(
     return CodeGenerationAst.FragmentType(
         graphqlName = fragmentName,
         rootType = rootType,
-        defaultImplementation = defaultImplementation,
+        defaultImplementation = defaultImplementationType,
         nestedTypes = nestedTypeContainer.typeContainer,
         fragmentDefinition = source
     )

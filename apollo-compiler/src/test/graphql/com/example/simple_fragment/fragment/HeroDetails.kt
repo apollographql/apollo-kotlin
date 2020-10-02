@@ -24,44 +24,67 @@ internal interface HeroDetails : GraphqlFragment {
   val __typename: String
 
   /**
-   * The name of the character
+   * A humanoid creature from the Star Wars universe
    */
-  val name: String
+  data class HumanDetailsImpl(
+    val humanDetailsDelegate: HumanDetails
+  ) : DefaultImpl, HumanDetails by humanDetailsDelegate {
+    companion object {
+      operator fun invoke(reader: ResponseReader): HumanDetailsImpl {
+        return HumanDetailsImpl(HumanDetails(reader))
+      }
+    }
+  }
 
   /**
    * A character from the Star Wars universe
    */
-  data class DefaultImpl(
-    override val __typename: String = "Character",
-    /**
-     * The name of the character
-     */
-    override val name: String
-  ) : HeroDetails {
+  data class OtherDefaultImpl(
+    override val __typename: String = "Character"
+  ) : HeroDetails, DefaultImpl {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@DefaultImpl.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@DefaultImpl.name)
+        writer.writeString(RESPONSE_FIELDS[0], this@OtherDefaultImpl.__typename)
       }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null)
+        ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): DefaultImpl = reader.run {
+      operator fun invoke(reader: ResponseReader): OtherDefaultImpl = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        DefaultImpl(
-          __typename = __typename,
-          name = name
+        OtherDefaultImpl(
+          __typename = __typename
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<DefaultImpl> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<OtherDefaultImpl> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
+   * A character from the Star Wars universe
+   */
+  interface DefaultImpl : HeroDetails {
+    override val __typename: String
+
+    override fun marshaller(): ResponseFieldMarshaller
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): DefaultImpl {
+        val typename = reader.readString(RESPONSE_FIELDS[0])
+        return when(typename) {
+          "Human" -> HumanDetailsImpl(reader)
+          else -> OtherDefaultImpl(reader)
+        }
+      }
     }
   }
 
@@ -69,17 +92,9 @@ internal interface HeroDetails : GraphqlFragment {
     val FRAGMENT_DEFINITION: String = """
         |fragment HeroDetails on Character {
         |  __typename
-        |  name
         |  ... HumanDetails
         |}
         """.trimMargin()
-
-    operator fun invoke(__typename: String, name: String): HeroDetails {
-      return DefaultImpl(
-        __typename = __typename,
-        name = name
-      )
-    }
 
     operator fun invoke(reader: ResponseReader): HeroDetails = DefaultImpl(reader)
   }

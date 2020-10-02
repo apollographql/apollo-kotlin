@@ -280,20 +280,6 @@ interface HumanDetails : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(
-      __typename: String,
-      name: String,
-      profileLink: Any,
-      friendsConnection: FriendsConnection1
-    ): HumanDetails {
-      return DefaultImpl(
-        __typename = __typename,
-        name = name,
-        profileLink = profileLink,
-        friendsConnection = friendsConnection
-      )
-    }
-
     operator fun invoke(reader: ResponseReader): HumanDetails = DefaultImpl(reader)
   }
 }
