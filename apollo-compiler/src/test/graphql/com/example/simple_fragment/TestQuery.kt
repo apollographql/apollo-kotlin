@@ -138,12 +138,12 @@ internal class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Varia
   /**
    * A character from the Star Wars universe
    */
-  data class Otherhero(
+  data class OtherHero(
     override val __typename: String = "Character"
   ) : Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Otherhero.__typename)
+        writer.writeString(RESPONSE_FIELDS[0], this@OtherHero.__typename)
       }
     }
 
@@ -152,15 +152,15 @@ internal class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Varia
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Otherhero = reader.run {
+      operator fun invoke(reader: ResponseReader): OtherHero = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
-        Otherhero(
+        OtherHero(
           __typename = __typename
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Otherhero> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<OtherHero> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -182,7 +182,7 @@ internal class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Varia
         return when(typename) {
           "Droid" -> HeroDetailsImpl(reader)
           "Human" -> HeroDetailsHumanDetailsImpl(reader)
-          else -> Otherhero(reader)
+          else -> OtherHero(reader)
         }
       }
     }

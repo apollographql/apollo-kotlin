@@ -123,14 +123,14 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   /**
    * For testing fragment type coercion
    */
-  data class Otherfoo(
+  data class OtherFoo(
     override val __typename: String = "Foo",
     override val foo: String
   ) : Foo {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Otherfoo.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@Otherfoo.foo)
+        writer.writeString(RESPONSE_FIELDS[0], this@OtherFoo.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@OtherFoo.foo)
       }
     }
 
@@ -140,17 +140,17 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("foo", "foo", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Otherfoo = reader.run {
+      operator fun invoke(reader: ResponseReader): OtherFoo = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
         val foo = readString(RESPONSE_FIELDS[1])!!
-        Otherfoo(
+        OtherFoo(
           __typename = __typename,
           foo = foo
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Otherfoo> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<OtherFoo> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -174,7 +174,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         return when(typename) {
           "BarObject" -> BarImpl(reader)
           "FooBar" -> BarImpl(reader)
-          else -> Otherfoo(reader)
+          else -> OtherFoo(reader)
         }
       }
     }

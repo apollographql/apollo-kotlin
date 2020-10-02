@@ -551,7 +551,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   /**
    * A character from the Star Wars universe
    */
-  data class Otherhero(
+  data class OtherHero(
     override val __typename: String = "Character",
     /**
      * The name of the character
@@ -564,9 +564,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   ) : Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Otherhero.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@Otherhero.name)
-        writer.writeList(RESPONSE_FIELDS[2], this@Otherhero.appearsIn) { value, listItemWriter ->
+        writer.writeString(RESPONSE_FIELDS[0], this@OtherHero.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@OtherHero.name)
+        writer.writeList(RESPONSE_FIELDS[2], this@OtherHero.appearsIn) { value, listItemWriter ->
           value?.forEach { value ->
             listItemWriter.writeString(value?.rawValue)}
         }
@@ -582,13 +582,13 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forList("appearsIn", "appearsIn", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Otherhero = reader.run {
+      operator fun invoke(reader: ResponseReader): OtherHero = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
         val name = readString(RESPONSE_FIELDS[1])!!
         val appearsIn = readList<Episode>(RESPONSE_FIELDS[2]) { reader ->
           Episode.safeValueOf(reader.readString())
         }!!
-        Otherhero(
+        OtherHero(
           __typename = __typename,
           name = name,
           appearsIn = appearsIn
@@ -596,7 +596,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Otherhero> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<OtherHero> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -628,7 +628,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         return when(typename) {
           "Droid" -> HeroDetailsDroidDroidDetailsImpl(reader)
           "Human" -> HeroDetailsHumanDetailsImpl(reader)
-          else -> Otherhero(reader)
+          else -> OtherHero(reader)
         }
       }
     }

@@ -107,12 +107,12 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
   }
 
-  data class Othersearch(
+  data class OtherSearch(
     override val __typename: String = "SearchResult"
   ) : Search {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Othersearch.__typename)
+        writer.writeString(RESPONSE_FIELDS[0], this@OtherSearch.__typename)
       }
     }
 
@@ -121,15 +121,15 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Othersearch = reader.run {
+      operator fun invoke(reader: ResponseReader): OtherSearch = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
-        Othersearch(
+        OtherSearch(
           __typename = __typename
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Othersearch> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<OtherSearch> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -149,7 +149,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           "Droid" -> CharacterImpl(reader)
           "Human" -> CharacterImpl(reader)
           "Starship" -> StarshipImpl(reader)
-          else -> Othersearch(reader)
+          else -> OtherSearch(reader)
         }
       }
     }

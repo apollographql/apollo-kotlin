@@ -165,12 +165,12 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
   }
 
-  data class Otherobject(
+  data class OtherObject(
     override val __typename: String = "SearchResult"
   ) : Object {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Otherobject.__typename)
+        writer.writeString(RESPONSE_FIELDS[0], this@OtherObject.__typename)
       }
     }
 
@@ -179,15 +179,15 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Otherobject = reader.run {
+      operator fun invoke(reader: ResponseReader): OtherObject = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
-        Otherobject(
+        OtherObject(
           __typename = __typename
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Otherobject> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<OtherObject> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -206,7 +206,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         return when(typename) {
           "Droid" -> CharacterImpl(reader)
           "Human" -> CharacterImpl(reader)
-          else -> Otherobject(reader)
+          else -> OtherObject(reader)
         }
       }
     }

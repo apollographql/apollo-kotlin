@@ -103,7 +103,7 @@ internal class ObjectTypeBuilder(
               rootFragmentInterfaceFields = fields
           )
           val defaultImplementationType = buildObjectType(
-              name = "Other${typeName.singularize()}",
+              name = "Other${typeName.singularize().capitalize()}",
               schemaType = schemaType,
               fields = fields,
               abstract = false,

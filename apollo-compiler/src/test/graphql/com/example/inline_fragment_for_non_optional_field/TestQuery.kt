@@ -130,7 +130,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   /**
    * A character from the Star Wars universe
    */
-  data class OthernonOptionalHero(
+  data class OtherNonOptionalHero(
     override val __typename: String = "Character",
     /**
      * The name of the character
@@ -139,8 +139,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   ) : NonOptionalHero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@OthernonOptionalHero.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@OthernonOptionalHero.name)
+        writer.writeString(RESPONSE_FIELDS[0], this@OtherNonOptionalHero.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@OtherNonOptionalHero.name)
       }
     }
 
@@ -150,17 +150,17 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): OthernonOptionalHero = reader.run {
+      operator fun invoke(reader: ResponseReader): OtherNonOptionalHero = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
         val name = readString(RESPONSE_FIELDS[1])!!
-        OthernonOptionalHero(
+        OtherNonOptionalHero(
           __typename = __typename,
           name = name
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<OthernonOptionalHero> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<OtherNonOptionalHero> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -186,7 +186,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         val typename = reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
           "Human" -> Human(reader)
-          else -> OthernonOptionalHero(reader)
+          else -> OtherNonOptionalHero(reader)
         }
       }
     }
