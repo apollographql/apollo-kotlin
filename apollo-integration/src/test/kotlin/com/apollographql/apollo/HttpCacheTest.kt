@@ -265,7 +265,7 @@ class HttpCacheTest {
         .query(AllPlanetsQuery()))
         .test()
     checkCachedResponse("/HttpCacheTestAllPlanets.json")
-    cacheStore!!.delegate.delete()
+    cacheStore!!.delegate?.delete()
     enqueueResponse("/HttpCacheTestAllPlanets.json")
     Rx2Apollo.from(apolloClient
         .query(AllPlanetsQuery())
