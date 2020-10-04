@@ -193,7 +193,7 @@ class NormalizedCacheTestCase {
     ) { response ->
       assertThat(response.hasErrors()).isFalse()
       assertThat(response.data!!.hero).isInstanceOf(HeroTypeDependentAliasedFieldQuery.Droid::class.java)
-      assertThat((response.data!!.hero as HeroTypeDependentAliasedFieldQuery.Droid?).property).isEqualTo("Astromech")
+      assertThat((response.data!!.hero as HeroTypeDependentAliasedFieldQuery.Droid?)?.property).isEqualTo("Astromech")
       true
     }
     server.enqueue(mockResponse("HeroTypeDependentAliasedFieldResponseHuman.json"))
@@ -257,7 +257,7 @@ class NormalizedCacheTestCase {
     assertResponse(
         apolloClient!!.query(CharacterDetailsQuery("1002")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
         Predicate<Response<CharacterDetailsQuery.Data?>> { (_, data) ->
-          Truth.assertThat(data).isNull()
+          assertThat(data).isNull()
           true
         }
     )
@@ -584,7 +584,7 @@ class NormalizedCacheTestCase {
         }
     )
     assertResponse(
-        apolloClient.query<D, T, V>(HeroAndFriendsDirectivesQuery.builder().episode(Episode.JEDI).includeName(true).skipFriends(true).build()).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
+        apolloClient.query(HeroAndFriendsDirectivesQuery( episode = Input.fromNullable(Episode.JEDI), includeName = true, skipFriends = true)).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
         Predicate<Response<HeroAndFriendsDirectivesQuery.Data>> { (_, data) ->
           assertThat(data!!.hero?.name).isEqualTo("R2-D2")
           assertThat(data!!.hero?.friends).isNull()
@@ -599,11 +599,11 @@ class NormalizedCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "HeroNameResponse.json",
-        apolloClient.query<D, T, V>(HeroAndFriendsDirectivesQuery.builder().episode(Episode.JEDI).includeName(true).skipFriends(true).build()),
+        apolloClient.query(HeroAndFriendsDirectivesQuery(episode = Input.fromNullable(Episode.JEDI), includeName = true, skipFriends = true)),
         Predicate<Response<HeroAndFriendsDirectivesQuery.Data?>> { response -> !response.hasErrors() }
     )
     assertResponse(
-        apolloClient.query<D, T, V>(HeroAndFriendsDirectivesQuery.builder().episode(Episode.JEDI).includeName(true).skipFriends(true).build()).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
+        apolloClient.query(HeroAndFriendsDirectivesQuery(episode = Input.fromNullable(Episode.JEDI), includeName = true, skipFriends = true)).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
         Predicate<Response<HeroAndFriendsDirectivesQuery.Data>> { (_, data) ->
           assertThat(data!!.hero?.name).isEqualTo("R2-D2")
           assertThat(data!!.hero?.friends).isNull()
@@ -611,9 +611,9 @@ class NormalizedCacheTestCase {
         }
     )
     assertResponse(
-        apolloClient.query<D, T, V>(HeroAndFriendsDirectivesQuery.builder().episode(Episode.JEDI).includeName(true).skipFriends(false).build()).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
+        apolloClient.query(HeroAndFriendsDirectivesQuery( episode = Input.fromNullable(Episode.JEDI), includeName = true, skipFriends = false)).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
         Predicate<Response<HeroAndFriendsDirectivesQuery.Data?>> { (_, data) ->
-          Truth.assertThat(data).isNull()
+          assertThat(data).isNull()
           true
         }
     )
