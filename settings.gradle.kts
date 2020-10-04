@@ -14,3 +14,5 @@ include("apollo-normalized-cache-api")
 include("apollo-runtime-kotlin")
 
 include("apollo-normalized-cache-sqlite")
+include("apollo-idling-resource")
+include("apollo-android-support")

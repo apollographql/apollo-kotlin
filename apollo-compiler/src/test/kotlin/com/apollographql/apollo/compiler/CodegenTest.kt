@@ -71,30 +71,10 @@ class CodegenTest(private val folder: File) {
       } else {
         emptyMap()
       }
-      val nullableValueType = when (folder.name) {
-        "hero_details_guava" -> NullableValueType.GUAVA_OPTIONAL
-        "hero_details_java_optional" -> NullableValueType.JAVA_OPTIONAL
-        "fragments_with_type_condition_nullable" -> NullableValueType.ANNOTATED
-        "hero_details_nullable" -> NullableValueType.ANNOTATED
-        "union_fragment" -> NullableValueType.ANNOTATED
-        else -> NullableValueType.APOLLO_OPTIONAL
-      }
       val useSemanticNaming = when (folder.name) {
         "hero_details_semantic_naming" -> true
         "mutation_create_review_semantic_naming" -> true
         else -> false
-      }
-      val generateModelBuilder = when (folder.name) {
-        "fragment_with_inline_fragment" -> true
-        else -> false
-      }
-      val suppressRawTypesWarning = when (folder.name) {
-        "custom_scalar_type_warnings" -> true
-        else -> false
-      }
-      val generateVisitorForPolymorphicDatatypes = when (folder.name) {
-        "java_beans_semantic_naming" -> false
-        else -> true
       }
       val generateAsInternal = when (folder.name) {
         "mutation_create_review", "simple_fragment" -> true
@@ -133,12 +113,7 @@ class CodegenTest(private val folder: File) {
           operationOutputGenerator = operationOutputGenerator,
           customTypeMap = customTypeMap,
           generateKotlinModels = true,
-          nullableValueType = nullableValueType,
           useSemanticNaming = useSemanticNaming,
-          generateModelBuilder = generateModelBuilder,
-          useJavaBeansSemanticNaming = false,
-          suppressRawTypesWarning = suppressRawTypesWarning,
-          generateVisitorForPolymorphicDatatypes = generateVisitorForPolymorphicDatatypes,
           generateAsInternal = generateAsInternal,
           kotlinMultiPlatformProject = true,
           enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters,

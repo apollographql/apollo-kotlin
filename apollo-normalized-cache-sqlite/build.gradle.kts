@@ -1,6 +1,5 @@
 plugins {
-  //id("com.android.library")
-  `java-library`
+  id("com.android.library")
   kotlin("multiplatform")
   id("com.squareup.sqldelight")
 }
@@ -29,9 +28,9 @@ kotlin {
     }
   }
 
-//  android {
-//    publishAllLibraryVariants()
-//  }
+  android {
+    publishAllLibraryVariants()
+  }
   jvm()
 
   sourceSets {
@@ -49,14 +48,14 @@ kotlin {
       }
     }
 
-//    val androidMain by getting {
-//      dependsOn(commonMain)
-//      dependencies {
-//        api(groovy.util.Eval.x(project, "x.dep.androidx.sqlite"))
-//        implementation(groovy.util.Eval.x(project, "x.dep.sqldelight.android"))
-//        implementation(groovy.util.Eval.x(project, "x.dep.androidx.sqliteFramework"))
-//      }
-//    }
+    val androidMain by getting {
+      dependsOn(commonMain)
+      dependencies {
+        api(groovy.util.Eval.x(project, "x.dep.androidx.sqlite"))
+        implementation(groovy.util.Eval.x(project, "x.dep.sqldelight.android"))
+        implementation(groovy.util.Eval.x(project, "x.dep.androidx.sqliteFramework"))
+      }
+    }
 
     val iosMain by getting {
       dependsOn(commonMain)
@@ -86,9 +85,9 @@ kotlin {
       }
     }
 
-//    val androidTest by getting {
-//      dependsOn(jvmTest)
-//    }
+    val androidTest by getting {
+      dependsOn(jvmTest)
+    }
 
     val iosTest by getting {
       dependsOn(commonTest)
@@ -100,20 +99,20 @@ kotlin {
   }
 }
 
-//android {
-//  compileSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt())
-//
-//  lintOptions {
-//    textReport = true
-//    textOutput("stdout")
-//    ignore("InvalidPackage")
-//  }
-//
-//  defaultConfig {
-//    minSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.minSdkVersion").toString())
-//    targetSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.targetSdkVersion").toString())
-//  }
-//}
+android {
+  compileSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt())
+
+  lintOptions {
+    textReport = true
+    textOutput("stdout")
+    ignore("InvalidPackage")
+  }
+
+  defaultConfig {
+    minSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.minSdkVersion").toString())
+    targetSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.targetSdkVersion").toString())
+  }
+}
 
 
 tasks.withType<Javadoc> {
