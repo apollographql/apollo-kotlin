@@ -45,11 +45,9 @@ class HttpCacheTest {
   private lateinit var cacheStore: MockHttpCacheStore
   private lateinit var okHttpClient: OkHttpClient
 
-  @Rule
   val server = MockWebServer()
-
-  @Rule
   val inMemoryFileSystem = InMemoryFileSystem()
+
   @Before
   fun setUp() {
     val dateCustomTypeAdapter: CustomTypeAdapter<Date> = object : CustomTypeAdapter<Date> {

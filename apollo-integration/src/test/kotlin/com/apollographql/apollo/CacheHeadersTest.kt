@@ -23,7 +23,6 @@ import java.io.IOException
 import java.util.concurrent.atomic.AtomicBoolean
 
 class CacheHeadersTest {
-  @Rule
   val server = MockWebServer()
   @Test
   @Throws(ApolloException::class, IOException::class)

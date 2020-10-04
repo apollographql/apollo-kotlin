@@ -36,8 +36,8 @@ import java.util.concurrent.TimeoutException
 class ApolloWatcherTest {
   private lateinit var apolloClient: ApolloClient
 
-  @Rule
   val server = MockWebServer()
+
   @Before
   @Throws(IOException::class)
   fun setUp() {

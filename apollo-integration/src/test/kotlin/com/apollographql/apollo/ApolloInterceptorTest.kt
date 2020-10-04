@@ -32,9 +32,10 @@ import java.util.concurrent.TimeoutException
 class ApolloInterceptorTest {
   private lateinit var client: ApolloClient
 
-  @Rule
   val server = MockWebServer()
+
   private var okHttpClient: OkHttpClient? = null
+
   @Before
   fun setup() {
     okHttpClient = OkHttpClient.Builder()

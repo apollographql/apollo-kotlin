@@ -34,10 +34,8 @@ class ApolloPrefetchTest {
   private lateinit var cacheStore: MockHttpCacheStore
   private lateinit var okHttpClient: OkHttpClient
 
-  @Rule
   val server = MockWebServer()
 
-  @Rule
   val inMemoryFileSystem = InMemoryFileSystem()
 
   var  lastHttRequest: Request? = null

@@ -25,7 +25,6 @@ import java.util.*
 class AsyncNormalizedCacheTestCase {
   private lateinit var apolloClient: ApolloClient
 
-  @Rule
   val server = MockWebServer()
   @Before
   fun setUp() {

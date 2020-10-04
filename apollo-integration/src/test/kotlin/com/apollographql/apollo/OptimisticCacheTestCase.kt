@@ -33,7 +33,6 @@ import java.util.*
 class OptimisticCacheTestCase {
   private var apolloClient: ApolloClient? = null
 
-  @Rule
   val server = MockWebServer()
   @Before
   fun setUp() {

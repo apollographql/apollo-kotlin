@@ -9,6 +9,7 @@ import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.CacheKey.Companion.from
 import com.apollographql.apollo.cache.normalized.CacheReference
 import com.apollographql.apollo.cache.normalized.NormalizedCache
+import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.Record.Companion.builder
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
@@ -29,7 +30,6 @@ class ResponseNormalizationTest {
   private lateinit var apolloClient: ApolloClient
   private lateinit var normalizedCache: NormalizedCache
 
-  @Rule
   val server = MockWebServer()
   private val QUERY_ROOT_KEY = "QUERY_ROOT"
   @Before
@@ -229,14 +229,13 @@ class ResponseNormalizationTest {
   fun list_of_objects_with_null_object() {
     assertHasNoErrors("AllPlanetsListOfObjectWithNullObject.json", AllPlanetsQuery())
     val fieldKey = "allPlanets({\"first\":300})"
-    var record = normalizedCache
-        .loadRecord("$fieldKey.planets.0", CacheHeaders.NONE)
+    var record: Record?
+
+    record = normalizedCache.loadRecord("$fieldKey.planets.0", CacheHeaders.NONE)
     Truth.assertThat(record!!.field("filmConnection")).isNull()
-    record = normalizedCache
-        .loadRecord("$fieldKey.planets.0.filmConnection", CacheHeaders.NONE)
+    record = normalizedCache.loadRecord("$fieldKey.planets.0.filmConnection", CacheHeaders.NONE)
     Truth.assertThat(record).isNull()
-    record = normalizedCache
-        .loadRecord("$fieldKey.planets.1.filmConnection", CacheHeaders.NONE)
+    record = normalizedCache.loadRecord("$fieldKey.planets.1.filmConnection", CacheHeaders.NONE)
     Truth.assertThat(record).isNotNull()
   }
 

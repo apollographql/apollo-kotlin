@@ -35,7 +35,6 @@ import java.util.concurrent.TimeUnit
 class NormalizedCacheTestCase {
   private lateinit var apolloClient: ApolloClient
 
-  @Rule
   val server = MockWebServer()
 
   @Before

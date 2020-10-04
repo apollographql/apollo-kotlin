@@ -17,7 +17,6 @@ import org.junit.Test
 import java.util.concurrent.atomic.AtomicBoolean
 
 class SendOperationIdentifiersTest {
-  @Rule
   val server = MockWebServer()
   @Test
   @Throws(Exception::class)

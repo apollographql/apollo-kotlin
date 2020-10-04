@@ -36,7 +36,6 @@ import java.util.*
 class ResponseWriteTestCase {
   private var apolloClient: ApolloClient? = null
 
-  @Rule
   val server = MockWebServer()
   private val DATE_TIME_FORMAT = SimpleDateFormat("yyyy-mm-dd", Locale.US)
 

@@ -15,7 +15,6 @@ import java.util.concurrent.TimeoutException
 
 class NetworkOnlyFetcherTest : BaseFetcherTest() {
   @Test
-  @Throws(IOException::class, ApolloException::class, TimeoutException::class, InterruptedException::class)
   fun enqueue() {
     val query = EpisodeHeroNameQuery(episode = Input.fromNullable(Episode.EMPIRE))
     var trackingCallback: TrackingCallback
