@@ -216,7 +216,7 @@ class ApolloWatcherTest {
               }
 
               override fun onFailure(e: ApolloException) {
-                Assert.fail(e.cause.message)
+                Assert.fail(e.cause!!.message)
               }
             })
 
@@ -335,7 +335,7 @@ class ApolloWatcherTest {
     val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery(episode = Input.fromNullable(Episode.EMPIRE))
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"))
     val watcher = apolloClient!!.query(query).watcher()
-    val callback: ApolloCall.Callback<EpisodeHeroNameQuery.Data> = Mockito.mock(ApolloCall.Callback::class.java)
+    val callback: ApolloCall.Callback<EpisodeHeroNameQuery.Data> = Mockito.mock(ApolloCall.Callback::class.java) as ApolloCall.Callback<EpisodeHeroNameQuery.Data>
     watcher.enqueueAndWatch(callback)
     val inOrder = Mockito.inOrder(callback)
     inOrder.verify(callback).onStatusEvent(ApolloCall.StatusEvent.SCHEDULED)
