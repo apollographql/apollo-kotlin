@@ -1,6 +1,6 @@
 plugins {
   id("com.android.library")
-  kotlin("android")
+  id("org.jetbrains.kotlin.android")
 }
 
 android {
@@ -20,7 +20,6 @@ android {
 }
 
 dependencies {
-  api(project(":apollo-normalized-cache-sqlite")) // TODO remove with removal of deprecated ApolloSqlHelper
   implementation(project(":apollo-runtime"))
 }
 
