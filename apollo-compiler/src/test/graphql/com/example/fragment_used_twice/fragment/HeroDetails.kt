@@ -10,6 +10,8 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.example.fragment_used_twice.type.CustomType
+import kotlin.Any
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
@@ -36,27 +38,36 @@ interface HeroDetails : GraphqlFragment {
     /**
      * The name of the character
      */
-    override val name: String
-  ) : HeroDetails {
+    override val name: String,
+    /**
+     * The date character was born.
+     */
+    override val birthDate: Any
+  ) : HeroDetails, CharacterDetails {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
         writer.writeString(RESPONSE_FIELDS[0], this@DefaultImpl.__typename)
         writer.writeString(RESPONSE_FIELDS[1], this@DefaultImpl.name)
+        writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField,
+            this@DefaultImpl.birthDate)
       }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null)
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forCustomType("birthDate", "birthDate", null, false, CustomType.DATE, null)
       )
 
       operator fun invoke(reader: ResponseReader): DefaultImpl = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
         val name = readString(RESPONSE_FIELDS[1])!!
+        val birthDate = readCustomType<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)!!
         DefaultImpl(
           __typename = __typename,
-          name = name
+          name = name,
+          birthDate = birthDate
         )
       }
 
@@ -73,13 +84,6 @@ interface HeroDetails : GraphqlFragment {
         |  ...CharacterDetails
         |}
         """.trimMargin()
-
-    operator fun invoke(__typename: String, name: String): HeroDetails {
-      return DefaultImpl(
-        __typename = __typename,
-        name = name
-      )
-    }
 
     operator fun invoke(reader: ResponseReader): HeroDetails = DefaultImpl(reader)
   }

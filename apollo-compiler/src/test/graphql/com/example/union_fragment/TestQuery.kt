@@ -21,7 +21,6 @@ import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.api.internal.Throws
 import com.example.union_fragment.fragment.Character
 import com.example.union_fragment.fragment.Starship
-import com.example.union_fragment.type.CustomType
 import kotlin.Array
 import kotlin.Boolean
 import kotlin.String
@@ -85,89 +84,35 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     scalarTypeAdapters = scalarTypeAdapters
   )
 
+  /**
+   * A character from the Star Wars universe
+   */
   data class CharacterImpl(
-    override val __typename: String,
-    /**
-     * The ID of the character
-     */
-    override val id: String,
-    /**
-     * The name of the character
-     */
-    override val name: String
-  ) : Character, Search {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@CharacterImpl.__typename)
-        writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField,
-            this@CharacterImpl.id)
-        writer.writeString(RESPONSE_FIELDS[2], this@CharacterImpl.name)
-      }
-    }
-
+    val characterDelegate: Character
+  ) : Search, Character by characterDelegate {
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
-        ResponseField.forString("name", "name", null, false, null)
-      )
-
-      operator fun invoke(reader: ResponseReader): CharacterImpl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)!!
-        val name = readString(RESPONSE_FIELDS[2])!!
-        CharacterImpl(
-          __typename = __typename,
-          id = id,
-          name = name
-        )
+      operator fun invoke(reader: ResponseReader): CharacterImpl {
+        return CharacterImpl(Character(reader))
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<CharacterImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 
   data class StarshipImpl(
-    /**
-     * The name of the starship
-     */
-    override val name: String,
-    override val __typename: String = "Starship"
-  ) : Search, Starship {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@StarshipImpl.name)
-        writer.writeString(RESPONSE_FIELDS[1], this@StarshipImpl.__typename)
-      }
-    }
-
+    val starshipDelegate: Starship
+  ) : Search, Starship by starshipDelegate {
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forString("__typename", "__typename", null, false, null)
-      )
-
-      operator fun invoke(reader: ResponseReader): StarshipImpl = reader.run {
-        val name = readString(RESPONSE_FIELDS[0])!!
-        val __typename = readString(RESPONSE_FIELDS[1])!!
-        StarshipImpl(
-          name = name,
-          __typename = __typename
-        )
+      operator fun invoke(reader: ResponseReader): StarshipImpl {
+        return StarshipImpl(Starship(reader))
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<StarshipImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 
-  data class SearchImpl(
+  data class OtherSearch(
     override val __typename: String = "SearchResult"
   ) : Search {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@SearchImpl.__typename)
+        writer.writeString(RESPONSE_FIELDS[0], this@OtherSearch.__typename)
       }
     }
 
@@ -176,15 +121,15 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): SearchImpl = reader.run {
+      operator fun invoke(reader: ResponseReader): OtherSearch = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
-        SearchImpl(
+        OtherSearch(
           __typename = __typename
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<SearchImpl> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<OtherSearch> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -204,7 +149,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           "Droid" -> CharacterImpl(reader)
           "Human" -> CharacterImpl(reader)
           "Starship" -> StarshipImpl(reader)
-          else -> SearchImpl(reader)
+          else -> OtherSearch(reader)
         }
       }
     }

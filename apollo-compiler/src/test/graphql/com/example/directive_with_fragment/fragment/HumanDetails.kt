@@ -73,13 +73,6 @@ interface HumanDetails : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(__typename: String, homePlanet: String?): HumanDetails {
-      return DefaultImpl(
-        __typename = __typename,
-        homePlanet = homePlanet
-      )
-    }
-
     operator fun invoke(reader: ResponseReader): HumanDetails = DefaultImpl(reader)
   }
 }

@@ -1,0 +1,26 @@
+query TestQuery {
+  hero {
+    ...DroidDetails
+    ...HumanDetails
+  }
+}
+
+fragment DroidDetails on Droid {
+  name
+  primaryFunction
+  friends {
+    name
+  }
+}
+
+fragment HumanDetails on Human {
+  name
+  profileLink
+  friendsConnection {
+    edges {
+      node {
+        name
+      }
+    }
+  }
+}

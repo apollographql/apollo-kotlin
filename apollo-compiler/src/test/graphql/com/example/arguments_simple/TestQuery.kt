@@ -257,69 +257,25 @@ data class TestQuery(
     }
   }
 
-  data class HeroDetailsImpl(
-    override val __typename: String,
-    /**
-     * The friends of the character exposed as a connection with edges
-     */
-    override val friendsConnection: FriendsConnection,
-    /**
-     * The name of the character
-     */
-    override val name: String?
-  ) : HeroDetails, Hero {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@HeroDetailsImpl.__typename)
-        writer.writeObject(RESPONSE_FIELDS[1], this@HeroDetailsImpl.friendsConnection.marshaller())
-        writer.writeString(RESPONSE_FIELDS[2], this@HeroDetailsImpl.name)
-      }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forObject("friendsConnection", "friendsConnection", mapOf<String, Any>(
-          "first" to mapOf<String, Any>(
-            "kind" to "Variable",
-            "variableName" to "friendsCount")), false, null),
-        ResponseField.forString("name", "name", null, true, listOf(
-          ResponseField.Condition.booleanCondition("IncludeName", false)
-        ))
-      )
-
-      operator fun invoke(reader: ResponseReader): HeroDetailsImpl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val friendsConnection = readObject<FriendsConnection>(RESPONSE_FIELDS[1]) { reader ->
-          FriendsConnection(reader)
-        }!!
-        val name = readString(RESPONSE_FIELDS[2])
-        HeroDetailsImpl(
-          __typename = __typename,
-          friendsConnection = friendsConnection,
-          name = name
-        )
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<HeroDetailsImpl> = ResponseFieldMapper { invoke(it) }
-    }
-  }
-
   /**
    * A character from the Star Wars universe
    */
-  data class HeroImpl(
+  data class Hero(
     override val __typename: String = "Character",
     /**
      * The name of the character
      */
-    override val name: String?
-  ) : Hero {
+    val name: String?,
+    /**
+     * The friends of the character exposed as a connection with edges
+     */
+    override val friendsConnection: FriendsConnection
+  ) : HeroDetails {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@HeroImpl.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@HeroImpl.name)
+        writer.writeString(RESPONSE_FIELDS[0], this@Hero.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@Hero.name)
+        writer.writeObject(RESPONSE_FIELDS[2], this@Hero.friendsConnection.marshaller())
       }
     }
 
@@ -328,49 +284,28 @@ data class TestQuery(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, true, listOf(
           ResponseField.Condition.booleanCondition("IncludeName", false)
-        ))
+        )),
+        ResponseField.forObject("friendsConnection", "friendsConnection", mapOf<String, Any>(
+          "first" to mapOf<String, Any>(
+            "kind" to "Variable",
+            "variableName" to "friendsCount")), false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): HeroImpl = reader.run {
+      operator fun invoke(reader: ResponseReader): Hero = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
         val name = readString(RESPONSE_FIELDS[1])
-        HeroImpl(
+        val friendsConnection = readObject<FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
+          FriendsConnection(reader)
+        }!!
+        Hero(
           __typename = __typename,
-          name = name
+          name = name,
+          friendsConnection = friendsConnection
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<HeroImpl> = ResponseFieldMapper { invoke(it) }
-    }
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
-  interface Hero {
-    val __typename: String
-
-    /**
-     * The name of the character
-     */
-    val name: String?
-
-    fun marshaller(): ResponseFieldMarshaller
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null)
-      )
-
-      operator fun invoke(reader: ResponseReader): Hero {
-        val typename = reader.readString(RESPONSE_FIELDS[0])
-        return when(typename) {
-          "Droid" -> HeroDetailsImpl(reader)
-          "Human" -> HeroDetailsImpl(reader)
-          else -> HeroImpl(reader)
-        }
-      }
+      fun Mapper(): ResponseFieldMapper<Hero> = ResponseFieldMapper { invoke(it) }
     }
   }
 

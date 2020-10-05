@@ -75,13 +75,6 @@ interface PlanetFragment : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(__typename: String, name: String?): PlanetFragment {
-      return DefaultImpl(
-        __typename = __typename,
-        name = name
-      )
-    }
-
     operator fun invoke(reader: ResponseReader): PlanetFragment = DefaultImpl(reader)
   }
 }

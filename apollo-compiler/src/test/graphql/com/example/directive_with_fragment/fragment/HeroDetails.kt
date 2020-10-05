@@ -73,13 +73,6 @@ interface HeroDetails : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(__typename: String, name: String): HeroDetails {
-      return DefaultImpl(
-        __typename = __typename,
-        name = name
-      )
-    }
-
     operator fun invoke(reader: ResponseReader): HeroDetails = DefaultImpl(reader)
   }
 }

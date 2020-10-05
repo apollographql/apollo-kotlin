@@ -10,10 +10,21 @@ import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
+import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.joinToCode
 
 internal fun CodeGenerationAst.ObjectType.typeSpec(
+    generateAsInternal: Boolean = false
+): TypeSpec {
+  return if (kind is CodeGenerationAst.ObjectType.Kind.FragmentDelegate) {
+    fragmentDelegateTypeSpec(generateAsInternal)
+  } else {
+    objectTypeSpec(generateAsInternal)
+  }
+}
+
+internal fun CodeGenerationAst.ObjectType.objectTypeSpec(
     generateAsInternal: Boolean = false
 ): TypeSpec {
   val builder = if (abstract) TypeSpec.interfaceBuilder(name) else TypeSpec.classBuilder(name)
@@ -69,6 +80,47 @@ internal fun CodeGenerationAst.ObjectType.typeSpec(
                 .build()
         )
       }
+      .build()
+}
+
+private fun CodeGenerationAst.ObjectType.fragmentDelegateTypeSpec(
+    generateAsInternal: Boolean = false
+): TypeSpec {
+  val delegateTypeRef = (kind as CodeGenerationAst.ObjectType.Kind.FragmentDelegate).fragmentTypeRef
+  val delegateFieldName = "${delegateTypeRef.name.decapitalize()}Delegate"
+  val delegateFieldTypeName = delegateTypeRef.asTypeName()
+  val primaryConstructorSpec = FunSpec.constructorBuilder()
+      .apply {
+        addParameter(
+            ParameterSpec.builder(name = delegateFieldName, type = delegateFieldTypeName).build()
+        )
+      }
+      .build()
+  return TypeSpec.classBuilder(name)
+      .addSuperinterfaces(implements.minus(delegateTypeRef).map { type -> type.asTypeName() })
+      .addSuperinterface(delegateTypeRef.asTypeName(), delegate = CodeBlock.of("%L", delegateFieldName))
+      .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
+      .addModifiers(KModifier.DATA)
+      .apply { if (description.isNotBlank()) addKdoc("%L\n", description) }
+      .addProperty(
+          PropertySpec.builder(name = delegateFieldName, type = delegateFieldTypeName)
+              .initializer("%L", delegateFieldName)
+              .build()
+      )
+      .primaryConstructor(primaryConstructorSpec)
+      .addType(
+          TypeSpec.companionObjectBuilder()
+              .addFunction(
+                  FunSpec
+                      .builder("invoke")
+                      .addModifiers(KModifier.OPERATOR)
+                      .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
+                      .returns(ClassName("", name))
+                      .addStatement("return·%L(%T(reader))", name, delegateFieldTypeName)
+                      .build()
+              )
+              .build()
+      )
       .build()
 }
 

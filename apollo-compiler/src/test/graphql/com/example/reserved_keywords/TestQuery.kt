@@ -131,24 +131,13 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   /**
    * A character from the Star Wars universe
    */
-  interface Character : Object {
-    override val __typename: String
-
+  data class CharacterImpl(
+    override val __typename: String = "Character",
     /**
      * The name of the character
      */
     val name: String
-
-    override fun marshaller(): ResponseFieldMarshaller
-  }
-
-  data class CharacterImpl(
-    override val __typename: String,
-    /**
-     * The name of the character
-     */
-    override val name: String
-  ) : Character, Object {
+  ) : Object {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
         writer.writeString(RESPONSE_FIELDS[0], this@CharacterImpl.__typename)
@@ -176,12 +165,12 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
   }
 
-  data class ObjectImpl(
+  data class OtherObject(
     override val __typename: String = "SearchResult"
   ) : Object {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@ObjectImpl.__typename)
+        writer.writeString(RESPONSE_FIELDS[0], this@OtherObject.__typename)
       }
     }
 
@@ -190,15 +179,15 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): ObjectImpl = reader.run {
+      operator fun invoke(reader: ResponseReader): OtherObject = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
-        ObjectImpl(
+        OtherObject(
           __typename = __typename
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<ObjectImpl> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<OtherObject> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -217,7 +206,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         return when(typename) {
           "Droid" -> CharacterImpl(reader)
           "Human" -> CharacterImpl(reader)
-          else -> ObjectImpl(reader)
+          else -> OtherObject(reader)
         }
       }
     }

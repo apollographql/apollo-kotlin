@@ -12,7 +12,6 @@ query TestQuery {
 # with multi lines support
 fragment HeroDetails on Character {
   __typename
-  name
   ... HumanDetails
 }
 

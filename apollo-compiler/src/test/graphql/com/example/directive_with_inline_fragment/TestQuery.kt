@@ -103,6 +103,30 @@ data class TestQuery(
   )
 
   /**
+   * A humanoid creature from the Star Wars universe
+   */
+  interface Human : Hero {
+    override val __typename: String
+
+    /**
+     * The ID of the human
+     */
+    override val id: String
+
+    /**
+     * What this human calls themselves
+     */
+    val name: String
+
+    /**
+     * The home planet of the human, or null if unknown
+     */
+    val homePlanet: String?
+
+    override fun marshaller(): ResponseFieldMarshaller
+  }
+
+  /**
    * A character from the Star Wars universe
    */
   interface Character : Hero {
@@ -122,14 +146,50 @@ data class TestQuery(
   }
 
   /**
-   * A humanoid creature from the Star Wars universe
+   * An autonomous mechanical character in the Star Wars universe
    */
-  data class Human(
+  interface Droid : Hero {
+    override val __typename: String
+
     /**
-     * The home planet of the human, or null if unknown
+     * The ID of the droid
      */
-    val homePlanet: String?,
-    override val __typename: String = "Human",
+    override val id: String
+
+    /**
+     * What others call this droid
+     */
+    val name: String
+
+    /**
+     * This droid's primary function
+     */
+    val primaryFunction: String?
+
+    override fun marshaller(): ResponseFieldMarshaller
+  }
+
+  /**
+   * A character from the Star Wars universe
+   */
+  interface Character1 : Hero {
+    override val __typename: String
+
+    /**
+     * The ID of the character
+     */
+    override val id: String
+
+    /**
+     * The name of the character
+     */
+    val name: String
+
+    override fun marshaller(): ResponseFieldMarshaller
+  }
+
+  data class HumanCharacterImpl(
+    override val __typename: String,
     /**
      * The ID of the human
      */
@@ -137,52 +197,50 @@ data class TestQuery(
     /**
      * What this human calls themselves
      */
-    override val name: String
-  ) : Character, Hero {
+    override val name: String,
+    /**
+     * The home planet of the human, or null if unknown
+     */
+    override val homePlanet: String?
+  ) : Human, Character1, Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Human.homePlanet)
-        writer.writeString(RESPONSE_FIELDS[1], this@Human.__typename)
-        writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, this@Human.id)
-        writer.writeString(RESPONSE_FIELDS[3], this@Human.name)
+        writer.writeString(RESPONSE_FIELDS[0], this@HumanCharacterImpl.__typename)
+        writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField,
+            this@HumanCharacterImpl.id)
+        writer.writeString(RESPONSE_FIELDS[2], this@HumanCharacterImpl.name)
+        writer.writeString(RESPONSE_FIELDS[3], this@HumanCharacterImpl.homePlanet)
       }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("homePlanet", "homePlanet", null, true, null),
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
-        ResponseField.forString("name", "name", null, false, null)
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forString("homePlanet", "homePlanet", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Human = reader.run {
-        val homePlanet = readString(RESPONSE_FIELDS[0])
-        val __typename = readString(RESPONSE_FIELDS[1])!!
-        val id = readCustomType<String>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)!!
-        val name = readString(RESPONSE_FIELDS[3])!!
-        Human(
-          homePlanet = homePlanet,
+      operator fun invoke(reader: ResponseReader): HumanCharacterImpl = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)!!
+        val name = readString(RESPONSE_FIELDS[2])!!
+        val homePlanet = readString(RESPONSE_FIELDS[3])
+        HumanCharacterImpl(
           __typename = __typename,
           id = id,
-          name = name
+          name = name,
+          homePlanet = homePlanet
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Human> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<HumanCharacterImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 
-  /**
-   * An autonomous mechanical character in the Star Wars universe
-   */
-  data class Droid(
-    /**
-     * This droid's primary function
-     */
-    val primaryFunction: String?,
-    override val __typename: String = "Droid",
+  data class DroidCharacterImpl(
+    override val __typename: String,
     /**
      * The ID of the droid
      */
@@ -190,47 +248,52 @@ data class TestQuery(
     /**
      * What others call this droid
      */
-    override val name: String
-  ) : Character, Hero {
+    override val name: String,
+    /**
+     * This droid's primary function
+     */
+    override val primaryFunction: String?
+  ) : Droid, Character1, Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Droid.primaryFunction)
-        writer.writeString(RESPONSE_FIELDS[1], this@Droid.__typename)
-        writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, this@Droid.id)
-        writer.writeString(RESPONSE_FIELDS[3], this@Droid.name)
+        writer.writeString(RESPONSE_FIELDS[0], this@DroidCharacterImpl.__typename)
+        writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField,
+            this@DroidCharacterImpl.id)
+        writer.writeString(RESPONSE_FIELDS[2], this@DroidCharacterImpl.name)
+        writer.writeString(RESPONSE_FIELDS[3], this@DroidCharacterImpl.primaryFunction)
       }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("primaryFunction", "primaryFunction", null, true, null),
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
-        ResponseField.forString("name", "name", null, false, null)
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forString("primaryFunction", "primaryFunction", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Droid = reader.run {
-        val primaryFunction = readString(RESPONSE_FIELDS[0])
-        val __typename = readString(RESPONSE_FIELDS[1])!!
-        val id = readCustomType<String>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)!!
-        val name = readString(RESPONSE_FIELDS[3])!!
-        Droid(
-          primaryFunction = primaryFunction,
+      operator fun invoke(reader: ResponseReader): DroidCharacterImpl = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)!!
+        val name = readString(RESPONSE_FIELDS[2])!!
+        val primaryFunction = readString(RESPONSE_FIELDS[3])
+        DroidCharacterImpl(
           __typename = __typename,
           id = id,
-          name = name
+          name = name,
+          primaryFunction = primaryFunction
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Droid> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<DroidCharacterImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 
   /**
    * A character from the Star Wars universe
    */
-  data class HeroImpl(
+  data class OtherHero(
     override val __typename: String = "Character",
     /**
      * The ID of the character
@@ -239,8 +302,8 @@ data class TestQuery(
   ) : Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@HeroImpl.__typename)
-        writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, this@HeroImpl.id)
+        writer.writeString(RESPONSE_FIELDS[0], this@OtherHero.__typename)
+        writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, this@OtherHero.id)
       }
     }
 
@@ -250,17 +313,17 @@ data class TestQuery(
         ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null)
       )
 
-      operator fun invoke(reader: ResponseReader): HeroImpl = reader.run {
+      operator fun invoke(reader: ResponseReader): OtherHero = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
         val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)!!
-        HeroImpl(
+        OtherHero(
           __typename = __typename,
           id = id
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<HeroImpl> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<OtherHero> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -285,9 +348,9 @@ data class TestQuery(
       operator fun invoke(reader: ResponseReader): Hero {
         val typename = reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
-          "Human" -> Human(reader)
-          "Droid" -> Droid(reader)
-          else -> HeroImpl(reader)
+          "Human" -> HumanCharacterImpl(reader)
+          "Droid" -> DroidCharacterImpl(reader)
+          else -> OtherHero(reader)
         }
       }
     }

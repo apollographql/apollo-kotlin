@@ -86,39 +86,39 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
    * A humanoid creature from the Star Wars universe
    */
   data class Human(
-    /**
-     * Height in the preferred unit, default is meters
-     */
-    val height: Double?,
     override val __typename: String = "Human",
     /**
      * What this human calls themselves
      */
-    override val name: String
+    override val name: String,
+    /**
+     * Height in the preferred unit, default is meters
+     */
+    val height: Double?
   ) : NonOptionalHero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeDouble(RESPONSE_FIELDS[0], this@Human.height)
-        writer.writeString(RESPONSE_FIELDS[1], this@Human.__typename)
-        writer.writeString(RESPONSE_FIELDS[2], this@Human.name)
+        writer.writeString(RESPONSE_FIELDS[0], this@Human.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@Human.name)
+        writer.writeDouble(RESPONSE_FIELDS[2], this@Human.height)
       }
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forDouble("height", "height", null, true, null),
         ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null)
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forDouble("height", "height", null, true, null)
       )
 
       operator fun invoke(reader: ResponseReader): Human = reader.run {
-        val height = readDouble(RESPONSE_FIELDS[0])
-        val __typename = readString(RESPONSE_FIELDS[1])!!
-        val name = readString(RESPONSE_FIELDS[2])!!
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
+        val height = readDouble(RESPONSE_FIELDS[2])
         Human(
-          height = height,
           __typename = __typename,
-          name = name
+          name = name,
+          height = height
         )
       }
 
@@ -130,7 +130,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   /**
    * A character from the Star Wars universe
    */
-  data class NonOptionalHeroImpl(
+  data class OtherNonOptionalHero(
     override val __typename: String = "Character",
     /**
      * The name of the character
@@ -139,8 +139,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   ) : NonOptionalHero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@NonOptionalHeroImpl.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@NonOptionalHeroImpl.name)
+        writer.writeString(RESPONSE_FIELDS[0], this@OtherNonOptionalHero.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@OtherNonOptionalHero.name)
       }
     }
 
@@ -150,17 +150,17 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): NonOptionalHeroImpl = reader.run {
+      operator fun invoke(reader: ResponseReader): OtherNonOptionalHero = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
         val name = readString(RESPONSE_FIELDS[1])!!
-        NonOptionalHeroImpl(
+        OtherNonOptionalHero(
           __typename = __typename,
           name = name
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<NonOptionalHeroImpl> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<OtherNonOptionalHero> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -186,7 +186,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         val typename = reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
           "Human" -> Human(reader)
-          else -> NonOptionalHeroImpl(reader)
+          else -> OtherNonOptionalHero(reader)
         }
       }
     }

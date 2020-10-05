@@ -10,6 +10,8 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.example.fragment_used_twice.type.CustomType
+import kotlin.Any
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
@@ -29,19 +31,65 @@ interface HumanDetails : GraphqlFragment {
   val name: String
 
   /**
+   * A character from the Star Wars universe
+   */
+  data class CharacterDetailsImpl(
+    override val __typename: String = "Character",
+    /**
+     * The name of the character
+     */
+    override val name: String,
+    /**
+     * The date character was born.
+     */
+    override val birthDate: Any
+  ) : DefaultImpl, CharacterDetails {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@CharacterDetailsImpl.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@CharacterDetailsImpl.name)
+        writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField,
+            this@CharacterDetailsImpl.birthDate)
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forCustomType("birthDate", "birthDate", null, false, CustomType.DATE, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): CharacterDetailsImpl = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
+        val birthDate = readCustomType<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)!!
+        CharacterDetailsImpl(
+          __typename = __typename,
+          name = name,
+          birthDate = birthDate
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<CharacterDetailsImpl> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
    * A humanoid creature from the Star Wars universe
    */
-  data class DefaultImpl(
+  data class OtherDefaultImpl(
     override val __typename: String = "Human",
     /**
      * What this human calls themselves
      */
     override val name: String
-  ) : HumanDetails {
+  ) : HumanDetails, DefaultImpl {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@DefaultImpl.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@DefaultImpl.name)
+        writer.writeString(RESPONSE_FIELDS[0], this@OtherDefaultImpl.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@OtherDefaultImpl.name)
       }
     }
 
@@ -51,17 +99,46 @@ interface HumanDetails : GraphqlFragment {
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): DefaultImpl = reader.run {
+      operator fun invoke(reader: ResponseReader): OtherDefaultImpl = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
         val name = readString(RESPONSE_FIELDS[1])!!
-        DefaultImpl(
+        OtherDefaultImpl(
           __typename = __typename,
           name = name
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<DefaultImpl> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<OtherDefaultImpl> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
+   * A humanoid creature from the Star Wars universe
+   */
+  interface DefaultImpl : HumanDetails {
+    override val __typename: String
+
+    /**
+     * What this human calls themselves
+     */
+    override val name: String
+
+    override fun marshaller(): ResponseFieldMarshaller
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader): DefaultImpl {
+        val typename = reader.readString(RESPONSE_FIELDS[0])
+        return when(typename) {
+          "Droid" -> CharacterDetailsImpl(reader)
+          "Human" -> CharacterDetailsImpl(reader)
+          else -> OtherDefaultImpl(reader)
+        }
+      }
     }
   }
 
@@ -73,13 +150,6 @@ interface HumanDetails : GraphqlFragment {
         |  ...CharacterDetails
         |}
         """.trimMargin()
-
-    operator fun invoke(__typename: String, name: String): HumanDetails {
-      return DefaultImpl(
-        __typename = __typename,
-        name = name
-      )
-    }
 
     operator fun invoke(reader: ResponseReader): HumanDetails = DefaultImpl(reader)
   }
