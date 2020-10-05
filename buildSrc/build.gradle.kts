@@ -9,13 +9,16 @@ project.apply {
 repositories {
   gradlePluginPortal()
   google()
-  jcenter()
   mavenCentral()
+  jcenter()
 }
 
 dependencies {
   implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp4"))
   implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
+
+  // We add all the plugins to the classpath here so that they are loaded with proper conflict resolution
+  // See https://github.com/gradle/gradle/issues/4741
   implementation(groovy.util.Eval.x(project, "x.dep.android.plugin"))
   implementation(groovy.util.Eval.x(project, "x.dep.gradleJapiCmpPlugin"))
   implementation(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
