@@ -39,6 +39,7 @@ dependencies {
     implementation("com.apollographql.apollo:apollo-coroutines-support")
     implementation("com.apollographql.apollo:apollo-runtime")
     implementation("com.apollographql.apollo:apollo-http-cache")
+    implementation("com.apollographql.apollo:apollo-normalized-cache-sqlite")
     implementation(groovy.util.Eval.x(project, "x.dep.okHttp.logging"))
     implementation(groovy.util.Eval.x(project, "x.dep.androidx.appcompat"))
     implementation(groovy.util.Eval.x(project, "x.dep.androidx.recyclerView"))
