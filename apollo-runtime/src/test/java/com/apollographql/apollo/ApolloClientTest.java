@@ -25,8 +25,8 @@ public class ApolloClientTest {
   @Test public void cloneSharesInstances() {
     ApolloClient copy = apolloClient.newBuilder().build();
 
-    assertThat(apolloClient.getApolloStore()).isSameAs(copy.getApolloStore());
-    assertThat(apolloClient.getSubscriptionManager()).isSameAs(copy.getSubscriptionManager());
-    assertThat(apolloClient.getHttpCache()).isSameAs(copy.getHttpCache());
+    assertThat(apolloClient.getApolloStore()).isEqualTo(copy.getApolloStore());
+    assertThat(apolloClient.getSubscriptionManager()).isEqualTo(copy.getSubscriptionManager());
+    assertThat(apolloClient.getHttpCache()).isEqualTo(copy.getHttpCache());
   }
 }
