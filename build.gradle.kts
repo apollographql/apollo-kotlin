@@ -11,6 +11,9 @@ buildscript {
   }
 }
 
+plugins {
+  id("com.github.ben-manes.versions")
+}
 ApiCompatibility.configure(rootProject)
 
 subprojects {
@@ -52,7 +55,6 @@ subprojects {
     }
   }
 
-  this.apply(plugin = "maven-publish")
   this.apply(plugin = "signing")
 
   repositories {
@@ -64,6 +66,7 @@ subprojects {
   group = property("GROUP")!!
   version = property("VERSION_NAME")!!
 
+  this.apply(plugin = "maven-publish")
   afterEvaluate {
     configurePublishing()
   }

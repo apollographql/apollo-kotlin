@@ -1,7 +1,9 @@
 import com.apollographql.apollo.gradle.api.ApolloExtension
 
-apply(plugin = "com.apollographql.apollo")
-apply(plugin = "org.jetbrains.kotlin.jvm")
+plugins {
+  id("com.apollographql.apollo")
+  kotlin("jvm")
+}
 
 dependencies {
   implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
