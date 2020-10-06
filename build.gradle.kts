@@ -169,6 +169,16 @@ fun Project.configurePublishing() {
     }
   }
 
+  tasks.all {
+    doFirst {
+      if (name.contains("publish")
+          && (name.contains("OssStagingRepository")
+              || name.contains("BintrayRepository"))
+          && findProperty("apollographql_skipAndroidModules") == "true"
+      ) throw kotlin.IllegalStateException("Cannot publish a version without android modules. Set -Papollographql_skipAndroidModules=false to publish a version")
+    }
+  }
+
   configure<SigningExtension> {
     // GPG_PRIVATE_KEY should contain the armoured private key that starts with -----BEGIN PGP PRIVATE KEY BLOCK-----
     // It can be obtained with gpg --armour --export-secret-keys KEY_ID
