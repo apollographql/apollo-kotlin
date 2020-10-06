@@ -56,7 +56,8 @@ configure<ApolloExtension> {
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
   kotlinOptions {
-    freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
+    freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn" + "-Xopt-in=kotlin.RequiresOptIn"
+    jvmTarget = JavaVersion.VERSION_1_8.toString()
   }
 }
 

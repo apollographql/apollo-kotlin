@@ -11,6 +11,5 @@ dependencies {
 }
 
 apollo {
-  generateKotlinModels.set(true)
   generateApolloMetadata.set(true)
 }

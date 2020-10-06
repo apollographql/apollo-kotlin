@@ -12,6 +12,7 @@ buildscript {
   dependencies {
     classpath(dep.android.plugin)
     classpath(dep.apollo.plugin)
+    classpath(dep.kotlin.plugin)
   }
 }
 

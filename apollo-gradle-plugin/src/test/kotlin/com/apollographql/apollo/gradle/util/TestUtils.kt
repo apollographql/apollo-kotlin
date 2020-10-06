@@ -76,10 +76,6 @@ object TestUtils {
       }
 
       if (hasKotlin) {
-        buildscript = buildscript.replace(
-            "// ADD DEPENDENCIES HERE",
-            "add(\"implementation\", kotlinDep(\"kotlin.stdlib\"))")
-
         buildscript += """
           tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
               kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
@@ -166,7 +162,7 @@ object TestUtils {
    */
   fun withSimpleProject(apolloConfiguration: String = "", block: (File) -> Unit) = withProject(
       usesKotlinDsl = false,
-      plugins = listOf(javaPlugin, apolloPlugin),
+      plugins = listOf(kotlinJvmPlugin, apolloPlugin),
       apolloConfiguration = apolloConfiguration
   ) { dir ->
     fixturesDirectory().child("java").copyRecursively(dir.child("src", "main", "java"))

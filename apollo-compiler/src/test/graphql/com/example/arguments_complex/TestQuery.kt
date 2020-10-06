@@ -181,12 +181,12 @@ data class TestQuery(
               "kind" to "Variable",
               "variableName" to "stars"),
             "favoriteColor" to mapOf<String, Any>(
-              "red" to "0",
+              "red" to 0,
               "green" to mapOf<String, Any>(
                 "kind" to "Variable",
                 "variableName" to "greenValue"),
-              "blue" to "0.0"),
-            "booleanNonOptional" to "false",
+              "blue" to 0.0),
+            "booleanNonOptional" to false,
             "listOfStringNonOptional" to emptyList<Any>()),
           "listOfInts" to listOf<Any>(
             mapOf<String, Any>(

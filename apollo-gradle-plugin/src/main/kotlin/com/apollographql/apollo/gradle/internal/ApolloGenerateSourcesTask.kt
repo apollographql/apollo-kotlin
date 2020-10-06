@@ -76,23 +76,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @get:Input
   @get:Optional
-  abstract val nullableValueType: Property<String>
-
-  @get:Input
-  @get:Optional
   abstract val useSemanticNaming: Property<Boolean>
-
-  @get:Input
-  @get:Optional
-  abstract val generateModelBuilder: Property<Boolean>
-
-  @get:Input
-  @get:Optional
-  abstract val useJavaBeansSemanticNaming: Property<Boolean>
-
-  @get:Input
-  @get:Optional
-  abstract val suppressRawTypesWarning: Property<Boolean>
 
   @get:Input
   @get:Optional
@@ -103,10 +87,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @get:Internal
   abstract val failOnWarnings: Property<Boolean>
-
-  @get:Input
-  @get:Optional
-  abstract val generateVisitorForPolymorphicDatatypes: Property<Boolean>
 
   @get:OutputDirectory
   abstract val outputDir: DirectoryProperty
@@ -134,14 +114,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @TaskAction
   fun taskAction() {
-    checkParameters()
-
-    val nullableValueTypeEnum = NullableValueType.values().find { it.value == nullableValueType.getOrElse(NullableValueType.ANNOTATED.value) }
-    if (nullableValueTypeEnum == null) {
-      throw IllegalArgumentException("ApolloGraphQL: Unknown nullableValueType: '${nullableValueType.get()}'. Possible values:\n" +
-          NullableValueType.values().joinToString(separator = "\n") { it.value })
-    }
-
     val args = GraphQLCompiler.Arguments(
         rootFolders = objectFactory.fileCollection().from(rootFolders).files.toList(),
         graphqlFiles = graphqlFiles.files,
@@ -161,15 +133,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         rootPackageName = rootPackageName.getOrElse(""),
 
         customTypeMap = customTypeMapping.getOrElse(emptyMap()),
-        nullableValueType = nullableValueTypeEnum,
         useSemanticNaming = useSemanticNaming.getOrElse(true),
-        generateModelBuilder = generateModelBuilder.getOrElse(false),
-        useJavaBeansSemanticNaming = useJavaBeansSemanticNaming.getOrElse(false),
-        suppressRawTypesWarning = suppressRawTypesWarning.getOrElse(false),
         generateKotlinModels = generateKotlinModels.getOrElse(false),
         warnOnDeprecatedUsages = warnOnDeprecatedUsages.getOrElse(true),
         failOnWarnings = failOnWarnings.getOrElse(false),
-        generateVisitorForPolymorphicDatatypes = generateVisitorForPolymorphicDatatypes.getOrElse(false),
         generateAsInternal = generateAsInternal.getOrElse(false),
         kotlinMultiPlatformProject = kotlinMultiPlatformProject.getOrElse(false),
         enumAsSealedClassPatternFilters = sealedClassesForEnumsMatching.getOrElse(emptyList()).toSet(),
@@ -183,25 +150,5 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
     }
 
     GraphQLCompiler(logger).write(args)
-  }
-
-  private fun checkParameters() {
-    if (generateKotlinModels.getOrElse(false) && generateModelBuilder.getOrElse(false)) {
-      throw IllegalArgumentException("""
-        ApolloGraphQL: Using `generateModelBuilder = true` does not make sense with `generateKotlinModels = true`. You can use .copy() as models are data classes.
-      """.trimIndent())
-    }
-
-    if (generateKotlinModels.getOrElse(false) && useJavaBeansSemanticNaming.getOrElse(false)) {
-      throw IllegalArgumentException("""
-        ApolloGraphQL: Using `useJavaBeansSemanticNaming = true` does not make sense with `generateKotlinModels = true`
-      """.trimIndent())
-    }
-
-    if (generateKotlinModels.getOrElse(false) && nullableValueType.isPresent) {
-      throw IllegalArgumentException("""
-        ApolloGraphQL: Using `nullableValueType` does not make sense with `generateKotlinModels = true`
-      """.trimIndent())
-    }
   }
 }

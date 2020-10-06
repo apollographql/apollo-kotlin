@@ -1,6 +1,5 @@
 package com.apollographql.apollo.compiler.parser.graphql
 
-import com.apollographql.apollo.compiler.PackageNameProvider
 import com.apollographql.apollo.compiler.ir.Field
 import com.apollographql.apollo.compiler.ir.Fragment
 import com.apollographql.apollo.compiler.ir.Operation
