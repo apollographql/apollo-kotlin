@@ -1,10 +1,12 @@
 import com.android.build.gradle.BaseExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-apply(plugin = "com.android.application")
-apply(plugin = "com.apollographql.apollo")
-apply(plugin = "kotlin-android")
-apply(plugin = "kotlin-android-extensions")
+plugins {
+    id("com.android.application")
+    id("com.apollographql.apollo")
+    id("kotlin-android")
+    id("kotlin-android-extensions")
+}
 
 extensions.findByType(BaseExtension::class.java)!!.apply {
     compileSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt())
@@ -33,7 +35,6 @@ tasks.withType<KotlinCompile> {
 }
 
 dependencies {
-    add("implementation", "com.apollographql.apollo:apollo-android-support")
     add("implementation", "com.apollographql.apollo:apollo-rx2-support")
     add("implementation", "com.apollographql.apollo:apollo-coroutines-support")
     add("implementation", "com.apollographql.apollo:apollo-runtime")

@@ -15,9 +15,9 @@ include("apollo-runtime-kotlin")
 
 include("apollo-normalized-cache-sqlite")
 
-val apollographql_skipAndroidModules: String? by extra
+val skipAndroidModules = extra.properties.get("apollographql_skipAndroidModules") == "true"
 
-if (apollographql_skipAndroidModules != "true") {
+if (!skipAndroidModules) {
   include("apollo-idling-resource")
   include("apollo-android-support")
 }

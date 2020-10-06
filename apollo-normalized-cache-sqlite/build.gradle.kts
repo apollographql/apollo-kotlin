@@ -1,9 +1,9 @@
-val apollographql_skipAndroidModule: String? by extra
+val skipAndroidModule = findProperty("apollographql_skipAndroidModules") == "true"
 
-if (apollographql_skipAndroidModule != "true") {
+if (!skipAndroidModule) {
   apply(plugin = "com.android.library")
 } else {
-  apply(plugin = "org.jetbrains.kotlin.jvm")
+  apply(plugin = "java-library")
 }
 apply(plugin = "org.jetbrains.kotlin.multiplatform")
 apply(plugin = "com.squareup.sqldelight")
@@ -31,7 +31,7 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
     }
   }
 
-  if (apollographql_skipAndroidModule != "true") {
+  if (!skipAndroidModule) {
     android {
       publishAllLibraryVariants()
     }
@@ -54,7 +54,7 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
       }
     }
 
-    if (apollographql_skipAndroidModule != "true") {
+    if (!skipAndroidModule) {
       val androidMain by getting {
         dependsOn(commonMain)
         dependencies {
@@ -93,7 +93,7 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
       }
     }
 
-    if (apollographql_skipAndroidModule != "true") {
+    if (!skipAndroidModule) {
       val androidTest by getting {
         dependsOn(jvmTest)
       }
@@ -109,7 +109,7 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
   }
 }
 
-if (apollographql_skipAndroidModule != "true") {
+if (!skipAndroidModule) {
   configure<com.android.build.gradle.LibraryExtension> {
     compileSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt())
 
