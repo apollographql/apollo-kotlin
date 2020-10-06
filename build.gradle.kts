@@ -2,8 +2,6 @@ import okhttp3.Credentials.basic
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
-import okhttp3.Route
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -21,9 +19,11 @@ subprojects {
   }
 
   plugins.withType(com.android.build.gradle.BasePlugin::class.java) {
-    (project.extensions.getByName("android") as com.android.build.gradle.BaseExtension).compileOptions {
-      sourceCompatibility = JavaVersion.VERSION_1_8
-      targetCompatibility = JavaVersion.VERSION_1_8
+    extensions.configure(com.android.build.gradle.BaseExtension::class.java) {
+      compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+      }
     }
   }
 
@@ -40,11 +40,13 @@ subprojects {
       // See https://issuetracker.google.com/issues/166582569
       apiVersion = "1.3"
       jvmTarget = JavaVersion.VERSION_1_8.toString()
-      freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+      freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
     }
   }
 
   tasks.withType<Test> {
+    systemProperty("updateTestFixtures", System.getProperty("updateTestFixtures"))
+    systemProperty("codegenTests", System.getProperty("codegenTests"))
     testLogging {
       exceptionFormat = TestExceptionFormat.FULL
     }
@@ -61,11 +63,6 @@ subprojects {
 
   group = property("GROUP")!!
   version = property("VERSION_NAME")!!
-  
-  tasks.withType<Test>().configureEach {
-    systemProperty("updateTestFixtures", System.getProperty("updateTestFixtures"))
-    systemProperty("codegenTests", System.getProperty("codegenTests"))
-  }
 
   afterEvaluate {
     configurePublishing()
@@ -73,57 +70,18 @@ subprojects {
 }
 
 fun Project.configurePublishing() {
-  val android = extensions.findByType(com.android.build.gradle.BaseExtension::class.java)
-
   /**
    * Javadoc
    */
-  var javadocTask = tasks.findByName("javadoc") as Javadoc?
-  var javadocJarTaskProvider: TaskProvider<org.gradle.jvm.tasks.Jar>? = null
-
-  if (javadocTask == null && android != null) {
-    // create the Android javadoc if needed
-    javadocTask = tasks.create("javadoc", Javadoc::class.java) {
-      source = android.sourceSets["main"].java.sourceFiles
-      classpath += project.files(android.getBootClasspath().joinToString(File.pathSeparator))
-
-      (android as? com.android.build.gradle.LibraryExtension)?.libraryVariants?.configureEach {
-        if (name != "release") {
-          return@configureEach
-        }
-        classpath += getCompileClasspath(null)
-      }
-    }
-  }
-
-  javadocJarTaskProvider = tasks.register("javadocJar", org.gradle.jvm.tasks.Jar::class.java) {
+  val emptyJavadocJarTaskProvider = tasks.register("javadocJar", org.gradle.jvm.tasks.Jar::class.java) {
     archiveClassifier.set("javadoc")
-    if (javadocTask != null) {
-      dependsOn(javadocTask)
-      from(javadocTask.destinationDir)
-    }
   }
 
-  val javaPluginConvention = project.convention.findPlugin(JavaPluginConvention::class.java)
-  val sourcesJarTaskProvider = tasks.register("sourcesJar", org.gradle.jvm.tasks.Jar::class.java) {
+  /**
+   * Sources
+   */
+  val emptySourcesJarTaskProvider = tasks.register("sourcesJar", org.gradle.jvm.tasks.Jar::class.java) {
     archiveClassifier.set("sources")
-    when {
-      javaPluginConvention != null && android == null -> {
-        try {
-          from(javaPluginConvention.sourceSets.get("main").allSource)
-        } catch (e: Exception) {
-          // this is the mpp path where we shouldn't need this
-        }
-      }
-      android != null -> {
-        from(android.sourceSets["main"].java.sourceFiles)
-      }
-    }
-  }
-
-  tasks.withType(Javadoc::class.java) {
-    // TODO: fix the javadoc warnings
-    (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
   }
 
   configure<PublishingExtension> {
@@ -132,33 +90,28 @@ fun Project.configurePublishing() {
         plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") -> {
           withType<MavenPublication> {
             // multiplatform doesn't add javadoc by default so add it here
-            artifact(javadocJarTaskProvider.get())
+            artifact(emptyJavadocJarTaskProvider.get())
             if (name == "kotlinMultiplatform") {
               // sources are added for each platform but not for the common module
-              artifact(sourcesJarTaskProvider.get())
+              artifact(emptySourcesJarTaskProvider.get())
             }
           }
         }
         plugins.hasPlugin("java-gradle-plugin") -> {
           // java-gradle-plugin doesn't add javadoc/sources by default so add it here
           withType<MavenPublication> {
-            artifact(javadocJarTaskProvider.get())
-            artifact(sourcesJarTaskProvider.get())
+            artifact(emptyJavadocJarTaskProvider.get())
+            artifact(emptySourcesJarTaskProvider.get())
           }
         }
         else -> {
           create<MavenPublication>("default") {
-            val javaComponent = components.findByName("java")
-            if (javaComponent != null) {
-              from(javaComponent)
-            } else if (android != null) {
-              afterEvaluate {
-                from(components.findByName("release"))
-              }
+            afterEvaluate {// required for android...
+              from(components.findByName("java") ?: components.findByName("release"))
             }
 
-            artifact(javadocJarTaskProvider.get())
-            artifact(sourcesJarTaskProvider.get())
+            artifact(emptyJavadocJarTaskProvider.get())
+            artifact(emptySourcesJarTaskProvider.get())
 
             pom {
               artifactId = findProperty("POM_ARTIFACT_ID") as String?

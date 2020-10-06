@@ -1,6 +1,6 @@
 def versions = [
     minAndroidPlugin      : '3.4.2',
-    androidPlugin         : '3.6.2',
+    androidPlugin         : '4.0.1',
     androidxSqlite        : '2.1.0',
     apollo                : '3.0.0-alpha01', // This should only be used by apollo-gradle-plugin-incubating:test to get the artifacts locally
     antlr4                : '4.5.3',
@@ -17,7 +17,7 @@ def versions = [
     mockito               : '1.9.5',
     moshi                 : '1.9.2',
     okHttp4               : '4.5.0',
-    okHttp                : '3.12.11',
+    okHttp                : '3.12.11', // Keep this to keep supporting older Android devices
     okio                  : '2.8.0',
     rxjava                : '2.0.5',
     rxjava3               : '3.0.4',
@@ -26,8 +26,6 @@ def versions = [
     testRunner            : '0.5',
     truth                 : '0.30'
 ]
-
-ext.isCi = "true" == System.getenv('CI')
 
 ext.dep = [
     android               : [
@@ -99,7 +97,7 @@ ext.dep = [
     uuid                  : "com.benasher44:uuid:0.2.0",
 ]
 ext.androidConfig = [
-    compileSdkVersion: 28,
+    compileSdkVersion: 30,
     minSdkVersion    : 15,
-    targetSdkVersion : 28
+    targetSdkVersion : 30
 ]

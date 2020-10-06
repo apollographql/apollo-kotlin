@@ -13,7 +13,3 @@ dependencies {
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.truth"))
 }
 
-tasks.withType<Javadoc> {
-  options.encoding = "UTF-8"
-}
-
