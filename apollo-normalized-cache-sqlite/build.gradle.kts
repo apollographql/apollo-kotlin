@@ -111,12 +111,6 @@ if (!skipAndroidModule) {
   configure<com.android.build.gradle.LibraryExtension> {
     compileSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt())
 
-    lintOptions {
-      textReport = true
-      textOutput("stdout")
-      ignore("InvalidPackage")
-    }
-
     defaultConfig {
       minSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.minSdkVersion").toString())
       targetSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.targetSdkVersion").toString())
