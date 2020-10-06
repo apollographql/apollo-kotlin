@@ -2,8 +2,6 @@ val skipAndroidModule = findProperty("apollographql_skipAndroidModules") == "tru
 
 if (!skipAndroidModule) {
   apply(plugin = "com.android.library")
-} else {
-  apply(plugin = "java-library")
 }
 apply(plugin = "org.jetbrains.kotlin.multiplatform")
 apply(plugin = "com.squareup.sqldelight")

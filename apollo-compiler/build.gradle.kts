@@ -2,25 +2,23 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   antlr
-  `java-library`
   kotlin("jvm")
   kotlin("kapt")
 }
 
 dependencies {
-  add("antlr", groovy.util.Eval.x(project, "x.dep.antlr.antlr"))
-  add("implementation", groovy.util.Eval.x(project, "x.dep.moshi.adapters"))
-  add("implementation", groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
-  add("implementation", groovy.util.Eval.x(project, "x.dep.poet.kotlin"))
-  add("implementation", project(":apollo-api"))
+  antlr(groovy.util.Eval.x(project, "x.dep.antlr.antlr"))
+  implementation(groovy.util.Eval.x(project, "x.dep.moshi.adapters"))
+  implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
+  implementation(groovy.util.Eval.x(project, "x.dep.poet.kotlin"))
+  implementation(project(":apollo-api"))
 
-  add("kapt", groovy.util.Eval.x(project, "x.dep.moshi.kotlinCodegen"))
-
-
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.compiletesting"))
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.kotlinCompileTesting"))
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.junit"))
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.truth"))
+  kapt(groovy.util.Eval.x(project, "x.dep.moshi.kotlinCodegen"))
+  
+  testImplementation(groovy.util.Eval.x(project, "x.dep.compiletesting"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.kotlinCompileTesting"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
 }
 
 abstract class GeneratePluginVersion : DefaultTask() {

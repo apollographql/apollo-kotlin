@@ -128,7 +128,11 @@ fun Project.configurePublishing() {
     archiveClassifier.set("sources")
     when {
       javaPluginConvention != null && android == null -> {
-        from(javaPluginConvention.sourceSets.get("main").allSource)
+        try {
+          from(javaPluginConvention.sourceSets.get("main").allSource)
+        } catch (e: Exception) {
+          // this is the mpp path where we shouldn't need this
+        }
       }
       android != null -> {
         from(android.sourceSets["main"].java.sourceFiles)
