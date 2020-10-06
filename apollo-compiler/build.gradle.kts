@@ -14,7 +14,7 @@ dependencies {
   implementation(project(":apollo-api"))
 
   kapt(groovy.util.Eval.x(project, "x.dep.moshi.kotlinCodegen"))
-  
+
   testImplementation(groovy.util.Eval.x(project, "x.dep.compiletesting"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.kotlinCompileTesting"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
@@ -49,9 +49,6 @@ tasks.withType(KotlinCompile::class.java) {
   source(versionFileProvider)
 }
 
-tasks.withType<Checkstyle> {
-  exclude("**com/apollographql/apollo/compiler/parser/antlr/**")
-}
 
 // since test/graphql is not an input to Test tasks, they're not run with the changes made in there.
 tasks.withType<Test>().configureEach { outputs.upToDateWhen { false } }

@@ -61,26 +61,7 @@ subprojects {
 
   group = property("GROUP")!!
   version = property("VERSION_NAME")!!
-
-  apply(plugin = "checkstyle")
-
-  extensions.findByType(CheckstyleExtension::class.java)!!.apply {
-    configFile = rootProject.file("checkstyle.xml")
-    configProperties = mapOf(
-        "checkstyle.cache.file" to rootProject.file("build/checkstyle.cache")
-    )
-  }
-
-  tasks.register("checkstyle", Checkstyle::class.java) {
-    source("src/main/java")
-    include("**/*.java")
-    classpath = files()
-  }
-
-  afterEvaluate {
-    tasks.findByName("check")?.dependsOn("checkstyle")
-  }
-
+  
   tasks.withType<Test>().configureEach {
     systemProperty("updateTestFixtures", System.getProperty("updateTestFixtures"))
     systemProperty("codegenTests", System.getProperty("codegenTests"))

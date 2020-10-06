@@ -81,12 +81,6 @@ kotlin {
   }
 }
 
-tasks.withType<Checkstyle> {
-  exclude("**/BufferedSourceJsonReader.java")
-  exclude("**/JsonScope.java")
-  exclude("**/JsonUtf8Writer.java")
-}
-
 tasks.named("javadoc").configure {
   /**
    * Somehow Javadoc fails when I removed the `@JvmSynthetic` annotation from `InputFieldWriter.ListItemWriter.writeList`
