@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-  add("compileOnly", groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
+  compileOnly(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
 
-  add("api", groovy.util.Eval.x(project, "x.dep.okio"))
+  api(groovy.util.Eval.x(project, "x.dep.okio"))
 }

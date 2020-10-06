@@ -60,7 +60,3 @@ kotlin {
   }
 }
 
-tasks.withType<Javadoc> {
-  options.encoding = "UTF-8"
-}
-

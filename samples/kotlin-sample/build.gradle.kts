@@ -35,15 +35,15 @@ tasks.withType<KotlinCompile> {
 }
 
 dependencies {
-    add("implementation", "com.apollographql.apollo:apollo-rx2-support")
-    add("implementation", "com.apollographql.apollo:apollo-coroutines-support")
-    add("implementation", "com.apollographql.apollo:apollo-runtime")
-    add("implementation", "com.apollographql.apollo:apollo-http-cache")
-    add("implementation", groovy.util.Eval.x(project, "x.dep.okHttp.logging"))
-    add("implementation", groovy.util.Eval.x(project, "x.dep.androidx.appcompat"))
-    add("implementation", groovy.util.Eval.x(project, "x.dep.androidx.recyclerView"))
-    add("implementation", groovy.util.Eval.x(project, "x.dep.kotlin.coroutinesAndroid"))
-    add("implementation", groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
-    add("implementation", groovy.util.Eval.x(project, "x.dep.rx.android"))
-    add("implementation", groovy.util.Eval.x(project, "x.dep.rx.java"))
+    implementation("com.apollographql.apollo:apollo-rx2-support")
+    implementation("com.apollographql.apollo:apollo-coroutines-support")
+    implementation("com.apollographql.apollo:apollo-runtime")
+    implementation("com.apollographql.apollo:apollo-http-cache")
+    implementation(groovy.util.Eval.x(project, "x.dep.okHttp.logging"))
+    implementation(groovy.util.Eval.x(project, "x.dep.androidx.appcompat"))
+    implementation(groovy.util.Eval.x(project, "x.dep.androidx.recyclerView"))
+    implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutinesAndroid"))
+    implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
+    implementation(groovy.util.Eval.x(project, "x.dep.rx.android"))
+    implementation(groovy.util.Eval.x(project, "x.dep.rx.java"))
 }
