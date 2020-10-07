@@ -138,7 +138,7 @@ abstract class DefaultCompilationUnit @Inject constructor(
     fun resolveSchema(project: Project, schemaPathProvider: Provider<String>, directories: Set<File>, sourceSetNames: List<String>): String? {
       if (schemaPathProvider.isPresent) {
         val schemaPath = schemaPathProvider.get()
-        if (schemaPath.startsWith(File.separator)) {
+        if (File(schemaPath).isRooted) {
           return schemaPath
         } else if (schemaPath.startsWith("..")) {
           return project.file("src/main/graphql/$schemaPath").normalize().path

@@ -16,13 +16,18 @@ import java.io.File
 import java.io.IOException
 import java.util.Locale
 
-internal object GraphSDLSchemaParser {
+object GraphSDLSchemaParser {
   fun File.parse(): GraphSdlSchema {
     val document = try {
       readText()
     } catch (e: IOException) {
       throw RuntimeException("Failed to read GraphQL SDL schema file `$this`", e)
     }
+    return document.parse(absolutePath)
+  }
+
+  fun String.parse(absolutePath: String = "(source)"): GraphSdlSchema {
+    val document = this
 
     val tokenStream = GraphSDLLexer(ANTLRInputStream(document))
         .apply { removeErrorListeners() }
