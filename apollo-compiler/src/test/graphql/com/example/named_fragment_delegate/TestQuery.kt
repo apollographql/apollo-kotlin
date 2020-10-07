@@ -144,6 +144,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   interface Hero {
     val __typename: String
 
+    fun asDroidDetails(): DroidDetails? = this as? DroidDetails
+
+    fun asHumanDetails(): HumanDetails? = this as? HumanDetails
+
     fun marshaller(): ResponseFieldMarshaller
 
     companion object {

@@ -200,6 +200,8 @@ data class TestQuery(
      */
     val name: String
 
+    fun asHuman1(): Human1? = this as? Human1
+
     fun marshaller(): ResponseFieldMarshaller
 
     companion object {
@@ -365,6 +367,8 @@ data class TestQuery(
      */
     val name: String
 
+    fun asHuman2(): Human2? = this as? Human2
+
     fun marshaller(): ResponseFieldMarshaller
 
     companion object {
@@ -483,6 +487,10 @@ data class TestQuery(
      * The name of the character
      */
     val name: String
+
+    fun asHuman(): Human? = this as? Human
+
+    fun asDroid(): Droid? = this as? Droid
 
     fun marshaller(): ResponseFieldMarshaller
 

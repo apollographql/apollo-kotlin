@@ -338,6 +338,12 @@ data class TestQuery(
      */
     val id: String
 
+    fun asHuman(): Human? = this as? Human
+
+    fun asCharacter1(): Character1? = this as? Character1
+
+    fun asDroid(): Droid? = this as? Droid
+
     fun marshaller(): ResponseFieldMarshaller
 
     companion object {

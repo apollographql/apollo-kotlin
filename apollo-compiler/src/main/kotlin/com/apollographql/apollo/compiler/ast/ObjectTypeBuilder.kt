@@ -120,7 +120,11 @@ internal class ObjectTypeBuilder(
               schemaType = schemaType.name,
               kind = CodeGenerationAst.ObjectType.Kind.Fragment(
                   defaultImplementation = defaultImplementationType,
-                  possibleImplementations = possibleImplementations
+                  possibleImplementations = possibleImplementations,
+                  allPossibleTypes = possibleImplementations.values.flatMap { typeRef ->
+                    val interfaces = nestedTypeContainer.typeContainer[typeRef]?.implements?.minus(fragmentRootInterfaceType)
+                    interfaces?.takeIf { it.isNotEmpty() } ?: listOf(typeRef)
+                  }.toSet()
               )
           )
         }
@@ -354,8 +358,7 @@ internal class ObjectTypeBuilder(
     } else {
       val typeName = when {
         this.interfaceType?.name != null -> "${this.interfaceType.name}Impl"
-        schemaType.kind === IntrospectionSchema.Kind.OBJECT -> this.typeCondition
-        else -> "${this.typeCondition}Impl"
+        else -> this.typeCondition
       }
       buildObjectType(
           name = typeName,

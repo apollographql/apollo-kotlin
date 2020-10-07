@@ -59,6 +59,15 @@ internal fun CodeGenerationAst.ObjectType.objectTypeSpec(
                   possibleImplementations = kind.possibleImplementations
               )
           )
+          kind.allPossibleTypes.forEach { type ->
+            addFunction(
+                FunSpec
+                    .builder("as${type.name}")
+                    .returns(type.asTypeName().copy(nullable = true))
+                    .addStatement("return this as? %T", type.asTypeName())
+                    .build()
+            )
+          }
         }
       }
       .applyIf(!abstract) {

@@ -131,7 +131,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   /**
    * A character from the Star Wars universe
    */
-  data class CharacterImpl(
+  data class Character(
     override val __typename: String = "Character",
     /**
      * The name of the character
@@ -140,8 +140,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   ) : Object {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@CharacterImpl.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@CharacterImpl.name)
+        writer.writeString(RESPONSE_FIELDS[0], this@Character.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@Character.name)
       }
     }
 
@@ -151,17 +151,17 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): CharacterImpl = reader.run {
+      operator fun invoke(reader: ResponseReader): Character = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
         val name = readString(RESPONSE_FIELDS[1])!!
-        CharacterImpl(
+        Character(
           __typename = __typename,
           name = name
         )
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<CharacterImpl> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<Character> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -194,6 +194,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   interface Object {
     val __typename: String
 
+    fun asCharacter(): Character? = this as? Character
+
     fun marshaller(): ResponseFieldMarshaller
 
     companion object {
@@ -204,8 +206,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       operator fun invoke(reader: ResponseReader): Object {
         val typename = reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
-          "Droid" -> CharacterImpl(reader)
-          "Human" -> CharacterImpl(reader)
+          "Droid" -> Character(reader)
+          "Human" -> Character(reader)
           else -> OtherObject(reader)
         }
       }

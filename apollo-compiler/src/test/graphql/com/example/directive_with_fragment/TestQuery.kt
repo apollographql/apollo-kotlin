@@ -250,6 +250,10 @@ data class TestQuery(
      */
     val id: String
 
+    fun asHeroDetails(): HeroDetails? = this as? HeroDetails
+
+    fun asHumanDetails(): HumanDetails? = this as? HumanDetails
+
     fun marshaller(): ResponseFieldMarshaller
 
     companion object {

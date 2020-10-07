@@ -175,6 +175,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val name: String
 
+    fun asHuman(): Human? = this as? Human
+
     fun marshaller(): ResponseFieldMarshaller
 
     companion object {
