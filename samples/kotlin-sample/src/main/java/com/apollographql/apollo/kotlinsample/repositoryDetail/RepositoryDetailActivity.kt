@@ -31,7 +31,7 @@ class RepositoryDetailActivity : AppCompatActivity() {
 
     setupDataSource()
 
-    val repoName = intent.getStringExtra(REPO_NAME_KEY)
+    val repoName = intent.getStringExtra(REPO_NAME_KEY)!!
     supportActionBar?.title = repoName
 
     fetchRepository(repoName)

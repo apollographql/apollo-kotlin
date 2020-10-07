@@ -29,7 +29,7 @@ class CommitsActivity : AppCompatActivity() {
     super.onCreate(savedInstanceState)
     binding = ActivityCommitsBinding.inflate(layoutInflater)
 
-    val repoName = intent.getStringExtra(REPO_NAME_KEY)
+    val repoName = intent.getStringExtra(REPO_NAME_KEY)!!
     supportActionBar?.title = repoName
 
     binding.recyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)

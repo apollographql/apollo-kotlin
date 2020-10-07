@@ -1,19 +1,13 @@
 plugins {
-  `java-library`
+  kotlin("jvm")
 }
 
 dependencies {
-  add("compileOnly", groovy.util.Eval.x(project, "x.dep.jetbrainsAnnotations"))
+  api(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
+  api(project(":apollo-api"))
+  api(project(":apollo-http-cache-api"))
 
-  add("api", groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
-  add("api", project(":apollo-api"))
-  add("api", project(":apollo-http-cache-api"))
-
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.junit"))
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.truth"))
-}
-
-tasks.withType<Javadoc> {
-  options.encoding = "UTF-8"
+  testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
 }
 

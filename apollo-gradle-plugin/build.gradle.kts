@@ -1,37 +1,29 @@
 plugins {
   id("java")
-  id("org.jetbrains.kotlin.jvm")
+  kotlin("jvm")
   id("java-gradle-plugin")
   id("com.gradle.plugin-publish")
   kotlin("kapt")
 }
 
-// groovy strings with double quotes are GString.
-// groovy strings with single quotes are java.lang.String
-// In all cases, gradle APIs take Any so just feed them whatever is returned
-fun dep(key: String) = (extra["dep"] as Map<*, *>)[key]!!
-
-fun Any.dot(key: String): Any {
-  return (this as Map<String, *>)[key]!!
-}
 
 dependencies {
   compileOnly(gradleApi())
-  compileOnly(dep("kotlin").dot("plugin"))
-  compileOnly(dep("android").dot("minPlugin"))
-  // kotlin-reflect is transitively pulled by ythe android plugin, make it explicit so that it uses the same version as the rest of kotlin libs
-  compileOnly(dep("kotlin").dot("reflect"))
+  compileOnly(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
+  compileOnly(groovy.util.Eval.x(project, "x.dep.android.minPlugin"))
+  // kotlin-reflect is transitively pulled by the android plugin, make it explicit so that it uses the same version as the rest of kotlin libs
+  compileOnly(groovy.util.Eval.x(project, "x.dep.kotlin.reflect"))
 
   api(project(":apollo-compiler"))
   implementation(project(":apollo-api")) // for QueryDocumentMinifier
-  implementation(dep("okHttp").dot("okHttp4"))
-  implementation(dep("moshi").dot("moshi"))
+  implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp4"))
+  implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
   kapt(groovy.util.Eval.x(project, "x.dep.moshi.kotlinCodegen"))
 
-  testImplementation(dep("junit"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
 
-  testImplementation(dep("okHttp").dot("mockWebServer4"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer4"))
 }
 
 tasks.withType<Test> {

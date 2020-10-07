@@ -29,8 +29,6 @@ actual class SqlNormalizedCacheFactory internal actual constructor(
       )
   )
 
-  constructor(apolloSqlHelper: ApolloSqlHelper) : this(apolloSqlHelper.sqlDriver)
-
   private val apolloDatabase = ApolloDatabase(driver)
 
   override fun create(recordFieldAdapter: RecordFieldJsonAdapter) =

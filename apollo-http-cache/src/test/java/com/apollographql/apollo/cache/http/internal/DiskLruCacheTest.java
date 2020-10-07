@@ -686,7 +686,7 @@ public final class DiskLruCacheTest {
   @Test public void readingTheSameStreamMultipleTimes() throws Exception {
     set("a", "a", "b");
     DiskLruCache.Snapshot snapshot = cache.get("a");
-    assertThat(snapshot.getSource(0)).isSameAs(snapshot.getSource(0));
+    assertThat(snapshot.getSource(0)).isEqualTo(snapshot.getSource(0));
     snapshot.close();
   }
 
