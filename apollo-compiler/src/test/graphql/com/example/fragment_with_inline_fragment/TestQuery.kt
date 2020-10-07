@@ -616,6 +616,14 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val appearsIn: List<Episode?>
 
+    fun asHeroDetails(): HeroDetails? = this as? HeroDetails
+
+    fun asDroid(): Droid? = this as? Droid
+
+    fun asDroidDetails(): DroidDetails? = this as? DroidDetails
+
+    fun asHumanDetails(): HumanDetails? = this as? HumanDetails
+
     fun marshaller(): ResponseFieldMarshaller
 
     companion object {

@@ -745,6 +745,12 @@ interface HeroDetails : GraphqlFragment {
      */
     override val friendsConnection: FriendsConnection5
 
+    fun asDroid(): Droid? = this as? Droid
+
+    fun asDroidDetails(): DroidDetails? = this as? DroidDetails
+
+    fun asHumanDetails(): HumanDetails? = this as? HumanDetails
+
     override fun marshaller(): ResponseFieldMarshaller
 
     companion object {

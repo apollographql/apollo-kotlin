@@ -330,6 +330,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
      */
     val name: String
 
+    fun asHuman(): Human? = this as? Human
+
+    fun asDroid(): Droid? = this as? Droid
+
     fun marshaller(): ResponseFieldMarshaller
 
     companion object {
@@ -351,7 +355,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   /**
    * A character from the Star Wars universe
    */
-  data class CharacterImpl(
+  data class Character(
     override val __typename: String = "Character",
     /**
      * The ID of the character
@@ -368,11 +372,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   ) : Search {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@CharacterImpl.__typename)
-        writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField,
-            this@CharacterImpl.id)
-        writer.writeString(RESPONSE_FIELDS[2], this@CharacterImpl.name)
-        writer.writeList(RESPONSE_FIELDS[3], this@CharacterImpl.friends) { value, listItemWriter ->
+        writer.writeString(RESPONSE_FIELDS[0], this@Character.__typename)
+        writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, this@Character.id)
+        writer.writeString(RESPONSE_FIELDS[2], this@Character.name)
+        writer.writeList(RESPONSE_FIELDS[3], this@Character.friends) { value, listItemWriter ->
           value?.forEach { value ->
             listItemWriter.writeObject(value?.marshaller())}
         }
@@ -389,7 +392,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forList("friends", "friends", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): CharacterImpl = reader.run {
+      operator fun invoke(reader: ResponseReader): Character = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
         val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)!!
         val name = readString(RESPONSE_FIELDS[2])!!
@@ -398,7 +401,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
             Friend(reader)
           }
         }
-        CharacterImpl(
+        Character(
           __typename = __typename,
           id = id,
           name = name,
@@ -407,7 +410,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<CharacterImpl> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<Character> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -474,6 +477,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   interface Search {
     val __typename: String
 
+    fun asCharacter(): Character? = this as? Character
+
+    fun asStarship(): Starship? = this as? Starship
+
     fun marshaller(): ResponseFieldMarshaller
 
     companion object {
@@ -484,8 +491,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       operator fun invoke(reader: ResponseReader): Search {
         val typename = reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
-          "Droid" -> CharacterImpl(reader)
-          "Human" -> CharacterImpl(reader)
+          "Droid" -> Character(reader)
+          "Human" -> Character(reader)
           "Starship" -> Starship(reader)
           else -> OtherSearch(reader)
         }

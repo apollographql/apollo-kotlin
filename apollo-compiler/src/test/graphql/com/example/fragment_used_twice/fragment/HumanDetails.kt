@@ -124,6 +124,8 @@ interface HumanDetails : GraphqlFragment {
      */
     override val name: String
 
+    fun asCharacterDetails(): CharacterDetails? = this as? CharacterDetails
+
     override fun marshaller(): ResponseFieldMarshaller
 
     companion object {
