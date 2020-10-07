@@ -134,6 +134,8 @@ class CodegenTest(private val folder: File) {
              * ./gradlew :apollo-compiler:test -DcodegenTests="fragments_with_type_condition" --tests '*Codegen*'
              */
             file.isDirectory && (filterRegex == null || filterRegex.matchEntire(file.toString()) != null)
+          }.filter {
+            it.name.contains("fragment_with_inline_fragment") || true
           }
     }
   }

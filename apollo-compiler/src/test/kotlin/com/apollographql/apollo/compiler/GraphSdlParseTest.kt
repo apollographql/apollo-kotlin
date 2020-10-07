@@ -22,7 +22,8 @@ class GraphSdlParseTest() {
      * - leading/trailing spaces in descriptions
      * - defaultValue coercion
      */
-    val actualSchema = GraphSdlSchema(File("src/test/sdl/schema.sdl")).toIntrospectionSchema().normalize()
+    val sdlSchema = GraphSdlSchema(File("src/test/sdl/schema.sdl"))
+    val actualSchema = sdlSchema.toIntrospectionSchema().normalize()
     val expectedSchema = IntrospectionSchema(File("src/test/sdl/schema.json")).normalize()
 
     assertEquals(actualSchema.toString(), expectedSchema.toString())
