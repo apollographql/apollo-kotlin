@@ -199,7 +199,7 @@ internal fun CodeGenerationAst.InputField.writeCodeBlock(thisRef: String): CodeB
             .add("writer.writeList(%S, this@%L.%L.value?.let { value ->\n", schemaName, thisRef, name)
             .indent()
             .beginControlFlow("%T { listItemWriter ->", InputFieldWriter.ListWriter::class)
-            .beginControlFlow("value.forEach { value ->")
+            .beginControlFlow("value.forEach·{ value ->")
             .add(type.rawType.writeListItem())
             .endControlFlow()
             .endControlFlow()
@@ -209,7 +209,7 @@ internal fun CodeGenerationAst.InputField.writeCodeBlock(thisRef: String): CodeB
       } else {
         codeBlockBuilder
             .beginControlFlow("writer.writeList(%S) { listItemWriter ->", schemaName)
-            .beginControlFlow("this@%L.%L.forEach { value ->", thisRef, name)
+            .beginControlFlow("this@%L.%L.forEach·{ value ->", thisRef, name)
             .add(type.rawType.writeListItem())
             .endControlFlow()
             .endControlFlow()
@@ -242,7 +242,7 @@ private fun CodeGenerationAst.FieldType.writeListItem(): CodeBlock {
     }
     is CodeGenerationAst.FieldType.Array -> CodeBlock.builder()
         .beginControlFlow("listItemWriter.writeList { listItemWriter ->")
-        .beginControlFlow("value%L.forEach { value ->", if (nullable) "?" else "")
+        .beginControlFlow("value%L.forEach·{ value ->", if (nullable) "?" else "")
         .add(rawType.writeListItem())
         .endControlFlow()
         .endControlFlow()
