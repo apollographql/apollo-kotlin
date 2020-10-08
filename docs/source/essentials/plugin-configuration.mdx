@@ -8,9 +8,9 @@ Apollo Android comes with logical defaults that will work for the majority of us
 
 The Gradle DSL exposes three types of objects:
 
-* [ApolloExtension](https://github.com/apollographql/apollo-android/blob/master/apollo-gradle-plugin/src/main/kotlin/com/apollographql/apollo/gradle/api/ApolloExtension.kt) is the global entry point of the plugin and will configure global options.
-* A [Service](https://github.com/apollographql/apollo-android/blob/master/apollo-gradle-plugin/src/main/kotlin/com/apollographql/apollo/gradle/api/Service.kt) is the configuration of a single GraphQL endpoint. If your app uses multiple GraphQL endpoints, you will need to define several services. 
-* A [CompilationUnit](https://github.com/apollographql/apollo-android/blob/master/apollo-gradle-plugin/src/main/kotlin/com/apollographql/apollo/gradle/api/CompilationUnit.kt) is an invocation of the Apollo compiler. It happens for each Service and Variant in your project.
+* [ApolloExtension](https://github.com/apollographql/apollo-android/blob/main/apollo-gradle-plugin/src/main/kotlin/com/apollographql/apollo/gradle/api/ApolloExtension.kt) is the global entry point of the plugin and will configure global options.
+* A [Service](https://github.com/apollographql/apollo-android/blob/main/apollo-gradle-plugin/src/main/kotlin/com/apollographql/apollo/gradle/api/Service.kt) is the configuration of a single GraphQL endpoint. If your app uses multiple GraphQL endpoints, you will need to define several services.
+* A [CompilationUnit](https://github.com/apollographql/apollo-android/blob/main/apollo-gradle-plugin/src/main/kotlin/com/apollographql/apollo/gradle/api/CompilationUnit.kt) is an invocation of the Apollo compiler. It happens for each Service and Variant in your project.
 
 These 3 objects inherit from `CompilerParams` and compiler options can be set in all of them. Options set on the most reduced scopes will override those set on the more global scopes:
 
@@ -43,7 +43,7 @@ apollo {
 
 ```
 
-The up-to-date list of options can be found in [CompilerParams](https://github.com/apollographql/apollo-android/blob/master/apollo-gradle-plugin/src/main/kotlin/com/apollographql/apollo/gradle/api/CompilerParams.kt):
+The up-to-date list of options can be found in [CompilerParams](https://github.com/apollographql/apollo-android/blob/main/apollo-gradle-plugin/src/main/kotlin/com/apollographql/apollo/gradle/api/CompilerParams.kt):
 
 ```kotlin
   /**

@@ -12,7 +12,7 @@ Since Apollo queries are just standard GraphQL, anything you can type into the G
 
 The following examples assume that you've already set up Apollo Android for your Android/Java application. Read our [getting started](/essentials/get-started/) guide if you need help with either of those steps.
 
-> All code snippets are taken from the apollo-sample project and can be found [here](https://github.com/apollographql/apollo-android/tree/master/apollo-sample).
+> All code snippets are taken from the apollo-sample project and can be found [here](https://github.com/apollographql/apollo-android/tree/main/apollo-sample).
 
 Apollo-android takes a schema and a set of `.graphql` files and uses these to generate code you can use to execute queries and access typed results.
 
@@ -76,7 +76,7 @@ apolloClient().query(feedQuery)
 
 </MultiCodeBlock>
 
-> By default, Apollo will deliver query results on a background thread. You can provide a handler in `enqueue`, or use [`apollo-android-support`](https://github.com/apollographql/apollo-android/tree/master/apollo-android-support) if you're using the result to update the UI.
+> By default, Apollo will deliver query results on a background thread. You can provide a handler in `enqueue`, or use [`apollo-android-support`](https://github.com/apollographql/apollo-android/tree/main/apollo-android-support) if you're using the result to update the UI.
 
 The `ApolloCall.Callback` also provides error handling methods for request parsing failed, network error and request cancelled, amongst others.
 

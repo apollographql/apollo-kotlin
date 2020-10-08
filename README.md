@@ -1,7 +1,7 @@
 
 # Apollo Android
 
-[![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg?maxAge=2592000)](https://raw.githubusercontent.com/apollographql/apollo-android/master/LICENSE) 
+[![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg?maxAge=2592000)](https://raw.githubusercontent.com/apollographql/apollo-android/main/LICENSE) 
 [![Join Spectrum](https://img.shields.io/badge/spectrum-join-orange?logo=spectrum)](https://spectrum.chat/apollo/apollo-android) 
 [![Slack](https://img.shields.io/static/v1?label=kotlinlang&message=apollo-android&color=15a2f5&logo=slack)](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ)
 [![CI](https://github.com/apollographql/apollo-android/workflows/CI/badge.svg)](https://github.com/apollographql/apollo-android/actions)
@@ -97,7 +97,7 @@ Apollo Android runs on the following platforms:
  
 ## Contributing
 
-If you'd like to contribute, please see [Contributing.md](https://github.com/apollographql/apollo-android/blob/master/Contributing.md).
+If you'd like to contribute, please see [Contributing.md](https://github.com/apollographql/apollo-android/blob/main/Contributing.md).
 
 ## Additional resources
 
