@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler
 
+import com.apollographql.apollo.compiler.parser.error.DocumentParseException
 import com.apollographql.apollo.compiler.parser.error.ParseException
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Companion.wrap
@@ -66,6 +67,17 @@ class GraphSdlParseTest() {
       assertThat(e.message).contains("Object `Cat` cannot implement non-interface `Animal`")
     }
   }
+
+  @Test
+  fun `argument names cannot contain '$'`() {
+    try {
+      GraphSdlSchema(File("src/test/sdl/dollar-arg-name.sdl"))
+      fail("parse expected to fail but was successful")
+    } catch (e: DocumentParseException) {
+      assertThat(e.message).contains("Unsupported token `$`")
+    }
+  }
+
 
   @Test
   fun `writing SDL and parsing again yields identical schemas`() {
