@@ -1,0 +1,9 @@
+query TestQuery($operation: String) {
+  typeWithGraphQLKeywords {
+    on
+    null(fragment: $operation)
+    alias: null(fragment: """A string
+with a new line
+""")
+  }
+}
