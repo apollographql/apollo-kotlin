@@ -7,7 +7,6 @@ import com.apollographql.apollo.api.ResponseField.Companion.forString
 import com.apollographql.apollo.api.ScalarType
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.InputFieldWriter
-import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder
 import com.google.common.truth.Truth
 import org.junit.Test
 import java.io.IOException
@@ -45,9 +44,7 @@ class CacheKeyBuilderTest {
 
   @Test
   fun testFieldWithArgument() {
-    val arguments = UnmodifiableMapBuilder<String, Any?>(1)
-        .put("episode", "JEDI")
-        .build()
+    val arguments = mapOf<String, Any?>("episode" to "JEDI")
     val field = createResponseField("hero", "hero", arguments)
     val variables: Operation.Variables = object : Operation.Variables() {
       override fun valueMap(): Map<String, Any?> {
@@ -59,9 +56,7 @@ class CacheKeyBuilderTest {
 
   @Test
   fun testFieldWithArgumentAndAlias() {
-    val arguments = UnmodifiableMapBuilder<String, Any?>(1)
-        .put("episode", "JEDI")
-        .build()
+    val arguments = mapOf<String, Any?>("episode" to "JEDI")
     val field = createResponseField("r2", "hero", arguments)
     val variables: Operation.Variables = object : Operation.Variables() {
       override fun valueMap(): Map<String, Any?> {
@@ -73,13 +68,13 @@ class CacheKeyBuilderTest {
 
   @Test
   fun testFieldWithVariableArgument() {
-    val argument = UnmodifiableMapBuilder<String, Any?>(1)
-        .put("episode", UnmodifiableMapBuilder<String, Any>(2)
-            .put("kind", "Variable")
-            .put("variableName", "episode")
-            .build())
-    val field = createResponseField("hero", "hero", argument
-        .build())
+    val argument = mapOf<String, Any?>(
+        "episode" to mapOf<String, Any>(
+            "kind" to "Variable",
+            "variableName" to "episode"
+        )
+    )
+    val field = createResponseField("hero", "hero", argument)
     val variables: Operation.Variables = object : Operation.Variables() {
       override fun valueMap(): Map<String, Any?> {
         val map = HashMap<String, Any?>()
@@ -92,13 +87,13 @@ class CacheKeyBuilderTest {
 
   @Test
   fun testFieldWithVariableArgumentNull() {
-    val argument = UnmodifiableMapBuilder<String, Any?>(1)
-        .put("episode", UnmodifiableMapBuilder<String, Any>(2)
-            .put("kind", "Variable")
-            .put("variableName", "episode")
-            .build())
-    val field = createResponseField("hero", "hero", argument
-        .build())
+    val argument = mapOf<String, Any?>(
+        "episode" to mapOf<String, Any>(
+            "kind" to "Variable",
+            "variableName" to "episode"
+        )
+    )
+    val field = createResponseField("hero", "hero", argument)
     val variables: Operation.Variables = object : Operation.Variables() {
       override fun valueMap(): Map<String, Any?> {
         val map = HashMap<String, Any?>()
@@ -111,11 +106,11 @@ class CacheKeyBuilderTest {
 
   @Test
   fun testFieldWithMultipleArgument() {
-    val build = UnmodifiableMapBuilder<String, Any?>(1)
-        .put("episode", "JEDI")
-        .put("color", "blue")
-        .build()
-    val field = createResponseField("hero", "hero", build)
+    val arguments = mapOf<String, Any?>(
+        "episode" to "JEDI",
+        "color" to "blue"
+    )
+    val field = createResponseField("hero", "hero", arguments)
     val variables: Operation.Variables = object : Operation.Variables() {
       override fun valueMap(): Map<String, Any?> {
         return super.valueMap()
@@ -126,33 +121,32 @@ class CacheKeyBuilderTest {
 
   @Test
   fun testFieldWithMultipleArgumentsOrderIndependent() {
-    val arguments = UnmodifiableMapBuilder<String, Any?>(1)
-        .put("episode", "JEDI")
-        .put("color", "blue")
-        .build()
+    val arguments = mapOf<String, Any?>(
+        "episode" to "JEDI",
+        "color" to "blue"
+    )
     val field = createResponseField("hero", "hero", arguments)
     val variables: Operation.Variables = object : Operation.Variables() {
       override fun valueMap(): Map<String, Any?> {
         return super.valueMap()
       }
     }
-    val fieldTwoArguments = UnmodifiableMapBuilder<String, Any?>(1)
-        .put("color", "blue")
-        .put("episode", "JEDI")
-        .build()
+    val fieldTwoArguments = mapOf<String, Any?>(
+        "color" to "blue",
+        "episode" to "JEDI")
     val fieldTwo = createResponseField("hero", "hero", fieldTwoArguments)
     Truth.assertThat(cacheKeyBuilder.build(fieldTwo, variables)).isEqualTo(cacheKeyBuilder.build(field, variables))
   }
 
   @Test
   fun testFieldWithNestedObject() {
-    val arguments = UnmodifiableMapBuilder<String, Any?>(1)
-        .put("episode", "JEDI")
-        .put("nested", UnmodifiableMapBuilder<String, Any>(2)
-            .put("foo", 1)
-            .put("bar", 2)
-            .build())
-        .build()
+    val arguments = mapOf<String, Any?>(
+        "episode" to "JEDI",
+        "nested" to mapOf<String, Any>(
+            "foo" to 1,
+            "bar" to 2
+        )
+    )
     val field = createResponseField("hero", "hero", arguments)
     val variables: Operation.Variables = object : Operation.Variables() {
       override fun valueMap(): Map<String, Any?> {
@@ -164,9 +158,8 @@ class CacheKeyBuilderTest {
 
   @Test
   fun testFieldWithNonPrimitiveValue() {
-    val field = forString("hero", "hero", UnmodifiableMapBuilder<String, Any?>(1)
-        .put("episode", Episode.JEDI)
-        .build(), false, emptyList())
+    val field = forString("hero", "hero",
+        mapOf<String, Any?>("episode" to Episode.JEDI), false, emptyList())
     val variables: Operation.Variables = object : Operation.Variables() {
       override fun valueMap(): Map<String, Any?> {
         return super.valueMap()
@@ -177,16 +170,16 @@ class CacheKeyBuilderTest {
 
   @Test
   fun testFieldWithNestedObjectAndVariables() {
-    val arguments = UnmodifiableMapBuilder<String, Any?>(1)
-        .put("episode", "JEDI")
-        .put("nested", UnmodifiableMapBuilder<String, Any>(2)
-            .put("foo", UnmodifiableMapBuilder<String, Any>(2)
-                .put("kind", "Variable")
-                .put("variableName", "stars")
-                .build())
-            .put("bar", "2")
-            .build())
-        .build()
+    val arguments = mapOf<String, Any?>(
+        "episode" to "JEDI",
+        "nested" to mapOf(
+            "foo" to mapOf<String, Any>(
+                "kind" to "Variable",
+                "variableName" to "stars"
+            ),
+            "bar" to "2"
+        )
+    )
     val field = createResponseField("hero", "hero", arguments)
     val variables: Operation.Variables = object : Operation.Variables() {
       override fun valueMap(): Map<String, Any?> {
@@ -200,16 +193,16 @@ class CacheKeyBuilderTest {
 
   @Test
   fun fieldInputTypeArgument() {
-    val arguments = UnmodifiableMapBuilder<String, Any?>(1)
-        .put("episode", "JEDI")
-        .put("nested", UnmodifiableMapBuilder<String, Any>(2)
-            .put("foo", UnmodifiableMapBuilder<String, Any>(2)
-                .put("kind", "Variable")
-                .put("variableName", "testInput")
-                .build())
-            .put("bar", "2")
-            .build())
-        .build()
+    val arguments = mapOf<String, Any?>(
+        "episode" to "JEDI",
+        "nested" to mapOf<String, Any>(
+            "foo" to mapOf<String, Any>(
+                "kind" to "Variable",
+                "variableName" to "testInput"
+            ),
+            "bar" to "2"
+        )
+    )
     val field = createResponseField("hero", "hero", arguments)
     val testInput: InputType = object : InputType {
       override fun marshaller(): InputFieldMarshaller {
@@ -288,16 +281,16 @@ class CacheKeyBuilderTest {
 
   @Test
   fun testFieldArgumentInputTypeWithNulls() {
-    val arguments = UnmodifiableMapBuilder<String, Any?>(1)
-        .put("episode", null)
-        .put("nested", UnmodifiableMapBuilder<String, Any?>(2)
-            .put("foo", UnmodifiableMapBuilder<String, Any>(2)
-                .put("kind", "Variable")
-                .put("variableName", "testInput")
-                .build())
-            .put("bar", null)
-            .build())
-        .build()
+    val arguments = mapOf<String, Any?>(
+        "episode" to null,
+        "nested" to mapOf<String, Any?>(
+            "foo" to mapOf<String, Any>(
+                "kind" to "Variable",
+                "variableName" to "testInput"
+            ),
+            "bar" to null
+        )
+    )
     val field = createResponseField("hero", "hero", arguments)
     val testInput: InputType = object : InputType {
       override fun marshaller(): InputFieldMarshaller {

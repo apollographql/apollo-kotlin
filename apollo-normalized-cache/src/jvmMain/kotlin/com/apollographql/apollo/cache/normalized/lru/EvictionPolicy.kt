@@ -1,6 +1,5 @@
 package com.apollographql.apollo.cache.normalized.lru
 
-import com.apollographql.apollo.api.internal.Optional
 import java.util.concurrent.TimeUnit
 
 /**
@@ -15,24 +14,6 @@ class EvictionPolicy internal constructor(
     val expireAfterWrite: Long? = null,
     val expireAfterWriteTimeUnit: TimeUnit? = null
 ) {
-
-  @Deprecated("Use property instead", replaceWith = ReplaceWith("maxSizeBytes"))
-  fun maxSizeBytes(): Optional<Long> = Optional.fromNullable(maxSizeBytes)
-
-  @Deprecated("Use property instead", replaceWith = ReplaceWith("maxEntries"))
-  fun maxEntries(): Optional<Long> = Optional.fromNullable(maxEntries)
-
-  @Deprecated("Use property instead", replaceWith = ReplaceWith("expireAfterAccess"))
-  fun expireAfterAccess(): Optional<Long> = Optional.fromNullable(expireAfterAccess)
-
-  @Deprecated("Use property instead", replaceWith = ReplaceWith("expireAfterAccessTimeUnit"))
-  fun expireAfterAccessTimeUnit(): Optional<TimeUnit> = Optional.fromNullable(expireAfterAccessTimeUnit)
-
-  @Deprecated("Use property instead", replaceWith = ReplaceWith("expireAfterWrite"))
-  fun expireAfterWrite(): Optional<Long> = Optional.fromNullable(expireAfterWrite)
-
-  @Deprecated("Use property instead", replaceWith = ReplaceWith("expireAfterWriteTimeUnit"))
-  fun expireAfterWriteTimeUnit(): Optional<TimeUnit> = Optional.fromNullable(expireAfterWriteTimeUnit)
 
   class Builder internal constructor() {
     private var maxSizeBytes: Long? = null
