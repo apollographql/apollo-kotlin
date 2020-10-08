@@ -22,42 +22,6 @@ open class ResponseField internal constructor(
     val conditions: List<Condition>
 ) {
 
-  @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "type"))
-  @JsName("getType")
-  fun type(): Type {
-    return type
-  }
-
-  @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "responseName"))
-  @JsName("getResponseName")
-  fun responseName(): String {
-    return responseName
-  }
-
-  @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "fieldName"))
-  @JsName("getFieldName")
-  fun fieldName(): String {
-    return fieldName
-  }
-
-  @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "arguments"))
-  @JsName("getArguments")
-  fun arguments(): Map<String, Any?> {
-    return arguments
-  }
-
-  @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "optional"))
-  @JsName("getOptional")
-  fun optional(): Boolean {
-    return optional
-  }
-
-  @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "conditions"))
-  @JsName("getConditions")
-  fun conditions(): List<Condition> {
-    return conditions
-  }
-
   /**
    * Resolves field argument value by [name]. If argument represents a references to the variable, it will be resolved from
    * provided operation [variables] values.
@@ -132,12 +96,6 @@ open class ResponseField internal constructor(
       conditions = conditions.orEmpty()
   ) {
 
-    @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "scalarType"))
-    @JsName("getScalarType")
-    fun scalarType(): ScalarType {
-      return scalarType
-    }
-
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is CustomTypeField) return false
@@ -184,11 +142,6 @@ open class ResponseField internal constructor(
   class TypeNameCondition internal constructor(
       val typeNames: List<String>
   ) : Condition() {
-    @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "typeNames"))
-    @JsName("getTypeNames")
-    fun typeNames(): List<String> {
-      return typeNames
-    }
 
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
@@ -211,20 +164,6 @@ open class ResponseField internal constructor(
       val variableName: String,
       val isInverted: Boolean
   ) : Condition() {
-    @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "variableName"))
-    @JsName("getVariableName")
-    fun variableName(): String {
-      return variableName
-    }
-
-    @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "isInverted"))
-    @JsName("getInverted")
-    fun inverted(): Boolean {
-      return isInverted
-    }
-
-    @Deprecated(message = "Use isInverted instead", replaceWith = ReplaceWith(expression = "isInverted"))
-    val inverted = isInverted
 
     override fun equals(other: Any?): Boolean {
       if (this === other) return true

@@ -10,9 +10,6 @@ import kotlin.jvm.JvmStatic
  */
 class CacheKey(val key: String) {
 
-  @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "key"))
-  fun key(): String = key
-
   override fun equals(other: Any?): Boolean {
     return key == (other as? CacheKey)?.key
   }

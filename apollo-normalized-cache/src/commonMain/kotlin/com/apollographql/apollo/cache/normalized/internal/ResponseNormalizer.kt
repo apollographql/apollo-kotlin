@@ -56,7 +56,7 @@ abstract class ResponseNormalizer<R> : ResolveDelegate<R> {
   override fun willResolveObject(objectField: ResponseField, objectSource: R?) {
     pathStack.push(path)
     val cacheKey = objectSource?.let { resolveCacheKey(objectField, it) } ?: CacheKey.NO_KEY
-    var cacheKeyValue = cacheKey.key()
+    var cacheKeyValue = cacheKey.key
     if (cacheKey.equals(CacheKey.NO_KEY)) {
       cacheKeyValue = pathToString()
     } else {
@@ -71,8 +71,8 @@ abstract class ResponseNormalizer<R> : ResolveDelegate<R> {
     path = pathStack.pop()
     if (objectSource != null) {
       val completedRecord = currentRecordBuilder.build()
-      valueStack.push(CacheReference(completedRecord.key()))
-      dependentKeys.add(completedRecord.key())
+      valueStack.push(CacheReference(completedRecord.key))
+      dependentKeys.add(completedRecord.key)
       recordSet.merge(completedRecord)
     }
     currentRecordBuilder = recordStack.pop().toBuilder()
@@ -109,7 +109,7 @@ abstract class ResponseNormalizer<R> : ResolveDelegate<R> {
     valueStack = SimpleStack()
     dependentKeys = HashSet()
     path = ArrayList()
-    currentRecordBuilder = builder(cacheKey.key())
+    currentRecordBuilder = builder(cacheKey.key)
     recordSet = RecordSet()
   }
 
@@ -156,7 +156,7 @@ abstract class ResponseNormalizer<R> : ResolveDelegate<R> {
       override fun cacheKeyBuilder(): CacheKeyBuilder {
         return object : CacheKeyBuilder {
           override fun build(field: ResponseField, variables: Operation.Variables): String {
-            return CacheKey.NO_KEY.key()
+            return CacheKey.NO_KEY.key
           }
         }
       }
