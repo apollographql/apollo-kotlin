@@ -1,11 +1,7 @@
 package com.apollographql.apollo.internal;
 
 
-import com.apollographql.apollo.ApolloCall;
-import com.apollographql.apollo.ApolloClient;
-import com.apollographql.apollo.ApolloQueryWatcher;
-import com.apollographql.apollo.IdFieldCacheKeyResolver;
-import com.apollographql.apollo.Utils;
+import com.apollographql.apollo.*;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
@@ -16,20 +12,17 @@ import com.apollographql.apollo.integration.normalizer.type.ColorInput;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.integration.normalizer.type.ReviewInput;
 import com.apollographql.apollo.rx2.Rx2Apollo;
-
+import io.reactivex.functions.Predicate;
+import okhttp3.Dispatcher;
+import okhttp3.OkHttpClient;
+import okhttp3.mockwebserver.MockWebServer;
+import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
-
-import org.jetbrains.annotations.NotNull;
-
-import io.reactivex.functions.Predicate;
-import okhttp3.Dispatcher;
-import okhttp3.OkHttpClient;
-import okhttp3.mockwebserver.MockWebServer;
 
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_FIRST;
@@ -80,9 +73,9 @@ public class QueryRefetchTest {
         apolloClient.query(new ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(CACHE_ONLY),
         new Predicate<Response<ReviewsByEpisodeQuery.Data>>() {
           @Override public boolean test(Response<ReviewsByEpisodeQuery.Data> response) throws Exception {
-            assertThat(response.data().reviews()).hasSize(3);
-            assertThat(response.data().reviews().get(2).stars()).isEqualTo(5);
-            assertThat(response.data().reviews().get(2).commentary()).isEqualTo("Amazing");
+            assertThat(response.getData().reviews()).hasSize(3);
+            assertThat(response.getData().reviews().get(2).stars()).isEqualTo(5);
+            assertThat(response.getData().reviews().get(2).commentary()).isEqualTo("Amazing");
             return true;
           }
         }
@@ -105,9 +98,9 @@ public class QueryRefetchTest {
         apolloClient.query(new ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(CACHE_ONLY),
         new Predicate<Response<ReviewsByEpisodeQuery.Data>>() {
           @Override public boolean test(Response<ReviewsByEpisodeQuery.Data> response) throws Exception {
-            assertThat(response.data().reviews()).hasSize(3);
-            assertThat(response.data().reviews().get(2).stars()).isEqualTo(5);
-            assertThat(response.data().reviews().get(2).commentary()).isEqualTo("Amazing");
+            assertThat(response.getData().reviews()).hasSize(3);
+            assertThat(response.getData().reviews().get(2).stars()).isEqualTo(5);
+            assertThat(response.getData().reviews().get(2).commentary()).isEqualTo("Amazing");
             return true;
           }
         }
@@ -131,9 +124,9 @@ public class QueryRefetchTest {
         apolloClient.query(new ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(CACHE_ONLY),
         new Predicate<Response<ReviewsByEpisodeQuery.Data>>() {
           @Override public boolean test(Response<ReviewsByEpisodeQuery.Data> response) throws Exception {
-            assertThat(response.data().reviews()).hasSize(4);
-            assertThat(response.data().reviews().get(3).stars()).isEqualTo(5);
-            assertThat(response.data().reviews().get(3).commentary()).isEqualTo("Awesome");
+            assertThat(response.getData().reviews()).hasSize(4);
+            assertThat(response.getData().reviews().get(3).stars()).isEqualTo(5);
+            assertThat(response.getData().reviews().get(3).commentary()).isEqualTo("Awesome");
             return true;
           }
         }
@@ -168,9 +161,9 @@ public class QueryRefetchTest {
     assertThat(server.getRequestCount()).isEqualTo(3);
 
     Response<ReviewsByEpisodeQuery.Data> empireReviewsQueryResponse = empireReviewsWatchResponse.get();
-    assertThat(empireReviewsQueryResponse.data().reviews()).hasSize(4);
-    assertThat(empireReviewsQueryResponse.data().reviews().get(3).stars()).isEqualTo(5);
-    assertThat(empireReviewsQueryResponse.data().reviews().get(3).commentary()).isEqualTo("Awesome");
+    assertThat(empireReviewsQueryResponse.getData().reviews()).hasSize(4);
+    assertThat(empireReviewsQueryResponse.getData().reviews().get(3).stars()).isEqualTo(5);
+    assertThat(empireReviewsQueryResponse.getData().reviews().get(3).commentary()).isEqualTo("Awesome");
 
     queryWatcher.cancel();
   }

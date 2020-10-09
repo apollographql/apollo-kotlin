@@ -5,7 +5,6 @@ import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.rx2.Rx2Apollo;
-
 import org.junit.Test;
 
 import java.io.IOException;
@@ -25,8 +24,8 @@ public class CacheOnlyFetcherTest extends BaseFetcherTest {
     apolloClient.query(query).responseFetcher(CACHE_ONLY).enqueue(trackingCallback);
     assertThat(trackingCallback.exceptions.size()).isEqualTo(0);
     assertThat(trackingCallback.responseList.size()).isEqualTo(1);
-    assertThat(trackingCallback.responseList.get(0).fromCache()).isTrue();
-    assertThat(trackingCallback.responseList.get(0).data()).isNull();
+    assertThat(trackingCallback.responseList.get(0).isFromCache()).isTrue();
+    assertThat(trackingCallback.responseList.get(0).getData()).isNull();
     assertThat(server.getRequestCount()).isEqualTo(0);
 
     // Populate cache
@@ -35,7 +34,7 @@ public class CacheOnlyFetcherTest extends BaseFetcherTest {
     final Response<EpisodeHeroNameQuery.Data> responseData
         = Rx2Apollo.from(apolloClient.query(query).responseFetcher(NETWORK_ONLY)).blockingFirst();
     assertThat(responseData.hasErrors()).isFalse();
-    assertThat(responseData.data().hero().name()).isEqualTo("R2-D2");
+    assertThat(responseData.getData().hero().name()).isEqualTo("R2-D2");
     assertThat(server.getRequestCount()).isEqualTo(1);
 
     // Success after cache populated
@@ -44,8 +43,8 @@ public class CacheOnlyFetcherTest extends BaseFetcherTest {
     apolloClient.query(query).responseFetcher(CACHE_ONLY).enqueue(trackingCallback);
     assertThat(trackingCallback.exceptions.size()).isEqualTo(0);
     assertThat(trackingCallback.responseList.size()).isEqualTo(1);
-    assertThat(trackingCallback.responseList.get(0).fromCache()).isTrue();
-    assertThat(trackingCallback.responseList.get(0).data().hero().name()).isEqualTo("R2-D2");
+    assertThat(trackingCallback.responseList.get(0).isFromCache()).isTrue();
+    assertThat(trackingCallback.responseList.get(0).getData().hero().name()).isEqualTo("R2-D2");
     assertThat(server.getRequestCount()).isEqualTo(1);
   }
 }

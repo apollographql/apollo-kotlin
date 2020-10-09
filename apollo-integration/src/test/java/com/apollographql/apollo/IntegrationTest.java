@@ -1,23 +1,16 @@
 package com.apollographql.apollo;
 
-import com.apollographql.apollo.api.CustomTypeAdapter;
-import com.apollographql.apollo.api.CustomTypeValue;
-import com.apollographql.apollo.api.Error;
-import com.apollographql.apollo.api.Input;
-import com.apollographql.apollo.api.OperationDataJsonSerializer;
-import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.api.ScalarType;
-import com.apollographql.apollo.api.ScalarTypeAdapters;
+import com.apollographql.apollo.api.*;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
+import com.apollographql.apollo.http.OkHttpExecutionContext;
 import com.apollographql.apollo.integration.httpcache.AllFilmsQuery;
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery;
 import com.apollographql.apollo.integration.httpcache.type.CustomType;
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.HeroNameQuery;
-import com.apollographql.apollo.http.OkHttpExecutionContext;
 import com.apollographql.apollo.response.OperationResponseParser;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 import com.google.common.base.Charsets;
@@ -38,12 +31,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import static com.apollographql.apollo.integration.normalizer.type.Episode.EMPIRE;
 import static com.apollographql.apollo.integration.normalizer.type.Episode.JEDI;
@@ -92,9 +80,9 @@ public class IntegrationTest {
         apolloClient.query(new AllPlanetsQuery()),
         new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
-            assertThat(response.data().allPlanets().planets().size()).isEqualTo(60);
+            assertThat(response.getData().allPlanets().planets().size()).isEqualTo(60);
 
-            List<String> planets = FluentIterable.from(response.data().allPlanets().planets())
+            List<String> planets = FluentIterable.from(response.getData().allPlanets().planets())
                 .transform(new Function<AllPlanetsQuery.Planet, String>() {
                   @Override public String apply(AllPlanetsQuery.Planet planet) {
                     return planet.fragments().planetFragment().name();
@@ -109,7 +97,7 @@ public class IntegrationTest {
                 .split("\\s*,\\s*")
             ));
 
-            AllPlanetsQuery.Planet firstPlanet = response.data().allPlanets().planets().get(0);
+            AllPlanetsQuery.Planet firstPlanet = response.getData().allPlanets().planets().get(0);
             assertThat(firstPlanet.fragments().planetFragment().climates()).isEqualTo(Collections.singletonList("arid"));
             assertThat(firstPlanet.fragments().planetFragment().surfaceWater()).isWithin(1d);
             assertThat(firstPlanet.filmConnection().totalCount()).isEqualTo(5);
@@ -134,7 +122,7 @@ public class IntegrationTest {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
             assertThat(response.hasErrors()).isTrue();
             //noinspection ConstantConditions
-            assertThat(response.errors()).containsExactly(new Error(
+            assertThat(response.getErrors()).containsExactly(new Error(
                 "Cannot query field \"names\" on type \"Species\".",
                 Collections.singletonList(new Error.Location(3, 5)), Collections.<String, Object>emptyMap()));
             return true;
@@ -150,12 +138,12 @@ public class IntegrationTest {
         new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
             assertThat(response.hasErrors()).isTrue();
-            assertThat(response.errors()).hasSize(1);
-            assertThat(response.errors().get(0).message()).isEqualTo("");
-            assertThat(response.errors().get(0).customAttributes()).hasSize(2);
-            assertThat(response.errors().get(0).customAttributes().get("code")).isEqualTo("userNotFound");
-            assertThat(response.errors().get(0).customAttributes().get("path")).isEqualTo("loginWithPassword");
-            assertThat(response.errors().get(0).locations()).hasSize(0);
+            assertThat(response.getErrors()).hasSize(1);
+            assertThat(response.getErrors().get(0).getMessage()).isEqualTo("");
+            assertThat(response.getErrors().get(0).getCustomAttributes()).hasSize(2);
+            assertThat(response.getErrors().get(0).getCustomAttributes().get("code")).isEqualTo("userNotFound");
+            assertThat(response.getErrors().get(0).getCustomAttributes().get("path")).isEqualTo("loginWithPassword");
+            assertThat(response.getErrors().get(0).getLocations()).hasSize(0);
             return true;
           }
         }
@@ -169,26 +157,26 @@ public class IntegrationTest {
         new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
             assertThat(response.hasErrors()).isTrue();
-            assertThat(response.errors().get(0).customAttributes()).hasSize(4);
-            assertThat(response.errors().get(0).customAttributes().get("code")).isEqualTo(new BigDecimal(500));
-            assertThat(response.errors().get(0).customAttributes().get("status")).isEqualTo("Internal Error");
-            assertThat(response.errors().get(0).customAttributes().get("fatal")).isEqualTo(true);
-            assertThat(response.errors().get(0).customAttributes().get("path")).isEqualTo(Arrays.asList("query"));
+            assertThat(response.getErrors().get(0).getCustomAttributes()).hasSize(4);
+            assertThat(response.getErrors().get(0).getCustomAttributes().get("code")).isEqualTo(new BigDecimal(500));
+            assertThat(response.getErrors().get(0).getCustomAttributes().get("status")).isEqualTo("Internal Error");
+            assertThat(response.getErrors().get(0).getCustomAttributes().get("fatal")).isEqualTo(true);
+            assertThat(response.getErrors().get(0).getCustomAttributes().get("path")).isEqualTo(Arrays.asList("query"));
             return true;
           }
         }
     );
   }
 
-  @Test public void errorResponse_with_data() throws Exception {
+  @Test public void errorResponse_with_getData() throws Exception {
     server.enqueue(mockResponse("ResponseErrorWithData.json"));
     assertResponse(
         apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(JEDI))),
         new Predicate<Response<EpisodeHeroNameQuery.Data>>() {
           @Override public boolean test(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
-            assertThat(response.data()).isNotNull();
-            assertThat(response.data().hero().name()).isEqualTo("R2-D2");
-            assertThat(response.errors()).containsExactly(new Error(
+            assertThat(response.getData()).isNotNull();
+            assertThat(response.getData().hero().name()).isEqualTo("R2-D2");
+            assertThat(response.getErrors()).containsExactly(new Error(
                 "Cannot query field \"names\" on type \"Species\".",
                 Collections.singletonList(new Error.Location(3, 5)), Collections.<String, Object>emptyMap()));
             return true;
@@ -204,8 +192,8 @@ public class IntegrationTest {
         new Predicate<Response<AllFilmsQuery.Data>>() {
           @Override public boolean test(Response<AllFilmsQuery.Data> response) throws Exception {
             assertThat(response.hasErrors()).isFalse();
-            assertThat(response.data().allFilms().films()).hasSize(6);
-            List<String> dates = FluentIterable.from(response.data().allFilms().films())
+            assertThat(response.getData().allFilms().films()).hasSize(6);
+            List<String> dates = FluentIterable.from(response.getData().allFilms().films())
                 .transform(new Function<AllFilmsQuery.Film, String>() {
                   @Override public String apply(AllFilmsQuery.Film film) {
                     Date releaseDate = film.releaseDate();
@@ -226,7 +214,7 @@ public class IntegrationTest {
         apolloClient.query(new HeroNameQuery()),
         new Predicate<Response<HeroNameQuery.Data>>() {
           @Override public boolean test(Response<HeroNameQuery.Data> response) throws Exception {
-            assertThat(response.data()).isNull();
+            assertThat(response.getData()).isNull();
             assertThat(response.hasErrors()).isFalse();
             return true;
           }
@@ -266,7 +254,7 @@ public class IntegrationTest {
     Response<HeroNameQuery.Data> response = new OperationResponseParser<>(query, query.responseFieldMapper(), new ScalarTypeAdapters(Collections.EMPTY_MAP))
         .parse(new Buffer().writeUtf8(json));
 
-    assertThat(response.data().hero().name()).isEqualTo("R2-D2");
+    assertThat(response.getData().hero().name()).isEqualTo("R2-D2");
   }
 
   @Test public void operationJsonWriter() throws Exception {
@@ -275,7 +263,7 @@ public class IntegrationTest {
     Response<AllPlanetsQuery.Data> response = new OperationResponseParser<>(query, query.responseFieldMapper(), ScalarTypeAdapters.DEFAULT)
         .parse(new Buffer().writeUtf8(expected));
 
-    String actual = OperationDataJsonSerializer.serialize(response.data(), "  ");
+    String actual = OperationDataJsonSerializer.serialize(response.getData(), "  ");
     assertThat(actual).isEqualTo(expected);
   }
 
@@ -286,10 +274,10 @@ public class IntegrationTest {
         new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap())
     );
 
-    assertThat(response.operation()).isEqualTo(query);
+    assertThat(response.getOperation()).isEqualTo(query);
     assertThat(response.hasErrors()).isFalse();
-    assertThat(response.data()).isNotNull();
-    assertThat(response.data().allPlanets().planets()).isNotEmpty();
+    assertThat(response.getData()).isNotNull();
+    assertThat(response.getData().allPlanets().planets()).isNotEmpty();
   }
 
   @Test public void parseErrorOperationRawResponse() throws Exception {
@@ -299,10 +287,10 @@ public class IntegrationTest {
         new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap())
     );
 
-    assertThat(response.data()).isNotNull();
-    assertThat(response.data().hero()).isNotNull();
-    assertThat(response.data().hero().name()).isEqualTo("R2-D2");
-    assertThat(response.errors()).containsExactly(
+    assertThat(response.getData()).isNotNull();
+    assertThat(response.getData().hero()).isNotNull();
+    assertThat(response.getData().hero().name()).isEqualTo("R2-D2");
+    assertThat(response.getErrors()).containsExactly(
         new Error(
             "Cannot query field \"names\" on type \"Species\".",
             Collections.singletonList(new Error.Location(3, 5)),
@@ -331,14 +319,14 @@ public class IntegrationTest {
     final Response<HeroNameQuery.Data> response = new OperationResponseParser<>(query, query.responseFieldMapper(),
         new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter<?>>emptyMap())).parse(source);
 
-    assertThat(response.extensions().toString()).isEqualTo("{cost={requestedQueryCost=3, actualQueryCost=3, throttleStatus={maximumAvailable=1000, currentlyAvailable=997, restoreRate=50}}}");
+    assertThat(response.getExtensions().toString()).isEqualTo("{cost={requestedQueryCost=3, actualQueryCost=3, throttleStatus={maximumAvailable=1000, currentlyAvailable=997, restoreRate=50}}}");
   }
 
   @SuppressWarnings("ConstantConditions")
   @Test public void operationParseResponseWithExtensions() throws Exception {
     final Buffer source = new Buffer().readFrom(getClass().getResourceAsStream("/HeroNameResponse.json"));
     final Response<HeroNameQuery.Data> response = new HeroNameQuery().parse(source);
-    assertThat(response.extensions().toString()).isEqualTo("{cost={requestedQueryCost=3, actualQueryCost=3, throttleStatus={maximumAvailable=1000, currentlyAvailable=997, restoreRate=50}}}");
+    assertThat(response.getExtensions().toString()).isEqualTo("{cost={requestedQueryCost=3, actualQueryCost=3, throttleStatus={maximumAvailable=1000, currentlyAvailable=997, restoreRate=50}}}");
   }
 
   @SuppressWarnings("ConstantConditions")

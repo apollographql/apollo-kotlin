@@ -590,7 +590,7 @@ public class HttpCacheTest {
         .test()
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
-            return !response.hasErrors() && !response.fromCache();
+            return !response.hasErrors() && !response.isFromCache();
           }
         });
 
@@ -602,7 +602,7 @@ public class HttpCacheTest {
         .test()
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
-            return !response.hasErrors() && !response.fromCache();
+            return !response.hasErrors() && !response.isFromCache();
           }
         });
 
@@ -612,7 +612,7 @@ public class HttpCacheTest {
         .test()
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
-            return !response.hasErrors() && response.fromCache();
+            return !response.hasErrors() && response.isFromCache();
           }
         });
 
@@ -622,7 +622,7 @@ public class HttpCacheTest {
         .test()
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
-            return !response.hasErrors() && response.fromCache();
+            return !response.hasErrors() && response.isFromCache();
           }
         });
 
@@ -632,7 +632,7 @@ public class HttpCacheTest {
         .test()
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
-            return !response.hasErrors() && response.fromCache();
+            return !response.hasErrors() && response.isFromCache();
           }
         });
 
@@ -642,7 +642,7 @@ public class HttpCacheTest {
         .test()
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
-            return !response.hasErrors() && response.fromCache();
+            return !response.hasErrors() && response.isFromCache();
           }
         });
   }

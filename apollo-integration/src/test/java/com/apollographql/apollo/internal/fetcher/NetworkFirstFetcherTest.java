@@ -3,13 +3,11 @@ package com.apollographql.apollo.internal.fetcher;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
-
+import okhttp3.mockwebserver.MockResponse;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
-
-import okhttp3.mockwebserver.MockResponse;
 
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_FIRST;
 import static com.google.common.truth.Truth.assertThat;
@@ -32,8 +30,8 @@ public class NetworkFirstFetcherTest extends BaseFetcherTest {
     apolloClient.query(query).responseFetcher(NETWORK_FIRST).enqueue(trackingCallback);
     assertThat(trackingCallback.exceptions).isEmpty();
     assertThat(trackingCallback.responseList.size()).isEqualTo(1);
-    assertThat(trackingCallback.responseList.get(0).fromCache()).isFalse();
-    assertThat(trackingCallback.responseList.get(0).data().hero().name()).isEqualTo("R2-D2");
+    assertThat(trackingCallback.responseList.get(0).isFromCache()).isFalse();
+    assertThat(trackingCallback.responseList.get(0).getData().hero().name()).isEqualTo("R2-D2");
 
     // Goes to network after cache populated
     server.enqueue(mockResponse("HeroNameResponse.json"));
@@ -41,8 +39,8 @@ public class NetworkFirstFetcherTest extends BaseFetcherTest {
     apolloClient.query(query).responseFetcher(NETWORK_FIRST).enqueue(trackingCallback);
     assertThat(trackingCallback.exceptions).isEmpty();
     assertThat(trackingCallback.responseList.size()).isEqualTo(1);
-    assertThat(trackingCallback.responseList.get(0).fromCache()).isFalse();
-    assertThat(trackingCallback.responseList.get(0).data().hero().name()).isEqualTo("R2-D2");
+    assertThat(trackingCallback.responseList.get(0).isFromCache()).isFalse();
+    assertThat(trackingCallback.responseList.get(0).getData().hero().name()).isEqualTo("R2-D2");
 
     // Falls back to cache if network error
     server.enqueue(new MockResponse().setResponseCode(HTTP_INTERNAL_ERROR).setBody("Server Error"));
@@ -50,8 +48,8 @@ public class NetworkFirstFetcherTest extends BaseFetcherTest {
     apolloClient.query(query).responseFetcher(NETWORK_FIRST).enqueue(trackingCallback);
     assertThat(trackingCallback.exceptions).isEmpty();
     assertThat(trackingCallback.responseList.size()).isEqualTo(1);
-    assertThat(trackingCallback.responseList.get(0).fromCache()).isTrue();
-    assertThat(trackingCallback.responseList.get(0).data().hero().name()).isEqualTo("R2-D2");
+    assertThat(trackingCallback.responseList.get(0).isFromCache()).isTrue();
+    assertThat(trackingCallback.responseList.get(0).getData().hero().name()).isEqualTo("R2-D2");
   }
 
 }

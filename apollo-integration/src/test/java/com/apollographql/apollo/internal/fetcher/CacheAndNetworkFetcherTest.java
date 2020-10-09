@@ -3,13 +3,10 @@ package com.apollographql.apollo.internal.fetcher;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
-
+import okhttp3.mockwebserver.MockResponse;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.concurrent.TimeoutException;
-
-import okhttp3.mockwebserver.MockResponse;
 
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_AND_NETWORK;
 import static com.google.common.truth.Truth.assertThat;
@@ -32,8 +29,8 @@ public class CacheAndNetworkFetcherTest extends BaseFetcherTest {
     apolloClient.query(query).responseFetcher(CACHE_AND_NETWORK).enqueue(trackingCallback);
     assertThat(trackingCallback.exceptions).isEmpty();
     assertThat(trackingCallback.responseList.size()).isEqualTo(1);
-    assertThat(trackingCallback.responseList.get(0).fromCache()).isFalse();
-    assertThat(trackingCallback.responseList.get(0).data().hero().name()).isEqualTo("R2-D2");
+    assertThat(trackingCallback.responseList.get(0).isFromCache()).isFalse();
+    assertThat(trackingCallback.responseList.get(0).getData().hero().name()).isEqualTo("R2-D2");
 
     // Goes to network and cache after cache populated
     server.enqueue(mockResponse("HeroNameResponse.json"));
@@ -43,11 +40,11 @@ public class CacheAndNetworkFetcherTest extends BaseFetcherTest {
     assertThat(trackingCallback.responseList.size()).isEqualTo(2);
 
     // Cache is always first
-    assertThat(trackingCallback.responseList.get(0).fromCache()).isTrue();
-    assertThat(trackingCallback.responseList.get(0).data().hero().name()).isEqualTo("R2-D2");
+    assertThat(trackingCallback.responseList.get(0).isFromCache()).isTrue();
+    assertThat(trackingCallback.responseList.get(0).getData().hero().name()).isEqualTo("R2-D2");
 
-    assertThat(trackingCallback.responseList.get(1).fromCache()).isFalse();
-    assertThat(trackingCallback.responseList.get(1).data().hero().name()).isEqualTo("R2-D2");
+    assertThat(trackingCallback.responseList.get(1).isFromCache()).isFalse();
+    assertThat(trackingCallback.responseList.get(1).getData().hero().name()).isEqualTo("R2-D2");
 
     // Falls back to cache if network error
     server.enqueue(new MockResponse().setResponseCode(HTTP_INTERNAL_ERROR).setBody("Server Error"));
@@ -55,7 +52,7 @@ public class CacheAndNetworkFetcherTest extends BaseFetcherTest {
     apolloClient.query(query).responseFetcher(CACHE_AND_NETWORK).enqueue(trackingCallback);
     assertThat(trackingCallback.exceptions).hasSize(1);
     assertThat(trackingCallback.responseList.size()).isEqualTo(1);
-    assertThat(trackingCallback.responseList.get(0).fromCache()).isTrue();
-    assertThat(trackingCallback.responseList.get(0).data().hero().name()).isEqualTo("R2-D2");
+    assertThat(trackingCallback.responseList.get(0).isFromCache()).isTrue();
+    assertThat(trackingCallback.responseList.get(0).getData().hero().name()).isEqualTo("R2-D2");
   }
 }

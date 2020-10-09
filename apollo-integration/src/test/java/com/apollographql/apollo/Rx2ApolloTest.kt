@@ -6,13 +6,13 @@ import com.apollographql.apollo.Utils.mockResponse
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.cache.CacheHeaders
-import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.NormalizedCache
+import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory
+import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
-import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
@@ -27,8 +27,8 @@ import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.TestScheduler
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
-import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -63,7 +63,7 @@ class Rx2ApolloTest {
         .assertNoErrors()
         .assertComplete()
         .assertValue({ response ->
-          assertThat(response.data()?.hero()?.name()).isEqualTo("R2-D2")
+          assertThat(response.data?.hero()?.name()).isEqualTo("R2-D2")
           true
         })
   }
@@ -115,7 +115,7 @@ class Rx2ApolloTest {
     Rx2Apollo
         .from(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
         .retry(1)
-        .map({ response -> response.data() })
+        .map { response -> response.data }
         .subscribeWith(observer)
     observer.assertValueCount(1)
         .assertValueAt(0) { data ->
@@ -131,7 +131,7 @@ class Rx2ApolloTest {
     val observer: TestObserver<EpisodeHeroNameQuery.Data> = TestObserver<EpisodeHeroNameQuery.Data>()
     Rx2Apollo
         .from(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
-        .map({ response -> response.data() })
+        .map({ response -> response.data })
         .subscribeWith(observer)
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE))
     apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE)))
@@ -155,7 +155,7 @@ class Rx2ApolloTest {
     val observer: TestObserver<EpisodeHeroNameQuery.Data> = TestObserver<EpisodeHeroNameQuery.Data>()
     Rx2Apollo
         .from(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
-        .map({ response -> response.data() })
+        .map({ response -> response.data })
         .subscribeWith(observer)
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
     apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).responseFetcher(NETWORK_ONLY)
@@ -175,7 +175,7 @@ class Rx2ApolloTest {
     val observer: TestObserver<EpisodeHeroNameQuery.Data> = TestObserver<EpisodeHeroNameQuery.Data>()
     Rx2Apollo
         .from(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
-        .map({ response -> response.data() })
+        .map({ response -> response.data })
         .subscribeWith(observer)
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"))
     apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(NEWHOPE))).enqueue(null)
@@ -199,7 +199,7 @@ class Rx2ApolloTest {
     val scheduler = TestScheduler()
     val disposable: Disposable = Rx2Apollo
         .from(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
-        .map({ response -> response.data() })
+        .map({ response -> response.data })
         .observeOn(scheduler)
         .subscribeWith(testObserver)
     scheduler.triggerActions()
@@ -221,9 +221,9 @@ class Rx2ApolloTest {
     /*
      * A simple cache that will always throw errors
      */
-    val cacheFactory = object: NormalizedCacheFactory<NormalizedCache>() {
+    val cacheFactory = object : NormalizedCacheFactory<NormalizedCache>() {
       override fun create(recordFieldAdapter: RecordFieldJsonAdapter): NormalizedCache {
-        return object: NormalizedCache() {
+        return object : NormalizedCache() {
           override fun clearAll() {
             throw Exception("not implemented")
           }

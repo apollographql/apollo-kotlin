@@ -6,13 +6,13 @@ import com.apollographql.apollo.Utils.mockResponse
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.cache.CacheHeaders
-import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.NormalizedCache
+import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory
+import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
-import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
@@ -22,15 +22,13 @@ import com.apollographql.apollo.rx3.Rx3Apollo
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import io.reactivex.rxjava3.disposables.Disposable
-import io.reactivex.rxjava3.functions.Function
-import io.reactivex.rxjava3.functions.Predicate
 import io.reactivex.rxjava3.observers.TestObserver
-import io.reactivex.rxjava3.schedulers.TestScheduler
 import io.reactivex.rxjava3.plugins.RxJavaPlugins
+import io.reactivex.rxjava3.schedulers.TestScheduler
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
-import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -65,7 +63,7 @@ class Rx3ApolloTest {
         .assertNoErrors()
         .assertComplete()
         .assertValue({ response ->
-          assertThat(response.data()?.hero()?.name()).isEqualTo("R2-D2")
+          assertThat(response.data?.hero()?.name()).isEqualTo("R2-D2")
           true
         })
   }
@@ -115,7 +113,7 @@ class Rx3ApolloTest {
     val observer: TestObserver<EpisodeHeroNameQuery.Data> = TestObserver<EpisodeHeroNameQuery.Data>()
     Rx3Apollo
         .from(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
-        .map({ response -> response.data() })
+        .map({ response -> response.data })
         .subscribeWith(observer)
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE))
     apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE)))
@@ -141,7 +139,7 @@ class Rx3ApolloTest {
     Rx3Apollo
         .from(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
         .retry(1)
-        .map({ response -> response.data() })
+        .map({ response -> response.data })
         .subscribeWith(observer)
     observer.assertValueCount(1)
         .assertValueAt(0) { data ->
@@ -157,7 +155,7 @@ class Rx3ApolloTest {
     val observer: TestObserver<EpisodeHeroNameQuery.Data> = TestObserver<EpisodeHeroNameQuery.Data>()
     Rx3Apollo
         .from(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
-        .map({ response -> response.data() })
+        .map({ response -> response.data })
         .subscribeWith(observer)
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
     apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).responseFetcher(NETWORK_ONLY)
@@ -177,7 +175,7 @@ class Rx3ApolloTest {
     val observer: TestObserver<EpisodeHeroNameQuery.Data> = TestObserver<EpisodeHeroNameQuery.Data>()
     Rx3Apollo
         .from(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
-        .map({ response -> response.data() })
+        .map({ response -> response.data })
         .subscribeWith(observer)
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"))
     apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(NEWHOPE))).enqueue(null)
@@ -201,7 +199,7 @@ class Rx3ApolloTest {
     val scheduler = TestScheduler()
     val disposable: Disposable = Rx3Apollo
         .from(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
-        .map({ response -> response.data() })
+        .map({ response -> response.data })
         .observeOn(scheduler)
         .subscribeWith(testObserver)
     scheduler.triggerActions()

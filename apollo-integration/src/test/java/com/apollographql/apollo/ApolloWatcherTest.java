@@ -31,15 +31,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
-import static com.apollographql.apollo.ApolloCall.StatusEvent.COMPLETED;
-import static com.apollographql.apollo.ApolloCall.StatusEvent.FETCH_CACHE;
-import static com.apollographql.apollo.ApolloCall.StatusEvent.FETCH_NETWORK;
-import static com.apollographql.apollo.ApolloCall.StatusEvent.SCHEDULED;
+import static com.apollographql.apollo.ApolloCall.StatusEvent.*;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.Assert.fail;
-import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 
 public class ApolloWatcherTest {
@@ -78,7 +74,7 @@ public class ApolloWatcherTest {
     watcher.enqueueAndWatch(
         new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
           @Override public void onResponse(@NotNull Response<EpisodeHeroNameQuery.Data> response) {
-            heroNameList.add(response.data().hero().name());
+            heroNameList.add(response.getData().hero().name());
           }
 
           @Override public void onFailure(@NotNull ApolloException e) {
@@ -116,7 +112,7 @@ public class ApolloWatcherTest {
     watcher.enqueueAndWatch(
         new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
           @Override public void onResponse(@NotNull Response<EpisodeHeroNameQuery.Data> response) {
-            heroNameList.add(response.data().hero().name());
+            heroNameList.add(response.getData().hero().name());
           }
 
           @Override public void onFailure(@NotNull ApolloException e) {
@@ -152,7 +148,7 @@ public class ApolloWatcherTest {
     watcher.enqueueAndWatch(
         new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
           @Override public void onResponse(@NotNull Response<EpisodeHeroNameQuery.Data> response) {
-            heroNameList.add(response.data().hero().name());
+            heroNameList.add(response.getData().hero().name());
           }
 
           @Override public void onFailure(@NotNull ApolloException e) {
@@ -178,7 +174,7 @@ public class ApolloWatcherTest {
     watcher.enqueueAndWatch(
         new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
           @Override public void onResponse(@NotNull Response<EpisodeHeroNameQuery.Data> response) {
-            heroNameList.add(response.data().hero().name());
+            heroNameList.add(response.getData().hero().name());
           }
 
           @Override public void onFailure(@NotNull ApolloException e) {
@@ -216,7 +212,7 @@ public class ApolloWatcherTest {
     watcher.enqueueAndWatch(
         new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
           @Override public void onResponse(@NotNull Response<EpisodeHeroNameQuery.Data> response) {
-            heroNameList.add(response.data().hero().name());
+            heroNameList.add(response.getData().hero().name());
           }
 
           @Override public void onFailure(@NotNull ApolloException e) {
@@ -245,7 +241,7 @@ public class ApolloWatcherTest {
         .enqueueAndWatch(
             new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
               @Override public void onResponse(@NotNull Response<EpisodeHeroNameQuery.Data> response) {
-                heroNameList.add(response.data().hero().name());
+                heroNameList.add(response.getData().hero().name());
               }
 
               @Override public void onFailure(@NotNull ApolloException e) {
@@ -286,7 +282,7 @@ public class ApolloWatcherTest {
     watcher.enqueueAndWatch(
         new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
           @Override public void onResponse(@NotNull Response<EpisodeHeroNameQuery.Data> response) {
-            heroNameList.add(response.data().hero().name());
+            heroNameList.add(response.getData().hero().name());
           }
 
           @Override public void onFailure(@NotNull ApolloException e) {
@@ -315,7 +311,7 @@ public class ApolloWatcherTest {
     watcher.enqueueAndWatch(
         new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
           @Override public void onResponse(@NotNull Response<EpisodeHeroNameQuery.Data> response) {
-            heroNameList.add(response.data().hero().name());
+            heroNameList.add(response.getData().hero().name());
           }
 
           @Override public void onFailure(@NotNull ApolloException e) {
@@ -348,8 +344,8 @@ public class ApolloWatcherTest {
         .watcher()
         .enqueueAndWatch(new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
           @Override public void onResponse(Response<EpisodeHeroNameQuery.Data> response) {
-            if (response.data() != null) {
-              watchedHeroes.add(response.data().hero());
+            if (response.getData() != null) {
+              watchedHeroes.add(response.getData().hero());
             }
           }
 
@@ -361,8 +357,8 @@ public class ApolloWatcherTest {
     server.enqueue(Utils.INSTANCE.mockResponse("EpisodeHeroNameResponseWithId.json"));
     apolloClient.query(query).enqueue(new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
       @Override public void onResponse(Response<EpisodeHeroNameQuery.Data> response) {
-        assertThat(response.data()).isNotNull();
-        assertThat(response.data().hero()).isNotNull();
+        assertThat(response.getData()).isNotNull();
+        assertThat(response.getData().hero()).isNotNull();
       }
 
       @Override public void onFailure(ApolloException e) {
