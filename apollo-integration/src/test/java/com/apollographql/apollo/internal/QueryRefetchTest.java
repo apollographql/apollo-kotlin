@@ -1,7 +1,11 @@
 package com.apollographql.apollo.internal;
 
 
-import com.apollographql.apollo.*;
+import com.apollographql.apollo.ApolloCall;
+import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.ApolloQueryWatcher;
+import com.apollographql.apollo.IdFieldCacheKeyResolver;
+import com.apollographql.apollo.Utils;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
@@ -12,17 +16,20 @@ import com.apollographql.apollo.integration.normalizer.type.ColorInput;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.integration.normalizer.type.ReviewInput;
 import com.apollographql.apollo.rx2.Rx2Apollo;
-import io.reactivex.functions.Predicate;
-import okhttp3.Dispatcher;
-import okhttp3.OkHttpClient;
-import okhttp3.mockwebserver.MockWebServer;
-import org.jetbrains.annotations.NotNull;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
+
+import org.jetbrains.annotations.NotNull;
+
+import io.reactivex.functions.Predicate;
+import okhttp3.Dispatcher;
+import okhttp3.OkHttpClient;
+import okhttp3.mockwebserver.MockWebServer;
 
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_FIRST;

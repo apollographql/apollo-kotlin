@@ -3,11 +3,13 @@ package com.apollographql.apollo.internal.fetcher;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
-import okhttp3.mockwebserver.MockResponse;
+
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
+
+import okhttp3.mockwebserver.MockResponse;
 
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY;
 import static com.google.common.truth.Truth.assertThat;

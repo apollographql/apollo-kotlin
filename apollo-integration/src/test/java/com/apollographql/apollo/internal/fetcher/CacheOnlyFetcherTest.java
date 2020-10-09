@@ -5,6 +5,7 @@ import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.rx2.Rx2Apollo;
+
 import org.junit.Test;
 
 import java.io.IOException;

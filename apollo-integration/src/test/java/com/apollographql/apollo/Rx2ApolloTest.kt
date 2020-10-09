@@ -6,13 +6,13 @@ import com.apollographql.apollo.Utils.mockResponse
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.cache.CacheHeaders
+import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.NormalizedCache
-import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory
-import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
+import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
@@ -27,8 +27,8 @@ import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.TestScheduler
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
-import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
+import okhttp3.mockwebserver.MockResponse
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

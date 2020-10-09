@@ -1,10 +1,19 @@
 package com.apollographql.apollo;
 
-import com.apollographql.apollo.api.*;
+import com.apollographql.apollo.api.CustomTypeAdapter;
+import com.apollographql.apollo.api.CustomTypeValue;
+import com.apollographql.apollo.api.Input;
+import com.apollographql.apollo.api.Query;
+import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
-import com.apollographql.apollo.integration.normalizer.*;
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroWithDatesQuery;
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroWithInlineFragmentQuery;
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery;
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsWithFragmentsQuery;
+import com.apollographql.apollo.integration.normalizer.HeroNameWithEnumsQuery;
+import com.apollographql.apollo.integration.normalizer.StarshipByIdQuery;
 import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsFragment;
 import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragment;
 import com.apollographql.apollo.integration.normalizer.type.CustomType;

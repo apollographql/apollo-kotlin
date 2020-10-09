@@ -31,11 +31,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
-import static com.apollographql.apollo.ApolloCall.StatusEvent.*;
+import static com.apollographql.apollo.ApolloCall.StatusEvent.COMPLETED;
+import static com.apollographql.apollo.ApolloCall.StatusEvent.FETCH_CACHE;
+import static com.apollographql.apollo.ApolloCall.StatusEvent.FETCH_NETWORK;
+import static com.apollographql.apollo.ApolloCall.StatusEvent.SCHEDULED;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.Assert.fail;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 
 public class ApolloWatcherTest {

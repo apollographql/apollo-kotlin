@@ -10,11 +10,7 @@ import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.rx2.Rx2Apollo;
-import io.reactivex.functions.Predicate;
-import okhttp3.*;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
-import org.jetbrains.annotations.NotNull;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -23,6 +19,18 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeoutException;
+
+import org.jetbrains.annotations.NotNull;
+
+import io.reactivex.functions.Predicate;
+import okhttp3.Dispatcher;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Protocol;
+import okhttp3.Request;
+import okhttp3.ResponseBody;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
 
 import static com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorResponse;
 import static com.google.common.truth.Truth.assertThat;
