@@ -71,7 +71,7 @@ class IRBuilder(private val schema: IntrospectionSchema,
         operations = documentParseResult.operations.map { operation ->
           val referencedRootFragmentNames = operation.fragments.map { it.name }
           val referencedFieldFragmentNames = operation.fields.referencedFragmentNames(fragments = allFragments, filePath = operation.filePath)
-          val allReferencedFragmentNames = (referencedRootFragmentNames + referencedFieldFragmentNames).toSet()
+          val allReferencedFragmentNames = referencedRootFragmentNames union referencedFieldFragmentNames
           val allReferencedFragments = allReferencedFragmentNames.mapNotNull { fragmentName -> allFragments.find { it.fragmentName == fragmentName } }
           allReferencedFragments.forEach { it.validateArguments(operation = operation, schema = schema) }
 
