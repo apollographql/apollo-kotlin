@@ -1,6 +1,7 @@
 package com.apollographql.apollo.compiler.ir
 
 import com.apollographql.apollo.compiler.ApolloMetadata
+import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.ir.TypeDeclaration.Companion.KIND_ENUM
 import com.apollographql.apollo.compiler.ir.TypeDeclaration.Companion.KIND_INPUT_OBJECT_TYPE
 import com.apollographql.apollo.compiler.ir.TypeDeclaration.Companion.KIND_SCALAR_TYPE
