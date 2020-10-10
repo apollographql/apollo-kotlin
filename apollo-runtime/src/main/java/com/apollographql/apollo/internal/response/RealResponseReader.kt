@@ -1,6 +1,5 @@
 package com.apollographql.apollo.internal.response
 
-import com.apollographql.apollo.api.BigDecimal
 import com.apollographql.apollo.api.CustomTypeAdapter
 import com.apollographql.apollo.api.CustomTypeValue.Companion.fromRawValue
 import com.apollographql.apollo.api.Operation
@@ -12,20 +11,30 @@ import com.apollographql.apollo.api.internal.ResolveDelegate
 import com.apollographql.apollo.api.internal.ResponseReader
 import java.util.Collections
 
-class RealResponseReader<R>(
+class RealResponseReader<R: Map<String, Any?>>(
     val operationVariables: Operation.Variables,
     private val recordSet: R,
     internal val fieldValueResolver: FieldValueResolver<R>,
     internal val scalarTypeAdapters: ScalarTypeAdapters,
     internal val resolveDelegate: ResolveDelegate<R>
 ) : ResponseReader {
-
+  private val responseRecordSetIterator = recordSet.iterator()
   private val variableValues: Map<String, Any?> = operationVariables.valueMap()
 
+  override fun selectField(fields: Array<ResponseField>): Int {
+    while (true)
+      if (responseRecordSetIterator.hasNext()) {
+        val (nextFieldName, _) = responseRecordSetIterator.next()
+        val fieldIndex = fields.indexOfFirst { field -> field.responseName == nextFieldName }
+        if (fieldIndex != -1 && !fields[fieldIndex].shouldSkip(variableValues)) {
+          return fieldIndex
+        }
+      } else {
+        return -1
+      }
+  }
+
   override fun readString(field: ResponseField): String? {
-    if (shouldSkip(field)) {
-      return null
-    }
     val value = fieldValueResolver.valueFor<String>(recordSet, field)
     checkValue(field, value)
     willResolve(field, value)
@@ -39,10 +48,7 @@ class RealResponseReader<R>(
   }
 
   override fun readInt(field: ResponseField): Int? {
-    if (shouldSkip(field)) {
-      return null
-    }
-    val value = fieldValueResolver.valueFor<BigDecimal>(recordSet, field)
+    val value = fieldValueResolver.valueFor<Number>(recordSet, field)
     checkValue(field, value)
     willResolve(field, value)
     if (value == null) {
@@ -55,10 +61,7 @@ class RealResponseReader<R>(
   }
 
   override fun readDouble(field: ResponseField): Double? {
-    if (shouldSkip(field)) {
-      return null
-    }
-    val value = fieldValueResolver.valueFor<BigDecimal>(recordSet, field)
+    val value = fieldValueResolver.valueFor<Number>(recordSet, field)
     checkValue(field, value)
     willResolve(field, value)
     if (value == null) {
@@ -71,9 +74,6 @@ class RealResponseReader<R>(
   }
 
   override fun readBoolean(field: ResponseField): Boolean? {
-    if (shouldSkip(field)) {
-      return null
-    }
     val value = fieldValueResolver.valueFor<Boolean>(recordSet, field)
     checkValue(field, value)
     willResolve(field, value)
@@ -87,9 +87,6 @@ class RealResponseReader<R>(
   }
 
   override fun <T : Any> readObject(field: ResponseField, objectReader: ResponseReader.ObjectReader<T>): T? {
-    if (shouldSkip(field)) {
-      return null
-    }
     val value: R? = fieldValueResolver.valueFor(recordSet, field)
     checkValue(field, value)
     willResolve(field, value)
@@ -107,9 +104,6 @@ class RealResponseReader<R>(
   }
 
   override fun <T : Any> readList(field: ResponseField, listReader: ResponseReader.ListReader<T>): List<T?>? {
-    if (shouldSkip(field)) {
-      return null
-    }
     val values = fieldValueResolver.valueFor<List<*>>(recordSet, field)
     checkValue(field, values)
     willResolve(field, values)
@@ -132,9 +126,6 @@ class RealResponseReader<R>(
   }
 
   override fun <T : Any> readCustomType(field: ResponseField.CustomTypeField): T? {
-    if (shouldSkip(field)) {
-      return null
-    }
     val value = fieldValueResolver.valueFor<Any>(recordSet, field)
     checkValue(field, value)
     willResolve(field, value)
@@ -152,25 +143,6 @@ class RealResponseReader<R>(
     return result
   }
 
-  private fun shouldSkip(field: ResponseField): Boolean {
-    for (condition in field.conditions) {
-      if (condition is ResponseField.BooleanCondition) {
-        val conditionValue = variableValues[condition.variableName] as Boolean?
-        if (condition.isInverted) {
-          // means it's a skip directive
-          if (conditionValue == true) {
-            return true
-          }
-        } else {
-          // means it's an include directive
-          if (conditionValue == false) {
-            return true
-          }
-        }
-      }
-    }
-    return false
-  }
 
   private fun willResolve(field: ResponseField, value: Any?) {
     resolveDelegate.willResolve(field, operationVariables, value)
@@ -198,12 +170,12 @@ class RealResponseReader<R>(
 
     override fun readInt(): Int {
       resolveDelegate.didResolveScalar(value)
-      return (value as BigDecimal).toInt()
+      return (value as Number).toInt()
     }
 
     override fun readDouble(): Double {
       resolveDelegate.didResolveScalar(value)
-      return (value as BigDecimal).toDouble()
+      return (value as Number).toDouble()
     }
 
     override fun readBoolean(): Boolean {

@@ -13,6 +13,7 @@ class SimpleResponseReader private constructor(
     private val variableValues: Map<String, Any?>,
     private val scalarTypeAdapters: ScalarTypeAdapters
 ) : ResponseReader {
+  private val responseRecordSetIterator = recordSet.iterator()
 
   constructor(
       recordSet: Map<String, Any?>,
@@ -20,114 +21,56 @@ class SimpleResponseReader private constructor(
       scalarTypeAdapters: ScalarTypeAdapters
   ) : this(recordSet, variables.valueMap(), scalarTypeAdapters)
 
-  override fun readString(field: ResponseField): String? {
-    if (shouldSkip(field)) {
-      return null
-    }
+  override fun selectField(fields: Array<ResponseField>): Int {
+    while (true)
+      if (responseRecordSetIterator.hasNext()) {
+        val (nextFieldName, _) = responseRecordSetIterator.next()
+        val fieldIndex = fields.indexOfFirst { field -> field.responseName == nextFieldName }
+        if (fieldIndex != -1 && !fields[fieldIndex].shouldSkip(variableValues)) {
+          return fieldIndex
+        }
+      } else {
+        return -1
+      }
+  }
 
-    val value = valueFor<String>(recordSet, field)
-    return checkValue(field, value)
+  override fun readString(field: ResponseField): String? {
+    return valueFor<String>(field)
   }
 
   override fun readInt(field: ResponseField): Int? {
-    if (shouldSkip(field)) {
-      return null
-    }
-
-    val value = valueFor<BigDecimal>(recordSet, field)
-    checkValue(field, value)
-    return value?.toNumber()?.toInt()
+    return valueFor<Number>(field)?.toInt()
   }
 
   override fun readDouble(field: ResponseField): Double? {
-    if (shouldSkip(field)) {
-      return null
-    }
-
-    val value = valueFor<BigDecimal>(recordSet, field)
-    checkValue(field, value)
-    return value?.toNumber()?.toDouble()
+    return valueFor<Number>(field)?.toDouble()
   }
 
   override fun readBoolean(field: ResponseField): Boolean? {
-    if (shouldSkip(field)) {
-      return null
-    }
-
-    val value = valueFor<Boolean>(recordSet, field)
-    return checkValue(field, value)
+    return valueFor<Boolean>(field)
   }
 
   override fun <T : Any> readObject(field: ResponseField, objectReader: ResponseReader.ObjectReader<T>): T? {
-    if (shouldSkip(field)) {
-      return null
-    }
-
-    val value = valueFor<Map<String, Any>>(recordSet, field)
-    checkValue(field, value)
-
-    return value?.let {
+    return valueFor<Map<String, Any>>(field)?.let {
       objectReader.read(SimpleResponseReader(it, variableValues, scalarTypeAdapters))
     }
   }
 
   @Suppress("UNCHECKED_CAST")
   override fun <T : Any> readList(field: ResponseField, listReader: ResponseReader.ListReader<T>): List<T?>? {
-    if (shouldSkip(field)) {
-      return null
-    }
-
-    val values = valueFor<List<*>>(recordSet, field)
-    checkValue(field, values)
-
-    return values?.map { value ->
+    return valueFor<List<*>>(field)?.map { value ->
       value?.let { listReader.read(ListItemReader(field, it)) }
     }
   }
 
   override fun <T : Any> readCustomType(field: ResponseField.CustomTypeField): T? {
-    if (shouldSkip(field)) {
-      return null
-    }
-
-    val value = valueFor<Any>(recordSet, field)
-    checkValue(field, value)
-
-    return value?.let {
+    return valueFor<Any>(field)?.let {
       val typeAdapter = scalarTypeAdapters.adapterFor<T>(field.scalarType)
       typeAdapter.decode(CustomTypeValue.fromRawValue(it))
     }
   }
 
-  private fun shouldSkip(field: ResponseField): Boolean {
-    for (condition in field.conditions) {
-      if (condition is ResponseField.BooleanCondition) {
-        val conditionValue = variableValues[condition.variableName] as Boolean
-        if (condition.isInverted) {
-          // means it's a skip directive
-          if (conditionValue) {
-            return true
-          }
-        } else {
-          // means it's an include directive
-          if (!conditionValue) {
-            return true
-          }
-        }
-      }
-    }
-    return false
-  }
-
-  private fun <V> checkValue(field: ResponseField, value: V?): V? {
-    if (!field.optional && value == null) {
-      throw NullPointerException("corrupted response reader, expected non null value for " + field.fieldName)
-    }
-
-    return value
-  }
-
-  private inner class ListItemReader internal constructor(
+  private inner class ListItemReader constructor(
       private val field: ResponseField,
       private val value: Any
   ) : ResponseReader.ListItemReader {
@@ -169,9 +112,13 @@ class SimpleResponseReader private constructor(
     }
   }
 
-  private inline fun <reified T> valueFor(map: Map<String, Any?>, field: ResponseField): T? {
-    return when (val value = map[field.responseName]) {
-      null -> null
+  private inline fun <reified T> valueFor(field: ResponseField): T? {
+    return when (val value = recordSet[field.responseName]) {
+      null -> {
+        if (field.optional) null else throw NullPointerException(
+            "Couldn't read `${field.responseName}` response value, expected non null value but was `null`"
+        )
+      }
       is T -> value
       else -> throw ClassCastException(
           "The value for \"${field.responseName}\" expected to be of type \"${T::class.simpleName}\" but was \"${value::class.simpleName}\""
