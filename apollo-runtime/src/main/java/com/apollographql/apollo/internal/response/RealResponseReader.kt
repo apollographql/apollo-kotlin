@@ -140,7 +140,6 @@ class RealResponseReader<R : Map<String, Any?>>(
     return result
   }
 
-
   private fun willResolve(field: ResponseField, value: Any?) {
     resolveDelegate.willResolve(field, operationVariables, value)
   }
