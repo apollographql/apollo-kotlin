@@ -69,7 +69,7 @@ class IRBuilder(private val schema: IntrospectionSchema,
 
     return CodeGenerationIR(
         operations = documentParseResult.operations.map { operation ->
-          val referencedRootFragmentNames = operation.fragments.map { it.name }
+          val referencedRootFragmentNames = operation.fragments.referencedRootFragmentNames(fragments = allFragments)
           val referencedFieldFragmentNames = operation.fields.referencedFragmentNames(fragments = allFragments, filePath = operation.filePath)
           val allReferencedFragmentNames = referencedRootFragmentNames union referencedFieldFragmentNames
           val allReferencedFragments = allReferencedFragmentNames.mapNotNull { fragmentName -> allFragments.find { it.fragmentName == fragmentName } }
@@ -188,6 +188,12 @@ class IRBuilder(private val schema: IntrospectionSchema,
       inputTypesToVisit.addAll(nestedInputTypes)
     }
     return usedTypes
+  }
+
+  private fun List<FragmentRef>.referencedRootFragmentNames(fragments: List<Fragment>): Set<String> {
+    val referencedRootFragments = mapNotNull { fragmentRef -> fragments.find { it.fragmentName == fragmentRef.name } }
+    val referencedRootFragmentNames = referencedRootFragments.map { it.fragmentName }
+    return referencedRootFragmentNames union referencedRootFragments.flatMap { it.referencedFragments(fragments) }
   }
 
   private fun List<Field>.referencedFragmentNames(fragments: List<Fragment>, filePath: String): Set<String> {

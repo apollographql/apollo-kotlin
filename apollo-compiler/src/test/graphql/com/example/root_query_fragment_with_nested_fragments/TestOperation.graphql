@@ -1,0 +1,28 @@
+query TestQuery {
+  ...QueryFragment
+}
+
+fragment QueryFragment on Query {
+  __typename
+  hero {
+    ...heroFragment
+  }
+  droid(id: 1) {
+    ...droidFragment
+  }
+  human(id: 1) {
+    ... on Human {
+      name
+      homePlanet
+    }
+  }
+}
+
+fragment heroFragment on Character {
+  name
+}
+
+fragment droidFragment on Droid {
+  name
+  primaryFunction
+}
