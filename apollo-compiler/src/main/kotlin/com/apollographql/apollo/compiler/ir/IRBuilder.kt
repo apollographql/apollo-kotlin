@@ -1,7 +1,6 @@
 package com.apollographql.apollo.compiler.ir
 
 import com.apollographql.apollo.compiler.ApolloMetadata
-import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.ir.TypeDeclaration.Companion.KIND_ENUM
 import com.apollographql.apollo.compiler.ir.TypeDeclaration.Companion.KIND_INPUT_OBJECT_TYPE
 import com.apollographql.apollo.compiler.ir.TypeDeclaration.Companion.KIND_SCALAR_TYPE
@@ -69,14 +68,15 @@ class IRBuilder(private val schema: IntrospectionSchema,
 
     return CodeGenerationIR(
         operations = documentParseResult.operations.map { operation ->
-          val referencedFragmentNames = operation.fields.referencedFragmentNames(fragments = allFragments, filePath = operation.filePath)
-          val referencedFragments = referencedFragmentNames.mapNotNull { fragmentName -> allFragments.find { it.fragmentName == fragmentName } }
-          referencedFragments.forEach { it.validateArguments(operation = operation, schema = schema) }
+          val referencedRootFragments = operation.fragments.mapNotNull { fragmentRef -> allFragments.find { it.fragmentName == fragmentRef.name } }
+          val referencedFieldFragmentNames = operation.fields.referencedFragmentNames(fragments = allFragments, filePath = operation.filePath)
+          val allReferencedFragments = referencedRootFragments + referencedFieldFragmentNames.mapNotNull { fragmentName -> allFragments.find { it.fragmentName == fragmentName } }
+          allReferencedFragments.forEach { it.validateArguments(operation = operation, schema = schema) }
 
-          val fragmentSource = referencedFragments.joinToString(separator = "\n") { it.source }
+          val fragmentSource = allReferencedFragments.joinToString(separator = "\n") { it.source }
           operation.copy(
               sourceWithFragments = operation.source + if (fragmentSource.isNotBlank()) "\n$fragmentSource" else "",
-              fragmentsReferenced = referencedFragmentNames.toList()
+              fragmentsReferenced = referencedFieldFragmentNames.toList()
           )
         },
         fragments = allFragments,

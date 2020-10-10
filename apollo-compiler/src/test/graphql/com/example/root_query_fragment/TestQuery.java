@@ -35,11 +35,18 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "921d636e4792da2e443d2fe7e19744a5dcfb76782f644e2543bef53154d013b8";
+  public static final String OPERATION_ID = "aa398544bf26cbb38315b1a35172c30b0e5fa0507770a4d9b5c420ee21a61fbb";
 
   public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
     "query TestQuery {\n"
         + "  ...QueryFragment\n"
+        + "}\n"
+        + "fragment QueryFragment on Query {\n"
+        + "  __typename\n"
+        + "  hero {\n"
+        + "    __typename\n"
+        + "    name\n"
+        + "  }\n"
         + "}"
   );
 

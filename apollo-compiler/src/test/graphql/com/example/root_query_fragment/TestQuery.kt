@@ -138,12 +138,19 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "921d636e4792da2e443d2fe7e19744a5dcfb76782f644e2543bef53154d013b8"
+        "aa398544bf26cbb38315b1a35172c30b0e5fa0507770a4d9b5c420ee21a61fbb"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery {
           |  ...QueryFragment
+          |}
+          |fragment QueryFragment on Query {
+          |  __typename
+          |  hero {
+          |    __typename
+          |    name
+          |  }
           |}
           """.trimMargin()
         )
