@@ -124,9 +124,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
         }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Bar> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -167,9 +164,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
         }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<OtherFoo> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -237,9 +231,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           )
         }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 

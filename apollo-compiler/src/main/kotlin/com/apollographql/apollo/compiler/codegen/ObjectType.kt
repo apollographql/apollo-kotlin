@@ -47,7 +47,6 @@ internal fun CodeGenerationAst.ObjectType.objectTypeSpec(
                 .companionObjectBuilder()
                 .addProperty(responseFieldsPropertySpec(fields))
                 .addFunction(fields.toMapperFun(ClassName("", name)))
-                .addFunction(ClassName("", name).createMapperFun())
                 .build()
         )
       }

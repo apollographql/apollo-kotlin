@@ -7,7 +7,6 @@ package com.example.fragment_with_inline_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import kotlin.Array
@@ -188,9 +187,6 @@ interface HeroDetails : GraphqlFragment {
           )
         }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Node2> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -236,9 +232,6 @@ interface HeroDetails : GraphqlFragment {
           )
         }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Edge2> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -299,9 +292,6 @@ interface HeroDetails : GraphqlFragment {
           )
         }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<FriendsConnection2> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -364,9 +354,6 @@ interface HeroDetails : GraphqlFragment {
           )
         }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<DroidDroidDetailsImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -410,9 +397,6 @@ interface HeroDetails : GraphqlFragment {
           )
         }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Node3> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -458,9 +442,6 @@ interface HeroDetails : GraphqlFragment {
           )
         }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Edge3> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -521,9 +502,6 @@ interface HeroDetails : GraphqlFragment {
           )
         }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<FriendsConnection3> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -578,9 +556,6 @@ interface HeroDetails : GraphqlFragment {
           )
         }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<HumanDetailsImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -624,9 +599,6 @@ interface HeroDetails : GraphqlFragment {
           )
         }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Node4> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -672,9 +644,6 @@ interface HeroDetails : GraphqlFragment {
           )
         }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Edge4> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -735,9 +704,6 @@ interface HeroDetails : GraphqlFragment {
           )
         }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<FriendsConnection4> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -792,9 +758,6 @@ interface HeroDetails : GraphqlFragment {
           )
         }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<OtherDefaultImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 

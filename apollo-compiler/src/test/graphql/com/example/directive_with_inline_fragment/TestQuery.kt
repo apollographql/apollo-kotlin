@@ -244,9 +244,6 @@ data class TestQuery(
           )
         }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<HumanCharacterImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -306,9 +303,6 @@ data class TestQuery(
           )
         }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<DroidCharacterImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -352,9 +346,6 @@ data class TestQuery(
           )
         }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<OtherHero> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -426,9 +417,6 @@ data class TestQuery(
           )
         }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 

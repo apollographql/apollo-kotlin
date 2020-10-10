@@ -124,9 +124,6 @@ class HeroDetails : Query<HeroDetails.Data, HeroDetails.Data, Operation.Variable
           )
         }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Node> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -172,9 +169,6 @@ class HeroDetails : Query<HeroDetails.Data, HeroDetails.Data, Operation.Variable
           )
         }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Edge> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -237,9 +231,6 @@ class HeroDetails : Query<HeroDetails.Data, HeroDetails.Data, Operation.Variable
           )
         }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<FriendsConnection> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -303,9 +294,6 @@ class HeroDetails : Query<HeroDetails.Data, HeroDetails.Data, Operation.Variable
           )
         }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Hero> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -342,9 +330,6 @@ class HeroDetails : Query<HeroDetails.Data, HeroDetails.Data, Operation.Variable
           )
         }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 
