@@ -69,15 +69,16 @@ class IRBuilder(private val schema: IntrospectionSchema,
 
     return CodeGenerationIR(
         operations = documentParseResult.operations.map { operation ->
-          val referencedRootFragments = operation.fragments.mapNotNull { fragmentRef -> allFragments.find { it.fragmentName == fragmentRef.name } }
+          val referencedRootFragmentNames = operation.fragments.map { it.name }
           val referencedFieldFragmentNames = operation.fields.referencedFragmentNames(fragments = allFragments, filePath = operation.filePath)
-          val allReferencedFragments = referencedRootFragments + referencedFieldFragmentNames.mapNotNull { fragmentName -> allFragments.find { it.fragmentName == fragmentName } }
+          val allReferencedFragmentNames = (referencedRootFragmentNames + referencedFieldFragmentNames).toSet()
+          val allReferencedFragments = allReferencedFragmentNames.mapNotNull { fragmentName -> allFragments.find { it.fragmentName == fragmentName } }
           allReferencedFragments.forEach { it.validateArguments(operation = operation, schema = schema) }
 
           val fragmentSource = allReferencedFragments.joinToString(separator = "\n") { it.source }
           operation.copy(
               sourceWithFragments = operation.source + if (fragmentSource.isNotBlank()) "\n$fragmentSource" else "",
-              fragmentsReferenced = referencedFieldFragmentNames.toList()
+              fragmentsReferenced = allReferencedFragmentNames.toList()
           )
         },
         fragments = allFragments,
