@@ -102,17 +102,23 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Child = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        Child(
-          __typename = __typename,
-          name = name
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Child {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              else -> break
+            }
+          }
+          Child(
+            __typename = __typename!!,
+            name = name!!
+          )
+        }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Child> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -136,17 +142,23 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Parent = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        Parent(
-          __typename = __typename,
-          name = name
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Parent {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              else -> break
+            }
+          }
+          Parent(
+            __typename = __typename!!,
+            name = name!!
+          )
+        }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Parent> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -179,27 +191,35 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forObject("parent", "parent", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Tree = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        val children = readList<Child>(RESPONSE_FIELDS[2]) { reader ->
-          reader.readObject<Child> { reader ->
-            Child(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Tree {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          var children: List<Child>? = null
+          var parent: Parent? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              2 -> children = readList<Child>(RESPONSE_FIELDS[2]) { reader ->
+                reader.readObject<Child> { reader ->
+                  Child(reader)
+                }
+              }?.map { it!! }
+              3 -> parent = readObject<Parent>(RESPONSE_FIELDS[3]) { reader ->
+                Parent(reader)
+              }
+              else -> break
+            }
           }
-        }!!.map { it!! }
-        val parent = readObject<Parent>(RESPONSE_FIELDS[3]) { reader ->
-          Parent(reader)
+          Tree(
+            __typename = __typename!!,
+            name = name!!,
+            children = children!!,
+            parent = parent
+          )
         }
-        Tree(
-          __typename = __typename,
-          name = name,
-          children = children,
-          parent = parent
-        )
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Tree> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -220,17 +240,22 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forObject("tree", "tree", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Data = reader.run {
-        val tree = readObject<Tree>(RESPONSE_FIELDS[0]) { reader ->
-          Tree(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+        return reader.run {
+          var tree: Tree? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> tree = readObject<Tree>(RESPONSE_FIELDS[0]) { reader ->
+                Tree(reader)
+              }
+              else -> break
+            }
+          }
+          Data(
+            tree = tree
+          )
         }
-        Data(
-          tree = tree
-        )
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 

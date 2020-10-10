@@ -135,21 +135,28 @@ data class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryA
             "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): HeroAVeryAVeryAVeryAVeryAVeryAVeryAV =
-          reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName
-            = readString(RESPONSE_FIELDS[1])!!
-        HeroAVeryAVeryAVeryAVeryAVeryAVeryAV(
-          __typename = __typename,
-          nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName =
-              nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null):
+          HeroAVeryAVeryAVeryAVeryAVeryAVeryAV {
+        return reader.run {
+          var __typename: String? = __typename
+          var
+              nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName:
+              String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = readString(RESPONSE_FIELDS[1])
+              else -> break
+            }
+          }
+          HeroAVeryAVeryAVeryAVeryAVeryAVeryAV(
+            __typename = __typename!!,
+            nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName
+                =
+                nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName!!
+          )
+        }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<HeroAVeryAVeryAVeryAVeryAVeryAVeryAV> =
-          ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -176,18 +183,22 @@ data class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryA
             true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Data = reader.run {
-        val heroAVeryAVeryAVeryAVeryAVeryAVeryAV =
-            readObject<HeroAVeryAVeryAVeryAVeryAVeryAVeryAV>(RESPONSE_FIELDS[0]) { reader ->
-          HeroAVeryAVeryAVeryAVeryAVeryAVeryAV(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+        return reader.run {
+          var heroAVeryAVeryAVeryAVeryAVeryAVeryAV: HeroAVeryAVeryAVeryAVeryAVeryAVeryAV? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> heroAVeryAVeryAVeryAVeryAVeryAVeryAV = readObject<HeroAVeryAVeryAVeryAVeryAVeryAVeryAV>(RESPONSE_FIELDS[0]) { reader ->
+                HeroAVeryAVeryAVeryAVeryAVeryAVeryAV(reader)
+              }
+              else -> break
+            }
+          }
+          Data(
+            heroAVeryAVeryAVeryAVeryAVeryAVeryAV = heroAVeryAVeryAVeryAVeryAVeryAVeryAV
+          )
         }
-        Data(
-          heroAVeryAVeryAVeryAVeryAVeryAVeryAV = heroAVeryAVeryAVeryAVeryAVeryAVeryAV
-        )
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 

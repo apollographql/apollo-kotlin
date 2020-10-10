@@ -105,17 +105,23 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): R2 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        R2(
-          __typename = __typename,
-          name = name
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): R2 {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              else -> break
+            }
+          }
+          R2(
+            __typename = __typename!!,
+            name = name!!
+          )
+        }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<R2> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -148,19 +154,26 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Luke = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)!!
-        val name = readString(RESPONSE_FIELDS[2])!!
-        Luke(
-          __typename = __typename,
-          id = id,
-          name = name
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Luke {
+        return reader.run {
+          var __typename: String? = __typename
+          var id: String? = null
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+              2 -> name = readString(RESPONSE_FIELDS[2])
+              else -> break
+            }
+          }
+          Luke(
+            __typename = __typename!!,
+            id = id!!,
+            name = name!!
+          )
+        }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Luke> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -185,21 +198,27 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           "episode" to "EMPIRE"), true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Data = reader.run {
-        val r2 = readObject<R2>(RESPONSE_FIELDS[0]) { reader ->
-          R2(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+        return reader.run {
+          var r2: R2? = null
+          var luke: Luke? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> r2 = readObject<R2>(RESPONSE_FIELDS[0]) { reader ->
+                R2(reader)
+              }
+              1 -> luke = readObject<Luke>(RESPONSE_FIELDS[1]) { reader ->
+                Luke(reader)
+              }
+              else -> break
+            }
+          }
+          Data(
+            r2 = r2,
+            luke = luke
+          )
         }
-        val luke = readObject<Luke>(RESPONSE_FIELDS[1]) { reader ->
-          Luke(reader)
-        }
-        Data(
-          r2 = r2,
-          luke = luke
-        )
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 

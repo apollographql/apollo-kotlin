@@ -107,17 +107,23 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Node = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        Node(
-          __typename = __typename,
-          name = name
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Node {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              else -> break
+            }
+          }
+          Node(
+            __typename = __typename!!,
+            name = name!!
+          )
+        }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Node> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -144,19 +150,25 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forObject("node", "node", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Edge = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val node = readObject<Node>(RESPONSE_FIELDS[1]) { reader ->
-          Node(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Edge {
+        return reader.run {
+          var __typename: String? = __typename
+          var node: Node? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> node = readObject<Node>(RESPONSE_FIELDS[1]) { reader ->
+                Node(reader)
+              }
+              else -> break
+            }
+          }
+          Edge(
+            __typename = __typename!!,
+            node = node
+          )
         }
-        Edge(
-          __typename = __typename,
-          node = node
-        )
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Edge> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -195,23 +207,30 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forList("edges", "edges", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): FriendsConnection = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val totalCount = readInt(RESPONSE_FIELDS[1])
-        val edges = readList<Edge>(RESPONSE_FIELDS[2]) { reader ->
-          reader.readObject<Edge> { reader ->
-            Edge(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): FriendsConnection {
+        return reader.run {
+          var __typename: String? = __typename
+          var totalCount: Int? = null
+          var edges: List<Edge?>? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> totalCount = readInt(RESPONSE_FIELDS[1])
+              2 -> edges = readList<Edge>(RESPONSE_FIELDS[2]) { reader ->
+                reader.readObject<Edge> { reader ->
+                  Edge(reader)
+                }
+              }
+              else -> break
+            }
           }
+          FriendsConnection(
+            __typename = __typename!!,
+            totalCount = totalCount,
+            edges = edges
+          )
         }
-        FriendsConnection(
-          __typename = __typename,
-          totalCount = totalCount,
-          edges = edges
-        )
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<FriendsConnection> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -244,21 +263,28 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): R2 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        val friendsConnection = readObject<FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
-          FriendsConnection(reader)
-        }!!
-        R2(
-          __typename = __typename,
-          name = name,
-          friendsConnection = friendsConnection
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): R2 {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          var friendsConnection: FriendsConnection? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              2 -> friendsConnection = readObject<FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
+                FriendsConnection(reader)
+              }
+              else -> break
+            }
+          }
+          R2(
+            __typename = __typename!!,
+            name = name!!,
+            friendsConnection = friendsConnection!!
+          )
+        }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<R2> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -285,17 +311,23 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Node1 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        Node1(
-          __typename = __typename,
-          name = name
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Node1 {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              else -> break
+            }
+          }
+          Node1(
+            __typename = __typename!!,
+            name = name!!
+          )
+        }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Node1> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -322,19 +354,25 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forObject("node", "node", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Edge1 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val node = readObject<Node1>(RESPONSE_FIELDS[1]) { reader ->
-          Node1(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Edge1 {
+        return reader.run {
+          var __typename: String? = __typename
+          var node: Node1? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> node = readObject<Node1>(RESPONSE_FIELDS[1]) { reader ->
+                Node1(reader)
+              }
+              else -> break
+            }
+          }
+          Edge1(
+            __typename = __typename!!,
+            node = node
+          )
         }
-        Edge1(
-          __typename = __typename,
-          node = node
-        )
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Edge1> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -373,23 +411,30 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forList("edges", "edges", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): FriendsConnection1 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val totalCount = readInt(RESPONSE_FIELDS[1])
-        val edges = readList<Edge1>(RESPONSE_FIELDS[2]) { reader ->
-          reader.readObject<Edge1> { reader ->
-            Edge1(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): FriendsConnection1 {
+        return reader.run {
+          var __typename: String? = __typename
+          var totalCount: Int? = null
+          var edges: List<Edge1?>? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> totalCount = readInt(RESPONSE_FIELDS[1])
+              2 -> edges = readList<Edge1>(RESPONSE_FIELDS[2]) { reader ->
+                reader.readObject<Edge1> { reader ->
+                  Edge1(reader)
+                }
+              }
+              else -> break
+            }
           }
+          FriendsConnection1(
+            __typename = __typename!!,
+            totalCount = totalCount,
+            edges = edges
+          )
         }
-        FriendsConnection1(
-          __typename = __typename,
-          totalCount = totalCount,
-          edges = edges
-        )
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<FriendsConnection1> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -428,23 +473,31 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Luke = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)!!
-        val name = readString(RESPONSE_FIELDS[2])!!
-        val friendsConnection = readObject<FriendsConnection1>(RESPONSE_FIELDS[3]) { reader ->
-          FriendsConnection1(reader)
-        }!!
-        Luke(
-          __typename = __typename,
-          id = id,
-          name = name,
-          friendsConnection = friendsConnection
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Luke {
+        return reader.run {
+          var __typename: String? = __typename
+          var id: String? = null
+          var name: String? = null
+          var friendsConnection: FriendsConnection1? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+              2 -> name = readString(RESPONSE_FIELDS[2])
+              3 -> friendsConnection = readObject<FriendsConnection1>(RESPONSE_FIELDS[3]) { reader ->
+                FriendsConnection1(reader)
+              }
+              else -> break
+            }
+          }
+          Luke(
+            __typename = __typename!!,
+            id = id!!,
+            name = name!!,
+            friendsConnection = friendsConnection!!
+          )
+        }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Luke> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -469,21 +522,27 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           "episode" to "EMPIRE"), true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Data = reader.run {
-        val r2 = readObject<R2>(RESPONSE_FIELDS[0]) { reader ->
-          R2(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+        return reader.run {
+          var r2: R2? = null
+          var luke: Luke? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> r2 = readObject<R2>(RESPONSE_FIELDS[0]) { reader ->
+                R2(reader)
+              }
+              1 -> luke = readObject<Luke>(RESPONSE_FIELDS[1]) { reader ->
+                Luke(reader)
+              }
+              else -> break
+            }
+          }
+          Data(
+            r2 = r2,
+            luke = luke
+          )
         }
-        val luke = readObject<Luke>(RESPONSE_FIELDS[1]) { reader ->
-          Luke(reader)
-        }
-        Data(
-          r2 = r2,
-          luke = luke
-        )
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 

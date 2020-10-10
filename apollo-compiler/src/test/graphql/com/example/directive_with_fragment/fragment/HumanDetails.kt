@@ -7,7 +7,6 @@ package com.example.directive_with_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import kotlin.Array
@@ -51,17 +50,23 @@ interface HumanDetails : GraphqlFragment {
         ResponseField.forString("homePlanet", "homePlanet", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): DefaultImpl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val homePlanet = readString(RESPONSE_FIELDS[1])
-        DefaultImpl(
-          __typename = __typename,
-          homePlanet = homePlanet
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): DefaultImpl {
+        return reader.run {
+          var __typename: String? = __typename
+          var homePlanet: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> homePlanet = readString(RESPONSE_FIELDS[1])
+              else -> break
+            }
+          }
+          DefaultImpl(
+            __typename = __typename!!,
+            homePlanet = homePlanet
+          )
+        }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<DefaultImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -73,6 +78,7 @@ interface HumanDetails : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader): HumanDetails = DefaultImpl(reader)
+    operator fun invoke(reader: ResponseReader, __typename: String? = null): HumanDetails =
+        DefaultImpl(reader, __typename)
   }
 }

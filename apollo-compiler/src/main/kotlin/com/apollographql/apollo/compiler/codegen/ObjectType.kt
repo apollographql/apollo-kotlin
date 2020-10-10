@@ -47,7 +47,6 @@ internal fun CodeGenerationAst.ObjectType.objectTypeSpec(
                 .companionObjectBuilder()
                 .addProperty(responseFieldsPropertySpec(fields))
                 .addFunction(fields.toMapperFun(ClassName("", name)))
-                .addFunction(ClassName("", name).createMapperFun())
                 .build()
         )
       }
@@ -124,8 +123,14 @@ private fun CodeGenerationAst.ObjectType.fragmentDelegateTypeSpec(
                       .builder("invoke")
                       .addModifiers(KModifier.OPERATOR)
                       .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
+                      .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec())
                       .returns(ClassName("", name))
-                      .addStatement("return·%L(%T(reader))", name, delegateFieldTypeName)
+                      .addStatement(
+                          "return·%L(%T(reader, %L))",
+                          name,
+                          delegateFieldTypeName,
+                          CodeGenerationAst.typenameField.responseName
+                      )
                       .build()
               )
               .build()
@@ -145,19 +150,26 @@ private fun CodeGenerationAst.ObjectType.fragmentCompanionTypeSpec(
               .builder("invoke")
               .addModifiers(KModifier.OPERATOR)
               .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
+              .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec())
               .returns(ClassName("", name))
               .applyIf(possibleImplementations.isEmpty()) {
                 addStatement("return %T(reader)", defaultImplementation.asTypeName())
               }
               .applyIf(possibleImplementations.isNotEmpty()) {
-                addStatement("val typename = reader.readString(RESPONSE_FIELDS[0])")
-                beginControlFlow("return·when(typename)·{")
+                addStatement("val·typename·=·%L·?:·reader.readString(RESPONSE_FIELDS[0])", CodeGenerationAst.typenameField.responseName)
+                beginControlFlow("return·when(typename)")
                 addCode(
                     possibleImplementations
-                        .map { (typeCondition, type) -> CodeBlock.of("%S·-> %T(reader)", typeCondition, type.asTypeName()) }
+                        .map { (typeCondition, type) ->
+                          CodeBlock.of(
+                              "%S·-> %T(reader, typename)",
+                              typeCondition,
+                              type.asTypeName(),
+                          )
+                        }
                         .joinToCode(separator = "\n", suffix = "\n")
                 )
-                addStatement("else·->·%T(reader)", defaultImplementation.asTypeName())
+                addStatement("else·->·%T(reader, typename)", defaultImplementation.asTypeName())
                 endControlFlow()
               }
               .build()

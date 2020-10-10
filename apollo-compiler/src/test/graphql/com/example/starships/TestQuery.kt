@@ -137,25 +137,33 @@ data class TestQuery(
         ResponseField.forList("coordinates", "coordinates", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Starship = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)!!
-        val name = readString(RESPONSE_FIELDS[2])!!
-        val coordinates = readList<List<Double>>(RESPONSE_FIELDS[3]) { reader ->
-          reader.readList<Double> { reader ->
-            reader.readDouble()
-          }.map { it!! }
-        }?.map { it!! }
-        Starship(
-          __typename = __typename,
-          id = id,
-          name = name,
-          coordinates = coordinates
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Starship {
+        return reader.run {
+          var __typename: String? = __typename
+          var id: String? = null
+          var name: String? = null
+          var coordinates: List<List<Double>>? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+              2 -> name = readString(RESPONSE_FIELDS[2])
+              3 -> coordinates = readList<List<Double>>(RESPONSE_FIELDS[3]) { reader ->
+                reader.readList<Double> { reader ->
+                  reader.readDouble()
+                }.map { it!! }
+              }?.map { it!! }
+              else -> break
+            }
+          }
+          Starship(
+            __typename = __typename!!,
+            id = id!!,
+            name = name!!,
+            coordinates = coordinates
+          )
+        }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Starship> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -179,17 +187,22 @@ data class TestQuery(
             "variableName" to "id")), true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Data = reader.run {
-        val starship = readObject<Starship>(RESPONSE_FIELDS[0]) { reader ->
-          Starship(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+        return reader.run {
+          var starship: Starship? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> starship = readObject<Starship>(RESPONSE_FIELDS[0]) { reader ->
+                Starship(reader)
+              }
+              else -> break
+            }
+          }
+          Data(
+            starship = starship
+          )
         }
-        Data(
-          starship = starship
-        )
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 

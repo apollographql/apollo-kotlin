@@ -108,17 +108,23 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("name", "name", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): QueryType = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])
-        QueryType(
-          __typename = __typename,
-          name = name
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): QueryType {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              else -> break
+            }
+          }
+          QueryType(
+            __typename = __typename!!,
+            name = name
+          )
+        }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<QueryType> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -148,17 +154,23 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("name", "name", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Type = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])
-        Type(
-          __typename = __typename,
-          name = name
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Type {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              else -> break
+            }
+          }
+          Type(
+            __typename = __typename!!,
+            name = name
+          )
+        }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Type> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -196,25 +208,32 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forList("types", "types", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): __Schema = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val queryType = readObject<QueryType>(RESPONSE_FIELDS[1]) { reader ->
-          QueryType(reader)
-        }!!
-        val types = readList<Type>(RESPONSE_FIELDS[2]) { reader ->
-          reader.readObject<Type> { reader ->
-            Type(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): __Schema {
+        return reader.run {
+          var __typename: String? = __typename
+          var queryType: QueryType? = null
+          var types: List<Type>? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> queryType = readObject<QueryType>(RESPONSE_FIELDS[1]) { reader ->
+                QueryType(reader)
+              }
+              2 -> types = readList<Type>(RESPONSE_FIELDS[2]) { reader ->
+                reader.readObject<Type> { reader ->
+                  Type(reader)
+                }
+              }?.map { it!! }
+              else -> break
+            }
           }
-        }!!.map { it!! }
-        __Schema(
-          __typename = __typename,
-          queryType = queryType,
-          types = types
-        )
+          __Schema(
+            __typename = __typename!!,
+            queryType = queryType!!,
+            types = types!!
+          )
+        }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<__Schema> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -244,17 +263,23 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("name", "name", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): __Type = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])
-        __Type(
-          __typename = __typename,
-          name = name
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): __Type {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              else -> break
+            }
+          }
+          __Type(
+            __typename = __typename!!,
+            name = name
+          )
+        }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<__Type> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -279,21 +304,27 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           "name" to "Vehicle"), true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Data = reader.run {
-        val __schema = readObject<__Schema>(RESPONSE_FIELDS[0]) { reader ->
-          __Schema(reader)
-        }!!
-        val __type = readObject<__Type>(RESPONSE_FIELDS[1]) { reader ->
-          __Type(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+        return reader.run {
+          var __schema: __Schema? = null
+          var __type: __Type? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __schema = readObject<__Schema>(RESPONSE_FIELDS[0]) { reader ->
+                __Schema(reader)
+              }
+              1 -> __type = readObject<__Type>(RESPONSE_FIELDS[1]) { reader ->
+                __Type(reader)
+              }
+              else -> break
+            }
+          }
+          Data(
+            __schema = __schema!!,
+            __type = __type
+          )
         }
-        Data(
-          __schema = __schema,
-          __type = __type
-        )
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 

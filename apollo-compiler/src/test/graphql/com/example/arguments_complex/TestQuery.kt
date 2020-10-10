@@ -142,19 +142,26 @@ data class TestQuery(
           "unit" to "FOOT"), true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): HeroWithReview = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        val height = readDouble(RESPONSE_FIELDS[2])
-        HeroWithReview(
-          __typename = __typename,
-          name = name,
-          height = height
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): HeroWithReview {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          var height: Double? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              2 -> height = readDouble(RESPONSE_FIELDS[2])
+              else -> break
+            }
+          }
+          HeroWithReview(
+            __typename = __typename!!,
+            name = name!!,
+            height = height
+          )
+        }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<HeroWithReview> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -197,17 +204,22 @@ data class TestQuery(
               "variableName" to "stars"))), true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Data = reader.run {
-        val heroWithReview = readObject<HeroWithReview>(RESPONSE_FIELDS[0]) { reader ->
-          HeroWithReview(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+        return reader.run {
+          var heroWithReview: HeroWithReview? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> heroWithReview = readObject<HeroWithReview>(RESPONSE_FIELDS[0]) { reader ->
+                HeroWithReview(reader)
+              }
+              else -> break
+            }
+          }
+          Data(
+            heroWithReview = heroWithReview
+          )
         }
-        Data(
-          heroWithReview = heroWithReview
-        )
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 

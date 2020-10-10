@@ -11,6 +11,7 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.asTypeName
 
 internal fun CodeGenerationAst.FragmentType.typeSpec(generateAsInternal: Boolean): TypeSpec {
   val fragmentType = checkNotNull(nestedTypes[rootType]) {
@@ -36,7 +37,12 @@ internal fun CodeGenerationAst.FragmentType.typeSpec(generateAsInternal: Boolean
                   .addModifiers(KModifier.OPERATOR)
                   .returns(ClassName.bestGuess(fragmentType.name))
                   .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
-                  .addStatement("return %T(reader)", defaultImplementation.asTypeName())
+                  .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec())
+                  .addStatement(
+                      "return %T(reader, %L)",
+                      defaultImplementation.asTypeName(),
+                      CodeGenerationAst.typenameField.responseName
+                  )
                   .build()
           )
           .build()

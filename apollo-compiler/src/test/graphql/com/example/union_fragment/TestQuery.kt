@@ -91,8 +91,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val characterDelegate: Character
   ) : Search, Character by characterDelegate {
     companion object {
-      operator fun invoke(reader: ResponseReader): CharacterImpl {
-        return CharacterImpl(Character(reader))
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): CharacterImpl {
+        return CharacterImpl(Character(reader, __typename))
       }
     }
   }
@@ -101,8 +101,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val starshipDelegate: Starship
   ) : Search, Starship by starshipDelegate {
     companion object {
-      operator fun invoke(reader: ResponseReader): StarshipImpl {
-        return StarshipImpl(Starship(reader))
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): StarshipImpl {
+        return StarshipImpl(Starship(reader, __typename))
       }
     }
   }
@@ -121,15 +121,20 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): OtherSearch = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        OtherSearch(
-          __typename = __typename
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): OtherSearch {
+        return reader.run {
+          var __typename: String? = __typename
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              else -> break
+            }
+          }
+          OtherSearch(
+            __typename = __typename!!
+          )
+        }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<OtherSearch> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -147,13 +152,13 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Search {
-        val typename = reader.readString(RESPONSE_FIELDS[0])
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Search {
+        val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
-          "Droid" -> CharacterImpl(reader)
-          "Human" -> CharacterImpl(reader)
-          "Starship" -> StarshipImpl(reader)
-          else -> OtherSearch(reader)
+          "Droid" -> CharacterImpl(reader, typename)
+          "Human" -> CharacterImpl(reader, typename)
+          "Starship" -> StarshipImpl(reader, typename)
+          else -> OtherSearch(reader, typename)
         }
       }
     }
@@ -182,19 +187,24 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           "text" to "test"), true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Data = reader.run {
-        val search = readList<Search>(RESPONSE_FIELDS[0]) { reader ->
-          reader.readObject<Search> { reader ->
-            Search(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+        return reader.run {
+          var search: List<Search?>? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> search = readList<Search>(RESPONSE_FIELDS[0]) { reader ->
+                reader.readObject<Search> { reader ->
+                  Search(reader)
+                }
+              }
+              else -> break
+            }
           }
+          Data(
+            search = search
+          )
         }
-        Data(
-          search = search
-        )
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 

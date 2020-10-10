@@ -7,7 +7,6 @@ package com.example.fragment_with_inline_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import kotlin.Array
@@ -171,17 +170,23 @@ interface HeroDetails : GraphqlFragment {
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Node2 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        Node2(
-          __typename = __typename,
-          name = name
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Node2 {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              else -> break
+            }
+          }
+          Node2(
+            __typename = __typename!!,
+            name = name!!
+          )
+        }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Node2> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -208,19 +213,25 @@ interface HeroDetails : GraphqlFragment {
         ResponseField.forObject("node", "node", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Edge2 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val node = readObject<Node2>(RESPONSE_FIELDS[1]) { reader ->
-          Node2(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Edge2 {
+        return reader.run {
+          var __typename: String? = __typename
+          var node: Node2? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> node = readObject<Node2>(RESPONSE_FIELDS[1]) { reader ->
+                Node2(reader)
+              }
+              else -> break
+            }
+          }
+          Edge2(
+            __typename = __typename!!,
+            node = node
+          )
         }
-        Edge2(
-          __typename = __typename,
-          node = node
-        )
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Edge2> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -257,23 +268,30 @@ interface HeroDetails : GraphqlFragment {
         ResponseField.forList("edges", "edges", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): FriendsConnection2 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val totalCount = readInt(RESPONSE_FIELDS[1])
-        val edges = readList<Edge2>(RESPONSE_FIELDS[2]) { reader ->
-          reader.readObject<Edge2> { reader ->
-            Edge2(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): FriendsConnection2 {
+        return reader.run {
+          var __typename: String? = __typename
+          var totalCount: Int? = null
+          var edges: List<Edge2?>? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> totalCount = readInt(RESPONSE_FIELDS[1])
+              2 -> edges = readList<Edge2>(RESPONSE_FIELDS[2]) { reader ->
+                reader.readObject<Edge2> { reader ->
+                  Edge2(reader)
+                }
+              }
+              else -> break
+            }
           }
+          FriendsConnection2(
+            __typename = __typename!!,
+            totalCount = totalCount,
+            edges = edges
+          )
         }
-        FriendsConnection2(
-          __typename = __typename,
-          totalCount = totalCount,
-          edges = edges
-        )
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<FriendsConnection2> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -310,23 +328,32 @@ interface HeroDetails : GraphqlFragment {
         ResponseField.forString("primaryFunction", "primaryFunction", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): DroidDroidDetailsImpl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        val friendsConnection = readObject<FriendsConnection2>(RESPONSE_FIELDS[2]) { reader ->
-          FriendsConnection2(reader)
-        }!!
-        val primaryFunction = readString(RESPONSE_FIELDS[3])
-        DroidDroidDetailsImpl(
-          __typename = __typename,
-          name = name,
-          friendsConnection = friendsConnection,
-          primaryFunction = primaryFunction
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null):
+          DroidDroidDetailsImpl {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          var friendsConnection: FriendsConnection2? = null
+          var primaryFunction: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              2 -> friendsConnection = readObject<FriendsConnection2>(RESPONSE_FIELDS[2]) { reader ->
+                FriendsConnection2(reader)
+              }
+              3 -> primaryFunction = readString(RESPONSE_FIELDS[3])
+              else -> break
+            }
+          }
+          DroidDroidDetailsImpl(
+            __typename = __typename!!,
+            name = name!!,
+            friendsConnection = friendsConnection!!,
+            primaryFunction = primaryFunction
+          )
+        }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<DroidDroidDetailsImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -353,17 +380,23 @@ interface HeroDetails : GraphqlFragment {
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Node3 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        Node3(
-          __typename = __typename,
-          name = name
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Node3 {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              else -> break
+            }
+          }
+          Node3(
+            __typename = __typename!!,
+            name = name!!
+          )
+        }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Node3> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -390,19 +423,25 @@ interface HeroDetails : GraphqlFragment {
         ResponseField.forObject("node", "node", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Edge3 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val node = readObject<Node3>(RESPONSE_FIELDS[1]) { reader ->
-          Node3(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Edge3 {
+        return reader.run {
+          var __typename: String? = __typename
+          var node: Node3? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> node = readObject<Node3>(RESPONSE_FIELDS[1]) { reader ->
+                Node3(reader)
+              }
+              else -> break
+            }
+          }
+          Edge3(
+            __typename = __typename!!,
+            node = node
+          )
         }
-        Edge3(
-          __typename = __typename,
-          node = node
-        )
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Edge3> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -439,23 +478,30 @@ interface HeroDetails : GraphqlFragment {
         ResponseField.forList("edges", "edges", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): FriendsConnection3 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val totalCount = readInt(RESPONSE_FIELDS[1])
-        val edges = readList<Edge3>(RESPONSE_FIELDS[2]) { reader ->
-          reader.readObject<Edge3> { reader ->
-            Edge3(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): FriendsConnection3 {
+        return reader.run {
+          var __typename: String? = __typename
+          var totalCount: Int? = null
+          var edges: List<Edge3?>? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> totalCount = readInt(RESPONSE_FIELDS[1])
+              2 -> edges = readList<Edge3>(RESPONSE_FIELDS[2]) { reader ->
+                reader.readObject<Edge3> { reader ->
+                  Edge3(reader)
+                }
+              }
+              else -> break
+            }
           }
+          FriendsConnection3(
+            __typename = __typename!!,
+            totalCount = totalCount,
+            edges = edges
+          )
         }
-        FriendsConnection3(
-          __typename = __typename,
-          totalCount = totalCount,
-          edges = edges
-        )
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<FriendsConnection3> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -488,21 +534,28 @@ interface HeroDetails : GraphqlFragment {
         ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): HumanDetailsImpl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        val friendsConnection = readObject<FriendsConnection3>(RESPONSE_FIELDS[2]) { reader ->
-          FriendsConnection3(reader)
-        }!!
-        HumanDetailsImpl(
-          __typename = __typename,
-          name = name,
-          friendsConnection = friendsConnection
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): HumanDetailsImpl {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          var friendsConnection: FriendsConnection3? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              2 -> friendsConnection = readObject<FriendsConnection3>(RESPONSE_FIELDS[2]) { reader ->
+                FriendsConnection3(reader)
+              }
+              else -> break
+            }
+          }
+          HumanDetailsImpl(
+            __typename = __typename!!,
+            name = name!!,
+            friendsConnection = friendsConnection!!
+          )
+        }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<HumanDetailsImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -529,17 +582,23 @@ interface HeroDetails : GraphqlFragment {
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Node4 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        Node4(
-          __typename = __typename,
-          name = name
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Node4 {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              else -> break
+            }
+          }
+          Node4(
+            __typename = __typename!!,
+            name = name!!
+          )
+        }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Node4> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -566,19 +625,25 @@ interface HeroDetails : GraphqlFragment {
         ResponseField.forObject("node", "node", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Edge4 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val node = readObject<Node4>(RESPONSE_FIELDS[1]) { reader ->
-          Node4(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Edge4 {
+        return reader.run {
+          var __typename: String? = __typename
+          var node: Node4? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> node = readObject<Node4>(RESPONSE_FIELDS[1]) { reader ->
+                Node4(reader)
+              }
+              else -> break
+            }
+          }
+          Edge4(
+            __typename = __typename!!,
+            node = node
+          )
         }
-        Edge4(
-          __typename = __typename,
-          node = node
-        )
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Edge4> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -615,23 +680,30 @@ interface HeroDetails : GraphqlFragment {
         ResponseField.forList("edges", "edges", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): FriendsConnection4 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val totalCount = readInt(RESPONSE_FIELDS[1])
-        val edges = readList<Edge4>(RESPONSE_FIELDS[2]) { reader ->
-          reader.readObject<Edge4> { reader ->
-            Edge4(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): FriendsConnection4 {
+        return reader.run {
+          var __typename: String? = __typename
+          var totalCount: Int? = null
+          var edges: List<Edge4?>? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> totalCount = readInt(RESPONSE_FIELDS[1])
+              2 -> edges = readList<Edge4>(RESPONSE_FIELDS[2]) { reader ->
+                reader.readObject<Edge4> { reader ->
+                  Edge4(reader)
+                }
+              }
+              else -> break
+            }
           }
+          FriendsConnection4(
+            __typename = __typename!!,
+            totalCount = totalCount,
+            edges = edges
+          )
         }
-        FriendsConnection4(
-          __typename = __typename,
-          totalCount = totalCount,
-          edges = edges
-        )
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<FriendsConnection4> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -664,21 +736,28 @@ interface HeroDetails : GraphqlFragment {
         ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): OtherDefaultImpl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        val friendsConnection = readObject<FriendsConnection4>(RESPONSE_FIELDS[2]) { reader ->
-          FriendsConnection4(reader)
-        }!!
-        OtherDefaultImpl(
-          __typename = __typename,
-          name = name,
-          friendsConnection = friendsConnection
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): OtherDefaultImpl {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          var friendsConnection: FriendsConnection4? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              2 -> friendsConnection = readObject<FriendsConnection4>(RESPONSE_FIELDS[2]) { reader ->
+                FriendsConnection4(reader)
+              }
+              else -> break
+            }
+          }
+          OtherDefaultImpl(
+            __typename = __typename!!,
+            name = name!!,
+            friendsConnection = friendsConnection!!
+          )
+        }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<OtherDefaultImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -758,12 +837,12 @@ interface HeroDetails : GraphqlFragment {
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): DefaultImpl {
-        val typename = reader.readString(RESPONSE_FIELDS[0])
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): DefaultImpl {
+        val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
-          "Droid" -> DroidDroidDetailsImpl(reader)
-          "Human" -> HumanDetailsImpl(reader)
-          else -> OtherDefaultImpl(reader)
+          "Droid" -> DroidDroidDetailsImpl(reader, typename)
+          "Human" -> HumanDetailsImpl(reader, typename)
+          else -> OtherDefaultImpl(reader, typename)
         }
       }
     }
@@ -792,6 +871,7 @@ interface HeroDetails : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader): HeroDetails = DefaultImpl(reader)
+    operator fun invoke(reader: ResponseReader, __typename: String? = null): HeroDetails =
+        DefaultImpl(reader, __typename)
   }
 }

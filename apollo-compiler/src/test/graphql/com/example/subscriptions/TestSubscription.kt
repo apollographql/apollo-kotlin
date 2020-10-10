@@ -128,19 +128,26 @@ data class TestSubscription(
         ResponseField.forString("content", "content", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): CommentAdded = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val id = readInt(RESPONSE_FIELDS[1])!!
-        val content = readString(RESPONSE_FIELDS[2])!!
-        CommentAdded(
-          __typename = __typename,
-          id = id,
-          content = content
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): CommentAdded {
+        return reader.run {
+          var __typename: String? = __typename
+          var id: Int? = null
+          var content: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> id = readInt(RESPONSE_FIELDS[1])
+              2 -> content = readString(RESPONSE_FIELDS[2])
+              else -> break
+            }
+          }
+          CommentAdded(
+            __typename = __typename!!,
+            id = id!!,
+            content = content!!
+          )
+        }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<CommentAdded> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -167,17 +174,22 @@ data class TestSubscription(
             "variableName" to "repo")), true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Data = reader.run {
-        val commentAdded = readObject<CommentAdded>(RESPONSE_FIELDS[0]) { reader ->
-          CommentAdded(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+        return reader.run {
+          var commentAdded: CommentAdded? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> commentAdded = readObject<CommentAdded>(RESPONSE_FIELDS[0]) { reader ->
+                CommentAdded(reader)
+              }
+              else -> break
+            }
+          }
+          Data(
+            commentAdded = commentAdded
+          )
         }
-        Data(
-          commentAdded = commentAdded
-        )
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 

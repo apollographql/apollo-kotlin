@@ -221,21 +221,29 @@ data class TestQuery(
         ResponseField.forString("homePlanet", "homePlanet", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): HumanCharacterImpl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)!!
-        val name = readString(RESPONSE_FIELDS[2])!!
-        val homePlanet = readString(RESPONSE_FIELDS[3])
-        HumanCharacterImpl(
-          __typename = __typename,
-          id = id,
-          name = name,
-          homePlanet = homePlanet
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): HumanCharacterImpl {
+        return reader.run {
+          var __typename: String? = __typename
+          var id: String? = null
+          var name: String? = null
+          var homePlanet: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+              2 -> name = readString(RESPONSE_FIELDS[2])
+              3 -> homePlanet = readString(RESPONSE_FIELDS[3])
+              else -> break
+            }
+          }
+          HumanCharacterImpl(
+            __typename = __typename!!,
+            id = id!!,
+            name = name!!,
+            homePlanet = homePlanet
+          )
+        }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<HumanCharacterImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -272,21 +280,29 @@ data class TestQuery(
         ResponseField.forString("primaryFunction", "primaryFunction", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): DroidCharacterImpl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)!!
-        val name = readString(RESPONSE_FIELDS[2])!!
-        val primaryFunction = readString(RESPONSE_FIELDS[3])
-        DroidCharacterImpl(
-          __typename = __typename,
-          id = id,
-          name = name,
-          primaryFunction = primaryFunction
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): DroidCharacterImpl {
+        return reader.run {
+          var __typename: String? = __typename
+          var id: String? = null
+          var name: String? = null
+          var primaryFunction: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+              2 -> name = readString(RESPONSE_FIELDS[2])
+              3 -> primaryFunction = readString(RESPONSE_FIELDS[3])
+              else -> break
+            }
+          }
+          DroidCharacterImpl(
+            __typename = __typename!!,
+            id = id!!,
+            name = name!!,
+            primaryFunction = primaryFunction
+          )
+        }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<DroidCharacterImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -313,17 +329,23 @@ data class TestQuery(
         ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null)
       )
 
-      operator fun invoke(reader: ResponseReader): OtherHero = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)!!
-        OtherHero(
-          __typename = __typename,
-          id = id
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): OtherHero {
+        return reader.run {
+          var __typename: String? = __typename
+          var id: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+              else -> break
+            }
+          }
+          OtherHero(
+            __typename = __typename!!,
+            id = id!!
+          )
+        }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<OtherHero> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -351,12 +373,12 @@ data class TestQuery(
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Hero {
-        val typename = reader.readString(RESPONSE_FIELDS[0])
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Hero {
+        val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
-          "Human" -> HumanCharacterImpl(reader)
-          "Droid" -> DroidCharacterImpl(reader)
-          else -> OtherHero(reader)
+          "Human" -> HumanCharacterImpl(reader, typename)
+          "Droid" -> DroidCharacterImpl(reader, typename)
+          else -> OtherHero(reader, typename)
         }
       }
     }
@@ -379,17 +401,22 @@ data class TestQuery(
         ResponseField.forObject("hero", "hero", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Data = reader.run {
-        val hero = readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
-          Hero(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+        return reader.run {
+          var hero: Hero? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> hero = readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
+                Hero(reader)
+              }
+              else -> break
+            }
+          }
+          Data(
+            hero = hero
+          )
         }
-        Data(
-          hero = hero
-        )
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 

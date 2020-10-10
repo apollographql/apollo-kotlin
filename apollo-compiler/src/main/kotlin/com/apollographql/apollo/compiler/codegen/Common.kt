@@ -112,34 +112,76 @@ internal fun responseFieldsPropertySpec(fields: List<CodeGenerationAst.Field>): 
       .builder(
           name = "RESPONSE_FIELDS",
           type = Array<ResponseField>::class.asClassName().parameterizedBy(ResponseField::class.asClassName()),
-          modifiers = *arrayOf(KModifier.PRIVATE)
+          modifiers = arrayOf(KModifier.PRIVATE)
       )
       .initializer(initializer)
       .build()
 }
 
 internal fun List<CodeGenerationAst.Field>.toMapperFun(responseTypeName: TypeName): FunSpec {
-  val readFieldsCode = mapIndexed { index, field ->
-    CodeBlock.of(
-        "val %L = %L", field.name, field.type.readCode(field = "RESPONSE_FIELDS[$index]")
-    )
-  }.joinToCode(separator = "\n", suffix = "\n")
-  val mapFieldsCode = map { field ->
-    CodeBlock.of("%L = %L", field.name, field.name)
-  }.joinToCode(separator = ",\n", suffix = "\n")
+  val fieldVariablesCode = this
+      .map { field ->
+        if (field.responseName == CodeGenerationAst.typenameField.responseName) {
+          CodeBlock.of(
+              "var %L: %T = %L",
+              field.name,
+              field.type.asTypeName().copy(nullable = true),
+              CodeGenerationAst.typenameField.responseName
+          )
+        } else {
+          CodeBlock.of(
+              "var %L: %T = null",
+              field.name,
+              field.type.asTypeName().copy(nullable = true)
+          )
+        }
+      }
+      .joinToCode(separator = "\n", suffix = "\n")
+
+  val selectFieldsCode = CodeBlock.builder()
+      .beginControlFlow("while(true)")
+      .beginControlFlow("when·(selectField(RESPONSE_FIELDS))")
+      .add(
+          this.mapIndexed { fieldIndex, field ->
+            CodeBlock.of(
+                "%L·->·%L·=·%L",
+                fieldIndex,
+                field.name,
+                field.type.nullable().readCode(field = "RESPONSE_FIELDS[$fieldIndex]")
+            )
+          }.joinToCode(separator = "\n", suffix = "\n")
+      )
+      .addStatement("else -> break")
+      .endControlFlow()
+      .endControlFlow()
+      .build()
+
+  val typeConstructorCode = CodeBlock.builder()
+      .addStatement("%T(", responseTypeName)
+      .indent()
+      .add(this.map { field ->
+        CodeBlock.of(
+            "%L = %L%L",
+            field.name,
+            field.name,
+            "!!".takeUnless { field.type.nullable } ?: ""
+        )
+      }.joinToCode(separator = ",\n", suffix = "\n"))
+      .unindent()
+      .addStatement(")")
+      .build()
+
   return FunSpec.builder("invoke")
       .addModifiers(KModifier.OPERATOR)
       .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
+      .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec())
       .returns(responseTypeName)
       .addCode(CodeBlock
           .builder()
-          .beginControlFlow("return reader.run")
-          .add(readFieldsCode)
-          .addStatement("%T(", responseTypeName)
-          .indent()
-          .add(mapFieldsCode)
-          .unindent()
-          .addStatement(")")
+          .beginControlFlow("return·reader.run")
+          .add(fieldVariablesCode)
+          .add(selectFieldsCode)
+          .add(typeConstructorCode)
           .endControlFlow()
           .build()
       )
@@ -410,22 +452,6 @@ private fun Number.castTo(type: TypeName): Number {
   }
 }
 
-internal fun TypeName.createMapperFun(): FunSpec {
-  return FunSpec.builder("Mapper")
-      .addAnnotation(
-          AnnotationSpec.builder(Suppress::class)
-              .addMember("%S", "FunctionName")
-              .build()
-      )
-      .returns(ResponseFieldMapper::class.asClassName().parameterizedBy(this))
-      .addStatement("return %T·{ invoke(it) }", ResponseFieldMapper::class)
-      .build()
-}
-
-internal fun PropertySpec.asParameter(): ParameterSpec {
-  return ParameterSpec.builder(name, type).build()
-}
-
 internal fun Collection<CodeGenerationAst.TypeRef>.accessorProperties(): List<PropertySpec> {
   return map { type ->
     PropertySpec.builder("as${type.name}", type.asTypeName().copy(nullable = true))
@@ -497,3 +523,10 @@ internal fun FunSpec.Builder.throws(vararg exceptionClasses: ClassName) = addAnn
     AnnotationSpec.builder(MULTIPLATFORM_THROWS)
         .apply { exceptionClasses.forEach { addMember("%T::class", it) } }
         .build())
+
+internal fun CodeGenerationAst.Field.asOptionalParameterSpec(): ParameterSpec {
+  return ParameterSpec
+      .builder(this.responseName, this.type.asTypeName().copy(nullable = true))
+      .defaultValue("null")
+      .build()
+}

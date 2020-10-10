@@ -94,8 +94,8 @@ internal class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Varia
     val heroDetailsDelegate: HeroDetails
   ) : Hero, HeroDetails by heroDetailsDelegate {
     companion object {
-      operator fun invoke(reader: ResponseReader): HeroDetailsImpl {
-        return HeroDetailsImpl(HeroDetails(reader))
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): HeroDetailsImpl {
+        return HeroDetailsImpl(HeroDetails(reader, __typename))
       }
     }
   }
@@ -120,18 +120,24 @@ internal class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Varia
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): HeroDetailsHumanDetailsImpl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        HeroDetailsHumanDetailsImpl(
-          __typename = __typename,
-          name = name
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null):
+          HeroDetailsHumanDetailsImpl {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              else -> break
+            }
+          }
+          HeroDetailsHumanDetailsImpl(
+            __typename = __typename!!,
+            name = name!!
+          )
+        }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<HeroDetailsHumanDetailsImpl> = ResponseFieldMapper {
-          invoke(it) }
     }
   }
 
@@ -152,15 +158,20 @@ internal class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Varia
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): OtherHero = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        OtherHero(
-          __typename = __typename
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): OtherHero {
+        return reader.run {
+          var __typename: String? = __typename
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              else -> break
+            }
+          }
+          OtherHero(
+            __typename = __typename!!
+          )
+        }
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<OtherHero> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -181,12 +192,12 @@ internal class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Varia
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Hero {
-        val typename = reader.readString(RESPONSE_FIELDS[0])
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Hero {
+        val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
-          "Droid" -> HeroDetailsImpl(reader)
-          "Human" -> HeroDetailsHumanDetailsImpl(reader)
-          else -> OtherHero(reader)
+          "Droid" -> HeroDetailsImpl(reader, typename)
+          "Human" -> HeroDetailsHumanDetailsImpl(reader, typename)
+          else -> OtherHero(reader, typename)
         }
       }
     }
@@ -209,17 +220,22 @@ internal class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Varia
         ResponseField.forObject("hero", "hero", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Data = reader.run {
-        val hero = readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
-          Hero(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+        return reader.run {
+          var hero: Hero? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> hero = readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
+                Hero(reader)
+              }
+              else -> break
+            }
+          }
+          Data(
+            hero = hero
+          )
         }
-        Data(
-          hero = hero
-        )
       }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 
