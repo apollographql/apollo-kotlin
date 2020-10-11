@@ -82,15 +82,22 @@ object GraphSDLSchemaParser {
 
   private fun builtInTypeDefinitions() = javaClass.getResourceAsStream("/builtins.sdl").use { inputStream ->
     GraphQLParser(CommonTokenStream(GraphQLLexer(CharStreams.fromStream(inputStream)))).document()
-        .definition().mapNotNull { it.typeDefinition() }.parse()
+        .definition().mapNotNull { it.typeSystemDefinition()?.typeDefinition() }.parse()
   }
 
   private fun GraphQLParser.DocumentContext.parse(): GraphSdlSchema {
-    val typeDefinitions = definition().mapNotNull { it.typeDefinition() }.parse()
+    val executableDefinition = definition().firstOrNull { it.executableDefinition() != null }
+    if (executableDefinition != null) {
+      throw ParseException(
+          message = "Found an executable definition. Schemas should not contain operations or fragments.",
+          token = executableDefinition.start
+      )
+    }
+    val typeDefinitions = definition().mapNotNull { it.typeSystemDefinition()?.typeDefinition() }.parse()
         .plus(builtInTypeDefinitions())
         .associateBy { it.name }
 
-    val schemaDefinition = definition().mapNotNull { it.schemaDefinition() }.firstOrNull()
+    val schemaDefinition = definition().mapNotNull { it.typeSystemDefinition()?.schemaDefinition() }.firstOrNull()
     val operationRootTypes = schemaDefinition?.operationTypesDefinition().parse()
     return GraphSdlSchema(
         schema = GraphSdlSchema.Schema(

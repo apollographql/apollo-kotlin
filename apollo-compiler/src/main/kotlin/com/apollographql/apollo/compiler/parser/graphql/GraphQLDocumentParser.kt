@@ -103,9 +103,23 @@ class GraphQLDocumentParser(
   }
 
   private fun GraphQLParser.DocumentContext.parse(tokenStream: CommonTokenStream, graphQLFilePath: String): DocumentParseResult {
-    val fragments = definition().mapNotNull { it.fragmentDefinition()?.parse(tokenStream, graphQLFilePath) }
+    val typeSystemDefinition = definition().firstOrNull { it.typeSystemDefinition() != null }
+    if (typeSystemDefinition != null) {
+      throw ParseException(
+          message = "Found a type system definition while expecting an executable definition.",
+          token = typeSystemDefinition.start
+      )
+    }
+    val typeSystemExtension = definition().firstOrNull { it.typeSystemExtension() != null }
+    if (typeSystemExtension != null) {
+      throw ParseException(
+          message = "Found a type system extension while expecting an executable definition.",
+          token = typeSystemExtension.start
+      )
+    }
+    val fragments = definition().mapNotNull { it.executableDefinition()?.fragmentDefinition()?.parse(tokenStream, graphQLFilePath) }
     val operations = definition().mapNotNull { ctx ->
-      ctx.operationDefinition()?.parse(tokenStream, graphQLFilePath)
+      ctx.executableDefinition()?.operationDefinition()?.parse(tokenStream, graphQLFilePath)
     }
     return DocumentParseResult(
         operations = operations.map { it.result },

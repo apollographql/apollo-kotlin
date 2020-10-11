@@ -32,7 +32,15 @@ document
   ;
 
 definition
-  : operationDefinition | fragmentDefinition | schemaDefinition | typeDefinition
+  : executableDefinition | typeSystemDefinition | typeSystemExtension
+  ;
+
+typeSystemDefinition
+  : schemaDefinition | typeDefinition | directiveDefinition
+  ;
+
+executableDefinition
+  : operationDefinition | fragmentDefinition
   ;
 
 schemaDefinition
@@ -46,8 +54,6 @@ typeDefinition
   | inputObjectDefinition
   | unionTypeDefinition
   | scalarTypeDefinition
-  | directiveDefinition
-  | typeSystemExtension
   ;
 
 enumTypeDefinition
