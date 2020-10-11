@@ -115,7 +115,7 @@ class IntegrationTest {
         apolloClient!!.query(AllPlanetsQuery()),
         Predicate<Response<AllPlanetsQuery.Data?>> { response ->
           assertThat(response.hasErrors()).isTrue()
-          assertThat(response.errors()).containsExactly(Error(
+          assertThat(response.errors).containsExactly(Error(
               "Cannot query field \"names\" on type \"Species\".", listOf(Error.Location(3, 5)), emptyMap<String, Any>()))
           true
         }
@@ -130,12 +130,12 @@ class IntegrationTest {
         apolloClient!!.query(AllPlanetsQuery())
     ) { response ->
       assertThat(response.hasErrors()).isTrue()
-      assertThat(response.errors()).hasSize(1)
-      assertThat(response.errors()!![0].message()).isEqualTo("")
-      assertThat(response.errors()!![0].customAttributes()).hasSize(2)
-      assertThat(response.errors()!![0].customAttributes()["code"]).isEqualTo("userNotFound")
-      assertThat(response.errors()!![0].customAttributes()["path"]).isEqualTo("loginWithPassword")
-      assertThat(response.errors()!![0].locations()).hasSize(0)
+      assertThat(response.errors).hasSize(1)
+      assertThat(response.errors!![0].message).isEqualTo("")
+      assertThat(response.errors!![0].customAttributes).hasSize(2)
+      assertThat(response.errors!![0].customAttributes["code"]).isEqualTo("userNotFound")
+      assertThat(response.errors!![0].customAttributes["path"]).isEqualTo("loginWithPassword")
+      assertThat(response.errors!![0].locations).hasSize(0)
       true
     }
   }
@@ -148,18 +148,18 @@ class IntegrationTest {
         apolloClient!!.query(AllPlanetsQuery())
     ) { response ->
       assertThat(response.hasErrors()).isTrue()
-      assertThat(response.errors()!![0].customAttributes()).hasSize(4)
-      assertThat(response.errors()!![0].customAttributes()["code"]).isEqualTo(BigDecimal(500))
-      assertThat(response.errors()!![0].customAttributes()["status"]).isEqualTo("Internal Error")
-      assertThat(response.errors()!![0].customAttributes()["fatal"]).isEqualTo(true)
-      assertThat(response.errors()!![0].customAttributes()["path"]).isEqualTo(Arrays.asList("query"))
+      assertThat(response.errors!![0].customAttributes).hasSize(4)
+      assertThat(response.errors!![0].customAttributes["code"]).isEqualTo(BigDecimal(500))
+      assertThat(response.errors!![0].customAttributes["status"]).isEqualTo("Internal Error")
+      assertThat(response.errors!![0].customAttributes["fatal"]).isEqualTo(true)
+      assertThat(response.errors!![0].customAttributes["path"]).isEqualTo(Arrays.asList("query"))
       true
     }
   }
 
   @Test
   @Throws(Exception::class)
-  fun errorResponse_with_data {
+  fun errorResponse_with_data() {
     server.enqueue(mockResponse("ResponseErrorWithData.json"))
     assertResponse(
         apolloClient!!.query(EpisodeHeroNameQuery(fromNullable(Episode.JEDI)))
@@ -258,7 +258,7 @@ class IntegrationTest {
         Buffer().readFrom(javaClass.getResourceAsStream("/AllPlanetsNullableField.json")),
         ScalarTypeAdapters(emptyMap())
     )
-    assertThat(response.operation()).isEqualTo(query)
+    assertThat(response.operation).isEqualTo(query)
     assertThat(response.hasErrors()).isFalse()
     assertThat(response.data).isNotNull()
     assertThat(response.data!!.allPlanets?.planets).isNotEmpty()

@@ -24,15 +24,15 @@ class CacheOnlyFetcherTest : BaseFetcherTest() {
     apolloClient.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).enqueue(trackingCallback)
     Truth.assertThat(trackingCallback.exceptions.size).isEqualTo(0)
     Truth.assertThat(trackingCallback.responseList.size).isEqualTo(1)
-    Truth.assertThat(trackingCallback.responseList[0].fromCache()).isTrue()
-    Truth.assertThat(trackingCallback.responseList[0].data()).isNull()
+    Truth.assertThat(trackingCallback.responseList[0].isFromCache).isTrue()
+    Truth.assertThat(trackingCallback.responseList[0].data).isNull()
     Truth.assertThat(server.requestCount).isEqualTo(0)
 
     // Populate cache
     server.enqueue(mockResponse("HeroNameResponse.json"))
     val responseData = Rx2Apollo.from(apolloClient.query(query).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)).blockingFirst()
     Truth.assertThat(responseData.hasErrors()).isFalse()
-    assertThat(responseData.data()!!.hero?.name).isEqualTo("R2-D2")
+    assertThat(responseData.data!!.hero?.name).isEqualTo("R2-D2")
     Truth.assertThat(server.requestCount).isEqualTo(1)
 
     // Success after cache populated
@@ -41,8 +41,8 @@ class CacheOnlyFetcherTest : BaseFetcherTest() {
     apolloClient.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).enqueue(trackingCallback)
     Truth.assertThat(trackingCallback.exceptions.size).isEqualTo(0)
     Truth.assertThat(trackingCallback.responseList.size).isEqualTo(1)
-    Truth.assertThat(trackingCallback.responseList[0].fromCache()).isTrue()
-    assertThat(trackingCallback.responseList[0].data()!!.hero?.name).isEqualTo("R2-D2")
+    Truth.assertThat(trackingCallback.responseList[0].isFromCache).isTrue()
+    assertThat(trackingCallback.responseList[0].data!!.hero?.name).isEqualTo("R2-D2")
     Truth.assertThat(server.requestCount).isEqualTo(1)
   }
 }

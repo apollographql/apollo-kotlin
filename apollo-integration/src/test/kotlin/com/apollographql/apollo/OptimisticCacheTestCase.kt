@@ -267,7 +267,7 @@ class OptimisticCacheTestCase {
         .watcher().refetchResponseFetcher(ApolloResponseFetchers.CACHE_FIRST)
         .enqueueAndWatch(object : ApolloCall.Callback<ReviewsByEpisodeQuery.Data>() {
           override fun onResponse(response: Response<ReviewsByEpisodeQuery.Data>) {
-            watcherData.add(response.data())
+            watcherData.add(response.data)
           }
 
           override fun onFailure(e: ApolloException) {}
