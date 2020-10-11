@@ -28,7 +28,6 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 /**
  * Implementation of an {@link Optional} containing a reference.
  */
-
 final class Present<T> extends Optional<T> {
   private final T reference;
 

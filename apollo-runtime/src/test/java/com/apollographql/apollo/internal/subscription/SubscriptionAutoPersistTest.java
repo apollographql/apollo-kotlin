@@ -10,7 +10,6 @@ import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.api.internal.ResponseFieldMapper;
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.internal.ResponseReader;
-import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer;
 import com.apollographql.apollo.subscription.OperationClientMessage;
@@ -72,9 +71,7 @@ public class SubscriptionAutoPersistTest {
     subscriptionTransportFactory.callback.onMessage(
         new OperationServerMessage.Error(
             subscriptionId.toString(),
-            new UnmodifiableMapBuilder<String, Object>()
-                .put("message", RealSubscriptionManager.PROTOCOL_NEGOTIATION_ERROR_NOT_FOUND)
-                .build()
+            Collections.singletonMap("message", RealSubscriptionManager.PROTOCOL_NEGOTIATION_ERROR_NOT_FOUND)
         )
     );
     assertStartMessage(true);
@@ -85,9 +82,7 @@ public class SubscriptionAutoPersistTest {
     subscriptionTransportFactory.callback.onMessage(
         new OperationServerMessage.Error(
             subscriptionId.toString(),
-            new UnmodifiableMapBuilder<String, Object>()
-                .put("message", RealSubscriptionManager.PROTOCOL_NEGOTIATION_ERROR_NOT_SUPPORTED)
-                .build()
+            Collections.singletonMap("message", RealSubscriptionManager.PROTOCOL_NEGOTIATION_ERROR_NOT_SUPPORTED)
         )
     );
     assertStartMessage(true);
@@ -98,9 +93,7 @@ public class SubscriptionAutoPersistTest {
     subscriptionTransportFactory.callback.onMessage(
         new OperationServerMessage.Error(
             subscriptionId.toString(),
-            new UnmodifiableMapBuilder<String, Object>()
-                .put("meh", "¯\\_(ツ)_/¯")
-                .build()
+            Collections.singletonMap("meh", "¯\\_(ツ)_/¯")
         )
     );
     assertThat(callbackAdapter.error).isInstanceOf(ApolloSubscriptionServerException.class);

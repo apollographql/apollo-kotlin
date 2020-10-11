@@ -9,8 +9,6 @@ import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.cache.http.HttpCache
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.api.internal.ApolloLogger
-import com.apollographql.apollo.api.internal.Optional
-import com.apollographql.apollo.api.internal.Utils.__checkNotNull
 import com.apollographql.apollo.api.internal.json.InputFieldJsonWriter
 import com.apollographql.apollo.api.internal.json.JsonWriter.Companion.of
 import com.apollographql.apollo.cache.ApolloCacheHeaders
@@ -46,15 +44,14 @@ import java.util.concurrent.atomic.AtomicReference
  * [ApolloInterceptorChain.proceedAsync]
  * on the interceptor chain.
  */
-class ApolloServerInterceptor(serverUrl: HttpUrl, httpCallFactory: Call.Factory,
-                              cachePolicy: HttpCachePolicy.Policy?, prefetch: Boolean,
-                              scalarTypeAdapters: ScalarTypeAdapters, logger: ApolloLogger) : ApolloInterceptor {
-  val serverUrl: HttpUrl
-  val httpCallFactory: Call.Factory
-  val cachePolicy: Optional<HttpCachePolicy.Policy>
-  val prefetch: Boolean
-  val logger: ApolloLogger
-  val scalarTypeAdapters: ScalarTypeAdapters
+class ApolloServerInterceptor(
+    val serverUrl: HttpUrl,
+    val httpCallFactory: Call.Factory,
+    val cachePolicy: HttpCachePolicy.Policy?,
+    val prefetch: Boolean,
+    val scalarTypeAdapters: ScalarTypeAdapters,
+    val logger: ApolloLogger
+) : ApolloInterceptor {
   var httpCallRef = AtomicReference<Call?>()
 
   @Volatile
@@ -149,8 +146,7 @@ class ApolloServerInterceptor(serverUrl: HttpUrl, httpCallFactory: Call.Factory,
       val value = requestHeaders.headerValue(header)
       requestBuilder.header(header, value)
     }
-    if (cachePolicy.isPresent) {
-      val cachePolicy = cachePolicy.get()
+    if (cachePolicy != null) {
       val skipCacheHttpResponse = "true".equals(cacheHeaders.headerValue(
           ApolloCacheHeaders.DO_NOT_STORE), ignoreCase = true)
       val cacheKey = cacheKey(operation, scalarTypeAdapters)
@@ -173,6 +169,7 @@ class ApolloServerInterceptor(serverUrl: HttpUrl, httpCallFactory: Call.Factory,
     const val ACCEPT_TYPE = "application/json"
     const val CONTENT_TYPE = "application/json"
     val MEDIA_TYPE = MediaType.parse("application/json; charset=utf-8")
+
     @Throws(IOException::class)
     fun cacheKey(operation: Operation<*, *, *>, scalarTypeAdapters: ScalarTypeAdapters?): String {
       return httpPostRequestBody(operation, scalarTypeAdapters, true, true).md5().hex()
@@ -308,7 +305,7 @@ class ApolloServerInterceptor(serverUrl: HttpUrl, httpCallFactory: Call.Factory,
       fileUploadMetaList.forEachIndexed { i, fileUploadMeta ->
         val file = fileUploadMeta.fileUpload.filePath?.let { File(it) }
         val mimetype = MediaType.parse(fileUploadMeta.fileUpload.mimetype)
-        if ( file != null) {
+        if (file != null) {
           multipartBodyBuilder.addFormDataPart(
               i.toString(),
               file.name,
@@ -328,14 +325,5 @@ class ApolloServerInterceptor(serverUrl: HttpUrl, httpCallFactory: Call.Factory,
       }
       return multipartBodyBuilder.build()
     }
-  }
-
-  init {
-    this.serverUrl = __checkNotNull(serverUrl, "serverUrl == null")
-    this.httpCallFactory = __checkNotNull(httpCallFactory, "httpCallFactory == null")
-    this.cachePolicy = Optional.fromNullable(cachePolicy)
-    this.prefetch = prefetch
-    this.scalarTypeAdapters = __checkNotNull(scalarTypeAdapters, "scalarTypeAdapters == null")
-    this.logger = __checkNotNull(logger, "logger == null")
   }
 }

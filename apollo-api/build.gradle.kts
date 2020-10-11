@@ -19,9 +19,7 @@ kotlin {
     }
   }
 
-  jvm {
-    withJava()
-  }
+  jvm()
 
   js {
     useCommonJs()
