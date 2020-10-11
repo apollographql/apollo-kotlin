@@ -58,26 +58,6 @@ class GraphSdlParseTest() {
     }
   }
 
-  @Test
-  fun `implementing an object fails`() {
-    try {
-      GraphSdlSchema(File("src/test/sdl/implements-object.sdl"))
-      fail("parse expected to fail but was successful")
-    } catch (e: ParseException) {
-      assertThat(e.message).contains("Object `Cat` cannot implement non-interface `Animal`")
-    }
-  }
-
-  @Test
-  fun `argument names cannot contain '$'`() {
-    try {
-      GraphSdlSchema(File("src/test/sdl/dollar-arg-name.sdl"))
-      fail("parse expected to fail but was successful")
-    } catch (e: DocumentParseException) {
-      assertThat(e.message).contains("Unsupported token `$`")
-    }
-  }
-
 
   @Test
   fun `writing SDL and parsing again yields identical schemas`() {

@@ -1,0 +1,7 @@
+Failed to parse GraphQL file /dollar-arg-name.sdl (2:28)
+Unsupported token `$`
+----------------------------------------------------
+[1]:# argument names should not contain a dollar sign
+[2]:type Mutation {sendMessage0($input: MessageInput0): String!}
+[3]:
+----------------------------------------------------

@@ -1,0 +1,7 @@
+Failed to parse GraphQL file /implements-object.sdl (5:9)
+Object `Cat` cannot implement non-interface `Animal`
+----------------------------------------------------
+[4]:
+[5]:type Cat implements Animal {
+[6]:  mustaches: Int
+----------------------------------------------------
