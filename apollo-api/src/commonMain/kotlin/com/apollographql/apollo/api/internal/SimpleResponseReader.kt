@@ -39,11 +39,11 @@ class SimpleResponseReader private constructor(
   }
 
   override fun readInt(field: ResponseField): Int? {
-    return valueFor<Number>(field)?.toInt()
+    return valueFor<BigDecimal>(field)?.toNumber()?.toInt()
   }
 
   override fun readDouble(field: ResponseField): Double? {
-    return valueFor<Number>(field)?.toDouble()
+    return valueFor<BigDecimal>(field)?.toNumber()?.toDouble()
   }
 
   override fun readBoolean(field: ResponseField): Boolean? {

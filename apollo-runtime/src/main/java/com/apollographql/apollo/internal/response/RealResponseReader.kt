@@ -1,5 +1,6 @@
 package com.apollographql.apollo.internal.response
 
+import com.apollographql.apollo.api.BigDecimal
 import com.apollographql.apollo.api.CustomTypeAdapter
 import com.apollographql.apollo.api.CustomTypeValue.Companion.fromRawValue
 import com.apollographql.apollo.api.Operation
@@ -48,7 +49,7 @@ class RealResponseReader<R: Map<String, Any?>>(
   }
 
   override fun readInt(field: ResponseField): Int? {
-    val value = fieldValueResolver.valueFor<Number>(recordSet, field)
+    val value = fieldValueResolver.valueFor<BigDecimal>(recordSet, field)
     checkValue(field, value)
     willResolve(field, value)
     if (value == null) {
@@ -61,7 +62,7 @@ class RealResponseReader<R: Map<String, Any?>>(
   }
 
   override fun readDouble(field: ResponseField): Double? {
-    val value = fieldValueResolver.valueFor<Number>(recordSet, field)
+    val value = fieldValueResolver.valueFor<BigDecimal>(recordSet, field)
     checkValue(field, value)
     willResolve(field, value)
     if (value == null) {
@@ -170,12 +171,12 @@ class RealResponseReader<R: Map<String, Any?>>(
 
     override fun readInt(): Int {
       resolveDelegate.didResolveScalar(value)
-      return (value as Number).toInt()
+      return (value as BigDecimal).toInt()
     }
 
     override fun readDouble(): Double {
       resolveDelegate.didResolveScalar(value)
-      return (value as Number).toDouble()
+      return (value as BigDecimal).toDouble()
     }
 
     override fun readBoolean(): Boolean {
