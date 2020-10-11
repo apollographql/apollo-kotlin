@@ -2,7 +2,14 @@ package com.apollographql.apollo.compiler.codegen
 
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.ast.CodeGenerationAst
-import com.squareup.kotlinpoet.*
+import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
+import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeName
+import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.joinToCode
 
 internal fun CodeGenerationAst.EnumType.typeSpec(
     generateAsInternal: Boolean = false,

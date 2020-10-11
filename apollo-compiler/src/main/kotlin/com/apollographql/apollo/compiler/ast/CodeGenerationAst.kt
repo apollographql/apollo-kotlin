@@ -67,7 +67,8 @@ internal data class CodeGenerationAst(
 
       data class Fragment(
           val defaultImplementation: TypeRef,
-          val possibleImplementations: Map<String, TypeRef>
+          val possibleImplementations: Map<String, TypeRef>,
+          val allPossibleTypes: Set<TypeRef>
       ) : Kind()
 
       data class FragmentDelegate(val fragmentTypeRef: TypeRef) : Kind()

@@ -1,5 +1,4 @@
 plugins {
-  `java-library`
   kotlin("multiplatform")
 }
 
@@ -48,9 +47,5 @@ kotlin {
     }
 
   }
-}
-
-tasks.withType<Javadoc> {
-  options.encoding = "UTF-8"
 }
 

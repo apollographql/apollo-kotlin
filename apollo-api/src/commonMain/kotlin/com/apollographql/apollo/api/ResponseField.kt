@@ -74,7 +74,7 @@ open class ResponseField internal constructor(
    * An abstraction for the field types
    */
   enum class Type {
-    STRING, INT, LONG, DOUBLE, BOOLEAN, ENUM, OBJECT, LIST, CUSTOM, FRAGMENT, FRAGMENTS
+    STRING, INT, DOUBLE, BOOLEAN, ENUM, OBJECT, LIST, CUSTOM
   }
 
   /**
@@ -235,34 +235,6 @@ open class ResponseField internal constructor(
     ): ResponseField {
       return ResponseField(
           type = Type.INT,
-          responseName = responseName,
-          fieldName = fieldName,
-          arguments = arguments.orEmpty(),
-          optional = optional,
-          conditions = conditions.orEmpty()
-      )
-    }
-
-    /**
-     * Factory method for creating a Field instance representing [Type.LONG].
-     *
-     * @param responseName alias for the result of a field
-     * @param fieldName name of the field in the GraphQL operation
-     * @param arguments arguments to be passed along with the field
-     * @param optional whether the arguments passed along are optional or required
-     * @param conditions list of conditions for this field
-     * @return Field instance representing [Type.LONG]
-     */
-    @JvmStatic
-    fun forLong(
-        responseName: String,
-        fieldName: String,
-        arguments: Map<String, Any?>?,
-        optional: Boolean,
-        conditions: List<Condition>?
-    ): ResponseField {
-      return ResponseField(
-          type = Type.LONG,
           responseName = responseName,
           fieldName = fieldName,
           arguments = arguments.orEmpty(),
@@ -437,30 +409,6 @@ open class ResponseField internal constructor(
           arguments = arguments.orEmpty(),
           optional = optional,
           scalarType = scalarType,
-          conditions = conditions.orEmpty()
-      )
-    }
-
-    /**
-     * Factory method for creating a Field instance representing [Type.FRAGMENT].
-     *
-     * @param responseName alias for the result of a field
-     * @param fieldName name of the field in the GraphQL operation
-     * @param conditions conditional GraphQL types
-     * @return Field instance representing [Type.FRAGMENT]
-     */
-    @JvmStatic
-    fun forFragment(
-        responseName: String,
-        fieldName: String,
-        conditions: List<Condition>?
-    ): ResponseField {
-      return ResponseField(
-          type = Type.FRAGMENT,
-          responseName = responseName,
-          fieldName = fieldName,
-          arguments = emptyMap(),
-          optional = false,
           conditions = conditions.orEmpty()
       )
     }

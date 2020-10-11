@@ -517,6 +517,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
      */
     val friends: List<Friend3?>?
 
+    fun asHuman(): Human? = this as? Human
+
     fun marshaller(): ResponseFieldMarshaller
 
     companion object {

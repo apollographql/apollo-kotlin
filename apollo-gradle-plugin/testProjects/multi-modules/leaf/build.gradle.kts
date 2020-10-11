@@ -17,6 +17,3 @@ application {
   mainClass.set("LeafKt")
 }
 
-apollo {
-  generateKotlinModels.set(true)
-}

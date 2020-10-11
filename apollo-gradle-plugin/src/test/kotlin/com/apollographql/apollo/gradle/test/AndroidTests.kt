@@ -17,18 +17,18 @@ class AndroidTests {
   fun `android library is compiling fine`() {
     withProject(apolloConfiguration = "",
         usesKotlinDsl = false,
-        plugins = listOf(TestUtils.androidLibraryPlugin, TestUtils.apolloPlugin)) { dir ->
+        plugins = listOf(TestUtils.androidLibraryPlugin, TestUtils.apolloPlugin, TestUtils.kotlinAndroidPlugin)) { dir ->
       val result = TestUtils.executeTask("build", dir)
 
       assertEquals(TaskOutcome.SUCCESS, result.task(":build")!!.outcome)
 
       // Java classes generated successfully
-      assertTrue(dir.generatedChild("debug/service/com/example/DroidDetailsQuery.java").isFile)
-      assertTrue(dir.generatedChild("debug/service/com/example/FilmsQuery.java").isFile)
-      assertTrue(dir.generatedChild("debug/service/com/example/fragment/SpeciesInformation.java").isFile)
-      assertTrue(dir.generatedChild("release/service/com/example/DroidDetailsQuery.java").isFile)
-      assertTrue(dir.generatedChild("release/service/com/example/FilmsQuery.java").isFile)
-      assertTrue(dir.generatedChild("release/service/com/example/fragment/SpeciesInformation.java").isFile)
+      assertTrue(dir.generatedChild("debug/service/com/example/DroidDetailsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("debug/service/com/example/FilmsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("debug/service/com/example/fragment/SpeciesInformation.kt").isFile)
+      assertTrue(dir.generatedChild("release/service/com/example/DroidDetailsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("release/service/com/example/FilmsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("release/service/com/example/fragment/SpeciesInformation.kt").isFile)
     }
   }
 
@@ -36,14 +36,14 @@ class AndroidTests {
   fun `android library debug does not compile release`() {
     withProject(apolloConfiguration = "",
         usesKotlinDsl = false,
-        plugins = listOf(TestUtils.androidLibraryPlugin, TestUtils.apolloPlugin)) { dir ->
+        plugins = listOf(TestUtils.androidLibraryPlugin, TestUtils.apolloPlugin,TestUtils.kotlinAndroidPlugin)) { dir ->
       val result = TestUtils.executeTask("generateDebugApolloSources", dir)
 
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateDebugApolloSources")!!.outcome)
 
       // Java classes generated successfully
-      assertTrue(dir.generatedChild("debug/service/com/example/DroidDetailsQuery.java").isFile)
-      assertFalse(dir.generatedChild("release/service/com/example/DroidDetailsQuery.java").exists())
+      assertTrue(dir.generatedChild("debug/service/com/example/DroidDetailsQuery.kt").isFile)
+      assertFalse(dir.generatedChild("release/service/com/example/DroidDetailsQuery.kt").exists())
     }
   }
 
@@ -51,7 +51,7 @@ class AndroidTests {
   fun `android library debug query overrides main`() {
     withProject(apolloConfiguration = "",
         usesKotlinDsl = false,
-        plugins = listOf(TestUtils.androidLibraryPlugin, TestUtils.apolloPlugin)) { dir ->
+        plugins = listOf(TestUtils.androidLibraryPlugin, TestUtils.apolloPlugin, TestUtils.kotlinAndroidPlugin)) { dir ->
 
       val debugFile = File(dir, "src/debug/graphql/com/example/DroidDetails.graphql")
       File(dir, "src/main/graphql/com/example/DroidDetails.graphql").copyTo(debugFile)
@@ -75,14 +75,14 @@ class AndroidTests {
     withProject(apolloConfiguration = "",
         usesKotlinDsl = false,
         isFlavored = true,
-        plugins = listOf(TestUtils.androidLibraryPlugin, TestUtils.apolloPlugin)) { dir ->
+        plugins = listOf(TestUtils.androidLibraryPlugin, TestUtils.apolloPlugin, TestUtils.kotlinAndroidPlugin)) { dir ->
 
       TestUtils.executeTask("build", dir)
 
-      assertTrue(dir.generatedChild("freeDebug/service/com/example/DroidDetailsQuery.java").isFile)
-      assertTrue(dir.generatedChild("freeRelease/service/com/example/DroidDetailsQuery.java").isFile)
-      assertTrue(dir.generatedChild("paidDebug/service/com/example/DroidDetailsQuery.java").isFile)
-      assertTrue(dir.generatedChild("paidRelease/service/com/example/DroidDetailsQuery.java").isFile)
+      assertTrue(dir.generatedChild("freeDebug/service/com/example/DroidDetailsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("freeRelease/service/com/example/DroidDetailsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("paidDebug/service/com/example/DroidDetailsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("paidRelease/service/com/example/DroidDetailsQuery.kt").isFile)
     }
   }
 
@@ -91,7 +91,7 @@ class AndroidTests {
     withProject(apolloConfiguration = "",
         usesKotlinDsl = false,
         isFlavored = true,
-        plugins = listOf(TestUtils.androidLibraryPlugin, TestUtils.apolloPlugin)) { dir ->
+        plugins = listOf(TestUtils.androidLibraryPlugin, TestUtils.apolloPlugin, TestUtils.kotlinAndroidPlugin)) { dir ->
 
       val freeDebugDir = File(dir, "src/freeDebug/graphql/com/example/")
       freeDebugDir.mkdirs()
@@ -122,18 +122,18 @@ class AndroidTests {
   fun `android application is compiling fine`() {
     withProject(apolloConfiguration = "",
         usesKotlinDsl = false,
-        plugins = listOf(TestUtils.androidApplicationPlugin, TestUtils.apolloPlugin)) { dir ->
+        plugins = listOf(TestUtils.androidApplicationPlugin, TestUtils.apolloPlugin, TestUtils.kotlinAndroidPlugin)) { dir ->
       val result = TestUtils.executeTask("build", dir)
 
       assertEquals(TaskOutcome.SUCCESS, result.task(":build")!!.outcome)
 
       // Java classes generated successfully
-      assertTrue(dir.generatedChild("debug/service/com/example/DroidDetailsQuery.java").isFile)
-      assertTrue(dir.generatedChild("debug/service/com/example/FilmsQuery.java").isFile)
-      assertTrue(dir.generatedChild("debug/service/com/example/fragment/SpeciesInformation.java").isFile)
-      assertTrue(dir.generatedChild("release/service/com/example/DroidDetailsQuery.java").isFile)
-      assertTrue(dir.generatedChild("release/service/com/example/FilmsQuery.java").isFile)
-      assertTrue(dir.generatedChild("release/service/com/example/fragment/SpeciesInformation.java").isFile)
+      assertTrue(dir.generatedChild("debug/service/com/example/DroidDetailsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("debug/service/com/example/FilmsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("debug/service/com/example/fragment/SpeciesInformation.kt").isFile)
+      assertTrue(dir.generatedChild("release/service/com/example/DroidDetailsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("release/service/com/example/FilmsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("release/service/com/example/fragment/SpeciesInformation.kt").isFile)
     }
   }
 }

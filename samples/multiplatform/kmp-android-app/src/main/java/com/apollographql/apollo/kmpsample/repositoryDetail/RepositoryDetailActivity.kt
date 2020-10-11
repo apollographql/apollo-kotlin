@@ -26,7 +26,7 @@ class RepositoryDetailActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     binding = ActivityRepositoryDetailBinding.inflate(layoutInflater)
-    val repoName = intent.getStringExtra(REPO_NAME_KEY)
+    val repoName = intent.getStringExtra(REPO_NAME_KEY)!!
     supportActionBar?.title = repoName
     setContentView(binding.root)
 

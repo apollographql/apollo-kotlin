@@ -13,6 +13,11 @@ include("apollo-normalized-cache")
 include("apollo-normalized-cache-api")
 include("apollo-runtime-kotlin")
 
-include("apollo-idling-resource")
 include("apollo-normalized-cache-sqlite")
-include("apollo-android-support")
+
+val skipAndroidModules = extra.properties.get("apollographql_skipAndroidModules") == "true"
+
+if (!skipAndroidModules) {
+  include("apollo-idling-resource")
+  include("apollo-android-support")
+}

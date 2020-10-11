@@ -28,16 +28,12 @@ class UpToDateTests {
     assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
 
     // Java classes generated successfully
-    assertTrue(dir.generatedChild("main/service/com/example/DroidDetailsQuery.java").isFile)
-    assertTrue(dir.generatedChild("main/service/com/example/FilmsQuery.java").isFile)
-    assertTrue(dir.generatedChild("main/service/com/example/fragment/SpeciesInformation.java").isFile)
+    assertTrue(dir.generatedChild("main/service/com/example/DroidDetailsQuery.kt").isFile)
+    assertTrue(dir.generatedChild("main/service/com/example/FilmsQuery.kt").isFile)
+    assertTrue(dir.generatedChild("main/service/com/example/fragment/SpeciesInformation.kt").isFile)
 
-    // verify that the custom type generated was Object.class because no customType mapping was specified
-    TestUtils.assertFileContains(dir, "main/service/com/example/type/CustomType.java", "return \"java.lang.Object\";")
-
-    // Optional is not added to the generated classes
-    assert(!TestUtils.fileContains(dir, "main/service/com/example/DroidDetailsQuery.java", "Optional"))
-    TestUtils.assertFileContains(dir, "main/service/com/example/DroidDetailsQuery.java", "import org.jetbrains.annotations.Nullable;")
+    // verify that the custom type generated was Any because no customType mapping was specified
+    TestUtils.assertFileContains(dir, "main/service/com/example/type/CustomType.kt", "= \"kotlin.Any\"")
   }
 
   fun `nothing changed, task up to date`(dir: File) {
@@ -46,13 +42,14 @@ class UpToDateTests {
     assertEquals(TaskOutcome.UP_TO_DATE, result.task(":generateApolloSources")!!.outcome)
 
     // Java classes generated successfully
-    assertTrue(dir.generatedChild("main/service/com/example/DroidDetailsQuery.java").isFile)
-    assertTrue(dir.generatedChild("main/service/com/example/FilmsQuery.java").isFile)
-    assertTrue(dir.generatedChild("main/service/com/example/fragment/SpeciesInformation.java").isFile)
+    assertTrue(dir.generatedChild("main/service/com/example/DroidDetailsQuery.kt").isFile)
+    assertTrue(dir.generatedChild("main/service/com/example/FilmsQuery.kt").isFile)
+    assertTrue(dir.generatedChild("main/service/com/example/fragment/SpeciesInformation.kt").isFile)
   }
 
   fun `adding a custom type to the build script re-generates the CustomType class`(dir: File) {
     val apolloBlock = """
+      
       apollo {
         customTypeMapping = ["DateTime": "java.util.Date"]
       }
@@ -66,7 +63,7 @@ class UpToDateTests {
     // and the task should run again
     assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
 
-    TestUtils.assertFileContains(dir, "main/service/com/example/type/CustomType.java", "return \"java.util.Date\";")
+    TestUtils.assertFileContains(dir, "main/service/com/example/type/CustomType.kt", "= \"java.util.Date\"")
 
     val text = File(dir, "build.gradle").readText()
     File(dir, "build.gradle").writeText(text.replace(apolloBlock, ""))
@@ -78,14 +75,14 @@ class UpToDateTests {
       var result = TestUtils.executeTask("generateApolloSources", dir, "-i")
 
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
-      assertThat(dir.generatedChild("main/service/com/example/DroidDetailsQuery.java").readText(), containsString("classification"))
+      assertThat(dir.generatedChild("main/service/com/example/DroidDetailsQuery.kt").readText(), containsString("classification"))
 
       dir.child("src", "main", "graphql", "com", "example", "DroidDetails.graphql").replaceInText("classification", "")
 
       result = TestUtils.executeTask("generateApolloSources", dir, "-i")
 
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
-      assertThat(dir.generatedChild("main/service/com/example/DroidDetailsQuery.java").readText(), not(containsString("classification")))
+      assertThat(dir.generatedChild("main/service/com/example/DroidDetailsQuery.kt").readText(), not(containsString("classification")))
     }
   }
 

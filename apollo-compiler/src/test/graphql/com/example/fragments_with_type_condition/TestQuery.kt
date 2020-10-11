@@ -144,6 +144,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   interface R2 {
     val __typename: String
 
+    fun asHumanDetails(): HumanDetails? = this as? HumanDetails
+
+    fun asDroidDetails(): DroidDetails? = this as? DroidDetails
+
     fun marshaller(): ResponseFieldMarshaller
 
     companion object {
@@ -222,6 +226,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
    */
   interface Luke {
     val __typename: String
+
+    fun asHumanDetails(): HumanDetails? = this as? HumanDetails
+
+    fun asDroidDetails(): DroidDetails? = this as? DroidDetails
 
     fun marshaller(): ResponseFieldMarshaller
 

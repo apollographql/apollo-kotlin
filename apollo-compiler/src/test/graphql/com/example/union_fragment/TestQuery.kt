@@ -136,6 +136,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   interface Search {
     val __typename: String
 
+    fun asCharacter(): Character? = this as? Character
+
+    fun asStarship(): Starship? = this as? Starship
+
     fun marshaller(): ResponseFieldMarshaller
 
     companion object {

@@ -18,13 +18,6 @@ import org.gradle.api.provider.SetProperty
  */
 interface CompilerParams {
   /**
-   * Whether to generate Java or Kotlin models
-   *
-   * Default value: false
-   */
-  val generateKotlinModels: Property<Boolean>
-
-  /**
    * Warn if using a deprecated field
    *
    * Default value: true
@@ -113,53 +106,12 @@ interface CompilerParams {
   val operationOutputGenerator: Property<OperationOutputGenerator>
 
   /**
-   * The custom types code generate some warnings that might make the build fail.
-   * suppressRawTypesWarning will add the appropriate SuppressWarning annotation
-   *
-   * Default value: false
-   */
-  val suppressRawTypesWarning: Property<Boolean>
-
-  /**
    * When true, the generated classes names will end with 'Query' or 'Mutation'.
    * If you write `query droid { ... }`, the generated class will be named 'DroidQuery'.
    *
    * Default value: true
    */
   val useSemanticNaming: Property<Boolean>
-
-  /**
-   * The nullable value type to use. One of: "annotated", "apolloOptional", "guavaOptional", "javaOptional", "inputType"
-   *
-   * Default value: "annotated"
-   * Only valid for java models as kotlin has proper nullability support
-   */
-  val nullableValueType: Property<String>
-
-  /**
-   * Whether to generate builders for java models
-   *
-   * Default value: false
-   * Only valid for java models as kotlin has data classes
-   */
-  val generateModelBuilder: Property<Boolean>
-
-  /**
-   * When true, java beans getters and setters will be generated for fields. If you request a field named 'user', the generated
-   * model will have a `getUser()` property instead of `user()`
-   *
-   * Default value: false
-   * Only valid for java as kotlin has properties
-   */
-  val useJavaBeansSemanticNaming: Property<Boolean>
-
-  /**
-   * Apollo Gradle plugin supports generating visitors for compile-time safe handling of polymorphic datatypes.
-   * Enabling this requires source/target compatibility with Java 1.8.
-   *
-   * Default value: false
-   */
-  val generateVisitorForPolymorphicDatatypes: Property<Boolean>
 
   /**
    * The package name of the models is computed from their folder hierarchy like for java sources.

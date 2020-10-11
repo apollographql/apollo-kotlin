@@ -1,5 +1,4 @@
 plugins {
-  `java-library`
   kotlin("jvm")
 }
 
@@ -12,6 +11,3 @@ dependencies {
   testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
 }
 
-tasks.withType<Javadoc> {
-  options.encoding = "UTF-8"
-}

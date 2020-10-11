@@ -1,25 +1,27 @@
 import com.apollographql.apollo.gradle.api.ApolloExtension
 
-apply(plugin = "com.apollographql.apollo")
-apply(plugin = "org.jetbrains.kotlin.jvm")
+plugins {
+  id("com.apollographql.apollo")
+  kotlin("jvm")
+}
 
 dependencies {
-  add("implementation", groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
+  implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
 
-  add("implementation", "com.apollographql.apollo:apollo-runtime")
-  add("implementation", "com.apollographql.apollo:apollo-rx2-support")
-  add("implementation", "com.apollographql.apollo:apollo-rx3-support")
-  add("implementation", "com.apollographql.apollo:apollo-coroutines-support")
-  add("implementation", "com.apollographql.apollo:apollo-http-cache")
-  add("implementation", "com.apollographql.apollo:apollo-normalized-cache-sqlite")
-  add("implementation", "com.apollographql.apollo:apollo-compiler")
+  implementation("com.apollographql.apollo:apollo-runtime")
+  implementation("com.apollographql.apollo:apollo-rx2-support")
+  implementation("com.apollographql.apollo:apollo-rx3-support")
+  implementation("com.apollographql.apollo:apollo-coroutines-support")
+  implementation("com.apollographql.apollo:apollo-http-cache")
+  implementation("com.apollographql.apollo:apollo-normalized-cache-sqlite")
+  implementation("com.apollographql.apollo:apollo-compiler")
 
-  add("testImplementation", kotlin("test-junit"))
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.junit"))
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.truth"))
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer"))
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.mockito"))
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
+  testImplementation(kotlin("test-junit"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.mockito"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
 }
 
 configure<ApolloExtension> {
@@ -56,7 +58,8 @@ configure<ApolloExtension> {
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
   kotlinOptions {
-    freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
+    freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn" + "-Xopt-in=kotlin.RequiresOptIn"
+    jvmTarget = JavaVersion.VERSION_1_8.toString()
   }
 }
 

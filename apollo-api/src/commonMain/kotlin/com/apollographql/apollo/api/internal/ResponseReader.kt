@@ -12,8 +12,6 @@ interface ResponseReader {
 
   fun readInt(field: ResponseField): Int?
 
-  fun readLong(field: ResponseField): Long?
-
   fun readDouble(field: ResponseField): Double?
 
   fun readBoolean(field: ResponseField): Boolean?
@@ -22,16 +20,6 @@ interface ResponseReader {
 
   fun <T : Any> readObject(field: ResponseField, block: (ResponseReader) -> T): T? {
     return readObject(field, object : ObjectReader<T> {
-      override fun read(reader: ResponseReader): T {
-        return block(reader)
-      }
-    })
-  }
-
-  fun <T : Any> readFragment(field: ResponseField, objectReader: ObjectReader<T>): T?
-
-  fun <T : Any> readFragment(field: ResponseField, block: (ResponseReader) -> T): T? {
-    return readFragment(field, object : ObjectReader<T> {
       override fun read(reader: ResponseReader): T {
         return block(reader)
       }
@@ -63,8 +51,6 @@ interface ResponseReader {
     fun readString(): String
 
     fun readInt(): Int
-
-    fun readLong(): Long
 
     fun readDouble(): Double
 

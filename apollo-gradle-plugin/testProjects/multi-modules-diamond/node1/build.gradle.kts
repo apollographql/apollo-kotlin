@@ -12,6 +12,3 @@ dependencies {
   apolloMetadata(project(":root"))
 }
 
-apollo {
-  generateKotlinModels.set(true)
-}

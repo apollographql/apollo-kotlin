@@ -24,11 +24,10 @@ class ConfigurationTests {
     withSimpleProject("""
       apollo {
         customTypeMapping = ["DateTime": "java.util.Date"]
-        suppressRawTypesWarning = true
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "main/service/com/example/type/CustomType.java", "return \"java.util.Date\";")
+      TestUtils.assertFileContains(dir, "main/service/com/example/type/CustomType.kt", "= \"java.util.Date\"")
     }
   }
 
@@ -46,36 +45,17 @@ class ConfigurationTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "main/api/com/example/type/CustomType.java", "return \"java.util.Date\";")
+      TestUtils.assertFileContains(dir, "main/api/com/example/type/CustomType.kt", "= \"java.util.Date\"")
     }
   }
 
-  @Test
-  fun `nullableValueType is working`() {
-    for (pair in listOf(
-        "annotated" to "@Nullable String name()",
-        "apolloOptional" to "import com.apollographql.apollo.api.internal.Optional;",
-        "guavaOptional" to "import com.google.common.base.Optional;",
-        "javaOptional" to "import java.util.Optional;",
-        "inputType" to "Input<String> name()"
-    )) {
-      withSimpleProject("""
-      apollo {
-        nullableValueType = "${pair.first}"
-      }
-    """.trimIndent()) { dir ->
-        TestUtils.executeTask("generateApolloSources", dir)
-        TestUtils.assertFileContains(dir, "main/service/com/example/DroidDetailsQuery.java", pair.second)
-      }
-    }
-  }
 
   @Test
   fun `useSemanticNaming defaults to true`() {
     withSimpleProject("""
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "main/service/com/example/DroidDetailsQuery.java", "class DroidDetailsQuery ")
+      TestUtils.assertFileContains(dir, "main/service/com/example/DroidDetailsQuery.kt", "class DroidDetailsQuery ")
     }
   }
 
@@ -87,49 +67,7 @@ class ConfigurationTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "main/service/com/example/DroidDetails.java", "class DroidDetails ")
-    }
-  }
-
-  @Test
-  fun `generateModelBuilders defaults to false`() {
-    withSimpleProject("""
-    """.trimIndent()) { dir ->
-      TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileDoesNotContain(dir, "main/service/com/example/DroidDetailsQuery.java", "Builder toBuilder()")
-    }
-  }
-
-  @Test
-  fun `generateModelBuilders generates builders correctly`() {
-    withSimpleProject("""
-      apollo {
-        generateModelBuilder = true
-      }
-    """.trimIndent()) { dir ->
-      TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "main/service/com/example/DroidDetailsQuery.java", "Builder toBuilder()")
-    }
-  }
-
-  @Test
-  fun `useJavaBeansSemanticNaming defaults to false`() {
-    withSimpleProject("""
-    """.trimIndent()) { dir ->
-      TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "main/service/com/example/DroidDetailsQuery.java", "String name()")
-    }
-  }
-
-  @Test
-  fun `useJavaBeansSemanticNaming generates java beans methods correctly`() {
-    withSimpleProject("""
-      apollo {
-        useJavaBeansSemanticNaming = true
-      }
-    """.trimIndent()) { dir ->
-      TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "main/service/com/example/DroidDetailsQuery.java", "String getName()")
+      TestUtils.assertFileContains(dir, "main/service/com/example/DroidDetails.kt", "class DroidDetails ")
     }
   }
 
@@ -141,9 +79,9 @@ class ConfigurationTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("main/service/com/starwars/com/example/DroidDetailsQuery.java").isFile)
-      assertTrue(dir.generatedChild("main/service/com/starwars/com/example/type/CustomType.java").isFile)
-      assertTrue(dir.generatedChild("main/service/com/starwars/com/example/fragment/SpeciesInformation.java").isFile)
+      assertTrue(dir.generatedChild("main/service/com/starwars/com/example/DroidDetailsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("main/service/com/starwars/com/example/type/CustomType.kt").isFile)
+      assertTrue(dir.generatedChild("main/service/com/starwars/com/example/fragment/SpeciesInformation.kt").isFile)
     }
   }
 
@@ -159,7 +97,7 @@ class ConfigurationTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "main/starwars/com/example/DroidDetailsQuery.java", "class DroidDetailsQuery ")
+      TestUtils.assertFileContains(dir, "main/starwars/com/example/DroidDetailsQuery.kt", "class DroidDetailsQuery ")
     }
   }
 
@@ -176,9 +114,9 @@ class ConfigurationTests {
       File(dir, "src/main/graphql/com").deleteRecursively()
 
       TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("main/starwars/DroidDetailsQuery.java").isFile)
-      assertTrue(dir.generatedChild("main/starwars/type/CustomType.java").isFile)
-      assertTrue(dir.generatedChild("main/starwars/fragment/SpeciesInformation.java").isFile)
+      assertTrue(dir.generatedChild("main/starwars/DroidDetailsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("main/starwars/type/CustomType.kt").isFile)
+      assertTrue(dir.generatedChild("main/starwars/fragment/SpeciesInformation.kt").isFile)
     }
   }
 
@@ -193,7 +131,7 @@ class ConfigurationTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "main/starwars/com/example/DroidDetailsQuery.java", "class DroidDetailsQuery ")
+      TestUtils.assertFileContains(dir, "main/starwars/com/example/DroidDetailsQuery.kt", "class DroidDetailsQuery ")
     }
   }
 
@@ -212,9 +150,9 @@ class ConfigurationTests {
       TestUtils.executeTask("generateApolloSources", dir)
       println(dir.absolutePath)
       dir.list()?.forEach(::println)
-      assertTrue(dir.generatedChild("main/starwars/DroidDetailsQuery.java").isFile)
-      assertTrue(dir.generatedChild("main/starwars/type/CustomType.java").isFile)
-      assertTrue(dir.generatedChild("main/starwars/fragment/SpeciesInformation.java").isFile)
+      assertTrue(dir.generatedChild("main/starwars/DroidDetailsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("main/starwars/type/CustomType.kt").isFile)
+      assertTrue(dir.generatedChild("main/starwars/fragment/SpeciesInformation.kt").isFile)
     }
   }
 
@@ -229,9 +167,9 @@ class ConfigurationTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("main/service/com/starwars/com/example/DroidDetailsQuery.java").isFile)
-      assertTrue(dir.generatedChild("main/service/com/starwars/com/example/type/CustomType.java").isFile)
-      assertTrue(dir.generatedChild("main/service/com/starwars/com/example/fragment/SpeciesInformation.java").isFile)
+      assertTrue(dir.generatedChild("main/service/com/starwars/com/example/DroidDetailsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("main/service/com/starwars/com/example/type/CustomType.kt").isFile)
+      assertTrue(dir.generatedChild("main/service/com/starwars/com/example/fragment/SpeciesInformation.kt").isFile)
     }
   }
 
@@ -249,9 +187,9 @@ class ConfigurationTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("main/starwars/com/overrides/com/example/DroidDetailsQuery.java").isFile)
-      assertTrue(dir.generatedChild("main/starwars/com/overrides/com/example/type/CustomType.java").isFile)
-      assertTrue(dir.generatedChild("main/starwars/com/overrides/com/example/fragment/SpeciesInformation.java").isFile)
+      assertTrue(dir.generatedChild("main/starwars/com/overrides/com/example/DroidDetailsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("main/starwars/com/overrides/com/example/type/CustomType.kt").isFile)
+      assertTrue(dir.generatedChild("main/starwars/com/overrides/com/example/fragment/SpeciesInformation.kt").isFile)
     }
   }
 
@@ -272,9 +210,9 @@ class ConfigurationTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("main/starwars/com/example/DroidDetailsQuery.java").isFile)
-      assertTrue(dir.generatedChild("main/starwars/com/example/type/CustomType.java").isFile)
-      assertTrue(dir.generatedChild("main/starwars/com/example/fragment/SpeciesInformation.java").isFile)
+      assertTrue(dir.generatedChild("main/starwars/com/example/DroidDetailsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("main/starwars/com/example/type/CustomType.kt").isFile)
+      assertTrue(dir.generatedChild("main/starwars/com/example/fragment/SpeciesInformation.kt").isFile)
     }
   }
 
@@ -292,7 +230,7 @@ class ConfigurationTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("main/service/com/example/DroidDetailsQuery.java").isFile)
+      assertTrue(dir.generatedChild("main/service/com/example/DroidDetailsQuery.kt").isFile)
     }
   }
 
@@ -308,7 +246,7 @@ class ConfigurationTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("main/service/com/example/DroidDetailsQuery.java").isFile)
+      assertTrue(dir.generatedChild("main/service/com/example/DroidDetailsQuery.kt").isFile)
     }
   }
 
@@ -325,7 +263,7 @@ class ConfigurationTests {
       File(dir, "src/main/graphql/com/example/schema.json").copyTo(dest, true)
       TestUtils.executeTask("generateApolloSources", dir)
       dest.delete()
-      assertTrue(dir.generatedChild("main/service/testProject/src/main/graphql/com/example/DroidDetailsQuery.java").isFile)
+      assertTrue(dir.generatedChild("main/service/testProject/src/main/graphql/com/example/DroidDetailsQuery.kt").isFile)
     }
   }
 
@@ -350,8 +288,8 @@ class ConfigurationTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("main/service/com/example/DroidDetailsQuery.java").exists())
-      assertTrue(dir.generatedChild("test/service/com/example/DroidDetailsQuery.java").exists().not())
+      assertTrue(dir.generatedChild("main/service/com/example/DroidDetailsQuery.kt").exists())
+      assertTrue(dir.generatedChild("test/service/com/example/DroidDetailsQuery.kt").exists().not())
     }
   }
 
@@ -365,8 +303,8 @@ class ConfigurationTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("main/service/com/example/DroidDetailsQuery.java").exists())
-      assertTrue(dir.generatedChild("test/service/com/example/DroidDetailsQuery.java").exists().not())
+      assertTrue(dir.generatedChild("main/service/com/example/DroidDetailsQuery.kt").exists())
+      assertTrue(dir.generatedChild("test/service/com/example/DroidDetailsQuery.kt").exists().not())
     }
   }
 
@@ -382,7 +320,7 @@ class ConfigurationTests {
       fixturesDirectory().child("starwars/AllFilms.graphql").copyTo(target = dir.child("src/test/graphql/com/example/AllFilms.graphql"))
 
       TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("test/service/com/example/FilmsQuery.java").exists())
+      assertTrue(dir.generatedChild("test/service/com/example/FilmsQuery.kt").exists())
     }
   }
 
@@ -396,7 +334,7 @@ class ConfigurationTests {
       val dest = File(dir, "../schema.json")
       File(dir, "src/main/graphql/com/example/schema.json").copyTo(dest, true)
       TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("main/service/testProject/src/main/graphql/com/example/DroidDetailsQuery.java").exists())
+      assertTrue(dir.generatedChild("main/service/testProject/src/main/graphql/com/example/DroidDetailsQuery.kt").exists())
       assertTrue(dir.generatedChild("test/service/").exists().not())
     }
   }
@@ -505,7 +443,7 @@ class ConfigurationTests {
       val operationOutput = dir.child("build/generated/operationOutput/apollo/main/service/operationOutput.json")
       assertThat(operationOutput.readText(), containsString(expectedOperationId))
 
-      val queryJavaFile = dir.generatedChild("main/service/com/example/DroidDetailsQuery.java")
+      val queryJavaFile = dir.generatedChild("main/service/com/example/DroidDetailsQuery.kt")
       assertThat(queryJavaFile.readText(), containsString(expectedOperationId))
     }
   }
@@ -543,7 +481,7 @@ class ConfigurationTests {
 
       TestUtils.executeTask("generateApolloSources", dir)
 
-      assertTrue(dir.generatedChild("main/service/com/example/fragment/SpeciesInformation.java").isFile)
+      assertTrue(dir.generatedChild("main/service/com/example/fragment/SpeciesInformation.kt").isFile)
     }
   }
 
@@ -561,7 +499,7 @@ class ConfigurationTests {
 
       TestUtils.executeTask("generateApolloSources", dir)
 
-      assertTrue(dir.generatedChild("main/service/example/fragment/SpeciesInformation.java").isFile)
+      assertTrue(dir.generatedChild("main/service/example/fragment/SpeciesInformation.kt").isFile)
     }
   }
 

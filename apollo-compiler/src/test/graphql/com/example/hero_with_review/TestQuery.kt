@@ -164,7 +164,7 @@ data class TestQuery(
             "kind" to "Variable",
             "variableName" to "ep"),
           "review" to mapOf<String, Any>(
-            "stars" to "5",
+            "stars" to 5,
             "listOfEnums" to listOf<Any>(
               "JEDI",
               "EMPIRE",
@@ -174,8 +174,8 @@ data class TestQuery(
               "2",
               "3"),
             "favoriteColor" to mapOf<String, Any>(
-              "red" to "1",
-              "blue" to "1.0"))), true, null)
+              "red" to 1,
+              "blue" to 1.0))), true, null)
       )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {

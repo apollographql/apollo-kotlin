@@ -3,8 +3,8 @@ package com.apollographql.apollo.compiler.codegen
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.compiler.applyIf
-import com.apollographql.apollo.compiler.ir.Field
 import com.apollographql.apollo.compiler.ast.CodeGenerationAst
+import com.apollographql.apollo.compiler.ir.Field
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -59,6 +59,15 @@ internal fun CodeGenerationAst.ObjectType.objectTypeSpec(
                   possibleImplementations = kind.possibleImplementations
               )
           )
+          kind.allPossibleTypes.forEach { type ->
+            addFunction(
+                FunSpec
+                    .builder("as${type.name}")
+                    .returns(type.asTypeName().copy(nullable = true))
+                    .addStatement("return this as? %T", type.asTypeName())
+                    .build()
+            )
+          }
         }
       }
       .applyIf(!abstract) {

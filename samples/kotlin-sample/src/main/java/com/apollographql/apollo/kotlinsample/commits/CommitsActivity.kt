@@ -27,7 +27,7 @@ class CommitsActivity : AppCompatActivity() {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_commits)
 
-    val repoName = intent.getStringExtra(REPO_NAME_KEY)
+    val repoName = intent.getStringExtra(REPO_NAME_KEY)!!
     supportActionBar?.title = repoName
 
     recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)

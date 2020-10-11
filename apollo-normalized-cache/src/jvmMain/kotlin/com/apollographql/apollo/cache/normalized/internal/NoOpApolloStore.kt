@@ -54,10 +54,12 @@ class NoOpApolloStore : ApolloStore, ReadableStore, WriteableStore {
     return emptyOperation(0)
   }
 
+  @Suppress("UNCHECKED_CAST")
   override fun networkResponseNormalizer(): ResponseNormalizer<Map<String, Any>> {
     return ResponseNormalizer.NO_OP_NORMALIZER as ResponseNormalizer<Map<String, Any>>
   }
 
+  @Suppress("UNCHECKED_CAST")
   override fun cacheResponseNormalizer(): ResponseNormalizer<Record> {
     return ResponseNormalizer.NO_OP_NORMALIZER as ResponseNormalizer<Record>
   }
@@ -88,7 +90,7 @@ class NoOpApolloStore : ApolloStore, ReadableStore, WriteableStore {
       responseNormalizer: ResponseNormalizer<Record>, cacheHeaders: CacheHeaders): ApolloStoreOperation<Response<T>> {
     // This is called in the default path when no cache is configured, do not trigger an error
     // Instead return an empty response. This will be seen as a cache MISS and the request will go to the network.
-    return emptyOperation(Response.builder<T>(operation).build())
+    return emptyOperation(builder<T>(operation).build())
   }
 
   override fun <F : GraphqlFragment> read(fieldMapper: ResponseFieldMapper<F>,
@@ -126,7 +128,7 @@ class NoOpApolloStore : ApolloStore, ReadableStore, WriteableStore {
   }
 
   override fun <D : Operation.Data, T, V : Operation.Variables> writeOptimisticUpdatesAndPublish(operation: Operation<D, T, V>, operationData: D,
-                                                                                                   mutationId: UUID): ApolloStoreOperation<Boolean> {
+                                                                                                 mutationId: UUID): ApolloStoreOperation<Boolean> {
     // Should we throw here instead?
     return emptyOperation(java.lang.Boolean.FALSE)
   }

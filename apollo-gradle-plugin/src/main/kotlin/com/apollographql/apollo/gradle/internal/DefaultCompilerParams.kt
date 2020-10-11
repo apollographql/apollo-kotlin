@@ -15,23 +15,11 @@ abstract class DefaultCompilerParams @Inject constructor(objects: ObjectFactory)
 
   abstract override val schemaFile: RegularFileProperty
 
-  abstract override val generateKotlinModels : Property<Boolean>
-
   abstract override val customTypeMapping: MapProperty<String, String>
 
   abstract override val operationIdGenerator: Property<OperationIdGenerator>
 
-  abstract override val suppressRawTypesWarning : Property<Boolean>
-
   abstract override val useSemanticNaming : Property<Boolean>
-
-  abstract override val nullableValueType : Property<String>
-
-  abstract override val generateModelBuilder : Property<Boolean>
-
-  abstract override val useJavaBeansSemanticNaming : Property<Boolean>
-
-  abstract override val generateVisitorForPolymorphicDatatypes : Property<Boolean>
 
   abstract override val rootPackageName : Property<String>
 

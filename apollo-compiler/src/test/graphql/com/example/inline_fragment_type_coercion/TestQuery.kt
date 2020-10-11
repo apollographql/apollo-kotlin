@@ -84,16 +84,16 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   /**
    * For testing fragment type coercion
    */
-  data class BarImpl(
+  data class Bar(
     override val __typename: String = "Bar",
     override val foo: String,
     val bar: String
   ) : Foo {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@BarImpl.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@BarImpl.foo)
-        writer.writeString(RESPONSE_FIELDS[2], this@BarImpl.bar)
+        writer.writeString(RESPONSE_FIELDS[0], this@Bar.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@Bar.foo)
+        writer.writeString(RESPONSE_FIELDS[2], this@Bar.bar)
       }
     }
 
@@ -104,11 +104,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("bar", "bar", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): BarImpl = reader.run {
+      operator fun invoke(reader: ResponseReader): Bar = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
         val foo = readString(RESPONSE_FIELDS[1])!!
         val bar = readString(RESPONSE_FIELDS[2])!!
-        BarImpl(
+        Bar(
           __typename = __typename,
           foo = foo,
           bar = bar
@@ -116,7 +116,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<BarImpl> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<Bar> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -162,6 +162,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
     val foo: String
 
+    fun asBar(): Bar? = this as? Bar
+
     fun marshaller(): ResponseFieldMarshaller
 
     companion object {
@@ -172,8 +174,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       operator fun invoke(reader: ResponseReader): Foo {
         val typename = reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
-          "BarObject" -> BarImpl(reader)
-          "FooBar" -> BarImpl(reader)
+          "BarObject" -> Bar(reader)
+          "FooBar" -> Bar(reader)
           else -> OtherFoo(reader)
         }
       }

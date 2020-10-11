@@ -19,7 +19,7 @@ configure<ApolloExtension> {
     """.trimIndent()
     TestUtils.withProject(
         usesKotlinDsl = true,
-        plugins = listOf(TestUtils.javaPlugin, TestUtils.apolloPlugin),
+        plugins = listOf(TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin),
         apolloConfiguration = apolloConfiguration
     ) { dir ->
       TestUtils.executeGradle(dir, "tasks", "--all")
@@ -52,7 +52,7 @@ configure<ApolloExtension> {
 
     TestUtils.withProject(
         usesKotlinDsl = true,
-        plugins = listOf(TestUtils.javaPlugin, TestUtils.apolloPlugin),
+        plugins = listOf(TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin),
         apolloConfiguration = apolloConfiguration
     ) { dir ->
       val result = TestUtils.executeTask("generateApolloSources", dir)

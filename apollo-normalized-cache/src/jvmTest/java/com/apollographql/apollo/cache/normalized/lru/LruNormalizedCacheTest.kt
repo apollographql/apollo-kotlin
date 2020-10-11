@@ -22,12 +22,12 @@ class LruNormalizedCacheTest {
         .expireAfterWrite(10, TimeUnit.DAYS)
         .build()
 
-    assertThat(policy.maxSizeBytes().get()).isEqualTo(100)
-    assertThat(policy.maxEntries().get()).isEqualTo(50)
-    assertThat(policy.expireAfterAccess().get()).isEqualTo(5)
-    assertThat(policy.expireAfterAccessTimeUnit().get()).isEqualTo(TimeUnit.HOURS)
-    assertThat(policy.expireAfterWrite().get()).isEqualTo(10)
-    assertThat(policy.expireAfterWriteTimeUnit().get()).isEqualTo(TimeUnit.DAYS)
+    assertThat(policy.maxSizeBytes).isEqualTo(100)
+    assertThat(policy.maxEntries).isEqualTo(50)
+    assertThat(policy.expireAfterAccess).isEqualTo(5)
+    assertThat(policy.expireAfterAccessTimeUnit).isEqualTo(TimeUnit.HOURS)
+    assertThat(policy.expireAfterWrite).isEqualTo(10)
+    assertThat(policy.expireAfterWriteTimeUnit).isEqualTo(TimeUnit.DAYS)
   }
 
   @Test

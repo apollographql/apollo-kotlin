@@ -71,6 +71,8 @@ internal interface HeroDetails : GraphqlFragment {
   interface DefaultImpl : HeroDetails {
     override val __typename: String
 
+    fun asHumanDetails(): HumanDetails? = this as? HumanDetails
+
     override fun marshaller(): ResponseFieldMarshaller
 
     companion object {

@@ -15,7 +15,7 @@ import java.io.File
 class MultipleServicesTests {
   fun withMultipleServicesProject(apolloConfiguration: String, block: (File) -> Unit) {
     withProject(usesKotlinDsl = false,
-        plugins = listOf(TestUtils.javaPlugin, TestUtils.apolloPlugin),
+        plugins = listOf(TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin),
         apolloConfiguration = apolloConfiguration) { dir ->
       val source = TestUtils.fixturesDirectory()
 
@@ -59,11 +59,11 @@ class MultipleServicesTests {
     withMultipleServicesProject(apolloConfiguration) { dir ->
       TestUtils.executeTask("build", dir)
 
-      assertTrue(dir.generatedChild("main/starwars/example/DroidDetailsQuery.java").isFile)
-      assertTrue(dir.generatedChild("main/starwars/example/FilmsQuery.java").isFile)
-      assertTrue(dir.generatedChild("main/starwars/example/fragment/SpeciesInformation.java").isFile)
-      assertTrue(dir.generatedChild("main/githunt/FeedQuery.java").isFile)
-      assertTrue(dir.generatedChild("main/githunt/fragment/RepositoryFragment.java").isFile)
+      assertTrue(dir.generatedChild("main/starwars/example/DroidDetailsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("main/starwars/example/FilmsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("main/starwars/example/fragment/SpeciesInformation.kt").isFile)
+      assertTrue(dir.generatedChild("main/githunt/FeedQuery.kt").isFile)
+      assertTrue(dir.generatedChild("main/githunt/fragment/RepositoryFragment.kt").isFile)
     }
   }
 }
