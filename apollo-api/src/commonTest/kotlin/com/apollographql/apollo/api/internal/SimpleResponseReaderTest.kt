@@ -8,6 +8,10 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseField.Condition.Companion.typeCondition
 import com.apollographql.apollo.api.ScalarType
 import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
+import com.apollographql.apollo.api.internal.json.JsonUtf8Writer
+import com.apollographql.apollo.api.internal.json.Utils
+import okio.Buffer
 import kotlin.reflect.KClass
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -466,7 +470,7 @@ class SimpleResponseReaderTest {
   }
 
   companion object {
-    private fun responseReader(recordSet: Map<String, Any>): SimpleResponseReader {
+    private fun responseReader(recordSet: Map<String, Any>): StreamResponseReader {
       val customTypeAdapters: MutableMap<ScalarType, CustomTypeAdapter<*>> = HashMap()
       customTypeAdapters[OBJECT_CUSTOM_TYPE] = object : CustomTypeAdapter<Any?> {
         override fun decode(value: CustomTypeValue<*>): Any {
@@ -477,7 +481,20 @@ class SimpleResponseReaderTest {
           throw UnsupportedOperationException()
         }
       }
-      return SimpleResponseReader(recordSet, EMPTY_OPERATION.variables(), ScalarTypeAdapters(customTypeAdapters))
+      val jsonReader = BufferedSourceJsonReader(
+          Buffer().apply {
+            Utils.writeToJson(
+                value = recordSet,
+                jsonWriter = JsonUtf8Writer(this),
+            )
+            flush()
+          }
+      ).beginObject()
+      return StreamResponseReader(
+          jsonReader = jsonReader,
+          variables = EMPTY_OPERATION.variables(),
+          scalarTypeAdapters = ScalarTypeAdapters(customTypeAdapters),
+      )
     }
 
     private fun scalarTypeFor(clazz: KClass<*>, className: String): ScalarType {

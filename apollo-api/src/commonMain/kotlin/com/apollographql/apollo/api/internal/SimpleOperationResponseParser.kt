@@ -5,7 +5,8 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
-import com.apollographql.apollo.api.internal.json.ResponseJsonStreamReader
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.internal.json.Utils.readRecursively
 import com.apollographql.apollo.api.internal.json.use
 import okio.BufferedSource
 import okio.IOException
@@ -22,34 +23,57 @@ object SimpleOperationResponseParser {
   ): Response<W> {
     return BufferedSourceJsonReader(source).use { jsonReader ->
       jsonReader.beginObject()
-      val response = ResponseJsonStreamReader(jsonReader).toMap().orEmpty()
-      parse(response, operation, scalarTypeAdapters)
+
+      var data: D? = null
+      var errors: List<Error>? = null
+      var extensions: Map<String, Any?>? = null
+      while (jsonReader.hasNext()) {
+        when (jsonReader.nextName()) {
+          "data" -> data = jsonReader.readData(
+              mapper = operation.responseFieldMapper(),
+              variables = operation.variables(),
+              scalarTypeAdapters = scalarTypeAdapters,
+          )
+          "errors" -> errors = jsonReader.readErrors()
+          "extensions" -> extensions = jsonReader.readExtensions()
+          else -> jsonReader.skipValue()
+        }
+      }
+
+      jsonReader.endObject()
+
+      Response(
+          operation = operation,
+          data = operation.wrapData(data),
+          errors = errors,
+          extensions = extensions.orEmpty()
+      )
     }
   }
 
-  @Suppress("UNCHECKED_CAST")
-  private fun <D : Operation.Data, W> parse(
-      response: Map<String, Any?>,
-      operation: Operation<D, W, *>,
-      scalarTypeAdapters: ScalarTypeAdapters
-  ): Response<W> {
-    val responseData = response["data"] as? Map<String, Any?>
-    val data = responseData?.let {
-      val responseReader = SimpleResponseReader(it, operation.variables(), scalarTypeAdapters)
-      operation.responseFieldMapper().map(responseReader)
-    }
-
-    val responseErrors = response["errors"] as? List<Map<String, Any?>>
-    val errors = responseErrors?.let {
-      it.map { errorPayload -> errorPayload.readError() }
-    }
-
-    return Response(
-        operation = operation,
-        data = operation.wrapData(data),
-        errors = errors,
-        extensions = (response["extensions"] as? Map<String, Any?>?).orEmpty()
+  private fun <D : Operation.Data> JsonReader.readData(
+      mapper: ResponseFieldMapper<D>,
+      variables: Operation.Variables,
+      scalarTypeAdapters: ScalarTypeAdapters,
+  ): D {
+    beginObject()
+    val data = mapper.map(
+        StreamResponseReader(
+            jsonReader = this,
+            variables = variables,
+            scalarTypeAdapters = scalarTypeAdapters,
+        )
     )
+    endObject()
+    return data
+  }
+
+  @Suppress("UNCHECKED_CAST")
+  private fun JsonReader.readErrors(): List<Error> {
+    val responseErrors = readRecursively() as? List<Map<String, Any?>>
+    return responseErrors?.let {
+      it.map { errorPayload -> errorPayload.readError() }
+    }.orEmpty()
   }
 
   @Suppress("UNCHECKED_CAST")
@@ -82,5 +106,10 @@ object SimpleOperationResponseParser {
       }
     }
     return Error.Location(line, column)
+  }
+
+  @Suppress("UNCHECKED_CAST")
+  private fun JsonReader.readExtensions(): Map<String, Any?> {
+    return readRecursively() as Map<String, Any?>
   }
 }
