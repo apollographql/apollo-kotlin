@@ -7,6 +7,7 @@ package com.example.fragment_in_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import kotlin.Array
@@ -69,6 +70,9 @@ interface PlanetFragment : GraphqlFragment {
           )
         }
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<DefaultImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 

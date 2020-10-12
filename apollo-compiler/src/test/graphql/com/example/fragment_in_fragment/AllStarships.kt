@@ -127,6 +127,9 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
           )
         }
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Homeworld> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -181,6 +184,9 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
           )
         }
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Node1> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -226,6 +232,9 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
           )
         }
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Edge1> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -278,6 +287,9 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
           )
         }
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<PilotConnection> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -338,6 +350,9 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
           )
         }
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Node> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -383,6 +398,9 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
           )
         }
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Edge> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -435,6 +453,9 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
           )
         }
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<AllStarships1> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -472,6 +493,9 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
           )
         }
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 

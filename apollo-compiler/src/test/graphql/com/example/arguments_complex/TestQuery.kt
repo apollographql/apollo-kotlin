@@ -162,6 +162,9 @@ data class TestQuery(
           )
         }
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<HeroWithReview> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -220,6 +223,9 @@ data class TestQuery(
           )
         }
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 

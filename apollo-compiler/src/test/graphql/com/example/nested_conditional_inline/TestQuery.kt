@@ -156,6 +156,9 @@ data class TestQuery(
           )
         }
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Human1> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -199,6 +202,9 @@ data class TestQuery(
           )
         }
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<OtherFriend> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -290,6 +296,9 @@ data class TestQuery(
           )
         }
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Human> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -343,6 +352,9 @@ data class TestQuery(
           )
         }
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Human2> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -386,6 +398,9 @@ data class TestQuery(
           )
         }
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<OtherFriend1> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -477,6 +492,9 @@ data class TestQuery(
           )
         }
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Droid> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -520,6 +538,9 @@ data class TestQuery(
           )
         }
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<OtherHero> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -592,6 +613,9 @@ data class TestQuery(
           )
         }
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 
