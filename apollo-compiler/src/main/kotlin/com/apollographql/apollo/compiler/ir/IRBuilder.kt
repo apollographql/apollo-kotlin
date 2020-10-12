@@ -14,6 +14,7 @@ import com.apollographql.apollo.compiler.parser.graphql.validateArguments
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.parser.introspection.asGraphQLType
 import com.apollographql.apollo.compiler.parser.introspection.possibleTypes
+import com.apollographql.apollo.compiler.parser.introspection.rootTypeForOperationType
 
 class IRBuilder(private val schema: IntrospectionSchema,
                 private val schemaPackageName: String,
@@ -69,7 +70,11 @@ class IRBuilder(private val schema: IntrospectionSchema,
 
     return CodeGenerationIR(
         operations = documentParseResult.operations.map { operation ->
-          val referencedRootFragmentNames = operation.fragments.referencedRootFragmentNames(fragments = allFragments)
+          val referencedRootFragmentNames = operation.fragments.referencedRootFragmentNames(
+              operationType = operation.operationType,
+              fragments = allFragments,
+              filePath = operation.filePath
+          )
           val referencedFieldFragmentNames = operation.fields.referencedFragmentNames(fragments = allFragments, filePath = operation.filePath)
           val allReferencedFragmentNames = referencedRootFragmentNames union referencedFieldFragmentNames
           val allReferencedFragments = allReferencedFragmentNames.mapNotNull { fragmentName -> allFragments.find { it.fragmentName == fragmentName } }
@@ -190,8 +195,17 @@ class IRBuilder(private val schema: IntrospectionSchema,
     return usedTypes
   }
 
-  private fun List<FragmentRef>.referencedRootFragmentNames(fragments: List<Fragment>): Set<String> {
-    val referencedRootFragments = mapNotNull { fragmentRef -> fragments.find { it.fragmentName == fragmentRef.name } }
+  private fun List<FragmentRef>.referencedRootFragmentNames(operationType: String, fragments: List<Fragment>, filePath: String): Set<String> {
+    val referencedRootFragments = mapNotNull { fragmentRef ->
+      val fragment = fragments.find { it.fragmentName == fragmentRef.name }
+      val rootType = schema.rootTypeForOperationType(operationType) ?: throw DocumentParseException(
+          message = "Fragment `${fragmentRef.name}` cannot be spread in invalid operation `$operationType`",
+          sourceLocation = fragmentRef.sourceLocation,
+          filePath = filePath
+      )
+      fragment?.validateTypeCondition(fragmentRef, rootType, filePath)
+      fragment
+    }
     val referencedRootFragmentNames = referencedRootFragments.map { it.fragmentName }
     return referencedRootFragmentNames union referencedRootFragments.flatMap { it.referencedFragments(fragments) }
   }
@@ -245,22 +259,26 @@ class IRBuilder(private val schema: IntrospectionSchema,
               filePath = filePath
           )
 
-      when (val schemaType = schema[typeCondition]) {
-        is IntrospectionSchema.Type.Object -> schemaType.possibleTypes(schema)
-        is IntrospectionSchema.Type.Interface -> schemaType.possibleTypes(schema)
-        is IntrospectionSchema.Type.Union -> schemaType.possibleTypes(schema)
-        else -> emptySet()
-      }.also { possibleTypes ->
-        if (fragment.possibleTypes.intersect(possibleTypes).isEmpty()) {
-          throw DocumentParseException(
-              message = "Fragment `${ref.name}` can't be spread here as result can never be of type `${fragment.typeCondition}`",
-              sourceLocation = ref.sourceLocation,
-              filePath = filePath
-          )
-        }
-      }
+      fragment.validateTypeCondition(ref, typeCondition, filePath)
 
       fragment
+    }
+  }
+
+  private fun Fragment.validateTypeCondition(fragmentRef: FragmentRef, typeCondition: String, filePath: String) {
+    when (val schemaType = schema[typeCondition]) {
+      is IntrospectionSchema.Type.Object -> schemaType.possibleTypes(schema)
+      is IntrospectionSchema.Type.Interface -> schemaType.possibleTypes(schema)
+      is IntrospectionSchema.Type.Union -> schemaType.possibleTypes(schema)
+      else -> emptySet()
+    }.also { possibleTypes ->
+      if (this.possibleTypes.intersect(possibleTypes).isEmpty()) {
+        throw DocumentParseException(
+            message = "Fragment `${fragmentRef.name}` can't be spread here as result can never be of type `${this.typeCondition}`",
+            sourceLocation = fragmentRef.sourceLocation,
+            filePath = filePath
+        )
+      }
     }
   }
 }
