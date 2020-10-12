@@ -196,16 +196,10 @@ class IRBuilder(private val schema: IntrospectionSchema,
   }
 
   private fun List<FragmentRef>.referencedRootFragmentNames(operationType: String, fragments: List<Fragment>, filePath: String): Set<String> {
-    val referencedRootFragments = mapNotNull { fragmentRef ->
-      val fragment = fragments.find { it.fragmentName == fragmentRef.name }
-      val rootType = schema.rootTypeForOperationType(operationType) ?: throw DocumentParseException(
-          message = "Fragment `${fragmentRef.name}` cannot be spread in invalid operation `$operationType`",
-          sourceLocation = fragmentRef.sourceLocation,
-          filePath = filePath
-      )
-      fragment?.validateTypeCondition(fragmentRef, rootType, filePath)
-      fragment
-    }
+    val rootTypeCondition = schema.rootTypeForOperationType(operationType) ?: throw ParseException(
+        message = "Fragments cannot be spread in invalid operation `$operationType`"
+    )
+    val referencedRootFragments = findFragments(typeCondition = rootTypeCondition, fragments = fragments, filePath = filePath)
     val referencedRootFragmentNames = referencedRootFragments.map { it.fragmentName }
     return referencedRootFragmentNames union referencedRootFragments.flatMap { it.referencedFragments(fragments) }
   }
@@ -259,26 +253,22 @@ class IRBuilder(private val schema: IntrospectionSchema,
               filePath = filePath
           )
 
-      fragment.validateTypeCondition(ref, typeCondition, filePath)
+      when (val schemaType = schema[typeCondition]) {
+        is IntrospectionSchema.Type.Object -> schemaType.possibleTypes(schema)
+        is IntrospectionSchema.Type.Interface -> schemaType.possibleTypes(schema)
+        is IntrospectionSchema.Type.Union -> schemaType.possibleTypes(schema)
+        else -> emptySet()
+      }.also { possibleTypes ->
+        if (fragment.possibleTypes.intersect(possibleTypes).isEmpty()) {
+          throw DocumentParseException(
+              message = "Fragment `${ref.name}` can't be spread here as result can never be of type `${fragment.typeCondition}`",
+              sourceLocation = ref.sourceLocation,
+              filePath = filePath
+          )
+        }
+      }
 
       fragment
-    }
-  }
-
-  private fun Fragment.validateTypeCondition(fragmentRef: FragmentRef, typeCondition: String, filePath: String) {
-    when (val schemaType = schema[typeCondition]) {
-      is IntrospectionSchema.Type.Object -> schemaType.possibleTypes(schema)
-      is IntrospectionSchema.Type.Interface -> schemaType.possibleTypes(schema)
-      is IntrospectionSchema.Type.Union -> schemaType.possibleTypes(schema)
-      else -> emptySet()
-    }.also { possibleTypes ->
-      if (this.possibleTypes.intersect(possibleTypes).isEmpty()) {
-        throw DocumentParseException(
-            message = "Fragment `${fragmentRef.name}` can't be spread here as result can never be of type `${this.typeCondition}`",
-            sourceLocation = fragmentRef.sourceLocation,
-            filePath = filePath
-        )
-      }
     }
   }
 }
