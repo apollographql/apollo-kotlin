@@ -20,8 +20,8 @@ import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchem
 import com.apollographql.apollo.compiler.parser.introspection.asGraphQLType
 import com.apollographql.apollo.compiler.parser.introspection.isAssignableFrom
 import com.apollographql.apollo.compiler.parser.introspection.possibleTypes
-import org.antlr.v4.runtime.ANTLRInputStream
 import org.antlr.v4.runtime.BaseErrorListener
+import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.RecognitionException
 import org.antlr.v4.runtime.Recognizer
@@ -52,7 +52,7 @@ class GraphQLDocumentParser(
       throw RuntimeException("Failed to read GraphQL file `$this`", e)
     }
 
-    val tokenStream = GraphQLLexer(ANTLRInputStream(document))
+    val tokenStream = GraphQLLexer(CharStreams.fromString(document))
         .apply { removeErrorListeners() }
         .let { CommonTokenStream(it) }
 
@@ -103,9 +103,23 @@ class GraphQLDocumentParser(
   }
 
   private fun GraphQLParser.DocumentContext.parse(tokenStream: CommonTokenStream, graphQLFilePath: String): DocumentParseResult {
-    val fragments = definition().mapNotNull { it.fragmentDefinition()?.parse(tokenStream, graphQLFilePath) }
+    val typeSystemDefinition = definition().firstOrNull { it.typeSystemDefinition() != null }
+    if (typeSystemDefinition != null) {
+      throw ParseException(
+          message = "Found a type system definition while expecting an executable definition.",
+          token = typeSystemDefinition.start
+      )
+    }
+    val typeSystemExtension = definition().firstOrNull { it.typeSystemExtension() != null }
+    if (typeSystemExtension != null) {
+      throw ParseException(
+          message = "Found a type system extension while expecting an executable definition.",
+          token = typeSystemExtension.start
+      )
+    }
+    val fragments = definition().mapNotNull { it.executableDefinition()?.fragmentDefinition()?.parse(tokenStream, graphQLFilePath) }
     val operations = definition().mapNotNull { ctx ->
-      ctx.operationDefinition()?.parse(tokenStream, graphQLFilePath)
+      ctx.executableDefinition()?.operationDefinition()?.parse(tokenStream, graphQLFilePath)
     }
     return DocumentParseResult(
         operations = operations.map { it.result },
@@ -116,7 +130,7 @@ class GraphQLDocumentParser(
 
   private fun GraphQLParser.OperationDefinitionContext.parse(tokenStream: CommonTokenStream, graphQLFilePath: String): ParseResult<Operation> {
     val operationType = operationType().text
-    val operationName = NAME()?.text ?: throw ParseException(
+    val operationName = name()?.text ?: throw ParseException(
         message = "Apollo does not support anonymous operations",
         token = operationType().start
     )
@@ -227,7 +241,7 @@ class GraphQLDocumentParser(
   }
 
   private fun GraphQLParser.VariableDefinitionContext.parse(): ParseResult<Variable> {
-    val name = variable().NAME().text
+    val name = variable().name().text
     val type = type().text
     val schemaType = schema[type.replace("!", "").replace("[", "").replace("]", "")] ?: throw ParseException(
         message = "Unknown variable type `$type`",
@@ -237,7 +251,7 @@ class GraphQLDocumentParser(
         result = Variable(
             name = name,
             type = type,
-            sourceLocation = SourceLocation(variable().NAME().symbol)
+            sourceLocation = SourceLocation(variable().name().start)
         ),
         usedTypes = setOf(schemaType.name)
     )
@@ -275,18 +289,18 @@ class GraphQLDocumentParser(
   }
 
   private fun GraphQLParser.FieldContext.parse(schemaType: IntrospectionSchema.Type): ParseResult<Field> {
-    val responseName = fieldName().alias()?.NAME(0)?.text ?: fieldName().NAME().text
-    val fieldName = fieldName().alias()?.NAME(1)?.text ?: fieldName().NAME().text
+    val responseName = fieldName().alias()?.name(0)?.text ?: fieldName().name().text
+    val fieldName = fieldName().alias()?.name(1)?.text ?: fieldName().name().text
     if (responseName == Field.TYPE_NAME_FIELD.responseName) {
       return ParseResult(result = Field.TYPE_NAME_FIELD, usedTypes = emptySet())
     }
     val schemaField = schemaType.lookupField(
         fieldName = fieldName,
-        token = fieldName().alias()?.NAME(1)?.symbol ?: fieldName().NAME().symbol
+        token = fieldName().alias()?.name(1)?.start ?: fieldName().name().start
     )
     val schemaFieldType = schema[schemaField.type.rawType.name] ?: throw ParseException(
         message = "Unknown type `${schemaField.type.rawType.name}`",
-        token = fieldName().alias()?.NAME(1)?.symbol ?: fieldName().NAME().symbol
+        token = fieldName().alias()?.name(1)?.start ?: fieldName().name().start
     )
     val arguments = arguments().parse(schemaField)
     val fields = selectionSet().parse(schemaFieldType)
@@ -349,9 +363,9 @@ class GraphQLDocumentParser(
         ?.mapNotNull { ctx -> ctx.fragmentSpread() }
         ?.map { fragmentSpread ->
           FragmentRef(
-              name = fragmentSpread.fragmentName().NAME().text,
+              name = fragmentSpread.fragmentName().text,
               conditions = fragmentSpread.directives().parse(),
-              sourceLocation = SourceLocation(fragmentSpread.fragmentName().NAME().symbol)
+              sourceLocation = SourceLocation(fragmentSpread.fragmentName().start)
           )
         }
         ?: emptyList()
@@ -359,19 +373,31 @@ class GraphQLDocumentParser(
 
   private fun GraphQLParser.DirectivesContext?.parse(): List<Condition> {
     return this?.directive()?.mapNotNull { ctx ->
-      val name = ctx.NAME().text
-      val argument = ctx.argument()
-      when {
-        argument == null -> null
-        name != "skip" && name != "include" -> null
-        argument.NAME()?.text != "if" || argument.valueOrVariable()?.variable() == null -> null
-        else -> Condition(
-            kind = "BooleanCondition",
-            variableName = argument.valueOrVariable().variable().NAME().text,
-            inverted = ctx.NAME().text == "skip",
-            sourceLocation = SourceLocation(argument.valueOrVariable()?.start ?: argument.NAME().symbol)
-        )
+      val name = ctx.name().text
+      val arguments = ctx.arguments()
+
+      if (name != "skip" && name != "include" ) {
+        // we only support skip and include directives for now
+        return@mapNotNull null
       }
+
+      if (arguments.argument().size != 1) {
+        // skip and include should only have a single argument
+        return@mapNotNull null
+      }
+
+      val argument = arguments.argument().first()
+      if (argument.name().text != "if" || argument.value().variable() == null) {
+        // The argument should be named "if"
+        // Not 100% why we ignore non-variable arguments
+        return@mapNotNull null
+      }
+      Condition(
+          kind = "BooleanCondition",
+          variableName = argument.value().variable().name().text,
+          inverted = name == "skip",
+          sourceLocation = SourceLocation(argument?.start ?: argument.name().start)
+      )
     } ?: emptyList()
   }
 
@@ -384,25 +410,25 @@ class GraphQLDocumentParser(
   }
 
   private fun GraphQLParser.ArgumentContext.parse(schemaField: IntrospectionSchema.Field): ParseResult<Argument> {
-    val name = NAME().text
+    val name = name().text
     val schemaArgument = schemaField.args.find { it.name == name } ?: throw ParseException(
         message = "Unknown argument `$name` on field `${schemaField.name}`",
-        token = NAME().symbol
+        token = name().start
     )
 
     val type = schemaArgument.type.asGraphQLType()
-    val value = valueOrVariable().variable()?.let { ctx ->
+    val value = value().variable()?.let { ctx ->
       mapOf(
           "kind" to "Variable",
-          "variableName" to ctx.NAME().text
+          "variableName" to ctx.name().text
       )
-    } ?: valueOrVariable().value().parse(schemaArgument.type)
+    } ?: value().parse(schemaArgument.type)
     return ParseResult(
         result = Argument(
             name = name,
             type = type,
             value = value,
-            sourceLocation = SourceLocation(valueOrVariable().start)
+            sourceLocation = SourceLocation(value().start)
         ),
         usedTypes = emptySet()
     )
@@ -413,16 +439,16 @@ class GraphQLDocumentParser(
       parentFields: ParseResult<List<Field>>
 
   ): ParseResult<InlineFragment> {
-    val typeCondition = typeCondition().typeName().NAME().text
+    val typeCondition = typeCondition().namedType().name().text
     val schemaType = schema[typeCondition] ?: throw ParseException(
         message = "Unknown type`$typeCondition}`",
-        token = typeCondition().typeName().start
+        token = typeCondition().namedType().start
     )
 
     if (!parentSchemaType.isAssignableFrom(other = schemaType, schema = schema)) {
       throw ParseException(
           message = "Fragment cannot be spread here as result can never be of type `$typeCondition`",
-          token = typeCondition().typeName().start
+          token = typeCondition().namedType().start
       )
     }
 
@@ -453,7 +479,7 @@ class GraphQLDocumentParser(
     if (fields.result.isEmpty()) {
       throw ParseException(
           message = "Inline fragment `$typeCondition` must have a selection of sub-fields",
-          token = typeCondition().typeName().NAME().symbol
+          token = typeCondition().namedType().name().start
       )
     }
 
@@ -478,20 +504,12 @@ class GraphQLDocumentParser(
   }
 
   private fun GraphQLParser.FragmentDefinitionContext.parse(tokenStream: CommonTokenStream, graphQLFilePath: String): ParseResult<Fragment> {
-    val fragmentKeyword = fragmentKeyword().text
-    if (fragmentKeyword != "fragment") {
-      throw ParseException(
-          message = "Unsupported token `$fragmentKeyword`",
-          token = fragmentKeyword().start
-      )
-    }
+    val fragmentName = fragmentName().text
 
-    val fragmentName = fragmentName().NAME().text
-
-    val typeCondition = typeCondition().typeName().NAME().text
+    val typeCondition = typeCondition().namedType().name().text
     val schemaType = schema[typeCondition] ?: throw ParseException(
         message = "Unknown type `$typeCondition`",
-        token = typeCondition().typeName().NAME().symbol
+        token = typeCondition().namedType().name().start
     )
 
     val possibleTypes = schemaType.possibleTypes(schema)
@@ -499,7 +517,7 @@ class GraphQLDocumentParser(
     if (fields.result.isEmpty()) {
       throw ParseException(
           message = "Fragment `$fragmentName` must have a selection of sub-fields",
-          token = fragmentName().NAME().symbol
+          token = fragmentName().start
       )
     }
 
@@ -541,40 +559,34 @@ class GraphQLDocumentParser(
   }
 
   private fun GraphQLParser.ValueContext.parse(schemaTypeRef: IntrospectionSchema.TypeRef): Any? {
+    if (variable() != null) {
+      return mapOf(
+          "kind" to "Variable",
+          "variableName" to variable()!!.name().text
+      )
+    }
     return when (schemaTypeRef.kind) {
       IntrospectionSchema.Kind.ENUM -> text.toString().trim()
       IntrospectionSchema.Kind.INTERFACE, IntrospectionSchema.Kind.OBJECT, IntrospectionSchema.Kind.INPUT_OBJECT, IntrospectionSchema.Kind.UNION -> {
-        val inlineInputType = when (this) {
-          is GraphQLParser.InlineInputTypeValueContext -> inlineInputType()
-          is GraphQLParser.LiteralValueContext -> if (text.toLowerCase() == "null") null else throw ParseException(
-              message = "Can't parse `Object` value `${this.text}`",
-              token = start
-          )
+        val objectValue = when {
+          objectValue() != null -> objectValue()
+          nullValue() != null -> null
           else -> throw throw ParseException(
               message = "Can't parse `Object` value `${this.text}`",
               token = start
           )
         }
-        when {
-          inlineInputType == null -> null
-          inlineInputType.emptyMap() != null -> emptyMap<String, Any?>()
-          else -> inlineInputType.inlineInputTypeField().map { field ->
-            val name = field.NAME().text
+        when (objectValue) {
+          null -> null
+          else -> objectValue.objectField().map { field ->
+            val name = field.name().text
             val schemaFieldType = schema[schemaTypeRef.name]!!.let { schemaType ->
               when (schemaType) {
-                is IntrospectionSchema.Type.InputObject -> schemaType.lookupField(fieldName = name, token = field.NAME().symbol).type
-                else -> schemaType.lookupField(fieldName = name, token = field.NAME().symbol).type
+                is IntrospectionSchema.Type.InputObject -> schemaType.lookupField(fieldName = name, token = field.name().start).type
+                else -> schemaType.lookupField(fieldName = name, token = field.name().start).type
               }
             }
-            val variableValue = field.valueOrVariable().variable()?.NAME()?.text
-            val value = field.valueOrVariable().value()?.parse(schemaFieldType)
-            name to when {
-              variableValue != null -> mapOf(
-                  "kind" to "Variable",
-                  "variableName" to variableValue
-              )
-              else -> value
-            }
+            name to field.value().parse(schemaFieldType)
           }.toMap()
         }
       }
@@ -592,20 +604,12 @@ class GraphQLDocumentParser(
       }
       IntrospectionSchema.Kind.NON_NULL -> parse(schemaTypeRef.ofType!!)
       IntrospectionSchema.Kind.LIST -> {
-        val arrayValueType = (this as? GraphQLParser.ArrayValueContext)?.arrayValueType() ?: throw ParseException(
-            message = "Can't parse `Array` value, expected array",
+        val values = listValue()?.value() ?: throw ParseException(
+            message = "Can't parse `List` value, expected list",
             token = start
         )
-        when {
-          arrayValueType.emptyArray() != null -> emptyList<Any?>()
-          else -> arrayValueType.valueOrVariable().map { valueOrVariable ->
-            valueOrVariable.variable()?.let { variable ->
-              mapOf(
-                  "kind" to "Variable",
-                  "variableName" to variable.NAME().text
-              )
-            } ?: valueOrVariable.value().parse(schemaTypeRef.ofType!!)
-          }
+        values.map { value ->
+          value.parse(schemaTypeRef.ofType!!)
         }
       }
     }

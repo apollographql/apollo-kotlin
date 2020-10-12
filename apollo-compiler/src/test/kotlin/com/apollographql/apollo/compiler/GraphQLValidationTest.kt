@@ -14,7 +14,7 @@ import java.io.File
 
 @Suppress("UNUSED_PARAMETER")
 @RunWith(Parameterized::class)
-class ValidationTest(name: String, private val graphQLFile: File) {
+class GraphQLValidationTest(name: String, private val graphQLFile: File) {
 
   @Test
   fun testValidation() {

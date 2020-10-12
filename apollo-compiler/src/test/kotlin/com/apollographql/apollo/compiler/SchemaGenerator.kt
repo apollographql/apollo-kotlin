@@ -47,7 +47,7 @@ input MessageInput42 {
     }
     stringBuilder.append(roots)
     repeat(repeat) {
-      stringBuilder.append("sendMessage$it(\$input: MessageInput$it): String!")
+      stringBuilder.append("sendMessage$it(input: MessageInput$it): String!\n")
     }
     stringBuilder.append("}\n")
 

@@ -1,6 +1,7 @@
 package com.apollographql.apollo.compiler.parser.sdl
 
 import com.apollographql.apollo.compiler.ir.SourceLocation
+import com.apollographql.apollo.compiler.parser.error.DocumentParseException
 import com.apollographql.apollo.compiler.parser.error.ParseException
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.parser.sdl.GraphSDLSchemaParser.parse
@@ -117,20 +118,20 @@ data class GraphSdlSchema(
     @JvmName("parse")
     operator fun invoke(schemaFile: File): GraphSdlSchema {
       return schemaFile.parse().apply {
-        validate()
+        validate(schemaFile.absolutePath)
       }
     }
 
-    private fun GraphSdlSchema.validate() {
+    private fun GraphSdlSchema.validate(path: String) {
       typeDefinitions.values
           .filterIsInstance<TypeDefinition.Object>()
           .forEach { o  ->
         o.interfaces.forEach { i ->
           if (typeDefinitions.get(i.typeName) !is TypeDefinition.Interface) {
-            throw ParseException(
+            throw DocumentParseException.invoke(ParseException(
                 message = "Object `${o.name}` cannot implement non-interface `${i.typeName}`",
                 sourceLocation = i.sourceLocation
-            )
+            ), path)
           }
         }
       }

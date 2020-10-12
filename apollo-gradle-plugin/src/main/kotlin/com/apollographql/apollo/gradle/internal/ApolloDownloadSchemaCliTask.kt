@@ -1,6 +1,5 @@
 package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo.compiler.parser.antlr.GraphSDLParser
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Companion.wrap
 import com.apollographql.apollo.compiler.parser.introspection.toSDL

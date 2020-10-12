@@ -28,176 +28,425 @@ package com.apollographql.apollo.compiler.parser.antlr;
 }
 
 document
-   : definition*
-   ;
+  : definition*
+  ;
 
 definition
-   : operationDefinition | fragmentDefinition
-   ;
+  : executableDefinition | typeSystemDefinition | typeSystemExtension
+  ;
 
-operationDefinition
-   : operationType NAME? variableDefinitions? directives? selectionSet
-   ;
+typeSystemDefinition
+  : schemaDefinition | typeDefinition | directiveDefinition
+  ;
 
-selectionSet
-   : '{' (selection)* '}'
-   ;
+executableDefinition
+  : operationDefinition | fragmentDefinition
+  ;
+
+schemaDefinition
+  : description? SCHEMA directives? operationTypesDefinition
+  ;
+
+typeDefinition
+  : enumTypeDefinition
+  | objectTypeDefinition
+  | interfaceTypeDefinition
+  | inputObjectDefinition
+  | unionTypeDefinition
+  | scalarTypeDefinition
+  ;
+
+enumTypeDefinition
+  : description? ENUM name directives? enumValuesDefinition
+  ;
+
+enumValuesDefinition
+  : '{' enumValueDefinition* '}'
+  ;
+
+enumValueDefinition
+  : description? name directives?
+  ;
+
+objectTypeDefinition
+  : description? TYPE name implementsInterfaces? directives? fieldsDefinition
+  ;
+
+implementsInterfaces
+  : IMPLEMENTS implementsInterface*
+  ;
+
+implementsInterface
+  : '&'? namedType
+  ;
+
+interfaceTypeDefinition
+  : description? INTERFACE name directives? fieldsDefinition
+  ;
+
+fieldsDefinition
+  : '{' fieldDefinition* '}'
+  ;
+
+fieldDefinition
+  : description? name argumentsDefinition? ':' type directives?
+  ;
+
+argumentsDefinition
+  : '(' inputValueDefinition* ')'
+  ;
+
+unionTypeDefinition
+  : description? UNION name directives? unionMemberTypes
+  ;
+
+unionMemberTypes
+  : '=' '|'?  namedType ('|'namedType)* ;
+
+scalarTypeDefinition
+  : description? SCALAR name directives?
+  ;
+
+inputObjectDefinition
+  : description? INPUT name directives? inputFieldsDefinition
+  ;
+
+inputFieldsDefinition
+  : '{' inputValueDefinition* '}'
+  ;
+
+inputValueDefinition
+  : description? name ':' type defaultValue? directives?
+  ;
+
+directiveDefinition
+  : description? DIRECTIVE '@' name argumentsDefinition? ON_KEYWORD directiveLocations
+  ;
+
+directiveLocations
+  : directiveLocation
+  | directiveLocations '|' directiveLocation
+  ;
+
+directiveLocation: name;
+
+typeSystemExtension
+  : schemaExtension | typeExtension
+  ;
+
+schemaExtension
+  : EXTEND SCHEMA directives? operationTypesDefinition
+  | EXTEND SCHEMA directives+
+  ;
+
+typeExtension
+  : objectTypeExtensionDefinition
+  | interfaceTypeExtensionDefinition
+  | unionTypeExtensionDefinition
+  | scalarTypeExtensionDefinition
+  | enumTypeExtensionDefinition
+  | inputObjectTypeExtensionDefinition
+  ;
+
+objectTypeExtensionDefinition
+  : EXTEND TYPE name implementsInterfaces? directives? fieldsDefinition
+  | EXTEND TYPE name implementsInterfaces? directives?
+  ;
+
+interfaceTypeExtensionDefinition
+  : EXTEND INTERFACE name directives? fieldsDefinition
+  | EXTEND INTERFACE name directives?
+  ;
+
+unionTypeExtensionDefinition
+  : EXTEND UNION name directives? unionMemberTypes
+  | EXTEND UNION name directives?
+  ;
+
+scalarTypeExtensionDefinition
+  : EXTEND SCALAR name directives
+  ;
+
+enumTypeExtensionDefinition
+  : EXTEND ENUM name directives? enumValuesDefinition
+  | EXTEND ENUM name directives?
+  ;
+
+inputObjectTypeExtensionDefinition
+  : EXTEND INPUT name directives? inputFieldsDefinition
+  | EXTEND INPUT name directives?
+  ;
+
+operationTypesDefinition
+  : '{' operationTypeDefinition* '}'
+  ;
+
+operationTypeDefinition
+  : description? operationType ':' namedType
+  ;
 
 operationType
-   : NAME
-   ;
+  : QUERY
+  | MUTATION
+  | SUBSCRIPTION
+  ;
+
+operationDefinition
+  : operationType name? variableDefinitions? directives? selectionSet
+  ;
+
+selectionSet
+  : '{' (selection)* '}'
+  ;
+
+description
+  : STRING
+  | BLOCK_STRING
+  ;
 
 selection
-   : field | fragmentSpread | inlineFragment
-   ;
+  : field | fragmentSpread | inlineFragment
+  ;
 
 field
-   : fieldName arguments? directives? selectionSet?
-   ;
+  : fieldName arguments? directives? selectionSet?
+  ;
 
 fieldName
-   : alias | NAME
-   ;
+  : alias | name
+  ;
 
 alias
-   : NAME ':' NAME
-   ;
+  : name ':' name
+  ;
 
 arguments
-   : '(' (argument)* ')'
-   ;
+  : '(' (argument)* ')'
+  ;
 
 argument
-   : NAME ':' valueOrVariable
-   ;
+  : name ':' value
+  ;
 
 fragmentSpread
-   : '...' fragmentName directives?
-   ;
+  : '...' fragmentName directives?
+  ;
 
 inlineFragment
-   : '...' 'on' typeCondition directives? selectionSet
-   ;
+  : '...' 'on' typeCondition directives? selectionSet
+  ;
 
 fragmentDefinition
-   : fragmentKeyword fragmentName 'on' typeCondition directives? selectionSet
-   ;
-
-fragmentKeyword
-   : NAME
-   ;
+  : FRAGMENT fragmentName ON_KEYWORD typeCondition directives? selectionSet
+  ;
 
 fragmentName
-   : NAME
-   ;
+  : nameButNotOn
+  ;
 
 directives
-   : directive+
-   ;
+  : directive+
+  ;
 
 directive
-   : '@' NAME ':' valueOrVariable | '@' NAME | '@' NAME '(' argument ')'
-   ;
+  : '@' name arguments?
+  ;
 
 typeCondition
-   : typeName
-   ;
+  : namedType
+  ;
 
 variableDefinitions
-   : '(' (variableDefinition)* ')'
-   ;
+  : '(' (variableDefinition)* ')'
+  ;
 
 variableDefinition
-   : variable ':' type defaultValue?
-   ;
+  : variable ':' type defaultValue?
+  ;
 
 variable
-   : '$' NAME
-   ;
+  : '$' name
+  ;
 
 defaultValue
-   : '=' value
-   ;
-
-valueOrVariable
-   : value | variable
-   ;
+  : '=' value
+  ;
 
 value
-   : STRING # stringValue | NUMBER # numberValue | BOOLEAN # booleanValue | arrayValueType # arrayValue | NAME # literalValue | inlineInputType # inlineInputTypeValue
-   ;
+  : variable | intValue | floatValue | stringValue | booleanValue | nullValue | enumValue | listValue | objectValue
+  ;
 
-arrayValueType
-   : '[' (valueOrVariable)* ']' | emptyArray
-   ;
+intValue
+  : INT
+  ;
 
-emptyArray
-   : '[' ']'
-   ;
+floatValue
+  : FLOAT
+  ;
 
-inlineInputType
-   : '{' (inlineInputTypeField)* '}' | emptyMap
-   ;
+booleanValue
+  :	BOOLEAN
+  ;
 
-inlineInputTypeField
-   : NAME ':' valueOrVariable
-   ;
+stringValue
+  : STRING
+  | BLOCK_STRING
+  ;
 
-emptyMap
-   : '{' '}'
-   ;
+nullValue
+  : 'null'
+  ;
+
+enumValue
+  : name
+  ;
+
+listValue
+  : '[' value* ']'
+  ;
+
+objectValue
+  : '{' objectField* '}'
+  ;
+
+objectField
+  : name ':' value
+  ;
 
 type
-   : typeName nonNullType? | listType nonNullType?
-   ;
+  : namedType
+  | listType
+  | nonNullType
+  ;
 
-typeName
-   : NAME
-   ;
+namedType
+  : name
+  ;
 
 listType
-   : '[' type ']'
-   ;
+  : '[' type ']'
+  ;
 
 nonNullType
-   : '!'
-   ;
+  : namedType '!'
+  | listType '!'
+  | nonNullType '!'
+  ;
 
+nameCommon
+  : WORD
+  | SCHEMA
+  | QUERY
+  | MUTATION
+  | SUBSCRIPTION
+  | ENUM
+  | TYPE
+  | IMPLEMENTS
+  | INTERFACE
+  | UNION
+  | SCALAR
+  | INPUT
+  | DIRECTIVE
+  | FRAGMENT
+  | EXTEND
+  ;
+
+
+// A special case for enums
+nameButNotOn
+  : nameCommon
+  | BOOLEAN
+  | NULL
+  ;
+
+// A special case for enums
+nameButNotBooleanOrNull
+  : nameCommon
+  | ON_KEYWORD
+  ;
+
+// We cannot make `name` a token because things like 'query', 'fragment', etc... are valid names so could potentially be used in
+// field names or other places
+name
+  : nameButNotBooleanOrNull
+  | BOOLEAN
+  | NULL
+  | ON_KEYWORD
+  ;
+
+// Begin lexer
 STRING
-   : '"' ( ESC | ~ ["\\] )* '"'
-   ;
+  : '"' ( ESC | ~ ["\\] )* '"'
+  ;
+BLOCK_STRING:   '"""' .*? '"""';
 BOOLEAN
-   : 'true' | 'false'
-   ;
-NAME
-   : [_A-Za-z] [_0-9A-Za-z]*
-   ;
+  : 'true' | 'false'
+  ;
+NULL: 'null';
+SCHEMA: 'schema';
+QUERY: 'query';
+MUTATION: 'mutation';
+SUBSCRIPTION:'subscription';
+ENUM: 'enum';
+TYPE: 'type';
+IMPLEMENTS: 'implements';
+INTERFACE: 'interface';
+UNION: 'union';
+SCALAR: 'scalar';
+INPUT: 'input';
+DIRECTIVE: 'directive';
+FRAGMENT: 'fragment';
+ON_KEYWORD: 'on';
+EXTEND: 'extend';
+UTF8_BOM: '\uEFBBBF';
+UTF16_BOM: '\uFEFF';
+UTF32_BOM: '\u0000FEFF';
+WORD
+  : [_A-Za-z] [_0-9A-Za-z]*
+  ;
+
 fragment ESC
-   : '\\' ( ["\\/bfnrt] | UNICODE )
-   ;
+  : '\\' ( ["\\/bfnrt] | UNICODE )
+  ;
 fragment UNICODE
-   : 'u' HEX HEX HEX HEX
-   ;
+  : 'u' HEX HEX HEX HEX
+  ;
 fragment HEX
-   : [0-9a-fA-F]
-   ;
-NUMBER
-   : '-'? INT '.' [0-9]+ EXP? | '-'? INT EXP | '-'? INT
-   ;
-fragment INT
-   : '0' | [1-9] [0-9]*
-   ;
+  : [0-9a-fA-F]
+  ;
+
+fragment NONZERO_DIGIT: [1-9];
+fragment DIGIT: [0-9];
+fragment FRACTIONAL_PART: '.' DIGIT+;
+fragment EXPONENTIAL_PART: EXPONENT_INDICATOR SIGN? DIGIT+;
+fragment EXPONENT_INDICATOR: [eE];
+fragment SIGN: [+-];
+fragment NEGATIVE_SIGN: '-';
+
+FLOAT
+  : INT FRACTIONAL_PART
+  | INT EXPONENTIAL_PART
+  | INT FRACTIONAL_PART EXPONENTIAL_PART
+  ;
+
+INT
+  : NEGATIVE_SIGN? '0'
+  | NEGATIVE_SIGN? NONZERO_DIGIT DIGIT*
+  ;
+
 // no leading zeros
 fragment EXP
-   : [Ee] [+\-]? INT
-   ;
+  : [Ee] [+\-]? INT
+  ;
 // \- since - means "range" inside [...]
 WS
-   : [ \t\n\r]+ -> skip
-   ;
+  : [ \t\n\r]+ -> skip
+  ;
 COMMENT
-    : '#' ~[\n\r]* -> channel(2)
-    ;
+  : '#' ~[\n\r]* -> channel(2)
+   ;
 COMMA
-    : ',' -> skip
-    ;
+  : ',' -> skip
+   ;
+UNICODE_BOM
+  : (UTF8_BOM | UTF16_BOM | UTF32_BOM) -> skip;

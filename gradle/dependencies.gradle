@@ -42,7 +42,6 @@ ext.dep = [
     ],
     antlr                 : [
         antlr  : "org.antlr:antlr4:$versions.antlr4",
-        runtime: "org.antlr:antlr4-runtime:$versions.antlr4",
     ],
     apollo                : [
         plugin : "com.apollographql.apollo:apollo-gradle-plugin:$versions.apollo",

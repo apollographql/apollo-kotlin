@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler
 
+import com.apollographql.apollo.compiler.parser.error.DocumentParseException
 import com.apollographql.apollo.compiler.parser.error.ParseException
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Companion.wrap
@@ -22,7 +23,8 @@ class GraphSdlParseTest() {
      * - leading/trailing spaces in descriptions
      * - defaultValue coercion
      */
-    val actualSchema = GraphSdlSchema(File("src/test/sdl/schema.sdl")).toIntrospectionSchema().normalize()
+    val sdlSchema = GraphSdlSchema(File("src/test/sdl/schema.sdl"))
+    val actualSchema = sdlSchema.toIntrospectionSchema().normalize()
     val expectedSchema = IntrospectionSchema(File("src/test/sdl/schema.json")).normalize()
 
     assertEquals(actualSchema.toString(), expectedSchema.toString())
@@ -56,15 +58,6 @@ class GraphSdlParseTest() {
     }
   }
 
-  @Test
-  fun `implementing an object fails`() {
-    try {
-      GraphSdlSchema(File("src/test/sdl/implements-object.sdl"))
-      fail("parse expected to fail but was successful")
-    } catch (e: ParseException) {
-      assertThat(e.message).contains("Object `Cat` cannot implement non-interface `Animal`")
-    }
-  }
 
   @Test
   fun `writing SDL and parsing again yields identical schemas`() {

@@ -1,0 +1,7 @@
+Failed to parse GraphQL file /executable-definition.sdl (1:0)
+Found an executable definition. Schemas should not contain operations or fragments.
+----------------------------------------------------
+
+[1]:query TestQuery {
+[2]:  hero {
+----------------------------------------------------

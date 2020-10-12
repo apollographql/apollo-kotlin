@@ -301,6 +301,7 @@ type Query {
   search(text: String): [SearchResult]
   starship(id: ID!): Starship
   tree: Tree
+  typeWithGraphQLKeywords: TypeWithGraphQLKeywords
 }
 
 """Represents a review for a movie"""
@@ -425,3 +426,8 @@ scalar UnsupportedType
 
 """URL for testing"""
 scalar URL
+
+type TypeWithGraphQLKeywords {
+  on: String
+  null(fragment: String): String
+}
