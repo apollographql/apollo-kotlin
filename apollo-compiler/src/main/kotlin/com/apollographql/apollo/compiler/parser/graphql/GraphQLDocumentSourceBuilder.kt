@@ -30,13 +30,21 @@ object GraphQLDocumentSourceBuilder {
     get() = variableDefinition().joinToString(separator = ", ", prefix = "(", postfix = ")") { it.source }
 
   private fun GraphQLParser.SelectionSetContext.format(addTypeName: Boolean = true): String {
-    val withTypeName = addTypeName && selection()?.find {
+    val withTypeName = addTypeName || selection()?.find {
       it.field()?.fieldName()?.NAME()?.text == "__typename"
-    } == null
-    val fields = selection()?.mapNotNull { selection ->
-      selection.field()?.source ?: selection?.inlineFragment()?.source ?: selection?.fragmentSpread()?.source
-    }
-    return fields?.joinToString(prefix = if (withTypeName) "__typename\n" else "", separator = "\n") ?: ""
+    } != null
+    return selection()
+        ?.filterNot { selection ->
+          selection.field()?.fieldName()?.NAME()?.text == "__typename"
+        }
+        ?.mapNotNull { selection ->
+          selection.field()?.source ?: selection?.inlineFragment()?.source ?: selection?.fragmentSpread()?.source
+        }
+        ?.joinToString(
+            prefix = if (withTypeName) "__typename\n" else "",
+            separator = "\n"
+        )
+        ?: ""
   }
 
   private val GraphQLParser.InlineFragmentContext.source: String
