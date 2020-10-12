@@ -31,8 +31,8 @@ class NetworkOnlyFetcherTest : BaseFetcherTest() {
     apolloClient.query(query).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY).enqueue(trackingCallback)
     Truth.assertThat(trackingCallback.exceptions).isEmpty()
     Truth.assertThat(trackingCallback.responseList.size).isEqualTo(1)
-    Truth.assertThat(trackingCallback.responseList[0].fromCache()).isFalse()
-    assertThat(trackingCallback.responseList[0].data()!!.hero?.name).isEqualTo("R2-D2")
+    Truth.assertThat(trackingCallback.responseList[0].isFromCache).isFalse()
+    assertThat(trackingCallback.responseList[0].data!!.hero?.name).isEqualTo("R2-D2")
 
     // Goes to network after cache populated
     server.enqueue(mockResponse("HeroNameResponse.json"))
@@ -40,8 +40,8 @@ class NetworkOnlyFetcherTest : BaseFetcherTest() {
     apolloClient.query(query).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY).enqueue(trackingCallback)
     Truth.assertThat(trackingCallback.exceptions).isEmpty()
     Truth.assertThat(trackingCallback.responseList.size).isEqualTo(1)
-    Truth.assertThat(trackingCallback.responseList[0].fromCache()).isFalse()
-    assertThat(trackingCallback.responseList[0].data()!!.hero?.name).isEqualTo("R2-D2")
+    Truth.assertThat(trackingCallback.responseList[0].isFromCache).isFalse()
+    assertThat(trackingCallback.responseList[0].data!!.hero?.name).isEqualTo("R2-D2")
 
     // Has error when cache empty, and network error
     server.enqueue(MockResponse().setResponseCode(HttpURLConnection.HTTP_INTERNAL_ERROR).setBody("Server Error"))

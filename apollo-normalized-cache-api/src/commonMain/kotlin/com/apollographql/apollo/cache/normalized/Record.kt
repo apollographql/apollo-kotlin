@@ -31,17 +31,6 @@ class Record internal constructor(
 
   fun hasField(fieldKey: String): Boolean = fields.containsKey(fieldKey)
 
-  @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "key"))
-  fun key(): String = key
-
-  @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "mutationId"))
-  fun mutationId(): Uuid? = mutationId
-
-  @Deprecated(message = "Build from a new builder instead", replaceWith = ReplaceWith(expression = "toBuilder().build()"))
-  fun clone(): Record {
-    return toBuilder().build()
-  }
-
   override fun toString(): String {
     return "Record(key='$key', fields=$fields, mutationId=$mutationId)"
   }
@@ -71,15 +60,6 @@ class Record internal constructor(
    */
   fun keys(): Set<String> {
     return fields.keys.map { "$key.$it" }.toSet()
-  }
-
-  /**
-   * @return A map of fieldName to fieldValue. Where fieldValue is a GraphQL Scalar or [CacheReference] if it is a
-   * GraphQL Object type.
-   */
-  @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "fields"))
-  fun fields(): Map<String, Any?> {
-    return fields
   }
 
   /**
@@ -129,11 +109,6 @@ class Record internal constructor(
     fun addFields(fields: Map<String, Any?>): Builder {
       this.fields.putAll(fields)
       return this
-    }
-
-    @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "key"))
-    fun key(): String {
-      return key
     }
 
     fun mutationId(mutationId: Uuid?): Builder {

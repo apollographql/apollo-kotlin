@@ -84,7 +84,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
   @Override public ResponseNormalizer<Record> cacheResponseNormalizer() {
     return new ResponseNormalizer<Record>() {
       @NotNull @Override public CacheKey resolveCacheKey(@NotNull ResponseField field, @NotNull Record record) {
-        return new CacheKey(record.key());
+        return new CacheKey(record.getKey());
       }
 
       @NotNull @Override public CacheKeyBuilder cacheKeyBuilder() {
@@ -358,7 +358,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
   <D extends Operation.Data, T, V extends Operation.Variables> T doRead(final Operation<D, T, V> operation) {
     return readTransaction(new Transaction<ReadableStore, T>() {
       @Nullable @Override public T execute(ReadableStore cache) {
-        Record rootRecord = cache.read(CacheKeyResolver.rootKeyForOperation(operation).key(), CacheHeaders.NONE);
+        Record rootRecord = cache.read(CacheKeyResolver.rootKeyForOperation(operation).getKey(), CacheHeaders.NONE);
         if (rootRecord == null) {
           return null;
         }
@@ -379,7 +379,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
       final ResponseNormalizer<Record> responseNormalizer, final CacheHeaders cacheHeaders) {
     return readTransaction(new Transaction<ReadableStore, Response<T>>() {
       @NotNull @Override public Response<T> execute(ReadableStore cache) {
-        Record rootRecord = cache.read(CacheKeyResolver.rootKeyForOperation(operation).key(), cacheHeaders);
+        Record rootRecord = cache.read(CacheKeyResolver.rootKeyForOperation(operation).getKey(), cacheHeaders);
         if (rootRecord == null) {
           return Response.<T>builder(operation).fromCache(true).build();
         }
@@ -408,7 +408,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
       final CacheKey cacheKey, final Operation.Variables variables) {
     return readTransaction(new Transaction<ReadableStore, F>() {
       @Nullable @Override public F execute(ReadableStore cache) {
-        Record rootRecord = cache.read(cacheKey.key(), CacheHeaders.NONE);
+        Record rootRecord = cache.read(cacheKey.getKey(), CacheHeaders.NONE);
         if (rootRecord == null) {
           return null;
         }

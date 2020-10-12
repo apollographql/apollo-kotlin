@@ -115,7 +115,7 @@ class IntegrationTest {
         apolloClient!!.query(AllPlanetsQuery()),
         Predicate<Response<AllPlanetsQuery.Data?>> { response ->
           assertThat(response.hasErrors()).isTrue()
-          assertThat(response.errors()).containsExactly(Error(
+          assertThat(response.errors).containsExactly(Error(
               "Cannot query field \"names\" on type \"Species\".", listOf(Error.Location(3, 5)), emptyMap<String, Any>()))
           true
         }
@@ -130,12 +130,12 @@ class IntegrationTest {
         apolloClient!!.query(AllPlanetsQuery())
     ) { response ->
       assertThat(response.hasErrors()).isTrue()
-      assertThat(response.errors()).hasSize(1)
-      assertThat(response.errors()!![0].message()).isEqualTo("")
-      assertThat(response.errors()!![0].customAttributes()).hasSize(2)
-      assertThat(response.errors()!![0].customAttributes()["code"]).isEqualTo("userNotFound")
-      assertThat(response.errors()!![0].customAttributes()["path"]).isEqualTo("loginWithPassword")
-      assertThat(response.errors()!![0].locations()).hasSize(0)
+      assertThat(response.errors).hasSize(1)
+      assertThat(response.errors!![0].message).isEqualTo("")
+      assertThat(response.errors!![0].customAttributes).hasSize(2)
+      assertThat(response.errors!![0].customAttributes["code"]).isEqualTo("userNotFound")
+      assertThat(response.errors!![0].customAttributes["path"]).isEqualTo("loginWithPassword")
+      assertThat(response.errors!![0].locations).hasSize(0)
       true
     }
   }
@@ -148,11 +148,11 @@ class IntegrationTest {
         apolloClient!!.query(AllPlanetsQuery())
     ) { response ->
       assertThat(response.hasErrors()).isTrue()
-      assertThat(response.errors()!![0].customAttributes()).hasSize(4)
-      assertThat(response.errors()!![0].customAttributes()["code"]).isEqualTo(BigDecimal(500))
-      assertThat(response.errors()!![0].customAttributes()["status"]).isEqualTo("Internal Error")
-      assertThat(response.errors()!![0].customAttributes()["fatal"]).isEqualTo(true)
-      assertThat(response.errors()!![0].customAttributes()["path"]).isEqualTo(Arrays.asList("query"))
+      assertThat(response.errors!![0].customAttributes).hasSize(4)
+      assertThat(response.errors!![0].customAttributes["code"]).isEqualTo(BigDecimal(500))
+      assertThat(response.errors!![0].customAttributes["status"]).isEqualTo("Internal Error")
+      assertThat(response.errors!![0].customAttributes["fatal"]).isEqualTo(true)
+      assertThat(response.errors!![0].customAttributes["path"]).isEqualTo(Arrays.asList("query"))
       true
     }
   }
@@ -180,8 +180,8 @@ class IntegrationTest {
         apolloClient!!.query(AllFilmsQuery())
     ) { response ->
       assertThat(response.hasErrors()).isFalse()
-      assertThat(response.data()!!.allFilms?.films).hasSize(6)
-      val dates = response.data()!!.allFilms?.films?.mapNotNull {
+      assertThat(response.data!!.allFilms?.films).hasSize(6)
+      val dates = response.data!!.allFilms?.films?.mapNotNull {
         val releaseDate = it!!.releaseDate!!
         dateCustomTypeAdapter!!.encode(releaseDate).value.toString()
       }
@@ -198,7 +198,7 @@ class IntegrationTest {
     assertResponse(
         apolloClient!!.query(HeroNameQuery()),
         Predicate<Response<HeroNameQuery.Data?>> { response ->
-          assertThat(response.data()).isNull()
+          assertThat(response.data).isNull()
           assertThat(response.hasErrors()).isFalse()
           true
         }
@@ -258,10 +258,10 @@ class IntegrationTest {
         Buffer().readFrom(javaClass.getResourceAsStream("/AllPlanetsNullableField.json")),
         ScalarTypeAdapters(emptyMap())
     )
-    assertThat(response.operation()).isEqualTo(query)
+    assertThat(response.operation).isEqualTo(query)
     assertThat(response.hasErrors()).isFalse()
-    assertThat(response.data()).isNotNull()
-    assertThat(response.data()!!.allPlanets?.planets).isNotEmpty()
+    assertThat(response.data).isNotNull()
+    assertThat(response.data!!.allPlanets?.planets).isNotEmpty()
   }
 
   @Test

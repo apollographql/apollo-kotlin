@@ -68,7 +68,7 @@ class ApolloWatcherTest {
     watcher.enqueueAndWatch(
         object : ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
           override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {
-            heroNameList.add(response.data()!!.hero!!.name)
+            heroNameList.add(response.data!!.hero!!.name)
           }
 
           override fun onFailure(e: ApolloException) {
@@ -100,7 +100,7 @@ class ApolloWatcherTest {
     watcher.enqueueAndWatch(
         object : ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
           override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {
-            heroNameList.add(response.data()!!.hero!!.name)
+            heroNameList.add(response.data!!.hero!!.name)
           }
 
           override fun onFailure(e: ApolloException) {
@@ -133,7 +133,7 @@ class ApolloWatcherTest {
     watcher.enqueueAndWatch(
         object : ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
           override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {
-            heroNameList.add(response.data()!!.hero!!.name)
+            heroNameList.add(response.data!!.hero!!.name)
           }
 
           override fun onFailure(e: ApolloException) {
@@ -157,7 +157,7 @@ class ApolloWatcherTest {
     watcher.enqueueAndWatch(
         object : ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
           override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {
-            heroNameList.add(response.data()!!.hero!!.name)
+            heroNameList.add(response.data!!.hero!!.name)
           }
 
           override fun onFailure(e: ApolloException) {
@@ -186,7 +186,7 @@ class ApolloWatcherTest {
     watcher.enqueueAndWatch(
         object : ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
           override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {
-            heroNameList.add(response.data()!!.hero!!.name)
+            heroNameList.add(response.data!!.hero!!.name)
           }
 
           override fun onFailure(e: ApolloException) {
@@ -212,7 +212,7 @@ class ApolloWatcherTest {
         .enqueueAndWatch(
             object : ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
               override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {
-                heroNameList.add(response.data()!!.hero!!.name)
+                heroNameList.add(response.data!!.hero!!.name)
               }
 
               override fun onFailure(e: ApolloException) {
@@ -250,7 +250,7 @@ class ApolloWatcherTest {
     watcher.enqueueAndWatch(
         object : ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
           override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {
-            heroNameList.add(response.data()!!.hero!!.name)
+            heroNameList.add(response.data!!.hero!!.name)
           }
 
           override fun onFailure(e: ApolloException) {
@@ -277,7 +277,7 @@ class ApolloWatcherTest {
     watcher.enqueueAndWatch(
         object : ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
           override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {
-            heroNameList.add(response.data()!!.hero!!.name)
+            heroNameList.add(response.data!!.hero!!.name)
           }
 
           override fun onFailure(e: ApolloException) {
@@ -305,8 +305,8 @@ class ApolloWatcherTest {
         .watcher()
         .enqueueAndWatch(object : ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
           override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {
-            if (response.data() != null) {
-              watchedHeroes.add(response.data()!!?.hero)
+            if (response.data != null) {
+              watchedHeroes.add(response.data!!?.hero)
             }
           }
 
@@ -317,8 +317,8 @@ class ApolloWatcherTest {
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"))
     apolloClient!!.query(query).enqueue(object : ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
       override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {
-        assertThat(response.data()).isNotNull()
-        assertThat(response.data()!!?.hero).isNotNull()
+        assertThat(response.data).isNotNull()
+        assertThat(response.data!!?.hero).isNotNull()
       }
 
       override fun onFailure(e: ApolloException) {

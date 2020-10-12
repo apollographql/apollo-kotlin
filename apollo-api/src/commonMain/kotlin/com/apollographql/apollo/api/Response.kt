@@ -55,42 +55,7 @@ data class Response<T>(
       executionContext = builder.executionContext
   )
 
-  @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "operation"))
-  @JsName("getOperation")
-  fun operation(): Operation<*, *, *> {
-    return operation
-  }
-
-  @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "data"))
-  @JsName("getData")
-  fun data(): T? = data
-
-  @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "errors"))
-  @JsName("getErrors")
-  fun errors(): List<Error>? = errors
-
-  @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "dependentKeys"))
-  @JsName("getDependentKeys")
-  fun dependentKeys(): Set<String> {
-    return dependentKeys
-  }
-
   fun hasErrors(): Boolean = !errors.isNullOrEmpty()
-
-  @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "isFromCache"))
-  @JsName("getFromCache")
-  fun fromCache(): Boolean {
-    return isFromCache
-  }
-
-  @Deprecated(message = "Use isFromCache Instead", replaceWith = ReplaceWith(expression = "isFromCache"))
-  val fromCache = isFromCache
-
-  @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "extensions"))
-  @JsName("getExtensions")
-  fun extensions(): Map<String, Any?> {
-    return extensions
-  }
 
   fun toBuilder(): Builder<T> = Builder<T>(operation)
       .data(data)

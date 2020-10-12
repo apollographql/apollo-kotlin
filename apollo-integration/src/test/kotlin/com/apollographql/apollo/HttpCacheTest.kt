@@ -499,33 +499,33 @@ class HttpCacheTest {
         .query(AllPlanetsQuery())
         .httpCachePolicy(HttpCachePolicy.NETWORK_FIRST))
         .test()
-        .assertValue { response -> !response.hasErrors() && !response.fromCache() }
+        .assertValue { response -> !response.hasErrors() && !response.isFromCache }
     enqueueResponse("/HttpCacheTestAllPlanets.json")
     Rx2Apollo.from(apolloClient
         .query(AllPlanetsQuery())
         .httpCachePolicy(HttpCachePolicy.NETWORK_ONLY))
         .test()
-        .assertValue { response -> !response.hasErrors() && !response.fromCache() }
+        .assertValue { response -> !response.hasErrors() && !response.isFromCache }
     Rx2Apollo.from(apolloClient
         .query(AllPlanetsQuery())
         .httpCachePolicy(HttpCachePolicy.CACHE_ONLY))
         .test()
-        .assertValue { response -> !response.hasErrors() && response.fromCache() }
+        .assertValue { response -> !response.hasErrors() && response.isFromCache }
     Rx2Apollo.from(apolloClient
         .query(AllPlanetsQuery())
         .httpCachePolicy(HttpCachePolicy.CACHE_FIRST))
         .test()
-        .assertValue { response -> !response.hasErrors() && response.fromCache() }
+        .assertValue { response -> !response.hasErrors() && response.isFromCache }
     Rx2Apollo.from(apolloClient
         .query(AllPlanetsQuery())
         .httpCachePolicy(HttpCachePolicy.CACHE_FIRST))
         .test()
-        .assertValue { response -> !response.hasErrors() && response.fromCache() }
+        .assertValue { response -> !response.hasErrors() && response.isFromCache }
     Rx2Apollo.from(apolloClient
         .query(AllPlanetsQuery())
         .httpCachePolicy(HttpCachePolicy.NETWORK_FIRST))
         .test()
-        .assertValue { response -> !response.hasErrors() && response.fromCache() }
+        .assertValue { response -> !response.hasErrors() && response.isFromCache }
   }
 
   @Throws(IOException::class)

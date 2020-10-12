@@ -32,8 +32,8 @@ class CacheFirstFetcherTest : BaseFetcherTest() {
     apolloClient.query(query).responseFetcher(ApolloResponseFetchers.CACHE_FIRST).enqueue(trackingCallback)
     Truth.assertThat(trackingCallback.exceptions).isEmpty()
     Truth.assertThat(trackingCallback.responseList.size).isEqualTo(1)
-    Truth.assertThat(trackingCallback.responseList[0].fromCache()).isFalse()
-    assertThat(trackingCallback.responseList[0].data()!!.hero?.name).isEqualTo("R2-D2")
+    Truth.assertThat(trackingCallback.responseList[0].isFromCache).isFalse()
+    assertThat(trackingCallback.responseList[0].data!!.hero?.name).isEqualTo("R2-D2")
     Truth.assertThat(server.requestCount).isEqualTo(2)
 
     // Hits only cache after populated
@@ -41,8 +41,8 @@ class CacheFirstFetcherTest : BaseFetcherTest() {
     apolloClient.query(query).responseFetcher(ApolloResponseFetchers.CACHE_FIRST).enqueue(trackingCallback)
     Truth.assertThat(trackingCallback.exceptions).isEmpty()
     Truth.assertThat(trackingCallback.responseList.size).isEqualTo(1)
-    Truth.assertThat(trackingCallback.responseList[0].fromCache()).isTrue()
-    assertThat(trackingCallback.responseList[0].data()!!.hero?.name).isEqualTo("R2-D2")
+    Truth.assertThat(trackingCallback.responseList[0].isFromCache).isTrue()
+    assertThat(trackingCallback.responseList[0].data!!.hero?.name).isEqualTo("R2-D2")
     Truth.assertThat(server.requestCount).isEqualTo(2)
   }
 }

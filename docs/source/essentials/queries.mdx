@@ -186,7 +186,7 @@ final HeroAndFriendsNames heroAndFriendsQuery = HeroAndFriendsNames.builder()
 apolloClient().query(heroAndFriendsQuery)
     .enqueue(new ApolloCallback<>(new ApolloCall.Callback<HeroAndFriendsNames.Data>() {
       @Override public void onResponse(@NotNull Response<HeroAndFriendsNames.Data> response) {
-         Log.i(TAG, response.data().hero().name();
+         Log.i(TAG, response.data.hero().name();
       }
 
       @Override public void onFailure(@NotNull ApolloException e) {

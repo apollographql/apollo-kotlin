@@ -49,11 +49,6 @@ class RecordFieldJsonAdapter {
   }
 
   companion object {
-    @JvmStatic
-    @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "RecordFieldJsonAdapter()"))
-    fun create(): RecordFieldJsonAdapter {
-      return RecordFieldJsonAdapter()
-    }
 
     @Suppress("UNCHECKED_CAST")
     @Throws(IOException::class)

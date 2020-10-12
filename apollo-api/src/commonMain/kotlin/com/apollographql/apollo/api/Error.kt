@@ -22,27 +22,6 @@ class Error(
     val customAttributes: Map<String, Any?> = emptyMap()
 ) {
 
-  /**
-   * Returns server error message.
-   */
-  @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "message"))
-  @JsName("getMessage")
-  fun message(): String? = message
-
-  /**
-   * Returns the location of the error in the GraphQL operation.
-   */
-  @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "locations"))
-  @JsName("getLocations")
-  fun locations(): List<Location> = locations
-
-  /**
-   * Returns custom attributes associated with this error
-   */
-  @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "customAttributes"))
-  @JsName("getCustomAttributes")
-  fun customAttributes(): Map<String, Any?> = customAttributes
-
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other !is Error) return false
@@ -76,20 +55,6 @@ class Error(
        */
       val column: Long
   ) {
-
-    /**
-     * Returns the line number of the error location.
-     */
-    @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "line"))
-    @JsName("getLine")
-    fun line(): Long = line
-
-    /**
-     * Returns the column number of the error location.
-     */
-    @Deprecated(message = "Use property instead", replaceWith = ReplaceWith(expression = "column"))
-    @JsName("getColumn")
-    fun column(): Long = column
 
     override fun equals(other: Any?): Boolean {
       if (this === other) return true

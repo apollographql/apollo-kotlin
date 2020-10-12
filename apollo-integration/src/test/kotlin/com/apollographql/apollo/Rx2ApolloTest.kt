@@ -115,7 +115,7 @@ class Rx2ApolloTest {
     Rx2Apollo
         .from(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
         .retry(1)
-        .map({ response -> response.data })
+        .map { response -> response.data }
         .subscribeWith(observer)
     observer.assertValueCount(1)
         .assertValueAt(0) { data ->
@@ -221,9 +221,9 @@ class Rx2ApolloTest {
     /*
      * A simple cache that will always throw errors
      */
-    val cacheFactory = object: NormalizedCacheFactory<NormalizedCache>() {
+    val cacheFactory = object : NormalizedCacheFactory<NormalizedCache>() {
       override fun create(recordFieldAdapter: RecordFieldJsonAdapter): NormalizedCache {
-        return object: NormalizedCache() {
+        return object : NormalizedCache() {
           override fun clearAll() {
             throw Exception("not implemented")
           }

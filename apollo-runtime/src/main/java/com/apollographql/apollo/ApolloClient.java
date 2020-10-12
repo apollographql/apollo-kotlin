@@ -230,15 +230,6 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
 
   /**
    * @return The default {@link CacheHeaders} which this instance of {@link ApolloClient} was configured.
-   * @deprecated Use getDefaultCacheHeaders() instead
-   */
-  @Deprecated
-  public CacheHeaders defaultCacheHeaders() {
-    return defaultCacheHeaders;
-  }
-
-  /**
-   * @return The default {@link CacheHeaders} which this instance of {@link ApolloClient} was configured.
    */
   public CacheHeaders getDefaultCacheHeaders() {
     return defaultCacheHeaders;
@@ -270,16 +261,6 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
    */
   public boolean clearNormalizedCache() {
     return apolloStore.clearAll().execute();
-  }
-
-  /**
-   * @return The {@link ApolloStore} managing access to the normalized cache created by
-   * {@link Builder#normalizedCache(NormalizedCacheFactory, CacheKeyResolver)}  }
-   * @deprecated Use getApolloStore() instead.
-   */
-  @Deprecated
-  public ApolloStore apolloStore() {
-    return apolloStore;
   }
 
   /**
@@ -770,7 +751,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       Optional<NormalizedCacheFactory> cacheFactory = this.cacheFactory;
       Optional<CacheKeyResolver> cacheKeyResolver = this.cacheKeyResolver;
       if (cacheFactory.isPresent() && cacheKeyResolver.isPresent()) {
-        final NormalizedCache normalizedCache = cacheFactory.get().createChain(RecordFieldJsonAdapter.create());
+        final NormalizedCache normalizedCache = cacheFactory.get().createChain(new RecordFieldJsonAdapter());
         apolloStore = new RealApolloStore(normalizedCache, cacheKeyResolver.get(), scalarTypeAdapters, dispatcher, apolloLogger);
       }
 
