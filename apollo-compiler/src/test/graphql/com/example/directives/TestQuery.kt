@@ -125,13 +125,22 @@ data class TestQuery(
         ResponseField.forInt("totalCount", "totalCount", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): FriendsConnection = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val totalCount = readInt(RESPONSE_FIELDS[1])
-        FriendsConnection(
-          __typename = __typename,
-          totalCount = totalCount
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): FriendsConnection {
+        return reader.run {
+          var __typename: String? = __typename
+          var totalCount: Int? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> totalCount = readInt(RESPONSE_FIELDS[1])
+              else -> break
+            }
+          }
+          FriendsConnection(
+            __typename = __typename!!,
+            totalCount = totalCount
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -172,17 +181,27 @@ data class TestQuery(
         ))
       )
 
-      operator fun invoke(reader: ResponseReader): Hero = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])
-        val friendsConnection = readObject<FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
-          FriendsConnection(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Hero {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          var friendsConnection: FriendsConnection? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              2 -> friendsConnection = readObject<FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
+                FriendsConnection(reader)
+              }
+              else -> break
+            }
+          }
+          Hero(
+            __typename = __typename!!,
+            name = name,
+            friendsConnection = friendsConnection
+          )
         }
-        Hero(
-          __typename = __typename,
-          name = name,
-          friendsConnection = friendsConnection
-        )
       }
 
       @Suppress("FunctionName")
@@ -207,13 +226,21 @@ data class TestQuery(
         ResponseField.forObject("hero", "hero", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Data = reader.run {
-        val hero = readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
-          Hero(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+        return reader.run {
+          var hero: Hero? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> hero = readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
+                Hero(reader)
+              }
+              else -> break
+            }
+          }
+          Data(
+            hero = hero
+          )
         }
-        Data(
-          hero = hero
-        )
       }
 
       @Suppress("FunctionName")

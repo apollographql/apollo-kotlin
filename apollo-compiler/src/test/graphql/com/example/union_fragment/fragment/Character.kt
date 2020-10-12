@@ -63,15 +63,25 @@ interface Character : GraphqlFragment {
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): DefaultImpl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)!!
-        val name = readString(RESPONSE_FIELDS[2])!!
-        DefaultImpl(
-          __typename = __typename,
-          id = id,
-          name = name
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): DefaultImpl {
+        return reader.run {
+          var __typename: String? = __typename
+          var id: String? = null
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+              2 -> name = readString(RESPONSE_FIELDS[2])
+              else -> break
+            }
+          }
+          DefaultImpl(
+            __typename = __typename!!,
+            id = id!!,
+            name = name!!
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -88,6 +98,7 @@ interface Character : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader): Character = DefaultImpl(reader)
+    operator fun invoke(reader: ResponseReader, __typename: String? = null): Character =
+        DefaultImpl(reader, __typename)
   }
 }

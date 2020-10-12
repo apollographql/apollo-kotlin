@@ -110,15 +110,24 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forList("links", "links", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Hero = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val links = readList<Any>(RESPONSE_FIELDS[1]) { reader ->
-          reader.readCustomType<Any>(CustomType.URL)
-        }!!.map { it!! }
-        Hero(
-          __typename = __typename,
-          links = links
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Hero {
+        return reader.run {
+          var __typename: String? = __typename
+          var links: List<Any>? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> links = readList<Any>(RESPONSE_FIELDS[1]) { reader ->
+                reader.readCustomType<Any>(CustomType.URL)
+              }?.map { it!! }
+              else -> break
+            }
+          }
+          Hero(
+            __typename = __typename!!,
+            links = links!!
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -143,13 +152,21 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forObject("hero", "hero", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Data = reader.run {
-        val hero = readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
-          Hero(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+        return reader.run {
+          var hero: Hero? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> hero = readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
+                Hero(reader)
+              }
+              else -> break
+            }
+          }
+          Data(
+            hero = hero
+          )
         }
-        Data(
-          hero = hero
-        )
       }
 
       @Suppress("FunctionName")

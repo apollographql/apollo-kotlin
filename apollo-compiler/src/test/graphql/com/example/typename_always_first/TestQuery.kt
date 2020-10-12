@@ -105,13 +105,22 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forDouble("height", "height", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Human = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val height = readDouble(RESPONSE_FIELDS[1])
-        Human(
-          __typename = __typename,
-          height = height
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Human {
+        return reader.run {
+          var __typename: String? = __typename
+          var height: Double? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> height = readDouble(RESPONSE_FIELDS[1])
+              else -> break
+            }
+          }
+          Human(
+            __typename = __typename!!,
+            height = height
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -148,15 +157,25 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("primaryFunction", "primaryFunction", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Droid = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        val primaryFunction = readString(RESPONSE_FIELDS[2])
-        Droid(
-          __typename = __typename,
-          name = name,
-          primaryFunction = primaryFunction
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Droid {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          var primaryFunction: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              2 -> primaryFunction = readString(RESPONSE_FIELDS[2])
+              else -> break
+            }
+          }
+          Droid(
+            __typename = __typename!!,
+            name = name!!,
+            primaryFunction = primaryFunction
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -181,11 +200,19 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): OtherHero = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        OtherHero(
-          __typename = __typename
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): OtherHero {
+        return reader.run {
+          var __typename: String? = __typename
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              else -> break
+            }
+          }
+          OtherHero(
+            __typename = __typename!!
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -210,12 +237,12 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Hero {
-        val typename = reader.readString(RESPONSE_FIELDS[0])
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Hero {
+        val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
-          "Human" -> Human(reader)
-          "Droid" -> Droid(reader)
-          else -> OtherHero(reader)
+          "Human" -> Human(reader, typename)
+          "Droid" -> Droid(reader, typename)
+          else -> OtherHero(reader, typename)
         }
       }
     }
@@ -238,13 +265,21 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forObject("hero", "hero", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Data = reader.run {
-        val hero = readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
-          Hero(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+        return reader.run {
+          var hero: Hero? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> hero = readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
+                Hero(reader)
+              }
+              else -> break
+            }
+          }
+          Data(
+            hero = hero
+          )
         }
-        Data(
-          hero = hero
-        )
       }
 
       @Suppress("FunctionName")

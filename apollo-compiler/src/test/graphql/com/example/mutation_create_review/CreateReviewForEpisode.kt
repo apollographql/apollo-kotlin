@@ -130,13 +130,22 @@ internal data class CreateReviewForEpisode(
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): ListOfListOfObject = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        ListOfListOfObject(
-          __typename = __typename,
-          name = name
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): ListOfListOfObject {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              else -> break
+            }
+          }
+          ListOfListOfObject(
+            __typename = __typename!!,
+            name = name!!
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -229,41 +238,55 @@ internal data class CreateReviewForEpisode(
         ResponseField.forList("listOfListOfObject", "listOfListOfObject", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): CreateReview = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val stars = readInt(RESPONSE_FIELDS[1])!!
-        val commentary = readString(RESPONSE_FIELDS[2])
-        val listOfListOfString = readList<List<String>>(RESPONSE_FIELDS[3]) { reader ->
-          reader.readList<String> { reader ->
-            reader.readString()
-          }.map { it!! }
-        }?.map { it!! }
-        val listOfListOfEnum = readList<List<Episode>>(RESPONSE_FIELDS[4]) { reader ->
-          reader.readList<Episode> { reader ->
-            Episode.safeValueOf(reader.readString())
-          }.map { it!! }
-        }?.map { it!! }
-        val listOfListOfCustom = readList<List<Date>>(RESPONSE_FIELDS[5]) { reader ->
-          reader.readList<Date> { reader ->
-            reader.readCustomType<Date>(CustomType.DATE)
-          }.map { it!! }
-        }?.map { it!! }
-        val listOfListOfObject = readList<List<ListOfListOfObject>>(RESPONSE_FIELDS[6]) { reader ->
-          reader.readList<ListOfListOfObject> { reader ->
-            reader.readObject<ListOfListOfObject> { reader ->
-              ListOfListOfObject(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): CreateReview {
+        return reader.run {
+          var __typename: String? = __typename
+          var stars: Int? = null
+          var commentary: String? = null
+          var listOfListOfString: List<List<String>>? = null
+          var listOfListOfEnum: List<List<Episode>>? = null
+          var listOfListOfCustom: List<List<Date>>? = null
+          var listOfListOfObject: List<List<ListOfListOfObject>>? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> stars = readInt(RESPONSE_FIELDS[1])
+              2 -> commentary = readString(RESPONSE_FIELDS[2])
+              3 -> listOfListOfString = readList<List<String>>(RESPONSE_FIELDS[3]) { reader ->
+                reader.readList<String> { reader ->
+                  reader.readString()
+                }.map { it!! }
+              }?.map { it!! }
+              4 -> listOfListOfEnum = readList<List<Episode>>(RESPONSE_FIELDS[4]) { reader ->
+                reader.readList<Episode> { reader ->
+                  Episode.safeValueOf(reader.readString())
+                }.map { it!! }
+              }?.map { it!! }
+              5 -> listOfListOfCustom = readList<List<Date>>(RESPONSE_FIELDS[5]) { reader ->
+                reader.readList<Date> { reader ->
+                  reader.readCustomType<Date>(CustomType.DATE)
+                }.map { it!! }
+              }?.map { it!! }
+              6 -> listOfListOfObject = readList<List<ListOfListOfObject>>(RESPONSE_FIELDS[6]) { reader ->
+                reader.readList<ListOfListOfObject> { reader ->
+                  reader.readObject<ListOfListOfObject> { reader ->
+                    ListOfListOfObject(reader)
+                  }
+                }.map { it!! }
+              }?.map { it!! }
+              else -> break
             }
-          }.map { it!! }
-        }?.map { it!! }
-        CreateReview(
-          __typename = __typename,
-          stars = stars,
-          commentary = commentary,
-          listOfListOfString = listOfListOfString,
-          listOfListOfEnum = listOfListOfEnum,
-          listOfListOfCustom = listOfListOfCustom,
-          listOfListOfObject = listOfListOfObject
-        )
+          }
+          CreateReview(
+            __typename = __typename!!,
+            stars = stars!!,
+            commentary = commentary,
+            listOfListOfString = listOfListOfString,
+            listOfListOfEnum = listOfListOfEnum,
+            listOfListOfCustom = listOfListOfCustom,
+            listOfListOfObject = listOfListOfObject
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -294,13 +317,21 @@ internal data class CreateReviewForEpisode(
             "variableName" to "review")), true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Data = reader.run {
-        val createReview = readObject<CreateReview>(RESPONSE_FIELDS[0]) { reader ->
-          CreateReview(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+        return reader.run {
+          var createReview: CreateReview? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> createReview = readObject<CreateReview>(RESPONSE_FIELDS[0]) { reader ->
+                CreateReview(reader)
+              }
+              else -> break
+            }
+          }
+          Data(
+            createReview = createReview
+          )
         }
-        Data(
-          createReview = createReview
-        )
       }
 
       @Suppress("FunctionName")

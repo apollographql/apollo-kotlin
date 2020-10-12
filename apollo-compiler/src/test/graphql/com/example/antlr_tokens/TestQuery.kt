@@ -133,17 +133,29 @@ data class TestQuery(
           |""".trimMargin()), true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): TypeWithGraphQLKeywords = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val on = readString(RESPONSE_FIELDS[1])
-        val null_ = readString(RESPONSE_FIELDS[2])
-        val alias = readString(RESPONSE_FIELDS[3])
-        TypeWithGraphQLKeywords(
-          __typename = __typename,
-          on = on,
-          null_ = null_,
-          alias = alias
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null):
+          TypeWithGraphQLKeywords {
+        return reader.run {
+          var __typename: String? = __typename
+          var on: String? = null
+          var null_: String? = null
+          var alias: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> on = readString(RESPONSE_FIELDS[1])
+              2 -> null_ = readString(RESPONSE_FIELDS[2])
+              3 -> alias = readString(RESPONSE_FIELDS[3])
+              else -> break
+            }
+          }
+          TypeWithGraphQLKeywords(
+            __typename = __typename!!,
+            on = on,
+            null_ = null_,
+            alias = alias
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -170,14 +182,21 @@ data class TestQuery(
             null)
       )
 
-      operator fun invoke(reader: ResponseReader): Data = reader.run {
-        val typeWithGraphQLKeywords =
-            readObject<TypeWithGraphQLKeywords>(RESPONSE_FIELDS[0]) { reader ->
-          TypeWithGraphQLKeywords(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+        return reader.run {
+          var typeWithGraphQLKeywords: TypeWithGraphQLKeywords? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> typeWithGraphQLKeywords = readObject<TypeWithGraphQLKeywords>(RESPONSE_FIELDS[0]) { reader ->
+                TypeWithGraphQLKeywords(reader)
+              }
+              else -> break
+            }
+          }
+          Data(
+            typeWithGraphQLKeywords = typeWithGraphQLKeywords
+          )
         }
-        Data(
-          typeWithGraphQLKeywords = typeWithGraphQLKeywords
-        )
       }
 
       @Suppress("FunctionName")

@@ -134,15 +134,25 @@ data class TestQuery(
         ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null)
       )
 
-      operator fun invoke(reader: ResponseReader): HeroDetailsImpl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        val id = readCustomType<String>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)!!
-        HeroDetailsImpl(
-          __typename = __typename,
-          name = name,
-          id = id
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): HeroDetailsImpl {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          var id: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              2 -> id = readCustomType<String>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)
+              else -> break
+            }
+          }
+          HeroDetailsImpl(
+            __typename = __typename!!,
+            name = name!!,
+            id = id!!
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -183,17 +193,29 @@ data class TestQuery(
         ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null)
       )
 
-      operator fun invoke(reader: ResponseReader): HeroDetailsHumanDetailsImpl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        val homePlanet = readString(RESPONSE_FIELDS[2])
-        val id = readCustomType<String>(RESPONSE_FIELDS[3] as ResponseField.CustomTypeField)!!
-        HeroDetailsHumanDetailsImpl(
-          __typename = __typename,
-          name = name,
-          homePlanet = homePlanet,
-          id = id
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null):
+          HeroDetailsHumanDetailsImpl {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          var homePlanet: String? = null
+          var id: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              2 -> homePlanet = readString(RESPONSE_FIELDS[2])
+              3 -> id = readCustomType<String>(RESPONSE_FIELDS[3] as ResponseField.CustomTypeField)
+              else -> break
+            }
+          }
+          HeroDetailsHumanDetailsImpl(
+            __typename = __typename!!,
+            name = name!!,
+            homePlanet = homePlanet,
+            id = id!!
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -225,13 +247,22 @@ data class TestQuery(
         ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null)
       )
 
-      operator fun invoke(reader: ResponseReader): OtherHero = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)!!
-        OtherHero(
-          __typename = __typename,
-          id = id
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): OtherHero {
+        return reader.run {
+          var __typename: String? = __typename
+          var id: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+              else -> break
+            }
+          }
+          OtherHero(
+            __typename = __typename!!,
+            id = id!!
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -261,12 +292,12 @@ data class TestQuery(
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Hero {
-        val typename = reader.readString(RESPONSE_FIELDS[0])
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Hero {
+        val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
-          "Droid" -> HeroDetailsImpl(reader)
-          "Human" -> HeroDetailsHumanDetailsImpl(reader)
-          else -> OtherHero(reader)
+          "Droid" -> HeroDetailsImpl(reader, typename)
+          "Human" -> HeroDetailsHumanDetailsImpl(reader, typename)
+          else -> OtherHero(reader, typename)
         }
       }
     }
@@ -289,13 +320,21 @@ data class TestQuery(
         ResponseField.forObject("hero", "hero", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Data = reader.run {
-        val hero = readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
-          Hero(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+        return reader.run {
+          var hero: Hero? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> hero = readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
+                Hero(reader)
+              }
+              else -> break
+            }
+          }
+          Data(
+            hero = hero
+          )
         }
-        Data(
-          hero = hero
-        )
       }
 
       @Suppress("FunctionName")

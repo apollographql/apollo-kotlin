@@ -111,15 +111,25 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forDouble("height", "height", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Human = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        val height = readDouble(RESPONSE_FIELDS[2])
-        Human(
-          __typename = __typename,
-          name = name,
-          height = height
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Human {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          var height: Double? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              2 -> height = readDouble(RESPONSE_FIELDS[2])
+              else -> break
+            }
+          }
+          Human(
+            __typename = __typename!!,
+            name = name!!,
+            height = height
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -150,13 +160,23 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): OtherNonOptionalHero = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        OtherNonOptionalHero(
-          __typename = __typename,
-          name = name
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null):
+          OtherNonOptionalHero {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              else -> break
+            }
+          }
+          OtherNonOptionalHero(
+            __typename = __typename!!,
+            name = name!!
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -184,11 +204,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): NonOptionalHero {
-        val typename = reader.readString(RESPONSE_FIELDS[0])
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): NonOptionalHero {
+        val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
-          "Human" -> Human(reader)
-          else -> OtherNonOptionalHero(reader)
+          "Human" -> Human(reader, typename)
+          else -> OtherNonOptionalHero(reader, typename)
         }
       }
     }
@@ -212,13 +232,21 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           "episode" to "EMPIRE"), false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Data = reader.run {
-        val nonOptionalHero = readObject<NonOptionalHero>(RESPONSE_FIELDS[0]) { reader ->
-          NonOptionalHero(reader)
-        }!!
-        Data(
-          nonOptionalHero = nonOptionalHero
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+        return reader.run {
+          var nonOptionalHero: NonOptionalHero? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> nonOptionalHero = readObject<NonOptionalHero>(RESPONSE_FIELDS[0]) { reader ->
+                NonOptionalHero(reader)
+              }
+              else -> break
+            }
+          }
+          Data(
+            nonOptionalHero = nonOptionalHero!!
+          )
+        }
       }
 
       @Suppress("FunctionName")

@@ -106,13 +106,22 @@ interface HumanDetails : GraphqlFragment {
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Node1 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        Node1(
-          __typename = __typename,
-          name = name
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Node1 {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              else -> break
+            }
+          }
+          Node1(
+            __typename = __typename!!,
+            name = name!!
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -143,15 +152,24 @@ interface HumanDetails : GraphqlFragment {
         ResponseField.forObject("node", "node", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Edge1 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val node = readObject<Node1>(RESPONSE_FIELDS[1]) { reader ->
-          Node1(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Edge1 {
+        return reader.run {
+          var __typename: String? = __typename
+          var node: Node1? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> node = readObject<Node1>(RESPONSE_FIELDS[1]) { reader ->
+                Node1(reader)
+              }
+              else -> break
+            }
+          }
+          Edge1(
+            __typename = __typename!!,
+            node = node
+          )
         }
-        Edge1(
-          __typename = __typename,
-          node = node
-        )
       }
 
       @Suppress("FunctionName")
@@ -186,17 +204,26 @@ interface HumanDetails : GraphqlFragment {
         ResponseField.forList("edges", "edges", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): FriendsConnection1 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val edges = readList<Edge1>(RESPONSE_FIELDS[1]) { reader ->
-          reader.readObject<Edge1> { reader ->
-            Edge1(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): FriendsConnection1 {
+        return reader.run {
+          var __typename: String? = __typename
+          var edges: List<Edge1?>? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> edges = readList<Edge1>(RESPONSE_FIELDS[1]) { reader ->
+                reader.readObject<Edge1> { reader ->
+                  Edge1(reader)
+                }
+              }
+              else -> break
+            }
           }
+          FriendsConnection1(
+            __typename = __typename!!,
+            edges = edges
+          )
         }
-        FriendsConnection1(
-          __typename = __typename,
-          edges = edges
-        )
       }
 
       @Suppress("FunctionName")
@@ -241,19 +268,31 @@ interface HumanDetails : GraphqlFragment {
         ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): DefaultImpl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        val profileLink = readCustomType<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)!!
-        val friendsConnection = readObject<FriendsConnection1>(RESPONSE_FIELDS[3]) { reader ->
-          FriendsConnection1(reader)
-        }!!
-        DefaultImpl(
-          __typename = __typename,
-          name = name,
-          profileLink = profileLink,
-          friendsConnection = friendsConnection
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): DefaultImpl {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          var profileLink: Any? = null
+          var friendsConnection: FriendsConnection1? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              2 -> profileLink = readCustomType<Any>(RESPONSE_FIELDS[2] as
+                  ResponseField.CustomTypeField)
+              3 -> friendsConnection = readObject<FriendsConnection1>(RESPONSE_FIELDS[3]) { reader ->
+                FriendsConnection1(reader)
+              }
+              else -> break
+            }
+          }
+          DefaultImpl(
+            __typename = __typename!!,
+            name = name!!,
+            profileLink = profileLink!!,
+            friendsConnection = friendsConnection!!
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -280,6 +319,7 @@ interface HumanDetails : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader): HumanDetails = DefaultImpl(reader)
+    operator fun invoke(reader: ResponseReader, __typename: String? = null): HumanDetails =
+        DefaultImpl(reader, __typename)
   }
 }

@@ -112,15 +112,25 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("commentary", "commentary", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Review = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val stars = readInt(RESPONSE_FIELDS[1])!!
-        val commentary = readString(RESPONSE_FIELDS[2])
-        Review(
-          __typename = __typename,
-          stars = stars,
-          commentary = commentary
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Review {
+        return reader.run {
+          var __typename: String? = __typename
+          var stars: Int? = null
+          var commentary: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> stars = readInt(RESPONSE_FIELDS[1])
+              2 -> commentary = readString(RESPONSE_FIELDS[2])
+              else -> break
+            }
+          }
+          Review(
+            __typename = __typename!!,
+            stars = stars!!,
+            commentary = commentary
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -153,15 +163,23 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           "starsFloat" to 9.9), true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Data = reader.run {
-        val reviews = readList<Review>(RESPONSE_FIELDS[0]) { reader ->
-          reader.readObject<Review> { reader ->
-            Review(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+        return reader.run {
+          var reviews: List<Review?>? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> reviews = readList<Review>(RESPONSE_FIELDS[0]) { reader ->
+                reader.readObject<Review> { reader ->
+                  Review(reader)
+                }
+              }
+              else -> break
+            }
           }
+          Data(
+            reviews = reviews
+          )
         }
-        Data(
-          reviews = reviews
-        )
       }
 
       @Suppress("FunctionName")

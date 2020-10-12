@@ -133,15 +133,25 @@ data class TestQuery(
         ResponseField.forString("commentary", "commentary", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): CreateReview = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val stars = readInt(RESPONSE_FIELDS[1])!!
-        val commentary = readString(RESPONSE_FIELDS[2])
-        CreateReview(
-          __typename = __typename,
-          stars = stars,
-          commentary = commentary
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): CreateReview {
+        return reader.run {
+          var __typename: String? = __typename
+          var stars: Int? = null
+          var commentary: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> stars = readInt(RESPONSE_FIELDS[1])
+              2 -> commentary = readString(RESPONSE_FIELDS[2])
+              else -> break
+            }
+          }
+          CreateReview(
+            __typename = __typename!!,
+            stars = stars!!,
+            commentary = commentary
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -172,13 +182,21 @@ data class TestQuery(
             "variableName" to "review")), true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Data = reader.run {
-        val createReview = readObject<CreateReview>(RESPONSE_FIELDS[0]) { reader ->
-          CreateReview(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+        return reader.run {
+          var createReview: CreateReview? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> createReview = readObject<CreateReview>(RESPONSE_FIELDS[0]) { reader ->
+                CreateReview(reader)
+              }
+              else -> break
+            }
+          }
+          Data(
+            createReview = createReview
+          )
         }
-        Data(
-          createReview = createReview
-        )
       }
 
       @Suppress("FunctionName")

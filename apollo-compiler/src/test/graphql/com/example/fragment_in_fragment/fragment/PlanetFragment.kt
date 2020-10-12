@@ -53,13 +53,22 @@ interface PlanetFragment : GraphqlFragment {
         ResponseField.forString("name", "name", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): DefaultImpl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])
-        DefaultImpl(
-          __typename = __typename,
-          name = name
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): DefaultImpl {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              else -> break
+            }
+          }
+          DefaultImpl(
+            __typename = __typename!!,
+            name = name
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -75,6 +84,7 @@ interface PlanetFragment : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader): PlanetFragment = DefaultImpl(reader)
+    operator fun invoke(reader: ResponseReader, __typename: String? = null): PlanetFragment =
+        DefaultImpl(reader, __typename)
   }
 }

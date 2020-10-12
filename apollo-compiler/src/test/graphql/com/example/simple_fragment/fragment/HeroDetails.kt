@@ -30,8 +30,8 @@ internal interface HeroDetails : GraphqlFragment {
     val humanDetailsDelegate: HumanDetails
   ) : DefaultImpl, HumanDetails by humanDetailsDelegate {
     companion object {
-      operator fun invoke(reader: ResponseReader): HumanDetailsImpl {
-        return HumanDetailsImpl(HumanDetails(reader))
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): HumanDetailsImpl {
+        return HumanDetailsImpl(HumanDetails(reader, __typename))
       }
     }
   }
@@ -53,11 +53,19 @@ internal interface HeroDetails : GraphqlFragment {
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): OtherDefaultImpl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        OtherDefaultImpl(
-          __typename = __typename
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): OtherDefaultImpl {
+        return reader.run {
+          var __typename: String? = __typename
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              else -> break
+            }
+          }
+          OtherDefaultImpl(
+            __typename = __typename!!
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -80,11 +88,11 @@ internal interface HeroDetails : GraphqlFragment {
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): DefaultImpl {
-        val typename = reader.readString(RESPONSE_FIELDS[0])
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): DefaultImpl {
+        val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
-          "Human" -> HumanDetailsImpl(reader)
-          else -> OtherDefaultImpl(reader)
+          "Human" -> HumanDetailsImpl(reader, typename)
+          else -> OtherDefaultImpl(reader, typename)
         }
       }
     }
@@ -98,6 +106,7 @@ internal interface HeroDetails : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader): HeroDetails = DefaultImpl(reader)
+    operator fun invoke(reader: ResponseReader, __typename: String? = null): HeroDetails =
+        DefaultImpl(reader, __typename)
   }
 }

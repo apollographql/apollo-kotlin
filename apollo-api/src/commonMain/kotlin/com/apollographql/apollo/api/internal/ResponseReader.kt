@@ -8,6 +8,8 @@ import com.apollographql.apollo.api.ScalarType
  */
 interface ResponseReader {
 
+  fun selectField(fields: Array<ResponseField>): Int
+
   fun readString(field: ResponseField): String?
 
   fun readInt(field: ResponseField): Int?

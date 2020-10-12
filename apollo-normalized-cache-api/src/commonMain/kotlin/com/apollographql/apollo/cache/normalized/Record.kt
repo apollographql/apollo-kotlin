@@ -15,7 +15,7 @@ class Record internal constructor(
     val key: String,
     private val _fields: MutableMap<String, Any?>,
     mutationId: Uuid?
-) {
+): Map<String, Any?> by _fields {
 
   val fields: Map<String, Any?> get() = _fields
 

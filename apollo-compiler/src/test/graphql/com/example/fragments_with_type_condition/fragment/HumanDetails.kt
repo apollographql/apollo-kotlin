@@ -63,15 +63,25 @@ interface HumanDetails : GraphqlFragment {
         ResponseField.forDouble("height", "height", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): DefaultImpl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        val height = readDouble(RESPONSE_FIELDS[2])
-        DefaultImpl(
-          __typename = __typename,
-          name = name,
-          height = height
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): DefaultImpl {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          var height: Double? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              2 -> height = readDouble(RESPONSE_FIELDS[2])
+              else -> break
+            }
+          }
+          DefaultImpl(
+            __typename = __typename!!,
+            name = name!!,
+            height = height
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -88,6 +98,7 @@ interface HumanDetails : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader): HumanDetails = DefaultImpl(reader)
+    operator fun invoke(reader: ResponseReader, __typename: String? = null): HumanDetails =
+        DefaultImpl(reader, __typename)
   }
 }

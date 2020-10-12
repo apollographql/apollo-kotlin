@@ -107,13 +107,22 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forEnum("firstAppearsIn", "firstAppearsIn", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Friend1 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val firstAppearsIn = Episode.safeValueOf(readString(RESPONSE_FIELDS[1])!!)
-        Friend1(
-          __typename = __typename,
-          firstAppearsIn = firstAppearsIn
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Friend1 {
+        return reader.run {
+          var __typename: String? = __typename
+          var firstAppearsIn: Episode? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> firstAppearsIn = readString(RESPONSE_FIELDS[1])?.let { Episode.safeValueOf(it) }
+              else -> break
+            }
+          }
+          Friend1(
+            __typename = __typename!!,
+            firstAppearsIn = firstAppearsIn!!
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -161,21 +170,32 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Human = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val homePlanet = readString(RESPONSE_FIELDS[1])
-        val friends = readList<Friend1>(RESPONSE_FIELDS[2]) { reader ->
-          reader.readObject<Friend1> { reader ->
-            Friend1(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Human {
+        return reader.run {
+          var __typename: String? = __typename
+          var homePlanet: String? = null
+          var friends: List<Friend1?>? = null
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> homePlanet = readString(RESPONSE_FIELDS[1])
+              2 -> friends = readList<Friend1>(RESPONSE_FIELDS[2]) { reader ->
+                reader.readObject<Friend1> { reader ->
+                  Friend1(reader)
+                }
+              }
+              3 -> name = readString(RESPONSE_FIELDS[3])
+              else -> break
+            }
           }
+          Human(
+            __typename = __typename!!,
+            homePlanet = homePlanet,
+            friends = friends,
+            name = name!!
+          )
         }
-        val name = readString(RESPONSE_FIELDS[3])!!
-        Human(
-          __typename = __typename,
-          homePlanet = homePlanet,
-          friends = friends,
-          name = name
-        )
       }
 
       @Suppress("FunctionName")
@@ -206,13 +226,22 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Friend2 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)!!
-        Friend2(
-          __typename = __typename,
-          id = id
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Friend2 {
+        return reader.run {
+          var __typename: String? = __typename
+          var id: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+              else -> break
+            }
+          }
+          Friend2(
+            __typename = __typename!!,
+            id = id!!
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -260,21 +289,32 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Droid = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val primaryFunction = readString(RESPONSE_FIELDS[1])
-        val friends = readList<Friend2>(RESPONSE_FIELDS[2]) { reader ->
-          reader.readObject<Friend2> { reader ->
-            Friend2(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Droid {
+        return reader.run {
+          var __typename: String? = __typename
+          var primaryFunction: String? = null
+          var friends: List<Friend2?>? = null
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> primaryFunction = readString(RESPONSE_FIELDS[1])
+              2 -> friends = readList<Friend2>(RESPONSE_FIELDS[2]) { reader ->
+                reader.readObject<Friend2> { reader ->
+                  Friend2(reader)
+                }
+              }
+              3 -> name = readString(RESPONSE_FIELDS[3])
+              else -> break
+            }
           }
+          Droid(
+            __typename = __typename!!,
+            primaryFunction = primaryFunction,
+            friends = friends,
+            name = name!!
+          )
         }
-        val name = readString(RESPONSE_FIELDS[3])!!
-        Droid(
-          __typename = __typename,
-          primaryFunction = primaryFunction,
-          friends = friends,
-          name = name
-        )
       }
 
       @Suppress("FunctionName")
@@ -305,13 +345,22 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): OtherFriend = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        OtherFriend(
-          __typename = __typename,
-          name = name
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): OtherFriend {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              else -> break
+            }
+          }
+          OtherFriend(
+            __typename = __typename!!,
+            name = name!!
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -341,12 +390,12 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Friend {
-        val typename = reader.readString(RESPONSE_FIELDS[0])
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Friend {
+        val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
-          "Human" -> Human(reader)
-          "Droid" -> Droid(reader)
-          else -> OtherFriend(reader)
+          "Human" -> Human(reader, typename)
+          "Droid" -> Droid(reader, typename)
+          else -> OtherFriend(reader, typename)
         }
       }
     }
@@ -392,21 +441,32 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forList("friends", "friends", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Character = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)!!
-        val name = readString(RESPONSE_FIELDS[2])!!
-        val friends = readList<Friend>(RESPONSE_FIELDS[3]) { reader ->
-          reader.readObject<Friend> { reader ->
-            Friend(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Character {
+        return reader.run {
+          var __typename: String? = __typename
+          var id: String? = null
+          var name: String? = null
+          var friends: List<Friend?>? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+              2 -> name = readString(RESPONSE_FIELDS[2])
+              3 -> friends = readList<Friend>(RESPONSE_FIELDS[3]) { reader ->
+                reader.readObject<Friend> { reader ->
+                  Friend(reader)
+                }
+              }
+              else -> break
+            }
           }
+          Character(
+            __typename = __typename!!,
+            id = id!!,
+            name = name!!,
+            friends = friends
+          )
         }
-        Character(
-          __typename = __typename,
-          id = id,
-          name = name,
-          friends = friends
-        )
       }
 
       @Suppress("FunctionName")
@@ -434,13 +494,22 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Starship = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        Starship(
-          __typename = __typename,
-          name = name
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Starship {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              else -> break
+            }
+          }
+          Starship(
+            __typename = __typename!!,
+            name = name!!
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -462,11 +531,19 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): OtherSearch = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        OtherSearch(
-          __typename = __typename
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): OtherSearch {
+        return reader.run {
+          var __typename: String? = __typename
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              else -> break
+            }
+          }
+          OtherSearch(
+            __typename = __typename!!
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -488,13 +565,13 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Search {
-        val typename = reader.readString(RESPONSE_FIELDS[0])
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Search {
+        val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
-          "Droid" -> Character(reader)
-          "Human" -> Character(reader)
-          "Starship" -> Starship(reader)
-          else -> OtherSearch(reader)
+          "Droid" -> Character(reader, typename)
+          "Human" -> Character(reader, typename)
+          "Starship" -> Starship(reader, typename)
+          else -> OtherSearch(reader, typename)
         }
       }
     }
@@ -523,15 +600,23 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           "text" to "test"), true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Data = reader.run {
-        val search = readList<Search>(RESPONSE_FIELDS[0]) { reader ->
-          reader.readObject<Search> { reader ->
-            Search(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+        return reader.run {
+          var search: List<Search?>? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> search = readList<Search>(RESPONSE_FIELDS[0]) { reader ->
+                reader.readObject<Search> { reader ->
+                  Search(reader)
+                }
+              }
+              else -> break
+            }
           }
+          Data(
+            search = search
+          )
         }
-        Data(
-          search = search
-        )
       }
 
       @Suppress("FunctionName")

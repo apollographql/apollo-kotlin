@@ -62,13 +62,22 @@ interface QueryFragment : GraphqlFragment {
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Hero1 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        Hero1(
-          __typename = __typename,
-          name = name
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Hero1 {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              else -> break
+            }
+          }
+          Hero1(
+            __typename = __typename!!,
+            name = name!!
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -96,15 +105,24 @@ interface QueryFragment : GraphqlFragment {
         ResponseField.forObject("hero", "hero", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): DefaultImpl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val hero = readObject<Hero1>(RESPONSE_FIELDS[1]) { reader ->
-          Hero1(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): DefaultImpl {
+        return reader.run {
+          var __typename: String? = __typename
+          var hero: Hero1? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> hero = readObject<Hero1>(RESPONSE_FIELDS[1]) { reader ->
+                Hero1(reader)
+              }
+              else -> break
+            }
+          }
+          DefaultImpl(
+            __typename = __typename!!,
+            hero = hero
+          )
         }
-        DefaultImpl(
-          __typename = __typename,
-          hero = hero
-        )
       }
 
       @Suppress("FunctionName")
@@ -123,6 +141,7 @@ interface QueryFragment : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader): QueryFragment = DefaultImpl(reader)
+    operator fun invoke(reader: ResponseReader, __typename: String? = null): QueryFragment =
+        DefaultImpl(reader, __typename)
   }
 }

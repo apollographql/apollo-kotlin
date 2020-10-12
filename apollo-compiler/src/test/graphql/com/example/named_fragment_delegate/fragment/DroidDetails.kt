@@ -76,13 +76,22 @@ interface DroidDetails : GraphqlFragment {
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Friend1 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        Friend1(
-          __typename = __typename,
-          name = name
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Friend1 {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              else -> break
+            }
+          }
+          Friend1(
+            __typename = __typename!!,
+            name = name!!
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -128,21 +137,32 @@ interface DroidDetails : GraphqlFragment {
         ResponseField.forList("friends", "friends", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): DefaultImpl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        val primaryFunction = readString(RESPONSE_FIELDS[2])
-        val friends = readList<Friend1>(RESPONSE_FIELDS[3]) { reader ->
-          reader.readObject<Friend1> { reader ->
-            Friend1(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): DefaultImpl {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          var primaryFunction: String? = null
+          var friends: List<Friend1?>? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              2 -> primaryFunction = readString(RESPONSE_FIELDS[2])
+              3 -> friends = readList<Friend1>(RESPONSE_FIELDS[3]) { reader ->
+                reader.readObject<Friend1> { reader ->
+                  Friend1(reader)
+                }
+              }
+              else -> break
+            }
           }
+          DefaultImpl(
+            __typename = __typename!!,
+            name = name!!,
+            primaryFunction = primaryFunction,
+            friends = friends
+          )
         }
-        DefaultImpl(
-          __typename = __typename,
-          name = name,
-          primaryFunction = primaryFunction,
-          friends = friends
-        )
       }
 
       @Suppress("FunctionName")
@@ -163,6 +183,7 @@ interface DroidDetails : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader): DroidDetails = DefaultImpl(reader)
+    operator fun invoke(reader: ResponseReader, __typename: String? = null): DroidDetails =
+        DefaultImpl(reader, __typename)
   }
 }

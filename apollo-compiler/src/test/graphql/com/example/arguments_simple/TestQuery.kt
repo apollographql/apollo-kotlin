@@ -149,13 +149,22 @@ data class TestQuery(
         ))
       )
 
-      operator fun invoke(reader: ResponseReader): Node = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])
-        Node(
-          __typename = __typename,
-          name = name
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Node {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              else -> break
+            }
+          }
+          Node(
+            __typename = __typename!!,
+            name = name
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -186,15 +195,24 @@ data class TestQuery(
         ResponseField.forObject("node", "node", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Edge = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val node = readObject<Node>(RESPONSE_FIELDS[1]) { reader ->
-          Node(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Edge {
+        return reader.run {
+          var __typename: String? = __typename
+          var node: Node? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> node = readObject<Node>(RESPONSE_FIELDS[1]) { reader ->
+                Node(reader)
+              }
+              else -> break
+            }
+          }
+          Edge(
+            __typename = __typename!!,
+            node = node
+          )
         }
-        Edge(
-          __typename = __typename,
-          node = node
-        )
       }
 
       @Suppress("FunctionName")
@@ -237,19 +255,29 @@ data class TestQuery(
         ResponseField.forList("edges", "edges", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): FriendsConnection = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val totalCount = readInt(RESPONSE_FIELDS[1])
-        val edges = readList<Edge>(RESPONSE_FIELDS[2]) { reader ->
-          reader.readObject<Edge> { reader ->
-            Edge(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): FriendsConnection {
+        return reader.run {
+          var __typename: String? = __typename
+          var totalCount: Int? = null
+          var edges: List<Edge?>? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> totalCount = readInt(RESPONSE_FIELDS[1])
+              2 -> edges = readList<Edge>(RESPONSE_FIELDS[2]) { reader ->
+                reader.readObject<Edge> { reader ->
+                  Edge(reader)
+                }
+              }
+              else -> break
+            }
           }
+          FriendsConnection(
+            __typename = __typename!!,
+            totalCount = totalCount,
+            edges = edges
+          )
         }
-        FriendsConnection(
-          __typename = __typename,
-          totalCount = totalCount,
-          edges = edges
-        )
       }
 
       @Suppress("FunctionName")
@@ -291,17 +319,27 @@ data class TestQuery(
             "variableName" to "friendsCount")), false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Hero = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])
-        val friendsConnection = readObject<FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
-          FriendsConnection(reader)
-        }!!
-        Hero(
-          __typename = __typename,
-          name = name,
-          friendsConnection = friendsConnection
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Hero {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          var friendsConnection: FriendsConnection? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              2 -> friendsConnection = readObject<FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
+                FriendsConnection(reader)
+              }
+              else -> break
+            }
+          }
+          Hero(
+            __typename = __typename!!,
+            name = name,
+            friendsConnection = friendsConnection!!
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -332,13 +370,22 @@ data class TestQuery(
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader): HeroWithReview = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        HeroWithReview(
-          __typename = __typename,
-          name = name
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): HeroWithReview {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              else -> break
+            }
+          }
+          HeroWithReview(
+            __typename = __typename!!,
+            name = name!!
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -376,17 +423,26 @@ data class TestQuery(
           "review" to emptyMap<String, Any>()), true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Data = reader.run {
-        val hero = readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
-          Hero(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+        return reader.run {
+          var hero: Hero? = null
+          var heroWithReview: HeroWithReview? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> hero = readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
+                Hero(reader)
+              }
+              1 -> heroWithReview = readObject<HeroWithReview>(RESPONSE_FIELDS[1]) { reader ->
+                HeroWithReview(reader)
+              }
+              else -> break
+            }
+          }
+          Data(
+            hero = hero,
+            heroWithReview = heroWithReview
+          )
         }
-        val heroWithReview = readObject<HeroWithReview>(RESPONSE_FIELDS[1]) { reader ->
-          HeroWithReview(reader)
-        }
-        Data(
-          hero = hero,
-          heroWithReview = heroWithReview
-        )
       }
 
       @Suppress("FunctionName")

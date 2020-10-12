@@ -65,15 +65,26 @@ interface CharacterDetails : GraphqlFragment {
         ResponseField.forCustomType("birthDate", "birthDate", null, false, CustomType.DATE, null)
       )
 
-      operator fun invoke(reader: ResponseReader): DefaultImpl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])!!
-        val birthDate = readCustomType<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)!!
-        DefaultImpl(
-          __typename = __typename,
-          name = name,
-          birthDate = birthDate
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): DefaultImpl {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          var birthDate: Any? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              2 -> birthDate = readCustomType<Any>(RESPONSE_FIELDS[2] as
+                  ResponseField.CustomTypeField)
+              else -> break
+            }
+          }
+          DefaultImpl(
+            __typename = __typename!!,
+            name = name!!,
+            birthDate = birthDate!!
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -90,6 +101,7 @@ interface CharacterDetails : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader): CharacterDetails = DefaultImpl(reader)
+    operator fun invoke(reader: ResponseReader, __typename: String? = null): CharacterDetails =
+        DefaultImpl(reader, __typename)
   }
 }

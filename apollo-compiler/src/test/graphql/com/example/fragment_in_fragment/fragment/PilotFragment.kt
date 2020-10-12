@@ -67,13 +67,22 @@ interface PilotFragment : GraphqlFragment {
         ResponseField.forString("name", "name", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Homeworld1 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])
-        Homeworld1(
-          __typename = __typename,
-          name = name
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Homeworld1 {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              else -> break
+            }
+          }
+          Homeworld1(
+            __typename = __typename!!,
+            name = name
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -110,17 +119,27 @@ interface PilotFragment : GraphqlFragment {
         ResponseField.forObject("homeworld", "homeworld", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): DefaultImpl = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])
-        val homeworld = readObject<Homeworld1>(RESPONSE_FIELDS[2]) { reader ->
-          Homeworld1(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): DefaultImpl {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          var homeworld: Homeworld1? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              2 -> homeworld = readObject<Homeworld1>(RESPONSE_FIELDS[2]) { reader ->
+                Homeworld1(reader)
+              }
+              else -> break
+            }
+          }
+          DefaultImpl(
+            __typename = __typename!!,
+            name = name,
+            homeworld = homeworld
+          )
         }
-        DefaultImpl(
-          __typename = __typename,
-          name = name,
-          homeworld = homeworld
-        )
       }
 
       @Suppress("FunctionName")
@@ -140,6 +159,7 @@ interface PilotFragment : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader): PilotFragment = DefaultImpl(reader)
+    operator fun invoke(reader: ResponseReader, __typename: String? = null): PilotFragment =
+        DefaultImpl(reader, __typename)
   }
 }

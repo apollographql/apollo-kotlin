@@ -110,13 +110,22 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
         ResponseField.forString("name", "name", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Homeworld = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])
-        Homeworld(
-          __typename = __typename,
-          name = name
-        )
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Homeworld {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              else -> break
+            }
+          }
+          Homeworld(
+            __typename = __typename!!,
+            name = name
+          )
+        }
       }
 
       @Suppress("FunctionName")
@@ -153,17 +162,27 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
         ResponseField.forObject("homeworld", "homeworld", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Node1 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val name = readString(RESPONSE_FIELDS[1])
-        val homeworld = readObject<Homeworld>(RESPONSE_FIELDS[2]) { reader ->
-          Homeworld(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Node1 {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          var homeworld: Homeworld? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              2 -> homeworld = readObject<Homeworld>(RESPONSE_FIELDS[2]) { reader ->
+                Homeworld(reader)
+              }
+              else -> break
+            }
+          }
+          Node1(
+            __typename = __typename!!,
+            name = name,
+            homeworld = homeworld
+          )
         }
-        Node1(
-          __typename = __typename,
-          name = name,
-          homeworld = homeworld
-        )
       }
 
       @Suppress("FunctionName")
@@ -194,15 +213,24 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
         ResponseField.forObject("node", "node", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Edge1 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val node = readObject<Node1>(RESPONSE_FIELDS[1]) { reader ->
-          Node1(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Edge1 {
+        return reader.run {
+          var __typename: String? = __typename
+          var node: Node1? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> node = readObject<Node1>(RESPONSE_FIELDS[1]) { reader ->
+                Node1(reader)
+              }
+              else -> break
+            }
+          }
+          Edge1(
+            __typename = __typename!!,
+            node = node
+          )
         }
-        Edge1(
-          __typename = __typename,
-          node = node
-        )
       }
 
       @Suppress("FunctionName")
@@ -238,17 +266,26 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
         ResponseField.forList("edges", "edges", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): PilotConnection = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val edges = readList<Edge1>(RESPONSE_FIELDS[1]) { reader ->
-          reader.readObject<Edge1> { reader ->
-            Edge1(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): PilotConnection {
+        return reader.run {
+          var __typename: String? = __typename
+          var edges: List<Edge1?>? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> edges = readList<Edge1>(RESPONSE_FIELDS[1]) { reader ->
+                reader.readObject<Edge1> { reader ->
+                  Edge1(reader)
+                }
+              }
+              else -> break
+            }
           }
+          PilotConnection(
+            __typename = __typename!!,
+            edges = edges
+          )
         }
-        PilotConnection(
-          __typename = __typename,
-          edges = edges
-        )
       }
 
       @Suppress("FunctionName")
@@ -288,19 +325,30 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
         ResponseField.forObject("pilotConnection", "pilotConnection", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Node = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)!!
-        val name = readString(RESPONSE_FIELDS[2])
-        val pilotConnection = readObject<PilotConnection>(RESPONSE_FIELDS[3]) { reader ->
-          PilotConnection(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Node {
+        return reader.run {
+          var __typename: String? = __typename
+          var id: String? = null
+          var name: String? = null
+          var pilotConnection: PilotConnection? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+              2 -> name = readString(RESPONSE_FIELDS[2])
+              3 -> pilotConnection = readObject<PilotConnection>(RESPONSE_FIELDS[3]) { reader ->
+                PilotConnection(reader)
+              }
+              else -> break
+            }
+          }
+          Node(
+            __typename = __typename!!,
+            id = id!!,
+            name = name,
+            pilotConnection = pilotConnection
+          )
         }
-        Node(
-          __typename = __typename,
-          id = id,
-          name = name,
-          pilotConnection = pilotConnection
-        )
       }
 
       @Suppress("FunctionName")
@@ -331,15 +379,24 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
         ResponseField.forObject("node", "node", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Edge = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val node = readObject<Node>(RESPONSE_FIELDS[1]) { reader ->
-          Node(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Edge {
+        return reader.run {
+          var __typename: String? = __typename
+          var node: Node? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> node = readObject<Node>(RESPONSE_FIELDS[1]) { reader ->
+                Node(reader)
+              }
+              else -> break
+            }
+          }
+          Edge(
+            __typename = __typename!!,
+            node = node
+          )
         }
-        Edge(
-          __typename = __typename,
-          node = node
-        )
       }
 
       @Suppress("FunctionName")
@@ -375,17 +432,26 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
         ResponseField.forList("edges", "edges", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): AllStarships1 = reader.run {
-        val __typename = readString(RESPONSE_FIELDS[0])!!
-        val edges = readList<Edge>(RESPONSE_FIELDS[1]) { reader ->
-          reader.readObject<Edge> { reader ->
-            Edge(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): AllStarships1 {
+        return reader.run {
+          var __typename: String? = __typename
+          var edges: List<Edge?>? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> edges = readList<Edge>(RESPONSE_FIELDS[1]) { reader ->
+                reader.readObject<Edge> { reader ->
+                  Edge(reader)
+                }
+              }
+              else -> break
+            }
           }
+          AllStarships1(
+            __typename = __typename!!,
+            edges = edges
+          )
         }
-        AllStarships1(
-          __typename = __typename,
-          edges = edges
-        )
       }
 
       @Suppress("FunctionName")
@@ -411,13 +477,21 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
           "first" to 7), true, null)
       )
 
-      operator fun invoke(reader: ResponseReader): Data = reader.run {
-        val allStarships = readObject<AllStarships1>(RESPONSE_FIELDS[0]) { reader ->
-          AllStarships1(reader)
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+        return reader.run {
+          var allStarships: AllStarships1? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> allStarships = readObject<AllStarships1>(RESPONSE_FIELDS[0]) { reader ->
+                AllStarships1(reader)
+              }
+              else -> break
+            }
+          }
+          Data(
+            allStarships = allStarships
+          )
         }
-        Data(
-          allStarships = allStarships
-        )
       }
 
       @Suppress("FunctionName")
