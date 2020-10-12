@@ -19,20 +19,16 @@ class RealResponseReader<R : Map<String, Any?>>(
     internal val scalarTypeAdapters: ScalarTypeAdapters,
     internal val resolveDelegate: ResolveDelegate<R>
 ) : ResponseReader {
-  private val responseRecordSetIterator = recordSet.iterator()
   private val variableValues: Map<String, Any?> = operationVariables.valueMap()
+  private var selectedFieldIndex = -1
 
   override fun selectField(fields: Array<ResponseField>): Int {
-    while (true)
-      if (responseRecordSetIterator.hasNext()) {
-        val (nextFieldName, _) = responseRecordSetIterator.next()
-        val fieldIndex = fields.indexOfFirst { field -> field.responseName == nextFieldName }
-        if (fieldIndex != -1 && !fields[fieldIndex].shouldSkip(variableValues)) {
-          return fieldIndex
-        }
-      } else {
-        return -1
+    while (++selectedFieldIndex < fields.size) {
+      if (!fields[selectedFieldIndex].shouldSkip(variableValues)) {
+        return selectedFieldIndex
       }
+    }
+    return -1
   }
 
   override fun readString(field: ResponseField): String? {
