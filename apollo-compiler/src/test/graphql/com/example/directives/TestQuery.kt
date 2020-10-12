@@ -142,6 +142,9 @@ data class TestQuery(
           )
         }
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<FriendsConnection> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -200,6 +203,9 @@ data class TestQuery(
           )
         }
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Hero> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -236,6 +242,9 @@ data class TestQuery(
           )
         }
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 

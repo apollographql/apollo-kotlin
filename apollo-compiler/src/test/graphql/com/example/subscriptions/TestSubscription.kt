@@ -148,6 +148,9 @@ data class TestSubscription(
           )
         }
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<CommentAdded> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -190,6 +193,9 @@ data class TestSubscription(
           )
         }
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 

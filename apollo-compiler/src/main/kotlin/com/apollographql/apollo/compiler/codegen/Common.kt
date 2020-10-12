@@ -452,6 +452,18 @@ private fun Number.castTo(type: TypeName): Number {
   }
 }
 
+internal fun TypeName.createMapperFun(): FunSpec {
+  return FunSpec.builder("Mapper")
+      .addAnnotation(
+          AnnotationSpec.builder(Suppress::class)
+              .addMember("%S", "FunctionName")
+              .build()
+      )
+      .returns(ResponseFieldMapper::class.asClassName().parameterizedBy(this))
+      .addStatement("return %T·{ invoke(it) }", ResponseFieldMapper::class)
+      .build()
+}
+
 internal fun Collection<CodeGenerationAst.TypeRef>.accessorProperties(): List<PropertySpec> {
   return map { type ->
     PropertySpec.builder("as${type.name}", type.asTypeName().copy(nullable = true))

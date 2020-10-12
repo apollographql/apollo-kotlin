@@ -26,7 +26,7 @@ class SimpleResponseReader private constructor(
       if (responseRecordSetIterator.hasNext()) {
         val (nextFieldName, _) = responseRecordSetIterator.next()
         val fieldIndex = fields.indexOfFirst { field -> field.responseName == nextFieldName }
-        if (fieldIndex != -1 && !fields[fieldIndex].shouldSkip(variableValues)) {
+        if (fieldIndex != -1) {
           return fieldIndex
         }
       } else {

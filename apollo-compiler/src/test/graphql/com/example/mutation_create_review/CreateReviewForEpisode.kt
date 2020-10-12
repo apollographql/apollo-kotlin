@@ -147,6 +147,9 @@ internal data class CreateReviewForEpisode(
           )
         }
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<ListOfListOfObject> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -285,6 +288,9 @@ internal data class CreateReviewForEpisode(
           )
         }
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<CreateReview> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -327,6 +333,9 @@ internal data class CreateReviewForEpisode(
           )
         }
       }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 

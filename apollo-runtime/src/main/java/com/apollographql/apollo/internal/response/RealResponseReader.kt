@@ -12,7 +12,7 @@ import com.apollographql.apollo.api.internal.ResolveDelegate
 import com.apollographql.apollo.api.internal.ResponseReader
 import java.util.Collections
 
-class RealResponseReader<R: Map<String, Any?>>(
+class RealResponseReader<R : Map<String, Any?>>(
     val operationVariables: Operation.Variables,
     private val recordSet: R,
     internal val fieldValueResolver: FieldValueResolver<R>,
@@ -157,6 +157,26 @@ class RealResponseReader<R: Map<String, Any?>>(
     check(field.optional || value != null) {
       "corrupted response reader, expected non null value for ${field.fieldName}"
     }
+  }
+
+  private fun ResponseField.shouldSkip(variableValues: Map<String, Any?>): Boolean {
+    for (condition in conditions) {
+      if (condition is ResponseField.BooleanCondition) {
+        val conditionValue = variableValues[condition.variableName] as Boolean
+        if (condition.isInverted) {
+          // means it's a skip directive
+          if (conditionValue) {
+            return true
+          }
+        } else {
+          // means it's an include directive
+          if (!conditionValue) {
+            return true
+          }
+        }
+      }
+    }
+    return false
   }
 
   private inner class ListItemReader(
