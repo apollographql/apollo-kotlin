@@ -131,7 +131,7 @@ public class ApolloAutoPersistedOperationInterceptor implements ApolloIntercepto
       this(false, true, true);
     }
 
-    @Nullable @Override public ApolloInterceptor newInterceptor(@NotNull ApolloLogger logger, @NotNull Operation<?, ?, ?> operation) {
+    @Nullable @Override public ApolloInterceptor newInterceptor(@NotNull ApolloLogger logger, @NotNull Operation<?, ?> operation) {
       if (operation instanceof Query && !persistQueries) {
         return null;
       }

@@ -223,7 +223,7 @@ class ApolloServerInterceptorFileUploadTest {
     interceptor.httpPostCall(mutationSingle, CacheHeaders.NONE, requestHeaders, true, false)
   }
 
-  private fun assertDefaultRequestHeaders(request: Request, mutation: Operation<*, *, *>) {
+  private fun assertDefaultRequestHeaders(request: Request, mutation: Operation<*, *>) {
     Truth.assertThat(request.url()).isEqualTo(serverUrl)
     Truth.assertThat(request.method()).isEqualTo("POST")
     Truth.assertThat(request.header(ApolloServerInterceptor.HEADER_ACCEPT_TYPE)).isEqualTo(ApolloServerInterceptor.ACCEPT_TYPE)

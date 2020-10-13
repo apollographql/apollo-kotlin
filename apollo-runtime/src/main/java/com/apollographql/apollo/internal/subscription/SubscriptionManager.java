@@ -1,5 +1,6 @@
 package com.apollographql.apollo.internal.subscription;
 
+import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeListener;
 import com.apollographql.apollo.subscription.SubscriptionManagerState;
@@ -11,17 +12,16 @@ public interface SubscriptionManager {
    * Starts provided subscription. Establishes connection to the subscription server if it was previously disconnected.
    *
    * @param subscription to start
-   * @param callback     to be called on result
-   * @param <T>
+   * @param callback to be called on result
    */
-  <T> void subscribe(@NotNull Subscription<?, T, ?> subscription, @NotNull RealSubscriptionManager.Callback<T> callback);
+  <D extends Operation.Data> void subscribe(@NotNull Subscription<D, ?> subscription, @NotNull RealSubscriptionManager.Callback<D> callback);
 
   /**
    * Stops provided subscription. If there are no active subscriptions left, disconnects from the subscription server.
    *
    * @param subscription to stop
    */
-  void unsubscribe(@NotNull Subscription<?, ?, ?> subscription);
+  void unsubscribe(@NotNull Subscription<?, ?> subscription);
 
   /**
    * Returns the current state of subscription manager.
@@ -45,8 +45,7 @@ public interface SubscriptionManager {
   void removeOnStateChangeListener(@NotNull OnSubscriptionManagerStateChangeListener onStateChangeListener);
 
   /**
-   * Put the {@link SubscriptionManager} in a connectible state. Does not necessarily open a web
-   * socket.
+   * Put the {@link SubscriptionManager} in a connectible state. Does not necessarily open a web socket.
    */
   void start();
 
@@ -55,8 +54,8 @@ public interface SubscriptionManager {
    */
   void stop();
 
-  interface Callback<T> {
-    void onResponse(@NotNull SubscriptionResponse<T> response);
+  interface Callback<D extends Subscription.Data> {
+    void onResponse(@NotNull SubscriptionResponse<D> response);
 
     void onError(@NotNull ApolloSubscriptionException error);
 

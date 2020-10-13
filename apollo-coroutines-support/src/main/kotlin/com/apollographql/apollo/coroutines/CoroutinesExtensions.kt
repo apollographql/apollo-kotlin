@@ -4,6 +4,8 @@ import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloPrefetch
 import com.apollographql.apollo.ApolloQueryWatcher
 import com.apollographql.apollo.ApolloSubscriptionCall
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import kotlinx.coroutines.CompletableDeferred
@@ -22,15 +24,15 @@ import kotlin.coroutines.resume
 /**
  * Converts an [ApolloCall] to an [Flow].
  *
- * @param <T>  the value type.
- * @return a flow which emits [Responses<T>]
+ * @param <D>  the value type.
+ * @return a flow which emits [Responses<D>]
  */
 @ExperimentalCoroutinesApi
-fun <T> ApolloCall<T>.toFlow(): Flow<Response<T>> = callbackFlow {
+fun <D: Operation.Data> ApolloCall<D>.toFlow(): Flow<Response<D>> = callbackFlow {
   val clone = clone()
   clone.enqueue(
-      object : ApolloCall.Callback<T>() {
-        override fun onResponse(response: Response<T>) {
+      object : ApolloCall.Callback<D>() {
+        override fun onResponse(response: Response<D>) {
           runCatching {
             offer(response)
           }
@@ -53,15 +55,15 @@ fun <T> ApolloCall<T>.toFlow(): Flow<Response<T>> = callbackFlow {
 /**
  * Converts an [ApolloQueryWatcher] to an [Flow].
  *
- * @param <T>  the value type.
- * @return a flow which emits [Responses<T>]
+ * @param <D>  the value type.
+ * @return a flow which emits [Responses<D>]
  */
 @ExperimentalCoroutinesApi
-fun <T> ApolloQueryWatcher<T>.toFlow(): Flow<Response<T>> = callbackFlow {
+fun <D: Operation.Data> ApolloQueryWatcher<D>.toFlow(): Flow<Response<D>> = callbackFlow {
   val clone = clone()
   clone.enqueueAndWatch(
-      object : ApolloCall.Callback<T>() {
-        override fun onResponse(response: Response<T>) {
+      object : ApolloCall.Callback<D>() {
+        override fun onResponse(response: Response<D>) {
           runCatching {
             offer(response)
           }
@@ -83,21 +85,21 @@ fun <T> ApolloQueryWatcher<T>.toFlow(): Flow<Response<T>> = callbackFlow {
  * This is a convenience method that will only return the first value emitted. If more than one
  * response is required, for an example to retrieve cached and network response, use [toFlow] instead.
  *
- * @param <T>  the value type.
+ * @param <D>  the value type.
  * @return the response on success.
  * @throws ApolloException on failure.
  */
-suspend fun <T> ApolloCall<T>.await(): Response<T> = suspendCancellableCoroutine { cont ->
+suspend fun <D: Operation.Data> ApolloCall<D>.await(): Response<D> = suspendCancellableCoroutine { cont ->
 
   cont.invokeOnCancellation {
     cancel()
   }
 
-  enqueue(object : ApolloCall.Callback<T>() {
+  enqueue(object : ApolloCall.Callback<D>() {
 
     private val wasCalled = AtomicBoolean(false)
 
-    override fun onResponse(response: Response<T>) {
+    override fun onResponse(response: Response<D>) {
       if (!wasCalled.getAndSet(true)) {
         cont.resume(response)
       }
@@ -115,20 +117,20 @@ suspend fun <T> ApolloCall<T>.await(): Response<T> = suspendCancellableCoroutine
  * Converts an [ApolloCall] to an [Deferred]. This is a convenience method that will only return the first value emitted.
  * If the more than one response is required, for an example to retrieve cached and network response, use [toFlow] instead.
  *
- * @param <T>  the value type.
+ * @param <D>  the value type.
  * @return the deferred
  */
 @Deprecated("Use await() instead.")
-fun <T> ApolloCall<T>.toDeferred(): Deferred<Response<T>> {
-  val deferred = CompletableDeferred<Response<T>>()
+fun <D: Operation.Data> ApolloCall<D>.toDeferred(): Deferred<Response<D>> {
+  val deferred = CompletableDeferred<Response<D>>()
 
   deferred.invokeOnCompletion {
     if (deferred.isCancelled) {
       cancel()
     }
   }
-  enqueue(object : ApolloCall.Callback<T>() {
-    override fun onResponse(response: Response<T>) {
+  enqueue(object : ApolloCall.Callback<D>() {
+    override fun onResponse(response: Response<D>) {
       if (deferred.isActive) {
         deferred.complete(response)
       }
@@ -147,18 +149,18 @@ fun <T> ApolloCall<T>.toDeferred(): Deferred<Response<T>> {
 /**
  * Converts an [ApolloSubscriptionCall] to an [Flow].
  *
- * @param <T>  the value type.
- * @return a flow which emits [Responses<T>]
+ * @param <D>  the value type.
+ * @return a flow which emits [Responses<D>]
  */
 @ExperimentalCoroutinesApi
-fun <T> ApolloSubscriptionCall<T>.toFlow(): Flow<Response<T>> = callbackFlow {
+fun <D: Operation.Data> ApolloSubscriptionCall<D>.toFlow(): Flow<Response<D>> = callbackFlow {
   val clone = clone()
   clone.execute(
-      object : ApolloSubscriptionCall.Callback<T> {
+      object : ApolloSubscriptionCall.Callback<D> {
         override fun onConnected() {
         }
 
-        override fun onResponse(response: Response<T>) {
+        override fun onResponse(response: Response<D>) {
           runCatching {
             channel.offer(response)
           }
@@ -184,7 +186,7 @@ fun <T> ApolloSubscriptionCall<T>.toFlow(): Flow<Response<T>> = callbackFlow {
  * Suspends the [ApolloPrefetch] until it completes and returns the value on success or throws an exception on failure.
  * The [ApolloPrefetch] is cancelled when the coroutine running the operation is cancelled as well.
  *
- * @param <T>  the value type.
+ * @param <D>  the value type.
  * @return the response on success.
  * @throws ApolloException on failure.
  */
@@ -215,7 +217,7 @@ suspend fun ApolloPrefetch.await(): Unit = suspendCancellableCoroutine { cont ->
 /**
  * Converts an [ApolloPrefetch] to [Job].
  *
- * @param <T>  the value type.
+ * @param <D>  the value type.
  * @return the converted job
  */
 @Deprecated("Use await() instead.")

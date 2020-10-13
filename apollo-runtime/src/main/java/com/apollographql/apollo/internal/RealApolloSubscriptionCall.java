@@ -1,6 +1,7 @@
 package com.apollographql.apollo.internal;
 
 import com.apollographql.apollo.ApolloSubscriptionCall;
+import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.api.internal.ApolloLogger;
@@ -30,8 +31,8 @@ import static com.apollographql.apollo.internal.CallState.CANCELED;
 import static com.apollographql.apollo.internal.CallState.IDLE;
 import static com.apollographql.apollo.internal.CallState.TERMINATED;
 
-public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> {
-  private final Subscription<?, T, ?> subscription;
+public class RealApolloSubscriptionCall<D extends Operation.Data> implements ApolloSubscriptionCall<D> {
+  private final Subscription<D, ?> subscription;
   private final SubscriptionManager subscriptionManager;
   private final ApolloStore apolloStore;
   private final CachePolicy cachePolicy;
@@ -39,9 +40,9 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
   private final ResponseFieldMapperFactory responseFieldMapperFactory;
   private final ApolloLogger logger;
   private final AtomicReference<CallState> state = new AtomicReference<>(IDLE);
-  private SubscriptionManagerCallback<T> subscriptionCallback;
+  private SubscriptionManagerCallback<D> subscriptionCallback;
 
-  public RealApolloSubscriptionCall(@NotNull Subscription<?, T, ?> subscription, @NotNull SubscriptionManager subscriptionManager,
+  public RealApolloSubscriptionCall(@NotNull Subscription<D, ?> subscription, @NotNull SubscriptionManager subscriptionManager,
       @NotNull ApolloStore apolloStore, @NotNull CachePolicy cachePolicy, @NotNull Executor dispatcher,
       @NotNull ResponseFieldMapperFactory responseFieldMapperFactory, @NotNull ApolloLogger logger) {
     this.subscription = subscription;
@@ -54,7 +55,7 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
   }
 
   @Override
-  public void execute(@NotNull final Callback<T> callback) throws ApolloCanceledException {
+  public void execute(@NotNull final Callback<D> callback) throws ApolloCanceledException {
     checkNotNull(callback, "callback == null");
     synchronized (this) {
       switch (state.get()) {
@@ -64,7 +65,7 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
           if (cachePolicy == CachePolicy.CACHE_AND_NETWORK) {
             dispatcher.execute(new Runnable() {
               @Override public void run() {
-                final Response<T> cachedResponse = resolveFromCache();
+                final Response<D> cachedResponse = resolveFromCache();
                 if (cachedResponse != null) {
                   callback.onResponse(cachedResponse);
                 }
@@ -122,7 +123,7 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
 
   @SuppressWarnings("MethodDoesntCallSuperMethod")
   @Override
-  public ApolloSubscriptionCall<T> clone() {
+  public ApolloSubscriptionCall<D> clone() {
     return new RealApolloSubscriptionCall<>(subscription, subscriptionManager, apolloStore, cachePolicy, dispatcher,
         responseFieldMapperFactory, logger);
   }
@@ -131,7 +132,7 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
     return state.get() == CANCELED;
   }
 
-  @NotNull @Override public ApolloSubscriptionCall<T> cachePolicy(@NotNull CachePolicy cachePolicy) {
+  @NotNull @Override public ApolloSubscriptionCall<D> cachePolicy(@NotNull CachePolicy cachePolicy) {
     checkNotNull(cachePolicy, "cachePolicy is null");
     return new RealApolloSubscriptionCall<>(subscription, subscriptionManager, apolloStore, cachePolicy, dispatcher,
         responseFieldMapperFactory, logger);
@@ -161,14 +162,14 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
   }
 
   @SuppressWarnings("unchecked")
-  private Response<T> resolveFromCache() {
+  private Response<D> resolveFromCache() {
     final ResponseNormalizer<Record> responseNormalizer = apolloStore.cacheResponseNormalizer();
     final ResponseFieldMapper responseFieldMapper = responseFieldMapperFactory.create(subscription);
 
     final ApolloStoreOperation<Response> apolloStoreOperation = apolloStore.read(subscription, responseFieldMapper, responseNormalizer,
         CacheHeaders.NONE);
 
-    Response<T> cachedResponse = null;
+    Response<D> cachedResponse = null;
     try {
       cachedResponse = apolloStoreOperation.execute();
     } catch (Exception e) {
@@ -184,7 +185,7 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
     }
   }
 
-  private void cacheResponse(final SubscriptionResponse<T> networkResponse) {
+  private void cacheResponse(final SubscriptionResponse<D> networkResponse) {
     if (networkResponse.cacheRecords.isEmpty() || cachePolicy == CachePolicy.NO_CACHE) {
       return;
     }
@@ -212,18 +213,18 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
     });
   }
 
-  private static final class SubscriptionManagerCallback<T> implements SubscriptionManager.Callback<T> {
-    private Callback<T> originalCallback;
-    private RealApolloSubscriptionCall<T> delegate;
+  private static final class SubscriptionManagerCallback<D extends Operation.Data> implements SubscriptionManager.Callback<D> {
+    private Callback<D> originalCallback;
+    private RealApolloSubscriptionCall<D> delegate;
 
-    SubscriptionManagerCallback(Callback<T> originalCallback, RealApolloSubscriptionCall<T> delegate) {
+    SubscriptionManagerCallback(Callback<D> originalCallback, RealApolloSubscriptionCall<D> delegate) {
       this.originalCallback = originalCallback;
       this.delegate = delegate;
     }
 
     @Override
-    public void onResponse(@NotNull SubscriptionResponse<T> response) {
-      Callback<T> callback = this.originalCallback;
+    public void onResponse(@NotNull SubscriptionResponse<D> response) {
+      Callback<D> callback = this.originalCallback;
       if (callback != null) {
         delegate.cacheResponse(response);
         callback.onResponse(response.response);
@@ -232,7 +233,7 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
 
     @Override
     public void onError(@NotNull ApolloSubscriptionException error) {
-      Callback<T> callback = this.originalCallback;
+      Callback<D> callback = this.originalCallback;
       if (callback != null) {
         callback.onFailure(error);
       }
@@ -241,7 +242,7 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
 
     @Override
     public void onNetworkError(@NotNull Throwable t) {
-      Callback<T> callback = this.originalCallback;
+      Callback<D> callback = this.originalCallback;
       if (callback != null) {
         callback.onFailure(new ApolloNetworkException("Subscription failed", t));
       }
@@ -250,7 +251,7 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
 
     @Override
     public void onCompleted() {
-      Callback<T> callback = this.originalCallback;
+      Callback<D> callback = this.originalCallback;
       if (callback != null) {
         callback.onCompleted();
       }
@@ -259,7 +260,7 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
 
     @Override
     public void onTerminated() {
-      Callback<T> callback = this.originalCallback;
+      Callback<D> callback = this.originalCallback;
       if (callback != null) {
         callback.onTerminated();
       }
@@ -268,14 +269,14 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
 
     @Override
     public void onConnected() {
-      Callback<T> callback = this.originalCallback;
+      Callback<D> callback = this.originalCallback;
       if (callback != null) {
         callback.onConnected();
       }
     }
 
     void terminate() {
-      RealApolloSubscriptionCall<T> delegate = this.delegate;
+      RealApolloSubscriptionCall<D> delegate = this.delegate;
       if (delegate != null) {
         delegate.terminate();
       }

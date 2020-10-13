@@ -32,7 +32,7 @@ abstract class CacheKeyResolver {
 
     @JvmStatic
     @Suppress("UNUSED_PARAMETER")
-    fun rootKeyForOperation(operation: Operation<*, *, *>): CacheKey {
+    fun rootKeyForOperation(operation: Operation<*, *>): CacheKey {
       return ROOT_CACHE_KEY
     }
   }

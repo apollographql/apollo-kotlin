@@ -12,5 +12,5 @@ interface ApolloInterceptorFactory {
    *
    * @return the interceptor or null if no interceptor is needed for this operation
    */
-  fun newInterceptor(logger: ApolloLogger, operation: Operation<*, *, *>): ApolloInterceptor?
+  fun newInterceptor(logger: ApolloLogger, operation: Operation<*, *>): ApolloInterceptor?
 }

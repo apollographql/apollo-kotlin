@@ -1,6 +1,7 @@
 package com.apollographql.apollo.internal.subscription;
 
 import com.apollographql.apollo.api.Error;
+import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.Subscription;
@@ -94,7 +95,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
   }
 
   @Override
-  public <T> void subscribe(@NotNull final Subscription<?, T, ?> subscription, @NotNull final SubscriptionManager.Callback<T> callback) {
+  public <D extends Operation.Data> void subscribe(@NotNull final Subscription<D, ?> subscription, @NotNull final SubscriptionManager.Callback<D> callback) {
     checkNotNull(subscription, "subscription == null");
     checkNotNull(callback, "callback == null");
     dispatcher.execute(new Runnable() {
@@ -502,10 +503,10 @@ public final class RealSubscriptionManager implements SubscriptionManager {
 
   private static class SubscriptionRecord {
     final UUID id;
-    final Subscription<?, ?, ?> subscription;
+    final Subscription<?, ?> subscription;
     final SubscriptionManager.Callback<?> callback;
 
-    SubscriptionRecord(UUID id, Subscription<?, ?, ?> subscription, SubscriptionManager.Callback<?> callback) {
+    SubscriptionRecord(UUID id, Subscription<?, ?> subscription, SubscriptionManager.Callback<?> callback) {
       this.id = id;
       this.subscription = subscription;
       this.callback = callback;

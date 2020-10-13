@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
  * <p>In order to execute the request again, call the {@link ApolloSubscriptionCall#clone()} method which creates a new
  * {@code ApolloSubscriptionCall} object.</p>
  */
-public interface ApolloSubscriptionCall<T> extends Cancelable {
+public interface ApolloSubscriptionCall<D extends Subscription.Data> extends Cancelable {
 
   /**
    * Sends {@link Subscription} to the subscription server and starts listening for the pushed updates. To cancel this
@@ -26,14 +26,14 @@ public interface ApolloSubscriptionCall<T> extends Cancelable {
    * @throws ApolloCanceledException when the call has already been canceled
    * @throws IllegalStateException   when the call has already been executed
    */
-  void execute(@NotNull Callback<T> callback);
+  void execute(@NotNull Callback<D> callback);
 
   /**
    * Creates a new, identical call to this one which can be executed even if this call has already been.
    *
    * @return The cloned {@code ApolloSubscriptionCall} object.
    */
-  ApolloSubscriptionCall<T> clone();
+  ApolloSubscriptionCall<D> clone();
 
   /**
    * Sets the cache policy for response/request cache.
@@ -41,7 +41,7 @@ public interface ApolloSubscriptionCall<T> extends Cancelable {
    * @param cachePolicy {@link CachePolicy} to set
    * @return {@link ApolloSubscriptionCall} with the provided {@link CachePolicy}
    */
-  @NotNull ApolloSubscriptionCall<T> cachePolicy(@NotNull CachePolicy cachePolicy);
+  @NotNull ApolloSubscriptionCall<D> cachePolicy(@NotNull CachePolicy cachePolicy);
 
   /**
    * Factory for creating {@link ApolloSubscriptionCall} calls.
@@ -53,8 +53,8 @@ public interface ApolloSubscriptionCall<T> extends Cancelable {
      * @param subscription to be sent to the subscription server to start listening pushed updates
      * @return prepared {@link ApolloSubscriptionCall} call to be executed
      */
-    <D extends Subscription.Data, T, V extends Subscription.Variables> ApolloSubscriptionCall<T> subscribe(
-        @NotNull Subscription<D, T, V> subscription);
+    <D extends Subscription.Data, V extends Subscription.Variables> ApolloSubscriptionCall<D> subscribe(
+        @NotNull Subscription<D, V> subscription);
   }
 
   /**
@@ -80,7 +80,7 @@ public interface ApolloSubscriptionCall<T> extends Cancelable {
   /**
    * Communicates responses from a subscription server.
    */
-  interface Callback<T> {
+  interface Callback<D extends Subscription.Data> {
 
     /**
      * Gets called when GraphQL response is received and parsed successfully. This may be called multiple times. {@link
@@ -88,7 +88,7 @@ public interface ApolloSubscriptionCall<T> extends Cancelable {
      *
      * @param response the GraphQL response
      */
-    void onResponse(@NotNull Response<T> response);
+    void onResponse(@NotNull Response<D> response);
 
     /**
      * Gets called when an unexpected exception occurs while creating the request or processing the response. Will be

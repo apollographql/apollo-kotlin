@@ -39,7 +39,7 @@ import okio.IOException
     "RemoveRedundantQualifierName")
 data class TestQuery(
   val ep: Episode
-) : Mutation<TestQuery.Data, TestQuery.Data, Operation.Variables> {
+) : Mutation<TestQuery.Data, Operation.Variables> {
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
@@ -53,7 +53,6 @@ data class TestQuery(
 
   override fun operationId(): String = OPERATION_ID
   override fun queryDocument(): String = QUERY_DOCUMENT
-  override fun wrapData(data: Data?): Data? = data
   override fun variables(): Operation.Variables = variables
   override fun name(): OperationName = OPERATION_NAME
   override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper.invoke {

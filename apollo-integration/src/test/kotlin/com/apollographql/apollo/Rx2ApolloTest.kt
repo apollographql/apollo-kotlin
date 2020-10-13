@@ -216,58 +216,6 @@ class Rx2ApolloTest {
         }
   }
 
-  @Test
-  fun disposingAnOperationDoesNotThrowUndeliverableException() {
-    /*
-     * A simple cache that will always throw errors
-     */
-    val cacheFactory = object : NormalizedCacheFactory<NormalizedCache>() {
-      override fun create(recordFieldAdapter: RecordFieldJsonAdapter): NormalizedCache {
-        return object : NormalizedCache() {
-          override fun clearAll() {
-            throw Exception("not implemented")
-          }
-
-          override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? {
-            throw Exception("not implemented")
-          }
-
-          override fun performMerge(apolloRecord: Record, oldRecord: Record?, cacheHeaders: CacheHeaders): Set<String> {
-            throw Exception("not implemented")
-          }
-
-          override fun remove(cacheKey: CacheKey, cascade: Boolean): Boolean {
-            throw Exception("not implemented")
-          }
-        }
-      }
-    }
-
-    val apolloClient = ApolloClient.builder()
-        .normalizedCache(cacheFactory)
-        .serverUrl("https://unused/")
-        .build()
-
-
-    val savedHandler = RxJavaPlugins.getErrorHandler()
-
-    var undeliverableException: Throwable? = null
-    RxJavaPlugins.setErrorHandler {
-      undeliverableException = it
-    }
-
-    val operation = apolloClient.apolloStore.write(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE)), EpisodeHeroNameQuery.Data(EpisodeHeroNameQuery.Hero("", "")))
-    val testObserver = Rx2Apollo.from(operation)
-        .test()
-
-    testObserver.dispose()
-
-    // Since there is no cancellation mechanism for the ApolloStoreOperation, the only way to see if an error is thrown is to wait here
-    Thread.sleep(200)
-    Truth.assertThat(undeliverableException == null).isTrue()
-    RxJavaPlugins.setErrorHandler(savedHandler)
-  }
-
   companion object {
     private const val FILE_EPISODE_HERO_NAME_WITH_ID = "EpisodeHeroNameResponseWithId.json"
     private const val FILE_EPISODE_HERO_NAME_CHANGE = "EpisodeHeroNameResponseNameChange.json"

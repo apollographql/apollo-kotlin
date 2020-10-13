@@ -144,34 +144,34 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   }
 
   @Override
-  public <D extends Mutation.Data, T, V extends Mutation.Variables> ApolloMutationCall<T> mutate(
-      @NotNull Mutation<D, T, V> mutation) {
+  public <D extends Mutation.Data, V extends Mutation.Variables> ApolloMutationCall<D> mutate(
+      @NotNull Mutation<D, V> mutation) {
     return newCall(mutation).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY);
   }
 
   @Override
-  public <D extends Mutation.Data, T, V extends Mutation.Variables> ApolloMutationCall<T> mutate(
-      @NotNull Mutation<D, T, V> mutation, @NotNull D withOptimisticUpdates) {
+  public <D extends Mutation.Data, V extends Mutation.Variables> ApolloMutationCall<D> mutate(
+      @NotNull Mutation<D, V> mutation, @NotNull D withOptimisticUpdates) {
     checkNotNull(withOptimisticUpdates, "withOptimisticUpdate == null");
     return newCall(mutation).toBuilder().responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
         .optimisticUpdates(Optional.<Operation.Data>fromNullable(withOptimisticUpdates)).build();
   }
 
   @Override
-  public <D extends Query.Data, T, V extends Query.Variables> ApolloQueryCall<T> query(@NotNull Query<D, T, V> query) {
+  public <D extends Query.Data, V extends Query.Variables> ApolloQueryCall<D> query(@NotNull Query<D, V> query) {
     return newCall(query);
   }
 
   @Override
-  public <D extends Operation.Data, T, V extends Operation.Variables> ApolloPrefetch prefetch(
-      @NotNull Operation<D, T, V> operation) {
+  public <D extends Operation.Data, V extends Operation.Variables> ApolloPrefetch prefetch(
+      @NotNull Operation<D, V> operation) {
     return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, scalarTypeAdapters, dispatcher, logger,
         tracker);
   }
 
   @Override
-  public <D extends Subscription.Data, T, V extends Subscription.Variables> ApolloSubscriptionCall<T> subscribe(
-      @NotNull Subscription<D, T, V> subscription) {
+  public <D extends Subscription.Data, V extends Subscription.Variables> ApolloSubscriptionCall<D> subscribe(
+      @NotNull Subscription<D, V> subscription) {
     return new RealApolloSubscriptionCall<>(subscription, subscriptionManager, apolloStore, ApolloSubscriptionCall.CachePolicy.NO_CACHE,
         dispatcher, responseFieldMapperFactory, logger);
   }
@@ -342,9 +342,9 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     }
   }
 
-  private <D extends Operation.Data, T, V extends Operation.Variables> RealApolloCall<T> newCall(
-      @NotNull Operation<D, T, V> operation) {
-    return RealApolloCall.<T>builder()
+  private <D extends Operation.Data, V extends Operation.Variables> RealApolloCall<D> newCall(
+      @NotNull Operation<D, V> operation) {
+    return RealApolloCall.<D>builder()
         .operation(operation)
         .serverUrl(serverUrl)
         .httpCallFactory(httpCallFactory)

@@ -76,7 +76,7 @@ class ApolloPrefetchTest {
         apolloClient
             .query(AllPlanetsQuery())
             .httpCachePolicy(HttpCachePolicy.CACHE_ONLY.expireAfter(2, TimeUnit.SECONDS)),
-        Predicate<Response<AllPlanetsQuery.Data?>> { dataResponse -> !dataResponse.hasErrors() }
+        Predicate<Response<AllPlanetsQuery.Data>> { dataResponse -> !dataResponse.hasErrors() }
     )
   }
 
@@ -94,7 +94,7 @@ class ApolloPrefetchTest {
         server,
         "HttpCacheTestAllPlanets.json",
         apolloClient.query(AllPlanetsQuery()),
-        Predicate<Response<AllPlanetsQuery.Data?>> { response -> !response.hasErrors() }
+        Predicate<Response<AllPlanetsQuery.Data>> { response -> !response.hasErrors() }
     )
   }
 

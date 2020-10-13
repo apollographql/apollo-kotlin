@@ -213,24 +213,24 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     return cacheKeyResolver;
   }
 
-  @Override @NotNull public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<T> read(
-      @NotNull final Operation<D, T, V> operation) {
+  @Override @NotNull public <D extends Operation.Data, V extends Operation.Variables> ApolloStoreOperation<D> read(
+      @NotNull final Operation<D, V> operation) {
     checkNotNull(operation, "operation == null");
-    return new ApolloStoreOperation<T>(dispatcher) {
-      @Override protected T perform() {
+    return new ApolloStoreOperation<D>(dispatcher) {
+      @Override protected D perform() {
         return doRead(operation);
       }
     };
   }
 
-  @Override @NotNull public <D extends Operation.Data, T, V extends Operation.Variables>
-  ApolloStoreOperation<Response<T>> read(@NotNull final Operation<D, T, V> operation,
+  @Override @NotNull public <D extends Operation.Data, V extends Operation.Variables>
+  ApolloStoreOperation<Response<D>> read(@NotNull final Operation<D, V> operation,
       @NotNull final ResponseFieldMapper<D> responseFieldMapper,
       @NotNull final ResponseNormalizer<Record> responseNormalizer, @NotNull final CacheHeaders cacheHeaders) {
     checkNotNull(operation, "operation == null");
     checkNotNull(responseNormalizer, "responseNormalizer == null");
-    return new ApolloStoreOperation<Response<T>>(dispatcher) {
-      @Override protected Response<T> perform() {
+    return new ApolloStoreOperation<Response<D>>(dispatcher) {
+      @Override protected Response<D> perform() {
         return doRead(operation, responseFieldMapper, responseNormalizer, cacheHeaders);
       }
     };
@@ -249,8 +249,8 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     };
   }
 
-  @Override @NotNull public <D extends Operation.Data, T, V extends Operation.Variables>
-  ApolloStoreOperation<Set<String>> write(@NotNull final Operation<D, T, V> operation, @NotNull final D operationData) {
+  @Override @NotNull public <D extends Operation.Data, V extends Operation.Variables>
+  ApolloStoreOperation<Set<String>> write(@NotNull final Operation<D, V> operation, @NotNull final D operationData) {
     checkNotNull(operation, "operation == null");
     checkNotNull(operationData, "operationData == null");
     return new ApolloStoreOperation<Set<String>>(dispatcher) {
@@ -260,8 +260,8 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     };
   }
 
-  @Override @NotNull public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Boolean>
-  writeAndPublish(@NotNull final Operation<D, T, V> operation, @NotNull final D operationData) {
+  @Override @NotNull public <D extends Operation.Data, V extends Operation.Variables> ApolloStoreOperation<Boolean>
+  writeAndPublish(@NotNull final Operation<D, V> operation, @NotNull final D operationData) {
     return new ApolloStoreOperation<Boolean>(dispatcher) {
       @Override protected Boolean perform() {
         Set<String> changedKeys = doWrite(operation, operationData, false, null);
@@ -304,8 +304,8 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
   }
 
   @NotNull @Override
-  public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Set<String>>
-  writeOptimisticUpdates(@NotNull final Operation<D, T, V> operation, @NotNull final D operationData,
+  public <D extends Operation.Data, V extends Operation.Variables> ApolloStoreOperation<Set<String>>
+  writeOptimisticUpdates(@NotNull final Operation<D, V> operation, @NotNull final D operationData,
       @NotNull final UUID mutationId) {
     return new ApolloStoreOperation<Set<String>>(dispatcher) {
       @Override protected Set<String> perform() {
@@ -315,8 +315,8 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
   }
 
   @NotNull @Override
-  public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Boolean>
-  writeOptimisticUpdatesAndPublish(@NotNull final Operation<D, T, V> operation, @NotNull final D operationData,
+  public <D extends Operation.Data, V extends Operation.Variables> ApolloStoreOperation<Boolean>
+  writeOptimisticUpdatesAndPublish(@NotNull final Operation<D, V> operation, @NotNull final D operationData,
       @NotNull final UUID mutationId) {
     return new ApolloStoreOperation<Boolean>(dispatcher) {
       @Override protected Boolean perform() {
@@ -355,9 +355,9 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     };
   }
 
-  <D extends Operation.Data, T, V extends Operation.Variables> T doRead(final Operation<D, T, V> operation) {
-    return readTransaction(new Transaction<ReadableStore, T>() {
-      @Nullable @Override public T execute(ReadableStore cache) {
+  <D extends Operation.Data, V extends Operation.Variables> D doRead(final Operation<D, V> operation) {
+    return readTransaction(new Transaction<ReadableStore, D>() {
+      @Nullable @Override public D execute(ReadableStore cache) {
         Record rootRecord = cache.read(CacheKeyResolver.rootKeyForOperation(operation).getKey(), CacheHeaders.NONE);
         if (rootRecord == null) {
           return null;
@@ -369,19 +369,19 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
         //noinspection unchecked
         RealResponseReader<Record> responseReader = new RealResponseReader<Record>(operation.variables(), rootRecord,
             fieldValueResolver, scalarTypeAdapters, (ResolveDelegate<Record>) ResponseNormalizer.NO_OP_NORMALIZER);
-        return operation.wrapData(responseFieldMapper.map(responseReader));
+        return responseFieldMapper.map(responseReader);
       }
     });
   }
 
-  <D extends Operation.Data, T, V extends Operation.Variables> Response<T> doRead(
-      final Operation<D, T, V> operation, final ResponseFieldMapper<D> responseFieldMapper,
+  <D extends Operation.Data, V extends Operation.Variables> Response<D> doRead(
+      final Operation<D, V> operation, final ResponseFieldMapper<D> responseFieldMapper,
       final ResponseNormalizer<Record> responseNormalizer, final CacheHeaders cacheHeaders) {
-    return readTransaction(new Transaction<ReadableStore, Response<T>>() {
-      @NotNull @Override public Response<T> execute(ReadableStore cache) {
+    return readTransaction(new Transaction<ReadableStore, Response<D>>() {
+      @NotNull @Override public Response<D> execute(ReadableStore cache) {
         Record rootRecord = cache.read(CacheKeyResolver.rootKeyForOperation(operation).getKey(), cacheHeaders);
         if (rootRecord == null) {
-          return Response.<T>builder(operation).fromCache(true).build();
+          return Response.<D>builder(operation).fromCache(true).build();
         }
 
         CacheFieldValueResolver fieldValueResolver = new CacheFieldValueResolver(cache, operation.variables(),
@@ -390,15 +390,15 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
             fieldValueResolver, scalarTypeAdapters, responseNormalizer);
         try {
           responseNormalizer.willResolveRootQuery(operation);
-          T data = operation.wrapData(responseFieldMapper.map(responseReader));
-          return Response.<T>builder(operation)
+          D data = responseFieldMapper.map(responseReader);
+          return Response.<D>builder(operation)
               .data(data)
               .fromCache(true)
               .dependentKeys(responseNormalizer.dependentKeys())
               .build();
         } catch (Exception e) {
           logger.e(e, "Failed to read cache response");
-          return Response.<T>builder(operation).fromCache(true).build();
+          return Response.<D>builder(operation).fromCache(true).build();
         }
       }
     });
@@ -423,8 +423,8 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     });
   }
 
-  <D extends Operation.Data, T, V extends Operation.Variables> Set<String> doWrite(
-      final Operation<D, T, V> operation, final D operationData, final boolean optimistic,
+  <D extends Operation.Data, V extends Operation.Variables> Set<String> doWrite(
+      final Operation<D, V> operation, final D operationData, final boolean optimistic,
       final UUID mutationId) {
     return writeTransaction(new Transaction<WriteableStore, Set<String>>() {
       @Override public Set<String> execute(WriteableStore cache) {

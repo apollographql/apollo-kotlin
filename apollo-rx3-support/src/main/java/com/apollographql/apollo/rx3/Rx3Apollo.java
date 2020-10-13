@@ -4,6 +4,7 @@ import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloPrefetch;
 import com.apollographql.apollo.ApolloQueryWatcher;
 import com.apollographql.apollo.ApolloSubscriptionCall;
+import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
 import com.apollographql.apollo.exception.ApolloException;
@@ -42,21 +43,21 @@ public class Rx3Apollo {
    * Converts an {@link ApolloQueryWatcher} to an asynchronous Observable.
    *
    * @param watcher the ApolloQueryWatcher to convert.
-   * @param <T>     the value type
+   * @param <D>     the value type
    * @return the converted Observable
    * @throws NullPointerException if watcher == null
    */
   @NotNull
   @CheckReturnValue
-  public static <T> Observable<Response<T>> from(@NotNull final ApolloQueryWatcher<T> watcher) {
+  public static <D extends Operation.Data> Observable<Response<D>> from(@NotNull final ApolloQueryWatcher<D> watcher) {
     checkNotNull(watcher, "watcher == null");
-    return Observable.create(new ObservableOnSubscribe<Response<T>>() {
-      @Override public void subscribe(final ObservableEmitter<Response<T>> emitter) throws Exception {
-        ApolloQueryWatcher<T> clone = watcher.clone();
+    return Observable.create(new ObservableOnSubscribe<Response<D>>() {
+      @Override public void subscribe(final ObservableEmitter<Response<D>> emitter) throws Exception {
+        ApolloQueryWatcher<D> clone = watcher.clone();
         cancelOnObservableDisposed(emitter, clone);
 
-        clone.enqueueAndWatch(new ApolloCall.Callback<T>() {
-          @Override public void onResponse(@NotNull Response<T> response) {
+        clone.enqueueAndWatch(new ApolloCall.Callback<D>() {
+          @Override public void onResponse(@NotNull Response<D> response) {
             if (!emitter.isDisposed()) {
               emitter.onNext(response);
             }
@@ -78,21 +79,21 @@ public class Rx3Apollo {
    * on the {@link com.apollographql.apollo.fetcher.ResponseFetcher} used with the call.
    *
    * @param call the ApolloCall to convert
-   * @param <T>  the value type.
+   * @param <D>  the value type.
    * @return the converted Observable
    * @throws NullPointerException if originalCall == null
    */
   @NotNull
   @CheckReturnValue
-  public static <T> Observable<Response<T>> from(@NotNull final ApolloCall<T> call) {
+  public static <D extends Operation.Data> Observable<Response<D>> from(@NotNull final ApolloCall<D> call) {
     checkNotNull(call, "call == null");
 
-    return Observable.create(new ObservableOnSubscribe<Response<T>>() {
-      @Override public void subscribe(final ObservableEmitter<Response<T>> emitter) throws Exception {
-        ApolloCall<T> clone = call.clone();
+    return Observable.create(new ObservableOnSubscribe<Response<D>>() {
+      @Override public void subscribe(final ObservableEmitter<Response<D>> emitter) throws Exception {
+        ApolloCall<D> clone = call.clone();
         cancelOnObservableDisposed(emitter, clone);
-        clone.enqueue(new ApolloCall.Callback<T>() {
-          @Override public void onResponse(@NotNull Response<T> response) {
+        clone.enqueue(new ApolloCall.Callback<D>() {
+          @Override public void onResponse(@NotNull Response<D> response) {
             if (!emitter.isDisposed()) {
               emitter.onNext(response);
             }
@@ -151,23 +152,23 @@ public class Rx3Apollo {
 
   @NotNull
   @CheckReturnValue
-  public static <T> Flowable<Response<T>> from(@NotNull ApolloSubscriptionCall<T> call) {
+  public static <D extends Operation.Data> Flowable<Response<D>> from(@NotNull ApolloSubscriptionCall<D> call) {
     return from(call, BackpressureStrategy.LATEST);
   }
 
   @NotNull
   @CheckReturnValue
-  public static <T> Flowable<Response<T>> from(@NotNull final ApolloSubscriptionCall<T> call,
+  public static <D extends Operation.Data> Flowable<Response<D>> from(@NotNull final ApolloSubscriptionCall<D> call,
       @NotNull BackpressureStrategy backpressureStrategy) {
     checkNotNull(call, "originalCall == null");
     checkNotNull(backpressureStrategy, "backpressureStrategy == null");
-    return Flowable.create(new FlowableOnSubscribe<Response<T>>() {
-      @Override public void subscribe(final FlowableEmitter<Response<T>> emitter) throws Exception {
-        ApolloSubscriptionCall<T> clone = call.clone();
+    return Flowable.create(new FlowableOnSubscribe<Response<D>>() {
+      @Override public void subscribe(final FlowableEmitter<Response<D>> emitter) throws Exception {
+        ApolloSubscriptionCall<D> clone = call.clone();
         cancelOnFlowableDisposed(emitter, clone);
         clone.execute(
-            new ApolloSubscriptionCall.Callback<T>() {
-              @Override public void onResponse(@NotNull Response<T> response) {
+            new ApolloSubscriptionCall.Callback<D>() {
+              @Override public void onResponse(@NotNull Response<D> response) {
                 if (!emitter.isCancelled()) {
                   emitter.onNext(response);
                 }
@@ -203,19 +204,19 @@ public class Rx3Apollo {
    * Converts an {@link ApolloStoreOperation} to a Single.
    *
    * @param operation the ApolloStoreOperation to convert
-   * @param <T>       the value type
+   * @param <D>       the value type
    * @return the converted Single
    */
   @NotNull
   @CheckReturnValue
-  public static <T> Single<T> from(@NotNull final ApolloStoreOperation<T> operation) {
+  public static <D extends Operation.Data> Single<D> from(@NotNull final ApolloStoreOperation<D> operation) {
     checkNotNull(operation, "operation == null");
-    return Single.create(new SingleOnSubscribe<T>() {
+    return Single.create(new SingleOnSubscribe<D>() {
       @Override
-      public void subscribe(final SingleEmitter<T> emitter) {
-        operation.enqueue(new ApolloStoreOperation.Callback<T>() {
+      public void subscribe(final SingleEmitter<D> emitter) {
+        operation.enqueue(new ApolloStoreOperation.Callback<D>() {
           @Override
-          public void onSuccess(T result) {
+          public void onSuccess(D result) {
             if (!emitter.isDisposed()) {
               emitter.onSuccess(result);
             }

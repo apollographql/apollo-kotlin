@@ -1,22 +1,21 @@
 package com.apollographql.apollo.api
 
-import kotlin.js.JsName
 import kotlin.jvm.JvmStatic
 
 /**
  * Represents either a successful or failed response received from the GraphQL server.
  */
-data class Response<T>(
+data class Response<D : Operation.Data>(
     /**
      * GraphQL operation this response represents of
      */
-    val operation: Operation<*, *, *>,
+    val operation: Operation<*, *>,
 
     /**
      * Parsed response of GraphQL [operation] execution.
      * Can be `null` in case if [operation] execution failed.
      */
-    val data: T?,
+    val data: D?,
 
     /**
      * GraphQL [operation] execution errors returned by the server to let client know that something has gone wrong.
@@ -45,7 +44,7 @@ data class Response<T>(
     val executionContext: ExecutionContext = ExecutionContext.Empty
 ) {
 
-  constructor(builder: Builder<T>) : this(
+  constructor(builder: Builder<D>) : this(
       operation = builder.operation,
       data = builder.data,
       errors = builder.errors,
@@ -57,7 +56,7 @@ data class Response<T>(
 
   fun hasErrors(): Boolean = !errors.isNullOrEmpty()
 
-  fun toBuilder(): Builder<T> = Builder<T>(operation)
+  fun toBuilder(): Builder<D> = Builder<D>(operation)
       .data(data)
       .errors(errors)
       .dependentKeys(dependentKeys)
@@ -90,15 +89,15 @@ data class Response<T>(
     return result
   }
 
-  class Builder<T> internal constructor(internal val operation: Operation<*, *, *>) {
-    internal var data: T? = null
+  class Builder<D : Operation.Data> internal constructor(internal val operation: Operation<*, *>) {
+    internal var data: D? = null
     internal var errors: List<Error>? = null
     internal var dependentKeys: Set<String>? = null
     internal var fromCache: Boolean = false
     internal var extensions: Map<String, Any?>? = null
     internal var executionContext: ExecutionContext = ExecutionContext.Empty
 
-    fun data(data: T?) = apply {
+    fun data(data: D?) = apply {
       this.data = data
     }
 
@@ -122,12 +121,12 @@ data class Response<T>(
       this.executionContext = executionContext
     }
 
-    fun build(): Response<T> = Response(this)
+    fun build(): Response<D> = Response(this)
   }
 
   companion object {
 
     @JvmStatic
-    fun <T> builder(operation: Operation<*, *, *>): Builder<T> = Builder(operation)
+    fun <D : Operation.Data> builder(operation: Operation<*, *>): Builder<D> = Builder(operation)
   }
 }

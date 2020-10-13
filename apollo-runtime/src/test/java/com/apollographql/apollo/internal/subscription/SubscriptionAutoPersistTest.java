@@ -156,7 +156,7 @@ public class SubscriptionAutoPersistTest {
     }
   }
 
-  private static final class MockSubscription implements Subscription<Operation.Data, Operation.Data, Operation.Variables> {
+  private static final class MockSubscription implements Subscription<Operation.Data, Operation.Variables> {
     final String operationId;
 
     MockSubscription(String operationId) {
@@ -181,10 +181,6 @@ public class SubscriptionAutoPersistTest {
           };
         }
       };
-    }
-
-    @Override public Data wrapData(Data data) {
-      return data;
     }
 
     @NotNull @Override public OperationName name() {
@@ -231,15 +227,15 @@ public class SubscriptionAutoPersistTest {
     }
   }
 
-  private static class SubscriptionManagerCallbackAdapter<T> implements SubscriptionManager.Callback<T> {
-    volatile SubscriptionResponse<T> response;
+  private static class SubscriptionManagerCallbackAdapter<D extends Operation.Data> implements SubscriptionManager.Callback<D> {
+    volatile SubscriptionResponse<D> response;
     volatile ApolloSubscriptionException error;
     volatile Throwable networkError;
     volatile boolean completed;
     volatile boolean terminated;
     volatile boolean connected;
 
-    @Override public void onResponse(@NotNull SubscriptionResponse<T> response) {
+    @Override public void onResponse(@NotNull SubscriptionResponse<D> response) {
       this.response = response;
     }
 

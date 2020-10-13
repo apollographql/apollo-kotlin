@@ -22,14 +22,14 @@ import org.jetbrains.annotations.Nullable;
  * <p>In order to execute the request again, call the {@link ApolloCall#clone()} method which creates a new ApolloCall
  * object.</p>
  */
-public interface ApolloCall<T> extends Cancelable {
+public interface ApolloCall<D extends Operation.Data> extends Cancelable {
   /**
    * Schedules the request to be executed at some point in the future.
    *
    * @param callback Callback which will handle the response or a failure exception.
    * @throws IllegalStateException when the call has already been executed
    */
-  void enqueue(@Nullable Callback<T> callback);
+  void enqueue(@Nullable Callback<D> callback);
 
   /**
    * Sets the {@link CacheHeaders} to use for this call. {@link com.apollographql.apollo.interceptor.FetchOptions} will
@@ -42,7 +42,7 @@ public interface ApolloCall<T> extends Cancelable {
    *                     defined in {@link ApolloCacheHeaders}.
    * @return The ApolloCall object with the provided {@link CacheHeaders}.
    */
-  @Deprecated @NotNull ApolloCall<T> cacheHeaders(@NotNull CacheHeaders cacheHeaders);
+  @Deprecated @NotNull ApolloCall<D> cacheHeaders(@NotNull CacheHeaders cacheHeaders);
 
   /**
    * Creates a new, identical call to this one which can be enqueued or executed even if this call has already been.
@@ -51,14 +51,14 @@ public interface ApolloCall<T> extends Cancelable {
    *
    * @return The cloned ApolloCall object.
    */
-  @Deprecated @NotNull ApolloCall<T> clone();
+  @Deprecated @NotNull ApolloCall<D> clone();
 
   /**
    * Returns GraphQL operation this call executes
    *
    * @return {@link Operation}
    */
-  @NotNull Operation operation();
+  @NotNull Operation<D, ?> operation();
 
   /**
    * Cancels this {@link ApolloCall}. If the call was started with {@link #enqueue(Callback)}, the
@@ -67,10 +67,10 @@ public interface ApolloCall<T> extends Cancelable {
    */
   @Override void cancel();
 
-  @NotNull Builder<T> toBuilder();
+  @NotNull Builder<D> toBuilder();
 
-  interface Builder<T> {
-    @NotNull ApolloCall<T> build();
+  interface Builder<D extends Operation.Data> {
+    @NotNull ApolloCall<D> build();
 
     /**
      * Sets the {@link CacheHeaders} to use for this call. {@link com.apollographql.apollo.interceptor.FetchOptions} will
@@ -81,13 +81,13 @@ public interface ApolloCall<T> extends Cancelable {
      *                     defined in {@link ApolloCacheHeaders}.
      * @return The builder
      */
-    @NotNull Builder<T> cacheHeaders(@NotNull CacheHeaders cacheHeaders);
+    @NotNull Builder<D> cacheHeaders(@NotNull CacheHeaders cacheHeaders);
   }
 
   /**
    * Communicates responses from a server or offline requests.
    */
-  abstract class Callback<T> {
+  abstract class Callback<D extends Operation.Data> {
 
     /**
      * Gets called when GraphQL response is received and parsed successfully. Depending on the
@@ -96,7 +96,7 @@ public interface ApolloCall<T> extends Cancelable {
      *
      * @param response the GraphQL response
      */
-    public abstract void onResponse(@NotNull Response<T> response);
+    public abstract void onResponse(@NotNull Response<D> response);
 
     /**
      * Gets called when an unexpected exception occurs while creating the request or processing the response.

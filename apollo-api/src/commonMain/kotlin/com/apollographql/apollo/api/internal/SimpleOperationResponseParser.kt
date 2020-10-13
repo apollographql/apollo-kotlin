@@ -18,9 +18,9 @@ object SimpleOperationResponseParser {
   @Throws(IOException::class)
   fun <D : Operation.Data, W> parse(
       source: BufferedSource,
-      operation: Operation<D, W, *>,
+      operation: Operation<D, *>,
       scalarTypeAdapters: ScalarTypeAdapters
-  ): Response<W> {
+  ): Response<D> {
     return BufferedSourceJsonReader(source).use { jsonReader ->
       jsonReader.beginObject()
 
@@ -44,7 +44,7 @@ object SimpleOperationResponseParser {
 
       Response(
           operation = operation,
-          data = operation.wrapData(data),
+          data = data,
           errors = errors,
           extensions = extensions.orEmpty()
       )

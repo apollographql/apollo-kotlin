@@ -3,6 +3,7 @@ package com.apollographql.apollo.internal;
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloQueryWatcher;
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.internal.ApolloLogger;
 import com.apollographql.apollo.api.internal.Optional;
@@ -27,8 +28,8 @@ import static com.apollographql.apollo.internal.CallState.CANCELED;
 import static com.apollographql.apollo.internal.CallState.IDLE;
 import static com.apollographql.apollo.internal.CallState.TERMINATED;
 
-final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
-  private RealApolloCall<T> activeCall;
+final class RealApolloQueryWatcher<D extends Query.Data> implements ApolloQueryWatcher<D> {
+  private RealApolloCall<D> activeCall;
   private ResponseFetcher refetchResponseFetcher = ApolloResponseFetchers.CACHE_FIRST;
   final ApolloStore apolloStore;
   Set<String> dependentKeys = Collections.emptySet();
@@ -42,16 +43,16 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
     }
   };
   private final AtomicReference<CallState> state = new AtomicReference<>(IDLE);
-  private final AtomicReference<ApolloCall.Callback<T>> originalCallback = new AtomicReference<>();
+  private final AtomicReference<ApolloCall.Callback<D>> originalCallback = new AtomicReference<>();
 
-  RealApolloQueryWatcher(RealApolloCall<T> originalCall, ApolloStore apolloStore, ApolloLogger logger, ApolloCallTracker tracker) {
+  RealApolloQueryWatcher(RealApolloCall<D> originalCall, ApolloStore apolloStore, ApolloLogger logger, ApolloCallTracker tracker) {
     this.activeCall = originalCall;
     this.apolloStore = apolloStore;
     this.logger = logger;
     this.tracker = tracker;
   }
 
-  @Override public ApolloQueryWatcher<T> enqueueAndWatch(@Nullable final ApolloCall.Callback<T> callback) {
+  @Override public ApolloQueryWatcher<D> enqueueAndWatch(@Nullable final ApolloCall.Callback<D> callback) {
     try {
       activate(Optional.fromNullable(callback));
     } catch (ApolloCanceledException e) {
@@ -67,7 +68,7 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
   }
 
   @NotNull
-  @Override public synchronized RealApolloQueryWatcher<T> refetchResponseFetcher(@NotNull ResponseFetcher fetcher) {
+  @Override public synchronized RealApolloQueryWatcher<D> refetchResponseFetcher(@NotNull ResponseFetcher fetcher) {
     if (state.get() != IDLE) throw new IllegalStateException("Already Executed");
     checkNotNull(fetcher, "responseFetcher == null");
     this.refetchResponseFetcher = fetcher;
@@ -126,14 +127,14 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
     }
   }
 
-  @NotNull @Override public ApolloQueryWatcher<T> clone() {
+  @NotNull @Override public ApolloQueryWatcher<D> clone() {
     return new RealApolloQueryWatcher<>(activeCall.clone(), apolloStore, logger, tracker);
   }
 
-  private ApolloCall.Callback<T> callbackProxy() {
-    return new ApolloCall.Callback<T>() {
-      @Override public void onResponse(@NotNull Response<T> response) {
-        Optional<ApolloCall.Callback<T>> callback = responseCallback();
+  private ApolloCall.Callback<D> callbackProxy() {
+    return new ApolloCall.Callback<D>() {
+      @Override public void onResponse(@NotNull Response<D> response) {
+        Optional<ApolloCall.Callback<D>> callback = responseCallback();
         if (!callback.isPresent()) {
           logger.d("onResponse for watched operation: %s. No callback present.", operation().name().name());
           return;
@@ -144,7 +145,7 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
       }
 
       @Override public void onFailure(@NotNull ApolloException e) {
-        Optional<ApolloCall.Callback<T>> callback = terminate();
+        Optional<ApolloCall.Callback<D>> callback = terminate();
         if (!callback.isPresent()) {
           logger.d(e, "onFailure for operation: %s. No callback present.", operation().name().name());
           return;
@@ -161,7 +162,7 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
       }
 
       @Override public void onStatusEvent(@NotNull ApolloCall.StatusEvent event) {
-        ApolloCall.Callback<T> callback = originalCallback.get();
+        ApolloCall.Callback<D> callback = originalCallback.get();
         if (callback == null) {
           logger.d("onStatusEvent for operation: %s. No callback present.", operation().name().name());
           return;
@@ -171,7 +172,7 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
     };
   }
 
-  private synchronized void activate(Optional<ApolloCall.Callback<T>> callback) throws ApolloCanceledException {
+  private synchronized void activate(Optional<ApolloCall.Callback<D>> callback) throws ApolloCanceledException {
     switch (state.get()) {
       case IDLE:
         originalCallback.set(callback.orNull());
@@ -188,7 +189,7 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
     state.set(ACTIVE);
   }
 
-  synchronized Optional<ApolloCall.Callback<T>> responseCallback() {
+  synchronized Optional<ApolloCall.Callback<D>> responseCallback() {
     switch (state.get()) {
       case ACTIVE:
       case CANCELED:
@@ -202,7 +203,7 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
     }
   }
 
-  synchronized Optional<ApolloCall.Callback<T>> terminate() {
+  synchronized Optional<ApolloCall.Callback<D>> terminate() {
     switch (state.get()) {
       case ACTIVE:
         tracker.unregisterQueryWatcher(this);

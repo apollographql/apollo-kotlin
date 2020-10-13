@@ -2,16 +2,17 @@ package com.apollographql.apollo
 
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
+import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import kotlinx.coroutines.flow.Flow
 
-interface ApolloCall<T> {
+interface ApolloCall<D: Operation.Data> {
   @ApolloExperimental
-  fun execute(executionContext: ExecutionContext = ExecutionContext.Empty): Flow<Response<T>>
+  fun execute(executionContext: ExecutionContext = ExecutionContext.Empty): Flow<Response<D>>
 }
 
-interface ApolloQueryCall<T> : ApolloCall<T>
+interface ApolloQueryCall<D: Operation.Data> : ApolloCall<D>
 
-interface ApolloMutationCall<T> : ApolloCall<T>
+interface ApolloMutationCall<D: Operation.Data> : ApolloCall<D>
 
-interface ApolloSubscriptionCall<T> : ApolloCall<T>
+interface ApolloSubscriptionCall<D: Operation.Data> : ApolloCall<D>

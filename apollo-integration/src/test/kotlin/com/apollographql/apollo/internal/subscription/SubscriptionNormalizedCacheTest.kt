@@ -3,6 +3,7 @@ package com.apollographql.apollo.internal.subscription
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.ApolloSubscriptionCall
 import com.apollographql.apollo.IdFieldCacheKeyResolver
+import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
@@ -247,13 +248,13 @@ private class MockSubscriptionTransport : SubscriptionTransport {
   }
 }
 
-private class SubscriptionManagerCallbackAdapter<T> : ApolloSubscriptionCall.Callback<T> {
-  var response: Response<T>? = null
+private class SubscriptionManagerCallbackAdapter<D: Operation.Data> : ApolloSubscriptionCall.Callback<D> {
+  var response: Response<D>? = null
   var completed = false
   var terminated = false
   var connected = false
 
-  override fun onResponse(response: Response<T>) {
+  override fun onResponse(response: Response<D>) {
     this.response = response
   }
 
