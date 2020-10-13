@@ -13,6 +13,7 @@ data class Operation(
     val fields: List<Field>,
     val filePath: String,
     val fragments: List<FragmentRef>,
+    val inlineFragments: List<InlineFragment>,
     val fragmentsReferenced: List<String>
 ) {
   fun isMutation() = operationType == TYPE_MUTATION

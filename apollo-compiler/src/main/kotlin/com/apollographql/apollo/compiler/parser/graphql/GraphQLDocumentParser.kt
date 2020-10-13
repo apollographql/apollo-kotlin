@@ -20,6 +20,8 @@ import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchem
 import com.apollographql.apollo.compiler.parser.introspection.asGraphQLType
 import com.apollographql.apollo.compiler.parser.introspection.isAssignableFrom
 import com.apollographql.apollo.compiler.parser.introspection.possibleTypes
+import com.apollographql.apollo.compiler.parser.introspection.resolveType
+import com.apollographql.apollo.compiler.parser.introspection.rootTypeForOperationType
 import org.antlr.v4.runtime.BaseErrorListener
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
@@ -160,6 +162,7 @@ class GraphQLDocumentParser(
         sourceWithFragments = graphQLDocumentSource,
         fields = fields.result.filter { hasFragments || it.responseName != Field.TYPE_NAME_FIELD.responseName},
         fragments = selectionSet().fragmentRefs(),
+        inlineFragments = selectionSet().inlineFragments(operationType = operationType),
         fragmentsReferenced = emptyList(),
         filePath = graphQLFilePath
     ).also { it.validateArguments(schema = schema) }
@@ -367,6 +370,20 @@ class GraphQLDocumentParser(
               conditions = fragmentSpread.directives().parse(),
               sourceLocation = SourceLocation(fragmentSpread.fragmentName().start)
           )
+        }
+        ?: emptyList()
+  }
+
+  private fun GraphQLParser.SelectionSetContext?.inlineFragments(operationType: String): List<InlineFragment> {
+    val rawRootParentType = schema.rootTypeForOperationType(operationType) ?: throw ParseException(
+        message = "Invalid operation type `${operationType}`"
+    )
+    val rootParentType = schema.resolveType(schema.resolveType(rawRootParentType))
+
+    return this
+        ?.selection()
+        ?.mapNotNull { ctx ->
+          ctx.inlineFragment()?.parse(parentSchemaType = rootParentType, ParseResult(result = emptyList()))?.result
         }
         ?: emptyList()
   }
