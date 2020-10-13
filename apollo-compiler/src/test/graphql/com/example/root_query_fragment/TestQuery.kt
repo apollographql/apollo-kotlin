@@ -175,11 +175,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-<<<<<<< HEAD
-        "f25706f188798126adb53f98428eecccd673936a413afa5b3ae155d18f46eae2"
-=======
-        "aa398544bf26cbb38315b1a35172c30b0e5fa0507770a4d9b5c420ee21a61fbb"
->>>>>>> main
+        "c93435f17c0461c309240b6f3d5682feec5dfc83af884170a57dcf407f77abd9"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
