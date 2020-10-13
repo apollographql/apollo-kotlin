@@ -14,6 +14,7 @@ import com.apollographql.apollo.compiler.parser.graphql.validateArguments
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.parser.introspection.asGraphQLType
 import com.apollographql.apollo.compiler.parser.introspection.possibleTypes
+import com.apollographql.apollo.compiler.parser.introspection.rootTypeForOperationType
 
 class IRBuilder(private val schema: IntrospectionSchema,
                 private val schemaPackageName: String,
@@ -69,14 +70,20 @@ class IRBuilder(private val schema: IntrospectionSchema,
 
     return CodeGenerationIR(
         operations = documentParseResult.operations.map { operation ->
-          val referencedFragmentNames = operation.fields.referencedFragmentNames(fragments = allFragments, filePath = operation.filePath)
-          val referencedFragments = referencedFragmentNames.mapNotNull { fragmentName -> allFragments.find { it.fragmentName == fragmentName } }
-          referencedFragments.forEach { it.validateArguments(operation = operation, schema = schema) }
+          val referencedRootFragmentNames = operation.fragments.referencedRootFragmentNames(
+              operationType = operation.operationType,
+              fragments = allFragments,
+              filePath = operation.filePath
+          )
+          val referencedFieldFragmentNames = operation.fields.referencedFragmentNames(fragments = allFragments, filePath = operation.filePath)
+          val allReferencedFragmentNames = referencedRootFragmentNames union referencedFieldFragmentNames
+          val allReferencedFragments = allReferencedFragmentNames.mapNotNull { fragmentName -> allFragments.find { it.fragmentName == fragmentName } }
+          allReferencedFragments.forEach { it.validateArguments(operation = operation, schema = schema) }
 
-          val fragmentSource = referencedFragments.joinToString(separator = "\n") { it.source }
+          val fragmentSource = allReferencedFragments.joinToString(separator = "\n") { it.source }
           operation.copy(
               sourceWithFragments = operation.source + if (fragmentSource.isNotBlank()) "\n$fragmentSource" else "",
-              fragmentsReferenced = referencedFragmentNames.toList()
+              fragmentsReferenced = allReferencedFragmentNames.toList()
           )
         },
         fragments = allFragments,
@@ -186,6 +193,15 @@ class IRBuilder(private val schema: IntrospectionSchema,
       inputTypesToVisit.addAll(nestedInputTypes)
     }
     return usedTypes
+  }
+
+  private fun List<FragmentRef>.referencedRootFragmentNames(operationType: String, fragments: List<Fragment>, filePath: String): Set<String> {
+    val rootTypeCondition = schema.rootTypeForOperationType(operationType) ?: throw ParseException(
+        message = "Fragments cannot be spread in invalid operation `$operationType`"
+    )
+    val referencedRootFragments = findFragments(typeCondition = rootTypeCondition, fragments = fragments, filePath = filePath)
+    val referencedRootFragmentNames = referencedRootFragments.map { it.fragmentName }
+    return referencedRootFragmentNames union referencedRootFragments.flatMap { it.referencedFragments(fragments) }
   }
 
   private fun List<Field>.referencedFragmentNames(fragments: List<Fragment>, filePath: String): Set<String> {

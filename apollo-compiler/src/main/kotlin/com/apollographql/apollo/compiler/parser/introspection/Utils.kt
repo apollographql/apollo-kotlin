@@ -88,3 +88,12 @@ internal fun IntrospectionSchema.resolveType(graphqlType: String): Introspection
 internal fun IntrospectionSchema.resolveType(typeRef: IntrospectionSchema.TypeRef): IntrospectionSchema.Type {
   return this[typeRef.name] ?: throw ParseException("Unknown type `${typeRef.name}`")
 }
+
+internal fun IntrospectionSchema.rootTypeForOperationType(operationType: String): String? {
+  return when (operationType) {
+    "query" -> queryType
+    "mutation" -> mutationType
+    "subscription" -> subscriptionType
+    else -> null
+  }
+}
