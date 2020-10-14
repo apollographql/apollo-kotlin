@@ -13,7 +13,7 @@ def versions = [
     junit                 : '4.13.1',
     kotlin                : '1.4.10',
     kotlinCoroutines      : '1.3.9',
-    kotlinPoet            : '1.7.0',
+    kotlinPoet            : '1.6.0',
     mockito               : '1.9.5',
     moshi                 : '1.11.0',
     okHttp4               : '4.9.0',
