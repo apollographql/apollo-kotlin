@@ -20,11 +20,12 @@ import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.api.internal.Throws
 import com.example.root_query_inline_fragment.fragment.DroidFragment
-import com.example.root_query_inline_fragment.fragment.HeroFragment
+import com.example.root_query_inline_fragment.type.Episode
 import kotlin.Array
 import kotlin.Boolean
 import kotlin.String
 import kotlin.Suppress
+import kotlin.collections.List
 import okio.Buffer
 import okio.BufferedSource
 import okio.ByteString
@@ -87,39 +88,55 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
    * A character from the Star Wars universe
    */
   data class Hero(
-    override val __typename: String = "Character",
+    val __typename: String = "Character",
     /**
      * The name of the character
      */
-    override val name: String
-  ) : HeroFragment {
-    override fun marshaller(): ResponseFieldMarshaller {
+    val name: String,
+    /**
+     * The movies this character appears in
+     */
+    val appearsIn: List<Episode?>
+  ) {
+    fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
         writer.writeString(RESPONSE_FIELDS[0], this@Hero.__typename)
         writer.writeString(RESPONSE_FIELDS[1], this@Hero.name)
+        writer.writeList(RESPONSE_FIELDS[2], this@Hero.appearsIn) { value, listItemWriter ->
+          value?.forEach { value ->
+            listItemWriter.writeString(value?.rawValue)}
+        }
       }
     }
+
+    fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null)
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forList("appearsIn", "appearsIn", null, false, null)
       )
 
       operator fun invoke(reader: ResponseReader, __typename: String? = null): Hero {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
+          var appearsIn: List<Episode?>? = null
           while(true) {
             when (selectField(RESPONSE_FIELDS)) {
               0 -> __typename = readString(RESPONSE_FIELDS[0])
               1 -> name = readString(RESPONSE_FIELDS[1])
+              2 -> appearsIn = readList<Episode>(RESPONSE_FIELDS[2]) { reader ->
+                Episode.safeValueOf(reader.readString())
+              }
               else -> break
             }
           }
           Hero(
             __typename = __typename!!,
-            name = name!!
+            name = name!!,
+            appearsIn = appearsIn!!
           )
         }
       }
@@ -304,7 +321,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "91703747d0c2266759fefabaecabb8d2511470887cb60dd550bdef815fcc9e03"
+        "5dbbcc56f98341b4752e8fada858759caf67ac2638708fadab29fd9879c55b7a"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -313,7 +330,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           |    __typename
           |    hero {
           |      __typename
-          |      ...heroFragment
+          |      name
+          |      appearsIn
           |    }
           |    droid(id: 1) {
           |      __typename
@@ -327,10 +345,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           |      }
           |    }
           |  }
-          |}
-          |fragment heroFragment on Character {
-          |  __typename
-          |  name
           |}
           |fragment droidFragment on Droid {
           |  __typename

@@ -146,6 +146,7 @@ class GraphQLDocumentParser(
         )
       }
     }
+    val inlineFragments = selectionSet().inlineFragments(operationType = operationType).flatten()
 
     val commentTokens = tokenStream.getHiddenTokensToLeft(start.tokenIndex, 2) ?: emptyList()
     val description = commentTokens.joinToString(separator = "\n") { token ->
@@ -162,14 +163,14 @@ class GraphQLDocumentParser(
         sourceWithFragments = graphQLDocumentSource,
         fields = fields.result.filter { hasFragments || it.responseName != Field.TYPE_NAME_FIELD.responseName},
         fragments = selectionSet().fragmentRefs(),
-        inlineFragments = selectionSet().inlineFragments(operationType = operationType),
+        inlineFragments = inlineFragments.result,
         fragmentsReferenced = emptyList(),
         filePath = graphQLFilePath
     ).also { it.validateArguments(schema = schema) }
 
     return ParseResult(
         result = operation,
-        usedTypes = variables.usedTypes + fields.usedTypes
+        usedTypes = variables.usedTypes + fields.usedTypes + inlineFragments.usedTypes
     )
   }
 
@@ -374,7 +375,7 @@ class GraphQLDocumentParser(
         ?: emptyList()
   }
 
-  private fun GraphQLParser.SelectionSetContext?.inlineFragments(operationType: String): List<InlineFragment> {
+  private fun GraphQLParser.SelectionSetContext?.inlineFragments(operationType: String): List<ParseResult<InlineFragment>> {
     val rawRootParentType = schema.rootTypeForOperationType(operationType) ?: throw ParseException(
         message = "Invalid operation type `${operationType}`"
     )
@@ -383,7 +384,7 @@ class GraphQLDocumentParser(
     return this
         ?.selection()
         ?.mapNotNull { ctx ->
-          ctx.inlineFragment()?.parse(parentSchemaType = rootParentType, ParseResult(result = emptyList()))?.result
+          ctx.inlineFragment()?.parse(parentSchemaType = rootParentType, ParseResult(result = emptyList()))
         }
         ?: emptyList()
   }

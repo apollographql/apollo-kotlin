@@ -2,7 +2,8 @@ query TestQuery {
   ... on Query {
     __typename
     hero {
-      ...heroFragment
+      name
+      appearsIn
     }
     droid(id: 1) {
       ...droidFragment
@@ -14,10 +15,6 @@ query TestQuery {
       }
     }
   }
-}
-
-fragment heroFragment on Character {
-  name
 }
 
 fragment droidFragment on Droid {
