@@ -27,19 +27,19 @@ class ApolloClient(
   private val coroutineDispatcherContext = executionContext[ApolloCoroutineDispatcherContext]
       ?: ApolloCoroutineDispatcherContext(Dispatchers.Default)
 
-  fun <D : Operation.Data, V : Operation.Variables> mutate(mutation: Mutation<D, D, V>): ApolloMutationCall<D> {
+  fun <D : Operation.Data, V : Operation.Variables> mutate(mutation: Mutation<D, V>): ApolloMutationCall<D> {
     return mutation.prepareCall()
   }
 
-  fun <D : Operation.Data, V : Operation.Variables> query(query: Query<D, D, V>): ApolloQueryCall<D> {
+  fun <D : Operation.Data, V : Operation.Variables> query(query: Query<D, V>): ApolloQueryCall<D> {
     return query.prepareCall()
   }
 
-  fun <D : Operation.Data, V : Operation.Variables> subscribe(query: Subscription<D, D, V>): ApolloQueryCall<D> {
+  fun <D : Operation.Data, V : Operation.Variables> subscribe(query: Subscription<D, V>): ApolloQueryCall<D> {
     return query.prepareCall()
   }
 
-  private fun <D : Operation.Data, V : Operation.Variables> Operation<D, D, V>.prepareCall(): RealApolloCall<D> {
+  private fun <D : Operation.Data, V : Operation.Variables> Operation<D, V>.prepareCall(): RealApolloCall<D> {
     return RealApolloCall(
         operation = this,
         scalarTypeAdapters = scalarTypeAdapters,

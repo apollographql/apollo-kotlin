@@ -120,9 +120,9 @@ interface ApolloStore {
    * @param <V>       type of operation variables
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with cached data for specified operation
   </V></T></D> */
-  fun <D : Operation.Data, T, V : Operation.Variables> read(
-      operation: Operation<D, T, V>
-  ): ApolloStoreOperation<T>
+  fun <D : Operation.Data, V : Operation.Variables> read(
+      operation: Operation<D, V>
+  ): ApolloStoreOperation<D>
 
   /**
    * Read GraphQL operation response from store.
@@ -136,12 +136,12 @@ interface ApolloStore {
    * @param <V>                 type of operation variables
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with cached response for specified operation
   </V></T></D> */
-  fun <D : Operation.Data, T, V : Operation.Variables> read(
-      operation: Operation<D, T, V>,
+  fun <D : Operation.Data, V : Operation.Variables> read(
+      operation: Operation<D, V>,
       responseFieldMapper: ResponseFieldMapper<D>,
       responseNormalizer: ResponseNormalizer<Record>,
       cacheHeaders: CacheHeaders
-  ): ApolloStoreOperation<Response<T>>
+  ): ApolloStoreOperation<Response<D>>
 
   /**
    * Read GraphQL fragment from store.
@@ -169,8 +169,8 @@ interface ApolloStore {
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with set of keys of [Record] which
    * have changed
   </V></T></D> */
-  fun <D : Operation.Data, T, V : Operation.Variables> write(
-      operation: Operation<D, T, V>,
+  fun <D : Operation.Data, V : Operation.Variables> write(
+      operation: Operation<D, V>,
       operationData: D
   ): ApolloStoreOperation<Set<String>>
 
@@ -184,8 +184,8 @@ interface ApolloStore {
    * @param <V>           type of operation variables
    * @return {@ApolloStoreOperation} to be performed
   </V></T></D> */
-  fun <D : Operation.Data, T, V : Operation.Variables> writeAndPublish(
-      operation: Operation<D, T, V>,
+  fun <D : Operation.Data, V : Operation.Variables> writeAndPublish(
+      operation: Operation<D, V>,
       operationData: D
   ): ApolloStoreOperation<Boolean>
 
@@ -228,8 +228,8 @@ interface ApolloStore {
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with set of keys of [Record] which
    * have changed
    */
-  fun <D : Operation.Data, T, V : Operation.Variables> writeOptimisticUpdates(
-      operation: Operation<D, T, V>,
+  fun <D : Operation.Data, V : Operation.Variables> writeOptimisticUpdates(
+      operation: Operation<D, V>,
       operationData: D,
       mutationId: UUID
   ): ApolloStoreOperation<Set<String>>
@@ -243,8 +243,8 @@ interface ApolloStore {
    * @param mutationId    mutation unique identifier
    * @return {@ApolloStoreOperation} to be performed
    */
-  fun <D : Operation.Data, T, V : Operation.Variables> writeOptimisticUpdatesAndPublish(
-      operation: Operation<D, T, V>,
+  fun <D : Operation.Data, V : Operation.Variables> writeOptimisticUpdatesAndPublish(
+      operation: Operation<D, V>,
       operationData: D,
       mutationId: UUID
   ): ApolloStoreOperation<Boolean>

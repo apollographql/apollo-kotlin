@@ -22,18 +22,18 @@ import java.util.Map;
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 @SuppressWarnings("WeakerAccess")
-public final class OperationResponseParser<D extends Operation.Data, W> {
-  final Operation<D, W, ?> operation;
+public final class OperationResponseParser<D extends Operation.Data> {
+  final Operation<D, ?> operation;
   final ResponseFieldMapper responseFieldMapper;
   final ScalarTypeAdapters scalarTypeAdapters;
   final ResponseNormalizer<Map<String, Object>> responseNormalizer;
 
-  @SuppressWarnings("unchecked") public OperationResponseParser(Operation<D, W, ?> operation,
+  @SuppressWarnings("unchecked") public OperationResponseParser(Operation<D, ?> operation,
       ResponseFieldMapper responseFieldMapper, ScalarTypeAdapters scalarTypeAdapters) {
     this(operation, responseFieldMapper, scalarTypeAdapters, (ResponseNormalizer<Map<String, Object>>) ResponseNormalizer.NO_OP_NORMALIZER);
   }
 
-  public OperationResponseParser(Operation<D, W, ?> operation, ResponseFieldMapper responseFieldMapper,
+  public OperationResponseParser(Operation<D, ?> operation, ResponseFieldMapper responseFieldMapper,
       ScalarTypeAdapters scalarTypeAdapters, ResponseNormalizer<Map<String, Object>> responseNormalizer) {
     this.operation = operation;
     this.responseFieldMapper = responseFieldMapper;
@@ -42,7 +42,7 @@ public final class OperationResponseParser<D extends Operation.Data, W> {
   }
 
   @SuppressWarnings("unchecked")
-  public Response<W> parse(@NotNull Map<String, Object> payload) {
+  public Response<D> parse(@NotNull Map<String, Object> payload) {
     checkNotNull(payload, "payload == null");
 
     responseNormalizer.willResolveRootQuery(operation);
@@ -66,15 +66,15 @@ public final class OperationResponseParser<D extends Operation.Data, W> {
       }
     }
 
-    return Response.<W>builder(operation)
-        .data(operation.wrapData(data))
+    return Response.<D>builder(operation)
+        .data(data)
         .errors(errors)
         .dependentKeys(responseNormalizer.dependentKeys())
         .extensions((Map<String, Object>) payload.get("extensions"))
         .build();
   }
 
-  public Response<W> parse(BufferedSource source) throws IOException {
+  public Response<D> parse(BufferedSource source) throws IOException {
     responseNormalizer.willResolveRootQuery(operation);
     BufferedSourceJsonReader jsonReader = null;
     try {
@@ -110,8 +110,8 @@ public final class OperationResponseParser<D extends Operation.Data, W> {
         }
       }
       jsonReader.endObject();
-      return Response.<W>builder(operation)
-          .data(operation.wrapData(data))
+      return Response.<D>builder(operation)
+          .data(data)
           .errors(errors)
           .dependentKeys(responseNormalizer.dependentKeys())
           .extensions(extensions)

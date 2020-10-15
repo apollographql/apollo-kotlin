@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.map
 @ApolloExperimental
 @ExperimentalCoroutinesApi
 class RealApolloCall<D : Operation.Data> constructor(
-    private val operation: Operation<D, D, *>,
+    private val operation: Operation<D, *>,
     private val scalarTypeAdapters: ScalarTypeAdapters,
     private val interceptors: List<ApolloRequestInterceptor>,
     private val executionContext: ExecutionContext

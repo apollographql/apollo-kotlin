@@ -82,7 +82,7 @@ class ApolloWatcherTest {
         server,
         "EpisodeHeroNameResponseNameChange.json",
         apolloClient!!.query(query).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY),
-        Predicate<Response<EpisodeHeroNameQuery.Data?>> { response -> !response.hasErrors() }
+        Predicate<Response<EpisodeHeroNameQuery.Data>> { response -> !response.hasErrors() }
     )
     watcher.cancel()
     assertThat(heroNameList[0]).isEqualTo("R2-D2")
@@ -169,7 +169,7 @@ class ApolloWatcherTest {
         server,
         "HeroAndFriendsNameWithIdsNameChange.json",
         apolloClient!!.query(friendsQuery).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY),
-        Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data?>> { response -> !response.hasErrors() }
+        Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>> { response -> !response.hasErrors() }
     )
     watcher.cancel()
     assertThat(heroNameList[0]).isEqualTo("R2-D2")
@@ -289,7 +289,7 @@ class ApolloWatcherTest {
         server,
         "EpisodeHeroNameResponseNameChange.json",
         apolloClient!!.query(query).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY),
-        Predicate<Response<EpisodeHeroNameQuery.Data?>> { response -> !response.hasErrors() }
+        Predicate<Response<EpisodeHeroNameQuery.Data>> { response -> !response.hasErrors() }
     )
     assertThat(heroNameList[0]).isEqualTo("R2-D2")
     assertThat(heroNameList.size).isEqualTo(1)

@@ -2,12 +2,14 @@ package com.apollographql.apollo.internal.reader;
 
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.IdleResourceCallback;
+import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.internal.OperationRequestBodyComposer;
 import com.apollographql.apollo.api.internal.ResponseFieldMapper;
+import com.apollographql.apollo.api.internal.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.internal.ResponseReader;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 import okhttp3.Interceptor;
@@ -34,7 +36,7 @@ import static com.google.common.truth.Truth.assertThat;
 public class ApolloCallTrackerTest {
   private static final String SERVER_URL = "http://localhost:1234";
   private static final int TIMEOUT_SECONDS = 2;
-  private static final Query EMPTY_QUERY = new Query() {
+  private static final Query EMPTY_QUERY = new Query<QueryData, Operation.Variables>() {
 
     OperationName operationName = new OperationName() {
       @Override public String name() {
@@ -50,16 +52,12 @@ public class ApolloCallTrackerTest {
       return EMPTY_VARIABLES;
     }
 
-    @Override public ResponseFieldMapper<Data> responseFieldMapper() {
-      return new ResponseFieldMapper<Data>() {
-        @Override public Data map(ResponseReader responseReader) {
+    @Override public ResponseFieldMapper<QueryData> responseFieldMapper() {
+      return new ResponseFieldMapper<QueryData>() {
+        @Override public QueryData map(ResponseReader responseReader) {
           return null;
         }
       };
-    }
-
-    @Override public Object wrapData(Data data) {
-      return data;
     }
 
     @NotNull @Override public OperationName name() {
@@ -70,19 +68,19 @@ public class ApolloCallTrackerTest {
       return "";
     }
 
-    @NotNull @Override public Response parse(@NotNull BufferedSource source) {
+    @NotNull @Override public Response<QueryData> parse(@NotNull BufferedSource source) {
       throw new UnsupportedOperationException();
     }
 
-    @NotNull @Override public Response parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+    @NotNull @Override public Response<QueryData> parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
       throw new UnsupportedOperationException();
     }
 
-    @NotNull @Override public Response parse(@NotNull ByteString byteString) {
+    @NotNull @Override public Response<QueryData> parse(@NotNull ByteString byteString) {
       throw new UnsupportedOperationException();
     }
 
-    @NotNull @Override public Response parse(@NotNull ByteString byteString, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+    @NotNull @Override public Response<QueryData> parse(@NotNull ByteString byteString, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
       throw new UnsupportedOperationException();
     }
 
@@ -91,19 +89,26 @@ public class ApolloCallTrackerTest {
         boolean withQueryDocument,
         @NotNull ScalarTypeAdapters scalarTypeAdapters
     ) {
-        return OperationRequestBodyComposer.compose(this, autoPersistQueries, withQueryDocument, scalarTypeAdapters);
-      }
+      return OperationRequestBodyComposer.compose(this, autoPersistQueries, withQueryDocument, scalarTypeAdapters);
+    }
 
-      @NotNull @Override public ByteString composeRequestBody(@NotNull ScalarTypeAdapters scalarTypeAdapters) {
-        return OperationRequestBodyComposer.compose(this, false, true, scalarTypeAdapters);
-      }
+    @NotNull @Override public ByteString composeRequestBody(@NotNull ScalarTypeAdapters scalarTypeAdapters) {
+      return OperationRequestBodyComposer.compose(this, false, true, scalarTypeAdapters);
+    }
 
-      @NotNull @Override public ByteString composeRequestBody() {
-        return OperationRequestBodyComposer.compose(this, false, true, ScalarTypeAdapters.DEFAULT);
-      }
+    @NotNull @Override public ByteString composeRequestBody() {
+      return OperationRequestBodyComposer.compose(this, false, true, ScalarTypeAdapters.DEFAULT);
+    }
   };
 
-  @Rule public final MockWebServer server = new MockWebServer();
+  static class QueryData implements Operation.Data {
+      @NotNull @Override public ResponseFieldMarshaller marshaller() {
+        throw new UnsupportedOperationException();
+      }
+    }
+
+  @Rule
+  public final MockWebServer server = new MockWebServer();
   private List<Integer> activeCallCounts;
   private ApolloClient apolloClient;
 

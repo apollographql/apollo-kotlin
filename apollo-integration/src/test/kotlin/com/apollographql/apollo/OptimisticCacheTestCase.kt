@@ -60,7 +60,7 @@ class OptimisticCacheTestCase {
         server,
         "HeroAndFriendsNameResponse.json",
         apolloClient!!.query(query),
-        Predicate<Response<HeroAndFriendsNamesQuery.Data?>> { response -> !response.hasErrors() }
+        Predicate<Response<HeroAndFriendsNamesQuery.Data>> { response -> !response.hasErrors() }
     )
     val mutationId = UUID.randomUUID()
     val data = HeroAndFriendsNamesQuery.Data(HeroAndFriendsNamesQuery.Hero(
@@ -111,7 +111,7 @@ class OptimisticCacheTestCase {
         server,
         "HeroAndFriendsNameWithIdsResponse.json",
         apolloClient!!.query(query1),
-        Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data?>> { response -> !response.hasErrors() }
+        Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>> { response -> !response.hasErrors() }
     )
     val data1 = HeroAndFriendsNamesWithIDsQuery.Data(
         HeroAndFriendsNamesWithIDsQuery.Hero(
@@ -151,7 +151,7 @@ class OptimisticCacheTestCase {
         server,
         "HeroNameWithIdResponse.json",
         apolloClient!!.query(query2),
-        Predicate<Response<HeroNameWithIdQuery.Data?>> { response -> !response.hasErrors() }
+        Predicate<Response<HeroNameWithIdQuery.Data>> { response -> !response.hasErrors() }
     )
     val data2 = HeroNameWithIdQuery.Data(HeroNameWithIdQuery.Hero(
         "Human",
@@ -231,7 +231,7 @@ class OptimisticCacheTestCase {
         server,
         "HeroNameWithEnumsResponse.json",
         apolloClient!!.query(HeroNameWithEnumsQuery()),
-        Predicate<Response<HeroNameWithEnumsQuery.Data?>> { response -> !response.hasErrors() }
+        Predicate<Response<HeroNameWithEnumsQuery.Data>> { response -> !response.hasErrors() }
     )
     val mutationId = UUID.randomUUID()
     apolloClient!!.apolloStore.writeOptimisticUpdates(
@@ -262,12 +262,12 @@ class OptimisticCacheTestCase {
   @Throws(Exception::class)
   fun mutation_and_query_watcher() {
     server.enqueue(mockResponse("ReviewsEmpireEpisodeResponse.json"))
-    val watcherData: MutableList<ReviewsByEpisodeQuery.Data?> = ArrayList()
+    val watcherData: MutableList<ReviewsByEpisodeQuery.Data> = ArrayList()
     apolloClient!!.query(ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(ApolloResponseFetchers.NETWORK_FIRST)
         .watcher().refetchResponseFetcher(ApolloResponseFetchers.CACHE_FIRST)
         .enqueueAndWatch(object : ApolloCall.Callback<ReviewsByEpisodeQuery.Data>() {
           override fun onResponse(response: Response<ReviewsByEpisodeQuery.Data>) {
-            watcherData.add(response.data)
+            watcherData.add(response.data!!)
           }
 
           override fun onFailure(e: ApolloException) {}
@@ -338,13 +338,13 @@ class OptimisticCacheTestCase {
         server,
         "HeroAndFriendsNameWithIdsResponse.json",
         apolloClient!!.query(query1),
-        Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data?>> { response -> !response.hasErrors() }
+        Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>> { response -> !response.hasErrors() }
     )
     enqueueAndAssertResponse(
         server,
         "HeroNameWithIdResponse.json",
         apolloClient!!.query(query2),
-        Predicate<Response<HeroNameWithIdQuery.Data?>> { response -> !response.hasErrors() }
+        Predicate<Response<HeroNameWithIdQuery.Data>> { response -> !response.hasErrors() }
     )
     val data1 = HeroAndFriendsNamesWithIDsQuery.Data(
         HeroAndFriendsNamesWithIDsQuery.Hero(

@@ -1,5 +1,6 @@
 package com.apollographql.apollo;
 
+import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
@@ -11,14 +12,14 @@ import org.jetbrains.annotations.NotNull;
 /**
  * A call prepared to execute GraphQL query operation.
  */
-public interface ApolloQueryCall<T> extends ApolloCall<T> {
+public interface ApolloQueryCall<D extends Operation.Data> extends ApolloCall<D> {
   /**
    * Returns a watcher to watch the changes to the normalized cache records this query depends on or when mutation call
    * triggers to re-fetch this query after it completes via {@link ApolloMutationCall#refetchQueries(OperationName...)}
    *
    * @return {@link ApolloQueryWatcher}
    */
-  @NotNull ApolloQueryWatcher<T> watcher();
+  @NotNull ApolloQueryWatcher<D> watcher();
 
   /**
    * Sets the http cache policy for response/request cache.
@@ -28,7 +29,7 @@ public interface ApolloQueryCall<T> extends ApolloCall<T> {
    * @param httpCachePolicy {@link HttpCachePolicy.Policy} to set
    * @return {@link ApolloQueryCall} with the provided {@link HttpCachePolicy.Policy}
    */
-  @Deprecated @NotNull ApolloQueryCall<T> httpCachePolicy(@NotNull HttpCachePolicy.Policy httpCachePolicy);
+  @Deprecated @NotNull ApolloQueryCall<D> httpCachePolicy(@NotNull HttpCachePolicy.Policy httpCachePolicy);
 
   /**
    * Sets the {@link CacheHeaders} to use for this call. {@link com.apollographql.apollo.interceptor.FetchOptions} will
@@ -41,7 +42,7 @@ public interface ApolloQueryCall<T> extends ApolloCall<T> {
    *                     defined in {@link com.apollographql.apollo.cache.ApolloCacheHeaders}.
    * @return The ApolloCall object with the provided {@link CacheHeaders}.
    */
-  @Deprecated @NotNull @Override ApolloQueryCall<T> cacheHeaders(@NotNull CacheHeaders cacheHeaders);
+  @Deprecated @NotNull @Override ApolloQueryCall<D> cacheHeaders(@NotNull CacheHeaders cacheHeaders);
 
   /**
    * Sets the {@link ResponseFetcher} strategy for an ApolloCall object.
@@ -51,7 +52,7 @@ public interface ApolloQueryCall<T> extends ApolloCall<T> {
    * @param fetcher the {@link ResponseFetcher} to use.
    * @return The ApolloCall object with the provided CacheControl strategy
    */
-  @Deprecated @NotNull ApolloQueryCall<T> responseFetcher(@NotNull ResponseFetcher fetcher);
+  @Deprecated @NotNull ApolloQueryCall<D> responseFetcher(@NotNull ResponseFetcher fetcher);
 
   /**
    * Sets the {@link RequestHeaders} to use for this call. These headers will be added to the HTTP request when
@@ -63,14 +64,14 @@ public interface ApolloQueryCall<T> extends ApolloCall<T> {
    * @param requestHeaders The {@link RequestHeaders} to use for this request.
    * @return The ApolloCall object with the provided {@link RequestHeaders}.
    */
-  @Deprecated @NotNull ApolloQueryCall<T> requestHeaders(@NotNull RequestHeaders requestHeaders);
+  @Deprecated @NotNull ApolloQueryCall<D> requestHeaders(@NotNull RequestHeaders requestHeaders);
 
-  @Deprecated @NotNull @Override ApolloQueryCall<T> clone();
+  @Deprecated @NotNull @Override ApolloQueryCall<D> clone();
 
-  @NotNull @Override Builder<T> toBuilder();
+  @NotNull @Override Builder<D> toBuilder();
 
-  interface Builder<T> extends ApolloCall.Builder<T> {
-    @NotNull @Override ApolloQueryCall<T> build();
+  interface Builder<D extends Operation.Data> extends ApolloCall.Builder<D> {
+    @NotNull @Override ApolloQueryCall<D> build();
 
     /**
      * Sets the {@link CacheHeaders} to use for this call. {@link com.apollographql.apollo.interceptor.FetchOptions} will
@@ -81,7 +82,7 @@ public interface ApolloQueryCall<T> extends ApolloCall<T> {
      *                     defined in {@link com.apollographql.apollo.cache.ApolloCacheHeaders}.
      * @return The ApolloCall object with the provided {@link CacheHeaders}.
      */
-    @NotNull @Override Builder<T> cacheHeaders(@NotNull CacheHeaders cacheHeaders);
+    @NotNull @Override Builder<D> cacheHeaders(@NotNull CacheHeaders cacheHeaders);
 
     /**
      * Sets the http cache policy for response/request cache.
@@ -89,7 +90,7 @@ public interface ApolloQueryCall<T> extends ApolloCall<T> {
      * @param httpCachePolicy {@link HttpCachePolicy.Policy} to set
      * @return {@link ApolloQueryCall} with the provided {@link HttpCachePolicy.Policy}
      */
-    @NotNull Builder<T> httpCachePolicy(@NotNull HttpCachePolicy.Policy httpCachePolicy);
+    @NotNull Builder<D> httpCachePolicy(@NotNull HttpCachePolicy.Policy httpCachePolicy);
 
     /**
      * Sets the {@link ResponseFetcher} strategy for an ApolloCall object.
@@ -97,7 +98,7 @@ public interface ApolloQueryCall<T> extends ApolloCall<T> {
      * @param fetcher the {@link ResponseFetcher} to use.
      * @return The ApolloCall object with the provided CacheControl strategy
      */
-    @NotNull Builder<T> responseFetcher(@NotNull ResponseFetcher fetcher);
+    @NotNull Builder<D> responseFetcher(@NotNull ResponseFetcher fetcher);
 
     /**
      * Sets the {@link RequestHeaders} to use for this call. These headers will be added to the HTTP request when
@@ -107,7 +108,7 @@ public interface ApolloQueryCall<T> extends ApolloCall<T> {
      * @param requestHeaders The {@link RequestHeaders} to use for this request.
      * @return The Builder
      */
-    @NotNull Builder<T> requestHeaders(@NotNull RequestHeaders requestHeaders);
+    @NotNull Builder<D> requestHeaders(@NotNull RequestHeaders requestHeaders);
   }
 
   /**
@@ -120,6 +121,6 @@ public interface ApolloQueryCall<T> extends ApolloCall<T> {
      * @param query the operation which needs to be performed
      * @return prepared {@link ApolloQueryCall} call to be executed at some point in the future
      */
-    <D extends Query.Data, T, V extends Query.Variables> ApolloQueryCall<T> query(@NotNull Query<D, T, V> query);
+    <D extends Query.Data, V extends Query.Variables> ApolloQueryCall<D> query(@NotNull Query<D, V> query);
   }
 }

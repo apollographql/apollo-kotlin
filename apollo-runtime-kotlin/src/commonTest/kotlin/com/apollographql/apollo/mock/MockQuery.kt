@@ -12,7 +12,7 @@ import okio.BufferedSource
 import okio.ByteString
 import okio.ByteString.Companion.encodeUtf8
 
-internal class MockQuery : Query<MockQuery.Data, MockQuery.Data, Operation.Variables> {
+internal class MockQuery : Query<MockQuery.Data, Operation.Variables> {
 
   override fun composeRequestBody(
       autoPersistQueries: Boolean,
@@ -43,8 +43,6 @@ internal class MockQuery : Query<MockQuery.Data, MockQuery.Data, Operation.Varia
   override fun responseFieldMapper(): ResponseFieldMapper<Data> {
     throw UnsupportedOperationException("Unsupported")
   }
-
-  override fun wrapData(data: Data?): Data? = data
 
   override fun name(): OperationName = object : OperationName {
     override fun name(): String = "MockQuery"

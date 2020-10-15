@@ -189,13 +189,10 @@ class WebSocketSubscriptionTransportMessageTest {
     override fun onClosed() {}
   }
 
-  private class MockSubscription : Subscription<Operation.Data, Operation.Data, Operation.Variables> {
+  private class MockSubscription : Subscription<Operation.Data, Operation.Variables> {
     override fun queryDocument() = "subscription{commentAdded{id  name}"
 
     override fun variables() = Operation.EMPTY_VARIABLES
-
-
-    override fun wrapData(data: Operation.Data?) = data
 
     override fun name() = object : OperationName {
       override fun name() = "SomeSubscription"

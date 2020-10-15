@@ -17,7 +17,7 @@ import kotlin.jvm.JvmField
 /**
  * Represents a GraphQL operation (mutation or query).
  */
-interface Operation<D : Operation.Data, T, V : Operation.Variables> {
+interface Operation<D : Operation.Data, V : Operation.Variables> {
   /**
    * Returns the raw GraphQL operation String.
    */
@@ -34,12 +34,6 @@ interface Operation<D : Operation.Data, T, V : Operation.Variables> {
   fun responseFieldMapper(): ResponseFieldMapper<D>
 
   /**
-   * Wraps the generated response data class [D] with another class. For example, a use case for this would be to
-   * wrap the generated response data class in an Optional i.e. Optional.fromNullable(data).
-   */
-  fun wrapData(data: D?): T?
-
-  /**
    * Returns GraphQL operation name [OperationName].
    */
   fun name(): OperationName
@@ -53,25 +47,25 @@ interface Operation<D : Operation.Data, T, V : Operation.Variables> {
    * Parses GraphQL operation raw response from the [source] with provided [scalarTypeAdapters] and returns result [Response]
    */
   @Throws(IOException::class)
-  fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters): Response<T>
+  fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters): Response<D>
 
   /**
    * Parses GraphQL operation raw response from the [byteString] with provided [scalarTypeAdapters] and returns result [Response]
    */
   @Throws(IOException::class)
-  fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters): Response<T>
+  fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters): Response<D>
 
   /**
    * Parses GraphQL operation raw response from the [source] and returns result [Response]
    */
   @Throws(IOException::class)
-  fun parse(source: BufferedSource): Response<T>
+  fun parse(source: BufferedSource): Response<D>
 
   /**
    * Parses GraphQL operation raw response from the [byteString] and returns result [Response]
    */
   @Throws(IOException::class)
-  fun parse(byteString: ByteString): Response<T>
+  fun parse(byteString: ByteString): Response<D>
 
   /**
    * Composes POST JSON-encoded request body to be sent to the GraphQL server.

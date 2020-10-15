@@ -5,6 +5,7 @@ import com.apollographql.apollo.Utils.immediateExecutor
 import com.apollographql.apollo.Utils.immediateExecutorService
 import com.apollographql.apollo.api.Input.Companion.fromNullable
 import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.CacheKey.Companion.from
 import com.apollographql.apollo.cache.normalized.CacheReference
@@ -240,7 +241,7 @@ class ResponseNormalizationTest {
   }
 
   @Throws(Exception::class)
-  private fun <T> assertHasNoErrors(mockResponse: String, query: Query<*, T, *>) {
+  private fun <D: Operation.Data> assertHasNoErrors(mockResponse: String, query: Query<D, *>) {
     enqueueAndAssertResponse(
         server,
         mockResponse,

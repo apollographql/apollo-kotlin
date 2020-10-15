@@ -3,7 +3,7 @@ package com.apollographql.apollo.api
 import okio.BufferedSource
 import okio.ByteString
 
-val EMPTY_OPERATION: Operation<*, *, *> = object : Operation<Operation.Data, Any?, Operation.Variables> {
+val EMPTY_OPERATION: Operation<*, *> = object : Operation<Operation.Data, Operation.Variables> {
   override fun variables(): Operation.Variables {
     return Operation.EMPTY_VARIABLES
   }
@@ -16,7 +16,6 @@ val EMPTY_OPERATION: Operation<*, *, *> = object : Operation<Operation.Data, Any
 
   override fun queryDocument() = throw UnsupportedOperationException()
   override fun responseFieldMapper() = throw UnsupportedOperationException()
-  override fun wrapData(data: Operation.Data?) = throw UnsupportedOperationException()
   override fun parse(source: BufferedSource) = throw UnsupportedOperationException()
   override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters) = throw UnsupportedOperationException()
   override fun parse(byteString: ByteString) = throw UnsupportedOperationException()

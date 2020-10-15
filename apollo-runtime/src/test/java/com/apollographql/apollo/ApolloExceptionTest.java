@@ -77,9 +77,6 @@ import static com.google.common.truth.Truth.assertThat;
         return "";
       }
 
-      @Override public Object wrapData(Data data) {
-        return data;
-      }
 
       @NotNull @Override public Response parse(@NotNull BufferedSource source) {
         throw new UnsupportedOperationException();

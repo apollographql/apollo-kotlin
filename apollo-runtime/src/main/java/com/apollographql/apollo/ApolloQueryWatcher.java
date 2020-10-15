@@ -1,21 +1,22 @@
 package com.apollographql.apollo;
 
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
 import com.apollographql.apollo.internal.util.Cancelable;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface ApolloQueryWatcher<T> extends Cancelable {
+public interface ApolloQueryWatcher<D extends Operation.Data> extends Cancelable {
 
-  ApolloQueryWatcher<T> enqueueAndWatch(@Nullable ApolloCall.Callback<T> callback);
+  ApolloQueryWatcher<D> enqueueAndWatch(@Nullable ApolloCall.Callback<D> callback);
 
   /**
    * @param fetcher The {@link ResponseFetcher} to use when the call is refetched due to a field changing in the
    * cache.
    */
-  @NotNull ApolloQueryWatcher<T> refetchResponseFetcher(@NotNull ResponseFetcher fetcher);
+  @NotNull ApolloQueryWatcher<D> refetchResponseFetcher(@NotNull ResponseFetcher fetcher);
 
   /**
    * Returns GraphQL watched operation.
@@ -41,5 +42,5 @@ public interface ApolloQueryWatcher<T> extends Cancelable {
    *
    * @return The cloned ApolloQueryWatcher object.
    */
-  @NotNull ApolloQueryWatcher<T> clone();
+  @NotNull ApolloQueryWatcher<D> clone();
 }

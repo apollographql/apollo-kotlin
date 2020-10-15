@@ -67,11 +67,11 @@ public abstract class OperationClientMessage {
     private final ScalarTypeAdapters scalarTypeAdapters;
 
     public final String subscriptionId;
-    public final Subscription<?, ?, ?> subscription;
+    public final Subscription<?, ?> subscription;
     public final boolean autoPersistSubscription;
     public final boolean sendSubscriptionDocument;
 
-    public Start(@NotNull String subscriptionId, @NotNull Subscription<?, ?, ?> subscription,
+    public Start(@NotNull String subscriptionId, @NotNull Subscription<?, ?> subscription,
         @NotNull ScalarTypeAdapters scalarTypeAdapters, boolean autoPersistSubscription, boolean sendSubscriptionDocument) {
       this.subscriptionId = checkNotNull(subscriptionId, "subscriptionId == null");
       this.subscription = checkNotNull(subscription, "subscription == null");

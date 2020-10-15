@@ -274,7 +274,7 @@ public class ApolloAutoPersistedOperationInterceptorTest {
         .build();
   }
 
-  static class MockOperation implements Operation<MockOperation.Data, MockOperation.Data, Operation.Variables> {
+  static class MockOperation implements Operation<MockOperation.Data, Operation.Variables> {
 
     @Override public String queryDocument() {
       throw new UnsupportedOperationException();
@@ -285,10 +285,6 @@ public class ApolloAutoPersistedOperationInterceptorTest {
     }
 
     @Override public ResponseFieldMapper<Data> responseFieldMapper() {
-      throw new UnsupportedOperationException();
-    }
-
-    @Override public Data wrapData(Data data) {
       throw new UnsupportedOperationException();
     }
 

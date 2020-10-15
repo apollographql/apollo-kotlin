@@ -4,7 +4,7 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
 
 interface ResolveDelegate<R> {
-  fun willResolveRootQuery(operation: Operation<*, *, *>)
+  fun willResolveRootQuery(operation: Operation<*, *>)
   fun willResolve(field: ResponseField, variables: Operation.Variables, value: Any?)
   fun didResolve(field: ResponseField, variables: Operation.Variables)
   fun didResolveScalar(value: Any?)

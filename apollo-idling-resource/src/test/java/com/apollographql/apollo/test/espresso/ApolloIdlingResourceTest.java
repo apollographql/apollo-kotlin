@@ -44,7 +44,7 @@ public class ApolloIdlingResourceTest {
   private static final long TIME_OUT_SECONDS = 3;
   private static final String IDLING_RESOURCE_NAME = "apolloIdlingResource";
 
-  private static final Query<Operation.Data, Object, Operation.Variables> EMPTY_QUERY = new Query<Operation.Data, Object, Operation.Variables>() {
+  private static final Query<Operation.Data, Operation.Variables> EMPTY_QUERY = new Query<Operation.Data, Operation.Variables>() {
 
     OperationName operationName = new OperationName() {
       @Override public String name() {
@@ -68,10 +68,6 @@ public class ApolloIdlingResourceTest {
       };
     }
 
-    @Override public Object wrapData(Data data) {
-      return data;
-    }
-
     @NotNull @Override public OperationName name() {
       return operationName;
     }
@@ -84,11 +80,11 @@ public class ApolloIdlingResourceTest {
       return OperationRequestBodyComposer.compose(this, false, true, ScalarTypeAdapters.DEFAULT);
     }
 
-    @NotNull @Override public Response<Object> parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+    @NotNull @Override public Response<Operation.Data> parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
       throw new UnsupportedOperationException();
     }
 
-    @NotNull @Override public Response<Object> parse(@NotNull BufferedSource source) {
+    @NotNull @Override public Response<Operation.Data> parse(@NotNull BufferedSource source) {
       throw new UnsupportedOperationException();
     }
 
@@ -99,7 +95,7 @@ public class ApolloIdlingResourceTest {
     @NotNull @Override public Response parse(@NotNull ByteString byteString, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
       throw new UnsupportedOperationException();
     }
-    
+
     @NotNull @Override public ByteString composeRequestBody(@NotNull ScalarTypeAdapters scalarTypeAdapters) {
       return OperationRequestBodyComposer.compose(this, false, true, ScalarTypeAdapters.DEFAULT);
     }
@@ -170,8 +166,8 @@ public class ApolloIdlingResourceTest {
     idlingResource = ApolloIdlingResource.create(IDLING_RESOURCE_NAME, apolloClient);
     assertThat(idlingResource.isIdleNow()).isTrue();
 
-    apolloClient.query(EMPTY_QUERY).enqueue(new ApolloCall.Callback<Object>() {
-      @Override public void onResponse(@NotNull Response<Object> response) {
+    apolloClient.query(EMPTY_QUERY).enqueue(new ApolloCall.Callback<Operation.Data>() {
+      @Override public void onResponse(@NotNull Response<Operation.Data> response) {
         latch.countDown();
       }
 
@@ -206,8 +202,8 @@ public class ApolloIdlingResourceTest {
     idlingResource = ApolloIdlingResource.create(IDLING_RESOURCE_NAME, apolloClient);
     assertThat(idlingResource.isIdleNow()).isTrue();
 
-    apolloClient.query(EMPTY_QUERY).watcher().enqueueAndWatch(new ApolloCall.Callback<Object>() {
-      @Override public void onResponse(@NotNull Response<Object> response) {
+    apolloClient.query(EMPTY_QUERY).watcher().enqueueAndWatch(new ApolloCall.Callback<Operation.Data>() {
+      @Override public void onResponse(@NotNull Response<Operation.Data> response) {
         latch.countDown();
       }
 

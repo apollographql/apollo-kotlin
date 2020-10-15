@@ -59,13 +59,6 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
           .addCode("return QUERY_DOCUMENT")
           .build()
       )
-      .addFunction(FunSpec.builder("wrapData")
-          .addModifiers(KModifier.OVERRIDE)
-          .addParameter(ParameterSpec.builder("data", dataType.rootType.asTypeName().copy(nullable = true)).build())
-          .returns(dataType.rootType.asTypeName().copy(nullable = true))
-          .addCode("return data")
-          .build()
-      )
       .addFunction(FunSpec.builder("variables")
           .addModifiers(KModifier.OVERRIDE)
           .returns(Operation.Variables::class.asClassName())
@@ -145,7 +138,7 @@ private fun CodeGenerationAst.OperationType.superInterfaceType(targetPackage: St
     CodeGenerationAst.OperationType.Type.QUERY -> Query::class.asClassName()
     CodeGenerationAst.OperationType.Type.MUTATION -> Mutation::class.asClassName()
     CodeGenerationAst.OperationType.Type.SUBSCRIPTION -> Subscription::class.asClassName()
-  }.parameterizedBy(dataTypeName, dataTypeName, Operation.Variables::class.asClassName())
+  }.parameterizedBy(dataTypeName, Operation.Variables::class.asClassName())
 }
 
 private val CodeGenerationAst.OperationType.primaryConstructorSpec: FunSpec

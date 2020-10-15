@@ -1,5 +1,6 @@
 package com.apollographql.apollo
 
+import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY
@@ -45,22 +46,22 @@ object Utils {
     return MockResponse().setChunkedBody(readFileToString(Utils::class.java, "/$fileName"), 32)
   }
 
-  fun <T> assertResponse(call: ApolloCall<T>, predicate: Predicate<Response<T>>) {
+  fun <D: Operation.Data> assertResponse(call: ApolloCall<D>, predicate: Predicate<Response<D>>) {
     Rx2Apollo.from(call)
         .test()
         .assertValue(predicate)
   }
 
   @Throws(Exception::class)
-  fun <T> enqueueAndAssertResponse(server: MockWebServer, mockResponse: String, call: ApolloCall<T>,
-                                   predicate: Predicate<Response<T>>) {
+  fun <D: Operation.Data> enqueueAndAssertResponse(server: MockWebServer, mockResponse: String, call: ApolloCall<D>,
+                                   predicate: Predicate<Response<D>>) {
     server.enqueue(mockResponse(mockResponse))
     assertResponse(call, predicate)
   }
 
   @Throws(Exception::class)
-  fun <T> cacheAndAssertCachedResponse(server: MockWebServer, mockResponse: String, call: ApolloQueryCall<T>,
-                                       predicate: Predicate<Response<T>>) {
+  fun <D: Operation.Data> cacheAndAssertCachedResponse(server: MockWebServer, mockResponse: String, call: ApolloQueryCall<D>,
+                                       predicate: Predicate<Response<D>>) {
     server.enqueue(mockResponse(mockResponse))
     assertResponse(
         call.responseFetcher(NETWORK_ONLY),

@@ -11,7 +11,7 @@ import okio.BufferedSource
 import okio.ByteString
 import okio.ByteString.Companion.encodeUtf8
 
-internal class MockSubscription : Subscription<MockSubscription.Data, MockSubscription.Data, Operation.Variables> {
+internal class MockSubscription : Subscription<MockSubscription.Data, Operation.Variables> {
 
   override fun composeRequestBody(
       autoPersistQueries: Boolean,
@@ -41,8 +41,6 @@ internal class MockSubscription : Subscription<MockSubscription.Data, MockSubscr
   override fun responseFieldMapper(): ResponseFieldMapper<Data> {
     throw UnsupportedOperationException("Unsupported")
   }
-
-  override fun wrapData(data: Data?): Data? = data
 
   override fun name(): OperationName = object : OperationName {
     override fun name(): String = "MockSubscription"

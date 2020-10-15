@@ -90,7 +90,7 @@ class QueryRefetchTest {
         server!!,
         "ReviewsEmpireEpisodeResponse.json",
         apolloClient!!.query(ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(ApolloResponseFetchers.NETWORK_FIRST),
-        Predicate<Response<ReviewsByEpisodeQuery.Data?>> { response -> !response.hasErrors() }
+        Predicate<Response<ReviewsByEpisodeQuery.Data>> { response -> !response.hasErrors() }
     )
     assertResponse(
         apolloClient!!.query(ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)

@@ -82,7 +82,7 @@ class SendOperationIdentifiersTest {
         server,
         "HeroAndFriendsNameResponse.json",
         apolloClient.query(heroAndFriendsNamesQuery),
-        Predicate<Response<HeroAndFriendsNamesQuery.Data?>> { response -> !response.hasErrors() }
+        Predicate<Response<HeroAndFriendsNamesQuery.Data>> { response -> !response.hasErrors() }
     )
     Truth.assertThat(applicationInterceptorHeader.get()).isTrue()
     Truth.assertThat(networkInterceptorHeader.get()).isTrue()

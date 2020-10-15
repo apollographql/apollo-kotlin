@@ -113,7 +113,7 @@ class IntegrationTest {
     server.enqueue(mockResponse("ResponseError.json"))
     assertResponse(
         apolloClient!!.query(AllPlanetsQuery()),
-        Predicate<Response<AllPlanetsQuery.Data?>> { response ->
+        Predicate<Response<AllPlanetsQuery.Data>> { response ->
           assertThat(response.hasErrors()).isTrue()
           assertThat(response.errors).containsExactly(Error(
               "Cannot query field \"names\" on type \"Species\".", listOf(Error.Location(3, 5)), emptyMap<String, Any>()))
@@ -197,7 +197,7 @@ class IntegrationTest {
     server.enqueue(mockResponse("ResponseDataNull.json"))
     assertResponse(
         apolloClient!!.query(HeroNameQuery()),
-        Predicate<Response<HeroNameQuery.Data?>> { response ->
+        Predicate<Response<HeroNameQuery.Data>> { response ->
           assertThat(response.data).isNull()
           assertThat(response.hasErrors()).isFalse()
           true
@@ -320,7 +320,7 @@ class IntegrationTest {
     server.enqueue(httpResponse)
     assertResponse(
         apolloClient!!.query(AllPlanetsQuery()),
-        Predicate { response: Response<AllPlanetsQuery.Data?> ->
+        Predicate { response: Response<AllPlanetsQuery.Data> ->
           assertThat(response.executionContext[OkHttpExecutionContext.KEY]).isNotNull()
           assertThat(response.executionContext[OkHttpExecutionContext.KEY]!!.response).isNotNull()
           assertThat(response.executionContext[OkHttpExecutionContext.KEY]!!.response.headers().toString())
@@ -334,7 +334,7 @@ class IntegrationTest {
               )
           assertThat(response.executionContext[OkHttpExecutionContext.KEY]!!.response.body()).isNull()
           true
-        } as Predicate<Response<AllPlanetsQuery.Data?>>
+        } as Predicate<Response<AllPlanetsQuery.Data>>
     )
   }
 
@@ -344,10 +344,10 @@ class IntegrationTest {
   }
 
   @Throws(Exception::class)
-  private fun <T> enqueueCall(call: ApolloQueryCall<T>): List<ApolloCall.StatusEvent?> {
+  private fun <D: Operation.Data> enqueueCall(call: ApolloQueryCall<D>): List<ApolloCall.StatusEvent?> {
     val statusEvents: MutableList<ApolloCall.StatusEvent?> = ArrayList()
-    call.enqueue(object : ApolloCall.Callback<T>() {
-      override fun onResponse(response: Response<T>) {}
+    call.enqueue(object : ApolloCall.Callback<D>() {
+      override fun onResponse(response: Response<D>) {}
       override fun onFailure(e: ApolloException) {}
       override fun onStatusEvent(event: ApolloCall.StatusEvent) {
         statusEvents.add(event)
@@ -358,7 +358,7 @@ class IntegrationTest {
 
   companion object {
     private val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-    private fun <T> assertResponse(call: ApolloCall<T>, predicate: Predicate<Response<T>>) {
+    private fun <D: Operation.Data> assertResponse(call: ApolloCall<D>, predicate: Predicate<Response<D>>) {
       Rx2Apollo.from(call)
           .test()
           .assertValue(predicate)

@@ -9,6 +9,7 @@ import com.apollographql.apollo.api.CustomTypeValue
 import com.apollographql.apollo.api.CustomTypeValue.GraphQLString
 import com.apollographql.apollo.api.Input.Companion.fromNullable
 import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.cache.normalized.CacheKey.Companion.from
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
@@ -476,7 +477,7 @@ class ResponseWriteTestCase {
   }
 
   @Throws(Exception::class)
-  private fun <T> assertCachedQueryResponse(query: Query<*, T, *>, predicate: Predicate<Response<T>>) {
+  private fun <D: Operation.Data> assertCachedQueryResponse(query: Query<D, *>, predicate: Predicate<Response<D>>) {
     assertResponse(
         apolloClient!!.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
         predicate
