@@ -5,6 +5,7 @@ import com.apollographql.apollo.api.internal.Utils.__checkNotNull
 import android.os.Looper
 import com.apollographql.apollo.ApolloCallback
 import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloHttpException
 import com.apollographql.apollo.exception.ApolloNetworkException
@@ -18,10 +19,10 @@ import com.apollographql.apollo.exception.ApolloParseException
  * attached to the main looper. This behaviour is intentional as [ApolloHttpException] internally has a reference
  * to raw [okhttp3.Response] that must be closed on the background, otherwise it throws [ ] exception.
  */
-class ApolloCallback<T>(callback: ApolloCall.Callback<T>, handler: Handler) : ApolloCall.Callback<T>() {
-  val delegate: ApolloCall.Callback<T>
+class ApolloCallback<D: Operation.Data>(callback: ApolloCall.Callback<D>, handler: Handler) : ApolloCall.Callback<D>() {
+  val delegate: ApolloCall.Callback<D>
   private val handler: Handler
-  override fun onResponse(response: Response<T>) {
+  override fun onResponse(response: Response<D>) {
     handler.post { delegate.onResponse(response) }
   }
 
@@ -56,7 +57,7 @@ class ApolloCallback<T>(callback: ApolloCall.Callback<T>, handler: Handler) : Ap
      * @param callback original callback to delegates calls
      * @param handler  the callback will be run on the thread to which this handler is attached
      */
-    fun <T> wrap(callback: ApolloCall.Callback<T>, handler: Handler): ApolloCallback<T> {
+    fun <D: Operation.Data> wrap(callback: ApolloCall.Callback<D>, handler: Handler): ApolloCallback<D> {
       return ApolloCallback(callback, handler)
     }
   }

@@ -16,7 +16,7 @@ object SimpleOperationResponseParser {
 
   @JvmStatic
   @Throws(IOException::class)
-  fun <D : Operation.Data, W> parse(
+  fun <D : Operation.Data> parse(
       source: BufferedSource,
       operation: Operation<D, *>,
       scalarTypeAdapters: ScalarTypeAdapters
