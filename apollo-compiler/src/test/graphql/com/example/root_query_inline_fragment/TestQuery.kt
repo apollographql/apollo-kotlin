@@ -22,6 +22,7 @@ import com.apollographql.apollo.api.internal.Throws
 import com.example.root_query_inline_fragment.type.Episode
 import kotlin.Array
 import kotlin.Boolean
+import kotlin.Double
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
@@ -84,24 +85,95 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   )
 
   /**
+   * A humanoid creature from the Star Wars universe
+   */
+  data class Human(
+    override val __typename: String = "Human",
+    /**
+     * What this human calls themselves
+     */
+    override val name: String,
+    /**
+     * The movies this human appears in
+     */
+    override val appearsIn: List<Episode?>,
+    /**
+     * Height in the preferred unit, default is meters
+     */
+    val height: Double?
+  ) : Hero {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller.invoke { writer ->
+        writer.writeString(RESPONSE_FIELDS[0], this@Human.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@Human.name)
+        writer.writeList(RESPONSE_FIELDS[2], this@Human.appearsIn) { value, listItemWriter ->
+          value?.forEach { value ->
+            listItemWriter.writeString(value?.rawValue)}
+        }
+        writer.writeDouble(RESPONSE_FIELDS[3], this@Human.height)
+      }
+    }
+
+    fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forList("appearsIn", "appearsIn", null, false, null),
+        ResponseField.forDouble("height", "height", null, true, null)
+      )
+
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Human {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          var appearsIn: List<Episode?>? = null
+          var height: Double? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              2 -> appearsIn = readList<Episode>(RESPONSE_FIELDS[2]) { reader ->
+                Episode.safeValueOf(reader.readString())
+              }
+              3 -> height = readDouble(RESPONSE_FIELDS[3])
+              else -> break
+            }
+          }
+          Human(
+            __typename = __typename!!,
+            name = name!!,
+            appearsIn = appearsIn!!,
+            height = height
+          )
+        }
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<Human> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
    * A character from the Star Wars universe
    */
-  data class Hero(
-    val __typename: String = "Character",
+  data class OtherHero(
+    override val __typename: String = "Character",
     /**
      * The name of the character
      */
-    val name: String,
+    override val name: String,
     /**
      * The movies this character appears in
      */
-    val appearsIn: List<Episode?>
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
+    override val appearsIn: List<Episode?>
+  ) : Hero {
+    override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Hero.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@Hero.name)
-        writer.writeList(RESPONSE_FIELDS[2], this@Hero.appearsIn) { value, listItemWriter ->
+        writer.writeString(RESPONSE_FIELDS[0], this@OtherHero.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@OtherHero.name)
+        writer.writeList(RESPONSE_FIELDS[2], this@OtherHero.appearsIn) { value, listItemWriter ->
           value?.forEach { value ->
             listItemWriter.writeString(value?.rawValue)}
         }
@@ -117,7 +189,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forList("appearsIn", "appearsIn", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Hero {
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): OtherHero {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -132,7 +204,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
               else -> break
             }
           }
-          Hero(
+          OtherHero(
             __typename = __typename!!,
             name = name!!,
             appearsIn = appearsIn!!
@@ -141,7 +213,42 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Hero> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<OtherHero> = ResponseFieldMapper { invoke(it) }
+    }
+  }
+
+  /**
+   * A character from the Star Wars universe
+   */
+  interface Hero {
+    val __typename: String
+
+    /**
+     * The name of the character
+     */
+    val name: String
+
+    /**
+     * The movies this character appears in
+     */
+    val appearsIn: List<Episode?>
+
+    fun asHuman(): Human? = this as? Human
+
+    fun marshaller(): ResponseFieldMarshaller
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Hero {
+        val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
+        return when(typename) {
+          "Human" -> Human(reader, typename)
+          else -> OtherHero(reader, typename)
+        }
+      }
     }
   }
 
@@ -203,7 +310,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   /**
    * A humanoid creature from the Star Wars universe
    */
-  data class Human(
+  data class Human1(
     val __typename: String = "Human",
     /**
      * What this human calls themselves
@@ -216,9 +323,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   ) {
     fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Human.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@Human.name)
-        writer.writeString(RESPONSE_FIELDS[2], this@Human.homePlanet)
+        writer.writeString(RESPONSE_FIELDS[0], this@Human1.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], this@Human1.name)
+        writer.writeString(RESPONSE_FIELDS[2], this@Human1.homePlanet)
       }
     }
 
@@ -229,7 +336,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("homePlanet", "homePlanet", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Human {
+      operator fun invoke(reader: ResponseReader, __typename: String? = null): Human1 {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -242,7 +349,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
               else -> break
             }
           }
-          Human(
+          Human1(
             __typename = __typename!!,
             name = name!!,
             homePlanet = homePlanet
@@ -251,7 +358,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       }
 
       @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Human> = ResponseFieldMapper { invoke(it) }
+      fun Mapper(): ResponseFieldMapper<Human1> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -262,7 +369,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     val __typename: String = "Query",
     val hero: Hero?,
     val droid: Droid?,
-    val human: Human?
+    val human: Human1?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
@@ -288,7 +395,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           var __typename: String? = __typename
           var hero: Hero? = null
           var droid: Droid? = null
-          var human: Human? = null
+          var human: Human1? = null
           while(true) {
             when (selectField(RESPONSE_FIELDS)) {
               0 -> __typename = readString(RESPONSE_FIELDS[0])
@@ -298,8 +405,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
               2 -> droid = readObject<Droid>(RESPONSE_FIELDS[2]) { reader ->
                 Droid(reader)
               }
-              3 -> human = readObject<Human>(RESPONSE_FIELDS[3]) { reader ->
-                Human(reader)
+              3 -> human = readObject<Human1>(RESPONSE_FIELDS[3]) { reader ->
+                Human1(reader)
               }
               else -> break
             }
@@ -320,7 +427,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "b1164d50a82d7166116f990543f13495ba41e1a3ab35212e09908aa5c533707d"
+        "ef210a847924557a5212f3b644b19e1c9c71371689ecfae98b684b150d875c8f"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -331,6 +438,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           |      __typename
           |      name
           |      appearsIn
+          |      ... on Human {
+          |        height
+          |      }
           |    }
           |    droid(id: 1) {
           |      __typename
