@@ -375,6 +375,9 @@ class GraphQLDocumentParser(
         ?: emptyList()
   }
 
+  // Passing parentFields might not be necessary if the root operation type always resolves to a
+  // single concrete type.
+  // See: https://github.com/apollographql/apollo-android/pull/2653#discussion_r504529317
   private fun GraphQLParser.SelectionSetContext?.inlineFragments(
       schemaType: IntrospectionSchema.Type,
       parentFields: ParseResult<List<Field>>
