@@ -68,6 +68,8 @@ object Utils {
 
       JsonReader.Token.NUMBER -> BigDecimal(nextString()!!)
 
+      JsonReader.Token.LONG -> BigDecimal(nextLong())
+
       else -> nextString()!!
     }
   }
