@@ -6,6 +6,12 @@ import com.apollographql.apollo.api.EMPTY_OPERATION
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ScalarType
 import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.internal.json.JsonUtf8Writer
+import com.apollographql.apollo.api.internal.json.JsonWriter
+import com.apollographql.apollo.api.internal.json.Utils
+import okio.Buffer
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -14,7 +20,7 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
 
-class SimpleResponseReaderJvmCustomTypesTest {
+class StreamResponseReaderJvmCustomTypesTest {
   private val noConditions: List<ResponseField.Condition> = emptyList()
 
   @Test
@@ -71,7 +77,7 @@ class SimpleResponseReaderJvmCustomTypesTest {
   }
 
   companion object {
-    private fun responseReader(recordSet: Map<String, Any>): SimpleResponseReader {
+    private fun responseReader(recordSet: Map<String, Any>): StreamResponseReader {
       val customTypeAdapters: MutableMap<ScalarType, CustomTypeAdapter<*>> = HashMap()
       customTypeAdapters[DATE_CUSTOM_TYPE] = object : CustomTypeAdapter<Any?> {
         override fun decode(value: CustomTypeValue<*>): Any {
@@ -104,7 +110,21 @@ class SimpleResponseReaderJvmCustomTypesTest {
           throw UnsupportedOperationException()
         }
       }
-      return SimpleResponseReader(recordSet, EMPTY_OPERATION.variables(), ScalarTypeAdapters(customTypeAdapters))
+
+      val jsonReader = BufferedSourceJsonReader(
+          Buffer().apply {
+            Utils.writeToJson(
+                value = recordSet,
+                jsonWriter = JsonUtf8Writer(this),
+            )
+            flush()
+          }
+      )
+      return StreamResponseReader(
+          jsonReader = jsonReader,
+          variables = EMPTY_OPERATION.variables(),
+          scalarTypeAdapters = ScalarTypeAdapters(customTypeAdapters),
+      )
     }
 
     private val OBJECT_CUSTOM_TYPE: ScalarType = object : ScalarType {

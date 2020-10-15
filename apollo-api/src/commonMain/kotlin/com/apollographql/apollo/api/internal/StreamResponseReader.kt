@@ -1,0 +1,193 @@
+package com.apollographql.apollo.api.internal
+
+import com.apollographql.apollo.api.CustomTypeValue
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.ScalarType
+import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.internal.json.Utils.readRecursively
+
+class StreamResponseReader private constructor(
+    private val jsonReader: JsonReader,
+    private val variableValues: Map<String, Any?>,
+    private val scalarTypeAdapters: ScalarTypeAdapters,
+) : ResponseReader {
+  private var selectedFieldIndex: Int = -1
+  private var selectedField: ResponseField? = null
+
+  constructor(
+      jsonReader: JsonReader,
+      variables: Operation.Variables,
+      scalarTypeAdapters: ScalarTypeAdapters
+  ) : this(jsonReader, variables.valueMap(), scalarTypeAdapters)
+
+  override fun selectField(fields: Array<ResponseField>): Int {
+    while (jsonReader.hasNext()) {
+      val nextFieldName = jsonReader.nextName()
+
+      // trying to guess that next selected field will be the next field in the JSON stream
+      selectedFieldIndex++
+
+      if (selectedFieldIndex >= fields.size || fields[selectedFieldIndex].responseName != nextFieldName) {
+        // our guess failed, fallback to full scan
+        selectedFieldIndex = fields.indexOfFirst { field -> field.responseName == nextFieldName }
+      }
+
+      if (selectedFieldIndex == -1) {
+        jsonReader.skipValue()
+      } else {
+        selectedField = fields[selectedFieldIndex]
+        return selectedFieldIndex
+      }
+    }
+
+    return -1
+  }
+
+  override fun readString(field: ResponseField): String? {
+    return readValue(field) {
+      nextString()
+    }
+  }
+
+  override fun readInt(field: ResponseField): Int? {
+    return readValue(field) {
+      nextInt()
+    }
+  }
+
+  override fun readDouble(field: ResponseField): Double? {
+    return readValue(field) {
+      nextDouble()
+    }
+  }
+
+  override fun readBoolean(field: ResponseField): Boolean? {
+    return readValue(field) {
+      nextBoolean()
+    }
+  }
+
+  override fun <T : Any> readObject(field: ResponseField, objectReader: ResponseReader.ObjectReader<T>): T? {
+    return readValue(field) {
+      beginObject()
+      val result = objectReader.read(
+          StreamResponseReader(
+              jsonReader = this,
+              variableValues = variableValues,
+              scalarTypeAdapters = scalarTypeAdapters,
+          )
+      )
+      endObject()
+      result
+    }
+  }
+
+  override fun <T : Any> readList(field: ResponseField, listReader: ResponseReader.ListReader<T>): List<T?>? {
+    return readValue(field) {
+      beginArray()
+      val listItemReader = ListItemReader(
+          jsonReader = this,
+          variableValues = variableValues,
+          scalarTypeAdapters = scalarTypeAdapters,
+      )
+      val result = ArrayList<T?>()
+      while (hasNext()) {
+        when (peek()) {
+          JsonReader.Token.NULL -> result.add(jsonReader.nextNull())
+          else -> result.add(listReader.read(listItemReader))
+        }
+      }
+      endArray()
+      result
+    }
+  }
+
+  override fun <T : Any> readCustomType(field: ResponseField.CustomTypeField): T? {
+    val typeAdapter = scalarTypeAdapters.adapterFor<T>(field.scalarType)
+    val value = readValue(field) {
+      readRecursively()
+    }
+    return value?.let { typeAdapter.decode(CustomTypeValue.fromRawValue(it)) }
+  }
+
+  private inline fun <T> readValue(field: ResponseField, readValue: JsonReader.() -> T?): T? {
+    val fieldToRead = selectedField.also {
+      selectedField = null
+    }
+
+    check(fieldToRead == null || fieldToRead.responseName == field.responseName) {
+      "Expected `${field.responseName}` field to read next from JSON stream but found `${fieldToRead?.responseName}`"
+    }
+
+    if (fieldToRead == null) {
+      val nextFieldName = jsonReader.nextName()
+      check(nextFieldName == field.responseName) {
+        "Expected `${field.responseName}` field to read next from JSON stream but found `$nextFieldName`"
+      }
+    }
+
+    return when (jsonReader.peek()) {
+      JsonReader.Token.NULL -> if (field.optional) jsonReader.nextNull() else throw NullPointerException(
+          "Couldn't read `${field.responseName}` field value, expected non null value"
+      )
+      else -> readValue(jsonReader)
+    }
+  }
+
+  private class ListItemReader(
+      private val jsonReader: JsonReader,
+      private val variableValues: Map<String, Any?>,
+      private val scalarTypeAdapters: ScalarTypeAdapters,
+  ) : ResponseReader.ListItemReader {
+
+    override fun readString(): String {
+      return jsonReader.nextString()!!
+    }
+
+    override fun readInt(): Int {
+      return jsonReader.nextInt()
+    }
+
+    override fun readDouble(): Double {
+      return jsonReader.nextDouble()
+    }
+
+    override fun readBoolean(): Boolean {
+      return jsonReader.nextBoolean()
+    }
+
+    override fun <T : Any> readCustomType(scalarType: ScalarType): T {
+      val typeAdapter = scalarTypeAdapters.adapterFor<T>(scalarType)
+      val value = jsonReader.readRecursively()!!
+      return typeAdapter.decode(CustomTypeValue.fromRawValue(value))
+    }
+
+    override fun <T : Any> readObject(objectReader: ResponseReader.ObjectReader<T>): T {
+      jsonReader.beginObject()
+      val result = objectReader.read(
+          StreamResponseReader(
+              jsonReader = jsonReader,
+              variableValues = variableValues,
+              scalarTypeAdapters = scalarTypeAdapters,
+          )
+      )
+      jsonReader.endObject()
+      return result
+    }
+
+    override fun <T : Any> readList(listReader: ResponseReader.ListReader<T>): List<T?> {
+      jsonReader.beginArray()
+      val result = ArrayList<T?>()
+      while (jsonReader.hasNext()) {
+        when (jsonReader.peek()) {
+          JsonReader.Token.NULL -> result.add(jsonReader.nextNull())
+          else -> result.add(listReader.read(this))
+        }
+      }
+      jsonReader.endArray()
+      return result
+    }
+  }
+}
