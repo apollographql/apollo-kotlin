@@ -6,7 +6,10 @@ query TestQuery {
       appearsIn
     }
     droid(id: 1) {
-      ...droidFragment
+      ... on Droid {
+        name
+        primaryFunction
+      }
     }
     human(id: 1) {
       ... on Human {
@@ -15,9 +18,4 @@ query TestQuery {
       }
     }
   }
-}
-
-fragment droidFragment on Droid {
-  name
-  primaryFunction
 }

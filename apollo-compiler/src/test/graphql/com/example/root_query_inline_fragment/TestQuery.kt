@@ -19,7 +19,6 @@ import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.api.internal.Throws
-import com.example.root_query_inline_fragment.fragment.DroidFragment
 import com.example.root_query_inline_fragment.type.Episode
 import kotlin.Array
 import kotlin.Boolean
@@ -150,17 +149,17 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
    * An autonomous mechanical character in the Star Wars universe
    */
   data class Droid(
-    override val __typename: String = "Droid",
+    val __typename: String = "Droid",
     /**
      * What others call this droid
      */
-    override val name: String,
+    val name: String,
     /**
      * This droid's primary function
      */
-    override val primaryFunction: String?
-  ) : DroidFragment {
-    override fun marshaller(): ResponseFieldMarshaller {
+    val primaryFunction: String?
+  ) {
+    fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
         writer.writeString(RESPONSE_FIELDS[0], this@Droid.__typename)
         writer.writeString(RESPONSE_FIELDS[1], this@Droid.name)
@@ -321,7 +320,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "5dbbcc56f98341b4752e8fada858759caf67ac2638708fadab29fd9879c55b7a"
+        "b1164d50a82d7166116f990543f13495ba41e1a3ab35212e09908aa5c533707d"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -335,7 +334,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           |    }
           |    droid(id: 1) {
           |      __typename
-          |      ...droidFragment
+          |      ... on Droid {
+          |        name
+          |        primaryFunction
+          |      }
           |    }
           |    human(id: 1) {
           |      __typename
@@ -345,11 +347,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           |      }
           |    }
           |  }
-          |}
-          |fragment droidFragment on Droid {
-          |  __typename
-          |  name
-          |  primaryFunction
           |}
           """.trimMargin()
         )
