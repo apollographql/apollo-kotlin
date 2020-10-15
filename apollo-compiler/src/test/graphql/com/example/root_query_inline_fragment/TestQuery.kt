@@ -308,75 +308,18 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
   }
 
   /**
-   * A humanoid creature from the Star Wars universe
-   */
-  data class Human1(
-    val __typename: String = "Human",
-    /**
-     * What this human calls themselves
-     */
-    val name: String,
-    /**
-     * The home planet of the human, or null if unknown
-     */
-    val homePlanet: String?
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Human1.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@Human1.name)
-        writer.writeString(RESPONSE_FIELDS[2], this@Human1.homePlanet)
-      }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forString("homePlanet", "homePlanet", null, true, null)
-      )
-
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Human1 {
-        return reader.run {
-          var __typename: String? = __typename
-          var name: String? = null
-          var homePlanet: String? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> name = readString(RESPONSE_FIELDS[1])
-              2 -> homePlanet = readString(RESPONSE_FIELDS[2])
-              else -> break
-            }
-          }
-          Human1(
-            __typename = __typename!!,
-            name = name!!,
-            homePlanet = homePlanet
-          )
-        }
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Human1> = ResponseFieldMapper { invoke(it) }
-    }
-  }
-
-  /**
    * Data from the response after executing this GraphQL operation
    */
   data class Data(
     val __typename: String = "Query",
     val hero: Hero?,
-    val droid: Droid?,
-    val human: Human1?
+    val droid: Droid?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
         writer.writeString(RESPONSE_FIELDS[0], this@Data.__typename)
         writer.writeObject(RESPONSE_FIELDS[1], this@Data.hero?.marshaller())
         writer.writeObject(RESPONSE_FIELDS[2], this@Data.droid?.marshaller())
-        writer.writeObject(RESPONSE_FIELDS[3], this@Data.human?.marshaller())
       }
     }
 
@@ -385,8 +328,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forObject("hero", "hero", null, true, null),
         ResponseField.forObject("droid", "droid", mapOf<String, Any>(
-          "id" to "1"), true, null),
-        ResponseField.forObject("human", "human", mapOf<String, Any>(
           "id" to "1"), true, null)
       )
 
@@ -395,7 +336,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           var __typename: String? = __typename
           var hero: Hero? = null
           var droid: Droid? = null
-          var human: Human1? = null
           while(true) {
             when (selectField(RESPONSE_FIELDS)) {
               0 -> __typename = readString(RESPONSE_FIELDS[0])
@@ -405,17 +345,13 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
               2 -> droid = readObject<Droid>(RESPONSE_FIELDS[2]) { reader ->
                 Droid(reader)
               }
-              3 -> human = readObject<Human1>(RESPONSE_FIELDS[3]) { reader ->
-                Human1(reader)
-              }
               else -> break
             }
           }
           Data(
             __typename = __typename!!,
             hero = hero,
-            droid = droid,
-            human = human
+            droid = droid
           )
         }
       }
@@ -427,7 +363,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "ef210a847924557a5212f3b644b19e1c9c71371689ecfae98b684b150d875c8f"
+        "22e04d7f32ad56e49eb2092e14a88853689bab52269dcc5d4d861d2d0a449657"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -447,13 +383,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           |      ... on Droid {
           |        name
           |        primaryFunction
-          |      }
-          |    }
-          |    human(id: 1) {
-          |      __typename
-          |      ... on Human {
-          |        name
-          |        homePlanet
           |      }
           |    }
           |  }
