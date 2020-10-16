@@ -1,6 +1,6 @@
 package com.apollographql.apollo.gradle.test
 
-import com.apollographql.apollo.gradle.internal.child
+
 import com.apollographql.apollo.gradle.util.TestUtils
 import com.apollographql.apollo.gradle.util.TestUtils.withProject
 import com.apollographql.apollo.gradle.util.generatedChild
@@ -20,13 +20,13 @@ class KotlinCodegenTests {
         plugins = listOf(TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin)) { dir ->
 
       val source = TestUtils.fixturesDirectory()
-      source.child("kotlin").copyRecursively(dir.child("src", "main", "kotlin"))
+      File(source, "kotlin").copyRecursively(File(dir, "src/main/kotlin"))
 
       TestUtils.executeTask("build", dir)
       assertTrue(File(dir, "build/classes/kotlin/main/com/example/DroidDetailsQuery.class").isFile)
-      assertTrue(dir.generatedChild("main/service/com/example/DroidDetailsQuery.kt").isFile)
-      assertTrue(dir.generatedChild("main/service/com/example/type/CustomType.kt").isFile)
-      assertTrue(dir.generatedChild("main/service/com/example/fragment/SpeciesInformation.kt").isFile)
+      assertTrue(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("service/com/example/type/CustomType.kt").isFile)
+      assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").isFile)
     }
   }
 
@@ -46,18 +46,18 @@ class KotlinCodegenTests {
     ) { dir ->
 
       val source = TestUtils.fixturesDirectory()
-      source.child("kotlin").copyRecursively(dir.child("src", "main", "kotlin"))
+      File(source, "kotlin").copyRecursively(File(dir, "src/main/kotlin"))
 
       TestUtils.executeTask("build", dir)
 
-      assertTrue(dir.generatedChild("main/service/com/example/DroidDetailsQuery.kt").isFile)
-      assertThat(dir.generatedChild("main/service/com/example/DroidDetailsQuery.kt").readText(), CoreMatchers.containsString("internal class"))
+      assertTrue(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").isFile)
+      assertThat(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").readText(), CoreMatchers.containsString("internal class"))
 
-      assertTrue(dir.generatedChild("main/service/com/example/type/CustomType.kt").isFile)
-      assertThat(dir.generatedChild("main/service/com/example/type/CustomType.kt").readText(), CoreMatchers.containsString("internal enum class"))
+      assertTrue(dir.generatedChild("service/com/example/type/CustomType.kt").isFile)
+      assertThat(dir.generatedChild("service/com/example/type/CustomType.kt").readText(), CoreMatchers.containsString("internal enum class"))
 
-      assertTrue(dir.generatedChild("main/service/com/example/fragment/SpeciesInformation.kt").isFile)
-      assertThat(dir.generatedChild("main/service/com/example/fragment/SpeciesInformation.kt").readText(), CoreMatchers.containsString("internal interface"))
+      assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").isFile)
+      assertThat(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").readText(), CoreMatchers.containsString("internal interface"))
     }
   }
 
@@ -67,8 +67,8 @@ class KotlinCodegenTests {
       apollo {
         service("githunt") {
           sourceFolder = "githunt"
+          sealedClassesForEnumsMatching = [".*"]
         }
-        sealedClassesForEnumsMatching = [".*"]
       }
     """.trimIndent()
     withProject(
@@ -78,15 +78,15 @@ class KotlinCodegenTests {
     ) { dir ->
       val source = TestUtils.fixturesDirectory()
 
-      val target = dir.child("src", "main", "graphql", "githunt")
-      source.child("githunt").copyRecursively(target = target, overwrite = true)
+      val target = File(dir, "src/main/graphql/githunt")
+      File(source, "githunt").copyRecursively(target = target, overwrite = true)
 
-      dir.child("src", "main", "graphql", "com").deleteRecursively()
+      File(dir, "src/main/graphql/com").deleteRecursively()
 
       TestUtils.executeTask("build", dir)
 
-      assertTrue(dir.generatedChild("main/githunt/type/FeedType.kt").isFile)
-      assertThat(dir.generatedChild("main/githunt/type/FeedType.kt").readText(), CoreMatchers.containsString("sealed class"))
+      assertTrue(dir.generatedChild("githunt/type/FeedType.kt").isFile)
+      assertThat(dir.generatedChild("githunt/type/FeedType.kt").readText(), CoreMatchers.containsString("sealed class"))
     }
   }
 }

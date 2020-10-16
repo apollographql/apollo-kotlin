@@ -45,14 +45,12 @@ class KotlinDSLTests {
   @Test
   fun `parameters do not throw`() {
     val apolloConfiguration = """
-      configure<ApolloExtension> {
-        useSemanticNaming.set(false)
-        customTypeMapping.set(mapOf("DateTime" to "java.util.Date"))
-        generateOperationOutput.set(false)
-        
+      configure<ApolloExtension> { 
         service("starwars") {
+          useSemanticNaming.set(false)
+          customTypeMapping.set(mapOf("DateTime" to "java.util.Date"))
           sourceFolder.set("com/example")
-          schemaPath.set("com/example/schema.json")
+          schemaFile.set(file("src/main/graphql/com/example/schema.json"))
           rootPackageName.set("com.starwars")
           exclude.set(listOf("*.gql"))
         }
@@ -66,7 +64,7 @@ class KotlinDSLTests {
     ) { dir ->
       val result = TestUtils.executeTask("generateApolloSources", dir)
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
-      Assert.assertTrue(dir.generatedChild("main/starwars/com/starwars/DroidDetails.kt").isFile)
+      Assert.assertTrue(dir.generatedChild("starwars/com/starwars/DroidDetails.kt").isFile)
     }
   }
 }

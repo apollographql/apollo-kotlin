@@ -1,6 +1,6 @@
 package com.apollographql.apollo.gradle.util
 
-import com.apollographql.apollo.gradle.internal.child
+
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
@@ -23,7 +23,7 @@ object TestUtils {
 
 
   fun withDirectory(block: (File) -> Unit) {
-    val dest = File(System.getProperty("user.dir")).child("build", "testProject")
+    val dest = File(File(System.getProperty("user.dir")), "build/testProject")
     dest.deleteRecursively()
 
     // See https://github.com/apollographql/apollo-android/issues/2184
@@ -45,8 +45,8 @@ object TestUtils {
     val source = fixturesDirectory()
     val dest = it
 
-    source.child("starwars").copyRecursively(target = dest.child("src", "main", "graphql", "com", "example"))
-    source.child("gradle", "settings.gradle").copyTo(target = dest.child("settings.gradle"))
+    File(source, "starwars").copyRecursively(target = File(dest, "src/main/graphql/com/example"))
+    File(source, "gradle/settings.gradle").copyTo(target = File(dest, "settings.gradle"))
 
     val isAndroid = plugins.firstOrNull { it.id.startsWith("com.android") } != null
     val hasKotlin = plugins.firstOrNull { it.id.startsWith("org.jetbrains.kotlin") } != null
@@ -136,7 +136,7 @@ object TestUtils {
     }
 
     if (isAndroid) {
-      source.child("manifest", "AndroidManifest.xml").copyTo(dest.child("src", "main", "AndroidManifest.xml"))
+      File(source, "manifest/AndroidManifest.xml").copyTo(File(dest, "src/main/AndroidManifest.xml"))
       File(dest, "local.properties").writeText("sdk.dir=${androidHome()}\n")
     }
 
@@ -144,10 +144,10 @@ object TestUtils {
   }
 
   fun withGeneratedAccessorsProject(apolloConfiguration: String, block: (File) -> Unit) = withDirectory { dir ->
-    fixturesDirectory().child("gradle", "settings.gradle.kts").copyTo(dir.child("settings.gradle.kts"))
-    fixturesDirectory().child("gradle", "build.gradle.kts").copyTo(dir.child("build.gradle.kts"))
+    File(fixturesDirectory(), "gradle/settings.gradle.kts").copyTo(File(dir, "settings.gradle.kts"))
+    File(fixturesDirectory(), "gradle/build.gradle.kts").copyTo(File(dir, "build.gradle.kts"))
 
-    dir.child("build.gradle.kts").appendText(apolloConfiguration)
+    File(dir, "build.gradle.kts").appendText(apolloConfiguration)
 
     block(dir)
   }
@@ -165,7 +165,7 @@ object TestUtils {
       plugins = listOf(kotlinJvmPlugin, apolloPlugin),
       apolloConfiguration = apolloConfiguration
   ) { dir ->
-    fixturesDirectory().child("java").copyRecursively(dir.child("src", "main", "java"))
+    File(fixturesDirectory(), "java").copyRecursively(File(dir, "src/main/java"))
     block(dir)
   }
 
@@ -206,7 +206,7 @@ object TestUtils {
         .contains(content)
   }
 
-  fun fixturesDirectory() = File(System.getProperty("user.dir")).child("src", "test", "files")
+  fun fixturesDirectory() = File(System.getProperty("user.dir"), "src/test/files")
 
   fun executeTaskAndAssertSuccess(task: String, dir: File) {
     val result = executeTask(task, dir)
@@ -214,7 +214,7 @@ object TestUtils {
   }
 }
 
-fun File.generatedChild(path: String) = child("build", "generated", "source", "apollo", path)
+fun File.generatedChild(path: String) = File(this, "build/generated/source/apollo/$path")
 
 fun File.replaceInText(oldValue: String, newValue: String) {
   val text = readText()

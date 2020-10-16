@@ -13,8 +13,8 @@ class DeprecationTests {
   @Test
   fun `deprecation warnings are shown by default`() {
     TestUtils.withTestProject("deprecationWarnings") { dir ->
-      val result = TestUtils.executeTask("generateMainServiceApolloSources", dir)
-      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainServiceApolloSources")!!.outcome)
+      val result = TestUtils.executeTask("generateServiceApolloSources", dir)
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateServiceApolloSources")!!.outcome)
       Truth.assertThat(result.output).contains("operations.graphql:6:7: ApolloGraphQL: Use of deprecated field 'number'")
       Truth.assertThat(result.output).contains("operations.graphql:3:5: ApolloGraphQL: Use of deprecated field 'name'")
     }
@@ -28,8 +28,8 @@ class DeprecationTests {
           warnOnDeprecatedUsages.set(false)
         }
       """.trimIndent())
-      val result = TestUtils.executeTask("generateMainServiceApolloSources", dir)
-      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainServiceApolloSources")!!.outcome)
+      val result = TestUtils.executeTask("generateServiceApolloSources", dir)
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateServiceApolloSources")!!.outcome)
       Truth.assertThat(result.output).doesNotContain("ApolloGraphQL: Use of deprecated field")
     }
   }
@@ -43,8 +43,8 @@ class DeprecationTests {
         }
       """.trimIndent())
       try {
-        TestUtils.executeTask("generateMainServiceApolloSources", dir)
-        fail("generateMainServiceApolloSources was expected to fail")
+        TestUtils.executeTask("generateServiceApolloSources", dir)
+        fail("generateServiceApolloSources was expected to fail")
       } catch (e: UnexpectedBuildFailure) {
         Truth.assertThat(e.message).contains("Warnings found and 'failOnWarnings' is true, aborting")
       }

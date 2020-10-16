@@ -1,19 +1,12 @@
 package com.apollographql.apollo.gradle.test
 
-import com.apollographql.apollo.gradle.internal.ApolloPlugin.Companion.MIN_GRADLE_VERSION
-import com.apollographql.apollo.gradle.internal.child
+import com.apollographql.apollo.gradle.internal.DefaultApolloExtension.Companion.MIN_GRADLE_VERSION
 import com.apollographql.apollo.gradle.util.TestUtils
-import com.apollographql.apollo.gradle.util.generatedChild
 import com.google.common.truth.Truth
 import junit.framework.Assert.fail
 import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.UnexpectedBuildFailure
-import org.hamcrest.CoreMatchers
-import org.hamcrest.CoreMatchers.containsString
-import org.hamcrest.CoreMatchers.not
-import org.junit.Assert
 import org.junit.Test
-import java.nio.file.Files
 
 class GradleVersionTests  {
   @Test
