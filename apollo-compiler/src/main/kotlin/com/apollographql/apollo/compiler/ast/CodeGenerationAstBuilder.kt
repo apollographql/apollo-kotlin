@@ -338,7 +338,8 @@ private class CodeGenerationAstBuilder(
             typeDescription = "",
             sourceLocation = SourceLocation.UNKNOWN,
             fields = fields,
-            fragmentRefs = fragments
+            fragmentRefs = fragments,
+            inlineFragments = inlineFragments
         ),
         schemaTypeRef = schema.resolveType(operationSchemaType),
         abstract = false

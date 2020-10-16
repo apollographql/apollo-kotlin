@@ -20,6 +20,8 @@ import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchem
 import com.apollographql.apollo.compiler.parser.introspection.asGraphQLType
 import com.apollographql.apollo.compiler.parser.introspection.isAssignableFrom
 import com.apollographql.apollo.compiler.parser.introspection.possibleTypes
+import com.apollographql.apollo.compiler.parser.introspection.resolveType
+import com.apollographql.apollo.compiler.parser.introspection.rootTypeForOperationType
 import org.antlr.v4.runtime.BaseErrorListener
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
@@ -144,6 +146,7 @@ class GraphQLDocumentParser(
         )
       }
     }
+    val inlineFragments = selectionSet().inlineFragments(schemaType = schemaType, parentFields = fields).flatten()
 
     val commentTokens = tokenStream.getHiddenTokensToLeft(start.tokenIndex, 2) ?: emptyList()
     val description = commentTokens.joinToString(separator = "\n") { token ->
@@ -160,13 +163,14 @@ class GraphQLDocumentParser(
         sourceWithFragments = graphQLDocumentSource,
         fields = fields.result.filter { hasFragments || it.responseName != Field.TYPE_NAME_FIELD.responseName},
         fragments = selectionSet().fragmentRefs(),
+        inlineFragments = inlineFragments.result,
         fragmentsReferenced = emptyList(),
         filePath = graphQLFilePath
     ).also { it.validateArguments(schema = schema) }
 
     return ParseResult(
         result = operation,
-        usedTypes = variables.usedTypes + fields.usedTypes
+        usedTypes = variables.usedTypes + fields.usedTypes + inlineFragments.usedTypes
     )
   }
 
@@ -367,6 +371,21 @@ class GraphQLDocumentParser(
               conditions = fragmentSpread.directives().parse(),
               sourceLocation = SourceLocation(fragmentSpread.fragmentName().start)
           )
+        }
+        ?: emptyList()
+  }
+
+  // Passing parentFields might not be necessary if the root operation type always resolves to a
+  // single concrete type.
+  // See: https://github.com/apollographql/apollo-android/pull/2653#discussion_r504529317
+  private fun GraphQLParser.SelectionSetContext?.inlineFragments(
+      schemaType: IntrospectionSchema.Type,
+      parentFields: ParseResult<List<Field>>
+  ): List<ParseResult<InlineFragment>> {
+    return this
+        ?.selection()
+        ?.mapNotNull { ctx ->
+          ctx.inlineFragment()?.parse(parentSchemaType = schemaType, parentFields = parentFields)
         }
         ?: emptyList()
   }
