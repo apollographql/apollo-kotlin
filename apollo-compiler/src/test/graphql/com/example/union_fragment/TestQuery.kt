@@ -33,7 +33,7 @@ import okio.IOException
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
-    "RemoveRedundantQualifierName")
+    "RemoveRedundantQualifierName", "NOTHING_TO_INLINE")
 class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   override fun operationId(): String = OPERATION_ID
   override fun queryDocument(): String = QUERY_DOCUMENT
@@ -90,7 +90,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     val characterDelegate: Character
   ) : Search, Character by characterDelegate {
     companion object {
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): CharacterImpl {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null):
+          CharacterImpl {
         return CharacterImpl(Character(reader, __typename))
       }
     }
@@ -100,7 +101,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     val starshipDelegate: Starship
   ) : Search, Starship by starshipDelegate {
     companion object {
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): StarshipImpl {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): StarshipImpl {
         return StarshipImpl(Starship(reader, __typename))
       }
     }
@@ -116,11 +117,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): OtherSearch {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): OtherSearch {
         return reader.run {
           var __typename: String? = __typename
           while(true) {
@@ -150,11 +151,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     fun marshaller(): ResponseFieldMarshaller
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Search {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Search {
         val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
           "Droid" -> CharacterImpl(reader, typename)
@@ -184,12 +185,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     fun searchFilterNotNull(): List<Search>? = search?.filterNotNull()
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forList("search", "search", mapOf<String, Any>(
           "text" to "test"), true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
         return reader.run {
           var search: List<Search?>? = null
           while(true) {

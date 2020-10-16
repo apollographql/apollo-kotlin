@@ -31,7 +31,7 @@ import okio.IOException
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
-    "RemoveRedundantQualifierName")
+    "RemoveRedundantQualifierName", "NOTHING_TO_INLINE")
 class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   override fun operationId(): String = OPERATION_ID
   override fun queryDocument(): String = QUERY_DOCUMENT
@@ -104,13 +104,13 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forDouble("height", "height", null, true, null),
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Human {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Human {
         return reader.run {
           var __typename: String? = __typename
           var height: Double? = null
@@ -159,13 +159,13 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("primaryFunction", "primaryFunction", null, true, null),
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Droid {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Droid {
         return reader.run {
           var __typename: String? = __typename
           var primaryFunction: String? = null
@@ -209,12 +209,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): OtherHero {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): OtherHero {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -255,11 +255,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     fun marshaller(): ResponseFieldMarshaller
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Hero {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Hero {
         val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
           "Human" -> Human(reader, typename)
@@ -283,11 +283,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forObject("hero", "hero", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
         return reader.run {
           var hero: Hero? = null
           while(true) {

@@ -38,7 +38,7 @@ import okio.IOException
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
-    "RemoveRedundantQualifierName")
+    "RemoveRedundantQualifierName", "NOTHING_TO_INLINE")
 data class TestQuery(
   val episode: Input<Episode> = Input.absent(),
   val stars: Int,
@@ -134,14 +134,15 @@ data class TestQuery(
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forDouble("height", "height", mapOf<String, Any>(
           "unit" to "FOOT"), true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): HeroWithReview {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null):
+          HeroWithReview {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -180,7 +181,7 @@ data class TestQuery(
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forObject("heroWithReview", "heroWithReview", mapOf<String, Any>(
           "episode" to mapOf<String, Any>(
             "kind" to "Variable",
@@ -206,7 +207,7 @@ data class TestQuery(
               "variableName" to "stars"))), true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
         return reader.run {
           var heroWithReview: HeroWithReview? = null
           while(true) {

@@ -20,7 +20,7 @@ import kotlin.Suppress
  */
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
-    "RemoveRedundantQualifierName")
+    "RemoveRedundantQualifierName", "NOTHING_TO_INLINE")
 interface Character : GraphqlFragment {
   val __typename: String
 
@@ -57,13 +57,13 @@ interface Character : GraphqlFragment {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): DefaultImpl {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): DefaultImpl {
         return reader.run {
           var __typename: String? = __typename
           var id: String? = null
@@ -98,7 +98,7 @@ interface Character : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader, __typename: String? = null): Character =
+    inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Character =
         DefaultImpl(reader, __typename)
   }
 }

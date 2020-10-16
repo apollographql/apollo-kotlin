@@ -122,7 +122,7 @@ private fun CodeGenerationAst.ObjectType.fragmentDelegateTypeSpec(
               .addFunction(
                   FunSpec
                       .builder("invoke")
-                      .addModifiers(KModifier.OPERATOR)
+                      .addModifiers(KModifier.OPERATOR, KModifier.INLINE)
                       .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
                       .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec())
                       .returns(ClassName("", name))
@@ -149,7 +149,7 @@ private fun CodeGenerationAst.ObjectType.fragmentCompanionTypeSpec(
       .addFunction(
           FunSpec
               .builder("invoke")
-              .addModifiers(KModifier.OPERATOR)
+              .addModifiers(KModifier.OPERATOR, KModifier.INLINE)
               .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
               .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec())
               .returns(ClassName("", name))

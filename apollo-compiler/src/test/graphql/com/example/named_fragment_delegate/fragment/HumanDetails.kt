@@ -22,7 +22,7 @@ import kotlin.collections.List
  */
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
-    "RemoveRedundantQualifierName")
+    "RemoveRedundantQualifierName", "NOTHING_TO_INLINE")
 interface HumanDetails : GraphqlFragment {
   val __typename: String
 
@@ -101,12 +101,12 @@ interface HumanDetails : GraphqlFragment {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Node1 {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Node1 {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -147,12 +147,12 @@ interface HumanDetails : GraphqlFragment {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forObject("node", "node", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Edge1 {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Edge1 {
         return reader.run {
           var __typename: String? = __typename
           var node: Node1? = null
@@ -199,12 +199,13 @@ interface HumanDetails : GraphqlFragment {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forList("edges", "edges", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): FriendsConnection1 {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null):
+          FriendsConnection1 {
         return reader.run {
           var __typename: String? = __typename
           var edges: List<Edge1?>? = null
@@ -260,7 +261,7 @@ interface HumanDetails : GraphqlFragment {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forCustomType("profileLink", "profileLink", null, false, CustomType.URL,
@@ -268,7 +269,7 @@ interface HumanDetails : GraphqlFragment {
         ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): DefaultImpl {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): DefaultImpl {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -319,7 +320,7 @@ interface HumanDetails : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader, __typename: String? = null): HumanDetails =
+    inline operator fun invoke(reader: ResponseReader, __typename: String? = null): HumanDetails =
         DefaultImpl(reader, __typename)
   }
 }

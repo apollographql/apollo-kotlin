@@ -38,7 +38,7 @@ import okio.IOException
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
-    "RemoveRedundantQualifierName")
+    "RemoveRedundantQualifierName", "NOTHING_TO_INLINE")
 data class TestQuery(
   val episode: Input<Episode> = Input.absent()
 ) : Query<TestQuery.Data, Operation.Variables> {
@@ -128,14 +128,14 @@ data class TestQuery(
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forDouble("height", "height", mapOf<String, Any>(
           "unit" to "FOOT"), true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Human1 {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Human1 {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -179,12 +179,12 @@ data class TestQuery(
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): OtherFriend {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): OtherFriend {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -223,11 +223,11 @@ data class TestQuery(
     fun marshaller(): ResponseFieldMarshaller
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Friend {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Friend {
         val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
           "Human" -> Human1(reader, typename)
@@ -265,13 +265,13 @@ data class TestQuery(
     fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forList("friends", "friends", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Human {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Human {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -324,14 +324,14 @@ data class TestQuery(
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forDouble("height", "height", mapOf<String, Any>(
           "unit" to "METER"), true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Human2 {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Human2 {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -375,12 +375,12 @@ data class TestQuery(
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): OtherFriend1 {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): OtherFriend1 {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -419,11 +419,11 @@ data class TestQuery(
     fun marshaller(): ResponseFieldMarshaller
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Friend1 {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Friend1 {
         val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
           "Human" -> Human2(reader, typename)
@@ -461,13 +461,13 @@ data class TestQuery(
     fun friendsFilterNotNull(): List<Friend1>? = friends?.filterNotNull()
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forList("friends", "friends", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Droid {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Droid {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -515,12 +515,12 @@ data class TestQuery(
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): OtherHero {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): OtherHero {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -561,11 +561,11 @@ data class TestQuery(
     fun marshaller(): ResponseFieldMarshaller
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Hero {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Hero {
         val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
           "Human" -> Human(reader, typename)
@@ -589,14 +589,14 @@ data class TestQuery(
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forObject("hero", "hero", mapOf<String, Any>(
           "episode" to mapOf<String, Any>(
             "kind" to "Variable",
             "variableName" to "episode")), true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
         return reader.run {
           var hero: Hero? = null
           while(true) {

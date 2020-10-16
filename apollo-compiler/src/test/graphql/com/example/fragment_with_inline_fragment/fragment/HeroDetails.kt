@@ -21,7 +21,7 @@ import kotlin.collections.List
  */
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
-    "RemoveRedundantQualifierName")
+    "RemoveRedundantQualifierName", "NOTHING_TO_INLINE")
 interface HeroDetails : GraphqlFragment {
   val __typename: String
 
@@ -166,12 +166,12 @@ interface HeroDetails : GraphqlFragment {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Node2 {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Node2 {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -212,12 +212,12 @@ interface HeroDetails : GraphqlFragment {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forObject("node", "node", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Edge2 {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Edge2 {
         return reader.run {
           var __typename: String? = __typename
           var node: Node2? = null
@@ -269,13 +269,14 @@ interface HeroDetails : GraphqlFragment {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forInt("totalCount", "totalCount", null, true, null),
         ResponseField.forList("edges", "edges", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): FriendsConnection2 {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null):
+          FriendsConnection2 {
         return reader.run {
           var __typename: String? = __typename
           var totalCount: Int? = null
@@ -331,14 +332,14 @@ interface HeroDetails : GraphqlFragment {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null),
         ResponseField.forString("primaryFunction", "primaryFunction", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null):
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null):
           DroidDroidDetailsImpl {
         return reader.run {
           var __typename: String? = __typename
@@ -388,12 +389,12 @@ interface HeroDetails : GraphqlFragment {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Node3 {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Node3 {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -434,12 +435,12 @@ interface HeroDetails : GraphqlFragment {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forObject("node", "node", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Edge3 {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Edge3 {
         return reader.run {
           var __typename: String? = __typename
           var node: Node3? = null
@@ -491,13 +492,14 @@ interface HeroDetails : GraphqlFragment {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forInt("totalCount", "totalCount", null, true, null),
         ResponseField.forList("edges", "edges", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): FriendsConnection3 {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null):
+          FriendsConnection3 {
         return reader.run {
           var __typename: String? = __typename
           var totalCount: Int? = null
@@ -550,13 +552,14 @@ interface HeroDetails : GraphqlFragment {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): HumanDetailsImpl {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null):
+          HumanDetailsImpl {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -602,12 +605,12 @@ interface HeroDetails : GraphqlFragment {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Node4 {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Node4 {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -648,12 +651,12 @@ interface HeroDetails : GraphqlFragment {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forObject("node", "node", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Edge4 {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Edge4 {
         return reader.run {
           var __typename: String? = __typename
           var node: Node4? = null
@@ -705,13 +708,14 @@ interface HeroDetails : GraphqlFragment {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forInt("totalCount", "totalCount", null, true, null),
         ResponseField.forList("edges", "edges", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): FriendsConnection4 {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null):
+          FriendsConnection4 {
         return reader.run {
           var __typename: String? = __typename
           var totalCount: Int? = null
@@ -764,13 +768,14 @@ interface HeroDetails : GraphqlFragment {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): OtherDefaultImpl {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null):
+          OtherDefaultImpl {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -870,11 +875,11 @@ interface HeroDetails : GraphqlFragment {
     override fun marshaller(): ResponseFieldMarshaller
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): DefaultImpl {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): DefaultImpl {
         val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
           "Droid" -> DroidDroidDetailsImpl(reader, typename)
@@ -908,7 +913,7 @@ interface HeroDetails : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader, __typename: String? = null): HeroDetails =
+    inline operator fun invoke(reader: ResponseReader, __typename: String? = null): HeroDetails =
         DefaultImpl(reader, __typename)
   }
 }

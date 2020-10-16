@@ -35,7 +35,7 @@ import okio.IOException
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
-    "RemoveRedundantQualifierName")
+    "RemoveRedundantQualifierName", "NOTHING_TO_INLINE")
 class AllStarships : Query<AllStarships.Data, Operation.Variables> {
   override fun operationId(): String = OPERATION_ID
   override fun queryDocument(): String = QUERY_DOCUMENT
@@ -104,12 +104,12 @@ class AllStarships : Query<AllStarships.Data, Operation.Variables> {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Homeworld {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Homeworld {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -155,13 +155,13 @@ class AllStarships : Query<AllStarships.Data, Operation.Variables> {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, true, null),
         ResponseField.forObject("homeworld", "homeworld", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Node1 {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Node1 {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -207,12 +207,12 @@ class AllStarships : Query<AllStarships.Data, Operation.Variables> {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forObject("node", "node", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Edge1 {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Edge1 {
         return reader.run {
           var __typename: String? = __typename
           var node: Node1? = null
@@ -260,12 +260,13 @@ class AllStarships : Query<AllStarships.Data, Operation.Variables> {
     fun edgesFilterNotNull(): List<Edge1>? = edges?.filterNotNull()
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forList("edges", "edges", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): PilotConnection {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null):
+          PilotConnection {
         return reader.run {
           var __typename: String? = __typename
           var edges: List<Edge1?>? = null
@@ -317,14 +318,14 @@ class AllStarships : Query<AllStarships.Data, Operation.Variables> {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
         ResponseField.forString("name", "name", null, true, null),
         ResponseField.forObject("pilotConnection", "pilotConnection", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Node {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Node {
         return reader.run {
           var __typename: String? = __typename
           var id: String? = null
@@ -373,12 +374,12 @@ class AllStarships : Query<AllStarships.Data, Operation.Variables> {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forObject("node", "node", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Edge {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Edge {
         return reader.run {
           var __typename: String? = __typename
           var node: Node? = null
@@ -426,12 +427,13 @@ class AllStarships : Query<AllStarships.Data, Operation.Variables> {
     fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forList("edges", "edges", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): AllStarships1 {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null):
+          AllStarships1 {
         return reader.run {
           var __typename: String? = __typename
           var edges: List<Edge?>? = null
@@ -471,12 +473,12 @@ class AllStarships : Query<AllStarships.Data, Operation.Variables> {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forObject("allStarships", "allStarships", mapOf<String, Any>(
           "first" to 7), true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
         return reader.run {
           var allStarships: AllStarships1? = null
           while(true) {

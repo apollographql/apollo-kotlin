@@ -19,7 +19,7 @@ import kotlin.Suppress
  */
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
-    "RemoveRedundantQualifierName")
+    "RemoveRedundantQualifierName", "NOTHING_TO_INLINE")
 internal interface HeroDetails : GraphqlFragment {
   val __typename: String
 
@@ -30,7 +30,8 @@ internal interface HeroDetails : GraphqlFragment {
     val humanDetailsDelegate: HumanDetails
   ) : DefaultImpl, HumanDetails by humanDetailsDelegate {
     companion object {
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): HumanDetailsImpl {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null):
+          HumanDetailsImpl {
         return HumanDetailsImpl(HumanDetails(reader, __typename))
       }
     }
@@ -49,11 +50,12 @@ internal interface HeroDetails : GraphqlFragment {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): OtherDefaultImpl {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null):
+          OtherDefaultImpl {
         return reader.run {
           var __typename: String? = __typename
           while(true) {
@@ -84,11 +86,11 @@ internal interface HeroDetails : GraphqlFragment {
     override fun marshaller(): ResponseFieldMarshaller
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): DefaultImpl {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): DefaultImpl {
         val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
           "Human" -> HumanDetailsImpl(reader, typename)
@@ -106,7 +108,7 @@ internal interface HeroDetails : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader, __typename: String? = null): HeroDetails =
+    inline operator fun invoke(reader: ResponseReader, __typename: String? = null): HeroDetails =
         DefaultImpl(reader, __typename)
   }
 }

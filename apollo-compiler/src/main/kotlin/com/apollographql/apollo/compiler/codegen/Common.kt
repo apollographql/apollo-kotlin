@@ -112,7 +112,6 @@ internal fun responseFieldsPropertySpec(fields: List<CodeGenerationAst.Field>): 
       .builder(
           name = "RESPONSE_FIELDS",
           type = Array<ResponseField>::class.asClassName().parameterizedBy(ResponseField::class.asClassName()),
-          modifiers = arrayOf(KModifier.PRIVATE)
       )
       .initializer(initializer)
       .build()
@@ -172,7 +171,7 @@ internal fun List<CodeGenerationAst.Field>.toMapperFun(responseTypeName: TypeNam
       .build()
 
   return FunSpec.builder("invoke")
-      .addModifiers(KModifier.OPERATOR)
+      .addModifiers(KModifier.OPERATOR, KModifier.INLINE)
       .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
       .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec())
       .returns(responseTypeName)
@@ -483,8 +482,9 @@ internal fun String.normalizeGraphQLType(): String {
 
 internal val suppressWarningsAnnotation = AnnotationSpec
     .builder(Suppress::class)
-    .addMember("%S, %S, %S, %S, %S, %S, %S", "NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
-        "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName", "RemoveRedundantQualifierName")
+    .addMember("%S, %S, %S, %S, %S, %S, %S, %S", "NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
+        "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName", "RemoveRedundantQualifierName",
+        "NOTHING_TO_INLINE")
     .build()
 
 internal fun TypeSpec.patchKotlinNativeOptionalArrayProperties(): TypeSpec {

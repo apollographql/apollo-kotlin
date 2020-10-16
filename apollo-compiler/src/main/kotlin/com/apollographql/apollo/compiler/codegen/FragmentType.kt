@@ -34,7 +34,7 @@ internal fun CodeGenerationAst.FragmentType.typeSpec(generateAsInternal: Boolean
           )
           .addFunction(
               FunSpec.builder("invoke")
-                  .addModifiers(KModifier.OPERATOR)
+                  .addModifiers(KModifier.OPERATOR, KModifier.INLINE)
                   .returns(ClassName.bestGuess(fragmentType.name))
                   .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
                   .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec())

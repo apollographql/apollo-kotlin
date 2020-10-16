@@ -19,7 +19,7 @@ import kotlin.Suppress
  */
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
-    "RemoveRedundantQualifierName")
+    "RemoveRedundantQualifierName", "NOTHING_TO_INLINE")
 interface DroidDetails : GraphqlFragment {
   val __typename: String
 
@@ -56,13 +56,13 @@ interface DroidDetails : GraphqlFragment {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forString("primaryFunction", "primaryFunction", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): DefaultImpl {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): DefaultImpl {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -97,7 +97,7 @@ interface DroidDetails : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader, __typename: String? = null): DroidDetails =
+    inline operator fun invoke(reader: ResponseReader, __typename: String? = null): DroidDetails =
         DefaultImpl(reader, __typename)
   }
 }

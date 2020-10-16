@@ -36,7 +36,7 @@ import okio.IOException
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
-    "RemoveRedundantQualifierName")
+    "RemoveRedundantQualifierName", "NOTHING_TO_INLINE")
 class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   override fun operationId(): String = OPERATION_ID
   override fun queryDocument(): String = QUERY_DOCUMENT
@@ -170,12 +170,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Node1 {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Node1 {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -216,12 +216,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forObject("node", "node", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Edge1 {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Edge1 {
         return reader.run {
           var __typename: String? = __typename
           var node: Node1? = null
@@ -275,13 +275,14 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     fun edgesFilterNotNull(): List<Edge1>? = edges?.filterNotNull()
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forInt("totalCount", "totalCount", null, true, null),
         ResponseField.forList("edges", "edges", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): FriendsConnection1 {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null):
+          FriendsConnection1 {
         return reader.run {
           var __typename: String? = __typename
           var totalCount: Int? = null
@@ -349,7 +350,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null),
@@ -357,7 +358,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         ResponseField.forList("appearsIn", "appearsIn", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null):
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null):
           HeroDetailsDroidDroidDetailsImpl {
         return reader.run {
           var __typename: String? = __typename
@@ -413,12 +414,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Node2 {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Node2 {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -459,12 +460,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forObject("node", "node", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Edge2 {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Edge2 {
         return reader.run {
           var __typename: String? = __typename
           var node: Node2? = null
@@ -518,13 +519,14 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     fun edgesFilterNotNull(): List<Edge2>? = edges?.filterNotNull()
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forInt("totalCount", "totalCount", null, true, null),
         ResponseField.forList("edges", "edges", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): FriendsConnection2 {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null):
+          FriendsConnection2 {
         return reader.run {
           var __typename: String? = __typename
           var totalCount: Int? = null
@@ -586,14 +588,14 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null),
         ResponseField.forList("appearsIn", "appearsIn", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null):
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null):
           HeroDetailsHumanDetailsImpl {
         return reader.run {
           var __typename: String? = __typename
@@ -656,13 +658,13 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forList("appearsIn", "appearsIn", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): OtherHero {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): OtherHero {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -717,11 +719,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     fun marshaller(): ResponseFieldMarshaller
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Hero {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Hero {
         val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
           "Droid" -> HeroDetailsDroidDroidDetailsImpl(reader, typename)
@@ -745,11 +747,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forObject("hero", "hero", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
         return reader.run {
           var hero: Hero? = null
           while(true) {

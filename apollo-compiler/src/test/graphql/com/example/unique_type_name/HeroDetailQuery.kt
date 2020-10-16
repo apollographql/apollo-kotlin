@@ -35,7 +35,7 @@ import okio.IOException
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
-    "RemoveRedundantQualifierName")
+    "RemoveRedundantQualifierName", "NOTHING_TO_INLINE")
 class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
   override fun operationId(): String = OPERATION_ID
   override fun queryDocument(): String = QUERY_DOCUMENT
@@ -103,12 +103,12 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Node {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Node {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -149,12 +149,12 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forObject("node", "node", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Edge {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Edge {
         return reader.run {
           var __typename: String? = __typename
           var node: Node? = null
@@ -208,13 +208,14 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
     fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forInt("totalCount", "totalCount", null, true, null),
         ResponseField.forList("edges", "edges", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): FriendsConnection {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null):
+          FriendsConnection {
         return reader.run {
           var __typename: String? = __typename
           var totalCount: Int? = null
@@ -267,13 +268,13 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Friend1 {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Friend1 {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -339,14 +340,14 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
     fun friendsFilterNotNull(): List<Friend1>? = friends?.filterNotNull()
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forList("appearsIn", "appearsIn", null, false, null),
         ResponseField.forList("friends", "friends", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Friend {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Friend {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -414,14 +415,14 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
     fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forList("friends", "friends", null, true, null),
         ResponseField.forDouble("height", "height", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Human {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Human {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -472,12 +473,12 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Friend2 {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Friend2 {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -529,13 +530,13 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
     fun friendsFilterNotNull(): List<Friend2>? = friends?.filterNotNull()
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forList("friends", "friends", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null):
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null):
           OtherHeroDetailQuery {
         return reader.run {
           var __typename: String? = __typename
@@ -601,11 +602,12 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
     fun marshaller(): ResponseFieldMarshaller
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): HeroDetailQuery1 {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null):
+          HeroDetailQuery1 {
         val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
           "Human" -> Human(reader, typename)
@@ -628,11 +630,11 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
     }
 
     companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forObject("heroDetailQuery", "heroDetailQuery", null, true, null)
       )
 
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
+      inline operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
         return reader.run {
           var heroDetailQuery: HeroDetailQuery1? = null
           while(true) {
