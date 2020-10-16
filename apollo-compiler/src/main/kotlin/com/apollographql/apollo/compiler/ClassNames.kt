@@ -37,7 +37,13 @@ object ClassNames {
       ParameterizedTypeName.get(LIST, ClassName.get(type))
 
   fun parameterizedListOf(typeArgument: TypeName): TypeName =
-      ParameterizedTypeName.get(LIST, typeArgument.let { if (it.isPrimitive) it.box() else it.withoutAnnotations() })
+      ParameterizedTypeName.get(LIST, typeArgument.let {
+        if (it.isPrimitive) {
+          it.box()
+        } else {
+          it.withoutAnnotations()
+        }
+      })
 
   fun <K : Any, V : Any> parameterizedMapOf(keyTypeArgument: Class<K>, valueTypeArgument: Class<V>): TypeName =
       ParameterizedTypeName.get(MAP, ClassName.get(keyTypeArgument).withoutAnnotations(),

@@ -9,4 +9,5 @@ mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {
       name
     }
   }
+  stat_collect
 }

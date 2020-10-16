@@ -263,6 +263,8 @@ enum LengthUnit {
 """The mutation type, represents all updates we can make to our data"""
 type Mutation {
   createReview(episode: Episode, review: ReviewInput!): Review
+  """For testing https://github.com/apollographql/apollo-android/issues/2660"""
+  stat_collect: [Boolean!]! @deprecated
 }
 
 """Information for paginating this connection"""
