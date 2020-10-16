@@ -17,7 +17,6 @@ import com.apollographql.apollo.api.internal.OperationRequestBodyComposer
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
-import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.api.internal.Throws
 import com.example.starships.type.CustomType
@@ -47,40 +46,65 @@ data class TestQuery(
       this["id"] = this@TestQuery.id
     }
 
-    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
-      writer.writeCustom("id", CustomType.ID, this@TestQuery.id)
+    override fun marshaller(): InputFieldMarshaller {
+      return InputFieldMarshaller.invoke { writer ->
+        writer.writeCustom("id", CustomType.ID, this@TestQuery.id)
+      }
     }
   }
 
-  override fun operationId(): String = OPERATION_ID
-  override fun queryDocument(): String = QUERY_DOCUMENT
-  override fun variables(): Operation.Variables = variables
-  override fun name(): OperationName = OPERATION_NAME
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper.invoke {
-    Data(it)
+  override fun operationId(): String {
+    return OPERATION_ID
+  }
+
+  override fun queryDocument(): String {
+    return QUERY_DOCUMENT
+  }
+
+  override fun variables(): Operation.Variables {
+    return variables
+  }
+
+  override fun name(): OperationName {
+    return OPERATION_NAME
+  }
+
+  override fun responseFieldMapper(): ResponseFieldMapper<TestQuery.Data> {
+    return ResponseFieldMapper.invoke {
+      TestQuery_ResponseAdapter.fromResponse(it)
+    }
   }
 
   @Throws(IOException::class)
-  override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters): Response<Data>
-      = SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters)
+  override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters):
+      Response<TestQuery.Data> {
+    return SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters)
+  }
 
   @Throws(IOException::class)
-  override fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters): Response<Data>
-      = parse(Buffer().write(byteString), scalarTypeAdapters)
+  override fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters):
+      Response<TestQuery.Data> {
+    return parse(Buffer().write(byteString), scalarTypeAdapters)
+  }
 
   @Throws(IOException::class)
-  override fun parse(source: BufferedSource): Response<Data> = parse(source, DEFAULT)
+  override fun parse(source: BufferedSource): Response<TestQuery.Data> {
+    return parse(source, DEFAULT)
+  }
 
   @Throws(IOException::class)
-  override fun parse(byteString: ByteString): Response<Data> = parse(byteString, DEFAULT)
+  override fun parse(byteString: ByteString): Response<TestQuery.Data> {
+    return parse(byteString, DEFAULT)
+  }
 
-  override fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters): ByteString =
-      OperationRequestBodyComposer.compose(
-    operation = this,
-    autoPersistQueries = false,
-    withQueryDocument = true,
-    scalarTypeAdapters = scalarTypeAdapters
-  )
+  override fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters): ByteString {
+    return OperationRequestBodyComposer.compose(
+      operation = this,
+      autoPersistQueries = false,
+      withQueryDocument = true,
+      scalarTypeAdapters = scalarTypeAdapters
+    )
+  }
 
   override fun composeRequestBody(): ByteString = OperationRequestBodyComposer.compose(
     operation = this,
@@ -135,37 +159,6 @@ data class TestQuery(
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forList("coordinates", "coordinates", null, true, null)
       )
-
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Starship {
-        return reader.run {
-          var __typename: String? = __typename
-          var id: String? = null
-          var name: String? = null
-          var coordinates: List<List<Double>>? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
-              2 -> name = readString(RESPONSE_FIELDS[2])
-              3 -> coordinates = readList<List<Double>>(RESPONSE_FIELDS[3]) { reader ->
-                reader.readList<Double> { reader ->
-                  reader.readDouble()
-                }.map { it!! }
-              }?.map { it!! }
-              else -> break
-            }
-          }
-          Starship(
-            __typename = __typename!!,
-            id = id!!,
-            name = name!!,
-            coordinates = coordinates
-          )
-        }
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Starship> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -173,7 +166,7 @@ data class TestQuery(
    * Data from the response after executing this GraphQL operation
    */
   data class Data(
-    val starship: Starship?
+    val starship: TestQuery.Starship?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
@@ -188,26 +181,6 @@ data class TestQuery(
             "kind" to "Variable",
             "variableName" to "id")), true, null)
       )
-
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
-        return reader.run {
-          var starship: Starship? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> starship = readObject<Starship>(RESPONSE_FIELDS[0]) { reader ->
-                Starship(reader)
-              }
-              else -> break
-            }
-          }
-          Data(
-            starship = starship
-          )
-        }
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -229,7 +202,9 @@ data class TestQuery(
         )
 
     val OPERATION_NAME: OperationName = object : OperationName {
-      override fun name(): String = "TestQuery"
+      override fun name(): String {
+        return "TestQuery"
+      }
     }
   }
 }

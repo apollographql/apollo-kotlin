@@ -133,7 +133,7 @@ class CodegenTest(private val folder: File) {
              *
              * ./gradlew :apollo-compiler:test -DcodegenTests="fragments_with_type_condition" --tests '*Codegen*'
              */
-            file.isDirectory && (filterRegex == null || filterRegex.matchEntire(file.toString()) != null)
+            file.isDirectory && (filterRegex == null || filterRegex.matchEntire(file.name) != null)// && file.name == "simple_fragment"
           }
     }
   }

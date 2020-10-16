@@ -17,7 +17,6 @@ import com.apollographql.apollo.api.internal.OperationRequestBodyComposer
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
-import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.api.internal.Throws
 import kotlin.Any
@@ -45,40 +44,65 @@ data class TestSubscription(
       this["repo"] = this@TestSubscription.repo
     }
 
-    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
-      writer.writeString("repo", this@TestSubscription.repo)
+    override fun marshaller(): InputFieldMarshaller {
+      return InputFieldMarshaller.invoke { writer ->
+        writer.writeString("repo", this@TestSubscription.repo)
+      }
     }
   }
 
-  override fun operationId(): String = OPERATION_ID
-  override fun queryDocument(): String = QUERY_DOCUMENT
-  override fun variables(): Operation.Variables = variables
-  override fun name(): OperationName = OPERATION_NAME
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper.invoke {
-    Data(it)
+  override fun operationId(): String {
+    return OPERATION_ID
+  }
+
+  override fun queryDocument(): String {
+    return QUERY_DOCUMENT
+  }
+
+  override fun variables(): Operation.Variables {
+    return variables
+  }
+
+  override fun name(): OperationName {
+    return OPERATION_NAME
+  }
+
+  override fun responseFieldMapper(): ResponseFieldMapper<TestSubscription.Data> {
+    return ResponseFieldMapper.invoke {
+      TestSubscription_ResponseAdapter.fromResponse(it)
+    }
   }
 
   @Throws(IOException::class)
-  override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters): Response<Data>
-      = SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters)
+  override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters):
+      Response<TestSubscription.Data> {
+    return SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters)
+  }
 
   @Throws(IOException::class)
-  override fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters): Response<Data>
-      = parse(Buffer().write(byteString), scalarTypeAdapters)
+  override fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters):
+      Response<TestSubscription.Data> {
+    return parse(Buffer().write(byteString), scalarTypeAdapters)
+  }
 
   @Throws(IOException::class)
-  override fun parse(source: BufferedSource): Response<Data> = parse(source, DEFAULT)
+  override fun parse(source: BufferedSource): Response<TestSubscription.Data> {
+    return parse(source, DEFAULT)
+  }
 
   @Throws(IOException::class)
-  override fun parse(byteString: ByteString): Response<Data> = parse(byteString, DEFAULT)
+  override fun parse(byteString: ByteString): Response<TestSubscription.Data> {
+    return parse(byteString, DEFAULT)
+  }
 
-  override fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters): ByteString =
-      OperationRequestBodyComposer.compose(
-    operation = this,
-    autoPersistQueries = false,
-    withQueryDocument = true,
-    scalarTypeAdapters = scalarTypeAdapters
-  )
+  override fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters): ByteString {
+    return OperationRequestBodyComposer.compose(
+      operation = this,
+      autoPersistQueries = false,
+      withQueryDocument = true,
+      scalarTypeAdapters = scalarTypeAdapters
+    )
+  }
 
   override fun composeRequestBody(): ByteString = OperationRequestBodyComposer.compose(
     operation = this,
@@ -126,30 +150,6 @@ data class TestSubscription(
         ResponseField.forInt("id", "id", null, false, null),
         ResponseField.forString("content", "content", null, false, null)
       )
-
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): CommentAdded {
-        return reader.run {
-          var __typename: String? = __typename
-          var id: Int? = null
-          var content: String? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> id = readInt(RESPONSE_FIELDS[1])
-              2 -> content = readString(RESPONSE_FIELDS[2])
-              else -> break
-            }
-          }
-          CommentAdded(
-            __typename = __typename!!,
-            id = id!!,
-            content = content!!
-          )
-        }
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<CommentAdded> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -160,7 +160,7 @@ data class TestSubscription(
     /**
      * Subscription fires on every comment added
      */
-    val commentAdded: CommentAdded?
+    val commentAdded: TestSubscription.CommentAdded?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
@@ -175,26 +175,6 @@ data class TestSubscription(
             "kind" to "Variable",
             "variableName" to "repo")), true, null)
       )
-
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
-        return reader.run {
-          var commentAdded: CommentAdded? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> commentAdded = readObject<CommentAdded>(RESPONSE_FIELDS[0]) { reader ->
-                CommentAdded(reader)
-              }
-              else -> break
-            }
-          }
-          Data(
-            commentAdded = commentAdded
-          )
-        }
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -215,7 +195,9 @@ data class TestSubscription(
         )
 
     val OPERATION_NAME: OperationName = object : OperationName {
-      override fun name(): String = "TestSubscription"
+      override fun name(): String {
+        return "TestSubscription"
+      }
     }
   }
 }

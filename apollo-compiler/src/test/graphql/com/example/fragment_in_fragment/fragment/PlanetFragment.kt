@@ -7,7 +7,6 @@ package com.example.fragment_in_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import kotlin.Array
@@ -52,27 +51,6 @@ interface PlanetFragment : GraphqlFragment {
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, true, null)
       )
-
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): DefaultImpl {
-        return reader.run {
-          var __typename: String? = __typename
-          var name: String? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> name = readString(RESPONSE_FIELDS[1])
-              else -> break
-            }
-          }
-          DefaultImpl(
-            __typename = __typename!!,
-            name = name
-          )
-        }
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<DefaultImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -84,7 +62,8 @@ interface PlanetFragment : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader, __typename: String? = null): PlanetFragment =
-        DefaultImpl(reader, __typename)
+    operator fun invoke(reader: ResponseReader): PlanetFragment {
+      return PlanetFragment_ResponseAdapter.fromResponse(reader)
+    }
   }
 }

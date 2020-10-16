@@ -17,7 +17,6 @@ import com.apollographql.apollo.api.internal.OperationRequestBodyComposer
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
-import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.api.internal.Throws
 import com.example.mutation_create_review.type.CustomType
@@ -52,41 +51,66 @@ internal data class CreateReviewForEpisode(
       this["review"] = this@CreateReviewForEpisode.review
     }
 
-    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
-      writer.writeString("ep", this@CreateReviewForEpisode.ep.rawValue)
-      writer.writeObject("review", this@CreateReviewForEpisode.review.marshaller())
+    override fun marshaller(): InputFieldMarshaller {
+      return InputFieldMarshaller.invoke { writer ->
+        writer.writeString("ep", this@CreateReviewForEpisode.ep.rawValue)
+        writer.writeObject("review", this@CreateReviewForEpisode.review.marshaller())
+      }
     }
   }
 
-  override fun operationId(): String = OPERATION_ID
-  override fun queryDocument(): String = QUERY_DOCUMENT
-  override fun variables(): Operation.Variables = variables
-  override fun name(): OperationName = OPERATION_NAME
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper.invoke {
-    Data(it)
+  override fun operationId(): String {
+    return OPERATION_ID
+  }
+
+  override fun queryDocument(): String {
+    return QUERY_DOCUMENT
+  }
+
+  override fun variables(): Operation.Variables {
+    return variables
+  }
+
+  override fun name(): OperationName {
+    return OPERATION_NAME
+  }
+
+  override fun responseFieldMapper(): ResponseFieldMapper<CreateReviewForEpisode.Data> {
+    return ResponseFieldMapper.invoke {
+      CreateReviewForEpisode_ResponseAdapter.fromResponse(it)
+    }
   }
 
   @Throws(IOException::class)
-  override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters): Response<Data>
-      = SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters)
+  override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters):
+      Response<CreateReviewForEpisode.Data> {
+    return SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters)
+  }
 
   @Throws(IOException::class)
-  override fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters): Response<Data>
-      = parse(Buffer().write(byteString), scalarTypeAdapters)
+  override fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters):
+      Response<CreateReviewForEpisode.Data> {
+    return parse(Buffer().write(byteString), scalarTypeAdapters)
+  }
 
   @Throws(IOException::class)
-  override fun parse(source: BufferedSource): Response<Data> = parse(source, DEFAULT)
+  override fun parse(source: BufferedSource): Response<CreateReviewForEpisode.Data> {
+    return parse(source, DEFAULT)
+  }
 
   @Throws(IOException::class)
-  override fun parse(byteString: ByteString): Response<Data> = parse(byteString, DEFAULT)
+  override fun parse(byteString: ByteString): Response<CreateReviewForEpisode.Data> {
+    return parse(byteString, DEFAULT)
+  }
 
-  override fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters): ByteString =
-      OperationRequestBodyComposer.compose(
-    operation = this,
-    autoPersistQueries = false,
-    withQueryDocument = true,
-    scalarTypeAdapters = scalarTypeAdapters
-  )
+  override fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters): ByteString {
+    return OperationRequestBodyComposer.compose(
+      operation = this,
+      autoPersistQueries = false,
+      withQueryDocument = true,
+      scalarTypeAdapters = scalarTypeAdapters
+    )
+  }
 
   override fun composeRequestBody(): ByteString = OperationRequestBodyComposer.compose(
     operation = this,
@@ -128,27 +152,6 @@ internal data class CreateReviewForEpisode(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null)
       )
-
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): ListOfListOfObject {
-        return reader.run {
-          var __typename: String? = __typename
-          var name: String? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> name = readString(RESPONSE_FIELDS[1])
-              else -> break
-            }
-          }
-          ListOfListOfObject(
-            __typename = __typename!!,
-            name = name!!
-          )
-        }
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<ListOfListOfObject> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -180,7 +183,7 @@ internal data class CreateReviewForEpisode(
     /**
      * for test purpose only
      */
-    val listOfListOfObject: List<List<ListOfListOfObject>>?
+    val listOfListOfObject: List<List<CreateReviewForEpisode.ListOfListOfObject>>?
   ) {
     fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
@@ -236,60 +239,6 @@ internal data class CreateReviewForEpisode(
         ResponseField.forList("listOfListOfCustom", "listOfListOfCustom", null, true, null),
         ResponseField.forList("listOfListOfObject", "listOfListOfObject", null, true, null)
       )
-
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): CreateReview {
-        return reader.run {
-          var __typename: String? = __typename
-          var stars: Int? = null
-          var commentary: String? = null
-          var listOfListOfString: List<List<String>>? = null
-          var listOfListOfEnum: List<List<Episode>>? = null
-          var listOfListOfCustom: List<List<Date>>? = null
-          var listOfListOfObject: List<List<ListOfListOfObject>>? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> stars = readInt(RESPONSE_FIELDS[1])
-              2 -> commentary = readString(RESPONSE_FIELDS[2])
-              3 -> listOfListOfString = readList<List<String>>(RESPONSE_FIELDS[3]) { reader ->
-                reader.readList<String> { reader ->
-                  reader.readString()
-                }.map { it!! }
-              }?.map { it!! }
-              4 -> listOfListOfEnum = readList<List<Episode>>(RESPONSE_FIELDS[4]) { reader ->
-                reader.readList<Episode> { reader ->
-                  Episode.safeValueOf(reader.readString())
-                }.map { it!! }
-              }?.map { it!! }
-              5 -> listOfListOfCustom = readList<List<Date>>(RESPONSE_FIELDS[5]) { reader ->
-                reader.readList<Date> { reader ->
-                  reader.readCustomType<Date>(CustomType.DATE)
-                }.map { it!! }
-              }?.map { it!! }
-              6 -> listOfListOfObject = readList<List<ListOfListOfObject>>(RESPONSE_FIELDS[6]) { reader ->
-                reader.readList<ListOfListOfObject> { reader ->
-                  reader.readObject<ListOfListOfObject> { reader ->
-                    ListOfListOfObject(reader)
-                  }
-                }.map { it!! }
-              }?.map { it!! }
-              else -> break
-            }
-          }
-          CreateReview(
-            __typename = __typename!!,
-            stars = stars!!,
-            commentary = commentary,
-            listOfListOfString = listOfListOfString,
-            listOfListOfEnum = listOfListOfEnum,
-            listOfListOfCustom = listOfListOfCustom,
-            listOfListOfObject = listOfListOfObject
-          )
-        }
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<CreateReview> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -297,7 +246,7 @@ internal data class CreateReviewForEpisode(
    * Data from the response after executing this GraphQL operation
    */
   data class Data(
-    val createReview: CreateReview?
+    val createReview: CreateReviewForEpisode.CreateReview?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
@@ -315,26 +264,6 @@ internal data class CreateReviewForEpisode(
             "kind" to "Variable",
             "variableName" to "review")), true, null)
       )
-
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
-        return reader.run {
-          var createReview: CreateReview? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> createReview = readObject<CreateReview>(RESPONSE_FIELDS[0]) { reader ->
-                CreateReview(reader)
-              }
-              else -> break
-            }
-          }
-          Data(
-            createReview = createReview
-          )
-        }
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -362,7 +291,9 @@ internal data class CreateReviewForEpisode(
         )
 
     val OPERATION_NAME: OperationName = object : OperationName {
-      override fun name(): String = "CreateReviewForEpisode"
+      override fun name(): String {
+        return "CreateReviewForEpisode"
+      }
     }
   }
 }

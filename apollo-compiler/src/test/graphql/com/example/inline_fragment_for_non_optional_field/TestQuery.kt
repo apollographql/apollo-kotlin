@@ -16,7 +16,6 @@ import com.apollographql.apollo.api.internal.OperationRequestBodyComposer
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
-import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.api.internal.Throws
 import kotlin.Array
@@ -33,35 +32,58 @@ import okio.IOException
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery : Query<TestQuery.Data, Operation.Variables> {
-  override fun operationId(): String = OPERATION_ID
-  override fun queryDocument(): String = QUERY_DOCUMENT
-  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
-  override fun name(): OperationName = OPERATION_NAME
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper.invoke {
-    Data(it)
+  override fun operationId(): String {
+    return OPERATION_ID
+  }
+
+  override fun queryDocument(): String {
+    return QUERY_DOCUMENT
+  }
+
+  override fun variables(): Operation.Variables {
+    return Operation.EMPTY_VARIABLES
+  }
+
+  override fun name(): OperationName {
+    return OPERATION_NAME
+  }
+
+  override fun responseFieldMapper(): ResponseFieldMapper<TestQuery.Data> {
+    return ResponseFieldMapper.invoke {
+      TestQuery_ResponseAdapter.fromResponse(it)
+    }
   }
 
   @Throws(IOException::class)
-  override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters): Response<Data>
-      = SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters)
+  override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters):
+      Response<TestQuery.Data> {
+    return SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters)
+  }
 
   @Throws(IOException::class)
-  override fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters): Response<Data>
-      = parse(Buffer().write(byteString), scalarTypeAdapters)
+  override fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters):
+      Response<TestQuery.Data> {
+    return parse(Buffer().write(byteString), scalarTypeAdapters)
+  }
 
   @Throws(IOException::class)
-  override fun parse(source: BufferedSource): Response<Data> = parse(source, DEFAULT)
+  override fun parse(source: BufferedSource): Response<TestQuery.Data> {
+    return parse(source, DEFAULT)
+  }
 
   @Throws(IOException::class)
-  override fun parse(byteString: ByteString): Response<Data> = parse(byteString, DEFAULT)
+  override fun parse(byteString: ByteString): Response<TestQuery.Data> {
+    return parse(byteString, DEFAULT)
+  }
 
-  override fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters): ByteString =
-      OperationRequestBodyComposer.compose(
-    operation = this,
-    autoPersistQueries = false,
-    withQueryDocument = true,
-    scalarTypeAdapters = scalarTypeAdapters
-  )
+  override fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters): ByteString {
+    return OperationRequestBodyComposer.compose(
+      operation = this,
+      autoPersistQueries = false,
+      withQueryDocument = true,
+      scalarTypeAdapters = scalarTypeAdapters
+    )
+  }
 
   override fun composeRequestBody(): ByteString = OperationRequestBodyComposer.compose(
     operation = this,
@@ -94,7 +116,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
      * Height in the preferred unit, default is meters
      */
     val height: Double?
-  ) : NonOptionalHero {
+  ) : TestQuery.NonOptionalHero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
         writer.writeString(RESPONSE_FIELDS[0], this@Human.__typename)
@@ -109,30 +131,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forDouble("height", "height", null, true, null)
       )
-
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Human {
-        return reader.run {
-          var __typename: String? = __typename
-          var name: String? = null
-          var height: Double? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> name = readString(RESPONSE_FIELDS[1])
-              2 -> height = readDouble(RESPONSE_FIELDS[2])
-              else -> break
-            }
-          }
-          Human(
-            __typename = __typename!!,
-            name = name!!,
-            height = height
-          )
-        }
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Human> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -145,7 +143,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
      * The name of the character
      */
     override val name: String
-  ) : NonOptionalHero {
+  ) : TestQuery.NonOptionalHero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
         writer.writeString(RESPONSE_FIELDS[0], this@OtherNonOptionalHero.__typename)
@@ -158,28 +156,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null)
       )
-
-      operator fun invoke(reader: ResponseReader, __typename: String? = null):
-          OtherNonOptionalHero {
-        return reader.run {
-          var __typename: String? = __typename
-          var name: String? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> name = readString(RESPONSE_FIELDS[1])
-              else -> break
-            }
-          }
-          OtherNonOptionalHero(
-            __typename = __typename!!,
-            name = name!!
-          )
-        }
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<OtherNonOptionalHero> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -194,30 +170,16 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
      */
     val name: String
 
-    fun asHuman(): Human? = this as? Human
+    fun asHuman(): TestQuery.Human? = this as? TestQuery.Human
 
     fun marshaller(): ResponseFieldMarshaller
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null)
-      )
-
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): NonOptionalHero {
-        val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
-        return when(typename) {
-          "Human" -> Human(reader, typename)
-          else -> OtherNonOptionalHero(reader, typename)
-        }
-      }
-    }
   }
 
   /**
    * Data from the response after executing this GraphQL operation
    */
   data class Data(
-    val nonOptionalHero: NonOptionalHero
+    val nonOptionalHero: TestQuery.NonOptionalHero
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
@@ -230,26 +192,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         ResponseField.forObject("nonOptionalHero", "nonOptionalHero", mapOf<String, Any>(
           "episode" to "EMPIRE"), false, null)
       )
-
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
-        return reader.run {
-          var nonOptionalHero: NonOptionalHero? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> nonOptionalHero = readObject<NonOptionalHero>(RESPONSE_FIELDS[0]) { reader ->
-                NonOptionalHero(reader)
-              }
-              else -> break
-            }
-          }
-          Data(
-            nonOptionalHero = nonOptionalHero!!
-          )
-        }
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -272,7 +214,9 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         )
 
     val OPERATION_NAME: OperationName = object : OperationName {
-      override fun name(): String = "TestQuery"
+      override fun name(): String {
+        return "TestQuery"
+      }
     }
   }
 }

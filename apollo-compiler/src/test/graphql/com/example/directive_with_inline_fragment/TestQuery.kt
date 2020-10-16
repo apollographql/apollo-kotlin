@@ -17,7 +17,6 @@ import com.apollographql.apollo.api.internal.OperationRequestBodyComposer
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
-import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.api.internal.Throws
 import com.example.directive_with_inline_fragment.type.CustomType
@@ -47,41 +46,66 @@ data class TestQuery(
       this["skipHumanDetails"] = this@TestQuery.skipHumanDetails
     }
 
-    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
-      writer.writeBoolean("withDetails", this@TestQuery.withDetails)
-      writer.writeBoolean("skipHumanDetails", this@TestQuery.skipHumanDetails)
+    override fun marshaller(): InputFieldMarshaller {
+      return InputFieldMarshaller.invoke { writer ->
+        writer.writeBoolean("withDetails", this@TestQuery.withDetails)
+        writer.writeBoolean("skipHumanDetails", this@TestQuery.skipHumanDetails)
+      }
     }
   }
 
-  override fun operationId(): String = OPERATION_ID
-  override fun queryDocument(): String = QUERY_DOCUMENT
-  override fun variables(): Operation.Variables = variables
-  override fun name(): OperationName = OPERATION_NAME
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper.invoke {
-    Data(it)
+  override fun operationId(): String {
+    return OPERATION_ID
+  }
+
+  override fun queryDocument(): String {
+    return QUERY_DOCUMENT
+  }
+
+  override fun variables(): Operation.Variables {
+    return variables
+  }
+
+  override fun name(): OperationName {
+    return OPERATION_NAME
+  }
+
+  override fun responseFieldMapper(): ResponseFieldMapper<TestQuery.Data> {
+    return ResponseFieldMapper.invoke {
+      TestQuery_ResponseAdapter.fromResponse(it)
+    }
   }
 
   @Throws(IOException::class)
-  override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters): Response<Data>
-      = SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters)
+  override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters):
+      Response<TestQuery.Data> {
+    return SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters)
+  }
 
   @Throws(IOException::class)
-  override fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters): Response<Data>
-      = parse(Buffer().write(byteString), scalarTypeAdapters)
+  override fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters):
+      Response<TestQuery.Data> {
+    return parse(Buffer().write(byteString), scalarTypeAdapters)
+  }
 
   @Throws(IOException::class)
-  override fun parse(source: BufferedSource): Response<Data> = parse(source, DEFAULT)
+  override fun parse(source: BufferedSource): Response<TestQuery.Data> {
+    return parse(source, DEFAULT)
+  }
 
   @Throws(IOException::class)
-  override fun parse(byteString: ByteString): Response<Data> = parse(byteString, DEFAULT)
+  override fun parse(byteString: ByteString): Response<TestQuery.Data> {
+    return parse(byteString, DEFAULT)
+  }
 
-  override fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters): ByteString =
-      OperationRequestBodyComposer.compose(
-    operation = this,
-    autoPersistQueries = false,
-    withQueryDocument = true,
-    scalarTypeAdapters = scalarTypeAdapters
-  )
+  override fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters): ByteString {
+    return OperationRequestBodyComposer.compose(
+      operation = this,
+      autoPersistQueries = false,
+      withQueryDocument = true,
+      scalarTypeAdapters = scalarTypeAdapters
+    )
+  }
 
   override fun composeRequestBody(): ByteString = OperationRequestBodyComposer.compose(
     operation = this,
@@ -104,7 +128,7 @@ data class TestQuery(
   /**
    * A humanoid creature from the Star Wars universe
    */
-  interface Human : Hero {
+  interface Human : TestQuery.Hero {
     override val __typename: String
 
     /**
@@ -128,7 +152,7 @@ data class TestQuery(
   /**
    * A character from the Star Wars universe
    */
-  interface Character : Hero {
+  interface Character : TestQuery.Hero {
     override val __typename: String
 
     /**
@@ -147,7 +171,7 @@ data class TestQuery(
   /**
    * An autonomous mechanical character in the Star Wars universe
    */
-  interface Droid : Hero {
+  interface Droid : TestQuery.Hero {
     override val __typename: String
 
     /**
@@ -171,7 +195,7 @@ data class TestQuery(
   /**
    * A character from the Star Wars universe
    */
-  interface Character1 : Hero {
+  interface Character1 : TestQuery.Hero {
     override val __typename: String
 
     /**
@@ -201,7 +225,7 @@ data class TestQuery(
      * The home planet of the human, or null if unknown
      */
     override val homePlanet: String?
-  ) : Human, Character1, Hero {
+  ) : TestQuery.Human, TestQuery.Character1, TestQuery.Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
         writer.writeString(RESPONSE_FIELDS[0], this@HumanCharacterImpl.__typename)
@@ -219,33 +243,6 @@ data class TestQuery(
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forString("homePlanet", "homePlanet", null, true, null)
       )
-
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): HumanCharacterImpl {
-        return reader.run {
-          var __typename: String? = __typename
-          var id: String? = null
-          var name: String? = null
-          var homePlanet: String? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
-              2 -> name = readString(RESPONSE_FIELDS[2])
-              3 -> homePlanet = readString(RESPONSE_FIELDS[3])
-              else -> break
-            }
-          }
-          HumanCharacterImpl(
-            __typename = __typename!!,
-            id = id!!,
-            name = name!!,
-            homePlanet = homePlanet
-          )
-        }
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<HumanCharacterImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -263,7 +260,7 @@ data class TestQuery(
      * This droid's primary function
      */
     override val primaryFunction: String?
-  ) : Droid, Character1, Hero {
+  ) : TestQuery.Droid, TestQuery.Character1, TestQuery.Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
         writer.writeString(RESPONSE_FIELDS[0], this@DroidCharacterImpl.__typename)
@@ -281,33 +278,6 @@ data class TestQuery(
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forString("primaryFunction", "primaryFunction", null, true, null)
       )
-
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): DroidCharacterImpl {
-        return reader.run {
-          var __typename: String? = __typename
-          var id: String? = null
-          var name: String? = null
-          var primaryFunction: String? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
-              2 -> name = readString(RESPONSE_FIELDS[2])
-              3 -> primaryFunction = readString(RESPONSE_FIELDS[3])
-              else -> break
-            }
-          }
-          DroidCharacterImpl(
-            __typename = __typename!!,
-            id = id!!,
-            name = name!!,
-            primaryFunction = primaryFunction
-          )
-        }
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<DroidCharacterImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -320,7 +290,7 @@ data class TestQuery(
      * The ID of the character
      */
     override val id: String
-  ) : Hero {
+  ) : TestQuery.Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
         writer.writeString(RESPONSE_FIELDS[0], this@OtherHero.__typename)
@@ -333,27 +303,6 @@ data class TestQuery(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null)
       )
-
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): OtherHero {
-        return reader.run {
-          var __typename: String? = __typename
-          var id: String? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
-              else -> break
-            }
-          }
-          OtherHero(
-            __typename = __typename!!,
-            id = id!!
-          )
-        }
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<OtherHero> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -368,35 +317,20 @@ data class TestQuery(
      */
     val id: String
 
-    fun asHuman(): Human? = this as? Human
+    fun asHuman(): TestQuery.Human? = this as? TestQuery.Human
 
-    fun asCharacter1(): Character1? = this as? Character1
+    fun asCharacter1(): TestQuery.Character1? = this as? TestQuery.Character1
 
-    fun asDroid(): Droid? = this as? Droid
+    fun asDroid(): TestQuery.Droid? = this as? TestQuery.Droid
 
     fun marshaller(): ResponseFieldMarshaller
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null)
-      )
-
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Hero {
-        val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
-        return when(typename) {
-          "Human" -> HumanCharacterImpl(reader, typename)
-          "Droid" -> DroidCharacterImpl(reader, typename)
-          else -> OtherHero(reader, typename)
-        }
-      }
-    }
   }
 
   /**
    * Data from the response after executing this GraphQL operation
    */
   data class Data(
-    val hero: Hero?
+    val hero: TestQuery.Hero?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller.invoke { writer ->
@@ -408,26 +342,6 @@ data class TestQuery(
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forObject("hero", "hero", null, true, null)
       )
-
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
-        return reader.run {
-          var hero: Hero? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> hero = readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
-                Hero(reader)
-              }
-              else -> break
-            }
-          }
-          Data(
-            hero = hero
-          )
-        }
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -458,7 +372,9 @@ data class TestQuery(
         )
 
     val OPERATION_NAME: OperationName = object : OperationName {
-      override fun name(): String = "TestQuery"
+      override fun name(): String {
+        return "TestQuery"
+      }
     }
   }
 }
