@@ -27,6 +27,7 @@ import java.util.Date
 import kotlin.Any
 import kotlin.Array
 import kotlin.Boolean
+import kotlin.Deprecated
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
@@ -270,10 +271,19 @@ internal data class CreateReviewForEpisode(
    * Data from the response after executing this GraphQL operation
    */
   data class Data(
-    val createReview: CreateReview?
+    val createReview: CreateReview?,
+    /**
+     * For testing https://github.com/apollographql/apollo-android/issues/2660
+     */
+    @Deprecated(message = "Deprecated")
+    val stat_collect: List<Boolean>
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeObject(RESPONSE_FIELDS[0], this@Data.createReview?.marshaller())
+      writer.writeList(RESPONSE_FIELDS[1], this@Data.stat_collect) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeBoolean(value)}
+      }
     }
 
     companion object {
@@ -284,15 +294,20 @@ internal data class CreateReviewForEpisode(
               "variableName" to "ep"),
             "review" to mapOf<String, Any>(
               "kind" to "Variable",
-              "variableName" to "review")), true, null)
+              "variableName" to "review")), true, null),
+          ResponseField.forList("stat_collect", "stat_collect", null, false, null)
           )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {
         val createReview = readObject<CreateReview>(RESPONSE_FIELDS[0]) { reader ->
           CreateReview(reader)
         }
+        val stat_collect = readList<Boolean>(RESPONSE_FIELDS[1]) { reader ->
+          reader.readBoolean()
+        }!!.map { it!! }
         Data(
-          createReview = createReview
+          createReview = createReview,
+          stat_collect = stat_collect
         )
       }
 
@@ -303,7 +318,7 @@ internal data class CreateReviewForEpisode(
 
   companion object {
     const val OPERATION_ID: String =
-        "c07e5abc4b4070cd773623194c07f546e609af467a1d34f7bf01c37272245296"
+        "ddb5b88794340f1233d8b0d93bf51320b4e285a912f0914ddbaba8fc430e6db7"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -320,6 +335,7 @@ internal data class CreateReviewForEpisode(
           |      name
           |    }
           |  }
+          |  stat_collect
           |}
           """.trimMargin()
         )

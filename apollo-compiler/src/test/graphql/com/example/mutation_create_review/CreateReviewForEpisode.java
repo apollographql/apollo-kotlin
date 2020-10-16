@@ -265,6 +265,7 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
 
     /**
      * For testing https://github.com/apollographql/apollo-android/issues/2660
+     * @deprecated Deprecated
      */
     public @NotNull @Deprecated List<Boolean> stat_collect() {
       return this.stat_collect;
