@@ -23,7 +23,6 @@ class JavaTypeResolverTest {
           emptySet(),
           emptySet(),
           emptySet(),
-          "",
           ""),
       useSemanticNaming = false,
       generateModelBuilder = false,

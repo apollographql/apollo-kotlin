@@ -48,7 +48,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
         roots = roots,
         rootPackageName = args.rootPackageName,
         schemaPackageName = schemaPackageName,
-        useFilePackageNameForFragments = true // TODO
+        useFilePackageNameForFragments = args.useFilePackageNameForFragments
     )
 
     val files = args.graphqlFiles
