@@ -89,6 +89,9 @@ object GraphSDLSchemaParser {
     val typeDefinitions = typeDefinition()?.parse()
         ?.plus(builtInTypeDefinitions())
         ?.associateBy { it.name }
+        ?.toMutableMap()
+
+    typeDefinition().mapNotNull { it.typeSystemExtension() }.parse(typeDefinitions ?: mutableMapOf())
 
     val schemaDefinition = schemaDefinition().firstOrNull()
     val operationRootTypes = schemaDefinition?.operationTypesDefinition().parse()
@@ -104,6 +107,218 @@ object GraphSDLSchemaParser {
         ),
         typeDefinitions = typeDefinitions ?: emptyMap()
     )
+  }
+
+  private fun List<GraphSDLParser.TypeSystemExtensionContext>.parse(
+      typeDefinitions: MutableMap<String, GraphSdlSchema.TypeDefinition>
+  ) {
+    forEach {
+      it.typeExtension()?.apply {
+        scalarTypeExtensionDefinition()?.parse(typeDefinitions)
+        enumTypeExtensionDefinition()?.parse(typeDefinitions)
+        objectTypeExtensionDefinition()?.parse(typeDefinitions)
+        interfaceTypeExtensionDefinition()?.parse(typeDefinitions)
+        unionTypeExtensionDefinition()?.parse(typeDefinitions)
+        inputObjectTypeExtensionDefinition()?.parse(typeDefinitions)
+      }
+    }
+  }
+
+  private fun GraphSDLParser.ScalarTypeExtensionDefinitionContext.parse(typeDefinitions: MutableMap<String, GraphSdlSchema.TypeDefinition>) {
+    val name = name().text
+    val scalar = typeDefinitions.get(name)
+    if (scalar == null) {
+      throw ParseException(
+          message = "Cannot add scalar type extension on unknown scalar `$name`",
+          token = start
+      )
+    }
+    if (scalar !is GraphSdlSchema.TypeDefinition.Scalar) {
+      throw ParseException(
+          message = "Cannot add scalr extension on non-scalar type `$name`",
+          token = start
+      )
+    }
+
+    typeDefinitions.put(name().text, scalar.copy(
+        directives = scalar.directives.mergeDirectives(directives().parse()),
+    ))
+  }
+
+  private fun GraphSDLParser.ObjectTypeExtensionDefinitionContext.parse(typeDefinitions: MutableMap<String, GraphSdlSchema.TypeDefinition>) {
+    val name = name().text
+    val objectType = typeDefinitions.get(name)
+    if (objectType == null) {
+      throw ParseException(
+          message = "Cannot add object type extension on unknown object type `$name`",
+          token = start
+      )
+    }
+    if (objectType !is GraphSdlSchema.TypeDefinition.Object) {
+      throw ParseException(
+          message = "Cannot add object extension on non-object type `$name`",
+          token = start
+      )
+    }
+
+    typeDefinitions.put(name, objectType.copy(
+        directives = objectType.directives.mergeDirectives(directives().parse()),
+        interfaces = objectType.interfaces.mergeTypeRefs(implementsInterfaces().parse()),
+        fields = objectType.fields.mergeFields(fieldsDefinition().parse()),
+    ))
+  }
+
+  private fun GraphSDLParser.InterfaceTypeExtensionDefinitionContext.parse(typeDefinitions: MutableMap<String, GraphSdlSchema.TypeDefinition>) {
+    val name = name().text
+    val interfaceType = typeDefinitions.get(name)
+    if (interfaceType == null) {
+      throw ParseException(
+          message = "Cannot add interface type extension on unknown interface `$name`",
+          token = start
+      )
+    }
+    if (interfaceType !is GraphSdlSchema.TypeDefinition.Interface) {
+      throw ParseException(
+          message = "Cannot add interface extension on non-interface type `$name`",
+          token = start
+      )
+    }
+
+    typeDefinitions.put(name, interfaceType.copy(
+        directives = interfaceType.directives.mergeDirectives(directives().parse()),
+        fields = interfaceType.fields.mergeFields(fieldsDefinition().parse()),
+    ))
+  }
+
+  private fun GraphSDLParser.UnionTypeExtensionDefinitionContext.parse(typeDefinitions: MutableMap<String, GraphSdlSchema.TypeDefinition>) {
+    val name = name().text
+    val union = typeDefinitions.get(name)
+    if (union == null) {
+      throw ParseException(
+          message = "Cannot add union type extension on unknown union `$name`",
+          token = start
+      )
+    }
+    if (union !is GraphSdlSchema.TypeDefinition.Union) {
+      throw ParseException(
+          message = "Cannot add union extension on non-union type `$name`",
+          token = start
+      )
+    }
+
+    typeDefinitions.put(name, union.copy(
+        directives = union.directives.mergeDirectives(directives().parse()),
+        typeRefs = union.typeRefs.mergeTypeRefs(unionMemberTypes().namedType().map { it.parse() })
+    ))
+  }
+
+  private fun GraphSDLParser.EnumTypeExtensionDefinitionContext.parse(typeDefinitions: MutableMap<String, GraphSdlSchema.TypeDefinition>) {
+    val name = name().text
+    val enum = typeDefinitions.get(name)
+    if (enum == null) {
+      throw ParseException(
+          message = "Cannot add enum extension on unknown enum `$name`",
+          token = start
+      )
+    }
+    if (enum !is GraphSdlSchema.TypeDefinition.Enum) {
+      throw ParseException(
+          message = "Cannot add enum extension on non-enum type `$name`",
+          token = start
+      )
+    }
+
+    typeDefinitions.put(name, enum.copy(
+        directives = enum.directives.mergeDirectives(directives().parse()),
+        enumValues = enum.enumValues.mergeEnumValues(enumValuesDefinition().parse())
+    ))
+  }
+
+  private fun GraphSDLParser.InputObjectTypeExtensionDefinitionContext.parse(typeDefinitions: MutableMap<String, GraphSdlSchema.TypeDefinition>) {
+    val name = name().text
+    val inputObjectType = typeDefinitions.get(name)
+    if (inputObjectType == null) {
+      throw ParseException(
+          message = "Cannot add enum extension on unknown enum `$name`",
+          token = start
+      )
+    }
+    if (inputObjectType !is GraphSdlSchema.TypeDefinition.InputObject) {
+      throw ParseException(
+          message = "Cannot add enum extension on non-enum type `$name`",
+          token = start
+      )
+    }
+
+    typeDefinitions.put(name, inputObjectType.copy(
+        directives = inputObjectType.directives.mergeDirectives(directives().parse()),
+        fields = inputObjectType.fields.mergeInputFields(inputValuesDefinition().parse())
+    ))
+  }
+
+  private fun List<GraphSdlSchema.Directive>.mergeDirectives(newDirectives: List<GraphSdlSchema.Directive>): List<GraphSdlSchema.Directive> {
+    newDirectives.forEach { newDirective ->
+      if (find { it.name == newDirective.name } != null) {
+        throw ParseException(
+            message = "Cannot add already existing directive `${newDirective.name}`",
+            sourceLocation = newDirective.sourceLocation
+        )
+      }
+    }
+
+    return this + newDirectives
+  }
+
+  private fun List<GraphSdlSchema.TypeRef.Named>.mergeTypeRefs(newTypeRefs: List<GraphSdlSchema.TypeRef.Named>): List<GraphSdlSchema.TypeRef.Named> {
+    newTypeRefs.forEach { newTypeRef ->
+      if (find { it.typeName == newTypeRef.typeName } != null) {
+        throw ParseException(
+            message = "Cannot add already existing type `${newTypeRef.typeName}`",
+            sourceLocation = newTypeRef.sourceLocation
+        )
+      }
+    }
+
+    return this + newTypeRefs
+  }
+
+  private fun List<GraphSdlSchema.TypeDefinition.Field>.mergeFields(newInterfaces: List<GraphSdlSchema.TypeDefinition.Field>): List<GraphSdlSchema.TypeDefinition.Field> {
+    newInterfaces.forEach { field ->
+      if (find { it.name == field.name } != null) {
+        throw ParseException(
+            message = "Cannot add already existing field `${field.name}`",
+            sourceLocation = field.sourceLocation
+        )
+      }
+    }
+
+    return this + newInterfaces
+  }
+
+  private fun List<GraphSdlSchema.TypeDefinition.Enum.Value>.mergeEnumValues(newEnumValues: List<GraphSdlSchema.TypeDefinition.Enum.Value>): List<GraphSdlSchema.TypeDefinition.Enum.Value> {
+    newEnumValues.forEach { newEnumValue ->
+      if (find { it.name == newEnumValue.name } != null) {
+        throw ParseException(
+            message = "Cannot add already existing enum value `${newEnumValue.name}`",
+            sourceLocation = newEnumValue.sourceLocation
+        )
+      }
+    }
+
+    return this + newEnumValues
+  }
+
+  private fun List<GraphSdlSchema.TypeDefinition.InputField>.mergeInputFields(newInputFields: List<GraphSdlSchema.TypeDefinition.InputField>): List<GraphSdlSchema.TypeDefinition.InputField> {
+    newInputFields.forEach { newInputField ->
+      if (find { it.name == newInputField.name } != null) {
+        throw ParseException(
+            message = "Cannot add already existing enum value `${newInputField.name}`",
+            sourceLocation = newInputField.sourceLocation
+        )
+      }
+    }
+
+    return this + newInputFields
   }
 
   private fun GraphSDLParser.OperationTypesDefinitionContext?.parse(): Map<String, String> {
@@ -134,7 +349,8 @@ object GraphSDLSchemaParser {
     return GraphSdlSchema.TypeDefinition.Enum.Value(
         name = name().text,
         description = description().parse(),
-        directives = directives().parse()
+        directives = directives().parse(),
+        sourceLocation = SourceLocation(start)
     )
   }
 
@@ -203,7 +419,8 @@ object GraphSDLSchemaParser {
         description = description().parse(),
         directives = directives().parse(),
         type = type().parse(),
-        arguments = argumentsDefinition().parse()
+        arguments = argumentsDefinition().parse(),
+        sourceLocation = SourceLocation(start)
     )
   }
 
@@ -237,7 +454,8 @@ object GraphSDLSchemaParser {
         description = description().parse(),
         directives = directives().parse(),
         type = type().parse(),
-        defaultValue = defaultValue()?.value()?.parse()
+        defaultValue = defaultValue()?.value()?.parse(),
+        sourceLocation = SourceLocation(start)
     )
   }
 
@@ -310,7 +528,8 @@ object GraphSDLSchemaParser {
   private fun GraphSDLParser.DirectiveContext.parse(): GraphSdlSchema.Directive {
     return GraphSdlSchema.Directive(
         name = name().text,
-        arguments = directiveArguments().parse()
+        arguments = directiveArguments().parse(),
+        sourceLocation = SourceLocation(start)
     )
   }
 

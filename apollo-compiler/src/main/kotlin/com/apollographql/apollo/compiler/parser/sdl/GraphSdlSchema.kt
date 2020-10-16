@@ -34,7 +34,8 @@ data class GraphSdlSchema(
       data class Value(
           val name: String,
           val description: String?,
-          val directives: List<Directive>
+          val directives: List<Directive>,
+          val sourceLocation: SourceLocation
       )
     }
 
@@ -58,7 +59,8 @@ data class GraphSdlSchema(
         val description: String?,
         val directives: List<Directive>,
         val type: TypeRef,
-        val arguments: List<Argument>
+        val arguments: List<Argument>,
+        val sourceLocation: SourceLocation
     ) {
       data class Argument(
           val name: String,
@@ -81,7 +83,8 @@ data class GraphSdlSchema(
         val description: String?,
         val directives: List<Directive>,
         val defaultValue: Any?,
-        val type: TypeRef
+        val type: TypeRef,
+        val sourceLocation: SourceLocation
     )
 
     data class Union(
@@ -101,7 +104,8 @@ data class GraphSdlSchema(
 
   data class Directive(
       val name: String,
-      val arguments: Map<String, String>
+      val arguments: Map<String, String>,
+      val sourceLocation: SourceLocation
   )
 
   sealed class TypeRef {

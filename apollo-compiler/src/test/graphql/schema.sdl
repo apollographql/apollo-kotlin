@@ -425,3 +425,7 @@ scalar UnsupportedType
 
 """URL for testing"""
 scalar URL
+
+extend type Starship {
+  shieldLevel: Float!
+}
