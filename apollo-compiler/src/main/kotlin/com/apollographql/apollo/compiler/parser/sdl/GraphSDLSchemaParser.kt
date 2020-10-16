@@ -135,7 +135,7 @@ object GraphSDLSchemaParser {
     }
     if (scalar !is GraphSdlSchema.TypeDefinition.Scalar) {
       throw ParseException(
-          message = "Cannot add scalr extension on non-scalar type `$name`",
+          message = "Cannot add scalar extension on non-scalar type `$name`",
           token = start
       )
     }
