@@ -1,7 +1,5 @@
 package com.apollographql.apollo.compiler.ir
 
-import com.apollographql.apollo.api.Operation
-
 data class Operation(
     val operationName: String,
     val packageName: String,

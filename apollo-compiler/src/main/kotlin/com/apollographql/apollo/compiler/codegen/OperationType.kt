@@ -50,13 +50,13 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
       .addFunction(FunSpec.builder("operationId")
           .addModifiers(KModifier.OVERRIDE)
           .returns(String::class)
-          .addCode("return OPERATION_ID")
+          .addStatement("return·OPERATION_ID")
           .build()
       )
       .addFunction(FunSpec.builder("queryDocument")
           .addModifiers(KModifier.OVERRIDE)
           .returns(String::class)
-          .addCode("return QUERY_DOCUMENT")
+          .addStatement("return·QUERY_DOCUMENT")
           .build()
       )
       .addFunction(FunSpec.builder("variables")
@@ -64,9 +64,9 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
           .returns(Operation.Variables::class.asClassName())
           .apply {
             if (variables.isNotEmpty()) {
-              addCode("return variables")
+              addStatement("return·variables")
             } else {
-              addCode("return %T.EMPTY_VARIABLES", Operation::class)
+              addStatement("return·%T.EMPTY_VARIABLES", Operation::class)
             }
           }
           .build()
@@ -74,16 +74,20 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
       .addFunction(FunSpec.builder("name")
           .addModifiers(KModifier.OVERRIDE)
           .returns(OperationName::class)
-          .addCode("return OPERATION_NAME")
+          .addStatement("return·OPERATION_NAME")
           .build()
       )
-      .addFunction(FunSpec.builder("responseFieldMapper")
-          .addModifiers(KModifier.OVERRIDE)
-          .returns(ResponseFieldMapper::class.asClassName().parameterizedBy(dataType.rootType.asTypeName()))
-          .beginControlFlow("return %T.invoke·{", ResponseFieldMapper::class)
-          .addStatement("%T(it)", dataType.rootType.asTypeName())
-          .endControlFlow()
-          .build()
+      .addFunction(
+          FunSpec.builder("responseFieldMapper")
+              .addModifiers(KModifier.OVERRIDE)
+              .returns(ResponseFieldMapper::class.asClassName().parameterizedBy(dataType.rootType.asTypeName()))
+              .beginControlFlow("return·%T.invoke·{", ResponseFieldMapper::class)
+              .addStatement(
+                  "%T.fromResponse(it)",
+                  CodeGenerationAst.TypeRef(name = name, packageName = targetPackage).asAdapterTypeName()
+              )
+              .endControlFlow()
+              .build()
       )
       .addFunction(parseWithAdaptersFunSpec())
       .addFunction(parseByteStringWithAdaptersFunSpec())
@@ -120,7 +124,7 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
                       .builder("name")
                       .addModifiers(KModifier.OVERRIDE)
                       .returns(String::class)
-                      .addStatement("return %S", operationName)
+                      .addStatement("return·%S", operationName)
                       .build()
                   )
                   .build()
@@ -206,7 +210,7 @@ private fun List<CodeGenerationAst.InputField>.variablesMarshallerSpec(thisRef: 
       .addModifiers(KModifier.OVERRIDE)
       .addCode(CodeBlock
           .builder()
-          .beginControlFlow("return %T.invoke·{ writer ->", InputFieldMarshaller::class)
+          .beginControlFlow("return·%T.invoke·{ writer ->", InputFieldMarshaller::class)
           .apply { forEach { field -> add(field.writeCodeBlock(thisRef)) } }
           .endControlFlow()
           .build()
@@ -221,7 +225,7 @@ private fun CodeGenerationAst.OperationType.parseWithAdaptersFunSpec(): FunSpec 
       .addParameter(ParameterSpec("scalarTypeAdapters", ScalarTypeAdapters::class.asTypeName()))
       .throwsMultiplatformIOException()
       .returns(responseReturnType())
-      .addStatement("return %T.parse(source, this, scalarTypeAdapters)", SimpleOperationResponseParser::class)
+      .addStatement("return·%T.parse(source,·this,·scalarTypeAdapters)", SimpleOperationResponseParser::class)
       .build()
 }
 
@@ -232,7 +236,7 @@ private fun CodeGenerationAst.OperationType.parseByteStringWithAdaptersFunSpec()
       .addParameter(ParameterSpec("scalarTypeAdapters", ScalarTypeAdapters::class.asTypeName()))
       .throwsMultiplatformIOException()
       .returns(responseReturnType())
-      .addStatement("return parse(%T().write(byteString), scalarTypeAdapters)", Buffer::class)
+      .addStatement("return·parse(%T().write(byteString),·scalarTypeAdapters)", Buffer::class)
       .build()
 }
 
@@ -242,7 +246,7 @@ private fun CodeGenerationAst.OperationType.parseFunSpec(): FunSpec {
       .addParameter(ParameterSpec("source", BufferedSource::class.asTypeName()))
       .throwsMultiplatformIOException()
       .returns(responseReturnType())
-      .addStatement("return parse(source, %M)", DEFAULT_SCALAR_TYPE_ADAPTERS)
+      .addStatement("return·parse(source,·%M)", DEFAULT_SCALAR_TYPE_ADAPTERS)
       .build()
 }
 
@@ -252,7 +256,7 @@ private fun CodeGenerationAst.OperationType.parseByteStringFunSpec(): FunSpec {
       .addParameter(ParameterSpec("byteString", ByteString::class.asTypeName()))
       .throwsMultiplatformIOException()
       .returns(responseReturnType())
-      .addStatement("return parse(byteString, %M)", DEFAULT_SCALAR_TYPE_ADAPTERS)
+      .addStatement("return·parse(byteString,·%M)", DEFAULT_SCALAR_TYPE_ADAPTERS)
       .build()
 }
 
@@ -267,7 +271,7 @@ private fun composeRequestBodyFunSpec(): FunSpec {
       .returns(ByteString::class)
       .addCode(
           CodeBlock.builder()
-              .add("return %T.compose(\n", OperationRequestBodyComposer::class)
+              .add("return·%T.compose(\n", OperationRequestBodyComposer::class)
               .indent()
               .addStatement("operation = this,")
               .addStatement("autoPersistQueries = false,")

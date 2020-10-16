@@ -1,18 +1,15 @@
 package com.apollographql.apollo.compiler.codegen
 
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
-import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.ast.CodeGenerationAst
 import com.apollographql.apollo.compiler.ir.Field
-import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.joinToCode
 
 internal fun CodeGenerationAst.ObjectType.typeSpec(
     generateAsInternal: Boolean = false
@@ -46,19 +43,11 @@ internal fun CodeGenerationAst.ObjectType.objectTypeSpec(
             TypeSpec
                 .companionObjectBuilder()
                 .addProperty(responseFieldsPropertySpec(fields))
-                .addFunction(fields.toMapperFun(ClassName("", name)))
-                .addFunction(ClassName("", name).createMapperFun())
                 .build()
         )
       }
       .apply {
         if (kind is CodeGenerationAst.ObjectType.Kind.Fragment) {
-          addType(
-              fragmentCompanionTypeSpec(
-                  defaultImplementation = kind.defaultImplementation,
-                  possibleImplementations = kind.possibleImplementations
-              )
-          )
           kind.allPossibleTypes.forEach { type ->
             addFunction(
                 FunSpec
@@ -117,64 +106,6 @@ private fun CodeGenerationAst.ObjectType.fragmentDelegateTypeSpec(
               .build()
       )
       .primaryConstructor(primaryConstructorSpec)
-      .addType(
-          TypeSpec.companionObjectBuilder()
-              .addFunction(
-                  FunSpec
-                      .builder("invoke")
-                      .addModifiers(KModifier.OPERATOR)
-                      .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
-                      .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec())
-                      .returns(ClassName("", name))
-                      .addStatement(
-                          "return·%L(%T(reader, %L))",
-                          name,
-                          delegateFieldTypeName,
-                          CodeGenerationAst.typenameField.responseName
-                      )
-                      .build()
-              )
-              .build()
-      )
-      .build()
-}
-
-private fun CodeGenerationAst.ObjectType.fragmentCompanionTypeSpec(
-    defaultImplementation: CodeGenerationAst.TypeRef,
-    possibleImplementations: Map<String, CodeGenerationAst.TypeRef>
-): TypeSpec {
-  return TypeSpec
-      .companionObjectBuilder()
-      .addProperty(responseFieldsPropertySpec(listOf(CodeGenerationAst.typenameField)))
-      .addFunction(
-          FunSpec
-              .builder("invoke")
-              .addModifiers(KModifier.OPERATOR)
-              .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
-              .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec())
-              .returns(ClassName("", name))
-              .applyIf(possibleImplementations.isEmpty()) {
-                addStatement("return %T(reader)", defaultImplementation.asTypeName())
-              }
-              .applyIf(possibleImplementations.isNotEmpty()) {
-                addStatement("val·typename·=·%L·?:·reader.readString(RESPONSE_FIELDS[0])", CodeGenerationAst.typenameField.responseName)
-                beginControlFlow("return·when(typename)")
-                addCode(
-                    possibleImplementations
-                        .map { (typeCondition, type) ->
-                          CodeBlock.of(
-                              "%S·-> %T(reader, typename)",
-                              typeCondition,
-                              type.asTypeName(),
-                          )
-                        }
-                        .joinToCode(separator = "\n", suffix = "\n")
-                )
-                addStatement("else·->·%T(reader, typename)", defaultImplementation.asTypeName())
-                endControlFlow()
-              }
-              .build()
-      )
       .build()
 }
 

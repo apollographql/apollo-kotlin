@@ -11,14 +11,12 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.asTypeName
 
 internal fun CodeGenerationAst.FragmentType.typeSpec(generateAsInternal: Boolean): TypeSpec {
   val fragmentType = checkNotNull(nestedTypes[rootType]) {
     "Failed to resolve operation root data type"
   }
   val nestedTypeSpecs = nestedTypes.minus(rootType).values.map { type -> type.typeSpec() }
-  val defaultImplementationTypeSpec = nestedTypeSpecs.find { typeSpec -> typeSpec.name == defaultImplementation.name }!!
   return TypeSpec
       .interfaceBuilder(fragmentType.name)
       .addAnnotation(suppressWarningsAnnotation)
@@ -37,11 +35,9 @@ internal fun CodeGenerationAst.FragmentType.typeSpec(generateAsInternal: Boolean
                   .addModifiers(KModifier.OPERATOR)
                   .returns(ClassName.bestGuess(fragmentType.name))
                   .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
-                  .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec())
                   .addStatement(
-                      "return %T(reader, %L)",
-                      defaultImplementation.asTypeName(),
-                      CodeGenerationAst.typenameField.responseName
+                      "return·%T.fromResponse(reader)",
+                      rootType.asAdapterTypeName(),
                   )
                   .build()
           )

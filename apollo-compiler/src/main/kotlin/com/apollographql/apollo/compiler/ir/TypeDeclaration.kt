@@ -8,10 +8,9 @@ data class TypeDeclaration(
     val fields: List<TypeDeclarationField> = emptyList()
 ) {
   companion object {
-    val KIND_INPUT_OBJECT_TYPE: String = "InputObjectType"
-    val KIND_ENUM: String = "EnumType"
-    val KIND_SCALAR_TYPE: String = "ScalarType"
-    val ENUM_UNKNOWN_CONSTANT: String = "\$UNKNOWN"
-    val ENUM_SAFE_VALUE_OF: String = "safeValueOf"
+    const val KIND_INPUT_OBJECT_TYPE: String = "InputObjectType"
+    const val KIND_ENUM: String = "EnumType"
+    const val KIND_SCALAR_TYPE: String = "ScalarType"
+    const val ENUM_UNKNOWN_CONSTANT: String = "\$UNKNOWN"
   }
 }
