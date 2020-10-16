@@ -14,7 +14,6 @@ import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 internal fun CodeGenerationIR.ast(
     customTypeMap: CustomTypes,
     typesPackageName: String,
-    fragmentsPackage: String,
     useSemanticNaming: Boolean,
     operationOutput: OperationOutput
 ): Schema {
@@ -43,7 +42,6 @@ internal fun CodeGenerationIR.ast(
             customTypeMap = customTypeMap,
             enums = enums,
             typesPackageName = typesPackageName,
-            fragmentsPackage = fragmentsPackage,
             fragments = irFragments
         )
     )
@@ -55,7 +53,6 @@ internal fun CodeGenerationIR.ast(
             customTypeMap = customTypeMap,
             enums = enums,
             typesPackageName = typesPackageName,
-            fragmentsPackage = fragmentsPackage,
             fragments = irFragments
         ),
         operationOutput = operationOutput

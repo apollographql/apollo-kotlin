@@ -92,6 +92,11 @@ internal data class ObjectType(
   }
 }
 
+internal class FragmentType(
+    val objectType: ObjectType,
+    val packageName: String
+)
+
 internal data class EnumType(
     val name: String,
     val description: String,
@@ -126,7 +131,7 @@ internal data class Schema(
     val enums: List<EnumType>,
     val customTypes: CustomTypes,
     val inputTypes: List<InputType>,
-    val fragments: List<ObjectType>,
+    val fragments: List<FragmentType>,
     val operations: List<OperationType>
 ) {
   fun accept(visitor: SchemaVisitor) {
@@ -145,7 +150,7 @@ internal interface SchemaVisitor {
 
   fun visit(inputType: InputType)
 
-  fun visit(fragmentType: ObjectType)
+  fun visit(fragmentType: FragmentType)
 
   fun visit(operationType: OperationType)
 }

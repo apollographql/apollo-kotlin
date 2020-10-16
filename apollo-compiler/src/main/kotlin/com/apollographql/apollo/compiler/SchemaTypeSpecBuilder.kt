@@ -190,7 +190,7 @@ class SchemaTypeSpecBuilder(
             val optional = fragmentRef.isOptional()
             val possibleTypes = fragment.takeIf { fragment.typeCondition != normalizeGraphQlType(schemaType) }?.possibleTypes ?: emptyList()
             val fieldSpec = FieldSpec.builder(
-                JavaTypeResolver(context = context, packageName = context.ir.fragmentsPackageName)
+                JavaTypeResolver(context = context, packageName = fragment.packageName)
                     .resolve(typeName = fragment.fragmentName.capitalize(), isOptional = optional), fragment.fragmentName.decapitalize())
                 .addModifiers(Modifier.FINAL)
                 .build()

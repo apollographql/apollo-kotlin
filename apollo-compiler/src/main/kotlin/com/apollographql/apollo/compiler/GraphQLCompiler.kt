@@ -219,7 +219,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
     }.forEach {
       val typeSpec = it.toTypeSpec(context.copy())
       JavaFile
-          .builder(context.ir.fragmentsPackageName, typeSpec)
+          .builder(it.packageName, typeSpec)
           .addFileComment(AUTO_GENERATED_FILE)
           .build()
           .writeTo(outputDir)

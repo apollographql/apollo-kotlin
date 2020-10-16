@@ -2,6 +2,7 @@ package com.apollographql.apollo.compiler.codegen.kotlin
 
 import com.apollographql.apollo.compiler.ast.CustomTypes
 import com.apollographql.apollo.compiler.ast.EnumType
+import com.apollographql.apollo.compiler.ast.FragmentType
 import com.apollographql.apollo.compiler.ast.InputType
 import com.apollographql.apollo.compiler.ast.ObjectType
 import com.apollographql.apollo.compiler.ast.OperationType
@@ -13,7 +14,6 @@ import java.io.File
 
 internal class SchemaCodegen(
     private val typesPackageName: String,
-    private val fragmentsPackageName: String,
     private val generateAsInternal: Boolean = false,
     private val kotlinMultiPlatformProject: Boolean,
     private val enumAsSealedClassPatternFilters: List<Regex>
@@ -36,13 +36,13 @@ internal class SchemaCodegen(
     fileSpecs = fileSpecs + inputTypeSpec.fileSpec(typesPackageName)
   }
 
-  override fun visit(fragmentType: ObjectType) {
-    val fragmentTypeSpec = fragmentType.typeSpec(generateAsInternal).let {
+  override fun visit(fragmentType: FragmentType) {
+    val fragmentTypeSpec = fragmentType.objectType.typeSpec(generateAsInternal).let {
       if (kotlinMultiPlatformProject) {
         it.patchKotlinNativeOptionalArrayProperties()
       } else it
     }
-    fileSpecs = fileSpecs + fragmentTypeSpec.fileSpec(fragmentsPackageName)
+    fileSpecs = fileSpecs + fragmentTypeSpec.fileSpec(fragmentType.packageName)
   }
 
   override fun visit(operationType: OperationType) {

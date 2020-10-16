@@ -21,13 +21,11 @@ class GraphQLKompiler(
     val schema = ir.ast(
         customTypeMap = CustomTypes(customTypeMap),
         typesPackageName = ir.typesPackageName,
-        fragmentsPackage = ir.fragmentsPackageName,
         useSemanticNaming = useSemanticNaming,
         operationOutput = operationOutput
     )
     val schemaCodegen = SchemaCodegen(
         typesPackageName = ir.typesPackageName,
-        fragmentsPackageName = ir.fragmentsPackageName,
         generateAsInternal = generateAsInternal,
         kotlinMultiPlatformProject = kotlinMultiPlatformProject,
         enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters

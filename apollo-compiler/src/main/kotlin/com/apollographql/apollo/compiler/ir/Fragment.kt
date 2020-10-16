@@ -23,7 +23,8 @@ data class Fragment(
     val fragmentRefs: List<FragmentRef>,
     val inlineFragments: List<InlineFragment>,
     val filePath: String,
-    val sourceLocation: SourceLocation
+    val sourceLocation: SourceLocation,
+    val packageName: String
 ) : CodeGenerator {
 
   /** Returns the Java interface that represents this Fragment object. */

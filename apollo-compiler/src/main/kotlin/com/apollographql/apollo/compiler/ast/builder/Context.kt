@@ -15,7 +15,6 @@ internal class Context(
     val customTypeMap: CustomTypes,
     val enums: List<EnumType>,
     val typesPackageName: String,
-    val fragmentsPackage: String,
     val fragments: Map<String, Fragment>,
     private val objectTypeContainer: MutableMap<TypeRef, ObjectType> = LinkedHashMap()
 ) : Map<TypeRef, ObjectType> by objectTypeContainer {
@@ -50,7 +49,6 @@ internal class Context(
           fragments[fragmentRef.name] ?: throw IllegalArgumentException("Unable to find fragment definition: ${fragmentRef.name}")
         }
         .astFragmentsObjectFieldType(
-            fragmentsPackage = fragmentsPackage,
             parentFieldSchemaTypeName = schemaTypeName
         )
 
