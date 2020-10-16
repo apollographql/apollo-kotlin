@@ -217,6 +217,7 @@ open class ApolloPlugin : Plugin<Project> {
         task.kotlinMultiPlatformProject.set(project.isKotlinMultiplatform)
         task.sealedClassesForEnumsMatching.set(compilerParams.sealedClassesForEnumsMatching)
         task.alwaysGenerateTypesMatching.set(compilerParams.alwaysGenerateTypesMatching)
+        task.useFilePackageNameForFragments.set(compilerParams.useFilePackageNameForFragments.getOrElse(false))
         task.projectName.set(project.name)
         task.projectRootDir.set(project.rootProject.rootDir)
       }

@@ -233,4 +233,15 @@ interface CompilerParams {
    */
   @ApolloExperimental
   val alwaysGenerateTypesMatching: SetProperty<String>
+
+  /**
+   * Whether to use file package name for generated `Fragment` classes or to default to schemaPackageName. Using this flag removes
+   * `fragment` sub-package.
+   *
+   * This is currently experimental and this API might change in the future.
+   *
+   * Default value: false
+   */
+  @ApolloExperimental
+  val useFilePackageNameForFragments: Property<Boolean>
 }
