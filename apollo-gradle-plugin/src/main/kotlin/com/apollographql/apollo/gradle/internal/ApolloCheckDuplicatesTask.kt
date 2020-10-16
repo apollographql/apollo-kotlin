@@ -2,7 +2,6 @@ package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.compiler.ApolloMetadata
 import org.gradle.api.DefaultTask
-import org.gradle.api.artifacts.Configuration
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.InputFiles

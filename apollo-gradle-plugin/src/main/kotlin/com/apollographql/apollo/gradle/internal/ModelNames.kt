@@ -1,5 +1,7 @@
 package com.apollographql.apollo.gradle.internal
 
+import com.apollographql.apollo.gradle.api.Service
+
 object ModelNames {
   private fun camelCase(vararg elements: String): String {
     return elements.mapIndexed { index, s ->
@@ -13,16 +15,16 @@ object ModelNames {
 
   // Task names
   fun generateApolloSources() = "generateApolloSources"
-  fun generateApolloSources(apolloVariant: ApolloVariant) = camelCase("generate", apolloVariant.name, "ApolloSources")
-  fun generateApolloSources(compilationUnit: DefaultCompilationUnit) = camelCase("generate", compilationUnit.variantName, compilationUnit.serviceName, "ApolloSources")
+  fun generateApolloSources(service: Service) = camelCase("generate", service.name, "ApolloSources")
   fun downloadApolloSchema() = camelCase("downloadApolloSchema")
-  fun downloadApolloSchema(service: DefaultService) = camelCase("download", service.name, "ApolloSchema")
+  fun downloadApolloSchemaIntrospection(service: Service) = camelCase("download", service.name, "ApolloSchemaFromIntrospection")
+  fun downloadApolloSchemaRegistry(service: Service) = camelCase("download", service.name, "ApolloSchemaFromRegistry")
   fun checkApolloVersions() = "checkApolloVersions"
-  fun checkApolloDuplicates(compilationUnit: DefaultCompilationUnit)= camelCase("check", compilationUnit.variantName, compilationUnit.serviceName, "ApolloDuplicates")
+  fun checkApolloDuplicates(service: Service) = camelCase("check", service.name, "ApolloDuplicates")
 
   // Configuration names
   fun apolloConfiguration() = "apolloMetadata" // not just 'apollo' to avoid name clashing with the apollo {} extension
-  fun producerConfiguration(compilationUnit: DefaultCompilationUnit) = camelCase("apollo", compilationUnit.variantName, compilationUnit.serviceName, "Producer")
-  fun consumerConfiguration(compilationUnit: DefaultCompilationUnit) = camelCase("apollo", compilationUnit.variantName, compilationUnit.serviceName, "Consumer")
-  fun duplicatesConsumerConfiguration(compilationUnit: DefaultCompilationUnit) = camelCase("apollo", compilationUnit.variantName, compilationUnit.serviceName, "DuplicatesConsumer")
+  fun producerConfiguration(service: Service) = camelCase("apollo", service.name, "Producer")
+  fun consumerConfiguration(service: Service) = camelCase("apollo", service.name, "Consumer")
+  fun duplicatesConsumerConfiguration(service: Service) = camelCase("apollo", service.name, "DuplicatesConsumer")
 }

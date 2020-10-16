@@ -94,6 +94,11 @@ Apollo Android runs on the following platforms:
 * Android API level 15+
 * JDK 8+
 * iOS 13+
+
+For building, it requires:
+
+* Gradle 5.6
+* Kotlin 1.4
  
 ## Contributing
 

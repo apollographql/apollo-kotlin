@@ -1,14 +1,11 @@
 plugins {
-  id("java")
   kotlin("jvm")
   id("java-gradle-plugin")
   id("com.gradle.plugin-publish")
-  kotlin("kapt")
 }
 
 
 dependencies {
-  compileOnly(gradleApi())
   compileOnly(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
   compileOnly(groovy.util.Eval.x(project, "x.dep.android.minPlugin"))
   // kotlin-reflect is transitively pulled by the android plugin, make it explicit so that it uses the same version as the rest of kotlin libs
@@ -17,8 +14,8 @@ dependencies {
   api(project(":apollo-compiler"))
   implementation(project(":apollo-api")) // for QueryDocumentMinifier
   implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp4"))
+  // Needed for manual Json construction in `SchemaDownloader`
   implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
-  kapt(groovy.util.Eval.x(project, "x.dep.moshi.kotlinCodegen"))
 
   testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))

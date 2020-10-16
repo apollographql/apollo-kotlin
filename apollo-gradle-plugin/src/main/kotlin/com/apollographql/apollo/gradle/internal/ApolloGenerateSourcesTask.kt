@@ -1,7 +1,6 @@
 package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.compiler.GraphQLCompiler
-import com.apollographql.apollo.compiler.NullableValueType
 import com.apollographql.apollo.compiler.OperationOutputGenerator
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
@@ -14,7 +13,6 @@ import org.gradle.api.provider.Property
 import org.gradle.api.provider.SetProperty
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Internal
@@ -23,7 +21,6 @@ import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
-import org.gradle.api.tasks.SkipWhenEmpty
 import org.gradle.api.tasks.TaskAction
 import javax.inject.Inject
 
@@ -40,10 +37,12 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   abstract val generateMetadata: Property<Boolean>
 
   @get:InputFiles
-  @get:SkipWhenEmpty
   @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val graphqlFiles: ConfigurableFileCollection
 
+  /**
+   * It's ok to have schemaFile = null if there is some metadata
+   */
   @get:InputFile
   @get:Optional
   @get:PathSensitive(PathSensitivity.RELATIVE)
@@ -97,7 +96,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @get:Input
   @get:Optional
-  abstract val kotlinMultiPlatformProject: Property<Boolean>
+  abstract val generateFilterNotNull: Property<Boolean>
 
   @get:Input
   @get:Optional
@@ -138,7 +137,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         warnOnDeprecatedUsages = warnOnDeprecatedUsages.getOrElse(true),
         failOnWarnings = failOnWarnings.getOrElse(false),
         generateAsInternal = generateAsInternal.getOrElse(false),
-        kotlinMultiPlatformProject = kotlinMultiPlatformProject.getOrElse(false),
+        generateFilterNotNull = generateFilterNotNull.getOrElse(false),
         enumAsSealedClassPatternFilters = sealedClassesForEnumsMatching.getOrElse(emptyList()).toSet(),
 
     )
