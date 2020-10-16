@@ -92,8 +92,7 @@ class IRBuilder(private val schema: IntrospectionSchema,
         enumsToGenerate = enumsToGenerate.toSet(),
         inputObjectsToGenerate = inputObjectsToGenerate.toSet(),
         scalarsToGenerate = scalarsToGenerate.toSet(),
-        typesPackageName = "$schemaPackageName.type".removePrefix("."),
-        fragmentsPackageName = "$schemaPackageName.fragment".removePrefix(".")
+        typesPackageName = "$schemaPackageName.type".removePrefix(".")
     )
   }
 

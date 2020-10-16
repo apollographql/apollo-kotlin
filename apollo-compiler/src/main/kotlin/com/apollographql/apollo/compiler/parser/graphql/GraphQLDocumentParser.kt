@@ -532,7 +532,7 @@ class GraphQLDocumentParser(
             inlineFragments = inlineFragments.result.filter { it.typeCondition != typeCondition },
             filePath = graphQLFilePath,
             sourceLocation = SourceLocation(start),
-            packageName = "${packageNameProvider.operationPackageName(graphQLFilePath)}.fragment".removePrefix(".")
+            packageName = packageNameProvider.fragmentPackageName(graphQLFilePath)
         ),
         usedTypes = setOf(typeCondition)
             .union(fields.usedTypes)
