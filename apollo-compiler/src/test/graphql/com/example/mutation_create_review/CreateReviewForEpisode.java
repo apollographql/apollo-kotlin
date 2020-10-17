@@ -27,6 +27,8 @@ import com.example.mutation_create_review.type.CustomType;
 import com.example.mutation_create_review.type.Episode;
 import com.example.mutation_create_review.type.ReviewInput;
 import java.io.IOException;
+import java.lang.Boolean;
+import java.lang.Deprecated;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -43,7 +45,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpisode.Data, Optional<CreateReviewForEpisode.Data>, CreateReviewForEpisode.Variables> {
-  public static final String OPERATION_ID = "c07e5abc4b4070cd773623194c07f546e609af467a1d34f7bf01c37272245296";
+  public static final String OPERATION_ID = "ddb5b88794340f1233d8b0d93bf51320b4e285a912f0914ddbaba8fc430e6db7";
 
   public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
     "mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {\n"
@@ -59,6 +61,7 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
         + "      name\n"
         + "    }\n"
         + "  }\n"
+        + "  stat_collect\n"
         + "}"
   );
 
@@ -236,10 +239,13 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
         .put("kind", "Variable")
         .put("variableName", "review")
         .build())
-      .build(), true, Collections.<ResponseField.Condition>emptyList())
+      .build(), true, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forList("stat_collect", "stat_collect", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
     final Optional<CreateReview> createReview;
+
+    final @NotNull @Deprecated List<Boolean> stat_collect;
 
     private transient volatile String $toString;
 
@@ -247,12 +253,22 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Data(@Nullable CreateReview createReview) {
+    public Data(@Nullable CreateReview createReview,
+        @NotNull @Deprecated List<Boolean> stat_collect) {
       this.createReview = Optional.fromNullable(createReview);
+      this.stat_collect = Utils.checkNotNull(stat_collect, "stat_collect == null");
     }
 
     public Optional<CreateReview> createReview() {
       return this.createReview;
+    }
+
+    /**
+     * For testing https://github.com/apollographql/apollo-android/issues/2660
+     * @deprecated Deprecated
+     */
+    public @NotNull @Deprecated List<Boolean> stat_collect() {
+      return this.stat_collect;
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -261,6 +277,14 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
         @Override
         public void marshal(ResponseWriter writer) {
           writer.writeObject($responseFields[0], createReview.isPresent() ? createReview.get().marshaller() : null);
+          writer.writeList($responseFields[1], stat_collect, new ResponseWriter.ListWriter() {
+            @Override
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeBoolean((Boolean) item);
+              }
+            }
+          });
         }
       };
     }
@@ -269,7 +293,8 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
     public String toString() {
       if ($toString == null) {
         $toString = "Data{"
-          + "createReview=" + createReview
+          + "createReview=" + createReview + ", "
+          + "stat_collect=" + stat_collect
           + "}";
       }
       return $toString;
@@ -282,7 +307,8 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
       }
       if (o instanceof Data) {
         Data that = (Data) o;
-        return this.createReview.equals(that.createReview);
+        return this.createReview.equals(that.createReview)
+         && this.stat_collect.equals(that.stat_collect);
       }
       return false;
     }
@@ -293,6 +319,8 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
         int h = 1;
         h *= 1000003;
         h ^= createReview.hashCode();
+        h *= 1000003;
+        h ^= stat_collect.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -310,7 +338,13 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
             return createReviewFieldMapper.map(reader);
           }
         });
-        return new Data(createReview);
+        final List<Boolean> stat_collect = reader.readList($responseFields[1], new ResponseReader.ListReader<Boolean>() {
+          @Override
+          public Boolean read(ResponseReader.ListItemReader listItemReader) {
+            return listItemReader.readBoolean();
+          }
+        });
+        return new Data(createReview, stat_collect);
       }
     }
   }
