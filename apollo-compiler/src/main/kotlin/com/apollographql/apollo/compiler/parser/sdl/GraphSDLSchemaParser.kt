@@ -89,9 +89,9 @@ object GraphSDLSchemaParser {
     val typeDefinitions = typeDefinition()?.parse()
         ?.plus(builtInTypeDefinitions())
         ?.associateBy { it.name }
-        ?.toMutableMap()
-
-    typeDefinition().mapNotNull { it.typeSystemExtension() }.parse(typeDefinitions ?: mutableMapOf())
+        ?.let {
+          typeDefinition().mapNotNull { it.typeSystemExtension() }.parse(it)
+        }
 
     val schemaDefinition = schemaDefinition().firstOrNull()
     val operationRootTypes = schemaDefinition?.operationTypesDefinition().parse()
@@ -110,21 +110,22 @@ object GraphSDLSchemaParser {
   }
 
   private fun List<GraphSDLParser.TypeSystemExtensionContext>.parse(
-      typeDefinitions: MutableMap<String, GraphSdlSchema.TypeDefinition>
-  ) {
-    forEach {
-      it.typeExtension()?.apply {
+      typeDefinitions: Map<String, GraphSdlSchema.TypeDefinition>
+  ): Map<String, GraphSdlSchema.TypeDefinition> {
+    return fold(typeDefinitions) { acc, item ->
+      return with(item.typeExtension()) {
         scalarTypeExtensionDefinition()?.parse(typeDefinitions)
-        enumTypeExtensionDefinition()?.parse(typeDefinitions)
-        objectTypeExtensionDefinition()?.parse(typeDefinitions)
-        interfaceTypeExtensionDefinition()?.parse(typeDefinitions)
-        unionTypeExtensionDefinition()?.parse(typeDefinitions)
-        inputObjectTypeExtensionDefinition()?.parse(typeDefinitions)
+            ?: enumTypeExtensionDefinition()?.parse(typeDefinitions)
+            ?: objectTypeExtensionDefinition()?.parse(typeDefinitions)
+            ?: interfaceTypeExtensionDefinition()?.parse(typeDefinitions)
+            ?: unionTypeExtensionDefinition()?.parse(typeDefinitions)
+            ?: inputObjectTypeExtensionDefinition()?.parse(typeDefinitions)
+            ?: acc
       }
     }
   }
 
-  private fun GraphSDLParser.ScalarTypeExtensionDefinitionContext.parse(typeDefinitions: MutableMap<String, GraphSdlSchema.TypeDefinition>) {
+  private fun GraphSDLParser.ScalarTypeExtensionDefinitionContext.parse(typeDefinitions: Map<String, GraphSdlSchema.TypeDefinition>): Map<String, GraphSdlSchema.TypeDefinition> {
     val name = name().text
     val scalar = typeDefinitions.get(name)
         ?: throw ParseException(
@@ -138,12 +139,14 @@ object GraphSDLSchemaParser {
       )
     }
 
-    typeDefinitions.put(name().text, scalar.copy(
-        directives = scalar.directives.mergeDirectives(directives().parse()),
-    ))
+    return typeDefinitions.toMutableMap().apply {
+      put(name().text, scalar.copy(
+          directives = scalar.directives.mergeDirectives(directives().parse()),
+      ))
+    }
   }
 
-  private fun GraphSDLParser.ObjectTypeExtensionDefinitionContext.parse(typeDefinitions: MutableMap<String, GraphSdlSchema.TypeDefinition>) {
+  private fun GraphSDLParser.ObjectTypeExtensionDefinitionContext.parse(typeDefinitions: Map<String, GraphSdlSchema.TypeDefinition>): Map<String, GraphSdlSchema.TypeDefinition> {
     val name = name().text
     val objectType = typeDefinitions.get(name)
         ?: throw ParseException(
@@ -157,14 +160,16 @@ object GraphSDLSchemaParser {
       )
     }
 
-    typeDefinitions.put(name, objectType.copy(
-        directives = objectType.directives.mergeDirectives(directives().parse()),
-        interfaces = objectType.interfaces.mergeTypeRefs(implementsInterfaces().parse()),
-        fields = objectType.fields.mergeFields(fieldsDefinition().parse()),
-    ))
+    return typeDefinitions.toMutableMap().apply {
+      put(name, objectType.copy(
+          directives = objectType.directives.mergeDirectives(directives().parse()),
+          interfaces = objectType.interfaces.mergeTypeRefs(implementsInterfaces().parse()),
+          fields = objectType.fields.mergeFields(fieldsDefinition().parse()),
+      ))
+    }
   }
 
-  private fun GraphSDLParser.InterfaceTypeExtensionDefinitionContext.parse(typeDefinitions: MutableMap<String, GraphSdlSchema.TypeDefinition>) {
+  private fun GraphSDLParser.InterfaceTypeExtensionDefinitionContext.parse(typeDefinitions: Map<String, GraphSdlSchema.TypeDefinition>): Map<String, GraphSdlSchema.TypeDefinition> {
     val name = name().text
     val interfaceType = typeDefinitions.get(name)
         ?: throw ParseException(
@@ -178,13 +183,15 @@ object GraphSDLSchemaParser {
       )
     }
 
-    typeDefinitions.put(name, interfaceType.copy(
-        directives = interfaceType.directives.mergeDirectives(directives().parse()),
-        fields = interfaceType.fields.mergeFields(fieldsDefinition().parse()),
-    ))
+    return typeDefinitions.toMutableMap().apply {
+      put(name, interfaceType.copy(
+          directives = interfaceType.directives.mergeDirectives(directives().parse()),
+          fields = interfaceType.fields.mergeFields(fieldsDefinition().parse()),
+      ))
+    }
   }
 
-  private fun GraphSDLParser.UnionTypeExtensionDefinitionContext.parse(typeDefinitions: MutableMap<String, GraphSdlSchema.TypeDefinition>) {
+  private fun GraphSDLParser.UnionTypeExtensionDefinitionContext.parse(typeDefinitions: Map<String, GraphSdlSchema.TypeDefinition>): Map<String, GraphSdlSchema.TypeDefinition> {
     val name = name().text
     val union = typeDefinitions.get(name)
         ?: throw ParseException(
@@ -198,13 +205,15 @@ object GraphSDLSchemaParser {
       )
     }
 
-    typeDefinitions.put(name, union.copy(
-        directives = union.directives.mergeDirectives(directives().parse()),
-        typeRefs = union.typeRefs.mergeTypeRefs(unionMemberTypes().namedType().map { it.parse() })
-    ))
+    return typeDefinitions.toMutableMap().apply {
+      put(name, union.copy(
+          directives = union.directives.mergeDirectives(directives().parse()),
+          typeRefs = union.typeRefs.mergeTypeRefs(unionMemberTypes().namedType().map { it.parse() })
+      ))
+    }
   }
 
-  private fun GraphSDLParser.EnumTypeExtensionDefinitionContext.parse(typeDefinitions: MutableMap<String, GraphSdlSchema.TypeDefinition>) {
+  private fun GraphSDLParser.EnumTypeExtensionDefinitionContext.parse(typeDefinitions: Map<String, GraphSdlSchema.TypeDefinition>): Map<String, GraphSdlSchema.TypeDefinition> {
     val name = name().text
     val enum = typeDefinitions.get(name)
         ?: throw ParseException(
@@ -218,13 +227,15 @@ object GraphSDLSchemaParser {
       )
     }
 
-    typeDefinitions.put(name, enum.copy(
-        directives = enum.directives.mergeDirectives(directives().parse()),
-        enumValues = enum.enumValues.mergeEnumValues(enumValuesDefinition().parse())
-    ))
+    return typeDefinitions.toMutableMap().apply {
+      put(name, enum.copy(
+          directives = enum.directives.mergeDirectives(directives().parse()),
+          enumValues = enum.enumValues.mergeEnumValues(enumValuesDefinition().parse())
+      ))
+    }
   }
 
-  private fun GraphSDLParser.InputObjectTypeExtensionDefinitionContext.parse(typeDefinitions: MutableMap<String, GraphSdlSchema.TypeDefinition>) {
+  private fun GraphSDLParser.InputObjectTypeExtensionDefinitionContext.parse(typeDefinitions: Map<String, GraphSdlSchema.TypeDefinition>): Map<String, GraphSdlSchema.TypeDefinition> {
     val name = name().text
     val inputObjectType = typeDefinitions.get(name)
         ?: throw ParseException(
@@ -238,10 +249,12 @@ object GraphSDLSchemaParser {
       )
     }
 
-    typeDefinitions.put(name, inputObjectType.copy(
-        directives = inputObjectType.directives.mergeDirectives(directives().parse()),
-        fields = inputObjectType.fields.mergeInputFields(inputValuesDefinition().parse())
-    ))
+    return typeDefinitions.toMutableMap().apply {
+      put(name, inputObjectType.copy(
+          directives = inputObjectType.directives.mergeDirectives(directives().parse()),
+          fields = inputObjectType.fields.mergeInputFields(inputValuesDefinition().parse())
+      ))
+    }
   }
 
   private fun List<GraphSdlSchema.Directive>.mergeDirectives(newDirectives: List<GraphSdlSchema.Directive>): List<GraphSdlSchema.Directive> {
