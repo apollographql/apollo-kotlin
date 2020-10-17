@@ -127,12 +127,10 @@ object GraphSDLSchemaParser {
   private fun GraphSDLParser.ScalarTypeExtensionDefinitionContext.parse(typeDefinitions: MutableMap<String, GraphSdlSchema.TypeDefinition>) {
     val name = name().text
     val scalar = typeDefinitions.get(name)
-    if (scalar == null) {
-      throw ParseException(
-          message = "Cannot add scalar type extension on unknown scalar `$name`",
-          token = start
-      )
-    }
+        ?: throw ParseException(
+            message = "Cannot add scalar type extension on unknown scalar `$name`",
+            token = start
+        )
     if (scalar !is GraphSdlSchema.TypeDefinition.Scalar) {
       throw ParseException(
           message = "Cannot add scalar extension on non-scalar type `$name`",
@@ -148,12 +146,10 @@ object GraphSDLSchemaParser {
   private fun GraphSDLParser.ObjectTypeExtensionDefinitionContext.parse(typeDefinitions: MutableMap<String, GraphSdlSchema.TypeDefinition>) {
     val name = name().text
     val objectType = typeDefinitions.get(name)
-    if (objectType == null) {
-      throw ParseException(
-          message = "Cannot add object type extension on unknown object type `$name`",
-          token = start
-      )
-    }
+        ?: throw ParseException(
+            message = "Cannot add object type extension on unknown object type `$name`",
+            token = start
+        )
     if (objectType !is GraphSdlSchema.TypeDefinition.Object) {
       throw ParseException(
           message = "Cannot add object extension on non-object type `$name`",
@@ -171,12 +167,10 @@ object GraphSDLSchemaParser {
   private fun GraphSDLParser.InterfaceTypeExtensionDefinitionContext.parse(typeDefinitions: MutableMap<String, GraphSdlSchema.TypeDefinition>) {
     val name = name().text
     val interfaceType = typeDefinitions.get(name)
-    if (interfaceType == null) {
-      throw ParseException(
-          message = "Cannot add interface type extension on unknown interface `$name`",
-          token = start
-      )
-    }
+        ?: throw ParseException(
+            message = "Cannot add interface type extension on unknown interface `$name`",
+            token = start
+        )
     if (interfaceType !is GraphSdlSchema.TypeDefinition.Interface) {
       throw ParseException(
           message = "Cannot add interface extension on non-interface type `$name`",
@@ -193,12 +187,10 @@ object GraphSDLSchemaParser {
   private fun GraphSDLParser.UnionTypeExtensionDefinitionContext.parse(typeDefinitions: MutableMap<String, GraphSdlSchema.TypeDefinition>) {
     val name = name().text
     val union = typeDefinitions.get(name)
-    if (union == null) {
-      throw ParseException(
-          message = "Cannot add union type extension on unknown union `$name`",
-          token = start
-      )
-    }
+        ?: throw ParseException(
+            message = "Cannot add union type extension on unknown union `$name`",
+            token = start
+        )
     if (union !is GraphSdlSchema.TypeDefinition.Union) {
       throw ParseException(
           message = "Cannot add union extension on non-union type `$name`",
@@ -215,12 +207,10 @@ object GraphSDLSchemaParser {
   private fun GraphSDLParser.EnumTypeExtensionDefinitionContext.parse(typeDefinitions: MutableMap<String, GraphSdlSchema.TypeDefinition>) {
     val name = name().text
     val enum = typeDefinitions.get(name)
-    if (enum == null) {
-      throw ParseException(
-          message = "Cannot add enum extension on unknown enum `$name`",
-          token = start
-      )
-    }
+        ?: throw ParseException(
+            message = "Cannot add enum extension on unknown enum `$name`",
+            token = start
+        )
     if (enum !is GraphSdlSchema.TypeDefinition.Enum) {
       throw ParseException(
           message = "Cannot add enum extension on non-enum type `$name`",
@@ -237,12 +227,10 @@ object GraphSDLSchemaParser {
   private fun GraphSDLParser.InputObjectTypeExtensionDefinitionContext.parse(typeDefinitions: MutableMap<String, GraphSdlSchema.TypeDefinition>) {
     val name = name().text
     val inputObjectType = typeDefinitions.get(name)
-    if (inputObjectType == null) {
-      throw ParseException(
-          message = "Cannot add enum extension on unknown enum `$name`",
-          token = start
-      )
-    }
+        ?: throw ParseException(
+            message = "Cannot add enum extension on unknown enum `$name`",
+            token = start
+        )
     if (inputObjectType !is GraphSdlSchema.TypeDefinition.InputObject) {
       throw ParseException(
           message = "Cannot add enum extension on non-enum type `$name`",
