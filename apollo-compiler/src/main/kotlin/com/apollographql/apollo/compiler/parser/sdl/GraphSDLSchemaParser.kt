@@ -114,12 +114,12 @@ object GraphSDLSchemaParser {
   ): Map<String, GraphSdlSchema.TypeDefinition> {
     return fold(typeDefinitions) { acc, item ->
       return with(item.typeExtension()) {
-        scalarTypeExtensionDefinition()?.parse(typeDefinitions)
-            ?: enumTypeExtensionDefinition()?.parse(typeDefinitions)
-            ?: objectTypeExtensionDefinition()?.parse(typeDefinitions)
-            ?: interfaceTypeExtensionDefinition()?.parse(typeDefinitions)
-            ?: unionTypeExtensionDefinition()?.parse(typeDefinitions)
-            ?: inputObjectTypeExtensionDefinition()?.parse(typeDefinitions)
+        scalarTypeExtensionDefinition()?.parse(acc)
+            ?: enumTypeExtensionDefinition()?.parse(acc)
+            ?: objectTypeExtensionDefinition()?.parse(acc)
+            ?: interfaceTypeExtensionDefinition()?.parse(acc)
+            ?: unionTypeExtensionDefinition()?.parse(acc)
+            ?: inputObjectTypeExtensionDefinition()?.parse(acc)
             ?: acc
       }
     }
