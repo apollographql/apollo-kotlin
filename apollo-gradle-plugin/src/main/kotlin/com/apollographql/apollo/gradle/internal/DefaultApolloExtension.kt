@@ -337,7 +337,6 @@ abstract class DefaultApolloExtension(private val project: Project, private val 
     private const val TASK_GROUP = "apollo"
     const val MIN_GRADLE_VERSION = "5.6"
 
-    private const val CONFIGURATION_CONSUMER = "apollo"
     private const val USAGE_APOLLO_METADATA = "apollo-metadata"
 
     private data class Dep(val name: String, val version: String?)

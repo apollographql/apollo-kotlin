@@ -5,6 +5,8 @@ import org.gradle.api.provider.Property
 
 /**
  * [Introspection] represents a GraphQL endpoint used to retrieve a schema.
+ *
+ * Use this to register a `download${ServiceName}ApolloSchemaFromIntrospection` task
  */
 interface Introspection {
   /**
