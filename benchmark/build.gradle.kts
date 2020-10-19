@@ -15,7 +15,7 @@ buildscript {
   dependencies {
     classpath(groovy.util.Eval.x(project, "x.dep.android.plugin"))
     classpath(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
-    classpath("com.apollographql.apollo:apollo-gradle-plugin:2.4.1")
+    classpath("com.apollographql.apollo:apollo-gradle-plugin:3.0.0-SNAPSHOT")
     classpath("androidx.benchmark:benchmark-gradle-plugin:1.0.0")
   }
 }
@@ -39,7 +39,7 @@ repositories {
 }
 
 dependencies {
-  add("implementation", "com.apollographql.apollo:apollo-api:2.4.1")
+  add("implementation", "com.apollographql.apollo:apollo-api:3.0.0-SNAPSHOT")
   add("implementation", groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
   add("kapt", groovy.util.Eval.x(project, "x.dep.moshi.kotlinCodegen"))
 
