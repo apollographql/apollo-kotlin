@@ -1,9 +1,8 @@
 .gradle
 
-.idea
-!.idea/codeStyles
-!.idea/icon.png
-
+**/.idea/*
+!**/.idea/codeStyles
+!**/.idea/icon.png
 *.iml
 build
 local.properties
