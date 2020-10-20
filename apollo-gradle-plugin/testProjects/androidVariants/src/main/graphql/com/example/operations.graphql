@@ -1,0 +1,3 @@
+query Main {
+  mainField
+}

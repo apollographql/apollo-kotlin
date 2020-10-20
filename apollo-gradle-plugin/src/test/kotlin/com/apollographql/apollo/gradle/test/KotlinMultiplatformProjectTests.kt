@@ -3,7 +3,7 @@ package com.apollographql.apollo.gradle.test
 import com.apollographql.apollo.gradle.util.TestUtils
 import org.junit.Test
 
-class MultiplatformTests {
+class KotlinMultiplatformProjectTests {
   @Test
   fun `ios framework compiles`() {
     TestUtils.withTestProject("multiplatform") { dir ->
