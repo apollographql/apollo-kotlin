@@ -151,6 +151,11 @@ class CodegenTest(private val folder: File, private val testLanguage: TestLangua
         else -> emptySet()
       }
 
+      val useFilePackageNameForFragments = when(folder.name) {
+        "fragment_package_name" -> true
+        else -> false
+      }
+
       val schemaFile = folder.listFiles()!!.find { it.isFile && it.name == "schema.sdl" }
           ?: File("src/test/graphql/schema.sdl")
       
@@ -177,6 +182,7 @@ class CodegenTest(private val folder: File, private val testLanguage: TestLangua
           kotlinMultiPlatformProject = true,
           enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters,
           metadataOutputFile = File("build/generated/test/${folder.name}/metadata/$language"),
+          useFilePackageNameForFragments = useFilePackageNameForFragments
       )
     }
 

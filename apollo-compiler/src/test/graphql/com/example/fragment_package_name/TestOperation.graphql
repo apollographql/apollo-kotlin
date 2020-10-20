@@ -1,0 +1,3 @@
+fragment HeroDetails on Character {
+  name
+}
