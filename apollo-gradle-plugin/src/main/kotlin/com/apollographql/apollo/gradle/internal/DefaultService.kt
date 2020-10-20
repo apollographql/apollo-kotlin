@@ -7,6 +7,7 @@ import com.apollographql.apollo.gradle.api.Registry
 import com.apollographql.apollo.gradle.api.Service
 import org.gradle.api.Action
 import org.gradle.api.Project
+import org.gradle.api.file.Directory
 import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
@@ -20,13 +21,21 @@ import javax.inject.Inject
 abstract class DefaultService @Inject constructor(val objects: ObjectFactory, override val name: String)
   : Service {
 
+  init {
+    // see https://github.com/gradle/gradle/issues/7485
+    // TODO replace with `convention(null)` when we can target Gradle 6.2
+    customTypeMapping.set(null as Map<String, String>?)
+    sealedClassesForEnumsMatching.set(null as List<String>?)
+    include.set(null as List<String>?)
+    exclude.set(null as List<String>?)
+    alwaysGenerateTypesMatching.set(null as Set<String>?)
+  }
+
   abstract override val sourceFolder: Property<String>
 
   abstract override val exclude: ListProperty<String>
 
   abstract override val include: ListProperty<String>
-
-  override val graphqlSourceDirectorySet = objects.sourceDirectorySet("graphql", "graphql")
 
   abstract override val schemaFile: RegularFileProperty
 
@@ -52,14 +61,10 @@ abstract class DefaultService @Inject constructor(val objects: ObjectFactory, ov
 
   abstract override val alwaysGenerateTypesMatching: SetProperty<String>
 
-  init {
-    // see https://github.com/gradle/gradle/issues/7485
-    // TODO replace with `convention(null)` when we can target Gradle 6.2
-    customTypeMapping.set(null as Map<String, String>?)
-    sealedClassesForEnumsMatching.set(null as List<String>?)
-    include.set(null as List<String>?)
-    exclude.set(null as List<String>?)
-    alwaysGenerateTypesMatching.set(null as Set<String>?)
+  val graphqlSourceDirectorySet = objects.sourceDirectorySet("graphql", "graphql")
+
+  override fun addGraphqlDirectory(directory: Any) {
+    graphqlSourceDirectorySet.srcDir(directory)
   }
 
   var introspection: DefaultIntrospection? = null
@@ -123,16 +128,7 @@ abstract class DefaultService @Inject constructor(val objects: ObjectFactory, ov
         """
 Multiple schemas found:
 ${candidates.joinToString(separator = "\n")}
-
-Use multiple services to use multiple schemas:
-service("service1") {
-  sourceDirectory.set("service1)"
-}
-
-service("service2") {
-  sourceDirectory.set("service2)"
-}
-      """.trimIndent()
+        """.trimIndent()
       }
 
       candidates.firstOrNull()

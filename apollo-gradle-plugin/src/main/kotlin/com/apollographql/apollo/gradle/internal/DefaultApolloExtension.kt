@@ -1,23 +1,28 @@
 package com.apollographql.apollo.gradle.internal
 
-import com.android.build.gradle.BaseExtension
 import com.apollographql.apollo.compiler.OperationIdGenerator
 import com.apollographql.apollo.compiler.OperationOutputGenerator
+import com.apollographql.apollo.gradle.api.AndroidProject
 import com.apollographql.apollo.gradle.api.ApolloAttributes
 import com.apollographql.apollo.gradle.api.ApolloExtension
+import com.apollographql.apollo.gradle.api.KotlinJvmProject
+import com.apollographql.apollo.gradle.api.KotlinMultiplatformProject
 import com.apollographql.apollo.gradle.api.Service
+import com.apollographql.apollo.gradle.api.androidExtension
+import com.apollographql.apollo.gradle.api.isKotlinMultiplatform
+import com.apollographql.apollo.gradle.api.kotlinJvmExtension
+import com.apollographql.apollo.gradle.api.kotlinMultiplatformExtension
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ConfigurationContainer
 import org.gradle.api.attributes.Usage
+import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import java.io.File
-import java.net.URLDecoder
 
 abstract class DefaultApolloExtension(private val project: Project, private val defaultService: DefaultService) : ApolloExtension, Service by defaultService {
 
@@ -25,6 +30,7 @@ abstract class DefaultApolloExtension(private val project: Project, private val 
   private val checkVersionsTask: TaskProvider<Task>
   private val apolloConfiguration: Configuration
   private val rootProvider: TaskProvider<Task>
+  private var registerDefaultService = true
 
   // Called when the plugin is applied
   init {
@@ -59,7 +65,7 @@ abstract class DefaultApolloExtension(private val project: Project, private val 
     }
 
     project.afterEvaluate {
-      if (services.isEmpty()) {
+      if (registerDefaultService) {
         registerService(defaultService)
       } else {
         check(defaultService.graphqlSourceDirectorySet.isEmpty
@@ -97,6 +103,8 @@ abstract class DefaultApolloExtension(private val project: Project, private val 
    * Call from users to explicitly register a service or by the plugin to register the implicit service
    */
   override fun service(name: String, action: Action<Service>) {
+    registerDefaultService = false
+
     val service = project.objects.newInstance(DefaultService::class.java, project.objects, name)
     action.execute(service)
 
@@ -195,34 +203,33 @@ abstract class DefaultApolloExtension(private val project: Project, private val 
       service.operationOutputAction!!.execute(operationOutputWire)
     }
 
-    if (service.outputDirAction != null) {
-      val outputDirWire = Service.OutputDirWire(
-          task = codegenProvider,
-          outputDir = codegenProvider.flatMap { it.outputDir }
-      )
-      service.outputDirAction!!.execute(outputDirWire)
-    } else {
-      /**
-       * Slap an `afterEvaluate` down there "just in case" the Kotlin and Android plugins hacen't finished their dance
-       */
-      project.afterEvaluate {
-        val kotlinExtension = project.extensions.findByName("kotlin")
-        val androidExtension = project.extensions.findByName("android") as BaseExtension?
-
-        when {
-          kotlinExtension is KotlinMultiplatformExtension -> KotlinMultiplatformTaskConfigurator.registerGeneratedDirectory(kotlinExtension, codegenProvider)
-          androidExtension != null -> AndroidTaskConfigurator.registerGeneratedDirectory(project.tasks, androidExtension, codegenProvider)
-          kotlinExtension != null -> KotlinTaskConfigurator.registerGeneratedDirectory(kotlinExtension as KotlinProjectExtension, codegenProvider)
-          else -> throw IllegalStateException("Cannot find the Kotlin extension, please apply a kotlin plugin")
-        }
-      }
+    val outputDirWire = Service.OutputDirWire(
+        task = codegenProvider,
+        outputDir = codegenProvider.flatMap { it.outputDir }
+    )
+    if (service.outputDirAction == null) {
+      service.outputDirAction = mainWireAction
     }
+
+    service.outputDirAction!!.execute(outputDirWire)
 
     rootProvider.configure {
       it.dependsOn(codegenProvider)
     }
 
     registerDownloadSchemaTasks(service)
+  }
+
+  /**
+   * The default wiring.
+   */
+  val mainWireAction = Action<Service.OutputDirWire> { wire ->
+    when {
+      project.kotlinMultiplatformExtension != null -> KotlinMultiplatformProject.registerGeneratedDirectoryToCommonMainSourceSet(project, wire)
+      project.androidExtension != null -> AndroidProject.registerGeneratedDirectoryToAllVariants(project, wire)
+      project.kotlinJvmExtension != null -> KotlinJvmProject.registerGeneratedDirectoryToMainSourceSet(project, wire)
+      else -> throw IllegalStateException("Cannot find the Kotlin extension, please apply a kotlin plugin")
+    }
   }
 
   private fun maybeRegisterCheckDuplicates(rootProject: Project, service: Service): TaskProvider<ApolloCheckDuplicatesTask> {
@@ -252,15 +259,15 @@ abstract class DefaultApolloExtension(private val project: Project, private val 
       task.group = TASK_GROUP
       task.description = "Generate Apollo models for ${service.name} GraphQL queries"
 
-      // Don't use graphqlSourceDirectorySet.isEmpty here, it doesn't work for some reason
-      if (service.graphqlSourceDirectorySet.sourceDirectories.isEmpty) {
+
+      if (service.graphqlSourceDirectorySet.isReallyEmpty) {
         val folder = service.sourceFolder.getOrElse(".")
         val dir = File(project.projectDir, "src/${mainSourceSet(project)}/graphql").resolve(folder)
 
         service.graphqlSourceDirectorySet.srcDir(dir)
-        service.graphqlSourceDirectorySet.include(service.include.getOrElse(listOf("**/*.graphql", "**/*.gql")))
-        service.graphqlSourceDirectorySet.exclude(service.exclude.getOrElse(emptyList()))
       }
+      service.graphqlSourceDirectorySet.include(service.include.getOrElse(listOf("**/*.graphql", "**/*.gql")))
+      service.graphqlSourceDirectorySet.exclude(service.exclude.getOrElse(emptyList()))
 
       task.graphqlFiles.setFrom(service.graphqlSourceDirectorySet)
       // Since this is stored as a list of string, the order matter hence the sorting
@@ -333,6 +340,68 @@ abstract class DefaultApolloExtension(private val project: Project, private val 
     }
   }
 
+  override fun createAllAndroidVariantServices(suffix: String, action: Action<Service>) {
+    /**
+     * The android plugin will call us back when the variants are ready but before that happens, disable the default service
+     */
+    registerDefaultService = false
+
+    AndroidProject.onEachVariant(project = project, withTestVariants = true) { variant ->
+      val name = "${variant.name}${suffix.capitalize()}"
+
+      val service = project.objects.newInstance(DefaultService::class.java, project.objects, name)
+      action.execute(service)
+
+      if (service.graphqlSourceDirectorySet.isReallyEmpty) {
+        val sourceFolder = service.sourceFolder.getOrElse(".")
+        check(!File(sourceFolder).isRooted && !sourceFolder.startsWith("..")) {
+          """ApolloGraphQL: using 'sourceFolder = "$sourceFolder"' makes no sense with Android variants as the same generated models will be used in all variants.
+          Use a simple relative path not starting with '..' instead.
+          """.trimMargin()
+        }
+        variant.sourceSets.forEach { sourceProvider ->
+          service.addGraphqlDirectory("src/${sourceProvider.name}/graphql/$sourceFolder")
+        }
+      }
+      if (service.outputDirAction == null) {
+        service.outputDirAction = Action<Service.OutputDirWire> { wire ->
+          AndroidProject.registerGeneratedDirectory(project, variant, wire)
+        }
+      }
+      registerService(service)
+    }
+  }
+
+  override fun createAllKotlinJvmSourceSetServices(suffix: String, action: Action<Service>) {
+    registerDefaultService = false
+
+    KotlinJvmProject.onEachSourceSet(project) { kotlinSourceSet ->
+      val name = "${kotlinSourceSet.name}${suffix.capitalize()}"
+
+      val service = project.objects.newInstance(DefaultService::class.java, project.objects, name)
+      action.execute(service)
+
+      if (service.graphqlSourceDirectorySet.isReallyEmpty) {
+        val sourceFolder = service.sourceFolder.getOrElse(".")
+        check(!File(sourceFolder).isRooted && !sourceFolder.startsWith("..")) {
+          """ApolloGraphQL: using 'sourceFolder = "$sourceFolder"' makes no sense with Kotlin source sets as the same generated models will be used in all source sets.
+          Use a simple relative path not starting with '..' instead.
+          """.trimMargin()
+        }
+
+        service.addGraphqlDirectory("src/${kotlinSourceSet.name}/graphql/$sourceFolder")
+      }
+      if (service.outputDirAction == null) {
+        service.outputDirAction = Action<Service.OutputDirWire> { wire ->
+          kotlinSourceSet.kotlin.srcDir(wire.outputDir)
+        }
+      }
+
+      registerService(service)
+    }
+  }
+
+
   companion object {
     private const val TASK_GROUP = "apollo"
     const val MIN_GRADLE_VERSION = "5.6"
@@ -352,7 +421,9 @@ abstract class DefaultApolloExtension(private val project: Project, private val 
       }
     }
 
-    val Project.isKotlinMultiplatform get() = pluginManager.hasPlugin("org.jetbrains.kotlin.multiplatform")
+    // Don't use `graphqlSourceDirectorySet.isEmpty` here, it doesn't work for some reason
+    private val SourceDirectorySet.isReallyEmpty
+      get() = sourceDirectories.isEmpty
 
     private fun mainSourceSet(project: Project): String {
       val kotlinExtension = project.extensions.findByName("kotlin")
@@ -361,17 +432,6 @@ abstract class DefaultApolloExtension(private val project: Project, private val 
         kotlinExtension is KotlinMultiplatformExtension -> "commonMain"
         else -> "main"
       }
-    }
-
-    private fun toMap(s: String): Map<String, String> {
-      return s.split("&")
-          .map {
-            val keyValue = it.split("=")
-            val key = URLDecoder.decode(keyValue[0], "UTF-8")
-            val value = URLDecoder.decode(keyValue[1], "UTF-8")
-
-            key to value
-          }.toMap()
     }
   }
 }

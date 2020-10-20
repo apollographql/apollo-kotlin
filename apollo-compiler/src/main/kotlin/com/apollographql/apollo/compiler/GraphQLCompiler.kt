@@ -45,7 +45,10 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
     )
 
     val files = args.graphqlFiles
-    checkDuplicateFiles(roots, files)
+    /**
+     * Android can have duplicate files but that's ok as long as they do not define the same operations (which is checked in IRBuilder)
+     */
+    // checkDuplicateFiles(roots, files)
 
     val parseResult = GraphQLDocumentParser(
         schema = introspectionSchema,
@@ -241,19 +244,6 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
       }
     }
 
-    /**
-     * Check for duplicates files. This can happen with Android variants
-     */
-    private fun checkDuplicateFiles(roots: Roots, files: Set<File>) {
-      val map = files.groupBy { roots.filePackageName(it.normalize().absolutePath) to it.nameWithoutExtension }
-
-      map.values.forEach {
-        require(it.size == 1) {
-          "ApolloGraphQL: duplicate(s) graphql file(s) found:\n" +
-              it.map { it.absolutePath }.joinToString("\n")
-        }
-      }
-    }
     val NoOpLogger = object: Logger {
       override fun warning(message: String) {
       }
