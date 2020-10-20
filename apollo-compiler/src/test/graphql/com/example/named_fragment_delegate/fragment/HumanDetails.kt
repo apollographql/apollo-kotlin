@@ -6,12 +6,9 @@
 package com.example.named_fragment_delegate.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
-import com.example.named_fragment_delegate.type.CustomType
 import kotlin.Any
-import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
@@ -93,17 +90,9 @@ interface HumanDetails : GraphqlFragment {
     override val name: String
   ) : Node {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Node1.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@Node1.name)
+      return ResponseFieldMarshaller { writer ->
+        HumanDetails_ResponseAdapter.Node1_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null)
-      )
     }
   }
 
@@ -118,17 +107,9 @@ interface HumanDetails : GraphqlFragment {
     override val node: Node1?
   ) : Edge {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Edge1.__typename)
-        writer.writeObject(RESPONSE_FIELDS[1], this@Edge1.node?.marshaller())
+      return ResponseFieldMarshaller { writer ->
+        HumanDetails_ResponseAdapter.Edge1_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forObject("node", "node", null, true, null)
-      )
     }
   }
 
@@ -143,21 +124,9 @@ interface HumanDetails : GraphqlFragment {
     override val edges: List<Edge1?>?
   ) : FriendsConnection {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@FriendsConnection1.__typename)
-        writer.writeList(RESPONSE_FIELDS[1],
-            this@FriendsConnection1.edges) { value, listItemWriter ->
-          value?.forEach { value ->
-            listItemWriter.writeObject(value?.marshaller())}
-        }
+      return ResponseFieldMarshaller { writer ->
+        HumanDetails_ResponseAdapter.FriendsConnection1_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forList("edges", "edges", null, true, null)
-      )
     }
   }
 
@@ -180,23 +149,9 @@ interface HumanDetails : GraphqlFragment {
     override val friendsConnection: FriendsConnection1
   ) : HumanDetails {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@DefaultImpl.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@DefaultImpl.name)
-        writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField,
-            this@DefaultImpl.profileLink)
-        writer.writeObject(RESPONSE_FIELDS[3], this@DefaultImpl.friendsConnection.marshaller())
+      return ResponseFieldMarshaller { writer ->
+        HumanDetails_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forCustomType("profileLink", "profileLink", null, false, CustomType.URL,
-            null),
-        ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
-      )
     }
   }
 

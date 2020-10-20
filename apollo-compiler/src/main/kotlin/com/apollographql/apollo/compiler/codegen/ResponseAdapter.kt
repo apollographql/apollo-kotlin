@@ -2,228 +2,67 @@ package com.apollographql.apollo.compiler.codegen
 
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.ast.CodeGenerationAst
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
-import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
-import com.squareup.kotlinpoet.TypeName
+import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
 
-internal fun CodeGenerationAst.OperationType.responseAdapterTypeSpec(targetPackage: String): TypeSpec {
-  val dataImplementationType = checkNotNull(this.dataType.nestedTypes[this.dataType.rootType]) {
+internal fun CodeGenerationAst.OperationType.responseAdapterTypeSpec(): TypeSpec {
+  val responseDataType = checkNotNull(this.dataType.nestedTypes[this.dataType.rootType]) {
     "Failed to resolve operation root data type"
   }
   return TypeSpec.objectBuilder("${this.name}_ResponseAdapter")
       .addModifiers(KModifier.INTERNAL)
       .addAnnotation(suppressWarningsAnnotation)
       .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this.dataType.rootType.asTypeName()))
-      .addProperty(responseFieldsPropertySpec(dataImplementationType.fields))
-      .addFunction(
-          dataImplementationType.readObjectFromResponseFunSpec(
-              this.dataType.rootType
-                  .copy(packageName = targetPackage)
-                  .asTypeName()
-          )
-      )
+      .addProperty(responseFieldsPropertySpec(responseDataType.fields))
+      .addFunction(responseDataType.readFromResponseFunSpec())
+      .addFunction(responseDataType.writeToResponseFunSpec())
       .addTypes(
           this.dataType
               .nestedTypes
               .minus(this.dataType.rootType)
               .filterNot { (_, type) -> type.abstract && type.kind !is CodeGenerationAst.ObjectType.Kind.Fragment }
-              .map { (typeRef, type) ->
-                type.responseAdapterTypeSpec(
-                    typeRef
-                        .copy(packageName = targetPackage)
-                        .asTypeName()
-                )
-              }
+              .map { (_, type) -> type.responseAdapterTypeSpec() }
       )
       .build()
 }
 
-internal fun CodeGenerationAst.FragmentType.responseAdapterTypeSpec(targetPackage: String): TypeSpec {
+internal fun CodeGenerationAst.FragmentType.responseAdapterTypeSpec(): TypeSpec {
   val defaultImplementationType = checkNotNull(this.nestedTypes[this.defaultImplementation]) {
-    "Failed to resolve operation root data type"
+    "Failed to resolve fragment default implementation type"
   }
   return TypeSpec.objectBuilder(this.rootType.asAdapterTypeName().simpleName)
       .addModifiers(KModifier.INTERNAL)
       .addAnnotation(suppressWarningsAnnotation)
-      .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this.rootType.asTypeName()))
+      .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this.defaultImplementation.asTypeName()))
       .addProperty(responseFieldsPropertySpec(defaultImplementationType.fields))
-      .addFunction(
-          FunSpec.builder("fromResponse")
-              .addModifiers(KModifier.OVERRIDE)
-              .returns(this.rootType.asTypeName())
-              .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
-              .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec(withDefaultValue = false))
-              .addStatement(
-                  "return·%T.fromResponse(reader,·%L)",
-                  ClassName(packageName = "", "${defaultImplementationType.name}_ResponseAdapter"),
-                  CodeGenerationAst.typenameField.responseName
-              )
-              .build()
-      )
+      .addFunction(defaultImplementationType.readFromResponseFunSpec())
+      .addFunction(defaultImplementationType.writeToResponseFunSpec())
       .addTypes(
           this.nestedTypes
               .minus(this.rootType)
+              .minus(this.defaultImplementation)
               .filterNot { (_, type) -> type.abstract && type.kind !is CodeGenerationAst.ObjectType.Kind.Fragment }
-              .map { (typeRef, type) ->
-                type.responseAdapterTypeSpec(
-                    typeRef
-                        .copy(packageName = targetPackage)
-                        .asTypeName()
-                )
-              }
+              .map { (_, type) -> type.responseAdapterTypeSpec() }
       )
       .build()
 }
 
 
-private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(objectTypeTypeName: TypeName): TypeSpec {
+private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(): TypeSpec {
   return TypeSpec.objectBuilder("${this.name}_ResponseAdapter")
-      .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(objectTypeTypeName))
-      .applyIf(fields.isNotEmpty()) { addProperty(responseFieldsPropertySpec(fields)) }
-      .addFunction(
-          when (this@responseAdapterTypeSpec.kind) {
-            is CodeGenerationAst.ObjectType.Kind.Fragment -> readFragmentFromResponseFunSpec(objectTypeTypeName)
-            is CodeGenerationAst.ObjectType.Kind.FragmentDelegate -> readFragmentDelegateFromResponseFunSpec(objectTypeTypeName)
-            else -> readObjectFromResponseFunSpec(objectTypeTypeName)
-          }
-      )
-      .build()
-}
-
-private fun CodeGenerationAst.ObjectType.readObjectFromResponseFunSpec(objectTypeTypeName: TypeName): FunSpec {
-  val fieldVariablesCode = this.fields
-      .map { field ->
-        if (field.responseName == CodeGenerationAst.typenameField.responseName) {
-          CodeBlock.of(
-              "var·%L:·%T·=·%L",
-              field.name,
-              field.type.asTypeName().copy(nullable = true),
-              CodeGenerationAst.typenameField.responseName
-          )
-        } else {
-          CodeBlock.of(
-              "var·%L:·%T·=·null",
-              field.name,
-              field.type.asTypeName().copy(nullable = true)
-          )
-        }
-      }
-      .joinToCode(separator = "\n", suffix = "\n")
-
-  val selectFieldsCode = CodeBlock.builder()
-      .beginControlFlow("while(true)")
-      .beginControlFlow("when·(selectField(RESPONSE_FIELDS))")
-      .add(
-          this.fields.mapIndexed { fieldIndex, field ->
-            CodeBlock.of(
-                "%L·->·%L·=·%L",
-                fieldIndex,
-                field.name,
-                field.type.nullable().fromResponseCode(field = "RESPONSE_FIELDS[$fieldIndex]")
-            )
-          }.joinToCode(separator = "\n", suffix = "\n")
-      )
-      .addStatement("else -> break")
-      .endControlFlow()
-      .endControlFlow()
-      .build()
-
-  val typeConstructorCode = CodeBlock.builder()
-      .addStatement("%T(", objectTypeTypeName)
-      .indent()
-      .add(this.fields.map { field ->
-        CodeBlock.of(
-            "%L·=·%L%L",
-            field.name,
-            field.name,
-            "!!".takeUnless { field.type.nullable } ?: ""
-        )
-      }.joinToCode(separator = ",\n", suffix = "\n"))
-      .unindent()
-      .addStatement(")")
-      .build()
-
-  return FunSpec.builder("fromResponse")
-      .addModifiers(KModifier.OVERRIDE)
-      .returns(objectTypeTypeName)
-      .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
-      .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec(withDefaultValue = false))
-      .addCode(CodeBlock
-          .builder()
-          .beginControlFlow("return·reader.run")
-          .add(fieldVariablesCode)
-          .add(selectFieldsCode)
-          .add(typeConstructorCode)
-          .endControlFlow()
-          .build()
-      )
-      .build()
-}
-
-private fun CodeGenerationAst.ObjectType.readFragmentFromResponseFunSpec(objectTypeTypeName: TypeName): FunSpec {
-  val (defaultImplementation, possibleImplementations) = with(this.kind as CodeGenerationAst.ObjectType.Kind.Fragment) {
-    defaultImplementation to possibleImplementations
-  }
-  return FunSpec.builder("fromResponse")
-      .addModifiers(KModifier.OVERRIDE)
-      .returns(objectTypeTypeName)
-      .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
-      .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec(withDefaultValue = false))
-      .applyIf(possibleImplementations.isEmpty()) {
-        addStatement(
-            "return·%T.fromResponse(reader)",
-            defaultImplementation.asAdapterTypeName()
-        )
-      }
-      .applyIf(possibleImplementations.isNotEmpty()) {
-        addStatement(
-            "val·typename·=·%L·?:·reader.readString(RESPONSE_FIELDS[0])",
-            CodeGenerationAst.typenameField.responseName
-        )
-        beginControlFlow("return·when(typename)")
-        addCode(
-            possibleImplementations
-                .map { (typeCondition, type) ->
-                  CodeBlock.of(
-                      "%S·->·%T.fromResponse(reader,·typename)",
-                      typeCondition,
-                      type.asAdapterTypeName(),
-                  )
-                }
-                .joinToCode(separator = "\n", suffix = "\n")
-        )
-        addStatement(
-            "else·->·%T.fromResponse(reader, typename)",
-            defaultImplementation.asAdapterTypeName()
-        )
-        endControlFlow()
-      }
-      .build()
-}
-
-private fun CodeGenerationAst.ObjectType.readFragmentDelegateFromResponseFunSpec(objectTypeTypeName: TypeName): FunSpec {
-  val fragmentRef = (this.kind as CodeGenerationAst.ObjectType.Kind.FragmentDelegate).fragmentTypeRef
-  return FunSpec.builder("fromResponse")
-      .addModifiers(KModifier.OVERRIDE)
-      .returns(objectTypeTypeName)
-      .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
-      .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec(withDefaultValue = false))
-      .addStatement(
-          "return·%T(%T.fromResponse(reader,·%L))",
-          objectTypeTypeName,
-          fragmentRef.asAdapterTypeName(),
-          CodeGenerationAst.typenameField.responseName
-      )
+      .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this.typeRef.asTypeName()))
+      .applyIf(this.fields.isNotEmpty()) { addProperty(responseFieldsPropertySpec(this@responseAdapterTypeSpec.fields)) }
+      .addFunction(readFromResponseFunSpec())
+      .addFunction(writeToResponseFunSpec())
       .build()
 }
 
@@ -235,99 +74,99 @@ internal fun CodeGenerationAst.TypeRef.asAdapterTypeName(): ClassName {
   }
 }
 
-
-private fun CodeGenerationAst.FieldType.fromResponseCode(field: String): CodeBlock {
-  val notNullOperator = "!!".takeUnless { nullable } ?: ""
-  return when (this) {
-    is CodeGenerationAst.FieldType.Scalar -> when (this) {
-      is CodeGenerationAst.FieldType.Scalar.ID -> if (field.isNotEmpty()) {
-        CodeBlock.of("readCustomType<%T>(%L·as·%T)%L", ClassName.bestGuess(type), field, ResponseField.CustomTypeField::class,
-            notNullOperator)
-      } else {
-        CodeBlock.of("readCustomType<%T>(%T)%L", ClassName.bestGuess(type), customEnumType.asTypeName(), notNullOperator)
-      }
-      is CodeGenerationAst.FieldType.Scalar.String -> CodeBlock.of("readString(%L)%L", field, notNullOperator)
-      is CodeGenerationAst.FieldType.Scalar.Int -> CodeBlock.of("readInt(%L)%L", field, notNullOperator)
-      is CodeGenerationAst.FieldType.Scalar.Boolean -> CodeBlock.of("readBoolean(%L)%L", field, notNullOperator)
-      is CodeGenerationAst.FieldType.Scalar.Float -> CodeBlock.of("readDouble(%L)%L", field, notNullOperator)
-      is CodeGenerationAst.FieldType.Scalar.Enum -> if (nullable) {
-        CodeBlock.of("readString(%L)?.let·{·%T.safeValueOf(it)·}", field, typeRef.asTypeName().copy(nullable = false))
-      } else {
-        CodeBlock.of("%T.safeValueOf(readString(%L)!!)", typeRef.asTypeName().copy(nullable = false), field)
-      }
-      is CodeGenerationAst.FieldType.Scalar.Custom -> if (field.isNotEmpty()) {
-        CodeBlock.of("readCustomType<%T>(%L·as·%T)%L", ClassName.bestGuess(type), field, ResponseField.CustomTypeField::class,
-            notNullOperator)
-      } else {
-        CodeBlock.of(
-            "readCustomType<%T>(%T)%L", ClassName.bestGuess(type), customEnumType.asTypeName().copy(nullable = false), notNullOperator
-        )
-      }
-    }
-    is CodeGenerationAst.FieldType.Object -> {
-      val fieldCode = field.takeIf { it.isNotEmpty() }?.let { CodeBlock.of("(%L)", it) } ?: CodeBlock.of("")
-      CodeBlock.builder()
-          .addStatement("readObject<%T>%L·{·reader·->", typeRef.asTypeName(), fieldCode)
-          .indent()
-          .addStatement("%T.fromResponse(reader)", typeRef.asAdapterTypeName())
-          .unindent()
-          .add("}%L", notNullOperator)
-          .build()
-    }
-    is CodeGenerationAst.FieldType.Array -> {
-      CodeBlock.builder()
-          .addStatement("readList<%T>(%L)·{·reader·->", rawType.asTypeName().copy(nullable = false), field)
-          .indent()
-          .add(rawType.readListItemCode())
-          .unindent()
-          .add("\n}%L", notNullOperator)
-          .applyIf(!rawType.nullable) {
-            if (nullable) {
-              add("?.map·{ it!! }")
-            } else {
-              add(".map·{ it!! }")
-            }
-          }
-          .build()
-    }
-  }
+private fun responseFieldsPropertySpec(fields: List<CodeGenerationAst.Field>): PropertySpec {
+  val initializer = CodeBlock.builder()
+      .addStatement("arrayOf(")
+      .indent()
+      .add(fields.map { field -> field.responseFieldInitializerCode }.joinToCode(separator = ",\n"))
+      .unindent()
+      .addStatement("")
+      .add(")")
+      .build()
+  return PropertySpec
+      .builder(
+          name = "RESPONSE_FIELDS",
+          type = Array<ResponseField>::class.asClassName().parameterizedBy(ResponseField::class.asClassName()),
+          modifiers = arrayOf(KModifier.PRIVATE)
+      )
+      .initializer(initializer)
+      .build()
 }
 
-private fun CodeGenerationAst.FieldType.readListItemCode(): CodeBlock {
-  return when (this) {
-    is CodeGenerationAst.FieldType.Scalar -> when (this) {
-      is CodeGenerationAst.FieldType.Scalar.ID -> CodeBlock.of(
-          "reader.readCustomType<%T>(%T)", ClassName.bestGuess(type), customEnumType.asTypeName()
-      )
-      is CodeGenerationAst.FieldType.Scalar.String -> CodeBlock.of("reader.readString()")
-      is CodeGenerationAst.FieldType.Scalar.Int -> CodeBlock.of("reader.readInt()")
-      is CodeGenerationAst.FieldType.Scalar.Boolean -> CodeBlock.of("reader.readBoolean()")
-      is CodeGenerationAst.FieldType.Scalar.Float -> CodeBlock.of("reader.readDouble()")
-      is CodeGenerationAst.FieldType.Scalar.Enum -> CodeBlock.of(
-          "%T.safeValueOf(reader.readString())", typeRef.asTypeName().copy(nullable = false)
-      )
-      is CodeGenerationAst.FieldType.Scalar.Custom -> CodeBlock.of(
-          "reader.readCustomType<%T>(%T)", ClassName.bestGuess(type), customEnumType.asTypeName()
-      )
+private val CodeGenerationAst.Field.responseFieldInitializerCode: CodeBlock
+  get() {
+    val factoryMethod = when (type) {
+      is CodeGenerationAst.FieldType.Scalar -> when (type) {
+        is CodeGenerationAst.FieldType.Scalar.ID -> "forString"
+        is CodeGenerationAst.FieldType.Scalar.String -> "forString"
+        is CodeGenerationAst.FieldType.Scalar.Int -> "forInt"
+        is CodeGenerationAst.FieldType.Scalar.Boolean -> "forBoolean"
+        is CodeGenerationAst.FieldType.Scalar.Float -> "forDouble"
+        is CodeGenerationAst.FieldType.Scalar.Enum -> "forEnum"
+        is CodeGenerationAst.FieldType.Scalar.Custom -> "forCustomType"
+      }
+      is CodeGenerationAst.FieldType.Object -> "forObject"
+      is CodeGenerationAst.FieldType.Array -> "forList"
     }
-    is CodeGenerationAst.FieldType.Object -> {
-      CodeBlock.builder()
-          .addStatement("reader.readObject<%T>·{·reader·->", typeRef.asTypeName())
-          .indent()
-          .addStatement("%T.fromResponse(reader)", typeRef.asAdapterTypeName())
-          .unindent()
-          .add("}")
-          .build()
+
+    val builder = CodeBlock.builder().add("%T.%L", ResponseField::class, factoryMethod)
+    when {
+      type is CodeGenerationAst.FieldType.Scalar && type is CodeGenerationAst.FieldType.Scalar.Custom -> {
+        builder.add("(%S,·%S,·%L,·%L,·%T,·%L)", responseName, schemaName, arguments.takeIf { it.isNotEmpty() }.toCode(), type.nullable,
+            type.customEnumType.asTypeName(), conditionsListCode(conditions))
+      }
+      else -> {
+        builder.add("(%S,·%S,·%L,·%L,·%L)", responseName, schemaName, arguments.takeIf { it.isNotEmpty() }.toCode(), type.nullable,
+            conditionsListCode(conditions))
+      }
     }
-    is CodeGenerationAst.FieldType.Array -> {
-      CodeBlock.builder()
-          .addStatement("reader.readList<%T>·{·reader·->", rawType.asTypeName().copy(nullable = false))
-          .indent()
-          .add(rawType.readListItemCode())
-          .unindent()
-          .add("\n}")
-          .applyIf(!rawType.nullable) { add(".map·{ it!! }") }
-          .build()
-    }
+    return builder.build()
+  }
+
+private fun conditionsListCode(conditions: Set<CodeGenerationAst.Field.Condition>): CodeBlock {
+  return conditions
+      .map { condition ->
+        when (condition) {
+          is CodeGenerationAst.Field.Condition.Directive -> CodeBlock.of("%T.booleanCondition(%S,·%L)",
+              ResponseField.Condition::class, condition.variableName, condition.inverted)
+        }
+      }
+      .joinToCode(separator = ",\n")
+      .let {
+        if (conditions.isEmpty()) {
+          CodeBlock.of("null")
+        } else {
+          CodeBlock.builder()
+              .add("listOf(\n")
+              .indent().add(it).unindent()
+              .add("\n)")
+              .build()
+        }
+      }
+}
+
+private fun Any?.toCode(): CodeBlock {
+  return when {
+    this == null -> CodeBlock.of("null")
+    this is Map<*, *> && this.isEmpty() -> CodeBlock.of("emptyMap<%T,·Any>()", String::class.asTypeName())
+    this is Map<*, *> -> CodeBlock.builder()
+        .add("mapOf<%T,·Any>(\n", String::class.asTypeName())
+        .indent()
+        .add(map { CodeBlock.of("%S to %L", it.key, it.value.toCode()) }.joinToCode(separator = ",\n"))
+        .unindent()
+        .add(")")
+        .build()
+    this is List<*> && this.isEmpty() -> CodeBlock.of("emptyList<Any>()")
+    this is List<*> -> CodeBlock.builder()
+        .add("listOf<Any>(\n")
+        .indent()
+        .add(map { it.toCode() }.joinToCode(separator = ",\n"))
+        .unindent()
+        .add(")")
+        .build()
+    this is String -> CodeBlock.of("%S", this)
+    this is Number -> CodeBlock.of("%L", this)
+    this is Boolean -> CodeBlock.of("%L", this)
+    else -> throw IllegalStateException("Cannot generate code for $this")
   }
 }

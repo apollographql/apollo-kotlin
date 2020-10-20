@@ -10,7 +10,6 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
@@ -22,7 +21,6 @@ import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.api.internal.Throws
 import com.example.nested_conditional_inline.type.Episode
 import kotlin.Any
-import kotlin.Array
 import kotlin.Boolean
 import kotlin.Double
 import kotlin.String
@@ -58,23 +56,15 @@ data class TestQuery(
     }
   }
 
-  override fun operationId(): String {
-    return OPERATION_ID
-  }
+  override fun operationId(): String = OPERATION_ID
 
-  override fun queryDocument(): String {
-    return QUERY_DOCUMENT
-  }
+  override fun queryDocument(): String = QUERY_DOCUMENT
 
-  override fun variables(): Operation.Variables {
-    return variables
-  }
+  override fun variables(): Operation.Variables = variables
 
-  override fun name(): OperationName {
-    return OPERATION_NAME
-  }
+  override fun name(): OperationName = OPERATION_NAME
 
-  override fun responseFieldMapper(): ResponseFieldMapper<TestQuery.Data> {
+  override fun responseFieldMapper(): ResponseFieldMapper<Data> {
     return ResponseFieldMapper.invoke {
       TestQuery_ResponseAdapter.fromResponse(it)
     }
@@ -82,23 +72,23 @@ data class TestQuery(
 
   @Throws(IOException::class)
   override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters):
-      Response<TestQuery.Data> {
+      Response<Data> {
     return SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters)
   }
 
   @Throws(IOException::class)
   override fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters):
-      Response<TestQuery.Data> {
+      Response<Data> {
     return parse(Buffer().write(byteString), scalarTypeAdapters)
   }
 
   @Throws(IOException::class)
-  override fun parse(source: BufferedSource): Response<TestQuery.Data> {
+  override fun parse(source: BufferedSource): Response<Data> {
     return parse(source, DEFAULT)
   }
 
   @Throws(IOException::class)
-  override fun parse(byteString: ByteString): Response<TestQuery.Data> {
+  override fun parse(byteString: ByteString): Response<Data> {
     return parse(byteString, DEFAULT)
   }
 
@@ -142,22 +132,11 @@ data class TestQuery(
      * Height in the preferred unit, default is meters
      */
     val height: Double?
-  ) : TestQuery.Friend {
+  ) : Friend {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Human1.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@Human1.name)
-        writer.writeDouble(RESPONSE_FIELDS[2], this@Human1.height)
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.Human1_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forDouble("height", "height", mapOf<String, Any>(
-          "unit" to "FOOT"), true, null)
-      )
     }
   }
 
@@ -170,19 +149,11 @@ data class TestQuery(
      * The name of the character
      */
     override val name: String
-  ) : TestQuery.Friend {
+  ) : Friend {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@OtherFriend.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@OtherFriend.name)
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.OtherFriend_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null)
-      )
     }
   }
 
@@ -197,7 +168,7 @@ data class TestQuery(
      */
     val name: String
 
-    fun asHuman1(): TestQuery.Human1? = this as? TestQuery.Human1
+    fun asHuman1(): Human1? = this as? Human1
 
     fun marshaller(): ResponseFieldMarshaller
   }
@@ -214,28 +185,15 @@ data class TestQuery(
     /**
      * This human's friends, or an empty list if they have none
      */
-    val friends: List<TestQuery.Friend?>?
-  ) : TestQuery.Hero {
+    val friends: List<Friend?>?
+  ) : Hero {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Human.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@Human.name)
-        writer.writeList(RESPONSE_FIELDS[2], this@Human.friends) { value, listItemWriter ->
-          value?.forEach { value ->
-            listItemWriter.writeObject(value?.marshaller())}
-        }
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.Human_ResponseAdapter.toResponse(writer, this)
       }
     }
 
-    fun friendsFilterNotNull(): List<TestQuery.Friend>? = friends?.filterNotNull()
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forList("friends", "friends", null, true, null)
-      )
-    }
+    fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
   }
 
   /**
@@ -251,22 +209,11 @@ data class TestQuery(
      * Height in the preferred unit, default is meters
      */
     val height: Double?
-  ) : TestQuery.Friend1 {
+  ) : Friend1 {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Human2.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@Human2.name)
-        writer.writeDouble(RESPONSE_FIELDS[2], this@Human2.height)
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.Human2_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forDouble("height", "height", mapOf<String, Any>(
-          "unit" to "METER"), true, null)
-      )
     }
   }
 
@@ -279,19 +226,11 @@ data class TestQuery(
      * The name of the character
      */
     override val name: String
-  ) : TestQuery.Friend1 {
+  ) : Friend1 {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@OtherFriend1.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@OtherFriend1.name)
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.OtherFriend1_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null)
-      )
     }
   }
 
@@ -306,7 +245,7 @@ data class TestQuery(
      */
     val name: String
 
-    fun asHuman2(): TestQuery.Human2? = this as? TestQuery.Human2
+    fun asHuman2(): Human2? = this as? Human2
 
     fun marshaller(): ResponseFieldMarshaller
   }
@@ -323,28 +262,15 @@ data class TestQuery(
     /**
      * This droid's friends, or an empty list if they have none
      */
-    val friends: List<TestQuery.Friend1?>?
-  ) : TestQuery.Hero {
+    val friends: List<Friend1?>?
+  ) : Hero {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Droid.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@Droid.name)
-        writer.writeList(RESPONSE_FIELDS[2], this@Droid.friends) { value, listItemWriter ->
-          value?.forEach { value ->
-            listItemWriter.writeObject(value?.marshaller())}
-        }
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.Droid_ResponseAdapter.toResponse(writer, this)
       }
     }
 
-    fun friendsFilterNotNull(): List<TestQuery.Friend1>? = friends?.filterNotNull()
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forList("friends", "friends", null, true, null)
-      )
-    }
+    fun friendsFilterNotNull(): List<Friend1>? = friends?.filterNotNull()
   }
 
   /**
@@ -356,19 +282,11 @@ data class TestQuery(
      * The name of the character
      */
     override val name: String
-  ) : TestQuery.Hero {
+  ) : Hero {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@OtherHero.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@OtherHero.name)
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.OtherHero_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null)
-      )
     }
   }
 
@@ -383,9 +301,9 @@ data class TestQuery(
      */
     val name: String
 
-    fun asHuman(): TestQuery.Human? = this as? TestQuery.Human
+    fun asHuman(): Human? = this as? Human
 
-    fun asDroid(): TestQuery.Droid? = this as? TestQuery.Droid
+    fun asDroid(): Droid? = this as? Droid
 
     fun marshaller(): ResponseFieldMarshaller
   }
@@ -394,21 +312,12 @@ data class TestQuery(
    * Data from the response after executing this GraphQL operation
    */
   data class Data(
-    val hero: TestQuery.Hero?
+    val hero: Hero?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeObject(RESPONSE_FIELDS[0], this@Data.hero?.marshaller())
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forObject("hero", "hero", mapOf<String, Any>(
-          "episode" to mapOf<String, Any>(
-            "kind" to "Variable",
-            "variableName" to "episode")), true, null)
-      )
     }
   }
 

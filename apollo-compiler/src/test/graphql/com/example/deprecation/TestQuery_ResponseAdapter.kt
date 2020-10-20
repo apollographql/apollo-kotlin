@@ -8,6 +8,7 @@ package com.example.deprecation
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import kotlin.Array
 import kotlin.Boolean
 import kotlin.String
@@ -41,6 +42,16 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
   }
 
+  override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
+    if(value.hero == null) {
+      writer.writeObject(RESPONSE_FIELDS[0], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[0]) {
+        TestQuery_ResponseAdapter.Hero_ResponseAdapter.toResponse(writer, value.hero)
+      }
+    }
+  }
+
   object Hero_ResponseAdapter : ResponseAdapter<TestQuery.Hero> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forString("__typename", "__typename", null, false, null),
@@ -71,6 +82,13 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           deprecatedBool = deprecatedBool!!
         )
       }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Hero) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeString(RESPONSE_FIELDS[2], value.deprecated)
+      writer.writeBoolean(RESPONSE_FIELDS[3], value.deprecatedBool)
     }
   }
 }

@@ -9,7 +9,6 @@ import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
@@ -19,12 +18,10 @@ import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.api.internal.Throws
-import com.example.mutation_create_review.type.CustomType
 import com.example.mutation_create_review.type.Episode
 import com.example.mutation_create_review.type.ReviewInput
 import java.util.Date
 import kotlin.Any
-import kotlin.Array
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
@@ -59,23 +56,15 @@ internal data class CreateReviewForEpisode(
     }
   }
 
-  override fun operationId(): String {
-    return OPERATION_ID
-  }
+  override fun operationId(): String = OPERATION_ID
 
-  override fun queryDocument(): String {
-    return QUERY_DOCUMENT
-  }
+  override fun queryDocument(): String = QUERY_DOCUMENT
 
-  override fun variables(): Operation.Variables {
-    return variables
-  }
+  override fun variables(): Operation.Variables = variables
 
-  override fun name(): OperationName {
-    return OPERATION_NAME
-  }
+  override fun name(): OperationName = OPERATION_NAME
 
-  override fun responseFieldMapper(): ResponseFieldMapper<CreateReviewForEpisode.Data> {
+  override fun responseFieldMapper(): ResponseFieldMapper<Data> {
     return ResponseFieldMapper.invoke {
       CreateReviewForEpisode_ResponseAdapter.fromResponse(it)
     }
@@ -83,23 +72,23 @@ internal data class CreateReviewForEpisode(
 
   @Throws(IOException::class)
   override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters):
-      Response<CreateReviewForEpisode.Data> {
+      Response<Data> {
     return SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters)
   }
 
   @Throws(IOException::class)
   override fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters):
-      Response<CreateReviewForEpisode.Data> {
+      Response<Data> {
     return parse(Buffer().write(byteString), scalarTypeAdapters)
   }
 
   @Throws(IOException::class)
-  override fun parse(source: BufferedSource): Response<CreateReviewForEpisode.Data> {
+  override fun parse(source: BufferedSource): Response<Data> {
     return parse(source, DEFAULT)
   }
 
   @Throws(IOException::class)
-  override fun parse(byteString: ByteString): Response<CreateReviewForEpisode.Data> {
+  override fun parse(byteString: ByteString): Response<Data> {
     return parse(byteString, DEFAULT)
   }
 
@@ -141,17 +130,9 @@ internal data class CreateReviewForEpisode(
     val name: String
   ) {
     fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@ListOfListOfObject.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@ListOfListOfObject.name)
+      return ResponseFieldMarshaller { writer ->
+        CreateReviewForEpisode_ResponseAdapter.ListOfListOfObject_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null)
-      )
     }
   }
 
@@ -183,62 +164,12 @@ internal data class CreateReviewForEpisode(
     /**
      * for test purpose only
      */
-    val listOfListOfObject: List<List<CreateReviewForEpisode.ListOfListOfObject>>?
+    val listOfListOfObject: List<List<ListOfListOfObject>>?
   ) {
     fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@CreateReview.__typename)
-        writer.writeInt(RESPONSE_FIELDS[1], this@CreateReview.stars)
-        writer.writeString(RESPONSE_FIELDS[2], this@CreateReview.commentary)
-        writer.writeList(RESPONSE_FIELDS[3],
-            this@CreateReview.listOfListOfString) { value, listItemWriter ->
-          value?.forEach { value ->
-            listItemWriter.writeList(value) { value, listItemWriter ->
-              value?.forEach { value ->
-                listItemWriter.writeString(value)}
-            }
-          }
-        }
-        writer.writeList(RESPONSE_FIELDS[4],
-            this@CreateReview.listOfListOfEnum) { value, listItemWriter ->
-          value?.forEach { value ->
-            listItemWriter.writeList(value) { value, listItemWriter ->
-              value?.forEach { value ->
-                listItemWriter.writeString(value.rawValue)}
-            }
-          }
-        }
-        writer.writeList(RESPONSE_FIELDS[5],
-            this@CreateReview.listOfListOfCustom) { value, listItemWriter ->
-          value?.forEach { value ->
-            listItemWriter.writeList(value) { value, listItemWriter ->
-              value?.forEach { value ->
-                listItemWriter.writeCustom(CustomType.DATE, value)}
-            }
-          }
-        }
-        writer.writeList(RESPONSE_FIELDS[6],
-            this@CreateReview.listOfListOfObject) { value, listItemWriter ->
-          value?.forEach { value ->
-            listItemWriter.writeList(value) { value, listItemWriter ->
-              value?.forEach { value ->
-                listItemWriter.writeObject(value.marshaller())}
-            }
-          }
-        }
+      return ResponseFieldMarshaller { writer ->
+        CreateReviewForEpisode_ResponseAdapter.CreateReview_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forInt("stars", "stars", null, false, null),
-        ResponseField.forString("commentary", "commentary", null, true, null),
-        ResponseField.forList("listOfListOfString", "listOfListOfString", null, true, null),
-        ResponseField.forList("listOfListOfEnum", "listOfListOfEnum", null, true, null),
-        ResponseField.forList("listOfListOfCustom", "listOfListOfCustom", null, true, null),
-        ResponseField.forList("listOfListOfObject", "listOfListOfObject", null, true, null)
-      )
     }
   }
 
@@ -246,24 +177,12 @@ internal data class CreateReviewForEpisode(
    * Data from the response after executing this GraphQL operation
    */
   data class Data(
-    val createReview: CreateReviewForEpisode.CreateReview?
+    val createReview: CreateReview?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeObject(RESPONSE_FIELDS[0], this@Data.createReview?.marshaller())
+      return ResponseFieldMarshaller { writer ->
+        CreateReviewForEpisode_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forObject("createReview", "createReview", mapOf<String, Any>(
-          "episode" to mapOf<String, Any>(
-            "kind" to "Variable",
-            "variableName" to "ep"),
-          "review" to mapOf<String, Any>(
-            "kind" to "Variable",
-            "variableName" to "review")), true, null)
-      )
     }
   }
 

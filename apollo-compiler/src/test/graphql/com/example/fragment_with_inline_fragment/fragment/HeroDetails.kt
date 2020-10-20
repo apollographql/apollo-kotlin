@@ -6,10 +6,8 @@
 package com.example.fragment_with_inline_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
-import kotlin.Array
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
@@ -158,17 +156,9 @@ interface HeroDetails : GraphqlFragment {
     override val name: String
   ) : Node1, Node5 {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Node2.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@Node2.name)
+      return ResponseFieldMarshaller { writer ->
+        HeroDetails_ResponseAdapter.Node2_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null)
-      )
     }
   }
 
@@ -183,17 +173,9 @@ interface HeroDetails : GraphqlFragment {
     override val node: Node2?
   ) : Edge1, Edge5 {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Edge2.__typename)
-        writer.writeObject(RESPONSE_FIELDS[1], this@Edge2.node?.marshaller())
+      return ResponseFieldMarshaller { writer ->
+        HeroDetails_ResponseAdapter.Edge2_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forObject("node", "node", null, true, null)
-      )
     }
   }
 
@@ -212,23 +194,9 @@ interface HeroDetails : GraphqlFragment {
     override val edges: List<Edge2?>?
   ) : FriendsConnection1, FriendsConnection5 {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@FriendsConnection2.__typename)
-        writer.writeInt(RESPONSE_FIELDS[1], this@FriendsConnection2.totalCount)
-        writer.writeList(RESPONSE_FIELDS[2],
-            this@FriendsConnection2.edges) { value, listItemWriter ->
-          value?.forEach { value ->
-            listItemWriter.writeObject(value?.marshaller())}
-        }
+      return ResponseFieldMarshaller { writer ->
+        HeroDetails_ResponseAdapter.FriendsConnection2_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forInt("totalCount", "totalCount", null, true, null),
-        ResponseField.forList("edges", "edges", null, true, null)
-      )
     }
   }
 
@@ -248,22 +216,9 @@ interface HeroDetails : GraphqlFragment {
     override val primaryFunction: String?
   ) : Droid, DroidDetails, DefaultImpl {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@DroidDroidDetailsImpl.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@DroidDroidDetailsImpl.name)
-        writer.writeObject(RESPONSE_FIELDS[2],
-            this@DroidDroidDetailsImpl.friendsConnection.marshaller())
-        writer.writeString(RESPONSE_FIELDS[3], this@DroidDroidDetailsImpl.primaryFunction)
+      return ResponseFieldMarshaller { writer ->
+        HeroDetails_ResponseAdapter.DroidDroidDetailsImpl_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null),
-        ResponseField.forString("primaryFunction", "primaryFunction", null, true, null)
-      )
     }
   }
 
@@ -278,17 +233,9 @@ interface HeroDetails : GraphqlFragment {
     override val name: String
   ) : Node5 {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Node3.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@Node3.name)
+      return ResponseFieldMarshaller { writer ->
+        HeroDetails_ResponseAdapter.Node3_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null)
-      )
     }
   }
 
@@ -303,17 +250,9 @@ interface HeroDetails : GraphqlFragment {
     override val node: Node3?
   ) : Edge5 {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Edge3.__typename)
-        writer.writeObject(RESPONSE_FIELDS[1], this@Edge3.node?.marshaller())
+      return ResponseFieldMarshaller { writer ->
+        HeroDetails_ResponseAdapter.Edge3_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forObject("node", "node", null, true, null)
-      )
     }
   }
 
@@ -332,23 +271,9 @@ interface HeroDetails : GraphqlFragment {
     override val edges: List<Edge3?>?
   ) : FriendsConnection5 {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@FriendsConnection3.__typename)
-        writer.writeInt(RESPONSE_FIELDS[1], this@FriendsConnection3.totalCount)
-        writer.writeList(RESPONSE_FIELDS[2],
-            this@FriendsConnection3.edges) { value, listItemWriter ->
-          value?.forEach { value ->
-            listItemWriter.writeObject(value?.marshaller())}
-        }
+      return ResponseFieldMarshaller { writer ->
+        HeroDetails_ResponseAdapter.FriendsConnection3_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forInt("totalCount", "totalCount", null, true, null),
-        ResponseField.forList("edges", "edges", null, true, null)
-      )
     }
   }
 
@@ -367,19 +292,9 @@ interface HeroDetails : GraphqlFragment {
     override val friendsConnection: FriendsConnection3
   ) : DefaultImpl, HumanDetails {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@HumanDetailsImpl.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@HumanDetailsImpl.name)
-        writer.writeObject(RESPONSE_FIELDS[2], this@HumanDetailsImpl.friendsConnection.marshaller())
+      return ResponseFieldMarshaller { writer ->
+        HeroDetails_ResponseAdapter.HumanDetailsImpl_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
-      )
     }
   }
 
@@ -394,17 +309,9 @@ interface HeroDetails : GraphqlFragment {
     override val name: String
   ) : Node, Node5 {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Node4.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@Node4.name)
+      return ResponseFieldMarshaller { writer ->
+        HeroDetails_ResponseAdapter.Node4_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null)
-      )
     }
   }
 
@@ -419,17 +326,9 @@ interface HeroDetails : GraphqlFragment {
     override val node: Node4?
   ) : Edge, Edge5 {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Edge4.__typename)
-        writer.writeObject(RESPONSE_FIELDS[1], this@Edge4.node?.marshaller())
+      return ResponseFieldMarshaller { writer ->
+        HeroDetails_ResponseAdapter.Edge4_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forObject("node", "node", null, true, null)
-      )
     }
   }
 
@@ -448,23 +347,9 @@ interface HeroDetails : GraphqlFragment {
     override val edges: List<Edge4?>?
   ) : FriendsConnection, FriendsConnection5 {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@FriendsConnection4.__typename)
-        writer.writeInt(RESPONSE_FIELDS[1], this@FriendsConnection4.totalCount)
-        writer.writeList(RESPONSE_FIELDS[2],
-            this@FriendsConnection4.edges) { value, listItemWriter ->
-          value?.forEach { value ->
-            listItemWriter.writeObject(value?.marshaller())}
-        }
+      return ResponseFieldMarshaller { writer ->
+        HeroDetails_ResponseAdapter.FriendsConnection4_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forInt("totalCount", "totalCount", null, true, null),
-        ResponseField.forList("edges", "edges", null, true, null)
-      )
     }
   }
 
@@ -483,19 +368,9 @@ interface HeroDetails : GraphqlFragment {
     override val friendsConnection: FriendsConnection4
   ) : HeroDetails, DefaultImpl {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@OtherDefaultImpl.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@OtherDefaultImpl.name)
-        writer.writeObject(RESPONSE_FIELDS[2], this@OtherDefaultImpl.friendsConnection.marshaller())
+      return ResponseFieldMarshaller { writer ->
+        HeroDetails_ResponseAdapter.OtherDefaultImpl_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
-      )
     }
   }
 

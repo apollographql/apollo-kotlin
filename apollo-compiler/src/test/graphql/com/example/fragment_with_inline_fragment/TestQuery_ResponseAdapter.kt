@@ -8,6 +8,7 @@ package com.example.fragment_with_inline_fragment
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.fragment_with_inline_fragment.type.Episode
 import kotlin.Array
 import kotlin.Int
@@ -40,6 +41,16 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
   }
 
+  override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
+    if(value.hero == null) {
+      writer.writeObject(RESPONSE_FIELDS[0], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[0]) {
+        TestQuery_ResponseAdapter.Hero_ResponseAdapter.toResponse(writer, value.hero)
+      }
+    }
+  }
+
   object Node1_ResponseAdapter : ResponseAdapter<TestQuery.Node1> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forString("__typename", "__typename", null, false, null),
@@ -62,6 +73,11 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           name = name!!
         )
       }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Node1) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
     }
   }
 
@@ -88,6 +104,17 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           __typename = __typename!!,
           node = node
         )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Edge1) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      if(value.node == null) {
+        writer.writeObject(RESPONSE_FIELDS[1], null)
+      } else {
+        writer.writeObject(RESPONSE_FIELDS[1]) {
+          TestQuery_ResponseAdapter.Node1_ResponseAdapter.toResponse(writer, value.node)
+        }
       }
     }
   }
@@ -122,6 +149,22 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           totalCount = totalCount,
           edges = edges
         )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.FriendsConnection1) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeInt(RESPONSE_FIELDS[1], value.totalCount)
+      writer.writeList(RESPONSE_FIELDS[2], value.edges) { value, listItemWriter ->
+        value?.forEach { value ->
+          if(value == null) {
+            listItemWriter.writeObject(null)
+          } else {
+            listItemWriter.writeObject {
+              TestQuery_ResponseAdapter.Edge1_ResponseAdapter.toResponse(writer, value)
+            }
+          }
+        }
       }
     }
   }
@@ -167,6 +210,20 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter,
+        value: TestQuery.HeroDetailsDroidDroidDetailsImpl) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeObject(RESPONSE_FIELDS[2]) {
+        TestQuery_ResponseAdapter.FriendsConnection1_ResponseAdapter.toResponse(writer, value.friendsConnection)
+      }
+      writer.writeString(RESPONSE_FIELDS[3], value.primaryFunction)
+      writer.writeList(RESPONSE_FIELDS[4], value.appearsIn) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeString(value?.rawValue)}
+      }
+    }
   }
 
   object Node2_ResponseAdapter : ResponseAdapter<TestQuery.Node2> {
@@ -191,6 +248,11 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           name = name!!
         )
       }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Node2) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
     }
   }
 
@@ -217,6 +279,17 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           __typename = __typename!!,
           node = node
         )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Edge2) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      if(value.node == null) {
+        writer.writeObject(RESPONSE_FIELDS[1], null)
+      } else {
+        writer.writeObject(RESPONSE_FIELDS[1]) {
+          TestQuery_ResponseAdapter.Node2_ResponseAdapter.toResponse(writer, value.node)
+        }
       }
     }
   }
@@ -251,6 +324,22 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           totalCount = totalCount,
           edges = edges
         )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.FriendsConnection2) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeInt(RESPONSE_FIELDS[1], value.totalCount)
+      writer.writeList(RESPONSE_FIELDS[2], value.edges) { value, listItemWriter ->
+        value?.forEach { value ->
+          if(value == null) {
+            listItemWriter.writeObject(null)
+          } else {
+            listItemWriter.writeObject {
+              TestQuery_ResponseAdapter.Edge2_ResponseAdapter.toResponse(writer, value)
+            }
+          }
+        }
       }
     }
   }
@@ -292,6 +381,18 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.HeroDetailsHumanDetailsImpl) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeObject(RESPONSE_FIELDS[2]) {
+        TestQuery_ResponseAdapter.FriendsConnection2_ResponseAdapter.toResponse(writer, value.friendsConnection)
+      }
+      writer.writeList(RESPONSE_FIELDS[3], value.appearsIn) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeString(value?.rawValue)}
+      }
+    }
   }
 
   object OtherHero_ResponseAdapter : ResponseAdapter<TestQuery.OtherHero> {
@@ -323,6 +424,15 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.OtherHero) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeList(RESPONSE_FIELDS[2], value.appearsIn) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeString(value?.rawValue)}
+      }
+    }
   }
 
   object Hero_ResponseAdapter : ResponseAdapter<TestQuery.Hero> {
@@ -338,6 +448,14 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         "Droid" -> TestQuery_ResponseAdapter.HeroDetailsDroidDroidDetailsImpl_ResponseAdapter.fromResponse(reader, typename)
         "Human" -> TestQuery_ResponseAdapter.HeroDetailsHumanDetailsImpl_ResponseAdapter.fromResponse(reader, typename)
         else -> TestQuery_ResponseAdapter.OtherHero_ResponseAdapter.fromResponse(reader, typename)
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Hero) {
+      when(value) {
+        is TestQuery.HeroDetailsDroidDroidDetailsImpl -> TestQuery_ResponseAdapter.HeroDetailsDroidDroidDetailsImpl_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.HeroDetailsHumanDetailsImpl -> TestQuery_ResponseAdapter.HeroDetailsHumanDetailsImpl_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.OtherHero -> TestQuery_ResponseAdapter.OtherHero_ResponseAdapter.toResponse(writer, value)
       }
     }
   }

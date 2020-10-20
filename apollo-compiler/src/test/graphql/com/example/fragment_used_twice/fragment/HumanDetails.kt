@@ -6,12 +6,9 @@
 package com.example.fragment_used_twice.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
-import com.example.fragment_used_twice.type.CustomType
 import kotlin.Any
-import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
 
@@ -44,20 +41,9 @@ interface HumanDetails : GraphqlFragment {
     override val birthDate: Any
   ) : DefaultImpl, CharacterDetails {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@CharacterDetailsImpl.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@CharacterDetailsImpl.name)
-        writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField,
-            this@CharacterDetailsImpl.birthDate)
+      return ResponseFieldMarshaller { writer ->
+        HumanDetails_ResponseAdapter.CharacterDetailsImpl_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forCustomType("birthDate", "birthDate", null, false, CustomType.DATE, null)
-      )
     }
   }
 
@@ -72,17 +58,9 @@ interface HumanDetails : GraphqlFragment {
     override val name: String
   ) : HumanDetails, DefaultImpl {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@OtherDefaultImpl.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@OtherDefaultImpl.name)
+      return ResponseFieldMarshaller { writer ->
+        HumanDetails_ResponseAdapter.OtherDefaultImpl_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null)
-      )
     }
   }
 

@@ -8,6 +8,7 @@ package com.example.enum_type
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.enum_type.type.Episode
 import kotlin.Array
 import kotlin.String
@@ -36,6 +37,16 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       TestQuery.Data(
         hero = hero
       )
+    }
+  }
+
+  override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
+    if(value.hero == null) {
+      writer.writeObject(RESPONSE_FIELDS[0], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[0]) {
+        TestQuery_ResponseAdapter.Hero_ResponseAdapter.toResponse(writer, value.hero)
+      }
     }
   }
 
@@ -71,6 +82,16 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           firstAppearsIn = firstAppearsIn!!
         )
       }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Hero) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeList(RESPONSE_FIELDS[2], value.appearsIn) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeString(value?.rawValue)}
+      }
+      writer.writeString(RESPONSE_FIELDS[3], value.firstAppearsIn.rawValue)
     }
   }
 }

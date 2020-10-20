@@ -16,7 +16,13 @@ internal fun CodeGenerationAst.FragmentType.typeSpec(generateAsInternal: Boolean
   val fragmentType = checkNotNull(nestedTypes[rootType]) {
     "Failed to resolve operation root data type"
   }
-  val nestedTypeSpecs = nestedTypes.minus(rootType).values.map { type -> type.typeSpec() }
+  val nestedTypeSpecs = nestedTypes.minus(rootType).map { (typeRef, type) ->
+    if (typeRef == this.defaultImplementation) {
+      type.typeSpec(responseAdapter = this.rootType.asAdapterTypeName())
+    } else {
+      type.typeSpec(responseAdapter = typeRef.asAdapterTypeName())
+    }
+  }
   return TypeSpec
       .interfaceBuilder(fragmentType.name)
       .addAnnotation(suppressWarningsAnnotation)

@@ -8,6 +8,7 @@ package com.example.hero_with_review
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import kotlin.Array
 import kotlin.Int
 import kotlin.String
@@ -54,6 +55,16 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
   }
 
+  override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
+    if(value.createReview == null) {
+      writer.writeObject(RESPONSE_FIELDS[0], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[0]) {
+        TestQuery_ResponseAdapter.CreateReview_ResponseAdapter.toResponse(writer, value.createReview)
+      }
+    }
+  }
+
   object CreateReview_ResponseAdapter : ResponseAdapter<TestQuery.CreateReview> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forString("__typename", "__typename", null, false, null),
@@ -80,6 +91,12 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           commentary = commentary
         )
       }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.CreateReview) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeInt(RESPONSE_FIELDS[1], value.stars)
+      writer.writeString(RESPONSE_FIELDS[2], value.commentary)
     }
   }
 }

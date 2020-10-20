@@ -6,11 +6,8 @@
 package com.example.fragment_in_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
-import com.example.fragment_in_fragment.type.CustomType
-import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
@@ -85,17 +82,9 @@ interface StarshipFragment : GraphqlFragment {
     override val name: String?
   ) : PlanetFragment, PilotFragment.Homeworld {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Homeworld.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@Homeworld.name)
+      return ResponseFieldMarshaller { writer ->
+        StarshipFragment_ResponseAdapter.Homeworld_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, true, null)
-      )
     }
   }
 
@@ -114,19 +103,9 @@ interface StarshipFragment : GraphqlFragment {
     override val homeworld: Homeworld?
   ) : PilotFragment, Node {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Node1.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@Node1.name)
-        writer.writeObject(RESPONSE_FIELDS[2], this@Node1.homeworld?.marshaller())
+      return ResponseFieldMarshaller { writer ->
+        StarshipFragment_ResponseAdapter.Node1_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, true, null),
-        ResponseField.forObject("homeworld", "homeworld", null, true, null)
-      )
     }
   }
 
@@ -141,17 +120,9 @@ interface StarshipFragment : GraphqlFragment {
     override val node: Node1?
   ) : Edge {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Edge1.__typename)
-        writer.writeObject(RESPONSE_FIELDS[1], this@Edge1.node?.marshaller())
+      return ResponseFieldMarshaller { writer ->
+        StarshipFragment_ResponseAdapter.Edge1_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forObject("node", "node", null, true, null)
-      )
     }
   }
 
@@ -166,20 +137,9 @@ interface StarshipFragment : GraphqlFragment {
     override val edges: List<Edge1?>?
   ) : PilotConnection {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@PilotConnection1.__typename)
-        writer.writeList(RESPONSE_FIELDS[1], this@PilotConnection1.edges) { value, listItemWriter ->
-          value?.forEach { value ->
-            listItemWriter.writeObject(value?.marshaller())}
-        }
+      return ResponseFieldMarshaller { writer ->
+        StarshipFragment_ResponseAdapter.PilotConnection1_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forList("edges", "edges", null, true, null)
-      )
     }
   }
 
@@ -199,21 +159,9 @@ interface StarshipFragment : GraphqlFragment {
     override val pilotConnection: PilotConnection1?
   ) : StarshipFragment {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@DefaultImpl.__typename)
-        writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, this@DefaultImpl.id)
-        writer.writeString(RESPONSE_FIELDS[2], this@DefaultImpl.name)
-        writer.writeObject(RESPONSE_FIELDS[3], this@DefaultImpl.pilotConnection?.marshaller())
+      return ResponseFieldMarshaller { writer ->
+        StarshipFragment_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
-        ResponseField.forString("name", "name", null, true, null),
-        ResponseField.forObject("pilotConnection", "pilotConnection", null, true, null)
-      )
     }
   }
 

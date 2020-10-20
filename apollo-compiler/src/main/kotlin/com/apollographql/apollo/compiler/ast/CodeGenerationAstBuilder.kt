@@ -328,7 +328,7 @@ private class CodeGenerationAstBuilder(
         fragmentsPackage = fragmentsPackage,
         irFragments = irFragments.associateBy { it.fragmentName },
         nestedTypeContainer = nestedTypeContainer,
-        enclosingType = CodeGenerationAst.TypeRef(name = operationClassName)
+        enclosingType = CodeGenerationAst.TypeRef(packageName = this.packageName, name = operationClassName)
     )
     val dataFieldType = objectTypeBuilder.resolveFieldType(
         field = Field(

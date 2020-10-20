@@ -8,6 +8,7 @@ package com.example.starships
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.starships.type.CustomType
 import kotlin.Array
 import kotlin.Double
@@ -40,6 +41,16 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       TestQuery.Data(
         starship = starship
       )
+    }
+  }
+
+  override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
+    if(value.starship == null) {
+      writer.writeObject(RESPONSE_FIELDS[0], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[0]) {
+        TestQuery_ResponseAdapter.Starship_ResponseAdapter.toResponse(writer, value.starship)
+      }
     }
   }
 
@@ -76,6 +87,20 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           name = name!!,
           coordinates = coordinates
         )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Starship) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, value.id)
+      writer.writeString(RESPONSE_FIELDS[2], value.name)
+      writer.writeList(RESPONSE_FIELDS[3], value.coordinates) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeList(value) { value, listItemWriter ->
+            value?.forEach { value ->
+              listItemWriter.writeDouble(value)}
+          }
+        }
       }
     }
   }

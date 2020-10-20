@@ -8,7 +8,6 @@ package com.example.subscriptions
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
 import com.apollographql.apollo.api.Subscription
@@ -20,7 +19,6 @@ import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.api.internal.Throws
 import kotlin.Any
-import kotlin.Array
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
@@ -51,23 +49,15 @@ data class TestSubscription(
     }
   }
 
-  override fun operationId(): String {
-    return OPERATION_ID
-  }
+  override fun operationId(): String = OPERATION_ID
 
-  override fun queryDocument(): String {
-    return QUERY_DOCUMENT
-  }
+  override fun queryDocument(): String = QUERY_DOCUMENT
 
-  override fun variables(): Operation.Variables {
-    return variables
-  }
+  override fun variables(): Operation.Variables = variables
 
-  override fun name(): OperationName {
-    return OPERATION_NAME
-  }
+  override fun name(): OperationName = OPERATION_NAME
 
-  override fun responseFieldMapper(): ResponseFieldMapper<TestSubscription.Data> {
+  override fun responseFieldMapper(): ResponseFieldMapper<Data> {
     return ResponseFieldMapper.invoke {
       TestSubscription_ResponseAdapter.fromResponse(it)
     }
@@ -75,23 +65,23 @@ data class TestSubscription(
 
   @Throws(IOException::class)
   override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters):
-      Response<TestSubscription.Data> {
+      Response<Data> {
     return SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters)
   }
 
   @Throws(IOException::class)
   override fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters):
-      Response<TestSubscription.Data> {
+      Response<Data> {
     return parse(Buffer().write(byteString), scalarTypeAdapters)
   }
 
   @Throws(IOException::class)
-  override fun parse(source: BufferedSource): Response<TestSubscription.Data> {
+  override fun parse(source: BufferedSource): Response<Data> {
     return parse(source, DEFAULT)
   }
 
   @Throws(IOException::class)
-  override fun parse(byteString: ByteString): Response<TestSubscription.Data> {
+  override fun parse(byteString: ByteString): Response<Data> {
     return parse(byteString, DEFAULT)
   }
 
@@ -137,19 +127,9 @@ data class TestSubscription(
     val content: String
   ) {
     fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@CommentAdded.__typename)
-        writer.writeInt(RESPONSE_FIELDS[1], this@CommentAdded.id)
-        writer.writeString(RESPONSE_FIELDS[2], this@CommentAdded.content)
+      return ResponseFieldMarshaller { writer ->
+        TestSubscription_ResponseAdapter.CommentAdded_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forInt("id", "id", null, false, null),
-        ResponseField.forString("content", "content", null, false, null)
-      )
     }
   }
 
@@ -160,21 +140,12 @@ data class TestSubscription(
     /**
      * Subscription fires on every comment added
      */
-    val commentAdded: TestSubscription.CommentAdded?
+    val commentAdded: CommentAdded?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeObject(RESPONSE_FIELDS[0], this@Data.commentAdded?.marshaller())
+      return ResponseFieldMarshaller { writer ->
+        TestSubscription_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forObject("commentAdded", "commentAdded", mapOf<String, Any>(
-          "repoFullName" to mapOf<String, Any>(
-            "kind" to "Variable",
-            "variableName" to "repo")), true, null)
-      )
     }
   }
 

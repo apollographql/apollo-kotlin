@@ -9,7 +9,6 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
 import com.apollographql.apollo.api.internal.OperationRequestBodyComposer
@@ -22,7 +21,6 @@ import com.example.fragment_with_inline_fragment.fragment.DroidDetails
 import com.example.fragment_with_inline_fragment.fragment.HeroDetails
 import com.example.fragment_with_inline_fragment.fragment.HumanDetails
 import com.example.fragment_with_inline_fragment.type.Episode
-import kotlin.Array
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
@@ -37,23 +35,15 @@ import okio.IOException
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery : Query<TestQuery.Data, Operation.Variables> {
-  override fun operationId(): String {
-    return OPERATION_ID
-  }
+  override fun operationId(): String = OPERATION_ID
 
-  override fun queryDocument(): String {
-    return QUERY_DOCUMENT
-  }
+  override fun queryDocument(): String = QUERY_DOCUMENT
 
-  override fun variables(): Operation.Variables {
-    return Operation.EMPTY_VARIABLES
-  }
+  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
 
-  override fun name(): OperationName {
-    return OPERATION_NAME
-  }
+  override fun name(): OperationName = OPERATION_NAME
 
-  override fun responseFieldMapper(): ResponseFieldMapper<TestQuery.Data> {
+  override fun responseFieldMapper(): ResponseFieldMapper<Data> {
     return ResponseFieldMapper.invoke {
       TestQuery_ResponseAdapter.fromResponse(it)
     }
@@ -61,23 +51,23 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   @Throws(IOException::class)
   override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters):
-      Response<TestQuery.Data> {
+      Response<Data> {
     return SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters)
   }
 
   @Throws(IOException::class)
   override fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters):
-      Response<TestQuery.Data> {
+      Response<Data> {
     return parse(Buffer().write(byteString), scalarTypeAdapters)
   }
 
   @Throws(IOException::class)
-  override fun parse(source: BufferedSource): Response<TestQuery.Data> {
+  override fun parse(source: BufferedSource): Response<Data> {
     return parse(source, DEFAULT)
   }
 
   @Throws(IOException::class)
-  override fun parse(byteString: ByteString): Response<TestQuery.Data> {
+  override fun parse(byteString: ByteString): Response<Data> {
     return parse(byteString, DEFAULT)
   }
 
@@ -131,7 +121,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     /**
      * The character represented by this friendship edge
      */
-    val node: TestQuery.Node?
+    val node: Node?
 
     fun marshaller(): ResponseFieldMarshaller
   }
@@ -150,7 +140,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     /**
      * The edges for each of the character's friends.
      */
-    val edges: List<TestQuery.Edge?>?
+    val edges: List<Edge?>?
 
     fun marshaller(): ResponseFieldMarshaller
   }
@@ -158,7 +148,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   /**
    * An autonomous mechanical character in the Star Wars universe
    */
-  interface Droid : TestQuery.Hero {
+  interface Droid : Hero {
     override val __typename: String
 
     /**
@@ -169,7 +159,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     /**
      * The friends of the droid exposed as a connection with edges
      */
-    val friendsConnection: TestQuery.FriendsConnection
+    val friendsConnection: FriendsConnection
 
     override fun marshaller(): ResponseFieldMarshaller
   }
@@ -183,19 +173,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
      * The name of the character
      */
     override val name: String
-  ) : HeroDetails.Node, TestQuery.Node {
+  ) : HeroDetails.Node, Node {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Node1.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@Node1.name)
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.Node1_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null)
-      )
     }
   }
 
@@ -207,20 +189,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     /**
      * The character represented by this friendship edge
      */
-    override val node: TestQuery.Node1?
-  ) : HeroDetails.Edge, TestQuery.Edge {
+    override val node: Node1?
+  ) : HeroDetails.Edge, Edge {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Edge1.__typename)
-        writer.writeObject(RESPONSE_FIELDS[1], this@Edge1.node?.marshaller())
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.Edge1_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forObject("node", "node", null, true, null)
-      )
     }
   }
 
@@ -236,29 +210,15 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     /**
      * The edges for each of the character's friends.
      */
-    override val edges: List<TestQuery.Edge1?>?
-  ) : HeroDetails.FriendsConnection, TestQuery.FriendsConnection {
+    override val edges: List<Edge1?>?
+  ) : HeroDetails.FriendsConnection, FriendsConnection {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@FriendsConnection1.__typename)
-        writer.writeInt(RESPONSE_FIELDS[1], this@FriendsConnection1.totalCount)
-        writer.writeList(RESPONSE_FIELDS[2],
-            this@FriendsConnection1.edges) { value, listItemWriter ->
-          value?.forEach { value ->
-            listItemWriter.writeObject(value?.marshaller())}
-        }
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.FriendsConnection1_ResponseAdapter.toResponse(writer, this)
       }
     }
 
-    fun edgesFilterNotNull(): List<TestQuery.Edge1>? = edges?.filterNotNull()
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forInt("totalCount", "totalCount", null, true, null),
-        ResponseField.forList("edges", "edges", null, true, null)
-      )
-    }
+    fun edgesFilterNotNull(): List<Edge1>? = edges?.filterNotNull()
   }
 
   data class HeroDetailsDroidDroidDetailsImpl(
@@ -270,7 +230,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     /**
      * The friends of the character exposed as a connection with edges
      */
-    override val friendsConnection: TestQuery.FriendsConnection1,
+    override val friendsConnection: FriendsConnection1,
     /**
      * This droid's primary function
      */
@@ -279,34 +239,14 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
      * The movies this character appears in
      */
     override val appearsIn: List<Episode?>
-  ) : HeroDetails, TestQuery.Droid, DroidDetails, TestQuery.Hero {
+  ) : HeroDetails, Droid, DroidDetails, Hero {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@HeroDetailsDroidDroidDetailsImpl.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@HeroDetailsDroidDroidDetailsImpl.name)
-        writer.writeObject(RESPONSE_FIELDS[2],
-            this@HeroDetailsDroidDroidDetailsImpl.friendsConnection.marshaller())
-        writer.writeString(RESPONSE_FIELDS[3],
-            this@HeroDetailsDroidDroidDetailsImpl.primaryFunction)
-        writer.writeList(RESPONSE_FIELDS[4],
-            this@HeroDetailsDroidDroidDetailsImpl.appearsIn) { value, listItemWriter ->
-          value?.forEach { value ->
-            listItemWriter.writeString(value?.rawValue)}
-        }
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.HeroDetailsDroidDroidDetailsImpl_ResponseAdapter.toResponse(writer, this)
       }
     }
 
     fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null),
-        ResponseField.forString("primaryFunction", "primaryFunction", null, true, null),
-        ResponseField.forList("appearsIn", "appearsIn", null, false, null)
-      )
-    }
   }
 
   /**
@@ -320,17 +260,9 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     override val name: String
   ) : HeroDetails.Node {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Node2.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@Node2.name)
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.Node2_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null)
-      )
     }
   }
 
@@ -342,20 +274,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     /**
      * The character represented by this friendship edge
      */
-    override val node: TestQuery.Node2?
+    override val node: Node2?
   ) : HeroDetails.Edge {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Edge2.__typename)
-        writer.writeObject(RESPONSE_FIELDS[1], this@Edge2.node?.marshaller())
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.Edge2_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forObject("node", "node", null, true, null)
-      )
     }
   }
 
@@ -371,29 +295,15 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     /**
      * The edges for each of the character's friends.
      */
-    override val edges: List<TestQuery.Edge2?>?
+    override val edges: List<Edge2?>?
   ) : HeroDetails.FriendsConnection {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@FriendsConnection2.__typename)
-        writer.writeInt(RESPONSE_FIELDS[1], this@FriendsConnection2.totalCount)
-        writer.writeList(RESPONSE_FIELDS[2],
-            this@FriendsConnection2.edges) { value, listItemWriter ->
-          value?.forEach { value ->
-            listItemWriter.writeObject(value?.marshaller())}
-        }
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.FriendsConnection2_ResponseAdapter.toResponse(writer, this)
       }
     }
 
-    fun edgesFilterNotNull(): List<TestQuery.Edge2>? = edges?.filterNotNull()
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forInt("totalCount", "totalCount", null, true, null),
-        ResponseField.forList("edges", "edges", null, true, null)
-      )
-    }
+    fun edgesFilterNotNull(): List<Edge2>? = edges?.filterNotNull()
   }
 
   data class HeroDetailsHumanDetailsImpl(
@@ -405,36 +315,19 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     /**
      * The friends of the character exposed as a connection with edges
      */
-    override val friendsConnection: TestQuery.FriendsConnection2,
+    override val friendsConnection: FriendsConnection2,
     /**
      * The movies this character appears in
      */
     override val appearsIn: List<Episode?>
-  ) : HeroDetails, HumanDetails, TestQuery.Hero {
+  ) : HeroDetails, HumanDetails, Hero {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@HeroDetailsHumanDetailsImpl.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@HeroDetailsHumanDetailsImpl.name)
-        writer.writeObject(RESPONSE_FIELDS[2],
-            this@HeroDetailsHumanDetailsImpl.friendsConnection.marshaller())
-        writer.writeList(RESPONSE_FIELDS[3],
-            this@HeroDetailsHumanDetailsImpl.appearsIn) { value, listItemWriter ->
-          value?.forEach { value ->
-            listItemWriter.writeString(value?.rawValue)}
-        }
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.HeroDetailsHumanDetailsImpl_ResponseAdapter.toResponse(writer, this)
       }
     }
 
     fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null),
-        ResponseField.forList("appearsIn", "appearsIn", null, false, null)
-      )
-    }
   }
 
   /**
@@ -450,27 +343,14 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
      * The movies this character appears in
      */
     override val appearsIn: List<Episode?>
-  ) : TestQuery.Hero {
+  ) : Hero {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@OtherHero.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@OtherHero.name)
-        writer.writeList(RESPONSE_FIELDS[2], this@OtherHero.appearsIn) { value, listItemWriter ->
-          value?.forEach { value ->
-            listItemWriter.writeString(value?.rawValue)}
-        }
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.OtherHero_ResponseAdapter.toResponse(writer, this)
       }
     }
 
     fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forList("appearsIn", "appearsIn", null, false, null)
-      )
-    }
   }
 
   /**
@@ -491,7 +371,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
     fun asHeroDetails(): HeroDetails? = this as? HeroDetails
 
-    fun asDroid(): TestQuery.Droid? = this as? TestQuery.Droid
+    fun asDroid(): Droid? = this as? Droid
 
     fun asDroidDetails(): DroidDetails? = this as? DroidDetails
 
@@ -504,18 +384,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * Data from the response after executing this GraphQL operation
    */
   data class Data(
-    val hero: TestQuery.Hero?
+    val hero: Hero?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeObject(RESPONSE_FIELDS[0], this@Data.hero?.marshaller())
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forObject("hero", "hero", null, true, null)
-      )
     }
   }
 

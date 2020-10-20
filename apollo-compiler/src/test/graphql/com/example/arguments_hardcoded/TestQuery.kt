@@ -9,7 +9,6 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
 import com.apollographql.apollo.api.internal.OperationRequestBodyComposer
@@ -18,7 +17,6 @@ import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.api.internal.Throws
-import kotlin.Array
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
@@ -33,23 +31,15 @@ import okio.IOException
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery : Query<TestQuery.Data, Operation.Variables> {
-  override fun operationId(): String {
-    return OPERATION_ID
-  }
+  override fun operationId(): String = OPERATION_ID
 
-  override fun queryDocument(): String {
-    return QUERY_DOCUMENT
-  }
+  override fun queryDocument(): String = QUERY_DOCUMENT
 
-  override fun variables(): Operation.Variables {
-    return Operation.EMPTY_VARIABLES
-  }
+  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
 
-  override fun name(): OperationName {
-    return OPERATION_NAME
-  }
+  override fun name(): OperationName = OPERATION_NAME
 
-  override fun responseFieldMapper(): ResponseFieldMapper<TestQuery.Data> {
+  override fun responseFieldMapper(): ResponseFieldMapper<Data> {
     return ResponseFieldMapper.invoke {
       TestQuery_ResponseAdapter.fromResponse(it)
     }
@@ -57,23 +47,23 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   @Throws(IOException::class)
   override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters):
-      Response<TestQuery.Data> {
+      Response<Data> {
     return SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters)
   }
 
   @Throws(IOException::class)
   override fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters):
-      Response<TestQuery.Data> {
+      Response<Data> {
     return parse(Buffer().write(byteString), scalarTypeAdapters)
   }
 
   @Throws(IOException::class)
-  override fun parse(source: BufferedSource): Response<TestQuery.Data> {
+  override fun parse(source: BufferedSource): Response<Data> {
     return parse(source, DEFAULT)
   }
 
   @Throws(IOException::class)
-  override fun parse(byteString: ByteString): Response<TestQuery.Data> {
+  override fun parse(byteString: ByteString): Response<Data> {
     return parse(byteString, DEFAULT)
   }
 
@@ -119,19 +109,9 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     val commentary: String?
   ) {
     fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Review.__typename)
-        writer.writeInt(RESPONSE_FIELDS[1], this@Review.stars)
-        writer.writeString(RESPONSE_FIELDS[2], this@Review.commentary)
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.Review_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forInt("stars", "stars", null, false, null),
-        ResponseField.forString("commentary", "commentary", null, true, null)
-      )
     }
   }
 
@@ -139,27 +119,15 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * Data from the response after executing this GraphQL operation
    */
   data class Data(
-    val reviews: List<TestQuery.Review?>?
+    val reviews: List<Review?>?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeList(RESPONSE_FIELDS[0], this@Data.reviews) { value, listItemWriter ->
-          value?.forEach { value ->
-            listItemWriter.writeObject(value?.marshaller())}
-        }
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.toResponse(writer, this)
       }
     }
 
-    fun reviewsFilterNotNull(): List<TestQuery.Review>? = reviews?.filterNotNull()
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forList("reviews", "reviews", mapOf<String, Any>(
-          "episode" to "JEDI",
-          "starsInt" to 10,
-          "starsFloat" to 9.9), true, null)
-      )
-    }
+    fun reviewsFilterNotNull(): List<Review>? = reviews?.filterNotNull()
   }
 
   companion object {

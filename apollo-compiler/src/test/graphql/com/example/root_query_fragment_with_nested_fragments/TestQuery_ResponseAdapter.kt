@@ -8,6 +8,7 @@ package com.example.root_query_fragment_with_nested_fragments
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
@@ -55,6 +56,31 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
   }
 
+  override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
+    writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+    if(value.hero == null) {
+      writer.writeObject(RESPONSE_FIELDS[1], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[1]) {
+        TestQuery_ResponseAdapter.Hero_ResponseAdapter.toResponse(writer, value.hero)
+      }
+    }
+    if(value.droid == null) {
+      writer.writeObject(RESPONSE_FIELDS[2], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[2]) {
+        TestQuery_ResponseAdapter.Droid_ResponseAdapter.toResponse(writer, value.droid)
+      }
+    }
+    if(value.human == null) {
+      writer.writeObject(RESPONSE_FIELDS[3], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[3]) {
+        TestQuery_ResponseAdapter.Human_ResponseAdapter.toResponse(writer, value.human)
+      }
+    }
+  }
+
   object Hero_ResponseAdapter : ResponseAdapter<TestQuery.Hero> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forString("__typename", "__typename", null, false, null),
@@ -77,6 +103,11 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           name = name!!
         )
       }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Hero) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
     }
   }
 
@@ -107,6 +138,12 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Droid) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeString(RESPONSE_FIELDS[2], value.primaryFunction)
+    }
   }
 
   object Human_ResponseAdapter : ResponseAdapter<TestQuery.Human> {
@@ -135,6 +172,12 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           homePlanet = homePlanet
         )
       }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Human) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeString(RESPONSE_FIELDS[2], value.homePlanet)
     }
   }
 }

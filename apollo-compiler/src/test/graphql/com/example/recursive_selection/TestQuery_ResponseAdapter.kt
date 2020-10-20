@@ -8,6 +8,7 @@ package com.example.recursive_selection
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
@@ -38,6 +39,16 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
   }
 
+  override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
+    if(value.tree == null) {
+      writer.writeObject(RESPONSE_FIELDS[0], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[0]) {
+        TestQuery_ResponseAdapter.Tree_ResponseAdapter.toResponse(writer, value.tree)
+      }
+    }
+  }
+
   object Child_ResponseAdapter : ResponseAdapter<TestQuery.Child> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forString("__typename", "__typename", null, false, null),
@@ -60,6 +71,11 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           name = name!!
         )
       }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Child) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
     }
   }
 
@@ -85,6 +101,11 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           name = name!!
         )
       }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Parent) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
     }
   }
 
@@ -123,6 +144,25 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           children = children!!,
           parent = parent
         )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Tree) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeList(RESPONSE_FIELDS[2], value.children) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeObject {
+            TestQuery_ResponseAdapter.Child_ResponseAdapter.toResponse(writer, value)
+          }
+        }
+      }
+      if(value.parent == null) {
+        writer.writeObject(RESPONSE_FIELDS[3], null)
+      } else {
+        writer.writeObject(RESPONSE_FIELDS[3]) {
+          TestQuery_ResponseAdapter.Parent_ResponseAdapter.toResponse(writer, value.parent)
+        }
       }
     }
   }

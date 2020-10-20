@@ -8,6 +8,7 @@ package com.example.union_fragment
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.union_fragment.fragment.Character_ResponseAdapter
 import com.example.union_fragment.fragment.Starship_ResponseAdapter
 import kotlin.Array
@@ -43,16 +44,38 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
   }
 
+  override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
+    writer.writeList(RESPONSE_FIELDS[0], value.search) { value, listItemWriter ->
+      value?.forEach { value ->
+        if(value == null) {
+          listItemWriter.writeObject(null)
+        } else {
+          listItemWriter.writeObject {
+            TestQuery_ResponseAdapter.Search_ResponseAdapter.toResponse(writer, value)
+          }
+        }
+      }
+    }
+  }
+
   object CharacterImpl_ResponseAdapter : ResponseAdapter<TestQuery.CharacterImpl> {
     override fun fromResponse(reader: ResponseReader, __typename: String?):
         TestQuery.CharacterImpl {
       return TestQuery.CharacterImpl(Character_ResponseAdapter.fromResponse(reader, __typename))
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.CharacterImpl) {
+      Character_ResponseAdapter.toResponse(writer, value.delegate)
     }
   }
 
   object StarshipImpl_ResponseAdapter : ResponseAdapter<TestQuery.StarshipImpl> {
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.StarshipImpl {
       return TestQuery.StarshipImpl(Starship_ResponseAdapter.fromResponse(reader, __typename))
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.StarshipImpl) {
+      Starship_ResponseAdapter.toResponse(writer, value.delegate)
     }
   }
 
@@ -75,6 +98,10 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.OtherSearch) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+    }
   }
 
   object Search_ResponseAdapter : ResponseAdapter<TestQuery.Search> {
@@ -89,6 +116,15 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         "Human" -> TestQuery_ResponseAdapter.CharacterImpl_ResponseAdapter.fromResponse(reader, typename)
         "Starship" -> TestQuery_ResponseAdapter.StarshipImpl_ResponseAdapter.fromResponse(reader, typename)
         else -> TestQuery_ResponseAdapter.OtherSearch_ResponseAdapter.fromResponse(reader, typename)
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Search) {
+      when(value) {
+        is TestQuery.CharacterImpl -> TestQuery_ResponseAdapter.CharacterImpl_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.CharacterImpl -> TestQuery_ResponseAdapter.CharacterImpl_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.StarshipImpl -> TestQuery_ResponseAdapter.StarshipImpl_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.OtherSearch -> TestQuery_ResponseAdapter.OtherSearch_ResponseAdapter.toResponse(writer, value)
       }
     }
   }

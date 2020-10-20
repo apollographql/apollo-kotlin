@@ -8,6 +8,7 @@ package com.example.fragment_in_fragment.fragment
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.fragment_in_fragment.type.CustomType
 import kotlin.Array
 import kotlin.String
@@ -17,7 +18,7 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-internal object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragment> {
+internal object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragment.DefaultImpl> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forString("__typename", "__typename", null, false, null),
     ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
@@ -25,8 +26,44 @@ internal object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragm
     ResponseField.forObject("pilotConnection", "pilotConnection", null, true, null)
   )
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?): StarshipFragment {
-    return DefaultImpl_ResponseAdapter.fromResponse(reader, __typename)
+  override fun fromResponse(reader: ResponseReader, __typename: String?):
+      StarshipFragment.DefaultImpl {
+    return reader.run {
+      var __typename: String? = __typename
+      var id: String? = null
+      var name: String? = null
+      var pilotConnection: StarshipFragment.PilotConnection1? = null
+      while(true) {
+        when (selectField(RESPONSE_FIELDS)) {
+          0 -> __typename = readString(RESPONSE_FIELDS[0])
+          1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+          2 -> name = readString(RESPONSE_FIELDS[2])
+          3 -> pilotConnection = readObject<StarshipFragment.PilotConnection1>(RESPONSE_FIELDS[3]) { reader ->
+            PilotConnection1_ResponseAdapter.fromResponse(reader)
+          }
+          else -> break
+        }
+      }
+      StarshipFragment.DefaultImpl(
+        __typename = __typename!!,
+        id = id!!,
+        name = name,
+        pilotConnection = pilotConnection
+      )
+    }
+  }
+
+  override fun toResponse(writer: ResponseWriter, value: StarshipFragment.DefaultImpl) {
+    writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+    writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, value.id)
+    writer.writeString(RESPONSE_FIELDS[2], value.name)
+    if(value.pilotConnection == null) {
+      writer.writeObject(RESPONSE_FIELDS[3], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[3]) {
+        PilotConnection1_ResponseAdapter.toResponse(writer, value.pilotConnection)
+      }
+    }
   }
 
   object Homeworld_ResponseAdapter : ResponseAdapter<StarshipFragment.Homeworld> {
@@ -52,6 +89,11 @@ internal object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragm
           name = name
         )
       }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: StarshipFragment.Homeworld) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
     }
   }
 
@@ -84,6 +126,18 @@ internal object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragm
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: StarshipFragment.Node1) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      if(value.homeworld == null) {
+        writer.writeObject(RESPONSE_FIELDS[2], null)
+      } else {
+        writer.writeObject(RESPONSE_FIELDS[2]) {
+          Homeworld_ResponseAdapter.toResponse(writer, value.homeworld)
+        }
+      }
+    }
   }
 
   object Edge1_ResponseAdapter : ResponseAdapter<StarshipFragment.Edge1> {
@@ -109,6 +163,17 @@ internal object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragm
           __typename = __typename!!,
           node = node
         )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: StarshipFragment.Edge1) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      if(value.node == null) {
+        writer.writeObject(RESPONSE_FIELDS[1], null)
+      } else {
+        writer.writeObject(RESPONSE_FIELDS[1]) {
+          Node1_ResponseAdapter.toResponse(writer, value.node)
+        }
       }
     }
   }
@@ -141,40 +206,19 @@ internal object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragm
         )
       }
     }
-  }
 
-  object DefaultImpl_ResponseAdapter : ResponseAdapter<StarshipFragment.DefaultImpl> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
-      ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
-      ResponseField.forString("name", "name", null, true, null),
-      ResponseField.forObject("pilotConnection", "pilotConnection", null, true, null)
-    )
-
-    override fun fromResponse(reader: ResponseReader, __typename: String?):
-        StarshipFragment.DefaultImpl {
-      return reader.run {
-        var __typename: String? = __typename
-        var id: String? = null
-        var name: String? = null
-        var pilotConnection: StarshipFragment.PilotConnection1? = null
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
-            2 -> name = readString(RESPONSE_FIELDS[2])
-            3 -> pilotConnection = readObject<StarshipFragment.PilotConnection1>(RESPONSE_FIELDS[3]) { reader ->
-              PilotConnection1_ResponseAdapter.fromResponse(reader)
+    override fun toResponse(writer: ResponseWriter, value: StarshipFragment.PilotConnection1) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeList(RESPONSE_FIELDS[1], value.edges) { value, listItemWriter ->
+        value?.forEach { value ->
+          if(value == null) {
+            listItemWriter.writeObject(null)
+          } else {
+            listItemWriter.writeObject {
+              Edge1_ResponseAdapter.toResponse(writer, value)
             }
-            else -> break
           }
         }
-        StarshipFragment.DefaultImpl(
-          __typename = __typename!!,
-          id = id!!,
-          name = name,
-          pilotConnection = pilotConnection
-        )
       }
     }
   }

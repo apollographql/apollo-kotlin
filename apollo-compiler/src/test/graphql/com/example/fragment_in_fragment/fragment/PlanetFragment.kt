@@ -6,10 +6,8 @@
 package com.example.fragment_in_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
-import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
 
@@ -40,17 +38,9 @@ interface PlanetFragment : GraphqlFragment {
     override val name: String?
   ) : PlanetFragment {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@DefaultImpl.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@DefaultImpl.name)
+      return ResponseFieldMarshaller { writer ->
+        PlanetFragment_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, true, null)
-      )
     }
   }
 

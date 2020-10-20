@@ -9,7 +9,6 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
 import com.apollographql.apollo.api.internal.OperationRequestBodyComposer
@@ -18,9 +17,7 @@ import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.api.internal.Throws
-import com.example.inline_fragments_with_friends.type.CustomType
 import com.example.inline_fragments_with_friends.type.Episode
-import kotlin.Array
 import kotlin.Boolean
 import kotlin.Double
 import kotlin.String
@@ -35,23 +32,15 @@ import okio.IOException
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery : Query<TestQuery.Data, Operation.Variables> {
-  override fun operationId(): String {
-    return OPERATION_ID
-  }
+  override fun operationId(): String = OPERATION_ID
 
-  override fun queryDocument(): String {
-    return QUERY_DOCUMENT
-  }
+  override fun queryDocument(): String = QUERY_DOCUMENT
 
-  override fun variables(): Operation.Variables {
-    return Operation.EMPTY_VARIABLES
-  }
+  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
 
-  override fun name(): OperationName {
-    return OPERATION_NAME
-  }
+  override fun name(): OperationName = OPERATION_NAME
 
-  override fun responseFieldMapper(): ResponseFieldMapper<TestQuery.Data> {
+  override fun responseFieldMapper(): ResponseFieldMapper<Data> {
     return ResponseFieldMapper.invoke {
       TestQuery_ResponseAdapter.fromResponse(it)
     }
@@ -59,23 +48,23 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   @Throws(IOException::class)
   override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters):
-      Response<TestQuery.Data> {
+      Response<Data> {
     return SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters)
   }
 
   @Throws(IOException::class)
   override fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters):
-      Response<TestQuery.Data> {
+      Response<Data> {
     return parse(Buffer().write(byteString), scalarTypeAdapters)
   }
 
   @Throws(IOException::class)
-  override fun parse(source: BufferedSource): Response<TestQuery.Data> {
+  override fun parse(source: BufferedSource): Response<Data> {
     return parse(source, DEFAULT)
   }
 
   @Throws(IOException::class)
-  override fun parse(byteString: ByteString): Response<TestQuery.Data> {
+  override fun parse(byteString: ByteString): Response<Data> {
     return parse(byteString, DEFAULT)
   }
 
@@ -117,23 +106,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     val appearsIn: List<Episode?>
   ) {
     fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Friend.__typename)
-        writer.writeList(RESPONSE_FIELDS[1], this@Friend.appearsIn) { value, listItemWriter ->
-          value?.forEach { value ->
-            listItemWriter.writeString(value?.rawValue)}
-        }
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.Friend_ResponseAdapter.toResponse(writer, this)
       }
     }
 
     fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forList("appearsIn", "appearsIn", null, false, null)
-      )
-    }
   }
 
   /**
@@ -152,30 +130,15 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     /**
      * This human's friends, or an empty list if they have none
      */
-    val friends: List<TestQuery.Friend?>?
-  ) : TestQuery.Hero {
+    val friends: List<Friend?>?
+  ) : Hero {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Human.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@Human.name)
-        writer.writeDouble(RESPONSE_FIELDS[2], this@Human.height)
-        writer.writeList(RESPONSE_FIELDS[3], this@Human.friends) { value, listItemWriter ->
-          value?.forEach { value ->
-            listItemWriter.writeObject(value?.marshaller())}
-        }
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.Human_ResponseAdapter.toResponse(writer, this)
       }
     }
 
-    fun friendsFilterNotNull(): List<TestQuery.Friend>? = friends?.filterNotNull()
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forDouble("height", "height", null, true, null),
-        ResponseField.forList("friends", "friends", null, true, null)
-      )
-    }
+    fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
   }
 
   /**
@@ -189,17 +152,9 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     val id: String
   ) {
     fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Friend1.__typename)
-        writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, this@Friend1.id)
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.Friend1_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null)
-      )
     }
   }
 
@@ -219,30 +174,15 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     /**
      * This droid's friends, or an empty list if they have none
      */
-    val friends: List<TestQuery.Friend1?>?
-  ) : TestQuery.Hero {
+    val friends: List<Friend1?>?
+  ) : Hero {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Droid.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@Droid.name)
-        writer.writeString(RESPONSE_FIELDS[2], this@Droid.primaryFunction)
-        writer.writeList(RESPONSE_FIELDS[3], this@Droid.friends) { value, listItemWriter ->
-          value?.forEach { value ->
-            listItemWriter.writeObject(value?.marshaller())}
-        }
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.Droid_ResponseAdapter.toResponse(writer, this)
       }
     }
 
-    fun friendsFilterNotNull(): List<TestQuery.Friend1>? = friends?.filterNotNull()
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forString("primaryFunction", "primaryFunction", null, true, null),
-        ResponseField.forList("friends", "friends", null, true, null)
-      )
-    }
+    fun friendsFilterNotNull(): List<Friend1>? = friends?.filterNotNull()
   }
 
   /**
@@ -254,19 +194,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
      * The name of the character
      */
     override val name: String
-  ) : TestQuery.Hero {
+  ) : Hero {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@OtherHero.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@OtherHero.name)
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.OtherHero_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null)
-      )
     }
   }
 
@@ -281,9 +213,9 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
      */
     val name: String
 
-    fun asHuman(): TestQuery.Human? = this as? TestQuery.Human
+    fun asHuman(): Human? = this as? Human
 
-    fun asDroid(): TestQuery.Droid? = this as? TestQuery.Droid
+    fun asDroid(): Droid? = this as? Droid
 
     fun marshaller(): ResponseFieldMarshaller
   }
@@ -292,18 +224,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * Data from the response after executing this GraphQL operation
    */
   data class Data(
-    val hero: TestQuery.Hero?
+    val hero: Hero?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeObject(RESPONSE_FIELDS[0], this@Data.hero?.marshaller())
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forObject("hero", "hero", null, true, null)
-      )
     }
   }
 

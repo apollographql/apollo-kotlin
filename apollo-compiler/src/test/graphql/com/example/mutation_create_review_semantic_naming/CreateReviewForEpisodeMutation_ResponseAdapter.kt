@@ -8,6 +8,7 @@ package com.example.mutation_create_review_semantic_naming
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import kotlin.Array
 import kotlin.Int
 import kotlin.String
@@ -46,6 +47,16 @@ internal object CreateReviewForEpisodeMutation_ResponseAdapter :
     }
   }
 
+  override fun toResponse(writer: ResponseWriter, value: CreateReviewForEpisodeMutation.Data) {
+    if(value.createReview == null) {
+      writer.writeObject(RESPONSE_FIELDS[0], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[0]) {
+        CreateReviewForEpisodeMutation_ResponseAdapter.CreateReview_ResponseAdapter.toResponse(writer, value.createReview)
+      }
+    }
+  }
+
   object CreateReview_ResponseAdapter : ResponseAdapter<CreateReviewForEpisodeMutation.CreateReview>
       {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
@@ -74,6 +85,13 @@ internal object CreateReviewForEpisodeMutation_ResponseAdapter :
           commentary = commentary
         )
       }
+    }
+
+    override fun toResponse(writer: ResponseWriter,
+        value: CreateReviewForEpisodeMutation.CreateReview) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeInt(RESPONSE_FIELDS[1], value.stars)
+      writer.writeString(RESPONSE_FIELDS[2], value.commentary)
     }
   }
 }

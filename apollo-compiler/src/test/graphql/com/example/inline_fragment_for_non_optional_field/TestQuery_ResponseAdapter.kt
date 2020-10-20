@@ -8,6 +8,7 @@ package com.example.inline_fragment_for_non_optional_field
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import kotlin.Array
 import kotlin.Double
 import kotlin.String
@@ -39,6 +40,12 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
   }
 
+  override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
+    writer.writeObject(RESPONSE_FIELDS[0]) {
+      TestQuery_ResponseAdapter.NonOptionalHero_ResponseAdapter.toResponse(writer, value.nonOptionalHero)
+    }
+  }
+
   object Human_ResponseAdapter : ResponseAdapter<TestQuery.Human> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forString("__typename", "__typename", null, false, null),
@@ -66,6 +73,12 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Human) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeDouble(RESPONSE_FIELDS[2], value.height)
+    }
   }
 
   object OtherNonOptionalHero_ResponseAdapter : ResponseAdapter<TestQuery.OtherNonOptionalHero> {
@@ -92,6 +105,11 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.OtherNonOptionalHero) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+    }
   }
 
   object NonOptionalHero_ResponseAdapter : ResponseAdapter<TestQuery.NonOptionalHero> {
@@ -105,8 +123,14 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
       return when(typename) {
         "Human" -> TestQuery_ResponseAdapter.Human_ResponseAdapter.fromResponse(reader, typename)
-        else -> TestQuery_ResponseAdapter.OtherNonOptionalHero_ResponseAdapter.fromResponse(reader,
-            typename)
+        else -> TestQuery_ResponseAdapter.OtherNonOptionalHero_ResponseAdapter.fromResponse(reader, typename)
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.NonOptionalHero) {
+      when(value) {
+        is TestQuery.Human -> TestQuery_ResponseAdapter.Human_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.OtherNonOptionalHero -> TestQuery_ResponseAdapter.OtherNonOptionalHero_ResponseAdapter.toResponse(writer, value)
       }
     }
   }

@@ -8,6 +8,7 @@ package com.example.simple_fragment
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.simple_fragment.fragment.HeroDetails_ResponseAdapter
 import kotlin.Array
 import kotlin.String
@@ -38,10 +39,24 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
   }
 
+  override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
+    if(value.hero == null) {
+      writer.writeObject(RESPONSE_FIELDS[0], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[0]) {
+        TestQuery_ResponseAdapter.Hero_ResponseAdapter.toResponse(writer, value.hero)
+      }
+    }
+  }
+
   object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<TestQuery.HeroDetailsImpl> {
     override fun fromResponse(reader: ResponseReader, __typename: String?):
         TestQuery.HeroDetailsImpl {
       return TestQuery.HeroDetailsImpl(HeroDetails_ResponseAdapter.fromResponse(reader, __typename))
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.HeroDetailsImpl) {
+      HeroDetails_ResponseAdapter.toResponse(writer, value.delegate)
     }
   }
 
@@ -70,6 +85,11 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.HeroDetailsHumanDetailsImpl) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+    }
   }
 
   object OtherHero_ResponseAdapter : ResponseAdapter<TestQuery.OtherHero> {
@@ -91,6 +111,10 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.OtherHero) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+    }
   }
 
   object Hero_ResponseAdapter : ResponseAdapter<TestQuery.Hero> {
@@ -104,6 +128,14 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         "Droid" -> TestQuery_ResponseAdapter.HeroDetailsImpl_ResponseAdapter.fromResponse(reader, typename)
         "Human" -> TestQuery_ResponseAdapter.HeroDetailsHumanDetailsImpl_ResponseAdapter.fromResponse(reader, typename)
         else -> TestQuery_ResponseAdapter.OtherHero_ResponseAdapter.fromResponse(reader, typename)
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Hero) {
+      when(value) {
+        is TestQuery.HeroDetailsImpl -> TestQuery_ResponseAdapter.HeroDetailsImpl_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.HeroDetailsHumanDetailsImpl -> TestQuery_ResponseAdapter.HeroDetailsHumanDetailsImpl_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.OtherHero -> TestQuery_ResponseAdapter.OtherHero_ResponseAdapter.toResponse(writer, value)
       }
     }
   }

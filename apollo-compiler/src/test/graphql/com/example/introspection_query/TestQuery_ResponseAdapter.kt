@@ -8,6 +8,7 @@ package com.example.introspection_query
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
@@ -45,6 +46,19 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
   }
 
+  override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
+    writer.writeObject(RESPONSE_FIELDS[0]) {
+      TestQuery_ResponseAdapter.__Schema_ResponseAdapter.toResponse(writer, value.__schema)
+    }
+    if(value.__type == null) {
+      writer.writeObject(RESPONSE_FIELDS[1], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[1]) {
+        TestQuery_ResponseAdapter.__Type_ResponseAdapter.toResponse(writer, value.__type)
+      }
+    }
+  }
+
   object QueryType_ResponseAdapter : ResponseAdapter<TestQuery.QueryType> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forString("__typename", "__typename", null, false, null),
@@ -67,6 +81,11 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           name = name
         )
       }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.QueryType) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
     }
   }
 
@@ -92,6 +111,11 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           name = name
         )
       }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Type) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
     }
   }
 
@@ -128,6 +152,20 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.__Schema) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeObject(RESPONSE_FIELDS[1]) {
+        TestQuery_ResponseAdapter.QueryType_ResponseAdapter.toResponse(writer, value.queryType)
+      }
+      writer.writeList(RESPONSE_FIELDS[2], value.types) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeObject {
+            TestQuery_ResponseAdapter.Type_ResponseAdapter.toResponse(writer, value)
+          }
+        }
+      }
+    }
   }
 
   object __Type_ResponseAdapter : ResponseAdapter<TestQuery.__Type> {
@@ -152,6 +190,11 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           name = name
         )
       }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.__Type) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
     }
   }
 }

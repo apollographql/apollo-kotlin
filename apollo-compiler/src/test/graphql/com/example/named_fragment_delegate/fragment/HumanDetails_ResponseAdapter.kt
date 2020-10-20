@@ -8,6 +8,7 @@ package com.example.named_fragment_delegate.fragment
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.named_fragment_delegate.type.CustomType
 import kotlin.Any
 import kotlin.Array
@@ -18,7 +19,7 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-internal object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails> {
+internal object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.DefaultImpl> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forString("__typename", "__typename", null, false, null),
     ResponseField.forString("name", "name", null, false, null),
@@ -26,8 +27,39 @@ internal object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails> {
     ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
   )
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?): HumanDetails {
-    return DefaultImpl_ResponseAdapter.fromResponse(reader, __typename)
+  override fun fromResponse(reader: ResponseReader, __typename: String?): HumanDetails.DefaultImpl {
+    return reader.run {
+      var __typename: String? = __typename
+      var name: String? = null
+      var profileLink: Any? = null
+      var friendsConnection: HumanDetails.FriendsConnection1? = null
+      while(true) {
+        when (selectField(RESPONSE_FIELDS)) {
+          0 -> __typename = readString(RESPONSE_FIELDS[0])
+          1 -> name = readString(RESPONSE_FIELDS[1])
+          2 -> profileLink = readCustomType<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)
+          3 -> friendsConnection = readObject<HumanDetails.FriendsConnection1>(RESPONSE_FIELDS[3]) { reader ->
+            FriendsConnection1_ResponseAdapter.fromResponse(reader)
+          }
+          else -> break
+        }
+      }
+      HumanDetails.DefaultImpl(
+        __typename = __typename!!,
+        name = name!!,
+        profileLink = profileLink!!,
+        friendsConnection = friendsConnection!!
+      )
+    }
+  }
+
+  override fun toResponse(writer: ResponseWriter, value: HumanDetails.DefaultImpl) {
+    writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+    writer.writeString(RESPONSE_FIELDS[1], value.name)
+    writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, value.profileLink)
+    writer.writeObject(RESPONSE_FIELDS[3]) {
+      FriendsConnection1_ResponseAdapter.toResponse(writer, value.friendsConnection)
+    }
   }
 
   object Node1_ResponseAdapter : ResponseAdapter<HumanDetails.Node1> {
@@ -52,6 +84,11 @@ internal object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails> {
           name = name!!
         )
       }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: HumanDetails.Node1) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
     }
   }
 
@@ -78,6 +115,17 @@ internal object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails> {
           __typename = __typename!!,
           node = node
         )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: HumanDetails.Edge1) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      if(value.node == null) {
+        writer.writeObject(RESPONSE_FIELDS[1], null)
+      } else {
+        writer.writeObject(RESPONSE_FIELDS[1]) {
+          Node1_ResponseAdapter.toResponse(writer, value.node)
+        }
       }
     }
   }
@@ -110,40 +158,19 @@ internal object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails> {
         )
       }
     }
-  }
 
-  object DefaultImpl_ResponseAdapter : ResponseAdapter<HumanDetails.DefaultImpl> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
-      ResponseField.forString("name", "name", null, false, null),
-      ResponseField.forCustomType("profileLink", "profileLink", null, false, CustomType.URL, null),
-      ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
-    )
-
-    override fun fromResponse(reader: ResponseReader, __typename: String?):
-        HumanDetails.DefaultImpl {
-      return reader.run {
-        var __typename: String? = __typename
-        var name: String? = null
-        var profileLink: Any? = null
-        var friendsConnection: HumanDetails.FriendsConnection1? = null
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> name = readString(RESPONSE_FIELDS[1])
-            2 -> profileLink = readCustomType<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)
-            3 -> friendsConnection = readObject<HumanDetails.FriendsConnection1>(RESPONSE_FIELDS[3]) { reader ->
-              FriendsConnection1_ResponseAdapter.fromResponse(reader)
+    override fun toResponse(writer: ResponseWriter, value: HumanDetails.FriendsConnection1) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeList(RESPONSE_FIELDS[1], value.edges) { value, listItemWriter ->
+        value?.forEach { value ->
+          if(value == null) {
+            listItemWriter.writeObject(null)
+          } else {
+            listItemWriter.writeObject {
+              Edge1_ResponseAdapter.toResponse(writer, value)
             }
-            else -> break
           }
         }
-        HumanDetails.DefaultImpl(
-          __typename = __typename!!,
-          name = name!!,
-          profileLink = profileLink!!,
-          friendsConnection = friendsConnection!!
-        )
       }
     }
   }

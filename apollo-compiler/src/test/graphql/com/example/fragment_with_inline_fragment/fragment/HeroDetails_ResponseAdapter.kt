@@ -8,6 +8,7 @@ package com.example.fragment_with_inline_fragment.fragment
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import kotlin.Array
 import kotlin.Int
 import kotlin.String
@@ -17,15 +18,28 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-internal object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails> {
+internal object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.DefaultImpl> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forString("__typename", "__typename", null, false, null),
     ResponseField.forString("name", "name", null, false, null),
     ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
   )
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?): HeroDetails {
-    return DefaultImpl_ResponseAdapter.fromResponse(reader, __typename)
+  override fun fromResponse(reader: ResponseReader, __typename: String?): HeroDetails.DefaultImpl {
+    val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
+    return when(typename) {
+      "Droid" -> DroidDroidDetailsImpl_ResponseAdapter.fromResponse(reader, typename)
+      "Human" -> HumanDetailsImpl_ResponseAdapter.fromResponse(reader, typename)
+      else -> OtherDefaultImpl_ResponseAdapter.fromResponse(reader, typename)
+    }
+  }
+
+  override fun toResponse(writer: ResponseWriter, value: HeroDetails.DefaultImpl) {
+    when(value) {
+      is HeroDetails.DroidDroidDetailsImpl -> DroidDroidDetailsImpl_ResponseAdapter.toResponse(writer, value)
+      is HeroDetails.HumanDetailsImpl -> HumanDetailsImpl_ResponseAdapter.toResponse(writer, value)
+      is HeroDetails.OtherDefaultImpl -> OtherDefaultImpl_ResponseAdapter.toResponse(writer, value)
+    }
   }
 
   object Node2_ResponseAdapter : ResponseAdapter<HeroDetails.Node2> {
@@ -50,6 +64,11 @@ internal object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails> {
           name = name!!
         )
       }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: HeroDetails.Node2) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
     }
   }
 
@@ -76,6 +95,17 @@ internal object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails> {
           __typename = __typename!!,
           node = node
         )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: HeroDetails.Edge2) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      if(value.node == null) {
+        writer.writeObject(RESPONSE_FIELDS[1], null)
+      } else {
+        writer.writeObject(RESPONSE_FIELDS[1]) {
+          Node2_ResponseAdapter.toResponse(writer, value.node)
+        }
       }
     }
   }
@@ -110,6 +140,22 @@ internal object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails> {
           totalCount = totalCount,
           edges = edges
         )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: HeroDetails.FriendsConnection2) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeInt(RESPONSE_FIELDS[1], value.totalCount)
+      writer.writeList(RESPONSE_FIELDS[2], value.edges) { value, listItemWriter ->
+        value?.forEach { value ->
+          if(value == null) {
+            listItemWriter.writeObject(null)
+          } else {
+            listItemWriter.writeObject {
+              Edge2_ResponseAdapter.toResponse(writer, value)
+            }
+          }
+        }
       }
     }
   }
@@ -149,6 +195,15 @@ internal object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: HeroDetails.DroidDroidDetailsImpl) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeObject(RESPONSE_FIELDS[2]) {
+        FriendsConnection2_ResponseAdapter.toResponse(writer, value.friendsConnection)
+      }
+      writer.writeString(RESPONSE_FIELDS[3], value.primaryFunction)
+    }
   }
 
   object Node3_ResponseAdapter : ResponseAdapter<HeroDetails.Node3> {
@@ -173,6 +228,11 @@ internal object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails> {
           name = name!!
         )
       }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: HeroDetails.Node3) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
     }
   }
 
@@ -199,6 +259,17 @@ internal object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails> {
           __typename = __typename!!,
           node = node
         )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: HeroDetails.Edge3) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      if(value.node == null) {
+        writer.writeObject(RESPONSE_FIELDS[1], null)
+      } else {
+        writer.writeObject(RESPONSE_FIELDS[1]) {
+          Node3_ResponseAdapter.toResponse(writer, value.node)
+        }
       }
     }
   }
@@ -235,6 +306,22 @@ internal object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: HeroDetails.FriendsConnection3) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeInt(RESPONSE_FIELDS[1], value.totalCount)
+      writer.writeList(RESPONSE_FIELDS[2], value.edges) { value, listItemWriter ->
+        value?.forEach { value ->
+          if(value == null) {
+            listItemWriter.writeObject(null)
+          } else {
+            listItemWriter.writeObject {
+              Edge3_ResponseAdapter.toResponse(writer, value)
+            }
+          }
+        }
+      }
+    }
   }
 
   object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetails.HumanDetailsImpl> {
@@ -267,6 +354,14 @@ internal object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: HeroDetails.HumanDetailsImpl) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeObject(RESPONSE_FIELDS[2]) {
+        FriendsConnection3_ResponseAdapter.toResponse(writer, value.friendsConnection)
+      }
+    }
   }
 
   object Node4_ResponseAdapter : ResponseAdapter<HeroDetails.Node4> {
@@ -291,6 +386,11 @@ internal object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails> {
           name = name!!
         )
       }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: HeroDetails.Node4) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
     }
   }
 
@@ -317,6 +417,17 @@ internal object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails> {
           __typename = __typename!!,
           node = node
         )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: HeroDetails.Edge4) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      if(value.node == null) {
+        writer.writeObject(RESPONSE_FIELDS[1], null)
+      } else {
+        writer.writeObject(RESPONSE_FIELDS[1]) {
+          Node4_ResponseAdapter.toResponse(writer, value.node)
+        }
       }
     }
   }
@@ -353,6 +464,22 @@ internal object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: HeroDetails.FriendsConnection4) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeInt(RESPONSE_FIELDS[1], value.totalCount)
+      writer.writeList(RESPONSE_FIELDS[2], value.edges) { value, listItemWriter ->
+        value?.forEach { value ->
+          if(value == null) {
+            listItemWriter.writeObject(null)
+          } else {
+            listItemWriter.writeObject {
+              Edge4_ResponseAdapter.toResponse(writer, value)
+            }
+          }
+        }
+      }
+    }
   }
 
   object OtherDefaultImpl_ResponseAdapter : ResponseAdapter<HeroDetails.OtherDefaultImpl> {
@@ -385,22 +512,12 @@ internal object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails> {
         )
       }
     }
-  }
 
-  object DefaultImpl_ResponseAdapter : ResponseAdapter<HeroDetails.DefaultImpl> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
-      ResponseField.forString("name", "name", null, false, null),
-      ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
-    )
-
-    override fun fromResponse(reader: ResponseReader, __typename: String?):
-        HeroDetails.DefaultImpl {
-      val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
-      return when(typename) {
-        "Droid" -> DroidDroidDetailsImpl_ResponseAdapter.fromResponse(reader, typename)
-        "Human" -> HumanDetailsImpl_ResponseAdapter.fromResponse(reader, typename)
-        else -> OtherDefaultImpl_ResponseAdapter.fromResponse(reader, typename)
+    override fun toResponse(writer: ResponseWriter, value: HeroDetails.OtherDefaultImpl) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeObject(RESPONSE_FIELDS[2]) {
+        FriendsConnection4_ResponseAdapter.toResponse(writer, value.friendsConnection)
       }
     }
   }

@@ -8,6 +8,7 @@ package com.example.union_inline_fragments
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.union_inline_fragments.type.CustomType
 import com.example.union_inline_fragments.type.Episode
 import kotlin.Array
@@ -43,6 +44,20 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
   }
 
+  override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
+    writer.writeList(RESPONSE_FIELDS[0], value.search) { value, listItemWriter ->
+      value?.forEach { value ->
+        if(value == null) {
+          listItemWriter.writeObject(null)
+        } else {
+          listItemWriter.writeObject {
+            TestQuery_ResponseAdapter.Search_ResponseAdapter.toResponse(writer, value)
+          }
+        }
+      }
+    }
+  }
+
   object Friend1_ResponseAdapter : ResponseAdapter<TestQuery.Friend1> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forString("__typename", "__typename", null, false, null),
@@ -65,6 +80,11 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           firstAppearsIn = firstAppearsIn!!
         )
       }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Friend1) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.firstAppearsIn.rawValue)
     }
   }
 
@@ -103,6 +123,23 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Human) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.homePlanet)
+      writer.writeList(RESPONSE_FIELDS[2], value.friends) { value, listItemWriter ->
+        value?.forEach { value ->
+          if(value == null) {
+            listItemWriter.writeObject(null)
+          } else {
+            listItemWriter.writeObject {
+              TestQuery_ResponseAdapter.Friend1_ResponseAdapter.toResponse(writer, value)
+            }
+          }
+        }
+      }
+      writer.writeString(RESPONSE_FIELDS[3], value.name)
+    }
   }
 
   object Friend2_ResponseAdapter : ResponseAdapter<TestQuery.Friend2> {
@@ -127,6 +164,11 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           id = id!!
         )
       }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Friend2) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, value.id)
     }
   }
 
@@ -165,6 +207,23 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Droid) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.primaryFunction)
+      writer.writeList(RESPONSE_FIELDS[2], value.friends) { value, listItemWriter ->
+        value?.forEach { value ->
+          if(value == null) {
+            listItemWriter.writeObject(null)
+          } else {
+            listItemWriter.writeObject {
+              TestQuery_ResponseAdapter.Friend2_ResponseAdapter.toResponse(writer, value)
+            }
+          }
+        }
+      }
+      writer.writeString(RESPONSE_FIELDS[3], value.name)
+    }
   }
 
   object OtherFriend_ResponseAdapter : ResponseAdapter<TestQuery.OtherFriend> {
@@ -190,6 +249,11 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.OtherFriend) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+    }
   }
 
   object Friend_ResponseAdapter : ResponseAdapter<TestQuery.Friend> {
@@ -204,6 +268,14 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         "Human" -> TestQuery_ResponseAdapter.Human_ResponseAdapter.fromResponse(reader, typename)
         "Droid" -> TestQuery_ResponseAdapter.Droid_ResponseAdapter.fromResponse(reader, typename)
         else -> TestQuery_ResponseAdapter.OtherFriend_ResponseAdapter.fromResponse(reader, typename)
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Friend) {
+      when(value) {
+        is TestQuery.Human -> TestQuery_ResponseAdapter.Human_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.Droid -> TestQuery_ResponseAdapter.Droid_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.OtherFriend -> TestQuery_ResponseAdapter.OtherFriend_ResponseAdapter.toResponse(writer, value)
       }
     }
   }
@@ -243,6 +315,23 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Character) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, value.id)
+      writer.writeString(RESPONSE_FIELDS[2], value.name)
+      writer.writeList(RESPONSE_FIELDS[3], value.friends) { value, listItemWriter ->
+        value?.forEach { value ->
+          if(value == null) {
+            listItemWriter.writeObject(null)
+          } else {
+            listItemWriter.writeObject {
+              TestQuery_ResponseAdapter.Friend_ResponseAdapter.toResponse(writer, value)
+            }
+          }
+        }
+      }
+    }
   }
 
   object Starship_ResponseAdapter : ResponseAdapter<TestQuery.Starship> {
@@ -268,6 +357,11 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Starship) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+    }
   }
 
   object OtherSearch_ResponseAdapter : ResponseAdapter<TestQuery.OtherSearch> {
@@ -289,6 +383,10 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.OtherSearch) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+    }
   }
 
   object Search_ResponseAdapter : ResponseAdapter<TestQuery.Search> {
@@ -303,6 +401,15 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         "Human" -> TestQuery_ResponseAdapter.Character_ResponseAdapter.fromResponse(reader, typename)
         "Starship" -> TestQuery_ResponseAdapter.Starship_ResponseAdapter.fromResponse(reader, typename)
         else -> TestQuery_ResponseAdapter.OtherSearch_ResponseAdapter.fromResponse(reader, typename)
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Search) {
+      when(value) {
+        is TestQuery.Character -> TestQuery_ResponseAdapter.Character_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.Character -> TestQuery_ResponseAdapter.Character_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.Starship -> TestQuery_ResponseAdapter.Starship_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.OtherSearch -> TestQuery_ResponseAdapter.OtherSearch_ResponseAdapter.toResponse(writer, value)
       }
     }
   }

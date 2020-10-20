@@ -75,7 +75,7 @@ class GraphQLKompiler(
         .filter { ir.fragmentsToGenerate.contains(it.graphqlName) }
         .forEach { fragmentType ->
           fragmentType
-              .responseAdapterTypeSpec(ir.fragmentsPackageName)
+              .responseAdapterTypeSpec()
               .fileSpec(ir.fragmentsPackageName)
               .writeTo(outputDir)
         }
@@ -96,7 +96,7 @@ class GraphQLKompiler(
     }
 
     ast.operationTypes.forEach { operationType ->
-      operationType.responseAdapterTypeSpec(operationType.packageName)
+      operationType.responseAdapterTypeSpec()
           .fileSpec(operationType.packageName)
           .writeTo(outputDir)
     }

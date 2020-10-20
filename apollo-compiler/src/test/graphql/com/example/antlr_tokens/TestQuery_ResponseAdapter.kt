@@ -8,6 +8,7 @@ package com.example.antlr_tokens
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
@@ -34,6 +35,16 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       TestQuery.Data(
         typeWithGraphQLKeywords = typeWithGraphQLKeywords
       )
+    }
+  }
+
+  override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
+    if(value.typeWithGraphQLKeywords == null) {
+      writer.writeObject(RESPONSE_FIELDS[0], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[0]) {
+        TestQuery_ResponseAdapter.TypeWithGraphQLKeywords_ResponseAdapter.toResponse(writer, value.typeWithGraphQLKeywords)
+      }
     }
   }
 
@@ -76,6 +87,13 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           alias = alias
         )
       }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.TypeWithGraphQLKeywords) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.on)
+      writer.writeString(RESPONSE_FIELDS[2], value.null_)
+      writer.writeString(RESPONSE_FIELDS[3], value.alias)
     }
   }
 }

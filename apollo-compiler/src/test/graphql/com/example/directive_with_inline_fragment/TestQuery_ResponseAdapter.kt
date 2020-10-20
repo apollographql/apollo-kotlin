@@ -8,6 +8,7 @@ package com.example.directive_with_inline_fragment
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.directive_with_inline_fragment.type.CustomType
 import kotlin.Array
 import kotlin.String
@@ -35,6 +36,16 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       TestQuery.Data(
         hero = hero
       )
+    }
+  }
+
+  override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
+    if(value.hero == null) {
+      writer.writeObject(RESPONSE_FIELDS[0], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[0]) {
+        TestQuery_ResponseAdapter.Hero_ResponseAdapter.toResponse(writer, value.hero)
+      }
     }
   }
 
@@ -70,6 +81,13 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.HumanCharacterImpl) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, value.id)
+      writer.writeString(RESPONSE_FIELDS[2], value.name)
+      writer.writeString(RESPONSE_FIELDS[3], value.homePlanet)
+    }
   }
 
   object DroidCharacterImpl_ResponseAdapter : ResponseAdapter<TestQuery.DroidCharacterImpl> {
@@ -104,6 +122,13 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.DroidCharacterImpl) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, value.id)
+      writer.writeString(RESPONSE_FIELDS[2], value.name)
+      writer.writeString(RESPONSE_FIELDS[3], value.primaryFunction)
+    }
   }
 
   object OtherHero_ResponseAdapter : ResponseAdapter<TestQuery.OtherHero> {
@@ -129,6 +154,11 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.OtherHero) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, value.id)
+    }
   }
 
   object Hero_ResponseAdapter : ResponseAdapter<TestQuery.Hero> {
@@ -143,6 +173,14 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         "Human" -> TestQuery_ResponseAdapter.HumanCharacterImpl_ResponseAdapter.fromResponse(reader, typename)
         "Droid" -> TestQuery_ResponseAdapter.DroidCharacterImpl_ResponseAdapter.fromResponse(reader, typename)
         else -> TestQuery_ResponseAdapter.OtherHero_ResponseAdapter.fromResponse(reader, typename)
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Hero) {
+      when(value) {
+        is TestQuery.HumanCharacterImpl -> TestQuery_ResponseAdapter.HumanCharacterImpl_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.DroidCharacterImpl -> TestQuery_ResponseAdapter.DroidCharacterImpl_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.OtherHero -> TestQuery_ResponseAdapter.OtherHero_ResponseAdapter.toResponse(writer, value)
       }
     }
   }

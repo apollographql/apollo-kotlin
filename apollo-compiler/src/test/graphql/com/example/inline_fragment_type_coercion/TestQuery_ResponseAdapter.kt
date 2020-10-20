@@ -8,6 +8,7 @@ package com.example.inline_fragment_type_coercion
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
@@ -34,6 +35,16 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       TestQuery.Data(
         foo = foo
       )
+    }
+  }
+
+  override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
+    if(value.foo == null) {
+      writer.writeObject(RESPONSE_FIELDS[0], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[0]) {
+        TestQuery_ResponseAdapter.Foo_ResponseAdapter.toResponse(writer, value.foo)
+      }
     }
   }
 
@@ -64,6 +75,12 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Bar) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.foo)
+      writer.writeString(RESPONSE_FIELDS[2], value.bar)
+    }
   }
 
   object OtherFoo_ResponseAdapter : ResponseAdapter<TestQuery.OtherFoo> {
@@ -89,6 +106,11 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.OtherFoo) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.foo)
+    }
   }
 
   object Foo_ResponseAdapter : ResponseAdapter<TestQuery.Foo> {
@@ -103,6 +125,14 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         "BarObject" -> TestQuery_ResponseAdapter.Bar_ResponseAdapter.fromResponse(reader, typename)
         "FooBar" -> TestQuery_ResponseAdapter.Bar_ResponseAdapter.fromResponse(reader, typename)
         else -> TestQuery_ResponseAdapter.OtherFoo_ResponseAdapter.fromResponse(reader, typename)
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Foo) {
+      when(value) {
+        is TestQuery.Bar -> TestQuery_ResponseAdapter.Bar_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.Bar -> TestQuery_ResponseAdapter.Bar_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.OtherFoo -> TestQuery_ResponseAdapter.OtherFoo_ResponseAdapter.toResponse(writer, value)
       }
     }
   }

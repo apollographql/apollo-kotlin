@@ -8,6 +8,7 @@ package com.example.arguments_hardcoded
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import kotlin.Array
 import kotlin.Int
 import kotlin.String
@@ -44,6 +45,20 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
   }
 
+  override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
+    writer.writeList(RESPONSE_FIELDS[0], value.reviews) { value, listItemWriter ->
+      value?.forEach { value ->
+        if(value == null) {
+          listItemWriter.writeObject(null)
+        } else {
+          listItemWriter.writeObject {
+            TestQuery_ResponseAdapter.Review_ResponseAdapter.toResponse(writer, value)
+          }
+        }
+      }
+    }
+  }
+
   object Review_ResponseAdapter : ResponseAdapter<TestQuery.Review> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forString("__typename", "__typename", null, false, null),
@@ -70,6 +85,12 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           commentary = commentary
         )
       }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Review) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeInt(RESPONSE_FIELDS[1], value.stars)
+      writer.writeString(RESPONSE_FIELDS[2], value.commentary)
     }
   }
 }

@@ -8,6 +8,7 @@ package com.example.root_query_fragment_with_nested_fragments.fragment
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
@@ -15,7 +16,7 @@ import kotlin.Suppress
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-internal object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment> {
+internal object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.DefaultImpl> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forString("__typename", "__typename", null, false, null),
     ResponseField.forObject("hero", "hero", null, true, null),
@@ -25,8 +26,60 @@ internal object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment> {
       "id" to "1"), true, null)
   )
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?): QueryFragment {
-    return DefaultImpl_ResponseAdapter.fromResponse(reader, __typename)
+  override fun fromResponse(reader: ResponseReader, __typename: String?):
+      QueryFragment.DefaultImpl {
+    return reader.run {
+      var __typename: String? = __typename
+      var hero: QueryFragment.Hero1? = null
+      var droid: QueryFragment.Droid1? = null
+      var human: QueryFragment.Human1? = null
+      while(true) {
+        when (selectField(RESPONSE_FIELDS)) {
+          0 -> __typename = readString(RESPONSE_FIELDS[0])
+          1 -> hero = readObject<QueryFragment.Hero1>(RESPONSE_FIELDS[1]) { reader ->
+            Hero1_ResponseAdapter.fromResponse(reader)
+          }
+          2 -> droid = readObject<QueryFragment.Droid1>(RESPONSE_FIELDS[2]) { reader ->
+            Droid1_ResponseAdapter.fromResponse(reader)
+          }
+          3 -> human = readObject<QueryFragment.Human1>(RESPONSE_FIELDS[3]) { reader ->
+            Human1_ResponseAdapter.fromResponse(reader)
+          }
+          else -> break
+        }
+      }
+      QueryFragment.DefaultImpl(
+        __typename = __typename!!,
+        hero = hero,
+        droid = droid,
+        human = human
+      )
+    }
+  }
+
+  override fun toResponse(writer: ResponseWriter, value: QueryFragment.DefaultImpl) {
+    writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+    if(value.hero == null) {
+      writer.writeObject(RESPONSE_FIELDS[1], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[1]) {
+        Hero1_ResponseAdapter.toResponse(writer, value.hero)
+      }
+    }
+    if(value.droid == null) {
+      writer.writeObject(RESPONSE_FIELDS[2], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[2]) {
+        Droid1_ResponseAdapter.toResponse(writer, value.droid)
+      }
+    }
+    if(value.human == null) {
+      writer.writeObject(RESPONSE_FIELDS[3], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[3]) {
+        Human1_ResponseAdapter.toResponse(writer, value.human)
+      }
+    }
   }
 
   object Hero1_ResponseAdapter : ResponseAdapter<QueryFragment.Hero1> {
@@ -51,6 +104,11 @@ internal object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment> {
           name = name!!
         )
       }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: QueryFragment.Hero1) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
     }
   }
 
@@ -81,6 +139,12 @@ internal object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: QueryFragment.Droid1) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeString(RESPONSE_FIELDS[2], value.primaryFunction)
+    }
   }
 
   object Human1_ResponseAdapter : ResponseAdapter<QueryFragment.Human1> {
@@ -110,47 +174,11 @@ internal object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment> {
         )
       }
     }
-  }
 
-  object DefaultImpl_ResponseAdapter : ResponseAdapter<QueryFragment.DefaultImpl> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
-      ResponseField.forObject("hero", "hero", null, true, null),
-      ResponseField.forObject("droid", "droid", mapOf<String, Any>(
-        "id" to "1"), true, null),
-      ResponseField.forObject("human", "human", mapOf<String, Any>(
-        "id" to "1"), true, null)
-    )
-
-    override fun fromResponse(reader: ResponseReader, __typename: String?):
-        QueryFragment.DefaultImpl {
-      return reader.run {
-        var __typename: String? = __typename
-        var hero: QueryFragment.Hero1? = null
-        var droid: QueryFragment.Droid1? = null
-        var human: QueryFragment.Human1? = null
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> hero = readObject<QueryFragment.Hero1>(RESPONSE_FIELDS[1]) { reader ->
-              Hero1_ResponseAdapter.fromResponse(reader)
-            }
-            2 -> droid = readObject<QueryFragment.Droid1>(RESPONSE_FIELDS[2]) { reader ->
-              Droid1_ResponseAdapter.fromResponse(reader)
-            }
-            3 -> human = readObject<QueryFragment.Human1>(RESPONSE_FIELDS[3]) { reader ->
-              Human1_ResponseAdapter.fromResponse(reader)
-            }
-            else -> break
-          }
-        }
-        QueryFragment.DefaultImpl(
-          __typename = __typename!!,
-          hero = hero,
-          droid = droid,
-          human = human
-        )
-      }
+    override fun toResponse(writer: ResponseWriter, value: QueryFragment.Human1) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeString(RESPONSE_FIELDS[2], value.homePlanet)
     }
   }
 }

@@ -8,6 +8,7 @@ package com.example.subscriptions
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import kotlin.Array
 import kotlin.Int
 import kotlin.String
@@ -41,6 +42,16 @@ internal object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscript
     }
   }
 
+  override fun toResponse(writer: ResponseWriter, value: TestSubscription.Data) {
+    if(value.commentAdded == null) {
+      writer.writeObject(RESPONSE_FIELDS[0], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[0]) {
+        TestSubscription_ResponseAdapter.CommentAdded_ResponseAdapter.toResponse(writer, value.commentAdded)
+      }
+    }
+  }
+
   object CommentAdded_ResponseAdapter : ResponseAdapter<TestSubscription.CommentAdded> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forString("__typename", "__typename", null, false, null),
@@ -68,6 +79,12 @@ internal object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscript
           content = content!!
         )
       }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestSubscription.CommentAdded) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeInt(RESPONSE_FIELDS[1], value.id)
+      writer.writeString(RESPONSE_FIELDS[2], value.content)
     }
   }
 }

@@ -8,6 +8,7 @@ package com.example.named_fragment_delegate
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.named_fragment_delegate.fragment.DroidDetails_ResponseAdapter
 import com.example.named_fragment_delegate.fragment.HumanDetails_ResponseAdapter
 import kotlin.Array
@@ -39,10 +40,24 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
   }
 
+  override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
+    if(value.hero == null) {
+      writer.writeObject(RESPONSE_FIELDS[0], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[0]) {
+        TestQuery_ResponseAdapter.Hero_ResponseAdapter.toResponse(writer, value.hero)
+      }
+    }
+  }
+
   object DroidDetailsImpl_ResponseAdapter : ResponseAdapter<TestQuery.DroidDetailsImpl> {
     override fun fromResponse(reader: ResponseReader, __typename: String?):
         TestQuery.DroidDetailsImpl {
       return TestQuery.DroidDetailsImpl(DroidDetails_ResponseAdapter.fromResponse(reader, __typename))
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.DroidDetailsImpl) {
+      DroidDetails_ResponseAdapter.toResponse(writer, value.delegate)
     }
   }
 
@@ -50,6 +65,10 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     override fun fromResponse(reader: ResponseReader, __typename: String?):
         TestQuery.HumanDetailsImpl {
       return TestQuery.HumanDetailsImpl(HumanDetails_ResponseAdapter.fromResponse(reader, __typename))
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.HumanDetailsImpl) {
+      HumanDetails_ResponseAdapter.toResponse(writer, value.delegate)
     }
   }
 
@@ -72,6 +91,10 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.OtherHero) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+    }
   }
 
   object Hero_ResponseAdapter : ResponseAdapter<TestQuery.Hero> {
@@ -85,6 +108,14 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         "Droid" -> TestQuery_ResponseAdapter.DroidDetailsImpl_ResponseAdapter.fromResponse(reader, typename)
         "Human" -> TestQuery_ResponseAdapter.HumanDetailsImpl_ResponseAdapter.fromResponse(reader, typename)
         else -> TestQuery_ResponseAdapter.OtherHero_ResponseAdapter.fromResponse(reader, typename)
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Hero) {
+      when(value) {
+        is TestQuery.DroidDetailsImpl -> TestQuery_ResponseAdapter.DroidDetailsImpl_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.HumanDetailsImpl -> TestQuery_ResponseAdapter.HumanDetailsImpl_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.OtherHero -> TestQuery_ResponseAdapter.OtherHero_ResponseAdapter.toResponse(writer, value)
       }
     }
   }

@@ -8,6 +8,7 @@ package com.example.fragment_in_fragment
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.fragment_in_fragment.type.CustomType
 import kotlin.Array
 import kotlin.String
@@ -40,6 +41,16 @@ internal object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data
     }
   }
 
+  override fun toResponse(writer: ResponseWriter, value: AllStarships.Data) {
+    if(value.allStarships == null) {
+      writer.writeObject(RESPONSE_FIELDS[0], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[0]) {
+        AllStarships_ResponseAdapter.AllStarships1_ResponseAdapter.toResponse(writer, value.allStarships)
+      }
+    }
+  }
+
   object Homeworld_ResponseAdapter : ResponseAdapter<AllStarships.Homeworld> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forString("__typename", "__typename", null, false, null),
@@ -62,6 +73,11 @@ internal object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data
           name = name
         )
       }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: AllStarships.Homeworld) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
     }
   }
 
@@ -94,6 +110,18 @@ internal object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: AllStarships.Node1) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      if(value.homeworld == null) {
+        writer.writeObject(RESPONSE_FIELDS[2], null)
+      } else {
+        writer.writeObject(RESPONSE_FIELDS[2]) {
+          AllStarships_ResponseAdapter.Homeworld_ResponseAdapter.toResponse(writer, value.homeworld)
+        }
+      }
+    }
   }
 
   object Edge1_ResponseAdapter : ResponseAdapter<AllStarships.Edge1> {
@@ -119,6 +147,17 @@ internal object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data
           __typename = __typename!!,
           node = node
         )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: AllStarships.Edge1) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      if(value.node == null) {
+        writer.writeObject(RESPONSE_FIELDS[1], null)
+      } else {
+        writer.writeObject(RESPONSE_FIELDS[1]) {
+          AllStarships_ResponseAdapter.Node1_ResponseAdapter.toResponse(writer, value.node)
+        }
       }
     }
   }
@@ -149,6 +188,21 @@ internal object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data
           __typename = __typename!!,
           edges = edges
         )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: AllStarships.PilotConnection) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeList(RESPONSE_FIELDS[1], value.edges) { value, listItemWriter ->
+        value?.forEach { value ->
+          if(value == null) {
+            listItemWriter.writeObject(null)
+          } else {
+            listItemWriter.writeObject {
+              AllStarships_ResponseAdapter.Edge1_ResponseAdapter.toResponse(writer, value)
+            }
+          }
+        }
       }
     }
   }
@@ -186,6 +240,19 @@ internal object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: AllStarships.Node) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, value.id)
+      writer.writeString(RESPONSE_FIELDS[2], value.name)
+      if(value.pilotConnection == null) {
+        writer.writeObject(RESPONSE_FIELDS[3], null)
+      } else {
+        writer.writeObject(RESPONSE_FIELDS[3]) {
+          AllStarships_ResponseAdapter.PilotConnection_ResponseAdapter.toResponse(writer, value.pilotConnection)
+        }
+      }
+    }
   }
 
   object Edge_ResponseAdapter : ResponseAdapter<AllStarships.Edge> {
@@ -211,6 +278,17 @@ internal object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data
           __typename = __typename!!,
           node = node
         )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: AllStarships.Edge) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      if(value.node == null) {
+        writer.writeObject(RESPONSE_FIELDS[1], null)
+      } else {
+        writer.writeObject(RESPONSE_FIELDS[1]) {
+          AllStarships_ResponseAdapter.Node_ResponseAdapter.toResponse(writer, value.node)
+        }
       }
     }
   }
@@ -241,6 +319,21 @@ internal object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data
           __typename = __typename!!,
           edges = edges
         )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: AllStarships.AllStarships1) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeList(RESPONSE_FIELDS[1], value.edges) { value, listItemWriter ->
+        value?.forEach { value ->
+          if(value == null) {
+            listItemWriter.writeObject(null)
+          } else {
+            listItemWriter.writeObject {
+              AllStarships_ResponseAdapter.Edge_ResponseAdapter.toResponse(writer, value)
+            }
+          }
+        }
       }
     }
   }

@@ -35,6 +35,7 @@ import okio.ByteString
 private val DEFAULT_SCALAR_TYPE_ADAPTERS = MemberName(ScalarTypeAdapters.Companion::class.asClassName(), "DEFAULT")
 
 internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, generateAsInternal: Boolean = false): TypeSpec {
+  val operationResponseAdapter = CodeGenerationAst.TypeRef(name = name, packageName = targetPackage).asAdapterTypeName()
   return TypeSpec
       .classBuilder(name)
       .addAnnotation(suppressWarningsAnnotation)
@@ -50,13 +51,13 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
       .addFunction(FunSpec.builder("operationId")
           .addModifiers(KModifier.OVERRIDE)
           .returns(String::class)
-          .addStatement("return·OPERATION_ID")
+          .addStatement("return OPERATION_ID")
           .build()
       )
       .addFunction(FunSpec.builder("queryDocument")
           .addModifiers(KModifier.OVERRIDE)
           .returns(String::class)
-          .addStatement("return·QUERY_DOCUMENT")
+          .addStatement("return QUERY_DOCUMENT")
           .build()
       )
       .addFunction(FunSpec.builder("variables")
@@ -64,9 +65,9 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
           .returns(Operation.Variables::class.asClassName())
           .apply {
             if (variables.isNotEmpty()) {
-              addStatement("return·variables")
+              addStatement("return variables")
             } else {
-              addStatement("return·%T.EMPTY_VARIABLES", Operation::class)
+              addStatement("return %T.EMPTY_VARIABLES", Operation::class)
             }
           }
           .build()
@@ -74,7 +75,7 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
       .addFunction(FunSpec.builder("name")
           .addModifiers(KModifier.OVERRIDE)
           .returns(OperationName::class)
-          .addStatement("return·OPERATION_NAME")
+          .addStatement("return OPERATION_NAME")
           .build()
       )
       .addFunction(
@@ -82,10 +83,7 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
               .addModifiers(KModifier.OVERRIDE)
               .returns(ResponseFieldMapper::class.asClassName().parameterizedBy(dataType.rootType.asTypeName()))
               .beginControlFlow("return·%T.invoke·{", ResponseFieldMapper::class)
-              .addStatement(
-                  "%T.fromResponse(it)",
-                  CodeGenerationAst.TypeRef(name = name, packageName = targetPackage).asAdapterTypeName()
-              )
+              .addStatement("%T.fromResponse(it)", operationResponseAdapter)
               .endControlFlow()
               .build()
       )
@@ -96,8 +94,17 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
       .addFunction(composeRequestBodyFunSpec())
       .addFunction(composeRequestBodyWithDefaultAdaptersFunSpec())
       .addFunction(composeRequestBodyFunSpecForQuery())
-      .addTypes(dataType.nestedTypes.minus(dataType.rootType).values.map { type -> type.typeSpec() })
-      .addType(dataType.toOperationDataTypeSpec())
+      .addTypes(
+          dataType.nestedTypes.minus(dataType.rootType).map { (typeRef, type) ->
+            type.typeSpec(responseAdapter = typeRef.asAdapterTypeName())
+          }
+      )
+      .addType(
+          dataType.toOperationDataTypeSpec(
+              targetPackage = targetPackage,
+              operationName = this.name,
+          )
+      )
       .addType(TypeSpec.companionObjectBuilder()
           .addProperty(PropertySpec.builder("OPERATION_ID", String::class)
               .addModifiers(KModifier.CONST)

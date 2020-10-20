@@ -6,10 +6,8 @@
 package com.example.simple_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
-import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
 
@@ -26,8 +24,8 @@ internal interface HeroDetails : GraphqlFragment {
    * A humanoid creature from the Star Wars universe
    */
   data class HumanDetailsImpl(
-    val humanDetailsDelegate: HumanDetails
-  ) : DefaultImpl, HumanDetails by humanDetailsDelegate
+    val delegate: HumanDetails.DefaultImpl
+  ) : DefaultImpl, HumanDetails by delegate
 
   /**
    * A character from the Star Wars universe
@@ -36,15 +34,9 @@ internal interface HeroDetails : GraphqlFragment {
     override val __typename: String = "Character"
   ) : HeroDetails, DefaultImpl {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@OtherDefaultImpl.__typename)
+      return ResponseFieldMarshaller { writer ->
+        HeroDetails_ResponseAdapter.OtherDefaultImpl_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null)
-      )
     }
   }
 

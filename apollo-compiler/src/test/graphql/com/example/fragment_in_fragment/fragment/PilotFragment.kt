@@ -6,10 +6,8 @@
 package com.example.fragment_in_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
-import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
 
@@ -54,17 +52,9 @@ interface PilotFragment : GraphqlFragment {
     override val name: String?
   ) : PlanetFragment, Homeworld {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Homeworld1.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@Homeworld1.name)
+      return ResponseFieldMarshaller { writer ->
+        PilotFragment_ResponseAdapter.Homeworld1_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, true, null)
-      )
     }
   }
 
@@ -83,19 +73,9 @@ interface PilotFragment : GraphqlFragment {
     override val homeworld: Homeworld1?
   ) : PilotFragment {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@DefaultImpl.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@DefaultImpl.name)
-        writer.writeObject(RESPONSE_FIELDS[2], this@DefaultImpl.homeworld?.marshaller())
+      return ResponseFieldMarshaller { writer ->
+        PilotFragment_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, true, null),
-        ResponseField.forObject("homeworld", "homeworld", null, true, null)
-      )
     }
   }
 

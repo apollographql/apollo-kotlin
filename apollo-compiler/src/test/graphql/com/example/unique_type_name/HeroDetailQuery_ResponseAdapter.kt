@@ -8,6 +8,7 @@ package com.example.unique_type_name
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.unique_type_name.type.Episode
 import kotlin.Array
 import kotlin.Double
@@ -41,6 +42,16 @@ internal object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuer
     }
   }
 
+  override fun toResponse(writer: ResponseWriter, value: HeroDetailQuery.Data) {
+    if(value.heroDetailQuery == null) {
+      writer.writeObject(RESPONSE_FIELDS[0], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[0]) {
+        HeroDetailQuery_ResponseAdapter.HeroDetailQuery1_ResponseAdapter.toResponse(writer, value.heroDetailQuery)
+      }
+    }
+  }
+
   object Node_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Node> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forString("__typename", "__typename", null, false, null),
@@ -63,6 +74,11 @@ internal object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuer
           name = name!!
         )
       }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: HeroDetailQuery.Node) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
     }
   }
 
@@ -89,6 +105,17 @@ internal object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuer
           __typename = __typename!!,
           node = node
         )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: HeroDetailQuery.Edge) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      if(value.node == null) {
+        writer.writeObject(RESPONSE_FIELDS[1], null)
+      } else {
+        writer.writeObject(RESPONSE_FIELDS[1]) {
+          HeroDetailQuery_ResponseAdapter.Node_ResponseAdapter.toResponse(writer, value.node)
+        }
       }
     }
   }
@@ -125,6 +152,22 @@ internal object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuer
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: HeroDetailQuery.FriendsConnection) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeInt(RESPONSE_FIELDS[1], value.totalCount)
+      writer.writeList(RESPONSE_FIELDS[2], value.edges) { value, listItemWriter ->
+        value?.forEach { value ->
+          if(value == null) {
+            listItemWriter.writeObject(null)
+          } else {
+            listItemWriter.writeObject {
+              HeroDetailQuery_ResponseAdapter.Edge_ResponseAdapter.toResponse(writer, value)
+            }
+          }
+        }
+      }
+    }
   }
 
   object Friend1_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Friend1> {
@@ -155,6 +198,14 @@ internal object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuer
           name = name!!,
           friendsConnection = friendsConnection!!
         )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: HeroDetailQuery.Friend1) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeObject(RESPONSE_FIELDS[2]) {
+        HeroDetailQuery_ResponseAdapter.FriendsConnection_ResponseAdapter.toResponse(writer, value.friendsConnection)
       }
     }
   }
@@ -196,6 +247,26 @@ internal object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuer
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: HeroDetailQuery.Friend) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeList(RESPONSE_FIELDS[2], value.appearsIn) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeString(value?.rawValue)}
+      }
+      writer.writeList(RESPONSE_FIELDS[3], value.friends) { value, listItemWriter ->
+        value?.forEach { value ->
+          if(value == null) {
+            listItemWriter.writeObject(null)
+          } else {
+            listItemWriter.writeObject {
+              HeroDetailQuery_ResponseAdapter.Friend1_ResponseAdapter.toResponse(writer, value)
+            }
+          }
+        }
+      }
+    }
   }
 
   object Human_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Human> {
@@ -233,6 +304,23 @@ internal object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuer
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: HeroDetailQuery.Human) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeList(RESPONSE_FIELDS[2], value.friends) { value, listItemWriter ->
+        value?.forEach { value ->
+          if(value == null) {
+            listItemWriter.writeObject(null)
+          } else {
+            listItemWriter.writeObject {
+              HeroDetailQuery_ResponseAdapter.Friend_ResponseAdapter.toResponse(writer, value)
+            }
+          }
+        }
+      }
+      writer.writeDouble(RESPONSE_FIELDS[3], value.height)
+    }
   }
 
   object Friend2_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Friend2> {
@@ -258,6 +346,11 @@ internal object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuer
           name = name!!
         )
       }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: HeroDetailQuery.Friend2) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
     }
   }
 
@@ -294,6 +387,22 @@ internal object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuer
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: HeroDetailQuery.OtherHeroDetailQuery) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeList(RESPONSE_FIELDS[2], value.friends) { value, listItemWriter ->
+        value?.forEach { value ->
+          if(value == null) {
+            listItemWriter.writeObject(null)
+          } else {
+            listItemWriter.writeObject {
+              HeroDetailQuery_ResponseAdapter.Friend2_ResponseAdapter.toResponse(writer, value)
+            }
+          }
+        }
+      }
+    }
   }
 
   object HeroDetailQuery1_ResponseAdapter : ResponseAdapter<HeroDetailQuery.HeroDetailQuery1> {
@@ -308,8 +417,14 @@ internal object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuer
       val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
       return when(typename) {
         "Human" -> HeroDetailQuery_ResponseAdapter.Human_ResponseAdapter.fromResponse(reader, typename)
-        else -> HeroDetailQuery_ResponseAdapter.OtherHeroDetailQuery_ResponseAdapter.fromResponse(reader,
-            typename)
+        else -> HeroDetailQuery_ResponseAdapter.OtherHeroDetailQuery_ResponseAdapter.fromResponse(reader, typename)
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: HeroDetailQuery.HeroDetailQuery1) {
+      when(value) {
+        is HeroDetailQuery.Human -> HeroDetailQuery_ResponseAdapter.Human_ResponseAdapter.toResponse(writer, value)
+        is HeroDetailQuery.OtherHeroDetailQuery -> HeroDetailQuery_ResponseAdapter.OtherHeroDetailQuery_ResponseAdapter.toResponse(writer, value)
       }
     }
   }

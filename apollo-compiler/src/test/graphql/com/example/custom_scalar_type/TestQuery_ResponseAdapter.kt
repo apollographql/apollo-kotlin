@@ -8,6 +8,7 @@ package com.example.custom_scalar_type
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.custom_scalar_type.type.CustomType
 import java.util.Date
 import kotlin.Any
@@ -41,14 +42,23 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
   }
 
+  override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
+    if(value.hero == null) {
+      writer.writeObject(RESPONSE_FIELDS[0], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[0]) {
+        TestQuery_ResponseAdapter.Hero_ResponseAdapter.toResponse(writer, value.hero)
+      }
+    }
+  }
+
   object Hero_ResponseAdapter : ResponseAdapter<TestQuery.Hero> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forString("name", "name", null, false, null),
       ResponseField.forCustomType("birthDate", "birthDate", null, false, CustomType.DATE, null),
       ResponseField.forList("appearanceDates", "appearanceDates", null, false, null),
-      ResponseField.forCustomType("fieldWithUnsupportedType", "fieldWithUnsupportedType", null,
-          false, CustomType.UNSUPPORTEDTYPE, null),
+      ResponseField.forCustomType("fieldWithUnsupportedType", "fieldWithUnsupportedType", null, false, CustomType.UNSUPPORTEDTYPE, null),
       ResponseField.forCustomType("profileLink", "profileLink", null, false, CustomType.URL, null),
       ResponseField.forList("links", "links", null, false, null)
     )
@@ -87,6 +97,22 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           profileLink = profileLink!!,
           links = links!!
         )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Hero) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, value.birthDate)
+      writer.writeList(RESPONSE_FIELDS[3], value.appearanceDates) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeCustom(CustomType.DATE, value)}
+      }
+      writer.writeCustom(RESPONSE_FIELDS[4] as ResponseField.CustomTypeField, value.fieldWithUnsupportedType)
+      writer.writeCustom(RESPONSE_FIELDS[5] as ResponseField.CustomTypeField, value.profileLink)
+      writer.writeList(RESPONSE_FIELDS[6], value.links) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeCustom(CustomType.URL, value)}
       }
     }
   }

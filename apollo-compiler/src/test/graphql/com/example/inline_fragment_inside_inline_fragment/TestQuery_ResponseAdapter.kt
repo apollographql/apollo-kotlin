@@ -8,6 +8,7 @@ package com.example.inline_fragment_inside_inline_fragment
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
@@ -41,6 +42,20 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
   }
 
+  override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
+    writer.writeList(RESPONSE_FIELDS[0], value.search) { value, listItemWriter ->
+      value?.forEach { value ->
+        if(value == null) {
+          listItemWriter.writeObject(null)
+        } else {
+          listItemWriter.writeObject {
+            TestQuery_ResponseAdapter.Search_ResponseAdapter.toResponse(writer, value)
+          }
+        }
+      }
+    }
+  }
+
   object CharacterDroidImpl_ResponseAdapter : ResponseAdapter<TestQuery.CharacterDroidImpl> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forString("__typename", "__typename", null, false, null),
@@ -68,6 +83,12 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           primaryFunction = primaryFunction
         )
       }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.CharacterDroidImpl) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeString(RESPONSE_FIELDS[2], value.primaryFunction)
     }
   }
 
@@ -99,6 +120,12 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.CharacterHumanImpl) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeString(RESPONSE_FIELDS[2], value.homePlanet)
+    }
   }
 
   object OtherSearch_ResponseAdapter : ResponseAdapter<TestQuery.OtherSearch> {
@@ -120,6 +147,10 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.OtherSearch) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+    }
   }
 
   object Search_ResponseAdapter : ResponseAdapter<TestQuery.Search> {
@@ -133,6 +164,14 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         "Droid" -> TestQuery_ResponseAdapter.CharacterDroidImpl_ResponseAdapter.fromResponse(reader, typename)
         "Human" -> TestQuery_ResponseAdapter.CharacterHumanImpl_ResponseAdapter.fromResponse(reader, typename)
         else -> TestQuery_ResponseAdapter.OtherSearch_ResponseAdapter.fromResponse(reader, typename)
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Search) {
+      when(value) {
+        is TestQuery.CharacterDroidImpl -> TestQuery_ResponseAdapter.CharacterDroidImpl_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.CharacterHumanImpl -> TestQuery_ResponseAdapter.CharacterHumanImpl_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.OtherSearch -> TestQuery_ResponseAdapter.OtherSearch_ResponseAdapter.toResponse(writer, value)
       }
     }
   }

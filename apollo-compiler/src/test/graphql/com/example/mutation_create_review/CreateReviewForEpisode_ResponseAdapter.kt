@@ -8,6 +8,7 @@ package com.example.mutation_create_review
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.mutation_create_review.type.CustomType
 import com.example.mutation_create_review.type.Episode
 import java.util.Date
@@ -50,6 +51,16 @@ internal object CreateReviewForEpisode_ResponseAdapter :
     }
   }
 
+  override fun toResponse(writer: ResponseWriter, value: CreateReviewForEpisode.Data) {
+    if(value.createReview == null) {
+      writer.writeObject(RESPONSE_FIELDS[0], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[0]) {
+        CreateReviewForEpisode_ResponseAdapter.CreateReview_ResponseAdapter.toResponse(writer, value.createReview)
+      }
+    }
+  }
+
   object ListOfListOfObject_ResponseAdapter :
       ResponseAdapter<CreateReviewForEpisode.ListOfListOfObject> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
@@ -74,6 +85,12 @@ internal object CreateReviewForEpisode_ResponseAdapter :
           name = name!!
         )
       }
+    }
+
+    override fun toResponse(writer: ResponseWriter,
+        value: CreateReviewForEpisode.ListOfListOfObject) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
     }
   }
 
@@ -137,6 +154,47 @@ internal object CreateReviewForEpisode_ResponseAdapter :
           listOfListOfCustom = listOfListOfCustom,
           listOfListOfObject = listOfListOfObject
         )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: CreateReviewForEpisode.CreateReview) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeInt(RESPONSE_FIELDS[1], value.stars)
+      writer.writeString(RESPONSE_FIELDS[2], value.commentary)
+      writer.writeList(RESPONSE_FIELDS[3], value.listOfListOfString) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeList(value) { value, listItemWriter ->
+            value?.forEach { value ->
+              listItemWriter.writeString(value)}
+          }
+        }
+      }
+      writer.writeList(RESPONSE_FIELDS[4], value.listOfListOfEnum) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeList(value) { value, listItemWriter ->
+            value?.forEach { value ->
+              listItemWriter.writeString(value.rawValue)}
+          }
+        }
+      }
+      writer.writeList(RESPONSE_FIELDS[5], value.listOfListOfCustom) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeList(value) { value, listItemWriter ->
+            value?.forEach { value ->
+              listItemWriter.writeCustom(CustomType.DATE, value)}
+          }
+        }
+      }
+      writer.writeList(RESPONSE_FIELDS[6], value.listOfListOfObject) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeList(value) { value, listItemWriter ->
+            value?.forEach { value ->
+              listItemWriter.writeObject {
+                CreateReviewForEpisode_ResponseAdapter.ListOfListOfObject_ResponseAdapter.toResponse(writer, value)
+              }
+            }
+          }
+        }
       }
     }
   }

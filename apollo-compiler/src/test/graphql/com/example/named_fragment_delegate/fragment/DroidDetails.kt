@@ -6,10 +6,8 @@
 package com.example.named_fragment_delegate.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
-import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
@@ -63,17 +61,9 @@ interface DroidDetails : GraphqlFragment {
     override val name: String
   ) : Friend {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Friend1.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@Friend1.name)
+      return ResponseFieldMarshaller { writer ->
+        DroidDetails_ResponseAdapter.Friend1_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null)
-      )
     }
   }
 
@@ -96,24 +86,9 @@ interface DroidDetails : GraphqlFragment {
     override val friends: List<Friend1?>?
   ) : DroidDetails {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@DefaultImpl.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@DefaultImpl.name)
-        writer.writeString(RESPONSE_FIELDS[2], this@DefaultImpl.primaryFunction)
-        writer.writeList(RESPONSE_FIELDS[3], this@DefaultImpl.friends) { value, listItemWriter ->
-          value?.forEach { value ->
-            listItemWriter.writeObject(value?.marshaller())}
-        }
+      return ResponseFieldMarshaller { writer ->
+        DroidDetails_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forString("primaryFunction", "primaryFunction", null, true, null),
-        ResponseField.forList("friends", "friends", null, true, null)
-      )
     }
   }
 

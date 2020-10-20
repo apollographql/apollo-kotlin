@@ -6,10 +6,8 @@
 package com.example.arguments_simple.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
-import kotlin.Array
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
@@ -87,19 +85,9 @@ interface HeroDetails : GraphqlFragment {
     override val name: String?
   ) : Node {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Node1.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@Node1.name)
+      return ResponseFieldMarshaller { writer ->
+        HeroDetails_ResponseAdapter.Node1_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, true, listOf(
-          ResponseField.Condition.booleanCondition("IncludeName", false)
-        ))
-      )
     }
   }
 
@@ -114,17 +102,9 @@ interface HeroDetails : GraphqlFragment {
     override val node: Node1?
   ) : Edge {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Edge1.__typename)
-        writer.writeObject(RESPONSE_FIELDS[1], this@Edge1.node?.marshaller())
+      return ResponseFieldMarshaller { writer ->
+        HeroDetails_ResponseAdapter.Edge1_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forObject("node", "node", null, true, null)
-      )
     }
   }
 
@@ -143,23 +123,9 @@ interface HeroDetails : GraphqlFragment {
     override val edges: List<Edge1?>?
   ) : FriendsConnection {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@FriendsConnection1.__typename)
-        writer.writeInt(RESPONSE_FIELDS[1], this@FriendsConnection1.totalCount)
-        writer.writeList(RESPONSE_FIELDS[2],
-            this@FriendsConnection1.edges) { value, listItemWriter ->
-          value?.forEach { value ->
-            listItemWriter.writeObject(value?.marshaller())}
-        }
+      return ResponseFieldMarshaller { writer ->
+        HeroDetails_ResponseAdapter.FriendsConnection1_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forInt("totalCount", "totalCount", null, true, null),
-        ResponseField.forList("edges", "edges", null, true, null)
-      )
     }
   }
 
@@ -174,20 +140,9 @@ interface HeroDetails : GraphqlFragment {
     override val friendsConnection: FriendsConnection1
   ) : HeroDetails {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@DefaultImpl.__typename)
-        writer.writeObject(RESPONSE_FIELDS[1], this@DefaultImpl.friendsConnection.marshaller())
+      return ResponseFieldMarshaller { writer ->
+        HeroDetails_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forObject("friendsConnection", "friendsConnection", mapOf<String, Any>(
-          "first" to mapOf<String, Any>(
-            "kind" to "Variable",
-            "variableName" to "friendsCount")), false, null)
-      )
     }
   }
 

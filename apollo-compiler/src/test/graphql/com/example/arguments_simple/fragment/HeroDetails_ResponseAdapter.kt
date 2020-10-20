@@ -8,6 +8,7 @@ package com.example.arguments_simple.fragment
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import kotlin.Array
 import kotlin.Int
 import kotlin.String
@@ -17,7 +18,7 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-internal object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails> {
+internal object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.DefaultImpl> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forString("__typename", "__typename", null, false, null),
     ResponseField.forObject("friendsConnection", "friendsConnection", mapOf<String, Any>(
@@ -26,8 +27,31 @@ internal object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails> {
         "variableName" to "friendsCount")), false, null)
   )
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?): HeroDetails {
-    return DefaultImpl_ResponseAdapter.fromResponse(reader, __typename)
+  override fun fromResponse(reader: ResponseReader, __typename: String?): HeroDetails.DefaultImpl {
+    return reader.run {
+      var __typename: String? = __typename
+      var friendsConnection: HeroDetails.FriendsConnection1? = null
+      while(true) {
+        when (selectField(RESPONSE_FIELDS)) {
+          0 -> __typename = readString(RESPONSE_FIELDS[0])
+          1 -> friendsConnection = readObject<HeroDetails.FriendsConnection1>(RESPONSE_FIELDS[1]) { reader ->
+            FriendsConnection1_ResponseAdapter.fromResponse(reader)
+          }
+          else -> break
+        }
+      }
+      HeroDetails.DefaultImpl(
+        __typename = __typename!!,
+        friendsConnection = friendsConnection!!
+      )
+    }
+  }
+
+  override fun toResponse(writer: ResponseWriter, value: HeroDetails.DefaultImpl) {
+    writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+    writer.writeObject(RESPONSE_FIELDS[1]) {
+      FriendsConnection1_ResponseAdapter.toResponse(writer, value.friendsConnection)
+    }
   }
 
   object Node1_ResponseAdapter : ResponseAdapter<HeroDetails.Node1> {
@@ -55,6 +79,11 @@ internal object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails> {
         )
       }
     }
+
+    override fun toResponse(writer: ResponseWriter, value: HeroDetails.Node1) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+    }
   }
 
   object Edge1_ResponseAdapter : ResponseAdapter<HeroDetails.Edge1> {
@@ -80,6 +109,17 @@ internal object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails> {
           __typename = __typename!!,
           node = node
         )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: HeroDetails.Edge1) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      if(value.node == null) {
+        writer.writeObject(RESPONSE_FIELDS[1], null)
+      } else {
+        writer.writeObject(RESPONSE_FIELDS[1]) {
+          Node1_ResponseAdapter.toResponse(writer, value.node)
+        }
       }
     }
   }
@@ -116,35 +156,20 @@ internal object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails> {
         )
       }
     }
-  }
 
-  object DefaultImpl_ResponseAdapter : ResponseAdapter<HeroDetails.DefaultImpl> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
-      ResponseField.forObject("friendsConnection", "friendsConnection", mapOf<String, Any>(
-        "first" to mapOf<String, Any>(
-          "kind" to "Variable",
-          "variableName" to "friendsCount")), false, null)
-    )
-
-    override fun fromResponse(reader: ResponseReader, __typename: String?):
-        HeroDetails.DefaultImpl {
-      return reader.run {
-        var __typename: String? = __typename
-        var friendsConnection: HeroDetails.FriendsConnection1? = null
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> friendsConnection = readObject<HeroDetails.FriendsConnection1>(RESPONSE_FIELDS[1]) { reader ->
-              FriendsConnection1_ResponseAdapter.fromResponse(reader)
+    override fun toResponse(writer: ResponseWriter, value: HeroDetails.FriendsConnection1) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeInt(RESPONSE_FIELDS[1], value.totalCount)
+      writer.writeList(RESPONSE_FIELDS[2], value.edges) { value, listItemWriter ->
+        value?.forEach { value ->
+          if(value == null) {
+            listItemWriter.writeObject(null)
+          } else {
+            listItemWriter.writeObject {
+              Edge1_ResponseAdapter.toResponse(writer, value)
             }
-            else -> break
           }
         }
-        HeroDetails.DefaultImpl(
-          __typename = __typename!!,
-          friendsConnection = friendsConnection!!
-        )
       }
     }
   }

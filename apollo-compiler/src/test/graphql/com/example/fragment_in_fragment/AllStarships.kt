@@ -9,7 +9,6 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
 import com.apollographql.apollo.api.internal.OperationRequestBodyComposer
@@ -21,8 +20,6 @@ import com.apollographql.apollo.api.internal.Throws
 import com.example.fragment_in_fragment.fragment.PilotFragment
 import com.example.fragment_in_fragment.fragment.PlanetFragment
 import com.example.fragment_in_fragment.fragment.StarshipFragment
-import com.example.fragment_in_fragment.type.CustomType
-import kotlin.Array
 import kotlin.Boolean
 import kotlin.String
 import kotlin.Suppress
@@ -36,23 +33,15 @@ import okio.IOException
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class AllStarships : Query<AllStarships.Data, Operation.Variables> {
-  override fun operationId(): String {
-    return OPERATION_ID
-  }
+  override fun operationId(): String = OPERATION_ID
 
-  override fun queryDocument(): String {
-    return QUERY_DOCUMENT
-  }
+  override fun queryDocument(): String = QUERY_DOCUMENT
 
-  override fun variables(): Operation.Variables {
-    return Operation.EMPTY_VARIABLES
-  }
+  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
 
-  override fun name(): OperationName {
-    return OPERATION_NAME
-  }
+  override fun name(): OperationName = OPERATION_NAME
 
-  override fun responseFieldMapper(): ResponseFieldMapper<AllStarships.Data> {
+  override fun responseFieldMapper(): ResponseFieldMapper<Data> {
     return ResponseFieldMapper.invoke {
       AllStarships_ResponseAdapter.fromResponse(it)
     }
@@ -60,23 +49,23 @@ class AllStarships : Query<AllStarships.Data, Operation.Variables> {
 
   @Throws(IOException::class)
   override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters):
-      Response<AllStarships.Data> {
+      Response<Data> {
     return SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters)
   }
 
   @Throws(IOException::class)
   override fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters):
-      Response<AllStarships.Data> {
+      Response<Data> {
     return parse(Buffer().write(byteString), scalarTypeAdapters)
   }
 
   @Throws(IOException::class)
-  override fun parse(source: BufferedSource): Response<AllStarships.Data> {
+  override fun parse(source: BufferedSource): Response<Data> {
     return parse(source, DEFAULT)
   }
 
   @Throws(IOException::class)
-  override fun parse(byteString: ByteString): Response<AllStarships.Data> {
+  override fun parse(byteString: ByteString): Response<Data> {
     return parse(byteString, DEFAULT)
   }
 
@@ -119,17 +108,9 @@ class AllStarships : Query<AllStarships.Data, Operation.Variables> {
     override val name: String?
   ) : PlanetFragment, PilotFragment.Homeworld {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Homeworld.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@Homeworld.name)
+      return ResponseFieldMarshaller { writer ->
+        AllStarships_ResponseAdapter.Homeworld_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, true, null)
-      )
     }
   }
 
@@ -145,22 +126,12 @@ class AllStarships : Query<AllStarships.Data, Operation.Variables> {
     /**
      * A planet that this person was born on or inhabits.
      */
-    override val homeworld: AllStarships.Homeworld?
+    override val homeworld: Homeworld?
   ) : PilotFragment, StarshipFragment.Node {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Node1.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@Node1.name)
-        writer.writeObject(RESPONSE_FIELDS[2], this@Node1.homeworld?.marshaller())
+      return ResponseFieldMarshaller { writer ->
+        AllStarships_ResponseAdapter.Node1_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, true, null),
-        ResponseField.forObject("homeworld", "homeworld", null, true, null)
-      )
     }
   }
 
@@ -172,20 +143,12 @@ class AllStarships : Query<AllStarships.Data, Operation.Variables> {
     /**
      * The item at the end of the edge
      */
-    override val node: AllStarships.Node1?
+    override val node: Node1?
   ) : StarshipFragment.Edge {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Edge1.__typename)
-        writer.writeObject(RESPONSE_FIELDS[1], this@Edge1.node?.marshaller())
+      return ResponseFieldMarshaller { writer ->
+        AllStarships_ResponseAdapter.Edge1_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forObject("node", "node", null, true, null)
-      )
     }
   }
 
@@ -197,26 +160,15 @@ class AllStarships : Query<AllStarships.Data, Operation.Variables> {
     /**
      * A list of edges.
      */
-    override val edges: List<AllStarships.Edge1?>?
+    override val edges: List<Edge1?>?
   ) : StarshipFragment.PilotConnection {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@PilotConnection.__typename)
-        writer.writeList(RESPONSE_FIELDS[1], this@PilotConnection.edges) { value, listItemWriter ->
-          value?.forEach { value ->
-            listItemWriter.writeObject(value?.marshaller())}
-        }
+      return ResponseFieldMarshaller { writer ->
+        AllStarships_ResponseAdapter.PilotConnection_ResponseAdapter.toResponse(writer, this)
       }
     }
 
-    fun edgesFilterNotNull(): List<AllStarships.Edge1>? = edges?.filterNotNull()
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forList("edges", "edges", null, true, null)
-      )
-    }
+    fun edgesFilterNotNull(): List<Edge1>? = edges?.filterNotNull()
   }
 
   /**
@@ -232,24 +184,12 @@ class AllStarships : Query<AllStarships.Data, Operation.Variables> {
      * The name of this starship. The common name, such as "Death Star".
      */
     override val name: String?,
-    override val pilotConnection: AllStarships.PilotConnection?
+    override val pilotConnection: PilotConnection?
   ) : StarshipFragment {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Node.__typename)
-        writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, this@Node.id)
-        writer.writeString(RESPONSE_FIELDS[2], this@Node.name)
-        writer.writeObject(RESPONSE_FIELDS[3], this@Node.pilotConnection?.marshaller())
+      return ResponseFieldMarshaller { writer ->
+        AllStarships_ResponseAdapter.Node_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
-        ResponseField.forString("name", "name", null, true, null),
-        ResponseField.forObject("pilotConnection", "pilotConnection", null, true, null)
-      )
     }
   }
 
@@ -261,20 +201,12 @@ class AllStarships : Query<AllStarships.Data, Operation.Variables> {
     /**
      * The item at the end of the edge
      */
-    val node: AllStarships.Node?
+    val node: Node?
   ) {
     fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@Edge.__typename)
-        writer.writeObject(RESPONSE_FIELDS[1], this@Edge.node?.marshaller())
+      return ResponseFieldMarshaller { writer ->
+        AllStarships_ResponseAdapter.Edge_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forObject("node", "node", null, true, null)
-      )
     }
   }
 
@@ -286,45 +218,27 @@ class AllStarships : Query<AllStarships.Data, Operation.Variables> {
     /**
      * A list of edges.
      */
-    val edges: List<AllStarships.Edge?>?
+    val edges: List<Edge?>?
   ) {
     fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@AllStarships1.__typename)
-        writer.writeList(RESPONSE_FIELDS[1], this@AllStarships1.edges) { value, listItemWriter ->
-          value?.forEach { value ->
-            listItemWriter.writeObject(value?.marshaller())}
-        }
+      return ResponseFieldMarshaller { writer ->
+        AllStarships_ResponseAdapter.AllStarships1_ResponseAdapter.toResponse(writer, this)
       }
     }
 
-    fun edgesFilterNotNull(): List<AllStarships.Edge>? = edges?.filterNotNull()
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forList("edges", "edges", null, true, null)
-      )
-    }
+    fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
   }
 
   /**
    * Data from the response after executing this GraphQL operation
    */
   data class Data(
-    val allStarships: AllStarships.AllStarships1?
+    val allStarships: AllStarships1?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeObject(RESPONSE_FIELDS[0], this@Data.allStarships?.marshaller())
+      return ResponseFieldMarshaller { writer ->
+        AllStarships_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forObject("allStarships", "allStarships", mapOf<String, Any>(
-          "first" to 7), true, null)
-      )
     }
   }
 
