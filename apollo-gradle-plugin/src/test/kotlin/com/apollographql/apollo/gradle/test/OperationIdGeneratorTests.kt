@@ -43,7 +43,7 @@ class OperationIdGeneratorTests {
   }
 
   @Test
-  fun `operationIdGenerator can be set from onCompilationUnit`() {
+  fun `operationIdGenerator is working`() {
     val apolloConfiguration = """
       class MyIdGenerator implements OperationIdGenerator {
           String apply(String queryString, String queryFilepath) {
@@ -53,9 +53,7 @@ class OperationIdGeneratorTests {
       }
       
       apollo {
-        onCompilationUnit {
-          operationIdGenerator = new MyIdGenerator()
-        }
+        operationIdGenerator = new MyIdGenerator()
       }
     """.trimIndent()
 
@@ -68,7 +66,7 @@ class OperationIdGeneratorTests {
 
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
 
-      val queryJavaFile = dir.generatedChild("main/service/com/example/DroidDetailsQuery.kt")
+      val queryJavaFile = dir.generatedChild("service/com/example/DroidDetailsQuery.kt")
       Assert.assertThat(queryJavaFile.readText(), CoreMatchers.containsString("com/example/DroidDetails.graphql"))
     }
   }
@@ -110,15 +108,15 @@ class OperationIdGeneratorTests {
 
       File(dir, "build.gradle").writeText("import com.apollographql.apollo.compiler.OperationIdGenerator\n$gradleFile")
 
-      var result = TestUtils.executeTask("generateMainServiceApolloSources", dir, "--build-cache", "-i")
+      var result = TestUtils.executeTask("generateServiceApolloSources", dir, "--build-cache", "-i")
 
-      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainServiceApolloSources")!!.outcome)
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateServiceApolloSources")!!.outcome)
 
       File(dir, "build").deleteRecursively()
 
-      result = TestUtils.executeTask("generateMainServiceApolloSources", dir, "--build-cache", "-i")
+      result = TestUtils.executeTask("generateServiceApolloSources", dir, "--build-cache", "-i")
 
-      Assert.assertEquals(TaskOutcome.FROM_CACHE, result.task(":generateMainServiceApolloSources")!!.outcome)
+      Assert.assertEquals(TaskOutcome.FROM_CACHE, result.task(":generateServiceApolloSources")!!.outcome)
     }
   }
 
@@ -128,10 +126,10 @@ class OperationIdGeneratorTests {
 
       var result = TestUtils.executeTask("generateApolloSources", dir)
 
-      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainServiceApolloSources")!!.outcome)
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateServiceApolloSources")!!.outcome)
 
       Assert.assertThat(
-          dir.generatedChild("main/service/com/example/GreetingQuery.kt").readText(),
+          dir.generatedChild("service/com/example/GreetingQuery.kt").readText(),
           CoreMatchers.containsString("OPERATION_ID: String = \"GreetingCustomId\"")
       )
 
@@ -141,10 +139,10 @@ class OperationIdGeneratorTests {
 
       result = TestUtils.executeTask("generateApolloSources", dir)
 
-      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainServiceApolloSources")!!.outcome)
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateServiceApolloSources")!!.outcome)
 
       Assert.assertThat(
-          dir.generatedChild("main/service/com/example/GreetingQuery.kt").readText(),
+          dir.generatedChild("service/com/example/GreetingQuery.kt").readText(),
           CoreMatchers.containsString("anotherCustomId")
       )
     }

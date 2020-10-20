@@ -4,7 +4,6 @@ import com.apollographql.apollo.gradle.util.TestUtils
 import com.apollographql.apollo.gradle.util.replaceInText
 import com.google.common.truth.Truth
 import junit.framework.Assert.fail
-import org.gradle.api.tasks.TaskExecutionException
 import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.junit.Assert
@@ -25,7 +24,7 @@ class MultiModulesTests {
     TestUtils.withTestProject("multi-modules-transitive") { dir ->
       val result = TestUtils.executeTask(":leaf:assemble", dir)
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":leaf:assemble")!!.outcome)
-      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":leaf:generateMainServiceApolloSources")!!.outcome)
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":leaf:generateServiceApolloSources")!!.outcome)
     }
   }
 
@@ -36,7 +35,7 @@ class MultiModulesTests {
      */
     TestUtils.withTestProject("multi-modules-diamond") { dir ->
       val result = TestUtils.executeTask(":leaf:jar", dir)
-      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":leaf:generateMainServiceApolloSources")!!.outcome)
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":leaf:generateServiceApolloSources")!!.outcome)
     }
   }
 
@@ -60,11 +59,11 @@ class MultiModulesTests {
       File(dir, "node1/src/main/graphql/com/library/operations.graphql").replaceInText("CatFragment", "CatFragment2")
       val result = TestUtils.executeTask(":node1:jar", dir)
 
-      Truth.assertThat(result.task(":node1:generateMainServiceApolloSources")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
+      Truth.assertThat(result.task(":node1:generateServiceApolloSources")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
       Truth.assertThat(result.task(":node1:compileKotlin")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
-      Truth.assertThat(result.task(":checkMainServiceApolloDuplicates")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
+      Truth.assertThat(result.task(":checkServiceApolloDuplicates")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
       Truth.assertThat(result.task(":node2:compileKotlin")?.outcome).isEqualTo(null)
-      Truth.assertThat(result.task(":node2:generateMainServiceApolloSources")?.outcome).isEqualTo(TaskOutcome.UP_TO_DATE)
+      Truth.assertThat(result.task(":node2:generateServiceApolloSources")?.outcome).isEqualTo(TaskOutcome.UP_TO_DATE)
     }
   }
 }

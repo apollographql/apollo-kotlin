@@ -15,7 +15,7 @@ class GraphQLKompiler(
     private val useSemanticNaming: Boolean,
     private val generateAsInternal: Boolean = false,
     private val operationOutput: OperationOutput,
-    private val kotlinMultiPlatformProject: Boolean,
+    private val generateFilterNotNull: Boolean,
     private val enumAsSealedClassPatternFilters: List<Regex>
 ) {
   fun write(outputDir: File) {
@@ -78,7 +78,7 @@ class GraphQLKompiler(
               generateAsInternal = generateAsInternal
           )
           .let {
-            if (kotlinMultiPlatformProject) {
+            if (generateFilterNotNull) {
               it.patchKotlinNativeOptionalArrayProperties()
             } else it
           }

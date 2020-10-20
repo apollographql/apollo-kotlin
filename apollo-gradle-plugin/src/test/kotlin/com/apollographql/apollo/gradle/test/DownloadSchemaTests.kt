@@ -1,6 +1,6 @@
 package com.apollographql.apollo.gradle.test
 
-import com.apollographql.apollo.gradle.internal.child
+
 import com.apollographql.apollo.gradle.util.TestUtils
 import com.apollographql.apollo.gradle.util.TestUtils.withSimpleProject
 import okhttp3.mockwebserver.MockResponse
@@ -16,7 +16,7 @@ class DownloadSchemaTests {
   val apolloConfiguration = """
       apollo {
         service("mock") {
-          schemaPath = "com/example/schema.json"
+          schemaFile = file("src/main/graphql/com/example/schema.json")
           introspection {
             endpointUrl = "${mockServer.url("/").toUrl()}"
           }
@@ -32,9 +32,9 @@ class DownloadSchemaTests {
       val mockResponse = MockResponse().setBody(content)
       mockServer.enqueue(mockResponse)
 
-      TestUtils.executeTask("downloadMockApolloSchema", dir)
+      TestUtils.executeTask("downloadMockApolloSchemaFromIntrospection", dir)
 
-      assertEquals(content, dir.child("src", "main", "graphql", "com", "example", "schema.json").readText())
+      assertEquals(content, File(dir, "src/main/graphql/com/example/schema.json").readText())
     }
   }
 
@@ -46,16 +46,16 @@ class DownloadSchemaTests {
       val mockResponse = MockResponse().setBody(content)
       mockServer.enqueue(mockResponse)
 
-      var result = TestUtils.executeTask("downloadMockApolloSchema", dir)
-      assertEquals(TaskOutcome.SUCCESS, result.task(":downloadMockApolloSchema")?.outcome)
+      var result = TestUtils.executeTask("downloadMockApolloSchemaFromIntrospection", dir)
+      assertEquals(TaskOutcome.SUCCESS, result.task(":downloadMockApolloSchemaFromIntrospection")?.outcome)
 
       mockServer.enqueue(mockResponse)
 
       // Since the task does not declare any output, it should never be up-to-date
-      result = TestUtils.executeTask("downloadMockApolloSchema", dir)
-      assertEquals(TaskOutcome.SUCCESS, result.task(":downloadMockApolloSchema")?.outcome)
+      result = TestUtils.executeTask("downloadMockApolloSchemaFromIntrospection", dir)
+      assertEquals(TaskOutcome.SUCCESS, result.task(":downloadMockApolloSchemaFromIntrospection")?.outcome)
 
-      assertEquals(content, dir.child("src", "main", "graphql", "com", "example", "schema.json").readText())
+      assertEquals(content, File(dir, "src/main/graphql/com/example/schema.json").readText())
     }
   }
 
@@ -63,10 +63,11 @@ class DownloadSchemaTests {
   fun `download schema is never cached`() {
 
     withSimpleProject(apolloConfiguration = apolloConfiguration) { dir ->
-      val buildCacheDir = dir.child("buildCache")
+      val buildCacheDir = File(dir, "buildCache")
 
-      File(dir, "settings.gradle").appendText("""
+      File(dir, "settings.gradle").appendText(""" 
         
+        // the empty line above is important
         buildCache {
             local {
                 directory '${buildCacheDir.absolutePath}'
@@ -74,18 +75,18 @@ class DownloadSchemaTests {
         }
       """.trimIndent())
 
-      val schemaFile = dir.child("src", "main", "graphql", "com", "example", "schema.json")
+      val schemaFile = File(dir, "src/main/graphql/com/example/schema.json")
 
       val content1 = "schema1"
       mockServer.enqueue(MockResponse().setBody(content1))
 
-      TestUtils.executeTask("downloadMockApolloSchema", dir, "--build-cache")
+      TestUtils.executeTask("downloadMockApolloSchemaFromIntrospection", dir, "--build-cache")
       assertEquals(content1, schemaFile.readText())
 
       val content2 = "schema2"
       mockServer.enqueue(MockResponse().setBody(content2))
 
-      TestUtils.executeTask("downloadMockApolloSchema", dir, "--build-cache")
+      TestUtils.executeTask("downloadMockApolloSchemaFromIntrospection", dir, "--build-cache")
       assertEquals(content2, schemaFile.readText())
     }
   }
@@ -98,11 +99,14 @@ class DownloadSchemaTests {
       val mockResponse = MockResponse().setBody(content)
       mockServer.enqueue(mockResponse)
 
-      TestUtils.executeGradle(dir, "downloadApolloSchema",
-          "-Pcom.apollographql.apollo.schema=schema.json",
-          "-Pcom.apollographql.apollo.endpoint=${mockServer.url("/")}")
+      // Tests are running with a working dir of "apollo-gradle-plugin", don't pollute that folder
+      val schema = File("build/testProject/schema.json")
 
-      assertEquals(content, dir.child("schema.json").readText())
+      TestUtils.executeGradle(dir, "downloadApolloSchema",
+          "--schema=${schema.path}",
+          "--endpoint=${mockServer.url("/")}")
+
+      assertEquals(content, schema.readText())
     }
   }
 }

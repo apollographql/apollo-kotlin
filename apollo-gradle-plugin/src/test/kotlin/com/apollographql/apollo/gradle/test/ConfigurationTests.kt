@@ -1,6 +1,6 @@
 package com.apollographql.apollo.gradle.test
 
-import com.apollographql.apollo.gradle.internal.child
+
 import com.apollographql.apollo.gradle.util.TestUtils
 import com.apollographql.apollo.gradle.util.TestUtils.fixturesDirectory
 import com.apollographql.apollo.gradle.util.TestUtils.withSimpleProject
@@ -27,7 +27,7 @@ class ConfigurationTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "main/service/com/example/type/CustomType.kt", "= \"java.util.Date\"")
+      TestUtils.assertFileContains(dir, "service/com/example/type/CustomType.kt", "= \"java.util.Date\"")
     }
   }
 
@@ -36,16 +36,14 @@ class ConfigurationTests {
     withSimpleProject("""
       apollo {
         service("other") {
-          schemaPath = "com/example/schema.json"
         }
         service("api") {
           customTypeMapping = ["DateTime": "java.util.Date"]
-          schemaPath = "com/example/schema.json"
         }
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "main/api/com/example/type/CustomType.kt", "= \"java.util.Date\"")
+      TestUtils.assertFileContains(dir, "api/com/example/type/CustomType.kt", "= \"java.util.Date\"")
     }
   }
 
@@ -55,7 +53,7 @@ class ConfigurationTests {
     withSimpleProject("""
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "main/service/com/example/DroidDetailsQuery.kt", "class DroidDetailsQuery ")
+      TestUtils.assertFileContains(dir, "service/com/example/DroidDetailsQuery.kt", "class DroidDetailsQuery ")
     }
   }
 
@@ -67,7 +65,7 @@ class ConfigurationTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "main/service/com/example/DroidDetails.kt", "class DroidDetails ")
+      TestUtils.assertFileContains(dir, "service/com/example/DroidDetails.kt", "class DroidDetails ")
     }
   }
 
@@ -79,25 +77,9 @@ class ConfigurationTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("main/service/com/starwars/com/example/DroidDetailsQuery.kt").isFile)
-      assertTrue(dir.generatedChild("main/service/com/starwars/com/example/type/CustomType.kt").isFile)
-      assertTrue(dir.generatedChild("main/service/com/starwars/com/example/fragment/SpeciesInformation.kt").isFile)
-    }
-  }
-
-  @Test
-  fun `service compilerParams override extension compilerParams`() {
-    withSimpleProject("""
-      apollo {
-        useSemanticNaming = false
-        service("starwars") {
-          useSemanticNaming = true
-          schemaPath = "com/example/schema.json"
-        }
-      }
-    """.trimIndent()) { dir ->
-      TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "main/starwars/com/example/DroidDetailsQuery.kt", "class DroidDetailsQuery ")
+      assertTrue(dir.generatedChild("service/com/starwars/com/example/DroidDetailsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("service/com/starwars/com/example/type/CustomType.kt").isFile)
+      assertTrue(dir.generatedChild("service/com/starwars/com/example/fragment/SpeciesInformation.kt").isFile)
     }
   }
 
@@ -114,24 +96,24 @@ class ConfigurationTests {
       File(dir, "src/main/graphql/com").deleteRecursively()
 
       TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("main/starwars/DroidDetailsQuery.kt").isFile)
-      assertTrue(dir.generatedChild("main/starwars/type/CustomType.kt").isFile)
-      assertTrue(dir.generatedChild("main/starwars/fragment/SpeciesInformation.kt").isFile)
+      assertTrue(dir.generatedChild("starwars/DroidDetailsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("starwars/type/CustomType.kt").isFile)
+      assertTrue(dir.generatedChild("starwars/fragment/SpeciesInformation.kt").isFile)
     }
   }
 
   @Test
-  fun `schemaPath can be absolute path`() {
+  fun `schemaFile can be an absolute path`() {
     val schema = File(System.getProperty("user.dir"), "src/test/files/starwars/schema.json")
     withSimpleProject("""
       apollo {
         service("starwars") {
-          schemaPath = "${schema.absolutePath}"
+          schemaFile.set(file("${schema.absolutePath}"))
         }
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "main/starwars/com/example/DroidDetailsQuery.kt", "class DroidDetailsQuery ")
+      TestUtils.assertFileContains(dir, "starwars/com/example/DroidDetailsQuery.kt", "class DroidDetailsQuery ")
     }
   }
 
@@ -150,182 +132,29 @@ class ConfigurationTests {
       TestUtils.executeTask("generateApolloSources", dir)
       println(dir.absolutePath)
       dir.list()?.forEach(::println)
-      assertTrue(dir.generatedChild("main/starwars/DroidDetailsQuery.kt").isFile)
-      assertTrue(dir.generatedChild("main/starwars/type/CustomType.kt").isFile)
-      assertTrue(dir.generatedChild("main/starwars/fragment/SpeciesInformation.kt").isFile)
+      assertTrue(dir.generatedChild("starwars/DroidDetailsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("starwars/type/CustomType.kt").isFile)
+      assertTrue(dir.generatedChild("starwars/fragment/SpeciesInformation.kt").isFile)
     }
   }
 
   @Test
-  fun `rootPackageName can be overridden in service`() {
+  fun `graphqlSourceDirectorySet overrides sourceFolder`() {
     withSimpleProject("""
       apollo {
-        rootPackageName = "com.something.else"
-        service("service") {
-          rootPackageName = "com.starwars"
-        }
-      }
-    """.trimIndent()) { dir ->
-      TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("main/service/com/starwars/com/example/DroidDetailsQuery.kt").isFile)
-      assertTrue(dir.generatedChild("main/service/com/starwars/com/example/type/CustomType.kt").isFile)
-      assertTrue(dir.generatedChild("main/service/com/starwars/com/example/fragment/SpeciesInformation.kt").isFile)
-    }
-  }
-
-  @Test
-  fun `rootPackageName can be overridden in compilationUnit`() {
-    withSimpleProject("""
-      apollo {
-        rootPackageName = "com.default"
-        service("starwars") {
-          rootPackageName = "com.starwars"
-        }
-        onCompilationUnit {
-          rootPackageName = "com.overrides"
-        }
-      }
-    """.trimIndent()) { dir ->
-      TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("main/starwars/com/overrides/com/example/DroidDetailsQuery.kt").isFile)
-      assertTrue(dir.generatedChild("main/starwars/com/overrides/com/example/type/CustomType.kt").isFile)
-      assertTrue(dir.generatedChild("main/starwars/com/overrides/com/example/fragment/SpeciesInformation.kt").isFile)
-    }
-  }
-
-  @Test
-  fun `sources with a service can be overridden in compilationUnit`() {
-    withSimpleProject("""
-      apollo {
-        service("starwars") {
-          schemaPath = "com/some/other/schema.json"
-          sourceFolder = "com/some/other"
-        }
-        
-        onCompilationUnit {
-          schemaFile = file("src/main/graphql/com/example/schema.json")
-          graphqlSourceDirectorySet.srcDir(file("src/main/graphql/"))
-          graphqlSourceDirectorySet.include("**/*.graphql")
-        }
-      }
-    """.trimIndent()) { dir ->
-      TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("main/starwars/com/example/DroidDetailsQuery.kt").isFile)
-      assertTrue(dir.generatedChild("main/starwars/com/example/type/CustomType.kt").isFile)
-      assertTrue(dir.generatedChild("main/starwars/com/example/fragment/SpeciesInformation.kt").isFile)
-    }
-  }
-
-  @Test
-  fun `sources can be overridden in compilationUnit`() {
-    withSimpleProject("""
-      apollo {
-        schemaFile = file("com/some/other/schema.json")
-
-        onCompilationUnit {
-          schemaFile = file("src/main/graphql/com/example/schema.json")
-          graphqlSourceDirectorySet.srcDir(file("src/main/graphql/"))
-          graphqlSourceDirectorySet.include("**/*.graphql")
-        }
-      }
-    """.trimIndent()) { dir ->
-      TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("main/service/com/example/DroidDetailsQuery.kt").isFile)
-    }
-  }
-
-  @Test
-  fun `onCompilationUnit can configure sources alone`() {
-    withSimpleProject("""
-      apollo {
-        onCompilationUnit {
-          schemaFile = file("src/main/graphql/com/example/schema.json")
-          graphqlSourceDirectorySet.srcDir(file("src/main/graphql/"))
-          graphqlSourceDirectorySet.include("**/*.graphql")
-        }
-      }
-    """.trimIndent()) { dir ->
-      TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("main/service/com/example/DroidDetailsQuery.kt").isFile)
-    }
-  }
-
-  @Test
-  fun `onCompilationUnit can point to a schema file outside the module`() {
-    withSimpleProject("""
-      apollo {
-        onCompilationUnit {
-          schemaFile = file("../schema.json")
-        }
-      }
-    """.trimIndent()) { dir ->
-      val dest = File(dir, "../schema.json")
-      File(dir, "src/main/graphql/com/example/schema.json").copyTo(dest, true)
-      TestUtils.executeTask("generateApolloSources", dir)
-      dest.delete()
-      assertTrue(dir.generatedChild("main/service/testProject/src/main/graphql/com/example/DroidDetailsQuery.kt").isFile)
-    }
-  }
-
-  @Test
-  fun `onCompilationUnit can override schemaFile for Android Projects`() {
-    withTestProject("compilationUnitAndroid") { dir ->
-      TestUtils.executeTaskAndAssertSuccess(":app:generateApolloSources", dir)
-    }
-  }
-
-  @Test
-  fun `onCompilationUnits for main sourceSet should not generate for test`() {
-    withSimpleProject("""
-      apollo {
-        onCompilationUnit {
-          if (variantName == "main") {
-            schemaFile = file("src/main/graphql/com/example/schema.json")
-            graphqlSourceDirectorySet.srcDir(file("src/main/graphql/"))
-            graphqlSourceDirectorySet.include("**/*.graphql")
-          }
-        }
-      }
-    """.trimIndent()) { dir ->
-      TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("main/service/com/example/DroidDetailsQuery.kt").exists())
-      assertTrue(dir.generatedChild("test/service/com/example/DroidDetailsQuery.kt").exists().not())
-    }
-  }
-
-  @Test
-  fun `explicit schemaFile and graphqlSourceDirectorySet should not generate for test`() {
-    withSimpleProject("""
-      apollo {
+        sourceFolder.set("non-existing")
         schemaFile = file("src/main/graphql/com/example/schema.json")
         graphqlSourceDirectorySet.srcDir(file("src/main/graphql/"))
         graphqlSourceDirectorySet.include("**/*.graphql")
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("main/service/com/example/DroidDetailsQuery.kt").exists())
-      assertTrue(dir.generatedChild("test/service/com/example/DroidDetailsQuery.kt").exists().not())
+      assertTrue(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").isFile)
     }
   }
 
   @Test
-  fun `graphql queries under test sources should still generate for test`() {
-    withSimpleProject("""
-      apollo {
-        schemaFile = file("src/main/graphql/com/example/schema.json")
-      }
-    """.trimIndent()) { dir ->
-      // Move AllFilms into test sources
-      dir.child("src/main/graphql/com/example/AllFilms.graphql").delete()
-      fixturesDirectory().child("starwars/AllFilms.graphql").copyTo(target = dir.child("src/test/graphql/com/example/AllFilms.graphql"))
-
-      TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("test/service/com/example/FilmsQuery.kt").exists())
-    }
-  }
-
-  @Test
-  fun `explicit schemaFile outside the module should not generate for test`() {
+  fun `schemaFile can point to a schema file outside the module`() {
     withSimpleProject("""
       apollo {
         schemaFile = file("../schema.json")
@@ -333,9 +162,11 @@ class ConfigurationTests {
     """.trimIndent()) { dir ->
       val dest = File(dir, "../schema.json")
       File(dir, "src/main/graphql/com/example/schema.json").copyTo(dest, true)
+      File(dir, "src/main/graphql/com/example/schema.json").delete()
+
       TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("main/service/testProject/src/main/graphql/com/example/DroidDetailsQuery.kt").exists())
-      assertTrue(dir.generatedChild("test/service/").exists().not())
+
+      assertTrue(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").isFile)
     }
   }
 
@@ -344,7 +175,6 @@ class ConfigurationTests {
     withSimpleProject("""
       apollo {
         service("starwars") {
-          schemaPath = "com/example/schema.json"
           exclude = ["**/*.gql"]
         }
       }
@@ -411,95 +241,94 @@ class ConfigurationTests {
   }
 
   @Test
-  fun `generateOperationOutput generates queries with __typename`() {
+  fun `operationOutput generates queries with __typename`() {
     withSimpleProject("""
       apollo {
-        generateOperationOutput = true
+        withOperationOutput {
+        }
       }
     """.trimIndent()) { dir ->
       val result = TestUtils.executeTask("generateApolloSources", dir)
 
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
-      val operationOutput = dir.child("build/generated/operationOutput/apollo/main/service/OperationOutput.json")
+      val operationOutput = File(dir, "build/generated/operationOutput/apollo/service/OperationOutput.json")
 
       // Check that the filename case did not change. See https://github.com/apollographql/apollo-android/issues/2533
-      assertTrue(operationOutput.canonicalFile.path.endsWith("build/generated/operationOutput/apollo/main/service/operationOutput.json"))
+      assertTrue(operationOutput.canonicalFile.path.endsWith("build/generated/operationOutput/apollo/service/operationOutput.json"))
 
       assertThat(operationOutput.readText(), containsString("__typename"))
     }
   }
 
   @Test
-  fun `generateOperationOutput uses same id as the query`() {
+  fun `operationOutput uses same id as the query`() {
     withSimpleProject("""
       apollo {
-        generateOperationOutput = true
+        withOperationOutput {
+        }
       }
     """.trimIndent()) { dir ->
       val result = TestUtils.executeTask("generateApolloSources", dir)
 
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
       val expectedOperationId = "260dd8d889c94e78b975e435300929027d0ad10ea55b63695b13894eb8cd8578"
-      val operationOutput = dir.child("build/generated/operationOutput/apollo/main/service/operationOutput.json")
+      val operationOutput = File(dir, "build/generated/operationOutput/apollo/service/operationOutput.json")
       assertThat(operationOutput.readText(), containsString(expectedOperationId))
 
-      val queryJavaFile = dir.generatedChild("main/service/com/example/DroidDetailsQuery.kt")
+      val queryJavaFile = dir.generatedChild("service/com/example/DroidDetailsQuery.kt")
       assertThat(queryJavaFile.readText(), containsString(expectedOperationId))
     }
   }
 
   @Test
-  fun `compilation unit directory properties carry task dependencies`() {
+  fun `operationOutputFile carries task dependencies`() {
     withSimpleProject("""
-      apollo {
-        generateOperationOutput = true
-        
-        onCompilationUnit { compilationUnit ->
-          tasks.register("customTask" + compilationUnit.name.capitalize()) {
-            inputs.file(compilationUnit.operationOutputFile)
+      apollo { 
+        withOperationOutput {
+          tasks.register("customTask" + name.capitalize()) {
+            inputs.file(operationOutputFile)
           }
         }
       }
     """.trimIndent()) { dir ->
-      val result = TestUtils.executeTask("customTaskMainService", dir)
+      val result = TestUtils.executeTask("customTaskService", dir)
 
-      assertEquals(TaskOutcome.SUCCESS, result.task(":generateMainServiceApolloSources")!!.outcome)
+      assertEquals(TaskOutcome.SUCCESS, result.task(":generateServiceApolloSources")!!.outcome)
     }
   }
 
   @Test
   fun `symlinks are not followed for the schema`() {
     withSimpleProject { dir ->
-      dir.child("src/main/graphql/com/example/schema.json").copyTo(dir.child("schema.json"))
-      dir.child("src/main/graphql/com/example/schema.json").delete()
+      File(dir, "src/main/graphql/com/example/schema.json").copyTo(File(dir, "schema.json"))
+      File(dir, "src/main/graphql/com/example/schema.json").delete()
 
 
-      Files.createSymbolicLink(dir.child(
-          "src/main/graphql/com/example/schema.json").toPath(),
-          dir.child("schema.json").toPath()
+      Files.createSymbolicLink(File(dir, "src/main/graphql/com/example/schema.json").toPath(),
+          File(dir, "schema.json").toPath()
       )
 
       TestUtils.executeTask("generateApolloSources", dir)
 
-      assertTrue(dir.generatedChild("main/service/com/example/fragment/SpeciesInformation.kt").isFile)
+      assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").isFile)
     }
   }
 
   @Test
   fun `symlinks are not followed for sources`() {
     withSimpleProject { dir ->
-      dir.child("src/main/graphql/com/example").copyRecursively(dir.child("tmp"))
-      dir.child("src/main/graphql/com/").deleteRecursively()
+      File(dir, "src/main/graphql/com/example").copyRecursively(File(dir, "tmp"))
+      File(dir, "src/main/graphql/com/").deleteRecursively()
 
 
       Files.createSymbolicLink(
-          dir.child("src/main/graphql/example").toPath(),
-          dir.child("tmp").toPath()
+          File(dir, "src/main/graphql/example").toPath(),
+          File(dir, "tmp").toPath()
       )
 
       TestUtils.executeTask("generateApolloSources", dir)
 
-      assertTrue(dir.generatedChild("main/service/example/fragment/SpeciesInformation.kt").isFile)
+      assertTrue(dir.generatedChild("service/example/fragment/SpeciesInformation.kt").isFile)
     }
   }
 

@@ -1,6 +1,6 @@
 package com.apollographql.apollo.gradle.test
 
-import com.apollographql.apollo.gradle.internal.child
+
 import com.apollographql.apollo.gradle.util.TestUtils
 import com.apollographql.apollo.gradle.util.replaceInText
 import org.gradle.testkit.runner.TaskOutcome
@@ -23,12 +23,12 @@ class GradleBuildCacheTests {
       File(project2, "build.gradle.kts").replaceInText("../../../../", "../../../../../")
       File(project2, "settings.gradle.kts").replaceInText("../buildCache", "../../buildCache")
       System.out.println("building project1")
-      var result = TestUtils.executeTask("generateMainServiceApolloSources", project1, "--build-cache")
-      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":module:generateMainServiceApolloSources")!!.outcome)
+      var result = TestUtils.executeTask("generateServiceApolloSources", project1, "--build-cache")
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":module:generateServiceApolloSources")!!.outcome)
 
       System.out.println("building project2")
-      result = TestUtils.executeTask("generateMainServiceApolloSources", project2, "--build-cache")
-      Assert.assertEquals(TaskOutcome.FROM_CACHE, result.task(":module:generateMainServiceApolloSources")!!.outcome)
+      result = TestUtils.executeTask("generateServiceApolloSources", project2, "--build-cache")
+      Assert.assertEquals(TaskOutcome.FROM_CACHE, result.task(":module:generateServiceApolloSources")!!.outcome)
     }
   }
 }

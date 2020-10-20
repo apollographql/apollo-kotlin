@@ -25,12 +25,11 @@ dependencies {
 }
 
 configure<ApolloExtension> {
-  customTypeMapping.set(mapOf(
-      "Date" to "java.util.Date",
-      "Upload" to "com.apollographql.apollo.api.FileUpload"
-  ))
-  generateOperationOutput.set(true)
   service("httpcache") {
+    withOperationOutput {}
+    customTypeMapping.set(mapOf(
+        "Date" to "java.util.Date"
+    ))
     sourceFolder.set("com/apollographql/apollo/integration/httpcache")
     rootPackageName.set("com.apollographql.apollo.integration.httpcache")
   }
@@ -43,6 +42,10 @@ configure<ApolloExtension> {
     rootPackageName.set("com.apollographql.apollo.integration.normalizer")
   }
   service("upload") {
+    customTypeMapping.set(mapOf(
+        "Date" to "java.util.Date",
+        "Upload" to "com.apollographql.apollo.api.FileUpload"
+    ))
     sourceFolder.set("com/apollographql/apollo/integration/upload")
     rootPackageName.set("com.apollographql.apollo.integration.upload")
   }

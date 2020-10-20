@@ -106,7 +106,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
         operationOutput = operationOutput,
         useSemanticNaming = args.useSemanticNaming,
         generateAsInternal = args.generateAsInternal,
-        kotlinMultiPlatformProject = args.kotlinMultiPlatformProject,
+        generateFilterNotNull = args.generateFilterNotNull,
         enumAsSealedClassPatternFilters = args.enumAsSealedClassPatternFilters.map { it.toRegex() }
     ).write(args.outputDir)
 
@@ -329,13 +329,17 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
       val generateKotlinModels: Boolean = false,
       val customTypeMap: Map<String, String> = emptyMap(),
       val useSemanticNaming: Boolean = true,
-      val generateAsInternal: Boolean = false,
       val warnOnDeprecatedUsages: Boolean = true,
       val failOnWarnings: Boolean = false,
 
       //========== Kotlin codegen options ============
 
-      val kotlinMultiPlatformProject: Boolean = false,
+      val generateAsInternal: Boolean = false,
+      /**
+       * Kotlin native will generate [Any?] for optional types
+       * Setting generateFilterNotNull will generate extra `filterNotNull` functions that will help keep the type information
+       */
+      val generateFilterNotNull: Boolean = false,
       val enumAsSealedClassPatternFilters: Set<String> = emptySet(),
   )
 }

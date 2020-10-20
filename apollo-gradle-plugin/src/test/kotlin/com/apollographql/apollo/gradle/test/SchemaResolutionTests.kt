@@ -1,6 +1,6 @@
 package com.apollographql.apollo.gradle.test
 
-import com.apollographql.apollo.gradle.internal.child
+
 import com.apollographql.apollo.gradle.util.TestUtils
 import com.apollographql.apollo.gradle.util.TestUtils.executeTask
 import com.apollographql.apollo.gradle.util.TestUtils.withProject
@@ -11,6 +11,7 @@ import org.hamcrest.MatcherAssert
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Test
+import java.io.File
 
 class SchemaResolutionTests {
 
@@ -28,18 +29,18 @@ class SchemaResolutionTests {
         apolloConfiguration = apolloConfiguration,
         plugins = listOf(TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin)
     ) { projectDir ->
-      projectDir.child("src", "main", "graphql", "com").deleteRecursively()
+      File(projectDir, "src/main/graphql/com").deleteRecursively()
 
       val fixturesDir = TestUtils.fixturesDirectory()
 
-      val target = projectDir.child("src", "main", "graphql")
-      fixturesDir.child("sdl").copyRecursively(target = target, overwrite = true)
+      val target = File(projectDir, "src/main/graphql")
+      File(fixturesDir, "sdl").copyRecursively(target = target, overwrite = true)
 
-      projectDir.child("src", "main", "graphql", "schema.json").delete()
+      File(projectDir, "src/main/graphql/schema.json").delete()
 
       executeTask("generateApolloSources", projectDir)
 
-      assertTrue(projectDir.generatedChild("main/api/FeedRepositoryQuery.kt").isFile)
+      assertTrue(projectDir.generatedChild("api/FeedRepositoryQuery.kt").isFile)
     }
   }
 
@@ -48,7 +49,7 @@ class SchemaResolutionTests {
     val apolloConfiguration = """
       apollo {
         service("api") {
-          schemaPath = "schema.sdl"
+          schemaFile.set(file("src/main/graphql/schema.sdl"))
         }
       }
     """.trimIndent()
@@ -58,21 +59,21 @@ class SchemaResolutionTests {
         apolloConfiguration = apolloConfiguration,
         plugins = listOf(TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin)
     ) { projectDir ->
-      projectDir.child("src", "main", "graphql", "com").deleteRecursively()
+      File(projectDir, "src/main/graphql/com").deleteRecursively()
 
       val fixturesDir = TestUtils.fixturesDirectory()
 
-      val target = projectDir.child("src", "main", "graphql")
-      fixturesDir.child("sdl").copyRecursively(target = target, overwrite = true)
+      val target = File(projectDir, "src/main/graphql")
+      File(fixturesDir, "sdl").copyRecursively(target = target, overwrite = true)
 
       executeTask("generateApolloSources", projectDir)
 
-      assertTrue(projectDir.generatedChild("main/api/FeedRepositoryQuery.kt").isFile)
+      assertTrue(projectDir.generatedChild("api/FeedRepositoryQuery.kt").isFile)
     }
   }
 
   @Test
-  fun `when SDL and introspection schema not set explicitly assert build fails`() {
+  fun `when both SDL and introspection schema are found build fails`() {
     val apolloConfiguration = """
       apollo {
         service("api") {
@@ -85,12 +86,12 @@ class SchemaResolutionTests {
         apolloConfiguration = apolloConfiguration,
         plugins = listOf(TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin)
     ) { projectDir ->
-      projectDir.child("src", "main", "graphql", "com").deleteRecursively()
+      File(projectDir, "src/main/graphql/com").deleteRecursively()
 
       val fixturesDir = TestUtils.fixturesDirectory()
 
-      val target = projectDir.child("src", "main", "graphql")
-      fixturesDir.child("sdl").copyRecursively(target = target, overwrite = true)
+      val target = File(projectDir, "src/main/graphql")
+      File(fixturesDir, "sdl").copyRecursively(target = target, overwrite = true)
 
       try {
         executeTask("generateApolloSources", projectDir)
@@ -98,7 +99,7 @@ class SchemaResolutionTests {
       } catch (e: UnexpectedBuildFailure) {
         MatcherAssert.assertThat(
             e.message,
-            CoreMatchers.containsString("ApolloGraphQL: By default only one schema.[json | sdl] file is supported.")
+            CoreMatchers.containsString("Multiple schemas found")
         )
       }
     }

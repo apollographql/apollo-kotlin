@@ -4,7 +4,9 @@ import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 
 /**
- * [Introspection] represents a GraphQL endpoint and its introspection query used to retrieve a schema.
+ * [Introspection] represents a GraphQL endpoint used to retrieve a schema.
+ *
+ * Use this to register a `download${ServiceName}ApolloSchemaFromIntrospection` task
  */
 interface Introspection {
   /**
@@ -15,23 +17,9 @@ interface Introspection {
   val endpointUrl: Property<String>
 
   /**
-   * query parameters if any required to get the introspection response
-   *
-   * empty by default
-   */
-  @Deprecated("add query parameters to endpointUrl instead")
-  val queryParameters: MapProperty<String, String>
-
-  /**
    * HTTP headers if any required to get the introspection response
    *
    * empty by default
    */
   val headers: MapProperty<String, String>
-
-  /**
-   * The name of the sourceSet where to download the schema. By default it will be downloaded
-   * in the "main" sourceSet (src/main/graphql)
-   */
-  val sourceSetName: Property<String>
 }

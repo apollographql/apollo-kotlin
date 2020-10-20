@@ -115,7 +115,7 @@ class CodegenTest(private val folder: File) {
           generateKotlinModels = true,
           useSemanticNaming = useSemanticNaming,
           generateAsInternal = generateAsInternal,
-          kotlinMultiPlatformProject = true,
+          generateFilterNotNull = true,
           enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters,
           metadataOutputFile = File("build/generated/test/${folder.name}/metadata"),
       )
