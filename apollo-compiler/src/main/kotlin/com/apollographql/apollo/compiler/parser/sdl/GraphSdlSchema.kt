@@ -14,9 +14,9 @@ data class GraphSdlSchema(
   data class Schema(
       val description: String?,
       val directives: List<Directive>,
-      val queryRootOperationType: TypeRef.Named,
-      val mutationRootOperationType: TypeRef.Named,
-      val subscriptionRootOperationType: TypeRef.Named
+      val queryRootOperationType: String,
+      val mutationRootOperationType: String?,
+      val subscriptionRootOperationType: String?
   )
 
   sealed class TypeDefinition {
@@ -144,9 +144,9 @@ data class GraphSdlSchema(
 
 fun GraphSdlSchema.toIntrospectionSchema(): IntrospectionSchema {
   return IntrospectionSchema(
-      queryType = schema.queryRootOperationType.typeName,
-      mutationType = schema.mutationRootOperationType.typeName,
-      subscriptionType = schema.subscriptionRootOperationType.typeName,
+      queryType = schema.queryRootOperationType,
+      mutationType = schema.mutationRootOperationType,
+      subscriptionType = schema.subscriptionRootOperationType,
       types = typeDefinitions.mapValues { (_, typeDefinition) ->
         when (typeDefinition) {
           is GraphSdlSchema.TypeDefinition.Enum -> typeDefinition.toIntrospectionType()

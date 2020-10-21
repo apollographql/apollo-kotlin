@@ -99,16 +99,22 @@ object GraphSDLSchemaParser {
         schema = GraphSdlSchema.Schema(
             description = schemaDefinition?.description()?.parse(),
             directives = schemaDefinition?.directives().parse(),
-            queryRootOperationType = GraphSdlSchema.TypeRef.Named(operationRootTypes["query"] ?: "Query", SourceLocation(start)),
-            mutationRootOperationType = GraphSdlSchema.TypeRef.Named(operationRootTypes["mutation"] ?: "Mutation", SourceLocation(start)),
-            subscriptionRootOperationType = GraphSdlSchema.TypeRef.Named(
-                operationRootTypes["subscription"] ?: "Subscription", SourceLocation(start)
-            )
-        ),
+            queryRootOperationType = rootOperationType(operationRootTypes, "query", typeDefinitions) ?: throw IllegalStateException("No query root operation type found"),
+            mutationRootOperationType = rootOperationType(operationRootTypes, "mutation", typeDefinitions),
+            subscriptionRootOperationType = rootOperationType(operationRootTypes, "subscription", typeDefinitions)),
         typeDefinitions = typeDefinitions ?: emptyMap()
     )
   }
 
+  fun rootOperationType(operationRootTypes: Map<String, String>?, operationType: String, typeDefinitions: Map<String, GraphSdlSchema.TypeDefinition>?): String? {
+    return (operationRootTypes
+        ?.get(operationType)
+        ?: operationType.capitalize())
+        .takeIf {
+          println("$operationType: ${typeDefinitions?.keys} $it")
+          typeDefinitions?.containsKey(it) == true
+        }
+  }
   private fun List<GraphSDLParser.TypeSystemExtensionContext>.parse(
       typeDefinitions: Map<String, GraphSdlSchema.TypeDefinition>
   ): Map<String, GraphSdlSchema.TypeDefinition> {
@@ -322,12 +328,11 @@ object GraphSDLSchemaParser {
     return this + newInputFields
   }
 
-  private fun GraphSDLParser.OperationTypesDefinitionContext?.parse(): Map<String, String> {
+  private fun GraphSDLParser.OperationTypesDefinitionContext?.parse(): Map<String, String>? {
     return this
         ?.operationTypeDefinition()
         ?.map { it.operationType().text to it.namedType().text }
         ?.toMap()
-        ?: emptyMap()
   }
 
   private fun GraphSDLParser.EnumTypeDefinitionContext.parse(): GraphSdlSchema.TypeDefinition.Enum {
