@@ -45,10 +45,6 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
     )
 
     val files = args.graphqlFiles
-    /**
-     * Android can have duplicate files but that's ok as long as they do not define the same operations (which is checked in IRBuilder)
-     */
-    // checkDuplicateFiles(roots, files)
 
     val parseResult = GraphQLDocumentParser(
         schema = introspectionSchema,
