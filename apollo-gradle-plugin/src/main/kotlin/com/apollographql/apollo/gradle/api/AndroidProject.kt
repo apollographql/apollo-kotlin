@@ -16,11 +16,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 object AndroidProject {
   fun onEachVariant(project: Project, withTestVariants: Boolean = false, block: (BaseVariant) -> Unit) {
-    val androidExtension = project.androidExtension
-
-    check(androidExtension != null) {
-      "ApolloGraphQL: cannot find 'android' extension. Did you apply the Android plugin?"
-    }
+    val androidExtension = project.androidExtensionOrFail
 
     val androidVariants = when (androidExtension) {
       is LibraryExtension -> androidExtension.libraryVariants
