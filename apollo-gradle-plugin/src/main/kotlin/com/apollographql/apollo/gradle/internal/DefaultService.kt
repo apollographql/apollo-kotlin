@@ -138,6 +138,7 @@ abstract class DefaultService @Inject constructor(val objects: ObjectFactory, ov
         """
 Multiple schemas found:
 ${candidates.joinToString(separator = "\n")}
+Multiple schemas are not supported. You can either define multiple services or specify the schema you want to use explicitely with `schemaFile`
         """.trimIndent()
       }
 
