@@ -10,7 +10,7 @@ import java.io.File
 class GradleBuildCacheTests {
 
   @Test
-  fun `generate and check apollo classes tasks are cached`() {
+  fun `generate and check apollo classes task are cached`() {
     TestUtils.withDirectory { dir ->
       val project1 = File(dir, "project1")
       val project2 = File(dir, "directory/project2")
@@ -25,17 +25,11 @@ class GradleBuildCacheTests {
       System.out.println("Generate sources project1")
       var result = TestUtils.executeTask("generateMainServiceApolloSources", project1, "--build-cache")
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":module:generateMainServiceApolloSources")!!.outcome)
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":checkMainServiceApolloDuplicates")!!.outcome)
 
       System.out.println("Generate sources project2")
       result = TestUtils.executeTask("generateMainServiceApolloSources", project2, "--build-cache")
       Assert.assertEquals(TaskOutcome.FROM_CACHE, result.task(":module:generateMainServiceApolloSources")!!.outcome)
-
-      System.out.println("Check Duplicates project1")
-      result = TestUtils.executeTask("checkMainServiceApolloDuplicates", project1, "--build-cache")
-      Assert.assertEquals(TaskOutcome.UP_TO_DATE, result.task(":checkMainServiceApolloDuplicates")!!.outcome)
-
-      System.out.println("Check Duplicates project2")
-      result = TestUtils.executeTask("checkMainServiceApolloDuplicates", project2, "--build-cache")
       Assert.assertEquals(TaskOutcome.FROM_CACHE, result.task(":checkMainServiceApolloDuplicates")!!.outcome)
     }
   }
