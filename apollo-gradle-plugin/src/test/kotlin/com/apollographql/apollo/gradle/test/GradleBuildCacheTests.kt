@@ -32,7 +32,7 @@ class GradleBuildCacheTests {
 
       System.out.println("Check Duplicates project1")
       result = TestUtils.executeTask("checkMainServiceApolloDuplicates", project1, "--build-cache")
-      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":checkMainServiceApolloDuplicates")!!.outcome)
+      Assert.assertEquals(TaskOutcome.UP_TO_DATE, result.task(":checkMainServiceApolloDuplicates")!!.outcome)
 
       System.out.println("Check Duplicates project2")
       result = TestUtils.executeTask("checkMainServiceApolloDuplicates", project2, "--build-cache")
