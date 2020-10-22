@@ -19,7 +19,7 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-internal object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
+object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forObject("hero", "hero", null, true, null)
   )

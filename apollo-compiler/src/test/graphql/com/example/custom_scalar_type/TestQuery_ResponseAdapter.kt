@@ -20,7 +20,7 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
+object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forObject("hero", "hero", null, true, null)
   )

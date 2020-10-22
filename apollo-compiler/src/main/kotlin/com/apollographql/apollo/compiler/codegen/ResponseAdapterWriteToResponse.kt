@@ -60,7 +60,9 @@ private fun CodeGenerationAst.ObjectType.writeFragmentToResponseFunSpec(): FunSp
         beginControlFlow("when(value)")
         addCode(
             possibleImplementations
-                .map { (_, type) ->
+                .values
+                .distinct()
+                .map { type ->
                   CodeBlock.of(
                       "is·%T·->·%T.toResponse(writer,·value)",
                       type.asTypeName(),

@@ -18,7 +18,7 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-internal object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragment.DefaultImpl> {
+object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragment.DefaultImpl> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forString("__typename", "__typename", null, false, null),
     ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),

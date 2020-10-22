@@ -17,7 +17,7 @@ import kotlin.Suppress
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
+object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forObject("createReview", "createReview", mapOf<String, Any>(
       "episode" to mapOf<String, Any>(

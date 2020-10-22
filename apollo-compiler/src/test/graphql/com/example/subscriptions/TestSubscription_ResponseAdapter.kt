@@ -17,7 +17,7 @@ import kotlin.Suppress
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-internal object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscription.Data> {
+object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscription.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forObject("commentAdded", "commentAdded", mapOf<String, Any>(
       "repoFullName" to mapOf<String, Any>(

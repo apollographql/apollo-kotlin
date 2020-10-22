@@ -16,7 +16,7 @@ import kotlin.Suppress
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
+object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forObject("foo", "foo", null, true, null)
   )
@@ -130,7 +130,6 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.Foo) {
       when(value) {
-        is TestQuery.Bar -> TestQuery_ResponseAdapter.Bar_ResponseAdapter.toResponse(writer, value)
         is TestQuery.Bar -> TestQuery_ResponseAdapter.Bar_ResponseAdapter.toResponse(writer, value)
         is TestQuery.OtherFoo -> TestQuery_ResponseAdapter.OtherFoo_ResponseAdapter.toResponse(writer, value)
       }

@@ -17,7 +17,7 @@ import kotlin.Suppress
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-internal object CreateReviewForEpisodeMutation_ResponseAdapter :
+object CreateReviewForEpisodeMutation_ResponseAdapter :
     ResponseAdapter<CreateReviewForEpisodeMutation.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forObject("createReview", "createReview", mapOf<String, Any>(

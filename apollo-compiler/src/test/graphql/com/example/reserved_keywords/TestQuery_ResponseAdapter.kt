@@ -18,7 +18,7 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
+object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forObject("yield", "hero", null, true, null),
     ResponseField.forList("objects", "search", mapOf<String, Any>(
@@ -176,7 +176,6 @@ internal object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.Object) {
       when(value) {
-        is TestQuery.Character -> TestQuery_ResponseAdapter.Character_ResponseAdapter.toResponse(writer, value)
         is TestQuery.Character -> TestQuery_ResponseAdapter.Character_ResponseAdapter.toResponse(writer, value)
         is TestQuery.OtherObject -> TestQuery_ResponseAdapter.OtherObject_ResponseAdapter.toResponse(writer, value)
       }

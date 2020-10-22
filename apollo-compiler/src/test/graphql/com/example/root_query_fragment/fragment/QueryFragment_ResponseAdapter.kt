@@ -16,7 +16,7 @@ import kotlin.Suppress
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-internal object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.DefaultImpl> {
+object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.DefaultImpl> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forString("__typename", "__typename", null, false, null),
     ResponseField.forObject("hero", "hero", null, true, null)
