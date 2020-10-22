@@ -5,6 +5,7 @@ import com.apollographql.apollo.compiler.OperationOutputGenerator
 import com.apollographql.apollo.gradle.api.Introspection
 import com.apollographql.apollo.gradle.api.Registry
 import com.apollographql.apollo.gradle.api.Service
+import com.apollographql.apollo.gradle.internal.DefaultApolloExtension.Companion.MIN_GRADLE_VERSION
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.file.Directory
@@ -16,19 +17,28 @@ import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.provider.SetProperty
+import org.gradle.util.GradleVersion
 import javax.inject.Inject
 
 abstract class DefaultService @Inject constructor(val objects: ObjectFactory, override val name: String)
   : Service {
 
   init {
-    // see https://github.com/gradle/gradle/issues/7485
-    // TODO replace with `convention(null)` when we can target Gradle 6.2
-    customTypeMapping.set(null as Map<String, String>?)
-    sealedClassesForEnumsMatching.set(null as List<String>?)
-    include.set(null as List<String>?)
-    exclude.set(null as List<String>?)
-    alwaysGenerateTypesMatching.set(null as Set<String>?)
+    if (GradleVersion.current().compareTo(GradleVersion.version("6.2")) >= 0) {
+      // This allows users to call customTypeMapping.put("Date", "java.util.Date")
+      // see https://github.com/gradle/gradle/issues/7485
+      customTypeMapping.convention(null as Map<String, String>?)
+      sealedClassesForEnumsMatching.convention(null as List<String>?)
+      include.convention(null as List<String>?)
+      exclude.convention(null as List<String>?)
+      alwaysGenerateTypesMatching.convention(null as Set<String>?)
+    } else {
+      customTypeMapping.set(null as Map<String, String>?)
+      sealedClassesForEnumsMatching.set(null as List<String>?)
+      include.set(null as List<String>?)
+      exclude.set(null as List<String>?)
+      alwaysGenerateTypesMatching.set(null as Set<String>?)
+    }
   }
 
   abstract override val sourceFolder: Property<String>

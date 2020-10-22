@@ -33,6 +33,18 @@ class ServiceTests {
   }
 
   @Test
+  fun `customTypeMapping put is working`() {
+    withSimpleProject("""
+      apollo {
+        customTypeMapping.put("DateTime", "java.util.Date")
+      }
+    """.trimIndent()) { dir ->
+      TestUtils.executeTask("generateApolloSources", dir)
+      TestUtils.assertFileContains(dir, "service/com/example/type/CustomType.kt", "= \"java.util.Date\"")
+    }
+  }
+
+  @Test
   fun `customTypeMapping can be applied from a service block`() {
     withSimpleProject("""
       apollo {
