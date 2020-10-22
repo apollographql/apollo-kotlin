@@ -10,7 +10,7 @@ import java.io.File
 class GradleBuildCacheTests {
 
   @Test
-  fun `generate apollo classes task is cached`() {
+  fun `generate and check apollo classes tasks are cached`() {
     TestUtils.withDirectory { dir ->
       val project1 = File(dir, "project1")
       val project2 = File(dir, "directory/project2")
@@ -21,33 +21,20 @@ class GradleBuildCacheTests {
 
       File(project2, "build.gradle.kts").replaceInText("../../../../", "../../../../../")
       File(project2, "settings.gradle.kts").replaceInText("../buildCache", "../../buildCache")
-      System.out.println("building project1")
+
+      System.out.println("Generate sources project1")
       var result = TestUtils.executeTask("generateMainServiceApolloSources", project1, "--build-cache")
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":module:generateMainServiceApolloSources")!!.outcome)
 
-      System.out.println("building project2")
+      System.out.println("Generate sources project2")
       result = TestUtils.executeTask("generateMainServiceApolloSources", project2, "--build-cache")
       Assert.assertEquals(TaskOutcome.FROM_CACHE, result.task(":module:generateMainServiceApolloSources")!!.outcome)
-    }
-  }
 
-  @Test
-  fun `check apollo classes duplicate task is cached`() {
-    TestUtils.withDirectory { dir ->
-      val project1 = File(dir, "project1")
-      val project2 = File(dir, "directory/project2")
-      project2.mkdirs()
-
-      File(System.getProperty("user.dir"), "testProjects/buildCache").copyRecursively(project1)
-      File(System.getProperty("user.dir"), "testProjects/buildCache").copyRecursively(project2)
-
-      File(project2, "build.gradle.kts").replaceInText("../../../../", "../../../../../")
-      File(project2, "settings.gradle.kts").replaceInText("../buildCache", "../../buildCache")
-      System.out.println("building project1")
-      var result = TestUtils.executeTask("checkMainServiceApolloDuplicates", project1, "--build-cache")
+      System.out.println("Check Duplicates project1")
+      result = TestUtils.executeTask("checkMainServiceApolloDuplicates", project1, "--build-cache")
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":checkMainServiceApolloDuplicates")!!.outcome)
 
-      System.out.println("building project2")
+      System.out.println("Check Duplicates project2")
       result = TestUtils.executeTask("checkMainServiceApolloDuplicates", project2, "--build-cache")
       Assert.assertEquals(TaskOutcome.FROM_CACHE, result.task(":checkMainServiceApolloDuplicates")!!.outcome)
     }
