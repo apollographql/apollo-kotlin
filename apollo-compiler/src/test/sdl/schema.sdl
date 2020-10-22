@@ -423,5 +423,4 @@ scalar UnsupportedType
 schema {
   query: Query
   mutation: Mutation
-  subscription: subscription
 }

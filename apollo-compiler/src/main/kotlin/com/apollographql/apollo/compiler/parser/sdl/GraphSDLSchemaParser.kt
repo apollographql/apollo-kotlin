@@ -106,14 +106,24 @@ object GraphSDLSchemaParser {
     )
   }
 
-  fun rootOperationType(operationRootTypes: Map<String, String>?, operationType: String, typeDefinitions: Map<String, GraphSdlSchema.TypeDefinition>?): String? {
-    return (operationRootTypes
-        ?.get(operationType)
-        ?: operationType.capitalize())
-        .takeIf {
-          println("$operationType: ${typeDefinitions?.keys} $it")
-          typeDefinitions?.containsKey(it) == true
-        }
+  private fun rootOperationType(operationRootTypes: Map<String, String>?, operationType: String, typeDefinitions: Map<String, GraphSdlSchema.TypeDefinition>?): String? {
+    var rootOperationType = operationRootTypes?.get(operationType)
+    if (rootOperationType != null) {
+      check(typeDefinitions?.get(rootOperationType) is GraphSdlSchema.TypeDefinition.Object) {
+        "ApolloGraphQL: schema defines '$operationType': '$rootOperationType' but no matching object type definition found"
+      }
+      return rootOperationType
+    }
+
+    // https://spec.graphql.org/June2018/#sec-Root-Operation-Types
+    // Default rootOperationTypes are "Query", "Mutation", "Subscription"
+    rootOperationType = operationType.capitalize()
+    return if (typeDefinitions?.get(rootOperationType) is GraphSdlSchema.TypeDefinition.Object) {
+      // The type is present, use it
+      rootOperationType
+    } else {
+      null
+    }
   }
   private fun List<GraphSDLParser.TypeSystemExtensionContext>.parse(
       typeDefinitions: Map<String, GraphSdlSchema.TypeDefinition>

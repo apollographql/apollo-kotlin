@@ -15,23 +15,6 @@ import java.io.File
 
 class GraphSdlParseTest() {
 
-  @Test
-  fun `SDL schema parsed successfully and produced the same introspection schema`() {
-    /**
-     * Things to watch out:
-     * - leading/trailing spaces in descriptions
-     * - defaultValue coercion
-     */
-    val actualSchema = GraphSdlSchema(File("src/test/sdl/schema.sdl")).toIntrospectionSchema().normalize()
-    val expectedSchema = IntrospectionSchema(File("src/test/sdl/schema.json")).normalize()
-
-    assertEquals(actualSchema.toString(), expectedSchema.toString())
-  }
-
-  private fun IntrospectionSchema.normalize(): IntrospectionSchema {
-    return copy(types = toSortedMap().mapValues { (_, type) -> type.normalize() })
-  }
-
   /**
    * GraphQL has Int and Float, json has only Number, map everything to Double
    */
@@ -54,6 +37,23 @@ class GraphSdlParseTest() {
         it.copy(defaultValue = it.defaultValue.normalizeNumbers())
       }.sortedBy { field -> field.name })
     }
+  }
+
+  @Test
+  fun `SDL schema parsed successfully and produced the same introspection schema`() {
+    /**
+     * Things to watch out:
+     * - leading/trailing spaces in descriptions
+     * - defaultValue coercion
+     */
+    val actualSchema = GraphSdlSchema(File("src/test/sdl/schema.sdl")).toIntrospectionSchema().normalize()
+    val expectedSchema = IntrospectionSchema(File("src/test/sdl/schema.json")).normalize()
+
+    assertEquals(actualSchema.toString(), expectedSchema.toString())
+  }
+
+  private fun IntrospectionSchema.normalize(): IntrospectionSchema {
+    return copy(types = toSortedMap().mapValues { (_, type) -> type.normalize() })
   }
 
   @Test
