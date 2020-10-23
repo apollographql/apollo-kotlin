@@ -30,11 +30,13 @@ import platform.Foundation.NSError
 import platform.Foundation.NSHTTPURLResponse
 import platform.Foundation.NSMutableURLRequest
 import platform.Foundation.NSThread
+import platform.Foundation.NSTimeInterval
 import platform.Foundation.NSURL
 import platform.Foundation.NSURLComponents
 import platform.Foundation.NSURLQueryItem
 import platform.Foundation.NSURLRequest
 import platform.Foundation.NSURLRequestReloadIgnoringCacheData
+import platform.Foundation.NSURLRequestUseProtocolCachePolicy
 import platform.Foundation.NSURLResponse
 import platform.Foundation.NSURLSession
 import platform.Foundation.NSURLSessionDataTask
@@ -58,20 +60,23 @@ actual class ApolloHttpNetworkTransport(
     private val serverUrl: NSURL,
     private val headers: Map<String, String>,
     private val httpMethod: HttpMethod,
-    private val dataTaskFactory: UrlSessionDataTaskFactory
+    private val dataTaskFactory: UrlSessionDataTaskFactory,
+    private val timeoutMillis: Long,
 ) : NetworkTransport {
 
   actual constructor(
       serverUrl: String,
       headers: Map<String, String>,
-      httpMethod: HttpMethod
+      httpMethod: HttpMethod,
+      timeoutMillis: Long
   ) : this(
       serverUrl = NSURL(string = serverUrl),
       headers = headers,
       httpMethod = httpMethod,
       dataTaskFactory = { request, completionHandler ->
         NSURLSession.sharedSession.dataTaskWithRequest(request, completionHandler)
-      }
+      },
+      timeoutMillis = timeoutMillis,
   )
 
   @Suppress("UNCHECKED_CAST")
@@ -138,7 +143,11 @@ actual class ApolloHttpNetworkTransport(
           if (variables.isNotEmpty()) NSURLQueryItem(name = "variables", value = variables) else null
         }
     )
-    return NSMutableURLRequest.requestWithURL(urlComponents.URL!!).apply {
+    return NSMutableURLRequest.requestWithURL(
+        URL = urlComponents.URL!!,
+        cachePolicy = NSURLRequestUseProtocolCachePolicy,
+        timeoutInterval = timeoutMillis.toDouble() / 1000
+    ).apply {
       setHTTPMethod("GET")
       headers
           .plus(httpExecutionContext?.headers ?: emptyMap())
@@ -203,7 +212,7 @@ actual class ApolloHttpNetworkTransport(
           scalarTypeAdapters = request.scalarTypeAdapters
       )
       Result.Success(
-          ApolloResponse(
+          ApolloResponse<D>(
               requestUuid = request.requestUuid,
               response = response,
               executionContext = request.executionContext + HttpExecutionContext.Response(
