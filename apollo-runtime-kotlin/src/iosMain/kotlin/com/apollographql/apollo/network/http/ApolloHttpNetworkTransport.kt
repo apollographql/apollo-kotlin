@@ -144,11 +144,10 @@ actual class ApolloHttpNetworkTransport(
         }
     )
     return NSMutableURLRequest.requestWithURL(
-        URL = urlComponents.URL!!,
-        cachePolicy = NSURLRequestUseProtocolCachePolicy,
-        timeoutInterval = timeoutMillis.toDouble() / 1000
+        URL = urlComponents.URL!!
     ).apply {
       setHTTPMethod("GET")
+      setTimeoutInterval(timeoutMillis.toDouble() / 1000)
       headers
           .plus(httpExecutionContext?.headers ?: emptyMap())
           .forEach { (key, value) -> setValue(value, forHTTPHeaderField = key) }
