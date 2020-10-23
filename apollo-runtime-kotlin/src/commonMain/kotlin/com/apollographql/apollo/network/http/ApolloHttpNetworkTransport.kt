@@ -12,7 +12,7 @@ expect class ApolloHttpNetworkTransport constructor(
     /**
      * The timeout interval to use when waiting for additional data.
      *
-     * - on iOS, it is used to set NSURLSessionConfiguration.timeoutIntervalForRequest
+     * - on iOS, it is used to set NSMutableURLRequest.timeoutInterval
      * - on Android, it is used to set both readTimeout and connectTimeout
      */
     timeoutMillis: Long = 30_000
