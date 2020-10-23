@@ -121,7 +121,7 @@ class ApolloHttpNetworkTransportTest {
         serverUrl = NSURL(string = "https://apollo.com"),
         headers = emptyMap(),
         httpMethod = HttpMethod.Post,
-        dataTaskFactory = dataTaskFactory
+        dataTaskFactory = dataTaskFactory,
     )
   }
 

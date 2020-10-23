@@ -61,7 +61,7 @@ actual class ApolloHttpNetworkTransport(
     private val headers: Map<String, String>,
     private val httpMethod: HttpMethod,
     private val dataTaskFactory: UrlSessionDataTaskFactory,
-    private val timeoutMillis: Long,
+    private val timeoutMillis: Long = 30_000,
 ) : NetworkTransport {
 
   actual constructor(
