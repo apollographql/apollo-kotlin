@@ -57,7 +57,7 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.DefaultImpl> 
     writer.writeString(RESPONSE_FIELDS[0], value.__typename)
     writer.writeString(RESPONSE_FIELDS[1], value.name)
     writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, value.profileLink)
-    writer.writeObject(RESPONSE_FIELDS[3]) {
+    writer.writeObject(RESPONSE_FIELDS[3]) { writer ->
       FriendsConnection1_ResponseAdapter.toResponse(writer, value.friendsConnection)
     }
   }
@@ -123,7 +123,7 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.DefaultImpl> 
       if(value.node == null) {
         writer.writeObject(RESPONSE_FIELDS[1], null)
       } else {
-        writer.writeObject(RESPONSE_FIELDS[1]) {
+        writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
           Node1_ResponseAdapter.toResponse(writer, value.node)
         }
       }
@@ -161,12 +161,12 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.DefaultImpl> 
 
     override fun toResponse(writer: ResponseWriter, value: HumanDetails.FriendsConnection1) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeList(RESPONSE_FIELDS[1], value.edges) { value, listItemWriter ->
-        value?.forEach { value ->
+      writer.writeList(RESPONSE_FIELDS[1], value.edges) { values, listItemWriter ->
+        values?.forEach { value ->
           if(value == null) {
             listItemWriter.writeObject(null)
           } else {
-            listItemWriter.writeObject {
+            listItemWriter.writeObject { writer ->
               Edge1_ResponseAdapter.toResponse(writer, value)
             }
           }

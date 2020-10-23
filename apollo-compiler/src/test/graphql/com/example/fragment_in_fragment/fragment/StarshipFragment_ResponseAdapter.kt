@@ -60,7 +60,7 @@ object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragment.Defau
     if(value.pilotConnection == null) {
       writer.writeObject(RESPONSE_FIELDS[3], null)
     } else {
-      writer.writeObject(RESPONSE_FIELDS[3]) {
+      writer.writeObject(RESPONSE_FIELDS[3]) { writer ->
         PilotConnection1_ResponseAdapter.toResponse(writer, value.pilotConnection)
       }
     }
@@ -133,7 +133,7 @@ object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragment.Defau
       if(value.homeworld == null) {
         writer.writeObject(RESPONSE_FIELDS[2], null)
       } else {
-        writer.writeObject(RESPONSE_FIELDS[2]) {
+        writer.writeObject(RESPONSE_FIELDS[2]) { writer ->
           Homeworld_ResponseAdapter.toResponse(writer, value.homeworld)
         }
       }
@@ -171,7 +171,7 @@ object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragment.Defau
       if(value.node == null) {
         writer.writeObject(RESPONSE_FIELDS[1], null)
       } else {
-        writer.writeObject(RESPONSE_FIELDS[1]) {
+        writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
           Node1_ResponseAdapter.toResponse(writer, value.node)
         }
       }
@@ -209,12 +209,12 @@ object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragment.Defau
 
     override fun toResponse(writer: ResponseWriter, value: StarshipFragment.PilotConnection1) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeList(RESPONSE_FIELDS[1], value.edges) { value, listItemWriter ->
-        value?.forEach { value ->
+      writer.writeList(RESPONSE_FIELDS[1], value.edges) { values, listItemWriter ->
+        values?.forEach { value ->
           if(value == null) {
             listItemWriter.writeObject(null)
           } else {
-            listItemWriter.writeObject {
+            listItemWriter.writeObject { writer ->
               Edge1_ResponseAdapter.toResponse(writer, value)
             }
           }

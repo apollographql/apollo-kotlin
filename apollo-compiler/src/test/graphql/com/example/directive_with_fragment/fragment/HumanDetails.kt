@@ -6,6 +6,7 @@
 package com.example.directive_with_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import kotlin.String
@@ -52,6 +53,12 @@ interface HumanDetails : GraphqlFragment {
 
     operator fun invoke(reader: ResponseReader): HumanDetails {
       return HumanDetails_ResponseAdapter.fromResponse(reader)
+    }
+
+    fun Mapper(): ResponseFieldMapper<HumanDetails> {
+      return ResponseFieldMapper { reader ->
+        HumanDetails_ResponseAdapter.fromResponse(reader)
+      }
     }
   }
 }

@@ -46,7 +46,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     if(value.hero == null) {
       writer.writeObject(RESPONSE_FIELDS[0], null)
     } else {
-      writer.writeObject(RESPONSE_FIELDS[0]) {
+      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
         TestQuery_ResponseAdapter.Hero_ResponseAdapter.toResponse(writer, value.hero)
       }
     }
@@ -80,8 +80,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.Friend) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeList(RESPONSE_FIELDS[1], value.appearsIn) { value, listItemWriter ->
-        value?.forEach { value ->
+      writer.writeList(RESPONSE_FIELDS[1], value.appearsIn) { values, listItemWriter ->
+        values?.forEach { value ->
           listItemWriter.writeString(value?.rawValue)}
       }
     }
@@ -127,12 +127,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeString(RESPONSE_FIELDS[1], value.name)
       writer.writeDouble(RESPONSE_FIELDS[2], value.height)
-      writer.writeList(RESPONSE_FIELDS[3], value.friends) { value, listItemWriter ->
-        value?.forEach { value ->
+      writer.writeList(RESPONSE_FIELDS[3], value.friends) { values, listItemWriter ->
+        values?.forEach { value ->
           if(value == null) {
             listItemWriter.writeObject(null)
           } else {
-            listItemWriter.writeObject {
+            listItemWriter.writeObject { writer ->
               TestQuery_ResponseAdapter.Friend_ResponseAdapter.toResponse(writer, value)
             }
           }
@@ -211,12 +211,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeString(RESPONSE_FIELDS[1], value.name)
       writer.writeString(RESPONSE_FIELDS[2], value.primaryFunction)
-      writer.writeList(RESPONSE_FIELDS[3], value.friends) { value, listItemWriter ->
-        value?.forEach { value ->
+      writer.writeList(RESPONSE_FIELDS[3], value.friends) { values, listItemWriter ->
+        values?.forEach { value ->
           if(value == null) {
             listItemWriter.writeObject(null)
           } else {
-            listItemWriter.writeObject {
+            listItemWriter.writeObject { writer ->
               TestQuery_ResponseAdapter.Friend1_ResponseAdapter.toResponse(writer, value)
             }
           }

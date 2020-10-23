@@ -65,8 +65,8 @@ internal data class CreateReviewForEpisode(
   override fun name(): OperationName = OPERATION_NAME
 
   override fun responseFieldMapper(): ResponseFieldMapper<Data> {
-    return ResponseFieldMapper.invoke {
-      CreateReviewForEpisode_ResponseAdapter.fromResponse(it)
+    return ResponseFieldMapper { reader ->
+      CreateReviewForEpisode_ResponseAdapter.fromResponse(reader)
     }
   }
 

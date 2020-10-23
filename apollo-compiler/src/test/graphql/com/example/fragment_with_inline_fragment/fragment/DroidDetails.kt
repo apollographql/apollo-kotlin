@@ -6,6 +6,7 @@
 package com.example.fragment_with_inline_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import kotlin.String
@@ -62,6 +63,12 @@ interface DroidDetails : GraphqlFragment {
 
     operator fun invoke(reader: ResponseReader): DroidDetails {
       return DroidDetails_ResponseAdapter.fromResponse(reader)
+    }
+
+    fun Mapper(): ResponseFieldMapper<DroidDetails> {
+      return ResponseFieldMapper { reader ->
+        DroidDetails_ResponseAdapter.fromResponse(reader)
+      }
     }
   }
 }

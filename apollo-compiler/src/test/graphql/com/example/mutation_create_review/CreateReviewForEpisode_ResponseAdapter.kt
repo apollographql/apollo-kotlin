@@ -55,7 +55,7 @@ internal object CreateReviewForEpisode_ResponseAdapter :
     if(value.createReview == null) {
       writer.writeObject(RESPONSE_FIELDS[0], null)
     } else {
-      writer.writeObject(RESPONSE_FIELDS[0]) {
+      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
         CreateReviewForEpisode_ResponseAdapter.CreateReview_ResponseAdapter.toResponse(writer, value.createReview)
       }
     }
@@ -161,35 +161,35 @@ internal object CreateReviewForEpisode_ResponseAdapter :
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeInt(RESPONSE_FIELDS[1], value.stars)
       writer.writeString(RESPONSE_FIELDS[2], value.commentary)
-      writer.writeList(RESPONSE_FIELDS[3], value.listOfListOfString) { value, listItemWriter ->
-        value?.forEach { value ->
+      writer.writeList(RESPONSE_FIELDS[3], value.listOfListOfString) { values, listItemWriter ->
+        values?.forEach { value ->
           listItemWriter.writeList(value) { value, listItemWriter ->
             value?.forEach { value ->
               listItemWriter.writeString(value)}
           }
         }
       }
-      writer.writeList(RESPONSE_FIELDS[4], value.listOfListOfEnum) { value, listItemWriter ->
-        value?.forEach { value ->
+      writer.writeList(RESPONSE_FIELDS[4], value.listOfListOfEnum) { values, listItemWriter ->
+        values?.forEach { value ->
           listItemWriter.writeList(value) { value, listItemWriter ->
             value?.forEach { value ->
               listItemWriter.writeString(value.rawValue)}
           }
         }
       }
-      writer.writeList(RESPONSE_FIELDS[5], value.listOfListOfCustom) { value, listItemWriter ->
-        value?.forEach { value ->
+      writer.writeList(RESPONSE_FIELDS[5], value.listOfListOfCustom) { values, listItemWriter ->
+        values?.forEach { value ->
           listItemWriter.writeList(value) { value, listItemWriter ->
             value?.forEach { value ->
               listItemWriter.writeCustom(CustomType.DATE, value)}
           }
         }
       }
-      writer.writeList(RESPONSE_FIELDS[6], value.listOfListOfObject) { value, listItemWriter ->
-        value?.forEach { value ->
+      writer.writeList(RESPONSE_FIELDS[6], value.listOfListOfObject) { values, listItemWriter ->
+        values?.forEach { value ->
           listItemWriter.writeList(value) { value, listItemWriter ->
             value?.forEach { value ->
-              listItemWriter.writeObject {
+              listItemWriter.writeObject { writer ->
                 CreateReviewForEpisode_ResponseAdapter.ListOfListOfObject_ResponseAdapter.toResponse(writer, value)
               }
             }

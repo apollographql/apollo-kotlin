@@ -67,8 +67,8 @@ data class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryA
   override fun name(): OperationName = OPERATION_NAME
 
   override fun responseFieldMapper(): ResponseFieldMapper<Data> {
-    return ResponseFieldMapper.invoke {
-      TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_ResponseAdapter.fromResponse(it)
+    return ResponseFieldMapper { reader ->
+      TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_ResponseAdapter.fromResponse(reader)
     }
   }
 

@@ -6,6 +6,7 @@
 package com.example.fragment_friends_connection.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import kotlin.Int
@@ -176,6 +177,12 @@ interface HeroDetails : GraphqlFragment {
 
     operator fun invoke(reader: ResponseReader): HeroDetails {
       return HeroDetails_ResponseAdapter.fromResponse(reader)
+    }
+
+    fun Mapper(): ResponseFieldMapper<HeroDetails> {
+      return ResponseFieldMapper { reader ->
+        HeroDetails_ResponseAdapter.fromResponse(reader)
+      }
     }
   }
 }

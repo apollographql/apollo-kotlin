@@ -46,7 +46,7 @@ object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscription.Data>
     if(value.commentAdded == null) {
       writer.writeObject(RESPONSE_FIELDS[0], null)
     } else {
-      writer.writeObject(RESPONSE_FIELDS[0]) {
+      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
         TestSubscription_ResponseAdapter.CommentAdded_ResponseAdapter.toResponse(writer, value.commentAdded)
       }
     }

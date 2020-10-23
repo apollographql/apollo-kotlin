@@ -52,14 +52,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     if(value.r2 == null) {
       writer.writeObject(RESPONSE_FIELDS[0], null)
     } else {
-      writer.writeObject(RESPONSE_FIELDS[0]) {
+      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
         TestQuery_ResponseAdapter.R2_ResponseAdapter.toResponse(writer, value.r2)
       }
     }
     if(value.luke == null) {
       writer.writeObject(RESPONSE_FIELDS[1], null)
     } else {
-      writer.writeObject(RESPONSE_FIELDS[1]) {
+      writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
         TestQuery_ResponseAdapter.Luke_ResponseAdapter.toResponse(writer, value.luke)
       }
     }
@@ -126,7 +126,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       if(value.node == null) {
         writer.writeObject(RESPONSE_FIELDS[1], null)
       } else {
-        writer.writeObject(RESPONSE_FIELDS[1]) {
+        writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
           TestQuery_ResponseAdapter.Node_ResponseAdapter.toResponse(writer, value.node)
         }
       }
@@ -169,12 +169,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     override fun toResponse(writer: ResponseWriter, value: TestQuery.FriendsConnection) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeInt(RESPONSE_FIELDS[1], value.totalCount)
-      writer.writeList(RESPONSE_FIELDS[2], value.edges) { value, listItemWriter ->
-        value?.forEach { value ->
+      writer.writeList(RESPONSE_FIELDS[2], value.edges) { values, listItemWriter ->
+        values?.forEach { value ->
           if(value == null) {
             listItemWriter.writeObject(null)
           } else {
-            listItemWriter.writeObject {
+            listItemWriter.writeObject { writer ->
               TestQuery_ResponseAdapter.Edge_ResponseAdapter.toResponse(writer, value)
             }
           }
@@ -216,7 +216,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     override fun toResponse(writer: ResponseWriter, value: TestQuery.R2) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeString(RESPONSE_FIELDS[1], value.name)
-      writer.writeObject(RESPONSE_FIELDS[2]) {
+      writer.writeObject(RESPONSE_FIELDS[2]) { writer ->
         TestQuery_ResponseAdapter.FriendsConnection_ResponseAdapter.toResponse(writer, value.friendsConnection)
       }
     }
@@ -283,7 +283,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       if(value.node == null) {
         writer.writeObject(RESPONSE_FIELDS[1], null)
       } else {
-        writer.writeObject(RESPONSE_FIELDS[1]) {
+        writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
           TestQuery_ResponseAdapter.Node1_ResponseAdapter.toResponse(writer, value.node)
         }
       }
@@ -326,12 +326,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     override fun toResponse(writer: ResponseWriter, value: TestQuery.FriendsConnection1) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeInt(RESPONSE_FIELDS[1], value.totalCount)
-      writer.writeList(RESPONSE_FIELDS[2], value.edges) { value, listItemWriter ->
-        value?.forEach { value ->
+      writer.writeList(RESPONSE_FIELDS[2], value.edges) { values, listItemWriter ->
+        values?.forEach { value ->
           if(value == null) {
             listItemWriter.writeObject(null)
           } else {
-            listItemWriter.writeObject {
+            listItemWriter.writeObject { writer ->
               TestQuery_ResponseAdapter.Edge1_ResponseAdapter.toResponse(writer, value)
             }
           }
@@ -378,7 +378,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, value.id)
       writer.writeString(RESPONSE_FIELDS[2], value.name)
-      writer.writeObject(RESPONSE_FIELDS[3]) {
+      writer.writeObject(RESPONSE_FIELDS[3]) { writer ->
         TestQuery_ResponseAdapter.FriendsConnection1_ResponseAdapter.toResponse(writer, value.friendsConnection)
       }
     }

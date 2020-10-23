@@ -43,7 +43,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     if(value.tree == null) {
       writer.writeObject(RESPONSE_FIELDS[0], null)
     } else {
-      writer.writeObject(RESPONSE_FIELDS[0]) {
+      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
         TestQuery_ResponseAdapter.Tree_ResponseAdapter.toResponse(writer, value.tree)
       }
     }
@@ -150,9 +150,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     override fun toResponse(writer: ResponseWriter, value: TestQuery.Tree) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeString(RESPONSE_FIELDS[1], value.name)
-      writer.writeList(RESPONSE_FIELDS[2], value.children) { value, listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeObject {
+      writer.writeList(RESPONSE_FIELDS[2], value.children) { values, listItemWriter ->
+        values?.forEach { value ->
+          listItemWriter.writeObject { writer ->
             TestQuery_ResponseAdapter.Child_ResponseAdapter.toResponse(writer, value)
           }
         }
@@ -160,7 +160,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       if(value.parent == null) {
         writer.writeObject(RESPONSE_FIELDS[3], null)
       } else {
-        writer.writeObject(RESPONSE_FIELDS[3]) {
+        writer.writeObject(RESPONSE_FIELDS[3]) { writer ->
           TestQuery_ResponseAdapter.Parent_ResponseAdapter.toResponse(writer, value.parent)
         }
       }

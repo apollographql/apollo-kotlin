@@ -63,8 +63,8 @@ data class CreateReviewForEpisodeMutation(
   override fun name(): OperationName = OPERATION_NAME
 
   override fun responseFieldMapper(): ResponseFieldMapper<Data> {
-    return ResponseFieldMapper.invoke {
-      CreateReviewForEpisodeMutation_ResponseAdapter.fromResponse(it)
+    return ResponseFieldMapper { reader ->
+      CreateReviewForEpisodeMutation_ResponseAdapter.fromResponse(reader)
     }
   }
 

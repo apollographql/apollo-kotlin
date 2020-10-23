@@ -44,7 +44,7 @@ object HeroDetailsQuery_ResponseAdapter : ResponseAdapter<HeroDetailsQuery.Data>
     if(value.hero == null) {
       writer.writeObject(RESPONSE_FIELDS[0], null)
     } else {
-      writer.writeObject(RESPONSE_FIELDS[0]) {
+      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
         HeroDetailsQuery_ResponseAdapter.Hero_ResponseAdapter.toResponse(writer, value.hero)
       }
     }
@@ -111,7 +111,7 @@ object HeroDetailsQuery_ResponseAdapter : ResponseAdapter<HeroDetailsQuery.Data>
       if(value.node == null) {
         writer.writeObject(RESPONSE_FIELDS[1], null)
       } else {
-        writer.writeObject(RESPONSE_FIELDS[1]) {
+        writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
           HeroDetailsQuery_ResponseAdapter.Node_ResponseAdapter.toResponse(writer, value.node)
         }
       }
@@ -154,12 +154,12 @@ object HeroDetailsQuery_ResponseAdapter : ResponseAdapter<HeroDetailsQuery.Data>
     override fun toResponse(writer: ResponseWriter, value: HeroDetailsQuery.FriendsConnection) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeInt(RESPONSE_FIELDS[1], value.totalCount)
-      writer.writeList(RESPONSE_FIELDS[2], value.edges) { value, listItemWriter ->
-        value?.forEach { value ->
+      writer.writeList(RESPONSE_FIELDS[2], value.edges) { values, listItemWriter ->
+        values?.forEach { value ->
           if(value == null) {
             listItemWriter.writeObject(null)
           } else {
-            listItemWriter.writeObject {
+            listItemWriter.writeObject { writer ->
               HeroDetailsQuery_ResponseAdapter.Edge_ResponseAdapter.toResponse(writer, value)
             }
           }
@@ -201,7 +201,7 @@ object HeroDetailsQuery_ResponseAdapter : ResponseAdapter<HeroDetailsQuery.Data>
     override fun toResponse(writer: ResponseWriter, value: HeroDetailsQuery.Hero) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeString(RESPONSE_FIELDS[1], value.name)
-      writer.writeObject(RESPONSE_FIELDS[2]) {
+      writer.writeObject(RESPONSE_FIELDS[2]) { writer ->
         HeroDetailsQuery_ResponseAdapter.FriendsConnection_ResponseAdapter.toResponse(writer, value.friendsConnection)
       }
     }

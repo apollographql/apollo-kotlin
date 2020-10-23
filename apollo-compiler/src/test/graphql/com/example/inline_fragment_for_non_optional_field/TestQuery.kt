@@ -39,8 +39,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   override fun name(): OperationName = OPERATION_NAME
 
   override fun responseFieldMapper(): ResponseFieldMapper<Data> {
-    return ResponseFieldMapper.invoke {
-      TestQuery_ResponseAdapter.fromResponse(it)
+    return ResponseFieldMapper { reader ->
+      TestQuery_ResponseAdapter.fromResponse(reader)
     }
   }
 

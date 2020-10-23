@@ -47,7 +47,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     if(value.hero == null) {
       writer.writeObject(RESPONSE_FIELDS[0], null)
     } else {
-      writer.writeObject(RESPONSE_FIELDS[0]) {
+      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
         TestQuery_ResponseAdapter.Hero_ResponseAdapter.toResponse(writer, value.hero)
       }
     }
@@ -176,12 +176,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     override fun toResponse(writer: ResponseWriter, value: TestQuery.Human) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeString(RESPONSE_FIELDS[1], value.name)
-      writer.writeList(RESPONSE_FIELDS[2], value.friends) { value, listItemWriter ->
-        value?.forEach { value ->
+      writer.writeList(RESPONSE_FIELDS[2], value.friends) { values, listItemWriter ->
+        values?.forEach { value ->
           if(value == null) {
             listItemWriter.writeObject(null)
           } else {
-            listItemWriter.writeObject {
+            listItemWriter.writeObject { writer ->
               TestQuery_ResponseAdapter.Friend_ResponseAdapter.toResponse(writer, value)
             }
           }
@@ -313,12 +313,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     override fun toResponse(writer: ResponseWriter, value: TestQuery.Droid) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeString(RESPONSE_FIELDS[1], value.name)
-      writer.writeList(RESPONSE_FIELDS[2], value.friends) { value, listItemWriter ->
-        value?.forEach { value ->
+      writer.writeList(RESPONSE_FIELDS[2], value.friends) { values, listItemWriter ->
+        values?.forEach { value ->
           if(value == null) {
             listItemWriter.writeObject(null)
           } else {
-            listItemWriter.writeObject {
+            listItemWriter.writeObject { writer ->
               TestQuery_ResponseAdapter.Friend1_ResponseAdapter.toResponse(writer, value)
             }
           }

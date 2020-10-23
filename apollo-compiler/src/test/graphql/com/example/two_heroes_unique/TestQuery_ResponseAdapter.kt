@@ -50,14 +50,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     if(value.r2 == null) {
       writer.writeObject(RESPONSE_FIELDS[0], null)
     } else {
-      writer.writeObject(RESPONSE_FIELDS[0]) {
+      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
         TestQuery_ResponseAdapter.R2_ResponseAdapter.toResponse(writer, value.r2)
       }
     }
     if(value.luke == null) {
       writer.writeObject(RESPONSE_FIELDS[1], null)
     } else {
-      writer.writeObject(RESPONSE_FIELDS[1]) {
+      writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
         TestQuery_ResponseAdapter.Luke_ResponseAdapter.toResponse(writer, value.luke)
       }
     }

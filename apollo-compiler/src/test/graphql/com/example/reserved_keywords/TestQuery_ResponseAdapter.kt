@@ -53,16 +53,16 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     if(value.yield_ == null) {
       writer.writeObject(RESPONSE_FIELDS[0], null)
     } else {
-      writer.writeObject(RESPONSE_FIELDS[0]) {
+      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
         TestQuery_ResponseAdapter.Yield__ResponseAdapter.toResponse(writer, value.yield_)
       }
     }
-    writer.writeList(RESPONSE_FIELDS[1], value.objects) { value, listItemWriter ->
-      value?.forEach { value ->
+    writer.writeList(RESPONSE_FIELDS[1], value.objects) { values, listItemWriter ->
+      values?.forEach { value ->
         if(value == null) {
           listItemWriter.writeObject(null)
         } else {
-          listItemWriter.writeObject {
+          listItemWriter.writeObject { writer ->
             TestQuery_ResponseAdapter.Object_ResponseAdapter.toResponse(writer, value)
           }
         }

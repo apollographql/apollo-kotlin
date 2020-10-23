@@ -42,8 +42,8 @@ class AllStarships : Query<AllStarships.Data, Operation.Variables> {
   override fun name(): OperationName = OPERATION_NAME
 
   override fun responseFieldMapper(): ResponseFieldMapper<Data> {
-    return ResponseFieldMapper.invoke {
-      AllStarships_ResponseAdapter.fromResponse(it)
+    return ResponseFieldMapper { reader ->
+      AllStarships_ResponseAdapter.fromResponse(reader)
     }
   }
 

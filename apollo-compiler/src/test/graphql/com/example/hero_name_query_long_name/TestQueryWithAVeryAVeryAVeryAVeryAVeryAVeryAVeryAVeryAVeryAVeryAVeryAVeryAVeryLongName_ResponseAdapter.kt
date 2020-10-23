@@ -52,7 +52,7 @@ object
     if(value.heroAVeryAVeryAVeryAVeryAVeryAVeryAV == null) {
       writer.writeObject(RESPONSE_FIELDS[0], null)
     } else {
-      writer.writeObject(RESPONSE_FIELDS[0]) {
+      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
         TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_ResponseAdapter.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV_ResponseAdapter.toResponse(writer, value.heroAVeryAVeryAVeryAVeryAVeryAVeryAV)
       }
     }

@@ -45,7 +45,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     if(value.hero == null) {
       writer.writeObject(RESPONSE_FIELDS[0], null)
     } else {
-      writer.writeObject(RESPONSE_FIELDS[0]) {
+      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
         TestQuery_ResponseAdapter.Hero_ResponseAdapter.toResponse(writer, value.hero)
       }
     }
@@ -112,7 +112,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       if(value.node == null) {
         writer.writeObject(RESPONSE_FIELDS[1], null)
       } else {
-        writer.writeObject(RESPONSE_FIELDS[1]) {
+        writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
           TestQuery_ResponseAdapter.Node1_ResponseAdapter.toResponse(writer, value.node)
         }
       }
@@ -155,12 +155,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     override fun toResponse(writer: ResponseWriter, value: TestQuery.FriendsConnection1) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeInt(RESPONSE_FIELDS[1], value.totalCount)
-      writer.writeList(RESPONSE_FIELDS[2], value.edges) { value, listItemWriter ->
-        value?.forEach { value ->
+      writer.writeList(RESPONSE_FIELDS[2], value.edges) { values, listItemWriter ->
+        values?.forEach { value ->
           if(value == null) {
             listItemWriter.writeObject(null)
           } else {
-            listItemWriter.writeObject {
+            listItemWriter.writeObject { writer ->
               TestQuery_ResponseAdapter.Edge1_ResponseAdapter.toResponse(writer, value)
             }
           }
@@ -215,12 +215,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         value: TestQuery.HeroDetailsDroidDroidDetailsImpl) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeString(RESPONSE_FIELDS[1], value.name)
-      writer.writeObject(RESPONSE_FIELDS[2]) {
+      writer.writeObject(RESPONSE_FIELDS[2]) { writer ->
         TestQuery_ResponseAdapter.FriendsConnection1_ResponseAdapter.toResponse(writer, value.friendsConnection)
       }
       writer.writeString(RESPONSE_FIELDS[3], value.primaryFunction)
-      writer.writeList(RESPONSE_FIELDS[4], value.appearsIn) { value, listItemWriter ->
-        value?.forEach { value ->
+      writer.writeList(RESPONSE_FIELDS[4], value.appearsIn) { values, listItemWriter ->
+        values?.forEach { value ->
           listItemWriter.writeString(value?.rawValue)}
       }
     }
@@ -287,7 +287,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       if(value.node == null) {
         writer.writeObject(RESPONSE_FIELDS[1], null)
       } else {
-        writer.writeObject(RESPONSE_FIELDS[1]) {
+        writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
           TestQuery_ResponseAdapter.Node2_ResponseAdapter.toResponse(writer, value.node)
         }
       }
@@ -330,12 +330,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     override fun toResponse(writer: ResponseWriter, value: TestQuery.FriendsConnection2) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeInt(RESPONSE_FIELDS[1], value.totalCount)
-      writer.writeList(RESPONSE_FIELDS[2], value.edges) { value, listItemWriter ->
-        value?.forEach { value ->
+      writer.writeList(RESPONSE_FIELDS[2], value.edges) { values, listItemWriter ->
+        values?.forEach { value ->
           if(value == null) {
             listItemWriter.writeObject(null)
           } else {
-            listItemWriter.writeObject {
+            listItemWriter.writeObject { writer ->
               TestQuery_ResponseAdapter.Edge2_ResponseAdapter.toResponse(writer, value)
             }
           }
@@ -385,11 +385,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     override fun toResponse(writer: ResponseWriter, value: TestQuery.HeroDetailsHumanDetailsImpl) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeString(RESPONSE_FIELDS[1], value.name)
-      writer.writeObject(RESPONSE_FIELDS[2]) {
+      writer.writeObject(RESPONSE_FIELDS[2]) { writer ->
         TestQuery_ResponseAdapter.FriendsConnection2_ResponseAdapter.toResponse(writer, value.friendsConnection)
       }
-      writer.writeList(RESPONSE_FIELDS[3], value.appearsIn) { value, listItemWriter ->
-        value?.forEach { value ->
+      writer.writeList(RESPONSE_FIELDS[3], value.appearsIn) { values, listItemWriter ->
+        values?.forEach { value ->
           listItemWriter.writeString(value?.rawValue)}
       }
     }
@@ -428,8 +428,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     override fun toResponse(writer: ResponseWriter, value: TestQuery.OtherHero) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeString(RESPONSE_FIELDS[1], value.name)
-      writer.writeList(RESPONSE_FIELDS[2], value.appearsIn) { value, listItemWriter ->
-        value?.forEach { value ->
+      writer.writeList(RESPONSE_FIELDS[2], value.appearsIn) { values, listItemWriter ->
+        values?.forEach { value ->
           listItemWriter.writeString(value?.rawValue)}
       }
     }

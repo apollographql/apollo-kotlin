@@ -41,7 +41,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   }
 
   override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
-    writer.writeObject(RESPONSE_FIELDS[0]) {
+    writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
       TestQuery_ResponseAdapter.NonOptionalHero_ResponseAdapter.toResponse(writer, value.nonOptionalHero)
     }
   }

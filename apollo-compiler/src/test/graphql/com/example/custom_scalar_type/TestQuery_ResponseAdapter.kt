@@ -46,7 +46,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     if(value.hero == null) {
       writer.writeObject(RESPONSE_FIELDS[0], null)
     } else {
-      writer.writeObject(RESPONSE_FIELDS[0]) {
+      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
         TestQuery_ResponseAdapter.Hero_ResponseAdapter.toResponse(writer, value.hero)
       }
     }
@@ -104,14 +104,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeString(RESPONSE_FIELDS[1], value.name)
       writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, value.birthDate)
-      writer.writeList(RESPONSE_FIELDS[3], value.appearanceDates) { value, listItemWriter ->
-        value?.forEach { value ->
+      writer.writeList(RESPONSE_FIELDS[3], value.appearanceDates) { values, listItemWriter ->
+        values?.forEach { value ->
           listItemWriter.writeCustom(CustomType.DATE, value)}
       }
       writer.writeCustom(RESPONSE_FIELDS[4] as ResponseField.CustomTypeField, value.fieldWithUnsupportedType)
       writer.writeCustom(RESPONSE_FIELDS[5] as ResponseField.CustomTypeField, value.profileLink)
-      writer.writeList(RESPONSE_FIELDS[6], value.links) { value, listItemWriter ->
-        value?.forEach { value ->
+      writer.writeList(RESPONSE_FIELDS[6], value.links) { values, listItemWriter ->
+        values?.forEach { value ->
           listItemWriter.writeCustom(CustomType.URL, value)}
       }
     }

@@ -57,12 +57,12 @@ object DroidDetails_ResponseAdapter : ResponseAdapter<DroidDetails.DefaultImpl> 
     writer.writeString(RESPONSE_FIELDS[0], value.__typename)
     writer.writeString(RESPONSE_FIELDS[1], value.name)
     writer.writeString(RESPONSE_FIELDS[2], value.primaryFunction)
-    writer.writeList(RESPONSE_FIELDS[3], value.friends) { value, listItemWriter ->
-      value?.forEach { value ->
+    writer.writeList(RESPONSE_FIELDS[3], value.friends) { values, listItemWriter ->
+      values?.forEach { value ->
         if(value == null) {
           listItemWriter.writeObject(null)
         } else {
-          listItemWriter.writeObject {
+          listItemWriter.writeObject { writer ->
             Friend1_ResponseAdapter.toResponse(writer, value)
           }
         }

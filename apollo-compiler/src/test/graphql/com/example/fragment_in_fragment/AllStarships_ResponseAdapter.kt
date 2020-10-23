@@ -45,7 +45,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
     if(value.allStarships == null) {
       writer.writeObject(RESPONSE_FIELDS[0], null)
     } else {
-      writer.writeObject(RESPONSE_FIELDS[0]) {
+      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
         AllStarships_ResponseAdapter.AllStarships1_ResponseAdapter.toResponse(writer, value.allStarships)
       }
     }
@@ -117,7 +117,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
       if(value.homeworld == null) {
         writer.writeObject(RESPONSE_FIELDS[2], null)
       } else {
-        writer.writeObject(RESPONSE_FIELDS[2]) {
+        writer.writeObject(RESPONSE_FIELDS[2]) { writer ->
           AllStarships_ResponseAdapter.Homeworld_ResponseAdapter.toResponse(writer, value.homeworld)
         }
       }
@@ -155,7 +155,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
       if(value.node == null) {
         writer.writeObject(RESPONSE_FIELDS[1], null)
       } else {
-        writer.writeObject(RESPONSE_FIELDS[1]) {
+        writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
           AllStarships_ResponseAdapter.Node1_ResponseAdapter.toResponse(writer, value.node)
         }
       }
@@ -193,12 +193,12 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
 
     override fun toResponse(writer: ResponseWriter, value: AllStarships.PilotConnection) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeList(RESPONSE_FIELDS[1], value.edges) { value, listItemWriter ->
-        value?.forEach { value ->
+      writer.writeList(RESPONSE_FIELDS[1], value.edges) { values, listItemWriter ->
+        values?.forEach { value ->
           if(value == null) {
             listItemWriter.writeObject(null)
           } else {
-            listItemWriter.writeObject {
+            listItemWriter.writeObject { writer ->
               AllStarships_ResponseAdapter.Edge1_ResponseAdapter.toResponse(writer, value)
             }
           }
@@ -248,7 +248,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
       if(value.pilotConnection == null) {
         writer.writeObject(RESPONSE_FIELDS[3], null)
       } else {
-        writer.writeObject(RESPONSE_FIELDS[3]) {
+        writer.writeObject(RESPONSE_FIELDS[3]) { writer ->
           AllStarships_ResponseAdapter.PilotConnection_ResponseAdapter.toResponse(writer, value.pilotConnection)
         }
       }
@@ -286,7 +286,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
       if(value.node == null) {
         writer.writeObject(RESPONSE_FIELDS[1], null)
       } else {
-        writer.writeObject(RESPONSE_FIELDS[1]) {
+        writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
           AllStarships_ResponseAdapter.Node_ResponseAdapter.toResponse(writer, value.node)
         }
       }
@@ -324,12 +324,12 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
 
     override fun toResponse(writer: ResponseWriter, value: AllStarships.AllStarships1) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeList(RESPONSE_FIELDS[1], value.edges) { value, listItemWriter ->
-        value?.forEach { value ->
+      writer.writeList(RESPONSE_FIELDS[1], value.edges) { values, listItemWriter ->
+        values?.forEach { value ->
           if(value == null) {
             listItemWriter.writeObject(null)
           } else {
-            listItemWriter.writeObject {
+            listItemWriter.writeObject { writer ->
               AllStarships_ResponseAdapter.Edge_ResponseAdapter.toResponse(writer, value)
             }
           }

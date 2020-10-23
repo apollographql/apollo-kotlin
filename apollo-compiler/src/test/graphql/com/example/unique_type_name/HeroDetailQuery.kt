@@ -43,8 +43,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
   override fun name(): OperationName = OPERATION_NAME
 
   override fun responseFieldMapper(): ResponseFieldMapper<Data> {
-    return ResponseFieldMapper.invoke {
-      HeroDetailQuery_ResponseAdapter.fromResponse(it)
+    return ResponseFieldMapper { reader ->
+      HeroDetailQuery_ResponseAdapter.fromResponse(reader)
     }
   }
 

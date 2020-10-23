@@ -48,7 +48,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     if(value.starship == null) {
       writer.writeObject(RESPONSE_FIELDS[0], null)
     } else {
-      writer.writeObject(RESPONSE_FIELDS[0]) {
+      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
         TestQuery_ResponseAdapter.Starship_ResponseAdapter.toResponse(writer, value.starship)
       }
     }
@@ -94,8 +94,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, value.id)
       writer.writeString(RESPONSE_FIELDS[2], value.name)
-      writer.writeList(RESPONSE_FIELDS[3], value.coordinates) { value, listItemWriter ->
-        value?.forEach { value ->
+      writer.writeList(RESPONSE_FIELDS[3], value.coordinates) { values, listItemWriter ->
+        values?.forEach { value ->
           listItemWriter.writeList(value) { value, listItemWriter ->
             value?.forEach { value ->
               listItemWriter.writeDouble(value)}

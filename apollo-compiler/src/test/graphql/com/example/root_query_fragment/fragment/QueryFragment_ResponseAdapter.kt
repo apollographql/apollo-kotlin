@@ -48,7 +48,7 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.DefaultImpl
     if(value.hero == null) {
       writer.writeObject(RESPONSE_FIELDS[1], null)
     } else {
-      writer.writeObject(RESPONSE_FIELDS[1]) {
+      writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
         Hero1_ResponseAdapter.toResponse(writer, value.hero)
       }
     }

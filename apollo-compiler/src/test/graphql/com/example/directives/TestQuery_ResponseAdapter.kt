@@ -43,7 +43,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     if(value.hero == null) {
       writer.writeObject(RESPONSE_FIELDS[0], null)
     } else {
-      writer.writeObject(RESPONSE_FIELDS[0]) {
+      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
         TestQuery_ResponseAdapter.Hero_ResponseAdapter.toResponse(writer, value.hero)
       }
     }
@@ -120,7 +120,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       if(value.friendsConnection == null) {
         writer.writeObject(RESPONSE_FIELDS[2], null)
       } else {
-        writer.writeObject(RESPONSE_FIELDS[2]) {
+        writer.writeObject(RESPONSE_FIELDS[2]) { writer ->
           TestQuery_ResponseAdapter.FriendsConnection_ResponseAdapter.toResponse(writer, value.friendsConnection)
         }
       }

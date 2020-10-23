@@ -1,6 +1,7 @@
 package com.apollographql.apollo.compiler.codegen
 
 import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.ast.CodeGenerationAst
@@ -9,8 +10,10 @@ import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.asTypeName
 
 internal fun CodeGenerationAst.FragmentType.typeSpec(generateAsInternal: Boolean): TypeSpec {
   val fragmentType = checkNotNull(nestedTypes[rootType]) {
@@ -37,15 +40,23 @@ internal fun CodeGenerationAst.FragmentType.typeSpec(generateAsInternal: Boolean
               .build()
           )
           .addFunction(
-              FunSpec.builder("invoke")
-                  .addModifiers(KModifier.OPERATOR)
-                  .returns(ClassName.bestGuess(fragmentType.name))
-                  .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
-                  .addStatement(
-                      "return·%T.fromResponse(reader)",
-                      rootType.asAdapterTypeName(),
-                  )
-                  .build()
+            FunSpec.builder("invoke")
+                .addModifiers(KModifier.OPERATOR)
+                .returns(ClassName.bestGuess(fragmentType.name))
+                .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
+                .addStatement(
+                  "return·%T.fromResponse(reader)",
+                  rootType.asAdapterTypeName(),
+                )
+                .build()
+          )
+          .addFunction(
+            FunSpec.builder("Mapper")
+                .returns(ResponseFieldMapper::class.asTypeName().parameterizedBy(ClassName(packageName = "", fragmentType.name)))
+                .beginControlFlow("return·%T·{·reader·->", ResponseFieldMapper::class)
+                .addStatement("%T.fromResponse(reader)", rootType.asAdapterTypeName())
+                .endControlFlow()
+                .build()
           )
           .build()
       )

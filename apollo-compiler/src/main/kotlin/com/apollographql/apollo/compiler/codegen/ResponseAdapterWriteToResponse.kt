@@ -140,7 +140,7 @@ private fun CodeGenerationAst.Field.writeCode(responseField: String): CodeBlock 
             .beginControlFlow("if(value.%L == null)", this.name)
             .addStatement("writer.writeObject(%L,·null)", responseField)
             .nextControlFlow("else")
-            .beginControlFlow("writer.writeObject(%L)", responseField)
+            .beginControlFlow("writer.writeObject(%L)·{·writer·->", responseField)
             .addStatement(
                 "%T.toResponse(writer,·value.%L)",
                 this.type.typeRef.asAdapterTypeName(),
@@ -151,7 +151,7 @@ private fun CodeGenerationAst.Field.writeCode(responseField: String): CodeBlock 
             .build()
       } else {
         CodeBlock.builder()
-            .beginControlFlow("writer.writeObject(%L)", responseField)
+            .beginControlFlow("writer.writeObject(%L)·{·writer·->", responseField)
             .addStatement(
                 "%T.toResponse(writer,·value.%L)",
                 this.type.typeRef.asAdapterTypeName(),
@@ -165,11 +165,11 @@ private fun CodeGenerationAst.Field.writeCode(responseField: String): CodeBlock 
     is CodeGenerationAst.FieldType.Array -> {
       CodeBlock.builder()
           .beginControlFlow(
-              "writer.writeList(%L,·value.%L)·{·value,·listItemWriter·->",
+              "writer.writeList(%L,·value.%L)·{·values,·listItemWriter·->",
               responseField,
               this.name,
           )
-          .beginControlFlow("value?.forEach·{·value·->")
+          .beginControlFlow("values?.forEach·{·value·->")
           .add(type.writeListItemCode)
           .endControlFlow()
           .endControlFlow()
@@ -201,14 +201,14 @@ private val CodeGenerationAst.FieldType.Array.writeListItemCode: CodeBlock
               .beginControlFlow("if(value == null)")
               .addStatement("listItemWriter.writeObject(null)")
               .nextControlFlow("else")
-              .beginControlFlow("listItemWriter.writeObject")
+              .beginControlFlow("listItemWriter.writeObject·{·writer·->")
               .addStatement("%T.toResponse(writer,·value)", this.rawType.typeRef.asAdapterTypeName())
               .endControlFlow()
               .endControlFlow()
               .build()
         } else {
           CodeBlock.builder()
-              .beginControlFlow("listItemWriter.writeObject")
+              .beginControlFlow("listItemWriter.writeObject·{·writer·->")
               .addStatement("%T.toResponse(writer,·value)", this.rawType.typeRef.asAdapterTypeName())
               .endControlFlow()
               .build()

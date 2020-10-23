@@ -53,7 +53,7 @@ object PilotFragment_ResponseAdapter : ResponseAdapter<PilotFragment.DefaultImpl
     if(value.homeworld == null) {
       writer.writeObject(RESPONSE_FIELDS[2], null)
     } else {
-      writer.writeObject(RESPONSE_FIELDS[2]) {
+      writer.writeObject(RESPONSE_FIELDS[2]) { writer ->
         Homeworld1_ResponseAdapter.toResponse(writer, value.homeworld)
       }
     }

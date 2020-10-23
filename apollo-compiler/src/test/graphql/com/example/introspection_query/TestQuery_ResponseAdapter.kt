@@ -47,13 +47,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   }
 
   override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
-    writer.writeObject(RESPONSE_FIELDS[0]) {
+    writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
       TestQuery_ResponseAdapter.__Schema_ResponseAdapter.toResponse(writer, value.__schema)
     }
     if(value.__type == null) {
       writer.writeObject(RESPONSE_FIELDS[1], null)
     } else {
-      writer.writeObject(RESPONSE_FIELDS[1]) {
+      writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
         TestQuery_ResponseAdapter.__Type_ResponseAdapter.toResponse(writer, value.__type)
       }
     }
@@ -155,12 +155,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.__Schema) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeObject(RESPONSE_FIELDS[1]) {
+      writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
         TestQuery_ResponseAdapter.QueryType_ResponseAdapter.toResponse(writer, value.queryType)
       }
-      writer.writeList(RESPONSE_FIELDS[2], value.types) { value, listItemWriter ->
-        value?.forEach { value ->
-          listItemWriter.writeObject {
+      writer.writeList(RESPONSE_FIELDS[2], value.types) { values, listItemWriter ->
+        values?.forEach { value ->
+          listItemWriter.writeObject { writer ->
             TestQuery_ResponseAdapter.Type_ResponseAdapter.toResponse(writer, value)
           }
         }

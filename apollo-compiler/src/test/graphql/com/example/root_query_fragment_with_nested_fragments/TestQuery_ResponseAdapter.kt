@@ -61,21 +61,21 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     if(value.hero == null) {
       writer.writeObject(RESPONSE_FIELDS[1], null)
     } else {
-      writer.writeObject(RESPONSE_FIELDS[1]) {
+      writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
         TestQuery_ResponseAdapter.Hero_ResponseAdapter.toResponse(writer, value.hero)
       }
     }
     if(value.droid == null) {
       writer.writeObject(RESPONSE_FIELDS[2], null)
     } else {
-      writer.writeObject(RESPONSE_FIELDS[2]) {
+      writer.writeObject(RESPONSE_FIELDS[2]) { writer ->
         TestQuery_ResponseAdapter.Droid_ResponseAdapter.toResponse(writer, value.droid)
       }
     }
     if(value.human == null) {
       writer.writeObject(RESPONSE_FIELDS[3], null)
     } else {
-      writer.writeObject(RESPONSE_FIELDS[3]) {
+      writer.writeObject(RESPONSE_FIELDS[3]) { writer ->
         TestQuery_ResponseAdapter.Human_ResponseAdapter.toResponse(writer, value.human)
       }
     }

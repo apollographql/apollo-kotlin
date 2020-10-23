@@ -51,7 +51,7 @@ object CreateReviewForEpisodeMutation_ResponseAdapter :
     if(value.createReview == null) {
       writer.writeObject(RESPONSE_FIELDS[0], null)
     } else {
-      writer.writeObject(RESPONSE_FIELDS[0]) {
+      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
         CreateReviewForEpisodeMutation_ResponseAdapter.CreateReview_ResponseAdapter.toResponse(writer, value.createReview)
       }
     }

@@ -62,21 +62,21 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.DefaultImpl
     if(value.hero == null) {
       writer.writeObject(RESPONSE_FIELDS[1], null)
     } else {
-      writer.writeObject(RESPONSE_FIELDS[1]) {
+      writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
         Hero1_ResponseAdapter.toResponse(writer, value.hero)
       }
     }
     if(value.droid == null) {
       writer.writeObject(RESPONSE_FIELDS[2], null)
     } else {
-      writer.writeObject(RESPONSE_FIELDS[2]) {
+      writer.writeObject(RESPONSE_FIELDS[2]) { writer ->
         Droid1_ResponseAdapter.toResponse(writer, value.droid)
       }
     }
     if(value.human == null) {
       writer.writeObject(RESPONSE_FIELDS[3], null)
     } else {
-      writer.writeObject(RESPONSE_FIELDS[3]) {
+      writer.writeObject(RESPONSE_FIELDS[3]) { writer ->
         Human1_ResponseAdapter.toResponse(writer, value.human)
       }
     }

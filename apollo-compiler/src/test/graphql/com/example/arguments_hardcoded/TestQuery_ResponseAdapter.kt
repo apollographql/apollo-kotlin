@@ -46,12 +46,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   }
 
   override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
-    writer.writeList(RESPONSE_FIELDS[0], value.reviews) { value, listItemWriter ->
-      value?.forEach { value ->
+    writer.writeList(RESPONSE_FIELDS[0], value.reviews) { values, listItemWriter ->
+      values?.forEach { value ->
         if(value == null) {
           listItemWriter.writeObject(null)
         } else {
-          listItemWriter.writeObject {
+          listItemWriter.writeObject { writer ->
             TestQuery_ResponseAdapter.Review_ResponseAdapter.toResponse(writer, value)
           }
         }
