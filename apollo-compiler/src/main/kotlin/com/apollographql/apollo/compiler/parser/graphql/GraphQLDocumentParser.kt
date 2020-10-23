@@ -330,8 +330,7 @@ class GraphQLDocumentParser(
               )
             },
             description = schemaField.description?.trim() ?: "",
-            isDeprecated = schemaField.isDeprecated,
-            deprecationReason = schemaField.deprecationReason ?: "",
+            deprecationReason = schemaField.deprecationReason,
             conditions = conditions,
             sourceLocation = SourceLocation(start)
         ),
@@ -427,7 +426,7 @@ class GraphQLDocumentParser(
 
     val decoratedParentFields = parentFields.let { (parentFields, usedTypes) ->
       // if inline fragment conditional type contains the same field as parent type
-      // carry over meta info such as: `description`, `isDeprecated`, `deprecationReason`
+      // carry over meta info such as: `description`, `deprecationReason`
       val decoratedFields = parentFields.map { parentField ->
         when (schemaType) {
           is IntrospectionSchema.Type.Interface -> schemaType.fields?.find { it.name == parentField.fieldName }
@@ -437,8 +436,7 @@ class GraphQLDocumentParser(
         }?.let { field ->
           parentField.copy(
               description = field.description ?: parentField.description,
-              isDeprecated = field.isDeprecated,
-              deprecationReason = field.deprecationReason ?: ""
+              deprecationReason = field.deprecationReason
           )
         } ?: parentField
       }

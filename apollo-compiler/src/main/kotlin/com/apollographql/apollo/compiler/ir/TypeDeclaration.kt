@@ -34,7 +34,7 @@ data class TypeDeclaration(
             }
           }
           .apply {
-            if (value.isDeprecated == true) {
+            if (value.deprecationReason != null) {
               addAnnotation(Annotations.DEPRECATED)
               if (!value.deprecationReason.isNullOrBlank()) {
                 addJavadoc("@deprecated \$L\n", value.deprecationReason)

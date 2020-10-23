@@ -70,7 +70,7 @@ internal object KotlinCodeGen {
               name = name,
               type = if (isOptional) type.asTypeName().copy(nullable = true) else type.asTypeName()
           )
-          .applyIf(isDeprecated) { addAnnotation(deprecatedAnnotation(deprecationReason)) }
+          .applyIf(deprecationReason != null) { addAnnotation(deprecatedAnnotation(deprecationReason!!)) }
           .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }
           .initializer(initializer)
           .build()

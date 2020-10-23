@@ -177,7 +177,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
     fieldsToVisit.addAll(this)
     while (fieldsToVisit.isNotEmpty()) {
       val field = fieldsToVisit.removeAt(fieldsToVisit.lastIndex)
-      if (field.isDeprecated) {
+      if (field.deprecationReason != null) {
         deprecatedUsages.add(DeprecatedUsage(filePath, field.sourceLocation, field))
       }
       fieldsToVisit.addAll(field.fields)

@@ -294,7 +294,7 @@ private fun GraphSdlSchema.TypeDefinition.Field.Argument.toIntrospectionType(sch
 
 private fun List<GraphSdlSchema.Directive>.findDeprecatedDirective(): DeprecateDirective? {
   return find { directive -> directive.name == "deprecated" }?.let { directive ->
-    DeprecateDirective(directive.arguments["reason"]?.removePrefix("\"")?.removeSuffix("\""))
+    DeprecateDirective(directive.arguments["reason"]?.removePrefix("\"")?.removeSuffix("\"") ?: "No longer supported")
   }
 }
 

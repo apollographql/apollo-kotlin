@@ -48,7 +48,7 @@ private val EnumType.Value.enumConstTypeSpec: TypeSpec
     return TypeSpec
         .anonymousClassBuilder()
         .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }
-        .applyIf(isDeprecated) { addAnnotation(KotlinCodeGen.deprecatedAnnotation(deprecationReason)) }
+        .applyIf(deprecationReason != null) { addAnnotation(KotlinCodeGen.deprecatedAnnotation(deprecationReason!!)) }
         .addSuperclassConstructorParameter("%S", value)
         .build()
   }
@@ -97,7 +97,7 @@ private fun EnumType.toSealedClassTypeSpec(generateAsInternal: Boolean): TypeSpe
 private fun EnumType.Value.toObjectTypeSpec(superClass: TypeName): TypeSpec {
   return TypeSpec.objectBuilder(constName)
       .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }
-      .applyIf(isDeprecated) { addAnnotation(KotlinCodeGen.deprecatedAnnotation(deprecationReason)) }
+      .applyIf(deprecationReason != null) { addAnnotation(KotlinCodeGen.deprecatedAnnotation(deprecationReason!!)) }
       .superclass(superClass)
       .addSuperclassConstructorParameter("rawValue = %S", value)
       .build()

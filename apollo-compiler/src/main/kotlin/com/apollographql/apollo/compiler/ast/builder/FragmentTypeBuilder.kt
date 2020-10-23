@@ -67,8 +67,7 @@ internal fun Map<FragmentRef, Fragment>.astFragmentsObjectFieldType(
             )),
             description = "",
             isOptional = isOptional,
-            isDeprecated = false,
-            deprecationReason = "",
+            deprecationReason = null,
             arguments = emptyMap(),
             conditions = fragmentRef.conditions
                 .filter { condition -> condition.kind == Condition.Kind.BOOLEAN.rawValue }
@@ -105,8 +104,7 @@ internal fun Map<FragmentRef, Fragment>.astFragmentsObjectFieldType(
       ),
       description = "",
       isOptional = false,
-      isDeprecated = false,
-      deprecationReason = "",
+      deprecationReason = null,
       arguments = emptyMap(),
       conditions = emptyList()
   )

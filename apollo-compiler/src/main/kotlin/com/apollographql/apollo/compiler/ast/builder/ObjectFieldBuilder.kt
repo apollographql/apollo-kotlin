@@ -27,7 +27,6 @@ private fun Field.scalar(context: Context): ObjectType.Field {
       ),
       description = description,
       isOptional = !type.endsWith("!") || isConditional,
-      isDeprecated = isDeprecated,
       deprecationReason = deprecationReason,
       arguments = args.associate { it.name to it.value },
       conditions = normalizedConditions
@@ -71,7 +70,6 @@ private fun Field.array(context: Context): ObjectType.Field {
       type = fieldType,
       description = description,
       isOptional = !type.endsWith("!") || isConditional,
-      isDeprecated = isDeprecated,
       deprecationReason = deprecationReason,
       arguments = args.associate { it.name to it.value },
       conditions = normalizedConditions
@@ -96,7 +94,6 @@ private fun Field.`object`(context: Context): ObjectType.Field {
       type = FieldType.Object(typeRef),
       description = description,
       isOptional = !type.endsWith("!") || isConditional,
-      isDeprecated = isDeprecated,
       deprecationReason = deprecationReason,
       arguments = args.associate { it.name to it.value },
       conditions = normalizedConditions

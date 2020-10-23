@@ -112,8 +112,7 @@ class IRBuilder(private val schema: IntrospectionSchema,
             TypeDeclarationValue(
                 name = value.name,
                 description = value.description?.trim() ?: "",
-                isDeprecated = value.isDeprecated || !value.deprecationReason.isNullOrBlank(),
-                deprecationReason = value.deprecationReason ?: ""
+                deprecationReason = value.deprecationReason
             )
           } ?: emptyList(),
           fields = (type as? IntrospectionSchema.Type.InputObject)?.inputFields?.map { field ->
