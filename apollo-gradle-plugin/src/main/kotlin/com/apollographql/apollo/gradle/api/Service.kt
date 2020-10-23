@@ -14,6 +14,7 @@ import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.provider.SetProperty
+import org.gradle.api.tasks.TaskProvider
 
 /**
  * A [Service] represents a GraphQL schema and associated queries.
@@ -26,8 +27,7 @@ interface Service  {
   /**
    * The folder containing the GraphQL operation files. They are the files that are used to define queries.
    *
-   * For multiplatform projects, files will be searched in "src/commonMain/graphql/$sourceFolder"
-   * For other projects, files will be searched in "src/main/graphql/$sourceFolder"
+   * Files will be searched in "src/$sourceSet/graphql/$sourceFolder"
    */
   val sourceFolder: Property<String>
 
@@ -46,17 +46,14 @@ interface Service  {
   val exclude: ListProperty<String>
 
   /**
-   * The graphql files containing the queries.
+   * Adds the given directory as a GraphQL source root
    *
-   * By default, the plugin will use [sourceFolder], [include] and [exclude] to populate the graphqlSourceDirectorySet with all the matching .graphql or .gql files.
-   * You can change this behaviour by calling `graphqlSourceDirectorySet.srcDir("path/to/your/directory")` and specifying includes/excludes manually:
-   * graphqlSourceDirectorySet.srcDir("path/to/your/directory")
-   * graphqlSourceDirectorySet.include("**&#47;*.graphql")
-   * graphqlSourceDirectorySet.exclude("**&#47;schema.graphql")
+   * By default, the plugin will use [sourceFolder] to search for GraphQL files under "src/$sourceSet/graphql/$sourceFolder".
    *
-   * This allows to put .graphql files outside of "src/main/graphql" or to have them in multiple folders. For an example, to share them with iOS or other clients
+   * Use [addGraphqlDirectory] if your files are outside of "src/main/graphql" or to have them in multiple folders.
+   *
    */
-  val graphqlSourceDirectorySet: SourceDirectorySet
+  fun addGraphqlDirectory(directory: Any)
 
   /**
    * The schema file as either a ".json" introspection schema or a ".sdl" SDL schema. You might come across schemas named "schema.graphql",
@@ -220,7 +217,7 @@ interface Service  {
       /**
        * The task that produces operationOutput
        */
-      val task: Provider<out Task>,
+      val task: TaskProvider<out Task>,
 
       /**
        * A json file containing a [Map]<[String], [com.apollographql.apollo.compiler.operationoutput.OperationDescriptor]>
@@ -243,7 +240,7 @@ interface Service  {
       /**
        * The task that produces outputDir
        */
-      val task: Provider<out Task>,
+      val task: TaskProvider<out Task>,
       /**
        * The directory where the generated models will be written
        */

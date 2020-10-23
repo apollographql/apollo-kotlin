@@ -1,0 +1,74 @@
+import com.apollographql.apollo.gradle.api.ApolloExtension
+import com.android.build.gradle.BaseExtension
+
+buildscript {
+  apply(from = "../../../gradle/dependencies.gradle")
+
+  repositories {
+    maven {
+      url = uri("../../../build/localMaven")
+    }
+    google()
+    jcenter()
+  }
+  dependencies {
+    classpath(groovy.util.Eval.x(project, "x.dep.android.plugin"))
+    classpath(groovy.util.Eval.x(project, "x.dep.apollo.plugin"))
+    classpath(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
+  }
+}
+
+
+apply(plugin = "com.android.library")
+apply(plugin = "org.jetbrains.kotlin.android")
+apply(plugin = "com.apollographql.apollo")
+
+repositories {
+  maven {
+    url = uri("../../../build/localMaven")
+  }
+  google()
+  mavenCentral()
+  jcenter()
+}
+
+dependencies {
+  add("implementation", groovy.util.Eval.x(project, "x.dep.apollo.api"))
+}
+
+configure<BaseExtension> {
+  compileSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt())
+
+  defaultConfig {
+    minSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.minSdkVersion").toString())
+    targetSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.targetSdkVersion").toString())
+  }
+
+  compileOptions {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+  }
+
+  // This doesn't really make sense for a library project, but still allows to compile flavor source sets
+  flavorDimensions("version")
+  productFlavors {
+    create("demo") {
+      versionNameSuffix = "-demo"
+    }
+    create("full") {
+      versionNameSuffix = "-full"
+    }
+  }
+}
+
+configure<ApolloExtension> {
+  createAllAndroidVariantServices("example") {
+    schemaFile.set(file("src/main/graphql/com/example/schema.sdl"))
+  }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+  kotlinOptions {
+    jvmTarget = "1.8"
+  }
+}

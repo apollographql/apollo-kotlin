@@ -10,6 +10,7 @@ import com.apollographql.apollo.gradle.util.replaceInText
 import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.hamcrest.CoreMatchers.containsString
+import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertThat
@@ -18,12 +19,24 @@ import org.junit.Test
 import java.io.File
 import java.nio.file.Files
 
-class ConfigurationTests {
+class ServiceTests {
   @Test
   fun `customTypeMapping is working`() {
     withSimpleProject("""
       apollo {
         customTypeMapping = ["DateTime": "java.util.Date"]
+      }
+    """.trimIndent()) { dir ->
+      TestUtils.executeTask("generateApolloSources", dir)
+      TestUtils.assertFileContains(dir, "service/com/example/type/CustomType.kt", "= \"java.util.Date\"")
+    }
+  }
+
+  @Test
+  fun `customTypeMapping put is working`() {
+    withSimpleProject("""
+      apollo {
+        customTypeMapping.put("DateTime", "java.util.Date")
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
@@ -144,8 +157,7 @@ class ConfigurationTests {
       apollo {
         sourceFolder.set("non-existing")
         schemaFile = file("src/main/graphql/com/example/schema.json")
-        graphqlSourceDirectorySet.srcDir(file("src/main/graphql/"))
-        graphqlSourceDirectorySet.include("**/*.graphql")
+        addGraphqlDirectory(file("src/main/graphql/"))
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
@@ -333,36 +345,71 @@ class ConfigurationTests {
   }
 
   @Test
-  fun `test variants do not create duplicate classes`() {
-    withSimpleProject("""
+  fun `withOutputDir can rewire to the test source set`() {
+    withTestProject("testSourceSet") {dir ->
+      TestUtils.executeTask("build", dir)
+
+      assertTrue(dir.generatedChild("service/com/example/GreetingQuery.kt").isFile)
+      assertTrue(File(dir, "build/libs/testProject.jar").isFile)
+    }
+  }
+
+  @Test
+  fun `when generateAsInternal set to true - generated models are internal`() {
+    val apolloConfiguration = """
       apollo {
-        schemaFile = file("src/main/graphql/com/example/schema.json")
-        graphqlSourceDirectorySet.srcDir("src/main/graphql/")
-        graphqlSourceDirectorySet.include("**/*.graphql")
+        generateAsInternal = true
       }
-    """.trimIndent()) { dir ->
+    """.trimIndent()
 
-      File(dir, "build.gradle").replaceInText(
-          "implementation dep.apollo.api",
-          "implementation dep.apollo.api\nimplementation \"junit:junit:4.12\""
-      )
-      File(dir, "src/test/java/com/example/").mkdirs()
-      File(dir, "src/test/java/com/example/MainTest.java").writeText("""
-        package com.example;
-        
-        import com.example.DroidDetailsQuery;
-        import org.junit.Test;
-        
-        public class MainTest {
-            @Test
-            public void aMethodThatReferencesAGeneratedQuery() {
-                new DroidDetailsQuery();
-            }
+    TestUtils.withProject(
+        usesKotlinDsl = false,
+        apolloConfiguration = apolloConfiguration,
+        plugins = listOf(TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin)
+    ) { dir ->
+
+      val source = fixturesDirectory()
+      File(source, "kotlin").copyRecursively(File(dir, "src/main/kotlin"))
+
+      TestUtils.executeTask("build", dir)
+
+      assertTrue(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").isFile)
+      assertThat(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").readText(), containsString("internal class"))
+
+      assertTrue(dir.generatedChild("service/com/example/type/CustomType.kt").isFile)
+      assertThat(dir.generatedChild("service/com/example/type/CustomType.kt").readText(), containsString("internal enum class"))
+
+      assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").isFile)
+      assertThat(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").readText(), containsString("internal interface"))
+    }
+  }
+
+  @Test
+  fun `when sealedClassesForEnumsMatching to match all - generated enum type as sealed class`() {
+    val apolloConfiguration = """
+      apollo {
+        service("githunt") {
+          sourceFolder = "githunt"
+          sealedClassesForEnumsMatching = [".*"]
         }
-""".trimIndent())
-      val result = TestUtils.executeTask("build", dir)
+      }
+    """.trimIndent()
+    TestUtils.withProject(
+        usesKotlinDsl = false,
+        apolloConfiguration = apolloConfiguration,
+        plugins = listOf(TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin)
+    ) { dir ->
+      val source = fixturesDirectory()
 
-      assertEquals(TaskOutcome.SUCCESS, result.task(":build")!!.outcome)
+      val target = File(dir, "src/main/graphql/githunt")
+      File(source, "githunt").copyRecursively(target = target, overwrite = true)
+
+      File(dir, "src/main/graphql/com").deleteRecursively()
+
+      TestUtils.executeTask("build", dir)
+
+      assertTrue(dir.generatedChild("githunt/type/FeedType.kt").isFile)
+      assertThat(dir.generatedChild("githunt/type/FeedType.kt").readText(), containsString("sealed class"))
     }
   }
 }

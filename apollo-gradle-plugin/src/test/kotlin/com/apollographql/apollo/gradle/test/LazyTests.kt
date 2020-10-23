@@ -45,7 +45,7 @@ val installTask = tasks.register("installTask", InstallGraphQLFilesTask::class.j
 }
 configure<ApolloExtension> {
   println("adding default toto")
-  graphqlSourceDirectorySet.srcDir(installTask.flatMap { it.outputDir })
+  addGraphqlDirectory(installTask.flatMap { it.outputDir })
 }
 """.trimIndent()
 

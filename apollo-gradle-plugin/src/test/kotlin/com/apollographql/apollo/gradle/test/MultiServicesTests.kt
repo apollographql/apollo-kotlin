@@ -12,8 +12,8 @@ import org.junit.Assert.fail
 import org.junit.Test
 import java.io.File
 
-class MultipleServicesTests {
-  fun withMultipleServicesProject(apolloConfiguration: String, block: (File) -> Unit) {
+class MultiServicesTests {
+  private fun withMultipleServicesProject(apolloConfiguration: String, block: (File) -> Unit) {
     withProject(usesKotlinDsl = false,
         plugins = listOf(TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin),
         apolloConfiguration = apolloConfiguration) { dir ->
