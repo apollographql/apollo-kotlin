@@ -1,31 +1,34 @@
 package com.apollographql.apollo.compiler.codegen
 
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
-import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.ast.CodeGenerationAst
 import com.apollographql.apollo.compiler.ir.Field
-import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.joinToCode
 
 internal fun CodeGenerationAst.ObjectType.typeSpec(
-    generateAsInternal: Boolean = false
+    responseAdapter: TypeName,
+    generateAsInternal: Boolean = false,
 ): TypeSpec {
   return if (kind is CodeGenerationAst.ObjectType.Kind.FragmentDelegate) {
     fragmentDelegateTypeSpec(generateAsInternal)
   } else {
-    objectTypeSpec(generateAsInternal)
+    objectTypeSpec(
+        responseAdapter = responseAdapter,
+        generateAsInternal = generateAsInternal,
+    )
   }
 }
 
-internal fun CodeGenerationAst.ObjectType.objectTypeSpec(
-    generateAsInternal: Boolean = false
+private fun CodeGenerationAst.ObjectType.objectTypeSpec(
+    responseAdapter: TypeName,
+    generateAsInternal: Boolean = false,
 ): TypeSpec {
   val builder = if (abstract) TypeSpec.interfaceBuilder(name) else TypeSpec.classBuilder(name)
   return builder
@@ -41,24 +44,8 @@ internal fun CodeGenerationAst.ObjectType.objectTypeSpec(
             )
           }
       )
-      .applyIf(!abstract) {
-        addType(
-            TypeSpec
-                .companionObjectBuilder()
-                .addProperty(responseFieldsPropertySpec(fields))
-                .addFunction(fields.toMapperFun(ClassName("", name)))
-                .addFunction(ClassName("", name).createMapperFun())
-                .build()
-        )
-      }
       .apply {
         if (kind is CodeGenerationAst.ObjectType.Kind.Fragment) {
-          addType(
-              fragmentCompanionTypeSpec(
-                  defaultImplementation = kind.defaultImplementation,
-                  possibleImplementations = kind.possibleImplementations
-              )
-          )
           kind.allPossibleTypes.forEach { type ->
             addFunction(
                 FunSpec
@@ -72,12 +59,13 @@ internal fun CodeGenerationAst.ObjectType.objectTypeSpec(
       }
       .applyIf(!abstract) {
         addFunction(
-            fields.marshallerFunSpec(
-                thisRef = name,
-                // not ideal but there is no better way of doing this
-                // we assume if generated class implements any interface, marshaller function is overridden
-                override = implements.isNotEmpty()
-            )
+            FunSpec.builder("marshaller")
+                .applyIf(implements.isNotEmpty()) { addModifiers(KModifier.OVERRIDE) }
+                .returns(ResponseFieldMarshaller::class)
+                .beginControlFlow("return·%T·{·writer·->", ResponseFieldMarshaller::class)
+                .addStatement("%T.toResponse(writer,·this)", responseAdapter)
+                .endControlFlow()
+                .build()
         )
       }
       .applyIf(abstract) {
@@ -96,85 +84,26 @@ private fun CodeGenerationAst.ObjectType.fragmentDelegateTypeSpec(
     generateAsInternal: Boolean = false
 ): TypeSpec {
   val delegateTypeRef = (kind as CodeGenerationAst.ObjectType.Kind.FragmentDelegate).fragmentTypeRef
-  val delegateFieldName = "${delegateTypeRef.name.decapitalize()}Delegate"
   val delegateFieldTypeName = delegateTypeRef.asTypeName()
   val primaryConstructorSpec = FunSpec.constructorBuilder()
       .apply {
         addParameter(
-            ParameterSpec.builder(name = delegateFieldName, type = delegateFieldTypeName).build()
+            ParameterSpec.builder(name = "delegate", type = delegateFieldTypeName).build()
         )
       }
       .build()
   return TypeSpec.classBuilder(name)
       .addSuperinterfaces(implements.minus(delegateTypeRef).map { type -> type.asTypeName() })
-      .addSuperinterface(delegateTypeRef.asTypeName(), delegate = CodeBlock.of("%L", delegateFieldName))
+      .addSuperinterface(delegateTypeRef.enclosingType!!.asTypeName(), delegate = CodeBlock.of("delegate"))
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .addModifiers(KModifier.DATA)
       .apply { if (description.isNotBlank()) addKdoc("%L\n", description) }
       .addProperty(
-          PropertySpec.builder(name = delegateFieldName, type = delegateFieldTypeName)
-              .initializer("%L", delegateFieldName)
+          PropertySpec.builder(name = "delegate", type = delegateFieldTypeName)
+              .initializer("delegate")
               .build()
       )
       .primaryConstructor(primaryConstructorSpec)
-      .addType(
-          TypeSpec.companionObjectBuilder()
-              .addFunction(
-                  FunSpec
-                      .builder("invoke")
-                      .addModifiers(KModifier.OPERATOR)
-                      .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
-                      .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec())
-                      .returns(ClassName("", name))
-                      .addStatement(
-                          "return·%L(%T(reader, %L))",
-                          name,
-                          delegateFieldTypeName,
-                          CodeGenerationAst.typenameField.responseName
-                      )
-                      .build()
-              )
-              .build()
-      )
-      .build()
-}
-
-private fun CodeGenerationAst.ObjectType.fragmentCompanionTypeSpec(
-    defaultImplementation: CodeGenerationAst.TypeRef,
-    possibleImplementations: Map<String, CodeGenerationAst.TypeRef>
-): TypeSpec {
-  return TypeSpec
-      .companionObjectBuilder()
-      .addProperty(responseFieldsPropertySpec(listOf(CodeGenerationAst.typenameField)))
-      .addFunction(
-          FunSpec
-              .builder("invoke")
-              .addModifiers(KModifier.OPERATOR)
-              .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
-              .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec())
-              .returns(ClassName("", name))
-              .applyIf(possibleImplementations.isEmpty()) {
-                addStatement("return %T(reader)", defaultImplementation.asTypeName())
-              }
-              .applyIf(possibleImplementations.isNotEmpty()) {
-                addStatement("val·typename·=·%L·?:·reader.readString(RESPONSE_FIELDS[0])", CodeGenerationAst.typenameField.responseName)
-                beginControlFlow("return·when(typename)")
-                addCode(
-                    possibleImplementations
-                        .map { (typeCondition, type) ->
-                          CodeBlock.of(
-                              "%S·-> %T(reader, typename)",
-                              typeCondition,
-                              type.asTypeName(),
-                          )
-                        }
-                        .joinToCode(separator = "\n", suffix = "\n")
-                )
-                addStatement("else·->·%T(reader, typename)", defaultImplementation.asTypeName())
-                endControlFlow()
-              }
-              .build()
-      )
       .build()
 }
 

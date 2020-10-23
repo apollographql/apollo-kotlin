@@ -9,17 +9,14 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
 import com.apollographql.apollo.api.internal.OperationRequestBodyComposer
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
-import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.api.internal.Throws
-import kotlin.Array
 import kotlin.Boolean
 import kotlin.String
 import kotlin.Suppress
@@ -34,34 +31,49 @@ import okio.IOException
     "RemoveRedundantQualifierName")
 class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   override fun operationId(): String = OPERATION_ID
+
   override fun queryDocument(): String = QUERY_DOCUMENT
+
   override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
+
   override fun name(): OperationName = OPERATION_NAME
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper.invoke {
-    Data(it)
+
+  override fun responseFieldMapper(): ResponseFieldMapper<Data> {
+    return ResponseFieldMapper { reader ->
+      TestQuery_ResponseAdapter.fromResponse(reader)
+    }
   }
 
   @Throws(IOException::class)
-  override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters): Response<Data>
-      = SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters)
+  override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters):
+      Response<Data> {
+    return SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters)
+  }
 
   @Throws(IOException::class)
-  override fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters): Response<Data>
-      = parse(Buffer().write(byteString), scalarTypeAdapters)
+  override fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters):
+      Response<Data> {
+    return parse(Buffer().write(byteString), scalarTypeAdapters)
+  }
 
   @Throws(IOException::class)
-  override fun parse(source: BufferedSource): Response<Data> = parse(source, DEFAULT)
+  override fun parse(source: BufferedSource): Response<Data> {
+    return parse(source, DEFAULT)
+  }
 
   @Throws(IOException::class)
-  override fun parse(byteString: ByteString): Response<Data> = parse(byteString, DEFAULT)
+  override fun parse(byteString: ByteString): Response<Data> {
+    return parse(byteString, DEFAULT)
+  }
 
-  override fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters): ByteString =
-      OperationRequestBodyComposer.compose(
-    operation = this,
-    autoPersistQueries = false,
-    withQueryDocument = true,
-    scalarTypeAdapters = scalarTypeAdapters
-  )
+  override fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters): ByteString {
+    return OperationRequestBodyComposer.compose(
+      operation = this,
+      autoPersistQueries = false,
+      withQueryDocument = true,
+      scalarTypeAdapters = scalarTypeAdapters
+    )
+  }
 
   override fun composeRequestBody(): ByteString = OperationRequestBodyComposer.compose(
     operation = this,
@@ -159,43 +171,9 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     override val primaryFunction: String?
   ) : Character1, Droid, Search {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@CharacterDroidImpl.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@CharacterDroidImpl.name)
-        writer.writeString(RESPONSE_FIELDS[2], this@CharacterDroidImpl.primaryFunction)
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.CharacterDroidImpl_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forString("primaryFunction", "primaryFunction", null, true, null)
-      )
-
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): CharacterDroidImpl {
-        return reader.run {
-          var __typename: String? = __typename
-          var name: String? = null
-          var primaryFunction: String? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> name = readString(RESPONSE_FIELDS[1])
-              2 -> primaryFunction = readString(RESPONSE_FIELDS[2])
-              else -> break
-            }
-          }
-          CharacterDroidImpl(
-            __typename = __typename!!,
-            name = name!!,
-            primaryFunction = primaryFunction
-          )
-        }
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<CharacterDroidImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -211,43 +189,9 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     override val homePlanet: String?
   ) : Character1, Human, Search {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@CharacterHumanImpl.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@CharacterHumanImpl.name)
-        writer.writeString(RESPONSE_FIELDS[2], this@CharacterHumanImpl.homePlanet)
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.CharacterHumanImpl_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forString("homePlanet", "homePlanet", null, true, null)
-      )
-
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): CharacterHumanImpl {
-        return reader.run {
-          var __typename: String? = __typename
-          var name: String? = null
-          var homePlanet: String? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> name = readString(RESPONSE_FIELDS[1])
-              2 -> homePlanet = readString(RESPONSE_FIELDS[2])
-              else -> break
-            }
-          }
-          CharacterHumanImpl(
-            __typename = __typename!!,
-            name = name!!,
-            homePlanet = homePlanet
-          )
-        }
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<CharacterHumanImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -255,33 +199,9 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     override val __typename: String = "SearchResult"
   ) : Search {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@OtherSearch.__typename)
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.OtherSearch_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null)
-      )
-
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): OtherSearch {
-        return reader.run {
-          var __typename: String? = __typename
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              else -> break
-            }
-          }
-          OtherSearch(
-            __typename = __typename!!
-          )
-        }
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<OtherSearch> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -295,21 +215,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     fun asHuman(): Human? = this as? Human
 
     fun marshaller(): ResponseFieldMarshaller
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null)
-      )
-
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Search {
-        val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
-        return when(typename) {
-          "Droid" -> CharacterDroidImpl(reader, typename)
-          "Human" -> CharacterHumanImpl(reader, typename)
-          else -> OtherSearch(reader, typename)
-        }
-      }
-    }
   }
 
   /**
@@ -319,44 +224,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     val search: List<Search?>?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeList(RESPONSE_FIELDS[0], this@Data.search) { value, listItemWriter ->
-          value?.forEach { value ->
-            listItemWriter.writeObject(value?.marshaller())}
-        }
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.toResponse(writer, this)
       }
     }
 
     fun searchFilterNotNull(): List<Search>? = search?.filterNotNull()
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forList("search", "search", mapOf<String, Any>(
-          "text" to "bla-bla"), true, null)
-      )
-
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): Data {
-        return reader.run {
-          var search: List<Search?>? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> search = readList<Search>(RESPONSE_FIELDS[0]) { reader ->
-                reader.readObject<Search> { reader ->
-                  Search(reader)
-                }
-              }
-              else -> break
-            }
-          }
-          Data(
-            search = search
-          )
-        }
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<Data> = ResponseFieldMapper { invoke(it) }
-    }
   }
 
   companion object {
@@ -384,7 +257,9 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         )
 
     val OPERATION_NAME: OperationName = object : OperationName {
-      override fun name(): String = "TestQuery"
+      override fun name(): String {
+        return "TestQuery"
+      }
     }
   }
 }

@@ -349,7 +349,7 @@ class NormalizedCacheTestCase {
         Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>> { response -> !response.hasErrors() }
     )
     val heroWithFriendsFragment = apolloClient!!.apolloStore.read(
-        HeroWithFriendsFragment.DefaultImpl.Mapper(),
+        HeroWithFriendsFragment.Mapper(),
         from("2001"),
         Operation.EMPTY_VARIABLES).execute()
     assertThat(heroWithFriendsFragment?.id).isEqualTo("2001")
@@ -363,7 +363,7 @@ class NormalizedCacheTestCase {
     assertThat((heroWithFriendsFragment?.friends?.get(2) as HumanWithIdFragment)?.name).isEqualTo("Leia Organa")
 
     var fragment: HumanWithIdFragment = apolloClient!!.apolloStore.read(
-        HumanWithIdFragment.DefaultImpl.Mapper(),
+        HumanWithIdFragment.Mapper(),
         from("1000"),
         Operation.EMPTY_VARIABLES
     ).execute()
@@ -372,7 +372,7 @@ class NormalizedCacheTestCase {
     assertThat(fragment?.name).isEqualTo("Luke Skywalker")
 
     fragment = apolloClient!!.apolloStore.read(
-        HumanWithIdFragment.DefaultImpl.Mapper(),
+        HumanWithIdFragment.Mapper(),
         from("1002"),
         Operation.EMPTY_VARIABLES
     ).execute()
@@ -380,7 +380,7 @@ class NormalizedCacheTestCase {
     assertThat(fragment?.name).isEqualTo("Han Solo")
 
     fragment = apolloClient!!.apolloStore.read(
-        HumanWithIdFragment.DefaultImpl.Mapper(),
+        HumanWithIdFragment.Mapper(),
         from("1003"),
         Operation.EMPTY_VARIABLES
     ).execute()

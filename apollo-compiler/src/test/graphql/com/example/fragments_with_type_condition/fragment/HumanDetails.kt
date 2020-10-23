@@ -6,11 +6,9 @@
 package com.example.fragments_with_type_condition.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
-import kotlin.Array
 import kotlin.Double
 import kotlin.String
 import kotlin.Suppress
@@ -49,43 +47,9 @@ interface HumanDetails : GraphqlFragment {
     override val height: Double?
   ) : HumanDetails {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@DefaultImpl.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], this@DefaultImpl.name)
-        writer.writeDouble(RESPONSE_FIELDS[2], this@DefaultImpl.height)
+      return ResponseFieldMarshaller { writer ->
+        HumanDetails_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forDouble("height", "height", null, true, null)
-      )
-
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): DefaultImpl {
-        return reader.run {
-          var __typename: String? = __typename
-          var name: String? = null
-          var height: Double? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> name = readString(RESPONSE_FIELDS[1])
-              2 -> height = readDouble(RESPONSE_FIELDS[2])
-              else -> break
-            }
-          }
-          DefaultImpl(
-            __typename = __typename!!,
-            name = name!!,
-            height = height
-          )
-        }
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<DefaultImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -98,7 +62,14 @@ interface HumanDetails : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader, __typename: String? = null): HumanDetails =
-        DefaultImpl(reader, __typename)
+    operator fun invoke(reader: ResponseReader): HumanDetails {
+      return HumanDetails_ResponseAdapter.fromResponse(reader)
+    }
+
+    fun Mapper(): ResponseFieldMapper<HumanDetails> {
+      return ResponseFieldMapper { reader ->
+        HumanDetails_ResponseAdapter.fromResponse(reader)
+      }
+    }
   }
 }

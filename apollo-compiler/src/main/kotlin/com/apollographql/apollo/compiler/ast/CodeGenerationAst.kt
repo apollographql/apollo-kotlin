@@ -56,7 +56,8 @@ internal data class CodeGenerationAst(
       val fields: List<Field>,
       val implements: Set<TypeRef>,
       val schemaType: String?,
-      val kind: Kind
+      val kind: Kind,
+      val typeRef: TypeRef
   ) {
     val abstract: Boolean = kind == Kind.Interface || kind is Kind.Fragment
 

@@ -31,14 +31,14 @@ class MetadataTest {
     rootSchemaFile.writeText(schema)
 
     val rootArgs = GraphQLCompiler.Arguments(
-        rootFolders = emptyList(),
-        graphqlFiles = emptySet(),
-        schemaFile = rootSchemaFile,
-        alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
-        outputDir = rootSourcesDir,
-        generateKotlinModels = true,
-        metadataOutputFile = rootMetadataFile,
-        generateMetadata = true
+      rootFolders = emptyList(),
+      graphqlFiles = emptySet(),
+      schemaFile = rootSchemaFile,
+      alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
+      outputDir = rootSourcesDir,
+      generateKotlinModels = true,
+      metadataOutputFile = rootMetadataFile,
+      generateMetadata = true
     )
     GraphQLCompiler().write(rootArgs)
 
@@ -47,14 +47,14 @@ class MetadataTest {
     leafGraphqlDir.mkdirs()
     File(leafGraphqlDir, "queries.graphql").writeText(SchemaGenerator.generateMutation())
     val leafArgs = GraphQLCompiler.Arguments(
-        rootFolders = leafFolders,
-        graphqlFiles = leafFolders.graphqlFiles(),
-        schemaFile = null,
-        metadata = listOf(rootMetadataFile),
-        outputDir = leafSourcesDir,
-        generateKotlinModels = true,
-        metadataOutputFile = leafMetadataFile,
-        generateMetadata = false
+      rootFolders = leafFolders,
+      graphqlFiles = leafFolders.graphqlFiles(),
+      schemaFile = null,
+      metadata = listOf(rootMetadataFile),
+      outputDir = leafSourcesDir,
+      generateKotlinModels = true,
+      metadataOutputFile = leafMetadataFile,
+      generateMetadata = false
     )
     GraphQLCompiler().write(leafArgs)
 
@@ -67,20 +67,23 @@ class MetadataTest {
 
     // All types are generated
     rootSourcesDir.assertContents(
-        "MessageInput0.kt",
-        "Body0.kt",
-        "User0.kt",
-        "MessageInput1.kt",
-        "Body1.kt",
-        "User1.kt",
-        "CustomType.kt",
-        "Encoding.kt",
-        "__TypeKind.kt",
-        "__DirectiveLocation.kt",
+      "MessageInput0.kt",
+      "Body0.kt",
+      "User0.kt",
+      "MessageInput1.kt",
+      "Body1.kt",
+      "User1.kt",
+      "CustomType.kt",
+      "Encoding.kt",
+      "__TypeKind.kt",
+      "__DirectiveLocation.kt",
     )
 
     // Only the mutation is generated in the leaf
-    leafSourcesDir.assertContents("SendMessageMutation.kt")
+    leafSourcesDir.assertContents(
+      "SendMessageMutation.kt",
+      "SendMessageMutation_ResponseAdapter.kt",
+    )
   }
 
   @Test
@@ -92,11 +95,12 @@ class MetadataTest {
 
     // Leaf contains its referenced types but not the unused ones
     leafSourcesDir.assertContents(
-        "MessageInput0.kt",
-        "SendMessageMutation.kt",
-        "Body0.kt",
-        "User0.kt",
-        "Encoding.kt"
+      "MessageInput0.kt",
+      "SendMessageMutation.kt",
+      "Body0.kt",
+      "User0.kt",
+      "Encoding.kt",
+      "SendMessageMutation_ResponseAdapter.kt"
     )
   }
 
@@ -106,46 +110,47 @@ class MetadataTest {
 
     // types ending with "1" end up in root
     rootSourcesDir.assertContents(
-        "MessageInput1.kt",
-        "Body1.kt",
-        "User1.kt",
-        "CustomType.kt",
-        "Encoding.kt"
+      "MessageInput1.kt",
+      "Body1.kt",
+      "User1.kt",
+      "CustomType.kt",
+      "Encoding.kt"
     )
 
     // Leaf contains its referenced types but not the unused ones
     leafSourcesDir.assertContents(
-        "MessageInput0.kt",
-        "SendMessageMutation.kt",
-        "Body0.kt",
-        "User0.kt"
+      "MessageInput0.kt",
+      "SendMessageMutation.kt",
+      "Body0.kt",
+      "User0.kt",
+      "SendMessageMutation_ResponseAdapter.kt",
     )
   }
 
   private fun fragmentTest(dirName: String) {
     val folder = File("src/test/metadata/$dirName/")
     val rootArgs = GraphQLCompiler.Arguments(
-        rootFolders = listOf(folder),
-        graphqlFiles = setOf(File(folder, "root.graphql")),
-        schemaFile = File("src/test/metadata/schema.sdl"),
-        alwaysGenerateTypesMatching = null,
-        outputDir = rootSourcesDir,
-        generateKotlinModels = true,
-        metadataOutputFile = rootMetadataFile,
-        generateMetadata = true,
-        rootProjectDir = folder
+      rootFolders = listOf(folder),
+      graphqlFiles = setOf(File(folder, "root.graphql")),
+      schemaFile = File("src/test/metadata/schema.sdl"),
+      alwaysGenerateTypesMatching = null,
+      outputDir = rootSourcesDir,
+      generateKotlinModels = true,
+      metadataOutputFile = rootMetadataFile,
+      generateMetadata = true,
+      rootProjectDir = folder
     )
     GraphQLCompiler().write(rootArgs)
 
     val leafArgs = GraphQLCompiler.Arguments(
-        rootFolders = listOf(folder),
-        graphqlFiles = setOf(File(folder, "leaf.graphql")),
-        schemaFile = null,
-        metadata = listOf(rootMetadataFile),
-        outputDir = leafSourcesDir,
-        generateKotlinModels = true,
-        metadataOutputFile = leafMetadataFile,
-        rootProjectDir = folder
+      rootFolders = listOf(folder),
+      graphqlFiles = setOf(File(folder, "leaf.graphql")),
+      schemaFile = null,
+      metadata = listOf(rootMetadataFile),
+      outputDir = leafSourcesDir,
+      generateKotlinModels = true,
+      metadataOutputFile = leafMetadataFile,
+      rootProjectDir = folder
     )
     GraphQLCompiler().write(leafArgs)
 
@@ -158,18 +163,20 @@ class MetadataTest {
 
     // Root generates the fragment
     rootSourcesDir.assertContents(
-        "Hero_type.kt",
-        "Episode.kt",
-        "CustomType.kt",
-        "LengthUnit.kt",
-        "CharacterFragment.kt",
-        "__TypeKind.kt",
-        "__DirectiveLocation.kt",
+      "Hero_type.kt",
+      "Episode.kt",
+      "CustomType.kt",
+      "LengthUnit.kt",
+      "CharacterFragment.kt",
+      "__TypeKind.kt",
+      "__DirectiveLocation.kt",
+      "CharacterFragment_ResponseAdapter.kt",
     )
 
     // Leaf contains the query but not the fragment
     leafSourcesDir.assertContents(
-        "GetHeroQuery.kt"
+      "GetHeroQuery.kt",
+      "GetHeroQuery_ResponseAdapter.kt",
     )
   }
 
@@ -216,18 +223,21 @@ class MetadataTest {
     fragmentTest("fragment-multiple")
 
     rootSourcesDir.assertContents(
-        "Hero_type.kt",
-        "Episode.kt",
-        "CustomType.kt",
-        "LengthUnit.kt",
-        "CharacterFragment.kt",
-        "__TypeKind.kt",
-        "__DirectiveLocation.kt",
+      "Hero_type.kt",
+      "Episode.kt",
+      "CustomType.kt",
+      "LengthUnit.kt",
+      "CharacterFragment.kt",
+      "__TypeKind.kt",
+      "__DirectiveLocation.kt",
+      "CharacterFragment_ResponseAdapter.kt",
     )
 
     leafSourcesDir.assertContents(
-        "GetHeroQuery.kt",
-        "HumanFragment.kt"
+      "GetHeroQuery.kt",
+      "HumanFragment.kt",
+      "HumanFragment_ResponseAdapter.kt",
+      "GetHeroQuery_ResponseAdapter.kt",
     )
   }
 
@@ -246,7 +256,7 @@ class MetadataTest {
 
     private fun File.assertContents(vararg files: String) {
       Truth.assertThat(walk().filter { it.isFile }.map { it.name }.toSet()).isEqualTo(
-          files.toSet()
+        files.toSet()
       )
     }
   }

@@ -35,7 +35,8 @@ internal class ObjectTypeBuilder(
         fields = fields.map { field -> field.toAstField(abstract) },
         implements = implements,
         schemaType = schemaType.name,
-        kind = CodeGenerationAst.ObjectType.Kind.Interface.takeIf { abstract } ?: CodeGenerationAst.ObjectType.Kind.Object
+        kind = CodeGenerationAst.ObjectType.Kind.Interface.takeIf { abstract } ?: CodeGenerationAst.ObjectType.Kind.Object,
+        typeRef = typeRef
     )
   }
 
@@ -125,7 +126,8 @@ internal class ObjectTypeBuilder(
                     val interfaces = nestedTypeContainer.typeContainer[typeRef]?.implements?.minus(fragmentRootInterfaceType)
                     interfaces?.takeIf { it.isNotEmpty() } ?: listOf(typeRef)
                   }.toSet()
-              )
+              ),
+              typeRef = fragmentRootInterfaceType
           )
         }
       }
@@ -313,7 +315,8 @@ internal class ObjectTypeBuilder(
           fields = fields.values.toList(),
           implements = mapNotNull { fragment -> fragmentInterfaceTypes[fragment] }.plus(rootFragmentInterfaceType).toSet(),
           schemaType = null,
-          kind = CodeGenerationAst.ObjectType.Kind.Object
+          kind = CodeGenerationAst.ObjectType.Kind.Object,
+          typeRef = typeRef
       )
     }
   }
@@ -352,7 +355,13 @@ internal class ObjectTypeBuilder(
                 .plus(listOfNotNull(this.interfaceType))
                 .toSet(),
             schemaType = schemaType.name,
-            kind = CodeGenerationAst.ObjectType.Kind.FragmentDelegate(this.interfaceType),
+            kind = CodeGenerationAst.ObjectType.Kind.FragmentDelegate(
+                CodeGenerationAst.TypeRef(
+                    name = "DefaultImpl",
+                    enclosingType = this.interfaceType,
+                )
+            ),
+            typeRef = typeRef
         )
       }
     } else {
@@ -414,7 +423,8 @@ internal class ObjectTypeBuilder(
           fields = fields.map { field -> field.toAstField(abstract) },
           implements = implements.toSet(),
           schemaType = schemaType.name,
-          kind = CodeGenerationAst.ObjectType.Kind.Interface.takeIf { abstract } ?: CodeGenerationAst.ObjectType.Kind.Object
+          kind = CodeGenerationAst.ObjectType.Kind.Interface.takeIf { abstract } ?: CodeGenerationAst.ObjectType.Kind.Object,
+          typeRef = typeRef
       )
     }
   }

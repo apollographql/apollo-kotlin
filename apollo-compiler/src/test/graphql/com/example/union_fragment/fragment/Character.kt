@@ -6,12 +6,9 @@
 package com.example.union_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
-import com.example.union_fragment.type.CustomType
-import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
 
@@ -49,43 +46,9 @@ interface Character : GraphqlFragment {
     override val name: String
   ) : Character {
     override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller.invoke { writer ->
-        writer.writeString(RESPONSE_FIELDS[0], this@DefaultImpl.__typename)
-        writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, this@DefaultImpl.id)
-        writer.writeString(RESPONSE_FIELDS[2], this@DefaultImpl.name)
+      return ResponseFieldMarshaller { writer ->
+        Character_ResponseAdapter.toResponse(writer, this)
       }
-    }
-
-    companion object {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
-        ResponseField.forString("name", "name", null, false, null)
-      )
-
-      operator fun invoke(reader: ResponseReader, __typename: String? = null): DefaultImpl {
-        return reader.run {
-          var __typename: String? = __typename
-          var id: String? = null
-          var name: String? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
-              2 -> name = readString(RESPONSE_FIELDS[2])
-              else -> break
-            }
-          }
-          DefaultImpl(
-            __typename = __typename!!,
-            id = id!!,
-            name = name!!
-          )
-        }
-      }
-
-      @Suppress("FunctionName")
-      fun Mapper(): ResponseFieldMapper<DefaultImpl> = ResponseFieldMapper { invoke(it) }
     }
   }
 
@@ -98,7 +61,14 @@ interface Character : GraphqlFragment {
         |}
         """.trimMargin()
 
-    operator fun invoke(reader: ResponseReader, __typename: String? = null): Character =
-        DefaultImpl(reader, __typename)
+    operator fun invoke(reader: ResponseReader): Character {
+      return Character_ResponseAdapter.fromResponse(reader)
+    }
+
+    fun Mapper(): ResponseFieldMapper<Character> {
+      return ResponseFieldMapper { reader ->
+        Character_ResponseAdapter.fromResponse(reader)
+      }
+    }
   }
 }

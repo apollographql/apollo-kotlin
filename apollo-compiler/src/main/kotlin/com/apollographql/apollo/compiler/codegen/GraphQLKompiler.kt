@@ -71,6 +71,15 @@ class GraphQLKompiler(
               .writeTo(outputDir)
         }
 
+    ast.fragmentTypes
+        .filter { ir.fragmentsToGenerate.contains(it.graphqlName) }
+        .forEach { fragmentType ->
+          fragmentType
+              .responseAdapterTypeSpec(generateAsInternal)
+              .fileSpec(ir.fragmentsPackageName)
+              .writeTo(outputDir)
+        }
+
     ast.operationTypes.forEach { operationType ->
       operationType
           .typeSpec(
@@ -82,6 +91,12 @@ class GraphQLKompiler(
               it.patchKotlinNativeOptionalArrayProperties()
             } else it
           }
+          .fileSpec(operationType.packageName)
+          .writeTo(outputDir)
+    }
+
+    ast.operationTypes.forEach { operationType ->
+      operationType.responseAdapterTypeSpec(generateAsInternal)
           .fileSpec(operationType.packageName)
           .writeTo(outputDir)
     }
