@@ -152,6 +152,7 @@ actual class ApolloHttpNetworkTransport(
       val postBody = operation.composeRequestBody(scalarTypeAdapters).toByteArray().toNSData()
       setHTTPMethod("POST")
       headers
+          .plus("Content-Type" to "application/json; charset=utf-8")
           .plus(httpExecutionContext?.headers ?: emptyMap())
           .forEach { (key, value) -> setValue(value, forHTTPHeaderField = key) }
       setCachePolicy(NSURLRequestReloadIgnoringCacheData)
