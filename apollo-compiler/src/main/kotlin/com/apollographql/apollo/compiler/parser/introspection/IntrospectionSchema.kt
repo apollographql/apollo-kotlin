@@ -10,9 +10,9 @@ import java.io.File
 import java.io.InputStream
 
 data class IntrospectionSchema(
-    val queryType: String = "query",
-    val mutationType: String = "mutation",
-    val subscriptionType: String = "subscription",
+    val queryType: String,
+    val mutationType: String?,
+    val subscriptionType: String?,
     val types: Map<String, Type>) : Map<String, IntrospectionSchema.Type> by types {
   sealed class Type(val kind: Kind) {
     abstract val name: String
@@ -162,9 +162,9 @@ data class IntrospectionSchema(
 
     fun IntrospectionQuery.Schema.toIntrospectionSchema(): IntrospectionSchema {
       return IntrospectionSchema(
-          queryType = queryType?.name ?: "query",
-          mutationType = mutationType?.name ?: "mutation",
-          subscriptionType = subscriptionType?.name ?: "subscription",
+          queryType = queryType?.name ?: "Query",
+          mutationType = mutationType?.name,
+          subscriptionType = subscriptionType?.name,
           types = types.associateBy { it.name }
       )
     }
@@ -172,9 +172,9 @@ data class IntrospectionSchema(
     fun IntrospectionSchema.wrap(): IntrospectionQuery.Wrapper {
       return IntrospectionQuery.Wrapper(
           __schema = IntrospectionQuery.Schema(
-              queryType = IntrospectionQuery.QueryType(this.queryType),
-              mutationType = IntrospectionQuery.MutationType(this.mutationType),
-              subscriptionType = IntrospectionQuery.SubscriptionType(this.subscriptionType),
+              queryType = this.queryType.let { IntrospectionQuery.QueryType(it) },
+              mutationType = this.mutationType?.let { IntrospectionQuery.MutationType(it) },
+              subscriptionType = this.subscriptionType?.let { IntrospectionQuery.SubscriptionType(it) },
               types = types.values.toList()
           )
       )

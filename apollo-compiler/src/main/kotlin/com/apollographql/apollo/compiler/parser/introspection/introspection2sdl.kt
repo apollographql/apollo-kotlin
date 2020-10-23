@@ -34,9 +34,9 @@ fun IntrospectionSchema.toSDL(sink: BufferedSink) {
     sink.writeUtf8("\n")
   }
   sink.writeUtf8("schema {\n")
-  sink.writeUtf8("  subscription: $subscriptionType\n")
   sink.writeUtf8("  query: $queryType\n")
-  sink.writeUtf8("  mutation: $mutationType\n")
+  mutationType?.let { sink.writeUtf8("  mutation: $it\n") }
+  subscriptionType?.let { sink.writeUtf8("  subscription: $it\n") }
   sink.writeUtf8("}\n")
 }
 
