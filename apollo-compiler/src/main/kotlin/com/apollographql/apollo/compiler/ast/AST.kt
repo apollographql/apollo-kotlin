@@ -80,8 +80,7 @@ internal data class ObjectType(
       val type: FieldType,
       val description: String,
       val isOptional: Boolean,
-      val isDeprecated: Boolean,
-      val deprecationReason: String,
+      val deprecationReason: String?, // null if not deprecated
       val arguments: Map<String, Any?>,
       val conditions: List<Condition>
   ) {
@@ -101,8 +100,7 @@ internal data class EnumType(
       val constName: String,
       val value: String,
       val description: String,
-      val isDeprecated: Boolean,
-      val deprecationReason: String
+      val deprecationReason: String?
   )
 }
 

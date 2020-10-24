@@ -27,6 +27,9 @@ interface Character {
   """Test deprecated field"""
   deprecated: String! @deprecated(reason: "For test purpose only")
 
+  """Test deprecated field with no reason"""
+  deprecatedWithNoReason: String! @deprecated
+
   """Test deprecated field"""
   deprecatedBool: Boolean! @deprecated(reason: "For test purpose only")
 

@@ -27,8 +27,7 @@ data class Field(
     val fragmentRefs: List<FragmentRef>,
     val inlineFragments: List<InlineFragment> = emptyList(),
     val description: String = "",
-    val isDeprecated: Boolean = false,
-    val deprecationReason: String = "",
+    val deprecationReason: String? = null, // null if not deprecated
     val conditions: List<Condition> = emptyList(),
     val sourceLocation: SourceLocation
 ) : CodeGenerator {
@@ -70,7 +69,7 @@ data class Field(
         .addStatement("return this.\$L", responseName.escapeJavaReservedWord())
         .let { if (description.isNotEmpty()) it.addJavadoc("\$L\n", description) else it }
         .let {
-          if (isDeprecated && deprecationReason.isNotEmpty()) {
+          if (deprecationReason != null) {
             it.addJavadoc("@deprecated \$L\n", deprecationReason)
           } else {
             it
@@ -147,7 +146,7 @@ data class Field(
 
   private fun toTypeName(responseType: String, context: CodeGenerationContext): TypeName {
     val packageName = if (isNonScalar()) "" else context.ir.typesPackageName
-    return JavaTypeResolver(context, packageName, isDeprecated).resolve(responseType, isOptional())
+    return JavaTypeResolver(context, packageName, deprecationReason != null).resolve(responseType, isOptional())
   }
 
   private fun methodResponseType(): String {
