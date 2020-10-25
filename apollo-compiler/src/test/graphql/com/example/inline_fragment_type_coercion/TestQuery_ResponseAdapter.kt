@@ -48,14 +48,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
   }
 
-  object Bar_ResponseAdapter : ResponseAdapter<TestQuery.Bar> {
+  object BarFoo_ResponseAdapter : ResponseAdapter<TestQuery.BarFoo> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forString("foo", "foo", null, false, null),
       ResponseField.forString("bar", "bar", null, false, null)
     )
 
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Bar {
+    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.BarFoo {
       return reader.run {
         var __typename: String? = __typename
         var foo: String? = null
@@ -68,7 +68,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             else -> break
           }
         }
-        TestQuery.Bar(
+        TestQuery.BarFoo(
           __typename = __typename!!,
           foo = foo!!,
           bar = bar!!
@@ -76,7 +76,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.Bar) {
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.BarFoo) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeString(RESPONSE_FIELDS[1], value.foo)
       writer.writeString(RESPONSE_FIELDS[2], value.bar)
@@ -122,15 +122,15 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Foo {
       val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
       return when(typename) {
-        "BarObject" -> TestQuery_ResponseAdapter.Bar_ResponseAdapter.fromResponse(reader, typename)
-        "FooBar" -> TestQuery_ResponseAdapter.Bar_ResponseAdapter.fromResponse(reader, typename)
+        "BarObject" -> TestQuery_ResponseAdapter.BarFoo_ResponseAdapter.fromResponse(reader, typename)
+        "FooBar" -> TestQuery_ResponseAdapter.BarFoo_ResponseAdapter.fromResponse(reader, typename)
         else -> TestQuery_ResponseAdapter.OtherFoo_ResponseAdapter.fromResponse(reader, typename)
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.Foo) {
       when(value) {
-        is TestQuery.Bar -> TestQuery_ResponseAdapter.Bar_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.BarFoo -> TestQuery_ResponseAdapter.BarFoo_ResponseAdapter.toResponse(writer, value)
         is TestQuery.OtherFoo -> TestQuery_ResponseAdapter.OtherFoo_ResponseAdapter.toResponse(writer, value)
       }
     }

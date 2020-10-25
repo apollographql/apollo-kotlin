@@ -63,24 +63,22 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
   }
 
-  object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<TestQuery.HumanDetailsImpl> {
-    override fun fromResponse(reader: ResponseReader, __typename: String?):
-        TestQuery.HumanDetailsImpl {
-      return TestQuery.HumanDetailsImpl(HumanDetails_ResponseAdapter.fromResponse(reader, __typename))
+  object HumanR2_ResponseAdapter : ResponseAdapter<TestQuery.HumanR2> {
+    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.HumanR2 {
+      return TestQuery.HumanR2(HumanDetails_ResponseAdapter.fromResponse(reader, __typename))
     }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.HumanDetailsImpl) {
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.HumanR2) {
       HumanDetails_ResponseAdapter.toResponse(writer, value.delegate)
     }
   }
 
-  object DroidDetailsImpl_ResponseAdapter : ResponseAdapter<TestQuery.DroidDetailsImpl> {
-    override fun fromResponse(reader: ResponseReader, __typename: String?):
-        TestQuery.DroidDetailsImpl {
-      return TestQuery.DroidDetailsImpl(DroidDetails_ResponseAdapter.fromResponse(reader, __typename))
+  object DroidR2_ResponseAdapter : ResponseAdapter<TestQuery.DroidR2> {
+    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.DroidR2 {
+      return TestQuery.DroidR2(DroidDetails_ResponseAdapter.fromResponse(reader, __typename))
     }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.DroidDetailsImpl) {
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.DroidR2) {
       DroidDetails_ResponseAdapter.toResponse(writer, value.delegate)
     }
   }
@@ -118,39 +116,37 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.R2 {
       val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
       return when(typename) {
-        "Human" -> TestQuery_ResponseAdapter.HumanDetailsImpl_ResponseAdapter.fromResponse(reader, typename)
-        "Droid" -> TestQuery_ResponseAdapter.DroidDetailsImpl_ResponseAdapter.fromResponse(reader, typename)
+        "Human" -> TestQuery_ResponseAdapter.HumanR2_ResponseAdapter.fromResponse(reader, typename)
+        "Droid" -> TestQuery_ResponseAdapter.DroidR2_ResponseAdapter.fromResponse(reader, typename)
         else -> TestQuery_ResponseAdapter.OtherR2_ResponseAdapter.fromResponse(reader, typename)
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.R2) {
       when(value) {
-        is TestQuery.HumanDetailsImpl -> TestQuery_ResponseAdapter.HumanDetailsImpl_ResponseAdapter.toResponse(writer, value)
-        is TestQuery.DroidDetailsImpl -> TestQuery_ResponseAdapter.DroidDetailsImpl_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.HumanR2 -> TestQuery_ResponseAdapter.HumanR2_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.DroidR2 -> TestQuery_ResponseAdapter.DroidR2_ResponseAdapter.toResponse(writer, value)
         is TestQuery.OtherR2 -> TestQuery_ResponseAdapter.OtherR2_ResponseAdapter.toResponse(writer, value)
       }
     }
   }
 
-  object HumanDetailsImpl1_ResponseAdapter : ResponseAdapter<TestQuery.HumanDetailsImpl1> {
-    override fun fromResponse(reader: ResponseReader, __typename: String?):
-        TestQuery.HumanDetailsImpl1 {
-      return TestQuery.HumanDetailsImpl1(HumanDetails_ResponseAdapter.fromResponse(reader, __typename))
+  object HumanLuke_ResponseAdapter : ResponseAdapter<TestQuery.HumanLuke> {
+    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.HumanLuke {
+      return TestQuery.HumanLuke(HumanDetails_ResponseAdapter.fromResponse(reader, __typename))
     }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.HumanDetailsImpl1) {
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.HumanLuke) {
       HumanDetails_ResponseAdapter.toResponse(writer, value.delegate)
     }
   }
 
-  object DroidDetailsImpl1_ResponseAdapter : ResponseAdapter<TestQuery.DroidDetailsImpl1> {
-    override fun fromResponse(reader: ResponseReader, __typename: String?):
-        TestQuery.DroidDetailsImpl1 {
-      return TestQuery.DroidDetailsImpl1(DroidDetails_ResponseAdapter.fromResponse(reader, __typename))
+  object DroidLuke_ResponseAdapter : ResponseAdapter<TestQuery.DroidLuke> {
+    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.DroidLuke {
+      return TestQuery.DroidLuke(DroidDetails_ResponseAdapter.fromResponse(reader, __typename))
     }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.DroidDetailsImpl1) {
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.DroidLuke) {
       DroidDetails_ResponseAdapter.toResponse(writer, value.delegate)
     }
   }
@@ -188,16 +184,16 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Luke {
       val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
       return when(typename) {
-        "Human" -> TestQuery_ResponseAdapter.HumanDetailsImpl1_ResponseAdapter.fromResponse(reader, typename)
-        "Droid" -> TestQuery_ResponseAdapter.DroidDetailsImpl1_ResponseAdapter.fromResponse(reader, typename)
+        "Human" -> TestQuery_ResponseAdapter.HumanLuke_ResponseAdapter.fromResponse(reader, typename)
+        "Droid" -> TestQuery_ResponseAdapter.DroidLuke_ResponseAdapter.fromResponse(reader, typename)
         else -> TestQuery_ResponseAdapter.OtherLuke_ResponseAdapter.fromResponse(reader, typename)
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.Luke) {
       when(value) {
-        is TestQuery.HumanDetailsImpl1 -> TestQuery_ResponseAdapter.HumanDetailsImpl1_ResponseAdapter.toResponse(writer, value)
-        is TestQuery.DroidDetailsImpl1 -> TestQuery_ResponseAdapter.DroidDetailsImpl1_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.HumanLuke -> TestQuery_ResponseAdapter.HumanLuke_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.DroidLuke -> TestQuery_ResponseAdapter.DroidLuke_ResponseAdapter.toResponse(writer, value)
         is TestQuery.OtherLuke -> TestQuery_ResponseAdapter.OtherLuke_ResponseAdapter.toResponse(writer, value)
       }
     }

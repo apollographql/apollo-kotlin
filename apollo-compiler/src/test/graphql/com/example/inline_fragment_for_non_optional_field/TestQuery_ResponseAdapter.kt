@@ -46,14 +46,15 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
   }
 
-  object Human_ResponseAdapter : ResponseAdapter<TestQuery.Human> {
+  object HumanNonOptionalHero_ResponseAdapter : ResponseAdapter<TestQuery.HumanNonOptionalHero> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forString("name", "name", null, false, null),
       ResponseField.forDouble("height", "height", null, true, null)
     )
 
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Human {
+    override fun fromResponse(reader: ResponseReader, __typename: String?):
+        TestQuery.HumanNonOptionalHero {
       return reader.run {
         var __typename: String? = __typename
         var name: String? = null
@@ -66,7 +67,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             else -> break
           }
         }
-        TestQuery.Human(
+        TestQuery.HumanNonOptionalHero(
           __typename = __typename!!,
           name = name!!,
           height = height
@@ -74,7 +75,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.Human) {
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.HumanNonOptionalHero) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeString(RESPONSE_FIELDS[1], value.name)
       writer.writeDouble(RESPONSE_FIELDS[2], value.height)
@@ -122,14 +123,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         TestQuery.NonOptionalHero {
       val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
       return when(typename) {
-        "Human" -> TestQuery_ResponseAdapter.Human_ResponseAdapter.fromResponse(reader, typename)
+        "Human" -> TestQuery_ResponseAdapter.HumanNonOptionalHero_ResponseAdapter.fromResponse(reader, typename)
         else -> TestQuery_ResponseAdapter.OtherNonOptionalHero_ResponseAdapter.fromResponse(reader, typename)
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.NonOptionalHero) {
       when(value) {
-        is TestQuery.Human -> TestQuery_ResponseAdapter.Human_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.HumanNonOptionalHero -> TestQuery_ResponseAdapter.HumanNonOptionalHero_ResponseAdapter.toResponse(writer, value)
         is TestQuery.OtherNonOptionalHero -> TestQuery_ResponseAdapter.OtherNonOptionalHero_ResponseAdapter.toResponse(writer, value)
       }
     }

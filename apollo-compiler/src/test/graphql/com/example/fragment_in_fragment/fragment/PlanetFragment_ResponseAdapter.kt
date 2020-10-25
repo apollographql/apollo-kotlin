@@ -16,14 +16,14 @@ import kotlin.Suppress
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-object PlanetFragment_ResponseAdapter : ResponseAdapter<PlanetFragment.DefaultImpl> {
+object PlanetFragment_ResponseAdapter : ResponseAdapter<PlanetFragment.PlanetFragmentImpl> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forString("__typename", "__typename", null, false, null),
     ResponseField.forString("name", "name", null, true, null)
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?):
-      PlanetFragment.DefaultImpl {
+      PlanetFragment.PlanetFragmentImpl {
     return reader.run {
       var __typename: String? = __typename
       var name: String? = null
@@ -34,14 +34,14 @@ object PlanetFragment_ResponseAdapter : ResponseAdapter<PlanetFragment.DefaultIm
           else -> break
         }
       }
-      PlanetFragment.DefaultImpl(
+      PlanetFragment.PlanetFragmentImpl(
         __typename = __typename!!,
         name = name
       )
     }
   }
 
-  override fun toResponse(writer: ResponseWriter, value: PlanetFragment.DefaultImpl) {
+  override fun toResponse(writer: ResponseWriter, value: PlanetFragment.PlanetFragmentImpl) {
     writer.writeString(RESPONSE_FIELDS[0], value.__typename)
     writer.writeString(RESPONSE_FIELDS[1], value.name)
   }

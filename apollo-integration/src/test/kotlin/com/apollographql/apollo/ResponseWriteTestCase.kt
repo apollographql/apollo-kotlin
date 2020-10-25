@@ -268,15 +268,15 @@ class ResponseWriteTestCase {
         id = "2001",
         name = "R222-D222",
         friends = listOf(
-            HeroAndFriendsWithFragmentsQuery.HumanWithIdFragmentImpl(
-                HumanWithIdFragment.DefaultImpl(
+            HeroAndFriendsWithFragmentsQuery.HumanFriend(
+                HumanWithIdFragment.HumanWithIdFragmentImpl(
                     __typename = "Human",
                     id = "1006",
                     name = "SuperMan"
                 )
             ),
-            HeroAndFriendsWithFragmentsQuery.HumanWithIdFragmentImpl(
-                HumanWithIdFragment.DefaultImpl(
+            HeroAndFriendsWithFragmentsQuery.HumanFriend(
+                HumanWithIdFragment.HumanWithIdFragmentImpl(
                     __typename = "Human",
                     id = "1004",
                     name = "Beast"
@@ -315,16 +315,16 @@ class ResponseWriteTestCase {
       assertThat(data!!.hero?.__typename).isEqualTo("Droid")
       assertThat(data.hero?.name).isEqualTo("R2-D2")
       assertThat(data.hero?.friends).hasSize(3)
-      val asHuman = data.hero?.friends?.get(0) as? EpisodeHeroWithInlineFragmentQuery.Human
+      val asHuman = data.hero?.friends?.get(0) as? EpisodeHeroWithInlineFragmentQuery.HumanFriend
       assertThat(asHuman?.__typename).isEqualTo("Human")
       assertThat(asHuman?.id).isEqualTo("1000")
       assertThat(asHuman?.name).isEqualTo("Luke Skywalker")
       assertThat(asHuman?.height).isWithin(1.5)
-      val asDroid1 = data.hero?.friends?.get(1) as? EpisodeHeroWithInlineFragmentQuery.Droid
+      val asDroid1 = data.hero?.friends?.get(1) as? EpisodeHeroWithInlineFragmentQuery.DroidFriend
       assertThat(asDroid1?.__typename).isEqualTo("Droid")
       assertThat(asDroid1?.name).isEqualTo("Android")
       assertThat(asDroid1?.primaryFunction).isEqualTo("Hunt and destroy iOS devices")
-      val asDroid2 = data.hero?.friends?.get(2) as EpisodeHeroWithInlineFragmentQuery.Droid
+      val asDroid2 = data.hero?.friends?.get(2) as EpisodeHeroWithInlineFragmentQuery.DroidFriend
       assertThat(asDroid2.__typename).isEqualTo("Droid")
       assertThat(asDroid2.name).isEqualTo("Battle Droid")
       assertThat(asDroid2.primaryFunction).isEqualTo("Controlled alternative to human soldiers")
@@ -334,13 +334,13 @@ class ResponseWriteTestCase {
         __typename = "Droid",
         name = "R22-D22",
         friends = listOf(
-            EpisodeHeroWithInlineFragmentQuery.Human(
+            EpisodeHeroWithInlineFragmentQuery.HumanFriend(
                 __typename = "Human",
                 id = "1002",
                 name = "Han Solo",
                 height = 2.5
             ),
-            EpisodeHeroWithInlineFragmentQuery.Droid(
+            EpisodeHeroWithInlineFragmentQuery.DroidFriend(
                 __typename = "Droid",
                 primaryFunction = "Entertainment",
                 name = "RD",
@@ -354,12 +354,12 @@ class ResponseWriteTestCase {
       assertThat(data!!.hero?.__typename).isEqualTo("Droid")
       assertThat(data.hero?.name).isEqualTo("R22-D22")
       assertThat(data.hero?.friends).hasSize(2)
-      val asHuman = data.hero?.friends?.get(0) as? EpisodeHeroWithInlineFragmentQuery.Human
+      val asHuman = data.hero?.friends?.get(0) as? EpisodeHeroWithInlineFragmentQuery.HumanFriend
       assertThat(asHuman?.__typename).isEqualTo("Human")
       assertThat(asHuman?.id).isEqualTo("1002")
       assertThat(asHuman?.name).isEqualTo("Han Solo")
       assertThat(asHuman?.height).isWithin(2.5)
-      val asDroid = data.hero?.friends?.get(1) as? EpisodeHeroWithInlineFragmentQuery.Droid
+      val asDroid = data.hero?.friends?.get(1) as? EpisodeHeroWithInlineFragmentQuery.DroidFriend
       assertThat(asDroid?.__typename).isEqualTo("Droid")
       assertThat(asDroid?.name).isEqualTo("RD")
       assertThat(asDroid?.primaryFunction).isEqualTo("Entertainment")
@@ -393,20 +393,20 @@ class ResponseWriteTestCase {
       true
     }
     apolloClient!!.apolloStore.write(
-        HeroWithFriendsFragment.DefaultImpl(
+        HeroWithFriendsFragment.HeroWithFriendsFragmentImpl(
             __typename = "Droid",
             id = "2001",
             name = "R222-D222",
             friends = listOf(
-                HeroWithFriendsFragment.HumanWithIdFragmentImpl(
-                    HumanWithIdFragment.DefaultImpl(
+                HeroWithFriendsFragment.HumanFriend1(
+                    HumanWithIdFragment.HumanWithIdFragmentImpl(
                         __typename = "Human",
                         id = "1000",
                         name = "SuperMan"
                     )
                 ),
-                HeroWithFriendsFragment.HumanWithIdFragmentImpl(
-                    HumanWithIdFragment.DefaultImpl(
+                HeroWithFriendsFragment.HumanFriend1(
+                    HumanWithIdFragment.HumanWithIdFragmentImpl(
                         __typename = "Human",
                         id = "1002",
                         name = "Han Solo"
@@ -416,7 +416,7 @@ class ResponseWriteTestCase {
         ), from("2001"), query.variables()
     ).execute()
     apolloClient!!.apolloStore.write(
-        HumanWithIdFragment.DefaultImpl(
+        HumanWithIdFragment.HumanWithIdFragmentImpl(
             "Human",
             "1002",
             "Beast"

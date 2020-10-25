@@ -130,7 +130,7 @@ interface HeroDetails : GraphqlFragment {
   /**
    * An autonomous mechanical character in the Star Wars universe
    */
-  interface Droid : DefaultImpl {
+  interface Droid : HeroDetailsImpl {
     override val __typename: String
 
     /**
@@ -201,7 +201,7 @@ interface HeroDetails : GraphqlFragment {
     }
   }
 
-  data class DroidDroidDetailsImpl(
+  data class DroidHeroDetailsImpl(
     override val __typename: String,
     /**
      * What others call this droid
@@ -215,10 +215,10 @@ interface HeroDetails : GraphqlFragment {
      * This droid's primary function
      */
     override val primaryFunction: String?
-  ) : Droid, DroidDetails, DefaultImpl {
+  ) : Droid, DroidDetails, HeroDetailsImpl {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        HeroDetails_ResponseAdapter.DroidDroidDetailsImpl_ResponseAdapter.toResponse(writer, this)
+        HeroDetails_ResponseAdapter.DroidHeroDetailsImpl_ResponseAdapter.toResponse(writer, this)
       }
     }
   }
@@ -281,7 +281,7 @@ interface HeroDetails : GraphqlFragment {
   /**
    * A humanoid creature from the Star Wars universe
    */
-  data class HumanDetailsImpl(
+  data class HumanHeroDetailsImpl(
     override val __typename: String = "Human",
     /**
      * What this human calls themselves
@@ -291,10 +291,10 @@ interface HeroDetails : GraphqlFragment {
      * The friends of the character exposed as a connection with edges
      */
     override val friendsConnection: FriendsConnection3
-  ) : DefaultImpl, HumanDetails {
+  ) : HeroDetailsImpl, HumanDetails {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        HeroDetails_ResponseAdapter.HumanDetailsImpl_ResponseAdapter.toResponse(writer, this)
+        HeroDetails_ResponseAdapter.HumanHeroDetailsImpl_ResponseAdapter.toResponse(writer, this)
       }
     }
   }
@@ -357,7 +357,7 @@ interface HeroDetails : GraphqlFragment {
   /**
    * A character from the Star Wars universe
    */
-  data class OtherDefaultImpl(
+  data class OtherHeroDetailsImpl(
     override val __typename: String = "Character",
     /**
      * The name of the character
@@ -367,10 +367,10 @@ interface HeroDetails : GraphqlFragment {
      * The friends of the character exposed as a connection with edges
      */
     override val friendsConnection: FriendsConnection4
-  ) : HeroDetails, DefaultImpl {
+  ) : HeroDetails, HeroDetailsImpl {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        HeroDetails_ResponseAdapter.OtherDefaultImpl_ResponseAdapter.toResponse(writer, this)
+        HeroDetails_ResponseAdapter.OtherHeroDetailsImpl_ResponseAdapter.toResponse(writer, this)
       }
     }
   }
@@ -425,7 +425,7 @@ interface HeroDetails : GraphqlFragment {
   /**
    * A character from the Star Wars universe
    */
-  interface DefaultImpl : HeroDetails {
+  interface HeroDetailsImpl : HeroDetails {
     override val __typename: String
 
     /**

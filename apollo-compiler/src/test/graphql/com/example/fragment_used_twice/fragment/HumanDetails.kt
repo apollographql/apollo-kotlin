@@ -30,7 +30,7 @@ interface HumanDetails : GraphqlFragment {
   /**
    * A character from the Star Wars universe
    */
-  data class CharacterDetailsImpl(
+  data class CharacterHumanDetailsImpl(
     override val __typename: String = "Character",
     /**
      * The name of the character
@@ -40,10 +40,10 @@ interface HumanDetails : GraphqlFragment {
      * The date character was born.
      */
     override val birthDate: Any
-  ) : DefaultImpl, CharacterDetails {
+  ) : HumanDetailsImpl, CharacterDetails {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        HumanDetails_ResponseAdapter.CharacterDetailsImpl_ResponseAdapter.toResponse(writer, this)
+        HumanDetails_ResponseAdapter.CharacterHumanDetailsImpl_ResponseAdapter.toResponse(writer, this)
       }
     }
   }
@@ -51,16 +51,16 @@ interface HumanDetails : GraphqlFragment {
   /**
    * A humanoid creature from the Star Wars universe
    */
-  data class OtherDefaultImpl(
+  data class OtherHumanDetailsImpl(
     override val __typename: String = "Human",
     /**
      * What this human calls themselves
      */
     override val name: String
-  ) : HumanDetails, DefaultImpl {
+  ) : HumanDetails, HumanDetailsImpl {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        HumanDetails_ResponseAdapter.OtherDefaultImpl_ResponseAdapter.toResponse(writer, this)
+        HumanDetails_ResponseAdapter.OtherHumanDetailsImpl_ResponseAdapter.toResponse(writer, this)
       }
     }
   }
@@ -68,7 +68,7 @@ interface HumanDetails : GraphqlFragment {
   /**
    * A humanoid creature from the Star Wars universe
    */
-  interface DefaultImpl : HumanDetails {
+  interface HumanDetailsImpl : HumanDetails {
     override val __typename: String
 
     /**

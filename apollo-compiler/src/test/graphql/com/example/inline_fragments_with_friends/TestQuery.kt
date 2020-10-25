@@ -117,7 +117,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   /**
    * A humanoid creature from the Star Wars universe
    */
-  data class Human(
+  data class HumanHero(
     override val __typename: String = "Human",
     /**
      * What this human calls themselves
@@ -134,7 +134,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   ) : Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Human_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.HumanHero_ResponseAdapter.toResponse(writer, this)
       }
     }
 
@@ -161,7 +161,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   /**
    * An autonomous mechanical character in the Star Wars universe
    */
-  data class Droid(
+  data class DroidHero(
     override val __typename: String = "Droid",
     /**
      * What others call this droid
@@ -178,7 +178,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   ) : Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Droid_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.DroidHero_ResponseAdapter.toResponse(writer, this)
       }
     }
 
@@ -213,9 +213,9 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
      */
     val name: String
 
-    fun asHuman(): Human? = this as? Human
+    fun asHumanHero(): HumanHero? = this as? HumanHero
 
-    fun asDroid(): Droid? = this as? Droid
+    fun asDroidHero(): DroidHero? = this as? DroidHero
 
     fun marshaller(): ResponseFieldMarshaller
   }

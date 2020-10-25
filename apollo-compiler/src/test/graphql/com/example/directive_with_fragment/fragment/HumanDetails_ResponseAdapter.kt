@@ -16,13 +16,14 @@ import kotlin.Suppress
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.DefaultImpl> {
+object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.HumanDetailsImpl> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forString("__typename", "__typename", null, false, null),
     ResponseField.forString("homePlanet", "homePlanet", null, true, null)
   )
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?): HumanDetails.DefaultImpl {
+  override fun fromResponse(reader: ResponseReader, __typename: String?):
+      HumanDetails.HumanDetailsImpl {
     return reader.run {
       var __typename: String? = __typename
       var homePlanet: String? = null
@@ -33,14 +34,14 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.DefaultImpl> 
           else -> break
         }
       }
-      HumanDetails.DefaultImpl(
+      HumanDetails.HumanDetailsImpl(
         __typename = __typename!!,
         homePlanet = homePlanet
       )
     }
   }
 
-  override fun toResponse(writer: ResponseWriter, value: HumanDetails.DefaultImpl) {
+  override fun toResponse(writer: ResponseWriter, value: HumanDetails.HumanDetailsImpl) {
     writer.writeString(RESPONSE_FIELDS[0], value.__typename)
     writer.writeString(RESPONSE_FIELDS[1], value.homePlanet)
   }

@@ -29,7 +29,7 @@ internal interface HumanDetails : GraphqlFragment {
   /**
    * A humanoid creature from the Star Wars universe
    */
-  data class DefaultImpl(
+  data class HumanDetailsImpl(
     override val __typename: String = "Human",
     /**
      * What this human calls themselves

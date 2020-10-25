@@ -200,7 +200,7 @@ data class TestQuery(
     override fun marshaller(): ResponseFieldMarshaller
   }
 
-  data class HumanCharacterImpl(
+  data class HumanCharacterHero(
     override val __typename: String,
     /**
      * The ID of the human
@@ -217,12 +217,12 @@ data class TestQuery(
   ) : Human, Character1, Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.HumanCharacterImpl_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.HumanCharacterHero_ResponseAdapter.toResponse(writer, this)
       }
     }
   }
 
-  data class DroidCharacterImpl(
+  data class DroidCharacterHero(
     override val __typename: String,
     /**
      * The ID of the droid
@@ -239,7 +239,7 @@ data class TestQuery(
   ) : Droid, Character1, Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.DroidCharacterImpl_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.DroidCharacterHero_ResponseAdapter.toResponse(writer, this)
       }
     }
   }

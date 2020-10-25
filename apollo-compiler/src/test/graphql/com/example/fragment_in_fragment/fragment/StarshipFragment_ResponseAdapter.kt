@@ -18,7 +18,7 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragment.DefaultImpl> {
+object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragment.StarshipFragmentImpl> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forString("__typename", "__typename", null, false, null),
     ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
@@ -27,7 +27,7 @@ object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragment.Defau
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?):
-      StarshipFragment.DefaultImpl {
+      StarshipFragment.StarshipFragmentImpl {
     return reader.run {
       var __typename: String? = __typename
       var id: String? = null
@@ -44,7 +44,7 @@ object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragment.Defau
           else -> break
         }
       }
-      StarshipFragment.DefaultImpl(
+      StarshipFragment.StarshipFragmentImpl(
         __typename = __typename!!,
         id = id!!,
         name = name,
@@ -53,7 +53,7 @@ object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragment.Defau
     }
   }
 
-  override fun toResponse(writer: ResponseWriter, value: StarshipFragment.DefaultImpl) {
+  override fun toResponse(writer: ResponseWriter, value: StarshipFragment.StarshipFragmentImpl) {
     writer.writeString(RESPONSE_FIELDS[0], value.__typename)
     writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, value.id)
     writer.writeString(RESPONSE_FIELDS[2], value.name)

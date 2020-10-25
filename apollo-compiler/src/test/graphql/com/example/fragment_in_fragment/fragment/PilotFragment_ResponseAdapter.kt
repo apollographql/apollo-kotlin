@@ -16,7 +16,7 @@ import kotlin.Suppress
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-object PilotFragment_ResponseAdapter : ResponseAdapter<PilotFragment.DefaultImpl> {
+object PilotFragment_ResponseAdapter : ResponseAdapter<PilotFragment.PilotFragmentImpl> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forString("__typename", "__typename", null, false, null),
     ResponseField.forString("name", "name", null, true, null),
@@ -24,7 +24,7 @@ object PilotFragment_ResponseAdapter : ResponseAdapter<PilotFragment.DefaultImpl
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?):
-      PilotFragment.DefaultImpl {
+      PilotFragment.PilotFragmentImpl {
     return reader.run {
       var __typename: String? = __typename
       var name: String? = null
@@ -39,7 +39,7 @@ object PilotFragment_ResponseAdapter : ResponseAdapter<PilotFragment.DefaultImpl
           else -> break
         }
       }
-      PilotFragment.DefaultImpl(
+      PilotFragment.PilotFragmentImpl(
         __typename = __typename!!,
         name = name,
         homeworld = homeworld
@@ -47,7 +47,7 @@ object PilotFragment_ResponseAdapter : ResponseAdapter<PilotFragment.DefaultImpl
     }
   }
 
-  override fun toResponse(writer: ResponseWriter, value: PilotFragment.DefaultImpl) {
+  override fun toResponse(writer: ResponseWriter, value: PilotFragment.PilotFragmentImpl) {
     writer.writeString(RESPONSE_FIELDS[0], value.__typename)
     writer.writeString(RESPONSE_FIELDS[1], value.name)
     if(value.homeworld == null) {

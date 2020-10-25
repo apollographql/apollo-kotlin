@@ -16,14 +16,15 @@ import kotlin.Suppress
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-object DroidDetails_ResponseAdapter : ResponseAdapter<DroidDetails.DefaultImpl> {
+object DroidDetails_ResponseAdapter : ResponseAdapter<DroidDetails.DroidDetailsImpl> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forString("__typename", "__typename", null, false, null),
     ResponseField.forString("name", "name", null, false, null),
     ResponseField.forString("primaryFunction", "primaryFunction", null, true, null)
   )
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?): DroidDetails.DefaultImpl {
+  override fun fromResponse(reader: ResponseReader, __typename: String?):
+      DroidDetails.DroidDetailsImpl {
     return reader.run {
       var __typename: String? = __typename
       var name: String? = null
@@ -36,7 +37,7 @@ object DroidDetails_ResponseAdapter : ResponseAdapter<DroidDetails.DefaultImpl> 
           else -> break
         }
       }
-      DroidDetails.DefaultImpl(
+      DroidDetails.DroidDetailsImpl(
         __typename = __typename!!,
         name = name!!,
         primaryFunction = primaryFunction
@@ -44,7 +45,7 @@ object DroidDetails_ResponseAdapter : ResponseAdapter<DroidDetails.DefaultImpl> 
     }
   }
 
-  override fun toResponse(writer: ResponseWriter, value: DroidDetails.DefaultImpl) {
+  override fun toResponse(writer: ResponseWriter, value: DroidDetails.DroidDetailsImpl) {
     writer.writeString(RESPONSE_FIELDS[0], value.__typename)
     writer.writeString(RESPONSE_FIELDS[1], value.name)
     writer.writeString(RESPONSE_FIELDS[2], value.primaryFunction)

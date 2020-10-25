@@ -29,7 +29,7 @@ interface HeroFragment : GraphqlFragment {
   /**
    * A character from the Star Wars universe
    */
-  data class DefaultImpl(
+  data class HeroFragmentImpl(
     override val __typename: String = "Character",
     /**
      * The name of the character

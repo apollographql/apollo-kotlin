@@ -221,7 +221,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     fun edgesFilterNotNull(): List<Edge1>? = edges?.filterNotNull()
   }
 
-  data class HeroDetailsDroidDroidDetailsImpl(
+  data class CharacterDroidHero(
     override val __typename: String,
     /**
      * The name of the character
@@ -242,7 +242,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   ) : HeroDetails, Droid, DroidDetails, Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.HeroDetailsDroidDroidDetailsImpl_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.CharacterDroidHero_ResponseAdapter.toResponse(writer, this)
       }
     }
 
@@ -306,7 +306,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     fun edgesFilterNotNull(): List<Edge2>? = edges?.filterNotNull()
   }
 
-  data class HeroDetailsHumanDetailsImpl(
+  data class CharacterHumanHero(
     override val __typename: String,
     /**
      * The name of the character
@@ -323,7 +323,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   ) : HeroDetails, HumanDetails, Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.HeroDetailsHumanDetailsImpl_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.CharacterHumanHero_ResponseAdapter.toResponse(writer, this)
       }
     }
 

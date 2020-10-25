@@ -16,13 +16,14 @@ import kotlin.Suppress
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-object HeroFragment_ResponseAdapter : ResponseAdapter<HeroFragment.DefaultImpl> {
+object HeroFragment_ResponseAdapter : ResponseAdapter<HeroFragment.HeroFragmentImpl> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forString("__typename", "__typename", null, false, null),
     ResponseField.forString("name", "name", null, false, null)
   )
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?): HeroFragment.DefaultImpl {
+  override fun fromResponse(reader: ResponseReader, __typename: String?):
+      HeroFragment.HeroFragmentImpl {
     return reader.run {
       var __typename: String? = __typename
       var name: String? = null
@@ -33,14 +34,14 @@ object HeroFragment_ResponseAdapter : ResponseAdapter<HeroFragment.DefaultImpl> 
           else -> break
         }
       }
-      HeroFragment.DefaultImpl(
+      HeroFragment.HeroFragmentImpl(
         __typename = __typename!!,
         name = name!!
       )
     }
   }
 
-  override fun toResponse(writer: ResponseWriter, value: HeroFragment.DefaultImpl) {
+  override fun toResponse(writer: ResponseWriter, value: HeroFragment.HeroFragmentImpl) {
     writer.writeString(RESPONSE_FIELDS[0], value.__typename)
     writer.writeString(RESPONSE_FIELDS[1], value.name)
   }

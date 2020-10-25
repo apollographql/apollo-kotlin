@@ -97,15 +97,15 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   /**
    * A humanoid creature from the Star Wars universe
    */
-  data class HumanDetailsImpl(
-    val delegate: HumanDetails.DefaultImpl
+  data class HumanR2(
+    val delegate: HumanDetails.HumanDetailsImpl
   ) : R2, HumanDetails by delegate
 
   /**
    * An autonomous mechanical character in the Star Wars universe
    */
-  data class DroidDetailsImpl(
-    val delegate: DroidDetails.DefaultImpl
+  data class DroidR2(
+    val delegate: DroidDetails.DroidDetailsImpl
   ) : R2, DroidDetails by delegate
 
   /**
@@ -137,15 +137,15 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   /**
    * A humanoid creature from the Star Wars universe
    */
-  data class HumanDetailsImpl1(
-    val delegate: HumanDetails.DefaultImpl
+  data class HumanLuke(
+    val delegate: HumanDetails.HumanDetailsImpl
   ) : Luke, HumanDetails by delegate
 
   /**
    * An autonomous mechanical character in the Star Wars universe
    */
-  data class DroidDetailsImpl1(
-    val delegate: DroidDetails.DefaultImpl
+  data class DroidLuke(
+    val delegate: DroidDetails.DroidDetailsImpl
   ) : Luke, DroidDetails by delegate
 
   /**

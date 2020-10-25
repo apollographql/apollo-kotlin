@@ -133,7 +133,7 @@ interface HeroDetails : GraphqlFragment {
   /**
    * A character from the Star Wars universe
    */
-  data class DefaultImpl(
+  data class HeroDetailsImpl(
     override val __typename: String = "Character",
     /**
      * The friends of the character exposed as a connection with edges

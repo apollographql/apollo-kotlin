@@ -95,14 +95,14 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   /**
    * For testing fragment type coercion
    */
-  data class Bar(
+  data class BarFoo(
     override val __typename: String = "Bar",
     override val foo: String,
     val bar: String
   ) : Foo {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Bar_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.BarFoo_ResponseAdapter.toResponse(writer, this)
       }
     }
   }
@@ -129,7 +129,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
     val foo: String
 
-    fun asBar(): Bar? = this as? Bar
+    fun asBarFoo(): BarFoo? = this as? BarFoo
 
     fun marshaller(): ResponseFieldMarshaller
   }

@@ -159,7 +159,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     override fun marshaller(): ResponseFieldMarshaller
   }
 
-  data class CharacterDroidImpl(
+  data class CharacterDroidSearch(
     override val __typename: String,
     /**
      * The name of the character
@@ -172,12 +172,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   ) : Character1, Droid, Search {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.CharacterDroidImpl_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.CharacterDroidSearch_ResponseAdapter.toResponse(writer, this)
       }
     }
   }
 
-  data class CharacterHumanImpl(
+  data class CharacterHumanSearch(
     override val __typename: String,
     /**
      * The name of the character
@@ -190,7 +190,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   ) : Character1, Human, Search {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.CharacterHumanImpl_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.CharacterHumanSearch_ResponseAdapter.toResponse(writer, this)
       }
     }
   }

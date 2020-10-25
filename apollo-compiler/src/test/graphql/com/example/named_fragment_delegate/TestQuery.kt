@@ -97,15 +97,15 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   /**
    * An autonomous mechanical character in the Star Wars universe
    */
-  data class DroidDetailsImpl(
-    val delegate: DroidDetails.DefaultImpl
+  data class DroidHero(
+    val delegate: DroidDetails.DroidDetailsImpl
   ) : Hero, DroidDetails by delegate
 
   /**
    * A humanoid creature from the Star Wars universe
    */
-  data class HumanDetailsImpl(
-    val delegate: HumanDetails.DefaultImpl
+  data class HumanHero(
+    val delegate: HumanDetails.HumanDetailsImpl
   ) : Hero, HumanDetails by delegate
 
   /**

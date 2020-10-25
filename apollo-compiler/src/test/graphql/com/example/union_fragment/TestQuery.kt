@@ -98,12 +98,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   /**
    * A character from the Star Wars universe
    */
-  data class CharacterImpl(
-    val delegate: Character.DefaultImpl
+  data class CharacterSearch(
+    val delegate: Character.CharacterImpl
   ) : Search, Character by delegate
 
-  data class StarshipImpl(
-    val delegate: Starship.DefaultImpl
+  data class StarshipSearch(
+    val delegate: Starship.StarshipImpl
   ) : Search, Starship by delegate
 
   data class OtherSearch(

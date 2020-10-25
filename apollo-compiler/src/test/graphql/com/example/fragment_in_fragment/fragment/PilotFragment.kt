@@ -62,7 +62,7 @@ interface PilotFragment : GraphqlFragment {
   /**
    * An individual person or character within the Star Wars universe.
    */
-  data class DefaultImpl(
+  data class PilotFragmentImpl(
     override val __typename: String = "Person",
     /**
      * The name of this person.
