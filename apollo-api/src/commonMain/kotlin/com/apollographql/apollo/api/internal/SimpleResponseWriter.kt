@@ -65,22 +65,22 @@ class SimpleResponseWriter(private val scalarTypeAdapters: ScalarTypeAdapters) :
     }
   }
 
-  override fun writeFragment(marshaller: ResponseFieldMarshaller?) {
-    marshaller?.marshal(this)
-  }
-
-  override fun <T> writeList(field: ResponseField, values: List<T>?, listWriter: ResponseWriter.ListWriter<T>) {
+  override fun <T> writeList(
+      field: ResponseField,
+      values: List<T>?,
+      block: (items: List<T>?, listItemWriter: ResponseWriter.ListItemWriter) -> Unit
+  ) {
     if (values == null) {
       data[field.responseName] = null
     } else {
       val listItemWriter = CustomListItemWriter(scalarTypeAdapters)
-      listWriter.write(values, listItemWriter)
+      block(values, listItemWriter)
       data[field.responseName] = listItemWriter.data
     }
   }
 
-  private class CustomListItemWriter internal constructor(private val scalarTypeAdapters: ScalarTypeAdapters) : ResponseWriter.ListItemWriter {
-    internal val data = ArrayList<Any?>()
+  private class CustomListItemWriter(private val scalarTypeAdapters: ScalarTypeAdapters) : ResponseWriter.ListItemWriter {
+    val data = ArrayList<Any?>()
 
     override fun writeString(value: String?) {
       data.add(value)
@@ -122,12 +122,12 @@ class SimpleResponseWriter(private val scalarTypeAdapters: ScalarTypeAdapters) :
       }
     }
 
-    override fun <T> writeList(items: List<T>?, listWriter: ResponseWriter.ListWriter<T>) {
+    override fun <T> writeList(items: List<T>?, block: (items: List<T>?, listItemWriter: ResponseWriter.ListItemWriter) -> Unit) {
       if (items == null) {
         data.add(null)
       } else {
         val listItemWriter = CustomListItemWriter(scalarTypeAdapters)
-        listWriter.write(items, listItemWriter)
+        block(items, listItemWriter)
         data.add(listItemWriter.data)
       }
     }

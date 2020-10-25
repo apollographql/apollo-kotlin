@@ -18,17 +18,7 @@ interface ResponseWriter {
 
   fun writeObject(field: ResponseField, marshaller: ResponseFieldMarshaller?)
 
-  fun writeFragment(marshaller: ResponseFieldMarshaller?)
-
-  fun <T> writeList(field: ResponseField, values: List<T>?, listWriter: ListWriter<T>)
-
-  fun <T> writeList(field: ResponseField, values: List<T>?, block: (items: List<T>?, listItemWriter: ListItemWriter) -> Unit) {
-    writeList(field, values, object : ListWriter<T> {
-      override fun write(items: List<T>?, listItemWriter: ListItemWriter) {
-        block(items, listItemWriter)
-      }
-    })
-  }
+  fun <T> writeList(field: ResponseField, values: List<T>?, block: (items: List<T>?, listItemWriter: ListItemWriter) -> Unit)
 
   interface ListWriter<T> {
     fun write(items: List<T>?, listItemWriter: ListItemWriter)
@@ -49,14 +39,6 @@ interface ResponseWriter {
 
     fun writeObject(marshaller: ResponseFieldMarshaller?)
 
-    fun <T> writeList(items: List<T>?, listWriter: ListWriter<T>)
-
-    fun <T> writeList(items: List<T>?, block: (items: List<T>?, listItemWriter: ListItemWriter) -> Unit) {
-      writeList(items, object : ListWriter<T> {
-        override fun write(items: List<T>?, listItemWriter: ListItemWriter) {
-          block(items, listItemWriter)
-        }
-      })
-    }
+    fun <T> writeList(items: List<T>?, block: (items: List<T>?, listItemWriter: ListItemWriter) -> Unit)
   }
 }

@@ -18,25 +18,9 @@ interface ResponseReader {
 
   fun readBoolean(field: ResponseField): Boolean?
 
-  fun <T : Any> readObject(field: ResponseField, objectReader: ObjectReader<T>): T?
+  fun <T : Any> readObject(field: ResponseField, block: (ResponseReader) -> T): T?
 
-  fun <T : Any> readObject(field: ResponseField, block: (ResponseReader) -> T): T? {
-    return readObject(field, object : ObjectReader<T> {
-      override fun read(reader: ResponseReader): T {
-        return block(reader)
-      }
-    })
-  }
-
-  fun <T : Any> readList(field: ResponseField, listReader: ListReader<T>): List<T?>?
-
-  fun <T : Any> readList(field: ResponseField, block: (ListItemReader) -> T): List<T?>? {
-    return readList(field, object : ListReader<T> {
-      override fun read(reader: ListItemReader): T {
-        return block(reader)
-      }
-    })
-  }
+  fun <T : Any> readList(field: ResponseField, block: (ListItemReader) -> T): List<T?>?
 
   fun <T : Any> readCustomType(field: ResponseField.CustomTypeField): T?
 
@@ -60,24 +44,8 @@ interface ResponseReader {
 
     fun <T : Any> readCustomType(scalarType: ScalarType): T
 
-    fun <T : Any> readObject(objectReader: ObjectReader<T>): T
+    fun <T : Any> readObject(block: (ResponseReader) -> T): T
 
-    fun <T : Any> readObject(block: (ResponseReader) -> T): T {
-      return readObject(object : ObjectReader<T> {
-        override fun read(reader: ResponseReader): T {
-          return block(reader)
-        }
-      })
-    }
-
-    fun <T : Any> readList(listReader: ListReader<T>): List<T?>
-
-    fun <T : Any> readList(block: (ListItemReader) -> T): List<T?> {
-      return readList(object : ListReader<T> {
-        override fun read(reader: ListItemReader): T {
-          return block(reader)
-        }
-      })
-    }
+    fun <T : Any> readList(block: (ListItemReader) -> T): List<T?>
   }
 }
