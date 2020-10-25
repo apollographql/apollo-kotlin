@@ -104,7 +104,7 @@ internal class ObjectTypeBuilder(
               rootFragmentInterfaceFields = fields
           )
           val defaultImplementationType = buildObjectType(
-              name = "Other${typeName.singularize().capitalize()}",
+              name = "Other${fragmentRootInterfaceType.name}",
               schemaType = schemaType,
               fields = fields,
               abstract = false,
@@ -292,11 +292,12 @@ internal class ObjectTypeBuilder(
       rootFragmentInterfaceFields: List<Field>,
       fragmentInterfaceTypes: Map<Fragment, CodeGenerationAst.TypeRef>
   ): CodeGenerationAst.TypeRef {
-    val typeName = joinToString(separator = "", postfix = "Impl") { fragment ->
-      fragment.interfaceType?.name ?: fragment.typeCondition.capitalize().singularize()
-    }
+    val implementationTypeName = this
+        .map { fragment -> fragment.typeCondition.capitalize().singularize() }
+        .distinct()
+        .joinToString(separator = "", postfix = rootFragmentInterfaceType.name)
     return nestedTypeContainer.registerObjectType(
-        typeName = typeName,
+        typeName = implementationTypeName,
         enclosingType = enclosingType
     ) { typeRef ->
 
@@ -339,7 +340,7 @@ internal class ObjectTypeBuilder(
       // if named fragment used without mixing additional fields except `__typename` it's safe to skip fragment implementation generation
       // and use delegation to default implementation of this fragment instead
       nestedTypeContainer.registerObjectType(
-          typeName = "${this.interfaceType.name}Impl",
+          typeName = "${this.typeCondition.singularize().capitalize()}${rootFragmentInterfaceType.name}",
           enclosingType = enclosingType,
           singularizeName = true
       ) { typeRef ->
@@ -357,7 +358,7 @@ internal class ObjectTypeBuilder(
             schemaType = schemaType.name,
             kind = CodeGenerationAst.ObjectType.Kind.FragmentDelegate(
                 CodeGenerationAst.TypeRef(
-                    name = "DefaultImpl",
+                    name = "${this.interfaceType.name}Impl",
                     enclosingType = this.interfaceType,
                 )
             ),
@@ -365,12 +366,8 @@ internal class ObjectTypeBuilder(
         )
       }
     } else {
-      val typeName = when {
-        this.interfaceType?.name != null -> "${this.interfaceType.name}Impl"
-        else -> this.typeCondition
-      }
       buildObjectType(
-          name = typeName,
+          name = "${this.typeCondition.singularize().capitalize()}${rootFragmentInterfaceType.name}",
           schemaType = schemaType,
           fields = this.fields.merge(fieldsToMerge),
           abstract = false,
