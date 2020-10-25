@@ -1,0 +1,26 @@
+type Query {
+  collection: Collection!
+}
+
+interface Collection {
+  items: [Item!]!
+}
+
+type ParticularCollection implements Collection {
+  items: [Item!]!
+}
+
+interface Item {
+  title: String!
+  description: String!
+}
+
+type ParticularItem implements Item {
+  title: String!
+  image: String!
+}
+
+type GenericItem implements Item {
+  title: String!
+  genericField: String!
+}
