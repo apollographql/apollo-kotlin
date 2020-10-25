@@ -31,7 +31,7 @@ interface PlanetFragment : GraphqlFragment {
    * A large mass, planet or planetoid in the Star Wars Universe, at the time of
    * 0 ABY.
    */
-  data class DefaultImpl(
+  data class PlanetFragmentImpl(
     override val __typename: String = "Planet",
     /**
      * The name of this planet.

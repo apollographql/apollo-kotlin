@@ -119,7 +119,7 @@ data class TestQuery(
   /**
    * A character from the Star Wars universe
    */
-  data class HeroDetailsImpl(
+  data class CharacterHero(
     override val __typename: String = "Character",
     /**
      * The name of the character
@@ -132,12 +132,12 @@ data class TestQuery(
   ) : HeroDetails, Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.HeroDetailsImpl_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.CharacterHero_ResponseAdapter.toResponse(writer, this)
       }
     }
   }
 
-  data class HeroDetailsHumanDetailsImpl(
+  data class CharacterHumanHero(
     override val __typename: String,
     /**
      * The name of the character
@@ -154,7 +154,7 @@ data class TestQuery(
   ) : HeroDetails, HumanDetails, Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.HeroDetailsHumanDetailsImpl_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.CharacterHumanHero_ResponseAdapter.toResponse(writer, this)
       }
     }
   }

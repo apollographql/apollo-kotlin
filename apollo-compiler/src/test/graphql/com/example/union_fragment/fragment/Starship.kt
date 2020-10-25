@@ -23,7 +23,7 @@ interface Starship : GraphqlFragment {
    */
   val name: String
 
-  data class DefaultImpl(
+  data class StarshipImpl(
     override val __typename: String = "Starship",
     /**
      * The name of the starship

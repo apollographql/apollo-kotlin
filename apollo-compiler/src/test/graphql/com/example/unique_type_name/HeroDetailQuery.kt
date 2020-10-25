@@ -207,7 +207,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
   /**
    * A humanoid creature from the Star Wars universe
    */
-  data class Human(
+  data class HumanHeroDetailQuery1(
     override val __typename: String = "Human",
     /**
      * What this human calls themselves
@@ -224,7 +224,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
   ) : HeroDetailQuery1 {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        HeroDetailQuery_ResponseAdapter.Human_ResponseAdapter.toResponse(writer, this)
+        HeroDetailQuery_ResponseAdapter.HumanHeroDetailQuery1_ResponseAdapter.toResponse(writer, this)
       }
     }
 
@@ -251,7 +251,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
   /**
    * A character from the Star Wars universe
    */
-  data class OtherHeroDetailQuery(
+  data class OtherHeroDetailQuery1(
     override val __typename: String = "Character",
     /**
      * The name of the character
@@ -264,7 +264,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
   ) : HeroDetailQuery1 {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        HeroDetailQuery_ResponseAdapter.OtherHeroDetailQuery_ResponseAdapter.toResponse(writer, this)
+        HeroDetailQuery_ResponseAdapter.OtherHeroDetailQuery1_ResponseAdapter.toResponse(writer, this)
       }
     }
 
@@ -301,7 +301,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
      */
     val friends: List<Friend3?>?
 
-    fun asHuman(): Human? = this as? Human
+    fun asHumanHeroDetailQuery1(): HumanHeroDetailQuery1? = this as? HumanHeroDetailQuery1
 
     fun marshaller(): ResponseFieldMarshaller
   }

@@ -101,11 +101,11 @@ internal class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   /**
    * A character from the Star Wars universe
    */
-  data class HeroDetailsImpl(
-    val delegate: HeroDetails.DefaultImpl
+  data class CharacterHero(
+    val delegate: HeroDetails.HeroDetailsImpl
   ) : HeroDetails by delegate, Hero
 
-  data class HeroDetailsHumanDetailsImpl(
+  data class CharacterHumanHero(
     override val __typename: String,
     /**
      * What this human calls themselves
@@ -114,7 +114,7 @@ internal class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   ) : HeroDetails, HumanDetails, Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.HeroDetailsHumanDetailsImpl_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.CharacterHumanHero_ResponseAdapter.toResponse(writer, this)
       }
     }
   }

@@ -49,7 +49,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
   }
 
-  object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<TestQuery.HeroDetailsImpl> {
+  object CharacterHero_ResponseAdapter : ResponseAdapter<TestQuery.CharacterHero> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forString("name", "name", null, false, null),
@@ -57,7 +57,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
-        TestQuery.HeroDetailsImpl {
+        TestQuery.CharacterHero {
       return reader.run {
         var __typename: String? = __typename
         var name: String? = null
@@ -70,7 +70,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             else -> break
           }
         }
-        TestQuery.HeroDetailsImpl(
+        TestQuery.CharacterHero(
           __typename = __typename!!,
           name = name!!,
           id = id!!
@@ -78,15 +78,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.HeroDetailsImpl) {
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.CharacterHero) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeString(RESPONSE_FIELDS[1], value.name)
       writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, value.id)
     }
   }
 
-  object HeroDetailsHumanDetailsImpl_ResponseAdapter :
-      ResponseAdapter<TestQuery.HeroDetailsHumanDetailsImpl> {
+  object CharacterHumanHero_ResponseAdapter : ResponseAdapter<TestQuery.CharacterHumanHero> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forString("name", "name", null, false, null),
@@ -95,7 +94,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
-        TestQuery.HeroDetailsHumanDetailsImpl {
+        TestQuery.CharacterHumanHero {
       return reader.run {
         var __typename: String? = __typename
         var name: String? = null
@@ -110,7 +109,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             else -> break
           }
         }
-        TestQuery.HeroDetailsHumanDetailsImpl(
+        TestQuery.CharacterHumanHero(
           __typename = __typename!!,
           name = name!!,
           homePlanet = homePlanet,
@@ -119,7 +118,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.HeroDetailsHumanDetailsImpl) {
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.CharacterHumanHero) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeString(RESPONSE_FIELDS[1], value.name)
       writer.writeString(RESPONSE_FIELDS[2], value.homePlanet)
@@ -166,16 +165,16 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Hero {
       val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
       return when(typename) {
-        "Droid" -> TestQuery_ResponseAdapter.HeroDetailsImpl_ResponseAdapter.fromResponse(reader, typename)
-        "Human" -> TestQuery_ResponseAdapter.HeroDetailsHumanDetailsImpl_ResponseAdapter.fromResponse(reader, typename)
+        "Droid" -> TestQuery_ResponseAdapter.CharacterHero_ResponseAdapter.fromResponse(reader, typename)
+        "Human" -> TestQuery_ResponseAdapter.CharacterHumanHero_ResponseAdapter.fromResponse(reader, typename)
         else -> TestQuery_ResponseAdapter.OtherHero_ResponseAdapter.fromResponse(reader, typename)
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.Hero) {
       when(value) {
-        is TestQuery.HeroDetailsImpl -> TestQuery_ResponseAdapter.HeroDetailsImpl_ResponseAdapter.toResponse(writer, value)
-        is TestQuery.HeroDetailsHumanDetailsImpl -> TestQuery_ResponseAdapter.HeroDetailsHumanDetailsImpl_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.CharacterHero -> TestQuery_ResponseAdapter.CharacterHero_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.CharacterHumanHero -> TestQuery_ResponseAdapter.CharacterHumanHero_ResponseAdapter.toResponse(writer, value)
         is TestQuery.OtherHero -> TestQuery_ResponseAdapter.OtherHero_ResponseAdapter.toResponse(writer, value)
       }
     }

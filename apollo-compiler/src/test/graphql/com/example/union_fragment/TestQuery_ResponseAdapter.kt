@@ -58,23 +58,24 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
   }
 
-  object CharacterImpl_ResponseAdapter : ResponseAdapter<TestQuery.CharacterImpl> {
+  object CharacterSearch_ResponseAdapter : ResponseAdapter<TestQuery.CharacterSearch> {
     override fun fromResponse(reader: ResponseReader, __typename: String?):
-        TestQuery.CharacterImpl {
-      return TestQuery.CharacterImpl(Character_ResponseAdapter.fromResponse(reader, __typename))
+        TestQuery.CharacterSearch {
+      return TestQuery.CharacterSearch(Character_ResponseAdapter.fromResponse(reader, __typename))
     }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.CharacterImpl) {
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.CharacterSearch) {
       Character_ResponseAdapter.toResponse(writer, value.delegate)
     }
   }
 
-  object StarshipImpl_ResponseAdapter : ResponseAdapter<TestQuery.StarshipImpl> {
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.StarshipImpl {
-      return TestQuery.StarshipImpl(Starship_ResponseAdapter.fromResponse(reader, __typename))
+  object StarshipSearch_ResponseAdapter : ResponseAdapter<TestQuery.StarshipSearch> {
+    override fun fromResponse(reader: ResponseReader, __typename: String?):
+        TestQuery.StarshipSearch {
+      return TestQuery.StarshipSearch(Starship_ResponseAdapter.fromResponse(reader, __typename))
     }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.StarshipImpl) {
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.StarshipSearch) {
       Starship_ResponseAdapter.toResponse(writer, value.delegate)
     }
   }
@@ -112,17 +113,17 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Search {
       val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
       return when(typename) {
-        "Droid" -> TestQuery_ResponseAdapter.CharacterImpl_ResponseAdapter.fromResponse(reader, typename)
-        "Human" -> TestQuery_ResponseAdapter.CharacterImpl_ResponseAdapter.fromResponse(reader, typename)
-        "Starship" -> TestQuery_ResponseAdapter.StarshipImpl_ResponseAdapter.fromResponse(reader, typename)
+        "Droid" -> TestQuery_ResponseAdapter.CharacterSearch_ResponseAdapter.fromResponse(reader, typename)
+        "Human" -> TestQuery_ResponseAdapter.CharacterSearch_ResponseAdapter.fromResponse(reader, typename)
+        "Starship" -> TestQuery_ResponseAdapter.StarshipSearch_ResponseAdapter.fromResponse(reader, typename)
         else -> TestQuery_ResponseAdapter.OtherSearch_ResponseAdapter.fromResponse(reader, typename)
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.Search) {
       when(value) {
-        is TestQuery.CharacterImpl -> TestQuery_ResponseAdapter.CharacterImpl_ResponseAdapter.toResponse(writer, value)
-        is TestQuery.StarshipImpl -> TestQuery_ResponseAdapter.StarshipImpl_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.CharacterSearch -> TestQuery_ResponseAdapter.CharacterSearch_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.StarshipSearch -> TestQuery_ResponseAdapter.StarshipSearch_ResponseAdapter.toResponse(writer, value)
         is TestQuery.OtherSearch -> TestQuery_ResponseAdapter.OtherSearch_ResponseAdapter.toResponse(writer, value)
       }
     }

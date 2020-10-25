@@ -18,7 +18,7 @@ import kotlin.Suppress
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-object CharacterDetails_ResponseAdapter : ResponseAdapter<CharacterDetails.DefaultImpl> {
+object CharacterDetails_ResponseAdapter : ResponseAdapter<CharacterDetails.CharacterDetailsImpl> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forString("__typename", "__typename", null, false, null),
     ResponseField.forString("name", "name", null, false, null),
@@ -26,7 +26,7 @@ object CharacterDetails_ResponseAdapter : ResponseAdapter<CharacterDetails.Defau
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?):
-      CharacterDetails.DefaultImpl {
+      CharacterDetails.CharacterDetailsImpl {
     return reader.run {
       var __typename: String? = __typename
       var name: String? = null
@@ -39,7 +39,7 @@ object CharacterDetails_ResponseAdapter : ResponseAdapter<CharacterDetails.Defau
           else -> break
         }
       }
-      CharacterDetails.DefaultImpl(
+      CharacterDetails.CharacterDetailsImpl(
         __typename = __typename!!,
         name = name!!,
         birthDate = birthDate!!
@@ -47,7 +47,7 @@ object CharacterDetails_ResponseAdapter : ResponseAdapter<CharacterDetails.Defau
     }
   }
 
-  override fun toResponse(writer: ResponseWriter, value: CharacterDetails.DefaultImpl) {
+  override fun toResponse(writer: ResponseWriter, value: CharacterDetails.CharacterDetailsImpl) {
     writer.writeString(RESPONSE_FIELDS[0], value.__typename)
     writer.writeString(RESPONSE_FIELDS[1], value.name)
     writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, value.birthDate)

@@ -372,7 +372,6 @@ private class CodeGenerationAstBuilder(
           abstract = true
       )
     }
-
     val objectTypeBuilder = ObjectTypeBuilder(
         schema = schema,
         customTypes = customTypes,
@@ -384,7 +383,7 @@ private class CodeGenerationAstBuilder(
     )
     val defaultImplementationType = if (inlineFragments.isEmpty() && fragmentRefs.isEmpty()) {
       nestedTypeContainer.registerObjectType(
-          typeName = "DefaultImpl",
+          typeName = "${rootType.name}Impl",
           enclosingType = rootType
       ) { typeRef ->
         objectTypeBuilder.buildObjectType(
@@ -398,7 +397,7 @@ private class CodeGenerationAstBuilder(
     } else {
       objectTypeBuilder.buildObjectTypeWithFragments(
           schemaType = schema.resolveType(schema.resolveType(typeCondition)),
-          typeName = "DefaultImpl",
+          typeName = "${rootType.name}Impl",
           fields = fields,
           inlineFragments = inlineFragments,
           fragmentRefs = fragmentRefs,

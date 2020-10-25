@@ -57,7 +57,7 @@ interface QueryFragment : GraphqlFragment {
   /**
    * The query type, represents all of the entry points into our object graph
    */
-  data class DefaultImpl(
+  data class QueryFragmentImpl(
     override val __typename: String = "Query",
     override val hero: Hero1?
   ) : QueryFragment {

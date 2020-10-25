@@ -18,14 +18,15 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.DefaultImpl> {
+object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.HeroDetailsImpl> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forString("__typename", "__typename", null, false, null),
     ResponseField.forString("name", "name", null, false, null),
     ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
   )
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?): HeroDetails.DefaultImpl {
+  override fun fromResponse(reader: ResponseReader, __typename: String?):
+      HeroDetails.HeroDetailsImpl {
     return reader.run {
       var __typename: String? = __typename
       var name: String? = null
@@ -40,7 +41,7 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.DefaultImpl> {
           else -> break
         }
       }
-      HeroDetails.DefaultImpl(
+      HeroDetails.HeroDetailsImpl(
         __typename = __typename!!,
         name = name!!,
         friendsConnection = friendsConnection!!
@@ -48,7 +49,7 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.DefaultImpl> {
     }
   }
 
-  override fun toResponse(writer: ResponseWriter, value: HeroDetails.DefaultImpl) {
+  override fun toResponse(writer: ResponseWriter, value: HeroDetails.HeroDetailsImpl) {
     writer.writeString(RESPONSE_FIELDS[0], value.__typename)
     writer.writeString(RESPONSE_FIELDS[1], value.name)
     writer.writeObject(RESPONSE_FIELDS[2]) { writer ->

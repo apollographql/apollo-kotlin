@@ -24,19 +24,19 @@ internal interface HeroDetails : GraphqlFragment {
   /**
    * A humanoid creature from the Star Wars universe
    */
-  data class HumanDetailsImpl(
-    val delegate: HumanDetails.DefaultImpl
-  ) : DefaultImpl, HumanDetails by delegate
+  data class HumanHeroDetailsImpl(
+    val delegate: HumanDetails.HumanDetailsImpl
+  ) : HeroDetailsImpl, HumanDetails by delegate
 
   /**
    * A character from the Star Wars universe
    */
-  data class OtherDefaultImpl(
+  data class OtherHeroDetailsImpl(
     override val __typename: String = "Character"
-  ) : HeroDetails, DefaultImpl {
+  ) : HeroDetails, HeroDetailsImpl {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        HeroDetails_ResponseAdapter.OtherDefaultImpl_ResponseAdapter.toResponse(writer, this)
+        HeroDetails_ResponseAdapter.OtherHeroDetailsImpl_ResponseAdapter.toResponse(writer, this)
       }
     }
   }
@@ -44,7 +44,7 @@ internal interface HeroDetails : GraphqlFragment {
   /**
    * A character from the Star Wars universe
    */
-  interface DefaultImpl : HeroDetails {
+  interface HeroDetailsImpl : HeroDetails {
     override val __typename: String
 
     fun asHumanDetails(): HumanDetails? = this as? HumanDetails

@@ -269,7 +269,8 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
     }
   }
 
-  object Human_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Human> {
+  object HumanHeroDetailQuery1_ResponseAdapter :
+      ResponseAdapter<HeroDetailQuery.HumanHeroDetailQuery1> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forString("name", "name", null, false, null),
@@ -277,7 +278,8 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
       ResponseField.forDouble("height", "height", null, true, null)
     )
 
-    override fun fromResponse(reader: ResponseReader, __typename: String?): HeroDetailQuery.Human {
+    override fun fromResponse(reader: ResponseReader, __typename: String?):
+        HeroDetailQuery.HumanHeroDetailQuery1 {
       return reader.run {
         var __typename: String? = __typename
         var name: String? = null
@@ -296,7 +298,7 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
             else -> break
           }
         }
-        HeroDetailQuery.Human(
+        HeroDetailQuery.HumanHeroDetailQuery1(
           __typename = __typename!!,
           name = name!!,
           friends = friends,
@@ -305,7 +307,7 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: HeroDetailQuery.Human) {
+    override fun toResponse(writer: ResponseWriter, value: HeroDetailQuery.HumanHeroDetailQuery1) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeString(RESPONSE_FIELDS[1], value.name)
       writer.writeList(RESPONSE_FIELDS[2], value.friends) { values, listItemWriter ->
@@ -354,8 +356,8 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
     }
   }
 
-  object OtherHeroDetailQuery_ResponseAdapter :
-      ResponseAdapter<HeroDetailQuery.OtherHeroDetailQuery> {
+  object OtherHeroDetailQuery1_ResponseAdapter :
+      ResponseAdapter<HeroDetailQuery.OtherHeroDetailQuery1> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forString("name", "name", null, false, null),
@@ -363,7 +365,7 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
-        HeroDetailQuery.OtherHeroDetailQuery {
+        HeroDetailQuery.OtherHeroDetailQuery1 {
       return reader.run {
         var __typename: String? = __typename
         var name: String? = null
@@ -380,7 +382,7 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
             else -> break
           }
         }
-        HeroDetailQuery.OtherHeroDetailQuery(
+        HeroDetailQuery.OtherHeroDetailQuery1(
           __typename = __typename!!,
           name = name!!,
           friends = friends
@@ -388,7 +390,7 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: HeroDetailQuery.OtherHeroDetailQuery) {
+    override fun toResponse(writer: ResponseWriter, value: HeroDetailQuery.OtherHeroDetailQuery1) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeString(RESPONSE_FIELDS[1], value.name)
       writer.writeList(RESPONSE_FIELDS[2], value.friends) { values, listItemWriter ->
@@ -416,15 +418,15 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
         HeroDetailQuery.HeroDetailQuery1 {
       val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
       return when(typename) {
-        "Human" -> HeroDetailQuery_ResponseAdapter.Human_ResponseAdapter.fromResponse(reader, typename)
-        else -> HeroDetailQuery_ResponseAdapter.OtherHeroDetailQuery_ResponseAdapter.fromResponse(reader, typename)
+        "Human" -> HeroDetailQuery_ResponseAdapter.HumanHeroDetailQuery1_ResponseAdapter.fromResponse(reader, typename)
+        else -> HeroDetailQuery_ResponseAdapter.OtherHeroDetailQuery1_ResponseAdapter.fromResponse(reader, typename)
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: HeroDetailQuery.HeroDetailQuery1) {
       when(value) {
-        is HeroDetailQuery.Human -> HeroDetailQuery_ResponseAdapter.Human_ResponseAdapter.toResponse(writer, value)
-        is HeroDetailQuery.OtherHeroDetailQuery -> HeroDetailQuery_ResponseAdapter.OtherHeroDetailQuery_ResponseAdapter.toResponse(writer, value)
+        is HeroDetailQuery.HumanHeroDetailQuery1 -> HeroDetailQuery_ResponseAdapter.HumanHeroDetailQuery1_ResponseAdapter.toResponse(writer, value)
+        is HeroDetailQuery.OtherHeroDetailQuery1 -> HeroDetailQuery_ResponseAdapter.OtherHeroDetailQuery1_ResponseAdapter.toResponse(writer, value)
       }
     }
   }

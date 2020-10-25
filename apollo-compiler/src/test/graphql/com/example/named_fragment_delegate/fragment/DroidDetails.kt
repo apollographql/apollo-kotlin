@@ -71,7 +71,7 @@ interface DroidDetails : GraphqlFragment {
   /**
    * An autonomous mechanical character in the Star Wars universe
    */
-  data class DefaultImpl(
+  data class DroidDetailsImpl(
     override val __typename: String = "Droid",
     /**
      * What others call this droid

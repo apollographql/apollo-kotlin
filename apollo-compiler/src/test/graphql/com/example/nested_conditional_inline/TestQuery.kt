@@ -122,7 +122,7 @@ data class TestQuery(
   /**
    * A humanoid creature from the Star Wars universe
    */
-  data class Human1(
+  data class HumanFriend(
     override val __typename: String = "Human",
     /**
      * What this human calls themselves
@@ -135,7 +135,7 @@ data class TestQuery(
   ) : Friend {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Human1_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.HumanFriend_ResponseAdapter.toResponse(writer, this)
       }
     }
   }
@@ -168,7 +168,7 @@ data class TestQuery(
      */
     val name: String
 
-    fun asHuman1(): Human1? = this as? Human1
+    fun asHumanFriend(): HumanFriend? = this as? HumanFriend
 
     fun marshaller(): ResponseFieldMarshaller
   }
@@ -176,7 +176,7 @@ data class TestQuery(
   /**
    * A humanoid creature from the Star Wars universe
    */
-  data class Human(
+  data class HumanHero(
     override val __typename: String = "Human",
     /**
      * What this human calls themselves
@@ -189,7 +189,7 @@ data class TestQuery(
   ) : Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Human_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.HumanHero_ResponseAdapter.toResponse(writer, this)
       }
     }
 
@@ -199,7 +199,7 @@ data class TestQuery(
   /**
    * A humanoid creature from the Star Wars universe
    */
-  data class Human2(
+  data class HumanFriend1(
     override val __typename: String = "Human",
     /**
      * What this human calls themselves
@@ -212,7 +212,7 @@ data class TestQuery(
   ) : Friend1 {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Human2_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.HumanFriend1_ResponseAdapter.toResponse(writer, this)
       }
     }
   }
@@ -245,7 +245,7 @@ data class TestQuery(
      */
     val name: String
 
-    fun asHuman2(): Human2? = this as? Human2
+    fun asHumanFriend1(): HumanFriend1? = this as? HumanFriend1
 
     fun marshaller(): ResponseFieldMarshaller
   }
@@ -253,7 +253,7 @@ data class TestQuery(
   /**
    * An autonomous mechanical character in the Star Wars universe
    */
-  data class Droid(
+  data class DroidHero(
     override val __typename: String = "Droid",
     /**
      * What others call this droid
@@ -266,7 +266,7 @@ data class TestQuery(
   ) : Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Droid_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.DroidHero_ResponseAdapter.toResponse(writer, this)
       }
     }
 
@@ -301,9 +301,9 @@ data class TestQuery(
      */
     val name: String
 
-    fun asHuman(): Human? = this as? Human
+    fun asHumanHero(): HumanHero? = this as? HumanHero
 
-    fun asDroid(): Droid? = this as? Droid
+    fun asDroidHero(): DroidHero? = this as? DroidHero
 
     fun marshaller(): ResponseFieldMarshaller
   }

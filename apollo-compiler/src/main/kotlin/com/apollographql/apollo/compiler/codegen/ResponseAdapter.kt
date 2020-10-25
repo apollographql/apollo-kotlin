@@ -56,7 +56,6 @@ internal fun CodeGenerationAst.FragmentType.responseAdapterTypeSpec(generateAsIn
       .build()
 }
 
-
 private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(): TypeSpec {
   return TypeSpec.objectBuilder("${this.name}_ResponseAdapter")
       .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this.typeRef.asTypeName()))

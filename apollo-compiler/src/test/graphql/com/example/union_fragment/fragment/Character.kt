@@ -34,7 +34,7 @@ interface Character : GraphqlFragment {
   /**
    * A character from the Star Wars universe
    */
-  data class DefaultImpl(
+  data class CharacterImpl(
     override val __typename: String = "Character",
     /**
      * The ID of the character

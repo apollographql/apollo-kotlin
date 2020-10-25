@@ -96,7 +96,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     scalarTypeAdapters = scalarTypeAdapters
   )
 
-  data class HeroDetailsCharacterDetailsImpl(
+  data class CharacterHero(
     override val __typename: String,
     /**
      * The name of the character
@@ -109,12 +109,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   ) : HeroDetails, CharacterDetails, Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.HeroDetailsCharacterDetailsImpl_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.CharacterHero_ResponseAdapter.toResponse(writer, this)
       }
     }
   }
 
-  data class HeroDetailsHumanDetailsCharacterDetailsImpl(
+  data class CharacterHumanHero(
     override val __typename: String,
     /**
      * The name of the character
@@ -127,7 +127,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   ) : HeroDetails, HumanDetails, CharacterDetails, Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.HeroDetailsHumanDetailsCharacterDetailsImpl_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.CharacterHumanHero_ResponseAdapter.toResponse(writer, this)
       }
     }
   }

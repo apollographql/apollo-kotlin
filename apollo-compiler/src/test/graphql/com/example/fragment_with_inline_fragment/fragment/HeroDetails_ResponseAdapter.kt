@@ -18,27 +18,28 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.DefaultImpl> {
+object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.HeroDetailsImpl> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forString("__typename", "__typename", null, false, null),
     ResponseField.forString("name", "name", null, false, null),
     ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
   )
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?): HeroDetails.DefaultImpl {
+  override fun fromResponse(reader: ResponseReader, __typename: String?):
+      HeroDetails.HeroDetailsImpl {
     val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
     return when(typename) {
-      "Droid" -> DroidDroidDetailsImpl_ResponseAdapter.fromResponse(reader, typename)
-      "Human" -> HumanDetailsImpl_ResponseAdapter.fromResponse(reader, typename)
-      else -> OtherDefaultImpl_ResponseAdapter.fromResponse(reader, typename)
+      "Droid" -> DroidHeroDetailsImpl_ResponseAdapter.fromResponse(reader, typename)
+      "Human" -> HumanHeroDetailsImpl_ResponseAdapter.fromResponse(reader, typename)
+      else -> OtherHeroDetailsImpl_ResponseAdapter.fromResponse(reader, typename)
     }
   }
 
-  override fun toResponse(writer: ResponseWriter, value: HeroDetails.DefaultImpl) {
+  override fun toResponse(writer: ResponseWriter, value: HeroDetails.HeroDetailsImpl) {
     when(value) {
-      is HeroDetails.DroidDroidDetailsImpl -> DroidDroidDetailsImpl_ResponseAdapter.toResponse(writer, value)
-      is HeroDetails.HumanDetailsImpl -> HumanDetailsImpl_ResponseAdapter.toResponse(writer, value)
-      is HeroDetails.OtherDefaultImpl -> OtherDefaultImpl_ResponseAdapter.toResponse(writer, value)
+      is HeroDetails.DroidHeroDetailsImpl -> DroidHeroDetailsImpl_ResponseAdapter.toResponse(writer, value)
+      is HeroDetails.HumanHeroDetailsImpl -> HumanHeroDetailsImpl_ResponseAdapter.toResponse(writer, value)
+      is HeroDetails.OtherHeroDetailsImpl -> OtherHeroDetailsImpl_ResponseAdapter.toResponse(writer, value)
     }
   }
 
@@ -160,8 +161,7 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.DefaultImpl> {
     }
   }
 
-  object DroidDroidDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetails.DroidDroidDetailsImpl>
-      {
+  object DroidHeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetails.DroidHeroDetailsImpl> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forString("name", "name", null, false, null),
@@ -170,7 +170,7 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.DefaultImpl> {
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
-        HeroDetails.DroidDroidDetailsImpl {
+        HeroDetails.DroidHeroDetailsImpl {
       return reader.run {
         var __typename: String? = __typename
         var name: String? = null
@@ -187,7 +187,7 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.DefaultImpl> {
             else -> break
           }
         }
-        HeroDetails.DroidDroidDetailsImpl(
+        HeroDetails.DroidHeroDetailsImpl(
           __typename = __typename!!,
           name = name!!,
           friendsConnection = friendsConnection!!,
@@ -196,7 +196,7 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.DefaultImpl> {
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: HeroDetails.DroidDroidDetailsImpl) {
+    override fun toResponse(writer: ResponseWriter, value: HeroDetails.DroidHeroDetailsImpl) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeString(RESPONSE_FIELDS[1], value.name)
       writer.writeObject(RESPONSE_FIELDS[2]) { writer ->
@@ -324,7 +324,7 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.DefaultImpl> {
     }
   }
 
-  object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetails.HumanDetailsImpl> {
+  object HumanHeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetails.HumanHeroDetailsImpl> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forString("name", "name", null, false, null),
@@ -332,7 +332,7 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.DefaultImpl> {
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
-        HeroDetails.HumanDetailsImpl {
+        HeroDetails.HumanHeroDetailsImpl {
       return reader.run {
         var __typename: String? = __typename
         var name: String? = null
@@ -347,7 +347,7 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.DefaultImpl> {
             else -> break
           }
         }
-        HeroDetails.HumanDetailsImpl(
+        HeroDetails.HumanHeroDetailsImpl(
           __typename = __typename!!,
           name = name!!,
           friendsConnection = friendsConnection!!
@@ -355,7 +355,7 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.DefaultImpl> {
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: HeroDetails.HumanDetailsImpl) {
+    override fun toResponse(writer: ResponseWriter, value: HeroDetails.HumanHeroDetailsImpl) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeString(RESPONSE_FIELDS[1], value.name)
       writer.writeObject(RESPONSE_FIELDS[2]) { writer ->
@@ -482,7 +482,7 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.DefaultImpl> {
     }
   }
 
-  object OtherDefaultImpl_ResponseAdapter : ResponseAdapter<HeroDetails.OtherDefaultImpl> {
+  object OtherHeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetails.OtherHeroDetailsImpl> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forString("name", "name", null, false, null),
@@ -490,7 +490,7 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.DefaultImpl> {
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
-        HeroDetails.OtherDefaultImpl {
+        HeroDetails.OtherHeroDetailsImpl {
       return reader.run {
         var __typename: String? = __typename
         var name: String? = null
@@ -505,7 +505,7 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.DefaultImpl> {
             else -> break
           }
         }
-        HeroDetails.OtherDefaultImpl(
+        HeroDetails.OtherHeroDetailsImpl(
           __typename = __typename!!,
           name = name!!,
           friendsConnection = friendsConnection!!
@@ -513,7 +513,7 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.DefaultImpl> {
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: HeroDetails.OtherDefaultImpl) {
+    override fun toResponse(writer: ResponseWriter, value: HeroDetails.OtherHeroDetailsImpl) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeString(RESPONSE_FIELDS[1], value.name)
       writer.writeObject(RESPONSE_FIELDS[2]) { writer ->

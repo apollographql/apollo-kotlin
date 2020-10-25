@@ -147,7 +147,7 @@ interface StarshipFragment : GraphqlFragment {
   /**
    * A single transport craft that has hyperdrive capability.
    */
-  data class DefaultImpl(
+  data class StarshipFragmentImpl(
     override val __typename: String = "Starship",
     /**
      * The ID of an object
