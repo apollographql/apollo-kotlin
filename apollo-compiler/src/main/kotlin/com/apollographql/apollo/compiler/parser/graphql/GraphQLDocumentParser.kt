@@ -640,7 +640,10 @@ class GraphQLDocumentParser(
               other.find { otherField ->
                 otherField.responseName + ":" + otherField.fieldName == targetFieldName
               }?.fields ?: emptyList()
-          )
+          ),
+          inlineFragments = targetField.inlineFragments + (other.find { otherField ->
+            otherField.responseName + ":" + otherField.fieldName == targetFieldName
+          }?.inlineFragments ?: emptyList())
       )
     } + other.filter { (it.responseName + ":" + it.fieldName) !in fieldNames }
   }
