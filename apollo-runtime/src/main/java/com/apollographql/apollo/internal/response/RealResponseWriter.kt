@@ -1,6 +1,5 @@
 package com.apollographql.apollo.internal.response
 
-import com.apollographql.apollo.api.CustomTypeAdapter
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ScalarType
@@ -12,8 +11,13 @@ import java.math.BigDecimal
 import java.util.ArrayList
 import java.util.LinkedHashMap
 
-class RealResponseWriter(private val operationVariables: Operation.Variables, private val scalarTypeAdapters: ScalarTypeAdapters) : ResponseWriter {
-  val buffer: MutableMap<String, FieldDescriptor> = LinkedHashMap()
+class RealResponseWriter(
+    private val operationVariables: Operation.Variables,
+    private val scalarTypeAdapters: ScalarTypeAdapters
+) : ResponseWriter {
+
+  private val buffer: MutableMap<String, FieldDescriptor> = LinkedHashMap()
+
   override fun writeString(field: ResponseField, value: String?) {
     writeScalarFieldValue(field, value)
   }
@@ -50,18 +54,17 @@ class RealResponseWriter(private val operationVariables: Operation.Variables, pr
     buffer[field.responseName] = FieldDescriptor(field, nestedResponseWriter.buffer)
   }
 
-  override fun writeFragment(marshaller: ResponseFieldMarshaller?) {
-    marshaller?.marshal(this)
-  }
-
-  override fun <T> writeList(field: ResponseField, values: List<T>?, listWriter: ResponseWriter.ListWriter<T>) {
+  override fun <T> writeList(
+      field: ResponseField, values: List<T>?,
+      block: (items: List<T>?, listItemWriter: ResponseWriter.ListItemWriter) -> Unit
+  ) {
     checkFieldValue(field, values)
     if (values == null) {
       buffer[field.responseName] = FieldDescriptor(field, null)
       return
     }
     val accumulated = ArrayList<Any?>()
-    listWriter.write(values, ListItemWriter(operationVariables, scalarTypeAdapters, accumulated))
+    block(values, ListItemWriter(operationVariables, scalarTypeAdapters, accumulated))
     buffer[field.responseName] = FieldDescriptor(field, accumulated)
   }
 
@@ -171,7 +174,11 @@ class RealResponseWriter(private val operationVariables: Operation.Variables, pr
     delegate.didResolveList(rawFieldValues!!)
   }
 
-  private class ListItemWriter internal constructor(val operationVariables: Operation.Variables, val scalarTypeAdapters: ScalarTypeAdapters, val accumulator: MutableList<Any?>) : ResponseWriter.ListItemWriter {
+  private class ListItemWriter(
+      private val operationVariables: Operation.Variables,
+      private val scalarTypeAdapters: ScalarTypeAdapters,
+      private val accumulator: MutableList<Any?>
+  ) : ResponseWriter.ListItemWriter {
     override fun writeString(value: String?) {
       accumulator.add(value)
     }
@@ -203,16 +210,15 @@ class RealResponseWriter(private val operationVariables: Operation.Variables, pr
       accumulator.add(nestedResponseWriter.buffer)
     }
 
-    override fun <T> writeList(items: List<T>?, listWriter: ResponseWriter.ListWriter<T>) {
+    override fun <T> writeList(items: List<T>?, block: (items: List<T>?, listItemWriter: ResponseWriter.ListItemWriter) -> Unit) {
       if (items == null) {
         accumulator.add(null)
       } else {
         val nestedAccumulated = ArrayList<Any?>()
-        listWriter.write(items, ListItemWriter(operationVariables, scalarTypeAdapters, nestedAccumulated))
+        block(items, ListItemWriter(operationVariables, scalarTypeAdapters, nestedAccumulated))
         accumulator.add(nestedAccumulated)
       }
     }
-
   }
 
   class FieldDescriptor internal constructor(val field: ResponseField, val value: Any?)
@@ -221,9 +227,8 @@ class RealResponseWriter(private val operationVariables: Operation.Variables, pr
     private fun checkFieldValue(field: ResponseField, value: Any?) {
       if (!field.optional && value == null) {
         throw NullPointerException(String.format("Mandatory response field `%s` resolved with null value",
-            field.responseName))
+          field.responseName))
       }
     }
   }
-
 }

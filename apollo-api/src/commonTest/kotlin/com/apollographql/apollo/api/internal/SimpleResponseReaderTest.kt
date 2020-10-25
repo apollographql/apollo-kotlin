@@ -89,9 +89,7 @@ class SimpleResponseReaderTest {
 
     assertEquals(
         expected = responseObject,
-        actual = responseReader.readObject(successField, object : ResponseReader.ObjectReader<Any> {
-          override fun read(reader: ResponseReader): Any = responseObject
-        })
+        actual = responseReader.readObject(successField) { responseObject }
     )
   }
 

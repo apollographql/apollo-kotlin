@@ -83,7 +83,7 @@ class RealResponseReader<R : Map<String, Any?>>(
     return value
   }
 
-  override fun <T : Any> readObject(field: ResponseField, objectReader: ResponseReader.ObjectReader<T>): T? {
+  override fun <T : Any> readObject(field: ResponseField, block: (ResponseReader) -> T): T? {
     val value: R? = fieldValueResolver.valueFor(recordSet, field)
     checkValue(field, value)
     willResolve(field, value)
@@ -93,14 +93,14 @@ class RealResponseReader<R : Map<String, Any?>>(
       resolveDelegate.didResolveNull()
       null
     } else {
-      objectReader.read(RealResponseReader(operationVariables, value, fieldValueResolver, scalarTypeAdapters, resolveDelegate))
+      block(RealResponseReader(operationVariables, value, fieldValueResolver, scalarTypeAdapters, resolveDelegate))
     }
     resolveDelegate.didResolveObject(field, value)
     didResolve(field)
     return parsedValue
   }
 
-  override fun <T : Any> readList(field: ResponseField, listReader: ResponseReader.ListReader<T>): List<T?>? {
+  override fun <T : Any> readList(field: ResponseField, block: (ResponseReader.ListItemReader) -> T): List<T?>? {
     val values = fieldValueResolver.valueFor<List<*>>(recordSet, field)
     checkValue(field, values)
     willResolve(field, values)
@@ -114,7 +114,7 @@ class RealResponseReader<R : Map<String, Any?>>(
           resolveDelegate.didResolveNull()
           null
         } else {
-          listReader.read(ListItemReader(field, value))
+          block(ListItemReader(field, value))
         }.also { resolveDelegate.didResolveElement(index) }
       }.also { resolveDelegate.didResolveList(values) }
     }
@@ -206,15 +206,15 @@ class RealResponseReader<R : Map<String, Any?>>(
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : Any> readObject(objectReader: ResponseReader.ObjectReader<T>): T {
+    override fun <T : Any> readObject(block: (ResponseReader) -> T): T {
       val value = value as R
       resolveDelegate.willResolveObject(field, value)
-      val item = objectReader.read(RealResponseReader(operationVariables, value, fieldValueResolver, scalarTypeAdapters, resolveDelegate))
+      val item = block(RealResponseReader(operationVariables, value, fieldValueResolver, scalarTypeAdapters, resolveDelegate))
       resolveDelegate.didResolveObject(field, value)
       return item
     }
 
-    override fun <T : Any> readList(listReader: ResponseReader.ListReader<T>): List<T?> {
+    override fun <T : Any> readList(block: (ResponseReader.ListItemReader) -> T): List<T?> {
       val values = value as List<*>
       val result = values.mapIndexed { index, value ->
         resolveDelegate.willResolveElement(index)
@@ -222,7 +222,7 @@ class RealResponseReader<R : Map<String, Any?>>(
           resolveDelegate.didResolveNull()
           null
         } else {
-          listReader.read(ListItemReader(field, value))
+          block(ListItemReader(field, value))
         }.also { resolveDelegate.didResolveElement(index) }
       }
       resolveDelegate.didResolveList(values)

@@ -69,34 +69,34 @@ class StreamResponseReader private constructor(
     }
   }
 
-  override fun <T : Any> readObject(field: ResponseField, objectReader: ResponseReader.ObjectReader<T>): T? {
+  override fun <T : Any> readObject(field: ResponseField, block: (ResponseReader) -> T): T? {
     return readValue(field) {
       beginObject()
-      val result = objectReader.read(
-          StreamResponseReader(
-              jsonReader = this,
-              variableValues = variableValues,
-              scalarTypeAdapters = scalarTypeAdapters,
-          )
+      val result = block(
+        StreamResponseReader(
+          jsonReader = this,
+          variableValues = variableValues,
+          scalarTypeAdapters = scalarTypeAdapters,
+        )
       )
       endObject()
       result
     }
   }
 
-  override fun <T : Any> readList(field: ResponseField, listReader: ResponseReader.ListReader<T>): List<T?>? {
+  override fun <T : Any> readList(field: ResponseField, block: (ResponseReader.ListItemReader) -> T): List<T?>? {
     return readValue(field) {
       beginArray()
       val listItemReader = ListItemReader(
-          jsonReader = this,
-          variableValues = variableValues,
-          scalarTypeAdapters = scalarTypeAdapters,
+        jsonReader = this,
+        variableValues = variableValues,
+        scalarTypeAdapters = scalarTypeAdapters,
       )
       val result = ArrayList<T?>()
       while (hasNext()) {
         when (peek()) {
           JsonReader.Token.NULL -> result.add(jsonReader.nextNull())
-          else -> result.add(listReader.read(listItemReader))
+          else -> result.add(block(listItemReader))
         }
       }
       endArray()
@@ -130,7 +130,7 @@ class StreamResponseReader private constructor(
 
     return when (jsonReader.peek()) {
       JsonReader.Token.NULL -> if (field.optional) jsonReader.nextNull() else throw NullPointerException(
-          "Couldn't read `${field.responseName}` field value, expected non null value"
+        "Couldn't read `${field.responseName}` field value, expected non null value"
       )
       else -> readValue(jsonReader)
     }
@@ -164,26 +164,26 @@ class StreamResponseReader private constructor(
       return typeAdapter.decode(CustomTypeValue.fromRawValue(value))
     }
 
-    override fun <T : Any> readObject(objectReader: ResponseReader.ObjectReader<T>): T {
+    override fun <T : Any> readObject(block: (ResponseReader) -> T): T {
       jsonReader.beginObject()
-      val result = objectReader.read(
-          StreamResponseReader(
-              jsonReader = jsonReader,
-              variableValues = variableValues,
-              scalarTypeAdapters = scalarTypeAdapters,
-          )
+      val result = block(
+        StreamResponseReader(
+          jsonReader = jsonReader,
+          variableValues = variableValues,
+          scalarTypeAdapters = scalarTypeAdapters,
+        )
       )
       jsonReader.endObject()
       return result
     }
 
-    override fun <T : Any> readList(listReader: ResponseReader.ListReader<T>): List<T?> {
+    override fun <T : Any> readList(block: (ResponseReader.ListItemReader) -> T): List<T?> {
       jsonReader.beginArray()
       val result = ArrayList<T?>()
       while (jsonReader.hasNext()) {
         when (jsonReader.peek()) {
           JsonReader.Token.NULL -> result.add(jsonReader.nextNull())
-          else -> result.add(listReader.read(this))
+          else -> result.add(block(this))
         }
       }
       jsonReader.endArray()
