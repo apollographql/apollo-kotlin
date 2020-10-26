@@ -207,12 +207,12 @@ Call your mutation with mimetype and a valid `File`.
 <MultiCodeBlock>
 
 ```kotlin
-  mutationSingle = SingleUploadMutation(file = FileUpload("image/jpg", File("/my/image.jpg")))
+  mutationSingle = SingleUploadMutation(file = FileUpload("image/jpeg", File("/my/image.jpg")))
 ```
 
 ```java
   mutationSingle = SingleUploadMutation.builder()
-        .file(new FileUpload("image/jpg", new File("/my/image.jpg")))
+        .file(new FileUpload("image/jpeg", new File("/my/image.jpg")))
         .build();
 ```
 
