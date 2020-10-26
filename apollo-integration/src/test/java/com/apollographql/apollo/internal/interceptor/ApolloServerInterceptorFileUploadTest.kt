@@ -35,7 +35,7 @@ class ApolloServerInterceptorFileUploadTest {
   private val file1 = createFile("file1.jpg", "content_file1")
   private val file2 = createFile("file2.png", "content_file2")
   private val upload0 = FileUpload("plain/txt", file0)
-  private val upload1 = FileUpload("image/jpg", file1)
+  private val upload1 = FileUpload("image/jpeg", file1)
   private val upload2 = FileUpload("image/png", file2)
   private val uploadSource = object: FileUpload("image/png") {
     val content = "content_source".encodeUtf8()
@@ -266,7 +266,7 @@ class ApolloServerInterceptorFileUploadTest {
     val part1 = body.parts()[1]
     assertMapPart(part1, "expectedMapPartBodySingle.json")
     val part2 = body.parts()[2]
-    assertFileContentPart(part2, "0", "file1.jpg", "image/jpg")
+    assertFileContentPart(part2, "0", "file1.jpg", "image/jpeg")
   }
 
   private fun assertRequestBodyTwice(request: Request) {
@@ -282,7 +282,7 @@ class ApolloServerInterceptorFileUploadTest {
     val part1 = body.parts()[1]
     assertMapPart(part1, "expectedMapPartBodyTwice.json")
     val part2 = body.parts()[2]
-    assertFileContentPart(part2, "0", "file1.jpg", "image/jpg")
+    assertFileContentPart(part2, "0", "file1.jpg", "image/jpeg")
     val part3 = body.parts()[3]
     assertFileContentPart(part3, "1", "file2.png", "image/png")
   }
@@ -300,7 +300,7 @@ class ApolloServerInterceptorFileUploadTest {
     val part1 = body.parts()[1]
     assertMapPart(part1, "expectedMapPartBodyMultiple.json")
     val part2 = body.parts()[2]
-    assertFileContentPart(part2, "0", "file1.jpg", "image/jpg")
+    assertFileContentPart(part2, "0", "file1.jpg", "image/jpeg")
     val part3 = body.parts()[3]
     assertFileContentPart(part3, "1", "file2.png", "image/png")
   }
