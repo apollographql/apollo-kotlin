@@ -23,6 +23,7 @@ import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.createMapp
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.marshallerFunSpec
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.responseFieldsPropertySpec
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.suppressWarningsAnnotation
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.toDefaultValueCodeBlock
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.toMapperFun
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -165,13 +166,26 @@ private val OperationType.primaryConstructorSpec: FunSpec
     return FunSpec
         .constructorBuilder()
         .addParameters(variables.fields.map { variable ->
-          val typeName = variable.type.asTypeName()
+          val typeName = variable.type.asTypeName().let {
+            if (variable.isOptional) Input::class.asClassName().parameterizedBy(it) else it
+          }
+          val defaultValue = variable.defaultValue?.toDefaultValueCodeBlock(typeName, variable.type)
+              .let { code ->
+                if (variable.isOptional) {
+                  code?.let { CodeBlock.of("%T.optional(%L)", Input::class, it) } ?: CodeBlock.of("%T.absent()", Input::class)
+                } else {
+                  code
+                }
+              }
+
           ParameterSpec
               .builder(
                   name = variable.name,
-                  type = if (variable.isOptional) Input::class.asClassName().parameterizedBy(typeName) else typeName
+                  type = typeName
               )
-              .applyIf(variable.isOptional) { defaultValue("%T.absent()", Input::class.asClassName()) }
+              .applyIf(defaultValue != null) {
+                defaultValue(defaultValue!!)
+              }
               .build()
         })
         .build()

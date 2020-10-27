@@ -20,6 +20,7 @@ import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchem
 import com.apollographql.apollo.compiler.parser.introspection.asGraphQLType
 import com.apollographql.apollo.compiler.parser.introspection.isAssignableFrom
 import com.apollographql.apollo.compiler.parser.introspection.possibleTypes
+import com.apollographql.apollo.compiler.parser.introspection.resolveType
 import org.antlr.v4.runtime.ANTLRInputStream
 import org.antlr.v4.runtime.BaseErrorListener
 import org.antlr.v4.runtime.CommonTokenStream
@@ -232,10 +233,12 @@ class GraphQLDocumentParser(
         message = "Unknown variable type `$type`",
         token = type().start
     )
+
     return ParseResult(
         result = Variable(
             name = name,
             type = type,
+            defaultValue = defaultValue()?.value()?.parse(schema.resolveType(type)),
             sourceLocation = SourceLocation(variable().NAME().symbol)
         ),
         usedTypes = setOf(schemaType.name)
