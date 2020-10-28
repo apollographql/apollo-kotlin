@@ -55,7 +55,7 @@ class CodegenTest(private val folder: File, private val testLanguage: TestLangua
       val actual = File(actualRoot, relativePath)
       if (!actual.exists()) {
         if (shouldUpdateTestFixtures()) {
-          println("removing actual file: ${expected.absolutePath}")
+          println("removing stale expected file: ${expected.absolutePath}")
           expected.delete()
           return@forEach
         } else {
@@ -152,7 +152,8 @@ class CodegenTest(private val folder: File, private val testLanguage: TestLangua
       }
 
       val packageName = when(folder.name) {
-        "fragment_package_name" -> "com.example.another"
+        // TODO reorganize tests so that we don't have to make this a child of "com.example.fragment_package_name"
+        "fragment_package_name" -> "com.example.fragment_package_name.another"
         else -> null
       }
 
