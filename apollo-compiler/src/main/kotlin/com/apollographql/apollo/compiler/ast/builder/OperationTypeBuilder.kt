@@ -56,7 +56,7 @@ internal fun Operation.ast(
                     typesPackageName = context.typesPackageName
                 ),
                 isOptional = variable.optional(),
-                defaultValue = null,
+                defaultValue = variable.defaultValue,
                 description = ""
             )
           }
