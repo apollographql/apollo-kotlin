@@ -48,7 +48,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
         roots = roots,
         rootPackageName = args.rootPackageName,
         schemaPackageName = schemaPackageName,
-        useFilePackageNameForFragments = args.useFilePackageNameForFragments
+        packageName = args.packageName
     )
 
     val files = args.graphqlFiles
@@ -405,7 +405,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
       val generateAsInternal: Boolean = false,
       val warnOnDeprecatedUsages: Boolean = true,
       val failOnWarnings: Boolean = false,
-      val useFilePackageNameForFragments: Boolean = false,
+      val packageName: String? = null,
 
       //========== Kotlin codegen options ============
 

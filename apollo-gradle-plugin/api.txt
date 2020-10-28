@@ -73,7 +73,7 @@ package com.apollographql.apollo.gradle.api {
     property public abstract error.NonExistentClass schemaFile;
     property public abstract error.NonExistentClass sealedClassesForEnumsMatching;
     property public abstract error.NonExistentClass suppressRawTypesWarning;
-    property public abstract error.NonExistentClass useFilePackageNameForFragments;
+    property public abstract error.NonExistentClass packageName;
     property public abstract error.NonExistentClass useJavaBeansSemanticNaming;
     property public abstract error.NonExistentClass useSemanticNaming;
     property public abstract error.NonExistentClass warnOnDeprecatedUsages;

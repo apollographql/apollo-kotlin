@@ -84,7 +84,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @get:Input
   @get:Optional
-  abstract val useFilePackageNameForFragments: Property<Boolean>
+  abstract val packageName: Property<String>
 
   @get:Input
   @get:Optional
@@ -158,7 +158,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching.orNull,
         moduleName = projectName.get(),
         rootProjectDir = projectRootDir.get().asFile,
-        useFilePackageNameForFragments = useFilePackageNameForFragments.getOrElse(false),
+        packageName = packageName.orNull,
 
         operationOutputFile = operationOutputFile.asFile.orNull,
         operationOutputGenerator = operationOutputGenerator,

@@ -6,16 +6,16 @@ class DefaultPackageNameProvider constructor(
     private val rootPackageName: String,
     private val schemaPackageName: String,
     private val roots: Roots,
-    private val useFilePackageNameForFragments: Boolean
+    private val packageName: String?
 ) : PackageNameProvider {
 
   override fun operationPackageName(filePath: String): String {
-    return "$rootPackageName.${roots.filePackageName(filePath)}".removePrefix(".").removeSuffix(".")
+    return packageName ?: "$rootPackageName.${roots.filePackageName(filePath)}".removePrefix(".").removeSuffix(".")
   }
 
   override fun fragmentPackageName(filePath: String): String {
-    return if (useFilePackageNameForFragments) {
-      operationPackageName(filePath).removePrefix(".")
+    return if (packageName != null) {
+      "$packageName.fragment".removePrefix(".")
     } else {
       "$schemaPackageName.fragment".removePrefix(".")
     }

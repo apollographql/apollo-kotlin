@@ -235,13 +235,16 @@ interface CompilerParams {
   val alwaysGenerateTypesMatching: SetProperty<String>
 
   /**
-   * Whether to use file package name for generated `Fragment` classes or to default to schemaPackageName. Using this flag removes
-   * `fragment` sub-package.
+   * Use the given package name and does not take into account the folders hierarchy.
+   *
+   * - Operations will be in `packageName`
+   * - Fragments will be in `packageName.fragment`
+   * - Input/Enum/Scalar types are not handled yet and will continue to be in the schemaPackageName
    *
    * This is currently experimental and this API might change in the future.
    *
    * Default value: false
    */
   @ApolloExperimental
-  val useFilePackageNameForFragments: Property<Boolean>
+  val packageName: Property<String>
 }

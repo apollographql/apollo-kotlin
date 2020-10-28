@@ -24,7 +24,7 @@ class ValidationTest(name: String, private val graphQLFile: File) {
         roots = Roots(listOf(graphQLFile.parentFile)),
         rootPackageName = "",
         schemaPackageName = "",
-        useFilePackageNameForFragments = false
+        packageName = null
     )
 
     try {
