@@ -81,7 +81,7 @@ implementsInterface
   ;
 
 interfaceTypeDefinition
-  : description? INTERFACE name directives? fieldsDefinition
+  : description? INTERFACE name implementsInterfaces? directives? fieldsDefinition
   ;
 
 fieldsDefinition
@@ -209,15 +209,11 @@ selection
   ;
 
 field
-  : fieldName arguments? directives? selectionSet?
-  ;
-
-fieldName
-  : alias | name
+  : alias? name arguments? directives? selectionSet?
   ;
 
 alias
-  : name ':' name
+  : name ':'
   ;
 
 arguments
@@ -330,7 +326,6 @@ listType
 nonNullType
   : namedType '!'
   | listType '!'
-  | nonNullType '!'
   ;
 
 nameCommon
