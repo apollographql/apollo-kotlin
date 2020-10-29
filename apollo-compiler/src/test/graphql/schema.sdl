@@ -1,7 +1,8 @@
-"""Dummy directive that can be placed on operations."""
+"""Dummy directive with multiple arguments that can be placed on operations."""
 directive @operationDirective(
   """blah"""
-  dummy: String!
+  dummy0: String!
+  dummy1: Int!
 ) on QUERY | MUTATION | SUBSCRIPTION
 
 """For testing fragment type coercion"""
