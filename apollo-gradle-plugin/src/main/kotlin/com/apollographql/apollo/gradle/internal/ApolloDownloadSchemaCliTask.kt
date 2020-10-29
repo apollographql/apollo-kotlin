@@ -90,7 +90,7 @@ abstract class ApolloDownloadSchemaCliTask : DefaultTask() {
         return@filter true
       }
 
-      it.variantName == "main" || it.variantName == "release"
+      it.variantName == "main" || it.variantName.toLowerCase().contains("release")
     }
 
     val compilationUnit = if (service.isPresent) {
@@ -102,15 +102,9 @@ abstract class ApolloDownloadSchemaCliTask : DefaultTask() {
       candidates.firstOrNull()
     }
 
-    check(compilationUnit != null) {
-      val services = compilationUnits.map { it.serviceName }.distinct().sorted().joinToString("\n")
-      val variants = compilationUnits.map { it.variantName }.distinct().sorted().joinToString("\n")
-      "Cannot find compilation unit, check variant and service.\nPossible services:\n$services\nPossible variants:\n$variants"
-    }
+    val compilerParams = compilationUnit?.resolveParams(project)?.first
 
-    val (compilerParams, _) = compilationUnit.resolveParams(project)
-
-    var endpointUrl = endpoint.orProperty("endpoint") ?: compilationUnit.service.introspection?.endpointUrl?.get()
+    var endpointUrl = endpoint.orProperty("endpoint") ?: compilationUnit?.service?.introspection?.endpointUrl?.get()
 
     val schema = schema.orProperty("schema")?.let {
       if (schema.isPresent) {
@@ -118,7 +112,8 @@ abstract class ApolloDownloadSchemaCliTask : DefaultTask() {
       } else {
         project.file(it) // relative to project. This is not super consistent but 🤷‍
       }
-    } ?: compilerParams.schemaFile.asFile.get()
+    } ?: compilerParams?.schemaFile?.asFile?.get()
+      ?: throw IllegalArgumentException("ApolloGraphQL: cannot determine where to save the schema. Specify --schema or --service")
 
     val headersProp = project.findProperty("com.apollographql.apollo.headers") as? String
     val headers = when {
