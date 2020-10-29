@@ -96,7 +96,7 @@ directives
    ;
 
 directive
-   : '@' NAME ':' valueOrVariable | '@' NAME | '@' NAME '(' argument ')'
+   : '@' NAME arguments?
    ;
 
 typeCondition

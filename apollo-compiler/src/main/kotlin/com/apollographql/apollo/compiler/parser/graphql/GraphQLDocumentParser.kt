@@ -361,18 +361,30 @@ class GraphQLDocumentParser(
   private fun GraphQLParser.DirectivesContext?.parse(): List<Condition> {
     return this?.directive()?.mapNotNull { ctx ->
       val name = ctx.NAME().text
-      val argument = ctx.argument()
-      when {
-        argument == null -> null
-        name != "skip" && name != "include" -> null
-        argument.NAME()?.text != "if" || argument.valueOrVariable()?.variable() == null -> null
-        else -> Condition(
-            kind = "BooleanCondition",
-            variableName = argument.valueOrVariable().variable().NAME().text,
-            inverted = ctx.NAME().text == "skip",
-            sourceLocation = SourceLocation(argument.valueOrVariable()?.start ?: argument.NAME().symbol)
-        )
+      val arguments = ctx.arguments()
+
+      if (name != "skip" && name != "include" ) {
+        // we only support skip and include directives for now
+        return@mapNotNull null
       }
+
+      if (arguments.argument().size != 1) {
+        // skip and include should only have a single argument
+        return@mapNotNull null
+      }
+
+      val argument = arguments.argument().first()
+      if (argument.NAME().text != "if" || argument.valueOrVariable().variable() == null) {
+        // The argument should be named "if"
+        // Not 100% why we ignore non-variable arguments
+        return@mapNotNull null
+      }
+      Condition(
+          kind = "BooleanCondition",
+          variableName = argument.valueOrVariable().variable().NAME().text,
+          inverted = name == "skip",
+          sourceLocation = SourceLocation(argument.start)
+      )
     } ?: emptyList()
   }
 
