@@ -6,7 +6,7 @@ data class GQLDocument(val definitions: List<GQLDefinition>)
 
 interface GQLDefinition
 data class GQLSchemaDefinition(val description: String, val directives: List<GQLDirective>, val rootOperationTypeDefinitions: List<GQLOperationTypeDefinition>) : GQLDefinition
-data class GQLOperationDefinition(val name: String, val variableDefinitions: List<GQLVariableDefinition>, val directives: List<GQLDirective>, val selections: List<GQLSelection>): GQLDefinition
+data class GQLOperationDefinition(val name: String?, val variableDefinitions: List<GQLVariableDefinition>, val directives: List<GQLDirective>, val selections: List<GQLSelection>): GQLDefinition
 data class GQLInterfaceTypeDefinition(val description: String, val name: String, val implementsInterfaces: List<String>, val fields: List<GQLFieldDefinition>) : GQLDefinition
 data class GQLObjectTypeDefinition(val description: String, val name: String, val directives: List<GQLDirective>, val fields: List<GQLFieldDefinition>, val implementsInterfaces: List<String>) : GQLDefinition
 data class GQLInputObjectTypeDefinition(val description: String, val name: String, val directives: List<GQLDirective>, val inputFields: List<GQLInputValueDefinition>) : GQLDefinition

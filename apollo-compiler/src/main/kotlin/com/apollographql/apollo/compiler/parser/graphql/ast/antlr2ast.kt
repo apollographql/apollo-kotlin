@@ -190,7 +190,7 @@ private fun GraphQLParser.ExecutableDefinitionContext.parse(): GQLDefinition {
 
 private fun GraphQLParser.OperationDefinitionContext.parse(): GQLOperationDefinition {
   return GQLOperationDefinition(
-      name = name().text,
+      name = name()?.text,
       variableDefinitions = variableDefinitions().parse(),
       directives = directives().parse(),
       selections = selectionSet().parse()
