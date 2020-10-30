@@ -24,6 +24,9 @@ class NoOpSubscriptionManager : SubscriptionManager {
     throw IllegalStateException(errorMessage)
   }
 
+  override fun reconnect() {
+  }
+
   override fun getState(): SubscriptionManagerState {
     return SubscriptionManagerState.DISCONNECTED
   }

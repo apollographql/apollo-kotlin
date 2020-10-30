@@ -54,6 +54,11 @@ public interface SubscriptionManager {
    */
   void stop();
 
+  /**
+   * Reconnect the web socket. Use this together with SubscriptionConnectionParamsProvider if you need to update connectionParams.
+   */
+  void reconnect();
+
   interface Callback<D extends Subscription.Data> {
     void onResponse(@NotNull SubscriptionResponse<D> response);
 
