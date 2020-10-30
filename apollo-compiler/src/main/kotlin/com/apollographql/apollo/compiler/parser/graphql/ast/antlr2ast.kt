@@ -18,6 +18,76 @@ private fun GraphQLParser.DefinitionContext.parse(): GQLDefinition {
       ?: throw ParseException("Unrecognized definition", start)
 }
 
+private fun GraphQLParser.TypeSystemExtensionContext.parse(): GQLDefinition {
+  return schemaExtension()?.parse()
+      ?: typeExtension()?.parse()
+      ?: throw ParseException("Unrecognized type system extension", start)
+}
+
+private fun GraphQLParser.TypeExtensionContext.parse(): GQLDefinition {
+  return enumTypeExtensionDefinition()?.parse()
+      ?: inputObjectTypeExtensionDefinition()?.parse()
+      ?: objectTypeExtensionDefinition()?.parse()
+      ?: unionTypeExtensionDefinition()?.parse()
+      ?: scalarTypeExtensionDefinition()?.parse()
+      ?: interfaceTypeExtensionDefinition()?.parse()
+      ?: throw ParseException("Unrecognized type extension", start)
+}
+
+private fun GraphQLParser.InterfaceTypeExtensionDefinitionContext.parse(): GQLInterfaceTypeExtension {
+  return GQLInterfaceTypeExtension(
+      name = name().text,
+      fields = fieldsDefinition().parse()
+  )
+}
+
+private fun GraphQLParser.ScalarTypeExtensionDefinitionContext.parse(): GQLScalarTypeExtension {
+  return GQLScalarTypeExtension(
+      name = name(),
+      directives = directives().parse(),
+  )
+}
+
+private fun GraphQLParser.UnionTypeExtensionDefinitionContext.parse(): GQLUnionTypeExtension {
+  return GQLUnionTypeExtension(
+      name = name().text,
+      directives = directives().parse(),
+      memberTypes = unionMemberTypes().parse()
+  )
+}
+
+private fun GraphQLParser.ObjectTypeExtensionDefinitionContext.parse(): GQLObjectTypeExtension {
+  return GQLObjectTypeExtension(
+      name = name().text,
+      directives = directives().parse(),
+      fields = fieldsDefinition().parse()
+  )
+}
+
+private fun GraphQLParser.InputObjectTypeExtensionDefinitionContext.parse(): GQLInputObjectTypeExtension {
+  return GQLInputObjectTypeExtension(
+      name = name().text,
+      directives = directives().parse(),
+      inputFields = inputFieldsDefinition().parse()
+  )
+}
+
+
+private fun GraphQLParser.EnumTypeExtensionDefinitionContext.parse(): GQLEnumTypeExtension {
+  return GQLEnumTypeExtension(
+      name = name().text,
+      directives = directives().parse(),
+      enumValues = enumValuesDefinition().parse()
+  )
+}
+
+private fun GraphQLParser.SchemaExtensionContext.parse(): GQLSchemaExtension {
+  return GQLSchemaExtension(
+      directives = directives().parse(),
+      operationTypesDefinition = operationTypesDefinition().parse()
+  )
+}
+
 private fun GraphQLParser.TypeSystemDefinitionContext.parse(): GQLDefinition {
   return typeDefinition()?.parse()
       ?: directiveDefinition()?.parse()
@@ -99,7 +169,7 @@ private fun GraphQLParser.InputObjectDefinitionContext.parse(): GQLInputObjectTy
       description = description().parse(),
       name = name().text,
       directives = directives().parse(),
-      fields = inputFieldsDefinition().parse(),
+      inputFields = inputFieldsDefinition().parse(),
   )
 }
 

@@ -1,5 +1,7 @@
 package com.apollographql.apollo.compiler.parser.graphql.ast
 
+import com.apollographql.apollo.compiler.parser.antlr.GraphQLParser
+
 data class GQLDocument(val definitions: List<GQLDefinition>)
 
 interface GQLDefinition
@@ -7,11 +9,18 @@ data class GQLSchemaDefinition(val description: String, val directives: List<GQL
 data class GQLOperationDefinition(val name: String, val variableDefinitions: List<GQLVariableDefinition>, val directives: List<GQLDirective>, val selections: List<GQLSelection>): GQLDefinition
 data class GQLInterfaceTypeDefinition(val description: String, val name: String, val implementsInterfaces: List<String>, val fields: List<GQLFieldDefinition>) : GQLDefinition
 data class GQLObjectTypeDefinition(val description: String, val name: String, val directives: List<GQLDirective>, val fields: List<GQLFieldDefinition>, val implementsInterfaces: List<String>) : GQLDefinition
-data class GQLInputObjectTypeDefinition(val description: String, val name: String, val directives: List<GQLDirective>, val fields: List<GQLInputValueDefinition>) : GQLDefinition
+data class GQLInputObjectTypeDefinition(val description: String, val name: String, val directives: List<GQLDirective>, val inputFields: List<GQLInputValueDefinition>) : GQLDefinition
 data class GQLScalarTypeDefinition(val description: String, val name: String, val directives: List<GQLDirective>) : GQLDefinition
 data class GQLEnumTypeDefinition(val description: String, val name: String, val directives: List<GQLDirective>, val enumValues: List<GQLEnumValueDefinition>) : GQLDefinition
 data class GQLUnionTypeDefinition(val description: String, val name: String, val directives: List<GQLDirective>, val memberTypes: List<String>?) : GQLDefinition
 data class GQLDirectiveDefinition(val description: String, val name: String, val arguments: List<GQLInputValueDefinition>) : GQLDefinition
+data class GQLSchemaExtension(val directives: List<GQLDirective>, val operationTypesDefinition: List<GQLOperationTypeDefinition>) : GQLDefinition
+data class GQLEnumTypeExtension(val name: String, val directives: List<GQLDirective>, val enumValues: List<GQLEnumValueDefinition>) : GQLDefinition
+data class GQLObjectTypeExtension(val name: String, val directives: List<GQLDirective>, val fields: List<GQLFieldDefinition>) : GQLDefinition
+data class GQLInputObjectTypeExtension(val name: String, val directives: List<GQLDirective>, val inputFields: List<GQLInputValueDefinition>) : GQLDefinition
+data class GQLScalarTypeExtension(val name: GraphQLParser.NameContext, val directives: List<GQLDirective>) : GQLDefinition
+data class GQLInterfaceTypeExtension(val name: String, val fields: List<GQLFieldDefinition>) : GQLDefinition
+data class GQLUnionTypeExtension(val name: String, val directives: List<GQLDirective>, val memberTypes: List<String>?) : GQLDefinition
 
 data class GQLEnumValueDefinition(val description: String, val name: String, val directives: List<GQLDirective>)
 data class GQLFieldDefinition(val description: String, val name: String, val arguments: List<GQLInputValueDefinition>, val type: GQLType, val directives: List<GQLDirective>)

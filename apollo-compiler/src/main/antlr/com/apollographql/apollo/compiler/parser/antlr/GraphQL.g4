@@ -136,7 +136,7 @@ typeSystemExtension
 
 schemaExtension
   : EXTEND SCHEMA directives? operationTypesDefinition
-  | EXTEND SCHEMA directives+
+  | EXTEND SCHEMA directives
   ;
 
 typeExtension
@@ -155,12 +155,12 @@ objectTypeExtensionDefinition
 
 interfaceTypeExtensionDefinition
   : EXTEND INTERFACE name directives? fieldsDefinition
-  | EXTEND INTERFACE name directives?
+  | EXTEND INTERFACE name directives
   ;
 
 unionTypeExtensionDefinition
   : EXTEND UNION name directives? unionMemberTypes
-  | EXTEND UNION name directives?
+  | EXTEND UNION name directives
   ;
 
 scalarTypeExtensionDefinition
@@ -169,12 +169,12 @@ scalarTypeExtensionDefinition
 
 enumTypeExtensionDefinition
   : EXTEND ENUM name directives? enumValuesDefinition
-  | EXTEND ENUM name directives?
+  | EXTEND ENUM name directives
   ;
 
 inputObjectTypeExtensionDefinition
   : EXTEND INPUT name directives? inputFieldsDefinition
-  | EXTEND INPUT name directives?
+  | EXTEND INPUT name directives
   ;
 
 operationTypesDefinition
