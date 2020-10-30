@@ -293,18 +293,18 @@ class GraphQLDocumentParser(
   }
 
   private fun GraphQLParser.FieldContext.parse(schemaType: IntrospectionSchema.Type): ParseResult<Field> {
-    val responseName = fieldName().alias()?.name(0)?.text ?: fieldName().name().text
-    val fieldName = fieldName().alias()?.name(1)?.text ?: fieldName().name().text
+    val responseName = alias()?.name()?.text ?: name().text
+    val fieldName = name().text
     if (responseName == Field.TYPE_NAME_FIELD.responseName) {
       return ParseResult(result = Field.TYPE_NAME_FIELD, usedTypes = emptySet())
     }
     val schemaField = schemaType.lookupField(
         fieldName = fieldName,
-        token = fieldName().alias()?.name(1)?.start ?: fieldName().name().start
+        token = name().start
     )
     val schemaFieldType = schema[schemaField.type.rawType.name] ?: throw ParseException(
         message = "Unknown type `${schemaField.type.rawType.name}`",
-        token = fieldName().alias()?.name(1)?.start ?: fieldName().name().start
+        token = name().start
     )
     val arguments = arguments().parse(schemaField)
     val fields = selectionSet().parse(schemaFieldType)

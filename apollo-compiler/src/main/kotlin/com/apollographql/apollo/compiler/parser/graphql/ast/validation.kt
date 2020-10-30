@@ -1,5 +1,7 @@
 package com.apollographql.apollo.compiler.parser.graphql.ast
 
-fun GQLDocument.validate() {
+import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
+
+fun GQLDocument.validateAsExecutable(schema: IntrospectionSchema) {
 
 }

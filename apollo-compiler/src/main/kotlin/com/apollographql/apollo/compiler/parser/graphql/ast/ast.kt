@@ -1,54 +1,65 @@
 package com.apollographql.apollo.compiler.parser.graphql.ast
 
-import com.apollographql.apollo.compiler.parser.antlr.GraphQLParser
+import com.apollographql.apollo.compiler.ir.SourceLocation
 
-data class GQLDocument(val definitions: List<GQLDefinition>)
+interface GQLNode {
+  val sourceLocation: SourceLocation
+}
 
-interface GQLDefinition
-data class GQLSchemaDefinition(val description: String, val directives: List<GQLDirective>, val rootOperationTypeDefinitions: List<GQLOperationTypeDefinition>) : GQLDefinition
-data class GQLOperationDefinition(val name: String?, val variableDefinitions: List<GQLVariableDefinition>, val directives: List<GQLDirective>, val selections: List<GQLSelection>): GQLDefinition
-data class GQLInterfaceTypeDefinition(val description: String, val name: String, val implementsInterfaces: List<String>, val fields: List<GQLFieldDefinition>) : GQLDefinition
-data class GQLObjectTypeDefinition(val description: String, val name: String, val directives: List<GQLDirective>, val fields: List<GQLFieldDefinition>, val implementsInterfaces: List<String>) : GQLDefinition
-data class GQLInputObjectTypeDefinition(val description: String, val name: String, val directives: List<GQLDirective>, val inputFields: List<GQLInputValueDefinition>) : GQLDefinition
-data class GQLScalarTypeDefinition(val description: String, val name: String, val directives: List<GQLDirective>) : GQLDefinition
-data class GQLEnumTypeDefinition(val description: String, val name: String, val directives: List<GQLDirective>, val enumValues: List<GQLEnumValueDefinition>) : GQLDefinition
-data class GQLUnionTypeDefinition(val description: String, val name: String, val directives: List<GQLDirective>, val memberTypes: List<String>?) : GQLDefinition
-data class GQLDirectiveDefinition(val description: String, val name: String, val arguments: List<GQLInputValueDefinition>) : GQLDefinition
-data class GQLSchemaExtension(val directives: List<GQLDirective>, val operationTypesDefinition: List<GQLOperationTypeDefinition>) : GQLDefinition
-data class GQLEnumTypeExtension(val name: String, val directives: List<GQLDirective>, val enumValues: List<GQLEnumValueDefinition>) : GQLDefinition
-data class GQLObjectTypeExtension(val name: String, val directives: List<GQLDirective>, val fields: List<GQLFieldDefinition>) : GQLDefinition
-data class GQLInputObjectTypeExtension(val name: String, val directives: List<GQLDirective>, val inputFields: List<GQLInputValueDefinition>) : GQLDefinition
-data class GQLScalarTypeExtension(val name: GraphQLParser.NameContext, val directives: List<GQLDirective>) : GQLDefinition
-data class GQLInterfaceTypeExtension(val name: String, val fields: List<GQLFieldDefinition>) : GQLDefinition
-data class GQLUnionTypeExtension(val name: String, val directives: List<GQLDirective>, val memberTypes: List<String>?) : GQLDefinition
+interface GQLDefinition : GQLNode
+interface GQLTypeSystemExtension : GQLNode
+interface GQLTypeExtension : GQLTypeSystemExtension {
+  val name: String
+}
 
-data class GQLEnumValueDefinition(val description: String, val name: String, val directives: List<GQLDirective>)
-data class GQLFieldDefinition(val description: String, val name: String, val arguments: List<GQLInputValueDefinition>, val type: GQLType, val directives: List<GQLDirective>)
-data class GQLInputValueDefinition(val description: String, val name: String, val directives: List<GQLDirective>, val type: GQLType, val defaultValue: GQLValue?)
-data class GQLVariableDefinition(val name: String, val type: GQLType, val defaultValue: GQLValue)
-data class GQLOperationTypeDefinition(val operationType: String, val namedType: String)
-data class GQLDirective(val name: String, val arguments: List<GQLArgument>)
+interface GQLSelection : GQLNode
+interface GQLType : GQLNode
+interface GQLValue : GQLNode
 
-interface GQLSelection
-data class GQLField(val alias: String?, val name: String, val arguments: List<GQLArgument>, val directives: List<GQLDirective>, val selections: List<GQLSelection>) : GQLSelection
-data class GQLInlineFragment(val typeCondition: String?, val directives: List<GQLDirective>, val selectionSet: List<GQLSelection>) : GQLSelection
-data class GQLFragmentSpread(val name: String, val directives: List<GQLDirective>) : GQLSelection
+data class GQLDocument(override val sourceLocation: SourceLocation, val definitions: List<GQLDefinition>) : GQLNode
 
-interface GQLType
-data class GQLNamedType(val name: String): GQLType
-data class GQLNonNullType(val type: GQLType): GQLType
-data class GQLListType(val type: GQLType): GQLType
+data class GQLOperationDefinition(override val sourceLocation: SourceLocation, val name: String?, val variableDefinitions: List<GQLVariableDefinition>, val directives: List<GQLDirective>, val selections: List<GQLSelection>) : GQLDefinition
+data class GQLFragmentDefinition(override val sourceLocation: SourceLocation, val name: String, val directives: List<GQLDirective>, val typeCondition: GQLNamedType, val selections: List<GQLSelection>?) : GQLDefinition
+data class GQLSchemaDefinition(override val sourceLocation: SourceLocation, val description: String, val directives: List<GQLDirective>, val rootOperationTypeDefinitions: List<GQLOperationTypeDefinition>) : GQLDefinition
+data class GQLInterfaceTypeDefinition(override val sourceLocation: SourceLocation, val description: String, val name: String, val implementsInterfaces: List<String>, val fields: List<GQLFieldDefinition>) : GQLDefinition
+data class GQLObjectTypeDefinition(override val sourceLocation: SourceLocation, val description: String, val name: String, val directives: List<GQLDirective>, val fields: List<GQLFieldDefinition>, val implementsInterfaces: List<String>) : GQLDefinition
+data class GQLInputObjectTypeDefinition(override val sourceLocation: SourceLocation, val description: String, val name: String, val directives: List<GQLDirective>, val inputFields: List<GQLInputValueDefinition>) : GQLDefinition
+data class GQLScalarTypeDefinition(override val sourceLocation: SourceLocation, val description: String, val name: String, val directives: List<GQLDirective>) : GQLDefinition
+data class GQLEnumTypeDefinition(override val sourceLocation: SourceLocation, val description: String, val name: String, val directives: List<GQLDirective>, val enumValues: List<GQLEnumValueDefinition>) : GQLDefinition
+data class GQLUnionTypeDefinition(override val sourceLocation: SourceLocation, val description: String, val name: String, val directives: List<GQLDirective>, val memberTypes: List<String>?) : GQLDefinition
+data class GQLDirectiveDefinition(override val sourceLocation: SourceLocation, val description: String, val name: String, val arguments: List<GQLInputValueDefinition>, val repeatable: Boolean) : GQLDefinition
+data class GQLSchemaExtension(override val sourceLocation: SourceLocation, val directives: List<GQLDirective>, val operationTypesDefinition: List<GQLOperationTypeDefinition>) : GQLDefinition, GQLTypeSystemExtension
+data class GQLEnumTypeExtension(override val sourceLocation: SourceLocation, override val name: String, val directives: List<GQLDirective>, val enumValues: List<GQLEnumValueDefinition>) : GQLDefinition, GQLTypeExtension
+data class GQLObjectTypeExtension(override val sourceLocation: SourceLocation, override val name: String, val directives: List<GQLDirective>, val fields: List<GQLFieldDefinition>) : GQLDefinition, GQLTypeExtension
+data class GQLInputObjectTypeExtension(override val sourceLocation: SourceLocation, override val name: String, val directives: List<GQLDirective>, val inputFields: List<GQLInputValueDefinition>) : GQLDefinition, GQLTypeExtension
+data class GQLScalarTypeExtension(override val sourceLocation: SourceLocation, override val name: String, val directives: List<GQLDirective>) : GQLDefinition, GQLTypeExtension
+data class GQLInterfaceTypeExtension(override val sourceLocation: SourceLocation, override val name: String, val fields: List<GQLFieldDefinition>) : GQLDefinition, GQLTypeExtension
+data class GQLUnionTypeExtension(override val sourceLocation: SourceLocation, override val name: String, val directives: List<GQLDirective>, val memberTypes: List<String>?) : GQLDefinition, GQLTypeExtension
 
-interface GQLValue
-data class GQLVariableValue(val name: String): GQLValue
-data class GQLIntValue(val value: Int): GQLValue
-data class GQLFloatValue(val value: Double): GQLValue
-data class GQLStringValue(val value: String): GQLValue
-data class GQLBooleanValue(val value: Boolean): GQLValue
-data class GQLEnumValue(val value: String): GQLValue
-data class GQLListValue(val values: List<GQLValue>): GQLValue
-data class GQLObjectValue(val fields: List<GQLObjectField>): GQLValue
-object GQLNullValue: GQLValue
+data class GQLEnumValueDefinition(override val sourceLocation: SourceLocation, val description: String, val name: String, val directives: List<GQLDirective>) : GQLNode
+data class GQLFieldDefinition(override val sourceLocation: SourceLocation, val description: String, val name: String, val arguments: List<GQLInputValueDefinition>, val type: GQLType, val directives: List<GQLDirective>) : GQLNode
+data class GQLInputValueDefinition(override val sourceLocation: SourceLocation, val description: String, val name: String, val directives: List<GQLDirective>, val type: GQLType, val defaultValue: GQLValue?) : GQLNode
+data class GQLVariableDefinition(override val sourceLocation: SourceLocation, val name: String, val type: GQLType, val defaultValue: GQLValue) : GQLNode
+data class GQLOperationTypeDefinition(override val sourceLocation: SourceLocation, val operationType: String, val namedType: String) : GQLNode
+data class GQLDirective(override val sourceLocation: SourceLocation, val name: String, val arguments: List<GQLArgument>) : GQLNode
+data class GQLObjectField(override val sourceLocation: SourceLocation, val name: String, val value: GQLValue) : GQLNode
+data class GQLArgument(override val sourceLocation: SourceLocation, val name: String, val value: GQLValue) : GQLNode
 
-data class GQLObjectField(val name: String, val value: GQLValue)
-data class GQLArgument(val name: String, val value: GQLValue)
+data class GQLField(override val sourceLocation: SourceLocation, val alias: String?, val name: String, val arguments: List<GQLArgument>, val directives: List<GQLDirective>, val selections: List<GQLSelection>) : GQLSelection
+data class GQLInlineFragment(override val sourceLocation: SourceLocation, val typeCondition: GQLNamedType, val directives: List<GQLDirective>, val selectionSet: List<GQLSelection>) : GQLSelection
+data class GQLFragmentSpread(override val sourceLocation: SourceLocation, val name: String, val directives: List<GQLDirective>) : GQLSelection
+
+data class GQLNamedType(override val sourceLocation: SourceLocation, val name: String) : GQLType
+data class GQLNonNullType(override val sourceLocation: SourceLocation, val type: GQLType) : GQLType
+data class GQLListType(override val sourceLocation: SourceLocation, val type: GQLType) : GQLType
+
+data class GQLVariableValue(override val sourceLocation: SourceLocation, val name: String) : GQLValue
+data class GQLIntValue(override val sourceLocation: SourceLocation, val value: Int) : GQLValue
+data class GQLFloatValue(override val sourceLocation: SourceLocation, val value: Double) : GQLValue
+data class GQLStringValue(override val sourceLocation: SourceLocation, val value: String) : GQLValue
+data class GQLBooleanValue(override val sourceLocation: SourceLocation, val value: Boolean) : GQLValue
+data class GQLEnumValue(override val sourceLocation: SourceLocation, val value: String) : GQLValue
+data class GQLListValue(override val sourceLocation: SourceLocation, val values: List<GQLValue>) : GQLValue
+data class GQLObjectValue(override val sourceLocation: SourceLocation, val fields: List<GQLObjectField>) : GQLValue
+data class GQLNullValue(override val sourceLocation: SourceLocation) : GQLValue
+

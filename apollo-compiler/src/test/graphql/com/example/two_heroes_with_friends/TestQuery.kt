@@ -270,12 +270,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "21133941aec3d5db7db82cc2688faa410a90b34e7cb283efa038fe67526b6b4b"
+        "4164208402a68d9e32fbc09b99c60cf4021b9387a86114434082202f1cc60768"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery {
-          |  r2: hero {
+          |  r2:hero {
           |    __typename
           |    name
           |    friendsConnection {
@@ -290,7 +290,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           |      }
           |    }
           |  }
-          |  luke: hero(episode: EMPIRE) {
+          |  luke:hero(episode: EMPIRE) {
           |    __typename
           |    id
           |    name

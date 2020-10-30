@@ -120,7 +120,7 @@ inputValueDefinition
   ;
 
 directiveDefinition
-  : description? DIRECTIVE '@' name argumentsDefinition? ON_KEYWORD directiveLocations
+  : description? DIRECTIVE '@' name argumentsDefinition? REPEATABLE? ON_KEYWORD directiveLocations
   ;
 
 directiveLocations
@@ -344,6 +344,7 @@ nameCommon
   | DIRECTIVE
   | FRAGMENT
   | EXTEND
+  | REPEATABLE
   ;
 
 
@@ -392,6 +393,7 @@ INPUT: 'input';
 DIRECTIVE: 'directive';
 FRAGMENT: 'fragment';
 ON_KEYWORD: 'on';
+REPEATABLE: 'repeatable';
 EXTEND: 'extend';
 UTF8_BOM: '\uEFBBBF';
 UTF16_BOM: '\uFEFF';

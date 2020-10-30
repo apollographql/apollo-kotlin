@@ -31,11 +31,11 @@ object GraphQLDocumentSourceBuilder {
 
   private fun GraphQLParser.SelectionSetContext.format(addTypeName: Boolean = true): String {
     val withTypeName = addTypeName || selection()?.find {
-      it.field()?.fieldName()?.name()?.text == "__typename"
+      it.field()?.name()?.text == "__typename"
     } != null
     return selection()
         ?.filterNot { selection ->
-          selection.field()?.fieldName()?.name()?.text == "__typename"
+          selection.field()?.name()?.text == "__typename"
         }
         ?.mapNotNull { selection ->
           selection.field()?.source ?: selection?.inlineFragment()?.source ?: selection?.fragmentSpread()?.source
@@ -58,7 +58,7 @@ object GraphQLDocumentSourceBuilder {
 
   private val GraphQLParser.FieldContext.source: String
     get() {
-      val fieldName = fieldName().source
+      val fieldName = (alias()?.source ?: "") + name().source
       val arguments = arguments()?.source ?: ""
       val directives = directives()?.source?.let { " $it" } ?: ""
       val selectionSet = selectionSet()?.format()?.let { " {\n$it\n}" } ?: ""

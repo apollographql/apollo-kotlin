@@ -146,16 +146,16 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "266f79f66749232e217afd9b47a628fd7096d4c48345bc245a7f63105be9e75d"
+        "83cf98196c4ddba4dbc4b6ceda1db8889a4b27d683948b6632d6db5f15da3e9e"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery {
-          |  r2: hero {
+          |  r2:hero {
           |    __typename
           |    name
           |  }
-          |  luke: hero(episode: EMPIRE) {
+          |  luke:hero(episode: EMPIRE) {
           |    __typename
           |    id
           |    name

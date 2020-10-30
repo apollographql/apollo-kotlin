@@ -1,12 +1,21 @@
 package com.apollographql.apollo.compiler.parser.graphql.ast
 
+import com.apollographql.apollo.compiler.ir.SourceLocation
 import com.apollographql.apollo.compiler.parser.antlr.GraphQLParser
 import com.apollographql.apollo.compiler.parser.error.ParseException
+import org.antlr.v4.runtime.Token
 import org.antlr.v4.runtime.tree.TerminalNode
+
+
+private fun SourceLocation(token: Token) = SourceLocation(
+    line = token.line,
+    position = token.charPositionInLine
+)
 
 
 private fun GraphQLParser.DocumentContext.parse(): GQLDocument {
   return GQLDocument(
+      sourceLocation = SourceLocation(start),
       definitions = definition().map { it.parse() }
   )
 }
@@ -36,6 +45,7 @@ private fun GraphQLParser.TypeExtensionContext.parse(): GQLDefinition {
 
 private fun GraphQLParser.InterfaceTypeExtensionDefinitionContext.parse(): GQLInterfaceTypeExtension {
   return GQLInterfaceTypeExtension(
+      sourceLocation = SourceLocation(start),
       name = name().text,
       fields = fieldsDefinition().parse()
   )
@@ -43,13 +53,15 @@ private fun GraphQLParser.InterfaceTypeExtensionDefinitionContext.parse(): GQLIn
 
 private fun GraphQLParser.ScalarTypeExtensionDefinitionContext.parse(): GQLScalarTypeExtension {
   return GQLScalarTypeExtension(
-      name = name(),
+      sourceLocation = SourceLocation(start),
+      name = name().text,
       directives = directives().parse(),
   )
 }
 
 private fun GraphQLParser.UnionTypeExtensionDefinitionContext.parse(): GQLUnionTypeExtension {
   return GQLUnionTypeExtension(
+      sourceLocation = SourceLocation(start),
       name = name().text,
       directives = directives().parse(),
       memberTypes = unionMemberTypes().parse()
@@ -58,6 +70,7 @@ private fun GraphQLParser.UnionTypeExtensionDefinitionContext.parse(): GQLUnionT
 
 private fun GraphQLParser.ObjectTypeExtensionDefinitionContext.parse(): GQLObjectTypeExtension {
   return GQLObjectTypeExtension(
+      sourceLocation = SourceLocation(start),
       name = name().text,
       directives = directives().parse(),
       fields = fieldsDefinition().parse()
@@ -66,6 +79,7 @@ private fun GraphQLParser.ObjectTypeExtensionDefinitionContext.parse(): GQLObjec
 
 private fun GraphQLParser.InputObjectTypeExtensionDefinitionContext.parse(): GQLInputObjectTypeExtension {
   return GQLInputObjectTypeExtension(
+      sourceLocation = SourceLocation(start),
       name = name().text,
       directives = directives().parse(),
       inputFields = inputFieldsDefinition().parse()
@@ -75,6 +89,7 @@ private fun GraphQLParser.InputObjectTypeExtensionDefinitionContext.parse(): GQL
 
 private fun GraphQLParser.EnumTypeExtensionDefinitionContext.parse(): GQLEnumTypeExtension {
   return GQLEnumTypeExtension(
+      sourceLocation = SourceLocation(start),
       name = name().text,
       directives = directives().parse(),
       enumValues = enumValuesDefinition().parse()
@@ -83,6 +98,7 @@ private fun GraphQLParser.EnumTypeExtensionDefinitionContext.parse(): GQLEnumTyp
 
 private fun GraphQLParser.SchemaExtensionContext.parse(): GQLSchemaExtension {
   return GQLSchemaExtension(
+      sourceLocation = SourceLocation(start),
       directives = directives().parse(),
       operationTypesDefinition = operationTypesDefinition().parse()
   )
@@ -98,6 +114,7 @@ private fun GraphQLParser.TypeSystemDefinitionContext.parse(): GQLDefinition {
 
 private fun GraphQLParser.SchemaDefinitionContext.parse(): GQLSchemaDefinition {
   return GQLSchemaDefinition(
+      sourceLocation = SourceLocation(start),
       description = description().parse(),
       directives = directives().parse(),
       rootOperationTypeDefinitions = operationTypesDefinition().parse()
@@ -106,9 +123,11 @@ private fun GraphQLParser.SchemaDefinitionContext.parse(): GQLSchemaDefinition {
 
 private fun GraphQLParser.DirectiveDefinitionContext.parse(): GQLDirectiveDefinition {
   return GQLDirectiveDefinition(
+      sourceLocation = SourceLocation(start),
       description = description().parse(),
       name = name().text,
-      arguments = argumentsDefinition().parse()
+      arguments = argumentsDefinition().parse(),
+      repeatable = REPEATABLE() != null
   )
 }
 
@@ -124,6 +143,7 @@ private fun GraphQLParser.TypeDefinitionContext.parse(): GQLDefinition {
 
 private fun GraphQLParser.InterfaceTypeDefinitionContext.parse(): GQLInterfaceTypeDefinition {
   return GQLInterfaceTypeDefinition(
+      sourceLocation = SourceLocation(start),
       description = description().parse(),
       name = name().text,
       implementsInterfaces = implementsInterfaces().parse(),
@@ -139,6 +159,7 @@ private fun GraphQLParser.DescriptionContext?.parse(): String {
 
 private fun GraphQLParser.UnionTypeDefinitionContext.parse(): GQLUnionTypeDefinition {
   return GQLUnionTypeDefinition(
+      sourceLocation = SourceLocation(start),
       description = description().parse(),
       name = name().text,
       directives = directives().parse(),
@@ -148,6 +169,7 @@ private fun GraphQLParser.UnionTypeDefinitionContext.parse(): GQLUnionTypeDefini
 
 private fun GraphQLParser.ScalarTypeDefinitionContext.parse(): GQLScalarTypeDefinition {
   return GQLScalarTypeDefinition(
+      sourceLocation = SourceLocation(start),
       description = description().parse(),
       name = name().text,
       directives = directives().parse()
@@ -156,6 +178,7 @@ private fun GraphQLParser.ScalarTypeDefinitionContext.parse(): GQLScalarTypeDefi
 
 private fun GraphQLParser.ObjectTypeDefinitionContext.parse(): GQLObjectTypeDefinition {
   return GQLObjectTypeDefinition(
+      sourceLocation = SourceLocation(start),
       description = description().parse(),
       name = name().text,
       directives = directives().parse(),
@@ -166,6 +189,7 @@ private fun GraphQLParser.ObjectTypeDefinitionContext.parse(): GQLObjectTypeDefi
 
 private fun GraphQLParser.InputObjectDefinitionContext.parse(): GQLInputObjectTypeDefinition {
   return GQLInputObjectTypeDefinition(
+      sourceLocation = SourceLocation(start),
       description = description().parse(),
       name = name().text,
       directives = directives().parse(),
@@ -176,6 +200,7 @@ private fun GraphQLParser.InputObjectDefinitionContext.parse(): GQLInputObjectTy
 
 private fun GraphQLParser.EnumTypeDefinitionContext.parse(): GQLEnumTypeDefinition {
   return GQLEnumTypeDefinition(
+      sourceLocation = SourceLocation(start),
       description = description().parse(),
       name = name().text,
       directives = directives().parse(),
@@ -185,11 +210,23 @@ private fun GraphQLParser.EnumTypeDefinitionContext.parse(): GQLEnumTypeDefiniti
 
 private fun GraphQLParser.ExecutableDefinitionContext.parse(): GQLDefinition {
   return operationDefinition()?.parse()
+      ?: fragmentDefinition()?.parse()
       ?: throw ParseException("Unrecognized executable definition", start)
+}
+
+private fun GraphQLParser.FragmentDefinitionContext.parse(): GQLFragmentDefinition {
+  return GQLFragmentDefinition(
+      sourceLocation = SourceLocation(start),
+      name = fragmentName().text,
+      directives = directives().parse(),
+      typeCondition = typeCondition().namedType().parse(),
+      selections = selectionSet()?.parse()
+  )
 }
 
 private fun GraphQLParser.OperationDefinitionContext.parse(): GQLOperationDefinition {
   return GQLOperationDefinition(
+      sourceLocation = SourceLocation(start),
       name = name()?.text,
       variableDefinitions = variableDefinitions().parse(),
       directives = directives().parse(),
@@ -206,6 +243,7 @@ private fun GraphQLParser.SelectionContext.parse(): GQLSelection {
 
 private fun GraphQLParser.FragmentSpreadContext.parse(): GQLFragmentSpread {
   return GQLFragmentSpread(
+      sourceLocation = SourceLocation(start),
       name = fragmentName().text,
       directives = directives().parse()
   )
@@ -213,7 +251,8 @@ private fun GraphQLParser.FragmentSpreadContext.parse(): GQLFragmentSpread {
 
 private fun GraphQLParser.InlineFragmentContext.parse(): GQLInlineFragment {
   return GQLInlineFragment(
-      typeCondition = typeCondition()?.namedType()?.name()?.text,
+      sourceLocation = SourceLocation(start),
+      typeCondition = typeCondition().namedType().parse(),
       directives = directives().parse(),
       selectionSet = selectionSet().parse()
   )
@@ -221,6 +260,7 @@ private fun GraphQLParser.InlineFragmentContext.parse(): GQLInlineFragment {
 
 private fun GraphQLParser.FieldContext.parse(): GQLField {
   return GQLField(
+      sourceLocation = SourceLocation(start),
       alias = alias()?.name()?.text,
       name = name().text,
       arguments = arguments().parse(),
@@ -231,6 +271,7 @@ private fun GraphQLParser.FieldContext.parse(): GQLField {
 
 private fun GraphQLParser.FieldDefinitionContext.parse(): GQLFieldDefinition {
   return GQLFieldDefinition(
+      sourceLocation = SourceLocation(start),
       description = description().parse(),
       name = name().text,
       arguments = argumentsDefinition().parse(),
@@ -253,6 +294,7 @@ private fun GraphQLParser.OperationTypesDefinitionContext?.parse() = this?.opera
 
 private fun GraphQLParser.OperationTypeDefinitionContext.parse(): GQLOperationTypeDefinition {
   return GQLOperationTypeDefinition(
+      sourceLocation = SourceLocation(start),
       operationType = operationType().text,
       namedType = namedType().text
   )
@@ -260,6 +302,7 @@ private fun GraphQLParser.OperationTypeDefinitionContext.parse(): GQLOperationTy
 
 private fun GraphQLParser.EnumValueDefinitionContext.parse(): GQLEnumValueDefinition {
   return GQLEnumValueDefinition(
+      sourceLocation = SourceLocation(start),
       description = description().parse(),
       name = name().text,
       directives = directives().parse(),
@@ -268,6 +311,7 @@ private fun GraphQLParser.EnumValueDefinitionContext.parse(): GQLEnumValueDefini
 
 private fun GraphQLParser.InputValueDefinitionContext.parse(): GQLInputValueDefinition {
   return GQLInputValueDefinition(
+      sourceLocation = SourceLocation(start),
       description = description().parse(),
       name = name().text,
       directives = directives().parse(),
@@ -282,17 +326,23 @@ private fun GraphQLParser.ImplementsInterfaceContext.parse(): String {
 
 private fun GraphQLParser.DirectiveContext.parse(): GQLDirective {
   return GQLDirective(
+      sourceLocation = SourceLocation(start),
       name = name().text,
       arguments = arguments().parse()
   )
 }
 
 private fun GraphQLParser.ArgumentContext.parse(): GQLArgument {
-  return GQLArgument(name().text, value().parse())
+  return GQLArgument(
+      sourceLocation = SourceLocation(start),
+      name = name().text,
+      value = value().parse()
+  )
 }
 
 private fun GraphQLParser.VariableDefinitionContext.parse(): GQLVariableDefinition {
   return GQLVariableDefinition(
+      sourceLocation = SourceLocation(start),
       name = variable().name().text,
       type = type().parse(),
       defaultValue = defaultValue().parse(),
@@ -318,32 +368,61 @@ private fun GraphQLParser.ValueContext.parse(): GQLValue {
       ?: throw ParseException("Unrecognized value", start)
 }
 
-private fun GraphQLParser.NullValueContext.parse() = GQLNullValue
+private fun GraphQLParser.NullValueContext.parse() = GQLNullValue(SourceLocation(start))
 
 private fun GraphQLParser.ObjectValueContext.parse(): GQLObjectValue {
   return GQLObjectValue(
-      objectField().map {
-        GQLObjectField(it.name().text, it.value().parse())
+      sourceLocation = SourceLocation(start),
+      fields = objectField().map {
+        GQLObjectField(
+            sourceLocation = SourceLocation(start),
+            name = it.name().text,
+            value = it.value().parse())
       }
   )
 }
 
 private fun GraphQLParser.ListValueContext.parse(): GQLListValue {
-  return GQLListValue(value().map { it.parse() })
+  return GQLListValue(
+      sourceLocation = SourceLocation(start),
+      values = value().map { it.parse() }
+  )
 }
 
 private fun GraphQLParser.VariableContext.parse(): GQLVariableValue {
-  return GQLVariableValue(name().text)
+  return GQLVariableValue(
+      sourceLocation = SourceLocation(start),
+      name = name().text
+  )
 }
 
-private fun GraphQLParser.IntValueContext.parse() = GQLIntValue(text.toInt())
-private fun GraphQLParser.FloatValueContext.parse() = GQLFloatValue(text.toDouble())
-private fun GraphQLParser.BooleanValueContext.parse() = GQLBooleanValue(text.toBoolean())
-private fun GraphQLParser.EnumValueContext.parse() = GQLEnumValue(name().text)
+private fun GraphQLParser.IntValueContext.parse() = GQLIntValue(
+    sourceLocation = SourceLocation(start),
+    value = text.toInt()
+)
+
+private fun GraphQLParser.FloatValueContext.parse() = GQLFloatValue(
+    sourceLocation = SourceLocation(start),
+    value = text.toDouble()
+)
+
+private fun GraphQLParser.BooleanValueContext.parse() = GQLBooleanValue(
+    sourceLocation = SourceLocation(start),
+    value = text.toBoolean()
+)
+
+private fun GraphQLParser.EnumValueContext.parse() = GQLEnumValue(
+    sourceLocation = SourceLocation(start),
+    value = name().text
+)
+
 private fun GraphQLParser.StringValueContext.parse(): GQLStringValue {
-  return GQLStringValue(STRING()?.text?.removePrefix("\"")?.removeSuffix("\"")
-      ?: BLOCK_STRING()?.text?.removePrefix("\"\"\"")?.removeSuffix("\"\"\"")
-      ?: throw ParseException("Unrecognized string", start))
+  return GQLStringValue(
+      sourceLocation = SourceLocation(start),
+      value = STRING()?.text?.removePrefix("\"")?.removeSuffix("\"")
+          ?: BLOCK_STRING()?.text?.removePrefix("\"\"\"")?.removeSuffix("\"\"\"")
+          ?: throw ParseException("Unrecognized string", start)
+  )
 }
 
 private fun TerminalNode?.withoutQuotes() = this?.text?.removePrefix("\"")?.removeSuffix("\"")
@@ -358,17 +437,25 @@ private fun GraphQLParser.TypeContext.parse(): GQLType {
 }
 
 private fun GraphQLParser.ListTypeContext.parse(): GQLListType {
-  return GQLListType(type().parse())
+  return GQLListType(
+      sourceLocation = SourceLocation(start),
+      type = type().parse()
+  )
 }
 
 private fun GraphQLParser.NamedTypeContext.parse(): GQLNamedType {
-  return GQLNamedType(text)
+  return GQLNamedType(
+      sourceLocation = SourceLocation(start),
+      name = text
+  )
 }
 
 private fun GraphQLParser.NonNullTypeContext.parse(): GQLNonNullType {
-  return GQLNonNullType(namedType()?.parse()
-      ?: listType()?.parse()
-      ?: throw ParseException("Unrecognized on-null type", start)
+  return GQLNonNullType(
+      sourceLocation = SourceLocation(start),
+      type = namedType()?.parse()
+          ?: listType()?.parse()
+          ?: throw ParseException("Unrecognized on-null type", start)
   )
 }
 
