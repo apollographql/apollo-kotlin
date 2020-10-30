@@ -84,6 +84,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @get:Input
   @get:Optional
+  abstract val packageName: Property<String>
+
+  @get:Input
+  @get:Optional
   abstract val generateModelBuilder: Property<Boolean>
 
   @get:Input
@@ -154,6 +158,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching.orNull,
         moduleName = projectName.get(),
         rootProjectDir = projectRootDir.get().asFile,
+        packageName = packageName.orNull,
 
         operationOutputFile = operationOutputFile.asFile.orNull,
         operationOutputGenerator = operationOutputGenerator,

@@ -22,7 +22,9 @@ class ValidationTest(name: String, private val graphQLFile: File) {
     val schema = IntrospectionSchema(schemaFile)
     val packageNameProvider = DefaultPackageNameProvider(
         roots = Roots(listOf(graphQLFile.parentFile)),
-        rootPackageName = ""
+        rootPackageName = "",
+        schemaPackageName = "",
+        packageName = null
     )
 
     try {

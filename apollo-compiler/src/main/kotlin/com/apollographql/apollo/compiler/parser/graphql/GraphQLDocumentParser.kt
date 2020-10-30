@@ -544,7 +544,8 @@ class GraphQLDocumentParser(
             fragmentRefs = fragmentRefs.union(mergeInlineFragmentRefs).toList(),
             inlineFragments = inlineFragments.result.filter { it.typeCondition != typeCondition },
             filePath = graphQLFilePath,
-            sourceLocation = SourceLocation(start)
+            sourceLocation = SourceLocation(start),
+            packageName = packageNameProvider.fragmentPackageName(graphQLFilePath)
         ),
         usedTypes = setOf(typeCondition)
             .union(fields.usedTypes)

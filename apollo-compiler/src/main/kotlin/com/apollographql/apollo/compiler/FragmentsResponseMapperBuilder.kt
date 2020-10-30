@@ -69,7 +69,7 @@ class FragmentsResponseMapperBuilder(
   private fun mapperFields(fragmentFields: List<ResponseFieldSpec>): List<FieldSpec> {
     return fragmentFields.map { field ->
       val fieldType = field.normalizedFieldSpec.type as ClassName
-      val mapperClassName = ClassName.get(context.ir.fragmentsPackageName, fieldType.simpleName(),
+      val mapperClassName = ClassName.get(fieldType.packageName(), fieldType.simpleName(),
           Util.RESPONSE_FIELD_MAPPER_TYPE_NAME)
       FieldSpec.builder(mapperClassName, fieldType.mapperFieldName(), Modifier.FINAL)
           .initializer(CodeBlock.of("new \$T()", mapperClassName))

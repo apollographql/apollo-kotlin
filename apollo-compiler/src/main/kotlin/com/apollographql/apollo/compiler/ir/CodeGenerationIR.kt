@@ -37,9 +37,5 @@ data class CodeGenerationIR(
     /**
      * The package name for input/enum types
      */
-    val typesPackageName: String,
-    /**
-     * The package name for fragments
-     */
-    val fragmentsPackageName: String
+    val typesPackageName: String
 )

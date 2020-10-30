@@ -233,4 +233,18 @@ interface CompilerParams {
    */
   @ApolloExperimental
   val alwaysGenerateTypesMatching: SetProperty<String>
+
+  /**
+   * Use the given package name and does not take into account the folders hierarchy.
+   *
+   * - Operations will be in `packageName`
+   * - Fragments will be in `packageName.fragment`
+   * - Input/Enum/Scalar types are not handled yet and will continue to be in the schemaPackageName
+   *
+   * This is currently experimental and this API might change in the future.
+   *
+   * Default value: false
+   */
+  @ApolloExperimental
+  val packageName: Property<String>
 }

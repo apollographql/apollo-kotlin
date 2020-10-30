@@ -28,6 +28,7 @@ fun CompilerParams.withFallback(objects: ObjectFactory, other: CompilerParams): 
   merge.operationOutputGenerator.set(this.operationOutputGenerator.orElse(other.operationOutputGenerator))
   merge.sealedClassesForEnumsMatching.set(this.sealedClassesForEnumsMatching.orElse(other.sealedClassesForEnumsMatching))
   merge.generateApolloMetadata.set(this.generateApolloMetadata.orElse(other.generateApolloMetadata))
+  merge.packageName.set(this.packageName.orElse(other.packageName))
   merge.alwaysGenerateTypesMatching.set(this.alwaysGenerateTypesMatching.orElse(other.alwaysGenerateTypesMatching))
   merge.warnOnDeprecatedUsages.set(this.warnOnDeprecatedUsages.orElse(other.warnOnDeprecatedUsages))
   merge.failOnWarnings.set(this.failOnWarnings.orElse(other.failOnWarnings))

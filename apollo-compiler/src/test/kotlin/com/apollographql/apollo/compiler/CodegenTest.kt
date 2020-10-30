@@ -55,7 +55,7 @@ class CodegenTest(private val folder: File, private val testLanguage: TestLangua
       val actual = File(actualRoot, relativePath)
       if (!actual.exists()) {
         if (shouldUpdateTestFixtures()) {
-          println("removing actual file: ${expected.absolutePath}")
+          println("removing stale expected file: ${expected.absolutePath}")
           expected.delete()
           return@forEach
         } else {
@@ -151,6 +151,12 @@ class CodegenTest(private val folder: File, private val testLanguage: TestLangua
         else -> emptySet()
       }
 
+      val packageName = when(folder.name) {
+        // TODO reorganize tests so that we don't have to make this a child of "com.example.fragment_package_name"
+        "fragment_package_name" -> "com.example.fragment_package_name.another"
+        else -> null
+      }
+
       val schemaFile = folder.listFiles()!!.find { it.isFile && it.name == "schema.sdl" }
           ?: File("src/test/graphql/schema.sdl")
       
@@ -177,6 +183,7 @@ class CodegenTest(private val folder: File, private val testLanguage: TestLangua
           kotlinMultiPlatformProject = true,
           enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters,
           metadataOutputFile = File("build/generated/test/${folder.name}/metadata/$language"),
+          packageName = packageName
       )
     }
 
