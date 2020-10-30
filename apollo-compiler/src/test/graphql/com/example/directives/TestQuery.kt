@@ -216,11 +216,11 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "c2c4bbf6368fd611eb19628164b0ef04ccad73f4c96b0416c254b8375b5d04f8"
+        "c8809f9b337abc20e8dd014ef3baac57633a1a31a604a8663fe470459712113d"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
-          |query TestQuery(${'$'}includeName: Boolean!, ${'$'}skipFriends: Boolean!) @operationDirective(dummy: "hello") {
+          |query TestQuery(${'$'}includeName: Boolean!, ${'$'}skipFriends: Boolean!) @operationDirective(dummy0: "hello", dummy1: 0) {
           |  hero {
           |    __typename
           |    name @include(if: ${'$'}includeName)

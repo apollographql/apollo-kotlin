@@ -39,10 +39,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, TestQuery.Variables> {
-  public static final String OPERATION_ID = "c2c4bbf6368fd611eb19628164b0ef04ccad73f4c96b0416c254b8375b5d04f8";
+  public static final String OPERATION_ID = "c8809f9b337abc20e8dd014ef3baac57633a1a31a604a8663fe470459712113d";
 
   public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
-    "query TestQuery($includeName: Boolean!, $skipFriends: Boolean!) @operationDirective(dummy: \"hello\") {\n"
+    "query TestQuery($includeName: Boolean!, $skipFriends: Boolean!) @operationDirective(dummy0: \"hello\", dummy1: 0) {\n"
         + "  hero {\n"
         + "    __typename\n"
         + "    name @include(if: $includeName)\n"
