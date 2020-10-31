@@ -161,26 +161,14 @@ private fun GQLDocument.validateUniqueSchemaDefinition() {
 }
 
 
-private fun GQLDefinition.typeDefinitionName() = when (this) {
-  is GQLEnumTypeDefinition -> name
-  is GQLScalarTypeDefinition -> name
-  is GQLObjectTypeDefinition -> name
-  is GQLInterfaceTypeDefinition -> name
-  is GQLUnionTypeDefinition -> name
-  is GQLInputObjectTypeDefinition -> name
-  else -> null
-}
-
 private fun GQLDocument.validateTypeNames() {
-  val typeDefinitions = mutableMapOf<String, GQLDefinition>()
-  val conflicts = mutableListOf<GQLDefinition>()
-  definitions.forEach {
-    val name = it.typeDefinitionName()
-    if (name == null) {
-      return@forEach
-    }
+  val typeDefinitions = mutableMapOf<String, GQLTypeDefinition>()
+  val conflicts = mutableListOf<GQLTypeDefinition>()
+  definitions.filterIsInstance<GQLTypeDefinition>().forEach {
+    val name = it.name
+
     if (!typeDefinitions.containsKey(name)) {
-      typeDefinitions.put(name, it)
+      typeDefinitions[name] = it
     } else {
       conflicts.add(it)
     }
@@ -189,7 +177,7 @@ private fun GQLDocument.validateTypeNames() {
   // 3.3 All types within a GraphQL schema must have unique names
   if (conflicts.size > 0) {
     val conflict = conflicts.first()
-    throw ParseException("type '${conflict.typeDefinitionName()}' is defined multiple times", conflict.sourceLocation)
+    throw ParseException("type '${conflict.name}' is defined multiple times", conflict.sourceLocation)
   }
 
   // 3.3 All types and directives defined within a schema must not have a name which begins with "__"
@@ -201,19 +189,14 @@ private fun GQLDocument.validateTypeNames() {
   }
 }
 
-private fun GQLDefinition.directiveDefinitionName() = when (this) {
-  is GQLDirectiveDefinition -> name
-  else -> null
-}
-
 private fun GQLDocument.validateDirectiveNames() {
-  val directiveDefinitions = mutableMapOf<String, GQLDefinition>()
-  val conflicts = mutableListOf<GQLDefinition>()
-  definitions.forEach {
-    val name = it.directiveDefinitionName()
-    if (name == null) {
-      return@forEach
-    }
+  val directiveDefinitions = mutableMapOf<String, GQLDirectiveDefinition>()
+  val conflicts = mutableListOf<GQLDirectiveDefinition>()
+  definitions
+      .filterIsInstance<GQLDirectiveDefinition>()
+      .forEach {
+    val name = it.name
+
     if (!directiveDefinitions.containsKey(name)) {
       directiveDefinitions.put(name, it)
     } else {
@@ -224,7 +207,7 @@ private fun GQLDocument.validateDirectiveNames() {
   // 3.3 All directives within a GraphQL schema must have unique names.
   if (conflicts.size > 0) {
     val conflict = conflicts.first()
-    throw ParseException("directive '${conflict.typeDefinitionName()}' is defined multiple times", conflict.sourceLocation)
+    throw ParseException("directive '${conflict.name}' is defined multiple times", conflict.sourceLocation)
   }
 
   // 3.3 All types and directives defined within a schema must not have a name which begins with "__"

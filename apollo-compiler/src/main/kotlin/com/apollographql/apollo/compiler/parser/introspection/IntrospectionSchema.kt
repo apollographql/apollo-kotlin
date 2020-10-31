@@ -10,9 +10,9 @@ import java.io.File
 import java.io.InputStream
 
 data class IntrospectionSchema(
-    val queryType: String = "query",
-    val mutationType: String = "mutation",
-    val subscriptionType: String = "subscription",
+    val queryType: String,
+    val mutationType: String? = null,
+    val subscriptionType: String? = null,
     val types: Map<String, Type>) : Map<String, IntrospectionSchema.Type> by types {
   sealed class Type(val kind: Kind) {
     abstract val name: String
