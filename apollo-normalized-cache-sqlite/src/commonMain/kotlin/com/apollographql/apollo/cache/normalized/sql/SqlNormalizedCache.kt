@@ -7,6 +7,7 @@ import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter
 import okio.IOException
+import kotlin.reflect.KClass
 
 class SqlNormalizedCache internal constructor(
     private val recordFieldAdapter: RecordFieldJsonAdapter,
@@ -135,5 +136,15 @@ class SqlNormalizedCache internal constructor(
 
   fun createRecord(key: String, fields: String) {
     cacheQueries.insert(key = key, record = fields)
+  }
+
+  @ExperimentalStdlibApi
+  override fun dump() = buildMap<KClass<*>, Map<String, Record>> {
+    put(this@SqlNormalizedCache::class, cacheQueries.selectRecords().executeAsList().map {
+      it.key to Record.builder(it.key)
+          .addFields(recordFieldAdapter.from(it.record)!!)
+          .build()
+    }.toMap())
+    putAll(nextCache?.dump().orEmpty())
   }
 }

@@ -14,6 +14,7 @@ package com.apollographql.apollo.cache.normalized.sql {
     method public void createRecord(error.NonExistentClass, error.NonExistentClass);
     method public error.NonExistentClass deleteRecord(error.NonExistentClass);
     method public error.NonExistentClass deleteRecords(error.NonExistentClass);
+    method public error.NonExistentClass dump();
     method public error.NonExistentClass loadRecord(error.NonExistentClass, error.NonExistentClass);
     method public error.NonExistentClass loadRecords(error.NonExistentClass, error.NonExistentClass);
     method public error.NonExistentClass merge(error.NonExistentClass, error.NonExistentClass);
