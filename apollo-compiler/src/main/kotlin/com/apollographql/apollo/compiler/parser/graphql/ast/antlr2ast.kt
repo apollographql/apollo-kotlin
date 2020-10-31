@@ -13,7 +13,7 @@ private fun SourceLocation(token: Token) = SourceLocation(
 )
 
 
-private fun GraphQLParser.DocumentContext.parse(): GQLDocument {
+fun GraphQLParser.DocumentContext.parse(): GQLDocument {
   return GQLDocument(
       sourceLocation = SourceLocation(start),
       definitions = definition().map { it.parse() }

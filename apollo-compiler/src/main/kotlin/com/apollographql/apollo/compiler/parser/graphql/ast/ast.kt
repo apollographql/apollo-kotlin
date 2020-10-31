@@ -16,7 +16,9 @@ interface GQLTypeExtension : GQLTypeSystemExtension, GQLNamed
 
 interface GQLSelection : GQLNode
 
-data class GQLDocument(override val sourceLocation: SourceLocation, val definitions: List<GQLDefinition>) : GQLNode
+data class GQLDocument(override val sourceLocation: SourceLocation, val definitions: List<GQLDefinition>) : GQLNode {
+  companion object
+}
 
 data class GQLOperationDefinition(override val sourceLocation: SourceLocation, val name: String?, val variableDefinitions: List<GQLVariableDefinition>, val directives: List<GQLDirective>, val selections: List<GQLSelection>) : GQLDefinition
 data class GQLFragmentDefinition(override val sourceLocation: SourceLocation, val name: String, val directives: List<GQLDirective>, val typeCondition: GQLNamedType, val selections: List<GQLSelection>?) : GQLDefinition
