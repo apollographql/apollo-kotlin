@@ -119,7 +119,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
           fragments = ir.fragments.filter { ir.fragmentsToGenerate.contains(it.fragmentName) },
           generateKotlinModels = generateKotlinModels,
           customTypesMap = args.customTypeMap,
-          pluginVersion = com.apollographql.apollo.compiler.VERSION
+          pluginVersion = VERSION
       ).let {
         if (args.rootProjectDir != null) {
           it.withRelativeFragments(args.rootProjectDir)
