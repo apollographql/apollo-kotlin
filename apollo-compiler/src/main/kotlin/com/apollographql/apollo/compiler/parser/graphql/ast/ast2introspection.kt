@@ -28,7 +28,7 @@ import com.apollographql.apollo.compiler.parser.graphql.ast.GQLValue
 import com.apollographql.apollo.compiler.parser.graphql.ast.GQLVariableValue
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 
-private class SchemaBuilder(private val document: GQLDocument) {
+private class IntrospectionSchemaBuilder(private val document: GQLDocument) {
   private val typeDefinitions = document.definitions.filterIsInstance<GQLTypeDefinition>().map { it.name to it }.toMap()
 
   fun toIntrospectionSchema() = document.toIntrospectionSchema()
@@ -245,6 +245,6 @@ private class SchemaBuilder(private val document: GQLDocument) {
   }
 }
 
-fun GQLDocument.toIntrospectionSchema() = SchemaBuilder(this).toIntrospectionSchema()
+fun GQLDocument.toIntrospectionSchema() = IntrospectionSchemaBuilder(this).toIntrospectionSchema()
 
 
