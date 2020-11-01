@@ -226,6 +226,7 @@ private fun GraphQLParser.FragmentDefinitionContext.parse(): GQLFragmentDefiniti
 private fun GraphQLParser.OperationDefinitionContext.parse(): GQLOperationDefinition {
   return GQLOperationDefinition(
       sourceLocation = SourceLocation(start),
+      operationType = operationType().text,
       name = name()?.text,
       variableDefinitions = variableDefinitions().parse(),
       directives = directives().parse(),

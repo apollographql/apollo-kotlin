@@ -185,7 +185,6 @@ private fun GQLDocument.validateTypeNames() {
     if (name.startsWith("__")) {
       throw ParseException("names starting with '__' are reserved for introspection", definition.sourceLocation)
     }
-
   }
 }
 
