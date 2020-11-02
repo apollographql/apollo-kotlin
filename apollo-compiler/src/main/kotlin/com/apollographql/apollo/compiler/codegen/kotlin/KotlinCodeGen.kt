@@ -41,9 +41,7 @@ internal object KotlinCodeGen {
   fun deprecatedAnnotation(message: String) = AnnotationSpec
       .builder(Deprecated::class)
       .apply {
-        if (message.isNotBlank()) {
-          addMember("message = %S", message)
-        }
+        addMember("message = %S", message)
       }
       .build()
 

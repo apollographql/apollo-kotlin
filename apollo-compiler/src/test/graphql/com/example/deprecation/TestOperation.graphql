@@ -4,5 +4,6 @@ query TestQuery($episode: Episode) {
     deprecated
     deprecatedBool
     deprecatedWithNoReason
+    deprecatedWithBlankReason
   }
 }
