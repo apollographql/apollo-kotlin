@@ -127,7 +127,12 @@ data class TestQuery(
      * Test deprecated field with no reason
      */
     @Deprecated(message = "No longer supported")
-    val deprecatedWithNoReason: String
+    val deprecatedWithNoReason: String,
+    /**
+     * Test deprecated field with blank reason
+     */
+    @Deprecated(message = "")
+    val deprecatedWithBlankReason: String
   ) {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@Hero.__typename)
@@ -135,6 +140,7 @@ data class TestQuery(
       writer.writeString(RESPONSE_FIELDS[2], this@Hero.deprecated)
       writer.writeBoolean(RESPONSE_FIELDS[3], this@Hero.deprecatedBool)
       writer.writeString(RESPONSE_FIELDS[4], this@Hero.deprecatedWithNoReason)
+      writer.writeString(RESPONSE_FIELDS[5], this@Hero.deprecatedWithBlankReason)
     }
 
     companion object {
@@ -144,7 +150,9 @@ data class TestQuery(
           ResponseField.forString("deprecated", "deprecated", null, false, null),
           ResponseField.forBoolean("deprecatedBool", "deprecatedBool", null, false, null),
           ResponseField.forString("deprecatedWithNoReason", "deprecatedWithNoReason", null, false,
-              null)
+              null),
+          ResponseField.forString("deprecatedWithBlankReason", "deprecatedWithBlankReason", null,
+              false, null)
           )
 
       operator fun invoke(reader: ResponseReader): Hero = reader.run {
@@ -153,12 +161,14 @@ data class TestQuery(
         val deprecated = readString(RESPONSE_FIELDS[2])!!
         val deprecatedBool = readBoolean(RESPONSE_FIELDS[3])!!
         val deprecatedWithNoReason = readString(RESPONSE_FIELDS[4])!!
+        val deprecatedWithBlankReason = readString(RESPONSE_FIELDS[5])!!
         Hero(
           __typename = __typename,
           name = name,
           deprecated = deprecated,
           deprecatedBool = deprecatedBool,
-          deprecatedWithNoReason = deprecatedWithNoReason
+          deprecatedWithNoReason = deprecatedWithNoReason,
+          deprecatedWithBlankReason = deprecatedWithBlankReason
         )
       }
 
@@ -201,7 +211,7 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "0ec7777648f4df19577e26ccefd76b5323e29426288a9e43770e8671a25865bc"
+        "82ddc716280f1e2f832345d489f265f98280abf0d9a0257c09ca5bd3779dfd2f"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -212,6 +222,7 @@ data class TestQuery(
           |    deprecated
           |    deprecatedBool
           |    deprecatedWithNoReason
+          |    deprecatedWithBlankReason
           |  }
           |}
           """.trimMargin()
