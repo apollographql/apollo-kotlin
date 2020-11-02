@@ -49,13 +49,14 @@ actual class ApolloHttpNetworkTransport(
       serverUrl: String,
       headers: Map<String, String>,
       httpMethod: HttpMethod,
-      timeoutMillis: Long
+      connectTimeoutMillis: Long,
+      readTimeoutMillis: Long
   ) : this(
       serverUrl = serverUrl.toHttpUrl(),
       headers = headers.toHeaders(),
       httpCallFactory = OkHttpClient.Builder()
-          .connectTimeout(Duration.ofMillis(timeoutMillis))
-          .readTimeout(Duration.ofMillis(timeoutMillis))
+          .connectTimeout(Duration.ofMillis(connectTimeoutMillis))
+          .readTimeout(Duration.ofMillis(readTimeoutMillis))
           .build(),
       httpMethod = httpMethod,
   )
