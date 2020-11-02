@@ -99,11 +99,14 @@ class DownloadSchemaTests {
       val mockResponse = MockResponse().setBody(content)
       mockServer.enqueue(mockResponse)
 
-      // Tests are running with a working dir of "apollo-gradle-plugin", don't pollute that folder
+      // Tests can run from any working directory.
+      // They used to run in `apollo-gradle-plugin` but with Gradle 6.7, they now run in something like
+      // /private/var/folders/zh/xlpqxsfn7vx_dhjswsgsps6h0000gp/T/.gradle-test-kit-martin/test-kit-daemon/6.7/
+      // We'll use absolute path as arguments for the check to succeed later on
       val schema = File("build/testProject/schema.json")
 
       TestUtils.executeGradle(dir, "downloadApolloSchema",
-          "--schema=${schema.path}",
+          "--schema=${schema.absolutePath}",
           "--endpoint=${mockServer.url("/")}")
 
       assertEquals(content, schema.readText())
