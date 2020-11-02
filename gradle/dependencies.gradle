@@ -2,7 +2,7 @@ def versions = [
     minAndroidPlugin      : '3.4.2',
     androidPlugin         : '3.6.2',
     androidxSqlite        : '2.1.0',
-    apollo                : '2.4.2', // This should only be used by apollo-gradle-plugin-incubating:test to get the artifacts locally
+    apollo                : '2.4.3-SNAPSHOT', // This should only be used by apollo-gradle-plugin-incubating:test to get the artifacts locally
     antlr4                : '4.5.3',
     cache                 : '2.0.2',
     compiletesting        : '0.15',
