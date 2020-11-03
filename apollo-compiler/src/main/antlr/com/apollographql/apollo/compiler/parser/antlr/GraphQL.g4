@@ -364,9 +364,7 @@ nameButNotBooleanOrNull
 // We cannot make `name` a token because things like 'query', 'fragment', etc... are valid names so could potentially be used in
 // field names or other places
 name
-  : nameButNotBooleanOrNull
-  | BOOLEAN
-  | NULL
+  : nameButNotOn
   | ON_KEYWORD
   ;
 
