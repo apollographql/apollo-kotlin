@@ -51,7 +51,8 @@ import kotlin.coroutines.resumeWithException
 import kotlin.native.concurrent.freeze
 
 typealias UrlSessionDataTaskCompletionHandler = (NSData?, NSURLResponse?, NSError?) -> Unit
- interface DataTaskFactory {
+
+fun interface DataTaskFactory {
   fun dataTask(request: NSURLRequest, completionHandler: UrlSessionDataTaskCompletionHandler): NSURLSessionDataTask
 }
 
