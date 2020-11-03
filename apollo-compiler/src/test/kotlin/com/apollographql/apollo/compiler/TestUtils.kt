@@ -12,7 +12,10 @@ internal object TestUtils {
   }
 
   internal fun checkTestFixture(actual: File, expected: File) {
-    val actualText = actual.readText()
+    return checkTestFixture(actual.readText(), expected, actual.path)
+  }
+
+  internal fun checkTestFixture(actualText: String, expected: File, source: String = "(source)") {
     val expectedText = expected.readText()
 
     if (actualText != expectedText) {
@@ -22,7 +25,7 @@ internal object TestUtils {
         throw Exception("""generatedFile content doesn't match the expectedFile content.
       |If you changed the compiler recently, you need to update the testFixtures.
       |Run the tests with `-DupdateTestFixtures=true` to do so.
-      |diff ${expected.path} ${actual.path}""".trimMargin())
+      |diff ${expected.path} ${source}""".trimMargin())
       }
     }
   }

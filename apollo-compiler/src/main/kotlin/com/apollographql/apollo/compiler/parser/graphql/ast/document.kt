@@ -10,22 +10,31 @@ import java.io.InputStream
 fun GQLDocument.withBuiltinTypes(): GQLDocument {
   val buildInsInputStream = javaClass.getResourceAsStream("/builtins.sdl")
   return copy(
-      definitions = definitions + GQLDocument(buildInsInputStream).definitions
+      definitions = definitions + GQLDocument.fromInputStream(buildInsInputStream, false).definitions
   )
 }
 
-operator fun GQLDocument.Companion.invoke(document: String) = GQLDocument(document.byteInputStream())
+fun GQLDocument.Companion.fromString(document: String) = GQLDocument.fromInputStream(document.byteInputStream())
 
-operator fun GQLDocument.Companion.invoke(file: File) = file.inputStream().use {
-  GQLDocument(it)
+fun GQLDocument.Companion.fromFile(file: File) = file.inputStream().use {
+  GQLDocument.fromInputStream(it)
 }
 
-operator fun GQLDocument.Companion.invoke(inputStream: InputStream): GQLDocument {
+fun GQLDocument.Companion.fromInputStream(inputStream: InputStream, addBuiltinTypes: Boolean = true): GQLDocument {
   return GraphQLParser(
       CommonTokenStream(
           GraphQLLexer(
               CharStreams.fromStream(inputStream)
           )
       )
-  ).document().parse()
+  ).document()
+      .parse()
+      .let {
+        if (addBuiltinTypes) {
+          it.withBuiltinTypes()
+        } else {
+          it
+        }
+      }
+
 }

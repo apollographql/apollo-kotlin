@@ -36,8 +36,8 @@ private class IntrospectionSchemaBuilder(private val document: GQLDocument) {
   private fun GQLDocument.toIntrospectionSchema(): IntrospectionSchema {
     return IntrospectionSchema(
         queryType = rootOperationTypeName("query") ?: throw IllegalStateException("No query root operation type found"),
-        mutationType = rootOperationTypeName("query"),
-        subscriptionType = rootOperationTypeName("mutation"),
+        mutationType = rootOperationTypeName("mutation"),
+        subscriptionType = rootOperationTypeName("subscription"),
         types = definitions.filterIsInstance<GQLTypeDefinition>().map {
           it.name to when (it) {
             is GQLObjectTypeDefinition -> it.toSchemaType()

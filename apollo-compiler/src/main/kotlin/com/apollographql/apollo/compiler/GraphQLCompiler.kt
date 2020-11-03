@@ -13,12 +13,15 @@ import com.apollographql.apollo.compiler.parser.error.DocumentParseException
 import com.apollographql.apollo.compiler.parser.error.ParseException
 import com.apollographql.apollo.compiler.parser.graphql.DocumentParseResult
 import com.apollographql.apollo.compiler.parser.graphql.GraphQLDocumentParser
+import com.apollographql.apollo.compiler.parser.graphql.ast.GQLDocument
+import com.apollographql.apollo.compiler.parser.graphql.ast.fromFile
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Companion.toIntrospectionSchema
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Companion.wrap
 import com.apollographql.apollo.compiler.parser.sdl.GraphSdlSchema
 import com.apollographql.apollo.compiler.parser.sdl.toIntrospectionSchema
 import com.squareup.kotlinpoet.asClassName
+import toIntrospectionSchema
 import java.io.File
 
 class GraphQLCompiler(val logger: Logger = NoOpLogger) {
@@ -216,7 +219,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
           IntrospectionSchema(schemaFile)
         } else {
           try {
-            GraphSdlSchema(schemaFile).toIntrospectionSchema()
+            GQLDocument.fromFile(schemaFile).toIntrospectionSchema()
           } catch (e: ParseException) {
             throw DocumentParseException(e, schemaFile.absolutePath)
           }

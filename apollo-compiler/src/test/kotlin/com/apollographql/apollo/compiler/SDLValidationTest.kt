@@ -2,6 +2,8 @@ package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.compiler.parser.error.DocumentParseException
 import com.apollographql.apollo.compiler.parser.error.ParseException
+import com.apollographql.apollo.compiler.parser.graphql.ast.GQLDocument
+import com.apollographql.apollo.compiler.parser.graphql.ast.fromFile
 import com.apollographql.apollo.compiler.parser.sdl.GraphSdlSchema
 import com.google.common.truth.Truth.assertThat
 import org.junit.Assert.fail
@@ -17,7 +19,7 @@ class SDLValidationTest(name: String, private val sdlFile: File) {
   @Test
   fun testValidation() {
     try {
-      GraphSdlSchema(sdlFile)
+      GQLDocument.fromFile(sdlFile)
       fail("parse expected to fail but was successful")
     } catch (e: Exception) {
       if (e is DocumentParseException || e is ParseException) {

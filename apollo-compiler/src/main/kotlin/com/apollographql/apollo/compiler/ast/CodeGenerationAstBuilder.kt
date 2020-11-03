@@ -310,10 +310,8 @@ private class CodeGenerationAstBuilder(
   ): CodeGenerationAst.OperationDataType {
     val operationSchemaType = when {
       isQuery() -> schema.queryType
-
-      isMutation() -> schema.mutationType
-
-      isSubscription() -> schema.subscriptionType
+      isMutation() -> schema.mutationType!!
+      isSubscription() -> schema.subscriptionType!!
 
       else -> throw IllegalArgumentException("Unsupported GraphQL operation type: `$operationType`")
     }

@@ -1,7 +1,10 @@
 package com.apollographql.apollo.compiler
 
+import com.apollographql.apollo.compiler.TestUtils.checkTestFixture
 import com.apollographql.apollo.compiler.parser.error.DocumentParseException
 import com.apollographql.apollo.compiler.parser.error.ParseException
+import com.apollographql.apollo.compiler.parser.graphql.ast.GQLDocument
+import com.apollographql.apollo.compiler.parser.graphql.ast.fromFile
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Companion.wrap
 import com.apollographql.apollo.compiler.parser.introspection.toSDL
@@ -12,6 +15,7 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Test
+import toIntrospectionSchema
 import java.io.File
 
 class GraphSdlParseTest() {
@@ -23,11 +27,17 @@ class GraphSdlParseTest() {
      * - leading/trailing spaces in descriptions
      * - defaultValue coercion
      */
-    val sdlSchema = GraphSdlSchema(File("src/test/sdl/schema.sdl"))
+    val sdlSchema = GQLDocument.fromFile(File("src/test/sdl/schema.sdl"))
     val actualSchema = sdlSchema.toIntrospectionSchema().normalize()
-    val expectedSchema = IntrospectionSchema(File("src/test/sdl/schema.json")).normalize()
+    val expectedSchemaFile = File("src/test/sdl/schema.json")
+    val expectedSchema = IntrospectionSchema(expectedSchemaFile).normalize()
 
-    assertEquals(actualSchema.toString(), expectedSchema.toString())
+    dumpSchemas(
+        expected = expectedSchema,
+        actual = actualSchema
+    )
+
+    checkTestFixture(actualText = actualSchema.toString(), expected = File("src/test/sdl/schema.json"))
   }
 
   private fun IntrospectionSchema.normalize(): IntrospectionSchema {
@@ -66,7 +76,7 @@ class GraphSdlParseTest() {
     sdlFile.parentFile.deleteRecursively()
     sdlFile.parentFile.mkdirs()
     initialSchema.toSDL(sdlFile)
-    val finalSchema = GraphSdlSchema(sdlFile).toIntrospectionSchema().normalize()
+    val finalSchema = GQLDocument.fromFile(sdlFile).toIntrospectionSchema().normalize()
 
     dumpSchemas(initialSchema, finalSchema)
     assertEquals(initialSchema, finalSchema)
@@ -74,8 +84,10 @@ class GraphSdlParseTest() {
 
   /**
    * use to make easier diffs
+   * Use meld or any other outside tool to compare
    */
   private fun dumpSchemas(expected: IntrospectionSchema, actual: IntrospectionSchema) {
+    File("build/sdl-test").mkdirs()
     actual.wrap().toJson(File("build/sdl-test/actual.json"), "  ")
     expected.wrap().toJson(File("build/sdl-test/expected.json"), "  ")
   }

@@ -433,14 +433,13 @@ private fun GraphQLParser.StringValueContext.parse(): GQLStringValue {
 }
 
 private fun TerminalNode?.withoutQuotes() = this?.text?.removePrefix("\"")?.removeSuffix("\"")
-private fun TerminalNode?.withoutBlockQuotes() = this?.text?.removePrefix("\"\"\"")?.removeSuffix("\"\"\"")
+private fun TerminalNode?.withoutBlockQuotes() = this?.text?.removePrefix("\"\"\"")?.removeSuffix("\"\"\"")?.trimIndent()
 
 private fun GraphQLParser.TypeContext.parse(): GQLType {
   return namedType()?.parse()
       ?: nonNullType()?.parse()
       ?: listType()?.parse()
       ?: throw ParseException("Unrecognized type", start)
-
 }
 
 private fun GraphQLParser.ListTypeContext.parse(): GQLListType {

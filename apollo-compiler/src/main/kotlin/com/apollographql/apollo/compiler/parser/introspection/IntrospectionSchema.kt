@@ -173,8 +173,8 @@ data class IntrospectionSchema(
       return IntrospectionQuery.Wrapper(
           __schema = IntrospectionQuery.Schema(
               queryType = IntrospectionQuery.QueryType(this.queryType),
-              mutationType = IntrospectionQuery.MutationType(this.mutationType),
-              subscriptionType = IntrospectionQuery.SubscriptionType(this.subscriptionType),
+              mutationType = this.mutationType?.let{IntrospectionQuery.MutationType(it)},
+              subscriptionType = this.subscriptionType?.let { IntrospectionQuery.SubscriptionType(it) },
               types = types.values.toList()
           )
       )
