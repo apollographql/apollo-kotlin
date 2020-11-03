@@ -124,8 +124,7 @@ directiveDefinition
   ;
 
 directiveLocations
-  : directiveLocation
-  | directiveLocations '|' directiveLocation
+  : directiveLocation ('|' directiveLocation)*
   ;
 
 directiveLocation: name;

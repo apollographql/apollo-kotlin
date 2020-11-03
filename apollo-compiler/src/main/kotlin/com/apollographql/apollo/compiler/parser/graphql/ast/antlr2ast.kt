@@ -126,7 +126,8 @@ private fun GraphQLParser.DirectiveDefinitionContext.parse(): GQLDirectiveDefini
       description = description().parse(),
       name = name().text,
       arguments = argumentsDefinition().parse(),
-      repeatable = REPEATABLE() != null
+      repeatable = REPEATABLE() != null,
+      locations = directiveLocations().parse()
   )
 }
 
@@ -146,7 +147,8 @@ private fun GraphQLParser.InterfaceTypeDefinitionContext.parse(): GQLInterfaceTy
       description = description().parse(),
       name = name().text,
       implementsInterfaces = implementsInterfaces().parse(),
-      fields = fieldsDefinition().parse()
+      fields = fieldsDefinition().parse(),
+      directives = directives().parse()
   )
 }
 
@@ -219,7 +221,7 @@ private fun GraphQLParser.FragmentDefinitionContext.parse(): GQLFragmentDefiniti
       name = fragmentName().text,
       directives = directives().parse(),
       typeCondition = typeCondition().namedType().parse(),
-      selections = selectionSet()?.parse()
+      selections = selectionSet().parse()
   )
 }
 
@@ -254,7 +256,7 @@ private fun GraphQLParser.InlineFragmentContext.parse(): GQLInlineFragment {
       sourceLocation = SourceLocation(start),
       typeCondition = typeCondition().namedType().parse(),
       directives = directives().parse(),
-      selectionSet = selectionSet().parse()
+      selections = selectionSet().parse()
   )
 }
 
@@ -291,6 +293,7 @@ private fun GraphQLParser.UnionMemberTypesContext?.parse() = this?.namedType()?.
 private fun GraphQLParser.InputFieldsDefinitionContext?.parse() = this?.inputValueDefinition()?.map { it.parse() } ?: emptyList()
 private fun GraphQLParser.EnumValuesDefinitionContext?.parse() = this?.enumValueDefinition()?.map { it.parse() } ?: emptyList()
 private fun GraphQLParser.OperationTypesDefinitionContext?.parse() = this?.operationTypeDefinition()?.map { it.parse() } ?: emptyList()
+private fun GraphQLParser.DirectiveLocationsContext?.parse() = this?.directiveLocation()?.map { it.parse() } ?: emptyList()
 
 private fun GraphQLParser.OperationTypeDefinitionContext.parse(): GQLOperationTypeDefinition {
   return GQLOperationTypeDefinition(
@@ -298,6 +301,10 @@ private fun GraphQLParser.OperationTypeDefinitionContext.parse(): GQLOperationTy
       operationType = operationType().text,
       namedType = namedType().text
   )
+}
+
+private fun GraphQLParser.DirectiveLocationContext.parse(): GQLDirectiveLocation {
+  return GQLDirectiveLocation.values().firstOrNull { it.name == name().text } ?: throw ParseException("Unrecognized directive location '${name().text}", start)
 }
 
 private fun GraphQLParser.EnumValueDefinitionContext.parse(): GQLEnumValueDefinition {

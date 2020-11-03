@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler.parser.graphql.ast
 
+import com.apollographql.apollo.compiler.parser.antlr.GraphQLParser
 import com.apollographql.apollo.compiler.parser.error.ParseException
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 
@@ -63,6 +64,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
         description = description,
         fields = fields?.map { it.toGQLFieldDefinition() } ?: throw ParseException("interface '$name' did not define any field"),
         implementsInterfaces = emptyList(), // TODO
+        directives = emptyList()
     )
   }
 
