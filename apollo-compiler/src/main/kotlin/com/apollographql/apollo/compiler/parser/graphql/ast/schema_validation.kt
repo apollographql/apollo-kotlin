@@ -2,14 +2,17 @@ package com.apollographql.apollo.compiler.parser.graphql.ast
 
 import com.apollographql.apollo.compiler.parser.error.ParseException
 
-fun GQLDocument.validateAndNormalizeSchema(): GQLDocument {
+fun GQLDocument.validateAsSchema(): GQLDocument {
   validateNotExecutable()
   validateUniqueSchemaDefinition()
   validateTypeNames()
   validateDirectiveNames()
   validateInterfaces()
   validateObjects()
+  return this
+}
 
+fun GQLDocument.mergeTypeExtensions(): GQLDocument {
   val (extensions, otherDefinitions) = definitions.partition { it is GQLTypeSystemExtension }
   extensions as List<GQLTypeSystemExtension>
 
@@ -46,7 +49,7 @@ private fun GQLDocument.validateObjects() {
     o.implementsInterfaces.forEach { implementsInterface ->
       val iface = definitions.firstOrNull { (it as? GQLInterfaceTypeDefinition)?.name == implementsInterface }
       if (iface == null) {
-        throw ParseException("Object '${o.name}' cannot implement non-interface type '$implementsInterface'")
+        throw ParseException("Object '${o.name}' cannot implement non-interface '$implementsInterface'", o.sourceLocation)
       }
     }
   }
@@ -214,7 +217,6 @@ private fun GQLDocument.validateDirectiveNames() {
     if (name.startsWith("__")) {
       throw ParseException("names starting with '__' are reserved for introspection", definition.sourceLocation)
     }
-
   }
 }
 
@@ -225,7 +227,7 @@ private fun GQLDocument.validateDirectiveNames() {
 private fun GQLDocument.validateNotExecutable() {
   definitions.firstOrNull { it is GQLOperationDefinition || it is GQLFragmentDefinition }
       ?.let {
-        throw ParseException("Found executable definition while parsing schema", it.sourceLocation)
+        throw ParseException("Found an executable definition. Schemas should not contain operations or fragments.", it.sourceLocation)
       }
 }
 
