@@ -1,1 +1,2767 @@
-IntrospectionSchema(queryType=Query, mutationType=Mutation, subscriptionType=subscription, types={Bar=Interface(name=Bar, description=For testing fragment type coercion, fields=[Field(name=bar, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=String, ofType=null)), args=[])], possibleTypes=[TypeRef(kind=OBJECT, name=BarObject, ofType=null), TypeRef(kind=OBJECT, name=FooBar, ofType=null)]), BarObject=Object(name=BarObject, description=, fields=[Field(name=bar, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=String, ofType=null)), args=[])]), Boolean=Scalar(name=Boolean, description=The `Boolean` scalar type represents `true` or `false`.), Character=Interface(name=Character, description=A character from the Star Wars universe, fields=[Field(name=appearanceDates, description=The dates of appearances, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=Date, ofType=null)))), args=[]), Field(name=appearsIn, description=The movies this character appears in, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=ENUM, name=Episode, ofType=null))), args=[]), Field(name=birthDate, description=The date character was born., isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=Date, ofType=null)), args=[]), Field(name=deprecated, description=Test deprecated field, isDeprecated=true, deprecationReason=For test purpose only, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=String, ofType=null)), args=[]), Field(name=deprecatedBool, description=Test deprecated field, isDeprecated=true, deprecationReason=For test purpose only, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=Boolean, ofType=null)), args=[]), Field(name=fieldWithUnsupportedType, description=The date character was born., isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=UnsupportedType, ofType=null)), args=[]), Field(name=firstAppearsIn, description=The movie this character first appears in, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=ENUM, name=Episode, ofType=null)), args=[]), Field(name=friends, description=The friends of the character, or an empty list if they have none, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=INTERFACE, name=Character, ofType=null)), args=[]), Field(name=friendsConnection, description=The friends of the character exposed as a connection with edges, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=OBJECT, name=FriendsConnection, ofType=null)), args=[Argument(name=first, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=Int, ofType=null), defaultValue=null), Argument(name=after, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=ID, ofType=null), defaultValue=null)]), Field(name=id, description=The ID of the character, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=ID, ofType=null)), args=[]), Field(name=links, description=Links, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=URL, ofType=null)))), args=[]), Field(name=name, description=The name of the character, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=String, ofType=null)), args=[]), Field(name=profileLink, description=Profile link, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=URL, ofType=null)), args=[]), Field(name=type, description=Hero type, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=ENUM, name=hero_type, ofType=null)), args=[])], possibleTypes=[TypeRef(kind=OBJECT, name=Droid, ofType=null), TypeRef(kind=OBJECT, name=Human, ofType=null)]), Date=Scalar(name=Date, description=The `Date` scalar type represents date format.), Droid=Object(name=Droid, description=An autonomous mechanical character in the Star Wars universe, fields=[Field(name=appearanceDates, description=The dates of appearances, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=Date, ofType=null)))), args=[]), Field(name=appearsIn, description=The movies this droid appears in, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=ENUM, name=Episode, ofType=null))), args=[]), Field(name=birthDate, description=The date droid was created., isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=Date, ofType=null)), args=[]), Field(name=deprecated, description=Test deprecated field, isDeprecated=true, deprecationReason=For test purpose only, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=String, ofType=null)), args=[]), Field(name=deprecatedBool, description=Test deprecated field, isDeprecated=true, deprecationReason=For test purpose only, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=Boolean, ofType=null)), args=[]), Field(name=fieldWithUnsupportedType, description=The date character was born., isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=UnsupportedType, ofType=null)), args=[]), Field(name=firstAppearsIn, description=The movie this character first appears in, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=ENUM, name=Episode, ofType=null)), args=[]), Field(name=friends, description=This droid's friends, or an empty list if they have none, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=INTERFACE, name=Character, ofType=null)), args=[]), Field(name=friendsConnection, description=The friends of the droid exposed as a connection with edges, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=OBJECT, name=FriendsConnection, ofType=null)), args=[Argument(name=first, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=Int, ofType=null), defaultValue=null), Argument(name=after, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=ID, ofType=null), defaultValue=null)]), Field(name=id, description=The ID of the droid, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=ID, ofType=null)), args=[]), Field(name=links, description=Links, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=URL, ofType=null)))), args=[]), Field(name=name, description=What others call this droid, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=String, ofType=null)), args=[]), Field(name=primaryFunction, description=This droid's primary function, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=String, ofType=null), args=[]), Field(name=profileLink, description=Profile link, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=URL, ofType=null)), args=[]), Field(name=type, description=Hero type, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=ENUM, name=hero_type, ofType=null)), args=[])]), Episode=Enum(name=Episode, description=The episodes in the Star Wars trilogy, enumValues=[Value(name=NEWHOPE, description=Star Wars Episode IV: A New Hope, released in 1977., isDeprecated=false, deprecationReason=null), Value(name=EMPIRE, description=Star Wars Episode V: The Empire Strikes Back, released in 1980., isDeprecated=false, deprecationReason=null), Value(name=JEDI, description=Star Wars Episode VI: Return of the Jedi, released in 1983., isDeprecated=false, deprecationReason=null), Value(name=DEPRECATED, description=Test deprecated enum value, isDeprecated=true, deprecationReason=For test purpose only), Value(name=new, description=Test java reserved word, isDeprecated=false, deprecationReason=null)]), Float=Scalar(name=Float, description=The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](http://en.wikipedia.org/wiki/IEEE_floating_point).), Foo=Interface(name=Foo, description=For testing fragment type coercion, fields=[Field(name=foo, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=String, ofType=null)), args=[])], possibleTypes=[TypeRef(kind=OBJECT, name=FooBar, ofType=null), TypeRef(kind=OBJECT, name=FooObject, ofType=null)]), FooBar=Object(name=FooBar, description=For testing fragment type coercion, fields=[Field(name=bar, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=String, ofType=null)), args=[]), Field(name=foo, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=String, ofType=null)), args=[])]), FooObject=Object(name=FooObject, description=For testing fragment type coercion, fields=[Field(name=foo, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=String, ofType=null)), args=[])]), FriendsConnection=Object(name=FriendsConnection, description=A connection object for a character's friends, fields=[Field(name=edges, description=The edges for each of the character's friends., isDeprecated=false, deprecationReason=null, type=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=OBJECT, name=FriendsEdge, ofType=null)), args=[]), Field(name=friends, description=A list of the friends, as a convenience when edges are not needed., isDeprecated=false, deprecationReason=null, type=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=INTERFACE, name=Character, ofType=null)), args=[]), Field(name=isEmpty, description=For test java beans semantic naming only, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=Boolean, ofType=null)), args=[]), Field(name=pageInfo, description=Information for paginating this connection, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=OBJECT, name=PageInfo, ofType=null)), args=[]), Field(name=totalCount, description=The total number of friends, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=Int, ofType=null), args=[])]), FriendsEdge=Object(name=FriendsEdge, description=An edge object for a character's friends, fields=[Field(name=cursor, description=A cursor used for pagination, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=ID, ofType=null)), args=[]), Field(name=node, description=The character represented by this friendship edge, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=INTERFACE, name=Character, ofType=null), args=[])]), Human=Object(name=Human, description=A humanoid creature from the Star Wars universe, fields=[Field(name=appearanceDates, description=The dates of appearances, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=Date, ofType=null)))), args=[]), Field(name=appearsIn, description=The movies this human appears in, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=ENUM, name=Episode, ofType=null))), args=[]), Field(name=birthDate, description=The date character was born., isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=Date, ofType=null)), args=[]), Field(name=deprecated, description=Test deprecated field, isDeprecated=true, deprecationReason=For test purpose only, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=String, ofType=null)), args=[]), Field(name=deprecatedBool, description=Test deprecated field, isDeprecated=true, deprecationReason=For test purpose only, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=Boolean, ofType=null)), args=[]), Field(name=fieldWithUnsupportedType, description=The date character was born., isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=UnsupportedType, ofType=null)), args=[]), Field(name=firstAppearsIn, description=The movie this character first appears in, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=ENUM, name=Episode, ofType=null)), args=[]), Field(name=friends, description=This human's friends, or an empty list if they have none, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=INTERFACE, name=Character, ofType=null)), args=[]), Field(name=friendsConnection, description=The friends of the human exposed as a connection with edges, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=OBJECT, name=FriendsConnection, ofType=null)), args=[Argument(name=first, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=Int, ofType=null), defaultValue=null), Argument(name=after, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=ID, ofType=null), defaultValue=null)]), Field(name=height, description=Height in the preferred unit, default is meters, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=Float, ofType=null), args=[Argument(name=unit, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=ENUM, name=LengthUnit, ofType=null), defaultValue=METER)]), Field(name=homePlanet, description=The home planet of the human, or null if unknown, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=String, ofType=null), args=[]), Field(name=id, description=The ID of the human, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=ID, ofType=null)), args=[]), Field(name=links, description=Links, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=URL, ofType=null)))), args=[]), Field(name=mass, description=Mass in kilograms, or null if unknown, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=Float, ofType=null), args=[]), Field(name=name, description=What this human calls themselves, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=String, ofType=null)), args=[]), Field(name=profileLink, description=Profile link, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=URL, ofType=null)), args=[]), Field(name=starships, description=A list of starships this person has piloted, or an empty list if none, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=OBJECT, name=Starship, ofType=null)), args=[]), Field(name=type, description=Hero type, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=ENUM, name=hero_type, ofType=null)), args=[])]), ID=Scalar(name=ID, description=The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.), Int=Scalar(name=Int, description=The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.), LengthUnit=Enum(name=LengthUnit, description=Units of height, enumValues=[Value(name=METER, description=The standard unit around the world, isDeprecated=false, deprecationReason=null), Value(name=FOOT, description=Primarily used in the United States, isDeprecated=false, deprecationReason=null)]), Mutation=Object(name=Mutation, description=The mutation type, represents all updates we can make to our data, fields=[Field(name=createReview, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=OBJECT, name=Review, ofType=null), args=[Argument(name=episode, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=ENUM, name=Episode, ofType=null), defaultValue=null), Argument(name=review, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=INPUT_OBJECT, name=ReviewInput, ofType=null)), defaultValue=null)])]), PageInfo=Object(name=PageInfo, description=Information for paginating this connection, fields=[Field(name=endCursor, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=ID, ofType=null), args=[]), Field(name=hasNextPage, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=Boolean, ofType=null)), args=[]), Field(name=startCursor, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=ID, ofType=null), args=[])]), Query=Object(name=Query, description=The query type, represents all of the entry points into our object graph, fields=[Field(name=character, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=INTERFACE, name=Character, ofType=null), args=[Argument(name=id, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=ID, ofType=null)), defaultValue=null)]), Field(name=droid, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=OBJECT, name=Droid, ofType=null), args=[Argument(name=id, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=ID, ofType=null)), defaultValue=null)]), Field(name=foo, description=For testing fragment type coercion, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=INTERFACE, name=Foo, ofType=null), args=[]), Field(name=hero, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=INTERFACE, name=Character, ofType=null), args=[Argument(name=episode, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=ENUM, name=Episode, ofType=null), defaultValue=null), Argument(name=listOfListOfStringArgs, description=for test purpose only, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=SCALAR, name=String, ofType=null))), defaultValue=null)]), Field(name=heroDetailQuery, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=INTERFACE, name=Character, ofType=null), args=[]), Field(name=heroWithReview, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=OBJECT, name=Human, ofType=null), args=[Argument(name=episode, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=ENUM, name=Episode, ofType=null), defaultValue=null), Argument(name=review, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=INPUT_OBJECT, name=ReviewInput, ofType=null), defaultValue=null), Argument(name=listOfInts, description=for test purpose only, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=SCALAR, name=Int, ofType=null)), defaultValue=null)]), Field(name=human, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=OBJECT, name=Human, ofType=null), args=[Argument(name=id, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=ID, ofType=null)), defaultValue=null)]), Field(name=nonOptionalHero, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=INTERFACE, name=Character, ofType=null)), args=[Argument(name=episode, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=ENUM, name=Episode, ofType=null), defaultValue=null)]), Field(name=reviews, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=OBJECT, name=Review, ofType=null)), args=[Argument(name=episode, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=ENUM, name=Episode, ofType=null)), defaultValue=null), Argument(name=starsInt, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=Int, ofType=null), defaultValue=null), Argument(name=starsFloat, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=Float, ofType=null), defaultValue=null)]), Field(name=search, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=UNION, name=SearchResult, ofType=null)), args=[Argument(name=text, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=String, ofType=null), defaultValue=null)]), Field(name=starship, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=OBJECT, name=Starship, ofType=null), args=[Argument(name=id, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=ID, ofType=null)), defaultValue=null)]), Field(name=tree, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=OBJECT, name=Tree, ofType=null), args=[])]), Review=Object(name=Review, description=Represents a review for a movie, fields=[Field(name=commentary, description=Comment about the movie, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=String, ofType=null), args=[]), Field(name=listOfListOfCustom, description=for test purpose only, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=Date, ofType=null))))), args=[]), Field(name=listOfListOfEnum, description=for test purpose only, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=ENUM, name=Episode, ofType=null))))), args=[]), Field(name=listOfListOfObject, description=for test purpose only, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=INTERFACE, name=Character, ofType=null))))), args=[]), Field(name=listOfListOfString, description=for test purpose only, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=String, ofType=null))))), args=[]), Field(name=stars, description=The number of stars this review gave, 1-5, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=Int, ofType=null)), args=[])]), ReviewInput=InputObject(name=ReviewInput, description=The input object sent when someone is creating a new review, inputFields=[InputField(name=CapitalizedField, description=for test purpose only, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=String, ofType=null), defaultValue=null), InputField(name=booleanWithDefaultValue, description=for test purpose only, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=Boolean, ofType=null), defaultValue=true), InputField(name=commentary, description=Comment about the movie, optional, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=String, ofType=null), defaultValue=null), InputField(name=customScalar, description=for test purpose only, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=Date, ofType=null), defaultValue=1984-06-21), InputField(name=enumWithDefaultValue, description=for test purpose only, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=ENUM, name=Episode, ofType=null), defaultValue=JEDI), InputField(name=favoriteColor, description=Favorite color, optional, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=INPUT_OBJECT, name=colorInput, ofType=null)), defaultValue=null), InputField(name=listOfCustomScalar, description=for test purpose only, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=SCALAR, name=Date, ofType=null)), defaultValue=[1984-06-21, 1984-11-21]), InputField(name=listOfEnums, description=for test purpose only, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=ENUM, name=Episode, ofType=null)), defaultValue=[NEWHOPE, EMPIRE]), InputField(name=listOfInputTypes, description=for test purpose only, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=INPUT_OBJECT, name=colorInput, ofType=null)), defaultValue=[]), InputField(name=listOfInt, description=for test purpose only, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=SCALAR, name=Int, ofType=null)), defaultValue=[1.0, 2.0, 3.0]), InputField(name=listOfListOfCustom, description=for test purpose only, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=Date, ofType=null))))), defaultValue=null), InputField(name=listOfListOfEnum, description=for test purpose only, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=ENUM, name=Episode, ofType=null))))), defaultValue=null), InputField(name=listOfListOfObject, description=for test purpose only, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=INPUT_OBJECT, name=colorInput, ofType=null))))), defaultValue=null), InputField(name=listOfListOfString, description=for test purpose only, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=String, ofType=null))))), defaultValue=null), InputField(name=listOfString, description=for test purpose only, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=SCALAR, name=String, ofType=null)), defaultValue=[test1, test2, test3]), InputField(name=listOfStringNonOptional, description=for test purpose only, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=SCALAR, name=String, ofType=null))), defaultValue=null), InputField(name=nonNullableEnumWithDefaultValue, description=for test purpose only, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=ENUM, name=Episode, ofType=null)), defaultValue=JEDI), InputField(name=nullableEnum, description=for test purpose only, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=ENUM, name=Episode, ofType=null), defaultValue=null), InputField(name=nullableIntFieldWithDefaultValue, description=for test purpose only, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=Int, ofType=null), defaultValue=10.0), InputField(name=stars, description=0-5 stars, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=Int, ofType=null)), defaultValue=null)]), ReviewRefInput=InputObject(name=ReviewRefInput, description=Circle ref to review input, inputFields=[InputField(name=reviewInput, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=INPUT_OBJECT, name=ReviewInput, ofType=null), defaultValue=null)]), SearchResult=Union(name=SearchResult, description=, fields=null, possibleTypes=[TypeRef(kind=OBJECT, name=Human, ofType=null), TypeRef(kind=OBJECT, name=Droid, ofType=null), TypeRef(kind=OBJECT, name=Starship, ofType=null)]), Starship=Object(name=Starship, description=, fields=[Field(name=coordinates, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=Float, ofType=null))))), args=[]), Field(name=id, description=The ID of the starship, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=ID, ofType=null)), args=[]), Field(name=length, description=Length of the starship, along the longest axis, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=Float, ofType=null), args=[Argument(name=unit, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=ENUM, name=LengthUnit, ofType=null), defaultValue=METER)]), Field(name=name, description=The name of the starship, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=String, ofType=null)), args=[])]), String=Scalar(name=String, description=The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.), Tree=Object(name=Tree, description=To test recursive structures, fields=[Field(name=children, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=OBJECT, name=Tree, ofType=null)))), args=[]), Field(name=name, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=String, ofType=null)), args=[]), Field(name=parent, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=OBJECT, name=Tree, ofType=null), args=[])]), URL=Scalar(name=URL, description=), UnsupportedType=Scalar(name=UnsupportedType, description=UnsupportedType for testing), __Directive=Object(name=__Directive, description=, fields=[Field(name=args, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=OBJECT, name=__InputValue, ofType=null)))), args=[]), Field(name=description, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=String, ofType=null), args=[]), Field(name=isRepeatable, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=Boolean, ofType=null)), args=[]), Field(name=locations, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=ENUM, name=__DirectiveLocation, ofType=null)))), args=[]), Field(name=name, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=String, ofType=null)), args=[])]), __DirectiveLocation=Enum(name=__DirectiveLocation, description=, enumValues=[Value(name=QUERY, description=, isDeprecated=false, deprecationReason=null), Value(name=MUTATION, description=, isDeprecated=false, deprecationReason=null), Value(name=SUBSCRIPTION, description=, isDeprecated=false, deprecationReason=null), Value(name=FIELD, description=, isDeprecated=false, deprecationReason=null), Value(name=FRAGMENT_DEFINITION, description=, isDeprecated=false, deprecationReason=null), Value(name=FRAGMENT_SPREAD, description=, isDeprecated=false, deprecationReason=null), Value(name=INLINE_FRAGMENT, description=, isDeprecated=false, deprecationReason=null), Value(name=VARIABLE_DEFINITION, description=, isDeprecated=false, deprecationReason=null), Value(name=SCHEMA, description=, isDeprecated=false, deprecationReason=null), Value(name=SCALAR, description=, isDeprecated=false, deprecationReason=null), Value(name=OBJECT, description=, isDeprecated=false, deprecationReason=null), Value(name=FIELD_DEFINITION, description=, isDeprecated=false, deprecationReason=null), Value(name=ARGUMENT_DEFINITION, description=, isDeprecated=false, deprecationReason=null), Value(name=INTERFACE, description=, isDeprecated=false, deprecationReason=null), Value(name=UNION, description=, isDeprecated=false, deprecationReason=null), Value(name=ENUM, description=, isDeprecated=false, deprecationReason=null), Value(name=ENUM_VALUE, description=, isDeprecated=false, deprecationReason=null), Value(name=INPUT_OBJECT, description=, isDeprecated=false, deprecationReason=null), Value(name=INPUT_FIELD_DEFINITION, description=, isDeprecated=false, deprecationReason=null)]), __EnumValue=Object(name=__EnumValue, description=, fields=[Field(name=deprecationReason, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=String, ofType=null), args=[]), Field(name=description, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=String, ofType=null), args=[]), Field(name=isDeprecated, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=Boolean, ofType=null)), args=[]), Field(name=name, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=String, ofType=null)), args=[])]), __Field=Object(name=__Field, description=, fields=[Field(name=args, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=OBJECT, name=__InputValue, ofType=null)))), args=[]), Field(name=deprecationReason, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=String, ofType=null), args=[]), Field(name=description, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=String, ofType=null), args=[]), Field(name=isDeprecated, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=Boolean, ofType=null)), args=[]), Field(name=name, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=String, ofType=null)), args=[]), Field(name=type, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=OBJECT, name=__Type, ofType=null)), args=[])]), __InputValue=Object(name=__InputValue, description=, fields=[Field(name=defaultValue, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=String, ofType=null), args=[]), Field(name=description, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=String, ofType=null), args=[]), Field(name=name, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=String, ofType=null)), args=[]), Field(name=type, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=OBJECT, name=__Type, ofType=null)), args=[])]), __Schema=Object(name=__Schema, description=, fields=[Field(name=description, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=String, ofType=null), args=[]), Field(name=directives, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=OBJECT, name=__Directive, ofType=null)))), args=[]), Field(name=mutationType, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=OBJECT, name=__Type, ofType=null), args=[]), Field(name=queryType, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=OBJECT, name=__Type, ofType=null)), args=[]), Field(name=subscriptionType, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=OBJECT, name=__Type, ofType=null), args=[]), Field(name=types, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=OBJECT, name=__Type, ofType=null)))), args=[])]), __Type=Object(name=__Type, description=, fields=[Field(name=description, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=String, ofType=null), args=[]), Field(name=enumValues, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=OBJECT, name=__EnumValue, ofType=null))), args=[Argument(name=includeDeprecated, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=Boolean, ofType=null), defaultValue=false)]), Field(name=fields, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=OBJECT, name=__Field, ofType=null))), args=[Argument(name=includeDeprecated, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=Boolean, ofType=null), defaultValue=false)]), Field(name=inputFields, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=OBJECT, name=__InputValue, ofType=null))), args=[]), Field(name=interfaces, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=OBJECT, name=__Type, ofType=null))), args=[]), Field(name=kind, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=ENUM, name=__TypeKind, ofType=null)), args=[]), Field(name=name, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=String, ofType=null), args=[]), Field(name=ofType, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=OBJECT, name=__Type, ofType=null), args=[]), Field(name=possibleTypes, description=, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=LIST, name=null, ofType=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=OBJECT, name=__Type, ofType=null))), args=[])]), __TypeKind=Enum(name=__TypeKind, description=, enumValues=[Value(name=SCALAR, description=, isDeprecated=false, deprecationReason=null), Value(name=OBJECT, description=, isDeprecated=false, deprecationReason=null), Value(name=INTERFACE, description=, isDeprecated=false, deprecationReason=null), Value(name=UNION, description=, isDeprecated=false, deprecationReason=null), Value(name=ENUM, description=, isDeprecated=false, deprecationReason=null), Value(name=INPUT_OBJECT, description=, isDeprecated=false, deprecationReason=null), Value(name=LIST, description=, isDeprecated=false, deprecationReason=null), Value(name=NON_NULL, description=, isDeprecated=false, deprecationReason=null)]), colorInput=InputObject(name=colorInput, description=The input object sent when passing in a color, inputFields=[InputField(name=blue, description=Blue color, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=Float, ofType=null)), defaultValue=1.5), InputField(name=enumWithDefaultValue, description=for test purpose only, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=ENUM, name=Episode, ofType=null), defaultValue=new), InputField(name=green, description=Green color, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=SCALAR, name=Int, ofType=null), defaultValue=0.0), InputField(name=red, description=Red color, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=NON_NULL, name=null, ofType=TypeRef(kind=SCALAR, name=Int, ofType=null)), defaultValue=1.0), InputField(name=reviewRefInput, description=Circle ref to review input, isDeprecated=false, deprecationReason=null, type=TypeRef(kind=INPUT_OBJECT, name=ReviewRefInput, ofType=null), defaultValue=null)]), hero_type=Enum(name=hero_type, description=Lower case enum type name, enumValues=[Value(name=human, description=, isDeprecated=false, deprecationReason=null), Value(name=droid, description=, isDeprecated=false, deprecationReason=null)])})
+{
+  "__schema": {
+    "queryType": {
+      "name": "Query"
+    },
+    "mutationType": {
+      "name": "Mutation"
+    },
+    "subscriptionType": {
+      "name": "subscription"
+    },
+    "types": [
+      {
+        "kind": "INTERFACE",
+        "name": "Bar",
+        "description": "For testing fragment type coercion",
+        "fields": [
+          {
+            "name": "bar",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            },
+            "args": []
+          }
+        ],
+        "possibleTypes": [
+          {
+            "kind": "OBJECT",
+            "name": "BarObject"
+          },
+          {
+            "kind": "OBJECT",
+            "name": "FooBar"
+          }
+        ]
+      },
+      {
+        "kind": "OBJECT",
+        "name": "BarObject",
+        "description": "",
+        "fields": [
+          {
+            "name": "bar",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            },
+            "args": []
+          }
+        ]
+      },
+      {
+        "kind": "SCALAR",
+        "name": "Boolean",
+        "description": "The `Boolean` scalar type represents `true` or `false`."
+      },
+      {
+        "kind": "INTERFACE",
+        "name": "Character",
+        "description": "A character from the Star Wars universe",
+        "fields": [
+          {
+            "name": "appearanceDates",
+            "description": "The dates of appearances",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Date"
+                  }
+                }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "appearsIn",
+            "description": "The movies this character appears in",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "Episode"
+                }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "birthDate",
+            "description": "The date character was born.",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Date"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "deprecated",
+            "description": "Test deprecated field",
+            "isDeprecated": true,
+            "deprecationReason": "For test purpose only",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "deprecatedBool",
+            "description": "Test deprecated field",
+            "isDeprecated": true,
+            "deprecationReason": "For test purpose only",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "fieldWithUnsupportedType",
+            "description": "The date character was born.",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UnsupportedType"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "firstAppearsIn",
+            "description": "The movie this character first appears in",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "ENUM",
+                "name": "Episode"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "friends",
+            "description": "The friends of the character, or an empty list if they have none",
+            "isDeprecated": false,
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "INTERFACE",
+                "name": "Character"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "friendsConnection",
+            "description": "The friends of the character exposed as a connection with edges",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "FriendsConnection"
+              }
+            },
+            "args": [
+              {
+                "name": "first",
+                "description": "",
+                "isDeprecated": false,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int"
+                }
+              },
+              {
+                "name": "after",
+                "description": "",
+                "isDeprecated": false,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "ID"
+                }
+              }
+            ]
+          },
+          {
+            "name": "id",
+            "description": "The ID of the character",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "links",
+            "description": "Links",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "URL"
+                  }
+                }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "name",
+            "description": "The name of the character",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "profileLink",
+            "description": "Profile link",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "URL"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "type",
+            "description": "Hero type",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "ENUM",
+                "name": "hero_type"
+              }
+            },
+            "args": []
+          }
+        ],
+        "possibleTypes": [
+          {
+            "kind": "OBJECT",
+            "name": "Droid"
+          },
+          {
+            "kind": "OBJECT",
+            "name": "Human"
+          }
+        ]
+      },
+      {
+        "kind": "SCALAR",
+        "name": "Date",
+        "description": "The `Date` scalar type represents date format."
+      },
+      {
+        "kind": "OBJECT",
+        "name": "Droid",
+        "description": "An autonomous mechanical character in the Star Wars universe",
+        "fields": [
+          {
+            "name": "appearanceDates",
+            "description": "The dates of appearances",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Date"
+                  }
+                }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "appearsIn",
+            "description": "The movies this droid appears in",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "Episode"
+                }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "birthDate",
+            "description": "The date droid was created.",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Date"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "deprecated",
+            "description": "Test deprecated field",
+            "isDeprecated": true,
+            "deprecationReason": "For test purpose only",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "deprecatedBool",
+            "description": "Test deprecated field",
+            "isDeprecated": true,
+            "deprecationReason": "For test purpose only",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "fieldWithUnsupportedType",
+            "description": "The date character was born.",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UnsupportedType"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "firstAppearsIn",
+            "description": "The movie this character first appears in",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "ENUM",
+                "name": "Episode"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "friends",
+            "description": "This droid's friends, or an empty list if they have none",
+            "isDeprecated": false,
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "INTERFACE",
+                "name": "Character"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "friendsConnection",
+            "description": "The friends of the droid exposed as a connection with edges",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "FriendsConnection"
+              }
+            },
+            "args": [
+              {
+                "name": "first",
+                "description": "",
+                "isDeprecated": false,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int"
+                }
+              },
+              {
+                "name": "after",
+                "description": "",
+                "isDeprecated": false,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "ID"
+                }
+              }
+            ]
+          },
+          {
+            "name": "id",
+            "description": "The ID of the droid",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "links",
+            "description": "Links",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "URL"
+                  }
+                }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "name",
+            "description": "What others call this droid",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "primaryFunction",
+            "description": "This droid's primary function",
+            "isDeprecated": false,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String"
+            },
+            "args": []
+          },
+          {
+            "name": "profileLink",
+            "description": "Profile link",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "URL"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "type",
+            "description": "Hero type",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "ENUM",
+                "name": "hero_type"
+              }
+            },
+            "args": []
+          }
+        ]
+      },
+      {
+        "kind": "ENUM",
+        "name": "Episode",
+        "description": "The episodes in the Star Wars trilogy",
+        "enumValues": [
+          {
+            "name": "NEWHOPE",
+            "description": "Star Wars Episode IV: A New Hope, released in 1977.",
+            "isDeprecated": false
+          },
+          {
+            "name": "EMPIRE",
+            "description": "Star Wars Episode V: The Empire Strikes Back, released in 1980.",
+            "isDeprecated": false
+          },
+          {
+            "name": "JEDI",
+            "description": "Star Wars Episode VI: Return of the Jedi, released in 1983.",
+            "isDeprecated": false
+          },
+          {
+            "name": "DEPRECATED",
+            "description": "Test deprecated enum value",
+            "isDeprecated": true,
+            "deprecationReason": "For test purpose only"
+          },
+          {
+            "name": "new",
+            "description": "Test java reserved word",
+            "isDeprecated": false
+          }
+        ]
+      },
+      {
+        "kind": "SCALAR",
+        "name": "Float",
+        "description": "The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](http://en.wikipedia.org/wiki/IEEE_floating_point)."
+      },
+      {
+        "kind": "INTERFACE",
+        "name": "Foo",
+        "description": "For testing fragment type coercion",
+        "fields": [
+          {
+            "name": "foo",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            },
+            "args": []
+          }
+        ],
+        "possibleTypes": [
+          {
+            "kind": "OBJECT",
+            "name": "FooBar"
+          },
+          {
+            "kind": "OBJECT",
+            "name": "FooObject"
+          }
+        ]
+      },
+      {
+        "kind": "OBJECT",
+        "name": "FooBar",
+        "description": "For testing fragment type coercion",
+        "fields": [
+          {
+            "name": "bar",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "foo",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            },
+            "args": []
+          }
+        ]
+      },
+      {
+        "kind": "OBJECT",
+        "name": "FooObject",
+        "description": "For testing fragment type coercion",
+        "fields": [
+          {
+            "name": "foo",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            },
+            "args": []
+          }
+        ]
+      },
+      {
+        "kind": "OBJECT",
+        "name": "FriendsConnection",
+        "description": "A connection object for a character's friends",
+        "fields": [
+          {
+            "name": "edges",
+            "description": "The edges for each of the character's friends.",
+            "isDeprecated": false,
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "FriendsEdge"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "friends",
+            "description": "A list of the friends, as a convenience when edges are not needed.",
+            "isDeprecated": false,
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "INTERFACE",
+                "name": "Character"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "isEmpty",
+            "description": "For test java beans semantic naming only",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "pageInfo",
+            "description": "Information for paginating this connection",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PageInfo"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "totalCount",
+            "description": "The total number of friends",
+            "isDeprecated": false,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int"
+            },
+            "args": []
+          }
+        ]
+      },
+      {
+        "kind": "OBJECT",
+        "name": "FriendsEdge",
+        "description": "An edge object for a character's friends",
+        "fields": [
+          {
+            "name": "cursor",
+            "description": "A cursor used for pagination",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "node",
+            "description": "The character represented by this friendship edge",
+            "isDeprecated": false,
+            "type": {
+              "kind": "INTERFACE",
+              "name": "Character"
+            },
+            "args": []
+          }
+        ]
+      },
+      {
+        "kind": "OBJECT",
+        "name": "Human",
+        "description": "A humanoid creature from the Star Wars universe",
+        "fields": [
+          {
+            "name": "appearanceDates",
+            "description": "The dates of appearances",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Date"
+                  }
+                }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "appearsIn",
+            "description": "The movies this human appears in",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "Episode"
+                }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "birthDate",
+            "description": "The date character was born.",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Date"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "deprecated",
+            "description": "Test deprecated field",
+            "isDeprecated": true,
+            "deprecationReason": "For test purpose only",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "deprecatedBool",
+            "description": "Test deprecated field",
+            "isDeprecated": true,
+            "deprecationReason": "For test purpose only",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "fieldWithUnsupportedType",
+            "description": "The date character was born.",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UnsupportedType"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "firstAppearsIn",
+            "description": "The movie this character first appears in",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "ENUM",
+                "name": "Episode"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "friends",
+            "description": "This human's friends, or an empty list if they have none",
+            "isDeprecated": false,
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "INTERFACE",
+                "name": "Character"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "friendsConnection",
+            "description": "The friends of the human exposed as a connection with edges",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "FriendsConnection"
+              }
+            },
+            "args": [
+              {
+                "name": "first",
+                "description": "",
+                "isDeprecated": false,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int"
+                }
+              },
+              {
+                "name": "after",
+                "description": "",
+                "isDeprecated": false,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "ID"
+                }
+              }
+            ]
+          },
+          {
+            "name": "height",
+            "description": "Height in the preferred unit, default is meters",
+            "isDeprecated": false,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float"
+            },
+            "args": [
+              {
+                "name": "unit",
+                "description": "",
+                "isDeprecated": false,
+                "type": {
+                  "kind": "ENUM",
+                  "name": "LengthUnit"
+                },
+                "defaultValue": "METER"
+              }
+            ]
+          },
+          {
+            "name": "homePlanet",
+            "description": "The home planet of the human, or null if unknown",
+            "isDeprecated": false,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String"
+            },
+            "args": []
+          },
+          {
+            "name": "id",
+            "description": "The ID of the human",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "links",
+            "description": "Links",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "URL"
+                  }
+                }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "mass",
+            "description": "Mass in kilograms, or null if unknown",
+            "isDeprecated": false,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float"
+            },
+            "args": []
+          },
+          {
+            "name": "name",
+            "description": "What this human calls themselves",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "profileLink",
+            "description": "Profile link",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "URL"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "starships",
+            "description": "A list of starships this person has piloted, or an empty list if none",
+            "isDeprecated": false,
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Starship"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "type",
+            "description": "Hero type",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "ENUM",
+                "name": "hero_type"
+              }
+            },
+            "args": []
+          }
+        ]
+      },
+      {
+        "kind": "SCALAR",
+        "name": "ID",
+        "description": "The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `\"4\"`) or integer (such as `4`) input value will be accepted as an ID."
+      },
+      {
+        "kind": "SCALAR",
+        "name": "Int",
+        "description": "The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1."
+      },
+      {
+        "kind": "ENUM",
+        "name": "LengthUnit",
+        "description": "Units of height",
+        "enumValues": [
+          {
+            "name": "METER",
+            "description": "The standard unit around the world",
+            "isDeprecated": false
+          },
+          {
+            "name": "FOOT",
+            "description": "Primarily used in the United States",
+            "isDeprecated": false
+          }
+        ]
+      },
+      {
+        "kind": "OBJECT",
+        "name": "Mutation",
+        "description": "The mutation type, represents all updates we can make to our data",
+        "fields": [
+          {
+            "name": "createReview",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "OBJECT",
+              "name": "Review"
+            },
+            "args": [
+              {
+                "name": "episode",
+                "description": "",
+                "isDeprecated": false,
+                "type": {
+                  "kind": "ENUM",
+                  "name": "Episode"
+                }
+              },
+              {
+                "name": "review",
+                "description": "",
+                "isDeprecated": false,
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "ReviewInput"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "OBJECT",
+        "name": "PageInfo",
+        "description": "Information for paginating this connection",
+        "fields": [
+          {
+            "name": "endCursor",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "SCALAR",
+              "name": "ID"
+            },
+            "args": []
+          },
+          {
+            "name": "hasNextPage",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "startCursor",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "SCALAR",
+              "name": "ID"
+            },
+            "args": []
+          }
+        ]
+      },
+      {
+        "kind": "OBJECT",
+        "name": "Query",
+        "description": "The query type, represents all of the entry points into our object graph",
+        "fields": [
+          {
+            "name": "character",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "INTERFACE",
+              "name": "Character"
+            },
+            "args": [
+              {
+                "name": "id",
+                "description": "",
+                "isDeprecated": false,
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "droid",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "OBJECT",
+              "name": "Droid"
+            },
+            "args": [
+              {
+                "name": "id",
+                "description": "",
+                "isDeprecated": false,
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "foo",
+            "description": "For testing fragment type coercion",
+            "isDeprecated": false,
+            "type": {
+              "kind": "INTERFACE",
+              "name": "Foo"
+            },
+            "args": []
+          },
+          {
+            "name": "hero",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "INTERFACE",
+              "name": "Character"
+            },
+            "args": [
+              {
+                "name": "episode",
+                "description": "",
+                "isDeprecated": false,
+                "type": {
+                  "kind": "ENUM",
+                  "name": "Episode"
+                }
+              },
+              {
+                "name": "listOfListOfStringArgs",
+                "description": "for test purpose only",
+                "isDeprecated": false,
+                "type": {
+                  "kind": "LIST",
+                  "ofType": {
+                    "kind": "LIST",
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "heroDetailQuery",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "INTERFACE",
+              "name": "Character"
+            },
+            "args": []
+          },
+          {
+            "name": "heroWithReview",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "OBJECT",
+              "name": "Human"
+            },
+            "args": [
+              {
+                "name": "episode",
+                "description": "",
+                "isDeprecated": false,
+                "type": {
+                  "kind": "ENUM",
+                  "name": "Episode"
+                }
+              },
+              {
+                "name": "review",
+                "description": "",
+                "isDeprecated": false,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "ReviewInput"
+                }
+              },
+              {
+                "name": "listOfInts",
+                "description": "for test purpose only",
+                "isDeprecated": false,
+                "type": {
+                  "kind": "LIST",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "human",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "OBJECT",
+              "name": "Human"
+            },
+            "args": [
+              {
+                "name": "id",
+                "description": "",
+                "isDeprecated": false,
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "nonOptionalHero",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "INTERFACE",
+                "name": "Character"
+              }
+            },
+            "args": [
+              {
+                "name": "episode",
+                "description": "",
+                "isDeprecated": false,
+                "type": {
+                  "kind": "ENUM",
+                  "name": "Episode"
+                }
+              }
+            ]
+          },
+          {
+            "name": "reviews",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Review"
+              }
+            },
+            "args": [
+              {
+                "name": "episode",
+                "description": "",
+                "isDeprecated": false,
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "ENUM",
+                    "name": "Episode"
+                  }
+                }
+              },
+              {
+                "name": "starsInt",
+                "description": "",
+                "isDeprecated": false,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int"
+                }
+              },
+              {
+                "name": "starsFloat",
+                "description": "",
+                "isDeprecated": false,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Float"
+                }
+              }
+            ]
+          },
+          {
+            "name": "search",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "UNION",
+                "name": "SearchResult"
+              }
+            },
+            "args": [
+              {
+                "name": "text",
+                "description": "",
+                "isDeprecated": false,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String"
+                }
+              }
+            ]
+          },
+          {
+            "name": "starship",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "OBJECT",
+              "name": "Starship"
+            },
+            "args": [
+              {
+                "name": "id",
+                "description": "",
+                "isDeprecated": false,
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "tree",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "OBJECT",
+              "name": "Tree"
+            },
+            "args": []
+          }
+        ]
+      },
+      {
+        "kind": "OBJECT",
+        "name": "Review",
+        "description": "Represents a review for a movie",
+        "fields": [
+          {
+            "name": "commentary",
+            "description": "Comment about the movie",
+            "isDeprecated": false,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String"
+            },
+            "args": []
+          },
+          {
+            "name": "listOfListOfCustom",
+            "description": "for test purpose only",
+            "isDeprecated": false,
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "LIST",
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Date"
+                    }
+                  }
+                }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "listOfListOfEnum",
+            "description": "for test purpose only",
+            "isDeprecated": false,
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "LIST",
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "Episode"
+                    }
+                  }
+                }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "listOfListOfObject",
+            "description": "for test purpose only",
+            "isDeprecated": false,
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "LIST",
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "ofType": {
+                      "kind": "INTERFACE",
+                      "name": "Character"
+                    }
+                  }
+                }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "listOfListOfString",
+            "description": "for test purpose only",
+            "isDeprecated": false,
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "LIST",
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String"
+                    }
+                  }
+                }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "stars",
+            "description": "The number of stars this review gave, 1-5",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int"
+              }
+            },
+            "args": []
+          }
+        ]
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "ReviewInput",
+        "description": "The input object sent when someone is creating a new review",
+        "inputFields": [
+          {
+            "name": "CapitalizedField",
+            "description": "for test purpose only",
+            "isDeprecated": false,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String"
+            }
+          },
+          {
+            "name": "booleanWithDefaultValue",
+            "description": "for test purpose only",
+            "isDeprecated": false,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean"
+            },
+            "defaultValue": true
+          },
+          {
+            "name": "commentary",
+            "description": "Comment about the movie, optional",
+            "isDeprecated": false,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String"
+            }
+          },
+          {
+            "name": "customScalar",
+            "description": "for test purpose only",
+            "isDeprecated": false,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Date"
+            },
+            "defaultValue": "1984-06-21"
+          },
+          {
+            "name": "enumWithDefaultValue",
+            "description": "for test purpose only",
+            "isDeprecated": false,
+            "type": {
+              "kind": "ENUM",
+              "name": "Episode"
+            },
+            "defaultValue": "JEDI"
+          },
+          {
+            "name": "favoriteColor",
+            "description": "Favorite color, optional",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "colorInput"
+              }
+            }
+          },
+          {
+            "name": "listOfCustomScalar",
+            "description": "for test purpose only",
+            "isDeprecated": false,
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Date"
+              }
+            },
+            "defaultValue": [
+              "1984-06-21",
+              "1984-11-21"
+            ]
+          },
+          {
+            "name": "listOfEnums",
+            "description": "for test purpose only",
+            "isDeprecated": false,
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "ENUM",
+                "name": "Episode"
+              }
+            },
+            "defaultValue": [
+              "NEWHOPE",
+              "EMPIRE"
+            ]
+          },
+          {
+            "name": "listOfInputTypes",
+            "description": "for test purpose only",
+            "isDeprecated": false,
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "colorInput"
+              }
+            },
+            "defaultValue": []
+          },
+          {
+            "name": "listOfInt",
+            "description": "for test purpose only",
+            "isDeprecated": false,
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int"
+              }
+            },
+            "defaultValue": [
+              1.0,
+              2.0,
+              3.0
+            ]
+          },
+          {
+            "name": "listOfListOfCustom",
+            "description": "for test purpose only",
+            "isDeprecated": false,
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "LIST",
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Date"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "name": "listOfListOfEnum",
+            "description": "for test purpose only",
+            "isDeprecated": false,
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "LIST",
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "Episode"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "name": "listOfListOfObject",
+            "description": "for test purpose only",
+            "isDeprecated": false,
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "LIST",
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "colorInput"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "name": "listOfListOfString",
+            "description": "for test purpose only",
+            "isDeprecated": false,
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "LIST",
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "name": "listOfString",
+            "description": "for test purpose only",
+            "isDeprecated": false,
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            },
+            "defaultValue": [
+              "test1",
+              "test2",
+              "test3"
+            ]
+          },
+          {
+            "name": "listOfStringNonOptional",
+            "description": "for test purpose only",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String"
+                }
+              }
+            }
+          },
+          {
+            "name": "nonNullableEnumWithDefaultValue",
+            "description": "for test purpose only",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "ENUM",
+                "name": "Episode"
+              }
+            },
+            "defaultValue": "JEDI"
+          },
+          {
+            "name": "nullableEnum",
+            "description": "for test purpose only",
+            "isDeprecated": false,
+            "type": {
+              "kind": "ENUM",
+              "name": "Episode"
+            }
+          },
+          {
+            "name": "nullableIntFieldWithDefaultValue",
+            "description": "for test purpose only",
+            "isDeprecated": false,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int"
+            },
+            "defaultValue": 10.0
+          },
+          {
+            "name": "stars",
+            "description": "0-5 stars",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "ReviewRefInput",
+        "description": "Circle ref to review input",
+        "inputFields": [
+          {
+            "name": "reviewInput",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "ReviewInput"
+            }
+          }
+        ]
+      },
+      {
+        "kind": "UNION",
+        "name": "SearchResult",
+        "description": "",
+        "possibleTypes": [
+          {
+            "kind": "OBJECT",
+            "name": "Human"
+          },
+          {
+            "kind": "OBJECT",
+            "name": "Droid"
+          },
+          {
+            "kind": "OBJECT",
+            "name": "Starship"
+          }
+        ]
+      },
+      {
+        "kind": "OBJECT",
+        "name": "Starship",
+        "description": "",
+        "fields": [
+          {
+            "name": "coordinates",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "LIST",
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Float"
+                    }
+                  }
+                }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "id",
+            "description": "The ID of the starship",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "length",
+            "description": "Length of the starship, along the longest axis",
+            "isDeprecated": false,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float"
+            },
+            "args": [
+              {
+                "name": "unit",
+                "description": "",
+                "isDeprecated": false,
+                "type": {
+                  "kind": "ENUM",
+                  "name": "LengthUnit"
+                },
+                "defaultValue": "METER"
+              }
+            ]
+          },
+          {
+            "name": "name",
+            "description": "The name of the starship",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            },
+            "args": []
+          }
+        ]
+      },
+      {
+        "kind": "SCALAR",
+        "name": "String",
+        "description": "The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text."
+      },
+      {
+        "kind": "OBJECT",
+        "name": "Tree",
+        "description": "To test recursive structures",
+        "fields": [
+          {
+            "name": "children",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "Tree"
+                  }
+                }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "name",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "parent",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "OBJECT",
+              "name": "Tree"
+            },
+            "args": []
+          }
+        ]
+      },
+      {
+        "kind": "SCALAR",
+        "name": "URL",
+        "description": ""
+      },
+      {
+        "kind": "SCALAR",
+        "name": "UnsupportedType",
+        "description": "UnsupportedType for testing"
+      },
+      {
+        "kind": "OBJECT",
+        "name": "__Directive",
+        "description": "",
+        "fields": [
+          {
+            "name": "args",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "__InputValue"
+                  }
+                }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "description",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String"
+            },
+            "args": []
+          },
+          {
+            "name": "isRepeatable",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "locations",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "ENUM",
+                    "name": "__DirectiveLocation"
+                  }
+                }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "name",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            },
+            "args": []
+          }
+        ]
+      },
+      {
+        "kind": "ENUM",
+        "name": "__DirectiveLocation",
+        "description": "",
+        "enumValues": [
+          {
+            "name": "QUERY",
+            "description": "",
+            "isDeprecated": false
+          },
+          {
+            "name": "MUTATION",
+            "description": "",
+            "isDeprecated": false
+          },
+          {
+            "name": "SUBSCRIPTION",
+            "description": "",
+            "isDeprecated": false
+          },
+          {
+            "name": "FIELD",
+            "description": "",
+            "isDeprecated": false
+          },
+          {
+            "name": "FRAGMENT_DEFINITION",
+            "description": "",
+            "isDeprecated": false
+          },
+          {
+            "name": "FRAGMENT_SPREAD",
+            "description": "",
+            "isDeprecated": false
+          },
+          {
+            "name": "INLINE_FRAGMENT",
+            "description": "",
+            "isDeprecated": false
+          },
+          {
+            "name": "VARIABLE_DEFINITION",
+            "description": "",
+            "isDeprecated": false
+          },
+          {
+            "name": "SCHEMA",
+            "description": "",
+            "isDeprecated": false
+          },
+          {
+            "name": "SCALAR",
+            "description": "",
+            "isDeprecated": false
+          },
+          {
+            "name": "OBJECT",
+            "description": "",
+            "isDeprecated": false
+          },
+          {
+            "name": "FIELD_DEFINITION",
+            "description": "",
+            "isDeprecated": false
+          },
+          {
+            "name": "ARGUMENT_DEFINITION",
+            "description": "",
+            "isDeprecated": false
+          },
+          {
+            "name": "INTERFACE",
+            "description": "",
+            "isDeprecated": false
+          },
+          {
+            "name": "UNION",
+            "description": "",
+            "isDeprecated": false
+          },
+          {
+            "name": "ENUM",
+            "description": "",
+            "isDeprecated": false
+          },
+          {
+            "name": "ENUM_VALUE",
+            "description": "",
+            "isDeprecated": false
+          },
+          {
+            "name": "INPUT_OBJECT",
+            "description": "",
+            "isDeprecated": false
+          },
+          {
+            "name": "INPUT_FIELD_DEFINITION",
+            "description": "",
+            "isDeprecated": false
+          }
+        ]
+      },
+      {
+        "kind": "OBJECT",
+        "name": "__EnumValue",
+        "description": "",
+        "fields": [
+          {
+            "name": "deprecationReason",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String"
+            },
+            "args": []
+          },
+          {
+            "name": "description",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String"
+            },
+            "args": []
+          },
+          {
+            "name": "isDeprecated",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "name",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            },
+            "args": []
+          }
+        ]
+      },
+      {
+        "kind": "OBJECT",
+        "name": "__Field",
+        "description": "",
+        "fields": [
+          {
+            "name": "args",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "__InputValue"
+                  }
+                }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "deprecationReason",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String"
+            },
+            "args": []
+          },
+          {
+            "name": "description",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String"
+            },
+            "args": []
+          },
+          {
+            "name": "isDeprecated",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "name",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "type",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "__Type"
+              }
+            },
+            "args": []
+          }
+        ]
+      },
+      {
+        "kind": "OBJECT",
+        "name": "__InputValue",
+        "description": "",
+        "fields": [
+          {
+            "name": "defaultValue",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String"
+            },
+            "args": []
+          },
+          {
+            "name": "description",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String"
+            },
+            "args": []
+          },
+          {
+            "name": "name",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "type",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "__Type"
+              }
+            },
+            "args": []
+          }
+        ]
+      },
+      {
+        "kind": "OBJECT",
+        "name": "__Schema",
+        "description": "",
+        "fields": [
+          {
+            "name": "description",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String"
+            },
+            "args": []
+          },
+          {
+            "name": "directives",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "__Directive"
+                  }
+                }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "mutationType",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "OBJECT",
+              "name": "__Type"
+            },
+            "args": []
+          },
+          {
+            "name": "queryType",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "__Type"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "subscriptionType",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "OBJECT",
+              "name": "__Type"
+            },
+            "args": []
+          },
+          {
+            "name": "types",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "__Type"
+                  }
+                }
+              }
+            },
+            "args": []
+          }
+        ]
+      },
+      {
+        "kind": "OBJECT",
+        "name": "__Type",
+        "description": "",
+        "fields": [
+          {
+            "name": "description",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String"
+            },
+            "args": []
+          },
+          {
+            "name": "enumValues",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "__EnumValue"
+                }
+              }
+            },
+            "args": [
+              {
+                "name": "includeDeprecated",
+                "description": "",
+                "isDeprecated": false,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Boolean"
+                },
+                "defaultValue": false
+              }
+            ]
+          },
+          {
+            "name": "fields",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "__Field"
+                }
+              }
+            },
+            "args": [
+              {
+                "name": "includeDeprecated",
+                "description": "",
+                "isDeprecated": false,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Boolean"
+                },
+                "defaultValue": false
+              }
+            ]
+          },
+          {
+            "name": "inputFields",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "__InputValue"
+                }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "interfaces",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "__Type"
+                }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "kind",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "ENUM",
+                "name": "__TypeKind"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "name",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String"
+            },
+            "args": []
+          },
+          {
+            "name": "ofType",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "OBJECT",
+              "name": "__Type"
+            },
+            "args": []
+          },
+          {
+            "name": "possibleTypes",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "__Type"
+                }
+              }
+            },
+            "args": []
+          }
+        ]
+      },
+      {
+        "kind": "ENUM",
+        "name": "__TypeKind",
+        "description": "",
+        "enumValues": [
+          {
+            "name": "SCALAR",
+            "description": "",
+            "isDeprecated": false
+          },
+          {
+            "name": "OBJECT",
+            "description": "",
+            "isDeprecated": false
+          },
+          {
+            "name": "INTERFACE",
+            "description": "",
+            "isDeprecated": false
+          },
+          {
+            "name": "UNION",
+            "description": "",
+            "isDeprecated": false
+          },
+          {
+            "name": "ENUM",
+            "description": "",
+            "isDeprecated": false
+          },
+          {
+            "name": "INPUT_OBJECT",
+            "description": "",
+            "isDeprecated": false
+          },
+          {
+            "name": "LIST",
+            "description": "",
+            "isDeprecated": false
+          },
+          {
+            "name": "NON_NULL",
+            "description": "",
+            "isDeprecated": false
+          }
+        ]
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "colorInput",
+        "description": "The input object sent when passing in a color",
+        "inputFields": [
+          {
+            "name": "blue",
+            "description": "Blue color",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Float"
+              }
+            },
+            "defaultValue": 1.5
+          },
+          {
+            "name": "enumWithDefaultValue",
+            "description": "for test purpose only",
+            "isDeprecated": false,
+            "type": {
+              "kind": "ENUM",
+              "name": "Episode"
+            },
+            "defaultValue": "new"
+          },
+          {
+            "name": "green",
+            "description": "Green color",
+            "isDeprecated": false,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int"
+            },
+            "defaultValue": 0.0
+          },
+          {
+            "name": "red",
+            "description": "Red color",
+            "isDeprecated": false,
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int"
+              }
+            },
+            "defaultValue": 1.0
+          },
+          {
+            "name": "reviewRefInput",
+            "description": "Circle ref to review input",
+            "isDeprecated": false,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "ReviewRefInput"
+            }
+          }
+        ]
+      },
+      {
+        "kind": "ENUM",
+        "name": "hero_type",
+        "description": "Lower case enum type name",
+        "enumValues": [
+          {
+            "name": "human",
+            "description": "",
+            "isDeprecated": false
+          },
+          {
+            "name": "droid",
+            "description": "",
+            "isDeprecated": false
+          }
+        ]
+      }
+    ]
+  }
+}

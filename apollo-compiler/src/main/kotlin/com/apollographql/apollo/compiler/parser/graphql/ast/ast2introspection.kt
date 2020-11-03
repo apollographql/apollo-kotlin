@@ -94,14 +94,14 @@ private class IntrospectionSchemaBuilder(private val document: GQLDocument) {
       is GQLNonNullType -> {
         IntrospectionSchema.TypeRef(
             kind = IntrospectionSchema.Kind.NON_NULL,
-            name = null,
+            name = "", // why "" and not null ?
             ofType = type.toSchemaType()
         )
       }
       is GQLListType -> {
         IntrospectionSchema.TypeRef(
             kind = IntrospectionSchema.Kind.LIST,
-            name = null,
+            name = "", // why "" and not null ?
             ofType = type.toSchemaType())
       }
       is GQLNamedType -> {

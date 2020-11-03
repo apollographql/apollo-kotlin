@@ -30,14 +30,10 @@ class GraphSdlParseTest() {
     val sdlSchema = GQLDocument.fromFile(File("src/test/sdl/schema.sdl"))
     val actualSchema = sdlSchema.toIntrospectionSchema().normalize()
     val expectedSchemaFile = File("src/test/sdl/schema.json")
-    val expectedSchema = IntrospectionSchema(expectedSchemaFile).normalize()
+    val actualSchemaFile = File("build/sdl-test/actual.json")
+    actualSchema.wrap().toJson(actualSchemaFile, "  ")
 
-    dumpSchemas(
-        expected = expectedSchema,
-        actual = actualSchema
-    )
-
-    checkTestFixture(actualText = actualSchema.toString(), expected = File("src/test/sdl/schema.json"))
+    checkTestFixture(actual = actualSchemaFile, expected = expectedSchemaFile)
   }
 
   private fun IntrospectionSchema.normalize(): IntrospectionSchema {
