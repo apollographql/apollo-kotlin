@@ -1,10 +1,12 @@
 package com.apollographql.apollo.gradle.internal
 
+import com.apollographql.apollo.compiler.parser.graphql.ast.GQLDocument
+import com.apollographql.apollo.compiler.parser.graphql.ast.fromFile
+import com.apollographql.apollo.compiler.parser.graphql.ast.fromString
+import com.apollographql.apollo.compiler.parser.graphql.ast.toDocument
+import com.apollographql.apollo.compiler.parser.graphql.ast.toUtf8
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Companion.wrap
-import com.apollographql.apollo.compiler.parser.introspection.toSDL
-import com.apollographql.apollo.compiler.parser.sdl.GraphSDLSchemaParser.parse
-import com.apollographql.apollo.compiler.parser.sdl.toIntrospectionSchema
 import com.apollographql.apollo.compiler.toJson
 import okio.Buffer
 import org.gradle.api.DefaultTask
@@ -13,6 +15,7 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
+import toIntrospectionSchema
 import java.io.File
 import java.nio.charset.Charset
 
@@ -107,14 +110,12 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
 
     if (schema.extension.toLowerCase() == "json") {
       if (introspectionSchema == null) {
-        introspectionSchema = sdlSchema!!.parse().toIntrospectionSchema().wrap().toJson()
+        introspectionSchema = GQLDocument.fromString(sdlSchema!!).toIntrospectionSchema().wrap().toJson()
       }
       schema.writeText(introspectionSchema)
     } else {
       if (sdlSchema == null) {
-        val buffer = Buffer()
-        IntrospectionSchema(introspectionSchema!!.byteInputStream()).toSDL(buffer)
-        sdlSchema = buffer.readString(Charset.defaultCharset())
+        sdlSchema = IntrospectionSchema(introspectionSchema!!.byteInputStream()).toDocument().toUtf8()
       }
       schema.writeText(sdlSchema)
     }

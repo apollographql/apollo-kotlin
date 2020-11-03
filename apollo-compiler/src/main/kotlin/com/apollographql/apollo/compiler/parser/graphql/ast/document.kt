@@ -117,7 +117,7 @@ fun GQLDocument.toBufferedSink(bufferedSink: BufferedSink) {
   bufferedSink.writeUtf8(pretty)
 }
 
-fun GQLDocument.toString(): String {
+fun GQLDocument.toUtf8(): String {
   val buffer = Buffer()
   toBufferedSink(buffer)
   return buffer.readUtf8()
