@@ -167,17 +167,17 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "125c87dbee288bf00a672f94cbb80793c3edeb0d32c7fed11e967a58e8612e74"
+        "47d23fa9d7e9bf697a19f43297b1c422ae31ce1886f740e3982a5daf9b7e1ebd"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery {
-          |  yield:hero {
+          |  yield: hero {
           |    __typename
-          |    it:id
+          |    it: id
           |    name
           |  }
-          |  objects:search(text: "abc") {
+          |  objects: search(text: "abc") {
           |    __typename
           |    ... on Character {
           |      name

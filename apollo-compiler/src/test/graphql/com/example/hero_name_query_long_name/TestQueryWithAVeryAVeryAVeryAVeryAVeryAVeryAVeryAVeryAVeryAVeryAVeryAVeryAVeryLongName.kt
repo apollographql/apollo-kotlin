@@ -154,14 +154,14 @@ data class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryA
 
   companion object {
     const val OPERATION_ID: String =
-        "d3edf7b3835fdee0e7087f52b6edf1faf0420b38fb3ec05b595dbcb2e40df373"
+        "da1b713dcfa710f7f5dbe01186d56ebdec768de44002ab965740de6acbee1d01"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName(${'$'}episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName:Episode) {
-          |  heroAVeryAVeryAVeryAVeryAVeryAVeryAV:hero(episode: ${'$'}episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName) {
+          |  heroAVeryAVeryAVeryAVeryAVeryAVeryAV: hero(episode: ${'$'}episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName) {
           |    __typename
-          |    nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName:name
+          |    nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName: name
           |  }
           |}
           """.trimMargin()
