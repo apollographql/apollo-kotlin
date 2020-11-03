@@ -93,15 +93,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     scalarTypeAdapters = scalarTypeAdapters
   )
 
-  /**
-   * The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in
-   * GraphQL as represented by the `__TypeKind` enum.
-   *
-   * Depending on the kind of a type, certain fields describe information about that type. Scalar
-   * types provide no information beyond a name and description, while Enum types provide their values.
-   * Object and Interface types provide the fields they describe. Abstract types, Union and Interface,
-   * provide the Object types possible at runtime. List and NonNull types compose other types.
-   */
   data class QueryType(
     val __typename: String = "__Type",
     val name: String?
@@ -113,15 +104,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     }
   }
 
-  /**
-   * The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in
-   * GraphQL as represented by the `__TypeKind` enum.
-   *
-   * Depending on the kind of a type, certain fields describe information about that type. Scalar
-   * types provide no information beyond a name and description, while Enum types provide their values.
-   * Object and Interface types provide the fields they describe. Abstract types, Union and Interface,
-   * provide the Object types possible at runtime. List and NonNull types compose other types.
-   */
   data class Type(
     val __typename: String = "__Type",
     val name: String?
@@ -133,20 +115,9 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     }
   }
 
-  /**
-   * A GraphQL Schema defines the capabilities of a GraphQL server. It exposes all available types
-   * and directives on the server, as well as the entry points for query, mutation, and subscription
-   * operations.
-   */
   data class __Schema(
     val __typename: String = "__Schema",
-    /**
-     * The type that query operations will be rooted at.
-     */
     val queryType: QueryType,
-    /**
-     * A list of all types supported by this server.
-     */
     val types: List<Type>
   ) {
     fun marshaller(): ResponseFieldMarshaller {
@@ -156,15 +127,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     }
   }
 
-  /**
-   * The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in
-   * GraphQL as represented by the `__TypeKind` enum.
-   *
-   * Depending on the kind of a type, certain fields describe information about that type. Scalar
-   * types provide no information beyond a name and description, while Enum types provide their values.
-   * Object and Interface types provide the fields they describe. Abstract types, Union and Interface,
-   * provide the Object types possible at runtime. List and NonNull types compose other types.
-   */
   data class __Type(
     val __typename: String = "__Type",
     val name: String?
