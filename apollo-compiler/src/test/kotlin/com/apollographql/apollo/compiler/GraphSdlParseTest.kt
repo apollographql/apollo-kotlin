@@ -25,6 +25,8 @@ class GraphSdlParseTest() {
     val actualSchema = sdlSchema.toIntrospectionSchema().normalize()
     val expectedSchemaFile = File("src/test/sdl/schema.json")
     val actualSchemaFile = File("build/sdl-test/actual.json")
+
+    actualSchemaFile.parentFile.mkdirs()
     actualSchema.wrap().toJson(actualSchemaFile, "  ")
 
     checkTestFixture(actual = actualSchemaFile, expected = expectedSchemaFile)
