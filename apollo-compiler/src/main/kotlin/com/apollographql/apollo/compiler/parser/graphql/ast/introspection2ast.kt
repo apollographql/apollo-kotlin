@@ -6,19 +6,21 @@ import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchem
 
 private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionSchema) {
   
-  fun IntrospectionSchema.toGQLDocument(): GQLDocument {
-    return GQLDocument(
-        definitions = types.values.map {
-          when (it) {
-            is IntrospectionSchema.Type.Union -> it.toGQLUnionTypeDefinition()
-            is IntrospectionSchema.Type.Interface -> it.toGQLInterfaceTypeDefinition()
-            is IntrospectionSchema.Type.Enum -> it.toGQLEnumTypeDefinition()
-            is IntrospectionSchema.Type.Object -> it.toGQLObjectTypeDefinition()
-            is IntrospectionSchema.Type.InputObject -> it.toGQLInputObjectTypeDefinition()
-            is IntrospectionSchema.Type.Scalar -> it.toGQLScalarTypeDefinition()
-          }
-        } + schemaDefinition()
-    )
+  fun toGQLDocument(): GQLDocument {
+    return with(introspectionSchema) {
+      GQLDocument(
+          definitions = types.values.map {
+            when (it) {
+              is IntrospectionSchema.Type.Union -> it.toGQLUnionTypeDefinition()
+              is IntrospectionSchema.Type.Interface -> it.toGQLInterfaceTypeDefinition()
+              is IntrospectionSchema.Type.Enum -> it.toGQLEnumTypeDefinition()
+              is IntrospectionSchema.Type.Object -> it.toGQLObjectTypeDefinition()
+              is IntrospectionSchema.Type.InputObject -> it.toGQLInputObjectTypeDefinition()
+              is IntrospectionSchema.Type.Scalar -> it.toGQLScalarTypeDefinition()
+            }
+          } + schemaDefinition()
+      )
+    }
   }
 
   private fun IntrospectionSchema.Type.Object.toGQLObjectTypeDefinition(): GQLObjectTypeDefinition {
@@ -207,6 +209,8 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     )
   }
 }
+
+fun IntrospectionSchema.toDocument(): GQLDocument = GQLDocumentBuilder(this).toGQLDocument()
 
 
 

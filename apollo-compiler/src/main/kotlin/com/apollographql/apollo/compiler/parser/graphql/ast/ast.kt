@@ -22,7 +22,7 @@ data class GQLDocument(val definitions: List<GQLDefinition>) : GQLNode {
   override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN
 
   override fun write(bufferedSink: BufferedSink) {
-    definitions.join(bufferedSink = bufferedSink, separator = "\n\n")
+    definitions.join(bufferedSink = bufferedSink, separator = "\n")
   }
 
   companion object
@@ -122,7 +122,11 @@ data class GQLObjectTypeDefinition(
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
       if (description != null) writeUtf8("\"\"\"$description\"\"\"\n")
-      writeUtf8("type $name ${implementsInterfaces.joinToString(" ")} ")
+      writeUtf8("type $name ")
+      if (implementsInterfaces.isNotEmpty()) {
+        writeUtf8("implements ")
+        writeUtf8("${implementsInterfaces.joinToString(" ")} ")
+      }
       directives.join(bufferedSink)
       fields.join(bufferedSink, prefix = "{\n", separator = "\n", postfix = "\n}\n")
     }
@@ -336,7 +340,7 @@ data class GQLInputValueDefinition(
 ) : GQLNode, GQLNamed {
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"$description\"\"\"\n")
+      if (description != null) writeUtf8("\"\"\"$description\"\"\" ")
       writeUtf8("$name: ")
       type.write(bufferedSink)
       if (defaultValue != null) {
@@ -391,7 +395,7 @@ data class GQLDirective(
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
       writeUtf8("@$name")
-      arguments.join(bufferedSink, prefix = "(", separator = ",", postfix = ")")
+      arguments.join(bufferedSink, prefix = "(", separator = ", ", postfix = ")")
     }
   }
 }
@@ -501,7 +505,7 @@ data class GQLListType(
     val type: GQLType
 ) : GQLType() {
   override fun write(bufferedSink: BufferedSink) {
-    with (bufferedSink) {
+    with(bufferedSink) {
       writeUtf8("[")
       type.write(bufferedSink)
       writeUtf8("]")
@@ -596,7 +600,7 @@ data class GQLObjectValue(
     val fields: List<GQLObjectField>
 ) : GQLValue() {
   override fun write(bufferedSink: BufferedSink) {
-    with (bufferedSink) {
+    with(bufferedSink) {
       writeUtf8("{\n")
       fields.join(bufferedSink, "\n")
       writeUtf8("}\n")
