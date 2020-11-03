@@ -1,19 +1,12 @@
 package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.compiler.TestUtils.checkTestFixture
-import com.apollographql.apollo.compiler.parser.error.DocumentParseException
-import com.apollographql.apollo.compiler.parser.error.ParseException
 import com.apollographql.apollo.compiler.parser.graphql.ast.GQLDocument
 import com.apollographql.apollo.compiler.parser.graphql.ast.fromFile
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Companion.wrap
 import com.apollographql.apollo.compiler.parser.introspection.toSDL
-import com.apollographql.apollo.compiler.parser.sdl.GraphSdlSchema
-import com.apollographql.apollo.compiler.parser.sdl.toIntrospectionSchema
-import com.google.common.truth.Truth
-import com.google.common.truth.Truth.assertThat
 import org.junit.Assert.assertEquals
-import org.junit.Assert.fail
 import org.junit.Test
 import toIntrospectionSchema
 import java.io.File

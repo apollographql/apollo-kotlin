@@ -18,8 +18,6 @@ import com.apollographql.apollo.compiler.parser.graphql.ast.fromFile
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Companion.toIntrospectionSchema
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Companion.wrap
-import com.apollographql.apollo.compiler.parser.sdl.GraphSdlSchema
-import com.apollographql.apollo.compiler.parser.sdl.toIntrospectionSchema
 import com.squareup.kotlinpoet.asClassName
 import toIntrospectionSchema
 import java.io.File

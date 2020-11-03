@@ -4,7 +4,6 @@ import com.apollographql.apollo.compiler.parser.error.DocumentParseException
 import com.apollographql.apollo.compiler.parser.error.ParseException
 import com.apollographql.apollo.compiler.parser.graphql.ast.GQLDocument
 import com.apollographql.apollo.compiler.parser.graphql.ast.fromFile
-import com.apollographql.apollo.compiler.parser.sdl.GraphSdlSchema
 import com.google.common.truth.Truth.assertThat
 import org.junit.Assert.fail
 import org.junit.Test
