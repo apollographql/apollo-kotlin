@@ -2,8 +2,6 @@ import okhttp3.Credentials.basic
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
-import okhttp3.Route
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -138,6 +136,17 @@ fun Project.configurePublishing() {
   tasks.withType(Javadoc::class.java) {
     // TODO: fix the javadoc warnings
     (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
+  }
+
+  tasks.withType(Jar::class.java) {
+      manifest {
+        attributes["Built-By"] = findProperty("POM_DEVELOPER_ID") as String?
+        attributes["Build-Jdk"] = "${System.getProperty("java.version")} (${System.getProperty("java.vendor")} ${System.getProperty("java.vm.version")})"
+        attributes["Build-Timestamp"] = java.time.Instant.now().toString()
+        attributes["Created-By"] = "Gradle ${gradle.gradleVersion}"
+        attributes["Implementation-Title"] = findProperty("POM_NAME") as String?
+        attributes["Implementation-Version"] = findProperty("VERSION_NAME") as String?
+      }
   }
 
   configure<PublishingExtension> {
