@@ -259,6 +259,9 @@ open class ApolloPlugin : Plugin<Project> {
         task.group = TASK_GROUP
         task.compilationUnits = apolloExtension.compilationUnits
       }
+      project.tasks.register(ModelNames.uploadApolloSchema(), ApolloUploadSchemaTask::class.java) { task ->
+        task.group = TASK_GROUP
+      }
     }
 
     fun toMap(s: String): Map<String, String> {

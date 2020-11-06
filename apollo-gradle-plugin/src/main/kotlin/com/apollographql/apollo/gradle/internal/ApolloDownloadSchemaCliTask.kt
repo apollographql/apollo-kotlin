@@ -32,13 +32,13 @@ abstract class ApolloDownloadSchemaCliTask : DefaultTask() {
 
   @get:Optional
   @get:Input
-  @get:Option(option = "graph", description = "The identifier of the Apollo graph used to download the schema.")
-  abstract val graph: Property<String>
+  @get:Option(option = "key", description = "The Apollo API key. See https://www.apollographql.com/docs/studio/api-keys/ for more information on how to get your API key.")
+  abstract val key: Property<String>
 
   @get:Optional
   @get:Input
-  @get:Option(option = "key", description = "The Apollo API key. See https://www.apollographql.com/docs/studio/api-keys/ for more information on how to get your API key.")
-  abstract val key: Property<String>
+  @get:Option(option = "graph", description = "The identifier of the Apollo graph used to download the schema.")
+  abstract val graph: Property<String>
 
   @get:Optional
   @get:Input

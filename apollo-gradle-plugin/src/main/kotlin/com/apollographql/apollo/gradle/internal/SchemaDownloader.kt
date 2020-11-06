@@ -8,14 +8,14 @@ object SchemaDownloader {
       headers: Map<String, String>
   ): String {
 
-    val response = SchemaHelper.executeQuery(introspectionQuery, null, endpoint, headers)
+    val response = SchemaHelper.executeQuery(introspectionQuery, emptyMap(), endpoint, headers)
 
     return response.body.use { responseBody ->
       responseBody!!.string()
     }
   }
 
-  fun downloadRegistry(graph: String, key: String, variant: String): String? {
+  fun downloadRegistry(key: String, graph: String, variant: String): String? {
     val query = """
     query DownloadSchema(${'$'}graphID: ID!, ${'$'}variant: String!) {
       service(id: ${'$'}graphID) {

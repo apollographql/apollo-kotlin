@@ -35,7 +35,7 @@ internal object SchemaHelper {
   /**
    * @param variables a map representing the variable as Json values
    */
-  internal fun executeQuery(query: String, variables: Map<String, Any>? = emptyMap(), url: String, headers: Map<String, String>): Response {
+  internal fun executeQuery(query: String, variables: Map<String, Any>, url: String, headers: Map<String, String>): Response {
     val body = mapOf("query" to query, "variables" to variables).toJson().toByteArray().toRequestBody("application/json".toMediaTypeOrNull())
     val request = Request.Builder()
         .post(body)
@@ -47,7 +47,7 @@ internal object SchemaHelper {
         .url(url)
         .build()
 
-    val response = SchemaHelper.newOkHttpClient()
+    val response = newOkHttpClient()
         .newCall(request)
         .execute()
 
