@@ -69,7 +69,7 @@ class DownloadSchemaTests {
 
       TestUtils.executeTask("downloadApolloSchema", dir, "--endpoint=${mockServer.url("/").toUrl()}")
 
-      assertEquals(content, dir.child("app", "src", "main", "graphql", "com", "example", "schema.json").readText())
+      assertEquals(content, dir.child( "schema.json").readText())
     }
   }
 
