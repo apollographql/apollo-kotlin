@@ -3,6 +3,7 @@ package com.apollographql.apollo.compiler
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonReader
+import com.squareup.moshi.JsonWriter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
@@ -67,6 +68,10 @@ inline fun <reified T> File.fromJsonList(): List<T> {
 
 inline fun <reified T> T.toJson(): String {
   return getJsonAdapter<T>().toJson(this)
+}
+
+inline fun <reified T> T.toJson(writer: JsonWriter) {
+  getJsonAdapter<T>().toJson(writer, this)
 }
 
 inline fun <reified T> T.toJson(file: File) {
