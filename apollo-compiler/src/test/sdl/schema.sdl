@@ -282,6 +282,7 @@ type Query {
   """For testing fragment type coercion"""
   foo: Foo
   hero(
+    """Test description with "quotes" inside"""
     episode: Episode
 
     """for test purpose only"""

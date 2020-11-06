@@ -51,11 +51,16 @@ ${indent}${"\"\"\""}
   }
 }
 
+private fun String.escape(): String {
+  // TODO: proper string escape and parsing
+  return replace("\"", "\\\"")
+}
+
 private fun BufferedSink.writeDeprecatedDirective(isDeprecated: Boolean, deprecationReason: String?) {
   if (isDeprecated) {
     writeUtf8(" @deprecated")
     if (deprecationReason != null) {
-      writeUtf8("(reason: \"${deprecationReason}\")")
+      writeUtf8("(reason: \"${deprecationReason.escape()}\")")
     }
   }
 }
@@ -101,7 +106,7 @@ private fun BufferedSink.writeValue(value: Any?) {
     is Long -> writeUtf8(value.toString()) // And Longs coming from moshi, be robust to both
     is Double -> writeUtf8(value.toString())
     is Boolean -> writeUtf8(value.toString())
-    is String -> writeUtf8("\"$value\"") // enums will fall in this case as there is no way to express an enum in Json
+    is String -> writeUtf8("\"\"\"$value\"\"\"") // enums will fall in this case as there is no way to express an enum in Json
     is List<*> -> {
       writeUtf8("[")
       value.forEachIndexed { index, item ->
@@ -167,7 +172,7 @@ private fun IntrospectionSchema.Field.toSDL(sink: BufferedSink) {
 private fun IntrospectionSchema.Field.Argument.toSDL(sink: BufferedSink) {
   if (!description.isNullOrBlank()) {
     // Write the description inline
-    sink.writeUtf8("\"$description\" ")
+    sink.writeUtf8("\"\"\"$description\"\"\" ")
   }
   sink.writeUtf8("$name: ${type.asGraphQLType()}")
   if (defaultValue != null) {
