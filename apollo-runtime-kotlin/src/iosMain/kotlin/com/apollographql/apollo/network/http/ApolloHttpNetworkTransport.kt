@@ -37,6 +37,7 @@ import platform.Foundation.NSURLRequest
 import platform.Foundation.NSURLRequestReloadIgnoringCacheData
 import platform.Foundation.NSURLResponse
 import platform.Foundation.NSURLSession
+import platform.Foundation.NSURLSessionConfiguration
 import platform.Foundation.NSURLSessionDataTask
 import platform.Foundation.dataTaskWithRequest
 import platform.Foundation.setHTTPBody
@@ -50,7 +51,10 @@ import kotlin.coroutines.resumeWithException
 import kotlin.native.concurrent.freeze
 
 typealias UrlSessionDataTaskCompletionHandler = (NSData?, NSURLResponse?, NSError?) -> Unit
-typealias UrlSessionDataTaskFactory = (NSURLRequest, UrlSessionDataTaskCompletionHandler) -> NSURLSessionDataTask
+
+fun interface DataTaskFactory {
+  fun dataTask(request: NSURLRequest, completionHandler: UrlSessionDataTaskCompletionHandler): NSURLSessionDataTask
+}
 
 @ApolloExperimental
 @ExperimentalCoroutinesApi
@@ -58,22 +62,34 @@ actual class ApolloHttpNetworkTransport(
     private val serverUrl: NSURL,
     private val headers: Map<String, String>,
     private val httpMethod: HttpMethod,
-    private val dataTaskFactory: UrlSessionDataTaskFactory
+    private val dataTaskFactory: DataTaskFactory,
+    private val connectTimeoutMillis: Long = 60_000,
 ) : NetworkTransport {
 
   actual constructor(
       serverUrl: String,
       headers: Map<String, String>,
-      httpMethod: HttpMethod
+      httpMethod: HttpMethod,
+      connectTimeoutMillis: Long,
+      readTimeoutMillis: Long,
   ) : this(
       serverUrl = NSURL(string = serverUrl),
       headers = headers,
       httpMethod = httpMethod,
-      dataTaskFactory = { request, completionHandler ->
-        NSURLSession.sharedSession.dataTaskWithRequest(request, completionHandler)
-      }
+      dataTaskFactory = DefaultDataTaskFactory(readTimeoutMillis),
+      connectTimeoutMillis = connectTimeoutMillis,
   )
 
+  private class DefaultDataTaskFactory(readTimeoutMillis: Long) : DataTaskFactory {
+    private val nsurlSession = NSURLSession.sessionWithConfiguration(NSURLSessionConfiguration().apply {
+      timeoutIntervalForRequest = readTimeoutMillis.toDouble()/1000
+    })
+
+    override fun dataTask(request: NSURLRequest, completionHandler: UrlSessionDataTaskCompletionHandler): NSURLSessionDataTask {
+      return nsurlSession.dataTaskWithRequest(request, completionHandler)
+    }
+
+  }
   @Suppress("UNCHECKED_CAST")
   override fun <D : Operation.Data> execute(request: ApolloRequest<D>, executionContext: ExecutionContext): Flow<ApolloResponse<D>> {
     return flow {
@@ -106,7 +122,7 @@ actual class ApolloHttpNetworkTransport(
           return@suspendCancellableCoroutine
         }
 
-        dataTaskFactory(httpRequest.freeze(), delegate.freeze())
+        dataTaskFactory.dataTask(httpRequest.freeze(), delegate.freeze())
             .also { task ->
               continuation.invokeOnCancellation {
                 task.cancel()
@@ -138,8 +154,11 @@ actual class ApolloHttpNetworkTransport(
           if (variables.isNotEmpty()) NSURLQueryItem(name = "variables", value = variables) else null
         }
     )
-    return NSMutableURLRequest.requestWithURL(urlComponents.URL!!).apply {
+    return NSMutableURLRequest.requestWithURL(
+        URL = urlComponents.URL!!
+    ).apply {
       setHTTPMethod("GET")
+      setTimeoutInterval(connectTimeoutMillis.toDouble() / 1000)
       headers
           .plus(httpExecutionContext?.headers ?: emptyMap())
           .forEach { (key, value) -> setValue(value, forHTTPHeaderField = key) }
@@ -204,7 +223,7 @@ actual class ApolloHttpNetworkTransport(
           scalarTypeAdapters = request.scalarTypeAdapters
       )
       Result.Success(
-          ApolloResponse(
+          ApolloResponse<D>(
               requestUuid = request.requestUuid,
               response = response,
               executionContext = request.executionContext + HttpExecutionContext.Response(

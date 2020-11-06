@@ -30,6 +30,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okhttp3.internal.closeQuietly
 import java.io.IOException
+import java.time.Duration
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
@@ -41,18 +42,23 @@ actual class ApolloHttpNetworkTransport(
     private val serverUrl: HttpUrl,
     private val headers: Headers,
     private val httpCallFactory: Call.Factory,
-    private val httpMethod: HttpMethod
+    private val httpMethod: HttpMethod,
 ) : NetworkTransport {
 
   actual constructor(
       serverUrl: String,
       headers: Map<String, String>,
-      httpMethod: HttpMethod
+      httpMethod: HttpMethod,
+      connectTimeoutMillis: Long,
+      readTimeoutMillis: Long
   ) : this(
       serverUrl = serverUrl.toHttpUrl(),
       headers = headers.toHeaders(),
-      httpCallFactory = OkHttpClient(),
-      httpMethod = httpMethod
+      httpCallFactory = OkHttpClient.Builder()
+          .connectTimeout(Duration.ofMillis(connectTimeoutMillis))
+          .readTimeout(Duration.ofMillis(readTimeoutMillis))
+          .build(),
+      httpMethod = httpMethod,
   )
 
   override fun <D : Operation.Data> execute(request: ApolloRequest<D>, executionContext: ExecutionContext): Flow<ApolloResponse<D>> {
