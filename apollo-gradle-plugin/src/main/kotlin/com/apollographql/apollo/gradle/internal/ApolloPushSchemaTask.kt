@@ -8,10 +8,10 @@ import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
 import java.io.File
 
-abstract class ApolloUploadSchemaTask : DefaultTask() {
+abstract class ApolloPushSchemaTask : DefaultTask() {
   @get:Input
   @get:Optional
-  @get:Option(option = "schema", description = "schema to upload as SDL")
+  @get:Option(option = "schema", description = "schema to push as SDL")
   abstract val schema: Property<String>
 
   @get:Optional
