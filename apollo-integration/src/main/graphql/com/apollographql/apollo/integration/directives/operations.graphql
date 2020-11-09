@@ -1,0 +1,5 @@
+query MyQuery($myBool: Boolean = false) {
+    getCityByName(name: "London") {
+        id @include(if: $myBool)
+    }
+}
