@@ -201,8 +201,7 @@ nonNullType
   ;
 
 description
-  : STRING
-  | BLOCK_STRING
+  : stringValue
   ;
 
 defaultValue

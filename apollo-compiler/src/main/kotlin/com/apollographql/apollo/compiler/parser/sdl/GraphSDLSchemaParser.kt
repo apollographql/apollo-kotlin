@@ -5,6 +5,7 @@ import com.apollographql.apollo.compiler.parser.antlr.GraphSDLLexer
 import com.apollographql.apollo.compiler.parser.antlr.GraphSDLParser
 import com.apollographql.apollo.compiler.parser.error.DocumentParseException
 import com.apollographql.apollo.compiler.parser.error.ParseException
+import com.apollographql.apollo.compiler.parser.sdl.GraphSDLSchemaParser.parse
 import org.antlr.v4.runtime.ANTLRInputStream
 import org.antlr.v4.runtime.BaseErrorListener
 import org.antlr.v4.runtime.CommonTokenStream
@@ -483,7 +484,7 @@ object GraphSDLSchemaParser {
       enumValue() != null -> enumValue().name().text
       listValue() != null -> listValue().value().map { it.parse() }
       objectValue() != null -> text
-      stringValue() != null -> text.removePrefix("\"").removeSuffix("\"")
+      stringValue() != null -> stringValue().parse()
       nullValue() != null -> null
       else -> throw ParseException(
           message = "Illegal default value `$text`",
@@ -524,14 +525,7 @@ object GraphSDLSchemaParser {
   }
 
   private fun GraphSDLParser.DescriptionContext?.parse(): String {
-    /**
-     * Block strings should strip their leading spaces.
-     * See https://spec.graphql.org/June2018/#sec-String-Value
-     */
-
-    return this?.STRING()?.text?.removePrefix("\"")?.removePrefix("\n")?.removeSuffix("\"")?.removeSuffix("\n")
-        ?: this?.BLOCK_STRING()?.text?.removePrefix("\"\"\"")?.removeSuffix("\"\"\"")?.trimIndent()
-        ?: ""
+    return this?.stringValue()?.parse() ?: ""
   }
 
   private fun GraphSDLParser.DirectivesContext?.parse(): List<GraphSdlSchema.Directive> {
@@ -556,6 +550,17 @@ object GraphSDLSchemaParser {
         ?.toMap()
         ?: emptyMap()
   }
+}
+
+private fun GraphSDLParser.StringValueContext.parse(): String {
+  /**
+   * Block strings should strip their leading spaces.
+   * See https://spec.graphql.org/June2018/#sec-String-Value
+   */
+
+  return STRING()?.text?.removePrefix("\"")?.removePrefix("\n")?.removeSuffix("\"")?.removeSuffix("\n")
+      ?: BLOCK_STRING()?.text?.removePrefix("\"\"\"")?.removeSuffix("\"\"\"")?.trimIndent()
+      ?: ""
 }
 
 private operator fun SourceLocation.Companion.invoke(token: Token) = SourceLocation(

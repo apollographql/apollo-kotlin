@@ -20,7 +20,7 @@
               "args": [
                 {
                   "name": "episode",
-                  "description": "",
+                  "description": "Test description with \"quotes\" inside",
                   "type": {
                     "kind": "ENUM",
                     "name": "Episode",
