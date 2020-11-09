@@ -25,7 +25,7 @@ class DirectivesTest {
   }
 
   @Test
-  fun `parse does not over fetch with default input`() {
+  fun `parse does not over fetch with skip directive`() {
     val responseJson = """
         {
           "data": {
@@ -36,7 +36,7 @@ class DirectivesTest {
           }
         }
       """.trimIndent()
-    val data = MyQuery(Input.absent()).parse(responseJson.byteInputStream().source().buffer()).data
+    val data = MyQuery(Input.optional(false)).parse(responseJson.byteInputStream().source().buffer()).data
     Truth.assertThat(data!!.getCityByName!!.id).isEqualTo(null)
   }
 }

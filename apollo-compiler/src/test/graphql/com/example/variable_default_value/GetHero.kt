@@ -41,9 +41,9 @@ import okio.IOException
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
 data class GetHero(
-  val myBool: Input<Boolean> = Input.optional(true),
-  val unit: LengthUnit = LengthUnit.safeValueOf("FOOT"),
-  val listOfInts: Input<List<Int?>> = Input.optional(listOf(1, 2, 3))
+  val myBool: Input<Boolean> = Input.absent(),
+  val unit: LengthUnit,
+  val listOfInts: Input<List<Int?>> = Input.absent()
 ) : Query<GetHero.Data, GetHero.Data, Operation.Variables> {
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
