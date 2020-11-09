@@ -3,6 +3,7 @@ package com.apollographql.apollo.gradle.test
 import com.apollographql.apollo.gradle.internal.child
 import com.apollographql.apollo.gradle.util.TestUtils
 import com.apollographql.apollo.gradle.util.TestUtils.withSimpleProject
+import com.apollographql.apollo.gradle.util.TestUtils.withTestProject
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.gradle.testkit.runner.TaskOutcome
@@ -56,6 +57,33 @@ class DownloadSchemaTests {
       assertEquals(TaskOutcome.SUCCESS, result.task(":downloadMockApolloSchema")?.outcome)
 
       assertEquals(content, dir.child("src", "main", "graphql", "com", "example", "schema.json").readText())
+    }
+  }
+
+  @Test
+  fun `Android, downloadApolloSchema find the schema location`() {
+    withTestProject("compilationUnitAndroid") { dir ->
+      val content = "schema should be here"
+      val mockResponse = MockResponse().setBody(content)
+      mockServer.enqueue(mockResponse)
+
+      TestUtils.executeTask("downloadApolloSchema", dir, "--endpoint=${mockServer.url("/").toUrl()}")
+
+      assertEquals(content, dir.child( "schema.json").readText())
+    }
+  }
+
+  @Test
+  fun `Android, downloadApolloSchema endpoint and schema override the default resolution`() {
+    withTestProject("compilationUnitAndroid") { dir ->
+      val content = "schema should be here"
+      val mockResponse = MockResponse().setBody(content)
+      mockServer.enqueue(mockResponse)
+
+      val schemaFile = File(dir, "schema.json")
+      TestUtils.executeTask("downloadApolloSchema", dir, "--endpoint=${mockServer.url("/").toUrl()}", "--schema=${schemaFile.absolutePath}")
+
+      assertEquals(content, schemaFile.readText())
     }
   }
 
