@@ -238,7 +238,8 @@ class GraphQLDocumentParser(
         result = Variable(
             name = name,
             type = type,
-            defaultValue = defaultValue()?.value()?.parse(schema.resolveType(type)),
+            // parse doesn't work with nullable types (see https://github.com/apollographql/apollo-android/issues/2742)
+            // defaultValue = defaultValue()?.value()?.parse(schema.resolveType(type)),
             sourceLocation = SourceLocation(variable().NAME().symbol)
         ),
         usedTypes = setOf(schemaType.name)
