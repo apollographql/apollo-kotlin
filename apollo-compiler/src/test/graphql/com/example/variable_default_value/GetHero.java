@@ -45,15 +45,19 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>, GetHero.Variables> {
-  public static final String OPERATION_ID = "174c448da54ce10fe5ade777417fe38dcbc242e68cd54f905a7c6e465e02fdf1";
+  public static final String OPERATION_ID = "6fd8246fe0a8a5557f683859ee3b34ad8702b590a811ff0adc73d112967700c3";
 
   public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
-    "query GetHero($myBool: Boolean = true, $unit: LengthUnit! = FOOT, $listOfInts: [Int] = [1, 2, 3]) {\n"
+    "query GetHero($myBool: Boolean = true, $unit: LengthUnit! = FOOT, $listOfInts: [Int] = [1, 2, 3], $first: Int = null) {\n"
         + "  hero {\n"
         + "    __typename\n"
         + "    name @include(if: $myBool)\n"
         + "    ... on Human {\n"
         + "      height(unit: $unit)\n"
+        + "    }\n"
+        + "    friendsConnection(first: $first) {\n"
+        + "      __typename\n"
+        + "      totalCount\n"
         + "    }\n"
         + "  }\n"
         + "  heroWithReview(listOfInts: $listOfInts) {\n"
@@ -73,11 +77,12 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
   private final GetHero.Variables variables;
 
   public GetHero(@NotNull Input<Boolean> myBool, @NotNull LengthUnit unit,
-      @NotNull Input<List<Integer>> listOfInts) {
+      @NotNull Input<List<Integer>> listOfInts, @NotNull Input<Integer> first) {
     Utils.checkNotNull(myBool, "myBool == null");
     Utils.checkNotNull(unit, "unit == null");
     Utils.checkNotNull(listOfInts, "listOfInts == null");
-    variables = new GetHero.Variables(myBool, unit, listOfInts);
+    Utils.checkNotNull(first, "first == null");
+    variables = new GetHero.Variables(myBool, unit, listOfInts, first);
   }
 
   @Override
@@ -168,6 +173,8 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
 
     private Input<List<Integer>> listOfInts = Input.absent();
 
+    private Input<Integer> first = Input.absent();
+
     Builder() {
     }
 
@@ -186,6 +193,11 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
       return this;
     }
 
+    public Builder first(@Nullable Integer first) {
+      this.first = Input.fromNullable(first);
+      return this;
+    }
+
     public Builder myBoolInput(@NotNull Input<Boolean> myBool) {
       this.myBool = Utils.checkNotNull(myBool, "myBool == null");
       return this;
@@ -196,9 +208,14 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
       return this;
     }
 
+    public Builder firstInput(@NotNull Input<Integer> first) {
+      this.first = Utils.checkNotNull(first, "first == null");
+      return this;
+    }
+
     public GetHero build() {
       Utils.checkNotNull(unit, "unit == null");
-      return new GetHero(myBool, unit, listOfInts);
+      return new GetHero(myBool, unit, listOfInts, first);
     }
   }
 
@@ -209,18 +226,25 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
 
     private final Input<List<Integer>> listOfInts;
 
+    private final Input<Integer> first;
+
     private final transient Map<String, Object> valueMap = new LinkedHashMap<>();
 
-    Variables(Input<Boolean> myBool, @NotNull LengthUnit unit, Input<List<Integer>> listOfInts) {
+    Variables(Input<Boolean> myBool, @NotNull LengthUnit unit, Input<List<Integer>> listOfInts,
+        Input<Integer> first) {
       this.myBool = myBool;
       this.unit = unit;
       this.listOfInts = listOfInts;
+      this.first = first;
       if (myBool.defined) {
         this.valueMap.put("myBool", myBool.value);
       }
       this.valueMap.put("unit", unit);
       if (listOfInts.defined) {
         this.valueMap.put("listOfInts", listOfInts.value);
+      }
+      if (first.defined) {
+        this.valueMap.put("first", first.value);
       }
     }
 
@@ -234,6 +258,10 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
 
     public Input<List<Integer>> listOfInts() {
       return listOfInts;
+    }
+
+    public Input<Integer> first() {
+      return first;
     }
 
     @Override
@@ -259,6 +287,9 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
                 }
               }
             } : null);
+          }
+          if (first.defined) {
+            writer.writeInt("first", first.value);
           }
         }
       };
@@ -386,6 +417,11 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
      */
     Optional<String> name();
 
+    /**
+     * The friends of the character exposed as a connection with edges
+     */
+    @NotNull FriendsConnection friendsConnection();
+
     ResponseFieldMarshaller marshaller();
 
     default <T> T visit(Visitor<T> visitor) {
@@ -433,6 +469,20 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
   }
 
   /**
+   * A connection object for a character's friends
+   */
+  public interface FriendsConnection {
+    @NotNull String __typename();
+
+    /**
+     * The total number of friends
+     */
+    Optional<Integer> totalCount();
+
+    ResponseFieldMarshaller marshaller();
+  }
+
+  /**
    * A humanoid creature from the Star Wars universe
    */
   public static class AsHuman implements Hero {
@@ -441,6 +491,12 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
       ResponseField.forString("name", "name", null, true, Arrays.<ResponseField.Condition>asList(
         ResponseField.Condition.booleanCondition("myBool", false)
       )),
+      ResponseField.forObject("friendsConnection", "friendsConnection", new UnmodifiableMapBuilder<String, Object>(1)
+      .put("first", new UnmodifiableMapBuilder<String, Object>(2)
+        .put("kind", "Variable")
+        .put("variableName", "first")
+        .build())
+      .build(), false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forDouble("height", "height", new UnmodifiableMapBuilder<String, Object>(1)
       .put("unit", new UnmodifiableMapBuilder<String, Object>(2)
         .put("kind", "Variable")
@@ -453,6 +509,8 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
 
     final Optional<String> name;
 
+    final @NotNull FriendsConnection1 friendsConnection;
+
     final Optional<Double> height;
 
     private transient volatile String $toString;
@@ -461,9 +519,11 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public AsHuman(@NotNull String __typename, @Nullable String name, @Nullable Double height) {
+    public AsHuman(@NotNull String __typename, @Nullable String name,
+        @NotNull FriendsConnection1 friendsConnection, @Nullable Double height) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.name = Optional.fromNullable(name);
+      this.friendsConnection = Utils.checkNotNull(friendsConnection, "friendsConnection == null");
       this.height = Optional.fromNullable(height);
     }
 
@@ -476,6 +536,13 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
      */
     public Optional<String> name() {
       return this.name;
+    }
+
+    /**
+     * The friends of the human exposed as a connection with edges
+     */
+    public @NotNull FriendsConnection1 friendsConnection() {
+      return this.friendsConnection;
     }
 
     /**
@@ -492,7 +559,8 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], name.isPresent() ? name.get() : null);
-          writer.writeDouble($responseFields[2], height.isPresent() ? height.get() : null);
+          writer.writeObject($responseFields[2], friendsConnection.marshaller());
+          writer.writeDouble($responseFields[3], height.isPresent() ? height.get() : null);
         }
       };
     }
@@ -503,6 +571,7 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
         $toString = "AsHuman{"
           + "__typename=" + __typename + ", "
           + "name=" + name + ", "
+          + "friendsConnection=" + friendsConnection + ", "
           + "height=" + height
           + "}";
       }
@@ -518,6 +587,7 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
         AsHuman that = (AsHuman) o;
         return this.__typename.equals(that.__typename)
          && this.name.equals(that.name)
+         && this.friendsConnection.equals(that.friendsConnection)
          && this.height.equals(that.height);
       }
       return false;
@@ -532,6 +602,8 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
         h *= 1000003;
         h ^= name.hashCode();
         h *= 1000003;
+        h ^= friendsConnection.hashCode();
+        h *= 1000003;
         h ^= height.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
@@ -540,12 +612,114 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
     }
 
     public static final class Mapper implements ResponseFieldMapper<AsHuman> {
+      final FriendsConnection1.Mapper friendsConnection1FieldMapper = new FriendsConnection1.Mapper();
+
       @Override
       public AsHuman map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String name = reader.readString($responseFields[1]);
-        final Double height = reader.readDouble($responseFields[2]);
-        return new AsHuman(__typename, name, height);
+        final FriendsConnection1 friendsConnection = reader.readObject($responseFields[2], new ResponseReader.ObjectReader<FriendsConnection1>() {
+          @Override
+          public FriendsConnection1 read(ResponseReader reader) {
+            return friendsConnection1FieldMapper.map(reader);
+          }
+        });
+        final Double height = reader.readDouble($responseFields[3]);
+        return new AsHuman(__typename, name, friendsConnection, height);
+      }
+    }
+  }
+
+  /**
+   * A connection object for a character's friends
+   */
+  public static class FriendsConnection1 implements FriendsConnection {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forInt("totalCount", "totalCount", null, true, Collections.<ResponseField.Condition>emptyList())
+    };
+
+    final @NotNull String __typename;
+
+    final Optional<Integer> totalCount;
+
+    private transient volatile String $toString;
+
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    public FriendsConnection1(@NotNull String __typename, @Nullable Integer totalCount) {
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.totalCount = Optional.fromNullable(totalCount);
+    }
+
+    public @NotNull String __typename() {
+      return this.__typename;
+    }
+
+    /**
+     * The total number of friends
+     */
+    public Optional<Integer> totalCount() {
+      return this.totalCount;
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeInt($responseFields[1], totalCount.isPresent() ? totalCount.get() : null);
+        }
+      };
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "FriendsConnection1{"
+          + "__typename=" + __typename + ", "
+          + "totalCount=" + totalCount
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof FriendsConnection1) {
+        FriendsConnection1 that = (FriendsConnection1) o;
+        return this.__typename.equals(that.__typename)
+         && this.totalCount.equals(that.totalCount);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= __typename.hashCode();
+        h *= 1000003;
+        h ^= totalCount.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<FriendsConnection1> {
+      @Override
+      public FriendsConnection1 map(ResponseReader reader) {
+        final String __typename = reader.readString($responseFields[0]);
+        final Integer totalCount = reader.readInt($responseFields[1]);
+        return new FriendsConnection1(__typename, totalCount);
       }
     }
   }
@@ -558,12 +732,20 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, true, Arrays.<ResponseField.Condition>asList(
         ResponseField.Condition.booleanCondition("myBool", false)
-      ))
+      )),
+      ResponseField.forObject("friendsConnection", "friendsConnection", new UnmodifiableMapBuilder<String, Object>(1)
+      .put("first", new UnmodifiableMapBuilder<String, Object>(2)
+        .put("kind", "Variable")
+        .put("variableName", "first")
+        .build())
+      .build(), false, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @NotNull String __typename;
 
     final Optional<String> name;
+
+    final @NotNull FriendsConnection2 friendsConnection;
 
     private transient volatile String $toString;
 
@@ -571,9 +753,11 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public AsCharacter(@NotNull String __typename, @Nullable String name) {
+    public AsCharacter(@NotNull String __typename, @Nullable String name,
+        @NotNull FriendsConnection2 friendsConnection) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.name = Optional.fromNullable(name);
+      this.friendsConnection = Utils.checkNotNull(friendsConnection, "friendsConnection == null");
     }
 
     public @NotNull String __typename() {
@@ -587,6 +771,13 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
       return this.name;
     }
 
+    /**
+     * The friends of the character exposed as a connection with edges
+     */
+    public @NotNull FriendsConnection2 friendsConnection() {
+      return this.friendsConnection;
+    }
+
     @SuppressWarnings({"rawtypes", "unchecked"})
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
@@ -594,6 +785,7 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], name.isPresent() ? name.get() : null);
+          writer.writeObject($responseFields[2], friendsConnection.marshaller());
         }
       };
     }
@@ -603,7 +795,8 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
       if ($toString == null) {
         $toString = "AsCharacter{"
           + "__typename=" + __typename + ", "
-          + "name=" + name
+          + "name=" + name + ", "
+          + "friendsConnection=" + friendsConnection
           + "}";
       }
       return $toString;
@@ -617,7 +810,8 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
       if (o instanceof AsCharacter) {
         AsCharacter that = (AsCharacter) o;
         return this.__typename.equals(that.__typename)
-         && this.name.equals(that.name);
+         && this.name.equals(that.name)
+         && this.friendsConnection.equals(that.friendsConnection);
       }
       return false;
     }
@@ -630,6 +824,8 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
         h ^= __typename.hashCode();
         h *= 1000003;
         h ^= name.hashCode();
+        h *= 1000003;
+        h ^= friendsConnection.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -637,11 +833,113 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
     }
 
     public static final class Mapper implements ResponseFieldMapper<AsCharacter> {
+      final FriendsConnection2.Mapper friendsConnection2FieldMapper = new FriendsConnection2.Mapper();
+
       @Override
       public AsCharacter map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String name = reader.readString($responseFields[1]);
-        return new AsCharacter(__typename, name);
+        final FriendsConnection2 friendsConnection = reader.readObject($responseFields[2], new ResponseReader.ObjectReader<FriendsConnection2>() {
+          @Override
+          public FriendsConnection2 read(ResponseReader reader) {
+            return friendsConnection2FieldMapper.map(reader);
+          }
+        });
+        return new AsCharacter(__typename, name, friendsConnection);
+      }
+    }
+  }
+
+  /**
+   * A connection object for a character's friends
+   */
+  public static class FriendsConnection2 implements FriendsConnection {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forInt("totalCount", "totalCount", null, true, Collections.<ResponseField.Condition>emptyList())
+    };
+
+    final @NotNull String __typename;
+
+    final Optional<Integer> totalCount;
+
+    private transient volatile String $toString;
+
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    public FriendsConnection2(@NotNull String __typename, @Nullable Integer totalCount) {
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.totalCount = Optional.fromNullable(totalCount);
+    }
+
+    public @NotNull String __typename() {
+      return this.__typename;
+    }
+
+    /**
+     * The total number of friends
+     */
+    public Optional<Integer> totalCount() {
+      return this.totalCount;
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeInt($responseFields[1], totalCount.isPresent() ? totalCount.get() : null);
+        }
+      };
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "FriendsConnection2{"
+          + "__typename=" + __typename + ", "
+          + "totalCount=" + totalCount
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof FriendsConnection2) {
+        FriendsConnection2 that = (FriendsConnection2) o;
+        return this.__typename.equals(that.__typename)
+         && this.totalCount.equals(that.totalCount);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= __typename.hashCode();
+        h *= 1000003;
+        h ^= totalCount.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<FriendsConnection2> {
+      @Override
+      public FriendsConnection2 map(ResponseReader reader) {
+        final String __typename = reader.readString($responseFields[0]);
+        final Integer totalCount = reader.readInt($responseFields[1]);
+        return new FriendsConnection2(__typename, totalCount);
       }
     }
   }

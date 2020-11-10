@@ -169,23 +169,13 @@ private val OperationType.primaryConstructorSpec: FunSpec
           val typeName = variable.type.asTypeName().let {
             if (variable.isOptional) Input::class.asClassName().parameterizedBy(it) else it
           }
-          val defaultValue = variable.defaultValue?.toDefaultValueCodeBlock(typeName, variable.type)
-              .let { code ->
-                if (variable.isOptional) {
-                  code?.let { CodeBlock.of("%T.optional(%L)", Input::class, it) } ?: CodeBlock.of("%T.absent()", Input::class)
-                } else {
-                  code
-                }
-              }
 
           ParameterSpec
               .builder(
                   name = variable.name,
                   type = typeName
               )
-              .applyIf(defaultValue != null) {
-                defaultValue(defaultValue!!)
-              }
+              .applyIf(variable.isOptional) { defaultValue("%T.absent()", Input::class.asClassName()) }
               .build()
         })
         .build()

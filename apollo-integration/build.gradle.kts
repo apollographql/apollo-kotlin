@@ -52,6 +52,11 @@ configure<ApolloExtension> {
     sourceFolder.set("com/apollographql/apollo/integration/performance")
     rootPackageName.set("com.apollographql.apollo.integration.performance")
   }
+  service("directives") {
+    sourceFolder.set("com/apollographql/apollo/integration/directives")
+    rootPackageName.set("com.apollographql.apollo.integration.directives")
+    generateKotlinModels.set(true)
+  }
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
@@ -68,5 +73,11 @@ tasks.withType(Test::class.java) {
   } else {
     // Enable some GC monitoring tools
     jvmArgs = listOf("-verbose:gc", "-Xloggc:gc.log", "-XX:+PrintGC", "-XX:+PrintGCDetails", "-XX:+PrintGCTimeStamps")
+  }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+  kotlinOptions {
+    jvmTarget = JavaVersion.VERSION_1_8.toString()
   }
 }
