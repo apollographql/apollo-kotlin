@@ -1,7 +1,0 @@
-query TestQuery($first: Int = null) {
-    hero {
-        friendsConnection(first: $first) {
-            totalCount
-        }
-    }
-}

@@ -2,6 +2,7 @@ query GetHero(
   $myBool: Boolean = true,
   $unit: LengthUnit! = FOOT,
   $listOfInts: [Int] = [1, 2, 3]
+  $first: Int = null,
   # FIXME
   #$review: ReviewInput! = {
   #  stars: 0,
@@ -14,9 +15,12 @@ query GetHero(
 ) {
   hero {
     name @include(if: $myBool)
-      ... on Human {
-        height(unit: $unit)
-      }
+    ... on Human {
+      height(unit: $unit)
+    }
+    friendsConnection(first: $first) {
+      totalCount
+    }
   }
   heroWithReview(listOfInts: $listOfInts) {
     name
