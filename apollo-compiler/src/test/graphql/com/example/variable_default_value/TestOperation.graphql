@@ -3,6 +3,7 @@ query GetHero(
   $unit: LengthUnit! = FOOT,
   $listOfInts: [Int] = [1, 2, 3]
   $first: Int = null,
+  $optionalUnit: LengthUnit = METER,
   # FIXME
   #$review: ReviewInput! = {
   #  stars: 0,
@@ -17,6 +18,7 @@ query GetHero(
     name @include(if: $myBool)
     ... on Human {
       height(unit: $unit)
+      heightInMeters: height(unit: $optionalUnit)
     }
     friendsConnection(first: $first) {
       totalCount
