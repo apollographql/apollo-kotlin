@@ -1,6 +1,8 @@
 
 Apollo Android requires your GraphQL server's schema as a `schema.json` file. You can obtain the contents of this file by running an introspection query on your server.
 
+**Note**: If you don't have a GraphQL server yet, you can use the server from the [tutorial](https://www.apollographql.com/docs/android/tutorial/00-introduction/): https://apollo-fullstack-tutorial.herokuapp.com/graphql.
+
 The Apollo Gradle plugin exposes a `downloadApolloSchema` task to help you obtain your schema. Provide this task your server's GraphQL endpoint and the output location for the `schema.json` file:
 
 ```bash:title=(shell)
