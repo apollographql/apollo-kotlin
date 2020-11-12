@@ -4,15 +4,58 @@ title: Get started with Java
 
 import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
 
-
-import AddPlugin from "../shared/add-plugin.mdx"
 import DownloadSchema from "../shared/download-schema.mdx"
 import AddQuery from "../shared/add-query.mdx"
 
 ## Add the Gradle plugin
 
-<AddPlugin />
+In your app Gradle file, apply the `com.apollographql.apollo` plugin:
 
+Using the [plugins DSL](https://docs.gradle.org/current/userguide/plugins.html#sec:plugins_block):
+
+<MultiCodeBlock>
+
+```groovy
+plugins {
+  // ...
+  id("com.apollographql.apollo").version("x.y.z")
+}
+```
+
+```kotlin
+plugins {
+  // ...
+  id("com.apollographql.apollo").version("x.y.z")
+}
+```
+
+</MultiCodeBlock>
+
+Or using the [legacy syntax](https://docs.gradle.org/current/userguide/plugins.html#sec:old_plugin_application):
+
+<MultiCodeBlock>
+
+```groovy
+buildscript {
+  // ...
+  classpath("com.apollographql.apollo:apollo-gradle-plugin:x.y.z")
+}
+
+apply plugin: "com.apollographql.apollo"
+```
+
+```kotlin
+buildscript {
+  // ...
+  classpath("com.apollographql.apollo:apollo-gradle-plugin:x.y.z")
+}
+
+apply(plugin = "com.apollographql.apollo")
+```
+
+</MultiCodeBlock>
+
+The plugin is hosted on the Gradle plugin portal, Jcenter and Maven Central.
 ## Add the runtime dependencies
 
 ```kotlin
