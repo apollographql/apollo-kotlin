@@ -44,7 +44,8 @@ data class GetHero(
   val myBool: Input<Boolean> = Input.absent(),
   val unit: LengthUnit,
   val listOfInts: Input<List<Int?>> = Input.absent(),
-  val first: Input<Int> = Input.absent()
+  val first: Input<Int> = Input.absent(),
+  val optionalUnit: Input<LengthUnit> = Input.absent()
 ) : Query<GetHero.Data, GetHero.Data, Operation.Variables> {
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
@@ -58,6 +59,9 @@ data class GetHero(
       }
       if (this@GetHero.first.defined) {
         this["first"] = this@GetHero.first.value
+      }
+      if (this@GetHero.optionalUnit.defined) {
+        this["optionalUnit"] = this@GetHero.optionalUnit.value
       }
     }
 
@@ -77,6 +81,9 @@ data class GetHero(
       }
       if (this@GetHero.first.defined) {
         writer.writeInt("first", this@GetHero.first.value)
+      }
+      if (this@GetHero.optionalUnit.defined) {
+        writer.writeString("optionalUnit", this@GetHero.optionalUnit.value?.rawValue)
       }
     }
   }
@@ -185,13 +192,18 @@ data class GetHero(
     /**
      * Height in the preferred unit, default is meters
      */
-    val height: Double?
+    val height: Double?,
+    /**
+     * Height in the preferred unit, default is meters
+     */
+    val heightInMeters: Double?
   ) : HeroCharacter {
     override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeString(RESPONSE_FIELDS[0], this@AsHuman.__typename)
       writer.writeString(RESPONSE_FIELDS[1], this@AsHuman.name)
       writer.writeObject(RESPONSE_FIELDS[2], this@AsHuman.friendsConnection.marshaller())
       writer.writeDouble(RESPONSE_FIELDS[3], this@AsHuman.height)
+      writer.writeDouble(RESPONSE_FIELDS[4], this@AsHuman.heightInMeters)
     }
 
     companion object {
@@ -207,7 +219,11 @@ data class GetHero(
           ResponseField.forDouble("height", "height", mapOf<String, Any>(
             "unit" to mapOf<String, Any>(
               "kind" to "Variable",
-              "variableName" to "unit")), true, null)
+              "variableName" to "unit")), true, null),
+          ResponseField.forDouble("heightInMeters", "height", mapOf<String, Any>(
+            "unit" to mapOf<String, Any>(
+              "kind" to "Variable",
+              "variableName" to "optionalUnit")), true, null)
           )
 
       operator fun invoke(reader: ResponseReader): AsHuman = reader.run {
@@ -217,11 +233,13 @@ data class GetHero(
           FriendsConnection(reader)
         }!!
         val height = readDouble(RESPONSE_FIELDS[3])
+        val heightInMeters = readDouble(RESPONSE_FIELDS[4])
         AsHuman(
           __typename = __typename,
           name = name,
           friendsConnection = friendsConnection,
-          height = height
+          height = height,
+          heightInMeters = heightInMeters
         )
       }
 
@@ -400,16 +418,17 @@ data class GetHero(
 
   companion object {
     const val OPERATION_ID: String =
-        "6fd8246fe0a8a5557f683859ee3b34ad8702b590a811ff0adc73d112967700c3"
+        "8072e53b9ff2579729b1fd0f06fe483b630c8c1e8a81c06f347a2f25bac675df"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
-          |query GetHero(${'$'}myBool: Boolean = true, ${'$'}unit: LengthUnit! = FOOT, ${'$'}listOfInts: [Int] = [1, 2, 3], ${'$'}first: Int = null) {
+          |query GetHero(${'$'}myBool: Boolean = true, ${'$'}unit: LengthUnit! = FOOT, ${'$'}listOfInts: [Int] = [1, 2, 3], ${'$'}first: Int = null, ${'$'}optionalUnit: LengthUnit = METER) {
           |  hero {
           |    __typename
           |    name @include(if: ${'$'}myBool)
           |    ... on Human {
           |      height(unit: ${'$'}unit)
+          |      heightInMeters: height(unit: ${'$'}optionalUnit)
           |    }
           |    friendsConnection(first: ${'$'}first) {
           |      __typename

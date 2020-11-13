@@ -45,15 +45,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>, GetHero.Variables> {
-  public static final String OPERATION_ID = "6fd8246fe0a8a5557f683859ee3b34ad8702b590a811ff0adc73d112967700c3";
+  public static final String OPERATION_ID = "8072e53b9ff2579729b1fd0f06fe483b630c8c1e8a81c06f347a2f25bac675df";
 
   public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
-    "query GetHero($myBool: Boolean = true, $unit: LengthUnit! = FOOT, $listOfInts: [Int] = [1, 2, 3], $first: Int = null) {\n"
+    "query GetHero($myBool: Boolean = true, $unit: LengthUnit! = FOOT, $listOfInts: [Int] = [1, 2, 3], $first: Int = null, $optionalUnit: LengthUnit = METER) {\n"
         + "  hero {\n"
         + "    __typename\n"
         + "    name @include(if: $myBool)\n"
         + "    ... on Human {\n"
         + "      height(unit: $unit)\n"
+        + "      heightInMeters: height(unit: $optionalUnit)\n"
         + "    }\n"
         + "    friendsConnection(first: $first) {\n"
         + "      __typename\n"
@@ -77,12 +78,14 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
   private final GetHero.Variables variables;
 
   public GetHero(@NotNull Input<Boolean> myBool, @NotNull LengthUnit unit,
-      @NotNull Input<List<Integer>> listOfInts, @NotNull Input<Integer> first) {
+      @NotNull Input<List<Integer>> listOfInts, @NotNull Input<Integer> first,
+      @NotNull Input<LengthUnit> optionalUnit) {
     Utils.checkNotNull(myBool, "myBool == null");
     Utils.checkNotNull(unit, "unit == null");
     Utils.checkNotNull(listOfInts, "listOfInts == null");
     Utils.checkNotNull(first, "first == null");
-    variables = new GetHero.Variables(myBool, unit, listOfInts, first);
+    Utils.checkNotNull(optionalUnit, "optionalUnit == null");
+    variables = new GetHero.Variables(myBool, unit, listOfInts, first, optionalUnit);
   }
 
   @Override
@@ -175,6 +178,8 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
 
     private Input<Integer> first = Input.absent();
 
+    private Input<LengthUnit> optionalUnit = Input.absent();
+
     Builder() {
     }
 
@@ -198,6 +203,11 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
       return this;
     }
 
+    public Builder optionalUnit(@Nullable LengthUnit optionalUnit) {
+      this.optionalUnit = Input.fromNullable(optionalUnit);
+      return this;
+    }
+
     public Builder myBoolInput(@NotNull Input<Boolean> myBool) {
       this.myBool = Utils.checkNotNull(myBool, "myBool == null");
       return this;
@@ -213,9 +223,14 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
       return this;
     }
 
+    public Builder optionalUnitInput(@NotNull Input<LengthUnit> optionalUnit) {
+      this.optionalUnit = Utils.checkNotNull(optionalUnit, "optionalUnit == null");
+      return this;
+    }
+
     public GetHero build() {
       Utils.checkNotNull(unit, "unit == null");
-      return new GetHero(myBool, unit, listOfInts, first);
+      return new GetHero(myBool, unit, listOfInts, first, optionalUnit);
     }
   }
 
@@ -228,14 +243,17 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
 
     private final Input<Integer> first;
 
+    private final Input<LengthUnit> optionalUnit;
+
     private final transient Map<String, Object> valueMap = new LinkedHashMap<>();
 
     Variables(Input<Boolean> myBool, @NotNull LengthUnit unit, Input<List<Integer>> listOfInts,
-        Input<Integer> first) {
+        Input<Integer> first, Input<LengthUnit> optionalUnit) {
       this.myBool = myBool;
       this.unit = unit;
       this.listOfInts = listOfInts;
       this.first = first;
+      this.optionalUnit = optionalUnit;
       if (myBool.defined) {
         this.valueMap.put("myBool", myBool.value);
       }
@@ -245,6 +263,9 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
       }
       if (first.defined) {
         this.valueMap.put("first", first.value);
+      }
+      if (optionalUnit.defined) {
+        this.valueMap.put("optionalUnit", optionalUnit.value);
       }
     }
 
@@ -262,6 +283,10 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
 
     public Input<Integer> first() {
       return first;
+    }
+
+    public Input<LengthUnit> optionalUnit() {
+      return optionalUnit;
     }
 
     @Override
@@ -290,6 +315,9 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
           }
           if (first.defined) {
             writer.writeInt("first", first.value);
+          }
+          if (optionalUnit.defined) {
+            writer.writeString("optionalUnit", optionalUnit.value != null ? optionalUnit.value.rawValue() : null);
           }
         }
       };
@@ -502,6 +530,12 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
         .put("kind", "Variable")
         .put("variableName", "unit")
         .build())
+      .build(), true, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forDouble("heightInMeters", "height", new UnmodifiableMapBuilder<String, Object>(1)
+      .put("unit", new UnmodifiableMapBuilder<String, Object>(2)
+        .put("kind", "Variable")
+        .put("variableName", "optionalUnit")
+        .build())
       .build(), true, Collections.<ResponseField.Condition>emptyList())
     };
 
@@ -513,6 +547,8 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
 
     final Optional<Double> height;
 
+    final Optional<Double> heightInMeters;
+
     private transient volatile String $toString;
 
     private transient volatile int $hashCode;
@@ -520,11 +556,13 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
     private transient volatile boolean $hashCodeMemoized;
 
     public AsHuman(@NotNull String __typename, @Nullable String name,
-        @NotNull FriendsConnection1 friendsConnection, @Nullable Double height) {
+        @NotNull FriendsConnection1 friendsConnection, @Nullable Double height,
+        @Nullable Double heightInMeters) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.name = Optional.fromNullable(name);
       this.friendsConnection = Utils.checkNotNull(friendsConnection, "friendsConnection == null");
       this.height = Optional.fromNullable(height);
+      this.heightInMeters = Optional.fromNullable(heightInMeters);
     }
 
     public @NotNull String __typename() {
@@ -552,6 +590,13 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
       return this.height;
     }
 
+    /**
+     * Height in the preferred unit, default is meters
+     */
+    public Optional<Double> heightInMeters() {
+      return this.heightInMeters;
+    }
+
     @SuppressWarnings({"rawtypes", "unchecked"})
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
@@ -561,6 +606,7 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
           writer.writeString($responseFields[1], name.isPresent() ? name.get() : null);
           writer.writeObject($responseFields[2], friendsConnection.marshaller());
           writer.writeDouble($responseFields[3], height.isPresent() ? height.get() : null);
+          writer.writeDouble($responseFields[4], heightInMeters.isPresent() ? heightInMeters.get() : null);
         }
       };
     }
@@ -572,7 +618,8 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
           + "__typename=" + __typename + ", "
           + "name=" + name + ", "
           + "friendsConnection=" + friendsConnection + ", "
-          + "height=" + height
+          + "height=" + height + ", "
+          + "heightInMeters=" + heightInMeters
           + "}";
       }
       return $toString;
@@ -588,7 +635,8 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
         return this.__typename.equals(that.__typename)
          && this.name.equals(that.name)
          && this.friendsConnection.equals(that.friendsConnection)
-         && this.height.equals(that.height);
+         && this.height.equals(that.height)
+         && this.heightInMeters.equals(that.heightInMeters);
       }
       return false;
     }
@@ -605,6 +653,8 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
         h ^= friendsConnection.hashCode();
         h *= 1000003;
         h ^= height.hashCode();
+        h *= 1000003;
+        h ^= heightInMeters.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -625,7 +675,8 @@ public final class GetHero implements Query<GetHero.Data, Optional<GetHero.Data>
           }
         });
         final Double height = reader.readDouble($responseFields[3]);
-        return new AsHuman(__typename, name, friendsConnection, height);
+        final Double heightInMeters = reader.readDouble($responseFields[4]);
+        return new AsHuman(__typename, name, friendsConnection, height, heightInMeters);
       }
     }
   }
