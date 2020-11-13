@@ -62,8 +62,8 @@ class CacheFieldValueResolver(
   @Suppress("UNCHECKED_CAST")
   private fun <T> fieldValue(record: Record, field: ResponseField): T? {
     val fieldKey = cacheKeyBuilder.build(field, variables)
-    check(record.hasField(fieldKey)) {
-      "Missing value: ${field.fieldName}"
+    if (!record.hasField(fieldKey)) {
+      throw CacheMissException(record, field.fieldName)
     }
     return record.field(fieldKey) as T?
   }
