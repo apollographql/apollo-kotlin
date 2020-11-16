@@ -24,6 +24,10 @@ DELETE FROM records WHERE key=?;
 deleteRecords:
 DELETE FROM records WHERE key IN ?;
 
+-- use only for debug
+selectRecords:
+SELECT * FROM records;
+
 changes:
 SELECT changes();
 

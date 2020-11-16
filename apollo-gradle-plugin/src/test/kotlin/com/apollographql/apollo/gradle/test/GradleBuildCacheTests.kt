@@ -1,6 +1,5 @@
 package com.apollographql.apollo.gradle.test
 
-
 import com.apollographql.apollo.gradle.util.TestUtils
 import com.apollographql.apollo.gradle.util.replaceInText
 import org.gradle.testkit.runner.TaskOutcome
@@ -11,7 +10,7 @@ import java.io.File
 class GradleBuildCacheTests {
 
   @Test
-  fun `generate apollo classes task is cached`() {
+  fun `generate and check apollo classes task are cached`() {
     TestUtils.withDirectory { dir ->
       val project1 = File(dir, "project1")
       val project2 = File(dir, "directory/project2")
@@ -22,13 +21,16 @@ class GradleBuildCacheTests {
 
       File(project2, "build.gradle.kts").replaceInText("../../../../", "../../../../../")
       File(project2, "settings.gradle.kts").replaceInText("../buildCache", "../../buildCache")
-      System.out.println("building project1")
+
+      println("Generate sources project1")
       var result = TestUtils.executeTask("generateServiceApolloSources", project1, "--build-cache")
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":module:generateServiceApolloSources")!!.outcome)
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":checkServiceApolloDuplicates")!!.outcome)
 
-      System.out.println("building project2")
+      println("Generate sources project2")
       result = TestUtils.executeTask("generateServiceApolloSources", project2, "--build-cache")
       Assert.assertEquals(TaskOutcome.FROM_CACHE, result.task(":module:generateServiceApolloSources")!!.outcome)
+      Assert.assertEquals(TaskOutcome.FROM_CACHE, result.task(":checkServiceApolloDuplicates")!!.outcome)
     }
   }
 }

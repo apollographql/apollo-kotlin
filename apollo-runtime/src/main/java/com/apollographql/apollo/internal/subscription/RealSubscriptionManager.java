@@ -340,7 +340,8 @@ public final class RealSubscriptionManager implements SubscriptionManager {
     return subscriptionRecords;
   }
 
-  void onConnectionHeartbeatTimeout() {
+  @Override
+  public void reconnect() {
     final SubscriptionManagerState oldState;
     synchronized (this) {
       oldState = state;
@@ -352,6 +353,10 @@ public final class RealSubscriptionManager implements SubscriptionManager {
 
     notifyStateChanged(oldState, SubscriptionManagerState.DISCONNECTED);
     notifyStateChanged(SubscriptionManagerState.DISCONNECTED, SubscriptionManagerState.CONNECTING);
+  }
+
+  void onConnectionHeartbeatTimeout() {
+    reconnect();
   }
 
   void onConnectionClosed() {

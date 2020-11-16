@@ -1,0 +1,15 @@
+query GetPage {
+  collection {
+    items {
+      title
+    }
+    ... on ParticularCollection {
+      items {
+        ... on ParticularItem {
+          image
+        }
+      }
+    }
+  }
+}
+
