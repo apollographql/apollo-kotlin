@@ -16,6 +16,7 @@ object ModelNames {
   fun generateApolloSources(apolloVariant: ApolloVariant) = camelCase("generate", apolloVariant.name, "ApolloSources")
   fun generateApolloSources(compilationUnit: DefaultCompilationUnit) = camelCase("generate", compilationUnit.variantName, compilationUnit.serviceName, "ApolloSources")
   fun downloadApolloSchema() = camelCase("downloadApolloSchema")
+  fun pushApolloSchema() = camelCase("pushApolloSchema")
   fun downloadApolloSchema(service: DefaultService) = camelCase("download", service.name, "ApolloSchema")
   fun checkApolloVersions() = "checkApolloVersions"
   fun checkApolloDuplicates(compilationUnit: DefaultCompilationUnit)= camelCase("check", compilationUnit.variantName, compilationUnit.serviceName, "ApolloDuplicates")

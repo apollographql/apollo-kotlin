@@ -1,6 +1,5 @@
 package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo.compiler.ApolloMetadata
 import com.apollographql.apollo.compiler.OperationIdGenerator
 import com.apollographql.apollo.compiler.OperationOutputGenerator
 import com.apollographql.apollo.gradle.api.ApolloAttributes
@@ -258,6 +257,9 @@ open class ApolloPlugin : Plugin<Project> {
       project.tasks.register(ModelNames.downloadApolloSchema(), ApolloDownloadSchemaCliTask::class.java) { task ->
         task.group = TASK_GROUP
         task.compilationUnits = apolloExtension.compilationUnits
+      }
+      project.tasks.register(ModelNames.pushApolloSchema(), ApolloPushSchemaTask::class.java) { task ->
+        task.group = TASK_GROUP
       }
     }
 

@@ -1,79 +1,21 @@
 package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.compiler.fromJson
-import com.squareup.moshi.JsonWriter
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
-import okio.buffer
-import okio.sink
-import java.io.ByteArrayOutputStream
-import java.util.concurrent.TimeUnit
 
 object SchemaDownloader {
-  private fun newOkHttpClient(): OkHttpClient {
-    val connectTimeoutSeconds = System.getProperty("okHttp.connectTimeout", "600").toLong()
-    val readTimeoutSeconds = System.getProperty("okHttp.readTimeout", "600").toLong()
-    return OkHttpClient.Builder()
-        .connectTimeout(connectTimeoutSeconds, TimeUnit.SECONDS)
-        .readTimeout(readTimeoutSeconds, TimeUnit.SECONDS)
-        .build()
-  }
-
-  private fun executeQuery(query: String, variables: String? = null, url: String, headers: Map<String, String>): Response {
-    val byteArrayOutputStream = ByteArrayOutputStream()
-    JsonWriter.of(byteArrayOutputStream.sink().buffer())
-        .apply {
-          beginObject()
-          name("query")
-          value(query)
-          if (variables != null) {
-            name("variables")
-            value(variables)
-          }
-          endObject()
-          flush()
-        }
-
-    val body = byteArrayOutputStream.toByteArray().toRequestBody("application/json".toMediaTypeOrNull())
-    val request = Request.Builder()
-        .post(body)
-        .apply {
-          headers.entries.forEach {
-            addHeader(it.key, it.value)
-          }
-        }
-        .header("apollographql-client-name", "apollo-gradle-plugin")
-        .header("apollographql-client-version", com.apollographql.apollo.compiler.VERSION)
-        .url(url)
-        .build()
-
-    val response = newOkHttpClient()
-        .newCall(request)
-        .execute()
-
-    check(response.isSuccessful) {
-      "cannot get schema from $url: ${response.code}:\n${response.body?.string()}"
-    }
-
-    return response
-  }
-
   fun downloadIntrospection(
       endpoint: String,
       headers: Map<String, String>
   ): String {
 
-    val response = executeQuery(introspectionQuery, null, endpoint, headers)
+    val response = SchemaHelper.executeQuery(introspectionQuery, emptyMap(), endpoint, headers)
 
     return response.body.use { responseBody ->
       responseBody!!.string()
     }
   }
 
-  fun downloadRegistry(graph: String, key: String, variant: String): String? {
+  fun downloadRegistry(key: String, graph: String, variant: String): String? {
     val query = """
     query DownloadSchema(${'$'}graphID: ID!, ${'$'}variant: String!) {
       service(id: ${'$'}graphID) {
@@ -87,14 +29,9 @@ object SchemaDownloader {
       }
     }
   """.trimIndent()
-    val variables = """
-      {
-        "graphID": "$graph",
-        "variant": "$variant"
-      }
-    """.trimIndent()
+    val variables = mapOf("graphID" to graph, "variant" to variant)
 
-    val response = executeQuery(query, variables, "https://graphql.api.apollographql.com/api/graphql", mapOf("x-api-key" to key))
+    val response = SchemaHelper.executeQuery(query, variables, "https://graphql.api.apollographql.com/api/graphql", mapOf("x-api-key" to key))
 
     val responseString = response.body.use { it?.string() }
 
