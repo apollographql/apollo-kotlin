@@ -8,7 +8,6 @@ project.apply {
 
 repositories {
   gradlePluginPortal()
-  mavenLocal()
   google()
   jcenter()
   mavenCentral()
