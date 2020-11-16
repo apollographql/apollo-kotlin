@@ -82,6 +82,10 @@ kotlin {
   }
 }
 
+metalava {
+  hiddenPackages += setOf("com.apollographql.apollo.api.internal")
+}
+
 tasks.withType<Checkstyle> {
   exclude("**/BufferedSourceJsonReader.java")
   exclude("**/JsonScope.java")

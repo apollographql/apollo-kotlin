@@ -2,6 +2,10 @@ plugins {
   `java-library`
 }
 
+metalava {
+  hiddenPackages += setOf("com.apollographql.apollo.cache.http.internal")
+}
+
 dependencies {
   add("compileOnly", groovy.util.Eval.x(project, "x.dep.jetbrainsAnnotations"))
 

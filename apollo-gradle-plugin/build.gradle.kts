@@ -15,6 +15,10 @@ fun Any.dot(key: String): Any {
   return (this as Map<String, *>)[key]!!
 }
 
+metalava {
+  hiddenPackages += setOf("com.apollographql.apollo.gradle.internal")
+}
+
 dependencies {
   compileOnly(gradleApi())
   compileOnly(dep("kotlin").dot("plugin"))
