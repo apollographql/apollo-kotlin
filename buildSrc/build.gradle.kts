@@ -9,7 +9,6 @@ project.apply {
 repositories {
   gradlePluginPortal()
   google()
-  jcenter()
   mavenCentral()
 }
 

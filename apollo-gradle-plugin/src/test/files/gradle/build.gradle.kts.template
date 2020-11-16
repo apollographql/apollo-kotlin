@@ -20,7 +20,11 @@ buildscript {
     }
     google()
     mavenCentral()
-    jcenter()
+    jcenter {
+      content {
+        includeGroup("org.jetbrains.trove4j")
+      }
+    }
   }
   dependencies {
     // ADD BUILDSCRIPT DEPENDENCIES HERE
@@ -47,8 +51,12 @@ repositories {
     url = uri("../../../build/localMaven")
   }
   google() // for aapt2
-  mavenCentral() // for jetbrainsAnnotations, depended on by apolloApi
-  jcenter() // for org.jetbrains.trove4j, depended on by lint
+  mavenCentral()
+  jcenter {
+    content {
+      includeGroup("org.jetbrains.trove4j")
+    }
+  }
 }
 
 dependencies {
