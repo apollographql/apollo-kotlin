@@ -63,7 +63,12 @@ abstract class DefaultApolloExtension(private val project: Project, private val 
     project.tasks.register(ModelNames.downloadApolloSchema(), ApolloDownloadSchemaTask::class.java) { task ->
       task.group = TASK_GROUP
     }
-
+    /**
+     * A simple task to be used from the command line to ease the schema upload
+     */
+    project.tasks.register(ModelNames.pushApolloSchema(), ApolloPushSchemaTask::class.java) { task ->
+      task.group = TASK_GROUP
+    }
     project.afterEvaluate {
       if (registerDefaultService) {
         registerService(defaultService)
