@@ -104,7 +104,7 @@ fun Project.configurePublishing() {
   if (javadocTask == null && android != null) {
     // create the Android javadoc if needed
     javadocTask = tasks.create("javadoc", Javadoc::class.java) {
-      source = android.sourceSets["main"].java.getSourceFiles()
+      source = android.sourceSets["main"].java.sourceFiles
       classpath += project.files(android.bootClasspath.joinToString(File.pathSeparator))
 
       (android as? com.android.build.gradle.LibraryExtension)?.libraryVariants?.configureEach {
@@ -132,7 +132,7 @@ fun Project.configurePublishing() {
         from(javaPluginConvention.sourceSets.get("main").allSource)
       }
       android != null -> {
-        from(android.sourceSets["main"].java.getSourceFiles())
+        from(android.sourceSets["main"].java.sourceFiles)
       }
     }
   }
