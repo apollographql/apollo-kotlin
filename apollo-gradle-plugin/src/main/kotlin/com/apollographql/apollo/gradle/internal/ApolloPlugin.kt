@@ -279,6 +279,9 @@ open class ApolloPlugin : Plugin<Project> {
       registerCompilationUnits(project, apolloExtension, checkVersionsTask)
 
       registerDownloadSchemaTasks(project, apolloExtension)
+      project.tasks.register(ModelNames.convertApolloSchema(), ApolloConvertSchemaTask::class.java) { task ->
+        task.group = TASK_GROUP
+      }
     }
 
     data class Dep(val name: String, val version: String?)

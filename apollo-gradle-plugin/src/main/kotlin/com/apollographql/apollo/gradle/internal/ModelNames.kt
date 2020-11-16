@@ -20,6 +20,7 @@ object ModelNames {
   fun downloadApolloSchema(service: DefaultService) = camelCase("download", service.name, "ApolloSchema")
   fun checkApolloVersions() = "checkApolloVersions"
   fun checkApolloDuplicates(compilationUnit: DefaultCompilationUnit)= camelCase("check", compilationUnit.variantName, compilationUnit.serviceName, "ApolloDuplicates")
+  fun convertApolloSchema() = "convertApolloSchema"
 
   // Configuration names
   fun apolloConfiguration() = "apolloMetadata" // not just 'apollo' to avoid name clashing with the apollo {} extension
