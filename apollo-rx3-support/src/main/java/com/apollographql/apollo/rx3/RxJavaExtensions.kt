@@ -22,8 +22,6 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
-import org.reactivestreams.Subscription
-import javax.management.Query
 
 @JvmSynthetic
 @CheckReturnValue
