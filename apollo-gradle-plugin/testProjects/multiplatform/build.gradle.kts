@@ -8,9 +8,7 @@ buildscript {
         maven {
             url = uri("../../../build/localMaven")
         }
-        google()
         mavenCentral()
-        jcenter()
     }
     dependencies {
         classpath(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
@@ -25,7 +23,6 @@ repositories {
     maven {
         url = uri("../../../build/localMaven")
     }
-    jcenter()
     mavenCentral()
 }
 
