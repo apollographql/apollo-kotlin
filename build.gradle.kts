@@ -54,7 +54,11 @@ subprojects {
   repositories {
     google()
     mavenCentral()
-    jcenter() // for trove4j
+    jcenter {
+      content {
+        includeGroup("org.jetbrains.trove4j")
+      }
+    }
   }
 
   group = property("GROUP")!!
@@ -101,7 +105,7 @@ fun Project.configurePublishing() {
     // create the Android javadoc if needed
     javadocTask = tasks.create("javadoc", Javadoc::class.java) {
       source = android.sourceSets["main"].java.sourceFiles
-      classpath += project.files(android.getBootClasspath().joinToString(File.pathSeparator))
+      classpath += project.files(android.bootClasspath.joinToString(File.pathSeparator))
 
       (android as? com.android.build.gradle.LibraryExtension)?.libraryVariants?.configureEach {
         if (name != "release") {

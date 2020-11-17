@@ -7,7 +7,11 @@ buildscript {
     }
     google()
     mavenCentral()
-    jcenter()
+    jcenter {
+      content {
+        includeGroup("org.jetbrains.trove4j")
+      }
+    }
   }
   dependencies {
     classpath(dep.android.plugin)
@@ -19,7 +23,11 @@ repositories {
   maven {
     url = uri("../../../build/localMaven")
   }
-  google() // for aapt2
-  mavenCentral() // for jetbrainsAnnotations, depended on by apolloApi
-  jcenter() // for org.jetbrains.trove4j, depended on by lint
+  google()
+  mavenCentral()
+  jcenter {
+    content {
+      includeGroup("org.jetbrains.trove4j")
+    }
+  }
 }

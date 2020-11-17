@@ -20,6 +20,10 @@ subprojects {
   repositories {
     google()
     mavenCentral()
-    jcenter()
+    jcenter {
+      content {
+        includeGroup("org.jetbrains.trove4j")
+      }
+    }
   }
 }
