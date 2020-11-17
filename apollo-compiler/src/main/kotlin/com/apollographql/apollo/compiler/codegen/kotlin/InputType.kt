@@ -91,7 +91,7 @@ internal fun InputType.Field.writeCodeBlock(thisRef: String): CodeBlock {
           CodeBlock.builder()
               .addStatement("if·(this@%L.%L.defined)·{", thisRef, name)
               .indent()
-              .addStatement("writer.writeInt(%S, this@%L.%L.value)", name, thisRef, name)
+              .addStatement("writer.writeInt(%S, this@%L.%L.value)", schemaName, thisRef, name)
               .unindent()
               .addStatement("}")
               .build()

@@ -250,7 +250,7 @@ data class ReviewInput(
       writer.writeString("CapitalizedField", this@ReviewInput.capitalizedField.value)
     }
     if (this@ReviewInput.capitalizedInt.defined) {
-      writer.writeInt("capitalizedInt", this@ReviewInput.capitalizedInt.value)
+      writer.writeInt("CapitalizedInt", this@ReviewInput.capitalizedInt.value)
     }
   }
 }
