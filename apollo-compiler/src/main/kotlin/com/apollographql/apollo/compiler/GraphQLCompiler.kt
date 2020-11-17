@@ -313,7 +313,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
         val schemaPackageName = if (packageName != null) {
           packageName
         } else {
-          val packageName = try {
+          try {
             "$rootPackageName.${roots.filePackageName(schemaFile.absolutePath)}".removePrefix(".").removeSuffix(".")
           } catch (e: IllegalArgumentException) {
             // Can happen if the schema is not a child of roots
