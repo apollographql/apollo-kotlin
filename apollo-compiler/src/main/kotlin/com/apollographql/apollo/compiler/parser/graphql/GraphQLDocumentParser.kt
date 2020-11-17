@@ -554,6 +554,11 @@ class GraphQLDocumentParser(
   }
 
   private fun GraphQLParser.ValueContext.parse(schemaTypeRef: IntrospectionSchema.TypeRef): Any? {
+    if (this is GraphQLParser.LiteralValueContext && text.toLowerCase() == "null"
+        && schemaTypeRef.kind != IntrospectionSchema.Kind.NON_NULL) {
+      return null
+    }
+
     return when (schemaTypeRef.kind) {
       IntrospectionSchema.Kind.ENUM -> text.toString().trim()
       IntrospectionSchema.Kind.INTERFACE, IntrospectionSchema.Kind.OBJECT, IntrospectionSchema.Kind.INPUT_OBJECT, IntrospectionSchema.Kind.UNION -> {
@@ -591,17 +596,19 @@ class GraphQLDocumentParser(
           }.toMap()
         }
       }
-      IntrospectionSchema.Kind.SCALAR -> when (ScalarType.forName(schemaTypeRef.name ?: "")) {
-        ScalarType.INT -> text.trim().toIntOrNull() ?: throw ParseException(
-            message = "Can't parse `Int` value",
-            token = start
-        )
-        ScalarType.BOOLEAN -> text.trim().toLowerCase() == "true"
-        ScalarType.FLOAT -> text.trim().toDoubleOrNull() ?: throw ParseException(
-            message = "Can't parse `Float` value",
-            token = start
-        )
-        else -> text.toString().replace("\"", "")
+      IntrospectionSchema.Kind.SCALAR -> {
+        when (ScalarType.forName(schemaTypeRef.name ?: "")) {
+          ScalarType.INT -> text.trim().toIntOrNull() ?: throw ParseException(
+              message = "Can't parse `Int` value",
+              token = start
+          )
+          ScalarType.BOOLEAN -> text.trim().toLowerCase() == "true"
+          ScalarType.FLOAT -> text.trim().toDoubleOrNull() ?: throw ParseException(
+              message = "Can't parse `Float` value",
+              token = start
+          )
+          else -> text.toString().replace("\"", "")
+        }
       }
       IntrospectionSchema.Kind.NON_NULL -> parse(schemaTypeRef.ofType!!)
       IntrospectionSchema.Kind.LIST -> {

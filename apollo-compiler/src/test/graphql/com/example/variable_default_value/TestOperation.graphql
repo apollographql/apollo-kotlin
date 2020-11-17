@@ -2,7 +2,7 @@ query GetHero(
   $myBool: Boolean = true,
   $unit: LengthUnit! = FOOT,
   $listOfInts: [Int] = [1, 2, 3]
-  $first: Int = 5,
+  $first: Int = null,
   $optionalUnit: LengthUnit = METER,
   # FIXME
   #$review: ReviewInput! = {

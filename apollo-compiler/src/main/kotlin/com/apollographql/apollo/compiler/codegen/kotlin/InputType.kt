@@ -6,6 +6,7 @@ import com.apollographql.apollo.api.internal.InputFieldWriter
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.ast.FieldType
 import com.apollographql.apollo.compiler.ast.InputType
+import com.apollographql.apollo.compiler.ast.canBeOmitted
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.asPropertySpec
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.asTypeName
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.suppressWarningsAnnotation
@@ -37,13 +38,13 @@ private val InputType.primaryConstructorSpec: FunSpec
 private fun InputType.Field.parameterSpec(): ParameterSpec {
   val rawTypeName = type.asTypeName()
   val typeName = when {
-    isOptional -> Input::class.asClassName().parameterizedBy(rawTypeName)
+    canBeOmitted -> Input::class.asClassName().parameterizedBy(rawTypeName)
     else -> rawTypeName
   }
   val defaultValue = defaultValue
       ?.toDefaultValueCodeBlock(typeName = rawTypeName, fieldType = type)
       .let { code ->
-        if (isOptional) {
+        if (canBeOmitted) {
           code?.let { CodeBlock.of("%T.optional(%L)", Input::class, it) } ?: CodeBlock.of("%T.absent()", Input::class)
         } else {
           code
@@ -74,7 +75,7 @@ internal fun InputType.Field.writeCodeBlock(thisRef: String): CodeBlock {
   return when (type) {
     is FieldType.Scalar -> when (type) {
       is FieldType.Scalar.String -> {
-        if (isOptional) {
+        if (canBeOmitted) {
           CodeBlock.builder()
               .addStatement("if·(this@%L.%L.defined)·{", thisRef, name)
               .indent()
@@ -87,7 +88,7 @@ internal fun InputType.Field.writeCodeBlock(thisRef: String): CodeBlock {
         }
       }
       is FieldType.Scalar.Int -> {
-        if (isOptional) {
+        if (canBeOmitted) {
           CodeBlock.builder()
               .addStatement("if·(this@%L.%L.defined)·{", thisRef, name)
               .indent()
@@ -100,7 +101,7 @@ internal fun InputType.Field.writeCodeBlock(thisRef: String): CodeBlock {
         }
       }
       is FieldType.Scalar.Boolean -> {
-        if (isOptional) {
+        if (canBeOmitted) {
           CodeBlock.builder()
               .addStatement("if·(this@%L.%L.defined)·{", thisRef, name)
               .indent()
@@ -113,7 +114,7 @@ internal fun InputType.Field.writeCodeBlock(thisRef: String): CodeBlock {
         }
       }
       is FieldType.Scalar.Float -> {
-        if (isOptional) {
+        if (canBeOmitted) {
           CodeBlock.builder()
               .addStatement("if·(this@%L.%L.defined)·{", thisRef, name)
               .indent()
@@ -126,7 +127,7 @@ internal fun InputType.Field.writeCodeBlock(thisRef: String): CodeBlock {
         }
       }
       is FieldType.Scalar.Enum -> {
-        if (isOptional) {
+        if (canBeOmitted) {
           CodeBlock.builder()
               .addStatement("if·(this@%L.%L.defined)·{", thisRef, name)
               .indent()
@@ -139,7 +140,7 @@ internal fun InputType.Field.writeCodeBlock(thisRef: String): CodeBlock {
         }
       }
       is FieldType.Scalar.Custom -> {
-        if (isOptional) {
+        if (canBeOmitted) {
           CodeBlock.builder()
               .addStatement("if·(this@%L.%L.defined)·{", thisRef, name)
               .indent()
@@ -157,7 +158,7 @@ internal fun InputType.Field.writeCodeBlock(thisRef: String): CodeBlock {
       }
     }
     is FieldType.Object -> {
-      if (isOptional) {
+      if (canBeOmitted) {
         CodeBlock.builder()
             .addStatement("if·(this@%L.%L.defined)·{", thisRef, name)
             .indent()
@@ -171,7 +172,7 @@ internal fun InputType.Field.writeCodeBlock(thisRef: String): CodeBlock {
     }
     is FieldType.Array -> {
       val codeBlockBuilder: CodeBlock.Builder = CodeBlock.Builder()
-      if (isOptional) {
+      if (canBeOmitted) {
         codeBlockBuilder
             .beginControlFlow("if·(this@%L.%L.defined)", thisRef, name)
             .add("writer.writeList(%S, this@%L.%L.value?.let { value ->\n", schemaName, thisRef, name)

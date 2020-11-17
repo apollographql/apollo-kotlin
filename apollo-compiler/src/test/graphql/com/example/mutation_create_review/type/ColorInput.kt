@@ -21,7 +21,7 @@ internal data class ColorInput(
   /**
    * Red color
    */
-  val red: Int = 1,
+  val red: Input<Int> = Input.optional(1),
   /**
    * Green color
    */
@@ -29,7 +29,7 @@ internal data class ColorInput(
   /**
    * Blue color
    */
-  val blue: Double = 1.5,
+  val blue: Input<Double> = Input.optional(1.5),
   /**
    * for test purpose only
    */
@@ -40,11 +40,15 @@ internal data class ColorInput(
   val reviewRefInput: Input<ReviewRefInput> = Input.absent()
 ) : InputType {
   override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
-    writer.writeInt("red", this@ColorInput.red)
+    if (this@ColorInput.red.defined) {
+      writer.writeInt("red", this@ColorInput.red.value)
+    }
     if (this@ColorInput.green.defined) {
       writer.writeDouble("green", this@ColorInput.green.value)
     }
-    writer.writeDouble("blue", this@ColorInput.blue)
+    if (this@ColorInput.blue.defined) {
+      writer.writeDouble("blue", this@ColorInput.blue.value)
+    }
     if (this@ColorInput.enumWithDefaultValue.defined) {
       writer.writeString("enumWithDefaultValue",
           this@ColorInput.enumWithDefaultValue.value?.rawValue)

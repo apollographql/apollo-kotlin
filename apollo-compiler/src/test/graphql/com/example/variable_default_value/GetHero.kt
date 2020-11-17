@@ -53,7 +53,9 @@ data class GetHero(
       if (this@GetHero.myBool.defined) {
         this["myBool"] = this@GetHero.myBool.value
       }
-      this["unit"] = this@GetHero.unit
+      if (this@GetHero.unit.defined) {
+        this["unit"] = this@GetHero.unit.value
+      }
       if (this@GetHero.listOfInts.defined) {
         this["listOfInts"] = this@GetHero.listOfInts.value
       }
@@ -69,7 +71,9 @@ data class GetHero(
       if (this@GetHero.myBool.defined) {
         writer.writeBoolean("myBool", this@GetHero.myBool.value)
       }
-      writer.writeString("unit", this@GetHero.unit.rawValue)
+      if (this@GetHero.unit.defined) {
+        writer.writeString("unit", this@GetHero.unit.value?.rawValue)
+      }
       if (this@GetHero.listOfInts.defined) {
         writer.writeList("listOfInts", this@GetHero.listOfInts.value?.let { value ->
           InputFieldWriter.ListWriter { listItemWriter ->
@@ -418,11 +422,11 @@ data class GetHero(
 
   companion object {
     const val OPERATION_ID: String =
-        "831984a89d7072e91db39b1164620317b57862379e374fb57c18c9d00dce51e6"
+        "8072e53b9ff2579729b1fd0f06fe483b630c8c1e8a81c06f347a2f25bac675df"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
-          |query GetHero(${'$'}myBool: Boolean = true, ${'$'}unit: LengthUnit! = FOOT, ${'$'}listOfInts: [Int] = [1, 2, 3], ${'$'}first: Int = 5, ${'$'}optionalUnit: LengthUnit = METER) {
+          |query GetHero(${'$'}myBool: Boolean = true, ${'$'}unit: LengthUnit! = FOOT, ${'$'}listOfInts: [Int] = [1, 2, 3], ${'$'}first: Int = null, ${'$'}optionalUnit: LengthUnit = METER) {
           |  hero {
           |    __typename
           |    name @include(if: ${'$'}myBool)

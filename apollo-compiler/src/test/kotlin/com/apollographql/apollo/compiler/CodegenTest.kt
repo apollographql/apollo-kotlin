@@ -192,7 +192,6 @@ class CodegenTest(private val folder: File, private val testLanguage: TestLangua
     fun data() =  File("src/test/graphql/com/example/")
           .listFiles()!!
           .filter { it.isDirectory }
-        .filter { it.name.contains("variable_defau")}
           .let {
             it.map {
               arrayOf(it, TestLanguage.Kotlin)

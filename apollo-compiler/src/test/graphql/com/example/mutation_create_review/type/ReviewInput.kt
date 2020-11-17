@@ -45,7 +45,7 @@ internal data class ReviewInput(
   /**
    * for test purpose only
    */
-  val nonNullableEnumWithDefaultValue: Episode = Episode.safeValueOf("JEDI"),
+  val nonNullableEnumWithDefaultValue: Input<Episode> = Input.optional(Episode.safeValueOf("JEDI")),
   /**
    * for test purpose only
    */
@@ -126,8 +126,10 @@ internal data class ReviewInput(
       writer.writeString("enumWithDefaultValue",
           this@ReviewInput.enumWithDefaultValue.value?.rawValue)
     }
-    writer.writeString("nonNullableEnumWithDefaultValue",
-        this@ReviewInput.nonNullableEnumWithDefaultValue.rawValue)
+    if (this@ReviewInput.nonNullableEnumWithDefaultValue.defined) {
+      writer.writeString("nonNullableEnumWithDefaultValue",
+          this@ReviewInput.nonNullableEnumWithDefaultValue.value?.rawValue)
+    }
     if (this@ReviewInput.nullableEnum.defined) {
       writer.writeString("nullableEnum", this@ReviewInput.nullableEnum.value?.rawValue)
     }

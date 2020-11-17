@@ -10,6 +10,7 @@ import com.apollographql.apollo.compiler.ast.FieldType
 import com.apollographql.apollo.compiler.ast.InputType
 import com.apollographql.apollo.compiler.ast.ObjectType
 import com.apollographql.apollo.compiler.ast.TypeRef
+import com.apollographql.apollo.compiler.ast.canBeOmitted
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.ClassName
@@ -107,14 +108,24 @@ internal object KotlinCodeGen {
       val builder = CodeBlock.builder().add("%T.%L", ResponseField::class, factoryMethod)
       when {
         type is FieldType.Scalar && type is FieldType.Scalar.Custom -> {
-          builder.add("(%S, %S, %L, %L, %T.%L, %L)", responseName, schemaName, arguments.takeIf { it.isNotEmpty() }.toCode(), isOptional,
-              type.customEnumType.asTypeName(), type.customEnumConst, conditionsListCode(conditions))
+          builder.add("(%S, %S, %L, %L, %T.%L, %L)",
+              responseName,
+              schemaName,
+              arguments.takeIf { it.isNotEmpty() }.toCode(),
+              isOptional,
+              type.customEnumType.asTypeName(),
+              type.customEnumConst,
+              conditionsListCode(conditions))
         }
         type is FieldType.Fragment -> {
           builder.add("(%S, %S, %L)", responseName, schemaName, conditionsListCode(conditions))
         }
         else -> {
-          builder.add("(%S, %S, %L, %L, %L)", responseName, schemaName, arguments.takeIf { it.isNotEmpty() }.toCode(), isOptional,
+          builder.add("(%S, %S, %L, %L, %L)",
+              responseName,
+              schemaName,
+              arguments.takeIf { it.isNotEmpty() }.toCode(),
+              isOptional,
               conditionsListCode(conditions))
         }
       }
@@ -381,7 +392,7 @@ internal object KotlinCodeGen {
       PropertySpec
           .builder(
               name = name,
-              type = if (isOptional || defaultValue != null) Input::class.asClassName().parameterizedBy(
+              type = if (canBeOmitted) Input::class.asClassName().parameterizedBy(
                   type.asTypeName()) else type.asTypeName()
           )
           .apply { if (description.isNotBlank()) addKdoc("%L\n", description) }

@@ -152,3 +152,6 @@ internal interface SchemaVisitor {
 
   fun visit(operationType: OperationType)
 }
+
+internal val InputType.Field.canBeOmitted
+  get() = isOptional || defaultValue != null

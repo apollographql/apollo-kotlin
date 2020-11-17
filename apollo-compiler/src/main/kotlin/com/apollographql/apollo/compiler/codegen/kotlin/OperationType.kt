@@ -17,6 +17,7 @@ import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.ast.InputType
 import com.apollographql.apollo.compiler.ast.ObjectType
 import com.apollographql.apollo.compiler.ast.OperationType
+import com.apollographql.apollo.compiler.ast.canBeOmitted
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.asPropertySpec
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.asTypeName
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.createMapperFun
@@ -167,7 +168,7 @@ private val OperationType.primaryConstructorSpec: FunSpec
         .constructorBuilder()
         .addParameters(variables.fields.map { variable ->
           val typeName = variable.type.asTypeName().let {
-            if (variable.isOptional || variable.defaultValue != null) Input::class.asClassName().parameterizedBy(it) else it
+            if (variable.canBeOmitted) Input::class.asClassName().parameterizedBy(it) else it
           }
 
           ParameterSpec
@@ -175,7 +176,7 @@ private val OperationType.primaryConstructorSpec: FunSpec
                   name = variable.name,
                   type = typeName
               )
-              .applyIf(variable.isOptional|| variable.defaultValue != null) { defaultValue("%T.absent()", Input::class.asClassName()) }
+              .applyIf(variable.canBeOmitted) { defaultValue("%T.absent()", Input::class.asClassName()) }
               .build()
         })
         .build()
@@ -204,7 +205,7 @@ private fun InputType.variablesValueMapSpec(operationType: OperationType): FunSp
       .beginControlFlow("return mutableMapOf<%T, %T>().apply", String::class, Any::class.asClassName().copy(nullable = true))
       .addCode(
           fields.map { field ->
-            if (field.isOptional) {
+            if (field.canBeOmitted) {
               CodeBlock.builder()
                   .addStatement("if·(this@%L.%L.defined)·{", operationType.name, field.name)
                   .indent()
