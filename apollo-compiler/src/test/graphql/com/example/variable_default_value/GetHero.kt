@@ -42,7 +42,7 @@ import okio.IOException
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
 data class GetHero(
   val myBool: Input<Boolean> = Input.absent(),
-  val unit: LengthUnit,
+  val unit: Input<LengthUnit> = Input.absent(),
   val listOfInts: Input<List<Int?>> = Input.absent(),
   val first: Input<Int> = Input.absent(),
   val optionalUnit: Input<LengthUnit> = Input.absent()
@@ -418,11 +418,11 @@ data class GetHero(
 
   companion object {
     const val OPERATION_ID: String =
-        "8072e53b9ff2579729b1fd0f06fe483b630c8c1e8a81c06f347a2f25bac675df"
+        "831984a89d7072e91db39b1164620317b57862379e374fb57c18c9d00dce51e6"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
-          |query GetHero(${'$'}myBool: Boolean = true, ${'$'}unit: LengthUnit! = FOOT, ${'$'}listOfInts: [Int] = [1, 2, 3], ${'$'}first: Int = null, ${'$'}optionalUnit: LengthUnit = METER) {
+          |query GetHero(${'$'}myBool: Boolean = true, ${'$'}unit: LengthUnit! = FOOT, ${'$'}listOfInts: [Int] = [1, 2, 3], ${'$'}first: Int = 5, ${'$'}optionalUnit: LengthUnit = METER) {
           |  hero {
           |    __typename
           |    name @include(if: ${'$'}myBool)

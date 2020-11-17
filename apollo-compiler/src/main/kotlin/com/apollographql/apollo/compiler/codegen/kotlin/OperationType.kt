@@ -167,7 +167,7 @@ private val OperationType.primaryConstructorSpec: FunSpec
         .constructorBuilder()
         .addParameters(variables.fields.map { variable ->
           val typeName = variable.type.asTypeName().let {
-            if (variable.isOptional) Input::class.asClassName().parameterizedBy(it) else it
+            if (variable.isOptional || variable.defaultValue != null) Input::class.asClassName().parameterizedBy(it) else it
           }
 
           ParameterSpec
@@ -175,7 +175,7 @@ private val OperationType.primaryConstructorSpec: FunSpec
                   name = variable.name,
                   type = typeName
               )
-              .applyIf(variable.isOptional) { defaultValue("%T.absent()", Input::class.asClassName()) }
+              .applyIf(variable.isOptional|| variable.defaultValue != null) { defaultValue("%T.absent()", Input::class.asClassName()) }
               .build()
         })
         .build()

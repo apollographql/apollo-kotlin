@@ -381,7 +381,7 @@ internal object KotlinCodeGen {
       PropertySpec
           .builder(
               name = name,
-              type = if (isOptional) Input::class.asClassName().parameterizedBy(
+              type = if (isOptional || defaultValue != null) Input::class.asClassName().parameterizedBy(
                   type.asTypeName()) else type.asTypeName()
           )
           .apply { if (description.isNotBlank()) addKdoc("%L\n", description) }
