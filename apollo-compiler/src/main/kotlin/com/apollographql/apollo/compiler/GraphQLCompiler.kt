@@ -310,17 +310,15 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
           }
         }
 
-        val schemaPackageName = if (packageName != null) {
-          packageName
-        } else {
-          try {
-            "$rootPackageName.${roots.filePackageName(schemaFile.absolutePath)}".removePrefix(".").removeSuffix(".")
-          } catch (e: IllegalArgumentException) {
-            // Can happen if the schema is not a child of roots
-            ""
-          }
-
-        }
+        val schemaPackageName = packageName
+            ?: try {
+              roots.filePackageName(schemaFile.absolutePath)
+            } catch (e: IllegalArgumentException) {
+              // Can happen if the schema is not a child of roots
+              ""
+            }.let {
+              "$rootPackageName.$it".removePrefix(".").removeSuffix(".")
+            }
         return SchemaInfo(introspectionSchema, schemaPackageName)
       } else if (metadata != null) {
         return SchemaInfo(metadata.schema!!.__schema.toIntrospectionSchema(), metadata.schemaPackageName!!)
