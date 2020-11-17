@@ -26,6 +26,12 @@ package com.apollographql.apollo.cache.normalized.sql {
   }
 
   public final class SqlNormalizedCacheFactory extends com.apollographql.apollo.cache.normalized.NormalizedCacheFactory<com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCache> {
+    ctor public SqlNormalizedCacheFactory();
+    ctor public SqlNormalizedCacheFactory(String name);
+    method public com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCache create(com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter recordFieldAdapter);
+  }
+
+  public final class SqlNormalizedCacheFactory extends com.apollographql.apollo.cache.normalized.NormalizedCacheFactory<com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCache> {
     ctor public SqlNormalizedCacheFactory(String url, java.util.Properties properties);
     ctor public SqlNormalizedCacheFactory(String url);
     method public com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCache create(com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter recordFieldAdapter);
@@ -41,12 +47,6 @@ package com.apollographql.apollo.cache.normalized.sql {
     ctor public SqlNormalizedCacheFactory(android.content.Context context, String? name);
     ctor public SqlNormalizedCacheFactory(android.content.Context context);
     ctor public SqlNormalizedCacheFactory(com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper apolloSqlHelper);
-    method public com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCache create(com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter recordFieldAdapter);
-  }
-
-  public final class SqlNormalizedCacheFactory extends com.apollographql.apollo.cache.normalized.NormalizedCacheFactory<com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCache> {
-    ctor public SqlNormalizedCacheFactory();
-    ctor public SqlNormalizedCacheFactory(String name);
     method public com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCache create(com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter recordFieldAdapter);
   }
 
