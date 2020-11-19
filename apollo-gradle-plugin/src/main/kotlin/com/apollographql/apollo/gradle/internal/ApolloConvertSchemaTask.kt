@@ -17,9 +17,12 @@ import org.gradle.api.tasks.options.Option
 import java.io.File
 
 abstract class ApolloConvertSchemaTask: DefaultTask() {
+  @get:Input
   @get:Option(option = "from", description = "schema to convert from")
   abstract val from: Property<String>
 
+  // Even if this is points to an output file, for the purpose of the task this is seen as an input
+  @get:Input
   @get:Option(option = "to", description = "schema to convert to")
   abstract val to: Property<String>
 
