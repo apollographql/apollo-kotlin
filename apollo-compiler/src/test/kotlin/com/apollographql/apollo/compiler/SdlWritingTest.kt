@@ -82,6 +82,7 @@ class SdlWritingTest {
     val schema1 = GraphQLParser.parseSchema(File("src/test/sdl/schema.sdl")).toDocument()
 
     val scratchFile = File("build/sdl-test/schema.sdl")
+    scratchFile.parentFile.mkdirs()
     schema1.toFile(scratchFile)
 
     val schema2 = GraphQLParser.parseSchema(scratchFile).toDocument()
