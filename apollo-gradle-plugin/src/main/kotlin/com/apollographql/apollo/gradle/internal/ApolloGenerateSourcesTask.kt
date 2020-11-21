@@ -33,9 +33,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:OutputFile
   abstract val metadataOutputFile: RegularFileProperty
 
-  @get:Input
-  abstract val generateMetadata: Property<Boolean>
-
   @get:InputFiles
   @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val graphqlFiles: ConfigurableFileCollection
@@ -108,9 +105,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Input
   abstract val projectName: Property<String>
 
-  @get:Internal // The generated models do not depend on the location on the project
-  abstract val projectRootDir: DirectoryProperty
-
   @TaskAction
   fun taskAction() {
     val args = GraphQLCompiler.Arguments(
@@ -121,10 +115,8 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
         metadata = metadataFiles.files.toList(),
         metadataOutputFile = metadataOutputFile.asFile.get(),
-        generateMetadata = generateMetadata.getOrElse(false),
-        alwaysGenerateTypesMatching = alwaysGenerateTypesMatching.orNull,
+        alwaysGenerateTypesMatching = alwaysGenerateTypesMatching.getOrElse(emptySet()),
         moduleName = projectName.get(),
-        rootProjectDir = projectRootDir.get().asFile,
 
         operationOutputFile = operationOutputFile.asFile.orNull,
         operationOutputGenerator = operationOutputGenerator,
@@ -139,7 +131,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         generateAsInternal = generateAsInternal.getOrElse(false),
         generateFilterNotNull = generateFilterNotNull.getOrElse(false),
         enumAsSealedClassPatternFilters = sealedClassesForEnumsMatching.getOrElse(emptyList()).toSet(),
-
     )
 
     val logger = object :GraphQLCompiler.Logger {

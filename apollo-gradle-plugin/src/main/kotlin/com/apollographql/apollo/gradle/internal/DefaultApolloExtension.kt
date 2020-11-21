@@ -303,7 +303,6 @@ abstract class DefaultApolloExtension(private val project: Project, private val 
         disallowChanges()
       }
 
-      task.generateMetadata.set(service.generateApolloMetadata.orElse(project.provider { !consumerConfiguration.isEmpty }))
       task.metadataFiles.from(consumerConfiguration)
 
       task.rootPackageName.set(service.rootPackageName)
@@ -312,7 +311,6 @@ abstract class DefaultApolloExtension(private val project: Project, private val 
       task.sealedClassesForEnumsMatching.set(service.sealedClassesForEnumsMatching)
       task.alwaysGenerateTypesMatching.set(service.alwaysGenerateTypesMatching)
       task.projectName.set(project.name)
-      task.projectRootDir.set(project.rootProject.rootDir)
     }
   }
 

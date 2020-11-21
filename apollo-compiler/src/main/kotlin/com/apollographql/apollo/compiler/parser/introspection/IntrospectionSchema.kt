@@ -163,8 +163,8 @@ data class IntrospectionSchema(
     fun IntrospectionQuery.Schema.toIntrospectionSchema(): IntrospectionSchema {
       return IntrospectionSchema(
           queryType = queryType?.name ?: "query",
-          mutationType = mutationType?.name ?: "mutation",
-          subscriptionType = subscriptionType?.name ?: "subscription",
+          mutationType = mutationType?.name,
+          subscriptionType = subscriptionType?.name,
           types = types.associateBy { it.name }
       )
     }

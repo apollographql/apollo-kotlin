@@ -191,7 +191,7 @@ operationType
   ;
 
 operationDefinition
-  : operationType name? variableDefinitions? directives? selectionSet
+  : description? operationType name? variableDefinitions? directives? selectionSet
   ;
 
 selectionSet
@@ -199,8 +199,7 @@ selectionSet
   ;
 
 description
-  : STRING
-  | BLOCK_STRING
+  : stringValue
   ;
 
 selection
@@ -232,7 +231,7 @@ inlineFragment
   ;
 
 fragmentDefinition
-  : FRAGMENT fragmentName ON_KEYWORD typeCondition directives? selectionSet
+  : description? FRAGMENT fragmentName ON_KEYWORD typeCondition directives? selectionSet
   ;
 
 fragmentName

@@ -31,7 +31,7 @@ internal fun CodeGenerationAst.FragmentType.typeSpec(generateAsInternal: Boolean
       .addAnnotation(suppressWarningsAnnotation)
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .addSuperinterface(GraphqlFragment::class)
-      .applyIf(fragmentType.description.isNotBlank()) { addKdoc("%L\n", fragmentType.description) }
+      .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }
       .addProperties(fragmentType.fields.map { field -> field.asPropertySpec() })
       .addTypes(nestedTypeSpecs)
       .addType(TypeSpec.companionObjectBuilder()

@@ -407,6 +407,7 @@ private class CodeGenerationAstBuilder(
     return CodeGenerationAst.FragmentType(
         graphqlName = fragmentName,
         rootType = rootType,
+        description = description,
         defaultImplementation = defaultImplementationType,
         nestedTypes = nestedTypeContainer.typeContainer,
         fragmentDefinition = source

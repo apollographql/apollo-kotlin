@@ -1,11 +1,9 @@
-package com.apollographql.apollo.compiler.parser.graphql.ast
+package com.apollographql.apollo.compiler.parser.gql
 
-import com.apollographql.apollo.compiler.parser.antlr.GraphQLParser
-import com.apollographql.apollo.compiler.parser.error.ParseException
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 
 private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionSchema) {
-  
+
   fun toGQLDocument(): GQLDocument {
     return with(introspectionSchema) {
       GQLDocument(
@@ -18,7 +16,8 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
               is IntrospectionSchema.Type.InputObject -> it.toGQLInputObjectTypeDefinition()
               is IntrospectionSchema.Type.Scalar -> it.toGQLScalarTypeDefinition()
             }
-          } + schemaDefinition()
+          } + schemaDefinition(),
+          filePath = null
       )
     }
   }
@@ -28,17 +27,17 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
         description = description,
         name = name,
         directives = emptyList(),
-        fields = fields?.map { it.toGQLFieldDefinition() } ?: throw ParseException("Object '$name' did not define any field"),
+        fields = fields?.map { it.toGQLFieldDefinition() } ?: throw ConversionException("Object '$name' did not define any field"),
         implementsInterfaces = findInterfacesImplementedBy(name)
     )
   }
 
   private fun findInterfacesImplementedBy(name: String): List<String> {
     return introspectionSchema.types.values.filterIsInstance<IntrospectionSchema.Type.Interface>()
-        .filter { 
+        .filter {
           it.possibleTypes?.map { it.name }?.contains(name) == true
         }
-        .map { 
+        .map {
           it.name
         }
   }
@@ -64,7 +63,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     return GQLInterfaceTypeDefinition(
         name = name,
         description = description,
-        fields = fields?.map { it.toGQLFieldDefinition() } ?: throw ParseException("interface '$name' did not define any field"),
+        fields = fields?.map { it.toGQLFieldDefinition() } ?: throw ConversionException("interface '$name' did not define any field"),
         implementsInterfaces = emptyList(), // TODO
         directives = emptyList()
     )
@@ -90,21 +89,31 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     )
   }
 
-  private fun Any?.toGQLValue(): GQLValue {
+  private fun Any?.toGQLValue(): GQLValue? {
+    if (this == null) {
+      // no default value
+      return null
+    }
+    try {
+      if (this is String) {
+        return GraphQLParser.parseValue(this).orThrow()
+      }
+    } catch (e: Exception) {
+      println("Wrongly encoded default value: $this: ${e.message}")
+    }
+
+    // All the below should theorically not happen because the spec
     return when {
-      this == null -> GQLNullValue()
-      // TODO: what does moshi return us?
+      this is String -> GQLStringValue(value = this)
       this is Int -> GQLIntValue(value = this)
       this is Long -> GQLIntValue(value = this.toInt())
       this is Double -> GQLFloatValue(value = this)
       this is Boolean -> GQLBooleanValue(value = this)
-      this is String -> GQLStringValue(value = this) // TODO: this will also catch enums
       this is Map<*, *> -> GQLObjectValue(fields = this.map {
-        GQLObjectField(name = it.key as String, value = it.value.toGQLValue())
+        GQLObjectField(name = it.key as String, value = it.value.toGQLValue()!!)
       })
-      this is List<*> -> GQLListValue(values = map { it.toGQLValue() })
-      // TODO: variables?
-      else -> throw ParseException("cannot convert $this to a GQLValue")
+      this is List<*> -> GQLListValue(values = map { it.toGQLValue()!! })
+      else -> throw ConversionException("cannot convert $this to a GQLValue")
     }
   }
 
@@ -115,9 +124,9 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     return listOf(
         GQLDirective(
             name = "deprecated",
-            arguments = listOf(
+            arguments = GQLArguments(listOf(
                 GQLArgument(name = "reason", value = GQLStringValue(value = deprecationReason))
-            )
+            ))
         )
     )
   }
@@ -126,22 +135,22 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     return GQLUnionTypeDefinition(
         name = name,
         description = "",
-        memberTypes = possibleTypes?.map { it.toGQLNamedType() } ?: throw ParseException("Union '$name' must have members"),
+        memberTypes = possibleTypes?.map { it.toGQLNamedType() } ?: throw ConversionException("Union '$name' must have members"),
         directives = emptyList(),
     )
   }
 
   private fun IntrospectionSchema.TypeRef.toGQLNamedType(): GQLNamedType {
-    return toGQLType() as? GQLNamedType ?: throw ParseException("expected a NamedType")
+    return toGQLType() as? GQLNamedType ?: throw ConversionException("expected a NamedType")
   }
 
   private fun IntrospectionSchema.TypeRef.toGQLType(): GQLType {
     return when (this.kind) {
       IntrospectionSchema.Kind.NON_NULL -> GQLNonNullType(
-          type = ofType?.toGQLType() ?: throw ParseException("ofType must not be null for non null types")
+          type = ofType?.toGQLType() ?: throw ConversionException("ofType must not be null for non null types")
       )
       IntrospectionSchema.Kind.LIST -> GQLListType(
-          type = ofType?.toGQLType() ?: throw ParseException("ofType must not be null for list types")
+          type = ofType?.toGQLType() ?: throw ConversionException("ofType must not be null for list types")
       )
       else -> GQLNamedType(
           name = name!!
@@ -190,8 +199,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     )
   }
 
-  private fun IntrospectionSchema.InputField.toGQLInputValueDefinition(): GQLInputValueDefinition
-  {
+  private fun IntrospectionSchema.InputField.toGQLInputValueDefinition(): GQLInputValueDefinition {
     return GQLInputValueDefinition(
         description = description,
         name = name,
@@ -210,7 +218,10 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
   }
 }
 
-fun IntrospectionSchema.toDocument(): GQLDocument = GQLDocumentBuilder(this).toGQLDocument()
+private fun IntrospectionSchema.toGQLDocument(): GQLDocument = GQLDocumentBuilder(this).toGQLDocument()
 
+fun IntrospectionSchema.toSchema(): Schema = toGQLDocument()
+    .withBuiltinTypes()
+    .toSchema()
 
 

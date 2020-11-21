@@ -1,23 +1,19 @@
 package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo.compiler.parser.graphql.ast.GQLDocument
-import com.apollographql.apollo.compiler.parser.graphql.ast.fromFile
-import com.apollographql.apollo.compiler.parser.graphql.ast.fromString
-import com.apollographql.apollo.compiler.parser.graphql.ast.toDocument
-import com.apollographql.apollo.compiler.parser.graphql.ast.toUtf8
+import com.apollographql.apollo.compiler.parser.gql.GraphQLParser
+import com.apollographql.apollo.compiler.parser.gql.toIntrospectionSchema
+import com.apollographql.apollo.compiler.parser.gql.toSchema
+import com.apollographql.apollo.compiler.parser.gql.toUtf8
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Companion.wrap
 import com.apollographql.apollo.compiler.toJson
-import okio.Buffer
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
-import toIntrospectionSchema
 import java.io.File
-import java.nio.charset.Charset
 
 /**
  * A task to download a schema either from introspection or from the registry.
@@ -110,12 +106,12 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
 
     if (schema.extension.toLowerCase() == "json") {
       if (introspectionSchema == null) {
-        introspectionSchema = GQLDocument.fromString(sdlSchema!!).toIntrospectionSchema().wrap().toJson()
+        introspectionSchema = GraphQLParser.parseSchema(sdlSchema!!).toIntrospectionSchema().wrap().toJson()
       }
       schema.writeText(introspectionSchema)
     } else {
       if (sdlSchema == null) {
-        sdlSchema = IntrospectionSchema(introspectionSchema!!.byteInputStream()).toDocument().toUtf8()
+        sdlSchema = IntrospectionSchema(introspectionSchema!!.byteInputStream()).toSchema().toDocument().toUtf8()
       }
       schema.writeText(sdlSchema)
     }

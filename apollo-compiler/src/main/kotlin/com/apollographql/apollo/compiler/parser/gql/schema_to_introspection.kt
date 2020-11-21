@@ -1,44 +1,16 @@
-import com.apollographql.apollo.compiler.parser.error.ParseException
-import com.apollographql.apollo.compiler.parser.graphql.ast.GQLBooleanValue
-import com.apollographql.apollo.compiler.parser.graphql.ast.GQLDirective
-import com.apollographql.apollo.compiler.parser.graphql.ast.GQLDocument
-import com.apollographql.apollo.compiler.parser.graphql.ast.GQLEnumTypeDefinition
-import com.apollographql.apollo.compiler.parser.graphql.ast.GQLEnumValue
-import com.apollographql.apollo.compiler.parser.graphql.ast.GQLEnumValueDefinition
-import com.apollographql.apollo.compiler.parser.graphql.ast.GQLFieldDefinition
-import com.apollographql.apollo.compiler.parser.graphql.ast.GQLFloatValue
-import com.apollographql.apollo.compiler.parser.graphql.ast.GQLInputObjectTypeDefinition
-import com.apollographql.apollo.compiler.parser.graphql.ast.GQLInputValueDefinition
-import com.apollographql.apollo.compiler.parser.graphql.ast.GQLIntValue
-import com.apollographql.apollo.compiler.parser.graphql.ast.GQLInterfaceTypeDefinition
-import com.apollographql.apollo.compiler.parser.graphql.ast.GQLListType
-import com.apollographql.apollo.compiler.parser.graphql.ast.GQLListValue
-import com.apollographql.apollo.compiler.parser.graphql.ast.GQLNamedType
-import com.apollographql.apollo.compiler.parser.graphql.ast.GQLNonNullType
-import com.apollographql.apollo.compiler.parser.graphql.ast.GQLNullValue
-import com.apollographql.apollo.compiler.parser.graphql.ast.GQLObjectTypeDefinition
-import com.apollographql.apollo.compiler.parser.graphql.ast.GQLObjectValue
-import com.apollographql.apollo.compiler.parser.graphql.ast.GQLScalarTypeDefinition
-import com.apollographql.apollo.compiler.parser.graphql.ast.GQLSchemaDefinition
-import com.apollographql.apollo.compiler.parser.graphql.ast.GQLStringValue
-import com.apollographql.apollo.compiler.parser.graphql.ast.GQLType
-import com.apollographql.apollo.compiler.parser.graphql.ast.GQLTypeDefinition
-import com.apollographql.apollo.compiler.parser.graphql.ast.GQLUnionTypeDefinition
-import com.apollographql.apollo.compiler.parser.graphql.ast.GQLValue
-import com.apollographql.apollo.compiler.parser.graphql.ast.GQLVariableValue
+package com.apollographql.apollo.compiler.parser.gql
+
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 
-private class IntrospectionSchemaBuilder(private val document: GQLDocument) {
-  private val typeDefinitions = document.definitions.filterIsInstance<GQLTypeDefinition>().map { it.name to it }.toMap()
+private class IntrospectionSchemaBuilder(private val schema: Schema) {
+  private val typeDefinitions = schema.typeDefinitions
 
-  fun toIntrospectionSchema() = document.toIntrospectionSchema()
-
-  private fun GQLDocument.toIntrospectionSchema(): IntrospectionSchema {
+  fun toIntrospectionSchema(): IntrospectionSchema {
     return IntrospectionSchema(
-        queryType = rootOperationTypeName("query") ?: throw IllegalStateException("No query root operation type found"),
-        mutationType = rootOperationTypeName("mutation"),
-        subscriptionType = rootOperationTypeName("subscription"),
-        types = definitions.filterIsInstance<GQLTypeDefinition>().map {
+        queryType = schema.queryTypeDefinition.name,
+        mutationType = schema.mutationTypeDefinition?.name,
+        subscriptionType = schema.subscriptionTypeDefinition?.name,
+        types = typeDefinitions.values.map {
           it.name to when (it) {
             is GQLObjectTypeDefinition -> it.toSchemaType()
             is GQLInputObjectTypeDefinition -> it.toSchemaType()
@@ -58,20 +30,6 @@ private class IntrospectionSchemaBuilder(private val document: GQLDocument) {
         fields = fields.map { it.toSchemaField() }
     )
   }
-
-  private fun List<GQLDirective>.findDeprecationReason() = firstOrNull { it.name == "deprecated" }
-      ?.let {
-        it.arguments
-            .firstOrNull { it.name == "reason" }
-            ?.value
-            ?.let { value ->
-              if (value !is GQLStringValue) {
-                throw ParseException("reason must be a string", it.sourceLocation)
-              }
-              value.value
-            }
-            ?: "No longer supported"
-      }
 
   private fun GQLFieldDefinition.toSchemaField(): IntrospectionSchema.Field {
     val deprecationReason = directives.findDeprecationReason()
@@ -105,7 +63,7 @@ private class IntrospectionSchemaBuilder(private val document: GQLDocument) {
             ofType = type.toSchemaType())
       }
       is GQLNamedType -> {
-        val typeDefinition = typeDefinitions[name] ?: throw ParseException(
+        val typeDefinition = typeDefinitions[name] ?: throw ConversionException(
             message = "Undefined GraphQL schema type `$name`",
             sourceLocation = sourceLocation
         )
@@ -154,22 +112,8 @@ private class IntrospectionSchemaBuilder(private val document: GQLDocument) {
         isDeprecated = deprecationReason != null,
         deprecationReason = deprecationReason,
         type = type.toSchemaType(),
-        defaultValue = defaultValue?.toKotlinValue() // TODO: difference between null and absent
+        defaultValue = defaultValue?.toKotlinValue(true) // TODO: difference between null and absent
     )
-  }
-
-  private fun GQLValue.toKotlinValue(): Any? {
-    return when (this) {
-      is GQLIntValue -> value
-      is GQLFloatValue -> value
-      is GQLStringValue -> value
-      is GQLNullValue -> null
-      is GQLListValue -> values.map { it.toKotlinValue() }
-      is GQLObjectValue -> fields.map { it.name to it.value.toKotlinValue() }.toMap()
-      is GQLBooleanValue -> value
-      is GQLEnumValue -> value // Could we use something else in Kotlin?
-      is GQLVariableValue -> throw ParseException("Value cannot be a variable in a const context", sourceLocation)
-    }
   }
 
   private fun GQLInputObjectTypeDefinition.toSchemaType(): IntrospectionSchema.Type.InputObject {
@@ -188,7 +132,7 @@ private class IntrospectionSchemaBuilder(private val document: GQLDocument) {
         isDeprecated = deprecationReason != null,
         deprecationReason = deprecationReason,
         type = type.toSchemaType(),
-        defaultValue = defaultValue?.toKotlinValue(),
+        defaultValue = defaultValue?.toKotlinValue(true),
     )
   }
 
@@ -245,6 +189,6 @@ private class IntrospectionSchemaBuilder(private val document: GQLDocument) {
   }
 }
 
-fun GQLDocument.toIntrospectionSchema() = IntrospectionSchemaBuilder(this).toIntrospectionSchema()
+fun Schema.toIntrospectionSchema() = IntrospectionSchemaBuilder(this).toIntrospectionSchema()
 
 

@@ -1,5 +1,8 @@
 package com.apollographql.apollo.compiler.ir
 
+import com.squareup.moshi.JsonClass
+
+@JsonClass(generateAdapter = true)
 data class TypeDeclaration(
     val kind: String,
     val name: String,
