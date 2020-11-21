@@ -39,7 +39,13 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
     val roots = Roots(args.rootFolders)
     val metadata = collectMetadata(args.metadata, args.rootProjectDir)
 
-    val (introspectionSchema, schemaPackageName) = getSchemaInfo(roots, args.rootPackageName, args.schemaFile, metadata)
+    val (introspectionSchema, schemaPackageName) = getSchemaInfo(
+        roots,
+        args.packageName,
+        args.rootPackageName,
+        args.schemaFile,
+        metadata
+    )
 
     val generateKotlinModels = metadata?.generateKotlinModels ?: args.generateKotlinModels
     val userCustomTypesMap = metadata?.customTypesMap ?: args.customTypeMap
@@ -279,7 +285,12 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
 
     private data class SchemaInfo(val introspectionSchema: IntrospectionSchema, val schemaPackageName: String)
 
-    private fun getSchemaInfo(roots: Roots, rootPackageName: String, schemaFile: File?, metadata: ApolloMetadata?): SchemaInfo {
+    private fun getSchemaInfo(
+        roots: Roots,
+        packageName: String?,
+        rootPackageName: String,
+        schemaFile: File?,
+        metadata: ApolloMetadata?): SchemaInfo {
       check(schemaFile != null || metadata != null) {
         "ApolloGraphQL: cannot find schema.[json | sdl]"
       }
@@ -299,13 +310,15 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
           }
         }
 
-        val packageName = try {
-          roots.filePackageName(schemaFile.absolutePath)
-        } catch (e: IllegalArgumentException) {
-          // Can happen if the schema is not a child of roots
-          ""
-        }
-        val schemaPackageName = "$rootPackageName.$packageName".removePrefix(".").removeSuffix(".")
+        val schemaPackageName = packageName
+            ?: try {
+              roots.filePackageName(schemaFile.absolutePath)
+            } catch (e: IllegalArgumentException) {
+              // Can happen if the schema is not a child of roots
+              ""
+            }.let {
+              "$rootPackageName.$it".removePrefix(".").removeSuffix(".")
+            }
         return SchemaInfo(introspectionSchema, schemaPackageName)
       } else if (metadata != null) {
         return SchemaInfo(metadata.schema!!.__schema.toIntrospectionSchema(), metadata.schemaPackageName!!)
