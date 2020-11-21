@@ -28,8 +28,8 @@ import okio.ByteString
 import okio.IOException
 
 /**
- *  Demonstration of Java / Kotlin docs generation
- *  for both query and fragments
+ * Demonstration of Java / Kotlin docs generation
+ * for both query and fragments
  */
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
@@ -160,7 +160,7 @@ internal class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "95135aa737d9042a7c2cc9351f54a92e59d89636a90762022269c562078efb65"
+        "6664b1abfa01e39c63ec2cbb5c6a25012b3fdf7b1064a1ff1172018c0e309828"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -173,7 +173,7 @@ internal class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           |}
           |fragment HeroDetails on Character {
           |  __typename
-          |  ... HumanDetails
+          |  ...HumanDetails
           |}
           |fragment HumanDetails on Human {
           |  __typename

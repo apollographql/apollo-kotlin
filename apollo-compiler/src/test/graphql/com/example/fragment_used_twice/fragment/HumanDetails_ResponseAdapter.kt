@@ -28,6 +28,7 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.HumanDetailsI
       HumanDetails.HumanDetailsImpl {
     val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
     return when(typename) {
+      "Character" -> CharacterHumanDetailsImpl_ResponseAdapter.fromResponse(reader, typename)
       "Droid" -> CharacterHumanDetailsImpl_ResponseAdapter.fromResponse(reader, typename)
       "Human" -> CharacterHumanDetailsImpl_ResponseAdapter.fromResponse(reader, typename)
       else -> OtherHumanDetailsImpl_ResponseAdapter.fromResponse(reader, typename)

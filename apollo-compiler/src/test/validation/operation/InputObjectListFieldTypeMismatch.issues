@@ -1,0 +1,8 @@
+ERROR: ValidationError (2:23)
+No value passed for required inputField stars
+------------
+ERROR: ValidationError (2:23)
+No value passed for required inputField favoriteColor
+------------
+ERROR: ValidationError (3:30)
+Variable `item` of type `Int` used in position expecting type `String`

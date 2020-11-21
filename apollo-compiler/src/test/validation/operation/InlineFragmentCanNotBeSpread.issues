@@ -1,0 +1,2 @@
+ERROR: ValidationError (3:11)
+Inline fragment cannot be spread here as result can never be of type `Mutation`

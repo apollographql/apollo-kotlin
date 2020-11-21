@@ -19,21 +19,27 @@ import kotlin.Suppress
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    ResponseField.forObject("hero", "hero", null, true, null),
     ResponseField.forObject("hero", "hero", null, true, null)
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
     return reader.run {
       var hero: TestQuery.Hero? = null
+      var hero: TestQuery.Hero1? = null
       while(true) {
         when (selectField(RESPONSE_FIELDS)) {
           0 -> hero = readObject<TestQuery.Hero>(RESPONSE_FIELDS[0]) { reader ->
             TestQuery_ResponseAdapter.Hero_ResponseAdapter.fromResponse(reader)
           }
+          1 -> hero = readObject<TestQuery.Hero1>(RESPONSE_FIELDS[1]) { reader ->
+            TestQuery_ResponseAdapter.Hero1_ResponseAdapter.fromResponse(reader)
+          }
           else -> break
         }
       }
       TestQuery.Data(
+        hero = hero,
         hero = hero
       )
     }
@@ -47,32 +53,35 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         TestQuery_ResponseAdapter.Hero_ResponseAdapter.toResponse(writer, value.hero)
       }
     }
+    if(value.hero == null) {
+      writer.writeObject(RESPONSE_FIELDS[1], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
+        TestQuery_ResponseAdapter.Hero1_ResponseAdapter.toResponse(writer, value.hero)
+      }
+    }
   }
 
   object Hero_ResponseAdapter : ResponseAdapter<TestQuery.Hero> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forString("__typename", "__typename", null, false, null),
-      ResponseField.forString("name", "name", null, false, null),
-      ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null)
+      ResponseField.forString("name", "name", null, false, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Hero {
       return reader.run {
         var __typename: String? = __typename
         var name: String? = null
-        var id: String? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
             0 -> __typename = readString(RESPONSE_FIELDS[0])
             1 -> name = readString(RESPONSE_FIELDS[1])
-            2 -> id = readCustomType<String>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)
             else -> break
           }
         }
         TestQuery.Hero(
           __typename = __typename!!,
-          name = name!!,
-          id = id!!
+          name = name!!
         )
       }
     }
@@ -80,7 +89,41 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     override fun toResponse(writer: ResponseWriter, value: TestQuery.Hero) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeString(RESPONSE_FIELDS[1], value.name)
-      writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, value.id)
+    }
+  }
+
+  object Hero1_ResponseAdapter : ResponseAdapter<TestQuery.Hero1> {
+    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.forString("__typename", "__typename", null, false, null),
+      ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
+      ResponseField.forString("name", "name", null, false, null)
+    )
+
+    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Hero1 {
+      return reader.run {
+        var __typename: String? = __typename
+        var id: String? = null
+        var name: String? = null
+        while(true) {
+          when (selectField(RESPONSE_FIELDS)) {
+            0 -> __typename = readString(RESPONSE_FIELDS[0])
+            1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+            2 -> name = readString(RESPONSE_FIELDS[2])
+            else -> break
+          }
+        }
+        TestQuery.Hero1(
+          __typename = __typename!!,
+          id = id!!,
+          name = name!!
+        )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Hero1) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, value.id)
+      writer.writeString(RESPONSE_FIELDS[2], value.name)
     }
   }
 }

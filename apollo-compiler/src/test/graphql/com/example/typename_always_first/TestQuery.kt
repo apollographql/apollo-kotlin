@@ -97,11 +97,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * A humanoid creature from the Star Wars universe
    */
   data class HumanHero(
-    override val __typename: String = "Human",
     /**
      * Height in the preferred unit, default is meters
      */
-    val height: Double?
+    val height: Double?,
+    override val __typename: String = "Human"
   ) : Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
@@ -114,11 +114,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * An autonomous mechanical character in the Star Wars universe
    */
   data class DroidHero(
-    override val __typename: String = "Droid",
     /**
      * What others call this droid
      */
     val name: String,
+    override val __typename: String = "Droid",
     /**
      * This droid's primary function
      */
@@ -161,7 +161,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * Data from the response after executing this GraphQL operation
    */
   data class Data(
-    val hero: Hero?
+    val hero: Hero?,
+    val __typename: String = "Query"
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
@@ -172,24 +173,24 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "38867796c2814fe9f94c746fe997c93a56f8bccbb86fd0c3041a3e625a0a2bff"
+        "5351cc2f9dea89f8d8d9513a08a18eee20324eaba674211bf21f9c01cba9fdea"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery {
-          |  __typename
           |  hero {
           |    __typename
           |    ... on Human {
-          |      __typename
           |      height
+          |      __typename
           |    }
           |    ... on Droid {
-          |      __typename
           |      name
+          |      __typename
           |      primaryFunction
           |    }
           |  }
+          |  __typename
           |}
           """.trimMargin()
         )

@@ -99,19 +99,19 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * A humanoid creature from the Star Wars universe
    */
   data class HumanHero(
-    override val __typename: String = "Human",
-    /**
-     * What this human calls themselves
-     */
-    override val name: String,
-    /**
-     * The movies this human appears in
-     */
-    override val appearsIn: List<Episode?>,
     /**
      * Height in the preferred unit, default is meters
      */
-    val height: Double?
+    val height: Double?,
+    override val __typename: String = "Human",
+    /**
+     * The name of the character
+     */
+    override val name: String,
+    /**
+     * The movies this character appears in
+     */
+    override val appearsIn: List<Episode?>
   ) : Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->

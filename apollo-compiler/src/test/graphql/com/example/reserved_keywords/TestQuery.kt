@@ -118,11 +118,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * A character from the Star Wars universe
    */
   data class CharacterObject(
-    override val __typename: String = "Character",
     /**
      * The name of the character
      */
-    val name: String
+    val name: String,
+    override val __typename: String = "Character"
   ) : Object {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->

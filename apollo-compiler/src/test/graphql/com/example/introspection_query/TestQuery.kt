@@ -143,7 +143,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    */
   data class Data(
     val __schema: __Schema,
-    val __type: __Type?
+    val __type: __Type
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->

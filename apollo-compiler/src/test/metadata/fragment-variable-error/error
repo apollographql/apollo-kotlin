@@ -1,9 +1,0 @@
-
-Failed to parse GraphQL file /root.graphql (5:27)
-Variable `first` is not defined by operation `GetHero`
-Operation `GetHero` declaration [/leaf.graphql]
-----------------------------------------------------
-[4]:  appearsIn
-[5]:  friendsConnection(first: $first) {
-[6]:    isEmpty
-----------------------------------------------------

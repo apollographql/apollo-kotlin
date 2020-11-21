@@ -1,7 +1,0 @@
-Failed to parse GraphQL file /InlineFragmentUnknonwType.graphql (3:11)
-Unknown type`Banana}`
-----------------------------------------------------
-[2]:  hero {
-[3]:    ... on Banana {
-[4]:    }
-----------------------------------------------------

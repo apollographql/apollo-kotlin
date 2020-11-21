@@ -144,7 +144,7 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "5ac5029cd74c32a45d6bbbe43e34f696e1a603331ea6164c01b2c1d8768fcb04"
+        "66526ebd8bfa253f1b91ed8c4a5d103f0371bf48673edaa11d5add4079d74138"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -153,9 +153,7 @@ data class TestQuery(
           |    __typename
           |    on
           |    null(fragment: ${'$'}operation)
-          |    alias: null(fragment: ""${'"'}A string
-          |    with a new line
-          |    ""${'"'})
+          |    alias: null(fragment: "A string\nwith a new line")
           |  }
           |}
           """.trimMargin()

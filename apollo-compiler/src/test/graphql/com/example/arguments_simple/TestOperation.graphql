@@ -5,7 +5,7 @@ query TestQuery($episode: Episode $IncludeName: Boolean! $friendsCount: Int! $li
   }
   heroWithReview (
     episode: $episode
-    review: {},
+    review: { stars: 5, favoriteColor: {red: 1, blue: 1}, listOfStringNonOptional: [] },
   ) {
     name
   }

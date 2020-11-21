@@ -1,7 +1,0 @@
-Failed to parse GraphQL file /VariableTypeMismatch.graphql (2:16)
-Variable `episode` of type `Int` used in position expecting type `Episode!`
-----------------------------------------------------
-[1]:query TestQuery($episode: Int) {
-[2]:  hero(episode: $episode) {
-[3]:    name
-----------------------------------------------------

@@ -98,13 +98,13 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   data class Hero(
     val __typename: String = "Character",
     /**
-     * The name of the character
-     */
-    val name: String,
-    /**
      * The ID of the character
      */
-    val id: String
+    val id: String,
+    /**
+     * The name of the character
+     */
+    val name: String
   ) {
     fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
@@ -132,10 +132,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery {
-          |  hero {
-          |    __typename
-          |    name
-          |  }
           |  hero {
           |    __typename
           |    id

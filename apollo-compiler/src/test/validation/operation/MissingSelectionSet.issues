@@ -1,0 +1,2 @@
+ERROR: ValidationError (2:2)
+Field `hero` of type `Character` must have a selection of sub-fields

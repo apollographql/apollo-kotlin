@@ -19,5 +19,17 @@ enum class CustomType : ScalarType {
     override fun typeName(): String = "ID"
 
     override fun className(): String = "java.lang.Integer"
+  },
+
+  URL {
+    override fun typeName(): String = "URL"
+
+    override fun className(): String = "java.lang.String"
+  },
+
+  UNSUPPORTEDTYPE {
+    override fun typeName(): String = "UnsupportedType"
+
+    override fun className(): String = "kotlin.Any"
   }
 }

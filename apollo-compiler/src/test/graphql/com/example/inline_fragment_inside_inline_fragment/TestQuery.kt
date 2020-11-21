@@ -111,13 +111,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * An autonomous mechanical character in the Star Wars universe
    */
   interface Droid : Search {
-    override val __typename: String
-
-    /**
-     * What others call this droid
-     */
-    val name: String
-
     /**
      * This droid's primary function
      */
@@ -144,19 +137,29 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * A humanoid creature from the Star Wars universe
    */
   interface Human : Search {
-    override val __typename: String
-
-    /**
-     * What this human calls themselves
-     */
-    val name: String
-
     /**
      * The home planet of the human, or null if unknown
      */
     val homePlanet: String?
 
     override fun marshaller(): ResponseFieldMarshaller
+  }
+
+  /**
+   * A character from the Star Wars universe
+   */
+  data class CharacterSearch(
+    override val __typename: String = "Character",
+    /**
+     * The name of the character
+     */
+    override val name: String
+  ) : Character1, Search {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.CharacterSearch_ResponseAdapter.toResponse(writer, this)
+      }
+    }
   }
 
   data class CharacterDroidSearch(

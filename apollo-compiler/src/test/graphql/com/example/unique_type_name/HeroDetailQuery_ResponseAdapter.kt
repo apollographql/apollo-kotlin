@@ -213,49 +213,48 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
   object Friend_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Friend> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forString("__typename", "__typename", null, false, null),
-      ResponseField.forString("name", "name", null, false, null),
       ResponseField.forList("appearsIn", "appearsIn", null, false, null),
-      ResponseField.forList("friends", "friends", null, true, null)
+      ResponseField.forList("friends", "friends", null, true, null),
+      ResponseField.forString("name", "name", null, false, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): HeroDetailQuery.Friend {
       return reader.run {
         var __typename: String? = __typename
-        var name: String? = null
         var appearsIn: List<Episode?>? = null
         var friends: List<HeroDetailQuery.Friend1?>? = null
+        var name: String? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
             0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> name = readString(RESPONSE_FIELDS[1])
-            2 -> appearsIn = readList<Episode>(RESPONSE_FIELDS[2]) { reader ->
+            1 -> appearsIn = readList<Episode>(RESPONSE_FIELDS[1]) { reader ->
               Episode.safeValueOf(reader.readString())
             }
-            3 -> friends = readList<HeroDetailQuery.Friend1>(RESPONSE_FIELDS[3]) { reader ->
+            2 -> friends = readList<HeroDetailQuery.Friend1>(RESPONSE_FIELDS[2]) { reader ->
               reader.readObject<HeroDetailQuery.Friend1> { reader ->
                 HeroDetailQuery_ResponseAdapter.Friend1_ResponseAdapter.fromResponse(reader)
               }
             }
+            3 -> name = readString(RESPONSE_FIELDS[3])
             else -> break
           }
         }
         HeroDetailQuery.Friend(
           __typename = __typename!!,
-          name = name!!,
           appearsIn = appearsIn!!,
-          friends = friends
+          friends = friends,
+          name = name!!
         )
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: HeroDetailQuery.Friend) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], value.name)
-      writer.writeList(RESPONSE_FIELDS[2], value.appearsIn) { values, listItemWriter ->
+      writer.writeList(RESPONSE_FIELDS[1], value.appearsIn) { values, listItemWriter ->
         values?.forEach { value ->
           listItemWriter.writeString(value?.rawValue)}
       }
-      writer.writeList(RESPONSE_FIELDS[3], value.friends) { values, listItemWriter ->
+      writer.writeList(RESPONSE_FIELDS[2], value.friends) { values, listItemWriter ->
         values?.forEach { value ->
           if(value == null) {
             listItemWriter.writeObject(null)
@@ -266,51 +265,51 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
           }
         }
       }
+      writer.writeString(RESPONSE_FIELDS[3], value.name)
     }
   }
 
   object HumanHeroDetailQuery1_ResponseAdapter :
       ResponseAdapter<HeroDetailQuery.HumanHeroDetailQuery1> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
-      ResponseField.forString("name", "name", null, false, null),
+      ResponseField.forDouble("height", "height", null, true, null),
       ResponseField.forList("friends", "friends", null, true, null),
-      ResponseField.forDouble("height", "height", null, true, null)
+      ResponseField.forString("__typename", "__typename", null, false, null),
+      ResponseField.forString("name", "name", null, false, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
         HeroDetailQuery.HumanHeroDetailQuery1 {
       return reader.run {
+        var height: Double? = null
+        var friends: List<HeroDetailQuery.Friend?>? = null
         var __typename: String? = __typename
         var name: String? = null
-        var friends: List<HeroDetailQuery.Friend?>? = null
-        var height: Double? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> name = readString(RESPONSE_FIELDS[1])
-            2 -> friends = readList<HeroDetailQuery.Friend>(RESPONSE_FIELDS[2]) { reader ->
+            0 -> height = readDouble(RESPONSE_FIELDS[0])
+            1 -> friends = readList<HeroDetailQuery.Friend>(RESPONSE_FIELDS[1]) { reader ->
               reader.readObject<HeroDetailQuery.Friend> { reader ->
                 HeroDetailQuery_ResponseAdapter.Friend_ResponseAdapter.fromResponse(reader)
               }
             }
-            3 -> height = readDouble(RESPONSE_FIELDS[3])
+            2 -> __typename = readString(RESPONSE_FIELDS[2])
+            3 -> name = readString(RESPONSE_FIELDS[3])
             else -> break
           }
         }
         HeroDetailQuery.HumanHeroDetailQuery1(
-          __typename = __typename!!,
-          name = name!!,
+          height = height,
           friends = friends,
-          height = height
+          __typename = __typename!!,
+          name = name!!
         )
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: HeroDetailQuery.HumanHeroDetailQuery1) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], value.name)
-      writer.writeList(RESPONSE_FIELDS[2], value.friends) { values, listItemWriter ->
+      writer.writeDouble(RESPONSE_FIELDS[0], value.height)
+      writer.writeList(RESPONSE_FIELDS[1], value.friends) { values, listItemWriter ->
         values?.forEach { value ->
           if(value == null) {
             listItemWriter.writeObject(null)
@@ -321,7 +320,8 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
           }
         }
       }
-      writer.writeDouble(RESPONSE_FIELDS[3], value.height)
+      writer.writeString(RESPONSE_FIELDS[2], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[3], value.name)
     }
   }
 

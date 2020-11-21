@@ -31,7 +31,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       "episode" to mapOf<String, Any>(
         "kind" to "Variable",
         "variableName" to "episode"),
-      "review" to emptyMap<String, Any>()), true, null)
+      "review" to mapOf<String, Any>(
+        "stars" to 5,
+        "favoriteColor" to mapOf<String, Any>(
+          "red" to 1,
+          "blue" to 1.0),
+        "listOfStringNonOptional" to emptyList<Any>())), true, null)
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {

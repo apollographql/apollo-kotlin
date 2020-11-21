@@ -181,17 +181,17 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
   data class Friend(
     override val __typename: String = "Character",
     /**
-     * The name of the character
-     */
-    override val name: String,
-    /**
      * The movies this character appears in
      */
     val appearsIn: List<Episode?>,
     /**
      * The friends of the character, or an empty list if they have none
      */
-    val friends: List<Friend1?>?
+    val friends: List<Friend1?>?,
+    /**
+     * The name of the character
+     */
+    override val name: String
   ) : Friend3 {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
@@ -208,19 +208,19 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
    * A humanoid creature from the Star Wars universe
    */
   data class HumanHeroDetailQuery1(
-    override val __typename: String = "Human",
     /**
-     * What this human calls themselves
+     * Height in the preferred unit, default is meters
      */
-    override val name: String,
+    val height: Double?,
     /**
      * This human's friends, or an empty list if they have none
      */
     override val friends: List<Friend?>?,
+    override val __typename: String = "Human",
     /**
-     * Height in the preferred unit, default is meters
+     * The name of the character
      */
-    val height: Double?
+    override val name: String
   ) : HeroDetailQuery1 {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->

@@ -1,7 +1,0 @@
-Failed to parse GraphQL file /InlineFragmentCanNotBeSpread.graphql (3:11)
-Fragment cannot be spread here as result can never be of type `Mutation`
-----------------------------------------------------
-[2]:  hero {
-[3]:    ... on Mutation {
-[4]:
-----------------------------------------------------

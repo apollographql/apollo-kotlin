@@ -149,12 +149,22 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "df7f6bf82724eedee5118f165075b5de1a2b3a06d0390126bf7932dc8df3f082"
+        "ea30318825224faea07e36fc3be2a907acb3aead475609bfb1dc28c3620f9550"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |mutation TestQuery(${'$'}ep: Episode!) {
-          |  createReview(episode: ${'$'}ep, review: {stars: 5, listOfEnums: [JEDI, EMPIRE, NEWHOPE], listOfStringNonOptional: ["1", "2", "3"], favoriteColor: {red: 1, blue: 1}}) {
+          |  createReview(episode: ${'$'}ep, review: {
+          |    stars: 5
+          |    listOfEnums: [JEDI,EMPIRE,NEWHOPE]
+          |    listOfStringNonOptional: ["1","2","3"]
+          |    favoriteColor: {
+          |      red: 1
+          |      blue: 1
+          |    }
+          |    
+          |  }
+          |  ) {
           |    __typename
           |    stars
           |    commentary

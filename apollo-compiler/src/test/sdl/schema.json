@@ -6,9 +6,6 @@
     "mutationType": {
       "name": "Mutation"
     },
-    "subscriptionType": {
-      "name": "subscription"
-    },
     "types": [
       {
         "kind": "INTERFACE",
@@ -17,7 +14,6 @@
         "fields": [
           {
             "name": "bar",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "NON_NULL",
@@ -44,11 +40,9 @@
       {
         "kind": "OBJECT",
         "name": "BarObject",
-        "description": "",
         "fields": [
           {
             "name": "bar",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "NON_NULL",
@@ -213,7 +207,6 @@
             "args": [
               {
                 "name": "first",
-                "description": "",
                 "isDeprecated": false,
                 "type": {
                   "kind": "SCALAR",
@@ -222,7 +215,6 @@
               },
               {
                 "name": "after",
-                "description": "",
                 "isDeprecated": false,
                 "type": {
                   "kind": "SCALAR",
@@ -472,7 +464,6 @@
             "args": [
               {
                 "name": "first",
-                "description": "",
                 "isDeprecated": false,
                 "type": {
                   "kind": "SCALAR",
@@ -481,7 +472,6 @@
               },
               {
                 "name": "after",
-                "description": "",
                 "isDeprecated": false,
                 "type": {
                   "kind": "SCALAR",
@@ -625,7 +615,6 @@
         "fields": [
           {
             "name": "foo",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "NON_NULL",
@@ -656,7 +645,6 @@
         "fields": [
           {
             "name": "bar",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "NON_NULL",
@@ -670,7 +658,6 @@
           },
           {
             "name": "foo",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "NON_NULL",
@@ -691,7 +678,6 @@
         "fields": [
           {
             "name": "foo",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "NON_NULL",
@@ -955,7 +941,6 @@
             "args": [
               {
                 "name": "first",
-                "description": "",
                 "isDeprecated": false,
                 "type": {
                   "kind": "SCALAR",
@@ -964,7 +949,6 @@
               },
               {
                 "name": "after",
-                "description": "",
                 "isDeprecated": false,
                 "type": {
                   "kind": "SCALAR",
@@ -984,7 +968,6 @@
             "args": [
               {
                 "name": "unit",
-                "description": "",
                 "isDeprecated": false,
                 "type": {
                   "kind": "ENUM",
@@ -1142,7 +1125,6 @@
         "fields": [
           {
             "name": "createReview",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "OBJECT",
@@ -1151,7 +1133,6 @@
             "args": [
               {
                 "name": "episode",
-                "description": "",
                 "isDeprecated": false,
                 "type": {
                   "kind": "ENUM",
@@ -1160,7 +1141,6 @@
               },
               {
                 "name": "review",
-                "description": "",
                 "isDeprecated": false,
                 "type": {
                   "kind": "NON_NULL",
@@ -1182,7 +1162,6 @@
         "fields": [
           {
             "name": "endCursor",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "SCALAR",
@@ -1192,7 +1171,6 @@
           },
           {
             "name": "hasNextPage",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "NON_NULL",
@@ -1206,7 +1184,6 @@
           },
           {
             "name": "startCursor",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "SCALAR",
@@ -1223,7 +1200,6 @@
         "fields": [
           {
             "name": "character",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "INTERFACE",
@@ -1232,7 +1208,6 @@
             "args": [
               {
                 "name": "id",
-                "description": "",
                 "isDeprecated": false,
                 "type": {
                   "kind": "NON_NULL",
@@ -1247,7 +1222,6 @@
           },
           {
             "name": "droid",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "OBJECT",
@@ -1256,7 +1230,6 @@
             "args": [
               {
                 "name": "id",
-                "description": "",
                 "isDeprecated": false,
                 "type": {
                   "kind": "NON_NULL",
@@ -1281,7 +1254,6 @@
           },
           {
             "name": "hero",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "INTERFACE",
@@ -1290,7 +1262,6 @@
             "args": [
               {
                 "name": "episode",
-                "description": "",
                 "isDeprecated": false,
                 "type": {
                   "kind": "ENUM",
@@ -1318,7 +1289,6 @@
           },
           {
             "name": "heroDetailQuery",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "INTERFACE",
@@ -1328,7 +1298,6 @@
           },
           {
             "name": "heroWithReview",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "OBJECT",
@@ -1337,7 +1306,6 @@
             "args": [
               {
                 "name": "episode",
-                "description": "",
                 "isDeprecated": false,
                 "type": {
                   "kind": "ENUM",
@@ -1346,7 +1314,6 @@
               },
               {
                 "name": "review",
-                "description": "",
                 "isDeprecated": false,
                 "type": {
                   "kind": "INPUT_OBJECT",
@@ -1370,7 +1337,6 @@
           },
           {
             "name": "human",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "OBJECT",
@@ -1379,7 +1345,6 @@
             "args": [
               {
                 "name": "id",
-                "description": "",
                 "isDeprecated": false,
                 "type": {
                   "kind": "NON_NULL",
@@ -1394,7 +1359,6 @@
           },
           {
             "name": "nonOptionalHero",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "NON_NULL",
@@ -1407,7 +1371,6 @@
             "args": [
               {
                 "name": "episode",
-                "description": "",
                 "isDeprecated": false,
                 "type": {
                   "kind": "ENUM",
@@ -1418,7 +1381,6 @@
           },
           {
             "name": "reviews",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "LIST",
@@ -1431,7 +1393,6 @@
             "args": [
               {
                 "name": "episode",
-                "description": "",
                 "isDeprecated": false,
                 "type": {
                   "kind": "NON_NULL",
@@ -1444,7 +1405,6 @@
               },
               {
                 "name": "starsInt",
-                "description": "",
                 "isDeprecated": false,
                 "type": {
                   "kind": "SCALAR",
@@ -1453,7 +1413,6 @@
               },
               {
                 "name": "starsFloat",
-                "description": "",
                 "isDeprecated": false,
                 "type": {
                   "kind": "SCALAR",
@@ -1464,7 +1423,6 @@
           },
           {
             "name": "search",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "LIST",
@@ -1477,7 +1435,6 @@
             "args": [
               {
                 "name": "text",
-                "description": "",
                 "isDeprecated": false,
                 "type": {
                   "kind": "SCALAR",
@@ -1488,7 +1445,6 @@
           },
           {
             "name": "starship",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "OBJECT",
@@ -1497,7 +1453,6 @@
             "args": [
               {
                 "name": "id",
-                "description": "",
                 "isDeprecated": false,
                 "type": {
                   "kind": "NON_NULL",
@@ -1512,7 +1467,6 @@
           },
           {
             "name": "tree",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "OBJECT",
@@ -1979,7 +1933,6 @@
         "inputFields": [
           {
             "name": "reviewInput",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -1991,7 +1944,6 @@
       {
         "kind": "UNION",
         "name": "SearchResult",
-        "description": "",
         "possibleTypes": [
           {
             "kind": "OBJECT",
@@ -2010,11 +1962,9 @@
       {
         "kind": "OBJECT",
         "name": "Starship",
-        "description": "",
         "fields": [
           {
             "name": "coordinates",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "LIST",
@@ -2063,7 +2013,6 @@
             "args": [
               {
                 "name": "unit",
-                "description": "",
                 "isDeprecated": false,
                 "type": {
                   "kind": "ENUM",
@@ -2101,7 +2050,6 @@
         "fields": [
           {
             "name": "children",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "NON_NULL",
@@ -2123,7 +2071,6 @@
           },
           {
             "name": "name",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "NON_NULL",
@@ -2137,7 +2084,6 @@
           },
           {
             "name": "parent",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "OBJECT",
@@ -2149,8 +2095,7 @@
       },
       {
         "kind": "SCALAR",
-        "name": "URL",
-        "description": ""
+        "name": "URL"
       },
       {
         "kind": "SCALAR",
@@ -2160,11 +2105,9 @@
       {
         "kind": "OBJECT",
         "name": "__Directive",
-        "description": "",
         "fields": [
           {
             "name": "args",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "NON_NULL",
@@ -2186,7 +2129,6 @@
           },
           {
             "name": "description",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "SCALAR",
@@ -2196,7 +2138,6 @@
           },
           {
             "name": "isRepeatable",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "NON_NULL",
@@ -2210,7 +2151,6 @@
           },
           {
             "name": "locations",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "NON_NULL",
@@ -2232,7 +2172,6 @@
           },
           {
             "name": "name",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "NON_NULL",
@@ -2249,101 +2188,81 @@
       {
         "kind": "ENUM",
         "name": "__DirectiveLocation",
-        "description": "",
         "enumValues": [
           {
             "name": "QUERY",
-            "description": "",
             "isDeprecated": false
           },
           {
             "name": "MUTATION",
-            "description": "",
             "isDeprecated": false
           },
           {
             "name": "SUBSCRIPTION",
-            "description": "",
             "isDeprecated": false
           },
           {
             "name": "FIELD",
-            "description": "",
             "isDeprecated": false
           },
           {
             "name": "FRAGMENT_DEFINITION",
-            "description": "",
             "isDeprecated": false
           },
           {
             "name": "FRAGMENT_SPREAD",
-            "description": "",
             "isDeprecated": false
           },
           {
             "name": "INLINE_FRAGMENT",
-            "description": "",
             "isDeprecated": false
           },
           {
             "name": "VARIABLE_DEFINITION",
-            "description": "",
             "isDeprecated": false
           },
           {
             "name": "SCHEMA",
-            "description": "",
             "isDeprecated": false
           },
           {
             "name": "SCALAR",
-            "description": "",
             "isDeprecated": false
           },
           {
             "name": "OBJECT",
-            "description": "",
             "isDeprecated": false
           },
           {
             "name": "FIELD_DEFINITION",
-            "description": "",
             "isDeprecated": false
           },
           {
             "name": "ARGUMENT_DEFINITION",
-            "description": "",
             "isDeprecated": false
           },
           {
             "name": "INTERFACE",
-            "description": "",
             "isDeprecated": false
           },
           {
             "name": "UNION",
-            "description": "",
             "isDeprecated": false
           },
           {
             "name": "ENUM",
-            "description": "",
             "isDeprecated": false
           },
           {
             "name": "ENUM_VALUE",
-            "description": "",
             "isDeprecated": false
           },
           {
             "name": "INPUT_OBJECT",
-            "description": "",
             "isDeprecated": false
           },
           {
             "name": "INPUT_FIELD_DEFINITION",
-            "description": "",
             "isDeprecated": false
           }
         ]
@@ -2351,11 +2270,9 @@
       {
         "kind": "OBJECT",
         "name": "__EnumValue",
-        "description": "",
         "fields": [
           {
             "name": "deprecationReason",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "SCALAR",
@@ -2365,7 +2282,6 @@
           },
           {
             "name": "description",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "SCALAR",
@@ -2375,7 +2291,6 @@
           },
           {
             "name": "isDeprecated",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "NON_NULL",
@@ -2389,7 +2304,6 @@
           },
           {
             "name": "name",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "NON_NULL",
@@ -2406,11 +2320,9 @@
       {
         "kind": "OBJECT",
         "name": "__Field",
-        "description": "",
         "fields": [
           {
             "name": "args",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "NON_NULL",
@@ -2432,7 +2344,6 @@
           },
           {
             "name": "deprecationReason",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "SCALAR",
@@ -2442,7 +2353,6 @@
           },
           {
             "name": "description",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "SCALAR",
@@ -2452,7 +2362,6 @@
           },
           {
             "name": "isDeprecated",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "NON_NULL",
@@ -2466,7 +2375,6 @@
           },
           {
             "name": "name",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "NON_NULL",
@@ -2480,7 +2388,6 @@
           },
           {
             "name": "type",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "NON_NULL",
@@ -2497,11 +2404,9 @@
       {
         "kind": "OBJECT",
         "name": "__InputValue",
-        "description": "",
         "fields": [
           {
             "name": "defaultValue",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "SCALAR",
@@ -2511,7 +2416,6 @@
           },
           {
             "name": "description",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "SCALAR",
@@ -2521,7 +2425,6 @@
           },
           {
             "name": "name",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "NON_NULL",
@@ -2535,7 +2438,6 @@
           },
           {
             "name": "type",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "NON_NULL",
@@ -2552,11 +2454,9 @@
       {
         "kind": "OBJECT",
         "name": "__Schema",
-        "description": "",
         "fields": [
           {
             "name": "description",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "SCALAR",
@@ -2566,7 +2466,6 @@
           },
           {
             "name": "directives",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "NON_NULL",
@@ -2588,7 +2487,6 @@
           },
           {
             "name": "mutationType",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "OBJECT",
@@ -2598,7 +2496,6 @@
           },
           {
             "name": "queryType",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "NON_NULL",
@@ -2612,7 +2509,6 @@
           },
           {
             "name": "subscriptionType",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "OBJECT",
@@ -2622,7 +2518,6 @@
           },
           {
             "name": "types",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "NON_NULL",
@@ -2647,11 +2542,9 @@
       {
         "kind": "OBJECT",
         "name": "__Type",
-        "description": "",
         "fields": [
           {
             "name": "description",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "SCALAR",
@@ -2661,7 +2554,6 @@
           },
           {
             "name": "enumValues",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "LIST",
@@ -2678,7 +2570,6 @@
             "args": [
               {
                 "name": "includeDeprecated",
-                "description": "",
                 "isDeprecated": false,
                 "type": {
                   "kind": "SCALAR",
@@ -2690,7 +2581,6 @@
           },
           {
             "name": "fields",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "LIST",
@@ -2707,7 +2597,6 @@
             "args": [
               {
                 "name": "includeDeprecated",
-                "description": "",
                 "isDeprecated": false,
                 "type": {
                   "kind": "SCALAR",
@@ -2719,7 +2608,6 @@
           },
           {
             "name": "inputFields",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "LIST",
@@ -2737,7 +2625,6 @@
           },
           {
             "name": "interfaces",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "LIST",
@@ -2755,7 +2642,6 @@
           },
           {
             "name": "kind",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "NON_NULL",
@@ -2769,7 +2655,6 @@
           },
           {
             "name": "name",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "SCALAR",
@@ -2779,7 +2664,6 @@
           },
           {
             "name": "ofType",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "OBJECT",
@@ -2789,7 +2673,6 @@
           },
           {
             "name": "possibleTypes",
-            "description": "",
             "isDeprecated": false,
             "type": {
               "kind": "LIST",
@@ -2810,46 +2693,37 @@
       {
         "kind": "ENUM",
         "name": "__TypeKind",
-        "description": "",
         "enumValues": [
           {
             "name": "SCALAR",
-            "description": "",
             "isDeprecated": false
           },
           {
             "name": "OBJECT",
-            "description": "",
             "isDeprecated": false
           },
           {
             "name": "INTERFACE",
-            "description": "",
             "isDeprecated": false
           },
           {
             "name": "UNION",
-            "description": "",
             "isDeprecated": false
           },
           {
             "name": "ENUM",
-            "description": "",
             "isDeprecated": false
           },
           {
             "name": "INPUT_OBJECT",
-            "description": "",
             "isDeprecated": false
           },
           {
             "name": "LIST",
-            "description": "",
             "isDeprecated": false
           },
           {
             "name": "NON_NULL",
-            "description": "",
             "isDeprecated": false
           }
         ]
@@ -2925,12 +2799,10 @@
         "enumValues": [
           {
             "name": "human",
-            "description": "",
             "isDeprecated": false
           },
           {
             "name": "droid",
-            "description": "",
             "isDeprecated": false
           }
         ]

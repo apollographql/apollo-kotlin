@@ -248,7 +248,7 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "89afe30dd0fa5ddce3d0b743d3adf68e55a48d0c11d10e495c0ec095949e6d04"
+        "58389df684cc5f8848f922f6c8d6d05706252f5dfec3af87d21ddec44f535ee7"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -258,7 +258,16 @@ data class TestQuery(
           |    name @include(if: ${'$'}IncludeName)
           |    ...HeroDetails
           |  }
-          |  heroWithReview(episode: ${'$'}episode, review: {}) {
+          |  heroWithReview(episode: ${'$'}episode, review: {
+          |    stars: 5
+          |    favoriteColor: {
+          |      red: 1
+          |      blue: 1
+          |    }
+          |    
+          |    listOfStringNonOptional: []
+          |  }
+          |  ) {
           |    __typename
           |    name
           |  }

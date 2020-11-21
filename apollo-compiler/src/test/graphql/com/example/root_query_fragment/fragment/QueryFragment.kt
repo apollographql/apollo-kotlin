@@ -12,9 +12,6 @@ import com.apollographql.apollo.api.internal.ResponseReader
 import kotlin.String
 import kotlin.Suppress
 
-/**
- * The query type, represents all of the entry points into our object graph
- */
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")

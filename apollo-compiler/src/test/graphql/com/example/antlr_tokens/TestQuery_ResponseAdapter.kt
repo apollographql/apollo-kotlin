@@ -61,7 +61,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         "fragment" to """
         |A string
         |with a new line
-        |""".trimMargin()), true, null)
+        """.trimMargin()), true, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):

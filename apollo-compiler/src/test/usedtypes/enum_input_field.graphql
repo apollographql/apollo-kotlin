@@ -1,0 +1,30 @@
+scalar CustomScalar0
+
+input MessageInput0 {
+    text: String
+    id: ID!
+    encoding: Encoding!
+}
+
+type Query {
+    random: String!
+}
+
+enum Encoding {
+    UTF8,
+    CP1952
+}
+
+type Mutation {
+    sendMessage0(input: MessageInput0): String!
+}
+
+"""
+MessageInput0
+String
+ID
+Encoding
+"""
+mutation sendMessage($input: MessageInput0) {
+    sendMessage0(input: $input)
+}

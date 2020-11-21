@@ -1,7 +1,0 @@
-Failed to parse GraphQL file /ArgumentNonOptional.graphql (2:23)
-Input field `review` is non optional
-----------------------------------------------------
-[1]:mutation TestQuery {
-[2]:  createReview(review: null) {
-[3]:    commentary
-----------------------------------------------------

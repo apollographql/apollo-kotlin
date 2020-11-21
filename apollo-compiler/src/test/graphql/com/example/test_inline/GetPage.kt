@@ -94,8 +94,8 @@ class GetPage : Query<GetPage.Data, Operation.Variables> {
   )
 
   data class ParticularItemItem(
-    override val __typename: String = "ParticularItem",
     val image: String,
+    override val __typename: String = "ParticularItem",
     override val title: String
   ) : Item {
     override fun marshaller(): ResponseFieldMarshaller {
@@ -127,8 +127,8 @@ class GetPage : Query<GetPage.Data, Operation.Variables> {
   }
 
   data class ParticularCollectionCollection(
-    override val __typename: String = "ParticularCollection",
-    override val items: List<Item>
+    override val items: List<Item>,
+    override val __typename: String = "ParticularCollection"
   ) : Collection {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->

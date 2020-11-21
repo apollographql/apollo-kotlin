@@ -161,12 +161,23 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "9bfee0998b66f8adeed48e612153400401690d904e272d69289721b6f39aca5f"
+        "41ecf1ebc942a1544916754c516199fdfaf62cbaa4d55f821c08248ac4b344d5"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery(${'$'}episode: Episode, ${'$'}stars: Int!, ${'$'}greenValue: Float!) {
-          |  heroWithReview(episode: ${'$'}episode, review: {stars: ${'$'}stars, favoriteColor: {red: 0, green: ${'$'}greenValue, blue: 0}, booleanNonOptional: false, listOfStringNonOptional: []}, listOfInts: [${'$'}stars, ${'$'}stars]) {
+          |  heroWithReview(episode: ${'$'}episode, review: {
+          |    stars: ${'$'}stars
+          |    favoriteColor: {
+          |      red: 0
+          |      green: ${'$'}greenValue
+          |      blue: 0
+          |    }
+          |    
+          |    booleanNonOptional: false
+          |    listOfStringNonOptional: []
+          |  }
+          |  , listOfInts: [${'$'}stars,${'$'}stars]) {
           |    __typename
           |    name
           |    height(unit: FOOT)

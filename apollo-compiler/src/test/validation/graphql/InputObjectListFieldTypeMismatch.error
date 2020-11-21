@@ -1,7 +1,0 @@
-Failed to parse GraphQL file /InputObjectListFieldTypeMismatch.graphql (2:23)
-Variable `item` of type `Int` used in position expecting type `String`
-----------------------------------------------------
-[1]:mutation TestQuery($item: Int) {
-[2]:  createReview(review: {
-[3]:    listOfStringNonOptional: [$item]
-----------------------------------------------------

@@ -21,7 +21,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forObject("__schema", "__schema", null, false, null),
     ResponseField.forObject("__type", "__type", mapOf<String, Any>(
-      "name" to "Vehicle"), true, null)
+      "name" to "Vehicle"), false, null)
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
@@ -41,7 +41,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
       TestQuery.Data(
         __schema = __schema!!,
-        __type = __type
+        __type = __type!!
       )
     }
   }
@@ -50,12 +50,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
       TestQuery_ResponseAdapter.__Schema_ResponseAdapter.toResponse(writer, value.__schema)
     }
-    if(value.__type == null) {
-      writer.writeObject(RESPONSE_FIELDS[1], null)
-    } else {
-      writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
-        TestQuery_ResponseAdapter.__Type_ResponseAdapter.toResponse(writer, value.__type)
-      }
+    writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
+      TestQuery_ResponseAdapter.__Type_ResponseAdapter.toResponse(writer, value.__type)
     }
   }
 

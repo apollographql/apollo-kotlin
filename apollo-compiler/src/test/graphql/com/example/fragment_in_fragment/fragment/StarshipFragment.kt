@@ -13,9 +13,6 @@ import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
 
-/**
- * A single transport craft that has hyperdrive capability.
- */
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")

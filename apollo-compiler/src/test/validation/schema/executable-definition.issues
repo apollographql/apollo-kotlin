@@ -1,0 +1,2 @@
+ERROR: ValidationError (1:0)
+Found an executable definition. Schemas should not contain operations or fragments.

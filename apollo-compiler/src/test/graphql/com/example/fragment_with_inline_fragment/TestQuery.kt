@@ -99,69 +99,94 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   )
 
   /**
+   * An autonomous mechanical character in the Star Wars universe
+   */
+  interface Droid : Hero {
+    override fun marshaller(): ResponseFieldMarshaller
+  }
+
+  /**
    * A character from the Star Wars universe
    */
-  interface Node {
-    val __typename: String
-
+  data class Node(
+    override val __typename: String = "Character",
     /**
      * The name of the character
      */
-    val name: String
-
-    fun marshaller(): ResponseFieldMarshaller
+    override val name: String
+  ) : HeroDetails.Node {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.Node_ResponseAdapter.toResponse(writer, this)
+      }
+    }
   }
 
   /**
    * An edge object for a character's friends
    */
-  interface Edge {
-    val __typename: String
-
+  data class Edge(
+    override val __typename: String = "FriendsEdge",
     /**
      * The character represented by this friendship edge
      */
-    val node: Node?
-
-    fun marshaller(): ResponseFieldMarshaller
+    override val node: Node?
+  ) : HeroDetails.Edge {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.Edge_ResponseAdapter.toResponse(writer, this)
+      }
+    }
   }
 
   /**
    * A connection object for a character's friends
    */
-  interface FriendsConnection {
-    val __typename: String
-
+  data class FriendsConnection(
+    override val __typename: String = "FriendsConnection",
     /**
      * The total number of friends
      */
-    val totalCount: Int?
-
+    override val totalCount: Int?,
     /**
      * The edges for each of the character's friends.
      */
-    val edges: List<Edge?>?
+    override val edges: List<Edge?>?
+  ) : HeroDetails.FriendsConnection {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.FriendsConnection_ResponseAdapter.toResponse(writer, this)
+      }
+    }
 
-    fun marshaller(): ResponseFieldMarshaller
+    fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
   }
 
   /**
-   * An autonomous mechanical character in the Star Wars universe
+   * A character from the Star Wars universe
    */
-  interface Droid : Hero {
-    override val __typename: String
-
+  data class CharacterHero(
+    override val __typename: String = "Character",
     /**
-     * What others call this droid
+     * The name of the character
      */
-    override val name: String
-
+    override val name: String,
     /**
-     * The friends of the droid exposed as a connection with edges
+     * The friends of the character exposed as a connection with edges
      */
-    val friendsConnection: FriendsConnection
+    override val friendsConnection: FriendsConnection,
+    /**
+     * The movies this character appears in
+     */
+    override val appearsIn: List<Episode?>
+  ) : HeroDetails, Hero {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.CharacterHero_ResponseAdapter.toResponse(writer, this)
+      }
+    }
 
-    override fun marshaller(): ResponseFieldMarshaller
+    fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
   }
 
   /**
@@ -173,7 +198,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
      * The name of the character
      */
     override val name: String
-  ) : HeroDetails.Node, Node {
+  ) : HeroDetails.Node {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
         TestQuery_ResponseAdapter.Node1_ResponseAdapter.toResponse(writer, this)
@@ -190,7 +215,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
      * The character represented by this friendship edge
      */
     override val node: Node1?
-  ) : HeroDetails.Edge, Edge {
+  ) : HeroDetails.Edge {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
         TestQuery_ResponseAdapter.Edge1_ResponseAdapter.toResponse(writer, this)
@@ -211,7 +236,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
      * The edges for each of the character's friends.
      */
     override val edges: List<Edge1?>?
-  ) : HeroDetails.FriendsConnection, FriendsConnection {
+  ) : HeroDetails.FriendsConnection {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
         TestQuery_ResponseAdapter.FriendsConnection1_ResponseAdapter.toResponse(writer, this)
@@ -395,7 +420,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "cf2801bb0424f62ecf3504cedcf40d0fc0f5b5b75bdaf1a9febb5e63bea91306"
+        "e9843a0a69aada34351cddb824627cf6c36cb9f7135d1ae5943ef8dffd8381fd"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -409,7 +434,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           |}
           |fragment HeroDetails on Character {
           |  __typename
-          |  ... HumanDetails
+          |  ...HumanDetails
           |  ... on Droid {
           |    ...DroidDetails
           |  }

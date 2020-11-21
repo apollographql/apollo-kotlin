@@ -94,43 +94,102 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   )
 
   /**
-   * A humanoid creature from the Star Wars universe
+   * A character from the Star Wars universe
    */
-  data class HumanHero(
-    override val __typename: String = "Human",
-    /**
-     * Height in the preferred unit, default is meters
-     */
-    val height: Double?,
+  interface Character : Hero {
     /**
      * The name of the character
      */
-    override val name: String
-  ) : Hero {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.HumanHero_ResponseAdapter.toResponse(writer, this)
-      }
-    }
+    val name: String
+
+    override fun marshaller(): ResponseFieldMarshaller
   }
 
   /**
    * An autonomous mechanical character in the Star Wars universe
    */
-  data class DroidHero(
-    override val __typename: String = "Droid",
+  interface Droid : Hero {
     /**
      * This droid's primary function
      */
-    val primaryFunction: String?,
+    val primaryFunction: String?
+
+    override fun marshaller(): ResponseFieldMarshaller
+  }
+
+  /**
+   * A character from the Star Wars universe
+   */
+  interface Character1 : Hero {
     /**
      * The name of the character
      */
-    override val name: String
-  ) : Hero {
+    val name: String
+
+    override fun marshaller(): ResponseFieldMarshaller
+  }
+
+  /**
+   * A humanoid creature from the Star Wars universe
+   */
+  interface Human : Hero {
+    /**
+     * Height in the preferred unit, default is meters
+     */
+    val height: Double?
+
+    override fun marshaller(): ResponseFieldMarshaller
+  }
+
+  /**
+   * A character from the Star Wars universe
+   */
+  data class CharacterHero(
+    /**
+     * The name of the character
+     */
+    override val name: String,
+    override val __typename: String = "Character"
+  ) : Character1, Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.DroidHero_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.CharacterHero_ResponseAdapter.toResponse(writer, this)
+      }
+    }
+  }
+
+  data class CharacterDroidHero(
+    /**
+     * The name of the character
+     */
+    override val name: String,
+    /**
+     * This droid's primary function
+     */
+    override val primaryFunction: String?,
+    override val __typename: String
+  ) : Character1, Droid, Hero {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.CharacterDroidHero_ResponseAdapter.toResponse(writer, this)
+      }
+    }
+  }
+
+  data class CharacterHumanHero(
+    /**
+     * The name of the character
+     */
+    override val name: String,
+    /**
+     * Height in the preferred unit, default is meters
+     */
+    override val height: Double?,
+    override val __typename: String
+  ) : Character1, Human, Hero {
+    override fun marshaller(): ResponseFieldMarshaller {
+      return ResponseFieldMarshaller { writer ->
+        TestQuery_ResponseAdapter.CharacterHumanHero_ResponseAdapter.toResponse(writer, this)
       }
     }
   }
@@ -139,11 +198,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * A character from the Star Wars universe
    */
   data class OtherHero(
-    override val __typename: String = "Character",
-    /**
-     * The name of the character
-     */
-    override val name: String
+    override val __typename: String = "Character"
   ) : Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
@@ -158,14 +213,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   interface Hero {
     val __typename: String
 
-    /**
-     * The name of the character
-     */
-    val name: String
+    fun asCharacter1(): Character1? = this as? Character1
 
-    fun asHumanHero(): HumanHero? = this as? HumanHero
+    fun asDroid(): Droid? = this as? Droid
 
-    fun asDroidHero(): DroidHero? = this as? DroidHero
+    fun asHuman(): Human? = this as? Human
 
     fun marshaller(): ResponseFieldMarshaller
   }

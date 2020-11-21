@@ -13,7 +13,8 @@ import kotlin.String
 import kotlin.Suppress
 
 /**
- * A character from the Star Wars universe
+ * Fragment with Java / Kotlin docs generation
+ * with multi lines support
  */
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
@@ -56,7 +57,7 @@ internal interface HeroDetails : GraphqlFragment {
     val FRAGMENT_DEFINITION: String = """
         |fragment HeroDetails on Character {
         |  __typename
-        |  ... HumanDetails
+        |  ...HumanDetails
         |}
         """.trimMargin()
 
