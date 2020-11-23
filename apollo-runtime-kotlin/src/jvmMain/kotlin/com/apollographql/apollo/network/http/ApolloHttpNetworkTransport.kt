@@ -31,6 +31,7 @@ import okhttp3.Response
 import okhttp3.internal.closeQuietly
 import java.io.IOException
 import java.time.Duration
+import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
@@ -55,8 +56,8 @@ actual class ApolloHttpNetworkTransport(
       serverUrl = serverUrl.toHttpUrl(),
       headers = headers.toHeaders(),
       httpCallFactory = OkHttpClient.Builder()
-          .connectTimeout(Duration.ofMillis(connectTimeoutMillis))
-          .readTimeout(Duration.ofMillis(readTimeoutMillis))
+          .connectTimeout(connectTimeoutMillis, TimeUnit.MILLISECONDS)
+          .readTimeout(readTimeoutMillis, TimeUnit.MILLISECONDS)
           .build(),
       httpMethod = httpMethod,
   )
