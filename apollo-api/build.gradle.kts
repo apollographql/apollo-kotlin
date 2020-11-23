@@ -1,4 +1,5 @@
 plugins {
+  `java-library`
   kotlin("multiplatform")
 }
 
@@ -77,4 +78,8 @@ kotlin {
       }
     }
   }
+}
+
+metalava {
+  hiddenPackages += setOf("com.apollographql.apollo.api.internal")
 }
