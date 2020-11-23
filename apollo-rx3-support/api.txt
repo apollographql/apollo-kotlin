@@ -1,26 +1,16 @@
+// Signature format: 3.0
 package com.apollographql.apollo.rx3 {
 
   public final class KotlinExtensions {
-    ctor public KotlinExtensions();
-    method public static inline error.NonExistentClass rx(error.NonExistentClass);
-    method public static inline <T> error.NonExistentClass rx(error.NonExistentClass);
-    method public static inline <T> error.NonExistentClass rx(error.NonExistentClass);
-    method public static inline <T> error.NonExistentClass rx(error.NonExistentClass);
-    method public static inline <T> error.NonExistentClass rx(error.NonExistentClass, error.NonExistentClass);
-    method public static inline <D, T, V> error.NonExistentClass rxMutate(error.NonExistentClass, error.NonExistentClass, kotlin.jvm.functions.Function1<? super error.NonExistentClass, ? extends error.NonExistentClass>);
-    method public static inline <D, T, V> error.NonExistentClass rxMutate(error.NonExistentClass, error.NonExistentClass, D, kotlin.jvm.functions.Function1<? super error.NonExistentClass, ? extends error.NonExistentClass>);
-    method public static inline <D, T, V> error.NonExistentClass rxPrefetch(error.NonExistentClass, error.NonExistentClass);
-    method public static inline <D, T, V> error.NonExistentClass rxQuery(error.NonExistentClass, error.NonExistentClass, kotlin.jvm.functions.Function1<? super error.NonExistentClass, ? extends error.NonExistentClass>);
-    method public static inline <D, T, V> error.NonExistentClass rxSubscribe(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
   }
 
   public class Rx3Apollo {
-    method public static <T> Observable<Response<T>> from(ApolloQueryWatcher<T>);
-    method public static <T> Observable<Response<T>> from(ApolloCall<T>);
-    method public static Completable from(ApolloPrefetch);
-    method public static <T> Flowable<Response<T>> from(ApolloSubscriptionCall<T>);
-    method public static <T> Flowable<Response<T>> from(ApolloSubscriptionCall<T>, BackpressureStrategy);
-    method public static <T> Single<T> from(ApolloStoreOperation<T>);
+    method @io.reactivex.rxjava3.annotations.CheckReturnValue public static <T> io.reactivex.rxjava3.core.Observable<com.apollographql.apollo.api.Response<T!>!> from(com.apollographql.apollo.ApolloQueryWatcher<T!>);
+    method @io.reactivex.rxjava3.annotations.CheckReturnValue public static <T> io.reactivex.rxjava3.core.Observable<com.apollographql.apollo.api.Response<T!>!> from(com.apollographql.apollo.ApolloCall<T!>);
+    method @io.reactivex.rxjava3.annotations.CheckReturnValue public static io.reactivex.rxjava3.core.Completable from(com.apollographql.apollo.ApolloPrefetch);
+    method @io.reactivex.rxjava3.annotations.CheckReturnValue public static <T> io.reactivex.rxjava3.core.Flowable<com.apollographql.apollo.api.Response<T!>!> from(com.apollographql.apollo.ApolloSubscriptionCall<T!>);
+    method @io.reactivex.rxjava3.annotations.CheckReturnValue public static <T> io.reactivex.rxjava3.core.Flowable<com.apollographql.apollo.api.Response<T!>!> from(com.apollographql.apollo.ApolloSubscriptionCall<T!>, io.reactivex.rxjava3.core.BackpressureStrategy);
+    method @io.reactivex.rxjava3.annotations.CheckReturnValue public static <T> io.reactivex.rxjava3.core.Single<T!> from(com.apollographql.apollo.cache.normalized.ApolloStoreOperation<T!>);
   }
 
 }

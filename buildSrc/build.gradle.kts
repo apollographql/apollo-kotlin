@@ -17,6 +17,7 @@ dependencies {
   implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
   implementation(groovy.util.Eval.x(project, "x.dep.android.plugin"))
   implementation(groovy.util.Eval.x(project, "x.dep.gradleJapiCmpPlugin"))
+  implementation(groovy.util.Eval.x(project, "x.dep.gradleMetalavaPlugin"))
   implementation(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
   implementation(groovy.util.Eval.x(project, "x.dep.sqldelight.plugin"))
   implementation(groovy.util.Eval.x(project, "x.dep.gradlePublishPlugin"))

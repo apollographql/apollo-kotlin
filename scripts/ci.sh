@@ -10,6 +10,6 @@ export PATH="$ANDROID_HOME"/tools/bin:$PATH
 # remove when it's working again
 ./gradlew -p composite build -i
 # check that the public API did not change with Metalava
-./gradlew checkMetalava
+./gradlew metalavaCheckCompatibility
 
 ./gradlew publishSnapshotsIfNeeded  --parallel

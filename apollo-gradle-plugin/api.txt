@@ -1,103 +1,104 @@
+// Signature format: 3.0
 package com.apollographql.apollo.gradle.api {
 
   public final class ApolloAttributes {
-    method public error.NonExistentClass getAPOLLO_SERVICE_ATTRIBUTE();
-    method public error.NonExistentClass getAPOLLO_VARIANT_ATTRIBUTE();
-    property public final error.NonExistentClass APOLLO_SERVICE_ATTRIBUTE;
-    property public final error.NonExistentClass APOLLO_VARIANT_ATTRIBUTE;
+    method public error.NonExistentClass! getAPOLLO_SERVICE_ATTRIBUTE();
+    method public error.NonExistentClass! getAPOLLO_VARIANT_ATTRIBUTE();
+    property public final error.NonExistentClass! APOLLO_SERVICE_ATTRIBUTE;
+    property public final error.NonExistentClass! APOLLO_VARIANT_ATTRIBUTE;
     field public static final com.apollographql.apollo.gradle.api.ApolloAttributes INSTANCE;
   }
 
-  public static abstract interface ApolloAttributes.Service {
+  public static interface ApolloAttributes.Service extends org.gradle.api.Named {
   }
 
-  public static abstract interface ApolloAttributes.Variant {
+  public static interface ApolloAttributes.Variant extends org.gradle.api.Named {
   }
 
-  public abstract interface ApolloExtension implements com.apollographql.apollo.gradle.api.CompilerParams {
-    method public abstract void onCompilationUnit(error.NonExistentClass);
-    method public abstract void service(error.NonExistentClass, error.NonExistentClass);
+  public interface ApolloExtension extends com.apollographql.apollo.gradle.api.CompilerParams {
+    method public void onCompilationUnit(org.gradle.api.Action<com.apollographql.apollo.gradle.api.CompilationUnit> action);
+    method public void service(String name, org.gradle.api.Action<com.apollographql.apollo.gradle.internal.DefaultService> action);
   }
 
-  public abstract interface CompilationUnit implements com.apollographql.apollo.gradle.api.CompilerParams {
-    method public abstract error.NonExistentClass getAndroidVariant();
-    method public abstract error.NonExistentClass getName();
-    method public abstract error.NonExistentClass getOperationOutputFile();
-    method public abstract error.NonExistentClass getOutputDir();
-    method public abstract error.NonExistentClass getServiceName();
-    method public abstract error.NonExistentClass getVariantName();
-    property public abstract error.NonExistentClass androidVariant;
-    property public abstract error.NonExistentClass name;
-    property public abstract error.NonExistentClass operationOutputFile;
-    property public abstract error.NonExistentClass outputDir;
-    property public abstract error.NonExistentClass serviceName;
-    property public abstract error.NonExistentClass variantName;
+  public interface CompilationUnit extends com.apollographql.apollo.gradle.api.CompilerParams {
+    method public Object? getAndroidVariant();
+    method public String getName();
+    method public org.gradle.api.provider.Provider<org.gradle.api.file.RegularFile> getOperationOutputFile();
+    method public org.gradle.api.provider.Provider<org.gradle.api.file.Directory> getOutputDir();
+    method public String getServiceName();
+    method public String getVariantName();
+    property public abstract Object? androidVariant;
+    property public abstract String name;
+    property public abstract org.gradle.api.provider.Provider<org.gradle.api.file.RegularFile> operationOutputFile;
+    property public abstract org.gradle.api.provider.Provider<org.gradle.api.file.Directory> outputDir;
+    property public abstract String serviceName;
+    property public abstract String variantName;
   }
 
-  public abstract interface CompilerParams {
-    method public abstract error.NonExistentClass getAlwaysGenerateTypesMatching();
-    method public abstract error.NonExistentClass getCustomTypeMapping();
-    method public abstract error.NonExistentClass getFailOnWarnings();
-    method public abstract error.NonExistentClass getGenerateApolloMetadata();
-    method public abstract error.NonExistentClass getGenerateAsInternal();
-    method public abstract error.NonExistentClass getGenerateKotlinModels();
-    method public abstract error.NonExistentClass getGenerateModelBuilder();
-    method public abstract error.NonExistentClass getGenerateOperationOutput();
-    method public abstract error.NonExistentClass getGenerateVisitorForPolymorphicDatatypes();
-    method public abstract error.NonExistentClass getGraphqlSourceDirectorySet();
-    method public abstract error.NonExistentClass getNullableValueType();
-    method public abstract error.NonExistentClass getOperationIdGenerator();
-    method public abstract error.NonExistentClass getOperationOutputGenerator();
-    method public abstract error.NonExistentClass getPackageName();
-    method public abstract error.NonExistentClass getRootPackageName();
-    method public abstract error.NonExistentClass getSchemaFile();
-    method public abstract error.NonExistentClass getSealedClassesForEnumsMatching();
-    method public abstract error.NonExistentClass getSuppressRawTypesWarning();
-    method public abstract error.NonExistentClass getUseJavaBeansSemanticNaming();
-    method public abstract error.NonExistentClass getUseSemanticNaming();
-    method public abstract error.NonExistentClass getWarnOnDeprecatedUsages();
-    property public abstract error.NonExistentClass alwaysGenerateTypesMatching;
-    property public abstract error.NonExistentClass customTypeMapping;
-    property public abstract error.NonExistentClass failOnWarnings;
-    property public abstract error.NonExistentClass generateApolloMetadata;
-    property public abstract error.NonExistentClass generateAsInternal;
-    property public abstract error.NonExistentClass generateKotlinModels;
-    property public abstract error.NonExistentClass generateModelBuilder;
-    property public abstract error.NonExistentClass generateOperationOutput;
-    property public abstract error.NonExistentClass generateVisitorForPolymorphicDatatypes;
-    property public abstract error.NonExistentClass graphqlSourceDirectorySet;
-    property public abstract error.NonExistentClass nullableValueType;
-    property public abstract error.NonExistentClass operationIdGenerator;
-    property public abstract error.NonExistentClass operationOutputGenerator;
-    property public abstract error.NonExistentClass packageName;
-    property public abstract error.NonExistentClass rootPackageName;
-    property public abstract error.NonExistentClass schemaFile;
-    property public abstract error.NonExistentClass sealedClassesForEnumsMatching;
-    property public abstract error.NonExistentClass suppressRawTypesWarning;
-    property public abstract error.NonExistentClass useJavaBeansSemanticNaming;
-    property public abstract error.NonExistentClass useSemanticNaming;
-    property public abstract error.NonExistentClass warnOnDeprecatedUsages;
+  public interface CompilerParams {
+    method public org.gradle.api.provider.SetProperty<java.lang.String> getAlwaysGenerateTypesMatching();
+    method public org.gradle.api.provider.MapProperty<java.lang.String,java.lang.String> getCustomTypeMapping();
+    method public org.gradle.api.provider.Property<java.lang.Boolean> getFailOnWarnings();
+    method public org.gradle.api.provider.Property<java.lang.Boolean> getGenerateApolloMetadata();
+    method public org.gradle.api.provider.Property<java.lang.Boolean> getGenerateAsInternal();
+    method public org.gradle.api.provider.Property<java.lang.Boolean> getGenerateKotlinModels();
+    method public org.gradle.api.provider.Property<java.lang.Boolean> getGenerateModelBuilder();
+    method public org.gradle.api.provider.Property<java.lang.Boolean> getGenerateOperationOutput();
+    method public org.gradle.api.provider.Property<java.lang.Boolean> getGenerateVisitorForPolymorphicDatatypes();
+    method public org.gradle.api.file.SourceDirectorySet getGraphqlSourceDirectorySet();
+    method public org.gradle.api.provider.Property<java.lang.String> getNullableValueType();
+    method public org.gradle.api.provider.Property<error.NonExistentClass> getOperationIdGenerator();
+    method public org.gradle.api.provider.Property<error.NonExistentClass> getOperationOutputGenerator();
+    method public org.gradle.api.provider.Property<java.lang.String> getPackageName();
+    method public org.gradle.api.provider.Property<java.lang.String> getRootPackageName();
+    method public org.gradle.api.file.RegularFileProperty getSchemaFile();
+    method public org.gradle.api.provider.ListProperty<java.lang.String> getSealedClassesForEnumsMatching();
+    method public org.gradle.api.provider.Property<java.lang.Boolean> getSuppressRawTypesWarning();
+    method public org.gradle.api.provider.Property<java.lang.Boolean> getUseJavaBeansSemanticNaming();
+    method public org.gradle.api.provider.Property<java.lang.Boolean> getUseSemanticNaming();
+    method public org.gradle.api.provider.Property<java.lang.Boolean> getWarnOnDeprecatedUsages();
+    property public abstract org.gradle.api.provider.SetProperty<java.lang.String> alwaysGenerateTypesMatching;
+    property public abstract org.gradle.api.provider.MapProperty<java.lang.String,java.lang.String> customTypeMapping;
+    property public abstract org.gradle.api.provider.Property<java.lang.Boolean> failOnWarnings;
+    property public abstract org.gradle.api.provider.Property<java.lang.Boolean> generateApolloMetadata;
+    property public abstract org.gradle.api.provider.Property<java.lang.Boolean> generateAsInternal;
+    property public abstract org.gradle.api.provider.Property<java.lang.Boolean> generateKotlinModels;
+    property public abstract org.gradle.api.provider.Property<java.lang.Boolean> generateModelBuilder;
+    property public abstract org.gradle.api.provider.Property<java.lang.Boolean> generateOperationOutput;
+    property public abstract org.gradle.api.provider.Property<java.lang.Boolean> generateVisitorForPolymorphicDatatypes;
+    property public abstract org.gradle.api.file.SourceDirectorySet graphqlSourceDirectorySet;
+    property public abstract org.gradle.api.provider.Property<java.lang.String> nullableValueType;
+    property public abstract org.gradle.api.provider.Property<error.NonExistentClass> operationIdGenerator;
+    property public abstract org.gradle.api.provider.Property<error.NonExistentClass> operationOutputGenerator;
+    property public abstract org.gradle.api.provider.Property<java.lang.String> packageName;
+    property public abstract org.gradle.api.provider.Property<java.lang.String> rootPackageName;
+    property public abstract org.gradle.api.file.RegularFileProperty schemaFile;
+    property public abstract org.gradle.api.provider.ListProperty<java.lang.String> sealedClassesForEnumsMatching;
+    property public abstract org.gradle.api.provider.Property<java.lang.Boolean> suppressRawTypesWarning;
+    property public abstract org.gradle.api.provider.Property<java.lang.Boolean> useJavaBeansSemanticNaming;
+    property public abstract org.gradle.api.provider.Property<java.lang.Boolean> useSemanticNaming;
+    property public abstract org.gradle.api.provider.Property<java.lang.Boolean> warnOnDeprecatedUsages;
   }
 
-  public abstract interface Introspection {
-    method public abstract error.NonExistentClass getEndpointUrl();
-    method public abstract error.NonExistentClass getHeaders();
-    method public abstract error.NonExistentClass getQueryParameters();
-    method public abstract error.NonExistentClass getSourceSetName();
-    property public abstract error.NonExistentClass endpointUrl;
-    property public abstract error.NonExistentClass headers;
-    property public abstract error.NonExistentClass queryParameters;
-    property public abstract error.NonExistentClass sourceSetName;
+  public interface Introspection {
+    method public org.gradle.api.provider.Property<java.lang.String> getEndpointUrl();
+    method public org.gradle.api.provider.MapProperty<java.lang.String,java.lang.String> getHeaders();
+    method @Deprecated public org.gradle.api.provider.MapProperty<java.lang.String,java.lang.String> getQueryParameters();
+    method public org.gradle.api.provider.Property<java.lang.String> getSourceSetName();
+    property public abstract org.gradle.api.provider.Property<java.lang.String> endpointUrl;
+    property public abstract org.gradle.api.provider.MapProperty<java.lang.String,java.lang.String> headers;
+    property @Deprecated public abstract org.gradle.api.provider.MapProperty<java.lang.String,java.lang.String> queryParameters;
+    property public abstract org.gradle.api.provider.Property<java.lang.String> sourceSetName;
   }
 
-  public abstract interface Service implements com.apollographql.apollo.gradle.api.CompilerParams {
-    method public abstract error.NonExistentClass getExclude();
-    method public abstract error.NonExistentClass getSchemaPath();
-    method public abstract error.NonExistentClass getSourceFolder();
-    method public abstract void introspection(error.NonExistentClass);
-    property public abstract error.NonExistentClass exclude;
-    property public abstract error.NonExistentClass schemaPath;
-    property public abstract error.NonExistentClass sourceFolder;
+  public interface Service extends com.apollographql.apollo.gradle.api.CompilerParams {
+    method public org.gradle.api.provider.ListProperty<java.lang.String> getExclude();
+    method public org.gradle.api.provider.Property<java.lang.String> getSchemaPath();
+    method public org.gradle.api.provider.Property<java.lang.String> getSourceFolder();
+    method public void introspection(org.gradle.api.Action<? super com.apollographql.apollo.gradle.api.Introspection> configure);
+    property public abstract org.gradle.api.provider.ListProperty<java.lang.String> exclude;
+    property public abstract org.gradle.api.provider.Property<java.lang.String> schemaPath;
+    property public abstract org.gradle.api.provider.Property<java.lang.String> sourceFolder;
   }
 
 }

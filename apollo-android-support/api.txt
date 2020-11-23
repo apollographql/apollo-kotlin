@@ -1,23 +1,18 @@
+// Signature format: 3.0
 package com.apollographql.apollo {
 
-  public final class ApolloCallback<T> {
-    ctor public ApolloCallback(ApolloCall.Callback<T>, Handler);
-    method public void onFailure(ApolloException);
-    method public void onHttpError(ApolloHttpException);
-    method public void onNetworkError(ApolloNetworkException);
-    method public void onParseError(ApolloParseException);
-    method public void onResponse(Response<T>);
-    method public void onStatusEvent(ApolloCall.StatusEvent);
-    method public static <T> com.apollographql.apollo.ApolloCallback<T> wrap(ApolloCall.Callback<T>, Handler);
+  public final class ApolloCallback<T> extends com.apollographql.apollo.ApolloCall.Callback<T> {
+    ctor public ApolloCallback(com.apollographql.apollo.ApolloCall.Callback<T!>, android.os.Handler);
+    method public void onFailure(com.apollographql.apollo.exception.ApolloException);
+    method public void onResponse(com.apollographql.apollo.api.Response<T!>);
+    method public static <T> com.apollographql.apollo.ApolloCallback<T!>! wrap(com.apollographql.apollo.ApolloCall.Callback<T!>, android.os.Handler);
   }
 
-  public final class ApolloPrefetchCallback {
-    ctor public ApolloPrefetchCallback(ApolloPrefetch.Callback, Handler);
-    method public void onFailure(ApolloException);
-    method public void onHttpError(ApolloHttpException);
-    method public void onNetworkError(ApolloNetworkException);
+  public final class ApolloPrefetchCallback extends com.apollographql.apollo.ApolloPrefetch.Callback {
+    ctor public ApolloPrefetchCallback(com.apollographql.apollo.ApolloPrefetch.Callback, android.os.Handler);
+    method public void onFailure(com.apollographql.apollo.exception.ApolloException);
     method public void onSuccess();
-    method public static <T> com.apollographql.apollo.ApolloPrefetchCallback wrap(ApolloPrefetch.Callback, Handler);
+    method public static <T> com.apollographql.apollo.ApolloPrefetchCallback! wrap(com.apollographql.apollo.ApolloPrefetch.Callback, android.os.Handler);
   }
 
 }
