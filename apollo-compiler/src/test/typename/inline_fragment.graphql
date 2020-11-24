@@ -1,0 +1,9 @@
+# no fragment, no typename
+query TestQuery {
+    hero {
+        ... on Droid {
+            name
+            primaryFunction
+        }
+    }
+}

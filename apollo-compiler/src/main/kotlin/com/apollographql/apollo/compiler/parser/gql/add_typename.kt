@@ -1,16 +1,15 @@
 package com.apollographql.apollo.compiler.parser.gql
 
 fun GQLOperationDefinition.withTypenameWhenNeeded(schema: Schema): GQLOperationDefinition {
-  val hasFragmentSpread = selectionSet.selections.filterIsInstance<GQLFragmentSpread>().isNotEmpty()
-
   return copy(
-      selectionSet = selectionSet.withTypenameWhenNeeded(schema, hasFragmentSpread)
+      selectionSet = selectionSet.withTypenameWhenNeeded(schema, true)
   )
 }
 
 fun GQLFragmentDefinition.withTypenameWhenNeeded(schema: Schema): GQLFragmentDefinition {
   return copy(
-      selectionSet = selectionSet.withTypenameWhenNeeded(schema, true)
+      // Fragment spread are not root selections by definition since they must be included by another selection set
+      selectionSet = selectionSet.withTypenameWhenNeeded(schema, false)
   )
 }
 
@@ -23,17 +22,13 @@ private val typeNameField = GQLField(
     alias = null
 )
 
-/**
- * XXX: add typename less often
- */
-private fun GQLSelectionSet.withTypenameWhenNeeded(schema: Schema, needed: Boolean): GQLSelectionSet {
+private fun GQLSelectionSet.withTypenameWhenNeeded(schema: Schema, isRootSelection: Boolean): GQLSelectionSet {
 
   var newSelections = selections.map {
     when (it) {
       is GQLInlineFragment -> {
-        val neededInInlineFragments = it.selectionSet.selections.filterIsInstance<GQLInlineFragment>().isNotEmpty()
         it.copy(
-            selectionSet = it.selectionSet.withTypenameWhenNeeded(schema, neededInInlineFragments)
+            selectionSet = it.selectionSet.withTypenameWhenNeeded(schema, false)
         )
       }
       is GQLFragmentSpread -> it
@@ -43,7 +38,9 @@ private fun GQLSelectionSet.withTypenameWhenNeeded(schema: Schema, needed: Boole
     }
   }
 
-  newSelections = if (needed) {
+  val hasFragment = selections.filter { it is GQLFragmentSpread || it is GQLInlineFragment }.isNotEmpty()
+
+  newSelections = if (isRootSelection && hasFragment) {
     // remove the __typename if it exists
     // and add it again at the top so we're guaranteed to have it at the beginning of json parsing
     listOf(typeNameField) + newSelections.filterNot { (it as? GQLField)?.name == "__typename" }

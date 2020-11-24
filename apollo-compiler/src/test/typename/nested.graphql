@@ -1,0 +1,18 @@
+# no fragment, no typename
+query TestQuery {
+    hero {
+        ... on Droid {
+            name
+            primaryFunction
+            friendsConnection {
+                edges {
+                    node {
+                        ... on Human {
+                            name
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
