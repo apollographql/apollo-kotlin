@@ -18,7 +18,7 @@ import okio.BufferedSink
  * Compared to the Antlr [com.apollographql.apollo.compiler.parser.antlr.GraphQLParser.DocumentContext], a GQLDocument
  * is a lot simpler and allows for easy modifying a document (using .clone()) and outputing them to a [okio.BufferedSink].
  *
- * Whitespace tokens are not mapped to GQLNodes so some formating will be lost during modification
+ * Whitespace tokens are not mapped to GQLNodes so some formatting will be lost during modification
  */
 interface GQLNode {
   val sourceLocation: SourceLocation
