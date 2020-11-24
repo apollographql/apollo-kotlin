@@ -26,6 +26,31 @@ class ConvertSchemaTests {
   }
 
   @Test
+  fun `convert is never up-to-date`() {
+    TestUtils.withTestProject("convertSchema") { dir ->
+      val from = File(dir, "schemas/schema.sdl")
+      val to = File(dir, "schema.json")
+      var result = TestUtils.executeTask("convertApolloSchema",
+          dir,
+          "--from",
+          from.absolutePath,
+          "--to",
+          to.absolutePath
+      )
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":convertApolloSchema")!!.outcome)
+      result = TestUtils.executeTask("convertApolloSchema",
+          dir,
+          "--from",
+          from.absolutePath,
+          "--to",
+          to.absolutePath
+      )
+      // even if inputs are the same,
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":convertApolloSchema")!!.outcome)
+    }
+  }
+
+  @Test
   fun `convert from Json to SDL works`() {
     TestUtils.withTestProject("convertSchema") { dir ->
       val from = File(dir, "schemas/schema.json")
