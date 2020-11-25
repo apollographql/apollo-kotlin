@@ -1,57 +1,49 @@
-package com.apollographql.apollo.compiler.codegen
+package com.apollographql.apollo.compiler.backend.codegen
 
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.compiler.applyIf
-import com.apollographql.apollo.compiler.ast.CodeGenerationAst
-import com.apollographql.apollo.compiler.frontend.ir.Field
+import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
+import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
-import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 
-internal fun CodeGenerationAst.ObjectType.typeSpec(
-    responseAdapter: TypeName,
-    generateAsInternal: Boolean = false,
-): TypeSpec {
+internal fun CodeGenerationAst.ObjectType.typeSpec(): TypeSpec {
   return if (kind is CodeGenerationAst.ObjectType.Kind.FragmentDelegate) {
-    fragmentDelegateTypeSpec(generateAsInternal)
+    fragmentDelegateTypeSpec()
   } else {
-    objectTypeSpec(
-        responseAdapter = responseAdapter,
-        generateAsInternal = generateAsInternal,
-    )
+    objectTypeSpec()
   }
 }
 
-private fun CodeGenerationAst.ObjectType.objectTypeSpec(
-    responseAdapter: TypeName,
-    generateAsInternal: Boolean = false,
-): TypeSpec {
-  val builder = if (abstract) TypeSpec.interfaceBuilder(name) else TypeSpec.classBuilder(name)
+private fun CodeGenerationAst.ObjectType.objectTypeSpec(): TypeSpec {
+  val builder = if (abstract)
+    TypeSpec.interfaceBuilder(name.escapeKotlinReservedWord())
+  else
+    TypeSpec.classBuilder(name.escapeKotlinReservedWord())
   return builder
       .addSuperinterfaces(implements.map { type -> type.asTypeName() })
-      .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
-      .applyIf(!abstract) { addModifiers(KModifier.DATA) }
+      .applyIf(!abstract && this.fields.isNotEmpty()) { addModifiers(KModifier.DATA) }
       .apply { if (description.isNotBlank()) addKdoc("%L\n", description) }
       .applyIf(!abstract) { primaryConstructor(primaryConstructorSpec) }
       .addProperties(
           fields.map { field ->
             field.asPropertySpec(
-                initializer = CodeBlock.of(field.name).takeUnless { abstract }
+                initializer = CodeBlock.of(field.name.escapeKotlinReservedWord()).takeUnless { abstract }
             )
           }
       )
       .apply {
         if (kind is CodeGenerationAst.ObjectType.Kind.Fragment) {
-          kind.allPossibleTypes.forEach { type ->
+          kind.fragmentAccessors.forEach { (name, fragmentTypeRef) ->
             addFunction(
                 FunSpec
-                    .builder("as${type.name}")
-                    .returns(type.asTypeName().copy(nullable = true))
-                    .addStatement("return this as? %T", type.asTypeName())
+                    .builder(name.escapeKotlinReservedWord())
+                    .returns(fragmentTypeRef.asTypeName().copy(nullable = true))
+                    .addStatement("return this as? %T", fragmentTypeRef.asTypeName())
                     .build()
             )
           }
@@ -63,7 +55,7 @@ private fun CodeGenerationAst.ObjectType.objectTypeSpec(
                 .applyIf(implements.isNotEmpty()) { addModifiers(KModifier.OVERRIDE) }
                 .returns(ResponseFieldMarshaller::class)
                 .beginControlFlow("return·%T·{·writer·->", ResponseFieldMarshaller::class)
-                .addStatement("%T.toResponse(writer,·this)", responseAdapter)
+                .addStatement("%T.toResponse(writer,·this)", this@objectTypeSpec.typeRef.asAdapterTypeName())
                 .endControlFlow()
                 .build()
         )
@@ -77,12 +69,14 @@ private fun CodeGenerationAst.ObjectType.objectTypeSpec(
                 .build()
         )
       }
+      .addTypes(
+          this.nestedObjects
+              .map { nestedObject -> nestedObject.objectTypeSpec() }
+      )
       .build()
 }
 
-private fun CodeGenerationAst.ObjectType.fragmentDelegateTypeSpec(
-    generateAsInternal: Boolean = false
-): TypeSpec {
+private fun CodeGenerationAst.ObjectType.fragmentDelegateTypeSpec(): TypeSpec {
   val delegateTypeRef = (kind as CodeGenerationAst.ObjectType.Kind.FragmentDelegate).fragmentTypeRef
   val delegateFieldTypeName = delegateTypeRef.asTypeName()
   val primaryConstructorSpec = FunSpec.constructorBuilder()
@@ -92,10 +86,9 @@ private fun CodeGenerationAst.ObjectType.fragmentDelegateTypeSpec(
         )
       }
       .build()
-  return TypeSpec.classBuilder(name)
+  return TypeSpec.classBuilder(name.escapeKotlinReservedWord())
       .addSuperinterfaces(implements.minus(delegateTypeRef).map { type -> type.asTypeName() })
       .addSuperinterface(delegateTypeRef.enclosingType!!.asTypeName(), delegate = CodeBlock.of("delegate"))
-      .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .addModifiers(KModifier.DATA)
       .apply { if (description.isNotBlank()) addKdoc("%L\n", description) }
       .addProperty(
@@ -113,14 +106,15 @@ private val CodeGenerationAst.ObjectType.primaryConstructorSpec: FunSpec
         .addParameters(fields.map { field ->
           ParameterSpec
               .builder(
-                  name = field.name,
+                  name = field.name.escapeKotlinReservedWord(),
                   type = field.type.asTypeName()
               )
-              .applyIf(
-                  field.responseName == Field.TYPE_NAME_FIELD.fieldName &&
-                      field.type is CodeGenerationAst.FieldType.Scalar.String &&
-                      schemaType != null) {
-                defaultValue("%S", schemaType)
+              .apply {
+                if (field.responseName == "__typename" &&
+                    field.type is CodeGenerationAst.FieldType.Scalar.String &&
+                    this@primaryConstructorSpec.introspectionSchemaType != null) {
+                  defaultValue("%S", this@primaryConstructorSpec.introspectionSchemaType.rawType.name)
+                }
               }
               .build()
         })

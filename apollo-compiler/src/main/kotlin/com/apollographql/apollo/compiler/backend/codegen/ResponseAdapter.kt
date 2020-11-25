@@ -1,12 +1,17 @@
-package com.apollographql.apollo.compiler.codegen
+package com.apollographql.apollo.compiler.backend.codegen
 
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import com.apollographql.apollo.compiler.applyIf
-import com.apollographql.apollo.compiler.ast.CodeGenerationAst
+import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
+import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
+import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
@@ -15,61 +20,80 @@ import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
 
 internal fun CodeGenerationAst.OperationType.responseAdapterTypeSpec(generateAsInternal: Boolean = false): TypeSpec {
-  val responseDataType = checkNotNull(this.dataType.nestedTypes[this.dataType.rootType]) {
-    "Failed to resolve operation root data type"
-  }
-  return TypeSpec.objectBuilder("${this.name}_ResponseAdapter")
+  return TypeSpec.objectBuilder("${this.name.escapeKotlinReservedWord()}_ResponseAdapter")
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .addAnnotation(suppressWarningsAnnotation)
-      .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this.dataType.rootType.asTypeName()))
-      .addProperty(responseFieldsPropertySpec(responseDataType.fields))
-      .addFunction(responseDataType.readFromResponseFunSpec())
-      .addFunction(responseDataType.writeToResponseFunSpec())
-      .addTypes(
-        this.dataType
-            .nestedTypes
-            .minus(this.dataType.rootType)
-            .filterNot { (_, type) -> type.abstract && type.kind !is CodeGenerationAst.ObjectType.Kind.Fragment }
-            .map { (_, type) -> type.responseAdapterTypeSpec() }
+      .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this.dataType.typeRef.asTypeName()))
+      .addProperty(responseFieldsPropertySpec(this.dataType.fields))
+      .addFunction(
+          FunSpec.builder("fromResponse")
+              .addModifiers(KModifier.OVERRIDE)
+              .returns(this.dataType.typeRef.asTypeName())
+              .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
+              .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec(withDefaultValue = false))
+              .addCode("return·%T.fromResponse(reader, __typename)", this.dataType.typeRef.asAdapterTypeName())
+              .build()
       )
+      .addFunction(
+          FunSpec.builder("toResponse")
+              .addModifiers(KModifier.OVERRIDE)
+              .addParameter(ParameterSpec(name = "writer", type = ResponseWriter::class.asTypeName()))
+              .addParameter(ParameterSpec(name = "value", type = this.dataType.typeRef.asTypeName()))
+              .addCode("%T.toResponse(writer, value)", this.dataType.typeRef.asAdapterTypeName())
+              .build()
+      )
+      .addType(this.dataType.responseAdapterTypeSpec())
       .build()
 }
 
 internal fun CodeGenerationAst.FragmentType.responseAdapterTypeSpec(generateAsInternal: Boolean = false): TypeSpec {
-  val defaultImplementationType = checkNotNull(this.nestedTypes[this.defaultImplementation]) {
-    "Failed to resolve fragment default implementation type"
-  }
-  return TypeSpec.objectBuilder(this.rootType.asAdapterTypeName().simpleName)
+  return TypeSpec.objectBuilder("${this.name.escapeKotlinReservedWord()}_ResponseAdapter")
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .addAnnotation(suppressWarningsAnnotation)
-      .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this.defaultImplementation.asTypeName()))
-      .addProperty(responseFieldsPropertySpec(defaultImplementationType.fields))
-      .addFunction(defaultImplementationType.readFromResponseFunSpec())
-      .addFunction(defaultImplementationType.writeToResponseFunSpec())
-      .addTypes(
-        this.nestedTypes
-            .minus(this.rootType)
-            .minus(this.defaultImplementation)
-            .filterNot { (_, type) -> type.abstract && type.kind !is CodeGenerationAst.ObjectType.Kind.Fragment }
-            .map { (_, type) -> type.responseAdapterTypeSpec() }
+      .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this.implementationType.typeRef.asTypeName()))
+      .addProperty(responseFieldsPropertySpec(this.implementationType.fields))
+      .addFunction(
+          FunSpec.builder("fromResponse")
+              .addModifiers(KModifier.OVERRIDE)
+              .returns(this.implementationType.typeRef.asTypeName())
+              .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
+              .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec(withDefaultValue = false))
+              .addCode("return·%T.fromResponse(reader, __typename)", this.implementationType.typeRef.asAdapterTypeName())
+              .build()
       )
+      .addFunction(
+          FunSpec.builder("toResponse")
+              .addModifiers(KModifier.OVERRIDE)
+              .addParameter(ParameterSpec(name = "writer", type = ResponseWriter::class.asTypeName()))
+              .addParameter(ParameterSpec(name = "value", type = this.implementationType.typeRef.asTypeName()))
+              .addCode("%T.toResponse(writer, value)", this.implementationType.typeRef.asAdapterTypeName())
+              .build()
+      )
+      .addType(this.implementationType.responseAdapterTypeSpec())
       .build()
 }
 
 private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(): TypeSpec {
-  return TypeSpec.objectBuilder("${this.name}_ResponseAdapter")
+  return TypeSpec.objectBuilder(this.name)
       .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this.typeRef.asTypeName()))
       .applyIf(this.fields.isNotEmpty()) { addProperty(responseFieldsPropertySpec(this@responseAdapterTypeSpec.fields)) }
       .addFunction(readFromResponseFunSpec())
       .addFunction(writeToResponseFunSpec())
+      .addTypes(
+          this.nestedObjects.mapNotNull { nestedObject ->
+            nestedObject
+                .takeUnless { it.kind is CodeGenerationAst.ObjectType.Kind.Interface }
+                ?.responseAdapterTypeSpec()
+          }
+      )
       .build()
 }
 
 internal fun CodeGenerationAst.TypeRef.asAdapterTypeName(): ClassName {
   return if (enclosingType == null) {
-    ClassName(packageName = packageName, "${this.name}_ResponseAdapter")
+    ClassName(packageName = packageName, "${this.name.escapeKotlinReservedWord()}_ResponseAdapter")
   } else {
-    ClassName(packageName = packageName, enclosingType.asAdapterTypeName().simpleName, "${this.name}_ResponseAdapter")
+    ClassName(packageName = packageName, enclosingType.asAdapterTypeName().simpleNames + this.name.escapeKotlinReservedWord())
   }
 }
 
@@ -84,9 +108,9 @@ private fun responseFieldsPropertySpec(fields: List<CodeGenerationAst.Field>): P
       .build()
   return PropertySpec
       .builder(
-        name = "RESPONSE_FIELDS",
-        type = Array<ResponseField>::class.asClassName().parameterizedBy(ResponseField::class.asClassName()),
-        modifiers = arrayOf(KModifier.PRIVATE)
+          name = "RESPONSE_FIELDS",
+          type = Array<ResponseField>::class.asClassName().parameterizedBy(ResponseField::class.asClassName()),
+          modifiers = arrayOf(KModifier.PRIVATE)
       )
       .initializer(initializer)
       .build()
@@ -112,11 +136,11 @@ private val CodeGenerationAst.Field.responseFieldInitializerCode: CodeBlock
     when {
       type is CodeGenerationAst.FieldType.Scalar && type is CodeGenerationAst.FieldType.Scalar.Custom -> {
         builder.add("(%S,·%S,·%L,·%L,·%T,·%L)", responseName, schemaName, arguments.takeIf { it.isNotEmpty() }.toCode(), type.nullable,
-          type.customEnumType.asTypeName(), conditionsListCode(conditions))
+            type.customEnumType.asTypeName(), conditionsListCode(conditions))
       }
       else -> {
         builder.add("(%S,·%S,·%L,·%L,·%L)", responseName, schemaName, arguments.takeIf { it.isNotEmpty() }.toCode(), type.nullable,
-          conditionsListCode(conditions))
+            conditionsListCode(conditions))
       }
     }
     return builder.build()
@@ -127,7 +151,7 @@ private fun conditionsListCode(conditions: Set<CodeGenerationAst.Field.Condition
       .map { condition ->
         when (condition) {
           is CodeGenerationAst.Field.Condition.Directive -> CodeBlock.of("%T.booleanCondition(%S,·%L)",
-            ResponseField.Condition::class, condition.variableName, condition.inverted)
+              ResponseField.Condition::class, condition.variableName.escapeKotlinReservedWord(), condition.inverted)
         }
       }
       .joinToCode(separator = ",\n")

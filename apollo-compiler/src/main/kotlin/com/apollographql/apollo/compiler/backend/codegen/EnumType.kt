@@ -1,7 +1,8 @@
-package com.apollographql.apollo.compiler.codegen
+package com.apollographql.apollo.compiler.backend.codegen
 
 import com.apollographql.apollo.compiler.applyIf
-import com.apollographql.apollo.compiler.ast.CodeGenerationAst
+import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
+import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -25,7 +26,7 @@ internal fun CodeGenerationAst.EnumType.typeSpec(
 
 private fun CodeGenerationAst.EnumType.toEnumTypeSpec(generateAsInternal: Boolean): TypeSpec {
   return TypeSpec
-      .enumBuilder(name)
+      .enumBuilder(name.escapeKotlinReservedWord())
       .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .primaryConstructor(primaryConstructorSpec)
@@ -55,7 +56,7 @@ private val CodeGenerationAst.EnumConst.enumConstTypeSpec: TypeSpec
     return TypeSpec
         .anonymousClassBuilder()
         .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }
-        .applyIf(isDeprecated) { addAnnotation(deprecatedAnnotation(deprecationReason)) }
+        .applyIf(deprecationReason != null) { addAnnotation(deprecatedAnnotation(deprecationReason!!)) }
         .addSuperclassConstructorParameter("%S", value)
         .build()
   }
@@ -82,29 +83,29 @@ private val CodeGenerationAst.EnumType.enumSafeValueOfFunSpec: FunSpec
     return FunSpec
         .builder("safeValueOf")
         .addParameter("rawValue", String::class)
-        .returns(ClassName("", name))
+        .returns(ClassName("", name.escapeKotlinReservedWord()))
         .addStatement("return values().find·{·it.rawValue·==·rawValue·} ?: UNKNOWN__")
         .build()
   }
 
 private fun CodeGenerationAst.EnumType.toSealedClassTypeSpec(generateAsInternal: Boolean): TypeSpec {
   return TypeSpec
-      .classBuilder(name)
+      .classBuilder(name.escapeKotlinReservedWord())
       .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .addModifiers(KModifier.SEALED)
       .primaryConstructor(primaryConstructorSpec)
       .addProperty(rawValuePropertySpec)
-      .addTypes(consts.map { value -> value.toObjectTypeSpec(ClassName("", name)) })
+      .addTypes(consts.map { value -> value.toObjectTypeSpec(ClassName("", name.escapeKotlinReservedWord())) })
       .addType(unknownValueTypeSpec)
       .addType(sealedClassCompanionObjectSpec)
       .build()
 }
 
 private fun CodeGenerationAst.EnumConst.toObjectTypeSpec(superClass: TypeName): TypeSpec {
-  return TypeSpec.objectBuilder(constName)
+  return TypeSpec.objectBuilder(constName.escapeKotlinReservedWord())
       .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }
-      .applyIf(isDeprecated) { addAnnotation(deprecatedAnnotation(deprecationReason)) }
+      .applyIf(deprecationReason != null) { addAnnotation(deprecatedAnnotation(deprecationReason!!)) }
       .superclass(superClass)
       .addSuperclassConstructorParameter("rawValue = %S", value)
       .build()
@@ -115,7 +116,7 @@ private val CodeGenerationAst.EnumType.unknownValueTypeSpec: TypeSpec
     return TypeSpec.classBuilder("UNKNOWN__")
         .addKdoc("%L", "Auto generated constant for unknown enum values\n")
         .primaryConstructor(primaryConstructorSpec)
-        .superclass(ClassName("", name))
+        .superclass(ClassName("", name.escapeKotlinReservedWord()))
         .addSuperclassConstructorParameter("rawValue = rawValue")
         .build()
   }
@@ -130,7 +131,7 @@ private val CodeGenerationAst.EnumType.sealedClassCompanionObjectSpec: TypeSpec
 
 private val CodeGenerationAst.EnumType.sealedClassSafeValueOfFunSpec: FunSpec
   get() {
-    val returnClassName = ClassName("", name)
+    val returnClassName = ClassName("", name.escapeKotlinReservedWord())
     return FunSpec
         .builder("safeValueOf")
         .addParameter("rawValue", String::class)
@@ -138,7 +139,7 @@ private val CodeGenerationAst.EnumType.sealedClassSafeValueOfFunSpec: FunSpec
         .beginControlFlow("return when(rawValue)")
         .addCode(
             consts
-                .map { CodeBlock.of("%S -> %L", it.value, it.constName) }
+                .map { CodeBlock.of("%S -> %L", it.value, it.constName.escapeKotlinReservedWord()) }
                 .joinToCode(separator = "\n", suffix = "\n")
         )
         .addCode("else -> UNKNOWN__(rawValue)\n")

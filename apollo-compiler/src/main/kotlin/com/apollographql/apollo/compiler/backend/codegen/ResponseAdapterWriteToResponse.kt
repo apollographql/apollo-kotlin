@@ -1,9 +1,10 @@
-package com.apollographql.apollo.compiler.codegen
+package com.apollographql.apollo.compiler.backend.codegen
 
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseWriter
 import com.apollographql.apollo.compiler.applyIf
-import com.apollographql.apollo.compiler.ast.CodeGenerationAst
+import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
+import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -87,49 +88,67 @@ private fun CodeGenerationAst.Field.writeCode(responseField: String): CodeBlock 
 
       is CodeGenerationAst.FieldType.Scalar.ID -> {
         CodeBlock.of(
-            "writer.writeCustom(%L·as·%T,·value.%L)\n", responseField, ResponseField.CustomTypeField::class, this.name
+            "writer.writeCustom(%L·as·%T,·value.%L)\n",
+            responseField.escapeKotlinReservedWord(),
+            ResponseField.CustomTypeField::class,
+            this.name.escapeKotlinReservedWord()
         )
       }
 
       is CodeGenerationAst.FieldType.Scalar.String -> {
         CodeBlock.of(
-            "writer.writeString(%L,·value.%L)\n", responseField, this.name
+            "writer.writeString(%L,·value.%L)\n",
+            responseField.escapeKotlinReservedWord(),
+            this.name.escapeKotlinReservedWord()
         )
       }
 
       is CodeGenerationAst.FieldType.Scalar.Int -> {
         CodeBlock.of(
-            "writer.writeInt(%L,·value.%L)\n", responseField, this.name
+            "writer.writeInt(%L,·value.%L)\n",
+            responseField.escapeKotlinReservedWord(),
+            this.name.escapeKotlinReservedWord()
         )
       }
 
       is CodeGenerationAst.FieldType.Scalar.Boolean -> {
         CodeBlock.of(
-            "writer.writeBoolean(%L,·value.%L)\n", responseField, this.name
+            "writer.writeBoolean(%L,·value.%L)\n",
+            responseField.escapeKotlinReservedWord(),
+            this.name.escapeKotlinReservedWord()
         )
       }
 
       is CodeGenerationAst.FieldType.Scalar.Float -> {
         CodeBlock.of(
-            "writer.writeDouble(%L,·value.%L)\n", responseField, this.name
+            "writer.writeDouble(%L,·value.%L)\n",
+            responseField.escapeKotlinReservedWord(),
+            this.name.escapeKotlinReservedWord()
         )
       }
 
       is CodeGenerationAst.FieldType.Scalar.Enum -> {
         if (type.nullable) {
           CodeBlock.of(
-              "writer.writeString(%L,·value.%L?.rawValue)\n", responseField, this.name
+              "writer.writeString(%L,·value.%L?.rawValue)\n",
+              responseField.escapeKotlinReservedWord(),
+              this.name.escapeKotlinReservedWord()
           )
         } else {
           CodeBlock.of(
-              "writer.writeString(%L,·value.%L.rawValue)\n", responseField, this.name
+              "writer.writeString(%L,·value.%L.rawValue)\n",
+              responseField.escapeKotlinReservedWord(),
+              this.name.escapeKotlinReservedWord()
           )
         }
       }
 
       is CodeGenerationAst.FieldType.Scalar.Custom -> {
         CodeBlock.of(
-            "writer.writeCustom(%L·as·%T,·value.%L)\n", responseField, ResponseField.CustomTypeField::class, this.name
+            "writer.writeCustom(%L·as·%T,·value.%L)\n",
+            responseField.escapeKotlinReservedWord(),
+            ResponseField.CustomTypeField::class,
+            this.name.escapeKotlinReservedWord()
         )
       }
     }
@@ -137,25 +156,25 @@ private fun CodeGenerationAst.Field.writeCode(responseField: String): CodeBlock 
     is CodeGenerationAst.FieldType.Object -> {
       if (type.nullable) {
         CodeBlock.builder()
-            .beginControlFlow("if(value.%L == null)", this.name)
-            .addStatement("writer.writeObject(%L,·null)", responseField)
+            .beginControlFlow("if(value.%L == null)", this.name.escapeKotlinReservedWord())
+            .addStatement("writer.writeObject(%L,·null)", responseField.escapeKotlinReservedWord())
             .nextControlFlow("else")
-            .beginControlFlow("writer.writeObject(%L)·{·writer·->", responseField)
+            .beginControlFlow("writer.writeObject(%L)·{·writer·->", responseField.escapeKotlinReservedWord())
             .addStatement(
                 "%T.toResponse(writer,·value.%L)",
                 this.type.typeRef.asAdapterTypeName(),
-                this.name,
+                this.name.escapeKotlinReservedWord(),
             )
             .endControlFlow()
             .endControlFlow()
             .build()
       } else {
         CodeBlock.builder()
-            .beginControlFlow("writer.writeObject(%L)·{·writer·->", responseField)
+            .beginControlFlow("writer.writeObject(%L)·{·writer·->", responseField.escapeKotlinReservedWord())
             .addStatement(
                 "%T.toResponse(writer,·value.%L)",
                 this.type.typeRef.asAdapterTypeName(),
-                this.name,
+                this.name.escapeKotlinReservedWord(),
             )
             .endControlFlow()
             .build()
@@ -166,8 +185,8 @@ private fun CodeGenerationAst.Field.writeCode(responseField: String): CodeBlock 
       CodeBlock.builder()
           .beginControlFlow(
               "writer.writeList(%L,·value.%L)·{·values,·listItemWriter·->",
-              responseField,
-              this.name,
+              responseField.escapeKotlinReservedWord(),
+              this.name.escapeKotlinReservedWord(),
           )
           .beginControlFlow("values?.forEach·{·value·->")
           .add(type.writeListItemCode)

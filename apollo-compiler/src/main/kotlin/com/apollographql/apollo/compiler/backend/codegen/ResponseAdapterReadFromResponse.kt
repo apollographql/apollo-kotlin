@@ -1,9 +1,10 @@
-package com.apollographql.apollo.compiler.codegen
+package com.apollographql.apollo.compiler.backend.codegen
 
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.compiler.applyIf
-import com.apollographql.apollo.compiler.ast.CodeGenerationAst
+import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
+import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -25,14 +26,14 @@ private fun CodeGenerationAst.ObjectType.readObjectFromResponseFunSpec(): FunSpe
         if (field.responseName == CodeGenerationAst.typenameField.responseName) {
           CodeBlock.of(
               "var·%L:·%T·=·%L",
-              field.name,
+              field.name.escapeKotlinReservedWord(),
               field.type.asTypeName().copy(nullable = true),
-              CodeGenerationAst.typenameField.responseName
+              CodeGenerationAst.typenameField.responseName.escapeKotlinReservedWord()
           )
         } else {
           CodeBlock.of(
               "var·%L:·%T·=·null",
-              field.name,
+              field.name.escapeKotlinReservedWord(),
               field.type.asTypeName().copy(nullable = true)
           )
         }
@@ -47,7 +48,7 @@ private fun CodeGenerationAst.ObjectType.readObjectFromResponseFunSpec(): FunSpe
             CodeBlock.of(
                 "%L·->·%L·=·%L",
                 fieldIndex,
-                field.name,
+                field.name.escapeKotlinReservedWord(),
                 field.type.nullable().fromResponseCode(field = "RESPONSE_FIELDS[$fieldIndex]")
             )
           }.joinToCode(separator = "\n", suffix = "\n")
@@ -63,8 +64,8 @@ private fun CodeGenerationAst.ObjectType.readObjectFromResponseFunSpec(): FunSpe
       .add(this.fields.map { field ->
         CodeBlock.of(
             "%L·=·%L%L",
-            field.name,
-            field.name,
+            field.name.escapeKotlinReservedWord(),
+            field.name.escapeKotlinReservedWord(),
             "!!".takeUnless { field.type.nullable } ?: ""
         )
       }.joinToCode(separator = ",\n", suffix = "\n"))
@@ -107,7 +108,7 @@ private fun CodeGenerationAst.ObjectType.readFragmentFromResponseFunSpec(): FunS
       .applyIf(possibleImplementations.isNotEmpty()) {
         addStatement(
             "val·typename·=·%L·?:·reader.readString(RESPONSE_FIELDS[0])",
-            CodeGenerationAst.typenameField.responseName
+            CodeGenerationAst.typenameField.responseName.escapeKotlinReservedWord()
         )
         beginControlFlow("return·when(typename)")
         addCode(
@@ -141,7 +142,7 @@ private fun CodeGenerationAst.ObjectType.readFragmentDelegateFromResponseFunSpec
           "return·%T(%T.fromResponse(reader,·%L))",
           this.typeRef.asTypeName(),
           fragmentRef.enclosingType!!.asAdapterTypeName(),
-          CodeGenerationAst.typenameField.responseName
+          CodeGenerationAst.typenameField.responseName.escapeKotlinReservedWord()
       )
       .build()
 }

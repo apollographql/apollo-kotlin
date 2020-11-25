@@ -1,4 +1,4 @@
-package com.apollographql.apollo.compiler.codegen
+package com.apollographql.apollo.compiler.backend.codegen
 
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.Mutation
@@ -14,7 +14,8 @@ import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.compiler.applyIf
-import com.apollographql.apollo.compiler.ast.CodeGenerationAst
+import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
+import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -37,7 +38,7 @@ private val DEFAULT_SCALAR_TYPE_ADAPTERS = MemberName(ScalarTypeAdapters.Compani
 internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, generateAsInternal: Boolean = false): TypeSpec {
   val operationResponseAdapter = CodeGenerationAst.TypeRef(name = name, packageName = targetPackage).asAdapterTypeName()
   return TypeSpec
-      .classBuilder(name)
+      .classBuilder(name.escapeKotlinReservedWord())
       .addAnnotation(suppressWarningsAnnotation)
       .addSuperinterface(superInterfaceType(targetPackage))
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
@@ -45,7 +46,7 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
       .applyIf(variables.isNotEmpty()) {
         addModifiers(KModifier.DATA)
         primaryConstructor(primaryConstructorSpec)
-        addProperties(variables.map { variable -> variable.asPropertySpec(CodeBlock.of(variable.name)) })
+        addProperties(variables.map { variable -> variable.asPropertySpec(CodeBlock.of(variable.name.escapeKotlinReservedWord())) })
         addProperty(variablePropertySpec)
       }
       .addFunction(FunSpec.builder("operationId")
@@ -81,7 +82,7 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
       .addFunction(
           FunSpec.builder("responseFieldMapper")
               .addModifiers(KModifier.OVERRIDE)
-              .returns(ResponseFieldMapper::class.asClassName().parameterizedBy(dataType.rootType.asTypeName()))
+              .returns(ResponseFieldMapper::class.asClassName().parameterizedBy(ClassName(packageName = "", "Data")))
               .beginControlFlow("return·%T·{·reader·->", ResponseFieldMapper::class)
               .addStatement("%T.fromResponse(reader)", operationResponseAdapter)
               .endControlFlow()
@@ -94,17 +95,7 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
       .addFunction(composeRequestBodyFunSpec())
       .addFunction(composeRequestBodyWithDefaultAdaptersFunSpec())
       .addFunction(composeRequestBodyFunSpecForQuery())
-      .addTypes(
-          dataType.nestedTypes.minus(dataType.rootType).map { (typeRef, type) ->
-            type.typeSpec(responseAdapter = typeRef.asAdapterTypeName())
-          }
-      )
-      .addType(
-          dataType.toOperationDataTypeSpec(
-              targetPackage = targetPackage,
-              operationName = this.name,
-          )
-      )
+      .addType(this.dataType.typeSpec())
       .addType(TypeSpec.companionObjectBuilder()
           .addProperty(PropertySpec.builder("OPERATION_ID", String::class)
               .addModifiers(KModifier.CONST)
@@ -144,7 +135,7 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
 }
 
 private fun CodeGenerationAst.OperationType.superInterfaceType(targetPackage: String): TypeName {
-  val dataTypeName = ClassName(targetPackage, name, "Data")
+  val dataTypeName = ClassName(targetPackage, name.escapeKotlinReservedWord(), "Data")
   return when (type) {
     CodeGenerationAst.OperationType.Type.QUERY -> Query::class.asClassName()
     CodeGenerationAst.OperationType.Type.MUTATION -> Mutation::class.asClassName()
@@ -159,7 +150,7 @@ private val CodeGenerationAst.OperationType.primaryConstructorSpec: FunSpec
         .addParameters(variables.map { variable ->
           ParameterSpec
               .builder(
-                  name = variable.name,
+                  name = variable.name.escapeKotlinReservedWord(),
                   type = variable.type.asTypeName().let { type ->
                     if (type.isNullable) Input::class.asClassName().parameterizedBy(type.copy(nullable = false)) else type
                   }
@@ -179,7 +170,7 @@ private val CodeGenerationAst.OperationType.variablePropertySpec: PropertySpec
         .initializer("%L", TypeSpec.anonymousClassBuilder()
             .superclass(Operation.Variables::class)
             .addFunction(variables.variablesValueMapSpec(this))
-            .addFunction(variables.variablesMarshallerSpec(name))
+            .addFunction(variables.variablesMarshallerSpec(name.escapeKotlinReservedWord()))
             .build()
         )
         .build()
@@ -195,14 +186,28 @@ private fun List<CodeGenerationAst.InputField>.variablesValueMapSpec(operationTy
           map { field ->
             if (field.type.nullable) {
               CodeBlock.builder()
-                  .addStatement("if·(this@%L.%L.defined)·{", operationType.name, field.name)
+                  .addStatement(
+                      "if·(this@%L.%L.defined)·{",
+                      operationType.name.escapeKotlinReservedWord(),
+                      field.name.escapeKotlinReservedWord()
+                  )
                   .indent()
-                  .addStatement("this[%S]·=·this@%L.%L.value", field.schemaName, operationType.name, field.name)
+                  .addStatement(
+                      "this[%S]·=·this@%L.%L.value",
+                      field.schemaName,
+                      operationType.name.escapeKotlinReservedWord(),
+                      field.name.escapeKotlinReservedWord()
+                  )
                   .unindent()
                   .addStatement("}")
                   .build()
             } else {
-              CodeBlock.of("this[%S]·=·this@%L.%L\n", field.schemaName, operationType.name, field.name)
+              CodeBlock.of(
+                  "this[%S]·=·this@%L.%L\n",
+                  field.schemaName,
+                  operationType.name.escapeKotlinReservedWord(),
+                  field.name.escapeKotlinReservedWord()
+              )
             }
           }.joinToCode(separator = "")
       )
@@ -268,7 +273,7 @@ private fun CodeGenerationAst.OperationType.parseByteStringFunSpec(): FunSpec {
 }
 
 private fun CodeGenerationAst.OperationType.responseReturnType(): TypeName {
-  return Response::class.asClassName().parameterizedBy(dataType.rootType.asTypeName())
+  return Response::class.asClassName().parameterizedBy(ClassName(packageName = "", "Data"))
 }
 
 private fun composeRequestBodyFunSpec(): FunSpec {

@@ -1,7 +1,8 @@
-package com.apollographql.apollo.compiler.codegen
+package com.apollographql.apollo.compiler.backend.codegen
 
 import com.apollographql.apollo.compiler.applyIf
-import com.apollographql.apollo.compiler.ast.CodeGenerationAst
+import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
+import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.ClassName
@@ -24,24 +25,24 @@ import com.squareup.kotlinpoet.joinToCode
 internal fun CodeGenerationAst.FieldType.asTypeName(): TypeName {
   return when (this) {
     is CodeGenerationAst.FieldType.Scalar -> when (this) {
-      is CodeGenerationAst.FieldType.Scalar.ID -> ClassName.bestGuess(type)
+      is CodeGenerationAst.FieldType.Scalar.ID -> ClassName.bestGuess(type.escapeKotlinReservedWord())
       is CodeGenerationAst.FieldType.Scalar.String -> String::class.asClassName()
       is CodeGenerationAst.FieldType.Scalar.Int -> INT
       is CodeGenerationAst.FieldType.Scalar.Boolean -> BOOLEAN
       is CodeGenerationAst.FieldType.Scalar.Float -> DOUBLE
       is CodeGenerationAst.FieldType.Scalar.Enum -> typeRef.asTypeName()
-      is CodeGenerationAst.FieldType.Scalar.Custom -> ClassName.bestGuess(type)
+      is CodeGenerationAst.FieldType.Scalar.Custom -> ClassName.bestGuess(type.escapeKotlinReservedWord())
     }
     is CodeGenerationAst.FieldType.Object -> typeRef.asTypeName()
     is CodeGenerationAst.FieldType.Array -> List::class.asClassName().parameterizedBy(rawType.asTypeName())
   }.copy(nullable = nullable)
 }
 
-internal fun CodeGenerationAst.TypeRef.asTypeName(): TypeName {
+internal fun CodeGenerationAst.TypeRef.asTypeName(): ClassName {
   return if (enclosingType == null) {
-    ClassName(packageName, name)
+    ClassName(packageName = packageName, name.escapeKotlinReservedWord())
   } else {
-    ClassName(enclosingType.packageName, enclosingType.name, name)
+    ClassName(packageName = packageName, enclosingType.asTypeName().simpleNames + name.escapeKotlinReservedWord())
   }
 }
 
@@ -83,11 +84,11 @@ internal fun deprecatedAnnotation(message: String) = AnnotationSpec
 internal fun CodeGenerationAst.Field.asPropertySpec(initializer: CodeBlock? = null): PropertySpec {
   return PropertySpec
       .builder(
-          name = name,
+          name = name.escapeKotlinReservedWord(),
           type = type.asTypeName()
       )
       .applyIf(override) { addModifiers(KModifier.OVERRIDE) }
-      .applyIf(deprecated) { addAnnotation(deprecatedAnnotation(deprecationReason)) }
+      .applyIf(deprecationReason != null) { addAnnotation(deprecatedAnnotation(deprecationReason!!)) }
       .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }
       .applyIf(initializer != null) { initializer(initializer!!) }
       .build()
@@ -104,7 +105,7 @@ private fun Number.castTo(type: TypeName): Number {
 
 internal fun Collection<CodeGenerationAst.TypeRef>.accessorProperties(): List<PropertySpec> {
   return map { type ->
-    PropertySpec.builder("as${type.name}", type.asTypeName().copy(nullable = true))
+    PropertySpec.builder("as${type.name.escapeKotlinReservedWord()}", type.asTypeName().copy(nullable = true))
         .getter(FunSpec.getterBuilder().addStatement("return this as? %T", type.asTypeName()).build())
         .build()
   }

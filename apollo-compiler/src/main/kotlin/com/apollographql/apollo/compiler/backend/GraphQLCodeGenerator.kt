@@ -1,15 +1,19 @@
-package com.apollographql.apollo.compiler.codegen
+package com.apollographql.apollo.compiler.backend
 
-import com.apollographql.apollo.compiler.ast.buildCodeGenerationAst
-import com.apollographql.apollo.compiler.frontend.ir.CodeGenerationIR
+import com.apollographql.apollo.compiler.backend.ast.AstBuilder.Companion.buildAst
+import com.apollographql.apollo.compiler.backend.codegen.patchKotlinNativeOptionalArrayProperties
+import com.apollographql.apollo.compiler.backend.codegen.responseAdapterTypeSpec
+import com.apollographql.apollo.compiler.backend.codegen.typeSpec
+import com.apollographql.apollo.compiler.backend.ir.BackendIrBuilder.Companion.buildBackendIr
+import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
-import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
+import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.TypeSpec
 import java.io.File
 
-class GraphQLKompiler(
-    private val ir: CodeGenerationIR,
+internal class GraphQLCodeGenerator(
+    private val frontendIr: CodeGenerationIR,
     private val schema: IntrospectionSchema,
     private val customTypeMap: Map<String, String>,
     private val useSemanticNaming: Boolean,
@@ -19,18 +23,20 @@ class GraphQLKompiler(
     private val enumAsSealedClassPatternFilters: List<Regex>
 ) {
   fun write(outputDir: File) {
-    val ast = ir.buildCodeGenerationAst(
+    val backendIr = frontendIr
+        .buildBackendIr(schema, useSemanticNaming)
+
+     val ast = backendIr.buildAst(
         schema = schema,
         customTypeMap = customTypeMap,
         operationOutput = operationOutput,
-        useSemanticNaming = useSemanticNaming,
-        typesPackageName = ir.typesPackageName,
-        fragmentsPackage = ir.fragmentsPackageName
+        typesPackageName = frontendIr.typesPackageName,
+        fragmentsPackage = frontendIr.fragmentsPackageName
     )
 
     ast.customTypes
         .filterKeys {
-          ir.scalarsToGenerate.contains(it)
+          frontendIr.scalarsToGenerate.contains(it)
         }.takeIf {
           /**
            * Skip generating the ScalarType enum if it's empty
@@ -38,47 +44,46 @@ class GraphQLKompiler(
            */
           it.isNotEmpty()
         }?.typeSpec(generateAsInternal)
-        ?.fileSpec(ir.typesPackageName)
+        ?.fileSpec(frontendIr.typesPackageName)
         ?.writeTo(outputDir)
 
     ast.enumTypes
-        .filter { ir.enumsToGenerate.contains(it.graphqlName) }
         .forEach { enumType ->
           enumType
               .typeSpec(
                   generateAsInternal = generateAsInternal,
                   enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters
               )
-              .fileSpec(ir.typesPackageName)
+              .fileSpec(frontendIr.typesPackageName)
               .writeTo(outputDir)
         }
 
     ast.inputTypes
-        .filter { ir.inputObjectsToGenerate.contains(it.graphqlName) }
         .forEach { inputType ->
           inputType
               .typeSpec(generateAsInternal)
-              .fileSpec(ir.typesPackageName)
+              .fileSpec(frontendIr.typesPackageName)
               .writeTo(outputDir)
         }
 
     ast.fragmentTypes
-        .filter { ir.fragmentsToGenerate.contains(it.graphqlName) }
+        .filter { frontendIr.fragmentsToGenerate.contains(it.graphqlName) }
         .forEach { fragmentType ->
           fragmentType
               .typeSpec(generateAsInternal)
-              .fileSpec(ir.fragmentsPackageName)
+              .fileSpec(frontendIr.fragmentsPackageName)
               .writeTo(outputDir)
         }
 
-    ast.fragmentTypes
-        .filter { ir.fragmentsToGenerate.contains(it.graphqlName) }
-        .forEach { fragmentType ->
-          fragmentType
-              .responseAdapterTypeSpec(generateAsInternal)
-              .fileSpec(ir.fragmentsPackageName)
-              .writeTo(outputDir)
-        }
+    // FIXME
+//    ast.fragmentTypes
+//        .filter { frontendIr.fragmentsToGenerate.contains(it.graphqlName) }
+//        .forEach { fragmentType ->
+//          fragmentType
+//              .responseAdapterTypeSpec(generateAsInternal)
+//              .fileSpec(frontendIr.fragmentsPackageName)
+//              .writeTo(outputDir)
+//        }
 
     ast.operationTypes.forEach { operationType ->
       operationType

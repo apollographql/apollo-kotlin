@@ -1,6 +1,6 @@
-package com.apollographql.apollo.compiler.ast
+package com.apollographql.apollo.compiler.backend.ast
 
-internal typealias ObjectTypeContainer = Map<CodeGenerationAst.TypeRef, CodeGenerationAst.ObjectType>
+import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 
 internal typealias CustomTypes = Map<String, CodeGenerationAst.CustomType>
 
@@ -27,38 +27,32 @@ internal data class CodeGenerationAst(
       val operationId: String,
       val queryDocument: String,
       val variables: List<InputField>,
-      val dataType: OperationDataType,
-      val filePath: String
+      val dataType: ObjectType,
   ) {
     enum class Type {
       QUERY, MUTATION, SUBSCRIPTION
     }
   }
 
-  data class OperationDataType(
-      val rootType: TypeRef,
-      val nestedTypes: ObjectTypeContainer
-  )
-
   data class FragmentType(
+      val name: String,
       val graphqlName: String,
-      val rootType: TypeRef,
       val description: String,
-      val defaultImplementation: TypeRef,
-      val nestedTypes: ObjectTypeContainer,
+      val interfaceType: ObjectType,
+      val implementationType: ObjectType,
       val fragmentDefinition: String
   )
 
   data class ObjectType(
       val name: String,
       val description: String,
-      val deprecated: Boolean,
-      val deprecationReason: String,
+      val deprecationReason: String?,
       val fields: List<Field>,
+      val nestedObjects: List<ObjectType>,
       val implements: Set<TypeRef>,
-      val schemaType: String?,
       val kind: Kind,
-      val typeRef: TypeRef
+      val typeRef: TypeRef,
+      val introspectionSchemaType: IntrospectionSchema.TypeRef?,
   ) {
     val abstract: Boolean = kind == Kind.Interface || kind is Kind.Fragment
 
@@ -70,7 +64,7 @@ internal data class CodeGenerationAst(
       data class Fragment(
           val defaultImplementation: TypeRef,
           val possibleImplementations: Map<String, TypeRef>,
-          val allPossibleTypes: Set<TypeRef>
+          val fragmentAccessors: Map<String, TypeRef>,
       ) : Kind()
 
       data class FragmentDelegate(val fragmentTypeRef: TypeRef) : Kind()
@@ -83,8 +77,7 @@ internal data class CodeGenerationAst(
       val schemaName: String,
       val type: FieldType,
       val description: String,
-      val deprecated: Boolean,
-      val deprecationReason: String,
+      val deprecationReason: String?,
       val arguments: Map<String, Any?>,
       val conditions: Set<Condition>,
       val override: Boolean
@@ -98,16 +91,14 @@ internal data class CodeGenerationAst(
       val graphqlName: String,
       val name: String,
       val description: String,
-      val deprecated: Boolean,
-      val deprecationReason: String,
+      val deprecationReason: String?,
       val fields: List<InputField>
   )
 
   data class InputField(
       val name: String,
       val schemaName: String,
-      val deprecated: Boolean,
-      val deprecationReason: String,
+      val deprecationReason: String?,
       val type: FieldType,
       val description: String,
       val defaultValue: Any?
@@ -124,8 +115,7 @@ internal data class CodeGenerationAst(
       val constName: String,
       val value: String,
       val description: String,
-      val isDeprecated: Boolean,
-      val deprecationReason: String
+      val deprecationReason: String?
   )
 
   sealed class FieldType {
@@ -218,8 +208,7 @@ internal data class CodeGenerationAst(
         schemaName = "__typename",
         type = FieldType.Scalar.String(nullable = false),
         description = "",
-        deprecated = false,
-        deprecationReason = "",
+        deprecationReason = null,
         arguments = emptyMap(),
         conditions = emptySet(),
         override = false
