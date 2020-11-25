@@ -3,11 +3,14 @@ package com.apollographql.apollo.cache.normalized.lru
 import com.apollographql.apollo.cache.ApolloCacheHeaders
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.CacheHeaders.Companion.builder
+import com.apollographql.apollo.cache.normalized.CacheKey
+import com.apollographql.apollo.cache.normalized.CacheReference
 import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
+import java.lang.IllegalStateException
 import java.util.concurrent.TimeUnit
 
 class LruNormalizedCacheTest {
@@ -22,12 +25,14 @@ class LruNormalizedCacheTest {
         .expireAfterWrite(10, TimeUnit.DAYS)
         .build()
 
-    assertThat(policy.maxSizeBytes().get()).isEqualTo(100)
-    assertThat(policy.maxEntries().get()).isEqualTo(50)
-    assertThat(policy.expireAfterAccess().get()).isEqualTo(5)
-    assertThat(policy.expireAfterAccessTimeUnit().get()).isEqualTo(TimeUnit.HOURS)
-    assertThat(policy.expireAfterWrite().get()).isEqualTo(10)
-    assertThat(policy.expireAfterWriteTimeUnit().get()).isEqualTo(TimeUnit.DAYS)
+    with(policy) {
+      assertThat(maxSizeBytes).isEqualTo(100)
+      assertThat(maxEntries).isEqualTo(50)
+      assertThat(expireAfterAccess).isEqualTo(5)
+      assertThat(expireAfterAccessTimeUnit).isEqualTo(TimeUnit.HOURS)
+      assertThat(expireAfterWrite).isEqualTo(10)
+      assertThat(expireAfterWriteTimeUnit).isEqualTo(TimeUnit.DAYS)
+    }
   }
 
   @Test
@@ -248,8 +253,110 @@ class LruNormalizedCacheTest {
     assertThat(record2).isNull()
   }
 
-  private fun createLruNormalizedCache() =
-      LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(10 * 1024.toLong()).build()).create(basicFieldAdapter)
+  @Test
+  fun testSettingMaxSizeAndMaxEntries() {
+    val policy = EvictionPolicy.builder()
+        .maxSizeBytes(100)
+        .maxEntries(50)
+        .build()
+
+    val exception: Throwable? = try {
+      createLruNormalizedCache(policy)
+      null
+    } catch (e: Throwable) {
+      e
+    }
+
+    assertThat(exception!!).let {
+      it.isInstanceOf(IllegalStateException::class.java)
+      it.hasMessage("maximum weight was already set to 100")
+    }
+  }
+
+  @Test
+  fun testRemove_nonExistentRecord() {
+    val lruCache = createLruNormalizedCache()
+    assertThat(lruCache.remove(CacheKey("fake"), true)).isFalse()
+  }
+
+  @Test
+  fun testRemove_nonReferencedRecord() {
+    val lruCache = createLruNormalizedCache()
+    lruCache.merge(listOf(createTestRecord("id_1")), CacheHeaders.NONE)
+    assertThat(lruCache.remove(CacheKey("keyid_1"), false)).isTrue()
+  }
+
+  @Test
+  fun testDump() {
+    val lruCache = createLruNormalizedCache()
+
+    val record1 = createTestRecord("id_1")
+    val record2 = createTestRecord("id_2")
+    val record3 = createTestRecord("id_3")
+
+    lruCache.merge(listOf(
+        record1,
+        record2,
+        record3
+    ), CacheHeaders.NONE)
+
+    with(lruCache.dump()) {
+      assertThat(size).isEqualTo(1)
+      val cache = this[LruNormalizedCache::class]!!
+
+      assertThat(cache.keys).containsExactly("keyid_1", "keyid_2", "keyid_3")
+      assertThat(cache["keyid_1"]).isEqualTo(record1)
+      assertThat(cache["keyid_2"]).isEqualTo(record2)
+      assertThat(cache["keyid_3"]).isEqualTo(record3)
+    }
+  }
+
+  @Test
+  fun testRemove_referencedRecord_cascadeFalse() {
+
+    val lruCache = createLruNormalizedCache()
+
+    val record1 = Record.builder("id_1")
+        .addField("a", "stringValueA")
+        .addField("b", "stringValueB")
+        .build()
+
+    val record2 = Record.builder("id_2")
+        .addField("a", CacheReference("id_1"))
+        .build()
+
+    lruCache.merge(
+        listOf(record1, record2), CacheHeaders.NONE
+    )
+
+    assertThat(lruCache.remove(CacheKey("id_2"), cascade = false)).isTrue()
+    assertThat(lruCache.loadRecord("id_1", CacheHeaders.NONE)).isNotNull()
+  }
+
+  @Test
+  fun testRemove_referencedRecord_cascadeTrue() {
+
+    val lruCache = createLruNormalizedCache()
+
+    val record1 = Record.builder("id_1")
+        .addField("a", "stringValueA")
+        .addField("b", "stringValueB")
+        .build()
+
+    val record2 = Record.builder("id_2")
+        .addField("a", CacheReference("id_1"))
+        .build()
+
+    lruCache.merge(
+        listOf(record1, record2), CacheHeaders.NONE
+    )
+
+    assertThat(lruCache.remove(CacheKey("id_2"), cascade = true)).isTrue()
+    assertThat(lruCache.loadRecord("id_1", CacheHeaders.NONE)).isNull()
+  }
+
+  private fun createLruNormalizedCache(policy: EvictionPolicy = EvictionPolicy.builder().maxSizeBytes(10 * 1024.toLong()).build()) =
+      LruNormalizedCacheFactory(policy).create(basicFieldAdapter)
 
   private fun assertTestRecordPresentAndAccurate(testRecord: Record, store: NormalizedCache) {
     val cacheRecord = requireNotNull(store.loadRecord(testRecord.key, CacheHeaders.NONE))
