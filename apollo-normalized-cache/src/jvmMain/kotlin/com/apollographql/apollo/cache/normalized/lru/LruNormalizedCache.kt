@@ -18,7 +18,7 @@ import kotlin.reflect.KClass
  *
  * A common configuration is to have secondary SQL cache.
  */
-class LruNormalizedCache internal constructor(evictionPolicy: EvictionPolicy) : NormalizedCache() {
+open class LruNormalizedCache constructor(evictionPolicy: EvictionPolicy) : NormalizedCache() {
 
   private val lruCache: Cache<String, Record> =
       CacheBuilder.newBuilder().apply {
