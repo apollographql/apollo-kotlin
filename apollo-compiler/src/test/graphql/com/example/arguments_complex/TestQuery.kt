@@ -126,57 +126,48 @@ data class TestQuery(
   )
 
   /**
-   * A humanoid creature from the Star Wars universe
-   */
-  data class HeroWithReview(
-    /**
-     * What this human calls themselves
-     */
-    val name: String,
-    /**
-     * Height in the preferred unit, default is meters
-     */
-    val height: Double?
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.HeroWithReview_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * Data from the response after executing this GraphQL operation
+   * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val heroWithReview: HeroWithReview?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
+      }
+    }
+
+    /**
+     * A humanoid creature from the Star Wars universe
+     */
+    data class HeroWithReview(
+      val __typename: String = "Human",
+      /**
+       * What this human calls themselves
+       */
+      val name: String,
+      /**
+       * Height in the preferred unit, default is meters
+       */
+      val height: Double?
+    ) {
+      fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          TestQuery_ResponseAdapter.Data.HeroWithReview.toResponse(writer, this)
+        }
       }
     }
   }
 
   companion object {
     const val OPERATION_ID: String =
-        "5de0170d60b7008300fa40599880d0b70e67a326a7b1fe27b8fa87aba7e5d36f"
+        "9bfee0998b66f8adeed48e612153400401690d904e272d69289721b6f39aca5f"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery(${'$'}episode: Episode, ${'$'}stars: Int!, ${'$'}greenValue: Float!) {
-          |  heroWithReview(episode: ${'$'}episode, review: {
-          |    stars: ${'$'}stars
-          |    favoriteColor: {
-          |      red: 0
-          |      green: ${'$'}greenValue
-          |      blue: 0
-          |    }
-          |    
-          |    booleanNonOptional: false
-          |    listOfStringNonOptional: []
-          |  }
-          |  , listOfInts: [${'$'}stars,${'$'}stars]) {
+          |  heroWithReview(episode: ${'$'}episode, review: {stars: ${'$'}stars, favoriteColor: {red: 0, green: ${'$'}greenValue, blue: 0}, booleanNonOptional: false, listOfStringNonOptional: []}, listOfInts: [${'$'}stars, ${'$'}stars]) {
+          |    __typename
           |    name
           |    height(unit: FOOT)
           |  }

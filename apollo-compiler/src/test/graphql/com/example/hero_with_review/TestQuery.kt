@@ -5,9 +5,9 @@
 //
 package com.example.hero_with_review
 
-import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
+import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
@@ -36,7 +36,7 @@ import okio.IOException
     "RemoveRedundantQualifierName")
 data class TestQuery(
   val ep: Episode
-) : Mutation<TestQuery.Data, Operation.Variables> {
+) : Query<TestQuery.Data, Operation.Variables> {
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
@@ -114,56 +114,48 @@ data class TestQuery(
   )
 
   /**
-   * Represents a review for a movie
-   */
-  data class CreateReview(
-    /**
-     * The number of stars this review gave, 1-5
-     */
-    val stars: Int,
-    /**
-     * Comment about the movie
-     */
-    val commentary: String?
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.CreateReview_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * Data from the response after executing this GraphQL operation
+   * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val createReview: CreateReview?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
+      }
+    }
+
+    /**
+     * Represents a review for a movie
+     */
+    data class CreateReview(
+      val __typename: String = "Review",
+      /**
+       * The number of stars this review gave, 1-5
+       */
+      val stars: Int,
+      /**
+       * Comment about the movie
+       */
+      val commentary: String?
+    ) {
+      fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          TestQuery_ResponseAdapter.Data.CreateReview.toResponse(writer, this)
+        }
       }
     }
   }
 
   companion object {
     const val OPERATION_ID: String =
-        "1faa220c7551ff1343a9bce722af8c12b87c70cc579f743aff1374ae1066f163"
+        "df7f6bf82724eedee5118f165075b5de1a2b3a06d0390126bf7932dc8df3f082"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |mutation TestQuery(${'$'}ep: Episode!) {
-          |  createReview(episode: ${'$'}ep, review: {
-          |    stars: 5
-          |    listOfEnums: [JEDI,EMPIRE,NEWHOPE]
-          |    listOfStringNonOptional: ["1","2","3"]
-          |    favoriteColor: {
-          |      red: 1
-          |      blue: 1
-          |    }
-          |    
-          |  }
-          |  ) {
+          |  createReview(episode: ${'$'}ep, review: {stars: 5, listOfEnums: [JEDI, EMPIRE, NEWHOPE], listOfStringNonOptional: ["1", "2", "3"], favoriteColor: {red: 1, blue: 1}}) {
+          |    __typename
           |    stars
           |    commentary
           |  }

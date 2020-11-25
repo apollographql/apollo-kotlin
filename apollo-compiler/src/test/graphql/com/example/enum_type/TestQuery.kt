@@ -95,52 +95,54 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   )
 
   /**
-   * A character from the Star Wars universe
-   */
-  data class Hero(
-    /**
-     * The name of the character
-     */
-    val name: String,
-    /**
-     * The movies this character appears in
-     */
-    val appearsIn: List<Episode?>,
-    /**
-     * The movie this character first appears in
-     */
-    val firstAppearsIn: Episode
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Hero_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-
-    fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
-  }
-
-  /**
-   * Data from the response after executing this GraphQL operation
+   * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val hero: Hero?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
       }
+    }
+
+    /**
+     * A character from the Star Wars universe
+     */
+    data class Hero(
+      val __typename: String = "Character",
+      /**
+       * The name of the character
+       */
+      val name: String,
+      /**
+       * The movies this character appears in
+       */
+      val appearsIn: List<Episode?>,
+      /**
+       * The movie this character first appears in
+       */
+      val firstAppearsIn: Episode
+    ) {
+      fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          TestQuery_ResponseAdapter.Data.Hero.toResponse(writer, this)
+        }
+      }
+
+      fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
     }
   }
 
   companion object {
     const val OPERATION_ID: String =
-        "f8b3a6c6a1f012c62428df69ea3b3a4679fcbeaa4515af8de523c00073d66325"
+        "2c07c7e101fe2bc0f8f43bbbeea320dad58fe57996d7f88872eaf50e4a448924"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery {
           |  hero {
+          |    __typename
           |    name
           |    appearsIn
           |    firstAppearsIn

@@ -5,9 +5,9 @@
 //
 package com.example.mutation_create_review_semantic_naming
 
-import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
+import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
@@ -38,7 +38,7 @@ import okio.IOException
 data class CreateReviewForEpisodeMutation(
   val ep: Episode,
   val review: ReviewInput
-) : Mutation<CreateReviewForEpisodeMutation.Data, Operation.Variables> {
+) : Query<CreateReviewForEpisodeMutation.Data, Operation.Variables> {
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
@@ -118,46 +118,48 @@ data class CreateReviewForEpisodeMutation(
   )
 
   /**
-   * Represents a review for a movie
-   */
-  data class CreateReview(
-    /**
-     * The number of stars this review gave, 1-5
-     */
-    val stars: Int,
-    /**
-     * Comment about the movie
-     */
-    val commentary: String?
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        CreateReviewForEpisodeMutation_ResponseAdapter.CreateReview_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * Data from the response after executing this GraphQL operation
+   * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val createReview: CreateReview?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        CreateReviewForEpisodeMutation_ResponseAdapter.toResponse(writer, this)
+        CreateReviewForEpisodeMutation_ResponseAdapter.Data.toResponse(writer, this)
+      }
+    }
+
+    /**
+     * Represents a review for a movie
+     */
+    data class CreateReview(
+      val __typename: String = "Review",
+      /**
+       * The number of stars this review gave, 1-5
+       */
+      val stars: Int,
+      /**
+       * Comment about the movie
+       */
+      val commentary: String?
+    ) {
+      fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          CreateReviewForEpisodeMutation_ResponseAdapter.Data.CreateReview.toResponse(writer, this)
+        }
       }
     }
   }
 
   companion object {
     const val OPERATION_ID: String =
-        "0af665fbb1ccec4fbec377a80b620cb423b737162848a7b16b842c2fa382b54c"
+        "0cd4b32f15788d426344f5f8d2ee1a3cebb72c167005cb147d2a47761c120a41"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |mutation CreateReviewForEpisode(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) {
           |  createReview(episode: ${'$'}ep, review: ${'$'}review) {
+          |    __typename
           |    stars
           |    commentary
           |  }

@@ -119,52 +119,54 @@ data class TestQuery(
   )
 
   /**
-   * A character from the Star Wars universe
-   */
-  data class Hero(
-    /**
-     * The name of the character
-     */
-    val name: String,
-    /**
-     * Test deprecated field
-     */
-    @Deprecated(message = "For test purpose only")
-    val deprecated: String,
-    /**
-     * Test deprecated field
-     */
-    @Deprecated(message = "For test purpose only")
-    val deprecatedBool: Boolean
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Hero_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * Data from the response after executing this GraphQL operation
+   * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val hero: Hero?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
+      }
+    }
+
+    /**
+     * A character from the Star Wars universe
+     */
+    data class Hero(
+      val __typename: String = "Character",
+      /**
+       * The name of the character
+       */
+      val name: String,
+      /**
+       * Test deprecated field
+       */
+      @Deprecated(message = "For test purpose only")
+      val deprecated: String,
+      /**
+       * Test deprecated field
+       */
+      @Deprecated(message = "For test purpose only")
+      val deprecatedBool: Boolean
+    ) {
+      fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          TestQuery_ResponseAdapter.Data.Hero.toResponse(writer, this)
+        }
       }
     }
   }
 
   companion object {
     const val OPERATION_ID: String =
-        "6a8dd101c1681dc829d72040868fdf394c52bacb692da3549bc73e9504013470"
+        "8f4a8c01b4bf0eb76356829f8062621ff66c3b53b6bf92753661cca41ef3ade4"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery(${'$'}episode: Episode) {
           |  hero(episode: ${'$'}episode) {
+          |    __typename
           |    name
           |    deprecated
           |    deprecatedBool

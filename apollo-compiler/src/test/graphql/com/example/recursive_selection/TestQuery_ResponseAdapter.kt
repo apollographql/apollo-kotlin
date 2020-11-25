@@ -23,130 +23,161 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
-    return reader.run {
-      var tree: TestQuery.Tree? = null
-      while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> tree = readObject<TestQuery.Tree>(RESPONSE_FIELDS[0]) { reader ->
-            TestQuery_ResponseAdapter.Tree_ResponseAdapter.fromResponse(reader)
-          }
-          else -> break
-        }
-      }
-      TestQuery.Data(
-        tree = tree
-      )
-    }
+    return Data.fromResponse(reader, __typename)
   }
 
   override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
-    if(value.tree == null) {
-      writer.writeObject(RESPONSE_FIELDS[0], null)
-    } else {
-      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
-        TestQuery_ResponseAdapter.Tree_ResponseAdapter.toResponse(writer, value.tree)
-      }
-    }
+    Data.toResponse(writer, value)
   }
 
-  object Child_ResponseAdapter : ResponseAdapter<TestQuery.Child> {
+  object Data : ResponseAdapter<TestQuery.Data> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("name", "name", null, false, null)
+      ResponseField.forObject("tree", "tree", null, true, null)
     )
 
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Child {
+    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
       return reader.run {
-        var name: String? = null
+        var tree: TestQuery.Data.Tree? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> name = readString(RESPONSE_FIELDS[0])
-            else -> break
-          }
-        }
-        TestQuery.Child(
-          name = name!!
-        )
-      }
-    }
-
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.Child) {
-      writer.writeString(RESPONSE_FIELDS[0], value.name)
-    }
-  }
-
-  object Parent_ResponseAdapter : ResponseAdapter<TestQuery.Parent> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("name", "name", null, false, null)
-    )
-
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Parent {
-      return reader.run {
-        var name: String? = null
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> name = readString(RESPONSE_FIELDS[0])
-            else -> break
-          }
-        }
-        TestQuery.Parent(
-          name = name!!
-        )
-      }
-    }
-
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.Parent) {
-      writer.writeString(RESPONSE_FIELDS[0], value.name)
-    }
-  }
-
-  object Tree_ResponseAdapter : ResponseAdapter<TestQuery.Tree> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("name", "name", null, false, null),
-      ResponseField.forList("children", "children", null, false, null),
-      ResponseField.forObject("parent", "parent", null, true, null)
-    )
-
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Tree {
-      return reader.run {
-        var name: String? = null
-        var children: List<TestQuery.Child>? = null
-        var parent: TestQuery.Parent? = null
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> name = readString(RESPONSE_FIELDS[0])
-            1 -> children = readList<TestQuery.Child>(RESPONSE_FIELDS[1]) { reader ->
-              reader.readObject<TestQuery.Child> { reader ->
-                TestQuery_ResponseAdapter.Child_ResponseAdapter.fromResponse(reader)
-              }
-            }?.map { it!! }
-            2 -> parent = readObject<TestQuery.Parent>(RESPONSE_FIELDS[2]) { reader ->
-              TestQuery_ResponseAdapter.Parent_ResponseAdapter.fromResponse(reader)
+            0 -> tree = readObject<TestQuery.Data.Tree>(RESPONSE_FIELDS[0]) { reader ->
+              Tree.fromResponse(reader)
             }
             else -> break
           }
         }
-        TestQuery.Tree(
-          name = name!!,
-          children = children!!,
-          parent = parent
+        TestQuery.Data(
+          tree = tree
         )
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.Tree) {
-      writer.writeString(RESPONSE_FIELDS[0], value.name)
-      writer.writeList(RESPONSE_FIELDS[1], value.children) { values, listItemWriter ->
-        values?.forEach { value ->
-          listItemWriter.writeObject { writer ->
-            TestQuery_ResponseAdapter.Child_ResponseAdapter.toResponse(writer, value)
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
+      if(value.tree == null) {
+        writer.writeObject(RESPONSE_FIELDS[0], null)
+      } else {
+        writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
+          Tree.toResponse(writer, value.tree)
+        }
+      }
+    }
+
+    object Tree : ResponseAdapter<TestQuery.Data.Tree> {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forList("children", "children", null, false, null),
+        ResponseField.forObject("parent", "parent", null, true, null)
+      )
+
+      override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Tree {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          var children: List<TestQuery.Data.Tree.Child>? = null
+          var parent: TestQuery.Data.Tree.Parent? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              2 -> children = readList<TestQuery.Data.Tree.Child>(RESPONSE_FIELDS[2]) { reader ->
+                reader.readObject<TestQuery.Data.Tree.Child> { reader ->
+                  Child.fromResponse(reader)
+                }
+              }?.map { it!! }
+              3 -> parent = readObject<TestQuery.Data.Tree.Parent>(RESPONSE_FIELDS[3]) { reader ->
+                Parent.fromResponse(reader)
+              }
+              else -> break
+            }
+          }
+          TestQuery.Data.Tree(
+            __typename = __typename!!,
+            name = name!!,
+            children = children!!,
+            parent = parent
+          )
+        }
+      }
+
+      override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Tree) {
+        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], value.name)
+        writer.writeList(RESPONSE_FIELDS[2], value.children) { values, listItemWriter ->
+          values?.forEach { value ->
+            listItemWriter.writeObject { writer ->
+              Child.toResponse(writer, value)
+            }
+          }
+        }
+        if(value.parent == null) {
+          writer.writeObject(RESPONSE_FIELDS[3], null)
+        } else {
+          writer.writeObject(RESPONSE_FIELDS[3]) { writer ->
+            Parent.toResponse(writer, value.parent)
           }
         }
       }
-      if(value.parent == null) {
-        writer.writeObject(RESPONSE_FIELDS[2], null)
-      } else {
-        writer.writeObject(RESPONSE_FIELDS[2]) { writer ->
-          TestQuery_ResponseAdapter.Parent_ResponseAdapter.toResponse(writer, value.parent)
+
+      object Child : ResponseAdapter<TestQuery.Data.Tree.Child> {
+        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forString("name", "name", null, false, null)
+        )
+
+        override fun fromResponse(reader: ResponseReader, __typename: String?):
+            TestQuery.Data.Tree.Child {
+          return reader.run {
+            var __typename: String? = __typename
+            var name: String? = null
+            while(true) {
+              when (selectField(RESPONSE_FIELDS)) {
+                0 -> __typename = readString(RESPONSE_FIELDS[0])
+                1 -> name = readString(RESPONSE_FIELDS[1])
+                else -> break
+              }
+            }
+            TestQuery.Data.Tree.Child(
+              __typename = __typename!!,
+              name = name!!
+            )
+          }
+        }
+
+        override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Tree.Child) {
+          writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+          writer.writeString(RESPONSE_FIELDS[1], value.name)
+        }
+      }
+
+      object Parent : ResponseAdapter<TestQuery.Data.Tree.Parent> {
+        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forString("name", "name", null, false, null)
+        )
+
+        override fun fromResponse(reader: ResponseReader, __typename: String?):
+            TestQuery.Data.Tree.Parent {
+          return reader.run {
+            var __typename: String? = __typename
+            var name: String? = null
+            while(true) {
+              when (selectField(RESPONSE_FIELDS)) {
+                0 -> __typename = readString(RESPONSE_FIELDS[0])
+                1 -> name = readString(RESPONSE_FIELDS[1])
+                else -> break
+              }
+            }
+            TestQuery.Data.Tree.Parent(
+              __typename = __typename!!,
+              name = name!!
+            )
+          }
+        }
+
+        override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Tree.Parent) {
+          writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+          writer.writeString(RESPONSE_FIELDS[1], value.name)
         }
       }
     }

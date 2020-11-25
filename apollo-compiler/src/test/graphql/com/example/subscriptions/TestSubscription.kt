@@ -7,10 +7,10 @@ package com.example.subscriptions
 
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
+import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
-import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.OperationRequestBodyComposer
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
@@ -35,7 +35,7 @@ import okio.IOException
     "RemoveRedundantQualifierName")
 data class TestSubscription(
   val repo: String
-) : Subscription<TestSubscription.Data, Operation.Variables> {
+) : Query<TestSubscription.Data, Operation.Variables> {
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
@@ -112,29 +112,6 @@ data class TestSubscription(
     scalarTypeAdapters = scalarTypeAdapters
   )
 
-  /**
-   * A comment about an entry, submitted by a user
-   */
-  data class CommentAdded(
-    /**
-     * The SQL ID of this entry
-     */
-    val id: Int,
-    /**
-     * The text of the comment
-     */
-    val content: String
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestSubscription_ResponseAdapter.CommentAdded_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * Data from the response after executing this GraphQL operation
-   */
   data class Data(
     /**
      * Subscription fires on every comment added
@@ -143,19 +120,41 @@ data class TestSubscription(
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestSubscription_ResponseAdapter.toResponse(writer, this)
+        TestSubscription_ResponseAdapter.Data.toResponse(writer, this)
+      }
+    }
+
+    /**
+     * A comment about an entry, submitted by a user
+     */
+    data class CommentAdded(
+      val __typename: String = "Comment",
+      /**
+       * The SQL ID of this entry
+       */
+      val id: Int,
+      /**
+       * The text of the comment
+       */
+      val content: String
+    ) {
+      fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          TestSubscription_ResponseAdapter.Data.CommentAdded.toResponse(writer, this)
+        }
       }
     }
   }
 
   companion object {
     const val OPERATION_ID: String =
-        "f053ee1afe42260f1511e417b6133f1cb8507c185e2e7b4e1e579696dbc8f2af"
+        "55460a650cce0aa4bb131446ec3e56225710e36940223934bee09e1723e41190"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |subscription TestSubscription(${'$'}repo: String!) {
           |  commentAdded(repoFullName: ${'$'}repo) {
+          |    __typename
           |    id
           |    content
           |  }

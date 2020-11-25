@@ -17,9 +17,9 @@ import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.api.internal.Throws
-import com.example.fragment_with_inline_fragment.fragment.DroidDetails
-import com.example.fragment_with_inline_fragment.fragment.HeroDetails
-import com.example.fragment_with_inline_fragment.fragment.HumanDetails
+import com.example.fragment_with_inline_fragment.fragment.DroidDetail
+import com.example.fragment_with_inline_fragment.fragment.HeroDetail
+import com.example.fragment_with_inline_fragment.fragment.HumanDetail
 import com.example.fragment_with_inline_fragment.type.Episode
 import kotlin.Boolean
 import kotlin.Int
@@ -99,321 +99,457 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   )
 
   /**
-   * An autonomous mechanical character in the Star Wars universe
-   */
-  interface Droid : Hero {
-    override val __typename: String
-
-    override fun marshaller(): ResponseFieldMarshaller
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
-  data class Node(
-    /**
-     * The name of the character
-     */
-    override val name: String
-  ) : HeroDetails.Node {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Node_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * An edge object for a character's friends
-   */
-  data class Edge(
-    /**
-     * The character represented by this friendship edge
-     */
-    override val node: Node?
-  ) : HeroDetails.Edge {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Edge_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * A connection object for a character's friends
-   */
-  data class FriendsConnection(
-    /**
-     * The total number of friends
-     */
-    override val totalCount: Int?,
-    /**
-     * The edges for each of the character's friends.
-     */
-    override val edges: List<Edge?>?
-  ) : HeroDetails.FriendsConnection {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.FriendsConnection_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-
-    fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
-  data class CharacterHero(
-    override val __typename: String = "Character",
-    /**
-     * The name of the character
-     */
-    override val name: String,
-    /**
-     * The friends of the character exposed as a connection with edges
-     */
-    override val friendsConnection: FriendsConnection,
-    /**
-     * The movies this character appears in
-     */
-    override val appearsIn: List<Episode?>
-  ) : HeroDetails, Hero {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.CharacterHero_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-
-    fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
-  data class Node1(
-    /**
-     * The name of the character
-     */
-    override val name: String
-  ) : HeroDetails.Node {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Node1_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * An edge object for a character's friends
-   */
-  data class Edge1(
-    /**
-     * The character represented by this friendship edge
-     */
-    override val node: Node1?
-  ) : HeroDetails.Edge {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Edge1_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * A connection object for a character's friends
-   */
-  data class FriendsConnection1(
-    /**
-     * The total number of friends
-     */
-    override val totalCount: Int?,
-    /**
-     * The edges for each of the character's friends.
-     */
-    override val edges: List<Edge1?>?
-  ) : HeroDetails.FriendsConnection {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.FriendsConnection1_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-
-    fun edgesFilterNotNull(): List<Edge1>? = edges?.filterNotNull()
-  }
-
-  data class CharacterDroidHero(
-    override val __typename: String,
-    /**
-     * The name of the character
-     */
-    override val name: String,
-    /**
-     * The friends of the character exposed as a connection with edges
-     */
-    override val friendsConnection: FriendsConnection1,
-    /**
-     * This droid's primary function
-     */
-    override val primaryFunction: String?,
-    /**
-     * The movies this character appears in
-     */
-    override val appearsIn: List<Episode?>
-  ) : HeroDetails, Droid, DroidDetails, Hero {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.CharacterDroidHero_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-
-    fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
-  data class Node2(
-    /**
-     * The name of the character
-     */
-    override val name: String
-  ) : HeroDetails.Node {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Node2_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * An edge object for a character's friends
-   */
-  data class Edge2(
-    /**
-     * The character represented by this friendship edge
-     */
-    override val node: Node2?
-  ) : HeroDetails.Edge {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Edge2_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * A connection object for a character's friends
-   */
-  data class FriendsConnection2(
-    /**
-     * The total number of friends
-     */
-    override val totalCount: Int?,
-    /**
-     * The edges for each of the character's friends.
-     */
-    override val edges: List<Edge2?>?
-  ) : HeroDetails.FriendsConnection {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.FriendsConnection2_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-
-    fun edgesFilterNotNull(): List<Edge2>? = edges?.filterNotNull()
-  }
-
-  data class CharacterHumanHero(
-    override val __typename: String,
-    /**
-     * The name of the character
-     */
-    override val name: String,
-    /**
-     * The friends of the character exposed as a connection with edges
-     */
-    override val friendsConnection: FriendsConnection2,
-    /**
-     * The movies this character appears in
-     */
-    override val appearsIn: List<Episode?>
-  ) : HeroDetails, HumanDetails, Hero {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.CharacterHumanHero_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-
-    fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
-  data class OtherHero(
-    override val __typename: String = "Character",
-    /**
-     * The name of the character
-     */
-    override val name: String,
-    /**
-     * The movies this character appears in
-     */
-    override val appearsIn: List<Episode?>
-  ) : Hero {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.OtherHero_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-
-    fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
-  interface Hero {
-    val __typename: String
-
-    /**
-     * The name of the character
-     */
-    val name: String
-
-    /**
-     * The movies this character appears in
-     */
-    val appearsIn: List<Episode?>
-
-    fun asHeroDetails(): HeroDetails? = this as? HeroDetails
-
-    fun asDroid(): Droid? = this as? Droid
-
-    fun asDroidDetails(): DroidDetails? = this as? DroidDetails
-
-    fun asHumanDetails(): HumanDetails? = this as? HumanDetails
-
-    fun marshaller(): ResponseFieldMarshaller
-  }
-
-  /**
-   * Data from the response after executing this GraphQL operation
+   * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val hero: Hero?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
+      }
+    }
+
+    /**
+     * A character from the Star Wars universe
+     */
+    interface Hero {
+      val __typename: String
+
+      /**
+       * The name of the character
+       */
+      val name: String
+
+      /**
+       * The movies this character appears in
+       */
+      val appearsIn: List<Episode?>
+
+      fun asCharacter(): Character? = this as? Character
+
+      fun asDroid(): Droid? = this as? Droid
+
+      fun asHuman(): Human? = this as? Human
+
+      fun asHeroDetail(): HeroDetail? = this as? HeroDetail
+
+      fun asDroidDetail(): DroidDetail? = this as? DroidDetail
+
+      fun asHumanDetail(): HumanDetail? = this as? HumanDetail
+
+      fun marshaller(): ResponseFieldMarshaller
+
+      interface Character : Hero, HeroDetail {
+        override val __typename: String
+
+        /**
+         * The name of the character
+         */
+        override val name: String
+
+        /**
+         * The movies this character appears in
+         */
+        override val appearsIn: List<Episode?>
+
+        /**
+         * The friends of the character exposed as a connection with edges
+         */
+        override val friendsConnection: FriendsConnection
+
+        override fun marshaller(): ResponseFieldMarshaller
+
+        /**
+         * A connection object for a character's friends
+         */
+        interface FriendsConnection : HeroDetail.FriendsConnection {
+          override val __typename: String
+
+          /**
+           * The total number of friends
+           */
+          override val totalCount: Int?
+
+          /**
+           * The edges for each of the character's friends.
+           */
+          override val edges: List<Edge?>?
+
+          override fun marshaller(): ResponseFieldMarshaller
+
+          /**
+           * An edge object for a character's friends
+           */
+          interface Edge : HeroDetail.FriendsConnection.Edge {
+            override val __typename: String
+
+            /**
+             * The character represented by this friendship edge
+             */
+            override val node: Node?
+
+            override fun marshaller(): ResponseFieldMarshaller
+
+            /**
+             * A character from the Star Wars universe
+             */
+            interface Node : HeroDetail.FriendsConnection.Edge.Node {
+              override val __typename: String
+
+              /**
+               * The name of the character
+               */
+              override val name: String
+
+              override fun marshaller(): ResponseFieldMarshaller
+            }
+          }
+        }
+      }
+
+      /**
+       * An autonomous mechanical character in the Star Wars universe
+       */
+      interface Droid : Hero, HeroDetail.Droid, Character, DroidDetail {
+        override val __typename: String
+
+        /**
+         * The name of the character
+         */
+        override val name: String
+
+        /**
+         * The movies this character appears in
+         */
+        override val appearsIn: List<Episode?>
+
+        /**
+         * The friends of the character exposed as a connection with edges
+         */
+        override val friendsConnection: FriendsConnection
+
+        /**
+         * This droid's primary function
+         */
+        override val primaryFunction: String?
+
+        override fun marshaller(): ResponseFieldMarshaller
+
+        /**
+         * A connection object for a character's friends
+         */
+        interface FriendsConnection : Character.FriendsConnection, HeroDetail.FriendsConnection,
+            HeroDetail.Droid.FriendsConnection {
+          override val __typename: String
+
+          /**
+           * The total number of friends
+           */
+          override val totalCount: Int?
+
+          /**
+           * The edges for each of the character's friends.
+           */
+          override val edges: List<Edge?>?
+
+          override fun marshaller(): ResponseFieldMarshaller
+
+          /**
+           * An edge object for a character's friends
+           */
+          interface Edge : Character.FriendsConnection.Edge, HeroDetail.FriendsConnection.Edge,
+              HeroDetail.Droid.FriendsConnection.Edge {
+            override val __typename: String
+
+            /**
+             * The character represented by this friendship edge
+             */
+            override val node: Node?
+
+            override fun marshaller(): ResponseFieldMarshaller
+
+            /**
+             * A character from the Star Wars universe
+             */
+            interface Node : Character.FriendsConnection.Edge.Node,
+                HeroDetail.FriendsConnection.Edge.Node, HeroDetail.Droid.FriendsConnection.Edge.Node
+                {
+              override val __typename: String
+
+              /**
+               * The name of the character
+               */
+              override val name: String
+
+              override fun marshaller(): ResponseFieldMarshaller
+            }
+          }
+        }
+      }
+
+      interface Human : Hero, HeroDetail.Human, HumanDetail {
+        override val __typename: String
+
+        /**
+         * The name of the character
+         */
+        override val name: String
+
+        /**
+         * The movies this character appears in
+         */
+        override val appearsIn: List<Episode?>
+
+        /**
+         * The friends of the character exposed as a connection with edges
+         */
+        override val friendsConnection: FriendsConnection
+
+        override fun marshaller(): ResponseFieldMarshaller
+
+        /**
+         * A connection object for a character's friends
+         */
+        interface FriendsConnection : Character.FriendsConnection, HeroDetail.FriendsConnection,
+            HeroDetail.Human.FriendsConnection {
+          override val __typename: String
+
+          /**
+           * The total number of friends
+           */
+          override val totalCount: Int?
+
+          /**
+           * The edges for each of the character's friends.
+           */
+          override val edges: List<Edge?>?
+
+          override fun marshaller(): ResponseFieldMarshaller
+
+          /**
+           * An edge object for a character's friends
+           */
+          interface Edge : Character.FriendsConnection.Edge, HeroDetail.FriendsConnection.Edge,
+              HeroDetail.Human.FriendsConnection.Edge {
+            override val __typename: String
+
+            /**
+             * The character represented by this friendship edge
+             */
+            override val node: Node?
+
+            override fun marshaller(): ResponseFieldMarshaller
+
+            /**
+             * A character from the Star Wars universe
+             */
+            interface Node : Character.FriendsConnection.Edge.Node,
+                HeroDetail.FriendsConnection.Edge.Node, HeroDetail.Human.FriendsConnection.Edge.Node
+                {
+              override val __typename: String
+
+              /**
+               * The name of the character
+               */
+              override val name: String
+
+              override fun marshaller(): ResponseFieldMarshaller
+            }
+          }
+        }
+      }
+
+      data class CharacterDroidHero(
+        override val __typename: String = "Droid",
+        /**
+         * The name of the character
+         */
+        override val name: String,
+        /**
+         * The movies this character appears in
+         */
+        override val appearsIn: List<Episode?>,
+        /**
+         * The friends of the character exposed as a connection with edges
+         */
+        override val friendsConnection: FriendsConnection,
+        /**
+         * This droid's primary function
+         */
+        override val primaryFunction: String?
+      ) : Hero, Character, HeroDetail, Droid, HeroDetail.Droid, DroidDetail {
+        override fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            TestQuery_ResponseAdapter.Data.Hero.CharacterDroidHero.toResponse(writer, this)
+          }
+        }
+
+        /**
+         * A connection object for a character's friends
+         */
+        data class FriendsConnection(
+          override val __typename: String = "FriendsConnection",
+          /**
+           * The total number of friends
+           */
+          override val totalCount: Int?,
+          /**
+           * The edges for each of the character's friends.
+           */
+          override val edges: List<Edge?>?
+        ) : Character.FriendsConnection, HeroDetail.FriendsConnection, Droid.FriendsConnection,
+            HeroDetail.Droid.FriendsConnection {
+          override fun marshaller(): ResponseFieldMarshaller {
+            return ResponseFieldMarshaller { writer ->
+              TestQuery_ResponseAdapter.Data.Hero.CharacterDroidHero.FriendsConnection.toResponse(writer, this)
+            }
+          }
+
+          /**
+           * An edge object for a character's friends
+           */
+          data class Edge(
+            override val __typename: String = "FriendsEdge",
+            /**
+             * The character represented by this friendship edge
+             */
+            override val node: Node?
+          ) : Character.FriendsConnection.Edge, HeroDetail.FriendsConnection.Edge,
+              Droid.FriendsConnection.Edge, HeroDetail.Droid.FriendsConnection.Edge {
+            override fun marshaller(): ResponseFieldMarshaller {
+              return ResponseFieldMarshaller { writer ->
+                TestQuery_ResponseAdapter.Data.Hero.CharacterDroidHero.FriendsConnection.Edge.toResponse(writer, this)
+              }
+            }
+
+            /**
+             * A character from the Star Wars universe
+             */
+            data class Node(
+              override val __typename: String = "Character",
+              /**
+               * The name of the character
+               */
+              override val name: String
+            ) : Character.FriendsConnection.Edge.Node, HeroDetail.FriendsConnection.Edge.Node,
+                Droid.FriendsConnection.Edge.Node, HeroDetail.Droid.FriendsConnection.Edge.Node {
+              override fun marshaller(): ResponseFieldMarshaller {
+                return ResponseFieldMarshaller { writer ->
+                  TestQuery_ResponseAdapter.Data.Hero.CharacterDroidHero.FriendsConnection.Edge.Node.toResponse(writer, this)
+                }
+              }
+            }
+          }
+        }
+      }
+
+      data class CharacterHumanHero(
+        override val __typename: String = "Human",
+        /**
+         * The name of the character
+         */
+        override val name: String,
+        /**
+         * The movies this character appears in
+         */
+        override val appearsIn: List<Episode?>,
+        /**
+         * The friends of the character exposed as a connection with edges
+         */
+        override val friendsConnection: FriendsConnection
+      ) : Hero, Character, HeroDetail, Human, HeroDetail.Human, HumanDetail {
+        override fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            TestQuery_ResponseAdapter.Data.Hero.CharacterHumanHero.toResponse(writer, this)
+          }
+        }
+
+        /**
+         * A connection object for a character's friends
+         */
+        data class FriendsConnection(
+          override val __typename: String = "FriendsConnection",
+          /**
+           * The total number of friends
+           */
+          override val totalCount: Int?,
+          /**
+           * The edges for each of the character's friends.
+           */
+          override val edges: List<Edge?>?
+        ) : Character.FriendsConnection, HeroDetail.FriendsConnection, Human.FriendsConnection,
+            HeroDetail.Human.FriendsConnection {
+          override fun marshaller(): ResponseFieldMarshaller {
+            return ResponseFieldMarshaller { writer ->
+              TestQuery_ResponseAdapter.Data.Hero.CharacterHumanHero.FriendsConnection.toResponse(writer, this)
+            }
+          }
+
+          /**
+           * An edge object for a character's friends
+           */
+          data class Edge(
+            override val __typename: String = "FriendsEdge",
+            /**
+             * The character represented by this friendship edge
+             */
+            override val node: Node?
+          ) : Character.FriendsConnection.Edge, HeroDetail.FriendsConnection.Edge,
+              Human.FriendsConnection.Edge, HeroDetail.Human.FriendsConnection.Edge {
+            override fun marshaller(): ResponseFieldMarshaller {
+              return ResponseFieldMarshaller { writer ->
+                TestQuery_ResponseAdapter.Data.Hero.CharacterHumanHero.FriendsConnection.Edge.toResponse(writer, this)
+              }
+            }
+
+            /**
+             * A character from the Star Wars universe
+             */
+            data class Node(
+              override val __typename: String = "Character",
+              /**
+               * The name of the character
+               */
+              override val name: String
+            ) : Character.FriendsConnection.Edge.Node, HeroDetail.FriendsConnection.Edge.Node,
+                Human.FriendsConnection.Edge.Node, HeroDetail.Human.FriendsConnection.Edge.Node {
+              override fun marshaller(): ResponseFieldMarshaller {
+                return ResponseFieldMarshaller { writer ->
+                  TestQuery_ResponseAdapter.Data.Hero.CharacterHumanHero.FriendsConnection.Edge.Node.toResponse(writer, this)
+                }
+              }
+            }
+          }
+        }
+      }
+
+      /**
+       * A character from the Star Wars universe
+       */
+      data class OtherHero(
+        override val __typename: String = "Character",
+        /**
+         * The name of the character
+         */
+        override val name: String,
+        /**
+         * The movies this character appears in
+         */
+        override val appearsIn: List<Episode?>
+      ) : Hero {
+        override fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            TestQuery_ResponseAdapter.Data.Hero.OtherHero.toResponse(writer, this)
+          }
+        }
       }
     }
   }
 
   companion object {
     const val OPERATION_ID: String =
-        "e01fcc7b255552f79419f653def959b6a7ab9bffd519c57e826d91ffc2c7fb1f"
+        "cf2801bb0424f62ecf3504cedcf40d0fc0f5b5b75bdaf1a9febb5e63bea91306"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -427,16 +563,18 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           |}
           |fragment HeroDetails on Character {
           |  __typename
-          |  ...HumanDetails
+          |  ... HumanDetails
           |  ... on Droid {
-          |    __typename
           |    ...DroidDetails
           |  }
           |  name
           |  friendsConnection {
+          |    __typename
           |    totalCount
           |    edges {
+          |      __typename
           |      node {
+          |        __typename
           |        name
           |      }
           |    }

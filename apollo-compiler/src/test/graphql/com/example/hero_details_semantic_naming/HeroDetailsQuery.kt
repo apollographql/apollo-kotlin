@@ -95,105 +95,113 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data, Operation.Variables> {
   )
 
   /**
-   * A character from the Star Wars universe
-   */
-  data class Node(
-    /**
-     * The name of the character
-     */
-    val name: String
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        HeroDetailsQuery_ResponseAdapter.Node_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * An edge object for a character's friends
-   */
-  data class Edge(
-    /**
-     * The character represented by this friendship edge
-     */
-    val node: Node?
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        HeroDetailsQuery_ResponseAdapter.Edge_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * A connection object for a character's friends
-   */
-  data class FriendsConnection(
-    /**
-     * The total number of friends
-     */
-    val totalCount: Int?,
-    /**
-     * The edges for each of the character's friends.
-     */
-    val edges: List<Edge?>?
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        HeroDetailsQuery_ResponseAdapter.FriendsConnection_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-
-    fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
-  data class Hero(
-    /**
-     * The name of the character
-     */
-    val name: String,
-    /**
-     * The friends of the character exposed as a connection with edges
-     */
-    val friendsConnection: FriendsConnection
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        HeroDetailsQuery_ResponseAdapter.Hero_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * Data from the response after executing this GraphQL operation
+   * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val hero: Hero?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        HeroDetailsQuery_ResponseAdapter.toResponse(writer, this)
+        HeroDetailsQuery_ResponseAdapter.Data.toResponse(writer, this)
+      }
+    }
+
+    /**
+     * A character from the Star Wars universe
+     */
+    data class Hero(
+      val __typename: String = "Character",
+      /**
+       * The name of the character
+       */
+      val name: String,
+      /**
+       * The friends of the character exposed as a connection with edges
+       */
+      val friendsConnection: FriendsConnection
+    ) {
+      fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          HeroDetailsQuery_ResponseAdapter.Data.Hero.toResponse(writer, this)
+        }
+      }
+
+      /**
+       * A connection object for a character's friends
+       */
+      data class FriendsConnection(
+        val __typename: String = "FriendsConnection",
+        /**
+         * The total number of friends
+         */
+        val totalCount: Int?,
+        /**
+         * The edges for each of the character's friends.
+         */
+        val edges: List<Edge?>?
+      ) {
+        fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            HeroDetailsQuery_ResponseAdapter.Data.Hero.FriendsConnection.toResponse(writer, this)
+          }
+        }
+
+        fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
+
+        /**
+         * An edge object for a character's friends
+         */
+        data class Edge(
+          val __typename: String = "FriendsEdge",
+          /**
+           * The character represented by this friendship edge
+           */
+          val node: Node?
+        ) {
+          fun marshaller(): ResponseFieldMarshaller {
+            return ResponseFieldMarshaller { writer ->
+              HeroDetailsQuery_ResponseAdapter.Data.Hero.FriendsConnection.Edge.toResponse(writer, this)
+            }
+          }
+
+          /**
+           * A character from the Star Wars universe
+           */
+          data class Node(
+            val __typename: String = "Character",
+            /**
+             * The name of the character
+             */
+            val name: String
+          ) {
+            fun marshaller(): ResponseFieldMarshaller {
+              return ResponseFieldMarshaller { writer ->
+                HeroDetailsQuery_ResponseAdapter.Data.Hero.FriendsConnection.Edge.Node.toResponse(writer, this)
+              }
+            }
+          }
+        }
       }
     }
   }
 
   companion object {
     const val OPERATION_ID: String =
-        "5e11892e17cceb600c00f4565a27951dce5e8aadd95b64b8d13a835ed8fb11e1"
+        "257332d822c9bcd5dabeff3f3dda46875a47846f6eeae88f9042c94e3effeee7"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query HeroDetails {
           |  hero {
+          |    __typename
           |    name
           |    friendsConnection {
+          |      __typename
           |      totalCount
           |      edges {
+          |        __typename
           |        node {
+          |          __typename
           |          name
           |        }
           |      }

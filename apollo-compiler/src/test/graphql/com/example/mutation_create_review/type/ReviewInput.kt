@@ -137,13 +137,13 @@ internal data class ReviewInput(
           value ->
         InputFieldWriter.ListWriter { listItemWriter ->
           value.forEach { value ->
-            listItemWriter.writeCustom(CustomType.DATE, value)
+            listItemWriter.writeCustom(CustomType.Date, value)
           }
         }
       })
     }
     if (this@ReviewInput.customScalar.defined) {
-      writer.writeCustom("customScalar", CustomType.DATE, this@ReviewInput.customScalar.value)
+      writer.writeCustom("customScalar", CustomType.Date, this@ReviewInput.customScalar.value)
     }
     if (this@ReviewInput.listOfEnums.defined) {
       writer.writeList("listOfEnums", this@ReviewInput.listOfEnums.value?.let { value ->
@@ -226,7 +226,7 @@ internal data class ReviewInput(
           value.forEach { value ->
             listItemWriter.writeList { listItemWriter ->
               value.forEach { value ->
-                listItemWriter.writeCustom(CustomType.DATE, value)
+                listItemWriter.writeCustom(CustomType.Date, value)
               }
             }
           }
@@ -251,7 +251,7 @@ internal data class ReviewInput(
       writer.writeString("CapitalizedField", this@ReviewInput.capitalizedField.value)
     }
     if (this@ReviewInput.capitalizedInt.defined) {
-      writer.writeInt("capitalizedInt", this@ReviewInput.capitalizedInt.value)
+      writer.writeInt("CapitalizedInt", this@ReviewInput.capitalizedInt.value)
     }
   }
 }

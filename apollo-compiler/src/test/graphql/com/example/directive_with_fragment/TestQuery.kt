@@ -18,8 +18,8 @@ import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.api.internal.Throws
-import com.example.directive_with_fragment.fragment.HeroDetails
-import com.example.directive_with_fragment.fragment.HumanDetails
+import com.example.directive_with_fragment.fragment.HeroDetail
+import com.example.directive_with_fragment.fragment.HumanDetail
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.String
@@ -117,92 +117,125 @@ data class TestQuery(
   )
 
   /**
-   * A character from the Star Wars universe
-   */
-  data class CharacterHero(
-    override val __typename: String = "Character",
-    /**
-     * The name of the character
-     */
-    override val name: String,
-    /**
-     * The ID of the character
-     */
-    override val id: String
-  ) : HeroDetails, Hero {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.CharacterHero_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  data class CharacterHumanHero(
-    override val __typename: String,
-    /**
-     * The name of the character
-     */
-    override val name: String,
-    /**
-     * The home planet of the human, or null if unknown
-     */
-    override val homePlanet: String?,
-    /**
-     * The ID of the character
-     */
-    override val id: String
-  ) : HeroDetails, HumanDetails, Hero {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.CharacterHumanHero_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
-  data class OtherHero(
-    override val __typename: String = "Character",
-    /**
-     * The ID of the character
-     */
-    override val id: String
-  ) : Hero {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.OtherHero_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
-  interface Hero {
-    val __typename: String
-
-    /**
-     * The ID of the character
-     */
-    val id: String
-
-    fun asHeroDetails(): HeroDetails? = this as? HeroDetails
-
-    fun asHumanDetails(): HumanDetails? = this as? HumanDetails
-
-    fun marshaller(): ResponseFieldMarshaller
-  }
-
-  /**
-   * Data from the response after executing this GraphQL operation
+   * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val hero: Hero?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
+      }
+    }
+
+    /**
+     * A character from the Star Wars universe
+     */
+    interface Hero {
+      val __typename: String
+
+      /**
+       * The ID of the character
+       */
+      val id: String
+
+      fun asCharacter(): Character? = this as? Character
+
+      fun asHuman(): Human? = this as? Human
+
+      fun asHeroDetail(): HeroDetail? = this as? HeroDetail
+
+      fun asHumanDetail(): HumanDetail? = this as? HumanDetail
+
+      fun marshaller(): ResponseFieldMarshaller
+
+      interface Character : Hero, HeroDetail {
+        override val __typename: String
+
+        /**
+         * The ID of the character
+         */
+        override val id: String
+
+        /**
+         * The name of the character
+         */
+        override val name: String
+
+        override fun marshaller(): ResponseFieldMarshaller
+      }
+
+      interface Human : Hero, HumanDetail {
+        override val __typename: String
+
+        /**
+         * The ID of the character
+         */
+        override val id: String
+
+        /**
+         * The home planet of the human, or null if unknown
+         */
+        override val homePlanet: String?
+
+        override fun marshaller(): ResponseFieldMarshaller
+      }
+
+      data class CharacterHero(
+        override val __typename: String = "Droid",
+        /**
+         * The ID of the character
+         */
+        override val id: String,
+        /**
+         * The name of the character
+         */
+        override val name: String
+      ) : Hero, Character, HeroDetail {
+        override fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            TestQuery_ResponseAdapter.Data.Hero.CharacterHero.toResponse(writer, this)
+          }
+        }
+      }
+
+      data class CharacterHumanHero(
+        override val __typename: String = "Human",
+        /**
+         * The ID of the character
+         */
+        override val id: String,
+        /**
+         * The name of the character
+         */
+        override val name: String,
+        /**
+         * The home planet of the human, or null if unknown
+         */
+        override val homePlanet: String?
+      ) : Hero, Character, HeroDetail, Human, HumanDetail {
+        override fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            TestQuery_ResponseAdapter.Data.Hero.CharacterHumanHero.toResponse(writer, this)
+          }
+        }
+      }
+
+      /**
+       * A character from the Star Wars universe
+       */
+      data class OtherHero(
+        override val __typename: String = "Character",
+        /**
+         * The ID of the character
+         */
+        override val id: String
+      ) : Hero {
+        override fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            TestQuery_ResponseAdapter.Data.Hero.OtherHero.toResponse(writer, this)
+          }
+        }
       }
     }
   }

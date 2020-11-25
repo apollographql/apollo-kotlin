@@ -6,9 +6,6 @@
 package com.example.fragment_in_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
-import com.apollographql.apollo.api.internal.ResponseReader
 import kotlin.String
 import kotlin.Suppress
 
@@ -23,24 +20,6 @@ interface PlanetFragment : GraphqlFragment {
    */
   val name: String?
 
-  /**
-   * A large mass, planet or planetoid in the Star Wars Universe, at the time of
-   * 0 ABY.
-   */
-  data class PlanetFragmentImpl(
-    override val __typename: String = "Planet",
-    /**
-     * The name of this planet.
-     */
-    override val name: String?
-  ) : PlanetFragment {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        PlanetFragment_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
   companion object {
     val FRAGMENT_DEFINITION: String = """
         |fragment planetFragment on Planet {
@@ -48,15 +27,5 @@ interface PlanetFragment : GraphqlFragment {
         |  name
         |}
         """.trimMargin()
-
-    operator fun invoke(reader: ResponseReader): PlanetFragment {
-      return PlanetFragment_ResponseAdapter.fromResponse(reader)
-    }
-
-    fun Mapper(): ResponseFieldMapper<PlanetFragment> {
-      return ResponseFieldMapper { reader ->
-        PlanetFragment_ResponseAdapter.fromResponse(reader)
-      }
-    }
   }
 }

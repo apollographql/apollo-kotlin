@@ -9,11 +9,12 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
-import com.example.named_fragment_delegate.fragment.DroidDetails_ResponseAdapter
-import com.example.named_fragment_delegate.fragment.HumanDetails_ResponseAdapter
+import com.example.named_fragment_delegate.type.CustomType
+import kotlin.Any
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
+import kotlin.collections.List
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
@@ -24,96 +25,343 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
-    return reader.run {
-      var hero: TestQuery.Hero? = null
-      while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> hero = readObject<TestQuery.Hero>(RESPONSE_FIELDS[0]) { reader ->
-            TestQuery_ResponseAdapter.Hero_ResponseAdapter.fromResponse(reader)
-          }
-          else -> break
-        }
-      }
-      TestQuery.Data(
-        hero = hero
-      )
-    }
+    return Data.fromResponse(reader, __typename)
   }
 
   override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
-    if(value.hero == null) {
-      writer.writeObject(RESPONSE_FIELDS[0], null)
-    } else {
-      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
-        TestQuery_ResponseAdapter.Hero_ResponseAdapter.toResponse(writer, value.hero)
-      }
-    }
+    Data.toResponse(writer, value)
   }
 
-  object DroidHero_ResponseAdapter : ResponseAdapter<TestQuery.DroidHero> {
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.DroidHero {
-      return TestQuery.DroidHero(DroidDetails_ResponseAdapter.fromResponse(reader, __typename))
-    }
-
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.DroidHero) {
-      DroidDetails_ResponseAdapter.toResponse(writer, value.delegate)
-    }
-  }
-
-  object HumanHero_ResponseAdapter : ResponseAdapter<TestQuery.HumanHero> {
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.HumanHero {
-      return TestQuery.HumanHero(HumanDetails_ResponseAdapter.fromResponse(reader, __typename))
-    }
-
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.HumanHero) {
-      HumanDetails_ResponseAdapter.toResponse(writer, value.delegate)
-    }
-  }
-
-  object OtherHero_ResponseAdapter : ResponseAdapter<TestQuery.OtherHero> {
+  object Data : ResponseAdapter<TestQuery.Data> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null)
+      ResponseField.forObject("hero", "hero", null, true, null)
     )
 
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.OtherHero {
+    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
       return reader.run {
-        var __typename: String? = __typename
+        var hero: TestQuery.Data.Hero? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
+            0 -> hero = readObject<TestQuery.Data.Hero>(RESPONSE_FIELDS[0]) { reader ->
+              Hero.fromResponse(reader)
+            }
             else -> break
           }
         }
-        TestQuery.OtherHero(
-          __typename = __typename!!
+        TestQuery.Data(
+          hero = hero
         )
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.OtherHero) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-    }
-  }
-
-  object Hero_ResponseAdapter : ResponseAdapter<TestQuery.Hero> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null)
-    )
-
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Hero {
-      val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
-      return when(typename) {
-        "Droid" -> TestQuery_ResponseAdapter.DroidHero_ResponseAdapter.fromResponse(reader, typename)
-        "Human" -> TestQuery_ResponseAdapter.HumanHero_ResponseAdapter.fromResponse(reader, typename)
-        else -> TestQuery_ResponseAdapter.OtherHero_ResponseAdapter.fromResponse(reader, typename)
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
+      if(value.hero == null) {
+        writer.writeObject(RESPONSE_FIELDS[0], null)
+      } else {
+        writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
+          Hero.toResponse(writer, value.hero)
+        }
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.Hero) {
-      when(value) {
-        is TestQuery.DroidHero -> TestQuery_ResponseAdapter.DroidHero_ResponseAdapter.toResponse(writer, value)
-        is TestQuery.HumanHero -> TestQuery_ResponseAdapter.HumanHero_ResponseAdapter.toResponse(writer, value)
-        is TestQuery.OtherHero -> TestQuery_ResponseAdapter.OtherHero_ResponseAdapter.toResponse(writer, value)
+    object Hero : ResponseAdapter<TestQuery.Data.Hero> {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Hero {
+        val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
+        return when(typename) {
+          "Droid" -> DroidHero.fromResponse(reader, typename)
+          "Human" -> HumanHero.fromResponse(reader, typename)
+          else -> OtherHero.fromResponse(reader, typename)
+        }
+      }
+
+      override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero) {
+        when(value) {
+          is TestQuery.Data.Hero.DroidHero -> DroidHero.toResponse(writer, value)
+          is TestQuery.Data.Hero.HumanHero -> HumanHero.toResponse(writer, value)
+          is TestQuery.Data.Hero.OtherHero -> OtherHero.toResponse(writer, value)
+        }
+      }
+
+      object DroidHero : ResponseAdapter<TestQuery.Data.Hero.DroidHero> {
+        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forString("name", "name", null, false, null),
+          ResponseField.forString("primaryFunction", "primaryFunction", null, true, null),
+          ResponseField.forList("friends", "friends", null, true, null)
+        )
+
+        override fun fromResponse(reader: ResponseReader, __typename: String?):
+            TestQuery.Data.Hero.DroidHero {
+          return reader.run {
+            var __typename: String? = __typename
+            var name: String? = null
+            var primaryFunction: String? = null
+            var friends: List<TestQuery.Data.Hero.DroidHero.Friend?>? = null
+            while(true) {
+              when (selectField(RESPONSE_FIELDS)) {
+                0 -> __typename = readString(RESPONSE_FIELDS[0])
+                1 -> name = readString(RESPONSE_FIELDS[1])
+                2 -> primaryFunction = readString(RESPONSE_FIELDS[2])
+                3 -> friends = readList<TestQuery.Data.Hero.DroidHero.Friend>(RESPONSE_FIELDS[3]) { reader ->
+                  reader.readObject<TestQuery.Data.Hero.DroidHero.Friend> { reader ->
+                    Friend.fromResponse(reader)
+                  }
+                }
+                else -> break
+              }
+            }
+            TestQuery.Data.Hero.DroidHero(
+              __typename = __typename!!,
+              name = name!!,
+              primaryFunction = primaryFunction,
+              friends = friends
+            )
+          }
+        }
+
+        override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero.DroidHero) {
+          writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+          writer.writeString(RESPONSE_FIELDS[1], value.name)
+          writer.writeString(RESPONSE_FIELDS[2], value.primaryFunction)
+          writer.writeList(RESPONSE_FIELDS[3], value.friends) { values, listItemWriter ->
+            values?.forEach { value ->
+              if(value == null) {
+                listItemWriter.writeObject(null)
+              } else {
+                listItemWriter.writeObject { writer ->
+                  Friend.toResponse(writer, value)
+                }
+              }
+            }
+          }
+        }
+
+        object Friend : ResponseAdapter<TestQuery.Data.Hero.DroidHero.Friend> {
+          private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+            ResponseField.forString("__typename", "__typename", null, false, null),
+            ResponseField.forString("name", "name", null, false, null)
+          )
+
+          override fun fromResponse(reader: ResponseReader, __typename: String?):
+              TestQuery.Data.Hero.DroidHero.Friend {
+            return reader.run {
+              var __typename: String? = __typename
+              var name: String? = null
+              while(true) {
+                when (selectField(RESPONSE_FIELDS)) {
+                  0 -> __typename = readString(RESPONSE_FIELDS[0])
+                  1 -> name = readString(RESPONSE_FIELDS[1])
+                  else -> break
+                }
+              }
+              TestQuery.Data.Hero.DroidHero.Friend(
+                __typename = __typename!!,
+                name = name!!
+              )
+            }
+          }
+
+          override fun toResponse(writer: ResponseWriter,
+              value: TestQuery.Data.Hero.DroidHero.Friend) {
+            writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+            writer.writeString(RESPONSE_FIELDS[1], value.name)
+          }
+        }
+      }
+
+      object HumanHero : ResponseAdapter<TestQuery.Data.Hero.HumanHero> {
+        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forString("name", "name", null, false, null),
+          ResponseField.forCustomType("profileLink", "profileLink", null, false, CustomType.URL, null),
+          ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
+        )
+
+        override fun fromResponse(reader: ResponseReader, __typename: String?):
+            TestQuery.Data.Hero.HumanHero {
+          return reader.run {
+            var __typename: String? = __typename
+            var name: String? = null
+            var profileLink: Any? = null
+            var friendsConnection: TestQuery.Data.Hero.HumanHero.FriendsConnection? = null
+            while(true) {
+              when (selectField(RESPONSE_FIELDS)) {
+                0 -> __typename = readString(RESPONSE_FIELDS[0])
+                1 -> name = readString(RESPONSE_FIELDS[1])
+                2 -> profileLink = readCustomType<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)
+                3 -> friendsConnection = readObject<TestQuery.Data.Hero.HumanHero.FriendsConnection>(RESPONSE_FIELDS[3]) { reader ->
+                  FriendsConnection.fromResponse(reader)
+                }
+                else -> break
+              }
+            }
+            TestQuery.Data.Hero.HumanHero(
+              __typename = __typename!!,
+              name = name!!,
+              profileLink = profileLink!!,
+              friendsConnection = friendsConnection!!
+            )
+          }
+        }
+
+        override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero.HumanHero) {
+          writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+          writer.writeString(RESPONSE_FIELDS[1], value.name)
+          writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, value.profileLink)
+          writer.writeObject(RESPONSE_FIELDS[3]) { writer ->
+            FriendsConnection.toResponse(writer, value.friendsConnection)
+          }
+        }
+
+        object FriendsConnection : ResponseAdapter<TestQuery.Data.Hero.HumanHero.FriendsConnection>
+            {
+          private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+            ResponseField.forString("__typename", "__typename", null, false, null),
+            ResponseField.forList("edges", "edges", null, true, null)
+          )
+
+          override fun fromResponse(reader: ResponseReader, __typename: String?):
+              TestQuery.Data.Hero.HumanHero.FriendsConnection {
+            return reader.run {
+              var __typename: String? = __typename
+              var edges: List<TestQuery.Data.Hero.HumanHero.FriendsConnection.Edge?>? = null
+              while(true) {
+                when (selectField(RESPONSE_FIELDS)) {
+                  0 -> __typename = readString(RESPONSE_FIELDS[0])
+                  1 -> edges = readList<TestQuery.Data.Hero.HumanHero.FriendsConnection.Edge>(RESPONSE_FIELDS[1]) { reader ->
+                    reader.readObject<TestQuery.Data.Hero.HumanHero.FriendsConnection.Edge> { reader ->
+                      Edge.fromResponse(reader)
+                    }
+                  }
+                  else -> break
+                }
+              }
+              TestQuery.Data.Hero.HumanHero.FriendsConnection(
+                __typename = __typename!!,
+                edges = edges
+              )
+            }
+          }
+
+          override fun toResponse(writer: ResponseWriter,
+              value: TestQuery.Data.Hero.HumanHero.FriendsConnection) {
+            writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+            writer.writeList(RESPONSE_FIELDS[1], value.edges) { values, listItemWriter ->
+              values?.forEach { value ->
+                if(value == null) {
+                  listItemWriter.writeObject(null)
+                } else {
+                  listItemWriter.writeObject { writer ->
+                    Edge.toResponse(writer, value)
+                  }
+                }
+              }
+            }
+          }
+
+          object Edge : ResponseAdapter<TestQuery.Data.Hero.HumanHero.FriendsConnection.Edge> {
+            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+              ResponseField.forString("__typename", "__typename", null, false, null),
+              ResponseField.forObject("node", "node", null, true, null)
+            )
+
+            override fun fromResponse(reader: ResponseReader, __typename: String?):
+                TestQuery.Data.Hero.HumanHero.FriendsConnection.Edge {
+              return reader.run {
+                var __typename: String? = __typename
+                var node: TestQuery.Data.Hero.HumanHero.FriendsConnection.Edge.Node? = null
+                while(true) {
+                  when (selectField(RESPONSE_FIELDS)) {
+                    0 -> __typename = readString(RESPONSE_FIELDS[0])
+                    1 -> node = readObject<TestQuery.Data.Hero.HumanHero.FriendsConnection.Edge.Node>(RESPONSE_FIELDS[1]) { reader ->
+                      Node.fromResponse(reader)
+                    }
+                    else -> break
+                  }
+                }
+                TestQuery.Data.Hero.HumanHero.FriendsConnection.Edge(
+                  __typename = __typename!!,
+                  node = node
+                )
+              }
+            }
+
+            override fun toResponse(writer: ResponseWriter,
+                value: TestQuery.Data.Hero.HumanHero.FriendsConnection.Edge) {
+              writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+              if(value.node == null) {
+                writer.writeObject(RESPONSE_FIELDS[1], null)
+              } else {
+                writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
+                  Node.toResponse(writer, value.node)
+                }
+              }
+            }
+
+            object Node : ResponseAdapter<TestQuery.Data.Hero.HumanHero.FriendsConnection.Edge.Node>
+                {
+              private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+                ResponseField.forString("__typename", "__typename", null, false, null),
+                ResponseField.forString("name", "name", null, false, null)
+              )
+
+              override fun fromResponse(reader: ResponseReader, __typename: String?):
+                  TestQuery.Data.Hero.HumanHero.FriendsConnection.Edge.Node {
+                return reader.run {
+                  var __typename: String? = __typename
+                  var name: String? = null
+                  while(true) {
+                    when (selectField(RESPONSE_FIELDS)) {
+                      0 -> __typename = readString(RESPONSE_FIELDS[0])
+                      1 -> name = readString(RESPONSE_FIELDS[1])
+                      else -> break
+                    }
+                  }
+                  TestQuery.Data.Hero.HumanHero.FriendsConnection.Edge.Node(
+                    __typename = __typename!!,
+                    name = name!!
+                  )
+                }
+              }
+
+              override fun toResponse(writer: ResponseWriter,
+                  value: TestQuery.Data.Hero.HumanHero.FriendsConnection.Edge.Node) {
+                writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+                writer.writeString(RESPONSE_FIELDS[1], value.name)
+              }
+            }
+          }
+        }
+      }
+
+      object OtherHero : ResponseAdapter<TestQuery.Data.Hero.OtherHero> {
+        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null)
+        )
+
+        override fun fromResponse(reader: ResponseReader, __typename: String?):
+            TestQuery.Data.Hero.OtherHero {
+          return reader.run {
+            var __typename: String? = __typename
+            while(true) {
+              when (selectField(RESPONSE_FIELDS)) {
+                0 -> __typename = readString(RESPONSE_FIELDS[0])
+                else -> break
+              }
+            }
+            TestQuery.Data.Hero.OtherHero(
+              __typename = __typename!!
+            )
+          }
+        }
+
+        override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero.OtherHero) {
+          writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+        }
       }
     }
   }

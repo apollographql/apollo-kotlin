@@ -25,58 +25,77 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
-    return reader.run {
-      var hero: TestQuery.Hero? = null
-      while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> hero = readObject<TestQuery.Hero>(RESPONSE_FIELDS[0]) { reader ->
-            TestQuery_ResponseAdapter.Hero_ResponseAdapter.fromResponse(reader)
-          }
-          else -> break
-        }
-      }
-      TestQuery.Data(
-        hero = hero
-      )
-    }
+    return Data.fromResponse(reader, __typename)
   }
 
   override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
-    if(value.hero == null) {
-      writer.writeObject(RESPONSE_FIELDS[0], null)
-    } else {
-      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
-        TestQuery_ResponseAdapter.Hero_ResponseAdapter.toResponse(writer, value.hero)
-      }
-    }
+    Data.toResponse(writer, value)
   }
 
-  object Hero_ResponseAdapter : ResponseAdapter<TestQuery.Hero> {
+  object Data : ResponseAdapter<TestQuery.Data> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forList("links", "links", null, false, null)
+      ResponseField.forObject("hero", "hero", null, true, null)
     )
 
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Hero {
+    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
       return reader.run {
-        var links: List<Any>? = null
+        var hero: TestQuery.Data.Hero? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> links = readList<Any>(RESPONSE_FIELDS[0]) { reader ->
-              reader.readCustomType<Any>(CustomType.URL)
-            }?.map { it!! }
+            0 -> hero = readObject<TestQuery.Data.Hero>(RESPONSE_FIELDS[0]) { reader ->
+              Hero.fromResponse(reader)
+            }
             else -> break
           }
         }
-        TestQuery.Hero(
-          links = links!!
+        TestQuery.Data(
+          hero = hero
         )
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.Hero) {
-      writer.writeList(RESPONSE_FIELDS[0], value.links) { values, listItemWriter ->
-        values?.forEach { value ->
-          listItemWriter.writeCustom(CustomType.URL, value)}
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
+      if(value.hero == null) {
+        writer.writeObject(RESPONSE_FIELDS[0], null)
+      } else {
+        writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
+          Hero.toResponse(writer, value.hero)
+        }
+      }
+    }
+
+    object Hero : ResponseAdapter<TestQuery.Data.Hero> {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forList("links", "links", null, false, null)
+      )
+
+      override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Hero {
+        return reader.run {
+          var __typename: String? = __typename
+          var links: List<Any>? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> links = readList<Any>(RESPONSE_FIELDS[1]) { reader ->
+                reader.readCustomType<Any>(CustomType.URL)
+              }?.map { it!! }
+              else -> break
+            }
+          }
+          TestQuery.Data.Hero(
+            __typename = __typename!!,
+            links = links!!
+          )
+        }
+      }
+
+      override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero) {
+        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+        writer.writeList(RESPONSE_FIELDS[1], value.links) { values, listItemWriter ->
+          values?.forEach { value ->
+            listItemWriter.writeCustom(CustomType.URL, value)}
+        }
       }
     }
   }

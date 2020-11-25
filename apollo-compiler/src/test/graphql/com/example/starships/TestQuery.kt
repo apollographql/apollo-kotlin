@@ -114,45 +114,47 @@ data class TestQuery(
     scalarTypeAdapters = scalarTypeAdapters
   )
 
-  data class Starship(
-    /**
-     * The ID of the starship
-     */
-    val id: String,
-    /**
-     * The name of the starship
-     */
-    val name: String,
-    val coordinates: List<List<Double>>?
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Starship_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
   /**
-   * Data from the response after executing this GraphQL operation
+   * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val starship: Starship?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
+      }
+    }
+
+    data class Starship(
+      val __typename: String = "Starship",
+      /**
+       * The ID of the starship
+       */
+      val id: String,
+      /**
+       * The name of the starship
+       */
+      val name: String,
+      val coordinates: List<List<Double>>?
+    ) {
+      fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          TestQuery_ResponseAdapter.Data.Starship.toResponse(writer, this)
+        }
       }
     }
   }
 
   companion object {
     const val OPERATION_ID: String =
-        "ec95d84c104260ea1c99e15341279aaabe98b7364279c2886a9ffe9adfeefb7f"
+        "a4c440f9a7ea17b55ba60d3ac9603f8be88a1db31c679f55982eb9f57b5b6181"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery(${'$'}id: ID!) {
           |  starship(id: ${'$'}id) {
+          |    __typename
           |    id
           |    name
           |    coordinates

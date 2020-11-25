@@ -6,9 +6,7 @@
 package com.example.root_query_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
-import com.apollographql.apollo.api.internal.ResponseReader
 import kotlin.String
 import kotlin.Suppress
 
@@ -24,6 +22,8 @@ interface QueryFragment : GraphqlFragment {
    * A character from the Star Wars universe
    */
   interface Hero {
+    val __typename: String
+
     /**
      * The name of the character
      */
@@ -32,54 +32,15 @@ interface QueryFragment : GraphqlFragment {
     fun marshaller(): ResponseFieldMarshaller
   }
 
-  /**
-   * A character from the Star Wars universe
-   */
-  data class Hero1(
-    /**
-     * The name of the character
-     */
-    override val name: String
-  ) : Hero {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        QueryFragment_ResponseAdapter.Hero1_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * The query type, represents all of the entry points into our object graph
-   */
-  data class QueryFragmentImpl(
-    override val __typename: String = "Query",
-    override val hero: Hero1?
-  ) : QueryFragment {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        QueryFragment_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
   companion object {
     val FRAGMENT_DEFINITION: String = """
         |fragment QueryFragment on Query {
         |  __typename
         |  hero {
+        |    __typename
         |    name
         |  }
         |}
         """.trimMargin()
-
-    operator fun invoke(reader: ResponseReader): QueryFragment {
-      return QueryFragment_ResponseAdapter.fromResponse(reader)
-    }
-
-    fun Mapper(): ResponseFieldMapper<QueryFragment> {
-      return ResponseFieldMapper { reader ->
-        QueryFragment_ResponseAdapter.fromResponse(reader)
-      }
-    }
   }
 }

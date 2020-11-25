@@ -5,9 +5,9 @@
 //
 package com.example.mutation_create_review
 
-import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
+import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
@@ -40,7 +40,7 @@ import okio.IOException
 internal data class CreateReviewForEpisode(
   val ep: Episode,
   val review: ReviewInput
-) : Mutation<CreateReviewForEpisode.Data, Operation.Variables> {
+) : Query<CreateReviewForEpisode.Data, Operation.Variables> {
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
@@ -120,84 +120,88 @@ internal data class CreateReviewForEpisode(
   )
 
   /**
-   * A character from the Star Wars universe
-   */
-  data class ListOfListOfObject(
-    /**
-     * The name of the character
-     */
-    val name: String
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        CreateReviewForEpisode_ResponseAdapter.ListOfListOfObject_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * Represents a review for a movie
-   */
-  data class CreateReview(
-    /**
-     * The number of stars this review gave, 1-5
-     */
-    val stars: Int,
-    /**
-     * Comment about the movie
-     */
-    val commentary: String?,
-    /**
-     * for test purpose only
-     */
-    val listOfListOfString: List<List<String>>?,
-    /**
-     * for test purpose only
-     */
-    val listOfListOfEnum: List<List<Episode>>?,
-    /**
-     * for test purpose only
-     */
-    val listOfListOfCustom: List<List<Date>>?,
-    /**
-     * for test purpose only
-     */
-    val listOfListOfObject: List<List<ListOfListOfObject>>?
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        CreateReviewForEpisode_ResponseAdapter.CreateReview_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * Data from the response after executing this GraphQL operation
+   * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val createReview: CreateReview?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        CreateReviewForEpisode_ResponseAdapter.toResponse(writer, this)
+        CreateReviewForEpisode_ResponseAdapter.Data.toResponse(writer, this)
+      }
+    }
+
+    /**
+     * Represents a review for a movie
+     */
+    data class CreateReview(
+      val __typename: String = "Review",
+      /**
+       * The number of stars this review gave, 1-5
+       */
+      val stars: Int,
+      /**
+       * Comment about the movie
+       */
+      val commentary: String?,
+      /**
+       * for test purpose only
+       */
+      val listOfListOfString: List<List<String>>?,
+      /**
+       * for test purpose only
+       */
+      val listOfListOfEnum: List<List<Episode>>?,
+      /**
+       * for test purpose only
+       */
+      val listOfListOfCustom: List<List<Date>>?,
+      /**
+       * for test purpose only
+       */
+      val listOfListOfObject: List<List<ListOfListOfObject>>?
+    ) {
+      fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          CreateReviewForEpisode_ResponseAdapter.Data.CreateReview.toResponse(writer, this)
+        }
+      }
+
+      /**
+       * A character from the Star Wars universe
+       */
+      data class ListOfListOfObject(
+        val __typename: String = "Character",
+        /**
+         * The name of the character
+         */
+        val name: String
+      ) {
+        fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            CreateReviewForEpisode_ResponseAdapter.Data.CreateReview.ListOfListOfObject.toResponse(writer, this)
+          }
+        }
       }
     }
   }
 
   companion object {
     const val OPERATION_ID: String =
-        "b333ec8237cdc346478f07c98169eeb782c4afac1a0a8b94c62dfbcb27275b21"
+        "c07e5abc4b4070cd773623194c07f546e609af467a1d34f7bf01c37272245296"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |mutation CreateReviewForEpisode(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) {
           |  createReview(episode: ${'$'}ep, review: ${'$'}review) {
+          |    __typename
           |    stars
           |    commentary
           |    listOfListOfString
           |    listOfListOfEnum
           |    listOfListOfCustom
           |    listOfListOfObject {
+          |      __typename
           |      name
           |    }
           |  }

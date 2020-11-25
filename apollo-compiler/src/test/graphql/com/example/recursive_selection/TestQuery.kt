@@ -94,72 +94,78 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   )
 
   /**
-   * To test recursive structures
-   */
-  data class Child(
-    val name: String
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Child_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * To test recursive structures
-   */
-  data class Parent(
-    val name: String
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Parent_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * To test recursive structures
-   */
-  data class Tree(
-    val name: String,
-    val children: List<Child>,
-    val parent: Parent?
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Tree_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * Data from the response after executing this GraphQL operation
+   * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val tree: Tree?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
+      }
+    }
+
+    /**
+     * To test recursive structures
+     */
+    data class Tree(
+      val __typename: String = "Tree",
+      val name: String,
+      val children: List<Child>,
+      val parent: Parent?
+    ) {
+      fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          TestQuery_ResponseAdapter.Data.Tree.toResponse(writer, this)
+        }
+      }
+
+      /**
+       * To test recursive structures
+       */
+      data class Child(
+        val __typename: String = "Tree",
+        val name: String
+      ) {
+        fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            TestQuery_ResponseAdapter.Data.Tree.Child.toResponse(writer, this)
+          }
+        }
+      }
+
+      /**
+       * To test recursive structures
+       */
+      data class Parent(
+        val __typename: String = "Tree",
+        val name: String
+      ) {
+        fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            TestQuery_ResponseAdapter.Data.Tree.Parent.toResponse(writer, this)
+          }
+        }
       }
     }
   }
 
   companion object {
     const val OPERATION_ID: String =
-        "0308cbb678ba65068f98c1e2db76c79bc46b6d4a171d6310a4bb5d98356651c5"
+        "07319106b852dad03abe0214a7b144e074f234950939a6247d5233b590685b3a"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery {
           |  tree {
+          |    __typename
           |    name
           |    children {
+          |      __typename
           |      name
           |    }
           |    parent {
+          |      __typename
           |      name
           |    }
           |  }

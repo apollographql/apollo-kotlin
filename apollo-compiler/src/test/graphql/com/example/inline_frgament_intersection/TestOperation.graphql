@@ -1,0 +1,27 @@
+query TestOperation {
+   random {
+       ... on Being {
+           name
+           friends {
+               name
+           }
+           ... on Human {
+             profilePictureUrl
+             friends {
+                isFamous
+                ... on Wookie {
+                  race
+                }
+             }
+           }
+           ... on Wookie {
+              race
+              friends {
+                lifeExpectancy
+              }
+           }
+       }
+   }
+}
+
+

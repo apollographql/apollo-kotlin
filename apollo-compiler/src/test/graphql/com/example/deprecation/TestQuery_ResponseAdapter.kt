@@ -26,64 +26,86 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
-    return reader.run {
-      var hero: TestQuery.Hero? = null
-      while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> hero = readObject<TestQuery.Hero>(RESPONSE_FIELDS[0]) { reader ->
-            TestQuery_ResponseAdapter.Hero_ResponseAdapter.fromResponse(reader)
-          }
-          else -> break
-        }
-      }
-      TestQuery.Data(
-        hero = hero
-      )
-    }
+    return Data.fromResponse(reader, __typename)
   }
 
   override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
-    if(value.hero == null) {
-      writer.writeObject(RESPONSE_FIELDS[0], null)
-    } else {
-      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
-        TestQuery_ResponseAdapter.Hero_ResponseAdapter.toResponse(writer, value.hero)
-      }
-    }
+    Data.toResponse(writer, value)
   }
 
-  object Hero_ResponseAdapter : ResponseAdapter<TestQuery.Hero> {
+  object Data : ResponseAdapter<TestQuery.Data> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("name", "name", null, false, null),
-      ResponseField.forString("deprecated", "deprecated", null, false, null),
-      ResponseField.forBoolean("deprecatedBool", "deprecatedBool", null, false, null)
+      ResponseField.forObject("hero", "hero", mapOf<String, Any>(
+        "episode" to mapOf<String, Any>(
+          "kind" to "Variable",
+          "variableName" to "episode")), true, null)
     )
 
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Hero {
+    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
       return reader.run {
-        var name: String? = null
-        var deprecated: String? = null
-        var deprecatedBool: Boolean? = null
+        var hero: TestQuery.Data.Hero? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> name = readString(RESPONSE_FIELDS[0])
-            1 -> deprecated = readString(RESPONSE_FIELDS[1])
-            2 -> deprecatedBool = readBoolean(RESPONSE_FIELDS[2])
+            0 -> hero = readObject<TestQuery.Data.Hero>(RESPONSE_FIELDS[0]) { reader ->
+              Hero.fromResponse(reader)
+            }
             else -> break
           }
         }
-        TestQuery.Hero(
-          name = name!!,
-          deprecated = deprecated!!,
-          deprecatedBool = deprecatedBool!!
+        TestQuery.Data(
+          hero = hero
         )
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.Hero) {
-      writer.writeString(RESPONSE_FIELDS[0], value.name)
-      writer.writeString(RESPONSE_FIELDS[1], value.deprecated)
-      writer.writeBoolean(RESPONSE_FIELDS[2], value.deprecatedBool)
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
+      if(value.hero == null) {
+        writer.writeObject(RESPONSE_FIELDS[0], null)
+      } else {
+        writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
+          Hero.toResponse(writer, value.hero)
+        }
+      }
+    }
+
+    object Hero : ResponseAdapter<TestQuery.Data.Hero> {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forString("deprecated", "deprecated", null, false, null),
+        ResponseField.forBoolean("deprecatedBool", "deprecatedBool", null, false, null)
+      )
+
+      override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Hero {
+        return reader.run {
+          var __typename: String? = __typename
+          var name: String? = null
+          var deprecated: String? = null
+          var deprecatedBool: Boolean? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              2 -> deprecated = readString(RESPONSE_FIELDS[2])
+              3 -> deprecatedBool = readBoolean(RESPONSE_FIELDS[3])
+              else -> break
+            }
+          }
+          TestQuery.Data.Hero(
+            __typename = __typename!!,
+            name = name!!,
+            deprecated = deprecated!!,
+            deprecatedBool = deprecatedBool!!
+          )
+        }
+      }
+
+      override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero) {
+        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], value.name)
+        writer.writeString(RESPONSE_FIELDS[2], value.deprecated)
+        writer.writeBoolean(RESPONSE_FIELDS[3], value.deprecatedBool)
+      }
     }
   }
 }

@@ -96,62 +96,64 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   )
 
   /**
-   * A character from the Star Wars universe
-   */
-  data class Hero(
-    /**
-     * The name of the character
-     */
-    val name: String,
-    /**
-     * The date character was born.
-     */
-    val birthDate: Date,
-    /**
-     * The dates of appearances
-     */
-    val appearanceDates: List<Date>,
-    /**
-     * The date character was born.
-     */
-    val fieldWithUnsupportedType: Any,
-    /**
-     * Profile link
-     */
-    val profileLink: java.lang.String,
-    /**
-     * Links
-     */
-    val links: List<java.lang.String>
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Hero_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * Data from the response after executing this GraphQL operation
+   * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val hero: Hero?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
+      }
+    }
+
+    /**
+     * A character from the Star Wars universe
+     */
+    data class Hero(
+      val __typename: String = "Character",
+      /**
+       * The name of the character
+       */
+      val name: String,
+      /**
+       * The date character was born.
+       */
+      val birthDate: Date,
+      /**
+       * The dates of appearances
+       */
+      val appearanceDates: List<Date>,
+      /**
+       * The date character was born.
+       */
+      val fieldWithUnsupportedType: Any,
+      /**
+       * Profile link
+       */
+      val profileLink: java.lang.String,
+      /**
+       * Links
+       */
+      val links: List<java.lang.String>
+    ) {
+      fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          TestQuery_ResponseAdapter.Data.Hero.toResponse(writer, this)
+        }
       }
     }
   }
 
   companion object {
     const val OPERATION_ID: String =
-        "8f6fd98f3592845e0a3eb760b37ff5bcdad7edc2cbbdfd8350af519bd3a26b19"
+        "5b1986dc0a04871a5bcbfdb1d7a5b9f935fd9b2d68da8990744106c4b253f177"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery {
           |  hero {
+          |    __typename
           |    name
           |    birthDate
           |    appearanceDates

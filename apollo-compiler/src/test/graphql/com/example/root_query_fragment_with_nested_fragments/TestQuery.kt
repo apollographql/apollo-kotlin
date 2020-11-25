@@ -96,76 +96,303 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   )
 
   /**
-   * A character from the Star Wars universe
+   * The query type, represents all of the entry points into our object graph
    */
-  data class Hero(
-    override val __typename: String = "Character",
-    /**
-     * The name of the character
-     */
-    override val name: String
-  ) : HeroFragment, QueryFragment.Hero {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Hero_ResponseAdapter.toResponse(writer, this)
+  interface Data : Operation.Data {
+    val __typename: String
+
+    fun asQuery(): Query? = this as? Query
+
+    fun asQueryFragment(): QueryFragment? = this as? QueryFragment
+
+    override fun marshaller(): ResponseFieldMarshaller
+
+    interface Query : Data, QueryFragment {
+      override val __typename: String
+
+      override val hero: Hero?
+
+      override val droid: Droid?
+
+      override val human: Human?
+
+      override fun marshaller(): ResponseFieldMarshaller
+
+      /**
+       * A character from the Star Wars universe
+       */
+      interface Hero : QueryFragment.Hero {
+        override val __typename: String
+
+        override fun marshaller(): ResponseFieldMarshaller
+
+        interface Character : Hero, HeroFragment, QueryFragment.Hero.Character {
+          override val __typename: String
+
+          /**
+           * The name of the character
+           */
+          override val name: String
+
+          override fun marshaller(): ResponseFieldMarshaller
+        }
+      }
+
+      /**
+       * An autonomous mechanical character in the Star Wars universe
+       */
+      interface Droid : QueryFragment.Droid {
+        override val __typename: String
+
+        override fun marshaller(): ResponseFieldMarshaller
+
+        interface Droid : Query.Droid, DroidFragment, QueryFragment.Droid.Droid {
+          override val __typename: String
+
+          /**
+           * What others call this droid
+           */
+          override val name: String
+
+          /**
+           * This droid's primary function
+           */
+          override val primaryFunction: String?
+
+          override fun marshaller(): ResponseFieldMarshaller
+        }
+      }
+
+      /**
+       * A humanoid creature from the Star Wars universe
+       */
+      interface Human : QueryFragment.Human {
+        override val __typename: String
+
+        override fun marshaller(): ResponseFieldMarshaller
+
+        /**
+         * A humanoid creature from the Star Wars universe
+         */
+        interface Human : Query.Human, QueryFragment.Human.Human {
+          override val __typename: String
+
+          /**
+           * What this human calls themselves
+           */
+          override val name: String
+
+          /**
+           * The home planet of the human, or null if unknown
+           */
+          override val homePlanet: String?
+
+          override fun marshaller(): ResponseFieldMarshaller
+        }
       }
     }
-  }
 
-  /**
-   * An autonomous mechanical character in the Star Wars universe
-   */
-  data class Droid(
-    override val __typename: String = "Droid",
-    /**
-     * What others call this droid
-     */
-    override val name: String,
-    /**
-     * This droid's primary function
-     */
-    override val primaryFunction: String?
-  ) : DroidFragment, QueryFragment.Droid {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Droid_ResponseAdapter.toResponse(writer, this)
+    data class QueryDatum(
+      override val __typename: String = "Query",
+      override val hero: Hero?,
+      override val droid: Droid?,
+      override val human: Human?
+    ) : Data, Query, QueryFragment {
+      override fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          TestQuery_ResponseAdapter.Data.QueryDatum.toResponse(writer, this)
+        }
+      }
+
+      /**
+       * A character from the Star Wars universe
+       */
+      interface Hero : Query.Hero, QueryFragment.Hero {
+        override val __typename: String
+
+        fun asCharacter(): Character? = this as? Character
+
+        fun asHeroFragment(): HeroFragment? = this as? HeroFragment
+
+        override fun marshaller(): ResponseFieldMarshaller
+
+        interface Character : Query.Hero, Query.Hero.Character, HeroFragment,
+            QueryFragment.Hero.Character, Hero {
+          override val __typename: String
+
+          /**
+           * The name of the character
+           */
+          override val name: String
+
+          override fun marshaller(): ResponseFieldMarshaller
+        }
+
+        data class CharacterHero(
+          override val __typename: String,
+          /**
+           * The name of the character
+           */
+          override val name: String
+        ) : Query.Hero, Query.Hero.Character, HeroFragment, Hero {
+          override fun marshaller(): ResponseFieldMarshaller {
+            return ResponseFieldMarshaller { writer ->
+              TestQuery_ResponseAdapter.Data.QueryDatum.Hero.CharacterHero.toResponse(writer, this)
+            }
+          }
+        }
+
+        /**
+         * A character from the Star Wars universe
+         */
+        data class OtherHero(
+          override val __typename: String = "Character"
+        ) : Query.Hero, QueryFragment.Hero, Hero {
+          override fun marshaller(): ResponseFieldMarshaller {
+            return ResponseFieldMarshaller { writer ->
+              TestQuery_ResponseAdapter.Data.QueryDatum.Hero.OtherHero.toResponse(writer, this)
+            }
+          }
+        }
+      }
+
+      /**
+       * An autonomous mechanical character in the Star Wars universe
+       */
+      interface Droid : Query.Droid, QueryFragment.Droid {
+        override val __typename: String
+
+        fun asDroid(): Droid? = this as? Droid
+
+        fun asDroidFragment(): DroidFragment? = this as? DroidFragment
+
+        override fun marshaller(): ResponseFieldMarshaller
+
+        interface Droid : Query.Droid, Query.Droid.Droid, DroidFragment, QueryFragment.Droid.Droid,
+            QueryDatum.Droid {
+          override val __typename: String
+
+          /**
+           * What others call this droid
+           */
+          override val name: String
+
+          /**
+           * This droid's primary function
+           */
+          override val primaryFunction: String?
+
+          override fun marshaller(): ResponseFieldMarshaller
+        }
+
+        data class DroidDroid(
+          override val __typename: String = "Droid",
+          /**
+           * What others call this droid
+           */
+          override val name: String,
+          /**
+           * This droid's primary function
+           */
+          override val primaryFunction: String?
+        ) : Query.Droid, Query.Droid.Droid, DroidFragment, QueryDatum.Droid {
+          override fun marshaller(): ResponseFieldMarshaller {
+            return ResponseFieldMarshaller { writer ->
+              TestQuery_ResponseAdapter.Data.QueryDatum.Droid.DroidDroid.toResponse(writer, this)
+            }
+          }
+        }
+
+        /**
+         * An autonomous mechanical character in the Star Wars universe
+         */
+        data class OtherDroid(
+          override val __typename: String = "Droid"
+        ) : Query.Droid, QueryFragment.Droid, QueryDatum.Droid {
+          override fun marshaller(): ResponseFieldMarshaller {
+            return ResponseFieldMarshaller { writer ->
+              TestQuery_ResponseAdapter.Data.QueryDatum.Droid.OtherDroid.toResponse(writer, this)
+            }
+          }
+        }
+      }
+
+      /**
+       * A humanoid creature from the Star Wars universe
+       */
+      interface Human : Query.Human, QueryFragment.Human {
+        override val __typename: String
+
+        fun asHuman(): Human? = this as? Human
+
+        override fun marshaller(): ResponseFieldMarshaller
+
+        /**
+         * A humanoid creature from the Star Wars universe
+         */
+        interface Human : Query.Human, Query.Human.Human, QueryFragment.Human.Human,
+            QueryDatum.Human {
+          override val __typename: String
+
+          /**
+           * What this human calls themselves
+           */
+          override val name: String
+
+          /**
+           * The home planet of the human, or null if unknown
+           */
+          override val homePlanet: String?
+
+          override fun marshaller(): ResponseFieldMarshaller
+        }
+
+        /**
+         * A humanoid creature from the Star Wars universe
+         */
+        data class HumanHuman(
+          override val __typename: String = "Human",
+          /**
+           * What this human calls themselves
+           */
+          override val name: String,
+          /**
+           * The home planet of the human, or null if unknown
+           */
+          override val homePlanet: String?
+        ) : Query.Human, Query.Human.Human, QueryDatum.Human {
+          override fun marshaller(): ResponseFieldMarshaller {
+            return ResponseFieldMarshaller { writer ->
+              TestQuery_ResponseAdapter.Data.QueryDatum.Human.HumanHuman.toResponse(writer, this)
+            }
+          }
+        }
+
+        /**
+         * A humanoid creature from the Star Wars universe
+         */
+        data class OtherHuman(
+          override val __typename: String = "Human"
+        ) : Query.Human, QueryFragment.Human, QueryDatum.Human {
+          override fun marshaller(): ResponseFieldMarshaller {
+            return ResponseFieldMarshaller { writer ->
+              TestQuery_ResponseAdapter.Data.QueryDatum.Human.OtherHuman.toResponse(writer, this)
+            }
+          }
+        }
       }
     }
-  }
 
-  /**
-   * A humanoid creature from the Star Wars universe
-   */
-  data class Human(
-    override val __typename: String = "Human",
     /**
-     * What this human calls themselves
+     * The query type, represents all of the entry points into our object graph
      */
-    val name: String,
-    /**
-     * The home planet of the human, or null if unknown
-     */
-    val homePlanet: String?
-  ) : QueryFragment.Human {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Human_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * Data from the response after executing this GraphQL operation
-   */
-  data class Data(
-    override val __typename: String = "Query",
-    override val hero: Hero?,
-    override val droid: Droid?,
-    override val human: Human?
-  ) : QueryFragment, Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.toResponse(writer, this)
+    data class OtherDatum(
+      override val __typename: String = "Query"
+    ) : Data {
+      override fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          TestQuery_ResponseAdapter.Data.OtherDatum.toResponse(writer, this)
+        }
       }
     }
   }

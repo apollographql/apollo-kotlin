@@ -94,84 +94,100 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   )
 
   /**
-   * A character from the Star Wars universe
-   */
-  data class Yield_(
-    /**
-     * The ID of the character
-     */
-    val it_: String,
-    /**
-     * The name of the character
-     */
-    val name: String
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Yield__ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
-  data class CharacterObject(
-    /**
-     * The name of the character
-     */
-    val name: String,
-    override val __typename: String = "Character"
-  ) : Object {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.CharacterObject_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  data class OtherObject(
-    override val __typename: String = "SearchResult"
-  ) : Object {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.OtherObject_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  interface Object {
-    val __typename: String
-
-    fun asCharacterObject(): CharacterObject? = this as? CharacterObject
-
-    fun marshaller(): ResponseFieldMarshaller
-  }
-
-  /**
-   * Data from the response after executing this GraphQL operation
+   * The query type, represents all of the entry points into our object graph
    */
   data class Data(
-    val yield_: Yield_?,
+    val yield_: Yield?,
     val objects: List<Object?>?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
       }
     }
 
     fun objectsFilterNotNull(): List<Object>? = objects?.filterNotNull()
+
+    /**
+     * A character from the Star Wars universe
+     */
+    data class Yield(
+      val __typename: String = "Character",
+      /**
+       * The ID of the character
+       */
+      val it_: String,
+      /**
+       * The name of the character
+       */
+      val name: String
+    ) {
+      fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          TestQuery_ResponseAdapter.Data.Yield.toResponse(writer, this)
+        }
+      }
+    }
+
+    interface Object {
+      val __typename: String
+
+      fun asCharacter(): Character? = this as? Character
+
+      fun marshaller(): ResponseFieldMarshaller
+
+      /**
+       * A character from the Star Wars universe
+       */
+      interface Character : Object {
+        override val __typename: String
+
+        /**
+         * The name of the character
+         */
+        val name: String
+
+        override fun marshaller(): ResponseFieldMarshaller
+      }
+
+      /**
+       * A character from the Star Wars universe
+       */
+      data class CharacterObject(
+        override val __typename: String,
+        /**
+         * The name of the character
+         */
+        override val name: String
+      ) : Object, Character {
+        override fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            TestQuery_ResponseAdapter.Data.Object.CharacterObject.toResponse(writer, this)
+          }
+        }
+      }
+
+      data class OtherObject(
+        override val __typename: String = "SearchResult"
+      ) : Object {
+        override fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            TestQuery_ResponseAdapter.Data.Object.OtherObject.toResponse(writer, this)
+          }
+        }
+      }
+    }
   }
 
   companion object {
     const val OPERATION_ID: String =
-        "da9796efa24977e73e9b865a993e83961235a63020ff989484d31097ab8e065b"
+        "47d23fa9d7e9bf697a19f43297b1c422ae31ce1886f740e3982a5daf9b7e1ebd"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery {
           |  yield: hero {
+          |    __typename
           |    it: id
           |    name
           |  }

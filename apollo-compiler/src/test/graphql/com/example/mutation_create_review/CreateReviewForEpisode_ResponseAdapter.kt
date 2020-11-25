@@ -35,155 +35,187 @@ internal object CreateReviewForEpisode_ResponseAdapter :
 
   override fun fromResponse(reader: ResponseReader, __typename: String?):
       CreateReviewForEpisode.Data {
-    return reader.run {
-      var createReview: CreateReviewForEpisode.CreateReview? = null
-      while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> createReview = readObject<CreateReviewForEpisode.CreateReview>(RESPONSE_FIELDS[0]) { reader ->
-            CreateReviewForEpisode_ResponseAdapter.CreateReview_ResponseAdapter.fromResponse(reader)
-          }
-          else -> break
-        }
-      }
-      CreateReviewForEpisode.Data(
-        createReview = createReview
-      )
-    }
+    return Data.fromResponse(reader, __typename)
   }
 
   override fun toResponse(writer: ResponseWriter, value: CreateReviewForEpisode.Data) {
-    if(value.createReview == null) {
-      writer.writeObject(RESPONSE_FIELDS[0], null)
-    } else {
-      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
-        CreateReviewForEpisode_ResponseAdapter.CreateReview_ResponseAdapter.toResponse(writer, value.createReview)
-      }
-    }
+    Data.toResponse(writer, value)
   }
 
-  object ListOfListOfObject_ResponseAdapter :
-      ResponseAdapter<CreateReviewForEpisode.ListOfListOfObject> {
+  object Data : ResponseAdapter<CreateReviewForEpisode.Data> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("name", "name", null, false, null)
+      ResponseField.forObject("createReview", "createReview", mapOf<String, Any>(
+        "episode" to mapOf<String, Any>(
+          "kind" to "Variable",
+          "variableName" to "ep"),
+        "review" to mapOf<String, Any>(
+          "kind" to "Variable",
+          "variableName" to "review")), true, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
-        CreateReviewForEpisode.ListOfListOfObject {
+        CreateReviewForEpisode.Data {
       return reader.run {
-        var name: String? = null
+        var createReview: CreateReviewForEpisode.Data.CreateReview? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> name = readString(RESPONSE_FIELDS[0])
+            0 -> createReview = readObject<CreateReviewForEpisode.Data.CreateReview>(RESPONSE_FIELDS[0]) { reader ->
+              CreateReview.fromResponse(reader)
+            }
             else -> break
           }
         }
-        CreateReviewForEpisode.ListOfListOfObject(
-          name = name!!
+        CreateReviewForEpisode.Data(
+          createReview = createReview
         )
       }
     }
 
-    override fun toResponse(writer: ResponseWriter,
-        value: CreateReviewForEpisode.ListOfListOfObject) {
-      writer.writeString(RESPONSE_FIELDS[0], value.name)
+    override fun toResponse(writer: ResponseWriter, value: CreateReviewForEpisode.Data) {
+      if(value.createReview == null) {
+        writer.writeObject(RESPONSE_FIELDS[0], null)
+      } else {
+        writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
+          CreateReview.toResponse(writer, value.createReview)
+        }
+      }
     }
-  }
 
-  object CreateReview_ResponseAdapter : ResponseAdapter<CreateReviewForEpisode.CreateReview> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forInt("stars", "stars", null, false, null),
-      ResponseField.forString("commentary", "commentary", null, true, null),
-      ResponseField.forList("listOfListOfString", "listOfListOfString", null, true, null),
-      ResponseField.forList("listOfListOfEnum", "listOfListOfEnum", null, true, null),
-      ResponseField.forList("listOfListOfCustom", "listOfListOfCustom", null, true, null),
-      ResponseField.forList("listOfListOfObject", "listOfListOfObject", null, true, null)
-    )
+    object CreateReview : ResponseAdapter<CreateReviewForEpisode.Data.CreateReview> {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forInt("stars", "stars", null, false, null),
+        ResponseField.forString("commentary", "commentary", null, true, null),
+        ResponseField.forList("listOfListOfString", "listOfListOfString", null, true, null),
+        ResponseField.forList("listOfListOfEnum", "listOfListOfEnum", null, true, null),
+        ResponseField.forList("listOfListOfCustom", "listOfListOfCustom", null, true, null),
+        ResponseField.forList("listOfListOfObject", "listOfListOfObject", null, true, null)
+      )
 
-    override fun fromResponse(reader: ResponseReader, __typename: String?):
-        CreateReviewForEpisode.CreateReview {
-      return reader.run {
-        var stars: Int? = null
-        var commentary: String? = null
-        var listOfListOfString: List<List<String>>? = null
-        var listOfListOfEnum: List<List<Episode>>? = null
-        var listOfListOfCustom: List<List<Date>>? = null
-        var listOfListOfObject: List<List<CreateReviewForEpisode.ListOfListOfObject>>? = null
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> stars = readInt(RESPONSE_FIELDS[0])
-            1 -> commentary = readString(RESPONSE_FIELDS[1])
-            2 -> listOfListOfString = readList<List<String>>(RESPONSE_FIELDS[2]) { reader ->
-              reader.readList<String> { reader ->
-                reader.readString()
-              }.map { it!! }
-            }?.map { it!! }
-            3 -> listOfListOfEnum = readList<List<Episode>>(RESPONSE_FIELDS[3]) { reader ->
-              reader.readList<Episode> { reader ->
-                Episode.safeValueOf(reader.readString())
-              }.map { it!! }
-            }?.map { it!! }
-            4 -> listOfListOfCustom = readList<List<Date>>(RESPONSE_FIELDS[4]) { reader ->
-              reader.readList<Date> { reader ->
-                reader.readCustomType<Date>(CustomType.DATE)
-              }.map { it!! }
-            }?.map { it!! }
-            5 -> listOfListOfObject = readList<List<CreateReviewForEpisode.ListOfListOfObject>>(RESPONSE_FIELDS[5]) { reader ->
-              reader.readList<CreateReviewForEpisode.ListOfListOfObject> { reader ->
-                reader.readObject<CreateReviewForEpisode.ListOfListOfObject> { reader ->
-                  CreateReviewForEpisode_ResponseAdapter.ListOfListOfObject_ResponseAdapter.fromResponse(reader)
+      override fun fromResponse(reader: ResponseReader, __typename: String?):
+          CreateReviewForEpisode.Data.CreateReview {
+        return reader.run {
+          var __typename: String? = __typename
+          var stars: Int? = null
+          var commentary: String? = null
+          var listOfListOfString: List<List<String>>? = null
+          var listOfListOfEnum: List<List<Episode>>? = null
+          var listOfListOfCustom: List<List<Date>>? = null
+          var listOfListOfObject: List<List<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject>>? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> stars = readInt(RESPONSE_FIELDS[1])
+              2 -> commentary = readString(RESPONSE_FIELDS[2])
+              3 -> listOfListOfString = readList<List<String>>(RESPONSE_FIELDS[3]) { reader ->
+                reader.readList<String> { reader ->
+                  reader.readString()
+                }.map { it!! }
+              }?.map { it!! }
+              4 -> listOfListOfEnum = readList<List<Episode>>(RESPONSE_FIELDS[4]) { reader ->
+                reader.readList<Episode> { reader ->
+                  Episode.safeValueOf(reader.readString())
+                }.map { it!! }
+              }?.map { it!! }
+              5 -> listOfListOfCustom = readList<List<Date>>(RESPONSE_FIELDS[5]) { reader ->
+                reader.readList<Date> { reader ->
+                  reader.readCustomType<Date>(CustomType.Date)
+                }.map { it!! }
+              }?.map { it!! }
+              6 -> listOfListOfObject = readList<List<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject>>(RESPONSE_FIELDS[6]) { reader ->
+                reader.readList<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject> { reader ->
+                  reader.readObject<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject> { reader ->
+                    ListOfListOfObject.fromResponse(reader)
+                  }
+                }.map { it!! }
+              }?.map { it!! }
+              else -> break
+            }
+          }
+          CreateReviewForEpisode.Data.CreateReview(
+            __typename = __typename!!,
+            stars = stars!!,
+            commentary = commentary,
+            listOfListOfString = listOfListOfString,
+            listOfListOfEnum = listOfListOfEnum,
+            listOfListOfCustom = listOfListOfCustom,
+            listOfListOfObject = listOfListOfObject
+          )
+        }
+      }
+
+      override fun toResponse(writer: ResponseWriter,
+          value: CreateReviewForEpisode.Data.CreateReview) {
+        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+        writer.writeInt(RESPONSE_FIELDS[1], value.stars)
+        writer.writeString(RESPONSE_FIELDS[2], value.commentary)
+        writer.writeList(RESPONSE_FIELDS[3], value.listOfListOfString) { values, listItemWriter ->
+          values?.forEach { value ->
+            listItemWriter.writeList(value) { value, listItemWriter ->
+              value?.forEach { value ->
+                listItemWriter.writeString(value)}
+            }
+          }
+        }
+        writer.writeList(RESPONSE_FIELDS[4], value.listOfListOfEnum) { values, listItemWriter ->
+          values?.forEach { value ->
+            listItemWriter.writeList(value) { value, listItemWriter ->
+              value?.forEach { value ->
+                listItemWriter.writeString(value.rawValue)}
+            }
+          }
+        }
+        writer.writeList(RESPONSE_FIELDS[5], value.listOfListOfCustom) { values, listItemWriter ->
+          values?.forEach { value ->
+            listItemWriter.writeList(value) { value, listItemWriter ->
+              value?.forEach { value ->
+                listItemWriter.writeCustom(CustomType.Date, value)}
+            }
+          }
+        }
+        writer.writeList(RESPONSE_FIELDS[6], value.listOfListOfObject) { values, listItemWriter ->
+          values?.forEach { value ->
+            listItemWriter.writeList(value) { value, listItemWriter ->
+              value?.forEach { value ->
+                listItemWriter.writeObject { writer ->
+                  ListOfListOfObject.toResponse(writer, value)
                 }
-              }.map { it!! }
-            }?.map { it!! }
-            else -> break
-          }
-        }
-        CreateReviewForEpisode.CreateReview(
-          stars = stars!!,
-          commentary = commentary,
-          listOfListOfString = listOfListOfString,
-          listOfListOfEnum = listOfListOfEnum,
-          listOfListOfCustom = listOfListOfCustom,
-          listOfListOfObject = listOfListOfObject
-        )
-      }
-    }
-
-    override fun toResponse(writer: ResponseWriter, value: CreateReviewForEpisode.CreateReview) {
-      writer.writeInt(RESPONSE_FIELDS[0], value.stars)
-      writer.writeString(RESPONSE_FIELDS[1], value.commentary)
-      writer.writeList(RESPONSE_FIELDS[2], value.listOfListOfString) { values, listItemWriter ->
-        values?.forEach { value ->
-          listItemWriter.writeList(value) { value, listItemWriter ->
-            value?.forEach { value ->
-              listItemWriter.writeString(value)}
-          }
-        }
-      }
-      writer.writeList(RESPONSE_FIELDS[3], value.listOfListOfEnum) { values, listItemWriter ->
-        values?.forEach { value ->
-          listItemWriter.writeList(value) { value, listItemWriter ->
-            value?.forEach { value ->
-              listItemWriter.writeString(value.rawValue)}
-          }
-        }
-      }
-      writer.writeList(RESPONSE_FIELDS[4], value.listOfListOfCustom) { values, listItemWriter ->
-        values?.forEach { value ->
-          listItemWriter.writeList(value) { value, listItemWriter ->
-            value?.forEach { value ->
-              listItemWriter.writeCustom(CustomType.DATE, value)}
-          }
-        }
-      }
-      writer.writeList(RESPONSE_FIELDS[5], value.listOfListOfObject) { values, listItemWriter ->
-        values?.forEach { value ->
-          listItemWriter.writeList(value) { value, listItemWriter ->
-            value?.forEach { value ->
-              listItemWriter.writeObject { writer ->
-                CreateReviewForEpisode_ResponseAdapter.ListOfListOfObject_ResponseAdapter.toResponse(writer, value)
               }
             }
           }
+        }
+      }
+
+      object ListOfListOfObject :
+          ResponseAdapter<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject> {
+        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forString("name", "name", null, false, null)
+        )
+
+        override fun fromResponse(reader: ResponseReader, __typename: String?):
+            CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject {
+          return reader.run {
+            var __typename: String? = __typename
+            var name: String? = null
+            while(true) {
+              when (selectField(RESPONSE_FIELDS)) {
+                0 -> __typename = readString(RESPONSE_FIELDS[0])
+                1 -> name = readString(RESPONSE_FIELDS[1])
+                else -> break
+              }
+            }
+            CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject(
+              __typename = __typename!!,
+              name = name!!
+            )
+          }
+        }
+
+        override fun toResponse(writer: ResponseWriter,
+            value: CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject) {
+          writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+          writer.writeString(RESPONSE_FIELDS[1], value.name)
         }
       }
     }

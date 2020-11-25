@@ -6,9 +6,6 @@
 package com.example.root_query_fragment_with_nested_fragments.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
-import com.apollographql.apollo.api.internal.ResponseReader
 import kotlin.String
 import kotlin.Suppress
 
@@ -28,27 +25,6 @@ interface DroidFragment : GraphqlFragment {
    */
   val primaryFunction: String?
 
-  /**
-   * An autonomous mechanical character in the Star Wars universe
-   */
-  data class DroidFragmentImpl(
-    override val __typename: String = "Droid",
-    /**
-     * What others call this droid
-     */
-    override val name: String,
-    /**
-     * This droid's primary function
-     */
-    override val primaryFunction: String?
-  ) : DroidFragment {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        DroidFragment_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
   companion object {
     val FRAGMENT_DEFINITION: String = """
         |fragment droidFragment on Droid {
@@ -57,15 +33,5 @@ interface DroidFragment : GraphqlFragment {
         |  primaryFunction
         |}
         """.trimMargin()
-
-    operator fun invoke(reader: ResponseReader): DroidFragment {
-      return DroidFragment_ResponseAdapter.fromResponse(reader)
-    }
-
-    fun Mapper(): ResponseFieldMapper<DroidFragment> {
-      return ResponseFieldMapper { reader ->
-        DroidFragment_ResponseAdapter.fromResponse(reader)
-      }
-    }
   }
 }

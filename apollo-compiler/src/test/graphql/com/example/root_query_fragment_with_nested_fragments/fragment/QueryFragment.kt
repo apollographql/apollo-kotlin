@@ -6,9 +6,7 @@
 package com.example.root_query_fragment_with_nested_fragments.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
-import com.apollographql.apollo.api.internal.ResponseReader
 import kotlin.String
 import kotlin.Suppress
 
@@ -31,6 +29,17 @@ interface QueryFragment : GraphqlFragment {
     val __typename: String
 
     fun marshaller(): ResponseFieldMarshaller
+
+    interface Character : Hero, HeroFragment {
+      override val __typename: String
+
+      /**
+       * The name of the character
+       */
+      override val name: String
+
+      override fun marshaller(): ResponseFieldMarshaller
+    }
   }
 
   /**
@@ -40,6 +49,22 @@ interface QueryFragment : GraphqlFragment {
     val __typename: String
 
     fun marshaller(): ResponseFieldMarshaller
+
+    interface Droid : QueryFragment.Droid, DroidFragment {
+      override val __typename: String
+
+      /**
+       * What others call this droid
+       */
+      override val name: String
+
+      /**
+       * This droid's primary function
+       */
+      override val primaryFunction: String?
+
+      override fun marshaller(): ResponseFieldMarshaller
+    }
   }
 
   /**
@@ -49,80 +74,24 @@ interface QueryFragment : GraphqlFragment {
     val __typename: String
 
     fun marshaller(): ResponseFieldMarshaller
-  }
 
-  /**
-   * A character from the Star Wars universe
-   */
-  data class Hero1(
-    override val __typename: String = "Character",
     /**
-     * The name of the character
+     * A humanoid creature from the Star Wars universe
      */
-    override val name: String
-  ) : HeroFragment, Hero {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        QueryFragment_ResponseAdapter.Hero1_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
+    interface Human : QueryFragment.Human {
+      override val __typename: String
 
-  /**
-   * An autonomous mechanical character in the Star Wars universe
-   */
-  data class Droid1(
-    override val __typename: String = "Droid",
-    /**
-     * What others call this droid
-     */
-    override val name: String,
-    /**
-     * This droid's primary function
-     */
-    override val primaryFunction: String?
-  ) : DroidFragment, Droid {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        QueryFragment_ResponseAdapter.Droid1_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
+      /**
+       * What this human calls themselves
+       */
+      val name: String
 
-  /**
-   * A humanoid creature from the Star Wars universe
-   */
-  data class Human1(
-    override val __typename: String = "Human",
-    /**
-     * What this human calls themselves
-     */
-    val name: String,
-    /**
-     * The home planet of the human, or null if unknown
-     */
-    val homePlanet: String?
-  ) : Human {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        QueryFragment_ResponseAdapter.Human1_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
+      /**
+       * The home planet of the human, or null if unknown
+       */
+      val homePlanet: String?
 
-  /**
-   * The query type, represents all of the entry points into our object graph
-   */
-  data class QueryFragmentImpl(
-    override val __typename: String = "Query",
-    override val hero: Hero1?,
-    override val droid: Droid1?,
-    override val human: Human1?
-  ) : QueryFragment {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        QueryFragment_ResponseAdapter.toResponse(writer, this)
-      }
+      override fun marshaller(): ResponseFieldMarshaller
     }
   }
 
@@ -147,15 +116,5 @@ interface QueryFragment : GraphqlFragment {
         |  }
         |}
         """.trimMargin()
-
-    operator fun invoke(reader: ResponseReader): QueryFragment {
-      return QueryFragment_ResponseAdapter.fromResponse(reader)
-    }
-
-    fun Mapper(): ResponseFieldMapper<QueryFragment> {
-      return ResponseFieldMapper { reader ->
-        QueryFragment_ResponseAdapter.fromResponse(reader)
-      }
-    }
   }
 }

@@ -94,38 +94,84 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   )
 
   /**
-   * A character from the Star Wars universe
+   * The query type, represents all of the entry points into our object graph
    */
-  data class Hero(
-    /**
-     * The name of the character
-     */
-    override val name: String
-  ) : QueryFragment.Hero {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Hero_ResponseAdapter.toResponse(writer, this)
+  interface Data : Operation.Data {
+    val __typename: String
+
+    fun asQuery(): Query? = this as? Query
+
+    fun asQueryFragment(): QueryFragment? = this as? QueryFragment
+
+    override fun marshaller(): ResponseFieldMarshaller
+
+    interface Query : Data, QueryFragment {
+      override val __typename: String
+
+      override val hero: Hero?
+
+      override fun marshaller(): ResponseFieldMarshaller
+
+      /**
+       * A character from the Star Wars universe
+       */
+      interface Hero : QueryFragment.Hero {
+        override val __typename: String
+
+        /**
+         * The name of the character
+         */
+        override val name: String
+
+        override fun marshaller(): ResponseFieldMarshaller
       }
     }
-  }
 
-  /**
-   * Data from the response after executing this GraphQL operation
-   */
-  data class Data(
-    override val __typename: String = "Query",
-    override val hero: Hero?
-  ) : QueryFragment, Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.toResponse(writer, this)
+    data class QueryDatum(
+      override val __typename: String = "Query",
+      override val hero: Hero?
+    ) : Data, Query, QueryFragment {
+      override fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          TestQuery_ResponseAdapter.Data.QueryDatum.toResponse(writer, this)
+        }
+      }
+
+      /**
+       * A character from the Star Wars universe
+       */
+      data class Hero(
+        override val __typename: String = "Character",
+        /**
+         * The name of the character
+         */
+        override val name: String
+      ) : Query.Hero, QueryFragment.Hero {
+        override fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            TestQuery_ResponseAdapter.Data.QueryDatum.Hero.toResponse(writer, this)
+          }
+        }
+      }
+    }
+
+    /**
+     * The query type, represents all of the entry points into our object graph
+     */
+    data class OtherDatum(
+      override val __typename: String = "Query"
+    ) : Data {
+      override fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          TestQuery_ResponseAdapter.Data.OtherDatum.toResponse(writer, this)
+        }
       }
     }
   }
 
   companion object {
     const val OPERATION_ID: String =
-        "f2287d7a8933207536dba2321db795487257ae1c8f5a9f0577d02361c0117ae5"
+        "c93435f17c0461c309240b6f3d5682feec5dfc83af884170a57dcf407f77abd9"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -136,6 +182,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           |fragment QueryFragment on Query {
           |  __typename
           |  hero {
+          |    __typename
           |    name
           |  }
           |}
