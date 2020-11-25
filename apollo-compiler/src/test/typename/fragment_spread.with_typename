@@ -5,6 +5,7 @@ query TestQuery {
   }
 }
 fragment heroFragment on Character {
+  __typename
   name
   ... on Droid {
     primaryFunction
