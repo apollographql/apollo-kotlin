@@ -109,7 +109,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
      * To test recursive structures
      */
     data class Tree(
-      val __typename: String = "Tree",
       val name: String,
       val children: List<Child>,
       val parent: Parent?
@@ -124,7 +123,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
        * To test recursive structures
        */
       data class Child(
-        val __typename: String = "Tree",
         val name: String
       ) {
         fun marshaller(): ResponseFieldMarshaller {
@@ -138,7 +136,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
        * To test recursive structures
        */
       data class Parent(
-        val __typename: String = "Tree",
         val name: String
       ) {
         fun marshaller(): ResponseFieldMarshaller {
@@ -152,20 +149,17 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "07319106b852dad03abe0214a7b144e074f234950939a6247d5233b590685b3a"
+        "0308cbb678ba65068f98c1e2db76c79bc46b6d4a171d6310a4bb5d98356651c5"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery {
           |  tree {
-          |    __typename
           |    name
           |    children {
-          |      __typename
           |      name
           |    }
           |    parent {
-          |      __typename
           |      name
           |    }
           |  }

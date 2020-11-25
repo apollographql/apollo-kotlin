@@ -125,8 +125,6 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
         override fun marshaller(): ResponseFieldMarshaller
 
         interface Friend {
-          val __typename: String
-
           val name: String
 
           fun marshaller(): ResponseFieldMarshaller
@@ -145,9 +143,9 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
         override fun marshaller(): ResponseFieldMarshaller
 
         interface Friend : Being.Friend {
-          override val __typename: String
-
           override val name: String
+
+          val __typename: String
 
           val isFamous: Boolean?
 
@@ -179,8 +177,6 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
         override fun marshaller(): ResponseFieldMarshaller
 
         interface Friend : Being.Friend {
-          override val __typename: String
-
           override val name: String
 
           val lifeExpectancy: Double?
@@ -202,9 +198,9 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
         }
 
         interface Friend : Being.Friend, Human.Friend {
-          override val __typename: String
-
           override val name: String
+
+          override val __typename: String
 
           override val isFamous: Boolean?
 
@@ -238,8 +234,8 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
           }
 
           data class OtherFriend(
-            override val __typename: String = "Being",
             override val name: String,
+            override val __typename: String = "Being",
             override val isFamous: Boolean?
           ) : Being.Friend, Human.Friend, Friend {
             override fun marshaller(): ResponseFieldMarshaller {
@@ -264,7 +260,6 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
         }
 
         data class Friend(
-          override val __typename: String = "Being",
           override val name: String,
           override val lifeExpectancy: Double?
         ) : Being.Friend, Wookie.Friend {
@@ -290,7 +285,7 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "266ee67aca335d39a844395b33ced4530282dc7f4346add6f8b2dbe95b0e38d6"
+        "a6fe7d57772cd09c101972ceb52806f6969f0dacda08113950a4e7b967cfb3df"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -301,7 +296,6 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
           |      __typename
           |      name
           |      friends {
-          |        __typename
           |        name
           |      }
           |      ... on Human {
@@ -317,7 +311,6 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
           |      ... on Wookie {
           |        race
           |        friends {
-          |          __typename
           |          lifeExpectancy
           |        }
           |      }

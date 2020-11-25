@@ -72,7 +72,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     object Starship : ResponseAdapter<TestQuery.Data.Starship> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forList("coordinates", "coordinates", null, true, null)
@@ -81,16 +80,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       override fun fromResponse(reader: ResponseReader, __typename: String?):
           TestQuery.Data.Starship {
         return reader.run {
-          var __typename: String? = __typename
           var id: String? = null
           var name: String? = null
           var coordinates: List<List<Double>>? = null
           while(true) {
             when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
-              2 -> name = readString(RESPONSE_FIELDS[2])
-              3 -> coordinates = readList<List<Double>>(RESPONSE_FIELDS[3]) { reader ->
+              0 -> id = readCustomType<String>(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField)
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              2 -> coordinates = readList<List<Double>>(RESPONSE_FIELDS[2]) { reader ->
                 reader.readList<Double> { reader ->
                   reader.readDouble()
                 }.map { it!! }
@@ -99,7 +96,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             }
           }
           TestQuery.Data.Starship(
-            __typename = __typename!!,
             id = id!!,
             name = name!!,
             coordinates = coordinates
@@ -108,10 +104,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
 
       override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Starship) {
-        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-        writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, value.id)
-        writer.writeString(RESPONSE_FIELDS[2], value.name)
-        writer.writeList(RESPONSE_FIELDS[3], value.coordinates) { values, listItemWriter ->
+        writer.writeCustom(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField, value.id)
+        writer.writeString(RESPONSE_FIELDS[1], value.name)
+        writer.writeList(RESPONSE_FIELDS[2], value.coordinates) { values, listItemWriter ->
           values?.forEach { value ->
             listItemWriter.writeList(value) { value, listItemWriter ->
               value?.forEach { value ->

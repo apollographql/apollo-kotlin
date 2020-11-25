@@ -97,7 +97,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * The query type, represents all of the entry points into our object graph
    */
   data class Data(
-    val hero: Hero?
+    val hero: Hero?,
+    val __typename: String = "Query"
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
@@ -205,24 +206,24 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "38867796c2814fe9f94c746fe997c93a56f8bccbb86fd0c3041a3e625a0a2bff"
+        "5351cc2f9dea89f8d8d9513a08a18eee20324eaba674211bf21f9c01cba9fdea"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery {
-          |  __typename
           |  hero {
           |    __typename
           |    ... on Human {
-          |      __typename
           |      height
+          |      __typename
           |    }
           |    ... on Droid {
-          |      __typename
           |      name
+          |      __typename
           |      primaryFunction
           |    }
           |  }
+          |  __typename
           |}
           """.trimMargin()
         )

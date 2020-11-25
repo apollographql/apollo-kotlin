@@ -1,6 +1,6 @@
 package com.apollographql.apollo.compiler.backend.ir
 
-import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
+import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
 
 internal data class SelectionKey(
     val root: String,
@@ -18,6 +18,21 @@ internal data class SelectionKey(
   }
 }
 
+/**
+ * Represents the backend IR after running lowering on parse frontend IR
+ *
+ * The full chain of lowering process looks like this:
+ *
+ * GraphQL -->  FrontendIr --> BackendIr -> AST
+ *
+ * After lowering high-level frontend IR:
+ * - GraphQL input / field types are resolved against GraphQL schema
+ * - GraphQL variables types are resolved against GraphQL schema
+ * - GraphQL fragments lowering by generating fragment interfaces and implementations based on possible types intersection
+ * - GraphQL field subselection set is merged with fragment selection set
+ * - build selection keys (selection path) for all fields and fragments
+ * - etc.
+ */
 internal data class BackendIr(
     val operations: List<Operation>,
     val fragments: List<NamedFragment>,
@@ -47,7 +62,7 @@ internal data class BackendIr(
       val type: IntrospectionSchema.TypeRef,
       val args: List<Argument>,
       val fields: List<Field>,
-      val fragments: List<InlineFragment>,
+      val fragments: List<Fragment>,
       val conditions: List<Condition>,
       val description: String,
       val deprecationReason: String?,
@@ -73,29 +88,29 @@ internal data class BackendIr(
     }
   }
 
-  sealed class InlineFragment {
+  sealed class Fragment {
     abstract val name: String
     abstract val fields: List<Field>
-    abstract val possibleTypes: List<IntrospectionSchema.TypeRef>
+    abstract val possibleTypes: Set<IntrospectionSchema.TypeRef>
     abstract val selectionKeys: Set<SelectionKey>
     abstract val description: String?
 
     data class Interface(
         override val name: String,
         override val fields: List<Field>,
-        override val possibleTypes: List<IntrospectionSchema.TypeRef>,
+        override val possibleTypes: Set<IntrospectionSchema.TypeRef>,
         override val selectionKeys: Set<SelectionKey>,
         override val description: String?,
         val typeCondition: IntrospectionSchema.TypeRef,
-    ) : InlineFragment()
+    ) : Fragment()
 
     data class Implementation(
         override val name: String,
         override val fields: List<Field>,
-        override val possibleTypes: List<IntrospectionSchema.TypeRef>,
+        override val possibleTypes: Set<IntrospectionSchema.TypeRef>,
         override val selectionKeys: Set<SelectionKey>,
         override val description: String?,
-    ) : InlineFragment()
+    ) : Fragment()
   }
 
   data class NamedFragment(
@@ -107,7 +122,7 @@ internal data class BackendIr(
   ) {
     data class SelectionSet(
         val fields: List<Field>,
-        val fragments: List<InlineFragment>,
+        val fragments: List<Fragment>,
         val typeCondition: IntrospectionSchema.TypeRef,
         val possibleTypes: List<IntrospectionSchema.TypeRef>,
         val selectionKeys: Set<SelectionKey>,

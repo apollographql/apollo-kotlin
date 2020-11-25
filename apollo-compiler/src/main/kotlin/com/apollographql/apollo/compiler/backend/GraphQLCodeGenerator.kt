@@ -5,9 +5,9 @@ import com.apollographql.apollo.compiler.backend.codegen.patchKotlinNativeOption
 import com.apollographql.apollo.compiler.backend.codegen.responseAdapterTypeSpec
 import com.apollographql.apollo.compiler.backend.codegen.typeSpec
 import com.apollographql.apollo.compiler.backend.ir.BackendIrBuilder.Companion.buildBackendIr
-import com.apollographql.apollo.compiler.ir.CodeGenerationIR
+import com.apollographql.apollo.compiler.frontend.ir.CodeGenerationIR
+import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
-import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.TypeSpec
 import java.io.File
@@ -26,7 +26,7 @@ internal class GraphQLCodeGenerator(
     val backendIr = frontendIr
         .buildBackendIr(schema, useSemanticNaming)
 
-     val ast = backendIr.buildAst(
+    val ast = backendIr.buildAst(
         schema = schema,
         customTypeMap = customTypeMap,
         operationOutput = operationOutput,
@@ -34,10 +34,8 @@ internal class GraphQLCodeGenerator(
         fragmentsPackage = frontendIr.fragmentsPackageName
     )
 
-    ast.customTypes
-        .filterKeys {
-          frontendIr.scalarsToGenerate.contains(it)
-        }.takeIf {
+    ast.customScalarScalarTypes
+        .takeIf {
           /**
            * Skip generating the ScalarType enum if it's empty
            * This happens in multi-module for leaf modules
@@ -48,6 +46,7 @@ internal class GraphQLCodeGenerator(
         ?.writeTo(outputDir)
 
     ast.enumTypes
+        .filter { enumType -> frontendIr.enumsToGenerate.contains(enumType.graphqlName) }
         .forEach { enumType ->
           enumType
               .typeSpec(
@@ -59,6 +58,7 @@ internal class GraphQLCodeGenerator(
         }
 
     ast.inputTypes
+        .filter { inputType -> frontendIr.inputObjectsToGenerate.contains(inputType.graphqlName) }
         .forEach { inputType ->
           inputType
               .typeSpec(generateAsInternal)
@@ -67,7 +67,7 @@ internal class GraphQLCodeGenerator(
         }
 
     ast.fragmentTypes
-        .filter { frontendIr.fragmentsToGenerate.contains(it.graphqlName) }
+        .filter { fragmentType -> frontendIr.fragmentsToGenerate.contains(fragmentType.graphqlName) }
         .forEach { fragmentType ->
           fragmentType
               .typeSpec(generateAsInternal)

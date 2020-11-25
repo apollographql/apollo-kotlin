@@ -77,7 +77,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     object Review : ResponseAdapter<TestQuery.Data.Review> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forInt("stars", "stars", null, false, null),
         ResponseField.forString("commentary", "commentary", null, true, null)
       )
@@ -85,19 +84,16 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       override fun fromResponse(reader: ResponseReader, __typename: String?):
           TestQuery.Data.Review {
         return reader.run {
-          var __typename: String? = __typename
           var stars: Int? = null
           var commentary: String? = null
           while(true) {
             when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> stars = readInt(RESPONSE_FIELDS[1])
-              2 -> commentary = readString(RESPONSE_FIELDS[2])
+              0 -> stars = readInt(RESPONSE_FIELDS[0])
+              1 -> commentary = readString(RESPONSE_FIELDS[1])
               else -> break
             }
           }
           TestQuery.Data.Review(
-            __typename = __typename!!,
             stars = stars!!,
             commentary = commentary
           )
@@ -105,9 +101,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
 
       override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Review) {
-        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-        writer.writeInt(RESPONSE_FIELDS[1], value.stars)
-        writer.writeString(RESPONSE_FIELDS[2], value.commentary)
+        writer.writeInt(RESPONSE_FIELDS[0], value.stars)
+        writer.writeString(RESPONSE_FIELDS[1], value.commentary)
       }
     }
   }

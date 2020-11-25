@@ -5,9 +5,9 @@
 //
 package com.example.mutation_create_review
 
+import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
-import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
@@ -40,7 +40,7 @@ import okio.IOException
 internal data class CreateReviewForEpisode(
   val ep: Episode,
   val review: ReviewInput
-) : Query<CreateReviewForEpisode.Data, Operation.Variables> {
+) : Mutation<CreateReviewForEpisode.Data, Operation.Variables> {
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
@@ -120,7 +120,7 @@ internal data class CreateReviewForEpisode(
   )
 
   /**
-   * The query type, represents all of the entry points into our object graph
+   * The mutation type, represents all updates we can make to our data
    */
   data class Data(
     val createReview: CreateReview?
@@ -135,7 +135,6 @@ internal data class CreateReviewForEpisode(
      * Represents a review for a movie
      */
     data class CreateReview(
-      val __typename: String = "Review",
       /**
        * The number of stars this review gave, 1-5
        */
@@ -171,7 +170,6 @@ internal data class CreateReviewForEpisode(
        * A character from the Star Wars universe
        */
       data class ListOfListOfObject(
-        val __typename: String = "Character",
         /**
          * The name of the character
          */
@@ -188,20 +186,18 @@ internal data class CreateReviewForEpisode(
 
   companion object {
     const val OPERATION_ID: String =
-        "c07e5abc4b4070cd773623194c07f546e609af467a1d34f7bf01c37272245296"
+        "b333ec8237cdc346478f07c98169eeb782c4afac1a0a8b94c62dfbcb27275b21"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |mutation CreateReviewForEpisode(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) {
           |  createReview(episode: ${'$'}ep, review: ${'$'}review) {
-          |    __typename
           |    stars
           |    commentary
           |    listOfListOfString
           |    listOfListOfEnum
           |    listOfListOfCustom
           |    listOfListOfObject {
-          |      __typename
           |      name
           |    }
           |  }

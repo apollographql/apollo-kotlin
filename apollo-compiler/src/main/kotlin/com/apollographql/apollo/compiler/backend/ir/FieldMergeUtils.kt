@@ -18,7 +18,6 @@ internal object FieldMergeUtils {
   private fun BackendIr.Field.merge(otherField: BackendIr.Field): BackendIr.Field {
     val mergedFields = this.fields.mergeFields(otherField.fields)
     return this.copy(
-        args = (this.args + otherField.args).distinct(),
         fields = mergedFields,
         fragments = this.fragments.mergeInlineFragments(
             parentSelectionSet = mergedFields,
@@ -28,10 +27,10 @@ internal object FieldMergeUtils {
     )
   }
 
-  private fun List<BackendIr.InlineFragment>.mergeInlineFragments(
+  private fun List<BackendIr.Fragment>.mergeInlineFragments(
       parentSelectionSet: List<BackendIr.Field>,
-      otherFragments: List<BackendIr.InlineFragment>
-  ): List<BackendIr.InlineFragment> {
+      otherFragments: List<BackendIr.Fragment>
+  ): List<BackendIr.Fragment> {
     val fragmentsToAdd = otherFragments.toMutableList()
     return this.map { fragment ->
       val fragmentToMergeIndex = fragmentsToAdd.indexOfFirst { otherFragment ->
@@ -42,20 +41,20 @@ internal object FieldMergeUtils {
         fragment
       } else {
         when (fragment) {
-          is BackendIr.InlineFragment.Interface -> fragment.copy(
+          is BackendIr.Fragment.Interface -> fragment.copy(
               fields = fragment.fields.mergeFields(fragmentToMerge.fields).mergeFields(parentSelectionSet),
           )
-          is BackendIr.InlineFragment.Implementation -> fragment.copy(
+          is BackendIr.Fragment.Implementation -> fragment.copy(
               fields = fragment.fields.mergeFields(fragmentToMerge.fields).mergeFields(parentSelectionSet),
           )
         }
       }
     } + fragmentsToAdd.map { fragment ->
       when (fragment) {
-        is BackendIr.InlineFragment.Interface -> fragment.copy(
+        is BackendIr.Fragment.Interface -> fragment.copy(
             fields = fragment.fields.mergeFields(parentSelectionSet),
         )
-        is BackendIr.InlineFragment.Implementation -> fragment.copy(
+        is BackendIr.Fragment.Implementation -> fragment.copy(
             fields = fragment.fields.mergeFields(parentSelectionSet),
         )
       }

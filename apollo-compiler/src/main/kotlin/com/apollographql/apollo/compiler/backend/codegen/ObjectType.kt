@@ -112,8 +112,9 @@ private val CodeGenerationAst.ObjectType.primaryConstructorSpec: FunSpec
               .apply {
                 if (field.responseName == "__typename" &&
                     field.type is CodeGenerationAst.FieldType.Scalar.String &&
-                    this@primaryConstructorSpec.introspectionSchemaType != null) {
-                  defaultValue("%S", this@primaryConstructorSpec.introspectionSchemaType.rawType.name)
+                    this@primaryConstructorSpec.schemaTypename != null
+                ) {
+                  defaultValue("%S", this@primaryConstructorSpec.schemaTypename)
                 }
               }
               .build()

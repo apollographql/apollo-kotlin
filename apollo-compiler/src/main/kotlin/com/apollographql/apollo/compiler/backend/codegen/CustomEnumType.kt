@@ -3,13 +3,13 @@ package com.apollographql.apollo.compiler.backend.codegen
 import com.apollographql.apollo.api.ScalarType
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
-import com.apollographql.apollo.compiler.backend.ast.CustomTypes
+import com.apollographql.apollo.compiler.backend.ast.CustomScalarTypes
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeSpec
 
-internal fun CustomTypes.typeSpec(generateAsInternal: Boolean = false): TypeSpec {
+internal fun CustomScalarTypes.typeSpec(generateAsInternal: Boolean = false): TypeSpec {
   return TypeSpec
       .enumBuilder("CustomType")
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }

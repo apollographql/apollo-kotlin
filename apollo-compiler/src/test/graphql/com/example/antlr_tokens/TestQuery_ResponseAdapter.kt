@@ -63,7 +63,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     object TypeWithGraphQLKeyword : ResponseAdapter<TestQuery.Data.TypeWithGraphQLKeyword> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("on", "on", null, true, null),
         ResponseField.forString("null", "null", mapOf<String, Any>(
           "fragment" to mapOf<String, Any>(
@@ -73,27 +72,24 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           "fragment" to """
           |A string
           |with a new line
-          |""".trimMargin()), true, null)
+          """.trimMargin()), true, null)
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
           TestQuery.Data.TypeWithGraphQLKeyword {
         return reader.run {
-          var __typename: String? = __typename
           var on: String? = null
           var null_: String? = null
           var alias: String? = null
           while(true) {
             when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> on = readString(RESPONSE_FIELDS[1])
-              2 -> null_ = readString(RESPONSE_FIELDS[2])
-              3 -> alias = readString(RESPONSE_FIELDS[3])
+              0 -> on = readString(RESPONSE_FIELDS[0])
+              1 -> null_ = readString(RESPONSE_FIELDS[1])
+              2 -> alias = readString(RESPONSE_FIELDS[2])
               else -> break
             }
           }
           TestQuery.Data.TypeWithGraphQLKeyword(
-            __typename = __typename!!,
             on = on,
             null_ = null_,
             alias = alias
@@ -103,10 +99,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       override fun toResponse(writer: ResponseWriter,
           value: TestQuery.Data.TypeWithGraphQLKeyword) {
-        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], value.on)
-        writer.writeString(RESPONSE_FIELDS[2], value.null_)
-        writer.writeString(RESPONSE_FIELDS[3], value.alias)
+        writer.writeString(RESPONSE_FIELDS[0], value.on)
+        writer.writeString(RESPONSE_FIELDS[1], value.null_)
+        writer.writeString(RESPONSE_FIELDS[2], value.alias)
       }
     }
   }

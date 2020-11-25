@@ -9,7 +9,7 @@ internal fun GQLTypeDefinition.sharesPossibleTypesWith(other: GQLTypeDefinition,
 internal fun GQLTypeDefinition.possibleTypes(typeDefinitions: Map<String, GQLTypeDefinition>): Set<String> {
   return when (this) {
     is GQLUnionTypeDefinition -> memberTypes.map { it.name }.toSet()
-    is GQLInterfaceTypeDefinition -> setOf(name) + typeDefinitions.values.filter {
+    is GQLInterfaceTypeDefinition -> typeDefinitions.values.filter {
       it is GQLObjectTypeDefinition && it.implementsInterfaces.contains(this.name)
           || it is GQLInterfaceTypeDefinition && it.implementsInterfaces.contains(this.name)
     }.flatMap {

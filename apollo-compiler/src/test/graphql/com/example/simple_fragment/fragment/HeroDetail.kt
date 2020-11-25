@@ -11,8 +11,8 @@ import kotlin.String
 import kotlin.Suppress
 
 /**
- *  Fragment with Java / Kotlin docs generation
- *  with multi lines support
+ * Fragment with Java / Kotlin docs generation
+ * with multi lines support
  */
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
@@ -21,7 +21,7 @@ internal interface HeroDetail : GraphqlFragment {
   val __typename: String
 
   /**
-   *  Fragment with Java / Kotlin docs generation
+   * Fragment with Java / Kotlin docs generation
    */
   interface Human : HeroDetail, HumanDetail {
     override val __typename: String
@@ -38,7 +38,7 @@ internal interface HeroDetail : GraphqlFragment {
     val FRAGMENT_DEFINITION: String = """
         |fragment HeroDetails on Character {
         |  __typename
-        |  ... HumanDetails
+        |  ...HumanDetails
         |}
         """.trimMargin()
   }

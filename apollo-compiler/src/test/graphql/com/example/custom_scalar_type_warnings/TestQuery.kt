@@ -110,7 +110,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
      * A character from the Star Wars universe
      */
     data class Hero(
-      val __typename: String = "Character",
       /**
        * Links
        */
@@ -126,13 +125,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "1a019419389595f8e5269db271bc43dae6cf9733959296ceff6a3270faa91c62"
+        "a08130a27bb0e73d4a9272921e0160d294799bb05d904af23430d9b980bee0dc"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery {
           |  hero {
-          |    __typename
           |    links
           |  }
           |}

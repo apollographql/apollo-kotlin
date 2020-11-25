@@ -22,8 +22,6 @@ interface QueryFragment : GraphqlFragment {
    * A character from the Star Wars universe
    */
   interface Hero {
-    val __typename: String
-
     /**
      * The name of the character
      */
@@ -37,7 +35,6 @@ interface QueryFragment : GraphqlFragment {
         |fragment QueryFragment on Query {
         |  __typename
         |  hero {
-        |    __typename
         |    name
         |  }
         |}

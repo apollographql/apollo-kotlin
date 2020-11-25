@@ -99,6 +99,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * The query type, represents all of the entry points into our object graph
    */
   interface Data : Operation.Data {
+    val __typename: String
+
     fun asQuery(): Query? = this as? Query
 
     override fun marshaller(): ResponseFieldMarshaller
@@ -107,7 +109,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
      * The query type, represents all of the entry points into our object graph
      */
     interface Query : Data {
-      val __typename: String
+      override val __typename: String
 
       val hero: Hero?
 
@@ -360,7 +362,9 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     /**
      * The query type, represents all of the entry points into our object graph
      */
-    class OtherDatum : Data {
+    data class OtherDatum(
+      override val __typename: String = "Query"
+    ) : Data {
       override fun marshaller(): ResponseFieldMarshaller {
         return ResponseFieldMarshaller { writer ->
           TestQuery_ResponseAdapter.Data.OtherDatum.toResponse(writer, this)
@@ -371,11 +375,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "22e04d7f32ad56e49eb2092e14a88853689bab52269dcc5d4d861d2d0a449657"
+        "25584d760eab0f41189b9f2bbdbba3c0ec491aced65ef23924ecdc8f41ffe78c"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery {
+          |  __typename
           |  ... on Query {
           |    __typename
           |    hero {

@@ -112,7 +112,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
      * Represents a review for a movie
      */
     data class Review(
-      val __typename: String = "Review",
       /**
        * The number of stars this review gave, 1-5
        */
@@ -132,13 +131,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "2dd4a7ef066f8606c7b9bb628452d3fc7ff17956e42a2a5f62191b9121cb2705"
+        "b4337eef1a3aa9444539ff12d9bec12e7693ab16bd56283708382fd380b6e0fc"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery {
           |  reviews(episode: JEDI, starsInt: 10, starsFloat: 9.9) {
-          |    __typename
           |    stars
           |    commentary
           |  }

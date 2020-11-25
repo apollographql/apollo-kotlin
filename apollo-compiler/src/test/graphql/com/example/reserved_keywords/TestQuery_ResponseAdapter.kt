@@ -87,26 +87,22 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     object Yield : ResponseAdapter<TestQuery.Data.Yield> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forCustomType("it", "id", null, false, CustomType.ID, null),
         ResponseField.forString("name", "name", null, false, null)
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Yield {
         return reader.run {
-          var __typename: String? = __typename
           var it_: String? = null
           var name: String? = null
           while(true) {
             when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> it_ = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
-              2 -> name = readString(RESPONSE_FIELDS[2])
+              0 -> it_ = readCustomType<String>(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField)
+              1 -> name = readString(RESPONSE_FIELDS[1])
               else -> break
             }
           }
           TestQuery.Data.Yield(
-            __typename = __typename!!,
             it_ = it_!!,
             name = name!!
           )
@@ -114,9 +110,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
 
       override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Yield) {
-        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-        writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, value.it_)
-        writer.writeString(RESPONSE_FIELDS[2], value.name)
+        writer.writeCustom(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField, value.it_)
+        writer.writeString(RESPONSE_FIELDS[1], value.name)
       }
     }
 

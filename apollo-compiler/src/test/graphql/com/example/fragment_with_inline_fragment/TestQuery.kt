@@ -164,8 +164,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * A connection object for a character's friends
          */
         interface FriendsConnection : HeroDetail.FriendsConnection {
-          override val __typename: String
-
           /**
            * The total number of friends
            */
@@ -182,8 +180,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            * An edge object for a character's friends
            */
           interface Edge : HeroDetail.FriendsConnection.Edge {
-            override val __typename: String
-
             /**
              * The character represented by this friendship edge
              */
@@ -195,8 +191,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
              * A character from the Star Wars universe
              */
             interface Node : HeroDetail.FriendsConnection.Edge.Node {
-              override val __typename: String
-
               /**
                * The name of the character
                */
@@ -241,8 +235,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          */
         interface FriendsConnection : Character.FriendsConnection, HeroDetail.FriendsConnection,
             HeroDetail.Droid.FriendsConnection {
-          override val __typename: String
-
           /**
            * The total number of friends
            */
@@ -260,8 +252,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            */
           interface Edge : Character.FriendsConnection.Edge, HeroDetail.FriendsConnection.Edge,
               HeroDetail.Droid.FriendsConnection.Edge {
-            override val __typename: String
-
             /**
              * The character represented by this friendship edge
              */
@@ -275,8 +265,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
             interface Node : Character.FriendsConnection.Edge.Node,
                 HeroDetail.FriendsConnection.Edge.Node, HeroDetail.Droid.FriendsConnection.Edge.Node
                 {
-              override val __typename: String
-
               /**
                * The name of the character
                */
@@ -313,8 +301,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          */
         interface FriendsConnection : Character.FriendsConnection, HeroDetail.FriendsConnection,
             HeroDetail.Human.FriendsConnection {
-          override val __typename: String
-
           /**
            * The total number of friends
            */
@@ -332,8 +318,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            */
           interface Edge : Character.FriendsConnection.Edge, HeroDetail.FriendsConnection.Edge,
               HeroDetail.Human.FriendsConnection.Edge {
-            override val __typename: String
-
             /**
              * The character represented by this friendship edge
              */
@@ -347,8 +331,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
             interface Node : Character.FriendsConnection.Edge.Node,
                 HeroDetail.FriendsConnection.Edge.Node, HeroDetail.Human.FriendsConnection.Edge.Node
                 {
-              override val __typename: String
-
               /**
                * The name of the character
                */
@@ -389,7 +371,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * A connection object for a character's friends
          */
         data class FriendsConnection(
-          override val __typename: String = "FriendsConnection",
           /**
            * The total number of friends
            */
@@ -410,7 +391,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            * An edge object for a character's friends
            */
           data class Edge(
-            override val __typename: String = "FriendsEdge",
             /**
              * The character represented by this friendship edge
              */
@@ -427,7 +407,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
              * A character from the Star Wars universe
              */
             data class Node(
-              override val __typename: String = "Character",
               /**
                * The name of the character
                */
@@ -469,7 +448,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * A connection object for a character's friends
          */
         data class FriendsConnection(
-          override val __typename: String = "FriendsConnection",
           /**
            * The total number of friends
            */
@@ -490,7 +468,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            * An edge object for a character's friends
            */
           data class Edge(
-            override val __typename: String = "FriendsEdge",
             /**
              * The character represented by this friendship edge
              */
@@ -507,7 +484,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
              * A character from the Star Wars universe
              */
             data class Node(
-              override val __typename: String = "Character",
               /**
                * The name of the character
                */
@@ -549,7 +525,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "cf2801bb0424f62ecf3504cedcf40d0fc0f5b5b75bdaf1a9febb5e63bea91306"
+        "e01fcc7b255552f79419f653def959b6a7ab9bffd519c57e826d91ffc2c7fb1f"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -563,18 +539,16 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           |}
           |fragment HeroDetails on Character {
           |  __typename
-          |  ... HumanDetails
+          |  ...HumanDetails
           |  ... on Droid {
+          |    __typename
           |    ...DroidDetails
           |  }
           |  name
           |  friendsConnection {
-          |    __typename
           |    totalCount
           |    edges {
-          |      __typename
           |      node {
-          |        __typename
           |        name
           |      }
           |    }

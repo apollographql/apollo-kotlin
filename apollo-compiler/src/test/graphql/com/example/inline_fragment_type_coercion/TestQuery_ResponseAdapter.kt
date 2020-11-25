@@ -70,7 +70,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Foo {
         val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
-          "BarObject" -> BarFoo.fromResponse(reader, typename)
           "FooBar" -> BarFoo.fromResponse(reader, typename)
           else -> OtherFoo.fromResponse(reader, typename)
         }

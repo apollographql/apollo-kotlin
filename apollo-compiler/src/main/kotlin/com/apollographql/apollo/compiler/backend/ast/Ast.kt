@@ -1,15 +1,23 @@
 package com.apollographql.apollo.compiler.backend.ast
 
-import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
+internal typealias CustomScalarTypes = Map<String, CodeGenerationAst.CustomType>
 
-internal typealias CustomTypes = Map<String, CodeGenerationAst.CustomType>
-
+/**
+ * Represents the minimum of possible AST for the code generator.
+ *
+ * This is the final phase in a chain of lowering process:
+ *
+ * GraphQL -->  FrontendIr --> BackendIr -> AST
+ *
+ * Rationale behind having this AST is that code generator doesn't need to do any special
+ * transformations before generating models.
+ */
 internal data class CodeGenerationAst(
     val operationTypes: List<OperationType>,
     val fragmentTypes: List<FragmentType>,
     val inputTypes: List<InputType>,
     val enumTypes: List<EnumType>,
-    val customTypes: CustomTypes
+    val customScalarScalarTypes: CustomScalarTypes
 ) {
 
   data class CustomType(
@@ -52,7 +60,7 @@ internal data class CodeGenerationAst(
       val implements: Set<TypeRef>,
       val kind: Kind,
       val typeRef: TypeRef,
-      val introspectionSchemaType: IntrospectionSchema.TypeRef?,
+      val schemaTypename: String?,
   ) {
     val abstract: Boolean = kind == Kind.Interface || kind is Kind.Fragment
 

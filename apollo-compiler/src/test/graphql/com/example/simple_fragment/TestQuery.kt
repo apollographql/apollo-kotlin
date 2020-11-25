@@ -127,8 +127,8 @@ internal class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       fun marshaller(): ResponseFieldMarshaller
 
       /**
-       *  Fragment with Java / Kotlin docs generation
-       *  with multi lines support
+       * Fragment with Java / Kotlin docs generation
+       * with multi lines support
        */
       interface Character : Hero, HeroDetail {
         override val __typename: String
@@ -137,7 +137,7 @@ internal class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       }
 
       /**
-       *  Fragment with Java / Kotlin docs generation
+       * Fragment with Java / Kotlin docs generation
        */
       interface Human : Hero, HeroDetail.Human, HumanDetail {
         override val __typename: String
@@ -151,8 +151,8 @@ internal class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       }
 
       /**
-       *  Fragment with Java / Kotlin docs generation
-       *  with multi lines support
+       * Fragment with Java / Kotlin docs generation
+       * with multi lines support
        */
       data class CharacterHero(
         override val __typename: String = "Droid"

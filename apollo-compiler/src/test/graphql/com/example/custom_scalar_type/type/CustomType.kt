@@ -15,6 +15,12 @@ enum class CustomType : ScalarType {
     override fun className(): String = "java.util.Date"
   },
 
+  ID {
+    override fun typeName(): String = "ID"
+
+    override fun className(): String = "java.lang.Integer"
+  },
+
   URL {
     override fun typeName(): String = "URL"
 

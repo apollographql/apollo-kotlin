@@ -19,7 +19,8 @@ import kotlin.Suppress
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forObject("hero", "hero", null, true, null)
+    ResponseField.forObject("hero", "hero", null, true, null),
+    ResponseField.forString("__typename", "__typename", null, false, null)
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
@@ -32,22 +33,26 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object Data : ResponseAdapter<TestQuery.Data> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forObject("hero", "hero", null, true, null)
+      ResponseField.forObject("hero", "hero", null, true, null),
+      ResponseField.forString("__typename", "__typename", null, false, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
       return reader.run {
         var hero: TestQuery.Data.Hero? = null
+        var __typename: String? = __typename
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
             0 -> hero = readObject<TestQuery.Data.Hero>(RESPONSE_FIELDS[0]) { reader ->
               Hero.fromResponse(reader)
             }
+            1 -> __typename = readString(RESPONSE_FIELDS[1])
             else -> break
           }
         }
         TestQuery.Data(
-          hero = hero
+          hero = hero,
+          __typename = __typename!!
         )
       }
     }
@@ -60,6 +65,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           Hero.toResponse(writer, value.hero)
         }
       }
+      writer.writeString(RESPONSE_FIELDS[1], value.__typename)
     }
 
     object Hero : ResponseAdapter<TestQuery.Data.Hero> {

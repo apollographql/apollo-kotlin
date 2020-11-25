@@ -151,8 +151,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * A character from the Star Wars universe
          */
         interface Friend {
-          val __typename: String
-
           /**
            * The movies this character appears in
            */
@@ -189,8 +187,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * A character from the Star Wars universe
          */
         interface Friend {
-          val __typename: String
-
           /**
            * The ID of the character
            */
@@ -228,7 +224,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * A character from the Star Wars universe
          */
         data class Friend(
-          override val __typename: String = "Character",
           /**
            * The movies this character appears in
            */
@@ -270,7 +265,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * A character from the Star Wars universe
          */
         data class Friend(
-          override val __typename: String = "Character",
           /**
            * The ID of the character
            */
@@ -305,7 +299,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "6a20c9553e5f209b6cc63f98b9d154b5d5917cdea11a903e5dc7f8f420f949b6"
+        "43bfea6068cd77041d723551dd119f0676f6c333620dd281a668eca49d14fcb5"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -316,14 +310,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           |    ... on Human {
           |      height
           |      friends {
-          |        __typename
           |        appearsIn
           |      }
           |    }
           |    ... on Droid {
           |      primaryFunction
           |      friends {
-          |        __typename
           |        id
           |      }
           |    }

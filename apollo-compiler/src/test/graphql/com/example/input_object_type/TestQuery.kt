@@ -5,9 +5,9 @@
 //
 package com.example.input_object_type
 
+import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
-import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
@@ -38,7 +38,7 @@ import okio.IOException
 data class TestQuery(
   val ep: Episode,
   val review: ReviewInput
-) : Query<TestQuery.Data, Operation.Variables> {
+) : Mutation<TestQuery.Data, Operation.Variables> {
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
@@ -118,7 +118,7 @@ data class TestQuery(
   )
 
   /**
-   * The query type, represents all of the entry points into our object graph
+   * The mutation type, represents all updates we can make to our data
    */
   data class Data(
     val createReview: CreateReview?
@@ -133,7 +133,6 @@ data class TestQuery(
      * Represents a review for a movie
      */
     data class CreateReview(
-      val __typename: String = "Review",
       /**
        * The number of stars this review gave, 1-5
        */
@@ -153,13 +152,12 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "9850c60bd20e2361afd7a41d51b709fcba9637809e387afe5c7a1cb738fc254b"
+        "2a1de6af8435bb9169562d78714566aaf26a9741ef16b72f49955dc615237b09"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |mutation TestQuery(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) {
           |  createReview(episode: ${'$'}ep, review: ${'$'}review) {
-          |    __typename
           |    stars
           |    commentary
           |  }

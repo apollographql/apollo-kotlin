@@ -133,8 +133,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
        * A character from the Star Wars universe
        */
       interface Friend {
-        val __typename: String
-
         /**
          * The name of the character
          */
@@ -170,8 +168,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
          * A character from the Star Wars universe
          */
         interface Friend : HeroDetailQuery.Friend {
-          override val __typename: String
-
           /**
            * The name of the character
            */
@@ -216,8 +212,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
                * A connection object for a character's friends
                */
               interface FriendsConnection : HeroDetail.FriendsConnection {
-                override val __typename: String
-
                 /**
                  * The total number of friends
                  */
@@ -234,8 +228,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
                  * An edge object for a character's friends
                  */
                 interface Edge : HeroDetail.FriendsConnection.Edge {
-                  override val __typename: String
-
                   /**
                    * The character represented by this friendship edge
                    */
@@ -247,8 +239,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
                    * A character from the Star Wars universe
                    */
                   interface Node : HeroDetail.FriendsConnection.Edge.Node {
-                    override val __typename: String
-
                     /**
                      * The name of the character
                      */
@@ -291,7 +281,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
          * A character from the Star Wars universe
          */
         data class Friend(
-          override val __typename: String = "Character",
           /**
            * The name of the character
            */
@@ -344,8 +333,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
                */
               interface FriendsConnection : Human.Friend.Friend.Character.FriendsConnection,
                   HeroDetail.FriendsConnection {
-                override val __typename: String
-
                 /**
                  * The total number of friends
                  */
@@ -363,8 +350,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
                  */
                 interface Edge : Human.Friend.Friend.Character.FriendsConnection.Edge,
                     HeroDetail.FriendsConnection.Edge {
-                  override val __typename: String
-
                   /**
                    * The character represented by this friendship edge
                    */
@@ -377,8 +362,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
                    */
                   interface Node : Human.Friend.Friend.Character.FriendsConnection.Edge.Node,
                       HeroDetail.FriendsConnection.Edge.Node {
-                    override val __typename: String
-
                     /**
                      * The name of the character
                      */
@@ -411,7 +394,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
                * A connection object for a character's friends
                */
               data class FriendsConnection(
-                override val __typename: String = "FriendsConnection",
                 /**
                  * The total number of friends
                  */
@@ -431,7 +413,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
                  * An edge object for a character's friends
                  */
                 data class Edge(
-                  override val __typename: String = "FriendsEdge",
                   /**
                    * The character represented by this friendship edge
                    */
@@ -448,7 +429,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
                    * A character from the Star Wars universe
                    */
                   data class Node(
-                    override val __typename: String = "Character",
                     /**
                      * The name of the character
                      */
@@ -505,7 +485,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
          * A character from the Star Wars universe
          */
         data class Friend(
-          override val __typename: String = "Character",
           /**
            * The name of the character
            */
@@ -523,7 +502,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "11473383397766137d7923128dd8cd6f27fcab32df9d9c091f08cf12a893a556"
+        "69ef2ada86ec094537d524f05f680155b2331dabf1b8420f7f63a84202ed34f7"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -532,13 +511,11 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
           |    __typename
           |    name
           |    friends {
-          |      __typename
           |      name
           |    }
           |    ... on Human {
           |      height
           |      friends {
-          |        __typename
           |        appearsIn
           |        friends {
           |          __typename
@@ -552,12 +529,9 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
           |  __typename
           |  name
           |  friendsConnection {
-          |    __typename
           |    totalCount
           |    edges {
-          |      __typename
           |      node {
-          |        __typename
           |        name
           |      }
           |    }

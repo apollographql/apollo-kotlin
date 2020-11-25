@@ -39,10 +39,12 @@ internal fun CodeGenerationAst.FieldType.asTypeName(): TypeName {
 }
 
 internal fun CodeGenerationAst.TypeRef.asTypeName(): ClassName {
-  return if (enclosingType == null) {
-    ClassName(packageName = packageName, name.escapeKotlinReservedWord())
+  return if (this.enclosingType == null) {
+    ClassName(packageName = this.packageName, this.name.escapeKotlinReservedWord())
   } else {
-    ClassName(packageName = packageName, enclosingType.asTypeName().simpleNames + name.escapeKotlinReservedWord())
+    val enclosingType = this.enclosingType.asTypeName()
+    val packageName = this.packageName.takeIf { it.isNotEmpty() } ?: enclosingType.packageName
+    ClassName(packageName = packageName, enclosingType.simpleNames + this.name.escapeKotlinReservedWord())
   }
 }
 

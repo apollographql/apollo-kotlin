@@ -3,18 +3,17 @@ package com.apollographql.apollo.compiler.backend.ir
 import com.apollographql.apollo.compiler.backend.ir.FieldMergeUtils.mergeFields
 import com.apollographql.apollo.compiler.backend.ir.SelectionKeyUtils.addFieldSelectionKey
 import com.apollographql.apollo.compiler.backend.ir.SelectionKeyUtils.addFieldSelectionKeys
-//import com.apollographql.apollo.compiler.backend.ir.FieldMerger.mergeParentFields
-import com.apollographql.apollo.compiler.ir.CodeGenerationIR
-import com.apollographql.apollo.compiler.ir.Condition
-import com.apollographql.apollo.compiler.ir.Field
-import com.apollographql.apollo.compiler.ir.Fragment
-import com.apollographql.apollo.compiler.ir.FragmentRef
-import com.apollographql.apollo.compiler.ir.InlineFragment
-import com.apollographql.apollo.compiler.ir.Operation
-import com.apollographql.apollo.compiler.ir.SourceLocation
-import com.apollographql.apollo.compiler.ir.TypeDeclaration
-import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
-import com.apollographql.apollo.compiler.parser.introspection.resolveType
+import com.apollographql.apollo.compiler.frontend.ir.CodeGenerationIR
+import com.apollographql.apollo.compiler.frontend.ir.Condition
+import com.apollographql.apollo.compiler.frontend.ir.Field
+import com.apollographql.apollo.compiler.frontend.ir.Fragment
+import com.apollographql.apollo.compiler.frontend.ir.FragmentRef
+import com.apollographql.apollo.compiler.frontend.ir.InlineFragment
+import com.apollographql.apollo.compiler.frontend.ir.Operation
+import com.apollographql.apollo.compiler.frontend.ir.SourceLocation
+import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
+import com.apollographql.apollo.compiler.introspection.possibleTypes
+import com.apollographql.apollo.compiler.introspection.resolveType
 
 internal class BackendIrBuilder private constructor(
     private val schema: IntrospectionSchema,
@@ -36,6 +35,9 @@ internal class BackendIrBuilder private constructor(
   }
 
   private fun buildBackendIR(frontendIr: CodeGenerationIR): BackendIr {
+    val customScalarTypes = frontendIr.scalarsToGenerate.map { scalar ->
+      schema.resolveType(scalar)
+    }
     return BackendIr(
         operations = frontendIr.operations.map { operation ->
           operation.buildBackendIrOperation()
@@ -48,16 +50,9 @@ internal class BackendIrBuilder private constructor(
               fragment.buildBackendIrNamedFragment()
             },
         typeDeclarations = frontendIr.typeDeclarations
-            .filter { typeDeclaration ->
-              when (typeDeclaration.kind) {
-                TypeDeclaration.KIND_ENUM -> typeDeclaration.name in frontendIr.enumsToGenerate
-                TypeDeclaration.KIND_INPUT_OBJECT_TYPE -> typeDeclaration.name in frontendIr.inputObjectsToGenerate
-                else -> true
-              }
-            }
-            .map { typeDeclaration ->
-              schema.resolveType(typeDeclaration.name)
-            },
+            .map { typeDeclaration -> schema.resolveType(typeDeclaration.name) }
+            .plus(customScalarTypes)
+            .distinct(),
         typesPackageName = frontendIr.typesPackageName,
         fragmentsPackageName = frontendIr.fragmentsPackageName,
     )
@@ -106,8 +101,12 @@ internal class BackendIrBuilder private constructor(
     get() {
       return when {
         this.isQuery() -> schema.resolveType(schema.queryType)
-        this.isMutation() -> schema.resolveType(schema.queryType)
-        this.isSubscription() -> schema.resolveType(schema.queryType)
+        this.isMutation() -> checkNotNull(schema.resolveType(schema.mutationType ?: "")) {
+          "Can't resolve GraphQL mutation operation type"
+        }
+        this.isSubscription() -> checkNotNull(schema.resolveType(schema.subscriptionType ?: "")) {
+          "Can't resolve GraphQL mutation operation type"
+        }
         else -> throw IllegalStateException("Unsupported GraphQL operation type: $operationType")
       }
     }
@@ -135,11 +134,13 @@ internal class BackendIrBuilder private constructor(
       selectionKey: SelectionKey,
       generateFragmentImplementations: Boolean,
   ): BackendIr.Field {
+    val schemaType = schema.resolveType(this.type)
     val selectionSet = this.fields.buildBackendIrFields(
         selectionKey = selectionKey,
         generateFragmentImplementations = generateFragmentImplementations,
     )
     val fragments = this.buildBackendIrFragments(
+        schemaType = schemaType,
         selectionKey = selectionKey,
         selectionSet = selectionSet,
         generateFragmentImplementations = generateFragmentImplementations,
@@ -162,7 +163,7 @@ internal class BackendIrBuilder private constructor(
     return BackendIr.Field(
         name = this.fieldName,
         alias = this.responseName.takeIf { this.fieldName != this.responseName },
-        type = schema.resolveType(this.type),
+        type = schemaType,
         args = arguments,
         fields = selectionSet,
         fragments = fragments,
@@ -239,12 +240,20 @@ internal class BackendIrBuilder private constructor(
 
   // builds fragment interfaces and implementations for given field
   private fun Field.buildBackendIrFragments(
+      schemaType: IntrospectionSchema.TypeRef,
       selectionKey: SelectionKey,
       selectionSet: List<BackendIr.Field>,
       generateFragmentImplementations: Boolean,
-  ): List<BackendIr.InlineFragment> {
+  ): List<BackendIr.Fragment> {
+    // resolve all field's possible types
+    val possibleTypes = schema.resolveType(schemaType.rawType)
+        .possibleTypes(schema)
+        .map { type -> schema.resolveType(type) }
+        .toSet()
+
     // build interfaces for the fragments
     val fragmentInterfaces = this.buildBackendIrFragmentInterfaces(
+        fieldPossibleTypes = possibleTypes,
         selectionKey = selectionKey,
         selectionSet = selectionSet,
     )
@@ -252,6 +261,7 @@ internal class BackendIrBuilder private constructor(
     // build implementations for the fragments if we allowed to do so
     val fragmentImplementations = if (generateFragmentImplementations) {
       this.buildFragmentImplementations(
+          fieldPossibleTypes = possibleTypes,
           selectionKey = selectionKey,
           selectionSet = selectionSet,
       )
@@ -261,9 +271,10 @@ internal class BackendIrBuilder private constructor(
   }
 
   private fun Field.buildBackendIrFragmentInterfaces(
+      fieldPossibleTypes: Set<IntrospectionSchema.TypeRef>,
       selectionKey: SelectionKey,
       selectionSet: List<BackendIr.Field>,
-  ): List<BackendIr.InlineFragment.Interface> {
+  ): List<BackendIr.Fragment.Interface> {
     // build all defined fragment interfaces including nested ones
     val fragments = this.buildGenericFragments(
         selectionKey = selectionKey,
@@ -284,11 +295,14 @@ internal class BackendIrBuilder private constructor(
       val selectionsKeys = fragments.fold(emptySet<SelectionKey>()) { acc, fragment ->
         acc.plus(fragment.selectionKeys)
       }
-      BackendIr.InlineFragment.Interface(
+      // as fragment can be defined on interface that has more possible implementations than field type where it used
+      // build intersection of fragment's and field's possible types
+      val possibleTypes = fragments.first().possibleTypes.intersect(fieldPossibleTypes)
+      BackendIr.Fragment.Interface(
           name = fragments.first().name,
           fields = selectionSet,
           selectionKeys = selectionsKeys,
-          possibleTypes = fragments.first().possibleTypes,
+          possibleTypes = possibleTypes,
           description = fragments.first().description,
           typeCondition = fragments.first().typeCondition,
       )
@@ -296,9 +310,10 @@ internal class BackendIrBuilder private constructor(
   }
 
   private fun Field.buildFragmentImplementations(
+      fieldPossibleTypes: Set<IntrospectionSchema.TypeRef>,
       selectionKey: SelectionKey,
       selectionSet: List<BackendIr.Field>,
-  ): List<BackendIr.InlineFragment.Implementation> {
+  ): List<BackendIr.Fragment.Implementation> {
     // build all defined fragment implementations including nested ones
     val fragments = this.buildGenericFragments(
         selectionKey = selectionKey,
@@ -312,7 +327,7 @@ internal class BackendIrBuilder private constructor(
     val groupedFragments = fragments.groupFragmentsByPossibleTypes()
 
     // merge fragments with possible types intersection into one implementation
-    return groupedFragments.map { (fragments, possibleTypes) ->
+    return groupedFragments.map { (fragments, fragmentsPossibleTypes) ->
       val fragmentName = fragments.formatFragmentImplementationName(
           postfix = this.responseName
       )
@@ -325,8 +340,10 @@ internal class BackendIrBuilder private constructor(
       val description = if (fragments.size == 1) {
         fragments.first().description
       } else null
-
-      BackendIr.InlineFragment.Implementation(
+      // as fragment can be defined on interface that has more possible implementation types than field's type where it used
+      // build intersection of fragment's and field's possible types
+      val possibleTypes = fragmentsPossibleTypes.intersect(fieldPossibleTypes)
+      BackendIr.Fragment.Implementation(
           name = fragmentName,
           fields = selectionSet,
           possibleTypes = possibleTypes,

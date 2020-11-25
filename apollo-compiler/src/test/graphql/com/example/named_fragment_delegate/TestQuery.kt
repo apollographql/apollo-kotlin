@@ -148,8 +148,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * A character from the Star Wars universe
          */
         interface Friend : DroidDetail.Friend {
-          override val __typename: String
-
           /**
            * The name of the character
            */
@@ -183,8 +181,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * A connection object for a character's friends
          */
         interface FriendsConnection : HumanDetail.FriendsConnection {
-          override val __typename: String
-
           /**
            * The edges for each of the character's friends.
            */
@@ -196,8 +192,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            * An edge object for a character's friends
            */
           interface Edge : HumanDetail.FriendsConnection.Edge {
-            override val __typename: String
-
             /**
              * The character represented by this friendship edge
              */
@@ -209,8 +203,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
              * A character from the Star Wars universe
              */
             interface Node : HumanDetail.FriendsConnection.Edge.Node {
-              override val __typename: String
-
               /**
                * The name of the character
                */
@@ -247,7 +239,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * A character from the Star Wars universe
          */
         data class Friend(
-          override val __typename: String = "Character",
           /**
            * The name of the character
            */
@@ -286,7 +277,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * A connection object for a character's friends
          */
         data class FriendsConnection(
-          override val __typename: String = "FriendsConnection",
           /**
            * The edges for each of the character's friends.
            */
@@ -302,7 +292,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            * An edge object for a character's friends
            */
           data class Edge(
-            override val __typename: String = "FriendsEdge",
             /**
              * The character represented by this friendship edge
              */
@@ -318,7 +307,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
              * A character from the Star Wars universe
              */
             data class Node(
-              override val __typename: String = "Character",
               /**
                * The name of the character
                */

@@ -5,9 +5,9 @@
 //
 package com.example.hero_with_review
 
+import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
-import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
@@ -36,7 +36,7 @@ import okio.IOException
     "RemoveRedundantQualifierName")
 data class TestQuery(
   val ep: Episode
-) : Query<TestQuery.Data, Operation.Variables> {
+) : Mutation<TestQuery.Data, Operation.Variables> {
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
@@ -114,7 +114,7 @@ data class TestQuery(
   )
 
   /**
-   * The query type, represents all of the entry points into our object graph
+   * The mutation type, represents all updates we can make to our data
    */
   data class Data(
     val createReview: CreateReview?
@@ -129,7 +129,6 @@ data class TestQuery(
      * Represents a review for a movie
      */
     data class CreateReview(
-      val __typename: String = "Review",
       /**
        * The number of stars this review gave, 1-5
        */
@@ -149,13 +148,22 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "df7f6bf82724eedee5118f165075b5de1a2b3a06d0390126bf7932dc8df3f082"
+        "1faa220c7551ff1343a9bce722af8c12b87c70cc579f743aff1374ae1066f163"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |mutation TestQuery(${'$'}ep: Episode!) {
-          |  createReview(episode: ${'$'}ep, review: {stars: 5, listOfEnums: [JEDI, EMPIRE, NEWHOPE], listOfStringNonOptional: ["1", "2", "3"], favoriteColor: {red: 1, blue: 1}}) {
-          |    __typename
+          |  createReview(episode: ${'$'}ep, review: {
+          |    stars: 5
+          |    listOfEnums: [JEDI,EMPIRE,NEWHOPE]
+          |    listOfStringNonOptional: ["1","2","3"]
+          |    favoriteColor: {
+          |      red: 1
+          |      blue: 1
+          |    }
+          |    
+          |  }
+          |  ) {
           |    stars
           |    commentary
           |  }

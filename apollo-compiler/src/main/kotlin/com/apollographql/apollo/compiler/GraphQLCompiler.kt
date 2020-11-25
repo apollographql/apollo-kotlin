@@ -3,11 +3,6 @@ package com.apollographql.apollo.compiler
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.compiler.ApolloMetadata.Companion.merge
 import com.apollographql.apollo.compiler.backend.GraphQLCodeGenerator
-import com.apollographql.apollo.compiler.ir.Field
-import com.apollographql.apollo.compiler.ir.IRBuilder
-import com.apollographql.apollo.compiler.ir.ScalarType
-import com.apollographql.apollo.compiler.ir.SourceLocation
-import com.apollographql.apollo.compiler.codegen.GraphQLKompiler
 import com.apollographql.apollo.compiler.frontend.ir.IRBuilder
 import com.apollographql.apollo.compiler.frontend.ir.ScalarType
 import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor

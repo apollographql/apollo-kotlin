@@ -235,24 +235,20 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
                 ResponseAdapter<TestQuery.Data.Search.CharacterSearch.Friend.CharacterDroidFriend.Friend>
                 {
               private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                ResponseField.forString("__typename", "__typename", null, false, null),
                 ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null)
               )
 
               override fun fromResponse(reader: ResponseReader, __typename: String?):
                   TestQuery.Data.Search.CharacterSearch.Friend.CharacterDroidFriend.Friend {
                 return reader.run {
-                  var __typename: String? = __typename
                   var id: String? = null
                   while(true) {
                     when (selectField(RESPONSE_FIELDS)) {
-                      0 -> __typename = readString(RESPONSE_FIELDS[0])
-                      1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+                      0 -> id = readCustomType<String>(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField)
                       else -> break
                     }
                   }
                   TestQuery.Data.Search.CharacterSearch.Friend.CharacterDroidFriend.Friend(
-                    __typename = __typename!!,
                     id = id!!
                   )
                 }
@@ -260,8 +256,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
               override fun toResponse(writer: ResponseWriter,
                   value: TestQuery.Data.Search.CharacterSearch.Friend.CharacterDroidFriend.Friend) {
-                writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-                writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, value.id)
+                writer.writeCustom(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField, value.id)
               }
             }
           }

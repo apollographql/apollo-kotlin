@@ -64,7 +64,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     object Hero : ResponseAdapter<TestQuery.Data.Hero> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, true, listOf(
           ResponseField.Condition.booleanCondition("includeName", false)
         )),
@@ -75,21 +74,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Hero {
         return reader.run {
-          var __typename: String? = __typename
           var name: String? = null
           var friendsConnection: TestQuery.Data.Hero.FriendsConnection? = null
           while(true) {
             when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> name = readString(RESPONSE_FIELDS[1])
-              2 -> friendsConnection = readObject<TestQuery.Data.Hero.FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
+              0 -> name = readString(RESPONSE_FIELDS[0])
+              1 -> friendsConnection = readObject<TestQuery.Data.Hero.FriendsConnection>(RESPONSE_FIELDS[1]) { reader ->
                 FriendsConnection.fromResponse(reader)
               }
               else -> break
             }
           }
           TestQuery.Data.Hero(
-            __typename = __typename!!,
             name = name,
             friendsConnection = friendsConnection
           )
@@ -97,12 +93,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
 
       override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero) {
-        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], value.name)
+        writer.writeString(RESPONSE_FIELDS[0], value.name)
         if(value.friendsConnection == null) {
-          writer.writeObject(RESPONSE_FIELDS[2], null)
+          writer.writeObject(RESPONSE_FIELDS[1], null)
         } else {
-          writer.writeObject(RESPONSE_FIELDS[2]) { writer ->
+          writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
             FriendsConnection.toResponse(writer, value.friendsConnection)
           }
         }
@@ -110,24 +105,20 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       object FriendsConnection : ResponseAdapter<TestQuery.Data.Hero.FriendsConnection> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forInt("totalCount", "totalCount", null, true, null)
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
             TestQuery.Data.Hero.FriendsConnection {
           return reader.run {
-            var __typename: String? = __typename
             var totalCount: Int? = null
             while(true) {
               when (selectField(RESPONSE_FIELDS)) {
-                0 -> __typename = readString(RESPONSE_FIELDS[0])
-                1 -> totalCount = readInt(RESPONSE_FIELDS[1])
+                0 -> totalCount = readInt(RESPONSE_FIELDS[0])
                 else -> break
               }
             }
             TestQuery.Data.Hero.FriendsConnection(
-              __typename = __typename!!,
               totalCount = totalCount
             )
           }
@@ -135,8 +126,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
         override fun toResponse(writer: ResponseWriter,
             value: TestQuery.Data.Hero.FriendsConnection) {
-          writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-          writer.writeInt(RESPONSE_FIELDS[1], value.totalCount)
+          writer.writeInt(RESPONSE_FIELDS[0], value.totalCount)
         }
       }
     }

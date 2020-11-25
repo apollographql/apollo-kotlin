@@ -65,7 +65,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     object Hero : ResponseAdapter<TestQuery.Data.Hero> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forList("appearsIn", "appearsIn", null, false, null),
         ResponseField.forEnum("firstAppearsIn", "firstAppearsIn", null, false, null)
@@ -73,23 +72,20 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Hero {
         return reader.run {
-          var __typename: String? = __typename
           var name: String? = null
           var appearsIn: List<Episode?>? = null
           var firstAppearsIn: Episode? = null
           while(true) {
             when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> name = readString(RESPONSE_FIELDS[1])
-              2 -> appearsIn = readList<Episode>(RESPONSE_FIELDS[2]) { reader ->
+              0 -> name = readString(RESPONSE_FIELDS[0])
+              1 -> appearsIn = readList<Episode>(RESPONSE_FIELDS[1]) { reader ->
                 Episode.safeValueOf(reader.readString())
               }
-              3 -> firstAppearsIn = readString(RESPONSE_FIELDS[3])?.let { Episode.safeValueOf(it) }
+              2 -> firstAppearsIn = readString(RESPONSE_FIELDS[2])?.let { Episode.safeValueOf(it) }
               else -> break
             }
           }
           TestQuery.Data.Hero(
-            __typename = __typename!!,
             name = name!!,
             appearsIn = appearsIn!!,
             firstAppearsIn = firstAppearsIn!!
@@ -98,13 +94,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
 
       override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero) {
-        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], value.name)
-        writer.writeList(RESPONSE_FIELDS[2], value.appearsIn) { values, listItemWriter ->
+        writer.writeString(RESPONSE_FIELDS[0], value.name)
+        writer.writeList(RESPONSE_FIELDS[1], value.appearsIn) { values, listItemWriter ->
           values?.forEach { value ->
             listItemWriter.writeString(value?.rawValue)}
         }
-        writer.writeString(RESPONSE_FIELDS[3], value.firstAppearsIn.rawValue)
+        writer.writeString(RESPONSE_FIELDS[2], value.firstAppearsIn.rawValue)
       }
     }
   }

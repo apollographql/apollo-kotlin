@@ -44,7 +44,8 @@ class IRBuilder(private val schema: Schema,
     }.filter {
       when (it) {
         is GQLEnumTypeDefinition,
-        is GQLInputObjectTypeDefinition -> true
+        is GQLInputObjectTypeDefinition,
+        is GQLScalarTypeDefinition -> true
         else -> false
       }
     }

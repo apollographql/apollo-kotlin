@@ -109,7 +109,6 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
      * A connection to a list of items.
      */
     data class AllStarship(
-      val __typename: String = "StarshipsConnection",
       /**
        * A list of edges.
        */
@@ -127,7 +126,6 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
        * An edge in a connection.
        */
       data class Edge(
-        val __typename: String = "StarshipsEdge",
         /**
          * The item at the end of the edge
          */
@@ -172,8 +170,6 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
              * A connection to a list of items.
              */
             interface PilotConnection : StarshipFragment.PilotConnection {
-              override val __typename: String
-
               /**
                * A list of edges.
                */
@@ -185,8 +181,6 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
                * An edge in a connection.
                */
               interface Edge : StarshipFragment.PilotConnection.Edge {
-                override val __typename: String
-
                 /**
                  * The item at the end of the edge
                  */
@@ -268,7 +262,6 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
              * A connection to a list of items.
              */
             data class PilotConnection(
-              override val __typename: String = "StarshipPilotsConnection",
               /**
                * A list of edges.
                */
@@ -284,7 +277,6 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
                * An edge in a connection.
                */
               data class Edge(
-                override val __typename: String = "StarshipPilotsEdge",
                 /**
                  * The item at the end of the edge
                  */
@@ -469,15 +461,13 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "1296a4041eb330b2810e426f9347f76c6df3a969ab7f7e56f250bf9c6a07982e"
+        "3d7fa8ee44e23f44c0605c01b0db776614b2dd3d78541751c50cb04d9ba4c4cc"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query AllStarships {
           |  allStarships(first: 7) {
-          |    __typename
           |    edges {
-          |      __typename
           |      node {
           |        __typename
           |        ...starshipFragment
@@ -490,9 +480,7 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
           |  id
           |  name
           |  pilotConnection {
-          |    __typename
           |    edges {
-          |      __typename
           |      node {
           |        __typename
           |        ...pilotFragment

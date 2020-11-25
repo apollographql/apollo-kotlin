@@ -59,10 +59,11 @@ private class SchemaHolder(
   private fun GQLInlineFragment.toIR(): InlineFragment {
     val typeDefinitionInScope = schema.typeDefinition(typeCondition.name)
     val (fields, inlineFragments, namedFragments) = selectionSet.toIR(typeDefinitionInScope)
+    val gqlTypeDefinition = schema.typeDefinitions[typeCondition.name]
     return InlineFragment(
         typeCondition = typeCondition.name,
-        possibleTypes = schema.typeDefinitions[typeCondition.name]!!.possibleTypes(schema.typeDefinitions).toList(),
-        description = "",
+        possibleTypes = gqlTypeDefinition!!.possibleTypes(schema.typeDefinitions).toList(),
+        description = gqlTypeDefinition.description ?: "",
         fields = fields,
         inlineFragments = inlineFragments,
         fragments = namedFragments,
@@ -213,6 +214,7 @@ private class SchemaHolder(
     return when (this) {
       is GQLInputObjectTypeDefinition -> toIR()
       is GQLEnumTypeDefinition -> toIR()
+      is GQLScalarTypeDefinition -> toIR()
       else -> throw ConversionException("cannot convert $name to IR")
     }
   }
@@ -223,6 +225,16 @@ private class SchemaHolder(
         name = name,
         description = description ?: "",
         values = enumValues.map { it.toIR() },
+        fields = emptyList()
+    )
+  }
+
+  private fun GQLScalarTypeDefinition.toIR(): TypeDeclaration {
+    return TypeDeclaration(
+        kind = TypeDeclaration.KIND_SCALAR_TYPE,
+        name = name,
+        description = description ?: "",
+        values = emptyList(),
         fields = emptyList()
     )
   }

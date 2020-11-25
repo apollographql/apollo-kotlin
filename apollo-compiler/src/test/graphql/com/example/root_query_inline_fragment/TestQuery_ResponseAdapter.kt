@@ -21,7 +21,7 @@ import kotlin.collections.List
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-
+    ResponseField.forString("__typename", "__typename", null, false, null)
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
@@ -33,6 +33,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   }
 
   object Data : ResponseAdapter<TestQuery.Data> {
+    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.forString("__typename", "__typename", null, false, null)
+    )
+
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
       val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
       return when(typename) {
@@ -53,7 +57,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forObject("hero", "hero", null, true, null),
         ResponseField.forObject("droid", "droid", mapOf<String, Any>(
-          "id" to "1"), true, null)
+          "id" to 1), true, null)
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -301,23 +305,28 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
 
     object OtherDatum : ResponseAdapter<TestQuery.Data.OtherDatum> {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
       override fun fromResponse(reader: ResponseReader, __typename: String?):
           TestQuery.Data.OtherDatum {
         return reader.run {
-
+          var __typename: String? = __typename
           while(true) {
             when (selectField(RESPONSE_FIELDS)) {
-
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
               else -> break
             }
           }
           TestQuery.Data.OtherDatum(
-
+            __typename = __typename!!
           )
         }
       }
 
       override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.OtherDatum) {
+        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       }
     }
   }

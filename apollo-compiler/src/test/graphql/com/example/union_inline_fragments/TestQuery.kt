@@ -226,8 +226,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
              * A character from the Star Wars universe
              */
             interface Friend {
-              val __typename: String
-
               /**
                * The ID of the character
                */
@@ -367,8 +365,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
              * A character from the Star Wars universe
              */
             interface Friend : Search.Character.Friend.Droid.Friend {
-              override val __typename: String
-
               /**
                * The ID of the character
                */
@@ -404,7 +400,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
              * A character from the Star Wars universe
              */
             data class Friend(
-              override val __typename: String = "Character",
               /**
                * The ID of the character
                */
@@ -541,7 +536,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "5450032fd838d0216d8b419846d25e09f98228b403e520aacd7eb68cd838f4da"
+        "2c2de063c729a4ce1b51648279b6afd6372ac91ae33c304f4e33d20fb098cfc6"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -568,7 +563,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           |        ... on Droid {
           |          primaryFunction
           |          friends {
-          |            __typename
           |            id
           |          }
           |        }

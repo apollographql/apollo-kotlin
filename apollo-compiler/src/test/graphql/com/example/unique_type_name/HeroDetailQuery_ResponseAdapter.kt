@@ -153,7 +153,6 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
             ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend>
             {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField.forString("__typename", "__typename", null, false, null),
             ResponseField.forString("name", "name", null, false, null),
             ResponseField.forList("appearsIn", "appearsIn", null, false, null),
             ResponseField.forList("friends", "friends", null, true, null)
@@ -162,18 +161,16 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
           override fun fromResponse(reader: ResponseReader, __typename: String?):
               com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend {
             return reader.run {
-              var __typename: String? = __typename
               var name: String? = null
               var appearsIn: List<Episode?>? = null
               var friends: List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend?>? = null
               while(true) {
                 when (selectField(RESPONSE_FIELDS)) {
-                  0 -> __typename = readString(RESPONSE_FIELDS[0])
-                  1 -> name = readString(RESPONSE_FIELDS[1])
-                  2 -> appearsIn = readList<Episode>(RESPONSE_FIELDS[2]) { reader ->
+                  0 -> name = readString(RESPONSE_FIELDS[0])
+                  1 -> appearsIn = readList<Episode>(RESPONSE_FIELDS[1]) { reader ->
                     Episode.safeValueOf(reader.readString())
                   }
-                  3 -> friends = readList<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend>(RESPONSE_FIELDS[3]) { reader ->
+                  2 -> friends = readList<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend>(RESPONSE_FIELDS[2]) { reader ->
                     reader.readObject<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend> { reader ->
                       Friend.fromResponse(reader)
                     }
@@ -182,7 +179,6 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
                 }
               }
               com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend(
-                __typename = __typename!!,
                 name = name!!,
                 appearsIn = appearsIn!!,
                 friends = friends
@@ -192,13 +188,12 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
 
           override fun toResponse(writer: ResponseWriter,
               value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend) {
-            writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-            writer.writeString(RESPONSE_FIELDS[1], value.name)
-            writer.writeList(RESPONSE_FIELDS[2], value.appearsIn) { values, listItemWriter ->
+            writer.writeString(RESPONSE_FIELDS[0], value.name)
+            writer.writeList(RESPONSE_FIELDS[1], value.appearsIn) { values, listItemWriter ->
               values?.forEach { value ->
                 listItemWriter.writeString(value?.rawValue)}
             }
-            writer.writeList(RESPONSE_FIELDS[3], value.friends) { values, listItemWriter ->
+            writer.writeList(RESPONSE_FIELDS[2], value.friends) { values, listItemWriter ->
               values?.forEach { value ->
                 if(value == null) {
                   listItemWriter.writeObject(null)
@@ -282,7 +277,6 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
                   ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection>
                   {
                 private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                  ResponseField.forString("__typename", "__typename", null, false, null),
                   ResponseField.forInt("totalCount", "totalCount", null, true, null),
                   ResponseField.forList("edges", "edges", null, true, null)
                 )
@@ -290,14 +284,12 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
                 override fun fromResponse(reader: ResponseReader, __typename: String?):
                     com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection {
                   return reader.run {
-                    var __typename: String? = __typename
                     var totalCount: Int? = null
                     var edges: List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection.Edge?>? = null
                     while(true) {
                       when (selectField(RESPONSE_FIELDS)) {
-                        0 -> __typename = readString(RESPONSE_FIELDS[0])
-                        1 -> totalCount = readInt(RESPONSE_FIELDS[1])
-                        2 -> edges = readList<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection.Edge>(RESPONSE_FIELDS[2]) { reader ->
+                        0 -> totalCount = readInt(RESPONSE_FIELDS[0])
+                        1 -> edges = readList<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection.Edge>(RESPONSE_FIELDS[1]) { reader ->
                           reader.readObject<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection.Edge> { reader ->
                             Edge.fromResponse(reader)
                           }
@@ -306,7 +298,6 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
                       }
                     }
                     com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection(
-                      __typename = __typename!!,
                       totalCount = totalCount,
                       edges = edges
                     )
@@ -315,9 +306,8 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
 
                 override fun toResponse(writer: ResponseWriter,
                     value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection) {
-                  writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-                  writer.writeInt(RESPONSE_FIELDS[1], value.totalCount)
-                  writer.writeList(RESPONSE_FIELDS[2], value.edges) { values, listItemWriter ->
+                  writer.writeInt(RESPONSE_FIELDS[0], value.totalCount)
+                  writer.writeList(RESPONSE_FIELDS[1], value.edges) { values, listItemWriter ->
                     values?.forEach { value ->
                       if(value == null) {
                         listItemWriter.writeObject(null)
@@ -334,26 +324,22 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
                     ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection.Edge>
                     {
                   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                    ResponseField.forString("__typename", "__typename", null, false, null),
                     ResponseField.forObject("node", "node", null, true, null)
                   )
 
                   override fun fromResponse(reader: ResponseReader, __typename: String?):
                       com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection.Edge {
                     return reader.run {
-                      var __typename: String? = __typename
                       var node: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection.Edge.Node? = null
                       while(true) {
                         when (selectField(RESPONSE_FIELDS)) {
-                          0 -> __typename = readString(RESPONSE_FIELDS[0])
-                          1 -> node = readObject<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection.Edge.Node>(RESPONSE_FIELDS[1]) { reader ->
+                          0 -> node = readObject<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection.Edge.Node>(RESPONSE_FIELDS[0]) { reader ->
                             Node.fromResponse(reader)
                           }
                           else -> break
                         }
                       }
                       com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection.Edge(
-                        __typename = __typename!!,
                         node = node
                       )
                     }
@@ -361,11 +347,10 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
 
                   override fun toResponse(writer: ResponseWriter,
                       value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection.Edge) {
-                    writer.writeString(RESPONSE_FIELDS[0], value.__typename)
                     if(value.node == null) {
-                      writer.writeObject(RESPONSE_FIELDS[1], null)
+                      writer.writeObject(RESPONSE_FIELDS[0], null)
                     } else {
-                      writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
+                      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
                         Node.toResponse(writer, value.node)
                       }
                     }
@@ -375,24 +360,20 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
                       ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection.Edge.Node>
                       {
                     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                      ResponseField.forString("__typename", "__typename", null, false, null),
                       ResponseField.forString("name", "name", null, false, null)
                     )
 
                     override fun fromResponse(reader: ResponseReader, __typename: String?):
                         com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection.Edge.Node {
                       return reader.run {
-                        var __typename: String? = __typename
                         var name: String? = null
                         while(true) {
                           when (selectField(RESPONSE_FIELDS)) {
-                            0 -> __typename = readString(RESPONSE_FIELDS[0])
-                            1 -> name = readString(RESPONSE_FIELDS[1])
+                            0 -> name = readString(RESPONSE_FIELDS[0])
                             else -> break
                           }
                         }
                         com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection.Edge.Node(
-                          __typename = __typename!!,
                           name = name!!
                         )
                       }
@@ -400,8 +381,7 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
 
                     override fun toResponse(writer: ResponseWriter,
                         value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection.Edge.Node) {
-                      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-                      writer.writeString(RESPONSE_FIELDS[1], value.name)
+                      writer.writeString(RESPONSE_FIELDS[0], value.name)
                     }
                   }
                 }
@@ -496,24 +476,20 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
             ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OtherHeroDetailQuery.Friend>
             {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField.forString("__typename", "__typename", null, false, null),
             ResponseField.forString("name", "name", null, false, null)
           )
 
           override fun fromResponse(reader: ResponseReader, __typename: String?):
               com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OtherHeroDetailQuery.Friend {
             return reader.run {
-              var __typename: String? = __typename
               var name: String? = null
               while(true) {
                 when (selectField(RESPONSE_FIELDS)) {
-                  0 -> __typename = readString(RESPONSE_FIELDS[0])
-                  1 -> name = readString(RESPONSE_FIELDS[1])
+                  0 -> name = readString(RESPONSE_FIELDS[0])
                   else -> break
                 }
               }
               com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OtherHeroDetailQuery.Friend(
-                __typename = __typename!!,
                 name = name!!
               )
             }
@@ -521,8 +497,7 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
 
           override fun toResponse(writer: ResponseWriter,
               value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OtherHeroDetailQuery.Friend) {
-            writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-            writer.writeString(RESPONSE_FIELDS[1], value.name)
+            writer.writeString(RESPONSE_FIELDS[0], value.name)
           }
         }
       }

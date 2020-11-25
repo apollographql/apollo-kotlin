@@ -137,8 +137,8 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
 
         object Friend : ResponseAdapter<TestOperation.Data.Random.BeingHumanRandom.Friend> {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField.forString("__typename", "__typename", null, false, null),
             ResponseField.forString("name", "name", null, false, null),
+            ResponseField.forString("__typename", "__typename", null, false, null),
             ResponseField.forBoolean("isFamous", "isFamous", null, true, null)
           )
 
@@ -205,28 +205,28 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           object OtherFriend :
               ResponseAdapter<TestOperation.Data.Random.BeingHumanRandom.Friend.OtherFriend> {
             private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-              ResponseField.forString("__typename", "__typename", null, false, null),
               ResponseField.forString("name", "name", null, false, null),
+              ResponseField.forString("__typename", "__typename", null, false, null),
               ResponseField.forBoolean("isFamous", "isFamous", null, true, null)
             )
 
             override fun fromResponse(reader: ResponseReader, __typename: String?):
                 TestOperation.Data.Random.BeingHumanRandom.Friend.OtherFriend {
               return reader.run {
-                var __typename: String? = __typename
                 var name: String? = null
+                var __typename: String? = __typename
                 var isFamous: Boolean? = null
                 while(true) {
                   when (selectField(RESPONSE_FIELDS)) {
-                    0 -> __typename = readString(RESPONSE_FIELDS[0])
-                    1 -> name = readString(RESPONSE_FIELDS[1])
+                    0 -> name = readString(RESPONSE_FIELDS[0])
+                    1 -> __typename = readString(RESPONSE_FIELDS[1])
                     2 -> isFamous = readBoolean(RESPONSE_FIELDS[2])
                     else -> break
                   }
                 }
                 TestOperation.Data.Random.BeingHumanRandom.Friend.OtherFriend(
-                  __typename = __typename!!,
                   name = name!!,
+                  __typename = __typename!!,
                   isFamous = isFamous
                 )
               }
@@ -234,8 +234,8 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
 
             override fun toResponse(writer: ResponseWriter,
                 value: TestOperation.Data.Random.BeingHumanRandom.Friend.OtherFriend) {
-              writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-              writer.writeString(RESPONSE_FIELDS[1], value.name)
+              writer.writeString(RESPONSE_FIELDS[0], value.name)
+              writer.writeString(RESPONSE_FIELDS[1], value.__typename)
               writer.writeBoolean(RESPONSE_FIELDS[2], value.isFamous)
             }
           }
@@ -295,7 +295,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
 
         object Friend : ResponseAdapter<TestOperation.Data.Random.BeingWookieRandom.Friend> {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField.forString("__typename", "__typename", null, false, null),
             ResponseField.forString("name", "name", null, false, null),
             ResponseField.forDouble("lifeExpectancy", "lifeExpectancy", null, true, null)
           )
@@ -303,19 +302,16 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           override fun fromResponse(reader: ResponseReader, __typename: String?):
               TestOperation.Data.Random.BeingWookieRandom.Friend {
             return reader.run {
-              var __typename: String? = __typename
               var name: String? = null
               var lifeExpectancy: Double? = null
               while(true) {
                 when (selectField(RESPONSE_FIELDS)) {
-                  0 -> __typename = readString(RESPONSE_FIELDS[0])
-                  1 -> name = readString(RESPONSE_FIELDS[1])
-                  2 -> lifeExpectancy = readDouble(RESPONSE_FIELDS[2])
+                  0 -> name = readString(RESPONSE_FIELDS[0])
+                  1 -> lifeExpectancy = readDouble(RESPONSE_FIELDS[1])
                   else -> break
                 }
               }
               TestOperation.Data.Random.BeingWookieRandom.Friend(
-                __typename = __typename!!,
                 name = name!!,
                 lifeExpectancy = lifeExpectancy
               )
@@ -324,9 +320,8 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
 
           override fun toResponse(writer: ResponseWriter,
               value: TestOperation.Data.Random.BeingWookieRandom.Friend) {
-            writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-            writer.writeString(RESPONSE_FIELDS[1], value.name)
-            writer.writeDouble(RESPONSE_FIELDS[2], value.lifeExpectancy)
+            writer.writeString(RESPONSE_FIELDS[0], value.name)
+            writer.writeDouble(RESPONSE_FIELDS[1], value.lifeExpectancy)
           }
         }
       }

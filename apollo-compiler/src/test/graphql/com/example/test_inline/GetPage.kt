@@ -93,97 +93,130 @@ class GetPage : Query<GetPage.Data, Operation.Variables> {
     scalarTypeAdapters = scalarTypeAdapters
   )
 
-  data class ParticularItemItem(
-    val image: String,
-    override val __typename: String = "ParticularItem",
-    override val title: String
-  ) : Item {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        GetPage_ResponseAdapter.ParticularItemItem_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  data class OtherItem(
-    override val __typename: String = "Item",
-    override val title: String
-  ) : Item {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        GetPage_ResponseAdapter.OtherItem_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  interface Item : Item2 {
-    val __typename: String
-
-    override val title: String
-
-    fun asParticularItemItem(): ParticularItemItem? = this as? ParticularItemItem
-
-    override fun marshaller(): ResponseFieldMarshaller
-  }
-
-  data class ParticularCollectionCollection(
-    override val items: List<Item>,
-    override val __typename: String = "ParticularCollection"
-  ) : Collection {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        GetPage_ResponseAdapter.ParticularCollectionCollection_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  data class Item1(
-    override val title: String
-  ) : Item2 {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        GetPage_ResponseAdapter.Item1_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  data class OtherCollection(
-    override val __typename: String = "Collection",
-    override val items: List<Item1>
-  ) : Collection {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        GetPage_ResponseAdapter.OtherCollection_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  interface Item2 {
-    val title: String
-
-    fun marshaller(): ResponseFieldMarshaller
-  }
-
-  interface Collection {
-    val __typename: String
-
-    val items: List<Item2>
-
-    fun asParticularCollectionCollection(): ParticularCollectionCollection? = this as?
-        ParticularCollectionCollection
-
-    fun marshaller(): ResponseFieldMarshaller
-  }
-
-  /**
-   * Data from the response after executing this GraphQL operation
-   */
   data class Data(
     val collection: Collection
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        GetPage_ResponseAdapter.toResponse(writer, this)
+        GetPage_ResponseAdapter.Data.toResponse(writer, this)
+      }
+    }
+
+    interface Collection {
+      val __typename: String
+
+      val items: List<Item>
+
+      fun asParticularCollection(): ParticularCollection? = this as? ParticularCollection
+
+      fun marshaller(): ResponseFieldMarshaller
+
+      interface Item {
+        val title: String
+
+        fun marshaller(): ResponseFieldMarshaller
+      }
+
+      interface ParticularCollection : Collection {
+        override val __typename: String
+
+        override val items: List<Item>
+
+        override fun marshaller(): ResponseFieldMarshaller
+
+        interface Item : Collection.Item {
+          override val title: String
+
+          val __typename: String
+
+          override fun marshaller(): ResponseFieldMarshaller
+
+          interface ParticularItem : Item {
+            override val __typename: String
+
+            val image: String
+
+            override val title: String
+
+            override fun marshaller(): ResponseFieldMarshaller
+          }
+        }
+      }
+
+      data class ParticularCollectionCollection(
+        override val __typename: String = "ParticularCollection",
+        override val items: List<Item>
+      ) : Collection, ParticularCollection {
+        override fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            GetPage_ResponseAdapter.Data.Collection.ParticularCollectionCollection.toResponse(writer, this)
+          }
+        }
+
+        interface Item : Collection.Item, ParticularCollection.Item {
+          override val title: String
+
+          override val __typename: String
+
+          fun asParticularItem(): ParticularItem? = this as? ParticularItem
+
+          override fun marshaller(): ResponseFieldMarshaller
+
+          interface ParticularItem : ParticularCollection.Item,
+              ParticularCollection.Item.ParticularItem, Item {
+            override val __typename: String
+
+            override val image: String
+
+            override val title: String
+
+            override fun marshaller(): ResponseFieldMarshaller
+          }
+
+          data class ParticularItemItem(
+            override val __typename: String = "ParticularItem",
+            override val image: String,
+            override val title: String
+          ) : ParticularCollection.Item, ParticularCollection.Item.ParticularItem, Item {
+            override fun marshaller(): ResponseFieldMarshaller {
+              return ResponseFieldMarshaller { writer ->
+                GetPage_ResponseAdapter.Data.Collection.ParticularCollectionCollection.Item.ParticularItemItem.toResponse(writer, this)
+              }
+            }
+          }
+
+          data class OtherItem(
+            override val title: String,
+            override val __typename: String = "Item"
+          ) : Collection.Item, ParticularCollection.Item, Item {
+            override fun marshaller(): ResponseFieldMarshaller {
+              return ResponseFieldMarshaller { writer ->
+                GetPage_ResponseAdapter.Data.Collection.ParticularCollectionCollection.Item.OtherItem.toResponse(writer, this)
+              }
+            }
+          }
+        }
+      }
+
+      data class OtherCollection(
+        override val __typename: String = "Collection",
+        override val items: List<Item>
+      ) : Collection {
+        override fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            GetPage_ResponseAdapter.Data.Collection.OtherCollection.toResponse(writer, this)
+          }
+        }
+
+        data class Item(
+          override val title: String
+        ) : Collection.Item {
+          override fun marshaller(): ResponseFieldMarshaller {
+            return ResponseFieldMarshaller { writer ->
+              GetPage_ResponseAdapter.Data.Collection.OtherCollection.Item.toResponse(writer, this)
+            }
+          }
+        }
       }
     }
   }

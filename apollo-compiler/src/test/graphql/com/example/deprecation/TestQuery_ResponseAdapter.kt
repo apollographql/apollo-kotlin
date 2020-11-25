@@ -70,7 +70,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     object Hero : ResponseAdapter<TestQuery.Data.Hero> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forString("deprecated", "deprecated", null, false, null),
         ResponseField.forBoolean("deprecatedBool", "deprecatedBool", null, false, null)
@@ -78,21 +77,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Hero {
         return reader.run {
-          var __typename: String? = __typename
           var name: String? = null
           var deprecated: String? = null
           var deprecatedBool: Boolean? = null
           while(true) {
             when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> name = readString(RESPONSE_FIELDS[1])
-              2 -> deprecated = readString(RESPONSE_FIELDS[2])
-              3 -> deprecatedBool = readBoolean(RESPONSE_FIELDS[3])
+              0 -> name = readString(RESPONSE_FIELDS[0])
+              1 -> deprecated = readString(RESPONSE_FIELDS[1])
+              2 -> deprecatedBool = readBoolean(RESPONSE_FIELDS[2])
               else -> break
             }
           }
           TestQuery.Data.Hero(
-            __typename = __typename!!,
             name = name!!,
             deprecated = deprecated!!,
             deprecatedBool = deprecatedBool!!
@@ -101,10 +97,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
 
       override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero) {
-        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], value.name)
-        writer.writeString(RESPONSE_FIELDS[2], value.deprecated)
-        writer.writeBoolean(RESPONSE_FIELDS[3], value.deprecatedBool)
+        writer.writeString(RESPONSE_FIELDS[0], value.name)
+        writer.writeString(RESPONSE_FIELDS[1], value.deprecated)
+        writer.writeBoolean(RESPONSE_FIELDS[2], value.deprecatedBool)
       }
     }
   }

@@ -5,9 +5,9 @@
 //
 package com.example.mutation_create_review_semantic_naming
 
+import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
-import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
@@ -38,7 +38,7 @@ import okio.IOException
 data class CreateReviewForEpisodeMutation(
   val ep: Episode,
   val review: ReviewInput
-) : Query<CreateReviewForEpisodeMutation.Data, Operation.Variables> {
+) : Mutation<CreateReviewForEpisodeMutation.Data, Operation.Variables> {
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
@@ -118,7 +118,7 @@ data class CreateReviewForEpisodeMutation(
   )
 
   /**
-   * The query type, represents all of the entry points into our object graph
+   * The mutation type, represents all updates we can make to our data
    */
   data class Data(
     val createReview: CreateReview?
@@ -133,7 +133,6 @@ data class CreateReviewForEpisodeMutation(
      * Represents a review for a movie
      */
     data class CreateReview(
-      val __typename: String = "Review",
       /**
        * The number of stars this review gave, 1-5
        */
@@ -153,13 +152,12 @@ data class CreateReviewForEpisodeMutation(
 
   companion object {
     const val OPERATION_ID: String =
-        "0cd4b32f15788d426344f5f8d2ee1a3cebb72c167005cb147d2a47761c120a41"
+        "0af665fbb1ccec4fbec377a80b620cb423b737162848a7b16b842c2fa382b54c"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |mutation CreateReviewForEpisode(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) {
           |  createReview(episode: ${'$'}ep, review: ${'$'}review) {
-          |    __typename
           |    stars
           |    commentary
           |  }

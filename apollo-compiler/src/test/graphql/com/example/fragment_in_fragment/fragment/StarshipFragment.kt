@@ -33,8 +33,6 @@ interface StarshipFragment : GraphqlFragment {
    * A connection to a list of items.
    */
   interface PilotConnection {
-    val __typename: String
-
     /**
      * A list of edges.
      */
@@ -46,8 +44,6 @@ interface StarshipFragment : GraphqlFragment {
      * An edge in a connection.
      */
     interface Edge {
-      val __typename: String
-
       /**
        * The item at the end of the edge
        */
@@ -110,9 +106,7 @@ interface StarshipFragment : GraphqlFragment {
         |  id
         |  name
         |  pilotConnection {
-        |    __typename
         |    edges {
-        |      __typename
         |      node {
         |        __typename
         |        ...pilotFragment

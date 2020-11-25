@@ -136,7 +136,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
        * For testing fragment type coercion
        */
       data class BarFoo(
-        override val __typename: String,
+        override val __typename: String = "FooBar",
         override val foo: String,
         override val bar: String
       ) : Foo, Bar {
