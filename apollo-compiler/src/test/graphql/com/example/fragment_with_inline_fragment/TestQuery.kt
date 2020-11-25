@@ -102,6 +102,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * An autonomous mechanical character in the Star Wars universe
    */
   interface Droid : Hero {
+    override val __typename: String
+
     override fun marshaller(): ResponseFieldMarshaller
   }
 
@@ -109,7 +111,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * A character from the Star Wars universe
    */
   data class Node(
-    override val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -126,7 +127,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * An edge object for a character's friends
    */
   data class Edge(
-    override val __typename: String = "FriendsEdge",
     /**
      * The character represented by this friendship edge
      */
@@ -143,7 +143,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * A connection object for a character's friends
    */
   data class FriendsConnection(
-    override val __typename: String = "FriendsConnection",
     /**
      * The total number of friends
      */
@@ -193,7 +192,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * A character from the Star Wars universe
    */
   data class Node1(
-    override val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -210,7 +208,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * An edge object for a character's friends
    */
   data class Edge1(
-    override val __typename: String = "FriendsEdge",
     /**
      * The character represented by this friendship edge
      */
@@ -227,7 +224,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * A connection object for a character's friends
    */
   data class FriendsConnection1(
-    override val __typename: String = "FriendsConnection",
     /**
      * The total number of friends
      */
@@ -278,7 +274,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * A character from the Star Wars universe
    */
   data class Node2(
-    override val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -295,7 +290,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * An edge object for a character's friends
    */
   data class Edge2(
-    override val __typename: String = "FriendsEdge",
     /**
      * The character represented by this friendship edge
      */
@@ -312,7 +306,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * A connection object for a character's friends
    */
   data class FriendsConnection2(
-    override val __typename: String = "FriendsConnection",
     /**
      * The total number of friends
      */
@@ -420,7 +413,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "e9843a0a69aada34351cddb824627cf6c36cb9f7135d1ae5943ef8dffd8381fd"
+        "e01fcc7b255552f79419f653def959b6a7ab9bffd519c57e826d91ffc2c7fb1f"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -436,16 +429,14 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           |  __typename
           |  ...HumanDetails
           |  ... on Droid {
+          |    __typename
           |    ...DroidDetails
           |  }
           |  name
           |  friendsConnection {
-          |    __typename
           |    totalCount
           |    edges {
-          |      __typename
           |      node {
-          |        __typename
           |        name
           |      }
           |    }

@@ -51,38 +51,32 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object FriendsConnection_ResponseAdapter : ResponseAdapter<TestQuery.FriendsConnection> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forInt("totalCount", "totalCount", null, true, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
         TestQuery.FriendsConnection {
       return reader.run {
-        var __typename: String? = __typename
         var totalCount: Int? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> totalCount = readInt(RESPONSE_FIELDS[1])
+            0 -> totalCount = readInt(RESPONSE_FIELDS[0])
             else -> break
           }
         }
         TestQuery.FriendsConnection(
-          __typename = __typename!!,
           totalCount = totalCount
         )
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.FriendsConnection) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeInt(RESPONSE_FIELDS[1], value.totalCount)
+      writer.writeInt(RESPONSE_FIELDS[0], value.totalCount)
     }
   }
 
   object Hero_ResponseAdapter : ResponseAdapter<TestQuery.Hero> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forString("name", "name", null, true, listOf(
         ResponseField.Condition.booleanCondition("includeName", false)
       )),
@@ -93,21 +87,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Hero {
       return reader.run {
-        var __typename: String? = __typename
         var name: String? = null
         var friendsConnection: TestQuery.FriendsConnection? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> name = readString(RESPONSE_FIELDS[1])
-            2 -> friendsConnection = readObject<TestQuery.FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
+            0 -> name = readString(RESPONSE_FIELDS[0])
+            1 -> friendsConnection = readObject<TestQuery.FriendsConnection>(RESPONSE_FIELDS[1]) { reader ->
               TestQuery_ResponseAdapter.FriendsConnection_ResponseAdapter.fromResponse(reader)
             }
             else -> break
           }
         }
         TestQuery.Hero(
-          __typename = __typename!!,
           name = name,
           friendsConnection = friendsConnection
         )
@@ -115,12 +106,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.Hero) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeString(RESPONSE_FIELDS[0], value.name)
       if(value.friendsConnection == null) {
-        writer.writeObject(RESPONSE_FIELDS[2], null)
+        writer.writeObject(RESPONSE_FIELDS[1], null)
       } else {
-        writer.writeObject(RESPONSE_FIELDS[2]) { writer ->
+        writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
           TestQuery_ResponseAdapter.FriendsConnection_ResponseAdapter.toResponse(writer, value.friendsConnection)
         }
       }

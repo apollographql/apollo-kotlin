@@ -34,8 +34,6 @@ interface HeroDetails : GraphqlFragment {
    * A character from the Star Wars universe
    */
   interface Node {
-    val __typename: String
-
     /**
      * The name of the character
      */
@@ -48,8 +46,6 @@ interface HeroDetails : GraphqlFragment {
    * An edge object for a character's friends
    */
   interface Edge {
-    val __typename: String
-
     /**
      * The character represented by this friendship edge
      */
@@ -62,8 +58,6 @@ interface HeroDetails : GraphqlFragment {
    * A connection object for a character's friends
    */
   interface FriendsConnection {
-    val __typename: String
-
     /**
      * The total number of friends
      */
@@ -81,6 +75,8 @@ interface HeroDetails : GraphqlFragment {
    * An autonomous mechanical character in the Star Wars universe
    */
   interface Droid : HeroDetailsImpl {
+    override val __typename: String
+
     override fun marshaller(): ResponseFieldMarshaller
   }
 
@@ -88,7 +84,6 @@ interface HeroDetails : GraphqlFragment {
    * A character from the Star Wars universe
    */
   data class Node1(
-    override val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -105,7 +100,6 @@ interface HeroDetails : GraphqlFragment {
    * An edge object for a character's friends
    */
   data class Edge1(
-    override val __typename: String = "FriendsEdge",
     /**
      * The character represented by this friendship edge
      */
@@ -122,7 +116,6 @@ interface HeroDetails : GraphqlFragment {
    * A connection object for a character's friends
    */
   data class FriendsConnection1(
-    override val __typename: String = "FriendsConnection",
     /**
      * The total number of friends
      */
@@ -165,7 +158,6 @@ interface HeroDetails : GraphqlFragment {
    * A character from the Star Wars universe
    */
   data class Node2(
-    override val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -182,7 +174,6 @@ interface HeroDetails : GraphqlFragment {
    * An edge object for a character's friends
    */
   data class Edge2(
-    override val __typename: String = "FriendsEdge",
     /**
      * The character represented by this friendship edge
      */
@@ -199,7 +190,6 @@ interface HeroDetails : GraphqlFragment {
    * A connection object for a character's friends
    */
   data class FriendsConnection2(
-    override val __typename: String = "FriendsConnection",
     /**
      * The total number of friends
      */
@@ -241,7 +231,6 @@ interface HeroDetails : GraphqlFragment {
    * A character from the Star Wars universe
    */
   data class Node3(
-    override val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -258,7 +247,6 @@ interface HeroDetails : GraphqlFragment {
    * An edge object for a character's friends
    */
   data class Edge3(
-    override val __typename: String = "FriendsEdge",
     /**
      * The character represented by this friendship edge
      */
@@ -275,7 +263,6 @@ interface HeroDetails : GraphqlFragment {
    * A connection object for a character's friends
    */
   data class FriendsConnection3(
-    override val __typename: String = "FriendsConnection",
     /**
      * The total number of friends
      */
@@ -317,8 +304,6 @@ interface HeroDetails : GraphqlFragment {
    * A character from the Star Wars universe
    */
   interface Node4 : Node {
-    override val __typename: String
-
     /**
      * The name of the character
      */
@@ -331,8 +316,6 @@ interface HeroDetails : GraphqlFragment {
    * An edge object for a character's friends
    */
   interface Edge4 : Edge {
-    override val __typename: String
-
     /**
      * The character represented by this friendship edge
      */
@@ -345,8 +328,6 @@ interface HeroDetails : GraphqlFragment {
    * A connection object for a character's friends
    */
   interface FriendsConnection4 : FriendsConnection {
-    override val __typename: String
-
     /**
      * The total number of friends
      */
@@ -391,16 +372,14 @@ interface HeroDetails : GraphqlFragment {
         |  __typename
         |  ...HumanDetails
         |  ... on Droid {
+        |    __typename
         |    ...DroidDetails
         |  }
         |  name
         |  friendsConnection {
-        |    __typename
         |    totalCount
         |    edges {
-        |      __typename
         |      node {
-        |        __typename
         |        name
         |      }
         |    }

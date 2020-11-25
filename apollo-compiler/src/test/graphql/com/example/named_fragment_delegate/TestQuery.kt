@@ -149,7 +149,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "488852c665d9a8bac97bdd0efaebc4ff4f607c5acf4fefb4fb54e24322f55ac5"
+        "727bf302bb93ddf9e3e12bad4506044461b67069ac0121c4f54417b9a98e42d4"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -165,7 +165,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           |  name
           |  primaryFunction
           |  friends {
-          |    __typename
           |    name
           |  }
           |}
@@ -174,11 +173,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           |  name
           |  profileLink
           |  friendsConnection {
-          |    __typename
           |    edges {
-          |      __typename
           |      node {
-          |        __typename
           |        name
           |      }
           |    }

@@ -53,33 +53,28 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object Hero_ResponseAdapter : ResponseAdapter<TestQuery.Hero> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forList("links", "links", null, false, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Hero {
       return reader.run {
-        var __typename: String? = __typename
         var links: List<Any>? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> links = readList<Any>(RESPONSE_FIELDS[1]) { reader ->
+            0 -> links = readList<Any>(RESPONSE_FIELDS[0]) { reader ->
               reader.readCustomType<Any>(CustomType.URL)
             }?.map { it!! }
             else -> break
           }
         }
         TestQuery.Hero(
-          __typename = __typename!!,
           links = links!!
         )
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.Hero) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeList(RESPONSE_FIELDS[1], value.links) { values, listItemWriter ->
+      writer.writeList(RESPONSE_FIELDS[0], value.links) { values, listItemWriter ->
         values?.forEach { value ->
           listItemWriter.writeCustom(CustomType.URL, value)}
       }

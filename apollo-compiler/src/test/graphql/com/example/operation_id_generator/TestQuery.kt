@@ -96,7 +96,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * A character from the Star Wars universe
    */
   data class Hero(
-    val __typename: String = "Character",
     /**
      * The ID of the character
      */
@@ -133,7 +132,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           """
           |query TestQuery {
           |  hero {
-          |    __typename
           |    id
           |    name
           |  }

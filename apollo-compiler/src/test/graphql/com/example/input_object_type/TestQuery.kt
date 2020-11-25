@@ -121,7 +121,6 @@ data class TestQuery(
    * Represents a review for a movie
    */
   data class CreateReview(
-    val __typename: String = "Review",
     /**
      * The number of stars this review gave, 1-5
      */
@@ -153,13 +152,12 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "9850c60bd20e2361afd7a41d51b709fcba9637809e387afe5c7a1cb738fc254b"
+        "2a1de6af8435bb9169562d78714566aaf26a9741ef16b72f49955dc615237b09"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |mutation TestQuery(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) {
           |  createReview(episode: ${'$'}ep, review: ${'$'}review) {
-          |    __typename
           |    stars
           |    commentary
           |  }

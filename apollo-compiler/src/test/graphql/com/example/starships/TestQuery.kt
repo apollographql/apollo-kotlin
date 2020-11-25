@@ -115,7 +115,6 @@ data class TestQuery(
   )
 
   data class Starship(
-    val __typename: String = "Starship",
     /**
      * The ID of the starship
      */
@@ -148,13 +147,12 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "a4c440f9a7ea17b55ba60d3ac9603f8be88a1db31c679f55982eb9f57b5b6181"
+        "ec95d84c104260ea1c99e15341279aaabe98b7364279c2886a9ffe9adfeefb7f"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery(${'$'}id: ID!) {
           |  starship(id: ${'$'}id) {
-          |    __typename
           |    id
           |    name
           |    coordinates

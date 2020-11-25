@@ -129,7 +129,6 @@ data class TestQuery(
    * A humanoid creature from the Star Wars universe
    */
   data class HeroWithReview(
-    val __typename: String = "Human",
     /**
      * What this human calls themselves
      */
@@ -161,7 +160,7 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "41ecf1ebc942a1544916754c516199fdfaf62cbaa4d55f821c08248ac4b344d5"
+        "5de0170d60b7008300fa40599880d0b70e67a326a7b1fe27b8fa87aba7e5d36f"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -178,7 +177,6 @@ data class TestQuery(
           |    listOfStringNonOptional: []
           |  }
           |  , listOfInts: [${'$'}stars,${'$'}stars]) {
-          |    __typename
           |    name
           |    height(unit: FOOT)
           |  }

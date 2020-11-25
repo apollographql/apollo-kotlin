@@ -5,7 +5,6 @@ query TestQuery {
 }
 
 fragment heroFragment on Character {
-    # No typename should be appended here
     name
     ... on Droid {
         primaryFunction

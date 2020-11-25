@@ -142,36 +142,31 @@ object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragment.Stars
 
   object Edge1_ResponseAdapter : ResponseAdapter<StarshipFragment.Edge1> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forObject("node", "node", null, true, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): StarshipFragment.Edge1 {
       return reader.run {
-        var __typename: String? = __typename
         var node: StarshipFragment.Node1? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> node = readObject<StarshipFragment.Node1>(RESPONSE_FIELDS[1]) { reader ->
+            0 -> node = readObject<StarshipFragment.Node1>(RESPONSE_FIELDS[0]) { reader ->
               Node1_ResponseAdapter.fromResponse(reader)
             }
             else -> break
           }
         }
         StarshipFragment.Edge1(
-          __typename = __typename!!,
           node = node
         )
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: StarshipFragment.Edge1) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       if(value.node == null) {
-        writer.writeObject(RESPONSE_FIELDS[1], null)
+        writer.writeObject(RESPONSE_FIELDS[0], null)
       } else {
-        writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
+        writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
           Node1_ResponseAdapter.toResponse(writer, value.node)
         }
       }
@@ -180,19 +175,16 @@ object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragment.Stars
 
   object PilotConnection1_ResponseAdapter : ResponseAdapter<StarshipFragment.PilotConnection1> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forList("edges", "edges", null, true, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
         StarshipFragment.PilotConnection1 {
       return reader.run {
-        var __typename: String? = __typename
         var edges: List<StarshipFragment.Edge1?>? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> edges = readList<StarshipFragment.Edge1>(RESPONSE_FIELDS[1]) { reader ->
+            0 -> edges = readList<StarshipFragment.Edge1>(RESPONSE_FIELDS[0]) { reader ->
               reader.readObject<StarshipFragment.Edge1> { reader ->
                 Edge1_ResponseAdapter.fromResponse(reader)
               }
@@ -201,15 +193,13 @@ object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragment.Stars
           }
         }
         StarshipFragment.PilotConnection1(
-          __typename = __typename!!,
           edges = edges
         )
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: StarshipFragment.PilotConnection1) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeList(RESPONSE_FIELDS[1], value.edges) { values, listItemWriter ->
+      writer.writeList(RESPONSE_FIELDS[0], value.edges) { values, listItemWriter ->
         values?.forEach { value ->
           if(value == null) {
             listItemWriter.writeObject(null)

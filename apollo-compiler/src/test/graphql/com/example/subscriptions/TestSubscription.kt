@@ -116,7 +116,6 @@ data class TestSubscription(
    * A comment about an entry, submitted by a user
    */
   data class CommentAdded(
-    val __typename: String = "Comment",
     /**
      * The SQL ID of this entry
      */
@@ -151,13 +150,12 @@ data class TestSubscription(
 
   companion object {
     const val OPERATION_ID: String =
-        "55460a650cce0aa4bb131446ec3e56225710e36940223934bee09e1723e41190"
+        "f053ee1afe42260f1511e417b6133f1cb8507c185e2e7b4e1e579696dbc8f2af"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |subscription TestSubscription(${'$'}repo: String!) {
           |  commentAdded(repoFullName: ${'$'}repo) {
-          |    __typename
           |    id
           |    content
           |  }

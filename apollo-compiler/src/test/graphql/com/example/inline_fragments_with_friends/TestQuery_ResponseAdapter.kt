@@ -54,33 +54,28 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object Friend_ResponseAdapter : ResponseAdapter<TestQuery.Friend> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forList("appearsIn", "appearsIn", null, false, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Friend {
       return reader.run {
-        var __typename: String? = __typename
         var appearsIn: List<Episode?>? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> appearsIn = readList<Episode>(RESPONSE_FIELDS[1]) { reader ->
+            0 -> appearsIn = readList<Episode>(RESPONSE_FIELDS[0]) { reader ->
               Episode.safeValueOf(reader.readString())
             }
             else -> break
           }
         }
         TestQuery.Friend(
-          __typename = __typename!!,
           appearsIn = appearsIn!!
         )
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.Friend) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeList(RESPONSE_FIELDS[1], value.appearsIn) { values, listItemWriter ->
+      writer.writeList(RESPONSE_FIELDS[0], value.appearsIn) { values, listItemWriter ->
         values?.forEach { value ->
           listItemWriter.writeString(value?.rawValue)}
       }
@@ -143,31 +138,26 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object Friend1_ResponseAdapter : ResponseAdapter<TestQuery.Friend1> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Friend1 {
       return reader.run {
-        var __typename: String? = __typename
         var id: String? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+            0 -> id = readCustomType<String>(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField)
             else -> break
           }
         }
         TestQuery.Friend1(
-          __typename = __typename!!,
           id = id!!
         )
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.Friend1) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, value.id)
+      writer.writeCustom(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField, value.id)
     }
   }
 

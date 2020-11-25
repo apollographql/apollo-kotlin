@@ -54,7 +54,6 @@ object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscription.Data>
 
   object CommentAdded_ResponseAdapter : ResponseAdapter<TestSubscription.CommentAdded> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forInt("id", "id", null, false, null),
       ResponseField.forString("content", "content", null, false, null)
     )
@@ -62,19 +61,16 @@ object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscription.Data>
     override fun fromResponse(reader: ResponseReader, __typename: String?):
         TestSubscription.CommentAdded {
       return reader.run {
-        var __typename: String? = __typename
         var id: Int? = null
         var content: String? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> id = readInt(RESPONSE_FIELDS[1])
-            2 -> content = readString(RESPONSE_FIELDS[2])
+            0 -> id = readInt(RESPONSE_FIELDS[0])
+            1 -> content = readString(RESPONSE_FIELDS[1])
             else -> break
           }
         }
         TestSubscription.CommentAdded(
-          __typename = __typename!!,
           id = id!!,
           content = content!!
         )
@@ -82,9 +78,8 @@ object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscription.Data>
     }
 
     override fun toResponse(writer: ResponseWriter, value: TestSubscription.CommentAdded) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeInt(RESPONSE_FIELDS[1], value.id)
-      writer.writeString(RESPONSE_FIELDS[2], value.content)
+      writer.writeInt(RESPONSE_FIELDS[0], value.id)
+      writer.writeString(RESPONSE_FIELDS[1], value.content)
     }
   }
 }

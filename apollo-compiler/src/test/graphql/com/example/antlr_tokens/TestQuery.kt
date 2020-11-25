@@ -117,7 +117,6 @@ data class TestQuery(
   )
 
   data class TypeWithGraphQLKeywords(
-    val __typename: String = "TypeWithGraphQLKeywords",
     val on: String?,
     val null_: String?,
     val alias: String?
@@ -144,13 +143,12 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "66526ebd8bfa253f1b91ed8c4a5d103f0371bf48673edaa11d5add4079d74138"
+        "197e186cfb461d1c38c0be4da7b182eff42e304043973b994c8c2de3535daea6"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery(${'$'}operation: String) {
           |  typeWithGraphQLKeywords {
-          |    __typename
           |    on
           |    null(fragment: ${'$'}operation)
           |    alias: null(fragment: "A string\nwith a new line")

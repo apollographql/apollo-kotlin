@@ -38,8 +38,6 @@ interface DroidDetails : GraphqlFragment {
    * A character from the Star Wars universe
    */
   interface Friend {
-    val __typename: String
-
     /**
      * The name of the character
      */
@@ -52,7 +50,6 @@ interface DroidDetails : GraphqlFragment {
    * A character from the Star Wars universe
    */
   data class Friend1(
-    override val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -97,7 +94,6 @@ interface DroidDetails : GraphqlFragment {
         |  name
         |  primaryFunction
         |  friends {
-        |    __typename
         |    name
         |  }
         |}

@@ -29,8 +29,6 @@ interface HeroDetails : GraphqlFragment {
    * A character from the Star Wars universe
    */
   interface Node {
-    val __typename: String
-
     /**
      * The name of the character
      */
@@ -43,8 +41,6 @@ interface HeroDetails : GraphqlFragment {
    * An edge object for a character's friends
    */
   interface Edge {
-    val __typename: String
-
     /**
      * The character represented by this friendship edge
      */
@@ -57,8 +53,6 @@ interface HeroDetails : GraphqlFragment {
    * A connection object for a character's friends
    */
   interface FriendsConnection {
-    val __typename: String
-
     /**
      * The total number of friends
      */
@@ -76,7 +70,6 @@ interface HeroDetails : GraphqlFragment {
    * A character from the Star Wars universe
    */
   data class Node1(
-    override val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -93,7 +86,6 @@ interface HeroDetails : GraphqlFragment {
    * An edge object for a character's friends
    */
   data class Edge1(
-    override val __typename: String = "FriendsEdge",
     /**
      * The character represented by this friendship edge
      */
@@ -110,7 +102,6 @@ interface HeroDetails : GraphqlFragment {
    * A connection object for a character's friends
    */
   data class FriendsConnection1(
-    override val __typename: String = "FriendsConnection",
     /**
      * The total number of friends
      */
@@ -149,12 +140,9 @@ interface HeroDetails : GraphqlFragment {
         |fragment HeroDetails on Character {
         |  __typename
         |  friendsConnection(first: ${'$'}friendsCount) {
-        |    __typename
         |    totalCount
         |    edges {
-        |      __typename
         |      node {
-        |        __typename
         |        name @include(if: ${'$'}IncludeName)
         |      }
         |    }

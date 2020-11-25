@@ -91,31 +91,26 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object Friend3_ResponseAdapter : ResponseAdapter<TestQuery.Friend3> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Friend3 {
       return reader.run {
-        var __typename: String? = __typename
         var id: String? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+            0 -> id = readCustomType<String>(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField)
             else -> break
           }
         }
         TestQuery.Friend3(
-          __typename = __typename!!,
           id = id!!
         )
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.Friend3) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, value.id)
+      writer.writeCustom(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField, value.id)
     }
   }
 

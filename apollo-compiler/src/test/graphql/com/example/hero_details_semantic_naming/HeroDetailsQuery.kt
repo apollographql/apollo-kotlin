@@ -98,7 +98,6 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data, Operation.Variables> {
    * A character from the Star Wars universe
    */
   data class Node(
-    val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -115,7 +114,6 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data, Operation.Variables> {
    * An edge object for a character's friends
    */
   data class Edge(
-    val __typename: String = "FriendsEdge",
     /**
      * The character represented by this friendship edge
      */
@@ -132,7 +130,6 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data, Operation.Variables> {
    * A connection object for a character's friends
    */
   data class FriendsConnection(
-    val __typename: String = "FriendsConnection",
     /**
      * The total number of friends
      */
@@ -155,7 +152,6 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data, Operation.Variables> {
    * A character from the Star Wars universe
    */
   data class Hero(
-    val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -187,21 +183,17 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "257332d822c9bcd5dabeff3f3dda46875a47846f6eeae88f9042c94e3effeee7"
+        "5e11892e17cceb600c00f4565a27951dce5e8aadd95b64b8d13a835ed8fb11e1"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query HeroDetails {
           |  hero {
-          |    __typename
           |    name
           |    friendsConnection {
-          |      __typename
           |      totalCount
           |      edges {
-          |        __typename
           |        node {
-          |          __typename
           |          name
           |        }
           |      }

@@ -177,31 +177,26 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
 
   object Item1_ResponseAdapter : ResponseAdapter<GetPage.Item1> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forString("title", "title", null, false, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): GetPage.Item1 {
       return reader.run {
-        var __typename: String? = __typename
         var title: String? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> title = readString(RESPONSE_FIELDS[1])
+            0 -> title = readString(RESPONSE_FIELDS[0])
             else -> break
           }
         }
         GetPage.Item1(
-          __typename = __typename!!,
           title = title!!
         )
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: GetPage.Item1) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], value.title)
+      writer.writeString(RESPONSE_FIELDS[0], value.title)
     }
   }
 

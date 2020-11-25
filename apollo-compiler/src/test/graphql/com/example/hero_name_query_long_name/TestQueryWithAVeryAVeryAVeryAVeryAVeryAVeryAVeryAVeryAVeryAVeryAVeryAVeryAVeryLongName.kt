@@ -125,7 +125,6 @@ data class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryA
    * A character from the Star Wars universe
    */
   data class HeroAVeryAVeryAVeryAVeryAVeryAVeryAV(
-    val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -154,13 +153,12 @@ data class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryA
 
   companion object {
     const val OPERATION_ID: String =
-        "6cf42f0449039e384d15a5d7d11c379b685940aeae503276ec8cd0a282bf669b"
+        "164dc148c38451cf968e075d4fd3114b0e03f4e5d8e126be67cf7156ef4cda9c"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName(${'$'}episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName: Episode) {
           |  heroAVeryAVeryAVeryAVeryAVeryAVeryAV: hero(episode: ${'$'}episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName) {
-          |    __typename
           |    nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName: name
           |  }
           |}

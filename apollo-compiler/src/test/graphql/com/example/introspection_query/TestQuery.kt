@@ -94,7 +94,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   )
 
   data class QueryType(
-    val __typename: String = "__Type",
     val name: String?
   ) {
     fun marshaller(): ResponseFieldMarshaller {
@@ -105,7 +104,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   }
 
   data class Type(
-    val __typename: String = "__Type",
     val name: String?
   ) {
     fun marshaller(): ResponseFieldMarshaller {
@@ -116,7 +114,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   }
 
   data class __Schema(
-    val __typename: String = "__Schema",
     val queryType: QueryType,
     val types: List<Type>
   ) {
@@ -128,7 +125,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   }
 
   data class __Type(
-    val __typename: String = "__Type",
     val name: String?
   ) {
     fun marshaller(): ResponseFieldMarshaller {
@@ -154,24 +150,20 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "08518fde8892d59c699c4d48f384d7199d933a5846e6936d910cb492b8f84684"
+        "0df748160db73d1bbdea0e6e8437222dd4026ef9a3d699923485cf95c7df8366"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery {
           |  __schema {
-          |    __typename
           |    queryType {
-          |      __typename
           |      name
           |    }
           |    types {
-          |      __typename
           |      name
           |    }
           |  }
           |  __type(name: "Vehicle") {
-          |    __typename
           |    name
           |  }
           |}

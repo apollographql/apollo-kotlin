@@ -141,7 +141,6 @@ data class TestQuery(
    * A character from the Star Wars universe
    */
   data class Node(
-    override val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -158,7 +157,6 @@ data class TestQuery(
    * An edge object for a character's friends
    */
   data class Edge(
-    override val __typename: String = "FriendsEdge",
     /**
      * The character represented by this friendship edge
      */
@@ -175,7 +173,6 @@ data class TestQuery(
    * A connection object for a character's friends
    */
   data class FriendsConnection(
-    override val __typename: String = "FriendsConnection",
     /**
      * The total number of friends
      */
@@ -219,7 +216,6 @@ data class TestQuery(
    * A humanoid creature from the Star Wars universe
    */
   data class HeroWithReview(
-    val __typename: String = "Human",
     /**
      * What this human calls themselves
      */
@@ -248,7 +244,7 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "58389df684cc5f8848f922f6c8d6d05706252f5dfec3af87d21ddec44f535ee7"
+        "b4e56c478d8dd79496d9d5e474e09c5f71a0deda5180d8e28be697c37605ce9d"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -268,19 +264,15 @@ data class TestQuery(
           |    listOfStringNonOptional: []
           |  }
           |  ) {
-          |    __typename
           |    name
           |  }
           |}
           |fragment HeroDetails on Character {
           |  __typename
           |  friendsConnection(first: ${'$'}friendsCount) {
-          |    __typename
           |    totalCount
           |    edges {
-          |      __typename
           |      node {
-          |        __typename
           |        name @include(if: ${'$'}IncludeName)
           |      }
           |    }

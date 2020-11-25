@@ -119,7 +119,6 @@ data class TestQuery(
    * A connection object for a character's friends
    */
   data class FriendsConnection(
-    val __typename: String = "FriendsConnection",
     /**
      * The total number of friends
      */
@@ -136,7 +135,6 @@ data class TestQuery(
    * A character from the Star Wars universe
    */
   data class Hero(
-    val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -168,16 +166,14 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "c2c4bbf6368fd611eb19628164b0ef04ccad73f4c96b0416c254b8375b5d04f8"
+        "7d815b13df95ab484c7b20cb8059c07e3a8688d1ea0a251bff6d3f0b6fdb1cb7"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery(${'$'}includeName: Boolean!, ${'$'}skipFriends: Boolean!) @operationDirective(dummy: "hello") {
           |  hero {
-          |    __typename
           |    name @include(if: ${'$'}includeName)
           |    friendsConnection @skip(if: ${'$'}skipFriends) {
-          |      __typename
           |      totalCount
           |    }
           |  }

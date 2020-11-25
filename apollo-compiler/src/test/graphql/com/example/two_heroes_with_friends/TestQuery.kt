@@ -98,7 +98,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * A character from the Star Wars universe
    */
   data class Node(
-    val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -115,7 +114,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * An edge object for a character's friends
    */
   data class Edge(
-    val __typename: String = "FriendsEdge",
     /**
      * The character represented by this friendship edge
      */
@@ -132,7 +130,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * A connection object for a character's friends
    */
   data class FriendsConnection(
-    val __typename: String = "FriendsConnection",
     /**
      * The total number of friends
      */
@@ -155,7 +152,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * A character from the Star Wars universe
    */
   data class R2(
-    val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -176,7 +172,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * A character from the Star Wars universe
    */
   data class Node1(
-    val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -193,7 +188,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * An edge object for a character's friends
    */
   data class Edge1(
-    val __typename: String = "FriendsEdge",
     /**
      * The character represented by this friendship edge
      */
@@ -210,7 +204,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * A connection object for a character's friends
    */
   data class FriendsConnection1(
-    val __typename: String = "FriendsConnection",
     /**
      * The total number of friends
      */
@@ -233,7 +226,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * A character from the Star Wars universe
    */
   data class Luke(
-    val __typename: String = "Character",
     /**
      * The ID of the character
      */
@@ -270,37 +262,29 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "21133941aec3d5db7db82cc2688faa410a90b34e7cb283efa038fe67526b6b4b"
+        "28b644b6fcd59e0677f51136035c5fc1deb6419f12b819bff2e6bf4c5f659916"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery {
           |  r2: hero {
-          |    __typename
           |    name
           |    friendsConnection {
-          |      __typename
           |      totalCount
           |      edges {
-          |        __typename
           |        node {
-          |          __typename
           |          name
           |        }
           |      }
           |    }
           |  }
           |  luke: hero(episode: EMPIRE) {
-          |    __typename
           |    id
           |    name
           |    friendsConnection {
-          |      __typename
           |      totalCount
           |      edges {
-          |        __typename
           |        node {
-          |          __typename
           |          name
           |        }
           |      }
