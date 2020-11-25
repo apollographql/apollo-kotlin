@@ -1,8 +1,8 @@
 package com.apollographql.apollo.compiler.ast
 
-import com.apollographql.apollo.compiler.ir.CodeGenerationIR
-import com.apollographql.apollo.compiler.ir.Field
-import com.apollographql.apollo.compiler.ir.InlineFragment
+import com.apollographql.apollo.compiler.frontend.ir.CodeGenerationIR
+import com.apollographql.apollo.compiler.frontend.ir.Field
+import com.apollographql.apollo.compiler.frontend.ir.InlineFragment
 
 internal fun CodeGenerationIR.flattenInlineFragments(): CodeGenerationIR {
   return copy(

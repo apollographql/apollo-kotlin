@@ -1,6 +1,6 @@
 package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo.compiler.parser.gql.SourceAwareException
+import com.apollographql.apollo.compiler.frontend.gql.SourceAwareException
 import com.google.common.truth.Truth
 import org.junit.Assert.fail
 import org.junit.Before

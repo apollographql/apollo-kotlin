@@ -1,14 +1,13 @@
 package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo.compiler.parser.gql.GQLDescribed
-import com.apollographql.apollo.compiler.parser.gql.GQLOperationDefinition
-import com.apollographql.apollo.compiler.parser.gql.GQLTypeDefinition
-import com.apollographql.apollo.compiler.parser.gql.GraphQLParser
-import com.apollographql.apollo.compiler.parser.gql.mergeTypeExtensions
-import com.apollographql.apollo.compiler.parser.gql.toSchema
-import com.apollographql.apollo.compiler.parser.gql.usedTypeNames
-import com.apollographql.apollo.compiler.parser.gql.validateAsSchema
-import com.apollographql.apollo.compiler.parser.gql.withBuiltinTypes
+import com.apollographql.apollo.compiler.frontend.gql.GQLDescribed
+import com.apollographql.apollo.compiler.frontend.gql.GQLTypeDefinition
+import com.apollographql.apollo.compiler.frontend.gql.GraphQLParser
+import com.apollographql.apollo.compiler.frontend.gql.mergeTypeExtensions
+import com.apollographql.apollo.compiler.frontend.gql.toSchema
+import com.apollographql.apollo.compiler.frontend.gql.usedTypeNames
+import com.apollographql.apollo.compiler.frontend.gql.validateAsSchema
+import com.apollographql.apollo.compiler.frontend.gql.withBuiltinTypes
 import com.google.common.truth.Truth
 import org.junit.Test
 import org.junit.runner.RunWith
