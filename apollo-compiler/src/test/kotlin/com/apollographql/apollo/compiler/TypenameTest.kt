@@ -56,7 +56,6 @@ class TypenameTest(val name: String, private val graphQLFile: File) {
           .filter { it.isFile }
           .filter { it.extension == "graphql" }
           .sortedBy { it.name }
-          //.filter { it.name.contains("InputObjectFieldType") }
           .map { arrayOf(it.nameWithoutExtension, it) }
     }
   }
