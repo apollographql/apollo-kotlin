@@ -60,7 +60,7 @@ kotlin {
       dependencies {
         implementation(kotlin("test-junit"))
         implementation(groovy.util.Eval.x(project, "x.dep.truth"))
-        implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp4"))
+        implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
       }
     }
 
