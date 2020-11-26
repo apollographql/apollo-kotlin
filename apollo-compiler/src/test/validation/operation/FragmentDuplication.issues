@@ -1,0 +1,2 @@
+ERROR: ValidationError (11:0)
+Fragment HeroFragment is already defined

@@ -1,0 +1,19 @@
+query TestQuery {
+  hero {
+    __typename
+    ... on Droid {
+      name
+      primaryFunction
+      friendsConnection {
+        edges {
+          node {
+            __typename
+            ... on Human {
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}

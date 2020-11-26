@@ -13,9 +13,6 @@ import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
 
-/**
- * An autonomous mechanical character in the Star Wars universe
- */
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
@@ -41,8 +38,6 @@ interface DroidDetails : GraphqlFragment {
    * A character from the Star Wars universe
    */
   interface Friend {
-    val __typename: String
-
     /**
      * The name of the character
      */
@@ -55,7 +50,6 @@ interface DroidDetails : GraphqlFragment {
    * A character from the Star Wars universe
    */
   data class Friend1(
-    override val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -100,7 +94,6 @@ interface DroidDetails : GraphqlFragment {
         |  name
         |  primaryFunction
         |  friends {
-        |    __typename
         |    name
         |  }
         |}

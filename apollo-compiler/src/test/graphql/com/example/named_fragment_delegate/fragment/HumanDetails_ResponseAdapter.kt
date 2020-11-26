@@ -65,66 +65,56 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.HumanDetailsI
 
   object Node1_ResponseAdapter : ResponseAdapter<HumanDetails.Node1> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forString("name", "name", null, false, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): HumanDetails.Node1 {
       return reader.run {
-        var __typename: String? = __typename
         var name: String? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> name = readString(RESPONSE_FIELDS[1])
+            0 -> name = readString(RESPONSE_FIELDS[0])
             else -> break
           }
         }
         HumanDetails.Node1(
-          __typename = __typename!!,
           name = name!!
         )
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: HumanDetails.Node1) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeString(RESPONSE_FIELDS[0], value.name)
     }
   }
 
   object Edge1_ResponseAdapter : ResponseAdapter<HumanDetails.Edge1> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forObject("node", "node", null, true, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): HumanDetails.Edge1 {
       return reader.run {
-        var __typename: String? = __typename
         var node: HumanDetails.Node1? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> node = readObject<HumanDetails.Node1>(RESPONSE_FIELDS[1]) { reader ->
+            0 -> node = readObject<HumanDetails.Node1>(RESPONSE_FIELDS[0]) { reader ->
               Node1_ResponseAdapter.fromResponse(reader)
             }
             else -> break
           }
         }
         HumanDetails.Edge1(
-          __typename = __typename!!,
           node = node
         )
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: HumanDetails.Edge1) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       if(value.node == null) {
-        writer.writeObject(RESPONSE_FIELDS[1], null)
+        writer.writeObject(RESPONSE_FIELDS[0], null)
       } else {
-        writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
+        writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
           Node1_ResponseAdapter.toResponse(writer, value.node)
         }
       }
@@ -133,19 +123,16 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.HumanDetailsI
 
   object FriendsConnection1_ResponseAdapter : ResponseAdapter<HumanDetails.FriendsConnection1> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forList("edges", "edges", null, true, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
         HumanDetails.FriendsConnection1 {
       return reader.run {
-        var __typename: String? = __typename
         var edges: List<HumanDetails.Edge1?>? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> edges = readList<HumanDetails.Edge1>(RESPONSE_FIELDS[1]) { reader ->
+            0 -> edges = readList<HumanDetails.Edge1>(RESPONSE_FIELDS[0]) { reader ->
               reader.readObject<HumanDetails.Edge1> { reader ->
                 Edge1_ResponseAdapter.fromResponse(reader)
               }
@@ -154,15 +141,13 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.HumanDetailsI
           }
         }
         HumanDetails.FriendsConnection1(
-          __typename = __typename!!,
           edges = edges
         )
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: HumanDetails.FriendsConnection1) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeList(RESPONSE_FIELDS[1], value.edges) { values, listItemWriter ->
+      writer.writeList(RESPONSE_FIELDS[0], value.edges) { values, listItemWriter ->
         values?.forEach { value ->
           if(value == null) {
             listItemWriter.writeObject(null)

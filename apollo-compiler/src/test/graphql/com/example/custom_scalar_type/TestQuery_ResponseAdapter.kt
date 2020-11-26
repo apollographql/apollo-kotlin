@@ -54,7 +54,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object Hero_ResponseAdapter : ResponseAdapter<TestQuery.Hero> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forString("name", "name", null, false, null),
       ResponseField.forCustomType("birthDate", "birthDate", null, false, CustomType.DATE, null),
       ResponseField.forList("appearanceDates", "appearanceDates", null, false, null),
@@ -65,7 +64,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Hero {
       return reader.run {
-        var __typename: String? = __typename
         var name: String? = null
         var birthDate: Date? = null
         var appearanceDates: List<Date>? = null
@@ -74,22 +72,20 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         var links: List<java.lang.String>? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> name = readString(RESPONSE_FIELDS[1])
-            2 -> birthDate = readCustomType<Date>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)
-            3 -> appearanceDates = readList<Date>(RESPONSE_FIELDS[3]) { reader ->
+            0 -> name = readString(RESPONSE_FIELDS[0])
+            1 -> birthDate = readCustomType<Date>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+            2 -> appearanceDates = readList<Date>(RESPONSE_FIELDS[2]) { reader ->
               reader.readCustomType<Date>(CustomType.DATE)
             }?.map { it!! }
-            4 -> fieldWithUnsupportedType = readCustomType<Any>(RESPONSE_FIELDS[4] as ResponseField.CustomTypeField)
-            5 -> profileLink = readCustomType<java.lang.String>(RESPONSE_FIELDS[5] as ResponseField.CustomTypeField)
-            6 -> links = readList<java.lang.String>(RESPONSE_FIELDS[6]) { reader ->
+            3 -> fieldWithUnsupportedType = readCustomType<Any>(RESPONSE_FIELDS[3] as ResponseField.CustomTypeField)
+            4 -> profileLink = readCustomType<java.lang.String>(RESPONSE_FIELDS[4] as ResponseField.CustomTypeField)
+            5 -> links = readList<java.lang.String>(RESPONSE_FIELDS[5]) { reader ->
               reader.readCustomType<java.lang.String>(CustomType.URL)
             }?.map { it!! }
             else -> break
           }
         }
         TestQuery.Hero(
-          __typename = __typename!!,
           name = name!!,
           birthDate = birthDate!!,
           appearanceDates = appearanceDates!!,
@@ -101,16 +97,15 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.Hero) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], value.name)
-      writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, value.birthDate)
-      writer.writeList(RESPONSE_FIELDS[3], value.appearanceDates) { values, listItemWriter ->
+      writer.writeString(RESPONSE_FIELDS[0], value.name)
+      writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, value.birthDate)
+      writer.writeList(RESPONSE_FIELDS[2], value.appearanceDates) { values, listItemWriter ->
         values?.forEach { value ->
           listItemWriter.writeCustom(CustomType.DATE, value)}
       }
-      writer.writeCustom(RESPONSE_FIELDS[4] as ResponseField.CustomTypeField, value.fieldWithUnsupportedType)
-      writer.writeCustom(RESPONSE_FIELDS[5] as ResponseField.CustomTypeField, value.profileLink)
-      writer.writeList(RESPONSE_FIELDS[6], value.links) { values, listItemWriter ->
+      writer.writeCustom(RESPONSE_FIELDS[3] as ResponseField.CustomTypeField, value.fieldWithUnsupportedType)
+      writer.writeCustom(RESPONSE_FIELDS[4] as ResponseField.CustomTypeField, value.profileLink)
+      writer.writeList(RESPONSE_FIELDS[5], value.links) { values, listItemWriter ->
         values?.forEach { value ->
           listItemWriter.writeCustom(CustomType.URL, value)}
       }

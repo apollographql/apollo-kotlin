@@ -1,17 +1,21 @@
 package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo.compiler.ir.Fragment
-import com.apollographql.apollo.compiler.parser.introspection.IntrospectionQuery
+import com.apollographql.apollo.compiler.frontend.gql.GQLFragmentDefinition
+import com.apollographql.apollo.compiler.frontend.gql.GraphQLParser
+import com.apollographql.apollo.compiler.frontend.gql.Schema
+import com.apollographql.apollo.compiler.frontend.gql.toUtf8
 import com.squareup.moshi.JsonClass
 import java.io.File
 
-@JsonClass(generateAdapter = true)
 data class ApolloMetadata(
-    val schema: IntrospectionQuery.Wrapper?,
     /**
-     * The fragments, in IR format
+     * Might be null if the schema is coming from upstream
      */
-    val fragments: List<Fragment>,
+    val schema: Schema?,
+    /**
+     * The fragments
+     */
+    val fragments: List<GQLFragmentDefinition>,
     /**
      * The generated input objects, enums
      */
@@ -25,48 +29,17 @@ data class ApolloMetadata(
     val pluginVersion: String,
     val customTypesMap: Map<String, String>
 ) {
-
-  fun withResolvedFragments(projectDir: File): ApolloMetadata {
-    return copy(
-        fragments = fragments.map {
-          // Try to lookup the file in the rootProject if it exists
-          if (File(it.filePath).isAbsolute) {
-            // already absolute, build cache will not work
-            return@map it
-          }
-
-          val resolvedPath = File(projectDir, it.filePath)
-          if (resolvedPath.exists()) {
-            return@map it.copy(
-                filePath = resolvedPath.absolutePath
-            )
-          }
-
-          // default: best effort mode, the error will not be able to display the context
-          it
-        }
-    )
-  }
-
-  fun withRelativeFragments(rootProjectDir: File): ApolloMetadata {
-    return copy(
-        fragments = fragments.map {
-          // Remove absolute paths from the artifacts in order to not break gradle build cache
-          val relativePath = try {
-            File(it.filePath).relativeTo(rootProjectDir.absoluteFile).path
-          } catch (e: IllegalArgumentException) {
-            println("Apollo: ${it.filePath} and $rootProjectDir don't share the same root, build cache will not work")
-            // fallback to absolute
-            it.filePath
-          }
-          it.copy(filePath = relativePath)
-        }
-    )
-  }
-
-  fun writeTo(file: File) {
-    this.toJson(file)
-  }
+  @JsonClass(generateAdapter = true)
+  internal class JsonMetadata(
+    val schema: String?,
+    val fragments: String,
+    val types: Set<String>,
+    val schemaPackageName: String?,
+    val moduleName: String,
+    val generateKotlinModels: Boolean,
+    val pluginVersion: String,
+    val customTypesMap: Map<String, String>
+  )
 
   companion object {
     fun List<ApolloMetadata>.merge(): ApolloMetadata? {
@@ -113,12 +86,35 @@ data class ApolloMetadata(
       )
     }
 
-    fun readFrom(file: File): ApolloMetadata? {
-      return try {
-        file.fromJson()
-      } catch (e: Exception) {
-        null
+    fun readFrom(file: File): ApolloMetadata {
+      val serializedMetadata = file.fromJson<JsonMetadata>()
+      return with(serializedMetadata) {
+        ApolloMetadata(
+            schema = schema?.let { GraphQLParser.parseSchema(it) },
+            fragments = GraphQLParser.parseDocument(fragments).orThrow().definitions.map { it as GQLFragmentDefinition },
+            types = types,
+            schemaPackageName = schemaPackageName,
+            moduleName = moduleName,
+            generateKotlinModels = generateKotlinModels,
+            pluginVersion = pluginVersion,
+            customTypesMap = customTypesMap
+        )
       }
     }
   }
+
+  fun writeTo(file: File) {
+    val serializedMetadata = JsonMetadata(
+        schema = schema?.toDocument()?.toUtf8(),
+        fragments = fragments.map { it.toUtf8() }.joinToString("\n"),
+        types = types,
+        schemaPackageName = schemaPackageName,
+        moduleName = moduleName,
+        generateKotlinModels = generateKotlinModels,
+        pluginVersion = pluginVersion,
+        customTypesMap = customTypesMap
+    )
+    serializedMetadata.toJson(file)
+  }
+
 }

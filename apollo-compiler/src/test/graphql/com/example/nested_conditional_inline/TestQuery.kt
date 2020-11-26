@@ -123,15 +123,15 @@ data class TestQuery(
    * A humanoid creature from the Star Wars universe
    */
   data class HumanFriend(
-    override val __typename: String = "Human",
-    /**
-     * What this human calls themselves
-     */
-    override val name: String,
     /**
      * Height in the preferred unit, default is meters
      */
-    val height: Double?
+    val height: Double?,
+    override val __typename: String = "Human",
+    /**
+     * The name of the character
+     */
+    override val name: String
   ) : Friend {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
@@ -177,15 +177,15 @@ data class TestQuery(
    * A humanoid creature from the Star Wars universe
    */
   data class HumanHero(
-    override val __typename: String = "Human",
-    /**
-     * What this human calls themselves
-     */
-    override val name: String,
     /**
      * This human's friends, or an empty list if they have none
      */
-    val friends: List<Friend?>?
+    val friends: List<Friend?>?,
+    override val __typename: String = "Human",
+    /**
+     * The name of the character
+     */
+    override val name: String
   ) : Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
@@ -200,15 +200,15 @@ data class TestQuery(
    * A humanoid creature from the Star Wars universe
    */
   data class HumanFriend1(
-    override val __typename: String = "Human",
-    /**
-     * What this human calls themselves
-     */
-    override val name: String,
     /**
      * Height in the preferred unit, default is meters
      */
-    val height: Double?
+    val height: Double?,
+    override val __typename: String = "Human",
+    /**
+     * The name of the character
+     */
+    override val name: String
   ) : Friend1 {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
@@ -254,15 +254,15 @@ data class TestQuery(
    * An autonomous mechanical character in the Star Wars universe
    */
   data class DroidHero(
-    override val __typename: String = "Droid",
-    /**
-     * What others call this droid
-     */
-    override val name: String,
     /**
      * This droid's friends, or an empty list if they have none
      */
-    val friends: List<Friend1?>?
+    val friends: List<Friend1?>?,
+    override val __typename: String = "Droid",
+    /**
+     * The name of the character
+     */
+    override val name: String
   ) : Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->

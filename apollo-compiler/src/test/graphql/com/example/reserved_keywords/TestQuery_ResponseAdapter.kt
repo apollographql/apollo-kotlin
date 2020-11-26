@@ -72,26 +72,22 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object Yield__ResponseAdapter : ResponseAdapter<TestQuery.Yield_> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forCustomType("it", "id", null, false, CustomType.ID, null),
       ResponseField.forString("name", "name", null, false, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Yield_ {
       return reader.run {
-        var __typename: String? = __typename
         var it_: String? = null
         var name: String? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> it_ = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
-            2 -> name = readString(RESPONSE_FIELDS[2])
+            0 -> it_ = readCustomType<String>(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField)
+            1 -> name = readString(RESPONSE_FIELDS[1])
             else -> break
           }
         }
         TestQuery.Yield_(
-          __typename = __typename!!,
           it_ = it_!!,
           name = name!!
         )
@@ -99,40 +95,39 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.Yield_) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, value.it_)
-      writer.writeString(RESPONSE_FIELDS[2], value.name)
+      writer.writeCustom(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField, value.it_)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
     }
   }
 
   object CharacterObject_ResponseAdapter : ResponseAdapter<TestQuery.CharacterObject> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
-      ResponseField.forString("name", "name", null, false, null)
+      ResponseField.forString("name", "name", null, false, null),
+      ResponseField.forString("__typename", "__typename", null, false, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
         TestQuery.CharacterObject {
       return reader.run {
-        var __typename: String? = __typename
         var name: String? = null
+        var __typename: String? = __typename
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> name = readString(RESPONSE_FIELDS[1])
+            0 -> name = readString(RESPONSE_FIELDS[0])
+            1 -> __typename = readString(RESPONSE_FIELDS[1])
             else -> break
           }
         }
         TestQuery.CharacterObject(
-          __typename = __typename!!,
-          name = name!!
+          name = name!!,
+          __typename = __typename!!
         )
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.CharacterObject) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeString(RESPONSE_FIELDS[0], value.name)
+      writer.writeString(RESPONSE_FIELDS[1], value.__typename)
     }
   }
 
@@ -169,6 +164,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Object {
       val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
       return when(typename) {
+        "Character" -> TestQuery_ResponseAdapter.CharacterObject_ResponseAdapter.fromResponse(reader, typename)
         "Droid" -> TestQuery_ResponseAdapter.CharacterObject_ResponseAdapter.fromResponse(reader, typename)
         "Human" -> TestQuery_ResponseAdapter.CharacterObject_ResponseAdapter.fromResponse(reader, typename)
         else -> TestQuery_ResponseAdapter.OtherObject_ResponseAdapter.fromResponse(reader, typename)

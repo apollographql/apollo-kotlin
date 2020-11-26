@@ -101,7 +101,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
    * A character from the Star Wars universe
    */
   data class Node(
-    override val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -118,7 +117,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
    * An edge object for a character's friends
    */
   data class Edge(
-    override val __typename: String = "FriendsEdge",
     /**
      * The character represented by this friendship edge
      */
@@ -135,7 +133,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
    * A connection object for a character's friends
    */
   data class FriendsConnection(
-    override val __typename: String = "FriendsConnection",
     /**
      * The total number of friends
      */
@@ -179,11 +176,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
    * A character from the Star Wars universe
    */
   data class Friend(
-    override val __typename: String = "Character",
-    /**
-     * The name of the character
-     */
-    override val name: String,
     /**
      * The movies this character appears in
      */
@@ -191,7 +183,11 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
     /**
      * The friends of the character, or an empty list if they have none
      */
-    val friends: List<Friend1?>?
+    val friends: List<Friend1?>?,
+    /**
+     * The name of the character
+     */
+    override val name: String
   ) : Friend3 {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
@@ -208,19 +204,19 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
    * A humanoid creature from the Star Wars universe
    */
   data class HumanHeroDetailQuery1(
-    override val __typename: String = "Human",
     /**
-     * What this human calls themselves
+     * Height in the preferred unit, default is meters
      */
-    override val name: String,
+    val height: Double?,
     /**
      * This human's friends, or an empty list if they have none
      */
     override val friends: List<Friend?>?,
+    override val __typename: String = "Human",
     /**
-     * Height in the preferred unit, default is meters
+     * The name of the character
      */
-    val height: Double?
+    override val name: String
   ) : HeroDetailQuery1 {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
@@ -235,7 +231,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
    * A character from the Star Wars universe
    */
   data class Friend2(
-    override val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -275,8 +270,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
    * A character from the Star Wars universe
    */
   interface Friend3 {
-    val __typename: String
-
     /**
      * The name of the character
      */
@@ -321,7 +314,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "11473383397766137d7923128dd8cd6f27fcab32df9d9c091f08cf12a893a556"
+        "69ef2ada86ec094537d524f05f680155b2331dabf1b8420f7f63a84202ed34f7"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -330,13 +323,11 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
           |    __typename
           |    name
           |    friends {
-          |      __typename
           |      name
           |    }
           |    ... on Human {
           |      height
           |      friends {
-          |        __typename
           |        appearsIn
           |        friends {
           |          __typename
@@ -350,12 +341,9 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
           |  __typename
           |  name
           |  friendsConnection {
-          |    __typename
           |    totalCount
           |    edges {
-          |      __typename
           |      node {
-          |        __typename
           |        name
           |      }
           |    }

@@ -209,7 +209,7 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "e7ae0709b15d61fbba95a5c2e74b439fbed8ccf8d68fd389f4dd8250b55efeaf"
+        "8f79c7203afc35079ccb88d398694334c9904f43358af3a6ec894cd303e3c51e"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -217,8 +217,8 @@ data class TestQuery(
           |  hero {
           |    __typename
           |    id
-          |    ... HeroDetails @include(if: ${'$'}withDetails) @skip(if: ${'$'}skipHumanDetails)
-          |    ... HumanDetails @include(if: ${'$'}withDetails)
+          |    ...HeroDetails @include(if: ${'$'}withDetails) @skip(if: ${'$'}skipHumanDetails)
+          |    ...HumanDetails @include(if: ${'$'}withDetails)
           |  }
           |}
           |fragment HeroDetails on Character {

@@ -1,7 +1,0 @@
-Failed to parse GraphQL file /VariableMissing.graphql (2:16)
-Variable `episode` is not defined by operation `TestQuery`
-----------------------------------------------------
-[1]:query TestQuery {
-[2]:  hero(episode: $episode) {
-[3]:    name
-----------------------------------------------------

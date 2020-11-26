@@ -94,8 +94,8 @@ class GetPage : Query<GetPage.Data, Operation.Variables> {
   )
 
   data class ParticularItemItem(
-    override val __typename: String = "ParticularItem",
     val image: String,
+    override val __typename: String = "ParticularItem",
     override val title: String
   ) : Item {
     override fun marshaller(): ResponseFieldMarshaller {
@@ -117,7 +117,7 @@ class GetPage : Query<GetPage.Data, Operation.Variables> {
   }
 
   interface Item : Item2 {
-    override val __typename: String
+    val __typename: String
 
     override val title: String
 
@@ -127,8 +127,8 @@ class GetPage : Query<GetPage.Data, Operation.Variables> {
   }
 
   data class ParticularCollectionCollection(
-    override val __typename: String = "ParticularCollection",
-    override val items: List<Item>
+    override val items: List<Item>,
+    override val __typename: String = "ParticularCollection"
   ) : Collection {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
@@ -138,7 +138,6 @@ class GetPage : Query<GetPage.Data, Operation.Variables> {
   }
 
   data class Item1(
-    override val __typename: String = "Item",
     override val title: String
   ) : Item2 {
     override fun marshaller(): ResponseFieldMarshaller {
@@ -160,8 +159,6 @@ class GetPage : Query<GetPage.Data, Operation.Variables> {
   }
 
   interface Item2 {
-    val __typename: String
-
     val title: String
 
     fun marshaller(): ResponseFieldMarshaller
@@ -193,7 +190,7 @@ class GetPage : Query<GetPage.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "09c2f7755e4c0be866863ec0d0af37acd3cdedf89bb6384d838019477611707e"
+        "09dd0a176a2233eccc3b2d3a76f25a1083460354f399f8b1aaf172c18cfc202b"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -201,7 +198,6 @@ class GetPage : Query<GetPage.Data, Operation.Variables> {
           |  collection {
           |    __typename
           |    items {
-          |      __typename
           |      title
           |    }
           |    ... on ParticularCollection {

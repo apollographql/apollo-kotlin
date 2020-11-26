@@ -141,11 +141,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     /**
      * What this human calls themselves
      */
-    override val name: String,
+    val name: String,
     /**
      * The home planet of the human, or null if unknown
      */
-    override val homePlanet: String?
+    val homePlanet: String?
   ) : QueryFragment.Human {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->

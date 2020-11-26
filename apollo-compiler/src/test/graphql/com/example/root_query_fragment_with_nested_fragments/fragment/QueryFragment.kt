@@ -12,9 +12,6 @@ import com.apollographql.apollo.api.internal.ResponseReader
 import kotlin.String
 import kotlin.Suppress
 
-/**
- * The query type, represents all of the entry points into our object graph
- */
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
@@ -50,16 +47,6 @@ interface QueryFragment : GraphqlFragment {
    */
   interface Human {
     val __typename: String
-
-    /**
-     * What this human calls themselves
-     */
-    val name: String
-
-    /**
-     * The home planet of the human, or null if unknown
-     */
-    val homePlanet: String?
 
     fun marshaller(): ResponseFieldMarshaller
   }
@@ -110,11 +97,11 @@ interface QueryFragment : GraphqlFragment {
     /**
      * What this human calls themselves
      */
-    override val name: String,
+    val name: String,
     /**
      * The home planet of the human, or null if unknown
      */
-    override val homePlanet: String?
+    val homePlanet: String?
   ) : Human {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->

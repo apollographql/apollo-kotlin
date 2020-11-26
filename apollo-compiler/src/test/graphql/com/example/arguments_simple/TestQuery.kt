@@ -141,7 +141,6 @@ data class TestQuery(
    * A character from the Star Wars universe
    */
   data class Node(
-    override val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -158,7 +157,6 @@ data class TestQuery(
    * An edge object for a character's friends
    */
   data class Edge(
-    override val __typename: String = "FriendsEdge",
     /**
      * The character represented by this friendship edge
      */
@@ -175,7 +173,6 @@ data class TestQuery(
    * A connection object for a character's friends
    */
   data class FriendsConnection(
-    override val __typename: String = "FriendsConnection",
     /**
      * The total number of friends
      */
@@ -219,7 +216,6 @@ data class TestQuery(
    * A humanoid creature from the Star Wars universe
    */
   data class HeroWithReview(
-    val __typename: String = "Human",
     /**
      * What this human calls themselves
      */
@@ -248,7 +244,7 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "89afe30dd0fa5ddce3d0b743d3adf68e55a48d0c11d10e495c0ec095949e6d04"
+        "b4e56c478d8dd79496d9d5e474e09c5f71a0deda5180d8e28be697c37605ce9d"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -258,20 +254,25 @@ data class TestQuery(
           |    name @include(if: ${'$'}IncludeName)
           |    ...HeroDetails
           |  }
-          |  heroWithReview(episode: ${'$'}episode, review: {}) {
-          |    __typename
+          |  heroWithReview(episode: ${'$'}episode, review: {
+          |    stars: 5
+          |    favoriteColor: {
+          |      red: 1
+          |      blue: 1
+          |    }
+          |    
+          |    listOfStringNonOptional: []
+          |  }
+          |  ) {
           |    name
           |  }
           |}
           |fragment HeroDetails on Character {
           |  __typename
           |  friendsConnection(first: ${'$'}friendsCount) {
-          |    __typename
           |    totalCount
           |    edges {
-          |      __typename
           |      node {
-          |        __typename
           |        name @include(if: ${'$'}IncludeName)
           |      }
           |    }

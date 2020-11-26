@@ -98,7 +98,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * A character from the Star Wars universe
    */
   data class Node(
-    val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -115,7 +114,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * An edge object for a character's friends
    */
   data class Edge(
-    val __typename: String = "FriendsEdge",
     /**
      * The character represented by this friendship edge
      */
@@ -132,7 +130,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * A connection object for a character's friends
    */
   data class FriendsConnection(
-    val __typename: String = "FriendsConnection",
     /**
      * The edges for each of the character's friends.
      */
@@ -187,7 +184,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "5ff8c88e5dfec4301ed7c0603bae2088ecdd096a8336ed0c2e5d386b08ebe5c5"
+        "516a2d4b3fe97536486d2d559538aab9949d7c7e0de7081caec02439a0cb3969"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -196,11 +193,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           |    __typename
           |    name
           |    friendsConnection {
-          |      __typename
           |      edges {
-          |        __typename
           |        node {
-          |          __typename
           |          name
           |        }
           |      }
@@ -209,11 +203,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           |      name
           |      profileLink
           |      friendsConnection {
-          |        __typename
           |        edges {
-          |          __typename
           |          node {
-          |            __typename
           |            name
           |          }
           |        }

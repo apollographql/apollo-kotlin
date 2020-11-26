@@ -1,0 +1,9 @@
+query TestQuery {
+  hero {
+    __typename
+    ... on Droid {
+      name
+      primaryFunction
+    }
+  }
+}

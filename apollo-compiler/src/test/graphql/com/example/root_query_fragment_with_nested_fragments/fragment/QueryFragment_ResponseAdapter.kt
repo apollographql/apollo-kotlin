@@ -21,9 +21,9 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.QueryFragme
     ResponseField.forString("__typename", "__typename", null, false, null),
     ResponseField.forObject("hero", "hero", null, true, null),
     ResponseField.forObject("droid", "droid", mapOf<String, Any>(
-      "id" to "1"), true, null),
+      "id" to 1), true, null),
     ResponseField.forObject("human", "human", mapOf<String, Any>(
-      "id" to "1"), true, null)
+      "id" to 1), true, null)
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?):

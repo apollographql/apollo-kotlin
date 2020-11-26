@@ -1,7 +1,0 @@
-Failed to parse GraphQL file /VariableIsOptional.graphql (2:16)
-Variable `episode` of type `Episode` used in position expecting type `Episode!`
-----------------------------------------------------
-[1]:query TestQuery($episode: Episode) {
-[2]:  hero(episode: $episode) {
-[3]:    name
-----------------------------------------------------

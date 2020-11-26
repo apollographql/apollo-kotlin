@@ -96,9 +96,9 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * For testing fragment type coercion
    */
   data class BarFoo(
+    val bar: String,
     override val __typename: String = "Bar",
-    override val foo: String,
-    val bar: String
+    override val foo: String
   ) : Foo {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->

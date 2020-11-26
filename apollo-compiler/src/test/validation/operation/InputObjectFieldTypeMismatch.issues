@@ -1,0 +1,8 @@
+ERROR: ValidationError (2:23)
+No value passed for required inputField stars
+------------
+ERROR: ValidationError (2:23)
+No value passed for required inputField listOfStringNonOptional
+------------
+ERROR: ValidationError (4:11)
+Variable `red` of type `String!` used in position expecting type `Int!`

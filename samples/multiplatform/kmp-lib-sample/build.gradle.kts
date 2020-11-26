@@ -76,3 +76,7 @@ tasks.register("copyFramework", Sync::class) {
     gradlew.setExecutable(true)
   }
 }
+
+apollo {
+  service("kmpsample")
+}

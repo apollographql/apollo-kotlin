@@ -97,7 +97,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * A character from the Star Wars universe
    */
   data class Yield_(
-    val __typename: String = "Character",
     /**
      * The ID of the character
      */
@@ -118,11 +117,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * A character from the Star Wars universe
    */
   data class CharacterObject(
-    override val __typename: String = "Character",
     /**
      * The name of the character
      */
-    val name: String
+    val name: String,
+    override val __typename: String = "Character"
   ) : Object {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
@@ -167,13 +166,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "47d23fa9d7e9bf697a19f43297b1c422ae31ce1886f740e3982a5daf9b7e1ebd"
+        "da9796efa24977e73e9b865a993e83961235a63020ff989484d31097ab8e065b"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery {
           |  yield: hero {
-          |    __typename
           |    it: id
           |    name
           |  }

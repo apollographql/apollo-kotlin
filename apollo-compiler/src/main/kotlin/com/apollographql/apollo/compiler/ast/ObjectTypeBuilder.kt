@@ -1,13 +1,13 @@
 package com.apollographql.apollo.compiler.ast
 
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
-import com.apollographql.apollo.compiler.ir.Condition
-import com.apollographql.apollo.compiler.ir.Field
-import com.apollographql.apollo.compiler.ir.Fragment as IrFragment
-import com.apollographql.apollo.compiler.ir.FragmentRef
-import com.apollographql.apollo.compiler.ir.InlineFragment
-import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
-import com.apollographql.apollo.compiler.parser.introspection.resolveType
+import com.apollographql.apollo.compiler.frontend.ir.Condition
+import com.apollographql.apollo.compiler.frontend.ir.Field
+import com.apollographql.apollo.compiler.frontend.ir.Fragment as IrFragment
+import com.apollographql.apollo.compiler.frontend.ir.FragmentRef
+import com.apollographql.apollo.compiler.frontend.ir.InlineFragment
+import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
+import com.apollographql.apollo.compiler.introspection.resolveType
 import com.apollographql.apollo.compiler.singularize
 
 internal class ObjectTypeBuilder(

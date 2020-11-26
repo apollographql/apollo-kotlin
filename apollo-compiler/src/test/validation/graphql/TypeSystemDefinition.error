@@ -1,7 +1,0 @@
-Failed to parse GraphQL file /TypeSystemDefinition.graphql (7:0)
-Found a type system definition while expecting an executable definition.
-----------------------------------------------------
-[6]:
-[7]:type LightSaber {
-[8]:  color: Int
-----------------------------------------------------

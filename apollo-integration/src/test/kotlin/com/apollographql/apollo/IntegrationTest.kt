@@ -290,7 +290,7 @@ class IntegrationTest {
         "\"query\": " + query.queryDocument() + ", " +
         "\"variables\": " + query.variables().marshal() +
         "}"
-    assertThat(payload).isEqualTo("{\"operationName\": EpisodeHeroName, \"query\": query EpisodeHeroName(\$episode: Episode) { hero(episode: \$episode) { __typename name } }, \"variables\": {\"episode\":\"EMPIRE\"}}")
+    assertThat(payload).isEqualTo("{\"operationName\": EpisodeHeroName, \"query\": query EpisodeHeroName(\$episode: Episode) { hero(episode: \$episode) { name } }, \"variables\": {\"episode\":\"EMPIRE\"}}")
   }
 
   @Test

@@ -51,83 +51,119 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object HumanCharacterHero_ResponseAdapter : ResponseAdapter<TestQuery.HumanCharacterHero> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
-      ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
       ResponseField.forString("name", "name", null, false, null),
-      ResponseField.forString("homePlanet", "homePlanet", null, true, null)
+      ResponseField.forString("homePlanet", "homePlanet", null, true, null),
+      ResponseField.forString("__typename", "__typename", null, false, null),
+      ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
         TestQuery.HumanCharacterHero {
       return reader.run {
-        var __typename: String? = __typename
-        var id: String? = null
         var name: String? = null
         var homePlanet: String? = null
+        var __typename: String? = __typename
+        var id: String? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
-            2 -> name = readString(RESPONSE_FIELDS[2])
-            3 -> homePlanet = readString(RESPONSE_FIELDS[3])
+            0 -> name = readString(RESPONSE_FIELDS[0])
+            1 -> homePlanet = readString(RESPONSE_FIELDS[1])
+            2 -> __typename = readString(RESPONSE_FIELDS[2])
+            3 -> id = readCustomType<String>(RESPONSE_FIELDS[3] as ResponseField.CustomTypeField)
             else -> break
           }
         }
         TestQuery.HumanCharacterHero(
-          __typename = __typename!!,
-          id = id!!,
           name = name!!,
-          homePlanet = homePlanet
+          homePlanet = homePlanet,
+          __typename = __typename!!,
+          id = id!!
         )
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.HumanCharacterHero) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, value.id)
-      writer.writeString(RESPONSE_FIELDS[2], value.name)
-      writer.writeString(RESPONSE_FIELDS[3], value.homePlanet)
+      writer.writeString(RESPONSE_FIELDS[0], value.name)
+      writer.writeString(RESPONSE_FIELDS[1], value.homePlanet)
+      writer.writeString(RESPONSE_FIELDS[2], value.__typename)
+      writer.writeCustom(RESPONSE_FIELDS[3] as ResponseField.CustomTypeField, value.id)
     }
   }
 
   object DroidCharacterHero_ResponseAdapter : ResponseAdapter<TestQuery.DroidCharacterHero> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
-      ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
       ResponseField.forString("name", "name", null, false, null),
-      ResponseField.forString("primaryFunction", "primaryFunction", null, true, null)
+      ResponseField.forString("primaryFunction", "primaryFunction", null, true, null),
+      ResponseField.forString("__typename", "__typename", null, false, null),
+      ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
         TestQuery.DroidCharacterHero {
       return reader.run {
-        var __typename: String? = __typename
-        var id: String? = null
         var name: String? = null
         var primaryFunction: String? = null
+        var __typename: String? = __typename
+        var id: String? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
-            2 -> name = readString(RESPONSE_FIELDS[2])
-            3 -> primaryFunction = readString(RESPONSE_FIELDS[3])
+            0 -> name = readString(RESPONSE_FIELDS[0])
+            1 -> primaryFunction = readString(RESPONSE_FIELDS[1])
+            2 -> __typename = readString(RESPONSE_FIELDS[2])
+            3 -> id = readCustomType<String>(RESPONSE_FIELDS[3] as ResponseField.CustomTypeField)
             else -> break
           }
         }
         TestQuery.DroidCharacterHero(
-          __typename = __typename!!,
-          id = id!!,
           name = name!!,
-          primaryFunction = primaryFunction
+          primaryFunction = primaryFunction,
+          __typename = __typename!!,
+          id = id!!
         )
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.DroidCharacterHero) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, value.id)
-      writer.writeString(RESPONSE_FIELDS[2], value.name)
-      writer.writeString(RESPONSE_FIELDS[3], value.primaryFunction)
+      writer.writeString(RESPONSE_FIELDS[0], value.name)
+      writer.writeString(RESPONSE_FIELDS[1], value.primaryFunction)
+      writer.writeString(RESPONSE_FIELDS[2], value.__typename)
+      writer.writeCustom(RESPONSE_FIELDS[3] as ResponseField.CustomTypeField, value.id)
+    }
+  }
+
+  object CharacterHero_ResponseAdapter : ResponseAdapter<TestQuery.CharacterHero> {
+    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.forString("name", "name", null, false, null),
+      ResponseField.forString("__typename", "__typename", null, false, null),
+      ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null)
+    )
+
+    override fun fromResponse(reader: ResponseReader, __typename: String?):
+        TestQuery.CharacterHero {
+      return reader.run {
+        var name: String? = null
+        var __typename: String? = __typename
+        var id: String? = null
+        while(true) {
+          when (selectField(RESPONSE_FIELDS)) {
+            0 -> name = readString(RESPONSE_FIELDS[0])
+            1 -> __typename = readString(RESPONSE_FIELDS[1])
+            2 -> id = readCustomType<String>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)
+            else -> break
+          }
+        }
+        TestQuery.CharacterHero(
+          name = name!!,
+          __typename = __typename!!,
+          id = id!!
+        )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.CharacterHero) {
+      writer.writeString(RESPONSE_FIELDS[0], value.name)
+      writer.writeString(RESPONSE_FIELDS[1], value.__typename)
+      writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, value.id)
     }
   }
 
@@ -172,6 +208,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       return when(typename) {
         "Human" -> TestQuery_ResponseAdapter.HumanCharacterHero_ResponseAdapter.fromResponse(reader, typename)
         "Droid" -> TestQuery_ResponseAdapter.DroidCharacterHero_ResponseAdapter.fromResponse(reader, typename)
+        "Character" -> TestQuery_ResponseAdapter.CharacterHero_ResponseAdapter.fromResponse(reader, typename)
         else -> TestQuery_ResponseAdapter.OtherHero_ResponseAdapter.fromResponse(reader, typename)
       }
     }
@@ -180,6 +217,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       when(value) {
         is TestQuery.HumanCharacterHero -> TestQuery_ResponseAdapter.HumanCharacterHero_ResponseAdapter.toResponse(writer, value)
         is TestQuery.DroidCharacterHero -> TestQuery_ResponseAdapter.DroidCharacterHero_ResponseAdapter.toResponse(writer, value)
+        is TestQuery.CharacterHero -> TestQuery_ResponseAdapter.CharacterHero_ResponseAdapter.toResponse(writer, value)
         is TestQuery.OtherHero -> TestQuery_ResponseAdapter.OtherHero_ResponseAdapter.toResponse(writer, value)
       }
     }

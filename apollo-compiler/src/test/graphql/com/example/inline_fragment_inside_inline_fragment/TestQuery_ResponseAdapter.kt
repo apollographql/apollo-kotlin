@@ -56,6 +56,37 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
   }
 
+  object CharacterSearch_ResponseAdapter : ResponseAdapter<TestQuery.CharacterSearch> {
+    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.forString("__typename", "__typename", null, false, null),
+      ResponseField.forString("name", "name", null, false, null)
+    )
+
+    override fun fromResponse(reader: ResponseReader, __typename: String?):
+        TestQuery.CharacterSearch {
+      return reader.run {
+        var __typename: String? = __typename
+        var name: String? = null
+        while(true) {
+          when (selectField(RESPONSE_FIELDS)) {
+            0 -> __typename = readString(RESPONSE_FIELDS[0])
+            1 -> name = readString(RESPONSE_FIELDS[1])
+            else -> break
+          }
+        }
+        TestQuery.CharacterSearch(
+          __typename = __typename!!,
+          name = name!!
+        )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.CharacterSearch) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+    }
+  }
+
   object CharacterDroidSearch_ResponseAdapter : ResponseAdapter<TestQuery.CharacterDroidSearch> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forString("__typename", "__typename", null, false, null),
@@ -161,6 +192,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Search {
       val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
       return when(typename) {
+        "Character" -> TestQuery_ResponseAdapter.CharacterSearch_ResponseAdapter.fromResponse(reader, typename)
         "Droid" -> TestQuery_ResponseAdapter.CharacterDroidSearch_ResponseAdapter.fromResponse(reader, typename)
         "Human" -> TestQuery_ResponseAdapter.CharacterHumanSearch_ResponseAdapter.fromResponse(reader, typename)
         else -> TestQuery_ResponseAdapter.OtherSearch_ResponseAdapter.fromResponse(reader, typename)
@@ -169,6 +201,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.Search) {
       when(value) {
+        is TestQuery.CharacterSearch -> TestQuery_ResponseAdapter.CharacterSearch_ResponseAdapter.toResponse(writer, value)
         is TestQuery.CharacterDroidSearch -> TestQuery_ResponseAdapter.CharacterDroidSearch_ResponseAdapter.toResponse(writer, value)
         is TestQuery.CharacterHumanSearch -> TestQuery_ResponseAdapter.CharacterHumanSearch_ResponseAdapter.toResponse(writer, value)
         is TestQuery.OtherSearch -> TestQuery_ResponseAdapter.OtherSearch_ResponseAdapter.toResponse(writer, value)

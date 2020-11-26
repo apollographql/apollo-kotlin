@@ -1,7 +1,0 @@
-Failed to parse GraphQL file /FragmentUnknownType.graphql (7:25)
-Unknown type `Banana`
-----------------------------------------------------
-[6]:
-[7]:fragment HeroFragment on Banana {
-[8]:  name
-----------------------------------------------------

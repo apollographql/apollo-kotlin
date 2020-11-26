@@ -1,0 +1,2 @@
+ERROR: ValidationError (2:16)
+Variable `episode` is not defined by operation `TestQuery`

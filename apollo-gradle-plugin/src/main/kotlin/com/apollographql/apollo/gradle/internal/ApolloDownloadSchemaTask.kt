@@ -1,12 +1,12 @@
 package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
-import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Companion.wrap
-import com.apollographql.apollo.compiler.parser.introspection.toSDL
-import com.apollographql.apollo.compiler.parser.sdl.GraphSDLSchemaParser.parse
-import com.apollographql.apollo.compiler.parser.sdl.toIntrospectionSchema
+import com.apollographql.apollo.compiler.frontend.gql.GraphQLParser
+import com.apollographql.apollo.compiler.frontend.gql.toIntrospectionSchema
+import com.apollographql.apollo.compiler.frontend.gql.toSchema
+import com.apollographql.apollo.compiler.frontend.gql.toUtf8
+import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
+import com.apollographql.apollo.compiler.introspection.IntrospectionSchema.Companion.wrap
 import com.apollographql.apollo.compiler.toJson
-import okio.Buffer
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
@@ -14,7 +14,6 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
 import java.io.File
-import java.nio.charset.Charset
 
 /**
  * A task to download a schema either from introspection or from the registry.
@@ -107,14 +106,12 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
 
     if (schema.extension.toLowerCase() == "json") {
       if (introspectionSchema == null) {
-        introspectionSchema = sdlSchema!!.parse().toIntrospectionSchema().wrap().toJson()
+        introspectionSchema = GraphQLParser.parseSchema(sdlSchema!!).toIntrospectionSchema().wrap().toJson()
       }
       schema.writeText(introspectionSchema)
     } else {
       if (sdlSchema == null) {
-        val buffer = Buffer()
-        IntrospectionSchema(introspectionSchema!!.byteInputStream()).toSDL(buffer)
-        sdlSchema = buffer.readString(Charset.defaultCharset())
+        sdlSchema = IntrospectionSchema(introspectionSchema!!.byteInputStream()).toSchema().toDocument().toUtf8()
       }
       schema.writeText(sdlSchema)
     }

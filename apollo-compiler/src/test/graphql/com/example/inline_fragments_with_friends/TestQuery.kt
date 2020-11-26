@@ -99,7 +99,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * A character from the Star Wars universe
    */
   data class Friend(
-    val __typename: String = "Character",
     /**
      * The movies this character appears in
      */
@@ -118,11 +117,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * A humanoid creature from the Star Wars universe
    */
   data class HumanHero(
-    override val __typename: String = "Human",
-    /**
-     * What this human calls themselves
-     */
-    override val name: String,
     /**
      * Height in the preferred unit, default is meters
      */
@@ -130,7 +124,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     /**
      * This human's friends, or an empty list if they have none
      */
-    val friends: List<Friend?>?
+    val friends: List<Friend?>?,
+    override val __typename: String = "Human",
+    /**
+     * The name of the character
+     */
+    override val name: String
   ) : Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
@@ -145,7 +144,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * A character from the Star Wars universe
    */
   data class Friend1(
-    val __typename: String = "Character",
     /**
      * The ID of the character
      */
@@ -162,11 +160,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * An autonomous mechanical character in the Star Wars universe
    */
   data class DroidHero(
-    override val __typename: String = "Droid",
-    /**
-     * What others call this droid
-     */
-    override val name: String,
     /**
      * This droid's primary function
      */
@@ -174,7 +167,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     /**
      * This droid's friends, or an empty list if they have none
      */
-    val friends: List<Friend1?>?
+    val friends: List<Friend1?>?,
+    override val __typename: String = "Droid",
+    /**
+     * The name of the character
+     */
+    override val name: String
   ) : Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
@@ -235,7 +233,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "6a20c9553e5f209b6cc63f98b9d154b5d5917cdea11a903e5dc7f8f420f949b6"
+        "43bfea6068cd77041d723551dd119f0676f6c333620dd281a668eca49d14fcb5"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -246,14 +244,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           |    ... on Human {
           |      height
           |      friends {
-          |        __typename
           |        appearsIn
           |      }
           |    }
           |    ... on Droid {
           |      primaryFunction
           |      friends {
-          |        __typename
           |        id
           |      }
           |    }

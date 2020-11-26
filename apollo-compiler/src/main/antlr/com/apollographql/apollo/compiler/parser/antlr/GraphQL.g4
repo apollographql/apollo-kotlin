@@ -81,7 +81,7 @@ implementsInterface
   ;
 
 interfaceTypeDefinition
-  : description? INTERFACE name directives? fieldsDefinition
+  : description? INTERFACE name implementsInterfaces? directives? fieldsDefinition
   ;
 
 fieldsDefinition
@@ -120,12 +120,11 @@ inputValueDefinition
   ;
 
 directiveDefinition
-  : description? DIRECTIVE '@' name argumentsDefinition? ON_KEYWORD directiveLocations
+  : description? DIRECTIVE '@' name argumentsDefinition? REPEATABLE? ON_KEYWORD directiveLocations
   ;
 
 directiveLocations
-  : directiveLocation
-  | directiveLocations '|' directiveLocation
+  : directiveLocation ('|' directiveLocation)*
   ;
 
 directiveLocation: name;
@@ -136,7 +135,7 @@ typeSystemExtension
 
 schemaExtension
   : EXTEND SCHEMA directives? operationTypesDefinition
-  | EXTEND SCHEMA directives+
+  | EXTEND SCHEMA directives
   ;
 
 typeExtension
@@ -155,12 +154,12 @@ objectTypeExtensionDefinition
 
 interfaceTypeExtensionDefinition
   : EXTEND INTERFACE name directives? fieldsDefinition
-  | EXTEND INTERFACE name directives?
+  | EXTEND INTERFACE name directives
   ;
 
 unionTypeExtensionDefinition
   : EXTEND UNION name directives? unionMemberTypes
-  | EXTEND UNION name directives?
+  | EXTEND UNION name directives
   ;
 
 scalarTypeExtensionDefinition
@@ -169,12 +168,12 @@ scalarTypeExtensionDefinition
 
 enumTypeExtensionDefinition
   : EXTEND ENUM name directives? enumValuesDefinition
-  | EXTEND ENUM name directives?
+  | EXTEND ENUM name directives
   ;
 
 inputObjectTypeExtensionDefinition
   : EXTEND INPUT name directives? inputFieldsDefinition
-  | EXTEND INPUT name directives?
+  | EXTEND INPUT name directives
   ;
 
 operationTypesDefinition
@@ -192,7 +191,7 @@ operationType
   ;
 
 operationDefinition
-  : operationType name? variableDefinitions? directives? selectionSet
+  : description? operationType name? variableDefinitions? directives? selectionSet
   ;
 
 selectionSet
@@ -200,8 +199,7 @@ selectionSet
   ;
 
 description
-  : STRING
-  | BLOCK_STRING
+  : stringValue
   ;
 
 selection
@@ -209,15 +207,11 @@ selection
   ;
 
 field
-  : fieldName arguments? directives? selectionSet?
-  ;
-
-fieldName
-  : alias | name
+  : alias? name arguments? directives? selectionSet?
   ;
 
 alias
-  : name ':' name
+  : name ':'
   ;
 
 arguments
@@ -237,7 +231,7 @@ inlineFragment
   ;
 
 fragmentDefinition
-  : FRAGMENT fragmentName ON_KEYWORD typeCondition directives? selectionSet
+  : description? FRAGMENT fragmentName ON_KEYWORD typeCondition directives? selectionSet
   ;
 
 fragmentName
@@ -330,7 +324,6 @@ listType
 nonNullType
   : namedType '!'
   | listType '!'
-  | nonNullType '!'
   ;
 
 nameCommon
@@ -349,6 +342,7 @@ nameCommon
   | DIRECTIVE
   | FRAGMENT
   | EXTEND
+  | REPEATABLE
   ;
 
 
@@ -368,9 +362,7 @@ nameButNotBooleanOrNull
 // We cannot make `name` a token because things like 'query', 'fragment', etc... are valid names so could potentially be used in
 // field names or other places
 name
-  : nameButNotBooleanOrNull
-  | BOOLEAN
-  | NULL
+  : nameButNotOn
   | ON_KEYWORD
   ;
 
@@ -397,6 +389,7 @@ INPUT: 'input';
 DIRECTIVE: 'directive';
 FRAGMENT: 'fragment';
 ON_KEYWORD: 'on';
+REPEATABLE: 'repeatable';
 EXTEND: 'extend';
 UTF8_BOM: '\uEFBBBF';
 UTF16_BOM: '\uFEFF';

@@ -9,6 +9,12 @@ import com.apollographql.apollo.api.ScalarType
 import kotlin.String
 
 enum class CustomType : ScalarType {
+  DATE {
+    override fun typeName(): String = "Date"
+
+    override fun className(): String = "kotlin.Any"
+  },
+
   ID {
     override fun typeName(): String = "ID"
 
@@ -17,6 +23,12 @@ enum class CustomType : ScalarType {
 
   URL {
     override fun typeName(): String = "URL"
+
+    override fun className(): String = "kotlin.Any"
+  },
+
+  UNSUPPORTEDTYPE {
+    override fun typeName(): String = "UnsupportedType"
 
     override fun className(): String = "kotlin.Any"
   }

@@ -47,36 +47,36 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
 
   object ParticularItemItem_ResponseAdapter : ResponseAdapter<GetPage.ParticularItemItem> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forString("image", "image", null, false, null),
+      ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forString("title", "title", null, false, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
         GetPage.ParticularItemItem {
       return reader.run {
-        var __typename: String? = __typename
         var image: String? = null
+        var __typename: String? = __typename
         var title: String? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> image = readString(RESPONSE_FIELDS[1])
+            0 -> image = readString(RESPONSE_FIELDS[0])
+            1 -> __typename = readString(RESPONSE_FIELDS[1])
             2 -> title = readString(RESPONSE_FIELDS[2])
             else -> break
           }
         }
         GetPage.ParticularItemItem(
-          __typename = __typename!!,
           image = image!!,
+          __typename = __typename!!,
           title = title!!
         )
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: GetPage.ParticularItemItem) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], value.image)
+      writer.writeString(RESPONSE_FIELDS[0], value.image)
+      writer.writeString(RESPONSE_FIELDS[1], value.__typename)
       writer.writeString(RESPONSE_FIELDS[2], value.title)
     }
   }
@@ -136,72 +136,67 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
   object ParticularCollectionCollection_ResponseAdapter :
       ResponseAdapter<GetPage.ParticularCollectionCollection> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
-      ResponseField.forList("items", "items", null, false, null)
+      ResponseField.forList("items", "items", null, false, null),
+      ResponseField.forString("__typename", "__typename", null, false, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
         GetPage.ParticularCollectionCollection {
       return reader.run {
-        var __typename: String? = __typename
         var items: List<GetPage.Item>? = null
+        var __typename: String? = __typename
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> items = readList<GetPage.Item>(RESPONSE_FIELDS[1]) { reader ->
+            0 -> items = readList<GetPage.Item>(RESPONSE_FIELDS[0]) { reader ->
               reader.readObject<GetPage.Item> { reader ->
                 GetPage_ResponseAdapter.Item_ResponseAdapter.fromResponse(reader)
               }
             }?.map { it!! }
+            1 -> __typename = readString(RESPONSE_FIELDS[1])
             else -> break
           }
         }
         GetPage.ParticularCollectionCollection(
-          __typename = __typename!!,
-          items = items!!
+          items = items!!,
+          __typename = __typename!!
         )
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: GetPage.ParticularCollectionCollection) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeList(RESPONSE_FIELDS[1], value.items) { values, listItemWriter ->
+      writer.writeList(RESPONSE_FIELDS[0], value.items) { values, listItemWriter ->
         values?.forEach { value ->
           listItemWriter.writeObject { writer ->
             GetPage_ResponseAdapter.Item_ResponseAdapter.toResponse(writer, value)
           }
         }
       }
+      writer.writeString(RESPONSE_FIELDS[1], value.__typename)
     }
   }
 
   object Item1_ResponseAdapter : ResponseAdapter<GetPage.Item1> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forString("title", "title", null, false, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): GetPage.Item1 {
       return reader.run {
-        var __typename: String? = __typename
         var title: String? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> title = readString(RESPONSE_FIELDS[1])
+            0 -> title = readString(RESPONSE_FIELDS[0])
             else -> break
           }
         }
         GetPage.Item1(
-          __typename = __typename!!,
           title = title!!
         )
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: GetPage.Item1) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], value.title)
+      writer.writeString(RESPONSE_FIELDS[0], value.title)
     }
   }
 

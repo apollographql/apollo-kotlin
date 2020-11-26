@@ -121,7 +121,6 @@ data class CreateReviewForEpisodeMutation(
    * Represents a review for a movie
    */
   data class CreateReview(
-    val __typename: String = "Review",
     /**
      * The number of stars this review gave, 1-5
      */
@@ -153,13 +152,12 @@ data class CreateReviewForEpisodeMutation(
 
   companion object {
     const val OPERATION_ID: String =
-        "0cd4b32f15788d426344f5f8d2ee1a3cebb72c167005cb147d2a47761c120a41"
+        "0af665fbb1ccec4fbec377a80b620cb423b737162848a7b16b842c2fa382b54c"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |mutation CreateReviewForEpisode(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) {
           |  createReview(episode: ${'$'}ep, review: ${'$'}review) {
-          |    __typename
           |    stars
           |    commentary
           |  }

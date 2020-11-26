@@ -113,6 +113,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Search {
       val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
       return when(typename) {
+        "Character" -> TestQuery_ResponseAdapter.CharacterSearch_ResponseAdapter.fromResponse(reader, typename)
         "Droid" -> TestQuery_ResponseAdapter.CharacterSearch_ResponseAdapter.fromResponse(reader, typename)
         "Human" -> TestQuery_ResponseAdapter.CharacterSearch_ResponseAdapter.fromResponse(reader, typename)
         "Starship" -> TestQuery_ResponseAdapter.StarshipSearch_ResponseAdapter.fromResponse(reader, typename)

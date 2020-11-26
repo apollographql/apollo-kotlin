@@ -96,15 +96,14 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * A character from the Star Wars universe
    */
   data class Hero(
-    val __typename: String = "Character",
-    /**
-     * The name of the character
-     */
-    val name: String,
     /**
      * The ID of the character
      */
-    val id: String
+    val id: String,
+    /**
+     * The name of the character
+     */
+    val name: String
   ) {
     fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
@@ -133,11 +132,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           """
           |query TestQuery {
           |  hero {
-          |    __typename
-          |    name
-          |  }
-          |  hero {
-          |    __typename
           |    id
           |    name
           |  }

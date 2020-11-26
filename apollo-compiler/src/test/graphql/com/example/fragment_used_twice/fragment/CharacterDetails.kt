@@ -13,9 +13,6 @@ import kotlin.Any
 import kotlin.String
 import kotlin.Suppress
 
-/**
- * A character from the Star Wars universe
- */
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")

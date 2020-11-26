@@ -1,9 +1,9 @@
 package com.apollographql.apollo.compiler.codegen
 
 import com.apollographql.apollo.compiler.ast.buildCodeGenerationAst
-import com.apollographql.apollo.compiler.ir.CodeGenerationIR
+import com.apollographql.apollo.compiler.frontend.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
-import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
+import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.TypeSpec
 import java.io.File

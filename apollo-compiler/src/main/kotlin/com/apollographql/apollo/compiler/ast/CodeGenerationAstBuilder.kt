@@ -1,19 +1,19 @@
 package com.apollographql.apollo.compiler.ast
 
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
-import com.apollographql.apollo.compiler.ir.CodeGenerationIR
-import com.apollographql.apollo.compiler.ir.Field
-import com.apollographql.apollo.compiler.ir.Operation
-import com.apollographql.apollo.compiler.ir.Operation.Companion.TYPE_MUTATION
-import com.apollographql.apollo.compiler.ir.Operation.Companion.TYPE_QUERY
-import com.apollographql.apollo.compiler.ir.Operation.Companion.TYPE_SUBSCRIPTION
-import com.apollographql.apollo.compiler.ir.SourceLocation
-import com.apollographql.apollo.compiler.ir.TypeDeclaration
+import com.apollographql.apollo.compiler.frontend.ir.CodeGenerationIR
+import com.apollographql.apollo.compiler.frontend.ir.Field
+import com.apollographql.apollo.compiler.frontend.ir.Operation
+import com.apollographql.apollo.compiler.frontend.ir.Operation.Companion.TYPE_MUTATION
+import com.apollographql.apollo.compiler.frontend.ir.Operation.Companion.TYPE_QUERY
+import com.apollographql.apollo.compiler.frontend.ir.Operation.Companion.TYPE_SUBSCRIPTION
+import com.apollographql.apollo.compiler.frontend.ir.SourceLocation
+import com.apollographql.apollo.compiler.frontend.ir.TypeDeclaration
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo.compiler.operationoutput.findOperationId
-import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
-import com.apollographql.apollo.compiler.parser.introspection.resolveType
-import com.apollographql.apollo.compiler.ir.Fragment as IrFragment
+import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
+import com.apollographql.apollo.compiler.introspection.resolveType
+import com.apollographql.apollo.compiler.frontend.ir.Fragment as IrFragment
 
 internal fun CodeGenerationIR.buildCodeGenerationAst(
     schema: IntrospectionSchema,
@@ -310,10 +310,8 @@ private class CodeGenerationAstBuilder(
   ): CodeGenerationAst.OperationDataType {
     val operationSchemaType = when {
       isQuery() -> schema.queryType
-
-      isMutation() -> schema.mutationType
-
-      isSubscription() -> schema.subscriptionType
+      isMutation() -> schema.mutationType!!
+      isSubscription() -> schema.subscriptionType!!
 
       else -> throw IllegalArgumentException("Unsupported GraphQL operation type: `$operationType`")
     }
@@ -409,6 +407,7 @@ private class CodeGenerationAstBuilder(
     return CodeGenerationAst.FragmentType(
         graphqlName = fragmentName,
         rootType = rootType,
+        description = description,
         defaultImplementation = defaultImplementationType,
         nestedTypes = nestedTypeContainer.typeContainer,
         fragmentDefinition = source

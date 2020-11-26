@@ -97,7 +97,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * A character from the Star Wars universe
    */
   data class Hero(
-    override val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -126,7 +125,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "c93435f17c0461c309240b6f3d5682feec5dfc83af884170a57dcf407f77abd9"
+        "f2287d7a8933207536dba2321db795487257ae1c8f5a9f0577d02361c0117ae5"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -137,7 +136,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           |fragment QueryFragment on Query {
           |  __typename
           |  hero {
-          |    __typename
           |    name
           |  }
           |}

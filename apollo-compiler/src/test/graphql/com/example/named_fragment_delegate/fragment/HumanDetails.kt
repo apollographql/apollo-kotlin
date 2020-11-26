@@ -14,9 +14,6 @@ import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
 
-/**
- * A humanoid creature from the Star Wars universe
- */
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
@@ -42,8 +39,6 @@ interface HumanDetails : GraphqlFragment {
    * A character from the Star Wars universe
    */
   interface Node {
-    val __typename: String
-
     /**
      * The name of the character
      */
@@ -56,8 +51,6 @@ interface HumanDetails : GraphqlFragment {
    * An edge object for a character's friends
    */
   interface Edge {
-    val __typename: String
-
     /**
      * The character represented by this friendship edge
      */
@@ -70,8 +63,6 @@ interface HumanDetails : GraphqlFragment {
    * A connection object for a character's friends
    */
   interface FriendsConnection {
-    val __typename: String
-
     /**
      * The edges for each of the character's friends.
      */
@@ -84,7 +75,6 @@ interface HumanDetails : GraphqlFragment {
    * A character from the Star Wars universe
    */
   data class Node1(
-    override val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -101,7 +91,6 @@ interface HumanDetails : GraphqlFragment {
    * An edge object for a character's friends
    */
   data class Edge1(
-    override val __typename: String = "FriendsEdge",
     /**
      * The character represented by this friendship edge
      */
@@ -118,7 +107,6 @@ interface HumanDetails : GraphqlFragment {
    * A connection object for a character's friends
    */
   data class FriendsConnection1(
-    override val __typename: String = "FriendsConnection",
     /**
      * The edges for each of the character's friends.
      */
@@ -163,11 +151,8 @@ interface HumanDetails : GraphqlFragment {
         |  name
         |  profileLink
         |  friendsConnection {
-        |    __typename
         |    edges {
-        |      __typename
         |      node {
-        |        __typename
         |        name
         |      }
         |    }

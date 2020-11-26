@@ -99,19 +99,19 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * A humanoid creature from the Star Wars universe
    */
   data class HumanHero(
-    override val __typename: String = "Human",
-    /**
-     * What this human calls themselves
-     */
-    override val name: String,
-    /**
-     * The movies this human appears in
-     */
-    override val appearsIn: List<Episode?>,
     /**
      * Height in the preferred unit, default is meters
      */
-    val height: Double?
+    val height: Double?,
+    override val __typename: String = "Human",
+    /**
+     * The name of the character
+     */
+    override val name: String,
+    /**
+     * The movies this character appears in
+     */
+    override val appearsIn: List<Episode?>
   ) : Hero {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
@@ -204,11 +204,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "22e04d7f32ad56e49eb2092e14a88853689bab52269dcc5d4d861d2d0a449657"
+        "25584d760eab0f41189b9f2bbdbba3c0ec491aced65ef23924ecdc8f41ffe78c"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery {
+          |  __typename
           |  ... on Query {
           |    __typename
           |    hero {

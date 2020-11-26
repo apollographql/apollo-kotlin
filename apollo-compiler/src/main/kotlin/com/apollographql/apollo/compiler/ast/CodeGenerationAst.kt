@@ -43,6 +43,7 @@ internal data class CodeGenerationAst(
   data class FragmentType(
       val graphqlName: String,
       val rootType: TypeRef,
+      val description: String,
       val defaultImplementation: TypeRef,
       val nestedTypes: ObjectTypeContainer,
       val fragmentDefinition: String

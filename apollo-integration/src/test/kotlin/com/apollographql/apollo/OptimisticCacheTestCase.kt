@@ -64,15 +64,12 @@ class OptimisticCacheTestCase {
     )
     val mutationId = UUID.randomUUID()
     val data = HeroAndFriendsNamesQuery.Data(HeroAndFriendsNamesQuery.Hero(
-        "Droid",
         "R222-D222",
         Arrays.asList(
             HeroAndFriendsNamesQuery.Friend(
-                "Human",
                 "SuperMan"
             ),
             HeroAndFriendsNamesQuery.Friend(
-                "Human",
                 "Batman"
             )
         )
@@ -115,17 +112,14 @@ class OptimisticCacheTestCase {
     )
     val data1 = HeroAndFriendsNamesWithIDsQuery.Data(
         HeroAndFriendsNamesWithIDsQuery.Hero(
-            "Droid",
             "2001",
             "R222-D222",
             Arrays.asList(
                 HeroAndFriendsNamesWithIDsQuery.Friend(
-                    "Human",
                     "1000",
                     "SuperMan"
                 ),
                 HeroAndFriendsNamesWithIDsQuery.Friend(
-                    "Human",
                     "1003",
                     "Batman"
                 )
@@ -154,7 +148,6 @@ class OptimisticCacheTestCase {
         Predicate<Response<HeroNameWithIdQuery.Data>> { response -> !response.hasErrors() }
     )
     val data2 = HeroNameWithIdQuery.Data(HeroNameWithIdQuery.Hero(
-        "Human",
         "1000",
         "Beast"
     ))
@@ -236,7 +229,7 @@ class OptimisticCacheTestCase {
     val mutationId = UUID.randomUUID()
     apolloClient!!.apolloStore.writeOptimisticUpdates(
         HeroNameQuery(),
-        HeroNameQuery.Data(HeroNameQuery.Hero("Droid", "R22-D22")),
+        HeroNameQuery.Data(HeroNameQuery.Hero("R22-D22")),
         mutationId
     ).execute()
     assertResponse(
@@ -282,7 +275,7 @@ class OptimisticCacheTestCase {
         )
     )
     apolloClient!!.mutate(updateReviewMutation, UpdateReviewMutation.Data(UpdateReview(
-        "Review", "empireReview2", 5, "Great"))).enqueue(
+        "empireReview2", 5, "Great"))).enqueue(
         object : ApolloCall.Callback<UpdateReviewMutation.Data>() {
           override fun onResponse(response: Response<UpdateReviewMutation.Data>) {}
           override fun onFailure(e: ApolloException) {}
@@ -348,17 +341,14 @@ class OptimisticCacheTestCase {
     )
     val data1 = HeroAndFriendsNamesWithIDsQuery.Data(
         HeroAndFriendsNamesWithIDsQuery.Hero(
-            "Droid",
             "2001",
             "R222-D222",
             listOf(
                 HeroAndFriendsNamesWithIDsQuery.Friend(
-                    "Human",
                     "1000",
                     "Robocop"
                 ),
                 HeroAndFriendsNamesWithIDsQuery.Friend(
-                    "Human",
                     "1003",
                     "Batman"
                 )
@@ -367,7 +357,6 @@ class OptimisticCacheTestCase {
     )
     apolloClient!!.apolloStore.writeOptimisticUpdatesAndPublish(query1, data1, mutationId1).execute()
     val data2 = HeroNameWithIdQuery.Data(HeroNameWithIdQuery.Hero(
-        "Human",
         "1000",
         "Spiderman"
     ))

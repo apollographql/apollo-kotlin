@@ -39,11 +39,9 @@ class SubscriptionNormalizedCacheTest {
     networkOperationData = mapOf(
         "data" to mapOf(
             "commentAdded" to mapOf(
-                "__typename" to "Comment",
                 "id" to BigDecimal(100),
                 "content" to "Network comment content",
                 "postedBy" to mapOf(
-                    "__typename" to "User",
                     "login" to "user@user.com"
                 )
             )
@@ -84,7 +82,7 @@ class SubscriptionNormalizedCacheTest {
     val operation = NewRepoCommentSubscription("repo")
     val data = NewRepoCommentSubscription.Data(
         NewRepoCommentSubscription.CommentAdded(
-            "Comment", 100, "Cached comment content", NewRepoCommentSubscription.PostedBy("User", "user@user.com")
+            100, "Cached comment content", NewRepoCommentSubscription.PostedBy("user@user.com")
         )
     )
     apolloClient.apolloStore.write(operation, data).execute()
@@ -112,7 +110,6 @@ class SubscriptionNormalizedCacheTest {
       OptimisticNormalizedCache {}
       LruNormalizedCache {
         "100" : {
-          "__typename" : Comment
           "id" : 100
           "content" : Network comment content
           "postedBy" : CacheRecordRef(100.postedBy)
@@ -123,7 +120,6 @@ class SubscriptionNormalizedCacheTest {
         }
       
         "100.postedBy" : {
-          "__typename" : User
           "login" : user@user.com
         }
       }
@@ -136,7 +132,7 @@ class SubscriptionNormalizedCacheTest {
     val operation = NewRepoCommentSubscription("repo")
     val data = NewRepoCommentSubscription.Data(
         NewRepoCommentSubscription.CommentAdded(
-            "Comment", 100, "Cached comment content", NewRepoCommentSubscription.PostedBy("User", "user@user.com")
+            100, "Cached comment content", NewRepoCommentSubscription.PostedBy("user@user.com")
         )
     )
     apolloClient.apolloStore.write(operation, data).execute()
@@ -167,7 +163,6 @@ class SubscriptionNormalizedCacheTest {
       OptimisticNormalizedCache {}
       LruNormalizedCache {
         "100" : {
-          "__typename" : Comment
           "id" : 100
           "content" : Network comment content
           "postedBy" : CacheRecordRef(100.postedBy)
@@ -178,7 +173,6 @@ class SubscriptionNormalizedCacheTest {
         }
       
         "100.postedBy" : {
-          "__typename" : User
           "login" : user@user.com
         }
       }

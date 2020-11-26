@@ -122,7 +122,6 @@ data class TestQuery(
    * A character from the Star Wars universe
    */
   data class Hero(
-    val __typename: String = "Character",
     /**
      * The name of the character
      */
@@ -160,13 +159,12 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "8f4a8c01b4bf0eb76356829f8062621ff66c3b53b6bf92753661cca41ef3ade4"
+        "6a8dd101c1681dc829d72040868fdf394c52bacb692da3549bc73e9504013470"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery(${'$'}episode: Episode) {
           |  hero(episode: ${'$'}episode) {
-          |    __typename
           |    name
           |    deprecated
           |    deprecatedBool

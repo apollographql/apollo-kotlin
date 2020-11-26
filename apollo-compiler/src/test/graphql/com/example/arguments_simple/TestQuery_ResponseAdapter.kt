@@ -31,7 +31,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       "episode" to mapOf<String, Any>(
         "kind" to "Variable",
         "variableName" to "episode"),
-      "review" to emptyMap<String, Any>()), true, null)
+      "review" to mapOf<String, Any>(
+        "stars" to 5,
+        "favoriteColor" to mapOf<String, Any>(
+          "red" to 1,
+          "blue" to 1.0),
+        "listOfStringNonOptional" to emptyList<Any>())), true, null)
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
@@ -75,7 +80,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object Node_ResponseAdapter : ResponseAdapter<TestQuery.Node> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forString("name", "name", null, true, listOf(
         ResponseField.Condition.booleanCondition("IncludeName", false)
       ))
@@ -83,60 +87,51 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Node {
       return reader.run {
-        var __typename: String? = __typename
         var name: String? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> name = readString(RESPONSE_FIELDS[1])
+            0 -> name = readString(RESPONSE_FIELDS[0])
             else -> break
           }
         }
         TestQuery.Node(
-          __typename = __typename!!,
           name = name
         )
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.Node) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeString(RESPONSE_FIELDS[0], value.name)
     }
   }
 
   object Edge_ResponseAdapter : ResponseAdapter<TestQuery.Edge> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forObject("node", "node", null, true, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Edge {
       return reader.run {
-        var __typename: String? = __typename
         var node: TestQuery.Node? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> node = readObject<TestQuery.Node>(RESPONSE_FIELDS[1]) { reader ->
+            0 -> node = readObject<TestQuery.Node>(RESPONSE_FIELDS[0]) { reader ->
               TestQuery_ResponseAdapter.Node_ResponseAdapter.fromResponse(reader)
             }
             else -> break
           }
         }
         TestQuery.Edge(
-          __typename = __typename!!,
           node = node
         )
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.Edge) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       if(value.node == null) {
-        writer.writeObject(RESPONSE_FIELDS[1], null)
+        writer.writeObject(RESPONSE_FIELDS[0], null)
       } else {
-        writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
+        writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
           TestQuery_ResponseAdapter.Node_ResponseAdapter.toResponse(writer, value.node)
         }
       }
@@ -145,7 +140,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object FriendsConnection_ResponseAdapter : ResponseAdapter<TestQuery.FriendsConnection> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forInt("totalCount", "totalCount", null, true, null),
       ResponseField.forList("edges", "edges", null, true, null)
     )
@@ -153,14 +147,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     override fun fromResponse(reader: ResponseReader, __typename: String?):
         TestQuery.FriendsConnection {
       return reader.run {
-        var __typename: String? = __typename
         var totalCount: Int? = null
         var edges: List<TestQuery.Edge?>? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> totalCount = readInt(RESPONSE_FIELDS[1])
-            2 -> edges = readList<TestQuery.Edge>(RESPONSE_FIELDS[2]) { reader ->
+            0 -> totalCount = readInt(RESPONSE_FIELDS[0])
+            1 -> edges = readList<TestQuery.Edge>(RESPONSE_FIELDS[1]) { reader ->
               reader.readObject<TestQuery.Edge> { reader ->
                 TestQuery_ResponseAdapter.Edge_ResponseAdapter.fromResponse(reader)
               }
@@ -169,7 +161,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           }
         }
         TestQuery.FriendsConnection(
-          __typename = __typename!!,
           totalCount = totalCount,
           edges = edges
         )
@@ -177,9 +168,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.FriendsConnection) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeInt(RESPONSE_FIELDS[1], value.totalCount)
-      writer.writeList(RESPONSE_FIELDS[2], value.edges) { values, listItemWriter ->
+      writer.writeInt(RESPONSE_FIELDS[0], value.totalCount)
+      writer.writeList(RESPONSE_FIELDS[1], value.edges) { values, listItemWriter ->
         values?.forEach { value ->
           if(value == null) {
             listItemWriter.writeObject(null)
@@ -239,32 +229,27 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object HeroWithReview_ResponseAdapter : ResponseAdapter<TestQuery.HeroWithReview> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forString("name", "name", null, false, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
         TestQuery.HeroWithReview {
       return reader.run {
-        var __typename: String? = __typename
         var name: String? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> name = readString(RESPONSE_FIELDS[1])
+            0 -> name = readString(RESPONSE_FIELDS[0])
             else -> break
           }
         }
         TestQuery.HeroWithReview(
-          __typename = __typename!!,
           name = name!!
         )
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.HeroWithReview) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeString(RESPONSE_FIELDS[0], value.name)
     }
   }
 }

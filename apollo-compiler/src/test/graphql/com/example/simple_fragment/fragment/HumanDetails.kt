@@ -13,7 +13,7 @@ import kotlin.String
 import kotlin.Suppress
 
 /**
- * A humanoid creature from the Star Wars universe
+ * Fragment with Java / Kotlin docs generation
  */
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",

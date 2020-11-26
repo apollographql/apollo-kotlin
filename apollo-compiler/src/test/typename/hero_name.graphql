@@ -1,0 +1,10 @@
+# no fragment, no typename
+query TestQuery {
+    hero {
+        name
+    }
+    hero {
+        id
+        name
+    }
+}
