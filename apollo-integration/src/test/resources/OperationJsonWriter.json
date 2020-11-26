@@ -1,7 +1,6 @@
 {
   "data": {
     "allPlanets": {
-      "__typename": "PlanetsConnection",
       "planets": [
         {
           "__typename": "Planet",
@@ -11,7 +10,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 2,
             "films": [
               {
@@ -40,7 +38,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 1,
             "films": [
               {
@@ -63,7 +60,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 1,
             "films": [
               {
@@ -85,7 +81,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 3,
             "films": [
               {
@@ -123,7 +118,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 1,
             "films": [
               {
@@ -145,7 +139,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 1,
             "films": [
               {
@@ -168,7 +161,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 4,
             "films": [
               {
@@ -212,7 +204,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 4,
             "films": [
               {
@@ -255,7 +246,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 1,
             "films": [
               {
@@ -276,7 +266,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 1,
             "films": [
               {
@@ -298,7 +287,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 1,
             "films": [
               {
@@ -321,7 +309,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 1,
             "films": [
               {
@@ -342,7 +329,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 1,
             "films": [
               {
@@ -363,7 +349,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 1,
             "films": [
               {
@@ -384,7 +369,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 1,
             "films": [
               {
@@ -404,7 +388,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 1,
             "films": [
               {
@@ -425,7 +408,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 1,
             "films": [
               {
@@ -446,7 +428,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 1,
             "films": [
               {
@@ -466,7 +447,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -478,7 +458,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -490,7 +469,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -503,7 +481,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -516,7 +493,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -528,7 +504,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -540,7 +515,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -553,7 +527,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 1,
             "films": [
               {
@@ -575,7 +548,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -587,7 +559,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -599,7 +570,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -611,7 +581,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -624,7 +593,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -637,7 +605,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -650,7 +617,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -662,7 +628,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -676,7 +641,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -688,7 +652,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -703,7 +666,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -715,7 +677,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -728,7 +689,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -740,7 +700,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -752,7 +711,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -764,7 +722,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -777,7 +734,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -791,7 +747,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -803,7 +758,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -815,7 +769,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -829,7 +782,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -841,7 +793,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -853,7 +804,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -865,7 +815,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -877,7 +826,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -889,7 +837,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -901,7 +848,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -913,7 +859,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -926,7 +871,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -938,7 +882,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -951,7 +894,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -963,7 +905,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },
@@ -977,7 +918,6 @@
         {
           "__typename": "Planet",
           "filmConnection": {
-            "__typename": "PlanetFilmsConnection",
             "totalCount": 0,
             "films": []
           },

@@ -1,10 +1,5 @@
 query CharacterNameById($id: ID!) {
   character(id: $id) {
-    ... on Human {
-      name
-    }
-    ... on Droid {
-      name
-    }
+    name
   }
 }
