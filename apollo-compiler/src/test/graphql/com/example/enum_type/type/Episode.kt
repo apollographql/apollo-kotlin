@@ -5,14 +5,15 @@
 //
 package com.example.enum_type.type
 
+import com.apollographql.apollo.api.EnumValue
 import kotlin.String
 
 /**
  * The episodes in the Star Wars trilogy (with special symbol $S)
  */
 enum class Episode(
-  val rawValue: String
-) {
+  override val rawValue: String
+) : EnumValue {
   /**
    * Star Wars Episode IV: A New Hope, released in 1977. (with special symbol $S)
    */
