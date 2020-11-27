@@ -46,12 +46,12 @@ class ApolloCoroutinesRepository {
         pullRequestStates = listOf(PullRequestState.OPEN)
     )
     val response = apolloClient.query(repositoryDetailQuery).execute().single()
-    return response.data?.viewer?.repository
+    return response.data?.viewer?.repository?.asRepositoryDetail()
   }
 
-  suspend fun fetchCommits(repositoryName: String): List<GithubRepositoryCommitsQuery.Edge?> {
+  suspend fun fetchCommits(repositoryName: String): List<GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.Commit.History.Edge?> {
     val response = apolloClient.query(GithubRepositoryCommitsQuery(repositoryName)).execute().single()
-    val headCommit = response.data?.viewer?.repository?.ref?.target as GithubRepositoryCommitsQuery.CommitTarget?
+    val headCommit = response.data?.viewer?.repository?.ref?.target as GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.Commit?
     return headCommit?.history?.edges.orEmpty()
   }
 

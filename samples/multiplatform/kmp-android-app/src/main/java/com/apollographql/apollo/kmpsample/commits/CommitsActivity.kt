@@ -63,7 +63,7 @@ class CommitsActivity : AppCompatActivity() {
     super.onDestroy()
   }
 
-  private fun handleCommits(commits: List<GithubRepositoryCommitsQuery.Edge?>) {
+  private fun handleCommits(commits: List<GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.Commit.History.Edge?>) {
     binding.progressBar.visibility = GONE
     adapter.setItems(commits)
   }
