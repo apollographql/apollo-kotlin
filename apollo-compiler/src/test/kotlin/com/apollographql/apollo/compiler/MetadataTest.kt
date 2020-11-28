@@ -136,7 +136,7 @@ class MetadataTest {
         "Episode.kt",
         "CustomType.kt",
         "CharacterFragment.kt",
-        "CharacterFragment_ResponseAdapter.kt",
+//        "CharacterFragment_ResponseAdapter.kt",
     )
 
     // Leaf contains the query but not the fragment
@@ -179,14 +179,14 @@ class MetadataTest {
     rootSourcesDir.assertContents(
         "CustomType.kt",
         "CharacterFragment.kt",
-        "CharacterFragment_ResponseAdapter.kt"
+//        "CharacterFragment_ResponseAdapter.kt"
     )
 
     leafSourcesDir.assertContents(
         "GetHeroQuery.kt",
         "Episode.kt",
         "HumanFragment.kt",
-        "HumanFragment_ResponseAdapter.kt",
+//        "HumanFragment_ResponseAdapter.kt",
         "GetHeroQuery_ResponseAdapter.kt"
     )
   }

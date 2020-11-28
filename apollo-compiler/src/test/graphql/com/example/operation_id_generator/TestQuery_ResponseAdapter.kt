@@ -9,7 +9,6 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
-import com.example.operation_id_generator.type.CustomType
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
@@ -64,7 +63,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     object Hero : ResponseAdapter<TestQuery.Data.Hero> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
+        ResponseField.forString("id", "id", null, false, null),
         ResponseField.forString("name", "name", null, false, null)
       )
 
@@ -74,7 +73,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           var name: String? = null
           while(true) {
             when (selectField(RESPONSE_FIELDS)) {
-              0 -> id = readCustomType<String>(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField)
+              0 -> id = readString(RESPONSE_FIELDS[0])
               1 -> name = readString(RESPONSE_FIELDS[1])
               else -> break
             }
@@ -87,7 +86,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
 
       override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero) {
-        writer.writeCustom(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField, value.id)
+        writer.writeString(RESPONSE_FIELDS[0], value.id)
         writer.writeString(RESPONSE_FIELDS[1], value.name)
       }
     }

@@ -9,7 +9,6 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
-import com.example.directive_with_fragment.type.CustomType
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
@@ -65,7 +64,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     object Hero : ResponseAdapter<TestQuery.Data.Hero> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null)
+        ResponseField.forString("id", "id", null, false, null)
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Hero {
@@ -88,7 +87,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       object CharacterHero : ResponseAdapter<TestQuery.Data.Hero.CharacterHero> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
+          ResponseField.forString("id", "id", null, false, null),
           ResponseField.forString("name", "name", null, false, null)
         )
 
@@ -101,7 +100,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             while(true) {
               when (selectField(RESPONSE_FIELDS)) {
                 0 -> __typename = readString(RESPONSE_FIELDS[0])
-                1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+                1 -> id = readString(RESPONSE_FIELDS[1])
                 2 -> name = readString(RESPONSE_FIELDS[2])
                 else -> break
               }
@@ -116,7 +115,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
         override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero.CharacterHero) {
           writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-          writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, value.id)
+          writer.writeString(RESPONSE_FIELDS[1], value.id)
           writer.writeString(RESPONSE_FIELDS[2], value.name)
         }
       }
@@ -124,7 +123,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       object CharacterHumanHero : ResponseAdapter<TestQuery.Data.Hero.CharacterHumanHero> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
+          ResponseField.forString("id", "id", null, false, null),
           ResponseField.forString("name", "name", null, false, null),
           ResponseField.forString("homePlanet", "homePlanet", null, true, null)
         )
@@ -139,7 +138,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             while(true) {
               when (selectField(RESPONSE_FIELDS)) {
                 0 -> __typename = readString(RESPONSE_FIELDS[0])
-                1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+                1 -> id = readString(RESPONSE_FIELDS[1])
                 2 -> name = readString(RESPONSE_FIELDS[2])
                 3 -> homePlanet = readString(RESPONSE_FIELDS[3])
                 else -> break
@@ -157,7 +156,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         override fun toResponse(writer: ResponseWriter,
             value: TestQuery.Data.Hero.CharacterHumanHero) {
           writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-          writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, value.id)
+          writer.writeString(RESPONSE_FIELDS[1], value.id)
           writer.writeString(RESPONSE_FIELDS[2], value.name)
           writer.writeString(RESPONSE_FIELDS[3], value.homePlanet)
         }
@@ -166,7 +165,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       object OtherHero : ResponseAdapter<TestQuery.Data.Hero.OtherHero> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null)
+          ResponseField.forString("id", "id", null, false, null)
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -177,7 +176,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             while(true) {
               when (selectField(RESPONSE_FIELDS)) {
                 0 -> __typename = readString(RESPONSE_FIELDS[0])
-                1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+                1 -> id = readString(RESPONSE_FIELDS[1])
                 else -> break
               }
             }
@@ -190,7 +189,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
         override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero.OtherHero) {
           writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-          writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, value.id)
+          writer.writeString(RESPONSE_FIELDS[1], value.id)
         }
       }
     }

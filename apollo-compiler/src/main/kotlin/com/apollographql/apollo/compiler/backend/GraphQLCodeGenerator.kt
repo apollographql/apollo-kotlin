@@ -28,13 +28,14 @@ internal class GraphQLCodeGenerator(
 
     val ast = backendIr.buildAst(
         schema = schema,
-        customTypeMap = customTypeMap,
+        customScalarTypeMap = customTypeMap,
         operationOutput = operationOutput,
         typesPackageName = frontendIr.typesPackageName,
         fragmentsPackage = frontendIr.fragmentsPackageName
     )
 
     ast.customScalarScalarTypes
+        .filterKeys { scalarType -> frontendIr.scalarsToGenerate.contains(scalarType) }
         .takeIf {
           /**
            * Skip generating the ScalarType enum if it's empty

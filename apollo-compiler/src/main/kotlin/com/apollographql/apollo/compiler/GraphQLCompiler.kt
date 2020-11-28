@@ -4,7 +4,6 @@ import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.compiler.ApolloMetadata.Companion.merge
 import com.apollographql.apollo.compiler.backend.GraphQLCodeGenerator
 import com.apollographql.apollo.compiler.frontend.ir.IRBuilder
-import com.apollographql.apollo.compiler.frontend.ir.ScalarType
 import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.operationoutput.toJson
 import com.apollographql.apollo.compiler.frontend.gql.GQLFragmentDefinition
@@ -105,9 +104,10 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
 
     // TODO: use another schema for codegen than introspection schema
     val introspectionSchema = schema.toIntrospectionSchema()
-    val customTypeMap = (introspectionSchema.types.values.filter {
-      it is IntrospectionSchema.Type.Scalar && ScalarType.forName(it.name) == null
-    }.map { it.name } + ScalarType.ID.name)
+    val customTypeMap = introspectionSchema.types
+        .values
+        .filter { type -> type is IntrospectionSchema.Type.Scalar && type.custom }
+        .map { type -> type.name }
         .supportedTypeMap(userCustomTypesMap, generateKotlinModels)
 
     GraphQLCodeGenerator(
@@ -135,12 +135,6 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
     outgoingMetadata.writeTo(args.metadataOutputFile)
   }
 
-  private fun idClassName(generateKotlinModels: Boolean) = if (generateKotlinModels) {
-    String::class.asClassName().toString()
-  } else {
-    TODO("ClassNames.STRING.toString()")
-  }
-
   private fun anyClassName(generateKotlinModels: Boolean) = if (generateKotlinModels) {
     Any::class.asClassName().toString()
   } else {
@@ -152,8 +146,6 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
       val userClassName = customTypeMap[it]
       val className = when {
         userClassName != null -> userClassName
-        // map ID to String by default
-        it == ScalarType.ID.name -> idClassName(generateKotlinModels)
         // unknown scalars will be mapped to Object/Any
         else -> anyClassName(generateKotlinModels)
       }

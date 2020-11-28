@@ -9,7 +9,6 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
-import com.example.two_heroes_with_friends.type.CustomType
 import kotlin.Array
 import kotlin.Int
 import kotlin.String
@@ -224,7 +223,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     object Luke : ResponseAdapter<TestQuery.Data.Luke> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
+        ResponseField.forString("id", "id", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
       )
@@ -236,7 +235,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           var friendsConnection: TestQuery.Data.Luke.FriendsConnection? = null
           while(true) {
             when (selectField(RESPONSE_FIELDS)) {
-              0 -> id = readCustomType<String>(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField)
+              0 -> id = readString(RESPONSE_FIELDS[0])
               1 -> name = readString(RESPONSE_FIELDS[1])
               2 -> friendsConnection = readObject<TestQuery.Data.Luke.FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
                 FriendsConnection.fromResponse(reader)
@@ -253,7 +252,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
 
       override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Luke) {
-        writer.writeCustom(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField, value.id)
+        writer.writeString(RESPONSE_FIELDS[0], value.id)
         writer.writeString(RESPONSE_FIELDS[1], value.name)
         writer.writeObject(RESPONSE_FIELDS[2]) { writer ->
           FriendsConnection.toResponse(writer, value.friendsConnection)

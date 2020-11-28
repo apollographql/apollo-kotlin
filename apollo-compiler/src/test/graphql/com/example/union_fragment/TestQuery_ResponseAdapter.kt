@@ -9,7 +9,6 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
-import com.example.union_fragment.type.CustomType
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
@@ -98,7 +97,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       object CharacterSearch : ResponseAdapter<TestQuery.Data.Search.CharacterSearch> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
+          ResponseField.forString("id", "id", null, false, null),
           ResponseField.forString("name", "name", null, false, null)
         )
 
@@ -111,7 +110,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             while(true) {
               when (selectField(RESPONSE_FIELDS)) {
                 0 -> __typename = readString(RESPONSE_FIELDS[0])
-                1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+                1 -> id = readString(RESPONSE_FIELDS[1])
                 2 -> name = readString(RESPONSE_FIELDS[2])
                 else -> break
               }
@@ -127,7 +126,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         override fun toResponse(writer: ResponseWriter,
             value: TestQuery.Data.Search.CharacterSearch) {
           writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-          writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, value.id)
+          writer.writeString(RESPONSE_FIELDS[1], value.id)
           writer.writeString(RESPONSE_FIELDS[2], value.name)
         }
       }

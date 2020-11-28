@@ -13,11 +13,5 @@ enum class CustomType : ScalarType {
     override fun typeName(): String = "Date"
 
     override fun className(): String = "kotlin.Any"
-  },
-
-  ID {
-    override fun typeName(): String = "ID"
-
-    override fun className(): String = "kotlin.String"
   }
 }

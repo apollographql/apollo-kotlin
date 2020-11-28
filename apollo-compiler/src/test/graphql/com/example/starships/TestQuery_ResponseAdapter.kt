@@ -9,7 +9,6 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
-import com.example.starships.type.CustomType
 import kotlin.Array
 import kotlin.Double
 import kotlin.String
@@ -72,7 +71,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     object Starship : ResponseAdapter<TestQuery.Data.Starship> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
+        ResponseField.forString("id", "id", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forList("coordinates", "coordinates", null, true, null)
       )
@@ -85,7 +84,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           var coordinates: List<List<Double>>? = null
           while(true) {
             when (selectField(RESPONSE_FIELDS)) {
-              0 -> id = readCustomType<String>(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField)
+              0 -> id = readString(RESPONSE_FIELDS[0])
               1 -> name = readString(RESPONSE_FIELDS[1])
               2 -> coordinates = readList<List<Double>>(RESPONSE_FIELDS[2]) { reader ->
                 reader.readList<Double> { reader ->
@@ -104,7 +103,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
 
       override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Starship) {
-        writer.writeCustom(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField, value.id)
+        writer.writeString(RESPONSE_FIELDS[0], value.id)
         writer.writeString(RESPONSE_FIELDS[1], value.name)
         writer.writeList(RESPONSE_FIELDS[2], value.coordinates) { values, listItemWriter ->
           values?.forEach { value ->

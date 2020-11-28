@@ -3,7 +3,6 @@ package com.apollographql.apollo.compiler.backend.ast
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.compiler.backend.ir.BackendIr
 import com.apollographql.apollo.compiler.backend.ir.SelectionKey
-import com.apollographql.apollo.compiler.frontend.ir.ScalarType
 import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.introspection.resolveType
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
@@ -13,7 +12,7 @@ import com.apollographql.apollo.compiler.singularize
 internal class AstBuilder private constructor(
     private val backendIr: BackendIr,
     private val schema: IntrospectionSchema,
-    private val customTypeMap: Map<String, String>,
+    private val customScalarTypeMap: Map<String, String>,
     private val typesPackageName: String,
     private val fragmentsPackage: String,
     private val operationOutput: OperationOutput,
@@ -22,7 +21,7 @@ internal class AstBuilder private constructor(
   companion object {
     fun BackendIr.buildAst(
         schema: IntrospectionSchema,
-        customTypeMap: Map<String, String>,
+        customScalarTypeMap: Map<String, String>,
         typesPackageName: String,
         fragmentsPackage: String,
         operationOutput: OperationOutput,
@@ -30,7 +29,7 @@ internal class AstBuilder private constructor(
       return AstBuilder(
           backendIr = this,
           schema = schema,
-          customTypeMap = customTypeMap,
+          customScalarTypeMap = customScalarTypeMap,
           typesPackageName = typesPackageName,
           fragmentsPackage = fragmentsPackage,
           operationOutput = operationOutput,
@@ -78,18 +77,13 @@ internal class AstBuilder private constructor(
   }
 
   private fun buildCustomTypes(): CustomScalarTypes {
-    return customTypeMap
-        .filter { (schemaType, _) ->
-          backendIr.typeDeclarations
-              .find { typeRef -> typeRef.rawType.name == schemaType } != null
-        }
-        .mapValues { (schemaType, mappedType) ->
-          CodeGenerationAst.CustomType(
-              name = schemaType.normalizeTypeName(),
-              schemaType = schemaType,
-              mappedType = mappedType,
-          )
-        }
+    return customScalarTypeMap.mapValues { (schemaType, mappedType) ->
+      CodeGenerationAst.CustomType(
+          name = schemaType.normalizeTypeName(),
+          schemaType = schemaType,
+          mappedType = mappedType,
+      )
+    }
   }
 
   private fun buildInputTypes(customScalarTypes: CustomScalarTypes): List<CodeGenerationAst.InputType> {
@@ -141,10 +135,10 @@ internal class AstBuilder private constructor(
 
     return when (type.kind) {
       IntrospectionSchema.Kind.SCALAR -> {
-        when (ScalarType.forName(type.name ?: "")) {
-          ScalarType.INT -> toString().trim().takeIf { it != "null" }?.toInt()
-          ScalarType.BOOLEAN -> toString().trim().takeIf { it != "null" }?.toBoolean()
-          ScalarType.FLOAT -> toString().trim().takeIf { it != "null" }?.toDouble()
+        when (type.name!!.toUpperCase()) {
+          "INT" -> toString().trim().takeIf { it != "null" }?.toInt()
+          "BOOLEAN" -> toString().trim().takeIf { it != "null" }?.toBoolean()
+          "FLOAT" -> toString().trim().takeIf { it != "null" }?.toDouble()
           else -> toString()
         }
       }
@@ -182,7 +176,7 @@ internal class AstBuilder private constructor(
           "BOOLEAN" -> CodeGenerationAst.FieldType.Scalar.Boolean(nullable = true)
           "FLOAT" -> CodeGenerationAst.FieldType.Scalar.Float(nullable = true)
           else -> {
-            val customType = checkNotNull(customTypeMap[this.name]) {
+            val customType = checkNotNull(customScalarTypeMap[this.name]) {
               "Failed to resolve custom scalar type `${this.name}`"
             }
             CodeGenerationAst.FieldType.Scalar.Custom(
@@ -703,12 +697,13 @@ internal class AstBuilder private constructor(
 
       IntrospectionSchema.Kind.SCALAR -> {
         when (schemaTypeRef.name!!.toUpperCase()) {
+          "ID" -> CodeGenerationAst.FieldType.Scalar.String(nullable = true)
           "STRING" -> CodeGenerationAst.FieldType.Scalar.String(nullable = true)
           "INT" -> CodeGenerationAst.FieldType.Scalar.Int(nullable = true)
           "BOOLEAN" -> CodeGenerationAst.FieldType.Scalar.Boolean(nullable = true)
           "FLOAT" -> CodeGenerationAst.FieldType.Scalar.Float(nullable = true)
           else -> {
-            val customType = checkNotNull(customTypeMap[schemaTypeRef.name]) {
+            val customType = checkNotNull(customScalarTypeMap[schemaTypeRef.name]) {
               "Failed to resolve custom scalar type `${schemaTypeRef.name}`"
             }
             CodeGenerationAst.FieldType.Scalar.Custom(

@@ -9,7 +9,6 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
-import com.example.union_inline_fragments.type.CustomType
 import com.example.union_inline_fragments.type.Episode
 import kotlin.Array
 import kotlin.String
@@ -99,7 +98,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       object CharacterSearch : ResponseAdapter<TestQuery.Data.Search.CharacterSearch> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
+          ResponseField.forString("id", "id", null, false, null),
           ResponseField.forString("name", "name", null, false, null),
           ResponseField.forList("friends", "friends", null, true, null)
         )
@@ -114,7 +113,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             while(true) {
               when (selectField(RESPONSE_FIELDS)) {
                 0 -> __typename = readString(RESPONSE_FIELDS[0])
-                1 -> id = readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+                1 -> id = readString(RESPONSE_FIELDS[1])
                 2 -> name = readString(RESPONSE_FIELDS[2])
                 3 -> friends = readList<TestQuery.Data.Search.CharacterSearch.Friend>(RESPONSE_FIELDS[3]) { reader ->
                   reader.readObject<TestQuery.Data.Search.CharacterSearch.Friend> { reader ->
@@ -136,7 +135,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         override fun toResponse(writer: ResponseWriter,
             value: TestQuery.Data.Search.CharacterSearch) {
           writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-          writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, value.id)
+          writer.writeString(RESPONSE_FIELDS[1], value.id)
           writer.writeString(RESPONSE_FIELDS[2], value.name)
           writer.writeList(RESPONSE_FIELDS[3], value.friends) { values, listItemWriter ->
             values?.forEach { value ->
@@ -235,7 +234,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
                 ResponseAdapter<TestQuery.Data.Search.CharacterSearch.Friend.CharacterDroidFriend.Friend>
                 {
               private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null)
+                ResponseField.forString("id", "id", null, false, null)
               )
 
               override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -244,7 +243,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
                   var id: String? = null
                   while(true) {
                     when (selectField(RESPONSE_FIELDS)) {
-                      0 -> id = readCustomType<String>(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField)
+                      0 -> id = readString(RESPONSE_FIELDS[0])
                       else -> break
                     }
                   }
@@ -256,7 +255,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
               override fun toResponse(writer: ResponseWriter,
                   value: TestQuery.Data.Search.CharacterSearch.Friend.CharacterDroidFriend.Friend) {
-                writer.writeCustom(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField, value.id)
+                writer.writeString(RESPONSE_FIELDS[0], value.id)
               }
             }
           }

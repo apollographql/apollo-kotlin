@@ -174,8 +174,9 @@ private class IntrospectionSchemaBuilder(private val schema: Schema) {
 
   private fun GQLScalarTypeDefinition.toSchemaType(): IntrospectionSchema.Type.Scalar {
     return IntrospectionSchema.Type.Scalar(
-        name = name,
-        description = description,
+        name = this.name,
+        description = this.description,
+        custom = !this.isBuiltIn()
     )
   }
 

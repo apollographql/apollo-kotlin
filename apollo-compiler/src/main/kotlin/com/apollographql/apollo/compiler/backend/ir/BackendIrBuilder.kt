@@ -35,9 +35,6 @@ internal class BackendIrBuilder private constructor(
   }
 
   private fun buildBackendIR(frontendIr: CodeGenerationIR): BackendIr {
-    val customScalarTypes = frontendIr.scalarsToGenerate.map { scalar ->
-      schema.resolveType(scalar)
-    }
     return BackendIr(
         operations = frontendIr.operations.map { operation ->
           operation.buildBackendIrOperation()
@@ -51,7 +48,6 @@ internal class BackendIrBuilder private constructor(
             },
         typeDeclarations = frontendIr.typeDeclarations
             .map { typeDeclaration -> schema.resolveType(typeDeclaration.name) }
-            .plus(customScalarTypes)
             .distinct(),
         typesPackageName = frontendIr.typesPackageName,
         fragmentsPackageName = frontendIr.fragmentsPackageName,
