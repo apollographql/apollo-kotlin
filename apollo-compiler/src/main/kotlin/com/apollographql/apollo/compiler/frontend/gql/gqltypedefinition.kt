@@ -21,18 +21,3 @@ internal fun GQLTypeDefinition.possibleTypes(typeDefinitions: Map<String, GQLTyp
     else -> throw SchemaValidationException("Cannot determine possibleTypes of $name")
   }
 }
-
-internal fun GQLTypeDefinition.isBuiltIn() = setOf(
-    "Int",
-    "Float",
-    "String",
-    "Boolean",
-    "ID",
-    "__Schema",
-    "__Type",
-    "__Field",
-    "__InputValue",
-    "__EnumValue",
-    "__TypeKind",
-    "__Directive",
-    "__DirectiveLocation").contains(name)

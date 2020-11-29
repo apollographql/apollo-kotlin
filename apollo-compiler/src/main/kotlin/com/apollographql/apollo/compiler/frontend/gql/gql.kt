@@ -148,7 +148,28 @@ data class GQLSchemaDefinition(
 
 }
 
-sealed class GQLTypeDefinition : GQLDefinition, GQLNamed, GQLDescribed
+sealed class GQLTypeDefinition : GQLDefinition, GQLNamed, GQLDescribed {
+  fun isBuiltIn(): Boolean = builtInTypes.contains(this.name)
+
+  companion object {
+    val builtInTypes: Set<String> = setOf(
+        "Int",
+        "Float",
+        "String",
+        "Boolean",
+        "ID",
+        "__Schema",
+        "__Type",
+        "__Field",
+        "__InputValue",
+        "__EnumValue",
+        "__TypeKind",
+        "__Directive",
+        "__DirectiveLocation"
+    )
+  }
+}
+
 data class GQLInterfaceTypeDefinition(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val description: String?,

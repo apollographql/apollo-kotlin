@@ -7,6 +7,7 @@ import com.apollographql.apollo.compiler.frontend.ir.IRBuilder
 import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.operationoutput.toJson
 import com.apollographql.apollo.compiler.frontend.gql.GQLFragmentDefinition
+import com.apollographql.apollo.compiler.frontend.gql.GQLTypeDefinition
 import com.apollographql.apollo.compiler.frontend.gql.GraphQLParser
 import com.apollographql.apollo.compiler.frontend.gql.Issue
 import com.apollographql.apollo.compiler.frontend.gql.Schema
@@ -106,7 +107,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
     val introspectionSchema = schema.toIntrospectionSchema()
     val customTypeMap = introspectionSchema.types
         .values
-        .filter { type -> type is IntrospectionSchema.Type.Scalar && type.custom }
+        .filter { type -> type is IntrospectionSchema.Type.Scalar && !GQLTypeDefinition.builtInTypes.contains(type.name) }
         .map { type -> type.name }
         .supportedTypeMap(userCustomTypesMap, generateKotlinModels)
 
