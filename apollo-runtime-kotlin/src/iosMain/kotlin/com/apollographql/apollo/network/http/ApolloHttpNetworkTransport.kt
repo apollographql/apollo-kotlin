@@ -81,7 +81,7 @@ actual class ApolloHttpNetworkTransport(
   )
 
   private class DefaultDataTaskFactory(readTimeoutMillis: Long) : DataTaskFactory {
-    private val nsurlSession = NSURLSession.sessionWithConfiguration(NSURLSessionConfiguration().apply {
+    private val nsurlSession = NSURLSession.sessionWithConfiguration(NSURLSessionConfiguration.defaultSessionConfiguration().apply {
       timeoutIntervalForRequest = readTimeoutMillis.toDouble()/1000
     })
 
