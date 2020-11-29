@@ -1,6 +1,7 @@
 package com.apollographql.apollo.compiler.backend.ir
 
-import com.apollographql.apollo.compiler.backend.ir.FieldMergeUtils.mergeFields
+import com.apollographql.apollo.compiler.backend.ir.BackendIrMergeUtils.mergeFields
+import com.apollographql.apollo.compiler.backend.ir.FrontendIrMergeUtils.squashFragmentsWithSameTypeConditions
 import com.apollographql.apollo.compiler.backend.ir.SelectionKeyUtils.addFieldSelectionKey
 import com.apollographql.apollo.compiler.backend.ir.SelectionKeyUtils.addFieldSelectionKeys
 import com.apollographql.apollo.compiler.frontend.ir.CodeGenerationIR
@@ -533,14 +534,16 @@ internal class BackendIrBuilder private constructor(
       generateFragmentImplementations: Boolean,
   ): List<GenericFragment> {
     // build generic fragments from inline fragments
-    val genericInlineFragments = inlineFragments.map { inlineFragment ->
-      inlineFragment.buildGenericFragment(
-          parentSelectionKey = selectionKey,
-          parentSelectionSet = selectionSet,
-          parentNamedFragmentSelectionKeys = emptySet(),
-          generateFragmentImplementations = generateFragmentImplementations
-      )
-    }
+    val genericInlineFragments = inlineFragments
+        .squashFragmentsWithSameTypeConditions()
+        .map { inlineFragment ->
+          inlineFragment.buildGenericFragment(
+              parentSelectionKey = selectionKey,
+              parentSelectionSet = selectionSet,
+              parentNamedFragmentSelectionKeys = emptySet(),
+              generateFragmentImplementations = generateFragmentImplementations
+          )
+        }
     // build generic fragments from named fragments
     val genericNamedFragments = namedFragments
         .map { fragmentRef -> lookupForNamedFragment(fragmentRef) }

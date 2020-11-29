@@ -29,20 +29,20 @@ internal object SelectionKeyUtils {
     )
   }
 
-  fun List<BackendIr.Fragment>.addFragmentSelectionKey(selectionKey: SelectionKey): List<BackendIr.Fragment> {
+  private fun List<BackendIr.Fragment>.addFragmentSelectionKey(selectionKey: SelectionKey): List<BackendIr.Fragment> {
     return this.map { fragment ->
       fragment.addFragmentSelectionKey(selectionKey.plus(fragment.name))
     }
   }
 
-  fun BackendIr.Fragment.addFragmentSelectionKey(selectionKey: SelectionKey): BackendIr.Fragment {
+  private fun BackendIr.Fragment.addFragmentSelectionKey(selectionKey: SelectionKey): BackendIr.Fragment {
     return when (this) {
       is BackendIr.Fragment.Interface -> this.copy(
           fields = this.fields.addFieldSelectionKey(selectionKey),
           selectionKeys = this.selectionKeys + selectionKey
       )
       // it looks like a hack but for fragment implementations we don't allow to change their locations
-      // (by adding a another selection key) as they must used only in one place where they defined.
+      // (by adding another selection key) as they must be used only in one place where they defined.
       is BackendIr.Fragment.Implementation -> this
     }
   }

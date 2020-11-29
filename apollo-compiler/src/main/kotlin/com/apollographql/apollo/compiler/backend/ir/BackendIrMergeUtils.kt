@@ -1,6 +1,6 @@
 package com.apollographql.apollo.compiler.backend.ir
 
-internal object FieldMergeUtils {
+internal object BackendIrMergeUtils {
 
   fun List<BackendIr.Field>.mergeFields(otherFields: List<BackendIr.Field>): List<BackendIr.Field> {
     val fieldsToAdd = otherFields.toMutableList()
@@ -19,7 +19,7 @@ internal object FieldMergeUtils {
     val mergedFields = this.fields.mergeFields(otherField.fields)
     return this.copy(
         fields = mergedFields,
-        fragments = this.fragments.mergeInlineFragments(
+        fragments = this.fragments.mergeFragments(
             parentSelectionSet = mergedFields,
             otherFragments = otherField.fragments
         ),
@@ -27,7 +27,7 @@ internal object FieldMergeUtils {
     )
   }
 
-  private fun List<BackendIr.Fragment>.mergeInlineFragments(
+  private fun List<BackendIr.Fragment>.mergeFragments(
       parentSelectionSet: List<BackendIr.Field>,
       otherFragments: List<BackendIr.Fragment>
   ): List<BackendIr.Fragment> {
@@ -43,9 +43,11 @@ internal object FieldMergeUtils {
         when (fragment) {
           is BackendIr.Fragment.Interface -> fragment.copy(
               fields = fragment.fields.mergeFields(fragmentToMerge.fields).mergeFields(parentSelectionSet),
+              selectionKeys = fragment.selectionKeys + fragmentToMerge.selectionKeys,
           )
           is BackendIr.Fragment.Implementation -> fragment.copy(
               fields = fragment.fields.mergeFields(fragmentToMerge.fields).mergeFields(parentSelectionSet),
+              selectionKeys = fragment.selectionKeys + fragmentToMerge.selectionKeys,
           )
         }
       }

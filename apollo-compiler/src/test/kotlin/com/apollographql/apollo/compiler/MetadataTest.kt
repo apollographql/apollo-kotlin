@@ -136,6 +136,7 @@ class MetadataTest {
         "Episode.kt",
         "CustomType.kt",
         "CharacterFragment.kt",
+        "CharacterFragmentImpl.kt",
         "CharacterFragmentImpl_ResponseAdapter.kt",
     )
 
@@ -179,6 +180,7 @@ class MetadataTest {
     rootSourcesDir.assertContents(
         "CustomType.kt",
         "CharacterFragment.kt",
+        "CharacterFragmentImpl.kt",
         "CharacterFragmentImpl_ResponseAdapter.kt"
     )
 
@@ -186,6 +188,7 @@ class MetadataTest {
         "GetHeroQuery.kt",
         "Episode.kt",
         "HumanFragment.kt",
+        "HumanFragmentImpl.kt",
         "HumanFragmentImpl_ResponseAdapter.kt",
         "GetHeroQuery_ResponseAdapter.kt"
     )

@@ -6,22 +6,27 @@ query TestOperation {
                name
            }
            ... on Human {
-             profilePictureUrl
-             friends {
-                isFamous
-                ... on Wookie {
-                  race
-                }
-             }
+               profilePictureUrl
+               friends {
+                  isFamous
+                  ... on Wookie {
+                    race
+                  }
+               }
            }
-           ... on Wookie {
-              race
-              friends {
-                lifeExpectancy
-              }
+       }
+       ... on Wookie {
+          race
+          friends {
+            lifeExpectancy
+          }
+       }
+       ... on Being {
+           friends {
+               ... on Wookie {
+                   lifeExpectancy
+               }
            }
        }
    }
 }
-
-

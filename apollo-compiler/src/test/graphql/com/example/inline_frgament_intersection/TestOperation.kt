@@ -127,7 +127,19 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
         interface Friend {
           val name: String
 
+          val __typename: String
+
           fun marshaller(): ResponseFieldMarshaller
+
+          interface Wookie : Friend {
+            override val name: String
+
+            override val __typename: String
+
+            val lifeExpectancy: Double?
+
+            override fun marshaller(): ResponseFieldMarshaller
+          }
         }
       }
 
@@ -145,43 +157,41 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
         interface Friend : Being.Friend {
           override val name: String
 
-          val __typename: String
+          override val __typename: String
 
           val isFamous: Boolean?
 
           override fun marshaller(): ResponseFieldMarshaller
 
-          interface Wookie : Friend {
+          interface Wookie : Being.Friend, Being.Friend.Wookie, Friend {
+            override val name: String
+
             override val __typename: String
+
+            override val lifeExpectancy: Double?
 
             override val isFamous: Boolean?
 
             val race: Race
-
-            override val name: String
 
             override fun marshaller(): ResponseFieldMarshaller
           }
         }
       }
 
-      interface Wookie : Random, Being {
+      interface Wookie : Random {
         override val __typename: String
-
-        override val name: String
-
-        override val friends: List<Friend>
 
         val race: Race
 
+        val friends: List<Friend>
+
         override fun marshaller(): ResponseFieldMarshaller
 
-        interface Friend : Being.Friend {
-          override val name: String
-
+        interface Friend {
           val lifeExpectancy: Double?
 
-          override fun marshaller(): ResponseFieldMarshaller
+          fun marshaller(): ResponseFieldMarshaller
         }
       }
 
@@ -208,24 +218,28 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
 
           override fun marshaller(): ResponseFieldMarshaller
 
-          interface Wookie : Human.Friend, Human.Friend.Wookie, Friend {
+          interface Wookie : Being.Friend, Being.Friend.Wookie, Human.Friend.Wookie, Human.Friend,
+              Friend {
+            override val name: String
+
             override val __typename: String
+
+            override val lifeExpectancy: Double?
 
             override val isFamous: Boolean?
 
             override val race: Race
 
-            override val name: String
-
             override fun marshaller(): ResponseFieldMarshaller
           }
 
           data class WookieFriend(
+            override val name: String,
             override val __typename: String = "Wookie",
+            override val lifeExpectancy: Double?,
             override val isFamous: Boolean?,
-            override val race: Race,
-            override val name: String
-          ) : Human.Friend, Human.Friend.Wookie, Friend {
+            override val race: Race
+          ) : Being.Friend, Being.Friend.Wookie, Human.Friend, Human.Friend.Wookie, Friend {
             override fun marshaller(): ResponseFieldMarshaller {
               return ResponseFieldMarshaller { writer ->
                 TestOperation_ResponseAdapter.Data.Random.BeingHumanRandom.Friend.WookieFriend.toResponse(writer, this)
@@ -259,13 +273,48 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
           }
         }
 
-        data class Friend(
-          override val name: String,
+        interface Friend : Being.Friend, Wookie.Friend {
+          override val name: String
+
+          override val __typename: String
+
           override val lifeExpectancy: Double?
-        ) : Being.Friend, Wookie.Friend {
-          override fun marshaller(): ResponseFieldMarshaller {
-            return ResponseFieldMarshaller { writer ->
-              TestOperation_ResponseAdapter.Data.Random.BeingWookieRandom.Friend.toResponse(writer, this)
+
+          fun asWookie(): Wookie? = this as? Wookie
+
+          override fun marshaller(): ResponseFieldMarshaller
+
+          interface Wookie : Being.Friend, Being.Friend.Wookie, Friend {
+            override val name: String
+
+            override val __typename: String
+
+            override val lifeExpectancy: Double?
+
+            override fun marshaller(): ResponseFieldMarshaller
+          }
+
+          data class WookieFriend(
+            override val name: String,
+            override val __typename: String = "Wookie",
+            override val lifeExpectancy: Double?
+          ) : Being.Friend, Being.Friend.Wookie, Friend {
+            override fun marshaller(): ResponseFieldMarshaller {
+              return ResponseFieldMarshaller { writer ->
+                TestOperation_ResponseAdapter.Data.Random.BeingWookieRandom.Friend.WookieFriend.toResponse(writer, this)
+              }
+            }
+          }
+
+          data class OtherFriend(
+            override val name: String,
+            override val __typename: String = "Being",
+            override val lifeExpectancy: Double?
+          ) : Being.Friend, Random.Wookie.Friend, Friend {
+            override fun marshaller(): ResponseFieldMarshaller {
+              return ResponseFieldMarshaller { writer ->
+                TestOperation_ResponseAdapter.Data.Random.BeingWookieRandom.Friend.OtherFriend.toResponse(writer, this)
+              }
             }
           }
         }
@@ -285,7 +334,7 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "a6fe7d57772cd09c101972ceb52806f6969f0dacda08113950a4e7b967cfb3df"
+        "f91c0dc2a73e17f3c986ee290e9fee7a937b8c44eb85f43510cdff057fc7176d"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -308,9 +357,17 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
           |          }
           |        }
           |      }
-          |      ... on Wookie {
-          |        race
-          |        friends {
+          |    }
+          |    ... on Wookie {
+          |      race
+          |      friends {
+          |        lifeExpectancy
+          |      }
+          |    }
+          |    ... on Being {
+          |      friends {
+          |        __typename
+          |        ... on Wookie {
           |          lifeExpectancy
           |        }
           |      }
