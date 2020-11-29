@@ -174,11 +174,11 @@ class NormalizedCacheTestCase {
       assertThat(response.hasErrors()).isFalse()
       assertThat(response.data!!.hero?.name).isEqualTo("R2-D2")
       assertThat(response.data!!.hero?.name).isEqualTo("R2-D2")
-      val hero = response.data!!.hero as HeroParentTypeDependentFieldQuery.DroidHero
+      val hero = response.data!!.hero as HeroParentTypeDependentFieldQuery.Data.Hero.Droid
       assertThat(hero?.friends).hasSize(3)
       assertThat(hero?.friends?.get(0)?.name).isEqualTo("Luke Skywalker")
       assertThat(hero?.friends?.get(0)?.name).isEqualTo("Luke Skywalker")
-      assertThat((hero?.friends?.get(0) as HeroParentTypeDependentFieldQuery.HumanFriend1).height).isWithin(1.72)
+      assertThat((hero?.friends?.get(0) as HeroParentTypeDependentFieldQuery.Data.Hero.Droid.Friend.Human).height).isWithin(1.72)
       true
     }
   }
@@ -192,8 +192,8 @@ class NormalizedCacheTestCase {
         apolloClient!!.query(HeroTypeDependentAliasedFieldQuery(fromNullable(Episode.NEWHOPE)))
     ) { response ->
       assertThat(response.hasErrors()).isFalse()
-      assertThat(response.data!!.hero).isInstanceOf(HeroTypeDependentAliasedFieldQuery.DroidHero::class.java)
-      assertThat((response.data!!.hero as HeroTypeDependentAliasedFieldQuery.DroidHero?)?.property).isEqualTo("Astromech")
+      assertThat(response.data!!.hero).isInstanceOf(HeroTypeDependentAliasedFieldQuery.Data.Hero.DroidHero::class.java)
+      assertThat((response.data!!.hero as HeroTypeDependentAliasedFieldQuery.Data.Hero.DroidHero?)?.property).isEqualTo("Astromech")
       true
     }
     server.enqueue(mockResponse("HeroTypeDependentAliasedFieldResponseHuman.json"))
@@ -203,8 +203,8 @@ class NormalizedCacheTestCase {
         apolloClient!!.query(HeroTypeDependentAliasedFieldQuery(fromNullable(Episode.NEWHOPE)))
     ) { response ->
       assertThat(response.hasErrors()).isFalse()
-      assertThat(response.data!!.hero).isInstanceOf(HeroTypeDependentAliasedFieldQuery.HumanHero::class.java)
-      assertThat((response.data!!.hero as HeroTypeDependentAliasedFieldQuery.HumanHero?)?.property).isEqualTo("Tatooine")
+      assertThat(response.data!!.hero).isInstanceOf(HeroTypeDependentAliasedFieldQuery.Data.Hero.HumanHero::class.java)
+      assertThat((response.data!!.hero as HeroTypeDependentAliasedFieldQuery.Data.Hero.HumanHero?)?.property).isEqualTo("Tatooine")
       true
     }
   }

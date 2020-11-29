@@ -298,7 +298,7 @@ class ApolloWatcherTest {
   @Test
   @Throws(Exception::class)
   fun emptyCacheQueryWatcherCacheOnly() {
-    val watchedHeroes: MutableList<EpisodeHeroNameQuery.Hero?> = ArrayList()
+    val watchedHeroes: MutableList<EpisodeHeroNameQuery.Data.Hero?> = ArrayList()
     val query = EpisodeHeroNameQuery(fromNullable(Episode.EMPIRE))
     apolloClient!!.query(query)
         .responseFetcher(ApolloResponseFetchers.CACHE_ONLY)

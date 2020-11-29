@@ -77,7 +77,7 @@ class HttpCacheTest {
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
         .dispatcher(immediateExecutor())
-        .addCustomTypeAdapter(CustomType.DATE, dateCustomTypeAdapter)
+        .addCustomTypeAdapter(CustomType.Date, dateCustomTypeAdapter)
         .httpCache(cache)
         .build()
   }
