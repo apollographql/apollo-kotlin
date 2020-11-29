@@ -47,7 +47,7 @@ internal data class CodeGenerationAst(
       val graphqlName: String,
       val description: String,
       val interfaceType: ObjectType,
-      val implementationType: ObjectType,
+      val defaultImplementationType: ObjectType,
       val fragmentDefinition: String
   )
 

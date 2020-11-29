@@ -6,6 +6,8 @@
 package com.example.fragment_used_twice.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
+import com.apollographql.apollo.api.internal.ResponseReader
 import kotlin.Any
 import kotlin.String
 import kotlin.Suppress
@@ -34,5 +36,15 @@ interface CharacterDetail : GraphqlFragment {
         |  birthDate
         |}
         """.trimMargin()
+
+    operator fun invoke(reader: ResponseReader): CharacterDetail {
+      return CharacterDetailsImpl_ResponseAdapter.fromResponse(reader)
+    }
+
+    fun Mapper(): ResponseFieldMapper<CharacterDetail> {
+      return ResponseFieldMapper { reader ->
+        CharacterDetailsImpl_ResponseAdapter.fromResponse(reader)
+      }
+    }
   }
 }

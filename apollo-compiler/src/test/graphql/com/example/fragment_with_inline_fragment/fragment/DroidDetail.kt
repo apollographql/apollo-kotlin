@@ -6,6 +6,8 @@
 package com.example.fragment_with_inline_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
+import com.apollographql.apollo.api.internal.ResponseReader
 import kotlin.String
 import kotlin.Suppress
 
@@ -33,5 +35,15 @@ interface DroidDetail : GraphqlFragment {
         |  primaryFunction
         |}
         """.trimMargin()
+
+    operator fun invoke(reader: ResponseReader): DroidDetail {
+      return DroidDetailsImpl_ResponseAdapter.fromResponse(reader)
+    }
+
+    fun Mapper(): ResponseFieldMapper<DroidDetail> {
+      return ResponseFieldMapper { reader ->
+        DroidDetailsImpl_ResponseAdapter.fromResponse(reader)
+      }
+    }
   }
 }

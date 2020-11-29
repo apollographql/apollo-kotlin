@@ -47,29 +47,21 @@ internal fun CodeGenerationAst.OperationType.responseAdapterTypeSpec(generateAsI
 }
 
 internal fun CodeGenerationAst.FragmentType.responseAdapterTypeSpec(generateAsInternal: Boolean = false): TypeSpec {
-  return TypeSpec.objectBuilder("${this.name.escapeKotlinReservedWord()}_ResponseAdapter")
+  return TypeSpec.objectBuilder("${this.defaultImplementationType.name.escapeKotlinReservedWord()}_ResponseAdapter")
+      .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this.defaultImplementationType.typeRef.asTypeName()))
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
-      .addAnnotation(suppressWarningsAnnotation)
-      .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this.implementationType.typeRef.asTypeName()))
-      .addProperty(responseFieldsPropertySpec(this.implementationType.fields))
-      .addFunction(
-          FunSpec.builder("fromResponse")
-              .addModifiers(KModifier.OVERRIDE)
-              .returns(this.implementationType.typeRef.asTypeName())
-              .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
-              .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec(withDefaultValue = false))
-              .addCode("return·%T.fromResponse(reader, __typename)", this.implementationType.typeRef.asAdapterTypeName())
-              .build()
+      .applyIf(this.defaultImplementationType.fields.isNotEmpty()) {
+        addProperty(responseFieldsPropertySpec(this@responseAdapterTypeSpec.defaultImplementationType.fields))
+      }
+      .addFunction(this.defaultImplementationType.readFromResponseFunSpec())
+      .addFunction(this.defaultImplementationType.writeToResponseFunSpec())
+      .addTypes(
+          this.defaultImplementationType.nestedObjects.mapNotNull { nestedObject ->
+            nestedObject
+                .takeUnless { it.kind is CodeGenerationAst.ObjectType.Kind.Interface }
+                ?.responseAdapterTypeSpec()
+          }
       )
-      .addFunction(
-          FunSpec.builder("toResponse")
-              .addModifiers(KModifier.OVERRIDE)
-              .addParameter(ParameterSpec(name = "writer", type = ResponseWriter::class.asTypeName()))
-              .addParameter(ParameterSpec(name = "value", type = this.implementationType.typeRef.asTypeName()))
-              .addCode("%T.toResponse(writer, value)", this.implementationType.typeRef.asAdapterTypeName())
-              .build()
-      )
-      .addType(this.implementationType.responseAdapterTypeSpec())
       .build()
 }
 

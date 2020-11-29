@@ -6,7 +6,9 @@
 package com.example.named_fragment_delegate.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseReader
 import kotlin.Any
 import kotlin.String
 import kotlin.Suppress
@@ -84,5 +86,15 @@ interface HumanDetail : GraphqlFragment {
         |  }
         |}
         """.trimMargin()
+
+    operator fun invoke(reader: ResponseReader): HumanDetail {
+      return HumanDetailsImpl_ResponseAdapter.fromResponse(reader)
+    }
+
+    fun Mapper(): ResponseFieldMapper<HumanDetail> {
+      return ResponseFieldMapper { reader ->
+        HumanDetailsImpl_ResponseAdapter.fromResponse(reader)
+      }
+    }
   }
 }

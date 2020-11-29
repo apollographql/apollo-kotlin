@@ -1,6 +1,8 @@
 package com.apollographql.apollo.compiler.backend
 
 import com.apollographql.apollo.compiler.backend.ast.AstBuilder.Companion.buildAst
+import com.apollographql.apollo.compiler.backend.codegen.implementationTypeSpec
+import com.apollographql.apollo.compiler.backend.codegen.interfaceTypeSpec
 import com.apollographql.apollo.compiler.backend.codegen.patchKotlinNativeOptionalArrayProperties
 import com.apollographql.apollo.compiler.backend.codegen.responseAdapterTypeSpec
 import com.apollographql.apollo.compiler.backend.codegen.typeSpec
@@ -71,20 +73,25 @@ internal class GraphQLCodeGenerator(
         .filter { fragmentType -> frontendIr.fragmentsToGenerate.contains(fragmentType.graphqlName) }
         .forEach { fragmentType ->
           fragmentType
-              .typeSpec(generateAsInternal)
+              .interfaceTypeSpec(generateAsInternal)
+              .fileSpec(frontendIr.fragmentsPackageName)
+              .writeTo(outputDir)
+
+          fragmentType
+              .implementationTypeSpec(generateAsInternal)
               .fileSpec(frontendIr.fragmentsPackageName)
               .writeTo(outputDir)
         }
 
     // FIXME
-//    ast.fragmentTypes
-//        .filter { frontendIr.fragmentsToGenerate.contains(it.graphqlName) }
-//        .forEach { fragmentType ->
-//          fragmentType
-//              .responseAdapterTypeSpec(generateAsInternal)
-//              .fileSpec(frontendIr.fragmentsPackageName)
-//              .writeTo(outputDir)
-//        }
+    ast.fragmentTypes
+        .filter { frontendIr.fragmentsToGenerate.contains(it.graphqlName) }
+        .forEach { fragmentType ->
+          fragmentType
+              .responseAdapterTypeSpec(generateAsInternal)
+              .fileSpec(frontendIr.fragmentsPackageName)
+              .writeTo(outputDir)
+        }
 
     ast.operationTypes.forEach { operationType ->
       operationType

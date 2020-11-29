@@ -321,7 +321,7 @@ internal class AstBuilder private constructor(
         alternativeSelectionKeys = selectionSet.selectionKeys,
     )
     val implementationType = buildObjectType(
-        name = "DefaultImpl",
+        name = this.defaultImplementationName,
         schemaTypeRef = defaultSelectionSet.typeCondition,
         fields = defaultSelectionSet.fields,
         fragments = defaultSelectionSet.fragments,
@@ -329,8 +329,8 @@ internal class AstBuilder private constructor(
         abstract = false,
         customScalarTypes = customScalarTypes,
         currentSelectionKey = SelectionKey(
-            root = name,
-            keys = listOf(name, "DefaultImpl"),
+            root = this.defaultImplementationName,
+            keys = listOf(this.defaultImplementationName),
             type = SelectionKey.Type.Fragment,
         ),
         alternativeSelectionKeys = defaultSelectionSet.selectionKeys,
@@ -340,7 +340,7 @@ internal class AstBuilder private constructor(
         graphqlName = this.name,
         description = this.comment,
         interfaceType = interfaceType,
-        implementationType = implementationType,
+        defaultImplementationType = implementationType,
         fragmentDefinition = this.source,
     )
   }

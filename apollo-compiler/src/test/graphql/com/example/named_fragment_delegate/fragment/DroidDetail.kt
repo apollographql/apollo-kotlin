@@ -6,7 +6,9 @@
 package com.example.named_fragment_delegate.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseReader
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
@@ -55,5 +57,15 @@ interface DroidDetail : GraphqlFragment {
         |  }
         |}
         """.trimMargin()
+
+    operator fun invoke(reader: ResponseReader): DroidDetail {
+      return DroidDetailsImpl_ResponseAdapter.fromResponse(reader)
+    }
+
+    fun Mapper(): ResponseFieldMapper<DroidDetail> {
+      return ResponseFieldMapper { reader ->
+        DroidDetailsImpl_ResponseAdapter.fromResponse(reader)
+      }
+    }
   }
 }

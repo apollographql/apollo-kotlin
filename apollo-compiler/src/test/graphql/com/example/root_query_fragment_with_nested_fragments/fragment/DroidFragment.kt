@@ -6,6 +6,8 @@
 package com.example.root_query_fragment_with_nested_fragments.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
+import com.apollographql.apollo.api.internal.ResponseReader
 import kotlin.String
 import kotlin.Suppress
 
@@ -33,5 +35,15 @@ interface DroidFragment : GraphqlFragment {
         |  primaryFunction
         |}
         """.trimMargin()
+
+    operator fun invoke(reader: ResponseReader): DroidFragment {
+      return DroidFragmentImpl_ResponseAdapter.fromResponse(reader)
+    }
+
+    fun Mapper(): ResponseFieldMapper<DroidFragment> {
+      return ResponseFieldMapper { reader ->
+        DroidFragmentImpl_ResponseAdapter.fromResponse(reader)
+      }
+    }
   }
 }

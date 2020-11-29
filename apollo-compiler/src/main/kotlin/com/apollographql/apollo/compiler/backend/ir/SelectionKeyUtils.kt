@@ -29,13 +29,13 @@ internal object SelectionKeyUtils {
     )
   }
 
-  private fun List<BackendIr.Fragment>.addFragmentSelectionKey(selectionKey: SelectionKey): List<BackendIr.Fragment> {
+  fun List<BackendIr.Fragment>.addFragmentSelectionKey(selectionKey: SelectionKey): List<BackendIr.Fragment> {
     return this.map { fragment ->
       fragment.addFragmentSelectionKey(selectionKey.plus(fragment.name))
     }
   }
 
-  private fun BackendIr.Fragment.addFragmentSelectionKey(selectionKey: SelectionKey): BackendIr.Fragment {
+  fun BackendIr.Fragment.addFragmentSelectionKey(selectionKey: SelectionKey): BackendIr.Fragment {
     return when (this) {
       is BackendIr.Fragment.Interface -> this.copy(
           fields = this.fields.addFieldSelectionKey(selectionKey),

@@ -6,7 +6,9 @@
 package com.example.fragment_in_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseReader
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
@@ -115,5 +117,15 @@ interface StarshipFragment : GraphqlFragment {
         |  }
         |}
         """.trimMargin()
+
+    operator fun invoke(reader: ResponseReader): StarshipFragment {
+      return StarshipFragmentImpl_ResponseAdapter.fromResponse(reader)
+    }
+
+    fun Mapper(): ResponseFieldMapper<StarshipFragment> {
+      return ResponseFieldMapper { reader ->
+        StarshipFragmentImpl_ResponseAdapter.fromResponse(reader)
+      }
+    }
   }
 }
