@@ -64,7 +64,7 @@ class KotlinDSLTests {
     ) { dir ->
       val result = TestUtils.executeTask("generateApolloSources", dir)
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
-      Assert.assertTrue(dir.generatedChild("starwars/com/starwars/DroidDetails.kt").isFile)
+      Assert.assertTrue(dir.generatedChild("starwars/com/starwars/DroidDetail.kt").isFile)
     }
   }
 }

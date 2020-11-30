@@ -86,15 +86,7 @@ private fun CodeGenerationAst.Field.writeCode(responseField: String): CodeBlock 
   return when (type) {
     is CodeGenerationAst.FieldType.Scalar -> when (type) {
 
-      is CodeGenerationAst.FieldType.Scalar.ID -> {
-        CodeBlock.of(
-            "writer.writeCustom(%L·as·%T,·value.%L)\n",
-            responseField.escapeKotlinReservedWord(),
-            ResponseField.CustomTypeField::class,
-            this.name.escapeKotlinReservedWord()
-        )
-      }
-
+      is CodeGenerationAst.FieldType.Scalar.ID,
       is CodeGenerationAst.FieldType.Scalar.String -> {
         CodeBlock.of(
             "writer.writeString(%L,·value.%L)\n",
@@ -202,9 +194,7 @@ private val CodeGenerationAst.FieldType.Array.writeListItemCode: CodeBlock
     val safeValue = if (rawType.nullable) "value?" else "value"
     return when (rawType) {
       is CodeGenerationAst.FieldType.Scalar -> when (rawType) {
-        is CodeGenerationAst.FieldType.Scalar.ID -> CodeBlock.of(
-            "listItemWriter.writeCustom(%T,·value)", rawType.customEnumType.asTypeName()
-        )
+        is CodeGenerationAst.FieldType.Scalar.ID,
         is CodeGenerationAst.FieldType.Scalar.String -> CodeBlock.of("listItemWriter.writeString(value)")
         is CodeGenerationAst.FieldType.Scalar.Int -> CodeBlock.of("listItemWriter.writeInt(value)")
         is CodeGenerationAst.FieldType.Scalar.Boolean -> CodeBlock.of("listItemWriter.writeBoolean(value)")
@@ -215,7 +205,7 @@ private val CodeGenerationAst.FieldType.Array.writeListItemCode: CodeBlock
         )
       }
       is CodeGenerationAst.FieldType.Object -> {
-        if (nullable) {
+        if (rawType.nullable) {
           CodeBlock.builder()
               .beginControlFlow("if(value == null)")
               .addStatement("listItemWriter.writeObject(null)")

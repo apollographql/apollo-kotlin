@@ -151,12 +151,7 @@ private fun CodeGenerationAst.FieldType.fromResponseCode(field: String): CodeBlo
   val notNullOperator = "!!".takeUnless { nullable } ?: ""
   return when (this) {
     is CodeGenerationAst.FieldType.Scalar -> when (this) {
-      is CodeGenerationAst.FieldType.Scalar.ID -> if (field.isNotEmpty()) {
-        CodeBlock.of("readCustomType<%T>(%L·as·%T)%L", ClassName.bestGuess(type), field, ResponseField.CustomTypeField::class,
-            notNullOperator)
-      } else {
-        CodeBlock.of("readCustomType<%T>(%T)%L", ClassName.bestGuess(type), customEnumType.asTypeName(), notNullOperator)
-      }
+      is CodeGenerationAst.FieldType.Scalar.ID,
       is CodeGenerationAst.FieldType.Scalar.String -> CodeBlock.of("readString(%L)%L", field, notNullOperator)
       is CodeGenerationAst.FieldType.Scalar.Int -> CodeBlock.of("readInt(%L)%L", field, notNullOperator)
       is CodeGenerationAst.FieldType.Scalar.Boolean -> CodeBlock.of("readBoolean(%L)%L", field, notNullOperator)
@@ -207,9 +202,7 @@ private fun CodeGenerationAst.FieldType.fromResponseCode(field: String): CodeBlo
 private fun CodeGenerationAst.FieldType.readListItemCode(): CodeBlock {
   return when (this) {
     is CodeGenerationAst.FieldType.Scalar -> when (this) {
-      is CodeGenerationAst.FieldType.Scalar.ID -> CodeBlock.of(
-          "reader.readCustomType<%T>(%T)", ClassName.bestGuess(type), customEnumType.asTypeName()
-      )
+      is CodeGenerationAst.FieldType.Scalar.ID,
       is CodeGenerationAst.FieldType.Scalar.String -> CodeBlock.of("reader.readString()")
       is CodeGenerationAst.FieldType.Scalar.Int -> CodeBlock.of("reader.readInt()")
       is CodeGenerationAst.FieldType.Scalar.Boolean -> CodeBlock.of("reader.readBoolean()")

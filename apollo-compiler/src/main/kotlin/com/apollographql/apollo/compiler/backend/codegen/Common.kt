@@ -25,7 +25,7 @@ import com.squareup.kotlinpoet.joinToCode
 internal fun CodeGenerationAst.FieldType.asTypeName(): TypeName {
   return when (this) {
     is CodeGenerationAst.FieldType.Scalar -> when (this) {
-      is CodeGenerationAst.FieldType.Scalar.ID -> ClassName.bestGuess(type.escapeKotlinReservedWord())
+      is CodeGenerationAst.FieldType.Scalar.ID,
       is CodeGenerationAst.FieldType.Scalar.String -> String::class.asClassName()
       is CodeGenerationAst.FieldType.Scalar.Int -> INT
       is CodeGenerationAst.FieldType.Scalar.Boolean -> BOOLEAN

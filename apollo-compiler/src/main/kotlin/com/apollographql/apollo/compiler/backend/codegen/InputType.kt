@@ -97,19 +97,7 @@ private val CodeGenerationAst.InputType.marshallerFunSpec: FunSpec
 internal fun CodeGenerationAst.InputField.writeCodeBlock(thisRef: String): CodeBlock {
   return when (type) {
     is CodeGenerationAst.FieldType.Scalar -> when (type) {
-      is CodeGenerationAst.FieldType.Scalar.ID -> {
-        if (type.nullable) {
-          CodeBlock.builder()
-              .addStatement("if·(this@%L.%L.defined)·{", thisRef, name.escapeKotlinReservedWord())
-              .indent()
-              .addStatement("writer.writeString(%S, this@%L.%L.value)", schemaName, thisRef, name.escapeKotlinReservedWord())
-              .unindent()
-              .addStatement("}")
-              .build()
-        } else {
-          CodeBlock.of("writer.writeString(%S, this@%L.%L)\n", schemaName, thisRef, name.escapeKotlinReservedWord())
-        }
-      }
+      is CodeGenerationAst.FieldType.Scalar.ID,
       is CodeGenerationAst.FieldType.Scalar.String -> {
         if (type.nullable) {
           CodeBlock.builder()
@@ -250,9 +238,7 @@ internal fun CodeGenerationAst.InputField.writeCodeBlock(thisRef: String): CodeB
 private fun CodeGenerationAst.FieldType.writeListItem(): CodeBlock {
   return when (this) {
     is CodeGenerationAst.FieldType.Scalar -> when (this) {
-      is CodeGenerationAst.FieldType.Scalar.ID -> CodeBlock.of(
-          "listItemWriter.writeCustom(%T, value)\n", customEnumType.asTypeName()
-      )
+      is CodeGenerationAst.FieldType.Scalar.ID,
       is CodeGenerationAst.FieldType.Scalar.String -> CodeBlock.of("listItemWriter.writeString(value)\n")
       is CodeGenerationAst.FieldType.Scalar.Int -> CodeBlock.of("listItemWriter.writeInt(value)\n")
       is CodeGenerationAst.FieldType.Scalar.Boolean -> CodeBlock.of("listItemWriter.writeBoolean(value)\n")
