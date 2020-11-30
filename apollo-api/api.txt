@@ -130,6 +130,11 @@ package com.apollographql.apollo.api {
     method public int hashCode();
   }
 
+  public interface EnumValue {
+    method public String getRawValue();
+    property public abstract String rawValue;
+  }
+
   public final class Error {
     ctor public Error(String message, java.util.List<com.apollographql.apollo.api.Error.Location> locations, java.util.Map<java.lang.String,?> customAttributes);
     method @Deprecated public java.util.Map<java.lang.String,java.lang.Object> customAttributes();

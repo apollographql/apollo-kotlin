@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler.codegen.kotlin
 
+import com.apollographql.apollo.api.EnumValue
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.ast.EnumType
 import com.squareup.kotlinpoet.*
@@ -21,7 +22,8 @@ private fun EnumType.toEnumTypeSpec(generateAsInternal: Boolean): TypeSpec {
       .enumBuilder(name)
       .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
-      .primaryConstructor(primaryConstructorSpec)
+      .primaryConstructor(primaryConstructorWithOverriddenParamSpec)
+      .addSuperinterface(EnumValue::class)
       .addProperty(rawValuePropertySpec)
       .apply {
         values.forEach { value -> addEnumConstant(value.constName, value.enumConstTypeSpec) }
@@ -35,6 +37,12 @@ private val primaryConstructorSpec =
     FunSpec
         .constructorBuilder()
         .addParameter("rawValue", String::class)
+        .build()
+
+private val primaryConstructorWithOverriddenParamSpec =
+    FunSpec
+        .constructorBuilder()
+        .addParameter("rawValue", String::class, KModifier.OVERRIDE)
         .build()
 
 private val rawValuePropertySpec =
@@ -86,7 +94,8 @@ private fun EnumType.toSealedClassTypeSpec(generateAsInternal: Boolean): TypeSpe
       .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .addModifiers(KModifier.SEALED)
-      .primaryConstructor(primaryConstructorSpec)
+      .primaryConstructor(primaryConstructorWithOverriddenParamSpec)
+      .addSuperinterface(EnumValue::class)
       .addProperty(rawValuePropertySpec)
       .addTypes(values.map { value -> value.toObjectTypeSpec(ClassName("", name)) })
       .addType(unknownValueTypeSpec)

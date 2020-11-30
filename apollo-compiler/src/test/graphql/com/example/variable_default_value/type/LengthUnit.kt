@@ -5,14 +5,15 @@
 //
 package com.example.variable_default_value.type
 
+import com.apollographql.apollo.api.EnumValue
 import kotlin.String
 
 /**
  * Units of height
  */
 enum class LengthUnit(
-  val rawValue: String
-) {
+  override val rawValue: String
+) : EnumValue {
   /**
    * The standard unit around the world
    */
