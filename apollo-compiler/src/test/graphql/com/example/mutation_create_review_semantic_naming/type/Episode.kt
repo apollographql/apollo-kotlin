@@ -5,6 +5,7 @@
 //
 package com.example.mutation_create_review_semantic_naming.type
 
+import com.apollographql.apollo.api.EnumValue
 import kotlin.Deprecated
 import kotlin.String
 
@@ -12,8 +13,8 @@ import kotlin.String
  * The episodes in the Star Wars trilogy
  */
 enum class Episode(
-  val rawValue: String
-) {
+  override val rawValue: String
+) : EnumValue {
   /**
    * Star Wars Episode IV: A New Hope, released in 1977.
    */

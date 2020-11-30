@@ -5,14 +5,15 @@
 //
 package com.example.hero_details.type
 
+import com.apollographql.apollo.api.EnumValue
 import kotlin.String
 
 /**
  * Lower case enum type name
  */
 enum class Hero_type(
-  val rawValue: String
-) {
+  override val rawValue: String
+) : EnumValue {
   HUMAN("human"),
 
   DROID("droid"),

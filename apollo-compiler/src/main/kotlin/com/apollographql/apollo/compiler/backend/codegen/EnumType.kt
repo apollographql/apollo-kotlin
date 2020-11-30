@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler.backend.codegen
 
+import com.apollographql.apollo.api.EnumValue
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
@@ -29,7 +30,8 @@ private fun CodeGenerationAst.EnumType.toEnumTypeSpec(generateAsInternal: Boolea
       .enumBuilder(name.escapeKotlinReservedWord())
       .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
-      .primaryConstructor(primaryConstructorSpec)
+      .primaryConstructor(primaryConstructorWithOverriddenParamSpec)
+      .addSuperinterface(EnumValue::class)
       .addProperty(rawValuePropertySpec)
       .apply {
         consts.forEach { value -> addEnumConstant(value.constName, value.enumConstTypeSpec) }
@@ -43,6 +45,12 @@ private val primaryConstructorSpec =
     FunSpec
         .constructorBuilder()
         .addParameter("rawValue", String::class)
+        .build()
+
+private val primaryConstructorWithOverriddenParamSpec =
+    FunSpec
+        .constructorBuilder()
+        .addParameter("rawValue", String::class, KModifier.OVERRIDE)
         .build()
 
 private val rawValuePropertySpec =
@@ -94,7 +102,8 @@ private fun CodeGenerationAst.EnumType.toSealedClassTypeSpec(generateAsInternal:
       .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .addModifiers(KModifier.SEALED)
-      .primaryConstructor(primaryConstructorSpec)
+      .primaryConstructor(primaryConstructorWithOverriddenParamSpec)
+      .addSuperinterface(EnumValue::class)
       .addProperty(rawValuePropertySpec)
       .addTypes(consts.map { value -> value.toObjectTypeSpec(ClassName("", name.escapeKotlinReservedWord())) })
       .addType(unknownValueTypeSpec)

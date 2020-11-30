@@ -5,11 +5,12 @@
 //
 package com.example.inline_frgament_intersection.type
 
+import com.apollographql.apollo.api.EnumValue
 import kotlin.String
 
 enum class Race(
-  val rawValue: String
-) {
+  override val rawValue: String
+) : EnumValue {
   WOOKIE("WOOKIE"),
 
   GUMGAN("GUMGAN"),

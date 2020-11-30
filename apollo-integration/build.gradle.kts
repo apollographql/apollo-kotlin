@@ -57,6 +57,12 @@ configure<ApolloExtension> {
     sourceFolder.set("com/apollographql/apollo/integration/performance")
     rootPackageName.set("com.apollographql.apollo.integration.performance")
   }
+  service("sealedclasses") {
+    sealedClassesForEnumsMatching.set(listOf(".*"))
+    generateKotlinModels.set(true)
+    sourceFolder.set("com/apollographql/apollo/integration/sealedclasses")
+    rootPackageName.set("com.apollographql.apollo.integration.sealedclasses")
+  }
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {

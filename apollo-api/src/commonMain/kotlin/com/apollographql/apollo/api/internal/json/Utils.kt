@@ -1,6 +1,5 @@
 package com.apollographql.apollo.api.internal.json
 
-import com.apollographql.apollo.api.BigDecimal
 import com.apollographql.apollo.api.internal.Throws
 import okio.IOException
 import kotlin.jvm.JvmStatic
@@ -32,6 +31,7 @@ object Utils {
 
       is Boolean -> jsonWriter.value(value as Boolean?)
       is Number -> jsonWriter.value(value as Number?)
+      is EnumValue -> jsonWriter.value(value.rawValue)
       else -> jsonWriter.value(value.toString())
     }
   }
