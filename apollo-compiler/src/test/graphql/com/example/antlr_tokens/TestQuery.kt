@@ -116,27 +116,27 @@ data class TestQuery(
     scalarTypeAdapters = scalarTypeAdapters
   )
 
-  data class TypeWithGraphQLKeywords(
-    val on: String?,
-    val null_: String?,
-    val alias: String?
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.TypeWithGraphQLKeywords_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
   /**
-   * Data from the response after executing this GraphQL operation
+   * The query type, represents all of the entry points into our object graph
    */
   data class Data(
-    val typeWithGraphQLKeywords: TypeWithGraphQLKeywords?
+    val typeWithGraphQLKeywords: TypeWithGraphQLKeyword?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
+      }
+    }
+
+    data class TypeWithGraphQLKeyword(
+      val on: String?,
+      val null_: String?,
+      val alias: String?
+    ) {
+      fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          TestQuery_ResponseAdapter.Data.TypeWithGraphQLKeyword.toResponse(writer, this)
+        }
       }
     }
   }

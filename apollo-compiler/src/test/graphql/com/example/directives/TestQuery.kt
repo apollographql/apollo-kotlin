@@ -116,50 +116,50 @@ data class TestQuery(
   )
 
   /**
-   * A connection object for a character's friends
-   */
-  data class FriendsConnection(
-    /**
-     * The total number of friends
-     */
-    val totalCount: Int?
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.FriendsConnection_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
-  data class Hero(
-    /**
-     * The name of the character
-     */
-    val name: String?,
-    /**
-     * The friends of the character exposed as a connection with edges
-     */
-    val friendsConnection: FriendsConnection?
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Hero_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * Data from the response after executing this GraphQL operation
+   * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val hero: Hero?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
+      }
+    }
+
+    /**
+     * A character from the Star Wars universe
+     */
+    data class Hero(
+      /**
+       * The name of the character
+       */
+      val name: String?,
+      /**
+       * The friends of the character exposed as a connection with edges
+       */
+      val friendsConnection: FriendsConnection?
+    ) {
+      fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          TestQuery_ResponseAdapter.Data.Hero.toResponse(writer, this)
+        }
+      }
+
+      /**
+       * A connection object for a character's friends
+       */
+      data class FriendsConnection(
+        /**
+         * The total number of friends
+         */
+        val totalCount: Int?
+      ) {
+        fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            TestQuery_ResponseAdapter.Data.Hero.FriendsConnection.toResponse(writer, this)
+          }
+        }
       }
     }
   }

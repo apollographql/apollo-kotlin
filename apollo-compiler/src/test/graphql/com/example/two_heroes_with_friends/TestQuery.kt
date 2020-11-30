@@ -95,159 +95,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   )
 
   /**
-   * A character from the Star Wars universe
-   */
-  data class Node(
-    /**
-     * The name of the character
-     */
-    val name: String
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Node_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * An edge object for a character's friends
-   */
-  data class Edge(
-    /**
-     * The character represented by this friendship edge
-     */
-    val node: Node?
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Edge_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * A connection object for a character's friends
-   */
-  data class FriendsConnection(
-    /**
-     * The total number of friends
-     */
-    val totalCount: Int?,
-    /**
-     * The edges for each of the character's friends.
-     */
-    val edges: List<Edge?>?
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.FriendsConnection_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-
-    fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
-  data class R2(
-    /**
-     * The name of the character
-     */
-    val name: String,
-    /**
-     * The friends of the character exposed as a connection with edges
-     */
-    val friendsConnection: FriendsConnection
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.R2_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
-  data class Node1(
-    /**
-     * The name of the character
-     */
-    val name: String
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Node1_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * An edge object for a character's friends
-   */
-  data class Edge1(
-    /**
-     * The character represented by this friendship edge
-     */
-    val node: Node1?
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Edge1_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * A connection object for a character's friends
-   */
-  data class FriendsConnection1(
-    /**
-     * The total number of friends
-     */
-    val totalCount: Int?,
-    /**
-     * The edges for each of the character's friends.
-     */
-    val edges: List<Edge1?>?
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.FriendsConnection1_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-
-    fun edgesFilterNotNull(): List<Edge1>? = edges?.filterNotNull()
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
-  data class Luke(
-    /**
-     * The ID of the character
-     */
-    val id: String,
-    /**
-     * The name of the character
-     */
-    val name: String,
-    /**
-     * The friends of the character exposed as a connection with edges
-     */
-    val friendsConnection: FriendsConnection1
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Luke_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * Data from the response after executing this GraphQL operation
+   * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val r2: R2?,
@@ -255,7 +103,159 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
+      }
+    }
+
+    /**
+     * A character from the Star Wars universe
+     */
+    data class R2(
+      /**
+       * The name of the character
+       */
+      val name: String,
+      /**
+       * The friends of the character exposed as a connection with edges
+       */
+      val friendsConnection: FriendsConnection
+    ) {
+      fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          TestQuery_ResponseAdapter.Data.R2.toResponse(writer, this)
+        }
+      }
+
+      /**
+       * A connection object for a character's friends
+       */
+      data class FriendsConnection(
+        /**
+         * The total number of friends
+         */
+        val totalCount: Int?,
+        /**
+         * The edges for each of the character's friends.
+         */
+        val edges: List<Edge?>?
+      ) {
+        fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            TestQuery_ResponseAdapter.Data.R2.FriendsConnection.toResponse(writer, this)
+          }
+        }
+
+        fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
+
+        /**
+         * An edge object for a character's friends
+         */
+        data class Edge(
+          /**
+           * The character represented by this friendship edge
+           */
+          val node: Node?
+        ) {
+          fun marshaller(): ResponseFieldMarshaller {
+            return ResponseFieldMarshaller { writer ->
+              TestQuery_ResponseAdapter.Data.R2.FriendsConnection.Edge.toResponse(writer, this)
+            }
+          }
+
+          /**
+           * A character from the Star Wars universe
+           */
+          data class Node(
+            /**
+             * The name of the character
+             */
+            val name: String
+          ) {
+            fun marshaller(): ResponseFieldMarshaller {
+              return ResponseFieldMarshaller { writer ->
+                TestQuery_ResponseAdapter.Data.R2.FriendsConnection.Edge.Node.toResponse(writer, this)
+              }
+            }
+          }
+        }
+      }
+    }
+
+    /**
+     * A character from the Star Wars universe
+     */
+    data class Luke(
+      /**
+       * The ID of the character
+       */
+      val id: String,
+      /**
+       * The name of the character
+       */
+      val name: String,
+      /**
+       * The friends of the character exposed as a connection with edges
+       */
+      val friendsConnection: FriendsConnection
+    ) {
+      fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          TestQuery_ResponseAdapter.Data.Luke.toResponse(writer, this)
+        }
+      }
+
+      /**
+       * A connection object for a character's friends
+       */
+      data class FriendsConnection(
+        /**
+         * The total number of friends
+         */
+        val totalCount: Int?,
+        /**
+         * The edges for each of the character's friends.
+         */
+        val edges: List<Edge?>?
+      ) {
+        fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            TestQuery_ResponseAdapter.Data.Luke.FriendsConnection.toResponse(writer, this)
+          }
+        }
+
+        fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
+
+        /**
+         * An edge object for a character's friends
+         */
+        data class Edge(
+          /**
+           * The character represented by this friendship edge
+           */
+          val node: Node?
+        ) {
+          fun marshaller(): ResponseFieldMarshaller {
+            return ResponseFieldMarshaller { writer ->
+              TestQuery_ResponseAdapter.Data.Luke.FriendsConnection.Edge.toResponse(writer, this)
+            }
+          }
+
+          /**
+           * A character from the Star Wars universe
+           */
+          data class Node(
+            /**
+             * The name of the character
+             */
+            val name: String
+          ) {
+            fun marshaller(): ResponseFieldMarshaller {
+              return ResponseFieldMarshaller { writer ->
+                TestQuery_ResponseAdapter.Data.Luke.FriendsConnection.Edge.Node.toResponse(writer, this)
+              }
+            }
+          }
+        }
       }
     }
   }

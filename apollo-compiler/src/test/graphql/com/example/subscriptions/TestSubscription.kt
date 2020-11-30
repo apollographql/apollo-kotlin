@@ -112,29 +112,6 @@ data class TestSubscription(
     scalarTypeAdapters = scalarTypeAdapters
   )
 
-  /**
-   * A comment about an entry, submitted by a user
-   */
-  data class CommentAdded(
-    /**
-     * The SQL ID of this entry
-     */
-    val id: Int,
-    /**
-     * The text of the comment
-     */
-    val content: String
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestSubscription_ResponseAdapter.CommentAdded_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * Data from the response after executing this GraphQL operation
-   */
   data class Data(
     /**
      * Subscription fires on every comment added
@@ -143,7 +120,27 @@ data class TestSubscription(
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestSubscription_ResponseAdapter.toResponse(writer, this)
+        TestSubscription_ResponseAdapter.Data.toResponse(writer, this)
+      }
+    }
+
+    /**
+     * A comment about an entry, submitted by a user
+     */
+    data class CommentAdded(
+      /**
+       * The SQL ID of this entry
+       */
+      val id: Int,
+      /**
+       * The text of the comment
+       */
+      val content: String
+    ) {
+      fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          TestSubscription_ResponseAdapter.Data.CommentAdded.toResponse(writer, this)
+        }
       }
     }
   }

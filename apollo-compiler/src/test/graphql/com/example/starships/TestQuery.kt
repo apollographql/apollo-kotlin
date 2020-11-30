@@ -18,7 +18,6 @@ import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.api.internal.Throws
-import com.example.starships.type.CustomType
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Double
@@ -46,7 +45,7 @@ data class TestQuery(
 
     override fun marshaller(): InputFieldMarshaller {
       return InputFieldMarshaller.invoke { writer ->
-        writer.writeCustom("id", CustomType.ID, this@TestQuery.id)
+        writer.writeString("id", this@TestQuery.id)
       }
     }
   }
@@ -114,33 +113,33 @@ data class TestQuery(
     scalarTypeAdapters = scalarTypeAdapters
   )
 
-  data class Starship(
-    /**
-     * The ID of the starship
-     */
-    val id: String,
-    /**
-     * The name of the starship
-     */
-    val name: String,
-    val coordinates: List<List<Double>>?
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Starship_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
   /**
-   * Data from the response after executing this GraphQL operation
+   * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val starship: Starship?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
+      }
+    }
+
+    data class Starship(
+      /**
+       * The ID of the starship
+       */
+      val id: String,
+      /**
+       * The name of the starship
+       */
+      val name: String,
+      val coordinates: List<List<Double>>?
+    ) {
+      fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          TestQuery_ResponseAdapter.Data.Starship.toResponse(writer, this)
+        }
       }
     }
   }

@@ -24,187 +24,173 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
-    return reader.run {
-      var search: List<TestQuery.Search?>? = null
-      while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> search = readList<TestQuery.Search>(RESPONSE_FIELDS[0]) { reader ->
-            reader.readObject<TestQuery.Search> { reader ->
-              TestQuery_ResponseAdapter.Search_ResponseAdapter.fromResponse(reader)
-            }
-          }
-          else -> break
-        }
-      }
-      TestQuery.Data(
-        search = search
-      )
-    }
+    return Data.fromResponse(reader, __typename)
   }
 
   override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
-    writer.writeList(RESPONSE_FIELDS[0], value.search) { values, listItemWriter ->
-      values?.forEach { value ->
-        if(value == null) {
-          listItemWriter.writeObject(null)
-        } else {
-          listItemWriter.writeObject { writer ->
-            TestQuery_ResponseAdapter.Search_ResponseAdapter.toResponse(writer, value)
-          }
-        }
-      }
-    }
+    Data.toResponse(writer, value)
   }
 
-  object CharacterSearch_ResponseAdapter : ResponseAdapter<TestQuery.CharacterSearch> {
+  object Data : ResponseAdapter<TestQuery.Data> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
-      ResponseField.forString("name", "name", null, false, null)
+      ResponseField.forList("search", "search", mapOf<String, Any>(
+        "text" to "bla-bla"), true, null)
     )
 
-    override fun fromResponse(reader: ResponseReader, __typename: String?):
-        TestQuery.CharacterSearch {
+    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
       return reader.run {
-        var __typename: String? = __typename
-        var name: String? = null
+        var search: List<TestQuery.Data.Search?>? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> name = readString(RESPONSE_FIELDS[1])
+            0 -> search = readList<TestQuery.Data.Search>(RESPONSE_FIELDS[0]) { reader ->
+              reader.readObject<TestQuery.Data.Search> { reader ->
+                Search.fromResponse(reader)
+              }
+            }
             else -> break
           }
         }
-        TestQuery.CharacterSearch(
-          __typename = __typename!!,
-          name = name!!
+        TestQuery.Data(
+          search = search
         )
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.CharacterSearch) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], value.name)
-    }
-  }
-
-  object CharacterDroidSearch_ResponseAdapter : ResponseAdapter<TestQuery.CharacterDroidSearch> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
-      ResponseField.forString("name", "name", null, false, null),
-      ResponseField.forString("primaryFunction", "primaryFunction", null, true, null)
-    )
-
-    override fun fromResponse(reader: ResponseReader, __typename: String?):
-        TestQuery.CharacterDroidSearch {
-      return reader.run {
-        var __typename: String? = __typename
-        var name: String? = null
-        var primaryFunction: String? = null
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> name = readString(RESPONSE_FIELDS[1])
-            2 -> primaryFunction = readString(RESPONSE_FIELDS[2])
-            else -> break
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
+      writer.writeList(RESPONSE_FIELDS[0], value.search) { values, listItemWriter ->
+        values?.forEach { value ->
+          if(value == null) {
+            listItemWriter.writeObject(null)
+          } else {
+            listItemWriter.writeObject { writer ->
+              Search.toResponse(writer, value)
+            }
           }
         }
-        TestQuery.CharacterDroidSearch(
-          __typename = __typename!!,
-          name = name!!,
-          primaryFunction = primaryFunction
-        )
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.CharacterDroidSearch) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], value.name)
-      writer.writeString(RESPONSE_FIELDS[2], value.primaryFunction)
-    }
-  }
+    object Search : ResponseAdapter<TestQuery.Data.Search> {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
 
-  object CharacterHumanSearch_ResponseAdapter : ResponseAdapter<TestQuery.CharacterHumanSearch> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
-      ResponseField.forString("name", "name", null, false, null),
-      ResponseField.forString("homePlanet", "homePlanet", null, true, null)
-    )
+      override fun fromResponse(reader: ResponseReader, __typename: String?):
+          TestQuery.Data.Search {
+        val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
+        return when(typename) {
+          "Droid" -> CharacterDroidSearch.fromResponse(reader, typename)
+          "Human" -> CharacterHumanSearch.fromResponse(reader, typename)
+          else -> OtherSearch.fromResponse(reader, typename)
+        }
+      }
 
-    override fun fromResponse(reader: ResponseReader, __typename: String?):
-        TestQuery.CharacterHumanSearch {
-      return reader.run {
-        var __typename: String? = __typename
-        var name: String? = null
-        var homePlanet: String? = null
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> name = readString(RESPONSE_FIELDS[1])
-            2 -> homePlanet = readString(RESPONSE_FIELDS[2])
-            else -> break
+      override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Search) {
+        when(value) {
+          is TestQuery.Data.Search.CharacterDroidSearch -> CharacterDroidSearch.toResponse(writer, value)
+          is TestQuery.Data.Search.CharacterHumanSearch -> CharacterHumanSearch.toResponse(writer, value)
+          is TestQuery.Data.Search.OtherSearch -> OtherSearch.toResponse(writer, value)
+        }
+      }
+
+      object CharacterDroidSearch : ResponseAdapter<TestQuery.Data.Search.CharacterDroidSearch> {
+        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forString("name", "name", null, false, null),
+          ResponseField.forString("primaryFunction", "primaryFunction", null, true, null)
+        )
+
+        override fun fromResponse(reader: ResponseReader, __typename: String?):
+            TestQuery.Data.Search.CharacterDroidSearch {
+          return reader.run {
+            var __typename: String? = __typename
+            var name: String? = null
+            var primaryFunction: String? = null
+            while(true) {
+              when (selectField(RESPONSE_FIELDS)) {
+                0 -> __typename = readString(RESPONSE_FIELDS[0])
+                1 -> name = readString(RESPONSE_FIELDS[1])
+                2 -> primaryFunction = readString(RESPONSE_FIELDS[2])
+                else -> break
+              }
+            }
+            TestQuery.Data.Search.CharacterDroidSearch(
+              __typename = __typename!!,
+              name = name!!,
+              primaryFunction = primaryFunction
+            )
           }
         }
-        TestQuery.CharacterHumanSearch(
-          __typename = __typename!!,
-          name = name!!,
-          homePlanet = homePlanet
-        )
+
+        override fun toResponse(writer: ResponseWriter,
+            value: TestQuery.Data.Search.CharacterDroidSearch) {
+          writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+          writer.writeString(RESPONSE_FIELDS[1], value.name)
+          writer.writeString(RESPONSE_FIELDS[2], value.primaryFunction)
+        }
       }
-    }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.CharacterHumanSearch) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], value.name)
-      writer.writeString(RESPONSE_FIELDS[2], value.homePlanet)
-    }
-  }
+      object CharacterHumanSearch : ResponseAdapter<TestQuery.Data.Search.CharacterHumanSearch> {
+        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forString("name", "name", null, false, null),
+          ResponseField.forString("homePlanet", "homePlanet", null, true, null)
+        )
 
-  object OtherSearch_ResponseAdapter : ResponseAdapter<TestQuery.OtherSearch> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null)
-    )
-
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.OtherSearch {
-      return reader.run {
-        var __typename: String? = __typename
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            else -> break
+        override fun fromResponse(reader: ResponseReader, __typename: String?):
+            TestQuery.Data.Search.CharacterHumanSearch {
+          return reader.run {
+            var __typename: String? = __typename
+            var name: String? = null
+            var homePlanet: String? = null
+            while(true) {
+              when (selectField(RESPONSE_FIELDS)) {
+                0 -> __typename = readString(RESPONSE_FIELDS[0])
+                1 -> name = readString(RESPONSE_FIELDS[1])
+                2 -> homePlanet = readString(RESPONSE_FIELDS[2])
+                else -> break
+              }
+            }
+            TestQuery.Data.Search.CharacterHumanSearch(
+              __typename = __typename!!,
+              name = name!!,
+              homePlanet = homePlanet
+            )
           }
         }
-        TestQuery.OtherSearch(
-          __typename = __typename!!
+
+        override fun toResponse(writer: ResponseWriter,
+            value: TestQuery.Data.Search.CharacterHumanSearch) {
+          writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+          writer.writeString(RESPONSE_FIELDS[1], value.name)
+          writer.writeString(RESPONSE_FIELDS[2], value.homePlanet)
+        }
+      }
+
+      object OtherSearch : ResponseAdapter<TestQuery.Data.Search.OtherSearch> {
+        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null)
         )
-      }
-    }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.OtherSearch) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-    }
-  }
+        override fun fromResponse(reader: ResponseReader, __typename: String?):
+            TestQuery.Data.Search.OtherSearch {
+          return reader.run {
+            var __typename: String? = __typename
+            while(true) {
+              when (selectField(RESPONSE_FIELDS)) {
+                0 -> __typename = readString(RESPONSE_FIELDS[0])
+                else -> break
+              }
+            }
+            TestQuery.Data.Search.OtherSearch(
+              __typename = __typename!!
+            )
+          }
+        }
 
-  object Search_ResponseAdapter : ResponseAdapter<TestQuery.Search> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null)
-    )
-
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Search {
-      val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
-      return when(typename) {
-        "Character" -> TestQuery_ResponseAdapter.CharacterSearch_ResponseAdapter.fromResponse(reader, typename)
-        "Droid" -> TestQuery_ResponseAdapter.CharacterDroidSearch_ResponseAdapter.fromResponse(reader, typename)
-        "Human" -> TestQuery_ResponseAdapter.CharacterHumanSearch_ResponseAdapter.fromResponse(reader, typename)
-        else -> TestQuery_ResponseAdapter.OtherSearch_ResponseAdapter.fromResponse(reader, typename)
-      }
-    }
-
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.Search) {
-      when(value) {
-        is TestQuery.CharacterSearch -> TestQuery_ResponseAdapter.CharacterSearch_ResponseAdapter.toResponse(writer, value)
-        is TestQuery.CharacterDroidSearch -> TestQuery_ResponseAdapter.CharacterDroidSearch_ResponseAdapter.toResponse(writer, value)
-        is TestQuery.CharacterHumanSearch -> TestQuery_ResponseAdapter.CharacterHumanSearch_ResponseAdapter.toResponse(writer, value)
-        is TestQuery.OtherSearch -> TestQuery_ResponseAdapter.OtherSearch_ResponseAdapter.toResponse(writer, value)
+        override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Search.OtherSearch) {
+          writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+        }
       }
     }
   }

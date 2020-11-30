@@ -95,284 +95,443 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   )
 
   /**
-   * A character from the Star Wars universe
-   */
-  interface Character : Friend {
-    /**
-     * The name of the character
-     */
-    val name: String
-
-    override fun marshaller(): ResponseFieldMarshaller
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
-  interface Friend1 {
-    /**
-     * The ID of the character
-     */
-    val id: String
-
-    fun marshaller(): ResponseFieldMarshaller
-  }
-
-  /**
-   * An autonomous mechanical character in the Star Wars universe
-   */
-  interface Droid : Friend {
-    /**
-     * This droid's primary function
-     */
-    val primaryFunction: String?
-
-    /**
-     * This droid's friends, or an empty list if they have none
-     */
-    val friends: List<Friend1?>?
-
-    override fun marshaller(): ResponseFieldMarshaller
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
-  interface Character1 : Friend {
-    /**
-     * The name of the character
-     */
-    val name: String
-
-    override fun marshaller(): ResponseFieldMarshaller
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
-  interface Friend2 {
-    val __typename: String
-
-    fun marshaller(): ResponseFieldMarshaller
-  }
-
-  /**
-   * A humanoid creature from the Star Wars universe
-   */
-  interface Human : Friend {
-    /**
-     * The home planet of the human, or null if unknown
-     */
-    val homePlanet: String?
-
-    /**
-     * This human's friends, or an empty list if they have none
-     */
-    val friends: List<Friend2?>?
-
-    override fun marshaller(): ResponseFieldMarshaller
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
-  data class CharacterFriend(
-    /**
-     * The name of the character
-     */
-    override val name: String,
-    override val __typename: String = "Character"
-  ) : Character1, Friend {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.CharacterFriend_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
-  data class Friend3(
-    /**
-     * The ID of the character
-     */
-    override val id: String
-  ) : Friend1 {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Friend3_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  data class CharacterDroidFriend(
-    /**
-     * The name of the character
-     */
-    override val name: String,
-    /**
-     * This droid's primary function
-     */
-    override val primaryFunction: String?,
-    /**
-     * This droid's friends, or an empty list if they have none
-     */
-    override val friends: List<Friend3?>?,
-    override val __typename: String
-  ) : Character1, Droid, Friend {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.CharacterDroidFriend_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-
-    fun friendsFilterNotNull(): List<Friend3>? = friends?.filterNotNull()
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
-  data class Friend4(
-    override val __typename: String = "Character",
-    /**
-     * The movie this character first appears in
-     */
-    val firstAppearsIn: Episode
-  ) : Friend2 {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Friend4_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  data class CharacterHumanFriend(
-    /**
-     * The name of the character
-     */
-    override val name: String,
-    /**
-     * The home planet of the human, or null if unknown
-     */
-    override val homePlanet: String?,
-    /**
-     * This human's friends, or an empty list if they have none
-     */
-    override val friends: List<Friend4?>?,
-    override val __typename: String
-  ) : Character1, Human, Friend {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.CharacterHumanFriend_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-
-    fun friendsFilterNotNull(): List<Friend4>? = friends?.filterNotNull()
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
-  data class OtherFriend(
-    override val __typename: String = "Character"
-  ) : Friend {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.OtherFriend_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
-  interface Friend {
-    val __typename: String
-
-    fun asCharacter1(): Character1? = this as? Character1
-
-    fun asDroid(): Droid? = this as? Droid
-
-    fun asHuman(): Human? = this as? Human
-
-    fun marshaller(): ResponseFieldMarshaller
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
-  data class CharacterSearch(
-    /**
-     * The ID of the character
-     */
-    val id: String,
-    /**
-     * The name of the character
-     */
-    val name: String,
-    /**
-     * The friends of the character, or an empty list if they have none
-     */
-    val friends: List<Friend?>?,
-    override val __typename: String = "Character"
-  ) : Search {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.CharacterSearch_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-
-    fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
-  }
-
-  data class StarshipSearch(
-    /**
-     * The name of the starship
-     */
-    val name: String,
-    override val __typename: String = "Starship"
-  ) : Search {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.StarshipSearch_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  data class OtherSearch(
-    override val __typename: String = "SearchResult"
-  ) : Search {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.OtherSearch_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  interface Search {
-    val __typename: String
-
-    fun asCharacterSearch(): CharacterSearch? = this as? CharacterSearch
-
-    fun asStarshipSearch(): StarshipSearch? = this as? StarshipSearch
-
-    fun marshaller(): ResponseFieldMarshaller
-  }
-
-  /**
-   * Data from the response after executing this GraphQL operation
+   * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val search: List<Search?>?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
       }
     }
 
     fun searchFilterNotNull(): List<Search>? = search?.filterNotNull()
+
+    interface Search {
+      val __typename: String
+
+      fun asCharacter(): Character? = this as? Character
+
+      fun asStarship(): Starship? = this as? Starship
+
+      fun marshaller(): ResponseFieldMarshaller
+
+      /**
+       * A character from the Star Wars universe
+       */
+      interface Character : Search {
+        override val __typename: String
+
+        /**
+         * The ID of the character
+         */
+        val id: String
+
+        /**
+         * The name of the character
+         */
+        val name: String
+
+        /**
+         * The friends of the character, or an empty list if they have none
+         */
+        val friends: List<Friend?>?
+
+        override fun marshaller(): ResponseFieldMarshaller
+
+        /**
+         * A character from the Star Wars universe
+         */
+        interface Friend {
+          val __typename: String
+
+          fun marshaller(): ResponseFieldMarshaller
+
+          /**
+           * A character from the Star Wars universe
+           */
+          interface Character : Friend {
+            override val __typename: String
+
+            /**
+             * The name of the character
+             */
+            val name: String
+
+            override fun marshaller(): ResponseFieldMarshaller
+          }
+
+          /**
+           * A humanoid creature from the Star Wars universe
+           */
+          interface Human : Friend {
+            override val __typename: String
+
+            /**
+             * The home planet of the human, or null if unknown
+             */
+            val homePlanet: String?
+
+            /**
+             * This human's friends, or an empty list if they have none
+             */
+            val friends: List<Friend?>?
+
+            override fun marshaller(): ResponseFieldMarshaller
+
+            /**
+             * A character from the Star Wars universe
+             */
+            interface Friend {
+              val __typename: String
+
+              fun marshaller(): ResponseFieldMarshaller
+
+              /**
+               * A character from the Star Wars universe
+               */
+              interface Character : Friend {
+                override val __typename: String
+
+                /**
+                 * The movie this character first appears in
+                 */
+                val firstAppearsIn: Episode
+
+                override fun marshaller(): ResponseFieldMarshaller
+              }
+            }
+          }
+
+          /**
+           * An autonomous mechanical character in the Star Wars universe
+           */
+          interface Droid : Friend {
+            override val __typename: String
+
+            /**
+             * This droid's primary function
+             */
+            val primaryFunction: String?
+
+            /**
+             * This droid's friends, or an empty list if they have none
+             */
+            val friends: List<Friend?>?
+
+            override fun marshaller(): ResponseFieldMarshaller
+
+            /**
+             * A character from the Star Wars universe
+             */
+            interface Friend {
+              /**
+               * The ID of the character
+               */
+              val id: String
+
+              fun marshaller(): ResponseFieldMarshaller
+            }
+          }
+        }
+      }
+
+      interface Starship : Search {
+        override val __typename: String
+
+        /**
+         * The name of the starship
+         */
+        val name: String
+
+        override fun marshaller(): ResponseFieldMarshaller
+      }
+
+      /**
+       * A character from the Star Wars universe
+       */
+      data class CharacterSearch(
+        override val __typename: String,
+        /**
+         * The ID of the character
+         */
+        override val id: String,
+        /**
+         * The name of the character
+         */
+        override val name: String,
+        /**
+         * The friends of the character, or an empty list if they have none
+         */
+        override val friends: List<Friend?>?
+      ) : Search, Character {
+        override fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            TestQuery_ResponseAdapter.Data.Search.CharacterSearch.toResponse(writer, this)
+          }
+        }
+
+        /**
+         * A character from the Star Wars universe
+         */
+        interface Friend : Character.Friend {
+          override val __typename: String
+
+          fun asCharacter(): Character? = this as? Character
+
+          fun asHuman(): Human? = this as? Human
+
+          fun asDroid(): Droid? = this as? Droid
+
+          override fun marshaller(): ResponseFieldMarshaller
+
+          /**
+           * A character from the Star Wars universe
+           */
+          interface Character : Search.Character.Friend, Search.Character.Friend.Character, Friend {
+            override val __typename: String
+
+            /**
+             * The name of the character
+             */
+            override val name: String
+
+            override fun marshaller(): ResponseFieldMarshaller
+          }
+
+          /**
+           * A humanoid creature from the Star Wars universe
+           */
+          interface Human : Search.Character.Friend, Search.Character.Friend.Human, Friend {
+            override val __typename: String
+
+            /**
+             * The home planet of the human, or null if unknown
+             */
+            override val homePlanet: String?
+
+            /**
+             * This human's friends, or an empty list if they have none
+             */
+            override val friends: List<Friend?>?
+
+            override fun marshaller(): ResponseFieldMarshaller
+
+            /**
+             * A character from the Star Wars universe
+             */
+            interface Friend : Search.Character.Friend.Human.Friend {
+              override val __typename: String
+
+              override fun marshaller(): ResponseFieldMarshaller
+
+              /**
+               * A character from the Star Wars universe
+               */
+              interface Character : Search.Character.Friend.Human.Friend,
+                  Search.Character.Friend.Human.Friend.Character, Friend {
+                override val __typename: String
+
+                /**
+                 * The movie this character first appears in
+                 */
+                override val firstAppearsIn: Episode
+
+                override fun marshaller(): ResponseFieldMarshaller
+              }
+            }
+          }
+
+          /**
+           * An autonomous mechanical character in the Star Wars universe
+           */
+          interface Droid : Search.Character.Friend, Search.Character.Friend.Droid, Friend {
+            override val __typename: String
+
+            /**
+             * This droid's primary function
+             */
+            override val primaryFunction: String?
+
+            /**
+             * This droid's friends, or an empty list if they have none
+             */
+            override val friends: List<Friend?>?
+
+            override fun marshaller(): ResponseFieldMarshaller
+
+            /**
+             * A character from the Star Wars universe
+             */
+            interface Friend : Search.Character.Friend.Droid.Friend {
+              /**
+               * The ID of the character
+               */
+              override val id: String
+
+              override fun marshaller(): ResponseFieldMarshaller
+            }
+          }
+
+          data class CharacterDroidFriend(
+            override val __typename: String = "Droid",
+            /**
+             * The name of the character
+             */
+            override val name: String,
+            /**
+             * This droid's primary function
+             */
+            override val primaryFunction: String?,
+            /**
+             * This droid's friends, or an empty list if they have none
+             */
+            override val friends: List<Friend?>?
+          ) : Search.Character.Friend, Search.Character.Friend.Character,
+              Search.Character.Friend.Droid, Friend {
+            override fun marshaller(): ResponseFieldMarshaller {
+              return ResponseFieldMarshaller { writer ->
+                TestQuery_ResponseAdapter.Data.Search.CharacterSearch.Friend.CharacterDroidFriend.toResponse(writer, this)
+              }
+            }
+
+            /**
+             * A character from the Star Wars universe
+             */
+            data class Friend(
+              /**
+               * The ID of the character
+               */
+              override val id: String
+            ) : Search.Character.Friend.Droid.Friend {
+              override fun marshaller(): ResponseFieldMarshaller {
+                return ResponseFieldMarshaller { writer ->
+                  TestQuery_ResponseAdapter.Data.Search.CharacterSearch.Friend.CharacterDroidFriend.Friend.toResponse(writer, this)
+                }
+              }
+            }
+          }
+
+          data class CharacterHumanFriend(
+            override val __typename: String = "Human",
+            /**
+             * The name of the character
+             */
+            override val name: String,
+            /**
+             * The home planet of the human, or null if unknown
+             */
+            override val homePlanet: String?,
+            /**
+             * This human's friends, or an empty list if they have none
+             */
+            override val friends: List<Friend?>?
+          ) : Search.Character.Friend, Search.Character.Friend.Character,
+              Search.Character.Friend.Human, Friend {
+            override fun marshaller(): ResponseFieldMarshaller {
+              return ResponseFieldMarshaller { writer ->
+                TestQuery_ResponseAdapter.Data.Search.CharacterSearch.Friend.CharacterHumanFriend.toResponse(writer, this)
+              }
+            }
+
+            /**
+             * A character from the Star Wars universe
+             */
+            interface Friend : Search.Character.Friend.Human.Friend {
+              override val __typename: String
+
+              fun asCharacter(): Character? = this as? Character
+
+              override fun marshaller(): ResponseFieldMarshaller
+
+              /**
+               * A character from the Star Wars universe
+               */
+              interface Character : Search.Character.Friend.Human.Friend,
+                  Search.Character.Friend.Human.Friend.Character, Friend {
+                override val __typename: String
+
+                /**
+                 * The movie this character first appears in
+                 */
+                override val firstAppearsIn: Episode
+
+                override fun marshaller(): ResponseFieldMarshaller
+              }
+
+              /**
+               * A character from the Star Wars universe
+               */
+              data class CharacterFriend(
+                override val __typename: String,
+                /**
+                 * The movie this character first appears in
+                 */
+                override val firstAppearsIn: Episode
+              ) : Search.Character.Friend.Human.Friend,
+                  Search.Character.Friend.Human.Friend.Character, Friend {
+                override fun marshaller(): ResponseFieldMarshaller {
+                  return ResponseFieldMarshaller { writer ->
+                    TestQuery_ResponseAdapter.Data.Search.CharacterSearch.Friend.CharacterHumanFriend.Friend.CharacterFriend.toResponse(writer, this)
+                  }
+                }
+              }
+
+              /**
+               * A character from the Star Wars universe
+               */
+              data class OtherFriend(
+                override val __typename: String = "Character"
+              ) : Search.Character.Friend.Human.Friend, Friend {
+                override fun marshaller(): ResponseFieldMarshaller {
+                  return ResponseFieldMarshaller { writer ->
+                    TestQuery_ResponseAdapter.Data.Search.CharacterSearch.Friend.CharacterHumanFriend.Friend.OtherFriend.toResponse(writer, this)
+                  }
+                }
+              }
+            }
+          }
+
+          /**
+           * A character from the Star Wars universe
+           */
+          data class OtherFriend(
+            override val __typename: String = "Character"
+          ) : Search.Character.Friend, Friend {
+            override fun marshaller(): ResponseFieldMarshaller {
+              return ResponseFieldMarshaller { writer ->
+                TestQuery_ResponseAdapter.Data.Search.CharacterSearch.Friend.OtherFriend.toResponse(writer, this)
+              }
+            }
+          }
+        }
+      }
+
+      data class StarshipSearch(
+        override val __typename: String = "Starship",
+        /**
+         * The name of the starship
+         */
+        override val name: String
+      ) : Search, Starship {
+        override fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            TestQuery_ResponseAdapter.Data.Search.StarshipSearch.toResponse(writer, this)
+          }
+        }
+      }
+
+      data class OtherSearch(
+        override val __typename: String = "SearchResult"
+      ) : Search {
+        override fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            TestQuery_ResponseAdapter.Data.Search.OtherSearch.toResponse(writer, this)
+          }
+        }
+      }
+    }
   }
 
   companion object {

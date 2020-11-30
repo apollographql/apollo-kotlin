@@ -7,7 +7,6 @@ package com.example.union_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import kotlin.String
 import kotlin.Suppress
@@ -28,27 +27,6 @@ interface Character : GraphqlFragment {
    */
   val name: String
 
-  /**
-   * A character from the Star Wars universe
-   */
-  data class CharacterImpl(
-    override val __typename: String = "Character",
-    /**
-     * The ID of the character
-     */
-    override val id: String,
-    /**
-     * The name of the character
-     */
-    override val name: String
-  ) : Character {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        Character_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
   companion object {
     val FRAGMENT_DEFINITION: String = """
         |fragment Character on Character {
@@ -59,12 +37,12 @@ interface Character : GraphqlFragment {
         """.trimMargin()
 
     operator fun invoke(reader: ResponseReader): Character {
-      return Character_ResponseAdapter.fromResponse(reader)
+      return CharacterImpl_ResponseAdapter.fromResponse(reader)
     }
 
     fun Mapper(): ResponseFieldMapper<Character> {
       return ResponseFieldMapper { reader ->
-        Character_ResponseAdapter.fromResponse(reader)
+        CharacterImpl_ResponseAdapter.fromResponse(reader)
       }
     }
   }

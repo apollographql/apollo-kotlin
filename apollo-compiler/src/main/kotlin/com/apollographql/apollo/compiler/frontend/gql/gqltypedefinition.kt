@@ -9,7 +9,7 @@ internal fun GQLTypeDefinition.sharesPossibleTypesWith(other: GQLTypeDefinition,
 internal fun GQLTypeDefinition.possibleTypes(typeDefinitions: Map<String, GQLTypeDefinition>): Set<String> {
   return when (this) {
     is GQLUnionTypeDefinition -> memberTypes.map { it.name }.toSet()
-    is GQLInterfaceTypeDefinition -> setOf(name) + typeDefinitions.values.filter {
+    is GQLInterfaceTypeDefinition -> typeDefinitions.values.filter {
       it is GQLObjectTypeDefinition && it.implementsInterfaces.contains(this.name)
           || it is GQLInterfaceTypeDefinition && it.implementsInterfaces.contains(this.name)
     }.flatMap {
@@ -21,18 +21,3 @@ internal fun GQLTypeDefinition.possibleTypes(typeDefinitions: Map<String, GQLTyp
     else -> throw SchemaValidationException("Cannot determine possibleTypes of $name")
   }
 }
-
-internal fun GQLTypeDefinition.isBuiltIn() = setOf(
-    "Int",
-    "Float",
-    "String",
-    "Boolean",
-    "ID",
-    "__Schema",
-    "__Type",
-    "__Field",
-    "__InputValue",
-    "__EnumValue",
-    "__TypeKind",
-    "__Directive",
-    "__DirectiveLocation").contains(name)

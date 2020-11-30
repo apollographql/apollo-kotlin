@@ -32,27 +32,6 @@ interface StarshipFragment : GraphqlFragment {
   val pilotConnection: PilotConnection?
 
   /**
-   * An individual person or character within the Star Wars universe.
-   */
-  interface Node {
-    val __typename: String
-
-    fun marshaller(): ResponseFieldMarshaller
-  }
-
-  /**
-   * An edge in a connection.
-   */
-  interface Edge {
-    /**
-     * The item at the end of the edge
-     */
-    val node: Node?
-
-    fun marshaller(): ResponseFieldMarshaller
-  }
-
-  /**
    * A connection to a list of items.
    */
   interface PilotConnection {
@@ -62,97 +41,62 @@ interface StarshipFragment : GraphqlFragment {
     val edges: List<Edge?>?
 
     fun marshaller(): ResponseFieldMarshaller
-  }
 
-  /**
-   * A large mass, planet or planetoid in the Star Wars Universe, at the time of
-   * 0 ABY.
-   */
-  data class Homeworld(
-    override val __typename: String = "Planet",
     /**
-     * The name of this planet.
+     * An edge in a connection.
      */
-    override val name: String?
-  ) : PlanetFragment, PilotFragment.Homeworld {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        StarshipFragment_ResponseAdapter.Homeworld_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
+    interface Edge {
+      /**
+       * The item at the end of the edge
+       */
+      val node: Node?
 
-  /**
-   * An individual person or character within the Star Wars universe.
-   */
-  data class Node1(
-    override val __typename: String = "Person",
-    /**
-     * The name of this person.
-     */
-    override val name: String?,
-    /**
-     * A planet that this person was born on or inhabits.
-     */
-    override val homeworld: Homeworld?
-  ) : PilotFragment, Node {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        StarshipFragment_ResponseAdapter.Node1_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
+      fun marshaller(): ResponseFieldMarshaller
 
-  /**
-   * An edge in a connection.
-   */
-  data class Edge1(
-    /**
-     * The item at the end of the edge
-     */
-    override val node: Node1?
-  ) : Edge {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        StarshipFragment_ResponseAdapter.Edge1_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
+      /**
+       * An individual person or character within the Star Wars universe.
+       */
+      interface Node {
+        val __typename: String
 
-  /**
-   * A connection to a list of items.
-   */
-  data class PilotConnection1(
-    /**
-     * A list of edges.
-     */
-    override val edges: List<Edge1?>?
-  ) : PilotConnection {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        StarshipFragment_ResponseAdapter.PilotConnection1_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
+        fun marshaller(): ResponseFieldMarshaller
 
-  /**
-   * A single transport craft that has hyperdrive capability.
-   */
-  data class StarshipFragmentImpl(
-    override val __typename: String = "Starship",
-    /**
-     * The ID of an object
-     */
-    override val id: String,
-    /**
-     * The name of this starship. The common name, such as "Death Star".
-     */
-    override val name: String?,
-    override val pilotConnection: PilotConnection1?
-  ) : StarshipFragment {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        StarshipFragment_ResponseAdapter.toResponse(writer, this)
+        interface Person : Node, PilotFragment {
+          override val __typename: String
+
+          /**
+           * The name of this person.
+           */
+          override val name: String?
+
+          /**
+           * A planet that this person was born on or inhabits.
+           */
+          override val homeworld: Homeworld?
+
+          override fun marshaller(): ResponseFieldMarshaller
+
+          /**
+           * A large mass, planet or planetoid in the Star Wars Universe, at the time of
+           * 0 ABY.
+           */
+          interface Homeworld : PilotFragment.Homeworld {
+            override val __typename: String
+
+            override fun marshaller(): ResponseFieldMarshaller
+
+            interface Planet : Homeworld, PlanetFragment, PilotFragment.Homeworld.Planet {
+              override val __typename: String
+
+              /**
+               * The name of this planet.
+               */
+              override val name: String?
+
+              override fun marshaller(): ResponseFieldMarshaller
+            }
+          }
+        }
       }
     }
   }
@@ -175,12 +119,12 @@ interface StarshipFragment : GraphqlFragment {
         """.trimMargin()
 
     operator fun invoke(reader: ResponseReader): StarshipFragment {
-      return StarshipFragment_ResponseAdapter.fromResponse(reader)
+      return StarshipFragmentImpl_ResponseAdapter.fromResponse(reader)
     }
 
     fun Mapper(): ResponseFieldMapper<StarshipFragment> {
       return ResponseFieldMapper { reader ->
-        StarshipFragment_ResponseAdapter.fromResponse(reader)
+        StarshipFragmentImpl_ResponseAdapter.fromResponse(reader)
       }
     }
   }

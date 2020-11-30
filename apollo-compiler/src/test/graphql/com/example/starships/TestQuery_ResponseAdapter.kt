@@ -9,7 +9,6 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
-import com.example.starships.type.CustomType
 import kotlin.Array
 import kotlin.Double
 import kotlin.String
@@ -28,72 +27,90 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
-    return reader.run {
-      var starship: TestQuery.Starship? = null
-      while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> starship = readObject<TestQuery.Starship>(RESPONSE_FIELDS[0]) { reader ->
-            TestQuery_ResponseAdapter.Starship_ResponseAdapter.fromResponse(reader)
-          }
-          else -> break
-        }
-      }
-      TestQuery.Data(
-        starship = starship
-      )
-    }
+    return Data.fromResponse(reader, __typename)
   }
 
   override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
-    if(value.starship == null) {
-      writer.writeObject(RESPONSE_FIELDS[0], null)
-    } else {
-      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
-        TestQuery_ResponseAdapter.Starship_ResponseAdapter.toResponse(writer, value.starship)
-      }
-    }
+    Data.toResponse(writer, value)
   }
 
-  object Starship_ResponseAdapter : ResponseAdapter<TestQuery.Starship> {
+  object Data : ResponseAdapter<TestQuery.Data> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
-      ResponseField.forString("name", "name", null, false, null),
-      ResponseField.forList("coordinates", "coordinates", null, true, null)
+      ResponseField.forObject("starship", "starship", mapOf<String, Any>(
+        "id" to mapOf<String, Any>(
+          "kind" to "Variable",
+          "variableName" to "id")), true, null)
     )
 
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Starship {
+    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
       return reader.run {
-        var id: String? = null
-        var name: String? = null
-        var coordinates: List<List<Double>>? = null
+        var starship: TestQuery.Data.Starship? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> id = readCustomType<String>(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField)
-            1 -> name = readString(RESPONSE_FIELDS[1])
-            2 -> coordinates = readList<List<Double>>(RESPONSE_FIELDS[2]) { reader ->
-              reader.readList<Double> { reader ->
-                reader.readDouble()
-              }.map { it!! }
-            }?.map { it!! }
+            0 -> starship = readObject<TestQuery.Data.Starship>(RESPONSE_FIELDS[0]) { reader ->
+              Starship.fromResponse(reader)
+            }
             else -> break
           }
         }
-        TestQuery.Starship(
-          id = id!!,
-          name = name!!,
-          coordinates = coordinates
+        TestQuery.Data(
+          starship = starship
         )
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.Starship) {
-      writer.writeCustom(RESPONSE_FIELDS[0] as ResponseField.CustomTypeField, value.id)
-      writer.writeString(RESPONSE_FIELDS[1], value.name)
-      writer.writeList(RESPONSE_FIELDS[2], value.coordinates) { values, listItemWriter ->
-        values?.forEach { value ->
-          listItemWriter.writeList(value) { value, listItemWriter ->
-            value?.forEach { value ->
-              listItemWriter.writeDouble(value)}
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
+      if(value.starship == null) {
+        writer.writeObject(RESPONSE_FIELDS[0], null)
+      } else {
+        writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
+          Starship.toResponse(writer, value.starship)
+        }
+      }
+    }
+
+    object Starship : ResponseAdapter<TestQuery.Data.Starship> {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("id", "id", null, false, null),
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forList("coordinates", "coordinates", null, true, null)
+      )
+
+      override fun fromResponse(reader: ResponseReader, __typename: String?):
+          TestQuery.Data.Starship {
+        return reader.run {
+          var id: String? = null
+          var name: String? = null
+          var coordinates: List<List<Double>>? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> id = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
+              2 -> coordinates = readList<List<Double>>(RESPONSE_FIELDS[2]) { reader ->
+                reader.readList<Double> { reader ->
+                  reader.readDouble()
+                }.map { it!! }
+              }?.map { it!! }
+              else -> break
+            }
+          }
+          TestQuery.Data.Starship(
+            id = id!!,
+            name = name!!,
+            coordinates = coordinates
+          )
+        }
+      }
+
+      override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Starship) {
+        writer.writeString(RESPONSE_FIELDS[0], value.id)
+        writer.writeString(RESPONSE_FIELDS[1], value.name)
+        writer.writeList(RESPONSE_FIELDS[2], value.coordinates) { values, listItemWriter ->
+          values?.forEach { value ->
+            listItemWriter.writeList(value) { value, listItemWriter ->
+              value?.forEach { value ->
+                listItemWriter.writeDouble(value)}
+            }
           }
         }
       }

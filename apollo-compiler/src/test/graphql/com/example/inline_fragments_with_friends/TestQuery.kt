@@ -96,137 +96,203 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   )
 
   /**
-   * A character from the Star Wars universe
-   */
-  data class Friend(
-    /**
-     * The movies this character appears in
-     */
-    val appearsIn: List<Episode?>
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Friend_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-
-    fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
-  }
-
-  /**
-   * A humanoid creature from the Star Wars universe
-   */
-  data class HumanHero(
-    /**
-     * Height in the preferred unit, default is meters
-     */
-    val height: Double?,
-    /**
-     * This human's friends, or an empty list if they have none
-     */
-    val friends: List<Friend?>?,
-    override val __typename: String = "Human",
-    /**
-     * The name of the character
-     */
-    override val name: String
-  ) : Hero {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.HumanHero_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-
-    fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
-  data class Friend1(
-    /**
-     * The ID of the character
-     */
-    val id: String
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Friend1_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * An autonomous mechanical character in the Star Wars universe
-   */
-  data class DroidHero(
-    /**
-     * This droid's primary function
-     */
-    val primaryFunction: String?,
-    /**
-     * This droid's friends, or an empty list if they have none
-     */
-    val friends: List<Friend1?>?,
-    override val __typename: String = "Droid",
-    /**
-     * The name of the character
-     */
-    override val name: String
-  ) : Hero {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.DroidHero_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-
-    fun friendsFilterNotNull(): List<Friend1>? = friends?.filterNotNull()
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
-  data class OtherHero(
-    override val __typename: String = "Character",
-    /**
-     * The name of the character
-     */
-    override val name: String
-  ) : Hero {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.OtherHero_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
-  interface Hero {
-    val __typename: String
-
-    /**
-     * The name of the character
-     */
-    val name: String
-
-    fun asHumanHero(): HumanHero? = this as? HumanHero
-
-    fun asDroidHero(): DroidHero? = this as? DroidHero
-
-    fun marshaller(): ResponseFieldMarshaller
-  }
-
-  /**
-   * Data from the response after executing this GraphQL operation
+   * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val hero: Hero?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
+      }
+    }
+
+    /**
+     * A character from the Star Wars universe
+     */
+    interface Hero {
+      val __typename: String
+
+      /**
+       * The name of the character
+       */
+      val name: String
+
+      fun asHuman(): Human? = this as? Human
+
+      fun asDroid(): Droid? = this as? Droid
+
+      fun marshaller(): ResponseFieldMarshaller
+
+      /**
+       * A humanoid creature from the Star Wars universe
+       */
+      interface Human : Hero {
+        override val __typename: String
+
+        /**
+         * The name of the character
+         */
+        override val name: String
+
+        /**
+         * Height in the preferred unit, default is meters
+         */
+        val height: Double?
+
+        /**
+         * This human's friends, or an empty list if they have none
+         */
+        val friends: List<Friend?>?
+
+        override fun marshaller(): ResponseFieldMarshaller
+
+        /**
+         * A character from the Star Wars universe
+         */
+        interface Friend {
+          /**
+           * The movies this character appears in
+           */
+          val appearsIn: List<Episode?>
+
+          fun marshaller(): ResponseFieldMarshaller
+        }
+      }
+
+      /**
+       * An autonomous mechanical character in the Star Wars universe
+       */
+      interface Droid : Hero {
+        override val __typename: String
+
+        /**
+         * The name of the character
+         */
+        override val name: String
+
+        /**
+         * This droid's primary function
+         */
+        val primaryFunction: String?
+
+        /**
+         * This droid's friends, or an empty list if they have none
+         */
+        val friends: List<Friend?>?
+
+        override fun marshaller(): ResponseFieldMarshaller
+
+        /**
+         * A character from the Star Wars universe
+         */
+        interface Friend {
+          /**
+           * The ID of the character
+           */
+          val id: String
+
+          fun marshaller(): ResponseFieldMarshaller
+        }
+      }
+
+      /**
+       * A humanoid creature from the Star Wars universe
+       */
+      data class HumanHero(
+        override val __typename: String = "Human",
+        /**
+         * The name of the character
+         */
+        override val name: String,
+        /**
+         * Height in the preferred unit, default is meters
+         */
+        override val height: Double?,
+        /**
+         * This human's friends, or an empty list if they have none
+         */
+        override val friends: List<Friend?>?
+      ) : Hero, Human {
+        override fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            TestQuery_ResponseAdapter.Data.Hero.HumanHero.toResponse(writer, this)
+          }
+        }
+
+        /**
+         * A character from the Star Wars universe
+         */
+        data class Friend(
+          /**
+           * The movies this character appears in
+           */
+          override val appearsIn: List<Episode?>
+        ) : Human.Friend {
+          override fun marshaller(): ResponseFieldMarshaller {
+            return ResponseFieldMarshaller { writer ->
+              TestQuery_ResponseAdapter.Data.Hero.HumanHero.Friend.toResponse(writer, this)
+            }
+          }
+        }
+      }
+
+      /**
+       * An autonomous mechanical character in the Star Wars universe
+       */
+      data class DroidHero(
+        override val __typename: String = "Droid",
+        /**
+         * The name of the character
+         */
+        override val name: String,
+        /**
+         * This droid's primary function
+         */
+        override val primaryFunction: String?,
+        /**
+         * This droid's friends, or an empty list if they have none
+         */
+        override val friends: List<Friend?>?
+      ) : Hero, Droid {
+        override fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            TestQuery_ResponseAdapter.Data.Hero.DroidHero.toResponse(writer, this)
+          }
+        }
+
+        /**
+         * A character from the Star Wars universe
+         */
+        data class Friend(
+          /**
+           * The ID of the character
+           */
+          override val id: String
+        ) : Droid.Friend {
+          override fun marshaller(): ResponseFieldMarshaller {
+            return ResponseFieldMarshaller { writer ->
+              TestQuery_ResponseAdapter.Data.Hero.DroidHero.Friend.toResponse(writer, this)
+            }
+          }
+        }
+      }
+
+      /**
+       * A character from the Star Wars universe
+       */
+      data class OtherHero(
+        override val __typename: String = "Character",
+        /**
+         * The name of the character
+         */
+        override val name: String
+      ) : Hero {
+        override fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            TestQuery_ResponseAdapter.Data.Hero.OtherHero.toResponse(writer, this)
+          }
+        }
       }
     }
   }

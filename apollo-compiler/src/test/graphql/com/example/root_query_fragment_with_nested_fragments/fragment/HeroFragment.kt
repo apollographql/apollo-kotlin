@@ -7,7 +7,6 @@ package com.example.root_query_fragment_with_nested_fragments.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import kotlin.String
 import kotlin.Suppress
@@ -23,23 +22,6 @@ interface HeroFragment : GraphqlFragment {
    */
   val name: String
 
-  /**
-   * A character from the Star Wars universe
-   */
-  data class HeroFragmentImpl(
-    override val __typename: String = "Character",
-    /**
-     * The name of the character
-     */
-    override val name: String
-  ) : HeroFragment {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        HeroFragment_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
   companion object {
     val FRAGMENT_DEFINITION: String = """
         |fragment heroFragment on Character {
@@ -49,12 +31,12 @@ interface HeroFragment : GraphqlFragment {
         """.trimMargin()
 
     operator fun invoke(reader: ResponseReader): HeroFragment {
-      return HeroFragment_ResponseAdapter.fromResponse(reader)
+      return HeroFragmentImpl_ResponseAdapter.fromResponse(reader)
     }
 
     fun Mapper(): ResponseFieldMapper<HeroFragment> {
       return ResponseFieldMapper { reader ->
-        HeroFragment_ResponseAdapter.fromResponse(reader)
+        HeroFragmentImpl_ResponseAdapter.fromResponse(reader)
       }
     }
   }

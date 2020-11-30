@@ -126,34 +126,34 @@ data class TestQuery(
   )
 
   /**
-   * A humanoid creature from the Star Wars universe
-   */
-  data class HeroWithReview(
-    /**
-     * What this human calls themselves
-     */
-    val name: String,
-    /**
-     * Height in the preferred unit, default is meters
-     */
-    val height: Double?
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.HeroWithReview_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * Data from the response after executing this GraphQL operation
+   * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val heroWithReview: HeroWithReview?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
+      }
+    }
+
+    /**
+     * A humanoid creature from the Star Wars universe
+     */
+    data class HeroWithReview(
+      /**
+       * What this human calls themselves
+       */
+      val name: String,
+      /**
+       * Height in the preferred unit, default is meters
+       */
+      val height: Double?
+    ) {
+      fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          TestQuery_ResponseAdapter.Data.HeroWithReview.toResponse(writer, this)
+        }
       }
     }
   }

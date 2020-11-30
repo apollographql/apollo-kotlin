@@ -93,49 +93,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     scalarTypeAdapters = scalarTypeAdapters
   )
 
-  data class QueryType(
-    val name: String?
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.QueryType_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  data class Type(
-    val name: String?
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Type_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  data class __Schema(
-    val queryType: QueryType,
-    val types: List<Type>
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.__Schema_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  data class __Type(
-    val name: String?
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.__Type_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
   /**
-   * Data from the response after executing this GraphQL operation
+   * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val __schema: __Schema,
@@ -143,7 +102,48 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
+      }
+    }
+
+    data class __Schema(
+      val queryType: QueryType,
+      val types: List<Type>
+    ) {
+      fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          TestQuery_ResponseAdapter.Data.__Schema.toResponse(writer, this)
+        }
+      }
+
+      data class QueryType(
+        val name: String?
+      ) {
+        fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            TestQuery_ResponseAdapter.Data.__Schema.QueryType.toResponse(writer, this)
+          }
+        }
+      }
+
+      data class Type(
+        val name: String?
+      ) {
+        fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            TestQuery_ResponseAdapter.Data.__Schema.Type.toResponse(writer, this)
+          }
+        }
+      }
+    }
+
+    data class __Type(
+      val name: String?
+    ) {
+      fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          TestQuery_ResponseAdapter.Data.__Type.toResponse(writer, this)
+        }
       }
     }
   }

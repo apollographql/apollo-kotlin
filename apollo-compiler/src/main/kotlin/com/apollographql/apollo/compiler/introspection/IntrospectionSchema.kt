@@ -21,7 +21,7 @@ data class IntrospectionSchema(
     @JsonClass(generateAdapter = true)
     data class Scalar(
         override val name: String,
-        override val description: String?
+        override val description: String?,
     ) : Type(Kind.SCALAR)
 
     @JsonClass(generateAdapter = true)

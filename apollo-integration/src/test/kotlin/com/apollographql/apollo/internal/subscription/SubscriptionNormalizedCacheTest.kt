@@ -81,8 +81,8 @@ class SubscriptionNormalizedCacheTest {
   fun `when network only cache policy then response is cached`() {
     val operation = NewRepoCommentSubscription("repo")
     val data = NewRepoCommentSubscription.Data(
-        NewRepoCommentSubscription.CommentAdded(
-            100, "Cached comment content", NewRepoCommentSubscription.PostedBy("user@user.com")
+        NewRepoCommentSubscription.Data.CommentAdded(
+            100, "Cached comment content", NewRepoCommentSubscription.Data.CommentAdded.PostedBy("user@user.com")
         )
     )
     apolloClient.apolloStore.write(operation, data).execute()
@@ -131,8 +131,8 @@ class SubscriptionNormalizedCacheTest {
   fun `when cache and network policy then first response from cache next one from network`() {
     val operation = NewRepoCommentSubscription("repo")
     val data = NewRepoCommentSubscription.Data(
-        NewRepoCommentSubscription.CommentAdded(
-            100, "Cached comment content", NewRepoCommentSubscription.PostedBy("user@user.com")
+        NewRepoCommentSubscription.Data.CommentAdded(
+            100, "Cached comment content", NewRepoCommentSubscription.Data.CommentAdded.PostedBy("user@user.com")
         )
     )
     apolloClient.apolloStore.write(operation, data).execute()

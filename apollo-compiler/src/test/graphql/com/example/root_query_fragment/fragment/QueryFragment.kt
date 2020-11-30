@@ -32,36 +32,6 @@ interface QueryFragment : GraphqlFragment {
     fun marshaller(): ResponseFieldMarshaller
   }
 
-  /**
-   * A character from the Star Wars universe
-   */
-  data class Hero1(
-    /**
-     * The name of the character
-     */
-    override val name: String
-  ) : Hero {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        QueryFragment_ResponseAdapter.Hero1_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * The query type, represents all of the entry points into our object graph
-   */
-  data class QueryFragmentImpl(
-    override val __typename: String = "Query",
-    override val hero: Hero1?
-  ) : QueryFragment {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        QueryFragment_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
   companion object {
     val FRAGMENT_DEFINITION: String = """
         |fragment QueryFragment on Query {
@@ -73,12 +43,12 @@ interface QueryFragment : GraphqlFragment {
         """.trimMargin()
 
     operator fun invoke(reader: ResponseReader): QueryFragment {
-      return QueryFragment_ResponseAdapter.fromResponse(reader)
+      return QueryFragmentImpl_ResponseAdapter.fromResponse(reader)
     }
 
     fun Mapper(): ResponseFieldMapper<QueryFragment> {
       return ResponseFieldMapper { reader ->
-        QueryFragment_ResponseAdapter.fromResponse(reader)
+        QueryFragmentImpl_ResponseAdapter.fromResponse(reader)
       }
     }
   }

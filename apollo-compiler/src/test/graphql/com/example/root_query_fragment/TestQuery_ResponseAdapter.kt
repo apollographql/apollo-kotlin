@@ -18,63 +18,126 @@ import kotlin.Suppress
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forString("__typename", "__typename", null, false, null),
-    ResponseField.forObject("hero", "hero", null, true, null)
+    ResponseField.forString("__typename", "__typename", null, false, null)
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
-    return reader.run {
-      var __typename: String? = __typename
-      var hero: TestQuery.Hero? = null
-      while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> __typename = readString(RESPONSE_FIELDS[0])
-          1 -> hero = readObject<TestQuery.Hero>(RESPONSE_FIELDS[1]) { reader ->
-            TestQuery_ResponseAdapter.Hero_ResponseAdapter.fromResponse(reader)
-          }
-          else -> break
-        }
-      }
-      TestQuery.Data(
-        __typename = __typename!!,
-        hero = hero
-      )
-    }
+    return Data.fromResponse(reader, __typename)
   }
 
   override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
-    writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-    if(value.hero == null) {
-      writer.writeObject(RESPONSE_FIELDS[1], null)
-    } else {
-      writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
-        TestQuery_ResponseAdapter.Hero_ResponseAdapter.toResponse(writer, value.hero)
-      }
-    }
+    Data.toResponse(writer, value)
   }
 
-  object Hero_ResponseAdapter : ResponseAdapter<TestQuery.Hero> {
+  object Data : ResponseAdapter<TestQuery.Data> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("name", "name", null, false, null)
+      ResponseField.forString("__typename", "__typename", null, false, null)
     )
 
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Hero {
-      return reader.run {
-        var name: String? = null
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> name = readString(RESPONSE_FIELDS[0])
-            else -> break
-          }
-        }
-        TestQuery.Hero(
-          name = name!!
-        )
+    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
+      val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
+      return when(typename) {
+        "Query" -> QueryDatum.fromResponse(reader, typename)
+        else -> OtherDatum.fromResponse(reader, typename)
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.Hero) {
-      writer.writeString(RESPONSE_FIELDS[0], value.name)
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
+      when(value) {
+        is TestQuery.Data.QueryDatum -> QueryDatum.toResponse(writer, value)
+        is TestQuery.Data.OtherDatum -> OtherDatum.toResponse(writer, value)
+      }
+    }
+
+    object QueryDatum : ResponseAdapter<TestQuery.Data.QueryDatum> {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forObject("hero", "hero", null, true, null)
+      )
+
+      override fun fromResponse(reader: ResponseReader, __typename: String?):
+          TestQuery.Data.QueryDatum {
+        return reader.run {
+          var __typename: String? = __typename
+          var hero: TestQuery.Data.QueryDatum.Hero? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> hero = readObject<TestQuery.Data.QueryDatum.Hero>(RESPONSE_FIELDS[1]) { reader ->
+                Hero.fromResponse(reader)
+              }
+              else -> break
+            }
+          }
+          TestQuery.Data.QueryDatum(
+            __typename = __typename!!,
+            hero = hero
+          )
+        }
+      }
+
+      override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.QueryDatum) {
+        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+        if(value.hero == null) {
+          writer.writeObject(RESPONSE_FIELDS[1], null)
+        } else {
+          writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
+            Hero.toResponse(writer, value.hero)
+          }
+        }
+      }
+
+      object Hero : ResponseAdapter<TestQuery.Data.QueryDatum.Hero> {
+        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("name", "name", null, false, null)
+        )
+
+        override fun fromResponse(reader: ResponseReader, __typename: String?):
+            TestQuery.Data.QueryDatum.Hero {
+          return reader.run {
+            var name: String? = null
+            while(true) {
+              when (selectField(RESPONSE_FIELDS)) {
+                0 -> name = readString(RESPONSE_FIELDS[0])
+                else -> break
+              }
+            }
+            TestQuery.Data.QueryDatum.Hero(
+              name = name!!
+            )
+          }
+        }
+
+        override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.QueryDatum.Hero) {
+          writer.writeString(RESPONSE_FIELDS[0], value.name)
+        }
+      }
+    }
+
+    object OtherDatum : ResponseAdapter<TestQuery.Data.OtherDatum> {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null)
+      )
+
+      override fun fromResponse(reader: ResponseReader, __typename: String?):
+          TestQuery.Data.OtherDatum {
+        return reader.run {
+          var __typename: String? = __typename
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              else -> break
+            }
+          }
+          TestQuery.Data.OtherDatum(
+            __typename = __typename!!
+          )
+        }
+      }
+
+      override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.OtherDatum) {
+        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      }
     }
   }
 }

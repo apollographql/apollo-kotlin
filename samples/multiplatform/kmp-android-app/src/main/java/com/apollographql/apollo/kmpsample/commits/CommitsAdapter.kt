@@ -9,7 +9,7 @@ import com.apollographql.apollo.kmpsample.databinding.ItemCommitBinding
 
 class CommitsAdapter : RecyclerView.Adapter<CommitsAdapter.ViewHolder>() {
 
-  private var data: List<GithubRepositoryCommitsQuery.Edge?>? = null
+  private var data: List<GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.Commit.History.Edge?>? = null
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
     val inflater = LayoutInflater.from(parent.context)
@@ -22,13 +22,13 @@ class CommitsAdapter : RecyclerView.Adapter<CommitsAdapter.ViewHolder>() {
     holder.bind(data!![position])
   }
 
-  fun setItems(data: List<GithubRepositoryCommitsQuery.Edge?>) {
+  fun setItems(data: List<GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.Commit.History.Edge?>) {
     this.data = data
     notifyDataSetChanged()
   }
 
   class ViewHolder(private val binding: ItemCommitBinding) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(commit: GithubRepositoryCommitsQuery.Edge?) {
+    fun bind(commit: GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.Commit.History.Edge?) {
       binding.run {
         tvCommitSha1.text = commit?.node?.abbreviatedOid
         val headline = "${commit?.node?.author?.email}: ${commit?.node?.messageHeadline}"

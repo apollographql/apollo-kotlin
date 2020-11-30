@@ -118,34 +118,34 @@ data class TestQuery(
   )
 
   /**
-   * Represents a review for a movie
-   */
-  data class CreateReview(
-    /**
-     * The number of stars this review gave, 1-5
-     */
-    val stars: Int,
-    /**
-     * Comment about the movie
-     */
-    val commentary: String?
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.CreateReview_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * Data from the response after executing this GraphQL operation
+   * The mutation type, represents all updates we can make to our data
    */
   data class Data(
     val createReview: CreateReview?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
+      }
+    }
+
+    /**
+     * Represents a review for a movie
+     */
+    data class CreateReview(
+      /**
+       * The number of stars this review gave, 1-5
+       */
+      val stars: Int,
+      /**
+       * Comment about the movie
+       */
+      val commentary: String?
+    ) {
+      fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          TestQuery_ResponseAdapter.Data.CreateReview.toResponse(writer, this)
+        }
       }
     }
   }

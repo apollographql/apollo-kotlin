@@ -14,7 +14,7 @@ import com.apollographql.apollo.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo.http.OkHttpExecutionContext
 import com.apollographql.apollo.integration.httpcache.AllFilmsQuery
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery
-import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery.Planet
+import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery.Data.AllPlanet.Planet
 import com.apollographql.apollo.integration.httpcache.fragment.FilmFragment
 import com.apollographql.apollo.integration.httpcache.fragment.PlanetFragment
 import com.apollographql.apollo.integration.httpcache.type.CustomType
@@ -67,7 +67,7 @@ class IntegrationTest {
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(OkHttpClient.Builder().dispatcher(Dispatcher(immediateExecutorService())).build())
-        .addCustomTypeAdapter(CustomType.DATE, dateCustomTypeAdapter)
+        .addCustomTypeAdapter(CustomType.Date, dateCustomTypeAdapter)
         .normalizedCache(LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), IdFieldCacheKeyResolver())
         .defaultResponseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
         .dispatcher(immediateExecutor())

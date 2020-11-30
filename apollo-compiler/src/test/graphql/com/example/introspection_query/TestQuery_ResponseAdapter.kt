@@ -25,152 +25,172 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
-    return reader.run {
-      var __schema: TestQuery.__Schema? = null
-      var __type: TestQuery.__Type? = null
-      while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> __schema = readObject<TestQuery.__Schema>(RESPONSE_FIELDS[0]) { reader ->
-            TestQuery_ResponseAdapter.__Schema_ResponseAdapter.fromResponse(reader)
-          }
-          1 -> __type = readObject<TestQuery.__Type>(RESPONSE_FIELDS[1]) { reader ->
-            TestQuery_ResponseAdapter.__Type_ResponseAdapter.fromResponse(reader)
-          }
-          else -> break
-        }
-      }
-      TestQuery.Data(
-        __schema = __schema!!,
-        __type = __type!!
-      )
-    }
+    return Data.fromResponse(reader, __typename)
   }
 
   override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
-    writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
-      TestQuery_ResponseAdapter.__Schema_ResponseAdapter.toResponse(writer, value.__schema)
-    }
-    writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
-      TestQuery_ResponseAdapter.__Type_ResponseAdapter.toResponse(writer, value.__type)
-    }
+    Data.toResponse(writer, value)
   }
 
-  object QueryType_ResponseAdapter : ResponseAdapter<TestQuery.QueryType> {
+  object Data : ResponseAdapter<TestQuery.Data> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("name", "name", null, true, null)
+      ResponseField.forObject("__schema", "__schema", null, false, null),
+      ResponseField.forObject("__type", "__type", mapOf<String, Any>(
+        "name" to "Vehicle"), false, null)
     )
 
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.QueryType {
+    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
       return reader.run {
-        var name: String? = null
+        var __schema: TestQuery.Data.__Schema? = null
+        var __type: TestQuery.Data.__Type? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> name = readString(RESPONSE_FIELDS[0])
-            else -> break
-          }
-        }
-        TestQuery.QueryType(
-          name = name
-        )
-      }
-    }
-
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.QueryType) {
-      writer.writeString(RESPONSE_FIELDS[0], value.name)
-    }
-  }
-
-  object Type_ResponseAdapter : ResponseAdapter<TestQuery.Type> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("name", "name", null, true, null)
-    )
-
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Type {
-      return reader.run {
-        var name: String? = null
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> name = readString(RESPONSE_FIELDS[0])
-            else -> break
-          }
-        }
-        TestQuery.Type(
-          name = name
-        )
-      }
-    }
-
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.Type) {
-      writer.writeString(RESPONSE_FIELDS[0], value.name)
-    }
-  }
-
-  object __Schema_ResponseAdapter : ResponseAdapter<TestQuery.__Schema> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forObject("queryType", "queryType", null, false, null),
-      ResponseField.forList("types", "types", null, false, null)
-    )
-
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.__Schema {
-      return reader.run {
-        var queryType: TestQuery.QueryType? = null
-        var types: List<TestQuery.Type>? = null
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> queryType = readObject<TestQuery.QueryType>(RESPONSE_FIELDS[0]) { reader ->
-              TestQuery_ResponseAdapter.QueryType_ResponseAdapter.fromResponse(reader)
+            0 -> __schema = readObject<TestQuery.Data.__Schema>(RESPONSE_FIELDS[0]) { reader ->
+              __Schema.fromResponse(reader)
             }
-            1 -> types = readList<TestQuery.Type>(RESPONSE_FIELDS[1]) { reader ->
-              reader.readObject<TestQuery.Type> { reader ->
-                TestQuery_ResponseAdapter.Type_ResponseAdapter.fromResponse(reader)
-              }
-            }?.map { it!! }
+            1 -> __type = readObject<TestQuery.Data.__Type>(RESPONSE_FIELDS[1]) { reader ->
+              __Type.fromResponse(reader)
+            }
             else -> break
           }
         }
-        TestQuery.__Schema(
-          queryType = queryType!!,
-          types = types!!
+        TestQuery.Data(
+          __schema = __schema!!,
+          __type = __type!!
         )
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.__Schema) {
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
       writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
-        TestQuery_ResponseAdapter.QueryType_ResponseAdapter.toResponse(writer, value.queryType)
+        __Schema.toResponse(writer, value.__schema)
       }
-      writer.writeList(RESPONSE_FIELDS[1], value.types) { values, listItemWriter ->
-        values?.forEach { value ->
-          listItemWriter.writeObject { writer ->
-            TestQuery_ResponseAdapter.Type_ResponseAdapter.toResponse(writer, value)
-          }
-        }
+      writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
+        __Type.toResponse(writer, value.__type)
       }
     }
-  }
 
-  object __Type_ResponseAdapter : ResponseAdapter<TestQuery.__Type> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("name", "name", null, true, null)
-    )
+    object __Schema : ResponseAdapter<TestQuery.Data.__Schema> {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forObject("queryType", "queryType", null, false, null),
+        ResponseField.forList("types", "types", null, false, null)
+      )
 
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.__Type {
-      return reader.run {
-        var name: String? = null
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> name = readString(RESPONSE_FIELDS[0])
-            else -> break
+      override fun fromResponse(reader: ResponseReader, __typename: String?):
+          TestQuery.Data.__Schema {
+        return reader.run {
+          var queryType: TestQuery.Data.__Schema.QueryType? = null
+          var types: List<TestQuery.Data.__Schema.Type>? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> queryType = readObject<TestQuery.Data.__Schema.QueryType>(RESPONSE_FIELDS[0]) { reader ->
+                QueryType.fromResponse(reader)
+              }
+              1 -> types = readList<TestQuery.Data.__Schema.Type>(RESPONSE_FIELDS[1]) { reader ->
+                reader.readObject<TestQuery.Data.__Schema.Type> { reader ->
+                  Type.fromResponse(reader)
+                }
+              }?.map { it!! }
+              else -> break
+            }
+          }
+          TestQuery.Data.__Schema(
+            queryType = queryType!!,
+            types = types!!
+          )
+        }
+      }
+
+      override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.__Schema) {
+        writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
+          QueryType.toResponse(writer, value.queryType)
+        }
+        writer.writeList(RESPONSE_FIELDS[1], value.types) { values, listItemWriter ->
+          values?.forEach { value ->
+            listItemWriter.writeObject { writer ->
+              Type.toResponse(writer, value)
+            }
           }
         }
-        TestQuery.__Type(
-          name = name
+      }
+
+      object QueryType : ResponseAdapter<TestQuery.Data.__Schema.QueryType> {
+        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("name", "name", null, true, null)
         )
+
+        override fun fromResponse(reader: ResponseReader, __typename: String?):
+            TestQuery.Data.__Schema.QueryType {
+          return reader.run {
+            var name: String? = null
+            while(true) {
+              when (selectField(RESPONSE_FIELDS)) {
+                0 -> name = readString(RESPONSE_FIELDS[0])
+                else -> break
+              }
+            }
+            TestQuery.Data.__Schema.QueryType(
+              name = name
+            )
+          }
+        }
+
+        override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.__Schema.QueryType) {
+          writer.writeString(RESPONSE_FIELDS[0], value.name)
+        }
+      }
+
+      object Type : ResponseAdapter<TestQuery.Data.__Schema.Type> {
+        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("name", "name", null, true, null)
+        )
+
+        override fun fromResponse(reader: ResponseReader, __typename: String?):
+            TestQuery.Data.__Schema.Type {
+          return reader.run {
+            var name: String? = null
+            while(true) {
+              when (selectField(RESPONSE_FIELDS)) {
+                0 -> name = readString(RESPONSE_FIELDS[0])
+                else -> break
+              }
+            }
+            TestQuery.Data.__Schema.Type(
+              name = name
+            )
+          }
+        }
+
+        override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.__Schema.Type) {
+          writer.writeString(RESPONSE_FIELDS[0], value.name)
+        }
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.__Type) {
-      writer.writeString(RESPONSE_FIELDS[0], value.name)
+    object __Type : ResponseAdapter<TestQuery.Data.__Type> {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("name", "name", null, true, null)
+      )
+
+      override fun fromResponse(reader: ResponseReader, __typename: String?):
+          TestQuery.Data.__Type {
+        return reader.run {
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> name = readString(RESPONSE_FIELDS[0])
+              else -> break
+            }
+          }
+          TestQuery.Data.__Type(
+            name = name
+          )
+        }
+      }
+
+      override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.__Type) {
+        writer.writeString(RESPONSE_FIELDS[0], value.name)
+      }
     }
   }
 }

@@ -13,7 +13,7 @@ import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo.integration.normalizer.*
-import com.apollographql.apollo.integration.normalizer.UpdateReviewMutation.UpdateReview
+import com.apollographql.apollo.integration.normalizer.UpdateReviewMutation.Data.UpdateReview
 import com.apollographql.apollo.integration.normalizer.type.ColorInput
 import com.apollographql.apollo.integration.normalizer.type.Episode
 import com.apollographql.apollo.integration.normalizer.type.ReviewInput
@@ -63,13 +63,13 @@ class OptimisticCacheTestCase {
         Predicate<Response<HeroAndFriendsNamesQuery.Data>> { response -> !response.hasErrors() }
     )
     val mutationId = UUID.randomUUID()
-    val data = HeroAndFriendsNamesQuery.Data(HeroAndFriendsNamesQuery.Hero(
+    val data = HeroAndFriendsNamesQuery.Data(HeroAndFriendsNamesQuery.Data.Hero(
         "R222-D222",
         Arrays.asList(
-            HeroAndFriendsNamesQuery.Friend(
+            HeroAndFriendsNamesQuery.Data.Hero.Friend(
                 "SuperMan"
             ),
-            HeroAndFriendsNamesQuery.Friend(
+            HeroAndFriendsNamesQuery.Data.Hero.Friend(
                 "Batman"
             )
         )
@@ -111,15 +111,15 @@ class OptimisticCacheTestCase {
         Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>> { response -> !response.hasErrors() }
     )
     val data1 = HeroAndFriendsNamesWithIDsQuery.Data(
-        HeroAndFriendsNamesWithIDsQuery.Hero(
+        HeroAndFriendsNamesWithIDsQuery.Data.Hero(
             "2001",
             "R222-D222",
             Arrays.asList(
-                HeroAndFriendsNamesWithIDsQuery.Friend(
+                HeroAndFriendsNamesWithIDsQuery.Data.Hero.Friend(
                     "1000",
                     "SuperMan"
                 ),
-                HeroAndFriendsNamesWithIDsQuery.Friend(
+                HeroAndFriendsNamesWithIDsQuery.Data.Hero.Friend(
                     "1003",
                     "Batman"
                 )
@@ -147,7 +147,7 @@ class OptimisticCacheTestCase {
         apolloClient!!.query(query2),
         Predicate<Response<HeroNameWithIdQuery.Data>> { response -> !response.hasErrors() }
     )
-    val data2 = HeroNameWithIdQuery.Data(HeroNameWithIdQuery.Hero(
+    val data2 = HeroNameWithIdQuery.Data(HeroNameWithIdQuery.Data.Hero(
         "1000",
         "Beast"
     ))
@@ -229,7 +229,7 @@ class OptimisticCacheTestCase {
     val mutationId = UUID.randomUUID()
     apolloClient!!.apolloStore.writeOptimisticUpdates(
         HeroNameQuery(),
-        HeroNameQuery.Data(HeroNameQuery.Hero("R22-D22")),
+        HeroNameQuery.Data(HeroNameQuery.Data.Hero("R22-D22")),
         mutationId
     ).execute()
     assertResponse(
@@ -340,15 +340,15 @@ class OptimisticCacheTestCase {
         Predicate<Response<HeroNameWithIdQuery.Data>> { response -> !response.hasErrors() }
     )
     val data1 = HeroAndFriendsNamesWithIDsQuery.Data(
-        HeroAndFriendsNamesWithIDsQuery.Hero(
+        HeroAndFriendsNamesWithIDsQuery.Data.Hero(
             "2001",
             "R222-D222",
             listOf(
-                HeroAndFriendsNamesWithIDsQuery.Friend(
+                HeroAndFriendsNamesWithIDsQuery.Data.Hero.Friend(
                     "1000",
                     "Robocop"
                 ),
-                HeroAndFriendsNamesWithIDsQuery.Friend(
+                HeroAndFriendsNamesWithIDsQuery.Data.Hero.Friend(
                     "1003",
                     "Batman"
                 )
@@ -356,7 +356,7 @@ class OptimisticCacheTestCase {
         )
     )
     apolloClient!!.apolloStore.writeOptimisticUpdatesAndPublish(query1, data1, mutationId1).execute()
-    val data2 = HeroNameWithIdQuery.Data(HeroNameWithIdQuery.Hero(
+    val data2 = HeroNameWithIdQuery.Data(HeroNameWithIdQuery.Data.Hero(
         "1000",
         "Spiderman"
     ))

@@ -93,43 +93,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   )
 
   /**
-   * A character from the Star Wars universe
-   */
-  data class R2(
-    /**
-     * The name of the character
-     */
-    val name: String
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.R2_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * A character from the Star Wars universe
-   */
-  data class Luke(
-    /**
-     * The ID of the character
-     */
-    val id: String,
-    /**
-     * The name of the character
-     */
-    val name: String
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Luke_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * Data from the response after executing this GraphQL operation
+   * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val r2: R2?,
@@ -137,7 +101,43 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
+      }
+    }
+
+    /**
+     * A character from the Star Wars universe
+     */
+    data class R2(
+      /**
+       * The name of the character
+       */
+      val name: String
+    ) {
+      fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          TestQuery_ResponseAdapter.Data.R2.toResponse(writer, this)
+        }
+      }
+    }
+
+    /**
+     * A character from the Star Wars universe
+     */
+    data class Luke(
+      /**
+       * The ID of the character
+       */
+      val id: String,
+      /**
+       * The name of the character
+       */
+      val name: String
+    ) {
+      fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          TestQuery_ResponseAdapter.Data.Luke.toResponse(writer, this)
+        }
       }
     }
   }

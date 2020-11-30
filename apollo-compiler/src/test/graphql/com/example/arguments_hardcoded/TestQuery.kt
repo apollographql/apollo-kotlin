@@ -95,38 +95,38 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   )
 
   /**
-   * Represents a review for a movie
-   */
-  data class Review(
-    /**
-     * The number of stars this review gave, 1-5
-     */
-    val stars: Int,
-    /**
-     * Comment about the movie
-     */
-    val commentary: String?
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Review_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * Data from the response after executing this GraphQL operation
+   * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val reviews: List<Review?>?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
       }
     }
 
     fun reviewsFilterNotNull(): List<Review>? = reviews?.filterNotNull()
+
+    /**
+     * Represents a review for a movie
+     */
+    data class Review(
+      /**
+       * The number of stars this review gave, 1-5
+       */
+      val stars: Int,
+      /**
+       * Comment about the movie
+       */
+      val commentary: String?
+    ) {
+      fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          TestQuery_ResponseAdapter.Data.Review.toResponse(writer, this)
+        }
+      }
+    }
   }
 
   companion object {

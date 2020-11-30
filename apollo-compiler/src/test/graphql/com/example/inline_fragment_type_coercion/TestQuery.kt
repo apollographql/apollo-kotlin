@@ -93,49 +93,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   )
 
   /**
-   * For testing fragment type coercion
-   */
-  data class BarFoo(
-    val bar: String,
-    override val __typename: String = "Bar",
-    override val foo: String
-  ) : Foo {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.BarFoo_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * For testing fragment type coercion
-   */
-  data class OtherFoo(
-    override val __typename: String = "Foo",
-    override val foo: String
-  ) : Foo {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.OtherFoo_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * For testing fragment type coercion
-   */
-  interface Foo {
-    val __typename: String
-
-    val foo: String
-
-    fun asBarFoo(): BarFoo? = this as? BarFoo
-
-    fun marshaller(): ResponseFieldMarshaller
-  }
-
-  /**
-   * Data from the response after executing this GraphQL operation
+   * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     /**
@@ -145,7 +103,62 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.toResponse(writer, this)
+        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
+      }
+    }
+
+    /**
+     * For testing fragment type coercion
+     */
+    interface Foo {
+      val __typename: String
+
+      val foo: String
+
+      fun asBar(): Bar? = this as? Bar
+
+      fun marshaller(): ResponseFieldMarshaller
+
+      /**
+       * For testing fragment type coercion
+       */
+      interface Bar : Foo {
+        override val __typename: String
+
+        override val foo: String
+
+        val bar: String
+
+        override fun marshaller(): ResponseFieldMarshaller
+      }
+
+      /**
+       * For testing fragment type coercion
+       */
+      data class BarFoo(
+        override val __typename: String = "FooBar",
+        override val foo: String,
+        override val bar: String
+      ) : Foo, Bar {
+        override fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            TestQuery_ResponseAdapter.Data.Foo.BarFoo.toResponse(writer, this)
+          }
+        }
+      }
+
+      /**
+       * For testing fragment type coercion
+       */
+      data class OtherFoo(
+        override val __typename: String = "Foo",
+        override val foo: String
+      ) : Foo {
+        override fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            TestQuery_ResponseAdapter.Data.Foo.OtherFoo.toResponse(writer, this)
+          }
+        }
       }
     }
   }

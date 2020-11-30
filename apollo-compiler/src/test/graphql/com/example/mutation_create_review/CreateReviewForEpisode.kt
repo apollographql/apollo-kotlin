@@ -120,66 +120,66 @@ internal data class CreateReviewForEpisode(
   )
 
   /**
-   * A character from the Star Wars universe
-   */
-  data class ListOfListOfObject(
-    /**
-     * The name of the character
-     */
-    val name: String
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        CreateReviewForEpisode_ResponseAdapter.ListOfListOfObject_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * Represents a review for a movie
-   */
-  data class CreateReview(
-    /**
-     * The number of stars this review gave, 1-5
-     */
-    val stars: Int,
-    /**
-     * Comment about the movie
-     */
-    val commentary: String?,
-    /**
-     * for test purpose only
-     */
-    val listOfListOfString: List<List<String>>?,
-    /**
-     * for test purpose only
-     */
-    val listOfListOfEnum: List<List<Episode>>?,
-    /**
-     * for test purpose only
-     */
-    val listOfListOfCustom: List<List<Date>>?,
-    /**
-     * for test purpose only
-     */
-    val listOfListOfObject: List<List<ListOfListOfObject>>?
-  ) {
-    fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        CreateReviewForEpisode_ResponseAdapter.CreateReview_ResponseAdapter.toResponse(writer, this)
-      }
-    }
-  }
-
-  /**
-   * Data from the response after executing this GraphQL operation
+   * The mutation type, represents all updates we can make to our data
    */
   data class Data(
     val createReview: CreateReview?
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        CreateReviewForEpisode_ResponseAdapter.toResponse(writer, this)
+        CreateReviewForEpisode_ResponseAdapter.Data.toResponse(writer, this)
+      }
+    }
+
+    /**
+     * Represents a review for a movie
+     */
+    data class CreateReview(
+      /**
+       * The number of stars this review gave, 1-5
+       */
+      val stars: Int,
+      /**
+       * Comment about the movie
+       */
+      val commentary: String?,
+      /**
+       * for test purpose only
+       */
+      val listOfListOfString: List<List<String>>?,
+      /**
+       * for test purpose only
+       */
+      val listOfListOfEnum: List<List<Episode>>?,
+      /**
+       * for test purpose only
+       */
+      val listOfListOfCustom: List<List<Date>>?,
+      /**
+       * for test purpose only
+       */
+      val listOfListOfObject: List<List<ListOfListOfObject>>?
+    ) {
+      fun marshaller(): ResponseFieldMarshaller {
+        return ResponseFieldMarshaller { writer ->
+          CreateReviewForEpisode_ResponseAdapter.Data.CreateReview.toResponse(writer, this)
+        }
+      }
+
+      /**
+       * A character from the Star Wars universe
+       */
+      data class ListOfListOfObject(
+        /**
+         * The name of the character
+         */
+        val name: String
+      ) {
+        fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            CreateReviewForEpisode_ResponseAdapter.Data.CreateReview.ListOfListOfObject.toResponse(writer, this)
+          }
+        }
       }
     }
   }
