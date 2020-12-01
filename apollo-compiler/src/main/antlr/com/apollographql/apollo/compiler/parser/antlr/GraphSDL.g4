@@ -105,7 +105,7 @@ inputValueDefinition
   ;
 
 directiveDefinition
-  : description? DIRECTIVE '@' name argumentsDefinition? ON_KEYWORD directiveLocations
+  : description? DIRECTIVE '@' name argumentsDefinition? REPEATABLE? ON_KEYWORD directiveLocations
   ;
 
 directiveLocations
@@ -289,6 +289,7 @@ UNION: 'union';
 SCALAR: 'scalar';
 INPUT: 'input';
 DIRECTIVE: 'directive';
+REPEATABLE: 'repeatable';
 ON_KEYWORD: 'on';
 EXTEND: 'extend';
 
