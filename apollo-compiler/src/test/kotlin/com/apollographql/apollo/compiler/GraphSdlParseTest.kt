@@ -67,6 +67,11 @@ class GraphSdlParseTest() {
   }
 
   @Test
+  fun `repeatable directive does not throw`() {
+    GraphSdlSchema(File("src/test/sdl/repeated-directive.sdl"))
+  }
+
+  @Test
   fun `writing SDL and parsing again yields identical schemas`() {
     val initialSchema = IntrospectionSchema(File("src/test/sdl/schema.json")).normalize()
     val sdlFile = File("build/sdl-test/schema.sdl")
