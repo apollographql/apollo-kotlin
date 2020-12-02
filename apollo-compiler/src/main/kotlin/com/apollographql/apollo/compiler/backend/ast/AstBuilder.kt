@@ -340,8 +340,12 @@ internal class AstBuilder private constructor(
         graphqlName = this.name,
         description = this.comment,
         interfaceType = interfaceType,
-        defaultImplementationType = implementationType,
+        defaultImplementationType = implementationType.copy(fragmentAccessors = emptyList()),
         fragmentDefinition = this.source,
+        typeRef = CodeGenerationAst.TypeRef(
+            name = this.name.normalizeTypeName(),
+            packageName = fragmentsPackage,
+        )
     )
   }
 
@@ -445,6 +449,7 @@ internal class AstBuilder private constructor(
         typeRef = currentSelectionKey.asTypeRef(targetPackageName),
         nestedObjects = nestedObjects,
         schemaTypename = schemaTypeRef.rawType.name,
+        fragmentAccessors = emptyList(),
     )
   }
 
@@ -460,13 +465,14 @@ internal class AstBuilder private constructor(
       alternativeSelectionKeys: Set<SelectionKey>,
   ): CodeGenerationAst.ObjectType {
     val schemaType = schema.resolveType(schemaTypeRef.rawType)
-    val kind = CodeGenerationAst.ObjectType.Kind.Interface.takeIf { abstract }
-        ?: buildFragmentKind(
-            parentTypeName = parentTypeName,
-            fragments = fragments,
-            targetPackageName = targetPackageName,
-            selectionKey = selectionKey,
-        )
+    val possibleImplementations = fragments.flatMap { fragment ->
+      val typeRef = (selectionKey + fragment.name).asTypeRef(targetPackageName)
+      fragment.possibleTypes.map { possibleType -> possibleType.name!! to typeRef }
+    }.toMap()
+    val kind = CodeGenerationAst.ObjectType.Kind.Fragment(
+        defaultImplementation = (selectionKey + "Other${parentTypeName.normalizeTypeName()}").asTypeRef(targetPackageName),
+        possibleImplementations = possibleImplementations,
+    )
     val astFields = fields.map { field ->
       field.buildField(
           targetPackageName = targetPackageName,
@@ -479,7 +485,7 @@ internal class AstBuilder private constructor(
           .takeIf { keys != selectionKey }
           ?.asTypeRef(targetPackageName)
     }.toSet()
-    val nestedObjects = buildFieldWithFragmentNestedObjects(
+    val nestedObjects = buildFragmentNestedObjectTypes(
         fragments = fragments,
         abstract = abstract,
         fields = fields,
@@ -490,6 +496,38 @@ internal class AstBuilder private constructor(
         schemaTypeRef = schemaTypeRef,
         alternativeSelectionKeys = alternativeSelectionKeys,
     )
+    val objectTypeRef = selectionKey.asTypeRef(targetPackageName)
+    val fragmentAccessors = fragments
+        .filterIsInstance<BackendIr.Fragment.Interface>()
+        .flatMap { fragment ->
+          fragment.selectionKeys
+              .filter { fragmentSelectionKey ->
+                // filter out keys that either shares the same named fragment root with current object type select key
+                fragmentSelectionKey.type == SelectionKey.Type.Fragment &&
+                    (selectionKey.type != SelectionKey.Type.Fragment || fragmentSelectionKey.root != selectionKey.root)
+              }
+              .map { fragmentSelectionKey ->
+                val name = fragmentSelectionKey.keys
+                    .joinToString(separator = "") { key -> key.capitalize() }
+                    .decapitalize()
+                CodeGenerationAst.ObjectType.FragmentAccessor(
+                    name = name,
+                    typeRef = fragmentSelectionKey.asTypeRef(targetPackageName),
+                )
+              }
+              .plus(
+                  CodeGenerationAst.ObjectType.FragmentAccessor(
+                      name = "as${fragment.typeCondition.name!!.capitalize()}",
+                      typeRef = CodeGenerationAst.TypeRef(
+                          name = fragment.typeCondition.name,
+                          packageName = targetPackageName,
+                          enclosingType = objectTypeRef,
+                      )
+                  )
+              )
+        }
+        .distinct()
+
     return CodeGenerationAst.ObjectType(
         name = parentTypeName.normalizeTypeName(),
         description = schemaType.description ?: "",
@@ -497,46 +535,14 @@ internal class AstBuilder private constructor(
         fields = astFields,
         implements = implements,
         kind = kind,
-        typeRef = selectionKey.asTypeRef(targetPackageName),
+        typeRef = objectTypeRef,
         nestedObjects = nestedObjects,
         schemaTypename = schemaTypeRef.rawType.name,
-    )
-  }
-
-  private fun buildFragmentKind(
-      parentTypeName: String,
-      fragments: List<BackendIr.Fragment>,
-      targetPackageName: String,
-      selectionKey: SelectionKey,
-  ): CodeGenerationAst.ObjectType.Kind.Fragment {
-    val inlineFragmentInterfaces = fragments.filterIsInstance<BackendIr.Fragment.Interface>()
-    val namedFragmentTypeRefs = inlineFragmentInterfaces
-        .flatMap { inlineFragment -> inlineFragment.selectionKeys }
-        .filter { key -> key.type == SelectionKey.Type.Fragment && key.keys.size == 1 }
-        .map { key -> key.asTypeRef(targetPackageName) }
-    val inlineFragmentInterfacesTypeRefs = inlineFragmentInterfaces
-        .map { inlineFragment -> selectionKey.plus(inlineFragment.name) }
-        .map { key -> key.asTypeRef(targetPackageName) }
-    val fragmentAccessors = inlineFragmentInterfacesTypeRefs
-        .associateBy { typeRef -> "as${typeRef.name.capitalize()}" }
-        .plus(
-            namedFragmentTypeRefs.associateBy { typeRef ->
-              "as${typeRef.name.capitalize()}"
-            }
-        )
-    val possibleImplementations = fragments.flatMap { fragment ->
-      val typeRef = (selectionKey + fragment.name).asTypeRef(targetPackageName)
-      fragment.possibleTypes.map { possibleType -> possibleType.name!! to typeRef }
-    }.toMap()
-
-    return CodeGenerationAst.ObjectType.Kind.Fragment(
-        defaultImplementation = (selectionKey + "Other${parentTypeName.normalizeTypeName()}").asTypeRef(targetPackageName),
-        possibleImplementations = possibleImplementations,
         fragmentAccessors = fragmentAccessors,
     )
   }
 
-  private fun buildFieldWithFragmentNestedObjects(
+  private fun buildFragmentNestedObjectTypes(
       fragments: List<BackendIr.Fragment>,
       abstract: Boolean,
       fields: List<BackendIr.Field>,
@@ -640,6 +646,7 @@ internal class AstBuilder private constructor(
         typeRef = typeRef,
         nestedObjects = nestedObjects,
         schemaTypename = introspectionSchemaType?.rawType?.name,
+        fragmentAccessors = emptyList(),
     )
   }
 

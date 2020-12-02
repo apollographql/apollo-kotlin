@@ -43,10 +43,6 @@ data class HeroDetailsImpl(
      */
     override val name: String
 
-    fun asHuman(): Human? = this as? Human
-
-    fun asDroid(): Droid? = this as? Droid
-
     override fun marshaller(): ResponseFieldMarshaller
 
     /**
@@ -145,24 +141,19 @@ data class HeroDetailsImpl(
         }
       }
     }
-  }
 
-  companion object {
-    val FRAGMENT_DEFINITION: String = """
-        |fragment HeroDetails on Character {
-        |  __typename
-        |  name
-        |  friends {
-        |    __typename
-        |    name
-        |    ... on Human {
-        |      height
-        |    }
-        |    ... on Droid {
-        |      primaryFunction
-        |    }
-        |  }
-        |}
-        """.trimMargin()
+    companion object {
+      fun Friend.heroDetailsFriends(): HeroDetail.Friend? = this as? HeroDetail.Friend
+
+      fun Friend.heroDetailsFriendsHuman(): HeroDetail.Friend.Human? = this as?
+          HeroDetail.Friend.Human
+
+      fun Friend.asHuman(): Human? = this as? Human
+
+      fun Friend.heroDetailsFriendsDroid(): HeroDetail.Friend.Droid? = this as?
+          HeroDetail.Friend.Droid
+
+      fun Friend.asDroid(): Droid? = this as? Droid
+    }
   }
 }

@@ -30,14 +30,4 @@ data class CharacterDetailsImpl(
       CharacterDetailsImpl_ResponseAdapter.toResponse(writer, this)
     }
   }
-
-  companion object {
-    val FRAGMENT_DEFINITION: String = """
-        |fragment CharacterDetails on Character {
-        |  __typename
-        |  name
-        |  birthDate
-        |}
-        """.trimMargin()
-  }
 }

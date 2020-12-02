@@ -114,10 +114,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     interface Hero {
       val __typename: String
 
-      fun asCharacter(): Character? = this as? Character
-
-      fun asHeroDetail(): HeroDetail? = this as? HeroDetail
-
       fun marshaller(): ResponseFieldMarshaller
 
       interface Character : Hero, HeroDetail {
@@ -185,6 +181,18 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
             override fun marshaller(): ResponseFieldMarshaller
           }
+
+          companion object {
+            fun Friend.heroDetailsFriendsHuman(): HeroDetail.Friend.Human? = this as?
+                HeroDetail.Friend.Human
+
+            fun Friend.asHuman(): Human? = this as? Human
+
+            fun Friend.heroDetailsFriendsDroid(): HeroDetail.Friend.Droid? = this as?
+                HeroDetail.Friend.Droid
+
+            fun Friend.asDroid(): Droid? = this as? Droid
+          }
         }
       }
 
@@ -215,10 +223,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            * The name of the character
            */
           override val name: String
-
-          fun asHuman(): Human? = this as? Human
-
-          fun asDroid(): Droid? = this as? Droid
 
           override fun marshaller(): ResponseFieldMarshaller
 
@@ -320,6 +324,18 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
               }
             }
           }
+
+          companion object {
+            fun Friend.heroDetailsFriendsHuman(): HeroDetail.Friend.Human? = this as?
+                HeroDetail.Friend.Human
+
+            fun Friend.asHuman(): Human? = this as? Human
+
+            fun Friend.heroDetailsFriendsDroid(): HeroDetail.Friend.Droid? = this as?
+                HeroDetail.Friend.Droid
+
+            fun Friend.asDroid(): Droid? = this as? Droid
+          }
         }
       }
 
@@ -334,6 +350,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
             TestQuery_ResponseAdapter.Data.Hero.OtherHero.toResponse(writer, this)
           }
         }
+      }
+
+      companion object {
+        fun Hero.heroDetails(): HeroDetail? = this as? HeroDetail
+
+        fun Hero.asCharacter(): Character? = this as? Character
       }
     }
   }

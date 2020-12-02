@@ -28,18 +28,6 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
    */
   override val friendsConnection: FriendsConnection
 
-  fun asDroid(): Droid? = this as? Droid
-
-  fun asHuman(): Human? = this as? Human
-
-  fun asHeroDetail(): HeroDetail? = this as? HeroDetail
-
-  fun asDroidDetail(): DroidDetail? = this as? DroidDetail
-
-  fun asHeroDetailsImpl(): HeroDetailsImpl? = this as? HeroDetailsImpl
-
-  fun asHumanDetail(): HumanDetail? = this as? HumanDetail
-
   override fun marshaller(): ResponseFieldMarshaller
 
   /**
@@ -434,27 +422,5 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
         }
       }
     }
-  }
-
-  companion object {
-    val FRAGMENT_DEFINITION: String = """
-        |fragment HeroDetails on Character {
-        |  __typename
-        |  ...HumanDetails
-        |  ... on Droid {
-        |    __typename
-        |    ...DroidDetails
-        |  }
-        |  name
-        |  friendsConnection {
-        |    totalCount
-        |    edges {
-        |      node {
-        |        name
-        |      }
-        |    }
-        |  }
-        |}
-        """.trimMargin()
   }
 }

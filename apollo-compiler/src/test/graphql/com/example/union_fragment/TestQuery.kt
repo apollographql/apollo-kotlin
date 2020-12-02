@@ -111,32 +111,15 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     interface Search {
       val __typename: String
 
-      fun asCharacter(): com.example.union_fragment.fragment.Character? = this as?
-          com.example.union_fragment.fragment.Character
-
-      fun asStarship(): com.example.union_fragment.fragment.Starship? = this as?
-          com.example.union_fragment.fragment.Starship
-
       fun marshaller(): ResponseFieldMarshaller
-
-      interface Character : Search, com.example.union_fragment.fragment.Character {
-        override val __typename: String
-
-        /**
-         * The ID of the character
-         */
-        override val id: String
-
-        /**
-         * The name of the character
-         */
-        override val name: String
-
-        override fun marshaller(): ResponseFieldMarshaller
-      }
 
       interface Starship : Search, com.example.union_fragment.fragment.Starship {
         override val __typename: String
+
+        /**
+         * The ID of the starship
+         */
+        val id: String
 
         /**
          * The name of the starship
@@ -146,26 +129,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         override fun marshaller(): ResponseFieldMarshaller
       }
 
-      data class CharacterSearch(
-        override val __typename: String,
-        /**
-         * The ID of the character
-         */
-        override val id: String,
-        /**
-         * The name of the character
-         */
-        override val name: String
-      ) : Search, Character, com.example.union_fragment.fragment.Character {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Search.CharacterSearch.toResponse(writer, this)
-          }
-        }
-      }
-
       data class StarshipSearch(
         override val __typename: String = "Starship",
+        /**
+         * The ID of the starship
+         */
+        override val id: String,
         /**
          * The name of the starship
          */
@@ -187,26 +156,30 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           }
         }
       }
+
+      companion object {
+        fun Search.starship(): com.example.union_fragment.fragment.Starship? = this as?
+            com.example.union_fragment.fragment.Starship
+
+        fun Search.asStarship(): Starship? = this as? Starship
+      }
     }
   }
 
   companion object {
     const val OPERATION_ID: String =
-        "de57eb41c200d48c0f6c508ebf5b4d23b8edd06c6cea371db90ac8160f911b1f"
+        "30d1eb05153f684ad9f80a0483579f001b507c53f8971d475f6c8d3690622ef4"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery {
           |  search(text: "test") {
           |    __typename
-          |    ...Character
+          |    ... on Starship {
+          |      id
+          |    }
           |    ...Starship
           |  }
-          |}
-          |fragment Character on Character {
-          |  __typename
-          |  id
-          |  name
           |}
           |fragment Starship on Starship {
           |  __typename

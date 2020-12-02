@@ -48,6 +48,12 @@ interface PilotFragment : GraphqlFragment {
 
       override fun marshaller(): ResponseFieldMarshaller
     }
+
+    companion object {
+      fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
+
+      fun Homeworld.asPlanet(): Planet? = this as? Planet
+    }
   }
 
   companion object {

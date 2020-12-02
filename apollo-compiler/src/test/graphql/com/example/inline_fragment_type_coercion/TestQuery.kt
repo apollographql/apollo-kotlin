@@ -116,8 +116,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
       val foo: String
 
-      fun asBar(): Bar? = this as? Bar
-
       fun marshaller(): ResponseFieldMarshaller
 
       /**
@@ -160,6 +158,10 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
             TestQuery_ResponseAdapter.Data.Foo.OtherFoo.toResponse(writer, this)
           }
         }
+      }
+
+      companion object {
+        fun Foo.asBar(): Bar? = this as? Bar
       }
     }
   }

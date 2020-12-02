@@ -59,5 +59,9 @@ interface HumanDetail : GraphqlFragment {
         HumanDetailsImpl_ResponseAdapter.fromResponse(reader)
       }
     }
+
+    fun HumanDetail.characterDetails(): CharacterDetail? = this as? CharacterDetail
+
+    fun HumanDetail.asCharacter(): Character? = this as? Character
   }
 }

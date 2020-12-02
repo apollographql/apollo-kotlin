@@ -26,13 +26,4 @@ data class PlanetFragmentImpl(
       PlanetFragmentImpl_ResponseAdapter.toResponse(writer, this)
     }
   }
-
-  companion object {
-    val FRAGMENT_DEFINITION: String = """
-        |fragment planetFragment on Planet {
-        |  __typename
-        |  name
-        |}
-        """.trimMargin()
-  }
 }

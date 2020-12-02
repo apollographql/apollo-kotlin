@@ -54,5 +54,9 @@ internal interface HeroDetail : GraphqlFragment {
         HeroDetailsImpl_ResponseAdapter.fromResponse(reader)
       }
     }
+
+    fun HeroDetail.humanDetails(): HumanDetail? = this as? HumanDetail
+
+    fun HeroDetail.asHuman(): Human? = this as? Human
   }
 }

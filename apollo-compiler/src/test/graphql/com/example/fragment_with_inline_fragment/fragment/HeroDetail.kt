@@ -224,5 +224,13 @@ interface HeroDetail : GraphqlFragment {
         HeroDetailsImpl_ResponseAdapter.fromResponse(reader)
       }
     }
+
+    fun HeroDetail.droidDetails(): DroidDetail? = this as? DroidDetail
+
+    fun HeroDetail.asDroid(): Droid? = this as? Droid
+
+    fun HeroDetail.humanDetails(): HumanDetail? = this as? HumanDetail
+
+    fun HeroDetail.asHuman(): Human? = this as? Human
   }
 }

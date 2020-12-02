@@ -115,14 +115,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     interface Hero {
       val __typename: String
 
-      fun asDroid(): Droid? = this as? Droid
-
-      fun asHuman(): Human? = this as? Human
-
-      fun asDroidDetail(): DroidDetail? = this as? DroidDetail
-
-      fun asHumanDetail(): HumanDetail? = this as? HumanDetail
-
       fun marshaller(): ResponseFieldMarshaller
 
       interface Droid : Hero, DroidDetail {
@@ -334,6 +326,16 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
             TestQuery_ResponseAdapter.Data.Hero.OtherHero.toResponse(writer, this)
           }
         }
+      }
+
+      companion object {
+        fun Hero.droidDetails(): DroidDetail? = this as? DroidDetail
+
+        fun Hero.asDroid(): Droid? = this as? Droid
+
+        fun Hero.humanDetails(): HumanDetail? = this as? HumanDetail
+
+        fun Hero.asHuman(): Human? = this as? Human
       }
     }
   }

@@ -37,10 +37,6 @@ data class PilotFragmentImpl(
   interface Homeworld : PilotFragment.Homeworld {
     override val __typename: String
 
-    fun asPlanet(): Planet? = this as? Planet
-
-    fun asPlanetFragment(): PlanetFragment? = this as? PlanetFragment
-
     override fun marshaller(): ResponseFieldMarshaller
 
     interface Planet : PilotFragment.Homeworld, PilotFragment.Homeworld.Planet, PlanetFragment,
@@ -82,18 +78,17 @@ data class PilotFragmentImpl(
         }
       }
     }
-  }
 
-  companion object {
-    val FRAGMENT_DEFINITION: String = """
-        |fragment pilotFragment on Person {
-        |  __typename
-        |  name
-        |  homeworld {
-        |    __typename
-        |    ...planetFragment
-        |  }
-        |}
-        """.trimMargin()
+    companion object {
+      fun Homeworld.pilotFragmentHomeworld(): PilotFragment.Homeworld? = this as?
+          PilotFragment.Homeworld
+
+      fun Homeworld.pilotFragmentHomeworldPlanet(): PilotFragment.Homeworld.Planet? = this as?
+          PilotFragment.Homeworld.Planet
+
+      fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
+
+      fun Homeworld.asPlanet(): Planet? = this as? Planet
+    }
   }
 }

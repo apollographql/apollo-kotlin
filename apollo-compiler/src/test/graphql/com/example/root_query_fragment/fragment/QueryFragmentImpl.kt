@@ -38,15 +38,4 @@ data class QueryFragmentImpl(
       }
     }
   }
-
-  companion object {
-    val FRAGMENT_DEFINITION: String = """
-        |fragment QueryFragment on Query {
-        |  __typename
-        |  hero {
-        |    name
-        |  }
-        |}
-        """.trimMargin()
-  }
 }

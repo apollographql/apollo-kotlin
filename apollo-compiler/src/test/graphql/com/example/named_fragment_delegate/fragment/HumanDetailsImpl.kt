@@ -83,21 +83,4 @@ data class HumanDetailsImpl(
       }
     }
   }
-
-  companion object {
-    val FRAGMENT_DEFINITION: String = """
-        |fragment HumanDetails on Human {
-        |  __typename
-        |  name
-        |  profileLink
-        |  friendsConnection {
-        |    edges {
-        |      node {
-        |        name
-        |      }
-        |    }
-        |  }
-        |}
-        """.trimMargin()
-  }
 }

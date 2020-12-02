@@ -25,13 +25,4 @@ data class HeroFragmentImpl(
       HeroFragmentImpl_ResponseAdapter.toResponse(writer, this)
     }
   }
-
-  companion object {
-    val FRAGMENT_DEFINITION: String = """
-        |fragment heroFragment on Character {
-        |  __typename
-        |  name
-        |}
-        """.trimMargin()
-  }
 }

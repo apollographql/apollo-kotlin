@@ -81,6 +81,12 @@ interface HeroDetail : GraphqlFragment {
 
       override fun marshaller(): ResponseFieldMarshaller
     }
+
+    companion object {
+      fun Friend.asHuman(): Human? = this as? Human
+
+      fun Friend.asDroid(): Droid? = this as? Droid
+    }
   }
 
   companion object {

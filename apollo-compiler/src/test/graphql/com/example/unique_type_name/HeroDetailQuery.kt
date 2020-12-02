@@ -126,8 +126,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
        */
       val friends: List<Friend?>?
 
-      fun asHuman(): Human? = this as? Human
-
       fun marshaller(): ResponseFieldMarshaller
 
       /**
@@ -250,6 +248,12 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
                 }
               }
             }
+
+            companion object {
+              fun Friend.heroDetails(): HeroDetail? = this as? HeroDetail
+
+              fun Friend.asCharacter(): Character? = this as? Character
+            }
           }
         }
       }
@@ -306,10 +310,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
            */
           interface Friend : Human.Friend.Friend {
             override val __typename: String
-
-            fun asCharacter(): Character? = this as? Character
-
-            fun asHeroDetail(): HeroDetail? = this as? HeroDetail
 
             override fun marshaller(): ResponseFieldMarshaller
 
@@ -458,6 +458,12 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
                 }
               }
             }
+
+            companion object {
+              fun Friend.heroDetails(): HeroDetail? = this as? HeroDetail
+
+              fun Friend.asCharacter(): Character? = this as? Character
+            }
           }
         }
       }
@@ -497,6 +503,10 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
             }
           }
         }
+      }
+
+      companion object {
+        fun HeroDetailQuery.asHuman(): Human? = this as? Human
       }
     }
   }

@@ -50,17 +50,4 @@ data class DroidDetailsImpl(
       }
     }
   }
-
-  companion object {
-    val FRAGMENT_DEFINITION: String = """
-        |fragment DroidDetails on Droid {
-        |  __typename
-        |  name
-        |  primaryFunction
-        |  friends {
-        |    name
-        |  }
-        |}
-        """.trimMargin()
-  }
 }

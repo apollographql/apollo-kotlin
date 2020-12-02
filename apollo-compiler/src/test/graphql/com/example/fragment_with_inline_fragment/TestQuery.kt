@@ -127,18 +127,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
        */
       val appearsIn: List<Episode?>
 
-      fun asCharacter(): Character? = this as? Character
-
-      fun asDroid(): Droid? = this as? Droid
-
-      fun asHuman(): Human? = this as? Human
-
-      fun asHeroDetail(): HeroDetail? = this as? HeroDetail
-
-      fun asDroidDetail(): DroidDetail? = this as? DroidDetail
-
-      fun asHumanDetail(): HumanDetail? = this as? HumanDetail
-
       fun marshaller(): ResponseFieldMarshaller
 
       interface Character : Hero, HeroDetail {
@@ -520,6 +508,24 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
             TestQuery_ResponseAdapter.Data.Hero.OtherHero.toResponse(writer, this)
           }
         }
+      }
+
+      companion object {
+        fun Hero.heroDetails(): HeroDetail? = this as? HeroDetail
+
+        fun Hero.asCharacter(): Character? = this as? Character
+
+        fun Hero.heroDetailsDroid(): HeroDetail.Droid? = this as? HeroDetail.Droid
+
+        fun Hero.droidDetails(): DroidDetail? = this as? DroidDetail
+
+        fun Hero.asDroid(): Droid? = this as? Droid
+
+        fun Hero.heroDetailsHuman(): HeroDetail.Human? = this as? HeroDetail.Human
+
+        fun Hero.humanDetails(): HumanDetail? = this as? HumanDetail
+
+        fun Hero.asHuman(): Human? = this as? Human
       }
     }
   }

@@ -144,10 +144,6 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
         interface Node {
           val __typename: String
 
-          fun asStarship(): Starship? = this as? Starship
-
-          fun asStarshipFragment(): StarshipFragment? = this as? StarshipFragment
-
           fun marshaller(): ResponseFieldMarshaller
 
           interface Starship : Node, StarshipFragment {
@@ -234,7 +230,32 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
 
                         override fun marshaller(): ResponseFieldMarshaller
                       }
+
+                      companion object {
+                        fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
+
+                        fun Homeworld.pilotFragmentHomeworldPlanet():
+                            PilotFragment.Homeworld.Planet? = this as?
+                            PilotFragment.Homeworld.Planet
+
+                        fun Homeworld.starshipFragmentPilotConnectionEdgesNodePersonHomeworldPlanet():
+                            StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet? =
+                            this as?
+                            StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet
+
+                        fun Homeworld.asPlanet(): Planet? = this as? Planet
+                      }
                     }
+                  }
+
+                  companion object {
+                    fun Node.pilotFragment(): PilotFragment? = this as? PilotFragment
+
+                    fun Node.starshipFragmentPilotConnectionEdgesNodePerson():
+                        StarshipFragment.PilotConnection.Edge.Node.Person? = this as?
+                        StarshipFragment.PilotConnection.Edge.Node.Person
+
+                    fun Node.asPerson(): Person? = this as? Person
                   }
                 }
               }
@@ -296,10 +317,6 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
                     StarshipFragment.PilotConnection.Edge.Node {
                   override val __typename: String
 
-                  fun asPerson(): Person? = this as? Person
-
-                  fun asPilotFragment(): PilotFragment? = this as? PilotFragment
-
                   override fun marshaller(): ResponseFieldMarshaller
 
                   interface Person : Starship.PilotConnection.Edge.Node,
@@ -344,6 +361,21 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
 
                         override fun marshaller(): ResponseFieldMarshaller
                       }
+
+                      companion object {
+                        fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
+
+                        fun Homeworld.pilotFragmentHomeworldPlanet():
+                            PilotFragment.Homeworld.Planet? = this as?
+                            PilotFragment.Homeworld.Planet
+
+                        fun Homeworld.starshipFragmentPilotConnectionEdgesNodePersonHomeworldPlanet():
+                            StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet? =
+                            this as?
+                            StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet
+
+                        fun Homeworld.asPlanet(): Planet? = this as? Planet
+                      }
                     }
                   }
 
@@ -372,10 +404,6 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
                     interface Homeworld : Starship.PilotConnection.Edge.Node.Person.Homeworld,
                         PilotFragment.Homeworld {
                       override val __typename: String
-
-                      fun asPlanet(): Planet? = this as? Planet
-
-                      fun asPlanetFragment(): PlanetFragment? = this as? PlanetFragment
 
                       override fun marshaller(): ResponseFieldMarshaller
 
@@ -422,6 +450,16 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
                           }
                         }
                       }
+
+                      companion object {
+                        fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
+
+                        fun Homeworld.pilotFragmentHomeworldPlanet():
+                            PilotFragment.Homeworld.Planet? = this as?
+                            PilotFragment.Homeworld.Planet
+
+                        fun Homeworld.asPlanet(): Planet? = this as? Planet
+                      }
                     }
                   }
 
@@ -437,6 +475,16 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
                         AllStarship_ResponseAdapter.Data.AllStarship.Edge.Node.StarshipNode.PilotConnection.Edge.Node.OtherNode.toResponse(writer, this)
                       }
                     }
+                  }
+
+                  companion object {
+                    fun Node.pilotFragment(): PilotFragment? = this as? PilotFragment
+
+                    fun Node.starshipFragmentPilotConnectionEdgesNodePerson():
+                        StarshipFragment.PilotConnection.Edge.Node.Person? = this as?
+                        StarshipFragment.PilotConnection.Edge.Node.Person
+
+                    fun Node.asPerson(): Person? = this as? Person
                   }
                 }
               }
@@ -454,6 +502,12 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
                 AllStarship_ResponseAdapter.Data.AllStarship.Edge.Node.OtherNode.toResponse(writer, this)
               }
             }
+          }
+
+          companion object {
+            fun Node.starshipFragment(): StarshipFragment? = this as? StarshipFragment
+
+            fun Node.asStarship(): Starship? = this as? Starship
           }
         }
       }

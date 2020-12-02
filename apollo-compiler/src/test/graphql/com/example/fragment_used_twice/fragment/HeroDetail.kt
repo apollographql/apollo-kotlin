@@ -59,5 +59,9 @@ interface HeroDetail : GraphqlFragment {
         HeroDetailsImpl_ResponseAdapter.fromResponse(reader)
       }
     }
+
+    fun HeroDetail.characterDetails(): CharacterDetail? = this as? CharacterDetail
+
+    fun HeroDetail.asCharacter(): Character? = this as? Character
   }
 }

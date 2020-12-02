@@ -16,14 +16,6 @@ import kotlin.String
 internal interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
   override val __typename: String
 
-  fun asHuman(): Human? = this as? Human
-
-  fun asHeroDetail(): HeroDetail? = this as? HeroDetail
-
-  fun asHumanDetail(): HumanDetail? = this as? HumanDetail
-
-  fun asHeroDetailsImpl(): HeroDetailsImpl? = this as? HeroDetailsImpl
-
   override fun marshaller(): ResponseFieldMarshaller
 
   /**
@@ -68,14 +60,5 @@ internal interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
         HeroDetailsImpl_ResponseAdapter.OtherHeroDetailsImpl.toResponse(writer, this)
       }
     }
-  }
-
-  companion object {
-    val FRAGMENT_DEFINITION: String = """
-        |fragment HeroDetails on Character {
-        |  __typename
-        |  ...HumanDetails
-        |}
-        """.trimMargin()
   }
 }

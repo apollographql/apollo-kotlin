@@ -22,14 +22,6 @@ interface HumanDetailsImpl : HumanDetail, GraphqlFragment {
    */
   override val name: String
 
-  fun asCharacter(): Character? = this as? Character
-
-  fun asHumanDetail(): HumanDetail? = this as? HumanDetail
-
-  fun asCharacterDetail(): CharacterDetail? = this as? CharacterDetail
-
-  fun asHumanDetailsImpl(): HumanDetailsImpl? = this as? HumanDetailsImpl
-
   override fun marshaller(): ResponseFieldMarshaller
 
   interface Character : HumanDetail, HumanDetail.Character, CharacterDetail, HumanDetailsImpl {
@@ -81,15 +73,5 @@ interface HumanDetailsImpl : HumanDetail, GraphqlFragment {
         HumanDetailsImpl_ResponseAdapter.OtherHumanDetailsImpl.toResponse(writer, this)
       }
     }
-  }
-
-  companion object {
-    val FRAGMENT_DEFINITION: String = """
-        |fragment HumanDetails on Human {
-        |  __typename
-        |  name
-        |  ...CharacterDetails
-        |}
-        """.trimMargin()
   }
 }

@@ -43,6 +43,12 @@ interface QueryFragment : GraphqlFragment {
 
       override fun marshaller(): ResponseFieldMarshaller
     }
+
+    companion object {
+      fun Hero.heroFragment(): HeroFragment? = this as? HeroFragment
+
+      fun Hero.asCharacter(): Character? = this as? Character
+    }
   }
 
   /**
@@ -67,6 +73,12 @@ interface QueryFragment : GraphqlFragment {
       override val primaryFunction: String?
 
       override fun marshaller(): ResponseFieldMarshaller
+    }
+
+    companion object {
+      fun QueryFragment.Droid.droidFragment(): DroidFragment? = this as? DroidFragment
+
+      fun QueryFragment.Droid.asDroid(): Droid? = this as? Droid
     }
   }
 
@@ -95,6 +107,10 @@ interface QueryFragment : GraphqlFragment {
       val homePlanet: String?
 
       override fun marshaller(): ResponseFieldMarshaller
+    }
+
+    companion object {
+      fun QueryFragment.Human.asHuman(): Human? = this as? Human
     }
   }
 
