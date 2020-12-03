@@ -7,6 +7,7 @@ package com.example.union_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.example.union_fragment.fragment.adapter.StarshipImpl_ResponseAdapter
 import kotlin.String
 
 data class StarshipImpl(

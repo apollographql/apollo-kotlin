@@ -7,6 +7,7 @@ package com.example.simple_fragment_with_inline_fragments.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.example.simple_fragment_with_inline_fragments.fragment.adapter.HeroDetailsImpl_ResponseAdapter
 import kotlin.Double
 import kotlin.String
 import kotlin.collections.List

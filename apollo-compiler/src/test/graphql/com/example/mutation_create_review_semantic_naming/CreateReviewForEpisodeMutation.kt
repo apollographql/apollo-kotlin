@@ -18,6 +18,7 @@ import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.api.internal.Throws
+import com.example.mutation_create_review_semantic_naming.adapter.CreateReviewForEpisodeMutation_ResponseAdapter
 import com.example.mutation_create_review_semantic_naming.type.Episode
 import com.example.mutation_create_review_semantic_naming.type.ReviewInput
 import kotlin.Any

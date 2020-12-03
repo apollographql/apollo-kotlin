@@ -7,6 +7,7 @@ package com.example.named_fragment_delegate.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.example.named_fragment_delegate.fragment.adapter.HumanDetailsImpl_ResponseAdapter
 import kotlin.Any
 import kotlin.String
 import kotlin.collections.List

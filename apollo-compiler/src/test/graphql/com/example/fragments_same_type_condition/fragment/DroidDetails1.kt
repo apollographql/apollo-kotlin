@@ -8,6 +8,7 @@ package com.example.fragments_same_type_condition.fragment
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.example.fragments_same_type_condition.fragment.adapter.DroidDetails1Impl_ResponseAdapter
 import kotlin.String
 import kotlin.Suppress
 

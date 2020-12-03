@@ -17,6 +17,7 @@ import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.api.internal.Throws
+import com.example.simple_fragment_with_inline_fragments.adapter.TestQuery_ResponseAdapter
 import com.example.simple_fragment_with_inline_fragments.fragment.HeroDetail
 import kotlin.Boolean
 import kotlin.Double

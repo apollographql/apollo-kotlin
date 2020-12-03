@@ -17,6 +17,7 @@ import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.api.internal.Throws
+import com.example.root_query_fragment_with_nested_fragments.adapter.TestQuery_ResponseAdapter
 import com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragment
 import com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragment
 import com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment

@@ -17,6 +17,7 @@ import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.api.internal.Throws
+import com.example.fragments_same_type_condition.adapter.TestQuery_ResponseAdapter
 import com.example.fragments_same_type_condition.fragment.DroidDetails1
 import com.example.fragments_same_type_condition.fragment.DroidDetails2
 import kotlin.Boolean

@@ -9,6 +9,7 @@ import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.example.fragment_friends_connection.fragment.adapter.HeroDetailsImpl_ResponseAdapter
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress

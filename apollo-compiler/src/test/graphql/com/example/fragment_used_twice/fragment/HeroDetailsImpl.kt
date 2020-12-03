@@ -7,6 +7,7 @@ package com.example.fragment_used_twice.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.example.fragment_used_twice.fragment.adapter.HeroDetailsImpl_ResponseAdapter
 import kotlin.Any
 import kotlin.String
 
