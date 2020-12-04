@@ -30,6 +30,7 @@ import com.apollographql.apollo.compiler.frontend.gql.toKotlinValue
 import com.apollographql.apollo.compiler.frontend.gql.toSchemaType
 import com.apollographql.apollo.compiler.frontend.gql.toUtf8WithIndents
 import com.apollographql.apollo.compiler.frontend.gql.usedFragmentNames
+import com.apollographql.apollo.compiler.frontend.gql.validateAndCoerce
 import com.apollographql.apollo.compiler.frontend.ir.Condition
 import com.apollographql.apollo.compiler.frontend.ir.Field
 import com.apollographql.apollo.compiler.frontend.ir.Fragment
@@ -217,10 +218,13 @@ internal class BackendIrBuilder private constructor(
     )
 
     val arguments = this.arguments?.arguments?.map { argument ->
+      val argumentType = fieldDefinition.arguments.first { it.name == argument.name }.type
       BackendIr.Argument(
           name = argument.name,
-          value = argument.value.toKotlinValue(false),
-          type = fieldDefinition.arguments.first { it.name == argument.name }.type.toSchemaType(schema)
+          value = argument.value.validateAndCoerce(argumentType, schema, null)
+              .orThrow()
+              .toKotlinValue(false),
+          type = argumentType.toSchemaType(schema)
       )
     } ?: emptyList()
 

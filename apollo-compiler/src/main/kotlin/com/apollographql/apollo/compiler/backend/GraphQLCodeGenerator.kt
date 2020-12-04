@@ -7,6 +7,7 @@ import com.apollographql.apollo.compiler.backend.codegen.interfaceTypeSpec
 import com.apollographql.apollo.compiler.backend.codegen.patchKotlinNativeOptionalArrayProperties
 import com.apollographql.apollo.compiler.backend.codegen.responseAdapterTypeSpec
 import com.apollographql.apollo.compiler.backend.codegen.typeSpec
+import com.apollographql.apollo.compiler.backend.ir.BackendIr
 import com.apollographql.apollo.compiler.backend.ir.BackendIrBuilder
 import com.apollographql.apollo.compiler.backend.ir.BackendIrBuilder.Companion.buildBackendIr
 import com.apollographql.apollo.compiler.frontend.gql.Schema
@@ -19,18 +20,15 @@ import java.io.File
 
 internal class GraphQLCodeGenerator(
     private val input: BackendIrBuilder.BackendIrBuilderInput,
+    private val backendIr: BackendIr,
     private val schema: Schema,
-    private val packageNameProvider: PackageNameProvider,
     private val customTypeMap: Map<String, String>,
-    private val useSemanticNaming: Boolean,
     private val generateAsInternal: Boolean = false,
     private val operationOutput: OperationOutput,
     private val generateFilterNotNull: Boolean,
     private val enumAsSealedClassPatternFilters: List<Regex>
 ) {
   fun write(outputDir: File) {
-    val backendIr = input
-        .buildBackendIr(schema, useSemanticNaming, packageNameProvider)
 
     val introspectionSchema = schema.toIntrospectionSchema()
     val ast = backendIr.buildAst(

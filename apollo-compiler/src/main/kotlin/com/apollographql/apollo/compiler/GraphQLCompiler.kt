@@ -3,6 +3,7 @@ package com.apollographql.apollo.compiler
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.compiler.ApolloMetadata.Companion.merge
 import com.apollographql.apollo.compiler.backend.GraphQLCodeGenerator
+import com.apollographql.apollo.compiler.backend.ir.BackendIrBuilder.Companion.buildBackendIr
 import com.apollographql.apollo.compiler.frontend.ir.IRBuilder
 import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.operationoutput.toJson
@@ -71,7 +72,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
       }
     }
 
-    val ir = IRBuilder(
+    val input = IRBuilder(
         schema = schema,
         schemaPackageName = schemaPackageName,
         incomingMetadata = metadata,
@@ -79,23 +80,22 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
         packageNameProvider = packageNameProvider
     ).build(documents)
 
-    if (args.dumpIR) {
-      ir.toJson(File(args.outputDir, "ir.json"))
-    }
 
-    val operationOutput = ir.operations.map {
+    val backendIr = input.buildBackendIr(schema, args.useSemanticNaming, packageNameProvider)
+
+    val operationOutput = backendIr.operations.map {
       OperationDescriptor(
           name = it.name!!,
-          packageName = packageNameProvider.operationPackageName(it.sourceLocation.filePath!!),
-          filePath = it.sourceLocation.filePath!!,
-          source = QueryDocumentMinifier.minify(it.toUtf8()) // FIXME
+          packageName = it.targetPackageName,
+          filePath = "",
+          source = QueryDocumentMinifier.minify(it.definition)
       )
     }.let {
       args.operationOutputGenerator.generate(it)
     }
 
-    check(operationOutput.size == ir.operations.size) {
-      """The number of operation IDs (${operationOutput.size}) should match the number of operations (${ir.operations.size}).
+    check(operationOutput.size == input.operations.size) {
+      """The number of operation IDs (${operationOutput.size}) should match the number of operations (${input.operations.size}).
         |Check that all your IDs are unique.
       """.trimMargin()
     }
@@ -112,13 +112,13 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
         .map { type -> type.name }
         .supportedTypeMap(userCustomTypesMap, generateKotlinModels)
 
+
     GraphQLCodeGenerator(
-        input = ir,
+        input = input,
+        backendIr = backendIr,
         schema = schema,
-        packageNameProvider = packageNameProvider,
         customTypeMap = customTypeMap,
         operationOutput = operationOutput,
-        useSemanticNaming = args.useSemanticNaming,
         generateAsInternal = args.generateAsInternal,
         generateFilterNotNull = args.generateFilterNotNull,
         enumAsSealedClassPatternFilters = args.enumAsSealedClassPatternFilters.map { it.toRegex() }
@@ -129,7 +129,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
         schema = if (metadata == null) schema else null,
         schemaPackageName = schemaPackageName,
         moduleName = args.moduleName,
-        types = ir.enumsToGenerate + ir.inputObjectsToGenerate,
+        types = input.enumsToGenerate + input.inputObjectsToGenerate,
         fragments = documents.flatMap { it.definitions.filterIsInstance<GQLFragmentDefinition>() },
         generateKotlinModels = generateKotlinModels,
         customTypesMap = args.customTypeMap,
