@@ -143,15 +143,7 @@ data class HeroDetailsImpl(
     }
 
     companion object {
-      fun Friend.heroDetailsFriends(): HeroDetail.Friend? = this as? HeroDetail.Friend
-
-      fun Friend.heroDetailsFriendsHuman(): HeroDetail.Friend.Human? = this as?
-          HeroDetail.Friend.Human
-
       fun Friend.asHuman(): Human? = this as? Human
-
-      fun Friend.heroDetailsFriendsDroid(): HeroDetail.Friend.Droid? = this as?
-          HeroDetail.Friend.Droid
 
       fun Friend.asDroid(): Droid? = this as? Droid
     }

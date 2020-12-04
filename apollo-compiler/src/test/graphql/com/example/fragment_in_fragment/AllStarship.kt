@@ -234,15 +234,6 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
                       companion object {
                         fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
 
-                        fun Homeworld.pilotFragmentHomeworldPlanet():
-                            PilotFragment.Homeworld.Planet? = this as?
-                            PilotFragment.Homeworld.Planet
-
-                        fun Homeworld.starshipFragmentPilotConnectionEdgesNodePersonHomeworldPlanet():
-                            StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet? =
-                            this as?
-                            StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet
-
                         fun Homeworld.asPlanet(): Planet? = this as? Planet
                       }
                     }
@@ -250,10 +241,6 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
 
                   companion object {
                     fun Node.pilotFragment(): PilotFragment? = this as? PilotFragment
-
-                    fun Node.starshipFragmentPilotConnectionEdgesNodePerson():
-                        StarshipFragment.PilotConnection.Edge.Node.Person? = this as?
-                        StarshipFragment.PilotConnection.Edge.Node.Person
 
                     fun Node.asPerson(): Person? = this as? Person
                   }
@@ -365,15 +352,6 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
                       companion object {
                         fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
 
-                        fun Homeworld.pilotFragmentHomeworldPlanet():
-                            PilotFragment.Homeworld.Planet? = this as?
-                            PilotFragment.Homeworld.Planet
-
-                        fun Homeworld.starshipFragmentPilotConnectionEdgesNodePersonHomeworldPlanet():
-                            StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet? =
-                            this as?
-                            StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet
-
                         fun Homeworld.asPlanet(): Planet? = this as? Planet
                       }
                     }
@@ -454,10 +432,6 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
                       companion object {
                         fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
 
-                        fun Homeworld.pilotFragmentHomeworldPlanet():
-                            PilotFragment.Homeworld.Planet? = this as?
-                            PilotFragment.Homeworld.Planet
-
                         fun Homeworld.asPlanet(): Planet? = this as? Planet
                       }
                     }
@@ -479,10 +453,6 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
 
                   companion object {
                     fun Node.pilotFragment(): PilotFragment? = this as? PilotFragment
-
-                    fun Node.starshipFragmentPilotConnectionEdgesNodePerson():
-                        StarshipFragment.PilotConnection.Edge.Node.Person? = this as?
-                        StarshipFragment.PilotConnection.Edge.Node.Person
 
                     fun Node.asPerson(): Person? = this as? Person
                   }

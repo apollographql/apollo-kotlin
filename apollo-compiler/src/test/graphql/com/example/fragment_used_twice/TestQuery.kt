@@ -199,11 +199,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       companion object {
         fun Hero.heroDetails(): HeroDetail? = this as? HeroDetail
 
-        fun Hero.heroDetailsCharacter(): HeroDetail.Character? = this as? HeroDetail.Character
-
         fun Hero.characterDetails(): CharacterDetail? = this as? CharacterDetail
-
-        fun Hero.humanDetailsCharacter(): HumanDetail.Character? = this as? HumanDetail.Character
 
         fun Hero.asCharacter(): Character? = this as? Character
 

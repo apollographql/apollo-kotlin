@@ -80,12 +80,6 @@ data class PilotFragmentImpl(
     }
 
     companion object {
-      fun Homeworld.pilotFragmentHomeworld(): PilotFragment.Homeworld? = this as?
-          PilotFragment.Homeworld
-
-      fun Homeworld.pilotFragmentHomeworldPlanet(): PilotFragment.Homeworld.Planet? = this as?
-          PilotFragment.Homeworld.Planet
-
       fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
 
       fun Homeworld.asPlanet(): Planet? = this as? Planet

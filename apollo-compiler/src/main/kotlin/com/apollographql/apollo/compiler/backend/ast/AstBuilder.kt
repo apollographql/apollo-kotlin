@@ -501,18 +501,24 @@ internal class AstBuilder private constructor(
         .filterIsInstance<BackendIr.Fragment.Interface>()
         .flatMap { fragment ->
           fragment.selectionKeys
-              .filter { fragmentSelectionKey ->
-                // filter out keys that either shares the same named fragment root with current object type select key
-                fragmentSelectionKey.type == SelectionKey.Type.Fragment &&
-                    (selectionKey.type != SelectionKey.Type.Fragment || fragmentSelectionKey.root != selectionKey.root)
+              .asSequence()
+              .mapNotNull { fragmentSelectionKey ->
+                // take only named fragment roots
+                fragmentSelectionKey.root.takeIf {
+                  fragmentSelectionKey.type == SelectionKey.Type.Fragment && fragmentSelectionKey.keys.size == 1
+                }
               }
-              .map { fragmentSelectionKey ->
-                val name = fragmentSelectionKey.keys
-                    .joinToString(separator = "") { key -> key.capitalize() }
-                    .decapitalize()
+              .filter { namedFragmentRootKey ->
+                // filter out keys that share the same root with current object type select key
+                selectionKey.type != SelectionKey.Type.Fragment || namedFragmentRootKey != selectionKey.root
+              }
+              .map { namedFragmentRootKey ->
                 CodeGenerationAst.ObjectType.FragmentAccessor(
-                    name = name,
-                    typeRef = fragmentSelectionKey.asTypeRef(targetPackageName),
+                    name = namedFragmentRootKey.normalizeFieldName(),
+                    typeRef = CodeGenerationAst.TypeRef(
+                        name = namedFragmentRootKey.normalizeTypeName(),
+                        packageName = fragmentsPackage,
+                    ),
                 )
               }
               .plus(
@@ -525,6 +531,7 @@ internal class AstBuilder private constructor(
                       )
                   )
               )
+              .toList()
         }
         .distinct()
 

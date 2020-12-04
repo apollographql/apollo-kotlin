@@ -72,11 +72,6 @@ data class QueryFragmentImpl(
     }
 
     companion object {
-      fun Hero.queryFragmentHero(): QueryFragment.Hero? = this as? QueryFragment.Hero
-
-      fun Hero.queryFragmentHeroCharacter(): QueryFragment.Hero.Character? = this as?
-          QueryFragment.Hero.Character
-
       fun Hero.heroFragment(): HeroFragment? = this as? HeroFragment
 
       fun Hero.asCharacter(): Character? = this as? Character
@@ -141,12 +136,6 @@ data class QueryFragmentImpl(
     }
 
     companion object {
-      fun QueryFragmentImpl.Droid.queryFragmentDroid(): QueryFragment.Droid? = this as?
-          QueryFragment.Droid
-
-      fun QueryFragmentImpl.Droid.queryFragmentDroidDroid(): QueryFragment.Droid.Droid? = this as?
-          QueryFragment.Droid.Droid
-
       fun QueryFragmentImpl.Droid.droidFragment(): DroidFragment? = this as? DroidFragment
 
       fun QueryFragmentImpl.Droid.asDroid(): Droid? = this as? Droid
@@ -215,12 +204,6 @@ data class QueryFragmentImpl(
     }
 
     companion object {
-      fun QueryFragmentImpl.Human.queryFragmentHuman(): QueryFragment.Human? = this as?
-          QueryFragment.Human
-
-      fun QueryFragmentImpl.Human.queryFragmentHumanHuman(): QueryFragment.Human.Human? = this as?
-          QueryFragment.Human.Human
-
       fun QueryFragmentImpl.Human.asHuman(): Human? = this as? Human
     }
   }

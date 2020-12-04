@@ -110,18 +110,7 @@ data class StarshipFragmentImpl(
             }
 
             companion object {
-              fun Homeworld.starshipFragmentPilotConnectionEdgesNodePersonHomeworld():
-                  StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld? = this as?
-                  StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld
-
-              fun Homeworld.starshipFragmentPilotConnectionEdgesNodePersonHomeworldPlanet():
-                  StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet? = this as?
-                  StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet
-
               fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
-
-              fun Homeworld.pilotFragmentHomeworldPlanet(): PilotFragment.Homeworld.Planet? = this
-                  as? PilotFragment.Homeworld.Planet
 
               fun Homeworld.asPlanet(): Planet? = this as? Planet
             }
@@ -202,18 +191,7 @@ data class StarshipFragmentImpl(
             }
 
             companion object {
-              fun Homeworld.starshipFragmentPilotConnectionEdgesNodePersonHomeworld():
-                  StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld? = this as?
-                  StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld
-
-              fun Homeworld.starshipFragmentPilotConnectionEdgesNodePersonHomeworldPlanet():
-                  StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet? = this as?
-                  StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet
-
               fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
-
-              fun Homeworld.pilotFragmentHomeworldPlanet(): PilotFragment.Homeworld.Planet? = this
-                  as? PilotFragment.Homeworld.Planet
 
               fun Homeworld.asPlanet(): Planet? = this as? Planet
             }
@@ -234,14 +212,6 @@ data class StarshipFragmentImpl(
         }
 
         companion object {
-          fun Node.starshipFragmentPilotConnectionEdgesNode():
-              StarshipFragment.PilotConnection.Edge.Node? = this as?
-              StarshipFragment.PilotConnection.Edge.Node
-
-          fun Node.starshipFragmentPilotConnectionEdgesNodePerson():
-              StarshipFragment.PilotConnection.Edge.Node.Person? = this as?
-              StarshipFragment.PilotConnection.Edge.Node.Person
-
           fun Node.pilotFragment(): PilotFragment? = this as? PilotFragment
 
           fun Node.asPerson(): Person? = this as? Person

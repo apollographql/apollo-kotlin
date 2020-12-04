@@ -137,9 +137,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         companion object {
           fun Hero.heroFragment(): HeroFragment? = this as? HeroFragment
 
-          fun Hero.queryFragmentHeroCharacter(): QueryFragment.Hero.Character? = this as?
-              QueryFragment.Hero.Character
-
           fun Hero.asCharacter(): Character? = this as? Character
         }
       }
@@ -170,9 +167,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
         companion object {
           fun Query.Droid.droidFragment(): DroidFragment? = this as? DroidFragment
-
-          fun Query.Droid.queryFragmentDroidDroid(): QueryFragment.Droid.Droid? = this as?
-              QueryFragment.Droid.Droid
 
           fun Query.Droid.asDroid(): Droid? = this as? Droid
         }
@@ -206,9 +200,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         }
 
         companion object {
-          fun Query.Human.queryFragmentHumanHuman(): QueryFragment.Human.Human? = this as?
-              QueryFragment.Human.Human
-
           fun Query.Human.asHuman(): Human? = this as? Human
         }
       }
@@ -276,9 +267,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         companion object {
           fun Hero.heroFragment(): HeroFragment? = this as? HeroFragment
 
-          fun Hero.queryFragmentHeroCharacter(): QueryFragment.Hero.Character? = this as?
-              QueryFragment.Hero.Character
-
           fun Hero.asCharacter(): Character? = this as? Character
         }
       }
@@ -341,9 +329,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
         companion object {
           fun QueryDatum.Droid.droidFragment(): DroidFragment? = this as? DroidFragment
-
-          fun QueryDatum.Droid.queryFragmentDroidDroid(): QueryFragment.Droid.Droid? = this as?
-              QueryFragment.Droid.Droid
 
           fun QueryDatum.Droid.asDroid(): Droid? = this as? Droid
         }
@@ -412,9 +397,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         }
 
         companion object {
-          fun QueryDatum.Human.queryFragmentHumanHuman(): QueryFragment.Human.Human? = this as?
-              QueryFragment.Human.Human
-
           fun QueryDatum.Human.asHuman(): Human? = this as? Human
         }
       }

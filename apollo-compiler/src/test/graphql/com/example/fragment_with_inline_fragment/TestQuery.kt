@@ -515,13 +515,9 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
         fun Hero.asCharacter(): Character? = this as? Character
 
-        fun Hero.heroDetailsDroid(): HeroDetail.Droid? = this as? HeroDetail.Droid
-
         fun Hero.droidDetails(): DroidDetail? = this as? DroidDetail
 
         fun Hero.asDroid(): Droid? = this as? Droid
-
-        fun Hero.heroDetailsHuman(): HeroDetail.Human? = this as? HeroDetail.Human
 
         fun Hero.humanDetails(): HumanDetail? = this as? HumanDetail
 

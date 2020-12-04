@@ -189,8 +189,6 @@ internal class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
         fun Hero.asCharacter(): Character? = this as? Character
 
-        fun Hero.heroDetailsHuman(): HeroDetail.Human? = this as? HeroDetail.Human
-
         fun Hero.humanDetails(): HumanDetail? = this as? HumanDetail
 
         fun Hero.asHuman(): Human? = this as? Human
