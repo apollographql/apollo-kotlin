@@ -31,11 +31,6 @@ import com.apollographql.apollo.compiler.frontend.gql.toSchemaType
 import com.apollographql.apollo.compiler.frontend.gql.toUtf8WithIndents
 import com.apollographql.apollo.compiler.frontend.gql.usedFragmentNames
 import com.apollographql.apollo.compiler.frontend.gql.validateAndCoerce
-import com.apollographql.apollo.compiler.frontend.ir.Condition
-import com.apollographql.apollo.compiler.frontend.ir.Field
-import com.apollographql.apollo.compiler.frontend.ir.Fragment
-import com.apollographql.apollo.compiler.frontend.ir.FragmentRef
-import com.apollographql.apollo.compiler.frontend.ir.InlineFragment
 import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
 
 internal class BackendIrBuilder private constructor(

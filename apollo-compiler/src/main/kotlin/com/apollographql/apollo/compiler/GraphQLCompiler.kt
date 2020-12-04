@@ -4,7 +4,7 @@ import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.compiler.ApolloMetadata.Companion.merge
 import com.apollographql.apollo.compiler.backend.GraphQLCodeGenerator
 import com.apollographql.apollo.compiler.backend.ir.BackendIrBuilder.Companion.buildBackendIr
-import com.apollographql.apollo.compiler.frontend.ir.IRBuilder
+import com.apollographql.apollo.compiler.IRBuilder
 import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.operationoutput.toJson
 import com.apollographql.apollo.compiler.frontend.gql.GQLFragmentDefinition

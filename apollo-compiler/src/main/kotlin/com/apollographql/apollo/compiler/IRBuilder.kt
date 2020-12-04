@@ -1,4 +1,4 @@
-package com.apollographql.apollo.compiler.frontend.ir
+package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.compiler.ApolloMetadata
 import com.apollographql.apollo.compiler.PackageNameProvider
@@ -10,7 +10,6 @@ import com.apollographql.apollo.compiler.frontend.gql.GQLInputObjectTypeDefiniti
 import com.apollographql.apollo.compiler.frontend.gql.GQLOperationDefinition
 import com.apollographql.apollo.compiler.frontend.gql.GQLScalarTypeDefinition
 import com.apollographql.apollo.compiler.frontend.gql.Schema
-import com.apollographql.apollo.compiler.frontend.gql.toIR
 import com.apollographql.apollo.compiler.frontend.gql.usedTypeNames
 import com.apollographql.apollo.compiler.frontend.gql.withTypenameWhenNeeded
 
