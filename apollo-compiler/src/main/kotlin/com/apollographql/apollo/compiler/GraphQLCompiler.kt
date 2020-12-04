@@ -14,6 +14,7 @@ import com.apollographql.apollo.compiler.frontend.gql.Schema
 import com.apollographql.apollo.compiler.frontend.gql.SourceAwareException
 import com.apollographql.apollo.compiler.frontend.gql.toIntrospectionSchema
 import com.apollographql.apollo.compiler.frontend.gql.toSchema
+import com.apollographql.apollo.compiler.frontend.gql.toUtf8
 import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
 import com.squareup.kotlinpoet.asClassName
 import java.io.File
@@ -84,10 +85,10 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
 
     val operationOutput = ir.operations.map {
       OperationDescriptor(
-          name = it.operationName,
-          packageName = it.packageName,
-          filePath = it.filePath,
-          source = QueryDocumentMinifier.minify(it.sourceWithFragments)
+          name = it.name!!,
+          packageName = packageNameProvider.operationPackageName(it.sourceLocation.filePath!!),
+          filePath = it.sourceLocation.filePath!!,
+          source = QueryDocumentMinifier.minify(it.toUtf8()) // FIXME
       )
     }.let {
       args.operationOutputGenerator.generate(it)
@@ -112,8 +113,9 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
         .supportedTypeMap(userCustomTypesMap, generateKotlinModels)
 
     GraphQLCodeGenerator(
-        frontendIr = ir,
-        schema = introspectionSchema,
+        input = ir,
+        schema = schema,
+        packageNameProvider = packageNameProvider,
         customTypeMap = customTypeMap,
         operationOutput = operationOutput,
         useSemanticNaming = args.useSemanticNaming,

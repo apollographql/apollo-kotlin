@@ -1,11 +1,17 @@
 package com.apollographql.apollo.compiler.backend.ir
 
+import com.apollographql.apollo.compiler.frontend.gql.GQLField
+import com.apollographql.apollo.compiler.frontend.gql.GQLFragmentSpread
+import com.apollographql.apollo.compiler.frontend.gql.GQLInlineFragment
+import com.apollographql.apollo.compiler.frontend.gql.GQLSelection
+import com.apollographql.apollo.compiler.frontend.gql.GQLSelectionSet
+import com.apollographql.apollo.compiler.frontend.gql.responseName
 import com.apollographql.apollo.compiler.frontend.ir.Field
 import com.apollographql.apollo.compiler.frontend.ir.InlineFragment
 
 internal object FrontendIrMergeUtils {
   /**
-   * Squashes fragments that defined on the same type condition into one:
+   * Merges fragments that defined on the same type condition into one:
    *
    * ```
    * query TestOperation {
@@ -33,9 +39,9 @@ internal object FrontendIrMergeUtils {
    *
    * fragments defined on `Being` are going to be squashed into 1 while fragment `on Wookie` remains intact
    */
-  fun List<InlineFragment>.squashFragmentsWithSameTypeConditions(): List<InlineFragment> {
+  fun List<GQLInlineFragment>.mergeInlineFragmentsWithSameTypeConditions(): List<GQLInlineFragment> {
     return this
-        .groupBy { fragment -> fragment.typeCondition }
+        .groupBy { fragment -> fragment.typeCondition.name }
         .map { (_, groupedFragments) ->
           groupedFragments.drop(1).fold(groupedFragments.first()) { result, fragment ->
             result.merge(fragment)
@@ -43,45 +49,51 @@ internal object FrontendIrMergeUtils {
         }
   }
 
-  private fun List<InlineFragment>.mergeFragments(others: List<InlineFragment>): List<InlineFragment> {
-    return this.plus(others)
-        .groupBy { fragment -> fragment.typeCondition }
-        .map { (_, groupedFragments) ->
-          groupedFragments.drop(1).fold(groupedFragments.first()) { result, fragment ->
-            result.merge(fragment)
-          }
-        }
-  }
-
-  private fun InlineFragment.merge(other: InlineFragment): InlineFragment {
+  private fun GQLInlineFragment.merge(other: GQLInlineFragment): GQLInlineFragment {
     return this.copy(
-        fields = this.fields.mergeFields(other.fields),
-        inlineFragments = this.inlineFragments.mergeFragments(other.inlineFragments),
-        fragments = this.fragments.plus(other.fragments).distinctBy { fragmentRef -> fragmentRef.name },
+        selectionSet = selectionSet.merge(other.selectionSet)
     )
   }
 
-  private fun List<Field>.mergeFields(others: List<Field>): List<Field> {
-    val fieldsToAdd = others.toMutableList()
-    return this.map { field ->
-      val fieldToMergeIndex = fieldsToAdd.indexOfFirst { otherField -> otherField.responseName == field.responseName }
-      val fieldToMerge = if (fieldToMergeIndex >= 0) fieldsToAdd.removeAt(fieldToMergeIndex) else null
-      if (fieldToMerge == null) {
-        field
-      } else {
-        field.merge(fieldToMerge)
+  private fun GQLSelectionSet.merge(other: GQLSelectionSet): GQLSelectionSet {
+    val selectionsToAdd = other.selections.toMutableList()
+    return copy(selections = selections.map { selection->
+      when (selection) {
+        is GQLFragmentSpread -> {
+          val index = selectionsToAdd.indexOfFirst { (it as? GQLFragmentSpread)?.name == selection.name }
+          if (index >= 0) {
+            selectionsToAdd.removeAt(index)
+            // named fragments are easy to merge
+            selection
+          } else {
+            selection
+          }
+        }
+        is GQLInlineFragment -> {
+          val index = selectionsToAdd.indexOfFirst { (it as? GQLInlineFragment)?.typeCondition?.name == selection.typeCondition.name }
+          if (index >= 0) {
+            selection.merge(selectionsToAdd.removeAt(index) as GQLInlineFragment)
+
+          } else {
+            selection
+          }
+        }
+        is GQLField -> {
+          val index = selectionsToAdd.indexOfFirst { (it as? GQLField)?.responseName() == selection.responseName() }
+          if (index >= 0) {
+            selection.merge(selectionsToAdd.removeAt(index) as GQLField)
+
+          } else {
+            selection
+          }
+        }
       }
-    } + fieldsToAdd
+    } + selectionsToAdd)
   }
 
-  private fun Field.merge(other: Field): Field {
-    val mergedFields = this.fields.mergeFields(other.fields)
-    val mergedInlineFragments = this.inlineFragments.mergeFragments(other.inlineFragments)
-    val mergedFragments = this.fragmentRefs.plus(other.fragmentRefs).distinctBy { fragmentRef -> fragmentRef.name }
+  private fun GQLField.merge(other: GQLField): GQLField {
     return this.copy(
-        fields = mergedFields,
-        inlineFragments = mergedInlineFragments,
-        fragmentRefs = mergedFragments,
+        selectionSet = selectionSet?.merge(other.selectionSet!!)
     )
   }
 }

@@ -18,6 +18,8 @@ internal fun GQLTypeDefinition.possibleTypes(typeDefinitions: Map<String, GQLTyp
       it.possibleTypes(typeDefinitions).toList()
     }.toSet()
     is GQLObjectTypeDefinition -> setOf(name)
-    else -> throw SchemaValidationException("Cannot determine possibleTypes of $name")
+    else -> {
+      throw SchemaValidationException("Cannot determine possibleTypes of $name")
+    }
   }
 }

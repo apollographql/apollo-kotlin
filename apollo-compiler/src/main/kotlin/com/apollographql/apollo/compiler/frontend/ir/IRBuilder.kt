@@ -2,6 +2,7 @@ package com.apollographql.apollo.compiler.frontend.ir
 
 import com.apollographql.apollo.compiler.ApolloMetadata
 import com.apollographql.apollo.compiler.PackageNameProvider
+import com.apollographql.apollo.compiler.backend.ir.BackendIrBuilder
 import com.apollographql.apollo.compiler.frontend.gql.GQLDocument
 import com.apollographql.apollo.compiler.frontend.gql.GQLEnumTypeDefinition
 import com.apollographql.apollo.compiler.frontend.gql.GQLFragmentDefinition
@@ -13,7 +14,7 @@ import com.apollographql.apollo.compiler.frontend.gql.toIR
 import com.apollographql.apollo.compiler.frontend.gql.usedTypeNames
 import com.apollographql.apollo.compiler.frontend.gql.withTypenameWhenNeeded
 
-class IRBuilder(private val schema: Schema,
+internal class IRBuilder(private val schema: Schema,
                 private val schemaPackageName: String,
                 private val incomingMetadata: ApolloMetadata?,
                 private val alwaysGenerateTypesMatching: Set<String>,
@@ -29,7 +30,7 @@ class IRBuilder(private val schema: Schema,
         .toSet()
   }
 
-  fun build(documents: List<GQLDocument>): CodeGenerationIR {
+  internal fun build(documents: List<GQLDocument>): BackendIrBuilder.BackendIrBuilderInput {
     val documentFragmentTypeDefinitions = documents.flatMap { it.definitions.filterIsInstance<GQLFragmentDefinition>() }
     val allFragments = ((incomingMetadata?.fragments ?: emptyList()) + documentFragmentTypeDefinitions).map { it.withTypenameWhenNeeded(schema) }
 
@@ -68,12 +69,12 @@ class IRBuilder(private val schema: Schema,
           .map { it.name } + "ID" // not sure why we need to add ID there
     }
 
-    return CodeGenerationIR(
+    return BackendIrBuilder.BackendIrBuilderInput(
         operations = documents.flatMap { it.definitions.filterIsInstance<GQLOperationDefinition>() }.map {
-          it.withTypenameWhenNeeded(schema).toIR(schema, allFragments.associateBy { it.name }, packageNameProvider)
+          it.withTypenameWhenNeeded(schema)
         },
-        fragments = allFragments.map { it.toIR(schema, allFragments.associateBy { it.name }) },
-        typeDeclarations = typeDeclarations.map { it.toIR(schema) },
+        fragments = allFragments,
+        typeDeclarations = typeDeclarations,
         fragmentsToGenerate = fragmentsToGenerate.toSet(),
         enumsToGenerate = enumsToGenerate.toSet(),
         inputObjectsToGenerate = inputObjectsToGenerate.toSet(),
