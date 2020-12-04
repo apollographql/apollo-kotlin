@@ -117,8 +117,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
        */
       val name: String
 
-      fun asHuman(): Human? = this as? Human
-
       fun marshaller(): ResponseFieldMarshaller
 
       /**
@@ -176,6 +174,10 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
             TestQuery_ResponseAdapter.Data.NonOptionalHero.OtherNonOptionalHero.toResponse(writer, this)
           }
         }
+      }
+
+      companion object {
+        fun NonOptionalHero.asHuman(): Human? = this as? Human
       }
     }
   }

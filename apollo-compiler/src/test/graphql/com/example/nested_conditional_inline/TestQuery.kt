@@ -143,10 +143,6 @@ data class TestQuery(
        */
       val name: String
 
-      fun asHuman(): Human? = this as? Human
-
-      fun asDroid(): Droid? = this as? Droid
-
       fun marshaller(): ResponseFieldMarshaller
 
       /**
@@ -197,6 +193,10 @@ data class TestQuery(
             val height: Double?
 
             override fun marshaller(): ResponseFieldMarshaller
+          }
+
+          companion object {
+            fun Friend.asHuman(): Human? = this as? Human
           }
         }
       }
@@ -250,6 +250,10 @@ data class TestQuery(
 
             override fun marshaller(): ResponseFieldMarshaller
           }
+
+          companion object {
+            fun Friend.asHuman(): Human? = this as? Human
+          }
         }
       }
 
@@ -283,8 +287,6 @@ data class TestQuery(
            * The name of the character
            */
           override val name: String
-
-          fun asHuman(): Human? = this as? Human
 
           override fun marshaller(): ResponseFieldMarshaller
 
@@ -344,6 +346,10 @@ data class TestQuery(
               }
             }
           }
+
+          companion object {
+            fun Friend.asHuman(): Human? = this as? Human
+          }
         }
       }
 
@@ -377,8 +383,6 @@ data class TestQuery(
            * The name of the character
            */
           override val name: String
-
-          fun asHuman(): Human? = this as? Human
 
           override fun marshaller(): ResponseFieldMarshaller
 
@@ -438,6 +442,10 @@ data class TestQuery(
               }
             }
           }
+
+          companion object {
+            fun Friend.asHuman(): Human? = this as? Human
+          }
         }
       }
 
@@ -456,6 +464,12 @@ data class TestQuery(
             TestQuery_ResponseAdapter.Data.Hero.OtherHero.toResponse(writer, this)
           }
         }
+      }
+
+      companion object {
+        fun Hero.asHuman(): Human? = this as? Human
+
+        fun Hero.asDroid(): Droid? = this as? Droid
       }
     }
   }

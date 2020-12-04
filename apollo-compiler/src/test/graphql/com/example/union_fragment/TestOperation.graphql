@@ -1,13 +1,10 @@
 query TestQuery {
   search(text: "test") {
-    ...Character
+    ... on Starship {
+      id
+    }
     ...Starship
   }
-}
-
-fragment Character on Character {
-  id
-  name
 }
 
 fragment Starship on Starship {

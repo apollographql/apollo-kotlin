@@ -123,8 +123,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
        */
       val friendsConnection: FriendsConnection
 
-      fun asCharacter(): Character? = this as? Character
-
       fun marshaller(): ResponseFieldMarshaller
 
       /**
@@ -363,6 +361,10 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
             }
           }
         }
+      }
+
+      companion object {
+        fun Hero.asCharacter(): Character? = this as? Character
       }
     }
   }

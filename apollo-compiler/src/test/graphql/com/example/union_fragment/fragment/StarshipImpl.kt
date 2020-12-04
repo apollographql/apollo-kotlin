@@ -22,13 +22,4 @@ data class StarshipImpl(
       StarshipImpl_ResponseAdapter.toResponse(writer, this)
     }
   }
-
-  companion object {
-    val FRAGMENT_DEFINITION: String = """
-        |fragment Starship on Starship {
-        |  __typename
-        |  name
-        |}
-        """.trimMargin()
-  }
 }

@@ -48,7 +48,8 @@ internal data class CodeGenerationAst(
       val description: String,
       val interfaceType: ObjectType,
       val defaultImplementationType: ObjectType,
-      val fragmentDefinition: String
+      val fragmentDefinition: String,
+      val typeRef: TypeRef,
   )
 
   data class ObjectType(
@@ -61,8 +62,11 @@ internal data class CodeGenerationAst(
       val kind: Kind,
       val typeRef: TypeRef,
       val schemaTypename: String?,
+      val fragmentAccessors: List<FragmentAccessor>,
   ) {
     val abstract: Boolean = kind == Kind.Interface || kind is Kind.Fragment
+
+    data class FragmentAccessor(val name: String, val typeRef: TypeRef)
 
     sealed class Kind {
       object Interface : Kind()
@@ -72,7 +76,6 @@ internal data class CodeGenerationAst(
       data class Fragment(
           val defaultImplementation: TypeRef,
           val possibleImplementations: Map<String, TypeRef>,
-          val fragmentAccessors: Map<String, TypeRef>,
       ) : Kind()
 
       data class FragmentDelegate(val fragmentTypeRef: TypeRef) : Kind()

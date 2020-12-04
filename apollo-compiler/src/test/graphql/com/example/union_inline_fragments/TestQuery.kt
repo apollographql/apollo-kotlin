@@ -112,10 +112,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     interface Search {
       val __typename: String
 
-      fun asCharacter(): Character? = this as? Character
-
-      fun asStarship(): Starship? = this as? Starship
-
       fun marshaller(): ResponseFieldMarshaller
 
       /**
@@ -202,6 +198,10 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
                 override fun marshaller(): ResponseFieldMarshaller
               }
+
+              companion object {
+                fun Friend.asCharacter(): Character? = this as? Character
+              }
             }
           }
 
@@ -234,6 +234,14 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
               fun marshaller(): ResponseFieldMarshaller
             }
+          }
+
+          companion object {
+            fun Friend.asCharacter(): Character? = this as? Character
+
+            fun Friend.asHuman(): Human? = this as? Human
+
+            fun Friend.asDroid(): Droid? = this as? Droid
           }
         }
       }
@@ -278,12 +286,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          */
         interface Friend : Character.Friend {
           override val __typename: String
-
-          fun asCharacter(): Character? = this as? Character
-
-          fun asHuman(): Human? = this as? Human
-
-          fun asDroid(): Droid? = this as? Droid
 
           override fun marshaller(): ResponseFieldMarshaller
 
@@ -340,6 +342,10 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
                 override val firstAppearsIn: Episode
 
                 override fun marshaller(): ResponseFieldMarshaller
+              }
+
+              companion object {
+                fun Friend.asCharacter(): Character? = this as? Character
               }
             }
           }
@@ -442,8 +448,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
             interface Friend : Search.Character.Friend.Human.Friend {
               override val __typename: String
 
-              fun asCharacter(): Character? = this as? Character
-
               override fun marshaller(): ResponseFieldMarshaller
 
               /**
@@ -491,6 +495,10 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
                   }
                 }
               }
+
+              companion object {
+                fun Friend.asCharacter(): Character? = this as? Character
+              }
             }
           }
 
@@ -505,6 +513,14 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
                 TestQuery_ResponseAdapter.Data.Search.CharacterSearch.Friend.OtherFriend.toResponse(writer, this)
               }
             }
+          }
+
+          companion object {
+            fun Friend.asCharacter(): Character? = this as? Character
+
+            fun Friend.asHuman(): Human? = this as? Human
+
+            fun Friend.asDroid(): Droid? = this as? Droid
           }
         }
       }
@@ -531,6 +547,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
             TestQuery_ResponseAdapter.Data.Search.OtherSearch.toResponse(writer, this)
           }
         }
+      }
+
+      companion object {
+        fun Search.asCharacter(): Character? = this as? Character
+
+        fun Search.asStarship(): Starship? = this as? Starship
       }
     }
   }

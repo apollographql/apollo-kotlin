@@ -102,10 +102,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   interface Data : Operation.Data {
     val __typename: String
 
-    fun asQuery(): Query? = this as? Query
-
-    fun asQueryFragment(): QueryFragment? = this as? QueryFragment
-
     override fun marshaller(): ResponseFieldMarshaller
 
     interface Query : Data, QueryFragment {
@@ -137,6 +133,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
           override fun marshaller(): ResponseFieldMarshaller
         }
+
+        companion object {
+          fun Hero.heroFragment(): HeroFragment? = this as? HeroFragment
+
+          fun Hero.asCharacter(): Character? = this as? Character
+        }
       }
 
       /**
@@ -161,6 +163,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           override val primaryFunction: String?
 
           override fun marshaller(): ResponseFieldMarshaller
+        }
+
+        companion object {
+          fun Query.Droid.droidFragment(): DroidFragment? = this as? DroidFragment
+
+          fun Query.Droid.asDroid(): Droid? = this as? Droid
         }
       }
 
@@ -190,6 +198,10 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
           override fun marshaller(): ResponseFieldMarshaller
         }
+
+        companion object {
+          fun Query.Human.asHuman(): Human? = this as? Human
+        }
       }
     }
 
@@ -210,10 +222,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
        */
       interface Hero : Query.Hero, QueryFragment.Hero {
         override val __typename: String
-
-        fun asCharacter(): Character? = this as? Character
-
-        fun asHeroFragment(): HeroFragment? = this as? HeroFragment
 
         override fun marshaller(): ResponseFieldMarshaller
 
@@ -255,6 +263,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
             }
           }
         }
+
+        companion object {
+          fun Hero.heroFragment(): HeroFragment? = this as? HeroFragment
+
+          fun Hero.asCharacter(): Character? = this as? Character
+        }
       }
 
       /**
@@ -262,10 +276,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
        */
       interface Droid : Query.Droid, QueryFragment.Droid {
         override val __typename: String
-
-        fun asDroid(): Droid? = this as? Droid
-
-        fun asDroidFragment(): DroidFragment? = this as? DroidFragment
 
         override fun marshaller(): ResponseFieldMarshaller
 
@@ -316,6 +326,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
             }
           }
         }
+
+        companion object {
+          fun QueryDatum.Droid.droidFragment(): DroidFragment? = this as? DroidFragment
+
+          fun QueryDatum.Droid.asDroid(): Droid? = this as? Droid
+        }
       }
 
       /**
@@ -323,8 +339,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
        */
       interface Human : Query.Human, QueryFragment.Human {
         override val __typename: String
-
-        fun asHuman(): Human? = this as? Human
 
         override fun marshaller(): ResponseFieldMarshaller
 
@@ -381,6 +395,10 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
             }
           }
         }
+
+        companion object {
+          fun QueryDatum.Human.asHuman(): Human? = this as? Human
+        }
       }
     }
 
@@ -395,6 +413,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           TestQuery_ResponseAdapter.Data.OtherDatum.toResponse(writer, this)
         }
       }
+    }
+
+    companion object {
+      fun Data.queryFragment(): QueryFragment? = this as? QueryFragment
+
+      fun Data.asQuery(): Query? = this as? Query
     }
   }
 

@@ -100,10 +100,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   interface Data : Operation.Data {
     val __typename: String
 
-    fun asQuery(): Query? = this as? Query
-
-    fun asQueryFragment(): QueryFragment? = this as? QueryFragment
-
     override fun marshaller(): ResponseFieldMarshaller
 
     interface Query : Data, QueryFragment {
@@ -164,6 +160,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           TestQuery_ResponseAdapter.Data.OtherDatum.toResponse(writer, this)
         }
       }
+    }
+
+    companion object {
+      fun Data.queryFragment(): QueryFragment? = this as? QueryFragment
+
+      fun Data.asQuery(): Query? = this as? Query
     }
   }
 

@@ -138,12 +138,6 @@ data class TestQuery(
        */
       val id: String
 
-      fun asHuman(): Human? = this as? Human
-
-      fun asDroid(): Droid? = this as? Droid
-
-      fun asCharacter(): Character? = this as? Character
-
       fun marshaller(): ResponseFieldMarshaller
 
       /**
@@ -272,6 +266,14 @@ data class TestQuery(
             TestQuery_ResponseAdapter.Data.Hero.OtherHero.toResponse(writer, this)
           }
         }
+      }
+
+      companion object {
+        fun Hero.asHuman(): Human? = this as? Human
+
+        fun Hero.asDroid(): Droid? = this as? Droid
+
+        fun Hero.asCharacter(): Character? = this as? Character
       }
     }
   }

@@ -132,8 +132,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     interface Object {
       val __typename: String
 
-      fun asCharacter(): Character? = this as? Character
-
       fun marshaller(): ResponseFieldMarshaller
 
       /**
@@ -175,6 +173,10 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
             TestQuery_ResponseAdapter.Data.Object.OtherObject.toResponse(writer, this)
           }
         }
+      }
+
+      companion object {
+        fun Object.asCharacter(): Character? = this as? Character
       }
     }
   }

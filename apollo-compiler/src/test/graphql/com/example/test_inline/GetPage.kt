@@ -108,8 +108,6 @@ class GetPage : Query<GetPage.Data, Operation.Variables> {
 
       val items: List<Item>
 
-      fun asParticularCollection(): ParticularCollection? = this as? ParticularCollection
-
       fun marshaller(): ResponseFieldMarshaller
 
       interface Item {
@@ -141,6 +139,10 @@ class GetPage : Query<GetPage.Data, Operation.Variables> {
 
             override fun marshaller(): ResponseFieldMarshaller
           }
+
+          companion object {
+            fun Item.asParticularItem(): ParticularItem? = this as? ParticularItem
+          }
         }
       }
 
@@ -158,8 +160,6 @@ class GetPage : Query<GetPage.Data, Operation.Variables> {
           override val title: String
 
           override val __typename: String
-
-          fun asParticularItem(): ParticularItem? = this as? ParticularItem
 
           override fun marshaller(): ResponseFieldMarshaller
 
@@ -196,6 +196,10 @@ class GetPage : Query<GetPage.Data, Operation.Variables> {
               }
             }
           }
+
+          companion object {
+            fun Item.asParticularItem(): ParticularItem? = this as? ParticularItem
+          }
         }
       }
 
@@ -218,6 +222,11 @@ class GetPage : Query<GetPage.Data, Operation.Variables> {
             }
           }
         }
+      }
+
+      companion object {
+        fun Collection.asParticularCollection(): ParticularCollection? = this as?
+            ParticularCollection
       }
     }
   }

@@ -96,7 +96,19 @@ interface StarshipFragment : GraphqlFragment {
 
               override fun marshaller(): ResponseFieldMarshaller
             }
+
+            companion object {
+              fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
+
+              fun Homeworld.asPlanet(): Planet? = this as? Planet
+            }
           }
+        }
+
+        companion object {
+          fun Node.pilotFragment(): PilotFragment? = this as? PilotFragment
+
+          fun Node.asPerson(): Person? = this as? Person
         }
       }
     }

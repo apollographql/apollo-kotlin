@@ -102,8 +102,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
   interface Data : Operation.Data {
     val __typename: String
 
-    fun asQuery(): Query? = this as? Query
-
     override fun marshaller(): ResponseFieldMarshaller
 
     /**
@@ -159,6 +157,10 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
           override fun marshaller(): ResponseFieldMarshaller
         }
+
+        companion object {
+          fun Hero.asHuman(): Human? = this as? Human
+        }
       }
 
       /**
@@ -186,6 +188,10 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           val primaryFunction: String?
 
           override fun marshaller(): ResponseFieldMarshaller
+        }
+
+        companion object {
+          fun Query.Droid.asDroid(): Droid? = this as? Droid
         }
       }
     }
@@ -219,8 +225,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * The movies this character appears in
          */
         override val appearsIn: List<Episode?>
-
-        fun asHuman(): Human? = this as? Human
 
         override fun marshaller(): ResponseFieldMarshaller
 
@@ -293,6 +297,10 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
             }
           }
         }
+
+        companion object {
+          fun Hero.asHuman(): Human? = this as? Human
+        }
       }
 
       /**
@@ -300,8 +308,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
        */
       interface Droid : Query.Droid {
         override val __typename: String
-
-        fun asDroid(): Droid? = this as? Droid
 
         override fun marshaller(): ResponseFieldMarshaller
 
@@ -357,6 +363,10 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
             }
           }
         }
+
+        companion object {
+          fun QueryDatum.Droid.asDroid(): Droid? = this as? Droid
+        }
       }
     }
 
@@ -371,6 +381,10 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           TestQuery_ResponseAdapter.Data.OtherDatum.toResponse(writer, this)
         }
       }
+    }
+
+    companion object {
+      fun Data.asQuery(): Query? = this as? Query
     }
   }
 

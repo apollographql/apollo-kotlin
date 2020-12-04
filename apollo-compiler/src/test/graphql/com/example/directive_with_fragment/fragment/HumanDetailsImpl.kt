@@ -25,13 +25,4 @@ data class HumanDetailsImpl(
       HumanDetailsImpl_ResponseAdapter.toResponse(writer, this)
     }
   }
-
-  companion object {
-    val FRAGMENT_DEFINITION: String = """
-        |fragment HumanDetails on Human {
-        |  __typename
-        |  homePlanet
-        |}
-        """.trimMargin()
-  }
 }

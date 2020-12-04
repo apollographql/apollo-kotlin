@@ -68,10 +68,6 @@ data class StarshipFragmentImpl(
       interface Node : StarshipFragment.PilotConnection.Edge.Node {
         override val __typename: String
 
-        fun asPerson(): Person? = this as? Person
-
-        fun asPilotFragment(): PilotFragment? = this as? PilotFragment
-
         override fun marshaller(): ResponseFieldMarshaller
 
         interface Person : StarshipFragment.PilotConnection.Edge.Node,
@@ -112,6 +108,12 @@ data class StarshipFragmentImpl(
 
               override fun marshaller(): ResponseFieldMarshaller
             }
+
+            companion object {
+              fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
+
+              fun Homeworld.asPlanet(): Planet? = this as? Planet
+            }
           }
         }
 
@@ -140,10 +142,6 @@ data class StarshipFragmentImpl(
           interface Homeworld : StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld,
               PilotFragment.Homeworld, Person.Homeworld {
             override val __typename: String
-
-            fun asPlanet(): Planet? = this as? Planet
-
-            fun asPlanetFragment(): PlanetFragment? = this as? PlanetFragment
 
             override fun marshaller(): ResponseFieldMarshaller
 
@@ -191,6 +189,12 @@ data class StarshipFragmentImpl(
                 }
               }
             }
+
+            companion object {
+              fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
+
+              fun Homeworld.asPlanet(): Planet? = this as? Planet
+            }
           }
         }
 
@@ -206,25 +210,13 @@ data class StarshipFragmentImpl(
             }
           }
         }
+
+        companion object {
+          fun Node.pilotFragment(): PilotFragment? = this as? PilotFragment
+
+          fun Node.asPerson(): Person? = this as? Person
+        }
       }
     }
-  }
-
-  companion object {
-    val FRAGMENT_DEFINITION: String = """
-        |fragment starshipFragment on Starship {
-        |  __typename
-        |  id
-        |  name
-        |  pilotConnection {
-        |    edges {
-        |      node {
-        |        __typename
-        |        ...pilotFragment
-        |      }
-        |    }
-        |  }
-        |}
-        """.trimMargin()
   }
 }

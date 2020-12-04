@@ -31,10 +31,6 @@ data class QueryFragmentImpl(
   interface Hero : QueryFragment.Hero {
     override val __typename: String
 
-    fun asCharacter(): Character? = this as? Character
-
-    fun asHeroFragment(): HeroFragment? = this as? HeroFragment
-
     override fun marshaller(): ResponseFieldMarshaller
 
     interface Character : QueryFragment.Hero, QueryFragment.Hero.Character, HeroFragment, Hero {
@@ -74,6 +70,12 @@ data class QueryFragmentImpl(
         }
       }
     }
+
+    companion object {
+      fun Hero.heroFragment(): HeroFragment? = this as? HeroFragment
+
+      fun Hero.asCharacter(): Character? = this as? Character
+    }
   }
 
   /**
@@ -81,10 +83,6 @@ data class QueryFragmentImpl(
    */
   interface Droid : QueryFragment.Droid {
     override val __typename: String
-
-    fun asDroid(): Droid? = this as? Droid
-
-    fun asDroidFragment(): DroidFragment? = this as? DroidFragment
 
     override fun marshaller(): ResponseFieldMarshaller
 
@@ -136,6 +134,12 @@ data class QueryFragmentImpl(
         }
       }
     }
+
+    companion object {
+      fun QueryFragmentImpl.Droid.droidFragment(): DroidFragment? = this as? DroidFragment
+
+      fun QueryFragmentImpl.Droid.asDroid(): Droid? = this as? Droid
+    }
   }
 
   /**
@@ -143,8 +147,6 @@ data class QueryFragmentImpl(
    */
   interface Human : QueryFragment.Human {
     override val __typename: String
-
-    fun asHuman(): Human? = this as? Human
 
     override fun marshaller(): ResponseFieldMarshaller
 
@@ -200,28 +202,9 @@ data class QueryFragmentImpl(
         }
       }
     }
-  }
 
-  companion object {
-    val FRAGMENT_DEFINITION: String = """
-        |fragment QueryFragment on Query {
-        |  __typename
-        |  hero {
-        |    __typename
-        |    ...heroFragment
-        |  }
-        |  droid(id: 1) {
-        |    __typename
-        |    ...droidFragment
-        |  }
-        |  human(id: 1) {
-        |    __typename
-        |    ... on Human {
-        |      name
-        |      homePlanet
-        |    }
-        |  }
-        |}
-        """.trimMargin()
+    companion object {
+      fun QueryFragmentImpl.Human.asHuman(): Human? = this as? Human
+    }
   }
 }

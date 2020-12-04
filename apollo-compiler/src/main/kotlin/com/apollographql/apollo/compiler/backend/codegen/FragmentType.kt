@@ -6,6 +6,7 @@ import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -59,6 +60,17 @@ internal fun CodeGenerationAst.FragmentType.interfaceTypeSpec(generateAsInternal
                       .endControlFlow()
                       .build()
               )
+              .addFunctions(
+                  this@interfaceTypeSpec.interfaceType.fragmentAccessors.map { accessor ->
+                    FunSpec
+                        .builder(accessor.name.escapeKotlinReservedWord())
+                        .receiver(this.typeRef.asTypeName())
+                        .returns(accessor.typeRef.asTypeName().copy(nullable = true))
+                        .addStatement("return this as? %T", accessor.typeRef.asTypeName())
+                        .build()
+
+                  }
+              )
               .build()
       )
       .build()
@@ -71,12 +83,5 @@ internal fun CodeGenerationAst.FragmentType.implementationTypeSpec(generateAsInt
       .toBuilder()
       .addSuperinterface(GraphqlFragment::class)
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
-      .addType(TypeSpec.companionObjectBuilder()
-          .addProperty(PropertySpec.builder("FRAGMENT_DEFINITION", String::class)
-              .initializer(CodeBlock.of("%S", fragmentDefinition))
-              .build()
-          )
-          .build()
-      )
       .build()
 }

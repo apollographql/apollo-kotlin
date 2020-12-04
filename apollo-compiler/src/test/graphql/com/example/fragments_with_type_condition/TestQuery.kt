@@ -115,14 +115,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     interface R2 {
       val __typename: String
 
-      fun asHuman(): Human? = this as? Human
-
-      fun asDroid(): Droid? = this as? Droid
-
-      fun asHumanDetail(): HumanDetail? = this as? HumanDetail
-
-      fun asDroidDetail(): DroidDetail? = this as? DroidDetail
-
       fun marshaller(): ResponseFieldMarshaller
 
       interface Human : R2, HumanDetail {
@@ -205,6 +197,16 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           }
         }
       }
+
+      companion object {
+        fun R2.humanDetails(): HumanDetail? = this as? HumanDetail
+
+        fun R2.asHuman(): Human? = this as? Human
+
+        fun R2.droidDetails(): DroidDetail? = this as? DroidDetail
+
+        fun R2.asDroid(): Droid? = this as? Droid
+      }
     }
 
     /**
@@ -212,14 +214,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
      */
     interface Luke {
       val __typename: String
-
-      fun asHuman(): Human? = this as? Human
-
-      fun asDroid(): Droid? = this as? Droid
-
-      fun asHumanDetail(): HumanDetail? = this as? HumanDetail
-
-      fun asDroidDetail(): DroidDetail? = this as? DroidDetail
 
       fun marshaller(): ResponseFieldMarshaller
 
@@ -302,6 +296,16 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
             TestQuery_ResponseAdapter.Data.Luke.OtherLuke.toResponse(writer, this)
           }
         }
+      }
+
+      companion object {
+        fun Luke.humanDetails(): HumanDetail? = this as? HumanDetail
+
+        fun Luke.asHuman(): Human? = this as? Human
+
+        fun Luke.droidDetails(): DroidDetail? = this as? DroidDetail
+
+        fun Luke.asDroid(): Droid? = this as? Droid
       }
     }
   }

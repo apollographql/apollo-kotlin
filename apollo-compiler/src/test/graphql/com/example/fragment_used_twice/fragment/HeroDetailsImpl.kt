@@ -22,14 +22,6 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
    */
   override val name: String
 
-  fun asCharacter(): Character? = this as? Character
-
-  fun asHeroDetail(): HeroDetail? = this as? HeroDetail
-
-  fun asCharacterDetail(): CharacterDetail? = this as? CharacterDetail
-
-  fun asHeroDetailsImpl(): HeroDetailsImpl? = this as? HeroDetailsImpl
-
   override fun marshaller(): ResponseFieldMarshaller
 
   interface Character : HeroDetail, HeroDetail.Character, CharacterDetail, HeroDetailsImpl {
@@ -81,15 +73,5 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
         HeroDetailsImpl_ResponseAdapter.OtherHeroDetailsImpl.toResponse(writer, this)
       }
     }
-  }
-
-  companion object {
-    val FRAGMENT_DEFINITION: String = """
-        |fragment HeroDetails on Character {
-        |  __typename
-        |  name
-        |  ...CharacterDetails
-        |}
-        """.trimMargin()
   }
 }

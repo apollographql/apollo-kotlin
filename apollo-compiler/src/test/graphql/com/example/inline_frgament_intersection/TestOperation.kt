@@ -108,12 +108,6 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
     interface Random {
       val __typename: String
 
-      fun asBeing(): Being? = this as? Being
-
-      fun asHuman(): Human? = this as? Human
-
-      fun asWookie(): Wookie? = this as? Wookie
-
       fun marshaller(): ResponseFieldMarshaller
 
       interface Being : Random {
@@ -140,6 +134,10 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
             val lifeExpectancy: Double?
 
             override fun marshaller(): ResponseFieldMarshaller
+          }
+
+          companion object {
+            fun Friend.asWookie(): Wookie? = this as? Wookie
           }
         }
       }
@@ -176,6 +174,10 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
             val race: Race
 
             override fun marshaller(): ResponseFieldMarshaller
+          }
+
+          companion object {
+            fun Friend.asWookie(): Wookie? = this as? Wookie
           }
         }
       }
@@ -214,8 +216,6 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
           override val __typename: String
 
           override val isFamous: Boolean?
-
-          fun asWookie(): Wookie? = this as? Wookie
 
           override fun marshaller(): ResponseFieldMarshaller
 
@@ -259,6 +259,10 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
               }
             }
           }
+
+          companion object {
+            fun Friend.asWookie(): Wookie? = this as? Wookie
+          }
         }
       }
 
@@ -280,8 +284,6 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
           override val __typename: String
 
           override val lifeExpectancy: Double?
-
-          fun asWookie(): Wookie? = this as? Wookie
 
           override fun marshaller(): ResponseFieldMarshaller
 
@@ -318,6 +320,10 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
               }
             }
           }
+
+          companion object {
+            fun Friend.asWookie(): Wookie? = this as? Wookie
+          }
         }
       }
 
@@ -329,6 +335,14 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
             TestOperation_ResponseAdapter.Data.Random.OtherRandom.toResponse(writer, this)
           }
         }
+      }
+
+      companion object {
+        fun Random.asBeing(): Being? = this as? Being
+
+        fun Random.asHuman(): Human? = this as? Human
+
+        fun Random.asWookie(): Wookie? = this as? Wookie
       }
     }
   }

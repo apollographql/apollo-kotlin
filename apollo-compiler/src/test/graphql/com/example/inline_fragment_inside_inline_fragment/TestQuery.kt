@@ -111,12 +111,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     interface Search {
       val __typename: String
 
-      fun asCharacter(): Character? = this as? Character
-
-      fun asHuman(): Human? = this as? Human
-
-      fun asDroid(): Droid? = this as? Droid
-
       fun marshaller(): ResponseFieldMarshaller
 
       /**
@@ -215,6 +209,14 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
             TestQuery_ResponseAdapter.Data.Search.OtherSearch.toResponse(writer, this)
           }
         }
+      }
+
+      companion object {
+        fun Search.asCharacter(): Character? = this as? Character
+
+        fun Search.asHuman(): Human? = this as? Human
+
+        fun Search.asDroid(): Droid? = this as? Droid
       }
     }
   }

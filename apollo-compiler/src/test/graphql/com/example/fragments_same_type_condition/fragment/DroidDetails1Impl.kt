@@ -25,13 +25,4 @@ data class DroidDetails1Impl(
       DroidDetails1Impl_ResponseAdapter.toResponse(writer, this)
     }
   }
-
-  companion object {
-    val FRAGMENT_DEFINITION: String = """
-        |fragment DroidDetails1 on Droid {
-        |  __typename
-        |  name
-        |}
-        """.trimMargin()
-  }
 }

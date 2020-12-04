@@ -4,6 +4,7 @@ import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -36,19 +37,6 @@ private fun CodeGenerationAst.ObjectType.objectTypeSpec(): TypeSpec {
             )
           }
       )
-      .apply {
-        if (kind is CodeGenerationAst.ObjectType.Kind.Fragment) {
-          kind.fragmentAccessors.forEach { (name, fragmentTypeRef) ->
-            addFunction(
-                FunSpec
-                    .builder(name.escapeKotlinReservedWord())
-                    .returns(fragmentTypeRef.asTypeName().copy(nullable = true))
-                    .addStatement("return this as? %T", fragmentTypeRef.asTypeName())
-                    .build()
-            )
-          }
-        }
-      }
       .applyIf(!abstract) {
         addFunction(
             FunSpec.builder("marshaller")
@@ -73,6 +61,23 @@ private fun CodeGenerationAst.ObjectType.objectTypeSpec(): TypeSpec {
           this.nestedObjects
               .map { nestedObject -> nestedObject.objectTypeSpec() }
       )
+      .applyIf(this.fragmentAccessors.isNotEmpty()) {
+        addType(
+            TypeSpec.companionObjectBuilder()
+                .addFunctions(
+                    this@objectTypeSpec.fragmentAccessors.map { accessor ->
+                      FunSpec
+                          .builder(accessor.name.escapeKotlinReservedWord())
+                          .receiver(typeRef.asTypeName())
+                          .returns(accessor.typeRef.asTypeName().copy(nullable = true))
+                          .addStatement("return this as? %T", accessor.typeRef.asTypeName())
+                          .build()
+
+                    }
+                )
+                .build()
+        )
+      }
       .build()
 }
 

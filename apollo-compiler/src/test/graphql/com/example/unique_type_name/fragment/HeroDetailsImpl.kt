@@ -83,21 +83,4 @@ data class HeroDetailsImpl(
       }
     }
   }
-
-  companion object {
-    val FRAGMENT_DEFINITION: String = """
-        |fragment HeroDetails on Character {
-        |  __typename
-        |  name
-        |  friendsConnection {
-        |    totalCount
-        |    edges {
-        |      node {
-        |        name
-        |      }
-        |    }
-        |  }
-        |}
-        """.trimMargin()
-  }
 }
