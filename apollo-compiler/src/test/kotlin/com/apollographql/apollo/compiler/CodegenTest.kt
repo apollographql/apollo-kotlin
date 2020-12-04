@@ -140,8 +140,7 @@ class CodegenTest(private val folder: File) {
             file.isDirectory && (filterRegex == null || filterRegex.matchEntire(file.name) != null)
           }
           .filter {
-            // TODO This test does not compile because the GQL-based IR does not merge fields
-            it.name != "hero_name"
+            it.name == "antlr_tokens"
           }
     }
   }

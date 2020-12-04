@@ -26,6 +26,7 @@ import com.apollographql.apollo.compiler.frontend.gql.possibleTypes
 import com.apollographql.apollo.compiler.frontend.gql.responseName
 import com.apollographql.apollo.compiler.frontend.gql.rootTypeDefinition
 import com.apollographql.apollo.compiler.frontend.gql.schemaKind
+import com.apollographql.apollo.compiler.frontend.gql.toKotlinValue
 import com.apollographql.apollo.compiler.frontend.gql.toSchemaType
 import com.apollographql.apollo.compiler.frontend.gql.toUtf8WithIndents
 import com.apollographql.apollo.compiler.frontend.gql.usedFragmentNames
@@ -218,8 +219,8 @@ internal class BackendIrBuilder private constructor(
     val arguments = this.arguments?.arguments?.map { argument ->
       BackendIr.Argument(
           name = argument.name,
-          value = argument.value,
-          type = fieldDefinition.arguments.first { it.name == name }.type.toSchemaType(schema)
+          value = argument.value.toKotlinValue(false),
+          type = fieldDefinition.arguments.first { it.name == argument.name }.type.toSchemaType(schema)
       )
     } ?: emptyList()
 
