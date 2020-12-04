@@ -7,6 +7,7 @@ package com.example.fragments_same_type_condition.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.example.fragments_same_type_condition.fragment.adapter.DroidDetails2Impl_ResponseAdapter
 import kotlin.String
 
 /**

@@ -18,6 +18,7 @@ import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.api.internal.Throws
+import com.example.input_object_type.adapter.TestQuery_ResponseAdapter
 import com.example.input_object_type.type.Episode
 import com.example.input_object_type.type.ReviewInput
 import kotlin.Any

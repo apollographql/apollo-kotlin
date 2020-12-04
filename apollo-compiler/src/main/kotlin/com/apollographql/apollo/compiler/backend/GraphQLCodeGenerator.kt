@@ -83,13 +83,12 @@ internal class GraphQLCodeGenerator(
               .writeTo(outputDir)
         }
 
-    // FIXME
     ast.fragmentTypes
         .filter { frontendIr.fragmentsToGenerate.contains(it.graphqlName) }
         .forEach { fragmentType ->
           fragmentType
               .responseAdapterTypeSpec(generateAsInternal)
-              .fileSpec(frontendIr.fragmentsPackageName)
+              .fileSpec("${frontendIr.fragmentsPackageName}.adapter")
               .writeTo(outputDir)
         }
 
@@ -110,7 +109,7 @@ internal class GraphQLCodeGenerator(
 
     ast.operationTypes.forEach { operationType ->
       operationType.responseAdapterTypeSpec(generateAsInternal)
-          .fileSpec(operationType.packageName)
+          .fileSpec("${operationType.packageName}.adapter")
           .writeTo(outputDir)
     }
   }

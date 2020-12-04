@@ -83,9 +83,9 @@ private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(): TypeSpec {
 
 internal fun CodeGenerationAst.TypeRef.asAdapterTypeName(): ClassName {
   return if (enclosingType == null) {
-    ClassName(packageName = packageName, "${this.name.escapeKotlinReservedWord()}_ResponseAdapter")
+    ClassName(packageName = "$packageName.adapter", "${this.name.escapeKotlinReservedWord()}_ResponseAdapter")
   } else {
-    ClassName(packageName = packageName, enclosingType.asAdapterTypeName().simpleNames + this.name.escapeKotlinReservedWord())
+    ClassName(packageName = "$packageName.adapter", enclosingType.asAdapterTypeName().simpleNames + this.name.escapeKotlinReservedWord())
   }
 }
 

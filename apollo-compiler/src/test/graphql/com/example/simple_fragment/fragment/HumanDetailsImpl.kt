@@ -7,6 +7,7 @@ package com.example.simple_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.example.simple_fragment.fragment.adapter.HumanDetailsImpl_ResponseAdapter
 import kotlin.String
 
 /**
