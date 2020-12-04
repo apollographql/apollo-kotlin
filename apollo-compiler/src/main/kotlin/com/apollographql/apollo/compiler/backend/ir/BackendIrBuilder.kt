@@ -759,7 +759,6 @@ private fun List<GQLField>.buildBackendIrFields(
       generateFragmentImplementations: Boolean,
   ): GenericFragment {
     val fragmentName = fragmentTypeCondition.capitalize()
-    val parentType = schema.typeDefinition(fragmentTypeCondition)
     val fragmentSelectionSet = selectionSet.selections.filterIsInstance<GQLField>().buildBackendIrFields(
         selectionKey = parentSelectionKey + fragmentName,
         generateFragmentImplementations = generateFragmentImplementations,
@@ -807,7 +806,7 @@ private fun List<GQLField>.buildBackendIrFields(
     val childNamedFragments = selectionSet.selections.filterIsInstance<GQLFragmentSpread>().map { namedFragment ->
       val fragmentDefinition = fragmentDefinitions.get(namedFragment.name)!!
       buildGenericFragment(
-          fragmentTypeCondition = namedFragment.name,
+          fragmentTypeCondition = fragmentDefinition.typeCondition.name,
           selectionSet = fragmentDefinition.selectionSet,
           fragmentDescription = fragmentDefinition.description ?: "",
           fragmentConditions = emptyList(),

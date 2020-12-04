@@ -51,6 +51,7 @@ class Schema(
   }
 
   fun typeDefinition(name: String): GQLTypeDefinition {
-    return typeDefinitions[name] ?: throw SchemaValidationException("Cannot find type `$name`")
+    return typeDefinitions[name]
+        ?: throw SchemaValidationException("Cannot find type `$name`")
   }
 }

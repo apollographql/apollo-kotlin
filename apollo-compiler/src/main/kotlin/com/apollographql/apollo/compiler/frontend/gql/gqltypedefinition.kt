@@ -19,6 +19,7 @@ internal fun GQLTypeDefinition.possibleTypes(typeDefinitions: Map<String, GQLTyp
     }.toSet()
     is GQLObjectTypeDefinition -> setOf(name)
     is GQLScalarTypeDefinition -> setOf(name)
+    is GQLEnumTypeDefinition -> enumValues.map { it.name }.toSet()
     else -> {
       throw SchemaValidationException("Cannot determine possibleTypes of $name")
     }

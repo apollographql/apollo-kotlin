@@ -139,9 +139,6 @@ class CodegenTest(private val folder: File) {
              */
             file.isDirectory && (filterRegex == null || filterRegex.matchEntire(file.name) != null)
           }
-          .filter {
-            it.name == "antlr_tokens"
-          }
     }
   }
 }

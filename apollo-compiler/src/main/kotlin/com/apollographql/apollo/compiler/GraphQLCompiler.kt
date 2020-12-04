@@ -85,7 +85,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
 
     val operationOutput = backendIr.operations.map {
       OperationDescriptor(
-          name = it.name!!,
+          name = it.operationName,
           packageName = it.targetPackageName,
           filePath = "",
           source = QueryDocumentMinifier.minify(it.definition)
