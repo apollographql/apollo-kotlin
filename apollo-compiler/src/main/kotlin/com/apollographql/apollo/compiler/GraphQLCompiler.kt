@@ -4,7 +4,6 @@ import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.compiler.ApolloMetadata.Companion.merge
 import com.apollographql.apollo.compiler.backend.GraphQLCodeGenerator
 import com.apollographql.apollo.compiler.backend.ir.BackendIrBuilder.Companion.buildBackendIr
-import com.apollographql.apollo.compiler.IRBuilder
 import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.operationoutput.toJson
 import com.apollographql.apollo.compiler.frontend.gql.GQLFragmentDefinition
@@ -15,7 +14,6 @@ import com.apollographql.apollo.compiler.frontend.gql.Schema
 import com.apollographql.apollo.compiler.frontend.gql.SourceAwareException
 import com.apollographql.apollo.compiler.frontend.gql.toIntrospectionSchema
 import com.apollographql.apollo.compiler.frontend.gql.toSchema
-import com.apollographql.apollo.compiler.frontend.gql.toUtf8
 import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
 import com.squareup.kotlinpoet.asClassName
 import java.io.File
@@ -76,8 +74,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
         schema = schema,
         schemaPackageName = schemaPackageName,
         incomingMetadata = metadata,
-        alwaysGenerateTypesMatching = args.alwaysGenerateTypesMatching,
-        packageNameProvider = packageNameProvider
+        alwaysGenerateTypesMatching = args.alwaysGenerateTypesMatching
     ).build(documents)
 
 
@@ -111,7 +108,6 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
         .filter { type -> type is IntrospectionSchema.Type.Scalar && !GQLTypeDefinition.builtInTypes.contains(type.name) }
         .map { type -> type.name }
         .supportedTypeMap(userCustomTypesMap, generateKotlinModels)
-
 
     GraphQLCodeGenerator(
         input = input,

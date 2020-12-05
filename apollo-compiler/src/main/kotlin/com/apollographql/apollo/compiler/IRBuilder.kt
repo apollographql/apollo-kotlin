@@ -14,8 +14,7 @@ import com.apollographql.apollo.compiler.frontend.gql.withTypenameWhenNeeded
 internal class IRBuilder(private val schema: Schema,
                          private val schemaPackageName: String,
                          private val incomingMetadata: ApolloMetadata?,
-                         private val alwaysGenerateTypesMatching: Set<String>,
-                         val packageNameProvider: PackageNameProvider
+                         private val alwaysGenerateTypesMatching: Set<String>
 ) {
   private fun extraTypes(): Set<String> {
     val regexes = alwaysGenerateTypesMatching.map { Regex(it) }
