@@ -33,7 +33,7 @@ import com.apollographql.apollo.compiler.frontend.gql.usedFragmentNames
 import com.apollographql.apollo.compiler.frontend.gql.validateAndCoerce
 import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
 
-internal class BackendIrBuilder private constructor(
+internal class BackendIrBuilder constructor(
     private val schema: Schema,
     private val fragmentDefinitions: Map<String, GQLFragmentDefinition>,
     private val useSemanticNaming: Boolean,
@@ -76,36 +76,18 @@ internal class BackendIrBuilder private constructor(
       val fragmentsPackageName: String
   )
 
-  companion object {
-
-    fun BackendIrBuilderInput.buildBackendIr(
-        schema: Schema,
-        useSemanticNaming: Boolean,
-        packageNameProvider: PackageNameProvider
-    ): BackendIr {
-      return BackendIrBuilder(
-          schema = schema,
-          fragmentDefinitions = this.fragments.associateBy { it.name },
-          useSemanticNaming = useSemanticNaming,
-          packageNameProvider = packageNameProvider
-      ).buildBackendIR(this)
-    }
-  }
-
-  private fun buildBackendIR(input: BackendIrBuilderInput): BackendIr {
+  fun buildBackendIR(
+      operations: List<GQLOperationDefinition>,
+      fragments: List<GQLFragmentDefinition>
+  ): BackendIr {
     return BackendIr(
-        operations = input.operations.map { operation ->
+        operations = operations.map { operation ->
           operation.buildBackendIrOperation()
         },
-        fragments = input.fragments
-            .filter { fragment ->
-              fragment.name in input.fragmentsToGenerate
-            }
+        fragments = fragments
             .map { fragment ->
               fragment.buildBackendIrNamedFragment()
-            },
-        typesPackageName = input.typesPackageName,
-        fragmentsPackageName = input.fragmentsPackageName,
+            }
     )
   }
 

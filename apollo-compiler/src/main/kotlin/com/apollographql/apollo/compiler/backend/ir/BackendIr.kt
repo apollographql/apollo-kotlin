@@ -35,9 +35,7 @@ internal data class SelectionKey(
  */
 internal data class BackendIr(
     val operations: List<Operation>,
-    val fragments: List<NamedFragment>,
-    val typesPackageName: String,
-    val fragmentsPackageName: String,
+    val fragments: List<NamedFragment>
 ) {
   data class Operation(
       val name: String,

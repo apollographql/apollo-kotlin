@@ -7,7 +7,6 @@ import com.apollographql.apollo.compiler.backend.codegen.patchKotlinNativeOption
 import com.apollographql.apollo.compiler.backend.codegen.responseAdapterTypeSpec
 import com.apollographql.apollo.compiler.backend.codegen.typeSpec
 import com.apollographql.apollo.compiler.backend.ir.BackendIr
-import com.apollographql.apollo.compiler.backend.ir.BackendIrBuilder
 import com.apollographql.apollo.compiler.frontend.gql.Schema
 import com.apollographql.apollo.compiler.frontend.gql.toIntrospectionSchema
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
@@ -16,14 +15,18 @@ import com.squareup.kotlinpoet.TypeSpec
 import java.io.File
 
 internal class GraphQLCodeGenerator(
-    private val input: BackendIrBuilder.BackendIrBuilderInput,
     private val backendIr: BackendIr,
     private val schema: Schema,
     private val customTypeMap: Map<String, String>,
     private val generateAsInternal: Boolean = false,
     private val operationOutput: OperationOutput,
     private val generateFilterNotNull: Boolean,
-    private val enumAsSealedClassPatternFilters: List<Regex>
+    private val enumAsSealedClassPatternFilters: List<Regex>,
+    private val enumsToGenerate: Set<String>,
+    private val inputObjectsToGenerate: Set<String>,
+    private val generateScalarMapping: Boolean,
+    private val typesPackageName: String,
+    private val fragmentsPackageName: String,
 ) {
   fun write(outputDir: File) {
 
@@ -32,11 +35,11 @@ internal class GraphQLCodeGenerator(
         schema = introspectionSchema,
         customScalarTypeMap = customTypeMap,
         operationOutput = operationOutput,
-        typesPackageName = input.typesPackageName,
-        fragmentsPackage = input.fragmentsPackageName
+        typesPackageName = typesPackageName,
+        fragmentsPackage = fragmentsPackageName
     )
 
-    if (input.generateScalarMapping) {
+    if (generateScalarMapping) {
       ast.customScalarScalarTypes
           .takeIf {
             /**
@@ -45,51 +48,49 @@ internal class GraphQLCodeGenerator(
              */
             it.isNotEmpty()
           }?.typeSpec(generateAsInternal)
-          ?.fileSpec(input.typesPackageName)
+          ?.fileSpec(typesPackageName)
           ?.writeTo(outputDir)
     }
 
     ast.enumTypes
-        .filter { enumType -> input.enumsToGenerate.contains(enumType.graphqlName) }
+        .filter { enumType -> enumsToGenerate.contains(enumType.graphqlName) }
         .forEach { enumType ->
           enumType
               .typeSpec(
                   generateAsInternal = generateAsInternal,
                   enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters
               )
-              .fileSpec(input.typesPackageName)
+              .fileSpec(typesPackageName)
               .writeTo(outputDir)
         }
 
     ast.inputTypes
-        .filter { inputType -> input.inputObjectsToGenerate.contains(inputType.graphqlName) }
+        .filter { inputType -> inputObjectsToGenerate.contains(inputType.graphqlName) }
         .forEach { inputType ->
           inputType
               .typeSpec(generateAsInternal)
-              .fileSpec(input.typesPackageName)
+              .fileSpec(typesPackageName)
               .writeTo(outputDir)
         }
 
     ast.fragmentTypes
-        .filter { fragmentType -> input.fragmentsToGenerate.contains(fragmentType.graphqlName) }
         .forEach { fragmentType ->
           fragmentType
               .interfaceTypeSpec(generateAsInternal)
-              .fileSpec(input.fragmentsPackageName)
+              .fileSpec(fragmentsPackageName)
               .writeTo(outputDir)
 
           fragmentType
               .implementationTypeSpec(generateAsInternal)
-              .fileSpec(input.fragmentsPackageName)
+              .fileSpec(fragmentsPackageName)
               .writeTo(outputDir)
         }
 
     ast.fragmentTypes
-        .filter { input.fragmentsToGenerate.contains(it.graphqlName) }
         .forEach { fragmentType ->
           fragmentType
               .responseAdapterTypeSpec(generateAsInternal)
-              .fileSpec("${input.fragmentsPackageName}.adapter")
+              .fileSpec("${fragmentsPackageName}.adapter")
               .writeTo(outputDir)
         }
 
