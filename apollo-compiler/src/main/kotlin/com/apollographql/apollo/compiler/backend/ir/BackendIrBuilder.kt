@@ -166,7 +166,11 @@ internal class BackendIrBuilder private constructor(
         ),
         comment = this.description ?: "",
         variables = variables,
-        definition = (toUtf8WithIndents() + "\n" + fragmentNames.map { fragmentDefinitions[it]!!.toUtf8WithIndents() }.joinToString("\n")).trimEnd('\n'),
+        definition = (toUtf8WithIndents() + "\n" + fragmentNames.joinToString(
+            separator = "\n"
+        ) { fragmentName ->
+          fragmentDefinitions[fragmentName]!!.toUtf8WithIndents()
+        }).trimEnd('\n'),
         dataField = dataField,
     )
   }
