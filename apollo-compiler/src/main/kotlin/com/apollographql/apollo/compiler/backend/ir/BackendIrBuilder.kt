@@ -147,7 +147,7 @@ internal class BackendIrBuilder private constructor(
     ).buildBackendIrField(
         selectionKey = selectionKey,
         generateFragmentImplementations = true,
-        dataFieldDefinition
+        fieldDefinition = dataFieldDefinition
     )
     val variables = this.variableDefinitions.map { variable ->
       BackendIr.Variable(
