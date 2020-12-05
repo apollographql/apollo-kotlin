@@ -48,18 +48,11 @@ internal class BackendIrBuilder private constructor(
        * All the fragments
        */
       val fragments: List<GQLFragmentDefinition>,
-      /**
-       * All the types
-       */
-      val typeDeclarations: List<GQLTypeDefinition>,
 
       /**
-       * The scalar types to generate
-       * - For root compilation units, this will be all the scalar types
-       * - For child compilation units, this will be empty
-       * - For standalone compilation units, this will contain only the scalar types that are used
+       *
        */
-      val scalarsToGenerate: Set<String>,
+      val generateScalarMapping: Boolean,
       /**
        * The fragments to generate
        */
@@ -111,12 +104,6 @@ internal class BackendIrBuilder private constructor(
             .map { fragment ->
               fragment.buildBackendIrNamedFragment()
             },
-        typeDeclarations = input.typeDeclarations.map {
-          IntrospectionSchema.TypeRef(
-              kind = it.schemaKind(),
-              name = it.name
-          )
-        },
         typesPackageName = input.typesPackageName,
         fragmentsPackageName = input.fragmentsPackageName,
     )
@@ -838,7 +825,7 @@ private fun List<GQLField>.buildBackendIrFields(
     return GenericFragment(
         name = fragmentName,
         typeCondition = GQLNamedType(sourceLocation = SourceLocation.UNKNOWN, fragmentTypeCondition).toSchemaType(schema),
-        possibleTypes = schema.typeDefinition(fragmentTypeCondition)!!.possibleTypes(schema.typeDefinitions).toList(),
+        possibleTypes = schema.typeDefinition(fragmentTypeCondition).possibleTypes(schema.typeDefinitions).toList(),
         description = fragmentDescription,
         selectionSet = parentSelectionSet,
         conditions = fragmentConditions,

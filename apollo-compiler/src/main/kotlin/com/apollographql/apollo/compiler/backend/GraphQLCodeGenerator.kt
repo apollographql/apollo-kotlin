@@ -1,6 +1,5 @@
 package com.apollographql.apollo.compiler.backend
 
-import com.apollographql.apollo.compiler.PackageNameProvider
 import com.apollographql.apollo.compiler.backend.ast.AstBuilder.Companion.buildAst
 import com.apollographql.apollo.compiler.backend.codegen.implementationTypeSpec
 import com.apollographql.apollo.compiler.backend.codegen.interfaceTypeSpec
@@ -9,10 +8,8 @@ import com.apollographql.apollo.compiler.backend.codegen.responseAdapterTypeSpec
 import com.apollographql.apollo.compiler.backend.codegen.typeSpec
 import com.apollographql.apollo.compiler.backend.ir.BackendIr
 import com.apollographql.apollo.compiler.backend.ir.BackendIrBuilder
-import com.apollographql.apollo.compiler.backend.ir.BackendIrBuilder.Companion.buildBackendIr
 import com.apollographql.apollo.compiler.frontend.gql.Schema
 import com.apollographql.apollo.compiler.frontend.gql.toIntrospectionSchema
-import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.TypeSpec
@@ -39,17 +36,18 @@ internal class GraphQLCodeGenerator(
         fragmentsPackage = input.fragmentsPackageName
     )
 
-    ast.customScalarScalarTypes
-        .filterKeys { scalarType -> input.scalarsToGenerate.contains(scalarType) }
-        .takeIf {
-          /**
-           * Skip generating the ScalarType enum if it's empty
-           * This happens in multi-module for leaf modules
-           */
-          it.isNotEmpty()
-        }?.typeSpec(generateAsInternal)
-        ?.fileSpec(input.typesPackageName)
-        ?.writeTo(outputDir)
+    if (input.generateScalarMapping) {
+      ast.customScalarScalarTypes
+          .takeIf {
+            /**
+             * Skip generating the ScalarType enum if it's empty
+             * This happens in multi-module for leaf modules
+             */
+            it.isNotEmpty()
+          }?.typeSpec(generateAsInternal)
+          ?.fileSpec(input.typesPackageName)
+          ?.writeTo(outputDir)
+    }
 
     ast.enumTypes
         .filter { enumType -> input.enumsToGenerate.contains(enumType.graphqlName) }
