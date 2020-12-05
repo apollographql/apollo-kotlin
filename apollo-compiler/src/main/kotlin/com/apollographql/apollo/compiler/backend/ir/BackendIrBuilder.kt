@@ -39,43 +39,6 @@ internal class BackendIrBuilder constructor(
     private val useSemanticNaming: Boolean,
     val packageNameProvider: PackageNameProvider?
 ) {
-  data class BackendIrBuilderInput(
-      /**
-       * All the operations
-       */
-      val operations: List<GQLOperationDefinition>,
-      /**
-       * All the fragments
-       */
-      val fragments: List<GQLFragmentDefinition>,
-
-      /**
-       *
-       */
-      val generateScalarMapping: Boolean,
-      /**
-       * The fragments to generate
-       */
-      val fragmentsToGenerate: Set<String>,
-      /**
-       * The enums to generate
-       */
-      val enumsToGenerate: Set<String>,
-      /**
-       * The enums to generate
-       */
-      val inputObjectsToGenerate: Set<String>,
-
-      /**
-       * The package name for input/enum types
-       */
-      val typesPackageName: String,
-      /**
-       * The package name for fragments
-       */
-      val fragmentsPackageName: String
-  )
-
   fun buildBackendIR(
       operations: List<GQLOperationDefinition>,
       fragments: List<GQLFragmentDefinition>
