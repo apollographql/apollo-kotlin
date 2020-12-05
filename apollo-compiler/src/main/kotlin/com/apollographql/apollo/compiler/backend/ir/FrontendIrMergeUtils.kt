@@ -57,14 +57,11 @@ internal object FrontendIrMergeUtils {
     return copy(selections = selections.map { selection->
       when (selection) {
         is GQLFragmentSpread -> {
-          val index = selectionsToAdd.indexOfFirst { (it as? GQLFragmentSpread)?.name == selection.name }
-          if (index >= 0) {
-            selectionsToAdd.removeAt(index)
-            // named fragments are easy to merge
-            selection
-          } else {
-            selection
+          // named fragments are easy to merge, just keep one of them
+          selectionsToAdd.removeIf {
+            (it as? GQLFragmentSpread)?.name == selection.name
           }
+          selection
         }
         is GQLInlineFragment -> {
           val index = selectionsToAdd.indexOfFirst { (it as? GQLInlineFragment)?.typeCondition?.name == selection.typeCondition.name }
