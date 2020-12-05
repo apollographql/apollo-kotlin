@@ -37,9 +37,7 @@ internal class BackendIrBuilder private constructor(
     private val schema: Schema,
     private val fragmentDefinitions: Map<String, GQLFragmentDefinition>,
     private val useSemanticNaming: Boolean,
-    val packageNameProvider: PackageNameProvider?,
-    val typesPackageName: String,
-    val fragmentsPackageName: String
+    val packageNameProvider: PackageNameProvider?
 ) {
   data class BackendIrBuilderInput(
       /**
@@ -96,8 +94,6 @@ internal class BackendIrBuilder private constructor(
           schema = schema,
           fragmentDefinitions = this.fragments.associateBy { it.name },
           useSemanticNaming = useSemanticNaming,
-          typesPackageName = typesPackageName,
-          fragmentsPackageName = fragmentsPackageName,
           packageNameProvider = packageNameProvider
       ).buildBackendIR(this)
     }
@@ -144,7 +140,7 @@ internal class BackendIrBuilder private constructor(
     val dataField = GQLField(
         name = "data",
         alias = null,
-        sourceLocation = com.apollographql.apollo.compiler.frontend.gql.SourceLocation.UNKNOWN,
+        sourceLocation = SourceLocation.UNKNOWN,
         arguments = null,
         directives = emptyList(),
         selectionSet = selectionSet
