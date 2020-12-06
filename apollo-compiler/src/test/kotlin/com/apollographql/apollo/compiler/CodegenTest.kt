@@ -138,9 +138,7 @@ class CodegenTest(private val folder: File) {
              * ./gradlew :apollo-compiler:test -DcodegenTests="fragments_with_type_condition" --tests '*Codegen*'
              */
             file.isDirectory && (filterRegex == null || filterRegex.matchEntire(file.name) != null)
-          }
-          .filter {
-            // TODO This test does not compile because the GQL-based IR does not merge fields
+          }.filter {
             it.name != "hero_name"
           }
     }

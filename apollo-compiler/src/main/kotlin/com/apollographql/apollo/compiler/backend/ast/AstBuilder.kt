@@ -53,10 +53,10 @@ internal class AstBuilder private constructor(
   }
 
   private fun buildEnumTypes(): List<CodeGenerationAst.EnumType> {
-    return backendIr.typeDeclarations
+    return schema.types.values
         .filter { type -> type.kind == IntrospectionSchema.Kind.ENUM }
         .map { type ->
-          val enumSchemaType = schema.resolveType(type) as IntrospectionSchema.Type.Enum
+          val enumSchemaType = type as IntrospectionSchema.Type.Enum
           val name = enumSchemaType.name.normalizeTypeName()
           CodeGenerationAst.EnumType(
               graphqlName = enumSchemaType.name,
@@ -95,11 +95,10 @@ internal class AstBuilder private constructor(
       }
     }
 
-    return backendIr
-        .typeDeclarations
+    return schema.types.values
         .filter { type -> type.kind == IntrospectionSchema.Kind.INPUT_OBJECT }
         .map { type ->
-          val inputSchemaType = schema.resolveType(type) as IntrospectionSchema.Type.InputObject
+          val inputSchemaType = type as IntrospectionSchema.Type.InputObject
           val name = inputSchemaType.name.normalizeTypeName()
           CodeGenerationAst.InputType(
               graphqlName = inputSchemaType.name,

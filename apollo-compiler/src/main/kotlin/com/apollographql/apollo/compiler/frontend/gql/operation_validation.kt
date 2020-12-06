@@ -470,6 +470,8 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
     }
 
     // 5.6.2 Input Object Field Names
+    // Note that this does not modify the document, it calls validateAndCoerce because it's easier
+    // to do both at the same time but the coerced resul is not used here
     issues.addAll(value.validateAndCoerce(schemaArgument.type, schema, operation).issues)
   }
 
