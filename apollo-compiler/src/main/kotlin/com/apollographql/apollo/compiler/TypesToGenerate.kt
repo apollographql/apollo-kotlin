@@ -1,11 +1,11 @@
 package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo.compiler.frontend.gql.GQLDocument
-import com.apollographql.apollo.compiler.frontend.gql.GQLEnumTypeDefinition
-import com.apollographql.apollo.compiler.frontend.gql.GQLInputObjectTypeDefinition
-import com.apollographql.apollo.compiler.frontend.gql.GQLScalarTypeDefinition
-import com.apollographql.apollo.compiler.frontend.gql.Schema
-import com.apollographql.apollo.compiler.frontend.gql.usedTypeNames
+import com.apollographql.apollo.compiler.frontend.GQLDocument
+import com.apollographql.apollo.compiler.frontend.GQLEnumTypeDefinition
+import com.apollographql.apollo.compiler.frontend.GQLInputObjectTypeDefinition
+import com.apollographql.apollo.compiler.frontend.GQLScalarTypeDefinition
+import com.apollographql.apollo.compiler.frontend.Schema
+import com.apollographql.apollo.compiler.frontend.usedTypeNames
 
 internal class TypesToGenerate(
     /**

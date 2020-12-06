@@ -3,7 +3,7 @@
  *
  * This is all in one file so we can use sealed classes. Extensions are in gqlxyz.kt
  */
-package com.apollographql.apollo.compiler.frontend.gql
+package com.apollographql.apollo.compiler.frontend
 
 import okio.BufferedSink
 

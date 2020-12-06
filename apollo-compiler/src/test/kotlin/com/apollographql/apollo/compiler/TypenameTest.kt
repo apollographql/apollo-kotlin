@@ -1,10 +1,10 @@
 package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo.compiler.frontend.gql.GQLFragmentDefinition
-import com.apollographql.apollo.compiler.frontend.gql.GQLOperationDefinition
-import com.apollographql.apollo.compiler.frontend.gql.GraphQLParser
-import com.apollographql.apollo.compiler.frontend.gql.toUtf8WithIndents
-import com.apollographql.apollo.compiler.frontend.gql.withTypenameWhenNeeded
+import com.apollographql.apollo.compiler.frontend.GQLFragmentDefinition
+import com.apollographql.apollo.compiler.frontend.GQLOperationDefinition
+import com.apollographql.apollo.compiler.frontend.GraphQLParser
+import com.apollographql.apollo.compiler.frontend.toUtf8WithIndents
+import com.apollographql.apollo.compiler.frontend.withTypenameWhenNeeded
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith

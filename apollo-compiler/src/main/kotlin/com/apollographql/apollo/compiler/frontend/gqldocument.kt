@@ -1,4 +1,4 @@
-package com.apollographql.apollo.compiler.frontend.gql
+package com.apollographql.apollo.compiler.frontend
 
 import okio.Buffer
 import okio.buffer

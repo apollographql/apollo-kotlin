@@ -7,8 +7,8 @@ import com.apollographql.apollo.compiler.backend.codegen.patchKotlinNativeOption
 import com.apollographql.apollo.compiler.backend.codegen.responseAdapterTypeSpec
 import com.apollographql.apollo.compiler.backend.codegen.typeSpec
 import com.apollographql.apollo.compiler.backend.ir.BackendIr
-import com.apollographql.apollo.compiler.frontend.gql.Schema
-import com.apollographql.apollo.compiler.frontend.gql.toIntrospectionSchema
+import com.apollographql.apollo.compiler.frontend.Schema
+import com.apollographql.apollo.compiler.frontend.toIntrospectionSchema
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.TypeSpec
