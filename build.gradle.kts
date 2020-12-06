@@ -322,6 +322,26 @@ tasks.register("publishSnapshotsIfNeeded") {
   }
 }
 
+tasks.register("publishToBintrayIfNeeded") {
+  if (isTag()) {
+    project.logger.log(LogLevel.LIFECYCLE, "Deploying release to Bintray...")
+    dependsOn(subprojectTasks("publishAllPublicationsToBintrayRepository"))
+  }
+}
+
+tasks.register("publishToOssStagingIfNeeded") {
+  if (isTag()) {
+    project.logger.log(LogLevel.LIFECYCLE, "Deploying release to OSS staging...")
+    dependsOn(subprojectTasks("publishAllPublicationsToOssStagingRepository"))
+  }
+}
+
+tasks.register("publishToGradlePortalIfNeeded") {
+  if (isTag()) {
+    project.logger.log(LogLevel.LIFECYCLE, "Deploying release to Gradle Portal...")
+    dependsOn(":apollo-gradle-plugin:publishPlugins")
+  }
+}
 
 tasks.register("sonatypeCloseAndReleaseRepository") {
   doLast {
@@ -361,3 +381,4 @@ tasks.register("bintrayPublish") {
     }
   }
 }
+
