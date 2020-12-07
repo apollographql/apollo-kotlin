@@ -1,4 +1,4 @@
-package com.apollographql.apollo.compiler.frontend.gql
+package com.apollographql.apollo.compiler.frontend
 
 import com.apollographql.apollo.compiler.parser.antlr.GraphQLLexer
 import com.apollographql.apollo.compiler.parser.antlr.GraphQLParser as AntlrGraphQLParser
@@ -148,7 +148,7 @@ object GraphQLParser {
       it.toGQLValue()
     }
   }
-  
+
   fun builtinTypes(): GQLDocument {
     val source = GQLDocument::class.java.getResourceAsStream("/builtins.sdl")
         .source()

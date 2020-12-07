@@ -1,4 +1,4 @@
-package com.apollographql.apollo.compiler.frontend.gql
+package com.apollographql.apollo.compiler.frontend
 
 import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
 

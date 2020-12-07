@@ -1,10 +1,10 @@
 package com.apollographql.apollo.compiler.backend.ir
 
-import com.apollographql.apollo.compiler.frontend.gql.GQLField
-import com.apollographql.apollo.compiler.frontend.gql.GQLFragmentSpread
-import com.apollographql.apollo.compiler.frontend.gql.GQLInlineFragment
-import com.apollographql.apollo.compiler.frontend.gql.GQLSelectionSet
-import com.apollographql.apollo.compiler.frontend.gql.responseName
+import com.apollographql.apollo.compiler.frontend.GQLField
+import com.apollographql.apollo.compiler.frontend.GQLFragmentSpread
+import com.apollographql.apollo.compiler.frontend.GQLInlineFragment
+import com.apollographql.apollo.compiler.frontend.GQLSelectionSet
+import com.apollographql.apollo.compiler.frontend.responseName
 
 internal object FrontendIrMergeUtils {
   /**

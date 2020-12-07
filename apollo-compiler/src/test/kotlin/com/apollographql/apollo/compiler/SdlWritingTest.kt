@@ -1,7 +1,7 @@
 package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo.compiler.frontend.gql.GraphQLParser
-import com.apollographql.apollo.compiler.frontend.gql.toFile
+import com.apollographql.apollo.compiler.frontend.GraphQLParser
+import com.apollographql.apollo.compiler.frontend.toFile
 import org.junit.Assert
 import org.junit.Test
 import java.io.File

@@ -1,8 +1,8 @@
 package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo.compiler.frontend.gql.GraphQLParser
-import com.apollographql.apollo.compiler.frontend.gql.Issue
-import com.apollographql.apollo.compiler.frontend.gql.toSchema
+import com.apollographql.apollo.compiler.frontend.GraphQLParser
+import com.apollographql.apollo.compiler.frontend.Issue
+import com.apollographql.apollo.compiler.frontend.toSchema
 import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test

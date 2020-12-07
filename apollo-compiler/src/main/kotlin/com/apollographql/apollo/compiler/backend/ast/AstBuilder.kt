@@ -567,6 +567,7 @@ internal class AstBuilder private constructor(
             selectionKey = selectionKey,
             customScalarTypes = customScalarTypes,
         ).run {
+          // TODO why this is not part of BackendIR builder?
           copy(
               implements = implements + selectionKey.asTypeRef(targetPackageName)
           )
