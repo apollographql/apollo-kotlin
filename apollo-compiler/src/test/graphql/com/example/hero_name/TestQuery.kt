@@ -17,6 +17,7 @@ import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.api.internal.Throws
+import com.example.hero_name.adapter.TestQuery_ResponseAdapter
 import kotlin.Boolean
 import kotlin.String
 import kotlin.Suppress
@@ -25,11 +26,6 @@ import okio.BufferedSource
 import okio.ByteString
 import okio.IOException
 
-/**
- *  This is a sample query to fetch hero name
- *  that demonstrates Java / Kotlin docs generations
- *  for query data model
- */
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
@@ -113,7 +109,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
      * A character from the Star Wars universe
      */
     data class Hero(
-      val __typename: String = "Character",
       /**
        * The name of the character
        */
@@ -133,17 +128,15 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "c10c6dfe569b0fbb60c67e42c973f7ffef2314b43004c527a03bdd790ef0f5dc"
+        "65397ddaca19455aa5c39253adcd047619e1474bee8c5a3d7c796439ee9535be"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery {
           |  hero {
-          |    __typename
           |    name
           |  }
           |  hero {
-          |    __typename
           |    id
           |    name
           |  }

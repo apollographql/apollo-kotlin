@@ -52,6 +52,11 @@ internal class BackendIrBuilder constructor(
     )
   }
 
+  /**
+   * a GroupedField is a list of fields with the same responseName and arguments but possibly different selectionSets and directives
+   */
+  private class GroupedField(val fields: List<GQLField>)
+
   private fun GQLOperationDefinition.buildBackendIrOperation(): BackendIr.Operation {
     val normalizedName = this.normalizeOperationName()
     val rootTypeDefinition = this.rootTypeDefinition(schema)!!
@@ -67,13 +72,17 @@ internal class BackendIrBuilder constructor(
         directives = emptyList(),
         type = GQLNamedType(name = rootTypeDefinition.name)
     )
-    val dataField = GQLField(
-        name = "data",
-        alias = null,
-        sourceLocation = SourceLocation.UNKNOWN,
-        arguments = null,
-        directives = emptyList(),
-        selectionSet = selectionSet
+    val dataField = GroupedField(
+        fields = listOf(
+            GQLField(
+                name = "data",
+                alias = null,
+                sourceLocation = SourceLocation.UNKNOWN,
+                arguments = null,
+                directives = emptyList(),
+                selectionSet = selectionSet
+            )
+        )
     ).buildBackendIrField(
         selectionKey = selectionKey,
         generateFragmentImplementations = true,
@@ -122,27 +131,30 @@ internal class BackendIrBuilder constructor(
     return normalizeOperationName(useSemanticNaming, operationType.capitalize())
   }
 
-  private fun GQLField.buildBackendIrField(
+  private fun GroupedField.buildBackendIrField(
       selectionKey: SelectionKey,
       generateFragmentImplementations: Boolean,
       fieldDefinition: GQLFieldDefinition,
   ): BackendIr.Field {
-    val selectionSet = (this.selectionSet?.selections ?: emptyList()).filterIsInstance<GQLField>().buildBackendIrFields(
+    val first  = fields.first()
+    val selections = fields.flatMap { it.selectionSet?.selections ?: emptyList() }
+
+    val selectionSet = selections.filterIsInstance<GQLField>().buildBackendIrFields(
         selectionKey = selectionKey,
         generateFragmentImplementations = generateFragmentImplementations,
         parentType = fieldDefinition.type
     )
     val fragments = buildBackendIrFragments(
-        parentSelectionName = this.responseName(),
-        inlineFragments = this.selectionSet?.selections?.filterIsInstance<GQLInlineFragment>() ?: emptyList(),
-        namedFragments = this.selectionSet?.selections?.filterIsInstance<GQLFragmentSpread>() ?: emptyList(),
+        parentSelectionName = first.responseName(),
+        inlineFragments = selections.filterIsInstance<GQLInlineFragment>(),
+        namedFragments = selections.filterIsInstance<GQLFragmentSpread>(),
         schemaType = fieldDefinition.type,
         selectionKey = selectionKey,
         selectionSet = selectionSet,
         generateFragmentImplementations = generateFragmentImplementations,
     )
 
-    val arguments = this.arguments?.arguments?.map { argument ->
+    val arguments = first.arguments?.arguments?.map { argument ->
       val argumentType = fieldDefinition.arguments.first { it.name == argument.name }.type
       BackendIr.Argument(
           name = argument.name,
@@ -153,11 +165,14 @@ internal class BackendIrBuilder constructor(
       )
     } ?: emptyList()
 
-    val conditions = this.directives.mapNotNull { it.toCondition() }
+    val conditions = fields.map { it.directives.mapNotNull { it.toCondition() } }
+        // TODO: this is wrong. If multiple field have @include/@skip directive, the resulting condition should be
+        // evaluated or'ing all the conditions on individual fields
+        .flatten()
 
     return BackendIr.Field(
-        name = this.name,
-        alias = this.alias,
+        name = first.name,
+        alias = first.alias,
         type = fieldDefinition.type.toSchemaType(schema),
         args = arguments,
         fields = selectionSet,
@@ -169,40 +184,43 @@ internal class BackendIrBuilder constructor(
     )
   }
 
-private fun GQLDirective.toCondition(): BackendIr.Condition? {
-  if (arguments?.arguments?.size != 1) {
-    // skip and include both have only one argument
-    return null
+  private fun GQLDirective.toCondition(): BackendIr.Condition? {
+    if (arguments?.arguments?.size != 1) {
+      // skip and include both have only one argument
+      return null
+    }
+
+    val argument = arguments.arguments.first()
+
+    if (argument.value !is GQLVariableValue) {
+      // FIXME: support literal values
+      return null
+    }
+
+    return when (name) {
+      "skip",
+      "include" -> BackendIr.Condition(
+          kind = "BooleanCondition",
+          variableName = argument.value.name,
+          inverted = name == "skip",
+          type = BackendIr.Condition.Type.Boolean
+      )
+      else -> null // unrecognized directive, skip
+    }
   }
 
-  val argument = arguments.arguments.first()
-
-  if (argument.value !is GQLVariableValue) {
-    // FIXME: support literal values
-    return null
-  }
-
-  return when (name) {
-    "skip",
-    "include" -> BackendIr.Condition(
-        kind = "BooleanCondition",
-        variableName = argument.value.name,
-        inverted = name == "skip",
-        type = BackendIr.Condition.Type.Boolean
-    )
-    else -> null // unrecognized directive, skip
-  }
-}
-
-private fun List<GQLField>.buildBackendIrFields(
+  private fun List<GQLField>.buildBackendIrFields(
       selectionKey: SelectionKey,
       generateFragmentImplementations: Boolean,
       parentType: GQLType
   ): List<BackendIr.Field> {
-    return this.map { field ->
-      val fieldDefinition = field.definitionFromScope(schema, schema.typeDefinition(parentType.leafType().name))!!
-      field.buildBackendIrField(
-          selectionKey = selectionKey + field.responseName(),
+    return this.groupBy { it.responseName() }.map {
+      GroupedField(it.value)
+    }.map { groupedField ->
+      val first = groupedField.fields.first()
+      val fieldDefinition = first.definitionFromScope(schema, schema.typeDefinition(parentType.leafType().name))!!
+      groupedField.buildBackendIrField(
+          selectionKey = selectionKey + first.responseName(),
           generateFragmentImplementations = generateFragmentImplementations,
           fieldDefinition
       )
