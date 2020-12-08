@@ -1,0 +1,8 @@
+query TestQuery {
+    hero {
+        name
+    }
+    hero @include(if: false) {
+        id
+    }
+}

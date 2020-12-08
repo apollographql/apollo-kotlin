@@ -5,6 +5,7 @@ import com.apollographql.apollo.compiler.backend.ir.BackendIrMergeUtils.mergeFie
 import com.apollographql.apollo.compiler.backend.ir.FrontendIrMergeUtils.mergeInlineFragmentsWithSameTypeConditions
 import com.apollographql.apollo.compiler.backend.ir.SelectionKeyUtils.addFieldSelectionKey
 import com.apollographql.apollo.compiler.backend.ir.SelectionKeyUtils.addFieldSelectionKeys
+import com.apollographql.apollo.compiler.frontend.GQLBooleanValue
 import com.apollographql.apollo.compiler.frontend.GQLDirective
 import com.apollographql.apollo.compiler.frontend.GQLField
 import com.apollographql.apollo.compiler.frontend.GQLFieldDefinition
@@ -15,6 +16,7 @@ import com.apollographql.apollo.compiler.frontend.GQLNamedType
 import com.apollographql.apollo.compiler.frontend.GQLOperationDefinition
 import com.apollographql.apollo.compiler.frontend.GQLSelectionSet
 import com.apollographql.apollo.compiler.frontend.GQLType
+import com.apollographql.apollo.compiler.frontend.GQLValue
 import com.apollographql.apollo.compiler.frontend.GQLVariableValue
 import com.apollographql.apollo.compiler.frontend.Schema
 import com.apollographql.apollo.compiler.frontend.SourceLocation
@@ -55,8 +57,39 @@ internal class BackendIrBuilder constructor(
   /**
    * a GroupedField is a list of fields with the same responseName and arguments but possibly different selectionSets and directives
    */
-  private class GroupedField(val fields: List<GQLField>)
+  private data class GroupedField(val fields: List<GQLField>)
 
+  private fun GQLValue.toBoolean(): Boolean? = when(this) {
+    is GQLBooleanValue -> this.value
+    else -> null
+  }
+
+  private fun GQLDirective.toBoolean(): Boolean? {
+    return when (name) {
+      "include" -> arguments!!.arguments.first().value.toBoolean()
+      "skip" -> arguments!!.arguments.first().value.toBoolean()?.not()
+      else -> null
+    }
+  }
+  private fun GroupedField.removeLiteralDirectives(): GroupedField? {
+    val newFields = fields.mapNotNull {
+      val isAlwaysSkipped = it.directives.firstOrNull { it.toBoolean() == false } != null
+      if (isAlwaysSkipped) {
+        // 3.13.2 the field or fragment must not be queried if either the @skip condition is true or the @include condition is false.
+        null
+      } else {
+        // Directives that are always true don't add any useful information
+        it.copy(directives = it.directives.filter {
+          it.toBoolean() != true
+        })
+      }
+    }
+    if (newFields.isEmpty()) {
+      return null
+    } else {
+      return copy(fields = newFields)
+    }
+  }
   private fun GQLOperationDefinition.buildBackendIrOperation(): BackendIr.Operation {
     val normalizedName = this.normalizeOperationName()
     val rootTypeDefinition = this.rootTypeDefinition(schema)!!
@@ -192,9 +225,9 @@ internal class BackendIrBuilder constructor(
 
     val argument = arguments.arguments.first()
 
-    if (argument.value !is GQLVariableValue) {
-      // FIXME: support literal values
-      return null
+    check (argument.value is GQLVariableValue) {
+      // see removeLiteralDirectives
+      "@include/@skip directives with literal values should have been removed. This is a bug, please file it on github"
     }
 
     return when (name) {
@@ -216,7 +249,8 @@ internal class BackendIrBuilder constructor(
   ): List<BackendIr.Field> {
     return this.groupBy { it.responseName() }.map {
       GroupedField(it.value)
-    }.map { groupedField ->
+    }.mapNotNull { it.removeLiteralDirectives() }
+        .map { groupedField ->
       val first = groupedField.fields.first()
       val fieldDefinition = first.definitionFromScope(schema, schema.typeDefinition(parentType.leafType().name))!!
       groupedField.buildBackendIrField(
