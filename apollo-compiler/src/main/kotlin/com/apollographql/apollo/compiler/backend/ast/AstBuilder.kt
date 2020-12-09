@@ -340,7 +340,6 @@ internal class AstBuilder private constructor(
         description = this.comment,
         interfaceType = interfaceType,
         defaultImplementationType = implementationType.copy(fragmentAccessors = emptyList()),
-        fragmentDefinition = this.source,
         typeRef = CodeGenerationAst.TypeRef(
             name = this.name.normalizeTypeName(),
             packageName = fragmentsPackage,
@@ -675,14 +674,27 @@ internal class AstBuilder private constructor(
         description = this.description,
         deprecationReason = this.deprecationReason,
         arguments = this.args.associate { argument -> argument.name to argument.value },
-        conditions = this.conditions.map { condition ->
-          CodeGenerationAst.Field.Condition.Directive(
-              variableName = condition.variableName,
-              inverted = condition.inverted
-          )
-        }.toSet(),
+        conditions = this.condition.toAst().toSet(),
         override = this.selectionKeys.any { key -> key != selectionKey }
     )
+  }
+
+  private fun BackendIr.Condition.toAst(): List<CodeGenerationAst.Field.Condition.Directive> {
+    return when (this) {
+      is BackendIr.Condition.True -> emptyList()
+      is BackendIr.Condition.And -> conditions.filterIsInstance<BackendIr.Condition.Variable>().map {
+        CodeGenerationAst.Field.Condition.Directive(
+            variableName = it.name,
+            inverted = it.inverted
+        )
+      }
+      is BackendIr.Condition.Variable -> listOf(CodeGenerationAst.Field.Condition.Directive(
+          variableName = name,
+          inverted = inverted
+      ))
+      // FIXME
+      else -> emptyList()
+    }
   }
 
   private fun BackendIr.Field.resolveFieldType(
@@ -753,7 +765,7 @@ internal class AstBuilder private constructor(
 
       else -> throw IllegalArgumentException("Unsupported selection field type `$schemaTypeRef`")
     }.let { type ->
-      if (this.conditions.isNotEmpty()) type.nullable() else type
+      if (this.condition != BackendIr.Condition.True) type.nullable() else type
     }
   }
 

@@ -2,266 +2,187 @@ package com.apollographql.apollo.compiler.backend.ir
 
 import com.apollographql.apollo.compiler.PackageNameProvider
 import com.apollographql.apollo.compiler.backend.ir.BackendIrMergeUtils.mergeFields
-import com.apollographql.apollo.compiler.backend.ir.FrontendIrMergeUtils.mergeInlineFragmentsWithSameTypeConditions
 import com.apollographql.apollo.compiler.backend.ir.SelectionKeyUtils.addFieldSelectionKey
 import com.apollographql.apollo.compiler.backend.ir.SelectionKeyUtils.addFieldSelectionKeys
-import com.apollographql.apollo.compiler.frontend.GQLBooleanValue
-import com.apollographql.apollo.compiler.frontend.GQLDirective
-import com.apollographql.apollo.compiler.frontend.GQLField
-import com.apollographql.apollo.compiler.frontend.GQLFieldDefinition
-import com.apollographql.apollo.compiler.frontend.GQLFragmentDefinition
-import com.apollographql.apollo.compiler.frontend.GQLFragmentSpread
-import com.apollographql.apollo.compiler.frontend.GQLInlineFragment
 import com.apollographql.apollo.compiler.frontend.GQLNamedType
-import com.apollographql.apollo.compiler.frontend.GQLOperationDefinition
-import com.apollographql.apollo.compiler.frontend.GQLSelectionSet
-import com.apollographql.apollo.compiler.frontend.GQLType
-import com.apollographql.apollo.compiler.frontend.GQLValue
-import com.apollographql.apollo.compiler.frontend.GQLVariableValue
 import com.apollographql.apollo.compiler.frontend.Schema
 import com.apollographql.apollo.compiler.frontend.SourceLocation
-import com.apollographql.apollo.compiler.frontend.definitionFromScope
-import com.apollographql.apollo.compiler.frontend.findDeprecationReason
-import com.apollographql.apollo.compiler.frontend.leafType
+import com.apollographql.apollo.compiler.frontend.ir.FrontendIr
 import com.apollographql.apollo.compiler.frontend.possibleTypes
-import com.apollographql.apollo.compiler.frontend.responseName
-import com.apollographql.apollo.compiler.frontend.rootTypeDefinition
+import com.apollographql.apollo.compiler.frontend.schemaKind
 import com.apollographql.apollo.compiler.frontend.toKotlinValue
 import com.apollographql.apollo.compiler.frontend.toSchemaType
-import com.apollographql.apollo.compiler.frontend.toUtf8WithIndents
-import com.apollographql.apollo.compiler.frontend.usedFragmentNames
-import com.apollographql.apollo.compiler.frontend.validateAndCoerce
 import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
 
 internal class BackendIrBuilder constructor(
     private val schema: Schema,
-    private val fragmentDefinitions: Map<String, GQLFragmentDefinition>,
     private val useSemanticNaming: Boolean,
     val packageNameProvider: PackageNameProvider?
 ) {
+  lateinit var allFragmentDefinitions: Map<String, FrontendIr.NamedFragmentDefinition>
   fun buildBackendIR(
-      operations: List<GQLOperationDefinition>,
-      fragments: List<GQLFragmentDefinition>
+      frontendIr: FrontendIr
   ): BackendIr {
+    allFragmentDefinitions = frontendIr.allFragmentDefinitions
     return BackendIr(
-        operations = operations.map { operation ->
+        operations = frontendIr.operations.map { operation ->
           operation.buildBackendIrOperation()
         },
-        fragments = fragments
-            .map { fragment ->
-              fragment.buildBackendIrNamedFragment()
+        fragments = frontendIr.fragmentDefinitions
+            .map { fragmentDefinition ->
+              fragmentDefinition.buildBackendIrNamedFragment()
             }
     )
   }
 
-  /**
-   * a GroupedField is a list of fields with the same responseName and arguments but possibly different selectionSets and directives
-   */
-  private data class GroupedField(val fields: List<GQLField>)
-
-  private fun GQLValue.toBoolean(): Boolean? = when(this) {
-    is GQLBooleanValue -> this.value
-    else -> null
-  }
-
-  private fun GQLDirective.toBoolean(): Boolean? {
-    return when (name) {
-      "include" -> arguments!!.arguments.first().value.toBoolean()
-      "skip" -> arguments!!.arguments.first().value.toBoolean()?.not()
-      else -> null
-    }
-  }
-  private fun GroupedField.removeLiteralDirectives(): GroupedField? {
-    val newFields = fields.mapNotNull {
-      val isAlwaysSkipped = it.directives.firstOrNull { it.toBoolean() == false } != null
-      if (isAlwaysSkipped) {
-        // 3.13.2 the field or fragment must not be queried if either the @skip condition is true or the @include condition is false.
-        null
-      } else {
-        // Directives that are always true don't add any useful information
-        it.copy(directives = it.directives.filter {
-          it.toBoolean() != true
-        })
-      }
-    }
-    if (newFields.isEmpty()) {
-      return null
-    } else {
-      return copy(fields = newFields)
-    }
-  }
-  private fun GQLOperationDefinition.buildBackendIrOperation(): BackendIr.Operation {
+  private fun FrontendIr.Operation.buildBackendIrOperation(): BackendIr.Operation {
     val normalizedName = this.normalizeOperationName()
-    val rootTypeDefinition = this.rootTypeDefinition(schema)!!
+    val rootTypeDefinition = this.typeDefinition
     val selectionKey = SelectionKey(
         root = normalizedName,
         keys = listOf(normalizedName, "data"),
         type = SelectionKey.Type.Query,
     )
-    val dataFieldDefinition = GQLFieldDefinition(
-        description = "",
-        name = "data",
-        arguments = emptyList(),
-        directives = emptyList(),
-        type = GQLNamedType(name = rootTypeDefinition.name)
-    )
-    val dataField = GroupedField(
-        fields = listOf(
-            GQLField(
+
+    val dataField = FrontendIr.Selection.Field(
                 name = "data",
                 alias = null,
-                sourceLocation = SourceLocation.UNKNOWN,
-                arguments = null,
-                directives = emptyList(),
-                selectionSet = selectionSet
-            )
-        )
+                arguments = emptyList(),
+                condition = FrontendIr.Condition.True,
+                selections = selections,
+                type = FrontendIr.Type.Named(typeDefinition),
+                deprecationReason = null,
+                description = description
     ).buildBackendIrField(
         selectionKey = selectionKey,
         generateFragmentImplementations = true,
-        fieldDefinition = dataFieldDefinition
     )
-    val variables = this.variableDefinitions.map { variable ->
+    val variables = this.variables.map { variable ->
       BackendIr.Variable(
           name = variable.name,
-          type = variable.type.toSchemaType(schema)
+          type = variable.type.toSchemaType()
       )
     }
-    val fragmentNames = usedFragmentNames(schema, fragmentDefinitions)
     return BackendIr.Operation(
         name = normalizedName,
-        operationName = name!!,
-        targetPackageName = packageNameProvider?.operationPackageName(filePath = sourceLocation.filePath ?: "") ?: "",
+        operationName = name,
+        targetPackageName = packageNameProvider?.operationPackageName(filePath = gqlOperationDefinition.sourceLocation.filePath ?: "") ?: "",
         operationType = IntrospectionSchema.TypeRef(
             IntrospectionSchema.Kind.OBJECT,
             rootTypeDefinition.name
         ),
-        comment = this.description ?: "",
+        comment = description ?: "",
         variables = variables,
-        definition = (toUtf8WithIndents() + "\n" + fragmentNames.joinToString(
-            separator = "\n"
-        ) { fragmentName ->
-          fragmentDefinitions[fragmentName]!!.toUtf8WithIndents()
-        }).trimEnd('\n'),
+        definition = sourceWithFragments,
         dataField = dataField,
     )
   }
 
-  private fun GQLOperationDefinition.normalizeOperationName(): String {
+  private fun FrontendIr.Type.toSchemaType(): IntrospectionSchema.TypeRef {
+    return when (this) {
+      is FrontendIr.Type.NonNull -> {
+        IntrospectionSchema.TypeRef(
+            kind = IntrospectionSchema.Kind.NON_NULL,
+            name = "", // why "" and not null ?
+            ofType = ofType.toSchemaType()
+        )
+      }
+      is FrontendIr.Type.List -> {
+        IntrospectionSchema.TypeRef(
+            kind = IntrospectionSchema.Kind.LIST,
+            name = "", // why "" and not null ?
+            ofType = ofType.toSchemaType())
+      }
+      is FrontendIr.Type.Named -> {
+        IntrospectionSchema.TypeRef(
+            kind = typeDefinition.schemaKind(),
+            name = typeDefinition.name,
+            ofType = null
+        )
+      }
+    }
+  }
+
+
+  private fun FrontendIr.Operation.normalizeOperationName(): String {
     fun normalizeOperationName(
         useSemanticNaming: Boolean,
         operationNameSuffix: String,
     ): String {
-      require(name != null) {
-        "anonymous operations are not supported. This should have been caught during validation"
-      }
       return if (useSemanticNaming && !name.endsWith(operationNameSuffix)) {
         name.capitalize() + operationNameSuffix
       } else {
         name.capitalize()
       }
     }
-    return normalizeOperationName(useSemanticNaming, operationType.capitalize())
+    return normalizeOperationName(useSemanticNaming, operationType.name)
   }
 
-  private fun GroupedField.buildBackendIrField(
+  private fun FrontendIr.Selection.Field.buildBackendIrField(
       selectionKey: SelectionKey,
       generateFragmentImplementations: Boolean,
-      fieldDefinition: GQLFieldDefinition,
   ): BackendIr.Field {
-    val first  = fields.first()
-    val selections = fields.flatMap { it.selectionSet?.selections ?: emptyList() }
 
-    val selectionSet = selections.filterIsInstance<GQLField>().buildBackendIrFields(
+    val selectionSet = selections.filterIsInstance<FrontendIr.Selection.Field>().buildBackendIrFields(
         selectionKey = selectionKey,
         generateFragmentImplementations = generateFragmentImplementations,
-        parentType = fieldDefinition.type
     )
+
     val fragments = buildBackendIrFragments(
-        parentSelectionName = first.responseName(),
-        inlineFragments = selections.filterIsInstance<GQLInlineFragment>(),
-        namedFragments = selections.filterIsInstance<GQLFragmentSpread>(),
-        schemaType = fieldDefinition.type,
+        parentSelectionName = responseName,
+        inlineFragments = selections.filterIsInstance<FrontendIr.Selection.InlineFragment>(),
+        namedFragments = selections.filterIsInstance<FrontendIr.Selection.FragmentSpread>(),
+        type = type,
         selectionKey = selectionKey,
         selectionSet = selectionSet,
         generateFragmentImplementations = generateFragmentImplementations,
     )
 
-    val arguments = first.arguments?.arguments?.map { argument ->
-      val argumentType = fieldDefinition.arguments.first { it.name == argument.name }.type
+    val arguments = arguments.map { argument ->
       BackendIr.Argument(
           name = argument.name,
-          value = argument.value.validateAndCoerce(argumentType, schema, null)
-              .orThrow()
-              .toKotlinValue(false),
-          type = argumentType.toSchemaType(schema)
+          value = argument.value.toKotlinValue(false),
+          type = argument.type.toSchemaType()
       )
-    } ?: emptyList()
-
-    val conditions = fields.map { it.directives.mapNotNull { it.toCondition() } }
-        // TODO: this is wrong. If multiple field have @include/@skip directive, the resulting condition should be
-        // evaluated or'ing all the conditions on individual fields
-        .flatten()
+    }
 
     return BackendIr.Field(
-        name = first.name,
-        alias = first.alias,
-        type = fieldDefinition.type.toSchemaType(schema),
+        name = name,
+        alias = alias,
+        type = type.toSchemaType(),
         args = arguments,
         fields = selectionSet,
         fragments = fragments,
-        deprecationReason = fieldDefinition.directives.findDeprecationReason(),
-        description = fieldDefinition.description ?: "",
-        conditions = conditions,
+        deprecationReason = deprecationReason,
+        description = description ?: "",
+        condition = condition.toBackendIr(),
         selectionKeys = setOf(selectionKey),
     )
   }
 
-  private fun GQLDirective.toCondition(): BackendIr.Condition? {
-    if (arguments?.arguments?.size != 1) {
-      // skip and include both have only one argument
-      return null
-    }
-
-    val argument = arguments.arguments.first()
-
-    check (argument.value is GQLVariableValue) {
-      // see removeLiteralDirectives
-      "@include/@skip directives with literal values should have been removed. This is a bug, please file it on github"
-    }
-
-    return when (name) {
-      "skip",
-      "include" -> BackendIr.Condition(
-          kind = "BooleanCondition",
-          variableName = argument.value.name,
-          inverted = name == "skip",
-          type = BackendIr.Condition.Type.Boolean
-      )
-      else -> null // unrecognized directive, skip
+  private fun FrontendIr.Condition.toBackendIr(): BackendIr.Condition {
+    return when (this) {
+      is FrontendIr.Condition.True -> BackendIr.Condition.True
+      is FrontendIr.Condition.False -> BackendIr.Condition.False
+      is FrontendIr.Condition.Or -> BackendIr.Condition.Or(conditions = conditions.map { it.toBackendIr() }.toSet())
+      is FrontendIr.Condition.And -> BackendIr.Condition.And(conditions = conditions.map { it.toBackendIr() }.toSet())
+      is FrontendIr.Condition.Variable -> BackendIr.Condition.Variable(name = name, inverted = inverted)
     }
   }
 
-  private fun List<GQLField>.buildBackendIrFields(
+  private fun List<FrontendIr.Selection.Field>.buildBackendIrFields(
       selectionKey: SelectionKey,
       generateFragmentImplementations: Boolean,
-      parentType: GQLType
   ): List<BackendIr.Field> {
-    return this.groupBy { it.responseName() }.map {
-      GroupedField(it.value)
-    }.mapNotNull { it.removeLiteralDirectives() }
-        .map { groupedField ->
-      val first = groupedField.fields.first()
-      val fieldDefinition = first.definitionFromScope(schema, schema.typeDefinition(parentType.leafType().name))!!
-      groupedField.buildBackendIrField(
-          selectionKey = selectionKey + first.responseName(),
+    return this.map { field ->
+      field.buildBackendIrField(
+          selectionKey = selectionKey + field.responseName,
           generateFragmentImplementations = generateFragmentImplementations,
-          fieldDefinition
       )
     }
   }
 
-  private fun GQLFragmentDefinition.buildBackendIrNamedFragment(): BackendIr.NamedFragment {
+  private fun FrontendIr.NamedFragmentDefinition.buildBackendIrNamedFragment(): BackendIr.NamedFragment {
     val selectionSet = buildSelectionSet(
         rootSelectionKey = SelectionKey(
             root = this.name,
@@ -292,21 +213,19 @@ internal class BackendIrBuilder constructor(
     return BackendIr.NamedFragment(
         name = this.name,
         defaultImplementationName = "${this.name}Impl",
-        source = this.toUtf8WithIndents(),
         comment = this.description ?: "",
         selectionSet = selectionSet,
         defaultSelectionSet = defaultSelectionSet,
     )
   }
 
-  private fun GQLFragmentDefinition.buildSelectionSet(
+  private fun FrontendIr.NamedFragmentDefinition.buildSelectionSet(
       rootSelectionKey: SelectionKey,
       generateFragmentImplementations: Boolean,
   ): BackendIr.NamedFragment.SelectionSet {
-    val selectionSet = this.selectionSet.selections.filterIsInstance<GQLField>().buildBackendIrFields(
+    val selectionSet = this.selections.filterIsInstance<FrontendIr.Selection.Field>().buildBackendIrFields(
         selectionKey = rootSelectionKey,
         generateFragmentImplementations = generateFragmentImplementations,
-        parentType = typeCondition
     )
 
     // resolve all possible types
@@ -314,30 +233,30 @@ internal class BackendIrBuilder constructor(
 
     // build interfaces for the fragments
     val fragmentInterfaces = buildBackendIrFragmentInterfaces(
-        inlineFragments = this.selectionSet.selections.filterIsInstance<GQLInlineFragment>(),
-        namedFragments = this.selectionSet.selections.filterIsInstance<GQLFragmentSpread>(),
+        inlineFragments = this.selections.filterIsInstance<FrontendIr.Selection.InlineFragment>(),
+        namedFragments = this.selections.filterIsInstance<FrontendIr.Selection.FragmentSpread>(),
         fieldPossibleTypes = possibleTypes,
         selectionKey = rootSelectionKey,
-        selectionSet = selectionSet,
+        fields = selectionSet,
     )
 
     // build implementations for the fragments if we allowed to do so
     val fragmentImplementations = if (generateFragmentImplementations) {
       buildFragmentImplementations(
           parentSelectionName = this.name,
-          inlineFragments = this.selectionSet.selections.filterIsInstance<GQLInlineFragment>(),
-          namedFragments = this.selectionSet.selections.filterIsInstance<GQLFragmentSpread>(),
+          inlineFragments = this.selections.filterIsInstance<FrontendIr.Selection.InlineFragment>(),
+          namedFragments = this.selections.filterIsInstance<FrontendIr.Selection.FragmentSpread>(),
           fieldPossibleTypes = possibleTypes,
           selectionKey = rootSelectionKey,
-          selectionSet = selectionSet,
+          fields = selectionSet,
       )
     } else emptyList()
 
     return BackendIr.NamedFragment.SelectionSet(
         fields = selectionSet,
         fragments = fragmentInterfaces + fragmentImplementations,
-        typeCondition = this.typeCondition.toSchemaType(schema),
-        possibleTypes = possibleTypes.map { GQLNamedType(sourceLocation = SourceLocation.UNKNOWN, it).toSchemaType(schema) },
+        typeCondition = FrontendIr.Type.Named(typeCondition).toSchemaType(),
+        possibleTypes = possibleTypes.map { FrontendIr.Type.Named(schema.typeDefinition(it)).toSchemaType() },
         selectionKeys = setOf(rootSelectionKey)
     )
   }
@@ -465,15 +384,15 @@ internal class BackendIrBuilder constructor(
   // builds fragment interfaces and implementations for given field
   private fun buildBackendIrFragments(
       parentSelectionName: String,
-      inlineFragments: List<GQLInlineFragment>,
-      namedFragments: List<GQLFragmentSpread>,
-      schemaType: GQLType,
+      inlineFragments: List<FrontendIr.Selection.InlineFragment>,
+      namedFragments: List<FrontendIr.Selection.FragmentSpread>,
+      type: FrontendIr.Type,
       selectionKey: SelectionKey,
       selectionSet: List<BackendIr.Field>,
       generateFragmentImplementations: Boolean,
   ): List<BackendIr.Fragment> {
     // resolve all field's possible types
-    val possibleTypes = schema.typeDefinition(schemaType.leafType().name)
+    val possibleTypes = type.leafTypeDefinition
         .possibleTypes(schema.typeDefinitions)
 
     // build interfaces for the fragments
@@ -482,7 +401,7 @@ internal class BackendIrBuilder constructor(
         namedFragments = namedFragments,
         fieldPossibleTypes = possibleTypes,
         selectionKey = selectionKey,
-        selectionSet = selectionSet,
+        fields = selectionSet,
     )
 
     // build implementations for the fragments if we allowed to do so
@@ -493,7 +412,7 @@ internal class BackendIrBuilder constructor(
           namedFragments = namedFragments,
           fieldPossibleTypes = possibleTypes,
           selectionKey = selectionKey,
-          selectionSet = selectionSet,
+          fields = selectionSet,
       )
     } else emptyList()
 
@@ -501,18 +420,18 @@ internal class BackendIrBuilder constructor(
   }
 
   private fun buildBackendIrFragmentInterfaces(
-      inlineFragments: List<GQLInlineFragment>,
-      namedFragments: List<GQLFragmentSpread>,
+      inlineFragments: List<FrontendIr.Selection.InlineFragment>,
+      namedFragments: List<FrontendIr.Selection.FragmentSpread>,
       fieldPossibleTypes: Set<String>,
       selectionKey: SelectionKey,
-      selectionSet: List<BackendIr.Field>,
+      fields: List<BackendIr.Field>,
   ): List<BackendIr.Fragment.Interface> {
     // build all defined fragment interfaces including nested ones
     val fragments = buildGenericFragments(
         inlineFragments = inlineFragments,
         namedFragments = namedFragments,
         selectionKey = selectionKey,
-        selectionSet = selectionSet,
+        selectionSet = fields,
         generateFragmentImplementations = false
     )
         // flatten fragments structure (remove nesting)
@@ -545,18 +464,18 @@ internal class BackendIrBuilder constructor(
 
   private fun buildFragmentImplementations(
       parentSelectionName: String,
-      inlineFragments: List<GQLInlineFragment>,
-      namedFragments: List<GQLFragmentSpread>,
+      inlineFragments: List<FrontendIr.Selection.InlineFragment>,
+      namedFragments: List<FrontendIr.Selection.FragmentSpread>,
       fieldPossibleTypes: Set<String>,
       selectionKey: SelectionKey,
-      selectionSet: List<BackendIr.Field>,
+      fields: List<BackendIr.Field>,
   ): List<BackendIr.Fragment.Implementation> {
     // build all defined fragment implementations including nested ones
     val fragments = buildGenericFragments(
         inlineFragments = inlineFragments,
         namedFragments = namedFragments,
         selectionKey = selectionKey,
-        selectionSet = selectionSet,
+        selectionSet = fields,
         generateFragmentImplementations = true
     )
         // flatten fragments structure (remove nesting)
@@ -599,15 +518,14 @@ internal class BackendIrBuilder constructor(
   }
 
   private fun buildGenericFragments(
-      inlineFragments: List<GQLInlineFragment>,
-      namedFragments: List<GQLFragmentSpread>,
+      inlineFragments: List<FrontendIr.Selection.InlineFragment>,
+      namedFragments: List<FrontendIr.Selection.FragmentSpread>,
       selectionKey: SelectionKey,
       selectionSet: List<BackendIr.Field>,
       generateFragmentImplementations: Boolean,
   ): List<GenericFragment> {
     // build generic fragments from inline fragments
     val genericInlineFragments = inlineFragments
-        .mergeInlineFragmentsWithSameTypeConditions()
         .map { inlineFragment ->
           inlineFragment.buildGenericFragment(
               parentSelectionKey = selectionKey,
@@ -618,7 +536,7 @@ internal class BackendIrBuilder constructor(
         }
     // build generic fragments from named fragments
     val genericNamedFragments = namedFragments
-        .map { fragmentSpread -> fragmentDefinitions.get(fragmentSpread.name)!! }
+        .map { fragmentSpread -> allFragmentDefinitions.get(fragmentSpread.name)!! }
         .map { namedFragment ->
           namedFragment.buildGenericFragment(
               parentSelectionKey = selectionKey,
@@ -630,27 +548,27 @@ internal class BackendIrBuilder constructor(
     return genericInlineFragments + genericNamedFragments
   }
 
-  private fun GQLInlineFragment.buildGenericFragment(
+  private fun FrontendIr.Selection.InlineFragment.buildGenericFragment(
       parentSelectionKey: SelectionKey,
       parentSelectionSet: List<BackendIr.Field>,
       parentNamedFragmentSelectionKeys: Set<SelectionKey>,
       generateFragmentImplementations: Boolean,
   ): GenericFragment {
-    val typeDefinition = schema.typeDefinition(typeCondition.name)
+    val typeDefinition = fragmentDefinition.typeCondition
     return buildGenericFragment(
-        fragmentTypeCondition = typeCondition.name,
-        selectionSet = selectionSet,
+        fragmentTypeCondition = typeDefinition.name,
+        selections = fragmentDefinition.selections,
         fragmentDescription = typeDefinition.description ?: "",
-        fragmentConditions = directives.mapNotNull { it.toCondition() },
+        fragmentCondition = condition.toBackendIr(),
         namedFragmentSelectionKey = null,
         parentSelectionKey = parentSelectionKey,
-        parentSelectionSet = parentSelectionSet,
+        parentFields = parentSelectionSet,
         parentNamedFragmentSelectionKeys = parentNamedFragmentSelectionKeys,
         generateFragmentImplementations = generateFragmentImplementations
     )
   }
 
-  private fun GQLFragmentDefinition.buildGenericFragment(
+  private fun FrontendIr.NamedFragmentDefinition.buildGenericFragment(
       parentSelectionKey: SelectionKey,
       parentSelectionSet: List<BackendIr.Field>,
       parentNamedFragmentSelectionKeys: Set<SelectionKey>,
@@ -658,16 +576,16 @@ internal class BackendIrBuilder constructor(
   ): GenericFragment {
     return buildGenericFragment(
         fragmentTypeCondition = typeCondition.name,
-        selectionSet = selectionSet,
+        selections = selections,
         fragmentDescription = this.description ?: "",
-        fragmentConditions = emptyList(),
+        fragmentCondition = BackendIr.Condition.True,
         namedFragmentSelectionKey = SelectionKey(
             root = this.name.capitalize(),
             keys = listOf(this.name.capitalize()),
             type = SelectionKey.Type.Fragment,
         ),
         parentSelectionKey = parentSelectionKey,
-        parentSelectionSet = parentSelectionSet,
+        parentFields = parentSelectionSet,
         parentNamedFragmentSelectionKeys = parentNamedFragmentSelectionKeys,
         generateFragmentImplementations = generateFragmentImplementations
     )
@@ -726,22 +644,21 @@ internal class BackendIrBuilder constructor(
    */
   private fun buildGenericFragment(
       fragmentTypeCondition: String,
-      selectionSet: GQLSelectionSet,
+      selections: List<FrontendIr.Selection>,
       fragmentDescription: String,
-      fragmentConditions: List<BackendIr.Condition>,
+      fragmentCondition: BackendIr.Condition,
       namedFragmentSelectionKey: SelectionKey?,
       parentSelectionKey: SelectionKey,
-      parentSelectionSet: List<BackendIr.Field>,
+      parentFields: List<BackendIr.Field>,
       parentNamedFragmentSelectionKeys: Set<SelectionKey>,
       generateFragmentImplementations: Boolean,
   ): GenericFragment {
     val fragmentName = fragmentTypeCondition.capitalize()
-    val fragmentSelectionSet = selectionSet.selections.filterIsInstance<GQLField>().buildBackendIrFields(
+    val fragmentSelectionSet = selections.filterIsInstance<FrontendIr.Selection.Field>().buildBackendIrFields(
         selectionKey = parentSelectionKey + fragmentName,
         generateFragmentImplementations = generateFragmentImplementations,
-        parentType = GQLNamedType(sourceLocation = SourceLocation.UNKNOWN, fragmentTypeCondition)
     ).addFieldSelectionKey(namedFragmentSelectionKey)
-    val parentSelectionSet = parentSelectionSet
+    val parentSelectionSet = parentFields
         .addFieldSelectionKey(parentSelectionKey + fragmentName)
         .map { field ->
           field.addFieldSelectionKeys(
@@ -756,19 +673,19 @@ internal class BackendIrBuilder constructor(
           )
         }
         .mergeFields(fragmentSelectionSet)
-    val childInlineFragments = selectionSet.selections.filterIsInstance<GQLInlineFragment>().map { inlineFragment ->
+    val childInlineFragments = selections.filterIsInstance<FrontendIr.Selection.InlineFragment>().map { inlineFragment ->
       val fragment = buildGenericFragment(
-          fragmentTypeCondition = inlineFragment.typeCondition.name,
-          selectionSet = inlineFragment.selectionSet,
-          fragmentDescription = schema.typeDefinition(inlineFragment.typeCondition.name).description ?: "",
-          fragmentConditions = inlineFragment.directives.mapNotNull { it.toCondition() },
+          fragmentTypeCondition = inlineFragment.fragmentDefinition.typeCondition.name,
+          selections = inlineFragment.fragmentDefinition.selections,
+          fragmentDescription = inlineFragment.fragmentDefinition.typeCondition.description ?: "",
+          fragmentCondition = inlineFragment.condition.toBackendIr(),
           namedFragmentSelectionKey = namedFragmentSelectionKey?.let { selectionKey ->
             selectionKey.copy(
-                keys = listOf(selectionKey.keys.first(), inlineFragment.typeCondition.name.capitalize())
+                keys = listOf(selectionKey.keys.first(), inlineFragment.fragmentDefinition.typeCondition.name.capitalize())
             )
           },
           parentSelectionKey = parentSelectionKey,
-          parentSelectionSet = parentSelectionSet,
+          parentFields = parentSelectionSet,
           parentNamedFragmentSelectionKeys = parentNamedFragmentSelectionKeys.run {
             if (namedFragmentSelectionKey != null) {
               this + namedFragmentSelectionKey
@@ -780,20 +697,20 @@ internal class BackendIrBuilder constructor(
           selectionKeys = fragment.selectionKeys + (parentSelectionKey + fragmentName)
       )
     }
-    val childNamedFragments = selectionSet.selections.filterIsInstance<GQLFragmentSpread>().map { namedFragment ->
-      val fragmentDefinition = fragmentDefinitions.get(namedFragment.name)!!
+    val childNamedFragments = selections.filterIsInstance<FrontendIr.Selection.FragmentSpread>().map { namedFragment ->
+      val fragmentDefinition = allFragmentDefinitions.get(namedFragment.name)!!
       buildGenericFragment(
           fragmentTypeCondition = fragmentDefinition.typeCondition.name,
-          selectionSet = fragmentDefinition.selectionSet,
+          selections = fragmentDefinition.selections,
           fragmentDescription = fragmentDefinition.description ?: "",
-          fragmentConditions = emptyList(),
+          fragmentCondition = BackendIr.Condition.True,
           namedFragmentSelectionKey = SelectionKey(
               root = namedFragment.name.capitalize(),
               keys = listOf(namedFragment.name.capitalize()),
               type = SelectionKey.Type.Fragment,
           ),
           parentSelectionKey = parentSelectionKey,
-          parentSelectionSet = parentSelectionSet,
+          parentFields = parentSelectionSet,
           parentNamedFragmentSelectionKeys = parentNamedFragmentSelectionKeys.run {
             if (namedFragmentSelectionKey != null) {
               this + namedFragmentSelectionKey
@@ -823,7 +740,7 @@ internal class BackendIrBuilder constructor(
         possibleTypes = schema.typeDefinition(fragmentTypeCondition).possibleTypes(schema.typeDefinitions).toList(),
         description = fragmentDescription,
         selectionSet = parentSelectionSet,
-        conditions = fragmentConditions,
+        condition = fragmentCondition,
         nestedFragments = childInlineFragments + childNamedFragments,
         selectionKeys = selectionKeys,
     )
@@ -893,7 +810,7 @@ internal class BackendIrBuilder constructor(
       val possibleTypes: List<String>,
       val description: String,
       val selectionSet: List<BackendIr.Field>,
-      val conditions: List<BackendIr.Condition>,
+      val condition: BackendIr.Condition,
       val nestedFragments: List<GenericFragment>,
       val selectionKeys: Set<SelectionKey>,
   )

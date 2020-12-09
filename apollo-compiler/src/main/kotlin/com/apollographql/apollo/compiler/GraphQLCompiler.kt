@@ -11,6 +11,7 @@ import com.apollographql.apollo.compiler.frontend.GraphQLParser
 import com.apollographql.apollo.compiler.frontend.Issue
 import com.apollographql.apollo.compiler.frontend.Schema
 import com.apollographql.apollo.compiler.frontend.SourceAwareException
+import com.apollographql.apollo.compiler.frontend.ir.FrontendIrBuilder
 import com.apollographql.apollo.compiler.frontend.toIntrospectionSchema
 import com.apollographql.apollo.compiler.frontend.toSchema
 import com.apollographql.apollo.compiler.frontend.withTypenameWhenNeeded
@@ -83,10 +84,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
       it.definitions.filterIsInstance<GQLOperationDefinition>()
     }.map {
       it.withTypenameWhenNeeded(schema)
-      // TODO: Simplify the document before handing them out to the BackIRBuilder
     }
-
-    val fragmentDefinitions = (fragments + metadataFragments).associateBy { it.name }
 
     val typesToGenerate = computeTypesToGenerate(
         documents = documents,
@@ -95,12 +93,18 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
         alwaysGenerateTypesMatching = args.alwaysGenerateTypesMatching
     )
 
+    val frontendIr = FrontendIrBuilder(
+        schema = schema,
+        operationDefinitions = operations,
+        fragmentDefinitions = fragments,
+        metadataFragmentDefinitions = metadataFragments
+    ).build()
+
     val backendIr = BackendIrBuilder(
         schema = schema,
-        fragmentDefinitions = fragmentDefinitions,
         useSemanticNaming = args.useSemanticNaming,
         packageNameProvider = packageNameProvider
-    ).buildBackendIR(operations = operations, fragments = fragments)
+    ).buildBackendIR(frontendIr)
 
     val operationOutput = backendIr.operations.map {
       OperationDescriptor(

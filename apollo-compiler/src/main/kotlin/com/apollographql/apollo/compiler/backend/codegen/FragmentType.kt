@@ -31,10 +31,6 @@ internal fun CodeGenerationAst.FragmentType.interfaceTypeSpec(generateAsInternal
       )
       .addType(
           TypeSpec.companionObjectBuilder()
-              .addProperty(PropertySpec.builder("FRAGMENT_DEFINITION", String::class)
-                  .initializer(CodeBlock.of("%S", fragmentDefinition))
-                  .build()
-              )
               .addFunction(
                   FunSpec.builder("invoke")
                       .addModifiers(KModifier.OPERATOR)

@@ -119,14 +119,6 @@ open class ResponseField internal constructor(
   open class Condition internal constructor() {
     companion object {
       /**
-       * Creates new [TypeNameCondition] with provided [types] conditions.
-       */
-      @JvmStatic
-      fun typeCondition(types: Array<String>): TypeNameCondition {
-        return TypeNameCondition(listOf(*types))
-      }
-
-      /**
        * Creates new [BooleanCondition] for provided [variableName].
        */
       @JvmStatic
@@ -137,50 +129,12 @@ open class ResponseField internal constructor(
   }
 
   /**
-   * Abstraction for type name condition
-   */
-  class TypeNameCondition internal constructor(
-      val typeNames: List<String>
-  ) : Condition() {
-
-    override fun equals(other: Any?): Boolean {
-      if (this === other) return true
-      if (other !is TypeNameCondition) return false
-
-      if (typeNames != other.typeNames) return false
-
-      return true
-    }
-
-    override fun hashCode(): Int {
-      return typeNames.hashCode()
-    }
-  }
-
-  /**
    * Abstraction for boolean condition
    */
-  class BooleanCondition internal constructor(
+  data class BooleanCondition internal constructor(
       val variableName: String,
       val isInverted: Boolean
-  ) : Condition() {
-
-    override fun equals(other: Any?): Boolean {
-      if (this === other) return true
-      if (other !is BooleanCondition) return false
-
-      if (variableName != other.variableName) return false
-      if (isInverted != other.isInverted) return false
-
-      return true
-    }
-
-    override fun hashCode(): Int {
-      var result = variableName.hashCode()
-      result = 31 * result + isInverted.hashCode()
-      return result
-    }
-  }
+  ) : Condition()
 
   companion object {
     private const val VARIABLE_IDENTIFIER_KEY = "kind"
