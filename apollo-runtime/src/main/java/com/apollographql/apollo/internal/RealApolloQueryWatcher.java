@@ -29,7 +29,7 @@ import static com.apollographql.apollo.internal.CallState.TERMINATED;
 
 final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
   private RealApolloCall<T> activeCall;
-  private ResponseFetcher refetchResponseFetcher = ApolloResponseFetchers.CACHE_FIRST;
+  private ResponseFetcher refetchResponseFetcher;
   final ApolloStore apolloStore;
   Set<String> dependentKeys = Collections.emptySet();
   final ApolloLogger logger;
@@ -44,11 +44,18 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
   private final AtomicReference<CallState> state = new AtomicReference<>(IDLE);
   private final AtomicReference<ApolloCall.Callback<T>> originalCallback = new AtomicReference<>();
 
-  RealApolloQueryWatcher(RealApolloCall<T> originalCall, ApolloStore apolloStore, ApolloLogger logger, ApolloCallTracker tracker) {
+  RealApolloQueryWatcher(
+      RealApolloCall<T> originalCall,
+      ApolloStore apolloStore,
+      ApolloLogger logger,
+      ApolloCallTracker tracker,
+      ResponseFetcher refetchResponseFetcher
+      ) {
     this.activeCall = originalCall;
     this.apolloStore = apolloStore;
     this.logger = logger;
     this.tracker = tracker;
+    this.refetchResponseFetcher = refetchResponseFetcher;
   }
 
   @Override public ApolloQueryWatcher<T> enqueueAndWatch(@Nullable final ApolloCall.Callback<T> callback) {
@@ -127,7 +134,7 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
   }
 
   @NotNull @Override public ApolloQueryWatcher<T> clone() {
-    return new RealApolloQueryWatcher<>(activeCall.clone(), apolloStore, logger, tracker);
+    return new RealApolloQueryWatcher<>(activeCall.clone(), apolloStore, logger, tracker, refetchResponseFetcher);
   }
 
   private ApolloCall.Callback<T> callbackProxy() {

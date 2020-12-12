@@ -20,6 +20,7 @@ import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.exception.ApolloParseException;
+import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
@@ -154,7 +155,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   }
 
   @NotNull @Override public RealApolloQueryWatcher<T> watcher() {
-    return new RealApolloQueryWatcher<>(clone(), apolloStore, logger, tracker);
+    return new RealApolloQueryWatcher<>(clone(), apolloStore, logger, tracker, ApolloResponseFetchers.CACHE_FIRST);
   }
 
   @NotNull @Override public RealApolloCall<T> httpCachePolicy(@NotNull HttpCachePolicy.Policy httpCachePolicy) {
