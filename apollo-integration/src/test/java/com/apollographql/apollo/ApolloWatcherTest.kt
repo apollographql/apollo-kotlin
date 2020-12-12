@@ -1,5 +1,7 @@
 package com.apollographql.apollo
 
+import com.apollographql.apollo.ApolloCall.Callback
+import com.apollographql.apollo.ApolloCall.StatusEvent
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.cache.CacheHeaders
@@ -8,16 +10,23 @@ import com.apollographql.apollo.cache.normalized.internal.Transaction
 import com.apollographql.apollo.cache.normalized.internal.WriteableStore
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
+import com.apollographql.apollo.coroutines.await
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.yield
+import com.apollographql.apollo.coroutines.toFlow
 import com.apollographql.apollo.exception.ApolloException
-import com.apollographql.apollo.ApolloCall.Callback
-import com.apollographql.apollo.ApolloCall.StatusEvent
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
+import com.apollographql.apollo.integration.normalizer.StarshipByIdQuery
 import com.apollographql.apollo.integration.normalizer.type.Episode
 import com.google.common.truth.Truth
-import io.reactivex.functions.Predicate
+import com.google.common.truth.Truth.assertThat
 import junit.framework.Assert
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockWebServer
@@ -26,20 +35,17 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.InOrder
 import org.mockito.Mockito
+import org.mockito.Mockito.inOrder
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeoutException
-import com.google.common.truth.Truth.assertThat
-import junit.framework.Assert.fail
-import org.mockito.Mockito.inOrder
-import org.mockito.Mockito.mock
 
 class ApolloWatcherTest {
   private lateinit var apolloClient: ApolloClient
 
   @get:Rule
   val server = MockWebServer()
-  
+
   @Before
   @Throws(IOException::class)
   fun setUp() {
@@ -61,7 +67,6 @@ class ApolloWatcherTest {
   }
 
   @Test
-  @Throws(Exception::class)
   fun testQueryWatcherUpdated_SameQuery_DifferentResults() {
     val heroNameList: MutableList<String> = ArrayList()
     val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build()
@@ -126,7 +131,6 @@ class ApolloWatcherTest {
   }
 
   @Test
-  @Throws(Exception::class)
   fun testQueryWatcherNotUpdated_SameQuery_SameResults() {
     val heroNameList: MutableList<String> = ArrayList()
     val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build()
@@ -150,7 +154,6 @@ class ApolloWatcherTest {
   }
 
   @Test
-  @Throws(Exception::class)
   fun testQueryWatcherUpdated_DifferentQuery_DifferentResults() {
     val heroNameList: MutableList<String> = ArrayList()
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
@@ -181,7 +184,6 @@ class ApolloWatcherTest {
   }
 
   @Test
-  @Throws(Exception::class)
   fun testQueryWatcherNotUpdated_DifferentQueries() {
     val heroNameList: MutableList<String> = ArrayList()
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
@@ -206,7 +208,6 @@ class ApolloWatcherTest {
   }
 
   @Test
-  @Throws(Exception::class)
   fun testRefetchCacheControl() {
     val heroNameList: MutableList<String> = ArrayList()
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
@@ -238,7 +239,6 @@ class ApolloWatcherTest {
   }
 
   @Test
-  @Throws(Exception::class)
   fun testQueryWatcherUpdated_SameQuery_DifferentResults_cacheOnly() {
     val heroNameList: MutableList<String> = ArrayList()
     val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build()
@@ -272,7 +272,6 @@ class ApolloWatcherTest {
   }
 
   @Test
-  @Throws(Exception::class)
   fun testQueryWatcherNotCalled_WhenCanceled() {
     val heroNameList: MutableList<String> = ArrayList()
     val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build()
@@ -300,9 +299,8 @@ class ApolloWatcherTest {
   }
 
   @Test
-  @Throws(Exception::class)
   fun emptyCacheQueryWatcherCacheOnly() {
-    val watchedHeroes: MutableList<EpisodeHeroNameQuery.Hero?> = ArrayList<EpisodeHeroNameQuery.Hero?>()
+    val watchedHeroes = ArrayList<EpisodeHeroNameQuery.Hero?>()
     val query = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))
     apolloClient.query(query)
         .responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
@@ -334,11 +332,10 @@ class ApolloWatcherTest {
   }
 
   @Test
-  @Throws(Exception::class)
   fun queryWatcher_onStatusEvent_properlyCalled() {
-    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build()
+    val query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build()
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
-    val watcher: ApolloQueryWatcher<EpisodeHeroNameQuery.Data> = apolloClient.query(query).watcher()
+    val watcher = apolloClient.query(query).watcher()
     val callback = Mockito.mock(ApolloCall.Callback::class.java) as ApolloCall.Callback<EpisodeHeroNameQuery.Data>
     watcher.enqueueAndWatch(callback)
     val inOrder: InOrder = inOrder(callback)
@@ -346,5 +343,41 @@ class ApolloWatcherTest {
     inOrder.verify(callback).onStatusEvent(StatusEvent.FETCH_CACHE)
     inOrder.verify(callback).onStatusEvent(StatusEvent.FETCH_NETWORK)
     inOrder.verify(callback).onStatusEvent(StatusEvent.COMPLETED)
+  }
+
+  @Test
+  fun queryWatcherWithCacheOnlyNeverGoesToTheNetwork() {
+    runBlocking {
+      val channel = Channel<Response<EpisodeHeroNameQuery.Data>>(capacity = Channel.UNLIMITED)
+      val job = launch {
+        apolloClient.query(EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build())
+            .responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
+            .watcher()
+            .refetchResponseFetcher(ApolloResponseFetchers.CACHE_ONLY)
+            .toFlow()
+            .collect {
+              println("got $it")
+              channel.send(it)
+            }
+      }
+
+      val response1 = channel.receive()
+      assertThat(response1.data).isNull()
+      assertThat(response1.isFromCache).isTrue()
+
+      server.enqueue(Utils.mockResponse("StarshipByIdResponse.json"))
+      server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
+
+      // execute a query that doesn't share any key with the main query
+      // that will trigger a refetch that shouldn't throw
+      apolloClient.query(StarshipByIdQuery("Starship1")).await()
+
+      val response2 = channel.receive()
+      // There should be no data
+      assertThat(response2.data).isNull()
+      assertThat(response2.isFromCache).isTrue()
+
+      job.cancel()
+    }
   }
 }
