@@ -356,7 +356,6 @@ class ApolloWatcherTest {
             .refetchResponseFetcher(ApolloResponseFetchers.CACHE_ONLY)
             .toFlow()
             .collect {
-              println("got $it")
               channel.send(it)
             }
       }
@@ -375,6 +374,38 @@ class ApolloWatcherTest {
       val response2 = channel.receive()
       // There should be no data
       assertThat(response2.data).isNull()
+      assertThat(response2.isFromCache).isTrue()
+
+      job.cancel()
+    }
+  }
+
+  @Test
+  fun queryWatcherWithCacheOnlyCanBeUpdatedFromAnotherQuery() {
+    runBlocking {
+      val channel = Channel<Response<EpisodeHeroNameQuery.Data>>(capacity = Channel.UNLIMITED)
+      val job = launch {
+        apolloClient.query(EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build())
+            .responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
+            .watcher()
+            .refetchResponseFetcher(ApolloResponseFetchers.CACHE_ONLY)
+            .toFlow()
+            .collect {
+              channel.send(it)
+            }
+      }
+
+      val response1 = channel.receive()
+      assertThat(response1.data).isNull()
+      assertThat(response1.isFromCache).isTrue()
+
+      // execute a query that should go to the network and trigger a result from the watcher
+      server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
+      apolloClient.query(EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build()).await()
+
+      val response2 = channel.receive()
+
+      assertThat(response2.data()?.hero()?.name()).isEqualTo("R2-D2")
       assertThat(response2.isFromCache).isTrue()
 
       job.cancel()
