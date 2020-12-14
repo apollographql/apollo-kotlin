@@ -8,6 +8,7 @@ import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.SetProperty
+import org.gradle.util.GradleVersion
 import javax.inject.Inject
 
 abstract class DefaultCompilerParams @Inject constructor(objects: ObjectFactory) : CompilerParams {
@@ -42,11 +43,16 @@ abstract class DefaultCompilerParams @Inject constructor(objects: ObjectFactory)
   abstract override val alwaysGenerateTypesMatching: SetProperty<String>
 
   init {
-    // see https://github.com/gradle/gradle/issues/7485
-    // TODO replace with `convention(null)` when we can target Gradle 6.2
-    customTypeMapping.set(null as Map<String, String>?)
-    sealedClassesForEnumsMatching.set(null as List<String>?)
-    alwaysGenerateTypesMatching.set(null as Set<String>?)
+    if (GradleVersion.current() >= GradleVersion.version("6.2")) {
+      // This allows users to call customTypeMapping.put("Date", "java.util.Date")
+      // see https://github.com/gradle/gradle/issues/7485
+      customTypeMapping.convention(null as Map<String, String>?)
+      sealedClassesForEnumsMatching.convention(null as List<String>?)
+      alwaysGenerateTypesMatching.convention(null as Set<String>?)
+    } else {
+      customTypeMapping.set(null as Map<String, String>?)
+      sealedClassesForEnumsMatching.set(null as List<String>?)
+      alwaysGenerateTypesMatching.set(null as Set<String>?)
+    }
   }
-
 }
