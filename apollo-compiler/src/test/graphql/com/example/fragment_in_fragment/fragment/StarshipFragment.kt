@@ -115,22 +115,6 @@ interface StarshipFragment : GraphqlFragment {
   }
 
   companion object {
-    val FRAGMENT_DEFINITION: String = """
-        |fragment starshipFragment on Starship {
-        |  __typename
-        |  id
-        |  name
-        |  pilotConnection {
-        |    edges {
-        |      node {
-        |        __typename
-        |        ...pilotFragment
-        |      }
-        |    }
-        |  }
-        |}
-        """.trimMargin()
-
     operator fun invoke(reader: ResponseReader): StarshipFragment {
       return StarshipFragmentImpl_ResponseAdapter.fromResponse(reader)
     }

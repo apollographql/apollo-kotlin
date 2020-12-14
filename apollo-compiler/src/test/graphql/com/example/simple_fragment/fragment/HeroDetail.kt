@@ -38,13 +38,6 @@ internal interface HeroDetail : GraphqlFragment {
   }
 
   companion object {
-    val FRAGMENT_DEFINITION: String = """
-        |fragment HeroDetails on Character {
-        |  __typename
-        |  ...HumanDetails
-        |}
-        """.trimMargin()
-
     operator fun invoke(reader: ResponseReader): HeroDetail {
       return HeroDetailsImpl_ResponseAdapter.fromResponse(reader)
     }

@@ -30,14 +30,6 @@ interface CharacterDetail : GraphqlFragment {
   val birthDate: Any
 
   companion object {
-    val FRAGMENT_DEFINITION: String = """
-        |fragment CharacterDetails on Character {
-        |  __typename
-        |  name
-        |  birthDate
-        |}
-        """.trimMargin()
-
     operator fun invoke(reader: ResponseReader): CharacterDetail {
       return CharacterDetailsImpl_ResponseAdapter.fromResponse(reader)
     }

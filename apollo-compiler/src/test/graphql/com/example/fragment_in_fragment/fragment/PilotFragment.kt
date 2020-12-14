@@ -57,17 +57,6 @@ interface PilotFragment : GraphqlFragment {
   }
 
   companion object {
-    val FRAGMENT_DEFINITION: String = """
-        |fragment pilotFragment on Person {
-        |  __typename
-        |  name
-        |  homeworld {
-        |    __typename
-        |    ...planetFragment
-        |  }
-        |}
-        """.trimMargin()
-
     operator fun invoke(reader: ResponseReader): PilotFragment {
       return PilotFragmentImpl_ResponseAdapter.fromResponse(reader)
     }

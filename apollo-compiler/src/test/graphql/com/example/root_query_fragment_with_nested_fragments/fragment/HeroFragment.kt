@@ -24,13 +24,6 @@ interface HeroFragment : GraphqlFragment {
   val name: String
 
   companion object {
-    val FRAGMENT_DEFINITION: String = """
-        |fragment heroFragment on Character {
-        |  __typename
-        |  name
-        |}
-        """.trimMargin()
-
     operator fun invoke(reader: ResponseReader): HeroFragment {
       return HeroFragmentImpl_ResponseAdapter.fromResponse(reader)
     }

@@ -29,14 +29,6 @@ interface DroidFragment : GraphqlFragment {
   val primaryFunction: String?
 
   companion object {
-    val FRAGMENT_DEFINITION: String = """
-        |fragment droidFragment on Droid {
-        |  __typename
-        |  name
-        |  primaryFunction
-        |}
-        """.trimMargin()
-
     operator fun invoke(reader: ResponseReader): DroidFragment {
       return DroidFragmentImpl_ResponseAdapter.fromResponse(reader)
     }
