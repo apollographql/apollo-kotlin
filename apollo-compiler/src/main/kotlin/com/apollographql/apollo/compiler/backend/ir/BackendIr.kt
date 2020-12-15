@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler.backend.ir
 
+import com.apollographql.apollo.compiler.frontend.GQLOperationDefinition
 import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
 
 internal data class SelectionKey(
@@ -60,7 +61,7 @@ internal data class BackendIr(
       val args: List<Argument>,
       val fields: List<Field>,
       val fragments: List<Fragment>,
-      val conditions: List<Condition>,
+      val condition: Condition,
       val description: String,
       val deprecationReason: String?,
       val selectionKeys: Set<SelectionKey>,
@@ -74,14 +75,31 @@ internal data class BackendIr(
       val type: IntrospectionSchema.TypeRef,
   )
 
-  data class Condition(
-      val kind: String,
-      val variableName: String,
-      val inverted: Boolean,
-      val type: Type,
-  ) {
-    enum class Type {
-      Boolean,
+  sealed class Condition {
+
+    object True : Condition() {
+    }
+
+    object False : Condition() {
+    }
+
+    data class Or(val conditions: Set<Condition>) : Condition() {
+      init {
+        check(conditions.isNotEmpty()) {
+          "ApolloGraphQL: cannot create a 'Or' condition from an empty list"
+        }
+      }
+    }
+
+    data class And(val conditions: Set<Condition>) : Condition() {
+      init {
+        check(conditions.isNotEmpty()) {
+          "ApolloGraphQL: cannot create a 'And' condition from an empty list"
+        }
+      }
+    }
+
+    data class Variable(val name: String, val inverted: Boolean) : Condition() {
     }
   }
 

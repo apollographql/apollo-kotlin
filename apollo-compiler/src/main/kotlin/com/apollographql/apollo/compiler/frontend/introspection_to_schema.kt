@@ -102,7 +102,8 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
       println("Wrongly encoded default value: $this: ${e.message}")
     }
 
-    // All the below should theorically not happen because the spec
+    // All the below should theoretically not happen because the spec says defaultValue should be
+    // a GQLValue encoded as a string
     return when {
       this is String -> GQLStringValue(value = this)
       this is Int -> GQLIntValue(value = this)

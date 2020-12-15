@@ -5,7 +5,6 @@ import com.apollographql.apollo.api.CustomTypeAdapter
 import com.apollographql.apollo.api.CustomTypeValue
 import com.apollographql.apollo.api.EMPTY_OPERATION
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.ResponseField.Condition.Companion.typeCondition
 import com.apollographql.apollo.api.ScalarType
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader

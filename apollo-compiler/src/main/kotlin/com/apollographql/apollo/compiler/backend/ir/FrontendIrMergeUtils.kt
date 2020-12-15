@@ -7,45 +7,6 @@ import com.apollographql.apollo.compiler.frontend.GQLSelectionSet
 import com.apollographql.apollo.compiler.frontend.responseName
 
 internal object FrontendIrMergeUtils {
-  /**
-   * Merges fragments that defined on the same type condition into one:
-   *
-   * ```
-   * query TestOperation {
-   *   random {
-   *       ... on Being {
-   *           name
-   *           friends {
-   *               name
-   *           }
-   *       }
-   *       ... on Wookie {
-   *          race
-   *          friends {
-   *            lifeExpectancy
-   *          }
-   *       }
-   *       ... on Being {
-   *           friends {
-   *              id
-   *           }
-   *       }
-   *   }
-   *}
-   * ```
-   *
-   * fragments defined on `Being` are going to be squashed into 1 while fragment `on Wookie` remains intact
-   */
-  fun List<GQLInlineFragment>.mergeInlineFragmentsWithSameTypeConditions(): List<GQLInlineFragment> {
-    return this
-        .groupBy { fragment -> fragment.typeCondition.name }
-        .map { (_, groupedFragments) ->
-          groupedFragments.drop(1).fold(groupedFragments.first()) { result, fragment ->
-            result.merge(fragment)
-          }
-        }
-  }
-
   private fun GQLInlineFragment.merge(other: GQLInlineFragment): GQLInlineFragment {
     return this.copy(
         selectionSet = selectionSet.merge(other.selectionSet)
