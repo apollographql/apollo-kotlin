@@ -156,8 +156,8 @@ data class TestSubscription(
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forObject("commentAdded", "commentAdded", mapOf<String, Any>(
-            "repoFullName" to mapOf<String, Any>(
+          ResponseField.forObject("commentAdded", "commentAdded", mapOf<String, Any?>(
+            "repoFullName" to mapOf<String, Any?>(
               "kind" to "Variable",
               "variableName" to "repo")), true, null)
           )

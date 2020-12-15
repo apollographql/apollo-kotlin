@@ -35,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "2dd4a7ef066f8606c7b9bb628452d3fc7ff17956e42a2a5f62191b9121cb2705";
+  public static final String OPERATION_ID = "c079dafcee21e2ecf99031bb06e515f069e661513cedaea29191c98b566125d6";
 
   public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
     "query TestQuery {\n"
@@ -44,6 +44,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         + "    stars\n"
         + "    commentary\n"
         + "  }\n"
+        + "  testNullableArguments(int: null, string: null, float: null, review: null, episode: null, boolean: null, list: null)\n"
         + "}"
   );
 
@@ -159,10 +160,21 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       .put("episode", "JEDI")
       .put("starsInt", 10)
       .put("starsFloat", 9.9f)
-      .build(), true, Collections.<ResponseField.Condition>emptyList())
+      .build(), true, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forInt("testNullableArguments", "testNullableArguments", new UnmodifiableMapBuilder<String, Object>(7)
+      .put("int", null)
+      .put("string", null)
+      .put("float", null)
+      .put("review", null)
+      .put("episode", null)
+      .put("boolean", null)
+      .put("list", null)
+      .build(), false, Collections.<ResponseField.Condition>emptyList())
     };
 
     final Optional<List<Review>> reviews;
+
+    final int testNullableArguments;
 
     private transient volatile String $toString;
 
@@ -170,12 +182,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Data(@Nullable List<Review> reviews) {
+    public Data(@Nullable List<Review> reviews, int testNullableArguments) {
       this.reviews = Optional.fromNullable(reviews);
+      this.testNullableArguments = testNullableArguments;
     }
 
     public Optional<List<Review>> reviews() {
       return this.reviews;
+    }
+
+    public int testNullableArguments() {
+      return this.testNullableArguments;
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -191,6 +208,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
               }
             }
           });
+          writer.writeInt($responseFields[1], testNullableArguments);
         }
       };
     }
@@ -199,7 +217,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "Data{"
-          + "reviews=" + reviews
+          + "reviews=" + reviews + ", "
+          + "testNullableArguments=" + testNullableArguments
           + "}";
       }
       return $toString;
@@ -212,7 +231,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Data) {
         Data that = (Data) o;
-        return this.reviews.equals(that.reviews);
+        return this.reviews.equals(that.reviews)
+         && this.testNullableArguments == that.testNullableArguments;
       }
       return false;
     }
@@ -223,6 +243,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         int h = 1;
         h *= 1000003;
         h ^= reviews.hashCode();
+        h *= 1000003;
+        h ^= testNullableArguments;
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -245,7 +267,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
             });
           }
         });
-        return new Data(reviews);
+        final int testNullableArguments = reader.readInt($responseFields[1]);
+        return new Data(reviews, testNullableArguments);
       }
     }
   }

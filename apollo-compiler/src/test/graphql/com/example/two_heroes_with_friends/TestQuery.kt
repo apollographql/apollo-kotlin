@@ -444,7 +444,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forObject("r2", "hero", null, true, null),
-          ResponseField.forObject("luke", "hero", mapOf<String, Any>(
+          ResponseField.forObject("luke", "hero", mapOf<String, Any?>(
             "episode" to "EMPIRE"), true, null)
           )
 

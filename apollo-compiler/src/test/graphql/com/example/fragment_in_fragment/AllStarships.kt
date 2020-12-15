@@ -233,7 +233,7 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forObject("allStarships", "allStarships", mapOf<String, Any>(
+          ResponseField.forObject("allStarships", "allStarships", mapOf<String, Any?>(
             "first" to "7"), true, null)
           )
 
