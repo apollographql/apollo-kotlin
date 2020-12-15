@@ -131,6 +131,7 @@ internal data class BackendIr(
   data class NamedFragment(
       val name: String,
       val defaultImplementationName: String,
+      val source: String,
       val comment: String,
       val selectionSet: SelectionSet,
       val defaultSelectionSet: SelectionSet,

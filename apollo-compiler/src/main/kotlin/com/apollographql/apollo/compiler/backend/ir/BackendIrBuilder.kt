@@ -213,6 +213,7 @@ internal class BackendIrBuilder constructor(
     return BackendIr.NamedFragment(
         name = this.name,
         defaultImplementationName = "${this.name}Impl",
+        source = this.source,
         comment = this.description ?: "",
         selectionSet = selectionSet,
         defaultSelectionSet = defaultSelectionSet,

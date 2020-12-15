@@ -48,6 +48,17 @@ interface DroidDetail : GraphqlFragment {
   }
 
   companion object {
+    val FRAGMENT_DEFINITION: String = """
+        |fragment DroidDetails on Droid {
+        |  __typename
+        |  name
+        |  primaryFunction
+        |  friends {
+        |    name
+        |  }
+        |}
+        """.trimMargin()
+
     operator fun invoke(reader: ResponseReader): DroidDetail {
       return DroidDetailsImpl_ResponseAdapter.fromResponse(reader)
     }

@@ -90,6 +90,23 @@ interface HeroDetail : GraphqlFragment {
   }
 
   companion object {
+    val FRAGMENT_DEFINITION: String = """
+        |fragment HeroDetails on Character {
+        |  __typename
+        |  name
+        |  friends {
+        |    __typename
+        |    name
+        |    ... on Human {
+        |      height
+        |    }
+        |    ... on Droid {
+        |      primaryFunction
+        |    }
+        |  }
+        |}
+        """.trimMargin()
+
     operator fun invoke(reader: ResponseReader): HeroDetail {
       return HeroDetailsImpl_ResponseAdapter.fromResponse(reader)
     }

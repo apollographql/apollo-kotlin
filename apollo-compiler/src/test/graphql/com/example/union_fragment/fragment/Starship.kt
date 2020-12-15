@@ -24,6 +24,13 @@ interface Starship : GraphqlFragment {
   val name: String
 
   companion object {
+    val FRAGMENT_DEFINITION: String = """
+        |fragment Starship on Starship {
+        |  __typename
+        |  name
+        |}
+        """.trimMargin()
+
     operator fun invoke(reader: ResponseReader): Starship {
       return StarshipImpl_ResponseAdapter.fromResponse(reader)
     }

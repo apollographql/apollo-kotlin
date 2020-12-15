@@ -24,6 +24,13 @@ interface PlanetFragment : GraphqlFragment {
   val name: String?
 
   companion object {
+    val FRAGMENT_DEFINITION: String = """
+        |fragment planetFragment on Planet {
+        |  __typename
+        |  name
+        |}
+        """.trimMargin()
+
     operator fun invoke(reader: ResponseReader): PlanetFragment {
       return PlanetFragmentImpl_ResponseAdapter.fromResponse(reader)
     }

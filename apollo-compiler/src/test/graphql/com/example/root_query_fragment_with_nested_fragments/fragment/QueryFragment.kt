@@ -115,6 +115,27 @@ interface QueryFragment : GraphqlFragment {
   }
 
   companion object {
+    val FRAGMENT_DEFINITION: String = """
+        |fragment QueryFragment on Query {
+        |  __typename
+        |  hero {
+        |    __typename
+        |    ...heroFragment
+        |  }
+        |  droid(id: 1) {
+        |    __typename
+        |    ...droidFragment
+        |  }
+        |  human(id: 1) {
+        |    __typename
+        |    ... on Human {
+        |      name
+        |      homePlanet
+        |    }
+        |  }
+        |}
+        """.trimMargin()
+
     operator fun invoke(reader: ResponseReader): QueryFragment {
       return QueryFragmentImpl_ResponseAdapter.fromResponse(reader)
     }

@@ -93,7 +93,9 @@ internal class FrontendIrBuilder(private val schema: Schema,
         name = name,
         description = description,
         selections = selectionSet.toIr(typeDefinition),
-        typeCondition = typeDefinition
+        typeCondition = typeDefinition,
+        source = toUtf8WithIndents(),
+        gqlFragmentDefinition = this
     )
   }
 

@@ -340,6 +340,7 @@ internal class AstBuilder private constructor(
         description = this.comment,
         interfaceType = interfaceType,
         defaultImplementationType = implementationType.copy(fragmentAccessors = emptyList()),
+        fragmentDefinition = this.source,
         typeRef = CodeGenerationAst.TypeRef(
             name = this.name.normalizeTypeName(),
             packageName = fragmentsPackage,

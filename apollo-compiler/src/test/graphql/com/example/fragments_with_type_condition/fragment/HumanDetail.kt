@@ -30,6 +30,14 @@ interface HumanDetail : GraphqlFragment {
   val height: Double?
 
   companion object {
+    val FRAGMENT_DEFINITION: String = """
+        |fragment HumanDetails on Human {
+        |  __typename
+        |  name
+        |  height
+        |}
+        """.trimMargin()
+
     operator fun invoke(reader: ResponseReader): HumanDetail {
       return HumanDetailsImpl_ResponseAdapter.fromResponse(reader)
     }

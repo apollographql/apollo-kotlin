@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler.frontend.ir
 
+import com.apollographql.apollo.compiler.frontend.GQLFragmentDefinition
 import com.apollographql.apollo.compiler.frontend.GQLOperationDefinition
 import com.apollographql.apollo.compiler.frontend.GQLTypeDefinition
 import com.apollographql.apollo.compiler.frontend.GQLValue
@@ -30,7 +31,9 @@ internal data class FrontendIr(
       val name: String,
       val description: String?,
       val selections: List<Selection>,
-      val typeCondition: GQLTypeDefinition
+      val typeCondition: GQLTypeDefinition,
+      val source: String,
+      val gqlFragmentDefinition: GQLFragmentDefinition
   )
 
   data class InlineFragmentDefinition(
