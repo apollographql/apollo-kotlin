@@ -26,23 +26,28 @@ import com.apollographql.apollo.compiler.frontend.toUtf8WithIndents
 import com.apollographql.apollo.compiler.frontend.usedFragmentNames
 import com.apollographql.apollo.compiler.frontend.validateAndCoerce
 
-internal class FrontendIrBuilder(private val schema: Schema,
-                                 private val operationDefinitions: List<GQLOperationDefinition>,
-                                 metadataFragmentDefinitions: List<GQLFragmentDefinition>,
-                                 fragmentDefinitions: List<GQLFragmentDefinition>) {
-  val allGQLFragmentDefinitions = (metadataFragmentDefinitions + fragmentDefinitions).associateBy {
+internal class FrontendIrBuilder(
+    private val schema: Schema,
+    private val operationDefinitions: List<GQLOperationDefinition>,
+    metadataFragmentDefinitions: List<GQLFragmentDefinition>,
+    fragmentDefinitions: List<GQLFragmentDefinition>
+) {
+  private val allGQLFragmentDefinitions = (metadataFragmentDefinitions + fragmentDefinitions).associateBy {
     it.name
   }
-  val irFragmentDefinitions = fragmentDefinitions.map {
+
+  private val irFragmentDefinitions = fragmentDefinitions.map {
     it.toIr()
+        .flattenInlineFragments()
         .mergeFieldsAndInlineFragments()
         .simplifyConditions()
   }
 
   // For metadataFragments, we transform them to IR multiple times, in each module
   // There's no real alternative as we still need the GQLFragmentDefinition to perform validation
-  val allFragmentDefinitions = (irFragmentDefinitions + metadataFragmentDefinitions.map {
+  private val allFragmentDefinitions = (irFragmentDefinitions + metadataFragmentDefinitions.map {
     it.toIr()
+        .flattenInlineFragments()
         .mergeFieldsAndInlineFragments()
         .simplifyConditions()
   }).associateBy { it.name }
@@ -51,6 +56,7 @@ internal class FrontendIrBuilder(private val schema: Schema,
     return FrontendIr(
         operations = operationDefinitions.map {
           it.toIr()
+              .flattenInlineFragments()
               .mergeFieldsAndInlineFragments()
               .simplifyConditions()
         },
@@ -158,6 +164,47 @@ internal class FrontendIrBuilder(private val schema: Schema,
         type = inputValueDefinition.type.toIr(),
 
         )
+  }
+
+  private fun FrontendIr.Operation.flattenInlineFragments(): FrontendIr.Operation {
+    return copy(
+        selections = selections.mergeFieldsAndInlineFragments()
+    )
+  }
+
+  private fun FrontendIr.NamedFragmentDefinition.flattenInlineFragments(): FrontendIr.NamedFragmentDefinition {
+    return copy(
+        selections = selections.flattenInlineFragments()
+    )
+  }
+
+  private fun List<FrontendIr.Selection>.flattenInlineFragments(): List<FrontendIr.Selection> {
+    return this.flatMap { selection ->
+      when (selection) {
+        is FrontendIr.Selection.InlineFragment -> selection.flattenInlineFragments()
+        is FrontendIr.Selection.FragmentSpread -> listOf(selection)
+        is FrontendIr.Selection.Field -> listOf(
+            selection.copy(
+                selections = selection.selections.flattenInlineFragments()
+            )
+        )
+      }
+    }
+  }
+
+  private fun FrontendIr.Selection.InlineFragment.flattenInlineFragments(): List<FrontendIr.Selection> {
+    val nestedInlineFragments = this.fragmentDefinition.selections.filterIsInstance<FrontendIr.Selection.InlineFragment>()
+    return listOf(
+        this.copy(
+            fragmentDefinition = this.fragmentDefinition.copy(
+                selections = this.fragmentDefinition.selections.filterNot { it is FrontendIr.Selection.InlineFragment }
+            )
+        )
+    ).plus(
+        nestedInlineFragments.flatMap { fragment ->
+          fragment.flattenInlineFragments()
+        }
+    )
   }
 
   private fun List<FrontendIr.Selection>.mergeFieldsAndInlineFragments(): List<FrontendIr.Selection> {

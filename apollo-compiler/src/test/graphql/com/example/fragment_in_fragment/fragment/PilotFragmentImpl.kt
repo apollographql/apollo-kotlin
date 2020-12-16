@@ -52,7 +52,7 @@ data class PilotFragmentImpl(
     }
 
     data class PlanetHomeworld(
-      override val __typename: String = "Planet",
+      override val __typename: String,
       /**
        * The name of this planet.
        */
@@ -65,12 +65,8 @@ data class PilotFragmentImpl(
       }
     }
 
-    /**
-     * A large mass, planet or planetoid in the Star Wars Universe, at the time of
-     * 0 ABY.
-     */
     data class OtherHomeworld(
-      override val __typename: String = "Planet"
+      override val __typename: String
     ) : PilotFragment.Homeworld, Homeworld {
       override fun marshaller(): ResponseFieldMarshaller {
         return ResponseFieldMarshaller { writer ->
@@ -80,9 +76,11 @@ data class PilotFragmentImpl(
     }
 
     companion object {
-      fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
+      fun Homeworld.asHomeworld(): PilotFragment.Homeworld? = this as? PilotFragment.Homeworld
 
       fun Homeworld.asPlanet(): Planet? = this as? Planet
+
+      fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
     }
   }
 }

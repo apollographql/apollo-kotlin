@@ -60,8 +60,8 @@ interface HumanDetail : GraphqlFragment {
       }
     }
 
-    fun HumanDetail.characterDetails(): CharacterDetail? = this as? CharacterDetail
-
     fun HumanDetail.asCharacter(): Character? = this as? Character
+
+    fun HumanDetail.characterDetails(): CharacterDetail? = this as? CharacterDetail
   }
 }

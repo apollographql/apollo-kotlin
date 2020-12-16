@@ -45,9 +45,9 @@ interface QueryFragment : GraphqlFragment {
     }
 
     companion object {
-      fun Hero.heroFragment(): HeroFragment? = this as? HeroFragment
-
       fun Hero.asCharacter(): Character? = this as? Character
+
+      fun Hero.heroFragment(): HeroFragment? = this as? HeroFragment
     }
   }
 
@@ -76,9 +76,9 @@ interface QueryFragment : GraphqlFragment {
     }
 
     companion object {
-      fun QueryFragment.Droid.droidFragment(): DroidFragment? = this as? DroidFragment
-
       fun QueryFragment.Droid.asDroid(): Droid? = this as? Droid
+
+      fun QueryFragment.Droid.droidFragment(): DroidFragment? = this as? DroidFragment
     }
   }
 
@@ -90,9 +90,6 @@ interface QueryFragment : GraphqlFragment {
 
     fun marshaller(): ResponseFieldMarshaller
 
-    /**
-     * A humanoid creature from the Star Wars universe
-     */
     interface Human : QueryFragment.Human {
       override val __typename: String
 

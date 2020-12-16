@@ -123,7 +123,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     }
 
     data class QueryDatum(
-      override val __typename: String = "Query",
+      override val __typename: String,
       override val hero: Hero?
     ) : Data, Query, QueryFragment {
       override fun marshaller(): ResponseFieldMarshaller {
@@ -149,11 +149,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       }
     }
 
-    /**
-     * The query type, represents all of the entry points into our object graph
-     */
     data class OtherDatum(
-      override val __typename: String = "Query"
+      override val __typename: String
     ) : Data {
       override fun marshaller(): ResponseFieldMarshaller {
         return ResponseFieldMarshaller { writer ->
@@ -163,9 +160,9 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     }
 
     companion object {
-      fun Data.queryFragment(): QueryFragment? = this as? QueryFragment
-
       fun Data.asQuery(): Query? = this as? Query
+
+      fun Data.queryFragment(): QueryFragment? = this as? QueryFragment
     }
   }
 

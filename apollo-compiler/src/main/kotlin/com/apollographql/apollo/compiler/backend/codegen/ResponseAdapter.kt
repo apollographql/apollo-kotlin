@@ -6,6 +6,7 @@ import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
+import com.apollographql.apollo.compiler.backend.ir.BackendIr
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -72,11 +73,13 @@ private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(): TypeSpec {
       .addFunction(readFromResponseFunSpec())
       .addFunction(writeToResponseFunSpec())
       .addTypes(
-          this.nestedObjects.mapNotNull { nestedObject ->
-            nestedObject
-                .takeUnless { it.kind is CodeGenerationAst.ObjectType.Kind.Interface }
-                ?.responseAdapterTypeSpec()
-          }
+          this.nestedObjects
+              .filter { it.kind !is CodeGenerationAst.ObjectType.Kind.Fragment || it.kind.possibleImplementations.isNotEmpty() }
+              .mapNotNull { nestedObject ->
+                nestedObject
+                    .takeUnless { it.kind is CodeGenerationAst.ObjectType.Kind.Interface }
+                    ?.responseAdapterTypeSpec()
+              }
       )
       .build()
 }

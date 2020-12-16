@@ -113,9 +113,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
       fun marshaller(): ResponseFieldMarshaller
 
-      /**
-       * A character from the Star Wars universe
-       */
       interface Character : Search {
         override val __typename: String
 
@@ -127,82 +124,22 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         override fun marshaller(): ResponseFieldMarshaller
       }
 
-      /**
-       * A humanoid creature from the Star Wars universe
-       */
-      interface Human : Search, Character {
-        override val __typename: String
-
+      data class CharacterSearch(
+        override val __typename: String,
         /**
          * The name of the character
          */
         override val name: String
-
-        /**
-         * The home planet of the human, or null if unknown
-         */
-        val homePlanet: String?
-
-        override fun marshaller(): ResponseFieldMarshaller
-      }
-
-      /**
-       * An autonomous mechanical character in the Star Wars universe
-       */
-      interface Droid : Search, Character {
-        override val __typename: String
-
-        /**
-         * The name of the character
-         */
-        override val name: String
-
-        /**
-         * This droid's primary function
-         */
-        val primaryFunction: String?
-
-        override fun marshaller(): ResponseFieldMarshaller
-      }
-
-      data class CharacterDroidSearch(
-        override val __typename: String = "Droid",
-        /**
-         * The name of the character
-         */
-        override val name: String,
-        /**
-         * This droid's primary function
-         */
-        override val primaryFunction: String?
-      ) : Search, Character, Droid {
+      ) : Search, Character {
         override fun marshaller(): ResponseFieldMarshaller {
           return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Search.CharacterDroidSearch.toResponse(writer, this)
-          }
-        }
-      }
-
-      data class CharacterHumanSearch(
-        override val __typename: String = "Human",
-        /**
-         * The name of the character
-         */
-        override val name: String,
-        /**
-         * The home planet of the human, or null if unknown
-         */
-        override val homePlanet: String?
-      ) : Search, Character, Human {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Search.CharacterHumanSearch.toResponse(writer, this)
+            TestQuery_ResponseAdapter.Data.Search.CharacterSearch.toResponse(writer, this)
           }
         }
       }
 
       data class OtherSearch(
-        override val __typename: String = "SearchResult"
+        override val __typename: String
       ) : Search {
         override fun marshaller(): ResponseFieldMarshaller {
           return ResponseFieldMarshaller { writer ->
@@ -213,10 +150,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
       companion object {
         fun Search.asCharacter(): Character? = this as? Character
-
-        fun Search.asHuman(): Human? = this as? Human
-
-        fun Search.asDroid(): Droid? = this as? Droid
       }
     }
   }

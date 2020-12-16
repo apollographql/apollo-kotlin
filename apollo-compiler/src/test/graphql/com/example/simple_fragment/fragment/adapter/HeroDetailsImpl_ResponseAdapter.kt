@@ -21,26 +21,26 @@ internal object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImp
   override fun fromResponse(reader: ResponseReader, __typename: String?): HeroDetailsImpl {
     val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
     return when(typename) {
-      "Human" -> HumanHeroDetail.fromResponse(reader, typename)
+      "Human" -> HumanHeroDetailsImpl.fromResponse(reader, typename)
       else -> OtherHeroDetailsImpl.fromResponse(reader, typename)
     }
   }
 
   override fun toResponse(writer: ResponseWriter, value: HeroDetailsImpl) {
     when(value) {
-      is HeroDetailsImpl.HumanHeroDetail -> HumanHeroDetail.toResponse(writer, value)
+      is HeroDetailsImpl.HumanHeroDetailsImpl -> HumanHeroDetailsImpl.toResponse(writer, value)
       is HeroDetailsImpl.OtherHeroDetailsImpl -> OtherHeroDetailsImpl.toResponse(writer, value)
     }
   }
 
-  object HumanHeroDetail : ResponseAdapter<HeroDetailsImpl.HumanHeroDetail> {
+  object HumanHeroDetailsImpl : ResponseAdapter<HeroDetailsImpl.HumanHeroDetailsImpl> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forString("name", "name", null, false, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
-        HeroDetailsImpl.HumanHeroDetail {
+        HeroDetailsImpl.HumanHeroDetailsImpl {
       return reader.run {
         var __typename: String? = __typename
         var name: String? = null
@@ -51,14 +51,14 @@ internal object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImp
             else -> break
           }
         }
-        HeroDetailsImpl.HumanHeroDetail(
+        HeroDetailsImpl.HumanHeroDetailsImpl(
           __typename = __typename!!,
           name = name!!
         )
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: HeroDetailsImpl.HumanHeroDetail) {
+    override fun toResponse(writer: ResponseWriter, value: HeroDetailsImpl.HumanHeroDetailsImpl) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeString(RESPONSE_FIELDS[1], value.name)
     }

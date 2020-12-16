@@ -18,9 +18,6 @@ internal interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
 
   override fun marshaller(): ResponseFieldMarshaller
 
-  /**
-   * Fragment with Java / Kotlin docs generation
-   */
   interface Human : HeroDetail, HeroDetail.Human, HumanDetail, HeroDetailsImpl {
     override val __typename: String
 
@@ -32,11 +29,8 @@ internal interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
     override fun marshaller(): ResponseFieldMarshaller
   }
 
-  /**
-   * Fragment with Java / Kotlin docs generation
-   */
-  data class HumanHeroDetail(
-    override val __typename: String = "Human",
+  data class HumanHeroDetailsImpl(
+    override val __typename: String,
     /**
      * What this human calls themselves
      */
@@ -44,16 +38,13 @@ internal interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
   ) : HeroDetail, HeroDetail.Human, HumanDetail, HeroDetailsImpl, Human {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        HeroDetailsImpl_ResponseAdapter.HumanHeroDetail.toResponse(writer, this)
+        HeroDetailsImpl_ResponseAdapter.HumanHeroDetailsImpl.toResponse(writer, this)
       }
     }
   }
 
-  /**
-   * A character from the Star Wars universe
-   */
   data class OtherHeroDetailsImpl(
-    override val __typename: String = "Character"
+    override val __typename: String
   ) : HeroDetail, HeroDetailsImpl {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->

@@ -72,10 +72,7 @@ interface HeroDetail : GraphqlFragment {
     }
   }
 
-  /**
-   * An autonomous mechanical character in the Star Wars universe
-   */
-  interface Droid : HeroDetail, DroidDetail {
+  interface Droid : HeroDetail {
     override val __typename: String
 
     /**
@@ -87,11 +84,6 @@ interface HeroDetail : GraphqlFragment {
      * The friends of the character exposed as a connection with edges
      */
     override val friendsConnection: FriendsConnection
-
-    /**
-     * This droid's primary function
-     */
-    override val primaryFunction: String?
 
     override fun marshaller(): ResponseFieldMarshaller
 
@@ -225,12 +217,10 @@ interface HeroDetail : GraphqlFragment {
       }
     }
 
-    fun HeroDetail.droidDetails(): DroidDetail? = this as? DroidDetail
-
     fun HeroDetail.asDroid(): Droid? = this as? Droid
 
-    fun HeroDetail.humanDetails(): HumanDetail? = this as? HumanDetail
-
     fun HeroDetail.asHuman(): Human? = this as? Human
+
+    fun HeroDetail.humanDetails(): HumanDetail? = this as? HumanDetail
   }
 }

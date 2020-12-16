@@ -175,7 +175,7 @@ data class TestQuery(
       }
 
       data class CharacterHero(
-        override val __typename: String = "Droid",
+        override val __typename: String,
         /**
          * The ID of the character
          */
@@ -193,7 +193,7 @@ data class TestQuery(
       }
 
       data class CharacterHumanHero(
-        override val __typename: String = "Human",
+        override val __typename: String,
         /**
          * The ID of the character
          */
@@ -214,11 +214,8 @@ data class TestQuery(
         }
       }
 
-      /**
-       * A character from the Star Wars universe
-       */
       data class OtherHero(
-        override val __typename: String = "Character",
+        override val __typename: String,
         /**
          * The ID of the character
          */
@@ -232,13 +229,13 @@ data class TestQuery(
       }
 
       companion object {
-        fun Hero.heroDetails(): HeroDetail? = this as? HeroDetail
-
         fun Hero.asCharacter(): Character? = this as? Character
 
-        fun Hero.humanDetails(): HumanDetail? = this as? HumanDetail
+        fun Hero.heroDetails(): HeroDetail? = this as? HeroDetail
 
         fun Hero.asHuman(): Human? = this as? Human
+
+        fun Hero.humanDetails(): HumanDetail? = this as? HumanDetail
       }
     }
   }

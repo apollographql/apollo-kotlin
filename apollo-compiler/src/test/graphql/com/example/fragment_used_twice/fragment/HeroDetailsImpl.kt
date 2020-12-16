@@ -40,7 +40,7 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
     override fun marshaller(): ResponseFieldMarshaller
   }
 
-  data class CharacterHeroDetail(
+  data class CharacterHeroDetailsImpl(
     override val __typename: String,
     /**
      * The name of the character
@@ -53,16 +53,13 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
   ) : HeroDetail, HeroDetail.Character, CharacterDetail, HeroDetailsImpl, Character {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        HeroDetailsImpl_ResponseAdapter.CharacterHeroDetail.toResponse(writer, this)
+        HeroDetailsImpl_ResponseAdapter.CharacterHeroDetailsImpl.toResponse(writer, this)
       }
     }
   }
 
-  /**
-   * A character from the Star Wars universe
-   */
   data class OtherHeroDetailsImpl(
-    override val __typename: String = "Character",
+    override val __typename: String,
     /**
      * The name of the character
      */

@@ -150,7 +150,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       }
 
       data class HumanR2(
-        override val __typename: String = "Human",
+        override val __typename: String,
         /**
          * What this human calls themselves
          */
@@ -168,7 +168,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       }
 
       data class DroidR2(
-        override val __typename: String = "Droid",
+        override val __typename: String,
         /**
          * What others call this droid
          */
@@ -185,11 +185,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         }
       }
 
-      /**
-       * A character from the Star Wars universe
-       */
       data class OtherR2(
-        override val __typename: String = "Character"
+        override val __typename: String
       ) : R2 {
         override fun marshaller(): ResponseFieldMarshaller {
           return ResponseFieldMarshaller { writer ->
@@ -199,13 +196,13 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       }
 
       companion object {
-        fun R2.humanDetails(): HumanDetail? = this as? HumanDetail
-
         fun R2.asHuman(): Human? = this as? Human
 
-        fun R2.droidDetails(): DroidDetail? = this as? DroidDetail
+        fun R2.humanDetails(): HumanDetail? = this as? HumanDetail
 
         fun R2.asDroid(): Droid? = this as? Droid
+
+        fun R2.droidDetails(): DroidDetail? = this as? DroidDetail
       }
     }
 
@@ -250,7 +247,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       }
 
       data class HumanLuke(
-        override val __typename: String = "Human",
+        override val __typename: String,
         /**
          * What this human calls themselves
          */
@@ -268,7 +265,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       }
 
       data class DroidLuke(
-        override val __typename: String = "Droid",
+        override val __typename: String,
         /**
          * What others call this droid
          */
@@ -285,11 +282,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         }
       }
 
-      /**
-       * A character from the Star Wars universe
-       */
       data class OtherLuke(
-        override val __typename: String = "Character"
+        override val __typename: String
       ) : Luke {
         override fun marshaller(): ResponseFieldMarshaller {
           return ResponseFieldMarshaller { writer ->
@@ -299,13 +293,13 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       }
 
       companion object {
-        fun Luke.humanDetails(): HumanDetail? = this as? HumanDetail
-
         fun Luke.asHuman(): Human? = this as? Human
 
-        fun Luke.droidDetails(): DroidDetail? = this as? DroidDetail
+        fun Luke.humanDetails(): HumanDetail? = this as? HumanDetail
 
         fun Luke.asDroid(): Droid? = this as? Droid
+
+        fun Luke.droidDetails(): DroidDetail? = this as? DroidDetail
       }
     }
   }

@@ -134,9 +134,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
       fun marshaller(): ResponseFieldMarshaller
 
-      /**
-       * A character from the Star Wars universe
-       */
       interface Character : Object {
         override val __typename: String
 
@@ -148,9 +145,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         override fun marshaller(): ResponseFieldMarshaller
       }
 
-      /**
-       * A character from the Star Wars universe
-       */
       data class CharacterObject(
         override val __typename: String,
         /**
@@ -166,7 +160,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       }
 
       data class OtherObject(
-        override val __typename: String = "SearchResult"
+        override val __typename: String
       ) : Object {
         override fun marshaller(): ResponseFieldMarshaller {
           return ResponseFieldMarshaller { writer ->

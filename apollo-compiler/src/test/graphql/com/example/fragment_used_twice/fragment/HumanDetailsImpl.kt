@@ -40,8 +40,8 @@ interface HumanDetailsImpl : HumanDetail, GraphqlFragment {
     override fun marshaller(): ResponseFieldMarshaller
   }
 
-  data class CharacterHumanDetail(
-    override val __typename: String = "Human",
+  data class CharacterHumanDetailsImpl(
+    override val __typename: String,
     /**
      * What this human calls themselves
      */
@@ -53,16 +53,13 @@ interface HumanDetailsImpl : HumanDetail, GraphqlFragment {
   ) : HumanDetail, HumanDetail.Character, CharacterDetail, HumanDetailsImpl, Character {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        HumanDetailsImpl_ResponseAdapter.CharacterHumanDetail.toResponse(writer, this)
+        HumanDetailsImpl_ResponseAdapter.CharacterHumanDetailsImpl.toResponse(writer, this)
       }
     }
   }
 
-  /**
-   * A humanoid creature from the Star Wars universe
-   */
   data class OtherHumanDetailsImpl(
-    override val __typename: String = "Human",
+    override val __typename: String,
     /**
      * What this human calls themselves
      */

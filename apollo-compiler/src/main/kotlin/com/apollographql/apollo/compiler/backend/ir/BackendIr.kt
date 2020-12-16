@@ -1,6 +1,5 @@
 package com.apollographql.apollo.compiler.backend.ir
 
-import com.apollographql.apollo.compiler.frontend.GQLOperationDefinition
 import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
 
 internal data class SelectionKey(
@@ -9,6 +8,7 @@ internal data class SelectionKey(
     val type: Type,
 ) {
   operator fun plus(name: String): SelectionKey {
+    if (name.isEmpty()) return this
     return this.copy(
         keys = this.keys + name
     )
@@ -60,7 +60,7 @@ internal data class BackendIr(
       val type: IntrospectionSchema.TypeRef,
       val args: List<Argument>,
       val fields: List<Field>,
-      val fragments: List<Fragment>,
+      val fragments: Fragments,
       val condition: Condition,
       val description: String,
       val deprecationReason: String?,
@@ -77,11 +77,9 @@ internal data class BackendIr(
 
   sealed class Condition {
 
-    object True : Condition() {
-    }
+    object True : Condition()
 
-    object False : Condition() {
-    }
+    object False : Condition()
 
     data class Or(val conditions: Set<Condition>) : Condition() {
       init {
@@ -99,46 +97,38 @@ internal data class BackendIr(
       }
     }
 
-    data class Variable(val name: String, val inverted: Boolean) : Condition() {
-    }
+    data class Variable(val name: String, val inverted: Boolean) : Condition()
   }
 
-  sealed class Fragment {
-    abstract val name: String
-    abstract val fields: List<Field>
-    abstract val possibleTypes: Set<IntrospectionSchema.TypeRef>
-    abstract val selectionKeys: Set<SelectionKey>
-    abstract val description: String?
+  data class Fragments(
+      val fragments: List<Fragment>,
+      val accessors: Map<String, SelectionKey>,
+  ) : List<Fragment> by fragments
 
-    data class Interface(
-        override val name: String,
-        override val fields: List<Field>,
-        override val possibleTypes: Set<IntrospectionSchema.TypeRef>,
-        override val selectionKeys: Set<SelectionKey>,
-        override val description: String?,
-        val typeCondition: IntrospectionSchema.TypeRef,
-    ) : Fragment()
-
-    data class Implementation(
-        override val name: String,
-        override val fields: List<Field>,
-        override val possibleTypes: Set<IntrospectionSchema.TypeRef>,
-        override val selectionKeys: Set<SelectionKey>,
-        override val description: String?,
-    ) : Fragment()
+  data class Fragment(
+      val name: String,
+      val fields: List<Field>,
+      val possibleTypes: Set<IntrospectionSchema.TypeRef>,
+      val selectionKeys: Set<SelectionKey>,
+      val description: String?,
+      val kind: Kind,
+  ) {
+    enum class Kind {
+      Interface, Implementation, Fallback
+    }
   }
 
   data class NamedFragment(
       val name: String,
-      val defaultImplementationName: String,
+      val defaultSelectionSetRootKey: SelectionKey,
       val source: String,
       val comment: String,
       val selectionSet: SelectionSet,
-      val defaultSelectionSet: SelectionSet,
+      val implementationSelectionSet: SelectionSet,
   ) {
     data class SelectionSet(
         val fields: List<Field>,
-        val fragments: List<Fragment>,
+        val fragments: Fragments,
         val typeCondition: IntrospectionSchema.TypeRef,
         val possibleTypes: List<IntrospectionSchema.TypeRef>,
         val selectionKeys: Set<SelectionKey>,

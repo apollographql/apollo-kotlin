@@ -60,8 +60,8 @@ interface HeroDetail : GraphqlFragment {
       }
     }
 
-    fun HeroDetail.characterDetails(): CharacterDetail? = this as? CharacterDetail
-
     fun HeroDetail.asCharacter(): Character? = this as? Character
+
+    fun HeroDetail.characterDetails(): CharacterDetail? = this as? CharacterDetail
   }
 }

@@ -24,20 +24,20 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl> {
   override fun fromResponse(reader: ResponseReader, __typename: String?): HeroDetailsImpl {
     val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
     return when(typename) {
-      "Droid" -> CharacterHeroDetail.fromResponse(reader, typename)
-      "Human" -> CharacterHeroDetail.fromResponse(reader, typename)
+      "Droid" -> CharacterHeroDetailsImpl.fromResponse(reader, typename)
+      "Human" -> CharacterHeroDetailsImpl.fromResponse(reader, typename)
       else -> OtherHeroDetailsImpl.fromResponse(reader, typename)
     }
   }
 
   override fun toResponse(writer: ResponseWriter, value: HeroDetailsImpl) {
     when(value) {
-      is HeroDetailsImpl.CharacterHeroDetail -> CharacterHeroDetail.toResponse(writer, value)
+      is HeroDetailsImpl.CharacterHeroDetailsImpl -> CharacterHeroDetailsImpl.toResponse(writer, value)
       is HeroDetailsImpl.OtherHeroDetailsImpl -> OtherHeroDetailsImpl.toResponse(writer, value)
     }
   }
 
-  object CharacterHeroDetail : ResponseAdapter<HeroDetailsImpl.CharacterHeroDetail> {
+  object CharacterHeroDetailsImpl : ResponseAdapter<HeroDetailsImpl.CharacterHeroDetailsImpl> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forString("name", "name", null, false, null),
@@ -45,7 +45,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl> {
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
-        HeroDetailsImpl.CharacterHeroDetail {
+        HeroDetailsImpl.CharacterHeroDetailsImpl {
       return reader.run {
         var __typename: String? = __typename
         var name: String? = null
@@ -58,7 +58,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl> {
             else -> break
           }
         }
-        HeroDetailsImpl.CharacterHeroDetail(
+        HeroDetailsImpl.CharacterHeroDetailsImpl(
           __typename = __typename!!,
           name = name!!,
           birthDate = birthDate!!
@@ -66,7 +66,8 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl> {
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: HeroDetailsImpl.CharacterHeroDetail) {
+    override fun toResponse(writer: ResponseWriter,
+        value: HeroDetailsImpl.CharacterHeroDetailsImpl) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeString(RESPONSE_FIELDS[1], value.name)
       writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, value.birthDate)

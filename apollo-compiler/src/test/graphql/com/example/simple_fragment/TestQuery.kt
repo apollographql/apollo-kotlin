@@ -119,19 +119,12 @@ internal class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
       fun marshaller(): ResponseFieldMarshaller
 
-      /**
-       * Fragment with Java / Kotlin docs generation
-       * with multi lines support
-       */
       interface Character : Hero, HeroDetail {
         override val __typename: String
 
         override fun marshaller(): ResponseFieldMarshaller
       }
 
-      /**
-       * Fragment with Java / Kotlin docs generation
-       */
       interface Human : Hero, HeroDetail.Human, HumanDetail {
         override val __typename: String
 
@@ -143,12 +136,8 @@ internal class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         override fun marshaller(): ResponseFieldMarshaller
       }
 
-      /**
-       * Fragment with Java / Kotlin docs generation
-       * with multi lines support
-       */
       data class CharacterHero(
-        override val __typename: String = "Droid"
+        override val __typename: String
       ) : Hero, Character, HeroDetail {
         override fun marshaller(): ResponseFieldMarshaller {
           return ResponseFieldMarshaller { writer ->
@@ -158,7 +147,7 @@ internal class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       }
 
       data class CharacterHumanHero(
-        override val __typename: String = "Human",
+        override val __typename: String,
         /**
          * What this human calls themselves
          */
@@ -171,11 +160,8 @@ internal class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         }
       }
 
-      /**
-       * A character from the Star Wars universe
-       */
       data class OtherHero(
-        override val __typename: String = "Character"
+        override val __typename: String
       ) : Hero {
         override fun marshaller(): ResponseFieldMarshaller {
           return ResponseFieldMarshaller { writer ->
@@ -185,13 +171,13 @@ internal class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       }
 
       companion object {
-        fun Hero.heroDetails(): HeroDetail? = this as? HeroDetail
-
         fun Hero.asCharacter(): Character? = this as? Character
 
-        fun Hero.humanDetails(): HumanDetail? = this as? HumanDetail
+        fun Hero.heroDetails(): HeroDetail? = this as? HeroDetail
 
-        fun Hero.asHuman(): Human? = this as? Human
+        fun Hero.asHuman(): HeroDetail.Human? = this as? HeroDetail.Human
+
+        fun Hero.humanDetails(): HumanDetail? = this as? HumanDetail
       }
     }
   }
