@@ -7,11 +7,12 @@ import com.apollographql.apollo.subscription.ApolloOperationMessageSerializer.wr
 import okhttp3.HttpUrl
 import okio.Buffer
 import okio.BufferedSink
+import okio.BufferedSource
 import java.util.Base64
 
 class AppSyncOperationMessageSerializer(
     private val authorization: Map<String, Any?>
-) : OperationMessageSerializer by ApolloOperationMessageSerializer {
+) : OperationMessageSerializer {
   override fun OperationClientMessage.writeTo(sink: BufferedSink) {
     when (this) {
       is OperationClientMessage.Start -> JsonWriter.of(sink).use { writeTo(it) }
@@ -20,6 +21,9 @@ class AppSyncOperationMessageSerializer(
       is OperationClientMessage.Terminate -> with(ApolloOperationMessageSerializer) { writeTo(sink) }
     }
   }
+
+  override fun readServerMessage(source: BufferedSource): OperationServerMessage =
+      ApolloOperationMessageSerializer.readServerMessage(source)
 
   private fun OperationClientMessage.Start.writeTo(writer: JsonWriter) {
     writer.writeObject {

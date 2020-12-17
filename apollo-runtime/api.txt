@@ -383,6 +383,7 @@ package com.apollographql.apollo.subscription {
     ctor public AppSyncOperationMessageSerializer(java.util.Map<java.lang.String,?> authorization);
     method public static String buildAppSyncWebSocketUrl(String baseWebSocketUrl, java.util.Map<java.lang.String,?> authorization, java.util.Map<java.lang.String,?> payload = emptyMap());
     method public static String buildAppSyncWebSocketUrl(String baseWebSocketUrl, java.util.Map<java.lang.String,?> authorization);
+    method public com.apollographql.apollo.subscription.OperationServerMessage readServerMessage(okio.BufferedSource source);
     method public void writeTo(com.apollographql.apollo.subscription.OperationClientMessage, okio.BufferedSink sink);
     field public static final com.apollographql.apollo.subscription.AppSyncOperationMessageSerializer.Companion Companion;
   }
