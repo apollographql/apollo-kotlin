@@ -96,7 +96,7 @@ sealed class OperationClientMessage {
               }
             }
             for ((name, value) in extensions) {
-              name(name).jsonValue(value)
+              Utils.writeToJson(value, name(name))
             }
           }
         }

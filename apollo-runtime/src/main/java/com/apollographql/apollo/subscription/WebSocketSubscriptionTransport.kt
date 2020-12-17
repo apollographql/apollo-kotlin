@@ -1,6 +1,7 @@
 package com.apollographql.apollo.subscription
 
 import com.apollographql.apollo.api.internal.json.JsonWriter
+import com.apollographql.apollo.api.internal.json.Utils
 import okhttp3.HttpUrl
 import okhttp3.Request
 import okhttp3.Response
@@ -157,7 +158,7 @@ class WebSocketSubscriptionTransport @JvmOverloads constructor(
     companion object {
       private fun Map<String, Any?>.encodeAsQueryParam(): String {
         val buffer = Buffer()
-        JsonWriter.of(buffer).jsonValue(this)
+        Utils.writeToJson(this, JsonWriter.of(buffer))
         return Base64.getUrlEncoder().encodeToString(buffer.readByteArray())
       }
     }
