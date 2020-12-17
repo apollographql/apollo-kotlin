@@ -1,209 +1,178 @@
-package com.apollographql.apollo.subscription;
+package com.apollographql.apollo.subscription
 
-import org.junit.Before;
-import org.junit.Test;
+import com.google.common.truth.Truth.assertThat
+import okhttp3.Protocol
+import okhttp3.Request
+import okhttp3.Response
+import okhttp3.WebSocket
+import okhttp3.WebSocketListener
+import okio.ByteString
+import org.junit.Before
+import org.junit.Test
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicReference
 
-import java.util.Collections;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import okhttp3.Protocol;
-import okhttp3.Request;
-import okhttp3.WebSocket;
-import okhttp3.WebSocketListener;
-import okio.ByteString;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class WebSocketSubscriptionTransportTest {
-  private Request webSocketRequest;
-  private MockWebSocketFactory webSocketFactory;
-  private WebSocketSubscriptionTransport subscriptionTransport;
-
-  @Before public void setUp() throws Exception {
-    webSocketRequest = new Request.Builder().url("wss://localhost").build();
-    webSocketFactory = new MockWebSocketFactory();
-    WebSocketSubscriptionTransport.Factory factory = new WebSocketSubscriptionTransport.Factory("wss://localhost/", webSocketFactory);
-    subscriptionTransport = (WebSocketSubscriptionTransport) factory.create(new SubscriptionTransport.Callback() {
-      @Override public void onConnected() {
-      }
-
-      @Override public void onFailure(Throwable t) {
-      }
-
-      @Override public void onMessage(OperationServerMessage message) {
-      }
-
-      @Override public void onClosed() {
-      }
-    });
+class WebSocketSubscriptionTransportTest {
+  private lateinit var webSocketRequest: Request
+  private lateinit var webSocketFactory: MockWebSocketFactory
+  private lateinit var subscriptionTransport: WebSocketSubscriptionTransport
+  
+  @Before
+  @Throws(Exception::class)
+  fun setUp() {
+    webSocketRequest = Request.Builder().url("wss://localhost").build()
+    webSocketFactory = MockWebSocketFactory()
+    val factory = WebSocketSubscriptionTransport.Factory("wss://localhost/", webSocketFactory)
+    subscriptionTransport = factory.create(object : SubscriptionTransport.Callback {
+      override fun onConnected() {}
+      override fun onFailure(t: Throwable) {}
+      override fun onMessage(message: OperationServerMessage) {}
+      override fun onClosed() {}
+    }) as WebSocketSubscriptionTransport
   }
 
-  @Test public void connect() {
-    assertThat(subscriptionTransport.webSocket.get()).isNull();
-    assertThat(subscriptionTransport.webSocketListener.get()).isNull();
-
-    subscriptionTransport.connect();
-    assertThat(subscriptionTransport.webSocket.get()).isNotNull();
-    assertThat(subscriptionTransport.webSocketListener.get()).isNotNull();
-
-    assertThat(webSocketFactory.request.header("Sec-WebSocket-Protocol")).isEqualTo("graphql-ws");
-    assertThat(webSocketFactory.request.header("Cookie")).isEqualTo("");
+  @Test
+  fun connect() {
+    assertThat(subscriptionTransport.webSocket.get()).isNull()
+    assertThat(subscriptionTransport.webSocketListener.get()).isNull()
+    subscriptionTransport.connect()
+    assertThat(subscriptionTransport.webSocket.get()).isNotNull()
+    assertThat(subscriptionTransport.webSocketListener.get()).isNotNull()
+    assertThat(webSocketFactory.request.header("Sec-WebSocket-Protocol")).isEqualTo("graphql-ws")
+    assertThat(webSocketFactory.request.header("Cookie")).isEqualTo("")
   }
 
-  @Test public void disconnect() {
-    subscriptionTransport.connect();
-    assertThat(subscriptionTransport.webSocket.get()).isNotNull();
-    assertThat(subscriptionTransport.webSocketListener.get()).isNotNull();
-
-    subscriptionTransport.disconnect(new OperationClientMessage.Terminate());
-    assertThat(subscriptionTransport.webSocket.get()).isNull();
-    assertThat(subscriptionTransport.webSocketListener.get()).isNull();
+  @Test
+  fun disconnect() {
+    subscriptionTransport.connect()
+    assertThat(subscriptionTransport.webSocket.get()).isNotNull()
+    assertThat(subscriptionTransport.webSocketListener.get()).isNotNull()
+    subscriptionTransport.disconnect(OperationClientMessage.Terminate())
+    assertThat(subscriptionTransport.webSocket.get()).isNull()
+    assertThat(subscriptionTransport.webSocketListener.get()).isNull()
   }
 
-  @Test public void send() {
-    final AtomicReference<Throwable> callbackFailure = new AtomicReference<>();
-
-    subscriptionTransport = new WebSocketSubscriptionTransport(webSocketRequest, webSocketFactory, new SubscriptionTransport.Callback() {
-      @Override public void onConnected() {
+  @Test
+  fun send() {
+    val callbackFailure = AtomicReference<Throwable?>()
+    subscriptionTransport = WebSocketSubscriptionTransport(webSocketRequest, webSocketFactory, object : SubscriptionTransport.Callback {
+      override fun onConnected() {}
+      override fun onFailure(t: Throwable) {
+        callbackFailure.set(t)
       }
 
-      @Override public void onFailure(Throwable t) {
-        callbackFailure.set(t);
-      }
-
-      @Override public void onMessage(OperationServerMessage message) {
-      }
-
-      @Override public void onClosed() {
-      }
-    });
-
-    subscriptionTransport.send(new OperationClientMessage.Init(Collections.<String, Object>emptyMap()));
-    assertThat(callbackFailure.get()).isInstanceOf(IllegalStateException.class);
-    callbackFailure.set(null);
-
-    subscriptionTransport.connect();
-    subscriptionTransport.send(new OperationClientMessage.Init(Collections.<String, Object>emptyMap()));
-    assertThat(callbackFailure.get()).isNull();
-    subscriptionTransport.disconnect(new OperationClientMessage.Terminate());
-
-    subscriptionTransport.send(new OperationClientMessage.Init(Collections.<String, Object>emptyMap()));
-    assertThat(callbackFailure.get()).isInstanceOf(IllegalStateException.class);
+      override fun onMessage(message: OperationServerMessage) {}
+      override fun onClosed() {}
+    })
+    subscriptionTransport.send(OperationClientMessage.Init(emptyMap<String, Any>()))
+    assertThat(callbackFailure.get()).isInstanceOf(IllegalStateException::class.java)
+    callbackFailure.set(null)
+    subscriptionTransport.connect()
+    subscriptionTransport.send(OperationClientMessage.Init(emptyMap<String, Any>()))
+    assertThat(callbackFailure.get()).isNull()
+    subscriptionTransport.disconnect(OperationClientMessage.Terminate())
+    subscriptionTransport.send(OperationClientMessage.Init(emptyMap<String, Any>()))
+    assertThat(callbackFailure.get()).isInstanceOf(IllegalStateException::class.java)
   }
 
-  @Test public void subscriptionTransportCallback() {
-    final AtomicBoolean callbackConnected = new AtomicBoolean();
-    final AtomicReference<Throwable> callbackFailure = new AtomicReference<>();
-    final AtomicReference<OperationServerMessage> callbackMessage = new AtomicReference<>();
-    subscriptionTransport = new WebSocketSubscriptionTransport(webSocketRequest, webSocketFactory, new SubscriptionTransport.Callback() {
-      @Override public void onConnected() {
-        callbackConnected.set(true);
+  @Test
+  fun subscriptionTransportCallback() {
+    val callbackConnected = AtomicBoolean()
+    val callbackFailure = AtomicReference<Throwable>()
+    val callbackMessage = AtomicReference<OperationServerMessage>()
+    subscriptionTransport = WebSocketSubscriptionTransport(webSocketRequest, webSocketFactory, object : SubscriptionTransport.Callback {
+      override fun onConnected() {
+        callbackConnected.set(true)
       }
 
-      @Override public void onFailure(Throwable t) {
-        callbackFailure.set(t);
+      override fun onFailure(t: Throwable) {
+        callbackFailure.set(t)
       }
 
-      @Override public void onMessage(OperationServerMessage message) {
-        callbackMessage.set(message);
+      override fun onMessage(message: OperationServerMessage) {
+        callbackMessage.set(message)
       }
 
-      @Override public void onClosed() {
-      }
-    });
-    subscriptionTransport.connect();
-    webSocketFactory.webSocket.listener.onMessage(webSocketFactory.webSocket, "{\"type\":\"connection_ack\"}");
-    webSocketFactory.webSocket.listener.onFailure(webSocketFactory.webSocket, new UnsupportedOperationException(), null);
-
-    assertThat(callbackConnected.get()).isTrue();
-    assertThat(callbackMessage.get()).isInstanceOf(OperationServerMessage.ConnectionAcknowledge.class);
-    assertThat(callbackFailure.get()).isInstanceOf(UnsupportedOperationException.class);
+      override fun onClosed() {}
+    })
+    subscriptionTransport.connect()
+    webSocketFactory.webSocket.listener.onMessage(webSocketFactory.webSocket, "{\"type\":\"connection_ack\"}")
+    webSocketFactory.webSocket.listener.onFailure(webSocketFactory.webSocket, UnsupportedOperationException(), null)
+    assertThat(callbackConnected.get()).isTrue()
+    assertThat(callbackMessage.get()).isInstanceOf(OperationServerMessage.ConnectionAcknowledge::class.java)
+    assertThat(callbackFailure.get()).isInstanceOf(UnsupportedOperationException::class.java)
   }
 
-  @Test public void subscriptionTransportClosedCallback() {
-    final AtomicBoolean callbackConnected = new AtomicBoolean();
-    final AtomicBoolean callbackClosed = new AtomicBoolean();
-    subscriptionTransport = new WebSocketSubscriptionTransport(webSocketRequest, webSocketFactory, new SubscriptionTransport.Callback() {
-      @Override public void onConnected() {
-        callbackConnected.set(true);
+  @Test
+  fun subscriptionTransportClosedCallback() {
+    val callbackConnected = AtomicBoolean()
+    val callbackClosed = AtomicBoolean()
+    subscriptionTransport = WebSocketSubscriptionTransport(webSocketRequest, webSocketFactory, object : SubscriptionTransport.Callback {
+      override fun onConnected() {
+        callbackConnected.set(true)
       }
 
-      @Override public void onFailure(Throwable t) {
-        throw new UnsupportedOperationException("Unexpected");
+      override fun onFailure(t: Throwable) {
+        throw UnsupportedOperationException("Unexpected")
       }
 
-      @Override public void onMessage(OperationServerMessage message) {
+      override fun onMessage(message: OperationServerMessage) {}
+      override fun onClosed() {
+        callbackClosed.set(true)
       }
-
-      @Override public void onClosed() {
-        callbackClosed.set(true);
-      }
-    });
-    subscriptionTransport.connect();
-    webSocketFactory.webSocket.listener.onClosed(webSocketFactory.webSocket, 1001, "");
-
-    assertThat(callbackConnected.get()).isTrue();
-    assertThat(callbackClosed.get()).isTrue();
+    })
+    subscriptionTransport.connect()
+    webSocketFactory.webSocket.listener.onClosed(webSocketFactory.webSocket, 1001, "")
+    assertThat(callbackConnected.get()).isTrue()
+    assertThat(callbackClosed.get()).isTrue()
   }
 
-  private static final class MockWebSocketFactory implements WebSocket.Factory {
-    Request request;
-    MockWebSocket webSocket;
+  private class MockWebSocketFactory : WebSocket.Factory {
+    lateinit var request: Request
+    lateinit var webSocket: MockWebSocket
 
-    @Override public WebSocket newWebSocket(@NotNull Request request, @NotNull WebSocketListener listener) {
-      if (webSocket != null) {
-        throw new IllegalStateException("already initialized");
-      }
-      this.request = request;
-      return webSocket = new MockWebSocket(request, listener);
+    override fun newWebSocket(request: Request, listener: WebSocketListener): WebSocket {
+      this.request = request
+      return MockWebSocket(request, listener).also { webSocket = it }
     }
   }
 
-  private static final class MockWebSocket implements WebSocket {
-    final Request request;
-    final WebSocketListener listener;
-    String lastSentMessage;
-    boolean closed;
+  private class MockWebSocket(val request: Request, val listener: WebSocketListener) : WebSocket {
+    var lastSentMessage: String? = null
+    var closed = false
 
-    MockWebSocket(Request request, WebSocketListener listener) {
-      this.request = request;
-      this.listener = listener;
-      this.listener.onOpen(this, new okhttp3.Response.Builder()
+    override fun request(): Request {
+      return request
+    }
+
+    override fun queueSize(): Long = throw UnsupportedOperationException()
+
+    override fun send(text: String): Boolean {
+      lastSentMessage = text
+      return true
+    }
+
+    override fun send(bytes: ByteString): Boolean {
+      throw UnsupportedOperationException()
+    }
+
+    override fun close(code: Int, reason: String?): Boolean {
+      closed = true
+      return true
+    }
+
+    override fun cancel() {
+      throw UnsupportedOperationException()
+    }
+
+    init {
+      listener.onOpen(this, Response.Builder()
           .request(request)
           .protocol(Protocol.HTTP_1_0)
           .code(200)
           .message("Ok")
           .build()
-      );
-    }
-
-    @Override public Request request() {
-      return request;
-    }
-
-    @Override public long queueSize() {
-      throw new UnsupportedOperationException();
-    }
-
-    @Override public boolean send(@NotNull String text) {
-      lastSentMessage = text;
-      return true;
-    }
-
-    @Override public boolean send(@NotNull ByteString bytes) {
-      throw new UnsupportedOperationException();
-    }
-
-    @Override public boolean close(int code, @Nullable String reason) {
-      return closed = true;
-    }
-
-    @Override public void cancel() {
-      throw new UnsupportedOperationException();
+      )
     }
   }
 }
