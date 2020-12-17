@@ -4,17 +4,22 @@ import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.json.Utils
+import com.apollographql.apollo.api.internal.json.writeArray
 import com.apollographql.apollo.api.internal.json.writeObject
 import okio.Buffer
 import java.io.IOException
 
 sealed class OperationClientMessage {
-  fun toJsonString(): String =
+  @JvmOverloads
+  fun toJsonString(
+      writePayloadAsJsonString: Boolean = false,
+      extensions: Map<String, Any?> = emptyMap()
+  ): String =
       try {
         val buffer = Buffer()
         JsonWriter.of(buffer).use { writer ->
           writer.writeObject {
-            writeToJson(this)
+            writeToJson(this, writePayloadAsJsonString, extensions)
           }
         }
         buffer.readUtf8()
@@ -23,7 +28,15 @@ sealed class OperationClientMessage {
       }
 
   @Throws(IOException::class)
-  abstract fun writeToJson(writer: JsonWriter)
+  fun writeToJson(writer: JsonWriter) = writeToJson(writer, false, emptyMap())
+  fun writeToJson(writer: JsonWriter, writePayloadAsJsonString: Boolean) = writeToJson(writer, writePayloadAsJsonString, emptyMap())
+
+  @Throws(IOException::class)
+  abstract fun writeToJson(
+      writer: JsonWriter,
+      writePayloadAsJsonString: Boolean = false,
+      extensions: Map<String, Any?> = emptyMap()
+  )
 
   companion object {
     const val JSON_KEY_ID = "id"
@@ -32,8 +45,9 @@ sealed class OperationClientMessage {
   }
 
   class Init(private val connectionParams: Map<String, Any?>) : OperationClientMessage() {
+
     @Throws(IOException::class)
-    override fun writeToJson(writer: JsonWriter) {
+    override fun writeToJson(writer: JsonWriter, writePayloadAsJsonString: Boolean, extensions: Map<String, Any?>) {
       writer.name(JSON_KEY_TYPE).value(TYPE)
       if (connectionParams.isNotEmpty()) {
         writer.name(JSON_KEY_PAYLOAD)
@@ -55,28 +69,49 @@ sealed class OperationClientMessage {
   ) : OperationClientMessage() {
 
     @Throws(IOException::class)
-    override fun writeToJson(writer: JsonWriter) {
+    override fun writeToJson(writer: JsonWriter, writePayloadAsJsonString: Boolean, extensions: Map<String, Any?>) {
+      require(JSON_KEY_EXTENSIONS_PERSISTED_QUERY !in extensions) {
+        "The extensions must not contain $JSON_KEY_EXTENSIONS_PERSISTED_QUERY"
+      }
+
       writer.name(JSON_KEY_ID).value(subscriptionId)
       writer.name(JSON_KEY_TYPE).value(TYPE)
       writer.name(JSON_KEY_PAYLOAD).writeObject {
-        name(JSON_KEY_VARIABLES).jsonValue(subscription.variables().marshal(scalarTypeAdapters))
-        name(JSON_KEY_OPERATION_NAME).value(subscription.name().name())
-        if (!autoPersistSubscription || sendSubscriptionDocument) {
-          writer.name(JSON_KEY_QUERY).value(subscription.queryDocument())
+        if (writePayloadAsJsonString) {
+          val buffer = Buffer()
+          JsonWriter.of(buffer).writeObject { writePayload() }
+          name(JSON_KEY_DATA).value(buffer.readUtf8())
+        } else {
+          writePayload()
         }
-        if (autoPersistSubscription) {
+
+        if (autoPersistSubscription || extensions.isNotEmpty()) {
           name(JSON_KEY_EXTENSIONS).writeObject {
-            name(JSON_KEY_EXTENSIONS_PERSISTED_QUERY).writeObject {
-              name(JSON_KEY_EXTENSIONS_PERSISTED_QUERY_VERSION).value(1)
-              name(JSON_KEY_EXTENSIONS_PERSISTED_QUERY_HASH).value(subscription.operationId())
+            if (autoPersistSubscription) {
+              name(JSON_KEY_EXTENSIONS_PERSISTED_QUERY).writeObject {
+                name(JSON_KEY_EXTENSIONS_PERSISTED_QUERY_VERSION).value(1)
+                name(JSON_KEY_EXTENSIONS_PERSISTED_QUERY_HASH).value(subscription.operationId())
+              }
+            }
+            for ((name, value) in extensions) {
+              name(name).jsonValue(value)
             }
           }
         }
       }
     }
 
+    private fun JsonWriter.writePayload() {
+      name(JSON_KEY_VARIABLES).jsonValue(subscription.variables().marshal(scalarTypeAdapters))
+      name(JSON_KEY_OPERATION_NAME).value(subscription.name().name())
+      if (!autoPersistSubscription || sendSubscriptionDocument) {
+        name(JSON_KEY_QUERY).value(subscription.queryDocument())
+      }
+    }
+
     companion object {
       private const val TYPE = "start"
+      private const val JSON_KEY_DATA = "data"
       private const val JSON_KEY_QUERY = "query"
       private const val JSON_KEY_VARIABLES = "variables"
       private const val JSON_KEY_OPERATION_NAME = "operationName"
@@ -84,13 +119,33 @@ sealed class OperationClientMessage {
       private const val JSON_KEY_EXTENSIONS_PERSISTED_QUERY = "persistedQuery"
       private const val JSON_KEY_EXTENSIONS_PERSISTED_QUERY_VERSION = "version"
       private const val JSON_KEY_EXTENSIONS_PERSISTED_QUERY_HASH = "sha256Hash"
+
+      internal fun JsonWriter.jsonValue(value: Any?) {
+        when (value) {
+          is Map<*, *> -> writeObject {
+            for ((k, v) in value) {
+              name(k as String).jsonValue(v)
+            }
+          }
+          is List<*> -> writeArray {
+            for (v in value) {
+              jsonValue(v)
+            }
+          }
+          is Boolean -> value(value)
+          is Number -> value(value)
+          is String -> value(value)
+          null -> nullValue()
+          else -> throw IllegalArgumentException("$value is not a valid JSON type")
+        }
+      }
     }
   }
 
   class Stop(val subscriptionId: String) : OperationClientMessage() {
 
     @Throws(IOException::class)
-    override fun writeToJson(writer: JsonWriter) {
+    override fun writeToJson(writer: JsonWriter, writePayloadAsJsonString: Boolean, extensions: Map<String, Any?>) {
       writer.name(JSON_KEY_ID).value(subscriptionId)
       writer.name(JSON_KEY_TYPE).value(TYPE)
     }
@@ -102,7 +157,7 @@ sealed class OperationClientMessage {
 
   class Terminate : OperationClientMessage() {
     @Throws(IOException::class)
-    override fun writeToJson(writer: JsonWriter) {
+    override fun writeToJson(writer: JsonWriter, writePayloadAsJsonString: Boolean, extensions: Map<String, Any?>) {
       writer.name(JSON_KEY_TYPE).value(TYPE)
     }
 
