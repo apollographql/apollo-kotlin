@@ -403,11 +403,6 @@ package com.apollographql.apollo.subscription {
 
   public static final class OperationClientMessage.Init extends com.apollographql.apollo.subscription.OperationClientMessage {
     ctor public OperationClientMessage.Init(java.util.Map<java.lang.String,?> connectionParams);
-    method public java.util.Map<java.lang.String,java.lang.Object> component1();
-    method public com.apollographql.apollo.subscription.OperationClientMessage.Init copy(java.util.Map<java.lang.String,?> connectionParams);
-    method public boolean equals(Object? p);
-    method public int hashCode();
-    method public String toString();
     field public static final com.apollographql.apollo.subscription.OperationClientMessage.Init.Companion Companion;
     field public final java.util.Map<java.lang.String,java.lang.Object> connectionParams;
   }
@@ -417,15 +412,6 @@ package com.apollographql.apollo.subscription {
 
   public static final class OperationClientMessage.Start extends com.apollographql.apollo.subscription.OperationClientMessage {
     ctor public OperationClientMessage.Start(String subscriptionId, com.apollographql.apollo.api.Subscription<?,?,?> subscription, com.apollographql.apollo.api.ScalarTypeAdapters scalarTypeAdapters, boolean autoPersistSubscription, boolean sendSubscriptionDocument);
-    method public String component1();
-    method public com.apollographql.apollo.api.Subscription<?,?,?> component2();
-    method public com.apollographql.apollo.api.ScalarTypeAdapters component3();
-    method public boolean component4();
-    method public boolean component5();
-    method public com.apollographql.apollo.subscription.OperationClientMessage.Start copy(String subscriptionId, com.apollographql.apollo.api.Subscription<?,?,?> subscription, com.apollographql.apollo.api.ScalarTypeAdapters scalarTypeAdapters, boolean autoPersistSubscription, boolean sendSubscriptionDocument);
-    method public boolean equals(Object? p);
-    method public int hashCode();
-    method public String toString();
     field public static final com.apollographql.apollo.subscription.OperationClientMessage.Start.Companion Companion;
     field public final boolean autoPersistSubscription;
     field public final com.apollographql.apollo.api.ScalarTypeAdapters scalarTypeAdapters;
@@ -439,11 +425,6 @@ package com.apollographql.apollo.subscription {
 
   public static final class OperationClientMessage.Stop extends com.apollographql.apollo.subscription.OperationClientMessage {
     ctor public OperationClientMessage.Stop(String subscriptionId);
-    method public String component1();
-    method public com.apollographql.apollo.subscription.OperationClientMessage.Stop copy(String subscriptionId);
-    method public boolean equals(Object? p);
-    method public int hashCode();
-    method public String toString();
     field public static final com.apollographql.apollo.subscription.OperationClientMessage.Stop.Companion Companion;
     field public final String subscriptionId;
   }
@@ -453,8 +434,6 @@ package com.apollographql.apollo.subscription {
 
   public static final class OperationClientMessage.Terminate extends com.apollographql.apollo.subscription.OperationClientMessage {
     ctor public OperationClientMessage.Terminate();
-    method public boolean equals(Object? other);
-    method public int hashCode();
     field public static final com.apollographql.apollo.subscription.OperationClientMessage.Terminate.Companion Companion;
   }
 
@@ -479,11 +458,6 @@ package com.apollographql.apollo.subscription {
 
   public static final class OperationServerMessage.Complete extends com.apollographql.apollo.subscription.OperationServerMessage {
     ctor public OperationServerMessage.Complete(String? id);
-    method public String? component1();
-    method public com.apollographql.apollo.subscription.OperationServerMessage.Complete copy(String? id);
-    method public boolean equals(Object? p);
-    method public int hashCode();
-    method public String toString();
     field public static final com.apollographql.apollo.subscription.OperationServerMessage.Complete.Companion Companion;
     field public static final String TYPE = "complete";
     field public final String? id;
@@ -494,8 +468,6 @@ package com.apollographql.apollo.subscription {
 
   public static final class OperationServerMessage.ConnectionAcknowledge extends com.apollographql.apollo.subscription.OperationServerMessage {
     ctor public OperationServerMessage.ConnectionAcknowledge();
-    method public boolean equals(Object? other);
-    method public int hashCode();
     field public static final com.apollographql.apollo.subscription.OperationServerMessage.ConnectionAcknowledge.Companion Companion;
     field public static final String TYPE = "connection_ack";
   }
@@ -505,8 +477,6 @@ package com.apollographql.apollo.subscription {
 
   public static final class OperationServerMessage.ConnectionError extends com.apollographql.apollo.subscription.OperationServerMessage {
     ctor public OperationServerMessage.ConnectionError(java.util.Map<java.lang.String,?> payload);
-    method public boolean equals(Object? other);
-    method public int hashCode();
     field public static final com.apollographql.apollo.subscription.OperationServerMessage.ConnectionError.Companion Companion;
     field public static final String TYPE = "connection_error";
     field public final java.util.Map<java.lang.String,java.lang.Object> payload;
@@ -517,8 +487,6 @@ package com.apollographql.apollo.subscription {
 
   public static final class OperationServerMessage.ConnectionKeepAlive extends com.apollographql.apollo.subscription.OperationServerMessage {
     ctor public OperationServerMessage.ConnectionKeepAlive();
-    method public boolean equals(Object? other);
-    method public int hashCode();
     field public static final com.apollographql.apollo.subscription.OperationServerMessage.ConnectionKeepAlive.Companion Companion;
     field public static final String TYPE = "ka";
   }
@@ -528,12 +496,6 @@ package com.apollographql.apollo.subscription {
 
   public static final class OperationServerMessage.Data extends com.apollographql.apollo.subscription.OperationServerMessage {
     ctor public OperationServerMessage.Data(String? id, java.util.Map<java.lang.String,?> payload);
-    method public String? component1();
-    method public java.util.Map<java.lang.String,java.lang.Object> component2();
-    method public com.apollographql.apollo.subscription.OperationServerMessage.Data copy(String? id, java.util.Map<java.lang.String,?> payload);
-    method public boolean equals(Object? p);
-    method public int hashCode();
-    method public String toString();
     field public static final com.apollographql.apollo.subscription.OperationServerMessage.Data.Companion Companion;
     field public static final String TYPE = "data";
     field public final String? id;
@@ -545,12 +507,6 @@ package com.apollographql.apollo.subscription {
 
   public static final class OperationServerMessage.Error extends com.apollographql.apollo.subscription.OperationServerMessage {
     ctor public OperationServerMessage.Error(String? id, java.util.Map<java.lang.String,?> payload);
-    method public String? component1();
-    method public java.util.Map<java.lang.String,java.lang.Object> component2();
-    method public com.apollographql.apollo.subscription.OperationServerMessage.Error copy(String? id, java.util.Map<java.lang.String,?> payload);
-    method public boolean equals(Object? p);
-    method public int hashCode();
-    method public String toString();
     field public static final com.apollographql.apollo.subscription.OperationServerMessage.Error.Companion Companion;
     field public static final String TYPE = "error";
     field public final String? id;

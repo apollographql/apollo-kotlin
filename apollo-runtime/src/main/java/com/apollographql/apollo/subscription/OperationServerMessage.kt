@@ -15,45 +15,36 @@ sealed class OperationServerMessage {
   }
 
   class ConnectionError(@JvmField val payload: Map<String, Any?>) : OperationServerMessage() {
-    override fun hashCode(): Int = javaClass.hashCode()
-    override fun equals(other: Any?): Boolean = other is ConnectionError
-
     companion object {
       const val TYPE = "connection_error"
     }
   }
 
   class ConnectionAcknowledge : OperationServerMessage() {
-    override fun hashCode(): Int = javaClass.hashCode()
-    override fun equals(other: Any?): Boolean = other is ConnectionAcknowledge
-
     companion object {
       const val TYPE = "connection_ack"
     }
   }
 
-  data class Data(@JvmField val id: String?, @JvmField val payload: Map<String, Any?>) : OperationServerMessage() {
+  class Data(@JvmField val id: String?, @JvmField val payload: Map<String, Any?>) : OperationServerMessage() {
     companion object {
       const val TYPE = "data"
     }
   }
 
-  data class Error(@JvmField val id: String?, @JvmField val payload: Map<String, Any?>) : OperationServerMessage() {
+  class Error(@JvmField val id: String?, @JvmField val payload: Map<String, Any?>) : OperationServerMessage() {
     companion object {
       const val TYPE = "error"
     }
   }
 
-  data class Complete(@JvmField val id: String?) : OperationServerMessage() {
+  class Complete(@JvmField val id: String?) : OperationServerMessage() {
     companion object {
       const val TYPE = "complete"
     }
   }
 
   class ConnectionKeepAlive : OperationServerMessage() {
-    override fun hashCode(): Int = javaClass.hashCode()
-    override fun equals(other: Any?): Boolean = other is ConnectionKeepAlive
-
     companion object {
       const val TYPE = "ka"
     }

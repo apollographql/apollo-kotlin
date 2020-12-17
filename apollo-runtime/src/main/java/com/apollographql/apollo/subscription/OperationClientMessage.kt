@@ -24,13 +24,13 @@ sealed class OperationClientMessage {
     with(ApolloOperationMessageSerializer) { writeContentsTo(writer) }
   }
 
-  data class Init(@JvmField val connectionParams: Map<String, Any?>) : OperationClientMessage() {
+  class Init(@JvmField val connectionParams: Map<String, Any?>) : OperationClientMessage() {
     companion object {
       internal const val TYPE = "connection_init"
     }
   }
 
-  data class Start(
+  class Start(
       @JvmField
       val subscriptionId: String,
       @JvmField
@@ -47,16 +47,13 @@ sealed class OperationClientMessage {
     }
   }
 
-  data class Stop(@JvmField val subscriptionId: String) : OperationClientMessage() {
+  class Stop(@JvmField val subscriptionId: String) : OperationClientMessage() {
     companion object {
       internal const val TYPE = "stop"
     }
   }
 
   class Terminate : OperationClientMessage() {
-    override fun hashCode(): Int = javaClass.hashCode()
-    override fun equals(other: Any?): Boolean = other is Terminate
-
     companion object {
       internal const val TYPE = "connection_terminate"
     }
