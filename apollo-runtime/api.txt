@@ -373,38 +373,65 @@ package com.apollographql.apollo.response {
 
 package com.apollographql.apollo.subscription {
 
+  public final class JsonWritersKt {
+  }
+
   public interface OnSubscriptionManagerStateChangeListener {
     method public void onStateChange(com.apollographql.apollo.subscription.SubscriptionManagerState!, com.apollographql.apollo.subscription.SubscriptionManagerState!);
   }
 
-  public abstract class OperationClientMessage {
-    method public String toJsonString();
-    method public abstract void writeToJson(com.apollographql.apollo.api.internal.json.JsonWriter);
+  public abstract sealed class OperationClientMessage {
+    method public final String toJsonString(boolean writePayloadAsJsonString = false, java.util.Map<java.lang.String,?> extensions = emptyMap());
+    method public final String toJsonString(boolean writePayloadAsJsonString = false);
+    method public final String toJsonString();
+    method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public final void writeToJson(com.apollographql.apollo.api.internal.json.JsonWriter writer);
+    method public final void writeToJson(com.apollographql.apollo.api.internal.json.JsonWriter writer, boolean writePayloadAsJsonString);
+    method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public abstract void writeToJson(com.apollographql.apollo.api.internal.json.JsonWriter writer, boolean writePayloadAsJsonString = false, java.util.Map<java.lang.String,?> extensions = emptyMap());
+    field public static final com.apollographql.apollo.subscription.OperationClientMessage.Companion Companion;
+  }
+
+  public static final class OperationClientMessage.Companion {
   }
 
   public static final class OperationClientMessage.Init extends com.apollographql.apollo.subscription.OperationClientMessage {
-    ctor public OperationClientMessage.Init(Map<String,Object>);
-    method public void writeToJson(com.apollographql.apollo.api.internal.json.JsonWriter);
+    ctor public OperationClientMessage.Init(java.util.Map<java.lang.String,?> connectionParams);
+    method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public void writeToJson(com.apollographql.apollo.api.internal.json.JsonWriter writer, boolean writePayloadAsJsonString, java.util.Map<java.lang.String,?> extensions);
+    field public static final com.apollographql.apollo.subscription.OperationClientMessage.Init.Companion Companion;
+  }
+
+  public static final class OperationClientMessage.Init.Companion {
   }
 
   public static final class OperationClientMessage.Start extends com.apollographql.apollo.subscription.OperationClientMessage {
-    ctor public OperationClientMessage.Start(String, com.apollographql.apollo.api.Subscription<?,?,?>, com.apollographql.apollo.api.ScalarTypeAdapters, boolean, boolean);
-    method public void writeToJson(com.apollographql.apollo.api.internal.json.JsonWriter);
+    ctor public OperationClientMessage.Start(String subscriptionId, com.apollographql.apollo.api.Subscription<?,?,?> subscription, com.apollographql.apollo.api.ScalarTypeAdapters scalarTypeAdapters, boolean autoPersistSubscription, boolean sendSubscriptionDocument);
+    method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public void writeToJson(com.apollographql.apollo.api.internal.json.JsonWriter writer, boolean writePayloadAsJsonString, java.util.Map<java.lang.String,?> extensions);
+    field public static final com.apollographql.apollo.subscription.OperationClientMessage.Start.Companion Companion;
     field public final boolean autoPersistSubscription;
     field public final boolean sendSubscriptionDocument;
-    field public final com.apollographql.apollo.api.Subscription<?,?,?>! subscription;
+    field public final com.apollographql.apollo.api.Subscription<?,?,?> subscription;
     field public final String subscriptionId;
   }
 
+  public static final class OperationClientMessage.Start.Companion {
+  }
+
   public static final class OperationClientMessage.Stop extends com.apollographql.apollo.subscription.OperationClientMessage {
-    ctor public OperationClientMessage.Stop(String);
-    method public void writeToJson(com.apollographql.apollo.api.internal.json.JsonWriter);
+    ctor public OperationClientMessage.Stop(String subscriptionId);
+    method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public void writeToJson(com.apollographql.apollo.api.internal.json.JsonWriter writer, boolean writePayloadAsJsonString, java.util.Map<java.lang.String,?> extensions);
+    field public static final com.apollographql.apollo.subscription.OperationClientMessage.Stop.Companion Companion;
     field public final String subscriptionId;
+  }
+
+  public static final class OperationClientMessage.Stop.Companion {
   }
 
   public static final class OperationClientMessage.Terminate extends com.apollographql.apollo.subscription.OperationClientMessage {
     ctor public OperationClientMessage.Terminate();
-    method public void writeToJson(com.apollographql.apollo.api.internal.json.JsonWriter);
+    method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public void writeToJson(com.apollographql.apollo.api.internal.json.JsonWriter writer, boolean writePayloadAsJsonString, java.util.Map<java.lang.String,?> extensions);
+    field public static final com.apollographql.apollo.subscription.OperationClientMessage.Terminate.Companion Companion;
+  }
+
+  public static final class OperationClientMessage.Terminate.Companion {
   }
 
   public abstract class OperationServerMessage {
@@ -493,15 +520,28 @@ package com.apollographql.apollo.subscription {
   }
 
   public final class WebSocketSubscriptionTransport implements com.apollographql.apollo.subscription.SubscriptionTransport {
-    ctor public WebSocketSubscriptionTransport(okhttp3.Request!, okhttp3.WebSocket.Factory!, com.apollographql.apollo.subscription.SubscriptionTransport.Callback!);
+    ctor public WebSocketSubscriptionTransport(okhttp3.Request webSocketRequest, okhttp3.WebSocket.Factory webSocketConnectionFactory, com.apollographql.apollo.subscription.SubscriptionTransport.Callback callback, boolean writePayloadAsJsonString, java.util.Map<java.lang.String,?> extensions);
+    ctor public WebSocketSubscriptionTransport(okhttp3.Request webSocketRequest, okhttp3.WebSocket.Factory webSocketConnectionFactory, com.apollographql.apollo.subscription.SubscriptionTransport.Callback callback, boolean writePayloadAsJsonString);
+    ctor public WebSocketSubscriptionTransport(okhttp3.Request webSocketRequest, okhttp3.WebSocket.Factory webSocketConnectionFactory, com.apollographql.apollo.subscription.SubscriptionTransport.Callback callback);
     method public void connect();
-    method public void disconnect(com.apollographql.apollo.subscription.OperationClientMessage!);
-    method public void send(com.apollographql.apollo.subscription.OperationClientMessage!);
+    method public void disconnect(com.apollographql.apollo.subscription.OperationClientMessage message);
+    method public void send(com.apollographql.apollo.subscription.OperationClientMessage message);
+  }
+
+  public static final class WebSocketSubscriptionTransport.AppSyncFactory implements com.apollographql.apollo.subscription.SubscriptionTransport.Factory {
+    ctor public WebSocketSubscriptionTransport.AppSyncFactory(String webSocketUrl, okhttp3.WebSocket.Factory webSocketConnectionFactory, java.util.Map<java.lang.String,?> authorization, java.util.Map<java.lang.String,?> payload);
+    ctor public WebSocketSubscriptionTransport.AppSyncFactory(String webSocketUrl, okhttp3.WebSocket.Factory webSocketConnectionFactory, java.util.Map<java.lang.String,?> authorization);
+    field public static final com.apollographql.apollo.subscription.WebSocketSubscriptionTransport.AppSyncFactory.Companion Companion;
+  }
+
+  public static final class WebSocketSubscriptionTransport.AppSyncFactory.Companion {
   }
 
   public static final class WebSocketSubscriptionTransport.Factory implements com.apollographql.apollo.subscription.SubscriptionTransport.Factory {
-    ctor public WebSocketSubscriptionTransport.Factory(String, okhttp3.WebSocket.Factory);
-    method public com.apollographql.apollo.subscription.SubscriptionTransport! create(com.apollographql.apollo.subscription.SubscriptionTransport.Callback);
+    ctor public WebSocketSubscriptionTransport.Factory(String webSocketUrl, okhttp3.WebSocket.Factory webSocketConnectionFactory, boolean writePayloadAsJsonString, java.util.Map<java.lang.String,?> extensions);
+    ctor public WebSocketSubscriptionTransport.Factory(String webSocketUrl, okhttp3.WebSocket.Factory webSocketConnectionFactory, boolean writePayloadAsJsonString);
+    ctor public WebSocketSubscriptionTransport.Factory(String webSocketUrl, okhttp3.WebSocket.Factory webSocketConnectionFactory);
+    method public com.apollographql.apollo.subscription.SubscriptionTransport create(com.apollographql.apollo.subscription.SubscriptionTransport.Callback callback);
   }
 
 }

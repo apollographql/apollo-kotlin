@@ -4,7 +4,6 @@ import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.json.Utils
-import com.apollographql.apollo.api.internal.json.writeArray
 import com.apollographql.apollo.api.internal.json.writeObject
 import okio.Buffer
 import java.io.IOException
@@ -39,13 +38,12 @@ sealed class OperationClientMessage {
   )
 
   companion object {
-    const val JSON_KEY_ID = "id"
-    const val JSON_KEY_TYPE = "type"
-    const val JSON_KEY_PAYLOAD = "payload"
+    private const val JSON_KEY_ID = "id"
+    private const val JSON_KEY_TYPE = "type"
+    private const val JSON_KEY_PAYLOAD = "payload"
   }
 
   class Init(private val connectionParams: Map<String, Any?>) : OperationClientMessage() {
-
     @Throws(IOException::class)
     override fun writeToJson(writer: JsonWriter, writePayloadAsJsonString: Boolean, extensions: Map<String, Any?>) {
       writer.name(JSON_KEY_TYPE).value(TYPE)
@@ -61,10 +59,14 @@ sealed class OperationClientMessage {
   }
 
   class Start(
+      @JvmField
       val subscriptionId: String,
+      @JvmField
       val subscription: Subscription<*, *, *>,
       private val scalarTypeAdapters: ScalarTypeAdapters,
+      @JvmField
       val autoPersistSubscription: Boolean,
+      @JvmField
       val sendSubscriptionDocument: Boolean
   ) : OperationClientMessage() {
 
@@ -119,30 +121,10 @@ sealed class OperationClientMessage {
       private const val JSON_KEY_EXTENSIONS_PERSISTED_QUERY = "persistedQuery"
       private const val JSON_KEY_EXTENSIONS_PERSISTED_QUERY_VERSION = "version"
       private const val JSON_KEY_EXTENSIONS_PERSISTED_QUERY_HASH = "sha256Hash"
-
-      internal fun JsonWriter.jsonValue(value: Any?) {
-        when (value) {
-          is Map<*, *> -> writeObject {
-            for ((k, v) in value) {
-              name(k as String).jsonValue(v)
-            }
-          }
-          is List<*> -> writeArray {
-            for (v in value) {
-              jsonValue(v)
-            }
-          }
-          is Boolean -> value(value)
-          is Number -> value(value)
-          is String -> value(value)
-          null -> nullValue()
-          else -> throw IllegalArgumentException("$value is not a valid JSON type")
-        }
-      }
     }
   }
 
-  class Stop(val subscriptionId: String) : OperationClientMessage() {
+  class Stop(@JvmField val subscriptionId: String) : OperationClientMessage() {
 
     @Throws(IOException::class)
     override fun writeToJson(writer: JsonWriter, writePayloadAsJsonString: Boolean, extensions: Map<String, Any?>) {

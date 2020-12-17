@@ -1,7 +1,6 @@
 package com.apollographql.apollo.subscription
 
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.subscription.OperationClientMessage.Start.Companion.jsonValue
 import okhttp3.HttpUrl
 import okhttp3.Request
 import okhttp3.Response
