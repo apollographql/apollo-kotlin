@@ -373,9 +373,6 @@ package com.apollographql.apollo.response {
 
 package com.apollographql.apollo.subscription {
 
-  public final class JsonWritersKt {
-  }
-
   public interface OnSubscriptionManagerStateChangeListener {
     method public void onStateChange(com.apollographql.apollo.subscription.SubscriptionManagerState!, com.apollographql.apollo.subscription.SubscriptionManagerState!);
   }
