@@ -1,165 +1,109 @@
-package com.apollographql.apollo.subscription;
+package com.apollographql.apollo.subscription
 
-import java.lang.ref.WeakReference;
-import java.util.concurrent.atomic.AtomicReference;
-
-import org.jetbrains.annotations.NotNull;
-
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.WebSocket;
-
-import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+import okhttp3.Request
+import okhttp3.Response
+import okhttp3.WebSocket
+import java.lang.ref.WeakReference
+import java.util.concurrent.atomic.AtomicReference
 
 /**
- * <p>{@link SubscriptionTransport} implementation based on {@link WebSocket}.<p/>
+ * [SubscriptionTransport] implementation based on [WebSocket].
  */
-public final class WebSocketSubscriptionTransport implements SubscriptionTransport {
-  private final Request webSocketRequest;
-  private final WebSocket.Factory webSocketConnectionFactory;
-  private final Callback callback;
-  final AtomicReference<WebSocket> webSocket = new AtomicReference<>();
-  final AtomicReference<WebSocketListener> webSocketListener = new AtomicReference<>();
+class WebSocketSubscriptionTransport(
+    private val webSocketRequest: Request,
+    private val webSocketConnectionFactory: WebSocket.Factory,
+    private val callback: SubscriptionTransport.Callback
+) : SubscriptionTransport {
+  internal val webSocket = AtomicReference<WebSocket>()
+  internal val webSocketListener = AtomicReference<WebSocketListener>()
 
-  public WebSocketSubscriptionTransport(Request webSocketRequest, WebSocket.Factory webSocketConnectionFactory,
-      Callback callback) {
-    this.webSocketRequest = webSocketRequest;
-    this.webSocketConnectionFactory = webSocketConnectionFactory;
-    this.callback = callback;
-  }
-
-  @Override
-  public void connect() {
-    WebSocketListener webSocketListener = new WebSocketListener(this);
-    if (!this.webSocketListener.compareAndSet(null, webSocketListener)) {
-      throw new IllegalStateException("Already connected");
+  override fun connect() {
+    val webSocketListener = WebSocketListener(this)
+    check(this.webSocketListener.compareAndSet(null, webSocketListener)) {
+      "Already connected"
     }
-    webSocket.set(webSocketConnectionFactory.newWebSocket(webSocketRequest, webSocketListener));
+    webSocket.set(webSocketConnectionFactory.newWebSocket(webSocketRequest, webSocketListener))
   }
 
-  @Override
-  public void disconnect(OperationClientMessage message) {
-    WebSocket socket = webSocket.getAndSet(null);
+  override fun disconnect(message: OperationClientMessage) {
+    webSocket.getAndSet(null)
+        ?.close(1001, message.toJsonString())
+    release()
+  }
 
-    if (socket != null) {
-      socket.close(1001, message.toJsonString());
+  override fun send(message: OperationClientMessage) {
+    val socket = webSocket.get() ?: run {
+      callback.onFailure(IllegalStateException("Send attempted on closed connection"))
+      return
     }
-
-    release();
+    socket.send(message.toJsonString())
   }
 
-  @Override
-  public void send(OperationClientMessage message) {
-    WebSocket socket = webSocket.get();
-    if (socket == null) {
-      callback.onFailure(new IllegalStateException("Send attempted on closed connection"));
-      return;
-    }
-    socket.send(message.toJsonString());
+  internal fun onOpen() {
+    callback.onConnected()
   }
 
-  void onOpen() {
-    callback.onConnected();
+  internal fun onMessage(message: OperationServerMessage?) {
+    callback.onMessage(message)
   }
 
-  void onMessage(OperationServerMessage message) {
-    callback.onMessage(message);
-  }
-
-  void onFailure(Throwable t) {
+  internal fun onFailure(t: Throwable?) {
     try {
-      callback.onFailure(t);
+      callback.onFailure(t)
     } finally {
-      release();
+      release()
     }
   }
 
-  void onClosed() {
+  internal fun onClosed() {
     try {
-      callback.onClosed();
+      callback.onClosed()
     } finally {
-      release();
+      release()
     }
   }
 
-  void release() {
-    WebSocketListener socketListener = webSocketListener.getAndSet(null);
-    if (socketListener != null) {
-      socketListener.release();
-    }
-    webSocket.set(null);
+  internal fun release() {
+    webSocketListener.getAndSet(null)?.release()
+    webSocket.set(null)
   }
 
-  static final class WebSocketListener extends okhttp3.WebSocketListener {
-    final WeakReference<WebSocketSubscriptionTransport> delegateRef;
+  internal class WebSocketListener(delegate: WebSocketSubscriptionTransport) : okhttp3.WebSocketListener() {
+    private val delegateRef = WeakReference(delegate)
 
-    WebSocketListener(WebSocketSubscriptionTransport delegate) {
-      delegateRef = new WeakReference<>(delegate);
+    override fun onOpen(webSocket: WebSocket, response: Response) {
+      delegateRef.get()?.onOpen()
     }
 
-    @Override
-    public void onOpen(WebSocket webSocket, Response response) {
-      WebSocketSubscriptionTransport delegate = delegateRef.get();
-      if (delegate != null) {
-        delegate.onOpen();
-      }
+    override fun onMessage(webSocket: WebSocket, text: String) {
+      delegateRef.get()?.onMessage(OperationServerMessage.fromJsonString(text))
     }
 
-    @Override
-    public void onMessage(WebSocket webSocket, String text) {
-      WebSocketSubscriptionTransport delegate = delegateRef.get();
-      if (delegate != null) {
-        OperationServerMessage message = OperationServerMessage.fromJsonString(text);
-        delegate.onMessage(message);
-      }
+    override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+      delegateRef.get()?.onFailure(t)
     }
 
-    @Override
-    public void onFailure(WebSocket webSocket, Throwable t, Response response) {
-      WebSocketSubscriptionTransport delegate = delegateRef.get();
-      if (delegate != null) {
-        delegate.onFailure(t);
-      }
+    override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
+      delegateRef.get()?.onClosed()
     }
 
-    @Override
-    public void onClosing(WebSocket webSocket, int code, String reason) {
-      WebSocketSubscriptionTransport delegate = delegateRef.get();
-      if (delegate != null) {
-        delegate.onClosed();
-      }
+    override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
+      delegateRef.get()?.onClosed()
     }
 
-    @Override
-    public void onClosed(WebSocket webSocket, int code, String reason) {
-      WebSocketSubscriptionTransport delegate = delegateRef.get();
-      if (delegate != null) {
-        delegate.onClosed();
-      }
-    }
-
-    void release() {
-      delegateRef.clear();
+    fun release() {
+      delegateRef.clear()
     }
   }
 
-  public static final class Factory implements SubscriptionTransport.Factory {
-    private final Request webSocketRequest;
-    private final WebSocket.Factory webSocketConnectionFactory;
+  class Factory(webSocketUrl: String, private val webSocketConnectionFactory: WebSocket.Factory) : SubscriptionTransport.Factory {
+    private val webSocketRequest: Request = Request.Builder()
+        .url(webSocketUrl)
+        .addHeader("Sec-WebSocket-Protocol", "graphql-ws")
+        .addHeader("Cookie", "")
+        .build()
 
-    public Factory(@NotNull String webSocketUrl, @NotNull WebSocket.Factory webSocketConnectionFactory) {
-      this.webSocketRequest = new Request.Builder()
-          .url(checkNotNull(webSocketUrl, "webSocketUrl == null"))
-          .addHeader("Sec-WebSocket-Protocol", "graphql-ws")
-          .addHeader("Cookie", "")
-          .build();
-      this.webSocketConnectionFactory = checkNotNull(webSocketConnectionFactory, "webSocketConnectionFactory == null");
-    }
-
-    @Override
-    public SubscriptionTransport create(@NotNull Callback callback) {
-      checkNotNull(callback, "callback == null");
-      return new WebSocketSubscriptionTransport(webSocketRequest, webSocketConnectionFactory, callback);
-    }
+    override fun create(callback: SubscriptionTransport.Callback): SubscriptionTransport =
+        WebSocketSubscriptionTransport(webSocketRequest, webSocketConnectionFactory, callback)
   }
 }
