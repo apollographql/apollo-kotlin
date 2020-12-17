@@ -9,7 +9,7 @@ sealed class OperationServerMessage {
     const val JSON_KEY_PAYLOAD = "payload"
 
     @Suppress("DeprecatedCallableAddReplaceWith")
-    @Deprecated("This method should be used any more. Instead you should use a serializer")
+    @Deprecated("This method is deprecated. Use an OperationMessageSerializer instead.")
     fun fromJsonString(json: String): OperationServerMessage =
         ApolloOperationMessageSerializer.readServerMessage(Buffer().writeUtf8(json))
   }

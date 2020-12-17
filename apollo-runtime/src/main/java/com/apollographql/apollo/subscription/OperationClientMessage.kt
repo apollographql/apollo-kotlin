@@ -7,7 +7,7 @@ import okio.Buffer
 import java.io.IOException
 
 sealed class OperationClientMessage {
-  @Deprecated("Use a serializer instead")
+  @Deprecated("This method is deprecated. Use an OperationMessageSerializer instead.")
   fun toJsonString(): String =
       try {
         val buffer = Buffer()
@@ -19,7 +19,7 @@ sealed class OperationClientMessage {
 
   @Suppress("DeprecatedCallableAddReplaceWith")
   @Throws(IOException::class)
-  @Deprecated("Use a serializer instead")
+  @Deprecated("This method is deprecated. Use an OperationMessageSerializer instead.")
   fun writeToJson(writer: JsonWriter) {
     with(ApolloOperationMessageSerializer) { writeContentsTo(writer) }
   }

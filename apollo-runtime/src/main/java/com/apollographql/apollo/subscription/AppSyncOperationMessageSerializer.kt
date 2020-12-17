@@ -8,6 +8,7 @@ import okhttp3.HttpUrl
 import okio.Buffer
 import okio.BufferedSink
 import okio.BufferedSource
+import java.net.URL
 import java.util.Base64
 
 class AppSyncOperationMessageSerializer(
