@@ -50,7 +50,7 @@ class AppSyncOperationMessageSerializer(
 
     @JvmOverloads
     @JvmStatic
-    fun buildAppSyncWebSocketUrl(
+    fun buildWebSocketUrl(
         baseWebSocketUrl: String,
         authorization: Map<String, Any?>,
         payload: Map<String, Any?> = emptyMap(),
