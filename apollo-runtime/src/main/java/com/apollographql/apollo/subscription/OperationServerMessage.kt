@@ -1,133 +1,83 @@
-package com.apollographql.apollo.subscription;
+package com.apollographql.apollo.subscription
 
-import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader;
-import com.apollographql.apollo.api.internal.json.JsonReader;
-import com.apollographql.apollo.api.internal.json.ResponseJsonStreamReader;
+import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.internal.json.ResponseJsonStreamReader
+import okio.Buffer
+import java.io.IOException
+import java.util.Collections
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Map;
-
-import org.jetbrains.annotations.NotNull;
-
-import okio.Buffer;
-
-import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
-import static java.util.Collections.unmodifiableMap;
-
-@SuppressWarnings("WeakerAccess")
-public abstract class OperationServerMessage {
-  static final String JSON_KEY_ID = "id";
-  static final String JSON_KEY_TYPE = "type";
-  static final String JSON_KEY_PAYLOAD = "payload";
-
-  OperationServerMessage() {
-  }
-
-  @NotNull public static OperationServerMessage fromJsonString(@NotNull String json) {
-    checkNotNull(json, "json == null");
-    try {
-      Buffer buffer = new Buffer();
-      buffer.writeUtf8(json);
-      return OperationServerMessage.readFromJson(new BufferedSourceJsonReader(buffer));
-    } catch (Exception e) {
-      return new Unsupported(json);
+sealed class OperationServerMessage {
+  class ConnectionError(val payload: Map<String, Any?>) : OperationServerMessage() {
+    companion object {
+      const val TYPE = "connection_error"
     }
   }
 
-  private static OperationServerMessage readFromJson(@NotNull JsonReader reader) throws IOException {
-    checkNotNull(reader, "reader == null");
-
-    ResponseJsonStreamReader responseJsonStreamReader = new ResponseJsonStreamReader(reader);
-    Map<String, Object> messageData = responseJsonStreamReader.toMap();
-    String id = (String) messageData.get(JSON_KEY_ID);
-    String type = (String) messageData.get(JSON_KEY_TYPE);
-    switch (type) {
-      case ConnectionError.TYPE:
-        return new ConnectionError(messagePayload(messageData));
-
-      case ConnectionAcknowledge.TYPE:
-        return new ConnectionAcknowledge();
-
-      case Data.TYPE:
-        return new Data(id, messagePayload(messageData));
-
-      case Error.TYPE:
-        return new Error(id, messagePayload(messageData));
-
-      case Complete.TYPE:
-        return new Complete(id);
-
-      case ConnectionKeepAlive.TYPE:
-        return new ConnectionKeepAlive();
-
-      default:
-        throw new IOException("Unsupported message");
+  class ConnectionAcknowledge : OperationServerMessage() {
+    companion object {
+      const val TYPE = "connection_ack"
     }
   }
 
-  @SuppressWarnings("unchecked")
-  private static Map<String, Object> messagePayload(Map<String, Object> messageData) {
-    Map<String, Object> messagePayload = (Map<String, Object>) messageData.get(JSON_KEY_PAYLOAD);
-    return messagePayload == null ? Collections.<String, Object>emptyMap() : unmodifiableMap(messagePayload);
-  }
-
-  public static final class ConnectionError extends OperationServerMessage {
-    public static final String TYPE = "connection_error";
-    public final Map<String, Object> payload;
-
-    public ConnectionError(Map<String, Object> payload) {
-      this.payload = payload;
+  class Data(val id: String?, val payload: Map<String, Any?>) : OperationServerMessage() {
+    companion object {
+      const val TYPE = "data"
     }
   }
 
-  public static final class ConnectionAcknowledge extends OperationServerMessage {
-    public static final String TYPE = "connection_ack";
-
-    public ConnectionAcknowledge() {
+  class Error(val id: String?, val payload: Map<String, Any?>) : OperationServerMessage() {
+    companion object {
+      const val TYPE = "error"
     }
   }
 
-  public static final class Data extends OperationServerMessage {
-    public static final String TYPE = "data";
-    public final String id;
-    public final Map<String, Object> payload;
-
-    public Data(String id, Map<String, Object> payload) {
-      this.id = id;
-      this.payload = payload;
+  class Complete(val id: String?) : OperationServerMessage() {
+    companion object {
+      const val TYPE = "complete"
     }
   }
 
-  public static final class Error extends OperationServerMessage {
-    public static final String TYPE = "error";
-    public final String id;
-    public final Map<String, Object> payload;
-
-    public Error(String id, Map<String, Object> payload) {
-      this.id = id;
-      this.payload = payload;
+  class ConnectionKeepAlive : OperationServerMessage() {
+    companion object {
+      const val TYPE = "ka"
     }
   }
 
-  public static final class Complete extends OperationServerMessage {
-    public static final String TYPE = "complete";
-    public final String id;
+  class Unsupported(val rawMessage: String) : OperationServerMessage()
 
-    public Complete(String id) {
-      this.id = id;
+  companion object {
+    const val JSON_KEY_ID = "id"
+    const val JSON_KEY_TYPE = "type"
+    const val JSON_KEY_PAYLOAD = "payload"
+
+    fun fromJsonString(json: String): OperationServerMessage =
+        try {
+          readFromJson(BufferedSourceJsonReader(Buffer().writeUtf8(json)))
+        } catch (e: Exception) {
+          Unsupported(json)
+        }
+
+    @Throws(IOException::class)
+    private fun readFromJson(reader: JsonReader): OperationServerMessage {
+      val responseJsonStreamReader = ResponseJsonStreamReader(reader)
+      val messageData = requireNotNull(responseJsonStreamReader.toMap())
+      val id = messageData[JSON_KEY_ID] as String?
+      return when (val type = messageData[JSON_KEY_TYPE] as String?) {
+        ConnectionError.TYPE -> ConnectionError(messagePayload(messageData))
+        ConnectionAcknowledge.TYPE -> ConnectionAcknowledge()
+        Data.TYPE -> Data(id, messagePayload(messageData))
+        Error.TYPE -> Error(id, messagePayload(messageData))
+        Complete.TYPE -> Complete(id)
+        ConnectionKeepAlive.TYPE -> ConnectionKeepAlive()
+        else -> throw IOException("Unsupported message type $type")
+      }
     }
-  }
 
-  public static final class ConnectionKeepAlive extends OperationServerMessage {
-    public static final String TYPE = "ka";
-  }
-
-  public static final class Unsupported extends OperationServerMessage {
-    public final String rawMessage;
-
-    public Unsupported(String rawMessage) {
-      this.rawMessage = rawMessage;
-    }
+    private fun messagePayload(messageData: Map<String, Any?>): Map<String, Any> =
+        @Suppress("UNCHECKED_CAST")
+        (messageData[JSON_KEY_PAYLOAD] as Map<String, Any>?)
+            ?.let { Collections.unmodifiableMap(it) }
+            ?: emptyMap()
   }
 }
