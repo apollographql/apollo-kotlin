@@ -12,12 +12,16 @@ import okio.BufferedSource
 import java.io.IOException
 import java.util.Collections
 
+/**
+ * An [OperationMessageSerializer] that uses the standard
+ * [Apollo format][https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md].
+ */
 object ApolloOperationMessageSerializer : OperationMessageSerializer {
   @Throws(IOException::class)
-  override fun OperationClientMessage.writeTo(sink: BufferedSink) {
+  override fun writeClientMessage(message: OperationClientMessage, sink: BufferedSink) {
     JsonWriter.of(sink).use { writer ->
       writer.writeObject {
-        writeContentsTo(writer)
+        message.writeContentsTo(writer)
       }
     }
   }
@@ -40,13 +44,11 @@ object ApolloOperationMessageSerializer : OperationMessageSerializer {
       }
 
   internal fun OperationClientMessage.writeContentsTo(writer: JsonWriter) {
-    with(writer) {
-      when (this@writeContentsTo) {
-        is OperationClientMessage.Init -> writeContentsTo(writer)
-        is OperationClientMessage.Start -> writeContentsTo(writer)
-        is OperationClientMessage.Stop -> writeContentsTo(writer)
-        is OperationClientMessage.Terminate -> writeContentsTo(writer)
-      }
+    when (this@writeContentsTo) {
+      is OperationClientMessage.Init -> writeContentsTo(writer)
+      is OperationClientMessage.Start -> writeContentsTo(writer)
+      is OperationClientMessage.Stop -> writeContentsTo(writer)
+      is OperationClientMessage.Terminate -> writeContentsTo(writer)
     }
   }
 

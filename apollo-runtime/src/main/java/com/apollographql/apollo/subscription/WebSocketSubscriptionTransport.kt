@@ -72,11 +72,9 @@ class WebSocketSubscriptionTransport @JvmOverloads constructor(
 
   private fun OperationClientMessage.serializeToJson(): String {
     val buffer = Buffer()
-    with(serializer) { writeTo(buffer) }
+    serializer.writeClientMessage(this, buffer)
     return buffer.readUtf8()
   }
-
-  companion object {}
 
   internal class WebSocketListener(delegate: WebSocketSubscriptionTransport) : okhttp3.WebSocketListener() {
     private val delegateRef = WeakReference(delegate)
@@ -108,9 +106,9 @@ class WebSocketSubscriptionTransport @JvmOverloads constructor(
   }
 
   /**
-   * @param webSocketUrl The URL of the GraphQL WebSocket API
-   * @param webSocketConnectionFactory The [WebSocket.Factory] to use to create the websockets
-   * @param serializer A [OperationMessageSerializer] that will be used to read and write operation messages
+   * @param webSocketUrl The URL of the GraphQL Web Socket API.
+   * @param webSocketConnectionFactory The [WebSocket.Factory] to use to create the websockets.
+   * @param serializer A [OperationMessageSerializer] that will be used to read and write messages.
    */
   class Factory @JvmOverloads constructor(
       webSocketUrl: String,

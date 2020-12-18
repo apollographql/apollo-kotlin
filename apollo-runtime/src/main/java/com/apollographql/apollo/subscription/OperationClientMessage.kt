@@ -11,7 +11,7 @@ sealed class OperationClientMessage {
   fun toJsonString(): String =
       try {
         val buffer = Buffer()
-        with(ApolloOperationMessageSerializer) { writeTo(buffer) }
+        ApolloOperationMessageSerializer.writeClientMessage(this, buffer)
         buffer.readUtf8()
       } catch (e: IOException) {
         throw RuntimeException("Failed to serialize to json", e)

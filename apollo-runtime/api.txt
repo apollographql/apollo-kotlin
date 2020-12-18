@@ -375,22 +375,22 @@ package com.apollographql.apollo.subscription {
 
   public final class ApolloOperationMessageSerializer implements com.apollographql.apollo.subscription.OperationMessageSerializer {
     method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public com.apollographql.apollo.subscription.OperationServerMessage readServerMessage(okio.BufferedSource source);
-    method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public void writeTo(com.apollographql.apollo.subscription.OperationClientMessage, okio.BufferedSink sink);
+    method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public void writeClientMessage(com.apollographql.apollo.subscription.OperationClientMessage message, okio.BufferedSink sink);
     field public static final com.apollographql.apollo.subscription.ApolloOperationMessageSerializer INSTANCE;
   }
 
   public final class AppSyncOperationMessageSerializer implements com.apollographql.apollo.subscription.OperationMessageSerializer {
     ctor public AppSyncOperationMessageSerializer(java.util.Map<java.lang.String,?> authorization);
-    method public static String buildAppSyncWebSocketUrl(String baseWebSocketUrl, java.util.Map<java.lang.String,?> authorization, java.util.Map<java.lang.String,?> payload = emptyMap());
-    method public static String buildAppSyncWebSocketUrl(String baseWebSocketUrl, java.util.Map<java.lang.String,?> authorization);
-    method public com.apollographql.apollo.subscription.OperationServerMessage readServerMessage(okio.BufferedSource source);
-    method public void writeTo(com.apollographql.apollo.subscription.OperationClientMessage, okio.BufferedSink sink);
+    method public static String buildWebSocketUrl(String baseWebSocketUrl, java.util.Map<java.lang.String,?> authorization, java.util.Map<java.lang.String,?> payload = emptyMap());
+    method public static String buildWebSocketUrl(String baseWebSocketUrl, java.util.Map<java.lang.String,?> authorization);
+    method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public com.apollographql.apollo.subscription.OperationServerMessage readServerMessage(okio.BufferedSource source);
+    method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public void writeClientMessage(com.apollographql.apollo.subscription.OperationClientMessage message, okio.BufferedSink sink);
     field public static final com.apollographql.apollo.subscription.AppSyncOperationMessageSerializer.Companion Companion;
   }
 
   public static final class AppSyncOperationMessageSerializer.Companion {
-    method public String buildAppSyncWebSocketUrl(String baseWebSocketUrl, java.util.Map<java.lang.String,?> authorization, java.util.Map<java.lang.String,?> payload = emptyMap());
-    method public String buildAppSyncWebSocketUrl(String baseWebSocketUrl, java.util.Map<java.lang.String,?> authorization);
+    method public String buildWebSocketUrl(String baseWebSocketUrl, java.util.Map<java.lang.String,?> authorization, java.util.Map<java.lang.String,?> payload = emptyMap());
+    method public String buildWebSocketUrl(String baseWebSocketUrl, java.util.Map<java.lang.String,?> authorization);
   }
 
   public interface OnSubscriptionManagerStateChangeListener {
@@ -443,7 +443,7 @@ package com.apollographql.apollo.subscription {
 
   public interface OperationMessageSerializer {
     method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public com.apollographql.apollo.subscription.OperationServerMessage readServerMessage(okio.BufferedSource source);
-    method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public void writeTo(com.apollographql.apollo.subscription.OperationClientMessage, okio.BufferedSink sink);
+    method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public void writeClientMessage(com.apollographql.apollo.subscription.OperationClientMessage message, okio.BufferedSink sink);
   }
 
   public abstract sealed class OperationServerMessage {
@@ -459,6 +459,8 @@ package com.apollographql.apollo.subscription {
 
   public static final class OperationServerMessage.Complete extends com.apollographql.apollo.subscription.OperationServerMessage {
     ctor public OperationServerMessage.Complete(String? id);
+    method public boolean equals(Object? other);
+    method public int hashCode();
     field public static final com.apollographql.apollo.subscription.OperationServerMessage.Complete.Companion Companion;
     field public static final String TYPE = "complete";
     field public final String? id;
@@ -469,6 +471,8 @@ package com.apollographql.apollo.subscription {
 
   public static final class OperationServerMessage.ConnectionAcknowledge extends com.apollographql.apollo.subscription.OperationServerMessage {
     ctor public OperationServerMessage.ConnectionAcknowledge();
+    method public boolean equals(Object? other);
+    method public int hashCode();
     field public static final com.apollographql.apollo.subscription.OperationServerMessage.ConnectionAcknowledge.Companion Companion;
     field public static final String TYPE = "connection_ack";
   }
@@ -478,6 +482,8 @@ package com.apollographql.apollo.subscription {
 
   public static final class OperationServerMessage.ConnectionError extends com.apollographql.apollo.subscription.OperationServerMessage {
     ctor public OperationServerMessage.ConnectionError(java.util.Map<java.lang.String,?> payload);
+    method public boolean equals(Object? other);
+    method public int hashCode();
     field public static final com.apollographql.apollo.subscription.OperationServerMessage.ConnectionError.Companion Companion;
     field public static final String TYPE = "connection_error";
     field public final java.util.Map<java.lang.String,java.lang.Object> payload;
@@ -488,6 +494,8 @@ package com.apollographql.apollo.subscription {
 
   public static final class OperationServerMessage.ConnectionKeepAlive extends com.apollographql.apollo.subscription.OperationServerMessage {
     ctor public OperationServerMessage.ConnectionKeepAlive();
+    method public boolean equals(Object? other);
+    method public int hashCode();
     field public static final com.apollographql.apollo.subscription.OperationServerMessage.ConnectionKeepAlive.Companion Companion;
     field public static final String TYPE = "ka";
   }
@@ -497,6 +505,8 @@ package com.apollographql.apollo.subscription {
 
   public static final class OperationServerMessage.Data extends com.apollographql.apollo.subscription.OperationServerMessage {
     ctor public OperationServerMessage.Data(String? id, java.util.Map<java.lang.String,?> payload);
+    method public boolean equals(Object? other);
+    method public int hashCode();
     field public static final com.apollographql.apollo.subscription.OperationServerMessage.Data.Companion Companion;
     field public static final String TYPE = "data";
     field public final String? id;
@@ -508,6 +518,8 @@ package com.apollographql.apollo.subscription {
 
   public static final class OperationServerMessage.Error extends com.apollographql.apollo.subscription.OperationServerMessage {
     ctor public OperationServerMessage.Error(String? id, java.util.Map<java.lang.String,?> payload);
+    method public boolean equals(Object? other);
+    method public int hashCode();
     field public static final com.apollographql.apollo.subscription.OperationServerMessage.Error.Companion Companion;
     field public static final String TYPE = "error";
     field public final String? id;
@@ -519,6 +531,8 @@ package com.apollographql.apollo.subscription {
 
   public static final class OperationServerMessage.Unsupported extends com.apollographql.apollo.subscription.OperationServerMessage {
     ctor public OperationServerMessage.Unsupported(String rawMessage);
+    method public boolean equals(Object? other);
+    method public int hashCode();
     field public final String rawMessage;
   }
 
@@ -568,10 +582,6 @@ package com.apollographql.apollo.subscription {
     method public void connect();
     method public void disconnect(com.apollographql.apollo.subscription.OperationClientMessage message);
     method public void send(com.apollographql.apollo.subscription.OperationClientMessage message);
-    field public static final com.apollographql.apollo.subscription.WebSocketSubscriptionTransport.Companion Companion;
-  }
-
-  public static final class WebSocketSubscriptionTransport.Companion {
   }
 
   public static final class WebSocketSubscriptionTransport.Factory implements com.apollographql.apollo.subscription.SubscriptionTransport.Factory {
