@@ -21,7 +21,7 @@ internal object BackendIrMergeUtils {
         fields = mergedFields,
         fragments = this.fragments.copy(
             fragments = this.fragments.mergeFragments(
-                parentSelectionSet = mergedFields,
+                parentFields = mergedFields,
                 otherFragments = otherField.fragments
             ),
             accessors = this.fragments.accessors + otherField.fragments.accessors,
@@ -30,8 +30,8 @@ internal object BackendIrMergeUtils {
     )
   }
 
-  fun List<BackendIr.Fragment>.mergeFragments(
-      parentSelectionSet: List<BackendIr.Field>,
+  private fun List<BackendIr.Fragment>.mergeFragments(
+      parentFields: List<BackendIr.Field>,
       otherFragments: List<BackendIr.Fragment>
   ): List<BackendIr.Fragment> {
     val fragmentsToAdd = otherFragments.toMutableList()
@@ -44,13 +44,13 @@ internal object BackendIrMergeUtils {
         fragment
       } else {
         fragment.copy(
-            fields = fragment.fields.mergeFields(fragmentToMerge.fields).mergeFields(parentSelectionSet),
+            fields = fragment.fields.mergeFields(fragmentToMerge.fields).mergeFields(parentFields),
             selectionKeys = fragment.selectionKeys + fragmentToMerge.selectionKeys,
         )
       }
     } + fragmentsToAdd.map { fragment ->
       fragment.copy(
-          fields = fragment.fields.mergeFields(parentSelectionSet),
+          fields = fragment.fields.mergeFields(parentFields),
       )
     }
   }

@@ -124,16 +124,60 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         override fun marshaller(): ResponseFieldMarshaller
       }
 
-      data class CharacterSearch(
+      interface Human : Search {
+        override val __typename: String
+
+        /**
+         * The home planet of the human, or null if unknown
+         */
+        val homePlanet: String?
+
+        override fun marshaller(): ResponseFieldMarshaller
+      }
+
+      interface Droid : Search {
+        override val __typename: String
+
+        /**
+         * This droid's primary function
+         */
+        val primaryFunction: String?
+
+        override fun marshaller(): ResponseFieldMarshaller
+      }
+
+      data class CharacterDroidSearch(
         override val __typename: String,
         /**
          * The name of the character
          */
-        override val name: String
-      ) : Search, Character {
+        override val name: String,
+        /**
+         * This droid's primary function
+         */
+        override val primaryFunction: String?
+      ) : Search, Character, Droid {
         override fun marshaller(): ResponseFieldMarshaller {
           return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Search.CharacterSearch.toResponse(writer, this)
+            TestQuery_ResponseAdapter.Data.Search.CharacterDroidSearch.toResponse(writer, this)
+          }
+        }
+      }
+
+      data class CharacterHumanSearch(
+        override val __typename: String,
+        /**
+         * The name of the character
+         */
+        override val name: String,
+        /**
+         * The home planet of the human, or null if unknown
+         */
+        override val homePlanet: String?
+      ) : Search, Character, Human {
+        override fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            TestQuery_ResponseAdapter.Data.Search.CharacterHumanSearch.toResponse(writer, this)
           }
         }
       }
@@ -150,6 +194,10 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
       companion object {
         fun Search.asCharacter(): Character? = this as? Character
+
+        fun Search.asHuman(): Human? = this as? Human
+
+        fun Search.asDroid(): Droid? = this as? Droid
       }
     }
   }

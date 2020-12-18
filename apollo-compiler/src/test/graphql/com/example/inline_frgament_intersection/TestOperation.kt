@@ -142,6 +142,38 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
         }
       }
 
+      interface Human : Random {
+        override val __typename: String
+
+        val profilePictureUrl: String?
+
+        val friends: List<Friend>
+
+        override fun marshaller(): ResponseFieldMarshaller
+
+        interface Friend {
+          val __typename: String
+
+          val isFamous: Boolean?
+
+          fun marshaller(): ResponseFieldMarshaller
+
+          interface Wookie : Friend {
+            override val __typename: String
+
+            override val isFamous: Boolean?
+
+            val race: Race
+
+            override fun marshaller(): ResponseFieldMarshaller
+          }
+
+          companion object {
+            fun Friend.asWookie(): Wookie? = this as? Wookie
+          }
+        }
+      }
+
       interface Wookie : Random {
         override val __typename: String
 
@@ -158,30 +190,37 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
         }
       }
 
-      data class BeingRandom(
+      data class BeingHumanRandom(
         override val __typename: String,
         override val name: String,
-        override val friends: List<Friend>
-      ) : Random, Being {
+        override val friends: List<Friend>,
+        override val profilePictureUrl: String?
+      ) : Random, Being, Human {
         override fun marshaller(): ResponseFieldMarshaller {
           return ResponseFieldMarshaller { writer ->
-            TestOperation_ResponseAdapter.Data.Random.BeingRandom.toResponse(writer, this)
+            TestOperation_ResponseAdapter.Data.Random.BeingHumanRandom.toResponse(writer, this)
           }
         }
 
-        interface Friend : Being.Friend {
+        interface Friend : Being.Friend, Human.Friend {
           override val __typename: String
 
           override val name: String
 
+          override val isFamous: Boolean?
+
           override fun marshaller(): ResponseFieldMarshaller
 
-          interface Wookie : Being.Friend, Being.Friend.Wookie {
+          interface Wookie : Being.Friend, Being.Friend.Wookie, Human.Friend, Human.Friend.Wookie {
             override val __typename: String
 
             override val name: String
 
             override val lifeExpectancy: Double?
+
+            override val isFamous: Boolean?
+
+            override val race: Race
 
             override fun marshaller(): ResponseFieldMarshaller
           }
@@ -189,30 +228,33 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
           data class WookieFriend(
             override val __typename: String,
             override val name: String,
-            override val lifeExpectancy: Double?
-          ) : Being.Friend, Being.Friend.Wookie, Wookie, Friend {
+            override val isFamous: Boolean?,
+            override val lifeExpectancy: Double?,
+            override val race: Race
+          ) : Being.Friend, Being.Friend.Wookie, Wookie, Human.Friend, Human.Friend.Wookie, Friend {
             override fun marshaller(): ResponseFieldMarshaller {
               return ResponseFieldMarshaller { writer ->
-                TestOperation_ResponseAdapter.Data.Random.BeingRandom.Friend.WookieFriend.toResponse(writer, this)
+                TestOperation_ResponseAdapter.Data.Random.BeingHumanRandom.Friend.WookieFriend.toResponse(writer, this)
               }
             }
           }
 
           data class OtherFriend(
             override val __typename: String,
-            override val name: String
-          ) : Being.Friend, Friend {
+            override val name: String,
+            override val isFamous: Boolean?
+          ) : Being.Friend, Friend, Human.Friend {
             override fun marshaller(): ResponseFieldMarshaller {
               return ResponseFieldMarshaller { writer ->
-                TestOperation_ResponseAdapter.Data.Random.BeingRandom.Friend.OtherFriend.toResponse(writer, this)
+                TestOperation_ResponseAdapter.Data.Random.BeingHumanRandom.Friend.OtherFriend.toResponse(writer, this)
               }
             }
           }
 
           companion object {
-            fun Friend.asFriends(): Being.Friend? = this as? Being.Friend
+            fun Friend.asFriends(): Human.Friend? = this as? Human.Friend
 
-            fun Friend.asWookie(): Wookie? = this as? Wookie
+            fun Friend.asWookie(): Human.Friend.Wookie? = this as? Human.Friend.Wookie
           }
         }
       }
@@ -292,6 +334,8 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
 
       companion object {
         fun Random.asBeing(): Being? = this as? Being
+
+        fun Random.asHuman(): Human? = this as? Human
 
         fun Random.asWookie(): Wookie? = this as? Wookie
       }

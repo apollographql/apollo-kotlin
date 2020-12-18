@@ -107,9 +107,9 @@ internal class BackendIrBuilder constructor(
 
   private fun FrontendIr.Operation.normalizeOperationName(): String {
     return if (useSemanticNaming && !name.endsWith(operationType.name)) {
-      name.capitalize() + operationType.name
+      name + operationType.name
     } else {
-      name.capitalize()
+      name
     }
   }
 
@@ -270,7 +270,7 @@ internal class BackendIrBuilder constructor(
         )
       }
 
-      val defaultImplementation = BackendIr.Fragment(
+      val fallbackImplementation = BackendIr.Fragment(
           name = "Other${implementationSelectionRootKey.root}",
           fields = fields,
           possibleTypes = emptySet(),
@@ -282,7 +282,7 @@ internal class BackendIrBuilder constructor(
       this.copy(
           fields = fields,
           fragments = BackendIr.Fragments(
-              fragments = fragmentInterfaces + fragmentImplementations + defaultImplementation,
+              fragments = fragmentInterfaces + fragmentImplementations + fallbackImplementation,
               accessors = fragmentInterfaces
                   .flatMap { fragmentInterface ->
                     fragmentInterface.selectionKeys
@@ -453,9 +453,17 @@ internal class BackendIrBuilder constructor(
         )
       }
 
-      val defaultImplementation = BackendIr.Fragment(
+      val fallbackImplementationFields = this.fields
+          .addFieldSelectionKey(selectionKey + "Other${this.responseName.capitalize()}")
+          .map { field ->
+            field.buildFragmentImplementations(
+                selectionKey = selectionKey + "Other${this.responseName.capitalize()}" + field.responseName,
+            )
+          }
+
+      val fallbackImplementation = BackendIr.Fragment(
           name = "Other${this.responseName.capitalize()}",
-          fields = fields,
+          fields = fallbackImplementationFields,
           possibleTypes = emptySet(),
           selectionKeys = this.selectionKeys + selectionKey,
           description = null,
@@ -466,7 +474,7 @@ internal class BackendIrBuilder constructor(
           fields = fields,
           fragments = createFragments(
               selectionKey = selectionKey,
-              fragments = fragmentInterfaces + fragmentImplementations + defaultImplementation,
+              fragments = fragmentInterfaces + fragmentImplementations + fallbackImplementation,
           ),
           selectionKeys = this.selectionKeys + selectionKey,
       )

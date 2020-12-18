@@ -168,7 +168,7 @@ internal class FrontendIrBuilder(
 
   private fun FrontendIr.Operation.flattenInlineFragments(): FrontendIr.Operation {
     return copy(
-        selections = selections.mergeFieldsAndInlineFragments()
+        selections = selections.flattenInlineFragments()
     )
   }
 
