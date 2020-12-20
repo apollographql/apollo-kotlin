@@ -45,9 +45,6 @@ data class HeroDetailsImpl(
 
     override fun marshaller(): ResponseFieldMarshaller
 
-    /**
-     * A humanoid creature from the Star Wars universe
-     */
     interface Human : HeroDetail.Friend, HeroDetail.Friend.Human, Friend {
       override val __typename: String
 
@@ -64,9 +61,6 @@ data class HeroDetailsImpl(
       override fun marshaller(): ResponseFieldMarshaller
     }
 
-    /**
-     * An autonomous mechanical character in the Star Wars universe
-     */
     interface Droid : HeroDetail.Friend, HeroDetail.Friend.Droid, Friend {
       override val __typename: String
 
@@ -83,11 +77,8 @@ data class HeroDetailsImpl(
       override fun marshaller(): ResponseFieldMarshaller
     }
 
-    /**
-     * A humanoid creature from the Star Wars universe
-     */
     data class HumanFriend(
-      override val __typename: String = "Human",
+      override val __typename: String,
       /**
        * The name of the character
        */
@@ -104,11 +95,8 @@ data class HeroDetailsImpl(
       }
     }
 
-    /**
-     * An autonomous mechanical character in the Star Wars universe
-     */
     data class DroidFriend(
-      override val __typename: String = "Droid",
+      override val __typename: String,
       /**
        * The name of the character
        */
@@ -125,11 +113,8 @@ data class HeroDetailsImpl(
       }
     }
 
-    /**
-     * A character from the Star Wars universe
-     */
     data class OtherFriend(
-      override val __typename: String = "Character",
+      override val __typename: String,
       /**
        * The name of the character
        */
@@ -143,6 +128,8 @@ data class HeroDetailsImpl(
     }
 
     companion object {
+      fun Friend.asFriends(): HeroDetail.Friend? = this as? HeroDetail.Friend
+
       fun Friend.asHuman(): Human? = this as? Human
 
       fun Friend.asDroid(): Droid? = this as? Droid

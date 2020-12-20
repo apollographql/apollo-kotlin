@@ -94,8 +94,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, false, null),
           ResponseField.forList("appearsIn", "appearsIn", null, false, null),
-          ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null),
-          ResponseField.forString("primaryFunction", "primaryFunction", null, true, null)
+          ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -105,7 +104,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             var name: String? = null
             var appearsIn: List<Episode?>? = null
             var friendsConnection: TestQuery.Data.Hero.CharacterDroidHero.FriendsConnection? = null
-            var primaryFunction: String? = null
             while(true) {
               when (selectField(RESPONSE_FIELDS)) {
                 0 -> __typename = readString(RESPONSE_FIELDS[0])
@@ -116,7 +114,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
                 3 -> friendsConnection = readObject<TestQuery.Data.Hero.CharacterDroidHero.FriendsConnection>(RESPONSE_FIELDS[3]) { reader ->
                   FriendsConnection.fromResponse(reader)
                 }
-                4 -> primaryFunction = readString(RESPONSE_FIELDS[4])
                 else -> break
               }
             }
@@ -124,8 +121,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               __typename = __typename!!,
               name = name!!,
               appearsIn = appearsIn!!,
-              friendsConnection = friendsConnection!!,
-              primaryFunction = primaryFunction
+              friendsConnection = friendsConnection!!
             )
           }
         }
@@ -141,7 +137,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           writer.writeObject(RESPONSE_FIELDS[3]) { writer ->
             FriendsConnection.toResponse(writer, value.friendsConnection)
           }
-          writer.writeString(RESPONSE_FIELDS[4], value.primaryFunction)
         }
 
         object FriendsConnection :

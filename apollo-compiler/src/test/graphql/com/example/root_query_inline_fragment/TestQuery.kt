@@ -104,9 +104,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
     override fun marshaller(): ResponseFieldMarshaller
 
-    /**
-     * The query type, represents all of the entry points into our object graph
-     */
     interface Query : Data {
       override val __typename: String
 
@@ -134,9 +131,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
         fun marshaller(): ResponseFieldMarshaller
 
-        /**
-         * A humanoid creature from the Star Wars universe
-         */
         interface Human : Hero {
           override val __typename: String
 
@@ -171,9 +165,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
         fun marshaller(): ResponseFieldMarshaller
 
-        /**
-         * An autonomous mechanical character in the Star Wars universe
-         */
         interface Droid : Query.Droid {
           override val __typename: String
 
@@ -196,11 +187,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       }
     }
 
-    /**
-     * The query type, represents all of the entry points into our object graph
-     */
     data class QueryDatum(
-      override val __typename: String = "Query",
+      override val __typename: String,
       override val hero: Hero?,
       override val droid: Droid?
     ) : Data, Query {
@@ -228,10 +216,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
         override fun marshaller(): ResponseFieldMarshaller
 
-        /**
-         * A humanoid creature from the Star Wars universe
-         */
-        interface Human : Query.Hero, Query.Hero.Human, Hero {
+        interface Human : Query.Hero, Query.Hero.Human {
           override val __typename: String
 
           /**
@@ -252,11 +237,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           override fun marshaller(): ResponseFieldMarshaller
         }
 
-        /**
-         * A humanoid creature from the Star Wars universe
-         */
         data class HumanHero(
-          override val __typename: String = "Human",
+          override val __typename: String,
           /**
            * The name of the character
            */
@@ -269,7 +251,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            * Height in the preferred unit, default is meters
            */
           override val height: Double?
-        ) : Query.Hero, Query.Hero.Human, Hero {
+        ) : Query.Hero, Query.Hero.Human, Human, Hero {
           override fun marshaller(): ResponseFieldMarshaller {
             return ResponseFieldMarshaller { writer ->
               TestQuery_ResponseAdapter.Data.QueryDatum.Hero.HumanHero.toResponse(writer, this)
@@ -277,11 +259,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           }
         }
 
-        /**
-         * A character from the Star Wars universe
-         */
         data class OtherHero(
-          override val __typename: String = "Character",
+          override val __typename: String,
           /**
            * The name of the character
            */
@@ -299,6 +278,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         }
 
         companion object {
+          fun Hero.asHero(): Query.Hero? = this as? Query.Hero
+
           fun Hero.asHuman(): Human? = this as? Human
         }
       }
@@ -311,10 +292,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
         override fun marshaller(): ResponseFieldMarshaller
 
-        /**
-         * An autonomous mechanical character in the Star Wars universe
-         */
-        interface Droid : Query.Droid, Query.Droid.Droid, QueryDatum.Droid {
+        interface Droid : Query.Droid, Query.Droid.Droid {
           override val __typename: String
 
           /**
@@ -330,11 +308,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           override fun marshaller(): ResponseFieldMarshaller
         }
 
-        /**
-         * An autonomous mechanical character in the Star Wars universe
-         */
         data class DroidDroid(
-          override val __typename: String = "Droid",
+          override val __typename: String,
           /**
            * What others call this droid
            */
@@ -343,7 +318,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            * This droid's primary function
            */
           override val primaryFunction: String?
-        ) : Query.Droid, Query.Droid.Droid, QueryDatum.Droid {
+        ) : Query.Droid, Query.Droid.Droid, Droid, QueryDatum.Droid {
           override fun marshaller(): ResponseFieldMarshaller {
             return ResponseFieldMarshaller { writer ->
               TestQuery_ResponseAdapter.Data.QueryDatum.Droid.DroidDroid.toResponse(writer, this)
@@ -351,11 +326,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           }
         }
 
-        /**
-         * An autonomous mechanical character in the Star Wars universe
-         */
         data class OtherDroid(
-          override val __typename: String = "Droid"
+          override val __typename: String
         ) : Query.Droid, QueryDatum.Droid {
           override fun marshaller(): ResponseFieldMarshaller {
             return ResponseFieldMarshaller { writer ->
@@ -370,11 +342,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       }
     }
 
-    /**
-     * The query type, represents all of the entry points into our object graph
-     */
     data class OtherDatum(
-      override val __typename: String = "Query"
+      override val __typename: String
     ) : Data {
       override fun marshaller(): ResponseFieldMarshaller {
         return ResponseFieldMarshaller { writer ->

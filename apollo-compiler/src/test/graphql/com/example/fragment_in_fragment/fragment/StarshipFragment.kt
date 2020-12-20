@@ -98,17 +98,17 @@ interface StarshipFragment : GraphqlFragment {
             }
 
             companion object {
-              fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
-
               fun Homeworld.asPlanet(): Planet? = this as? Planet
+
+              fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
             }
           }
         }
 
         companion object {
-          fun Node.pilotFragment(): PilotFragment? = this as? PilotFragment
-
           fun Node.asPerson(): Person? = this as? Person
+
+          fun Node.pilotFragment(): PilotFragment? = this as? PilotFragment
         }
       }
     }

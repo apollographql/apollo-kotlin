@@ -71,10 +71,7 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
     }
   }
 
-  /**
-   * An autonomous mechanical character in the Star Wars universe
-   */
-  interface Droid : HeroDetail, HeroDetail.Droid, DroidDetail, HeroDetailsImpl {
+  interface Droid : HeroDetail, HeroDetail.Droid, HeroDetailsImpl {
     override val __typename: String
 
     /**
@@ -86,11 +83,6 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
      * The friends of the character exposed as a connection with edges
      */
     override val friendsConnection: FriendsConnection
-
-    /**
-     * This droid's primary function
-     */
-    override val primaryFunction: String?
 
     override fun marshaller(): ResponseFieldMarshaller
 
@@ -201,8 +193,8 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
     }
   }
 
-  data class DroidHeroDetail(
-    override val __typename: String = "Droid",
+  data class DroidHeroDetailsImpl(
+    override val __typename: String,
     /**
      * The name of the character
      */
@@ -210,15 +202,11 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
     /**
      * The friends of the character exposed as a connection with edges
      */
-    override val friendsConnection: FriendsConnection,
-    /**
-     * This droid's primary function
-     */
-    override val primaryFunction: String?
-  ) : HeroDetail, HeroDetail.Droid, DroidDetail, HeroDetailsImpl, Droid {
+    override val friendsConnection: FriendsConnection
+  ) : HeroDetail, HeroDetail.Droid, HeroDetailsImpl, Droid {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        HeroDetailsImpl_ResponseAdapter.DroidHeroDetail.toResponse(writer, this)
+        HeroDetailsImpl_ResponseAdapter.DroidHeroDetailsImpl.toResponse(writer, this)
       }
     }
 
@@ -234,11 +222,11 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
        * The edges for each of the character's friends.
        */
       override val edges: List<Edge?>?
-    ) : HeroDetail.FriendsConnection, HeroDetail.Droid.FriendsConnection,
-        HeroDetailsImpl.FriendsConnection, Droid.FriendsConnection {
+    ) : HeroDetail.FriendsConnection, HeroDetailsImpl.FriendsConnection,
+        HeroDetail.Droid.FriendsConnection, Droid.FriendsConnection {
       override fun marshaller(): ResponseFieldMarshaller {
         return ResponseFieldMarshaller { writer ->
-          HeroDetailsImpl_ResponseAdapter.DroidHeroDetail.FriendsConnection.toResponse(writer, this)
+          HeroDetailsImpl_ResponseAdapter.DroidHeroDetailsImpl.FriendsConnection.toResponse(writer, this)
         }
       }
 
@@ -250,11 +238,11 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
          * The character represented by this friendship edge
          */
         override val node: Node?
-      ) : HeroDetail.FriendsConnection.Edge, HeroDetail.Droid.FriendsConnection.Edge,
-          HeroDetailsImpl.FriendsConnection.Edge, Droid.FriendsConnection.Edge {
+      ) : HeroDetail.FriendsConnection.Edge, HeroDetailsImpl.FriendsConnection.Edge,
+          HeroDetail.Droid.FriendsConnection.Edge, Droid.FriendsConnection.Edge {
         override fun marshaller(): ResponseFieldMarshaller {
           return ResponseFieldMarshaller { writer ->
-            HeroDetailsImpl_ResponseAdapter.DroidHeroDetail.FriendsConnection.Edge.toResponse(writer, this)
+            HeroDetailsImpl_ResponseAdapter.DroidHeroDetailsImpl.FriendsConnection.Edge.toResponse(writer, this)
           }
         }
 
@@ -266,11 +254,11 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
            * The name of the character
            */
           override val name: String
-        ) : HeroDetail.FriendsConnection.Edge.Node, HeroDetail.Droid.FriendsConnection.Edge.Node,
-            HeroDetailsImpl.FriendsConnection.Edge.Node, Droid.FriendsConnection.Edge.Node {
+        ) : HeroDetail.FriendsConnection.Edge.Node, HeroDetailsImpl.FriendsConnection.Edge.Node,
+            HeroDetail.Droid.FriendsConnection.Edge.Node, Droid.FriendsConnection.Edge.Node {
           override fun marshaller(): ResponseFieldMarshaller {
             return ResponseFieldMarshaller { writer ->
-              HeroDetailsImpl_ResponseAdapter.DroidHeroDetail.FriendsConnection.Edge.Node.toResponse(writer, this)
+              HeroDetailsImpl_ResponseAdapter.DroidHeroDetailsImpl.FriendsConnection.Edge.Node.toResponse(writer, this)
             }
           }
         }
@@ -278,8 +266,8 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
     }
   }
 
-  data class HumanHeroDetail(
-    override val __typename: String = "Human",
+  data class HumanHeroDetailsImpl(
+    override val __typename: String,
     /**
      * The name of the character
      */
@@ -291,7 +279,7 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
   ) : HeroDetail, HeroDetail.Human, HumanDetail, HeroDetailsImpl, Human {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
-        HeroDetailsImpl_ResponseAdapter.HumanHeroDetail.toResponse(writer, this)
+        HeroDetailsImpl_ResponseAdapter.HumanHeroDetailsImpl.toResponse(writer, this)
       }
     }
 
@@ -307,11 +295,11 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
        * The edges for each of the character's friends.
        */
       override val edges: List<Edge?>?
-    ) : HeroDetail.FriendsConnection, HeroDetail.Human.FriendsConnection,
-        HeroDetailsImpl.FriendsConnection, Human.FriendsConnection {
+    ) : HeroDetail.FriendsConnection, HeroDetailsImpl.FriendsConnection,
+        HeroDetail.Human.FriendsConnection, Human.FriendsConnection {
       override fun marshaller(): ResponseFieldMarshaller {
         return ResponseFieldMarshaller { writer ->
-          HeroDetailsImpl_ResponseAdapter.HumanHeroDetail.FriendsConnection.toResponse(writer, this)
+          HeroDetailsImpl_ResponseAdapter.HumanHeroDetailsImpl.FriendsConnection.toResponse(writer, this)
         }
       }
 
@@ -323,11 +311,11 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
          * The character represented by this friendship edge
          */
         override val node: Node?
-      ) : HeroDetail.FriendsConnection.Edge, HeroDetail.Human.FriendsConnection.Edge,
-          HeroDetailsImpl.FriendsConnection.Edge, Human.FriendsConnection.Edge {
+      ) : HeroDetail.FriendsConnection.Edge, HeroDetailsImpl.FriendsConnection.Edge,
+          HeroDetail.Human.FriendsConnection.Edge, Human.FriendsConnection.Edge {
         override fun marshaller(): ResponseFieldMarshaller {
           return ResponseFieldMarshaller { writer ->
-            HeroDetailsImpl_ResponseAdapter.HumanHeroDetail.FriendsConnection.Edge.toResponse(writer, this)
+            HeroDetailsImpl_ResponseAdapter.HumanHeroDetailsImpl.FriendsConnection.Edge.toResponse(writer, this)
           }
         }
 
@@ -339,11 +327,11 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
            * The name of the character
            */
           override val name: String
-        ) : HeroDetail.FriendsConnection.Edge.Node, HeroDetail.Human.FriendsConnection.Edge.Node,
-            HeroDetailsImpl.FriendsConnection.Edge.Node, Human.FriendsConnection.Edge.Node {
+        ) : HeroDetail.FriendsConnection.Edge.Node, HeroDetailsImpl.FriendsConnection.Edge.Node,
+            HeroDetail.Human.FriendsConnection.Edge.Node, Human.FriendsConnection.Edge.Node {
           override fun marshaller(): ResponseFieldMarshaller {
             return ResponseFieldMarshaller { writer ->
-              HeroDetailsImpl_ResponseAdapter.HumanHeroDetail.FriendsConnection.Edge.Node.toResponse(writer, this)
+              HeroDetailsImpl_ResponseAdapter.HumanHeroDetailsImpl.FriendsConnection.Edge.Node.toResponse(writer, this)
             }
           }
         }
@@ -351,11 +339,8 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
     }
   }
 
-  /**
-   * A character from the Star Wars universe
-   */
   data class OtherHeroDetailsImpl(
-    override val __typename: String = "Character",
+    override val __typename: String,
     /**
      * The name of the character
      */

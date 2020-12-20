@@ -118,9 +118,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
       fun marshaller(): ResponseFieldMarshaller
 
-      /**
-       * For testing fragment type coercion
-       */
       interface Bar : Foo {
         override val __typename: String
 
@@ -131,11 +128,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         override fun marshaller(): ResponseFieldMarshaller
       }
 
-      /**
-       * For testing fragment type coercion
-       */
       data class BarFoo(
-        override val __typename: String = "FooBar",
+        override val __typename: String,
         override val foo: String,
         override val bar: String
       ) : Foo, Bar {
@@ -146,11 +140,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         }
       }
 
-      /**
-       * For testing fragment type coercion
-       */
       data class OtherFoo(
-        override val __typename: String = "Foo",
+        override val __typename: String,
         override val foo: String
       ) : Foo {
         override fun marshaller(): ResponseFieldMarshaller {

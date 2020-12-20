@@ -23,9 +23,6 @@ import kotlin.Suppress
 internal interface HeroDetail : GraphqlFragment {
   val __typename: String
 
-  /**
-   * Fragment with Java / Kotlin docs generation
-   */
   interface Human : HeroDetail, HumanDetail {
     override val __typename: String
 
@@ -55,8 +52,8 @@ internal interface HeroDetail : GraphqlFragment {
       }
     }
 
-    fun HeroDetail.humanDetails(): HumanDetail? = this as? HumanDetail
-
     fun HeroDetail.asHuman(): Human? = this as? Human
+
+    fun HeroDetail.humanDetails(): HumanDetail? = this as? HumanDetail
   }
 }

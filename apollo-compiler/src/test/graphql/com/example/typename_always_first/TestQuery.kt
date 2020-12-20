@@ -115,9 +115,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
       fun marshaller(): ResponseFieldMarshaller
 
-      /**
-       * A humanoid creature from the Star Wars universe
-       */
       interface Human : Hero {
         override val __typename: String
 
@@ -129,9 +126,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         override fun marshaller(): ResponseFieldMarshaller
       }
 
-      /**
-       * An autonomous mechanical character in the Star Wars universe
-       */
       interface Droid : Hero {
         override val __typename: String
 
@@ -148,11 +142,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         override fun marshaller(): ResponseFieldMarshaller
       }
 
-      /**
-       * A humanoid creature from the Star Wars universe
-       */
       data class HumanHero(
-        override val __typename: String = "Human",
+        override val __typename: String,
         /**
          * Height in the preferred unit, default is meters
          */
@@ -165,11 +156,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         }
       }
 
-      /**
-       * An autonomous mechanical character in the Star Wars universe
-       */
       data class DroidHero(
-        override val __typename: String = "Droid",
+        override val __typename: String,
         /**
          * What others call this droid
          */
@@ -186,11 +174,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         }
       }
 
-      /**
-       * A character from the Star Wars universe
-       */
       data class OtherHero(
-        override val __typename: String = "Character"
+        override val __typename: String
       ) : Hero {
         override fun marshaller(): ResponseFieldMarshaller {
           return ResponseFieldMarshaller { writer ->

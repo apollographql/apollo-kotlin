@@ -58,11 +58,8 @@ data class QueryFragmentImpl(
       }
     }
 
-    /**
-     * A character from the Star Wars universe
-     */
     data class OtherHero(
-      override val __typename: String = "Character"
+      override val __typename: String
     ) : QueryFragment.Hero, Hero {
       override fun marshaller(): ResponseFieldMarshaller {
         return ResponseFieldMarshaller { writer ->
@@ -72,9 +69,11 @@ data class QueryFragmentImpl(
     }
 
     companion object {
-      fun Hero.heroFragment(): HeroFragment? = this as? HeroFragment
+      fun Hero.asHero(): QueryFragment.Hero? = this as? QueryFragment.Hero
 
       fun Hero.asCharacter(): Character? = this as? Character
+
+      fun Hero.heroFragment(): HeroFragment? = this as? HeroFragment
     }
   }
 
@@ -104,7 +103,7 @@ data class QueryFragmentImpl(
     }
 
     data class DroidDroid(
-      override val __typename: String = "Droid",
+      override val __typename: String,
       /**
        * What others call this droid
        */
@@ -122,11 +121,8 @@ data class QueryFragmentImpl(
       }
     }
 
-    /**
-     * An autonomous mechanical character in the Star Wars universe
-     */
     data class OtherDroid(
-      override val __typename: String = "Droid"
+      override val __typename: String
     ) : QueryFragment.Droid, QueryFragmentImpl.Droid {
       override fun marshaller(): ResponseFieldMarshaller {
         return ResponseFieldMarshaller { writer ->
@@ -136,9 +132,9 @@ data class QueryFragmentImpl(
     }
 
     companion object {
-      fun QueryFragmentImpl.Droid.droidFragment(): DroidFragment? = this as? DroidFragment
-
       fun QueryFragmentImpl.Droid.asDroid(): Droid? = this as? Droid
+
+      fun QueryFragmentImpl.Droid.droidFragment(): DroidFragment? = this as? DroidFragment
     }
   }
 
@@ -150,9 +146,6 @@ data class QueryFragmentImpl(
 
     override fun marshaller(): ResponseFieldMarshaller
 
-    /**
-     * A humanoid creature from the Star Wars universe
-     */
     interface Human : QueryFragment.Human, QueryFragment.Human.Human, QueryFragmentImpl.Human {
       override val __typename: String
 
@@ -169,11 +162,8 @@ data class QueryFragmentImpl(
       override fun marshaller(): ResponseFieldMarshaller
     }
 
-    /**
-     * A humanoid creature from the Star Wars universe
-     */
     data class HumanHuman(
-      override val __typename: String = "Human",
+      override val __typename: String,
       /**
        * What this human calls themselves
        */
@@ -190,11 +180,8 @@ data class QueryFragmentImpl(
       }
     }
 
-    /**
-     * A humanoid creature from the Star Wars universe
-     */
     data class OtherHuman(
-      override val __typename: String = "Human"
+      override val __typename: String
     ) : QueryFragment.Human, QueryFragmentImpl.Human {
       override fun marshaller(): ResponseFieldMarshaller {
         return ResponseFieldMarshaller { writer ->

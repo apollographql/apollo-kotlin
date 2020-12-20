@@ -150,38 +150,38 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
               ResponseAdapter<GetPage.Data.Collection.ParticularCollectionCollection.Item.ParticularItemItem>
               {
             private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+              ResponseField.forString("title", "title", null, false, null),
               ResponseField.forString("__typename", "__typename", null, false, null),
-              ResponseField.forString("image", "image", null, false, null),
-              ResponseField.forString("title", "title", null, false, null)
+              ResponseField.forString("image", "image", null, false, null)
             )
 
             override fun fromResponse(reader: ResponseReader, __typename: String?):
                 GetPage.Data.Collection.ParticularCollectionCollection.Item.ParticularItemItem {
               return reader.run {
+                var title: String? = null
                 var __typename: String? = __typename
                 var image: String? = null
-                var title: String? = null
                 while(true) {
                   when (selectField(RESPONSE_FIELDS)) {
-                    0 -> __typename = readString(RESPONSE_FIELDS[0])
-                    1 -> image = readString(RESPONSE_FIELDS[1])
-                    2 -> title = readString(RESPONSE_FIELDS[2])
+                    0 -> title = readString(RESPONSE_FIELDS[0])
+                    1 -> __typename = readString(RESPONSE_FIELDS[1])
+                    2 -> image = readString(RESPONSE_FIELDS[2])
                     else -> break
                   }
                 }
                 GetPage.Data.Collection.ParticularCollectionCollection.Item.ParticularItemItem(
+                  title = title!!,
                   __typename = __typename!!,
-                  image = image!!,
-                  title = title!!
+                  image = image!!
                 )
               }
             }
 
             override fun toResponse(writer: ResponseWriter,
                 value: GetPage.Data.Collection.ParticularCollectionCollection.Item.ParticularItemItem) {
-              writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-              writer.writeString(RESPONSE_FIELDS[1], value.image)
-              writer.writeString(RESPONSE_FIELDS[2], value.title)
+              writer.writeString(RESPONSE_FIELDS[0], value.title)
+              writer.writeString(RESPONSE_FIELDS[1], value.__typename)
+              writer.writeString(RESPONSE_FIELDS[2], value.image)
             }
           }
 

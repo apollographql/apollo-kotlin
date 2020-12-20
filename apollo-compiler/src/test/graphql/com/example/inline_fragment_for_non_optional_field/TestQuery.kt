@@ -119,9 +119,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
       fun marshaller(): ResponseFieldMarshaller
 
-      /**
-       * A humanoid creature from the Star Wars universe
-       */
       interface Human : NonOptionalHero {
         override val __typename: String
 
@@ -138,11 +135,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         override fun marshaller(): ResponseFieldMarshaller
       }
 
-      /**
-       * A humanoid creature from the Star Wars universe
-       */
       data class HumanNonOptionalHero(
-        override val __typename: String = "Human",
+        override val __typename: String,
         /**
          * The name of the character
          */
@@ -159,11 +153,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         }
       }
 
-      /**
-       * A character from the Star Wars universe
-       */
       data class OtherNonOptionalHero(
-        override val __typename: String = "Character",
+        override val __typename: String,
         /**
          * The name of the character
          */

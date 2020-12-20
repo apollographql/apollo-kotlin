@@ -24,19 +24,19 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl> {
   override fun fromResponse(reader: ResponseReader, __typename: String?): HumanDetailsImpl {
     val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
     return when(typename) {
-      "Human" -> CharacterHumanDetail.fromResponse(reader, typename)
+      "Human" -> CharacterHumanDetailsImpl.fromResponse(reader, typename)
       else -> OtherHumanDetailsImpl.fromResponse(reader, typename)
     }
   }
 
   override fun toResponse(writer: ResponseWriter, value: HumanDetailsImpl) {
     when(value) {
-      is HumanDetailsImpl.CharacterHumanDetail -> CharacterHumanDetail.toResponse(writer, value)
+      is HumanDetailsImpl.CharacterHumanDetailsImpl -> CharacterHumanDetailsImpl.toResponse(writer, value)
       is HumanDetailsImpl.OtherHumanDetailsImpl -> OtherHumanDetailsImpl.toResponse(writer, value)
     }
   }
 
-  object CharacterHumanDetail : ResponseAdapter<HumanDetailsImpl.CharacterHumanDetail> {
+  object CharacterHumanDetailsImpl : ResponseAdapter<HumanDetailsImpl.CharacterHumanDetailsImpl> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forString("__typename", "__typename", null, false, null),
       ResponseField.forString("name", "name", null, false, null),
@@ -44,7 +44,7 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl> {
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
-        HumanDetailsImpl.CharacterHumanDetail {
+        HumanDetailsImpl.CharacterHumanDetailsImpl {
       return reader.run {
         var __typename: String? = __typename
         var name: String? = null
@@ -57,7 +57,7 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl> {
             else -> break
           }
         }
-        HumanDetailsImpl.CharacterHumanDetail(
+        HumanDetailsImpl.CharacterHumanDetailsImpl(
           __typename = __typename!!,
           name = name!!,
           birthDate = birthDate!!
@@ -65,7 +65,8 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl> {
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: HumanDetailsImpl.CharacterHumanDetail) {
+    override fun toResponse(writer: ResponseWriter,
+        value: HumanDetailsImpl.CharacterHumanDetailsImpl) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeString(RESPONSE_FIELDS[1], value.name)
       writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, value.birthDate)

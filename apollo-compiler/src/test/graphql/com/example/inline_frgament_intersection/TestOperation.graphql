@@ -4,6 +4,9 @@ query TestOperation {
            name
            friends {
                name
+               ... on Wookie {
+                lifeExpectancy
+              }
            }
            ... on Human {
                profilePictureUrl

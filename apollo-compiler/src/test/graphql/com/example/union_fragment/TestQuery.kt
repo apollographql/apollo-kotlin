@@ -130,7 +130,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       }
 
       data class StarshipSearch(
-        override val __typename: String = "Starship",
+        override val __typename: String,
         /**
          * The ID of the starship
          */
@@ -148,7 +148,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       }
 
       data class OtherSearch(
-        override val __typename: String = "SearchResult"
+        override val __typename: String
       ) : Search {
         override fun marshaller(): ResponseFieldMarshaller {
           return ResponseFieldMarshaller { writer ->
@@ -158,10 +158,10 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       }
 
       companion object {
+        fun Search.asStarship(): Starship? = this as? Starship
+
         fun Search.starship(): com.example.union_fragment.fragment.Starship? = this as?
             com.example.union_fragment.fragment.Starship
-
-        fun Search.asStarship(): Starship? = this as? Starship
       }
     }
   }

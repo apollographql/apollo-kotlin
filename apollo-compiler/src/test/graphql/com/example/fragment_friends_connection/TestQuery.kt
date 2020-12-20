@@ -243,11 +243,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         }
       }
 
-      /**
-       * A character from the Star Wars universe
-       */
       data class OtherHero(
-        override val __typename: String = "Character"
+        override val __typename: String
       ) : Hero {
         override fun marshaller(): ResponseFieldMarshaller {
           return ResponseFieldMarshaller { writer ->
@@ -257,9 +254,9 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       }
 
       companion object {
-        fun Hero.heroDetails(): HeroDetail? = this as? HeroDetail
-
         fun Hero.asCharacter(): Character? = this as? Character
+
+        fun Hero.heroDetails(): HeroDetail? = this as? HeroDetail
       }
     }
   }

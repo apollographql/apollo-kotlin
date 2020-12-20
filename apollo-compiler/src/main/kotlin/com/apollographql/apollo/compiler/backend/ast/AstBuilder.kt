@@ -304,9 +304,11 @@ internal class AstBuilder private constructor(
   }
 
   private fun BackendIr.NamedFragment.buildFragmentType(customScalarTypes: CustomScalarTypes): CodeGenerationAst.FragmentType {
+    val schemaType = schema.resolveType(this.selectionSet.typeCondition)
     val interfaceType = buildObjectType(
         name = name,
-        schemaTypeRef = selectionSet.typeCondition,
+        description = schemaType.description,
+        schemaTypename = schemaType.name,
         fields = selectionSet.fields,
         fragments = selectionSet.fragments,
         targetPackageName = fragmentsPackage,
@@ -320,19 +322,16 @@ internal class AstBuilder private constructor(
         alternativeSelectionKeys = selectionSet.selectionKeys,
     )
     val implementationType = buildObjectType(
-        name = this.defaultImplementationName,
-        schemaTypeRef = defaultSelectionSet.typeCondition,
-        fields = defaultSelectionSet.fields,
-        fragments = defaultSelectionSet.fragments,
+        name = this.defaultSelectionSetRootKey.root,
+        description = schemaType.description,
+        schemaTypename = schemaType.name,
+        fields = implementationSelectionSet.fields,
+        fragments = implementationSelectionSet.fragments,
         targetPackageName = fragmentsPackage,
         abstract = false,
         customScalarTypes = customScalarTypes,
-        currentSelectionKey = SelectionKey(
-            root = this.defaultImplementationName,
-            keys = listOf(this.defaultImplementationName),
-            type = SelectionKey.Type.Fragment,
-        ),
-        alternativeSelectionKeys = defaultSelectionSet.selectionKeys,
+        currentSelectionKey = defaultSelectionSetRootKey,
+        alternativeSelectionKeys = implementationSelectionSet.selectionKeys,
     )
     return CodeGenerationAst.FragmentType(
         name = this.name.normalizeTypeName(),
@@ -354,9 +353,11 @@ internal class AstBuilder private constructor(
       currentSelectionKey: SelectionKey,
       customScalarTypes: CustomScalarTypes,
   ): CodeGenerationAst.ObjectType {
+    val schemaType = schema.resolveType(schema.resolveType(this.type.rawType.name!!))
     return buildObjectType(
         name = responseName,
-        schemaTypeRef = type,
+        description = schemaType.description,
+        schemaTypename = this.type.rawType.name,
         fields = fields,
         fragments = fragments,
         targetPackageName = targetPackageName,
@@ -369,9 +370,10 @@ internal class AstBuilder private constructor(
 
   private fun buildObjectType(
       name: String,
-      schemaTypeRef: IntrospectionSchema.TypeRef,
+      description: String?,
+      schemaTypename: String?,
       fields: List<BackendIr.Field>,
-      fragments: List<BackendIr.Fragment>,
+      fragments: BackendIr.Fragments,
       targetPackageName: String,
       abstract: Boolean,
       customScalarTypes: CustomScalarTypes,
@@ -381,7 +383,8 @@ internal class AstBuilder private constructor(
     return if (fragments.isEmpty()) {
       buildObjectTypeWithoutFragments(
           name = name,
-          schemaTypeRef = schemaTypeRef,
+          description = description,
+          schemaTypename = schemaTypename,
           fields = fields,
           targetPackageName = targetPackageName,
           abstract = abstract,
@@ -392,7 +395,8 @@ internal class AstBuilder private constructor(
     } else {
       buildObjectTypeWithFragments(
           parentTypeName = name,
-          schemaTypeRef = schemaTypeRef,
+          description = description,
+          schemaTypename = schemaTypename,
           fields = fields,
           fragments = fragments,
           targetPackageName = targetPackageName,
@@ -406,7 +410,8 @@ internal class AstBuilder private constructor(
 
   private fun buildObjectTypeWithoutFragments(
       name: String,
-      schemaTypeRef: IntrospectionSchema.TypeRef,
+      description: String?,
+      schemaTypename: String?,
       fields: List<BackendIr.Field>,
       targetPackageName: String,
       abstract: Boolean,
@@ -414,7 +419,6 @@ internal class AstBuilder private constructor(
       currentSelectionKey: SelectionKey,
       alternativeSelectionKeys: Set<SelectionKey>,
   ): CodeGenerationAst.ObjectType {
-    val schemaType = schema.resolveType(schemaTypeRef.rawType)
     val astFields = fields.map { field ->
       field.buildField(
           targetPackageName = targetPackageName,
@@ -440,34 +444,38 @@ internal class AstBuilder private constructor(
         }
     return CodeGenerationAst.ObjectType(
         name = name.normalizeTypeName(),
-        description = schemaType.description ?: "",
+        description = description ?: "",
         deprecationReason = null,
         fields = astFields,
         implements = implements,
         kind = kind,
         typeRef = currentSelectionKey.asTypeRef(targetPackageName),
         nestedObjects = nestedObjects,
-        schemaTypename = schemaTypeRef.rawType.name,
+        schemaTypename = schemaTypename,
         fragmentAccessors = emptyList(),
     )
   }
 
   private fun buildObjectTypeWithFragments(
       parentTypeName: String,
-      schemaTypeRef: IntrospectionSchema.TypeRef,
+      description: String?,
+      schemaTypename: String?,
       fields: List<BackendIr.Field>,
-      fragments: List<BackendIr.Fragment>,
+      fragments: BackendIr.Fragments,
       targetPackageName: String,
       abstract: Boolean,
       customScalarTypes: CustomScalarTypes,
       selectionKey: SelectionKey,
       alternativeSelectionKeys: Set<SelectionKey>,
   ): CodeGenerationAst.ObjectType {
-    val schemaType = schema.resolveType(schemaTypeRef.rawType)
-    val possibleImplementations = fragments.flatMap { fragment ->
-      val typeRef = (selectionKey + fragment.name).asTypeRef(targetPackageName)
-      fragment.possibleTypes.map { possibleType -> possibleType.name!! to typeRef }
-    }.toMap()
+    val possibleImplementations = if (abstract) emptyMap() else fragments
+        .filter { fragment -> fragment.kind != BackendIr.Fragment.Kind.Fallback }
+        .flatMap { fragment ->
+          val typeRef = (selectionKey + fragment.name).asTypeRef(targetPackageName)
+          fragment.possibleTypes.map { possibleType -> possibleType.name!! to typeRef }
+        }
+        .toMap()
+
     val kind = CodeGenerationAst.ObjectType.Kind.Fragment(
         defaultImplementation = (selectionKey + "Other${parentTypeName.normalizeTypeName()}").asTypeRef(targetPackageName),
         possibleImplementations = possibleImplementations,
@@ -491,59 +499,26 @@ internal class AstBuilder private constructor(
         targetPackageName = targetPackageName,
         customScalarTypes = customScalarTypes,
         selectionKey = selectionKey,
-        parentTypeName = parentTypeName,
-        schemaTypeRef = schemaTypeRef,
-        alternativeSelectionKeys = alternativeSelectionKeys,
     )
     val objectTypeRef = selectionKey.asTypeRef(targetPackageName)
-    val fragmentAccessors = fragments
-        .filterIsInstance<BackendIr.Fragment.Interface>()
-        .flatMap { fragment ->
-          fragment.selectionKeys
-              .asSequence()
-              .mapNotNull { fragmentSelectionKey ->
-                // take only named fragment roots
-                fragmentSelectionKey.root.takeIf {
-                  fragmentSelectionKey.type == SelectionKey.Type.Fragment && fragmentSelectionKey.keys.size == 1
-                }
-              }
-              .filter { namedFragmentRootKey ->
-                // filter out keys that share the same root with current object type select key
-                selectionKey.type != SelectionKey.Type.Fragment || namedFragmentRootKey != selectionKey.root
-              }
-              .map { namedFragmentRootKey ->
-                CodeGenerationAst.ObjectType.FragmentAccessor(
-                    name = namedFragmentRootKey.normalizeFieldName(),
-                    typeRef = CodeGenerationAst.TypeRef(
-                        name = namedFragmentRootKey.normalizeTypeName(),
-                        packageName = fragmentsPackage,
-                    ),
-                )
-              }
-              .plus(
-                  CodeGenerationAst.ObjectType.FragmentAccessor(
-                      name = "as${fragment.typeCondition.name!!.capitalize()}",
-                      typeRef = CodeGenerationAst.TypeRef(
-                          name = fragment.typeCondition.name,
-                          packageName = targetPackageName,
-                          enclosingType = objectTypeRef,
-                      )
-                  )
-              )
-              .toList()
+    val fragmentAccessors = fragments.accessors
+        .map { (name, selectionKey) ->
+          CodeGenerationAst.ObjectType.FragmentAccessor(
+              name = name.normalizeFieldName(),
+              typeRef = selectionKey.asTypeRef(targetPackageName),
+          )
         }
-        .distinct()
 
     return CodeGenerationAst.ObjectType(
         name = parentTypeName.normalizeTypeName(),
-        description = schemaType.description ?: "",
+        description = description ?: "",
         deprecationReason = null,
         fields = astFields,
         implements = implements,
         kind = kind,
         typeRef = objectTypeRef,
         nestedObjects = nestedObjects,
-        schemaTypename = schemaTypeRef.rawType.name,
+        schemaTypename = schemaTypename,
         fragmentAccessors = fragmentAccessors,
     )
   }
@@ -555,57 +530,26 @@ internal class AstBuilder private constructor(
       targetPackageName: String,
       selectionKey: SelectionKey,
       customScalarTypes: CustomScalarTypes,
-      parentTypeName: String,
-      schemaTypeRef: IntrospectionSchema.TypeRef,
-      alternativeSelectionKeys: Set<SelectionKey>,
   ): List<CodeGenerationAst.ObjectType> {
-    val fragmentObjectTypes = fragments.mapNotNull { fragment ->
-      if (fragment is BackendIr.Fragment.Interface || !abstract) {
-        fragment.buildObjectType(
-            targetPackageName = targetPackageName,
-            abstract = abstract,
-            selectionKey = selectionKey,
-            customScalarTypes = customScalarTypes,
-        ).run {
-          // TODO why this is not part of BackendIR builder?
-          copy(
-              implements = implements + selectionKey.asTypeRef(targetPackageName)
-          )
-        }
-      } else null
+    val fragmentObjectTypes = fragments.map { fragment ->
+      fragment.buildObjectType(
+          targetPackageName = targetPackageName,
+          abstract = abstract,
+          selectionKey = selectionKey,
+          customScalarTypes = customScalarTypes,
+      )
     }
     val fieldNestedObjects = fields
         .filter { field -> field.fields.isNotEmpty() || field.fragments.isNotEmpty() }
         .map { field ->
           field.asAstObjectType(
               targetPackageName = targetPackageName,
-              abstract = true,
+              abstract = abstract || fragmentObjectTypes.isNotEmpty(),
               currentSelectionKey = selectionKey + field.responseName,
               customScalarTypes = customScalarTypes,
           )
         }
-    val otherFragmentObjectType = if (abstract) null else buildObjectType(
-        name = "Other${parentTypeName.normalizeTypeName()}",
-        schemaTypeRef = schemaTypeRef.rawType,
-        fields = fields,
-        fragments = emptyList(),
-        targetPackageName = targetPackageName,
-        abstract = abstract,
-        customScalarTypes = customScalarTypes,
-        currentSelectionKey = selectionKey + "Other${parentTypeName.normalizeTypeName()}",
-        alternativeSelectionKeys = alternativeSelectionKeys
-            .plus(setOf(selectionKey + "Other${parentTypeName.normalizeTypeName()}"))
-            .toSet(),
-    ).run {
-      copy(
-          implements = implements + selectionKey.asTypeRef(targetPackageName)
-      )
-    }
-    return fieldNestedObjects
-        .plus(fragmentObjectTypes)
-        .run {
-          if (otherFragmentObjectType != null) this.plus(otherFragmentObjectType) else this
-        }
+    return fieldNestedObjects.plus(fragmentObjectTypes)
   }
 
   private fun BackendIr.Fragment.buildObjectType(
@@ -614,47 +558,38 @@ internal class AstBuilder private constructor(
       selectionKey: SelectionKey,
       customScalarTypes: CustomScalarTypes,
   ): CodeGenerationAst.ObjectType {
-    val name = this.name.normalizeTypeName()
-    val fields = this.fields.map { field ->
-      field.buildField(
+    return if (abstract || this.kind == BackendIr.Fragment.Kind.Interface) {
+      val objectType = buildObjectTypeWithoutFragments(
+          name = this.name,
+          description = null,
+          schemaTypename = null,
+          fields = this.fields,
           targetPackageName = targetPackageName,
+          abstract = true,
           customScalarTypes = customScalarTypes,
-          selectionKey = selectionKey + this.name + field.responseName,
+          currentSelectionKey = selectionKey + this.name,
+          alternativeSelectionKeys = this.selectionKeys,
+      )
+      objectType.copy(
+          nestedObjects = objectType.nestedObjects
+      )
+    } else {
+      buildObjectType(
+          name = this.name,
+          description = null,
+          schemaTypename = null,
+          fields = this.fields,
+          fragments = BackendIr.Fragments(
+              fragments = emptyList(),
+              accessors = emptyMap(),
+          ),
+          targetPackageName = targetPackageName,
+          abstract = abstract,
+          customScalarTypes = customScalarTypes,
+          currentSelectionKey = selectionKey + this.name,
+          alternativeSelectionKeys = this.selectionKeys,
       )
     }
-    val implements = this.selectionKeys
-        .mapNotNull { keys ->
-          keys
-              .takeIf { keys != (selectionKey + this.name) }
-              ?.asTypeRef(targetPackageName)
-        }
-        .toSet()
-    val kind = CodeGenerationAst.ObjectType.Kind.Interface.takeIf { this is BackendIr.Fragment.Interface }
-        ?: CodeGenerationAst.ObjectType.Kind.Object
-    val typeRef = (selectionKey + this.name).asTypeRef(targetPackageName)
-    val nestedObjects = this.fields
-        .filter { field -> field.fields.isNotEmpty() || field.fragments.isNotEmpty() }
-        .map { field ->
-          field.asAstObjectType(
-              targetPackageName = targetPackageName,
-              abstract = abstract || this is BackendIr.Fragment.Interface,
-              currentSelectionKey = selectionKey + this.name + field.responseName,
-              customScalarTypes = customScalarTypes,
-          )
-        }
-    val introspectionSchemaType = this.possibleTypes.first().takeIf { this.possibleTypes.size == 1 }
-    return CodeGenerationAst.ObjectType(
-        name = name,
-        description = this.description ?: "",
-        deprecationReason = null,
-        fields = fields,
-        implements = implements,
-        kind = kind,
-        typeRef = typeRef,
-        nestedObjects = nestedObjects,
-        schemaTypename = introspectionSchemaType?.rawType?.name,
-        fragmentAccessors = emptyList(),
-    )
   }
 
   private fun BackendIr.Field.buildField(

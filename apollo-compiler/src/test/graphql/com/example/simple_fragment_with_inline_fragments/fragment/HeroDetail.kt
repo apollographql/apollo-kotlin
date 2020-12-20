@@ -44,9 +44,6 @@ interface HeroDetail : GraphqlFragment {
 
     fun marshaller(): ResponseFieldMarshaller
 
-    /**
-     * A humanoid creature from the Star Wars universe
-     */
     interface Human : Friend {
       override val __typename: String
 
@@ -63,9 +60,6 @@ interface HeroDetail : GraphqlFragment {
       override fun marshaller(): ResponseFieldMarshaller
     }
 
-    /**
-     * An autonomous mechanical character in the Star Wars universe
-     */
     interface Droid : Friend {
       override val __typename: String
 

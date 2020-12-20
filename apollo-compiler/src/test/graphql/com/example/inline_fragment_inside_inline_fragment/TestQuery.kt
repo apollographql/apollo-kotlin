@@ -113,9 +113,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
       fun marshaller(): ResponseFieldMarshaller
 
-      /**
-       * A character from the Star Wars universe
-       */
       interface Character : Search {
         override val __typename: String
 
@@ -127,16 +124,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         override fun marshaller(): ResponseFieldMarshaller
       }
 
-      /**
-       * A humanoid creature from the Star Wars universe
-       */
-      interface Human : Search, Character {
+      interface Human : Search {
         override val __typename: String
-
-        /**
-         * The name of the character
-         */
-        override val name: String
 
         /**
          * The home planet of the human, or null if unknown
@@ -146,16 +135,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         override fun marshaller(): ResponseFieldMarshaller
       }
 
-      /**
-       * An autonomous mechanical character in the Star Wars universe
-       */
-      interface Droid : Search, Character {
+      interface Droid : Search {
         override val __typename: String
-
-        /**
-         * The name of the character
-         */
-        override val name: String
 
         /**
          * This droid's primary function
@@ -166,7 +147,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       }
 
       data class CharacterDroidSearch(
-        override val __typename: String = "Droid",
+        override val __typename: String,
         /**
          * The name of the character
          */
@@ -184,7 +165,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       }
 
       data class CharacterHumanSearch(
-        override val __typename: String = "Human",
+        override val __typename: String,
         /**
          * The name of the character
          */
@@ -202,7 +183,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       }
 
       data class OtherSearch(
-        override val __typename: String = "SearchResult"
+        override val __typename: String
       ) : Search {
         override fun marshaller(): ResponseFieldMarshaller {
           return ResponseFieldMarshaller { writer ->

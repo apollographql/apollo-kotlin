@@ -19,16 +19,19 @@ internal object BackendIrMergeUtils {
     val mergedFields = this.fields.mergeFields(otherField.fields)
     return this.copy(
         fields = mergedFields,
-        fragments = this.fragments.mergeFragments(
-            parentSelectionSet = mergedFields,
-            otherFragments = otherField.fragments
+        fragments = this.fragments.copy(
+            fragments = this.fragments.mergeFragments(
+                parentFields = mergedFields,
+                otherFragments = otherField.fragments
+            ),
+            accessors = this.fragments.accessors + otherField.fragments.accessors,
         ),
         selectionKeys = this.selectionKeys + otherField.selectionKeys,
     )
   }
 
   private fun List<BackendIr.Fragment>.mergeFragments(
-      parentSelectionSet: List<BackendIr.Field>,
+      parentFields: List<BackendIr.Field>,
       otherFragments: List<BackendIr.Fragment>
   ): List<BackendIr.Fragment> {
     val fragmentsToAdd = otherFragments.toMutableList()
@@ -40,26 +43,15 @@ internal object BackendIrMergeUtils {
       if (fragmentToMerge == null) {
         fragment
       } else {
-        when (fragment) {
-          is BackendIr.Fragment.Interface -> fragment.copy(
-              fields = fragment.fields.mergeFields(fragmentToMerge.fields).mergeFields(parentSelectionSet),
-              selectionKeys = fragment.selectionKeys + fragmentToMerge.selectionKeys,
-          )
-          is BackendIr.Fragment.Implementation -> fragment.copy(
-              fields = fragment.fields.mergeFields(fragmentToMerge.fields).mergeFields(parentSelectionSet),
-              selectionKeys = fragment.selectionKeys + fragmentToMerge.selectionKeys,
-          )
-        }
+        fragment.copy(
+            fields = fragment.fields.mergeFields(fragmentToMerge.fields).mergeFields(parentFields),
+            selectionKeys = fragment.selectionKeys + fragmentToMerge.selectionKeys,
+        )
       }
     } + fragmentsToAdd.map { fragment ->
-      when (fragment) {
-        is BackendIr.Fragment.Interface -> fragment.copy(
-            fields = fragment.fields.mergeFields(parentSelectionSet),
-        )
-        is BackendIr.Fragment.Implementation -> fragment.copy(
-            fields = fragment.fields.mergeFields(parentSelectionSet),
-        )
-      }
+      fragment.copy(
+          fields = fragment.fields.mergeFields(parentFields),
+      )
     }
   }
 }

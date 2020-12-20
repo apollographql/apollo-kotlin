@@ -291,11 +291,8 @@ data class TestQuery(
         }
       }
 
-      /**
-       * A character from the Star Wars universe
-       */
       data class OtherHero(
-        override val __typename: String = "Character",
+        override val __typename: String,
         /**
          * The name of the character
          */
@@ -309,9 +306,9 @@ data class TestQuery(
       }
 
       companion object {
-        fun Hero.heroDetails(): HeroDetail? = this as? HeroDetail
-
         fun Hero.asCharacter(): Character? = this as? Character
+
+        fun Hero.heroDetails(): HeroDetail? = this as? HeroDetail
       }
     }
 

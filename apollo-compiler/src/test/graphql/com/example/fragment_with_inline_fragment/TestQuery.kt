@@ -18,9 +18,7 @@ import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.api.internal.Throws
 import com.example.fragment_with_inline_fragment.adapter.TestQuery_ResponseAdapter
-import com.example.fragment_with_inline_fragment.fragment.DroidDetail
 import com.example.fragment_with_inline_fragment.fragment.HeroDetail
-import com.example.fragment_with_inline_fragment.fragment.HumanDetail
 import com.example.fragment_with_inline_fragment.type.Episode
 import kotlin.Boolean
 import kotlin.Int
@@ -191,10 +189,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         }
       }
 
-      /**
-       * An autonomous mechanical character in the Star Wars universe
-       */
-      interface Droid : Hero, HeroDetail.Droid, Character, DroidDetail {
+      interface Droid : Hero, HeroDetail.Droid {
         override val __typename: String
 
         /**
@@ -211,11 +206,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * The friends of the character exposed as a connection with edges
          */
         override val friendsConnection: FriendsConnection
-
-        /**
-         * This droid's primary function
-         */
-        override val primaryFunction: String?
 
         override fun marshaller(): ResponseFieldMarshaller
 
@@ -265,7 +255,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         }
       }
 
-      interface Human : Hero, HeroDetail.Human, HumanDetail {
+      interface Human : Hero, HeroDetail.Human {
         override val __typename: String
 
         /**
@@ -332,7 +322,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       }
 
       data class CharacterDroidHero(
-        override val __typename: String = "Droid",
+        override val __typename: String,
         /**
          * The name of the character
          */
@@ -344,12 +334,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         /**
          * The friends of the character exposed as a connection with edges
          */
-        override val friendsConnection: FriendsConnection,
-        /**
-         * This droid's primary function
-         */
-        override val primaryFunction: String?
-      ) : Hero, Character, HeroDetail, Droid, HeroDetail.Droid, DroidDetail {
+        override val friendsConnection: FriendsConnection
+      ) : Hero, Character, HeroDetail, Droid, HeroDetail.Droid {
         override fun marshaller(): ResponseFieldMarshaller {
           return ResponseFieldMarshaller { writer ->
             TestQuery_ResponseAdapter.Data.Hero.CharacterDroidHero.toResponse(writer, this)
@@ -368,8 +354,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            * The edges for each of the character's friends.
            */
           override val edges: List<Edge?>?
-        ) : Character.FriendsConnection, HeroDetail.FriendsConnection, Droid.FriendsConnection,
-            HeroDetail.Droid.FriendsConnection {
+        ) : Character.FriendsConnection, HeroDetail.FriendsConnection,
+            HeroDetail.Droid.FriendsConnection, Droid.FriendsConnection {
           override fun marshaller(): ResponseFieldMarshaller {
             return ResponseFieldMarshaller { writer ->
               TestQuery_ResponseAdapter.Data.Hero.CharacterDroidHero.FriendsConnection.toResponse(writer, this)
@@ -385,7 +371,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
              */
             override val node: Node?
           ) : Character.FriendsConnection.Edge, HeroDetail.FriendsConnection.Edge,
-              Droid.FriendsConnection.Edge, HeroDetail.Droid.FriendsConnection.Edge {
+              HeroDetail.Droid.FriendsConnection.Edge, Droid.FriendsConnection.Edge {
             override fun marshaller(): ResponseFieldMarshaller {
               return ResponseFieldMarshaller { writer ->
                 TestQuery_ResponseAdapter.Data.Hero.CharacterDroidHero.FriendsConnection.Edge.toResponse(writer, this)
@@ -401,7 +387,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
                */
               override val name: String
             ) : Character.FriendsConnection.Edge.Node, HeroDetail.FriendsConnection.Edge.Node,
-                Droid.FriendsConnection.Edge.Node, HeroDetail.Droid.FriendsConnection.Edge.Node {
+                HeroDetail.Droid.FriendsConnection.Edge.Node, Droid.FriendsConnection.Edge.Node {
               override fun marshaller(): ResponseFieldMarshaller {
                 return ResponseFieldMarshaller { writer ->
                   TestQuery_ResponseAdapter.Data.Hero.CharacterDroidHero.FriendsConnection.Edge.Node.toResponse(writer, this)
@@ -413,7 +399,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       }
 
       data class CharacterHumanHero(
-        override val __typename: String = "Human",
+        override val __typename: String,
         /**
          * The name of the character
          */
@@ -426,7 +412,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * The friends of the character exposed as a connection with edges
          */
         override val friendsConnection: FriendsConnection
-      ) : Hero, Character, HeroDetail, Human, HeroDetail.Human, HumanDetail {
+      ) : Hero, Character, HeroDetail, Human, HeroDetail.Human {
         override fun marshaller(): ResponseFieldMarshaller {
           return ResponseFieldMarshaller { writer ->
             TestQuery_ResponseAdapter.Data.Hero.CharacterHumanHero.toResponse(writer, this)
@@ -445,8 +431,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            * The edges for each of the character's friends.
            */
           override val edges: List<Edge?>?
-        ) : Character.FriendsConnection, HeroDetail.FriendsConnection, Human.FriendsConnection,
-            HeroDetail.Human.FriendsConnection {
+        ) : Character.FriendsConnection, HeroDetail.FriendsConnection,
+            HeroDetail.Human.FriendsConnection, Human.FriendsConnection {
           override fun marshaller(): ResponseFieldMarshaller {
             return ResponseFieldMarshaller { writer ->
               TestQuery_ResponseAdapter.Data.Hero.CharacterHumanHero.FriendsConnection.toResponse(writer, this)
@@ -462,7 +448,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
              */
             override val node: Node?
           ) : Character.FriendsConnection.Edge, HeroDetail.FriendsConnection.Edge,
-              Human.FriendsConnection.Edge, HeroDetail.Human.FriendsConnection.Edge {
+              HeroDetail.Human.FriendsConnection.Edge, Human.FriendsConnection.Edge {
             override fun marshaller(): ResponseFieldMarshaller {
               return ResponseFieldMarshaller { writer ->
                 TestQuery_ResponseAdapter.Data.Hero.CharacterHumanHero.FriendsConnection.Edge.toResponse(writer, this)
@@ -478,7 +464,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
                */
               override val name: String
             ) : Character.FriendsConnection.Edge.Node, HeroDetail.FriendsConnection.Edge.Node,
-                Human.FriendsConnection.Edge.Node, HeroDetail.Human.FriendsConnection.Edge.Node {
+                HeroDetail.Human.FriendsConnection.Edge.Node, Human.FriendsConnection.Edge.Node {
               override fun marshaller(): ResponseFieldMarshaller {
                 return ResponseFieldMarshaller { writer ->
                   TestQuery_ResponseAdapter.Data.Hero.CharacterHumanHero.FriendsConnection.Edge.Node.toResponse(writer, this)
@@ -489,11 +475,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         }
       }
 
-      /**
-       * A character from the Star Wars universe
-       */
       data class OtherHero(
-        override val __typename: String = "Character",
+        override val __typename: String,
         /**
          * The name of the character
          */
@@ -511,17 +494,13 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       }
 
       companion object {
-        fun Hero.heroDetails(): HeroDetail? = this as? HeroDetail
-
         fun Hero.asCharacter(): Character? = this as? Character
 
-        fun Hero.droidDetails(): DroidDetail? = this as? DroidDetail
+        fun Hero.heroDetails(): HeroDetail? = this as? HeroDetail
 
-        fun Hero.asDroid(): Droid? = this as? Droid
+        fun Hero.asDroid(): HeroDetail.Droid? = this as? HeroDetail.Droid
 
-        fun Hero.humanDetails(): HumanDetail? = this as? HumanDetail
-
-        fun Hero.asHuman(): Human? = this as? Human
+        fun Hero.asHuman(): HeroDetail.Human? = this as? HeroDetail.Human
       }
     }
   }

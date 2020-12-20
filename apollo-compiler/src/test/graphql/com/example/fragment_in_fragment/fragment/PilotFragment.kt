@@ -50,9 +50,9 @@ interface PilotFragment : GraphqlFragment {
     }
 
     companion object {
-      fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
-
       fun Homeworld.asPlanet(): Planet? = this as? Planet
+
+      fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
     }
   }
 
