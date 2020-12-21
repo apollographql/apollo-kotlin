@@ -59,7 +59,6 @@ configure<ApolloExtension> {
   }
   service("sealedclasses") {
     sealedClassesForEnumsMatching.set(listOf(".*"))
-    generateKotlinModels.set(true)
     sourceFolder.set("com/apollographql/apollo/integration/sealedclasses")
     rootPackageName.set("com.apollographql.apollo.integration.sealedclasses")
   }
