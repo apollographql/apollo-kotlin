@@ -6,7 +6,7 @@ import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.Record
 
 class SimpleNormalizedCache : NormalizedCache() {
-  val map = mutableMapOf<String, Record>()
+  private val map = mutableMapOf<String, Record>()
 
   override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? {
     val record = nextCache?.loadRecord(key, cacheHeaders)
