@@ -21,10 +21,18 @@ import kotlin.collections.List
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forList("reviews", "reviews", mapOf<String, Any>(
+    ResponseField.forList("reviews", "reviews", mapOf<String, Any?>(
       "episode" to "JEDI",
       "starsInt" to 10,
-      "starsFloat" to 9.9), true, null)
+      "starsFloat" to 9.9), true, null),
+    ResponseField.forInt("testNullableArguments", "testNullableArguments", mapOf<String, Any?>(
+      "int" to null,
+      "string" to null,
+      "float" to null,
+      "review" to null,
+      "episode" to null,
+      "boolean" to null,
+      "list" to null), false, null)
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
@@ -37,15 +45,24 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object Data : ResponseAdapter<TestQuery.Data> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forList("reviews", "reviews", mapOf<String, Any>(
+      ResponseField.forList("reviews", "reviews", mapOf<String, Any?>(
         "episode" to "JEDI",
         "starsInt" to 10,
-        "starsFloat" to 9.9), true, null)
+        "starsFloat" to 9.9), true, null),
+      ResponseField.forInt("testNullableArguments", "testNullableArguments", mapOf<String, Any?>(
+        "int" to null,
+        "string" to null,
+        "float" to null,
+        "review" to null,
+        "episode" to null,
+        "boolean" to null,
+        "list" to null), false, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
       return reader.run {
         var reviews: List<TestQuery.Data.Review?>? = null
+        var testNullableArguments: Int? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
             0 -> reviews = readList<TestQuery.Data.Review>(RESPONSE_FIELDS[0]) { reader ->
@@ -53,11 +70,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
                 Review.fromResponse(reader)
               }
             }
+            1 -> testNullableArguments = readInt(RESPONSE_FIELDS[1])
             else -> break
           }
         }
         TestQuery.Data(
-          reviews = reviews
+          reviews = reviews,
+          testNullableArguments = testNullableArguments!!
         )
       }
     }
@@ -74,6 +93,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           }
         }
       }
+      writer.writeInt(RESPONSE_FIELDS[1], value.testNullableArguments)
     }
 
     object Review : ResponseAdapter<TestQuery.Data.Review> {

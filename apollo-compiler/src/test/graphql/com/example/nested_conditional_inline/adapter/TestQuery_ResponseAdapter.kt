@@ -21,8 +21,8 @@ import kotlin.collections.List
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forObject("hero", "hero", mapOf<String, Any>(
-      "episode" to mapOf<String, Any>(
+    ResponseField.forObject("hero", "hero", mapOf<String, Any?>(
+      "episode" to mapOf<String, Any?>(
         "kind" to "Variable",
         "variableName" to "episode")), true, null)
   )
@@ -37,8 +37,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object Data : ResponseAdapter<TestQuery.Data> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forObject("hero", "hero", mapOf<String, Any>(
-        "episode" to mapOf<String, Any>(
+      ResponseField.forObject("hero", "hero", mapOf<String, Any?>(
+        "episode" to mapOf<String, Any?>(
           "kind" to "Variable",
           "variableName" to "episode")), true, null)
     )
@@ -169,7 +169,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
               ResponseField.forString("__typename", "__typename", null, false, null),
               ResponseField.forString("name", "name", null, false, null),
-              ResponseField.forDouble("height", "height", mapOf<String, Any>(
+              ResponseField.forDouble("height", "height", mapOf<String, Any?>(
                 "unit" to "FOOT"), true, null)
             )
 
@@ -313,7 +313,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
               ResponseField.forString("__typename", "__typename", null, false, null),
               ResponseField.forString("name", "name", null, false, null),
-              ResponseField.forDouble("height", "height", mapOf<String, Any>(
+              ResponseField.forDouble("height", "height", mapOf<String, Any?>(
                 "unit" to "METER"), true, null)
             )
 

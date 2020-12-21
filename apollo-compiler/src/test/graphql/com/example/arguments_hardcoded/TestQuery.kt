@@ -99,7 +99,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
    * The query type, represents all of the entry points into our object graph
    */
   data class Data(
-    val reviews: List<Review?>?
+    val reviews: List<Review?>?,
+    val testNullableArguments: Int
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
@@ -132,7 +133,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "b4337eef1a3aa9444539ff12d9bec12e7693ab16bd56283708382fd380b6e0fc"
+        "a15321a7f7103480873db29a761ae001023b059eb7ad1af9e2816d1a2458c1b5"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -141,6 +142,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           |    stars
           |    commentary
           |  }
+          |  testNullableArguments(int: null, string: null, float: null, review: null, episode: null, boolean: null, list: null)
           |}
           """.trimMargin()
         )

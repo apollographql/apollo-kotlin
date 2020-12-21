@@ -20,7 +20,7 @@ import kotlin.Suppress
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forObject("nonOptionalHero", "nonOptionalHero", mapOf<String, Any>(
+    ResponseField.forObject("nonOptionalHero", "nonOptionalHero", mapOf<String, Any?>(
       "episode" to "EMPIRE"), false, null)
   )
 
@@ -34,7 +34,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object Data : ResponseAdapter<TestQuery.Data> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forObject("nonOptionalHero", "nonOptionalHero", mapOf<String, Any>(
+      ResponseField.forObject("nonOptionalHero", "nonOptionalHero", mapOf<String, Any?>(
         "episode" to "EMPIRE"), false, null)
     )
 

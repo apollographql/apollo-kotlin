@@ -54,9 +54,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forObject("hero", "hero", null, true, null),
-        ResponseField.forObject("droid", "droid", mapOf<String, Any>(
+        ResponseField.forObject("droid", "droid", mapOf<String, Any?>(
           "id" to 1), true, null),
-        ResponseField.forObject("human", "human", mapOf<String, Any>(
+        ResponseField.forObject("human", "human", mapOf<String, Any?>(
           "id" to 1), true, null)
       )
 

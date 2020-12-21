@@ -65,11 +65,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     object TypeWithGraphQLKeyword : ResponseAdapter<TestQuery.Data.TypeWithGraphQLKeyword> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("on", "on", null, true, null),
-        ResponseField.forString("null", "null", mapOf<String, Any>(
-          "fragment" to mapOf<String, Any>(
+        ResponseField.forString("null", "null", mapOf<String, Any?>(
+          "fragment" to mapOf<String, Any?>(
             "kind" to "Variable",
             "variableName" to "operation")), true, null),
-        ResponseField.forString("alias", "null", mapOf<String, Any>(
+        ResponseField.forString("alias", "null", mapOf<String, Any?>(
           "fragment" to """
           |A string
           |with a new line

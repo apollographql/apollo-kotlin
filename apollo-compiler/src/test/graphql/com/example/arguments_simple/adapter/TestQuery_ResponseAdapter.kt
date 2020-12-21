@@ -21,23 +21,23 @@ import kotlin.collections.List
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forObject("hero", "hero", mapOf<String, Any>(
-      "episode" to mapOf<String, Any>(
+    ResponseField.forObject("hero", "hero", mapOf<String, Any?>(
+      "episode" to mapOf<String, Any?>(
         "kind" to "Variable",
         "variableName" to "episode"),
-      "listOfListOfStringArgs" to mapOf<String, Any>(
+      "listOfListOfStringArgs" to mapOf<String, Any?>(
         "kind" to "Variable",
         "variableName" to "listOfListOfStringArgs")), true, null),
-    ResponseField.forObject("heroWithReview", "heroWithReview", mapOf<String, Any>(
-      "episode" to mapOf<String, Any>(
+    ResponseField.forObject("heroWithReview", "heroWithReview", mapOf<String, Any?>(
+      "episode" to mapOf<String, Any?>(
         "kind" to "Variable",
         "variableName" to "episode"),
-      "review" to mapOf<String, Any>(
+      "review" to mapOf<String, Any?>(
         "stars" to 5,
-        "favoriteColor" to mapOf<String, Any>(
+        "favoriteColor" to mapOf<String, Any?>(
           "red" to 1,
           "blue" to 1.0),
-        "listOfStringNonOptional" to emptyList<Any>())), true, null)
+        "listOfStringNonOptional" to emptyList<Any?>())), true, null)
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
@@ -50,23 +50,23 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object Data : ResponseAdapter<TestQuery.Data> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forObject("hero", "hero", mapOf<String, Any>(
-        "episode" to mapOf<String, Any>(
+      ResponseField.forObject("hero", "hero", mapOf<String, Any?>(
+        "episode" to mapOf<String, Any?>(
           "kind" to "Variable",
           "variableName" to "episode"),
-        "listOfListOfStringArgs" to mapOf<String, Any>(
+        "listOfListOfStringArgs" to mapOf<String, Any?>(
           "kind" to "Variable",
           "variableName" to "listOfListOfStringArgs")), true, null),
-      ResponseField.forObject("heroWithReview", "heroWithReview", mapOf<String, Any>(
-        "episode" to mapOf<String, Any>(
+      ResponseField.forObject("heroWithReview", "heroWithReview", mapOf<String, Any?>(
+        "episode" to mapOf<String, Any?>(
           "kind" to "Variable",
           "variableName" to "episode"),
-        "review" to mapOf<String, Any>(
+        "review" to mapOf<String, Any?>(
           "stars" to 5,
-          "favoriteColor" to mapOf<String, Any>(
+          "favoriteColor" to mapOf<String, Any?>(
             "red" to 1,
             "blue" to 1.0),
-          "listOfStringNonOptional" to emptyList<Any>())), true, null)
+          "listOfStringNonOptional" to emptyList<Any?>())), true, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
@@ -138,8 +138,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           ResponseField.forString("name", "name", null, true, listOf(
             ResponseField.Condition.booleanCondition("IncludeName", false)
           )),
-          ResponseField.forObject("friendsConnection", "friendsConnection", mapOf<String, Any>(
-            "first" to mapOf<String, Any>(
+          ResponseField.forObject("friendsConnection", "friendsConnection", mapOf<String, Any?>(
+            "first" to mapOf<String, Any?>(
               "kind" to "Variable",
               "variableName" to "friendsCount")), false, null)
         )

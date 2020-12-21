@@ -21,11 +21,11 @@ import kotlin.Suppress
 object CreateReviewForEpisodeMutation_ResponseAdapter :
     ResponseAdapter<CreateReviewForEpisodeMutation.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forObject("createReview", "createReview", mapOf<String, Any>(
-      "episode" to mapOf<String, Any>(
+    ResponseField.forObject("createReview", "createReview", mapOf<String, Any?>(
+      "episode" to mapOf<String, Any?>(
         "kind" to "Variable",
         "variableName" to "ep"),
-      "review" to mapOf<String, Any>(
+      "review" to mapOf<String, Any?>(
         "kind" to "Variable",
         "variableName" to "review")), true, null)
   )
@@ -41,11 +41,11 @@ object CreateReviewForEpisodeMutation_ResponseAdapter :
 
   object Data : ResponseAdapter<CreateReviewForEpisodeMutation.Data> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forObject("createReview", "createReview", mapOf<String, Any>(
-        "episode" to mapOf<String, Any>(
+      ResponseField.forObject("createReview", "createReview", mapOf<String, Any?>(
+        "episode" to mapOf<String, Any?>(
           "kind" to "Variable",
           "variableName" to "ep"),
-        "review" to mapOf<String, Any>(
+        "review" to mapOf<String, Any?>(
           "kind" to "Variable",
           "variableName" to "review")), true, null)
     )

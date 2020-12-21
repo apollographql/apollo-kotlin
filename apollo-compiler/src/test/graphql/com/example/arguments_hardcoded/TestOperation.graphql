@@ -3,4 +3,5 @@ query TestQuery {
     stars
     commentary
   }
+  testNullableArguments(int: null, string: null, float: null, review: null, episode: null, boolean: null, list: null)
 }

@@ -21,8 +21,8 @@ import kotlin.collections.List
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forObject("starship", "starship", mapOf<String, Any>(
-      "id" to mapOf<String, Any>(
+    ResponseField.forObject("starship", "starship", mapOf<String, Any?>(
+      "id" to mapOf<String, Any?>(
         "kind" to "Variable",
         "variableName" to "id")), true, null)
   )
@@ -37,8 +37,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object Data : ResponseAdapter<TestQuery.Data> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forObject("starship", "starship", mapOf<String, Any>(
-        "id" to mapOf<String, Any>(
+      ResponseField.forObject("starship", "starship", mapOf<String, Any?>(
+        "id" to mapOf<String, Any?>(
           "kind" to "Variable",
           "variableName" to "id")), true, null)
     )
