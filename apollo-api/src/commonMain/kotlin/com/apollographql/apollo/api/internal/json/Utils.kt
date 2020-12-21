@@ -1,6 +1,8 @@
 package com.apollographql.apollo.api.internal.json
 
+import com.apollographql.apollo.api.BigDecimal
 import com.apollographql.apollo.api.internal.Throws
+import com.apollographql.apollo.api.EnumValue
 import okio.IOException
 import kotlin.jvm.JvmStatic
 
