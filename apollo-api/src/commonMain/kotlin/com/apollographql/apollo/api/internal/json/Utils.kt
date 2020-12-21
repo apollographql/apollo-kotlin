@@ -15,20 +15,20 @@ object Utils {
       null -> jsonWriter.nullValue()
 
       is Map<*, *> -> {
-        jsonWriter.beginObject().apply {
+        jsonWriter.writeObject {
           value.forEach { (key, value) ->
             jsonWriter.name(key.toString())
             writeToJson(value, this)
           }
-        }.endObject()
+        }
       }
 
       is List<*> -> {
-        jsonWriter.beginArray().apply {
+        jsonWriter.writeArray {
           value.forEach {
             writeToJson(it, this)
           }
-        }.endArray()
+        }
       }
 
       is Boolean -> jsonWriter.value(value as Boolean?)
