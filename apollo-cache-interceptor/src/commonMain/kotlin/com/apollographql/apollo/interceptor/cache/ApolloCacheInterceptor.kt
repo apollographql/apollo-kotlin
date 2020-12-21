@@ -16,7 +16,6 @@ import com.apollographql.apollo.cache.normalized.internal.CacheKeyBuilder
 import com.apollographql.apollo.cache.normalized.internal.ReadableStore
 import com.apollographql.apollo.cache.normalized.internal.RealCacheKeyBuilder
 import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
-import com.apollographql.apollo.cache.normalized.simple.SimpleNormalizedCache
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo.interceptor.ApolloRequest
 import com.apollographql.apollo.interceptor.ApolloRequestInterceptor
@@ -43,7 +42,13 @@ class ApolloCacheInterceptor(private val normalizedCache: NormalizedCache) : Apo
     return flow {
       val response = readFromCache(request)
       if (response != null) {
-        emit(ApolloResponse(requestUuid = request.requestUuid, response = response, executionContext = request.executionContext + CacheExecutionContext(true)))
+        emit(
+            ApolloResponse(
+                requestUuid = request.requestUuid,
+                response = response,
+                executionContext = request.executionContext + CacheExecutionContext(true)
+            )
+        )
       } else {
         chain.proceed(request).collect {
           if (it.response.data != null) {
