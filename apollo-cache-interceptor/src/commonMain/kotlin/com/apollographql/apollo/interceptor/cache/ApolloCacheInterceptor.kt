@@ -9,6 +9,7 @@ import com.apollographql.apollo.api.internal.NoOpResolveDelegate
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
+import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.internal.CacheFieldValueResolver
 import com.apollographql.apollo.cache.normalized.internal.CacheKeyBuilder
@@ -27,9 +28,8 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 
 @ApolloExperimental
-class ApolloCacheInterceptor : ApolloRequestInterceptor {
-  val normalizedCache = SimpleNormalizedCache()
-  val readableStore = object : ReadableStore {
+class ApolloCacheInterceptor(private val normalizedCache: NormalizedCache) : ApolloRequestInterceptor {
+  private val readableStore = object : ReadableStore {
     override fun read(key: String, cacheHeaders: CacheHeaders): Record? {
       return normalizedCache.loadRecord(key, cacheHeaders)
     }

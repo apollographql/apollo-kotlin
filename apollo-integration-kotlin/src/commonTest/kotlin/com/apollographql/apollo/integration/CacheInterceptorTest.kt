@@ -2,6 +2,7 @@ package com.apollographql.apollo.integration
 
 import HeroNameQuery
 import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.cache.normalized.simple.SimpleNormalizedCache
 import com.apollographql.apollo.interceptor.cache.ApolloCacheInterceptor
 import com.apollographql.apollo.interceptor.cache.cacheContext
 import com.apollographql.apollo.testing.MockNetworkTransport
@@ -24,7 +25,7 @@ class CacheInterceptorTest {
     networkTransport = MockNetworkTransport()
     apolloClient = ApolloClient(
         networkTransport = networkTransport,
-        interceptors = listOf(TestLoggerExecutor, ApolloCacheInterceptor())
+        interceptors = listOf(TestLoggerExecutor, ApolloCacheInterceptor(SimpleNormalizedCache()))
     )
   }
 
