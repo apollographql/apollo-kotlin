@@ -69,13 +69,13 @@ class ApolloWatcherTest {
   @Test
   fun testQueryWatcherUpdated_SameQuery_DifferentResults() {
     val heroNameList: MutableList<String> = ArrayList()
-    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build()
+    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
     val watcher = apolloClient.query(query).watcher()
     watcher.enqueueAndWatch(
         object : Callback<EpisodeHeroNameQuery.Data>() {
           override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {
-            heroNameList.add(response.data()!!.hero()!!.name())
+            heroNameList.add(response.data!!.hero!!.name)
           }
 
           override fun onFailure(e: ApolloException) {
@@ -101,13 +101,13 @@ class ApolloWatcherTest {
   @Throws(IOException::class, InterruptedException::class, TimeoutException::class, ApolloException::class)
   fun testQueryWatcherUpdated_Store_write() {
     val heroNameList: MutableList<String> = ArrayList()
-    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build()
+    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
     val watcher: ApolloQueryWatcher<EpisodeHeroNameQuery.Data> = apolloClient.query(query).watcher()
     watcher.enqueueAndWatch(
         object : Callback<EpisodeHeroNameQuery.Data>() {
           override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {
-            heroNameList.add(response.data()!!.hero()!!.name())
+            heroNameList.add(response.data!!.hero!!.name)
           }
 
           override fun onFailure(e: ApolloException) {
@@ -133,13 +133,13 @@ class ApolloWatcherTest {
   @Test
   fun testQueryWatcherNotUpdated_SameQuery_SameResults() {
     val heroNameList: MutableList<String> = ArrayList()
-    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build()
+    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
     val watcher: ApolloQueryWatcher<EpisodeHeroNameQuery.Data> = apolloClient.query(query).watcher()
     watcher.enqueueAndWatch(
         object : Callback<EpisodeHeroNameQuery.Data>() {
           override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {
-            heroNameList.add(response.data()!!.hero()!!.name())
+            heroNameList.add(response.data!!.hero!!.name)
           }
 
           override fun onFailure(e: ApolloException) {
@@ -157,21 +157,20 @@ class ApolloWatcherTest {
   fun testQueryWatcherUpdated_DifferentQuery_DifferentResults() {
     val heroNameList: MutableList<String> = ArrayList()
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
-    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build()
+    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))
     val watcher: ApolloQueryWatcher<EpisodeHeroNameQuery.Data> = apolloClient.query(query).watcher()
     watcher.enqueueAndWatch(
         object : Callback<EpisodeHeroNameQuery.Data>() {
           override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {
-            heroNameList.add(response.data()!!.hero()!!.name())
+            heroNameList.add(response.data!!.hero!!.name)
           }
 
           override fun onFailure(e: ApolloException) {
             Assert.fail(e.message)
           }
         })
-    val friendsQuery: HeroAndFriendsNamesWithIDsQuery = HeroAndFriendsNamesWithIDsQuery.builder()
-        .episode(Episode.NEWHOPE)
-        .build()
+    val friendsQuery: HeroAndFriendsNamesWithIDsQuery = HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(Episode.NEWHOPE))
+
     Utils.enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameWithIdsNameChange.json",
@@ -187,19 +186,19 @@ class ApolloWatcherTest {
   fun testQueryWatcherNotUpdated_DifferentQueries() {
     val heroNameList: MutableList<String> = ArrayList()
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
-    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build()
+    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))
     val watcher: ApolloQueryWatcher<EpisodeHeroNameQuery.Data> = apolloClient.query(query).watcher()
     watcher.enqueueAndWatch(
         object : Callback<EpisodeHeroNameQuery.Data>() {
           override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {
-            heroNameList.add(response.data()!!.hero()!!.name())
+            heroNameList.add(response.data!!.hero!!.name)
           }
 
           override fun onFailure(e: ApolloException) {
             Assert.fail(e.message)
           }
         })
-    val friendsQuery: HeroAndFriendsNamesWithIDsQuery = HeroAndFriendsNamesWithIDsQuery.builder().episode(Episode.NEWHOPE).build()
+    val friendsQuery: HeroAndFriendsNamesWithIDsQuery = HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(Episode.NEWHOPE))
     server.enqueue(Utils.mockResponse("HeroAndFriendsNameWithIdsResponse.json"))
     apolloClient.query(friendsQuery).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY).enqueue(null)
     watcher.cancel()
@@ -211,13 +210,13 @@ class ApolloWatcherTest {
   fun testRefetchCacheControl() {
     val heroNameList: MutableList<String> = ArrayList()
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
-    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build()
+    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))
     val watcher: ApolloQueryWatcher<EpisodeHeroNameQuery.Data> = apolloClient.query(query).watcher()
     watcher.refetchResponseFetcher(ApolloResponseFetchers.NETWORK_ONLY) //Force network instead of CACHE_FIRST default
         .enqueueAndWatch(
             object : Callback<EpisodeHeroNameQuery.Data>() {
               override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {
-                heroNameList.add(response.data()!!.hero()!!.name())
+                heroNameList.add(response.data!!.hero!!.name)
               }
 
               override fun onFailure(e: ApolloException) {
@@ -241,7 +240,7 @@ class ApolloWatcherTest {
   @Test
   fun testQueryWatcherUpdated_SameQuery_DifferentResults_cacheOnly() {
     val heroNameList: MutableList<String> = ArrayList()
-    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build()
+    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
     apolloClient.query(query).enqueue(object : Callback<EpisodeHeroNameQuery.Data>() {
       override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {}
@@ -254,7 +253,7 @@ class ApolloWatcherTest {
     watcher.enqueueAndWatch(
         object : Callback<EpisodeHeroNameQuery.Data>() {
           override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {
-            heroNameList.add(response.data()!!.hero()!!.name())
+            heroNameList.add(response.data!!.hero!!.name)
           }
 
           override fun onFailure(e: ApolloException) {
@@ -274,13 +273,13 @@ class ApolloWatcherTest {
   @Test
   fun testQueryWatcherNotCalled_WhenCanceled() {
     val heroNameList: MutableList<String> = ArrayList()
-    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build()
+    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
     val watcher: ApolloQueryWatcher<EpisodeHeroNameQuery.Data> = apolloClient.query(query).watcher()
     watcher.enqueueAndWatch(
         object : Callback<EpisodeHeroNameQuery.Data>() {
           override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {
-            heroNameList.add(response.data()!!.hero()!!.name())
+            heroNameList.add(response.data!!.hero!!.name)
           }
 
           override fun onFailure(e: ApolloException) {
@@ -300,15 +299,15 @@ class ApolloWatcherTest {
 
   @Test
   fun emptyCacheQueryWatcherCacheOnly() {
-    val watchedHeroes = ArrayList<EpisodeHeroNameQuery.Hero?>()
+    val watchedHeroes = ArrayList<EpisodeHeroNameQuery.Data.Hero?>()
     val query = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))
     apolloClient.query(query)
         .responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
         .watcher()
         .enqueueAndWatch(object : Callback<EpisodeHeroNameQuery.Data>() {
           override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {
-            if (response.data() != null) {
-              watchedHeroes.add(response.data()!!.hero()!!)
+            if (response.data != null) {
+              watchedHeroes.add(response.data!!.hero!!)
             }
           }
 
@@ -319,8 +318,8 @@ class ApolloWatcherTest {
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
     apolloClient.query(query).enqueue(object : Callback<EpisodeHeroNameQuery.Data>() {
       override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {
-        assertThat(response.data()).isNotNull()
-        assertThat(response.data()?.hero()).isNotNull()
+        assertThat(response.data).isNotNull()
+        assertThat(response.data?.hero).isNotNull()
       }
 
       override fun onFailure(e: ApolloException) {
@@ -328,12 +327,12 @@ class ApolloWatcherTest {
       }
     })
     Truth.assertThat(watchedHeroes).hasSize(1)
-    assertThat(watchedHeroes[0]?.name()).isEqualTo("R2-D2")
+    assertThat(watchedHeroes[0]?.name).isEqualTo("R2-D2")
   }
 
   @Test
   fun queryWatcher_onStatusEvent_properlyCalled() {
-    val query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build()
+    val query = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
     val watcher = apolloClient.query(query).watcher()
     val callback = Mockito.mock(ApolloCall.Callback::class.java) as ApolloCall.Callback<EpisodeHeroNameQuery.Data>
@@ -350,7 +349,7 @@ class ApolloWatcherTest {
     runBlocking {
       val channel = Channel<Response<EpisodeHeroNameQuery.Data>>(capacity = Channel.UNLIMITED)
       val job = launch {
-        apolloClient.query(EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build())
+        apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
             .responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
             .watcher()
             .refetchResponseFetcher(ApolloResponseFetchers.CACHE_ONLY)
@@ -385,7 +384,7 @@ class ApolloWatcherTest {
     runBlocking {
       val channel = Channel<Response<EpisodeHeroNameQuery.Data>>(capacity = Channel.UNLIMITED)
       val job = launch {
-        apolloClient.query(EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build())
+        apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
             .responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
             .watcher()
             .refetchResponseFetcher(ApolloResponseFetchers.CACHE_ONLY)
@@ -401,11 +400,11 @@ class ApolloWatcherTest {
 
       // execute a query that should go to the network and trigger a result from the watcher
       server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
-      apolloClient.query(EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build()).await()
+      apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).await()
 
       val response2 = channel.receive()
 
-      assertThat(response2.data()?.hero()?.name()).isEqualTo("R2-D2")
+      assertThat(response2.data?.hero?.name).isEqualTo("R2-D2")
       assertThat(response2.isFromCache).isTrue()
 
       job.cancel()
