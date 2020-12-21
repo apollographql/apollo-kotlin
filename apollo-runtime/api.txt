@@ -447,6 +447,7 @@ package com.apollographql.apollo.subscription {
   }
 
   public abstract sealed class OperationServerMessage {
+    method @Deprecated public static final com.apollographql.apollo.subscription.OperationServerMessage fromJsonString(String json);
     field public static final com.apollographql.apollo.subscription.OperationServerMessage.Companion Companion;
     field public static final String JSON_KEY_ID = "id";
     field public static final String JSON_KEY_PAYLOAD = "payload";
