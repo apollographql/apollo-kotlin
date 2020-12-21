@@ -55,10 +55,10 @@ class SqlNormalizedCache internal constructor(
     }
   }
 
-  override fun merge(recordSet: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
+  override fun merge(recordCollection: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
     lateinit var records: Set<String>
     database.transaction {
-      records = super.merge(recordSet, cacheHeaders)
+      records = super.merge(recordCollection, cacheHeaders)
     }
     return records
   }

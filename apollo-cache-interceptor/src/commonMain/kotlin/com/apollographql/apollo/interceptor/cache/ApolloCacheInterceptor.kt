@@ -9,13 +9,12 @@ import com.apollographql.apollo.api.internal.NoOpResolveDelegate
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
-import com.apollographql.apollo.cache.normalized.NormalizedCache
-import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.internal.CacheFieldValueResolver
 import com.apollographql.apollo.cache.normalized.internal.CacheKeyBuilder
 import com.apollographql.apollo.cache.normalized.internal.ReadableStore
 import com.apollographql.apollo.cache.normalized.internal.RealCacheKeyBuilder
 import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
+import com.apollographql.apollo.cache.normalized.internal.WriteableStore
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo.interceptor.ApolloRequest
 import com.apollographql.apollo.interceptor.ApolloRequestInterceptor
@@ -27,16 +26,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 
 @ApolloExperimental
-class ApolloCacheInterceptor(private val normalizedCache: NormalizedCache) : ApolloRequestInterceptor {
-  private val readableStore = object : ReadableStore {
-    override fun read(key: String, cacheHeaders: CacheHeaders): Record? {
-      return normalizedCache.loadRecord(key, cacheHeaders)
-    }
-
-    override fun read(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
-      return keys.mapNotNull { normalizedCache.loadRecord(it, cacheHeaders) }
-    }
-  }
+class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor where S: WriteableStore, S: ReadableStore{
 
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return flow {
@@ -78,14 +68,15 @@ class ApolloCacheInterceptor(private val normalizedCache: NormalizedCache) : Apo
 
     responseNormalizer.willResolveRootQuery(operation);
     writer.resolveFields(responseNormalizer)
-    normalizedCache.merge(responseNormalizer.records()?.filterNotNull() ?: emptySet(), CacheHeaders.NONE)
+
+    store.merge(responseNormalizer.records()?.filterNotNull() ?: emptySet(), CacheHeaders.NONE)
   }
 
   private fun <D : Operation.Data> readFromCache(request: ApolloRequest<D>): Response<D>? {
     val operation = request.operation
-    val rootRecord = normalizedCache.loadRecord(CacheKeyResolver.rootKeyForOperation(operation).key, CacheHeaders.NONE) ?: return null
+    val rootRecord = store.read(CacheKeyResolver.rootKeyForOperation(operation).key, CacheHeaders.NONE) ?: return null
 
-    val fieldValueResolver = CacheFieldValueResolver(readableStore,
+    val fieldValueResolver = CacheFieldValueResolver(store,
         operation.variables(),
         CacheKeyResolver.DEFAULT,
         CacheHeaders.NONE,

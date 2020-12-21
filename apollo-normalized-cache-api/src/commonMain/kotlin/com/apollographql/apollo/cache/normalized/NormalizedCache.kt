@@ -55,13 +55,13 @@ abstract class NormalizedCache {
    * @param cacheHeaders The [CacheHeaders] associated with the request which generated this record.
    * @return A set of record field keys that have changed. This set is returned by [Record.mergeWith].
    */
-  open fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String?> {
+  open fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
     if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
       return emptySet<String>()
     }
     val nextCacheChangedKeys = nextCache?.merge(record, cacheHeaders).orEmpty()
     val currentCacheChangedKeys = performMerge(record, loadRecord(record.key, cacheHeaders), cacheHeaders)
-    val changedKeys: MutableSet<String?> = HashSet()
+    val changedKeys: MutableSet<String> = HashSet()
     changedKeys.addAll(nextCacheChangedKeys)
     changedKeys.addAll(currentCacheChangedKeys)
     return changedKeys
@@ -71,18 +71,18 @@ abstract class NormalizedCache {
    * Calls through to [NormalizedCache.merge]. Implementations should override this method
    * if the underlying storage technology can offer an optimized manner to store multiple records.
    *
-   * @param recordSet    The set of Records to merge.
+   * @param recordCollection The collection of Records to merge.
    * @param cacheHeaders The [CacheHeaders] associated with the request which generated this record.
    * @return A set of record field keys that have changed. This set is returned by [Record.mergeWith].
    */
-  open fun merge(recordSet: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
+  open fun merge(recordCollection: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
     if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
       return emptySet()
     }
-    val nextCacheChangedKeys = nextCache?.merge(recordSet, cacheHeaders).orEmpty()
+    val nextCacheChangedKeys = nextCache?.merge(recordCollection, cacheHeaders).orEmpty()
     val currentCacheChangedKeys: MutableSet<String> = HashSet()
-    val oldRecords = loadRecords(recordSet.map { it.key }, cacheHeaders).associateBy { it.key }
-    for (record in recordSet) {
+    val oldRecords = loadRecords(recordCollection.map { it.key }, cacheHeaders).associateBy { it.key }
+    for (record in recordCollection) {
       val oldRecord = oldRecords[record.key]
       currentCacheChangedKeys.addAll(performMerge(record, oldRecord, cacheHeaders))
     }
