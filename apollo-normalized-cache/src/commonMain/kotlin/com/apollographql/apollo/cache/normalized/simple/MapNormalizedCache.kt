@@ -5,7 +5,12 @@ import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.Record
 
-class SimpleNormalizedCache : NormalizedCache() {
+/**
+ * A simple normalized cache backed by a [MutableMap].
+ *
+ * A [MapNormalizedCache] keeps its entry in memory forever and can only grow. Do not use it to store big amounts of data.
+ */
+class MapNormalizedCache : NormalizedCache() {
   private val map = mutableMapOf<String, Record>()
 
   override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? {
