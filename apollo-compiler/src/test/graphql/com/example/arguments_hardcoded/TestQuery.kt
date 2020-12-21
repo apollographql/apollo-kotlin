@@ -129,23 +129,34 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
    * Data from the response after executing this GraphQL operation
    */
   data class Data(
-    val reviews: List<Review?>?
+    val reviews: List<Review?>?,
+    val testNullableArguments: Int
   ) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
       writer.writeList(RESPONSE_FIELDS[0], this@Data.reviews) { value, listItemWriter ->
         value?.forEach { value ->
           listItemWriter.writeObject(value?.marshaller())}
       }
+      writer.writeInt(RESPONSE_FIELDS[1], this@Data.testNullableArguments)
     }
 
     fun reviewsFilterNotNull(): List<Review>? = reviews?.filterNotNull()
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forList("reviews", "reviews", mapOf<String, Any>(
+          ResponseField.forList("reviews", "reviews", mapOf<String, Any?>(
             "episode" to "JEDI",
             "starsInt" to "10",
-            "starsFloat" to "9.9"), true, null)
+            "starsFloat" to "9.9"), true, null),
+          ResponseField.forInt("testNullableArguments", "testNullableArguments", mapOf<String,
+              Any?>(
+            "int" to null,
+            "string" to null,
+            "float" to null,
+            "review" to null,
+            "episode" to null,
+            "boolean" to null,
+            "list" to null), false, null)
           )
 
       operator fun invoke(reader: ResponseReader): Data = reader.run {
@@ -154,8 +165,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
             Review(reader)
           }
         }
+        val testNullableArguments = readInt(RESPONSE_FIELDS[1])!!
         Data(
-          reviews = reviews
+          reviews = reviews,
+          testNullableArguments = testNullableArguments
         )
       }
 
@@ -166,7 +179,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "2dd4a7ef066f8606c7b9bb628452d3fc7ff17956e42a2a5f62191b9121cb2705"
+        "c079dafcee21e2ecf99031bb06e515f069e661513cedaea29191c98b566125d6"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -176,6 +189,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           |    stars
           |    commentary
           |  }
+          |  testNullableArguments(int: null, string: null, float: null, review: null, episode: null, boolean: null, list: null)
           |}
           """.trimMargin()
         )

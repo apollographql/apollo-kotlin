@@ -212,16 +212,16 @@ data class GetHero(
           ResponseField.forString("name", "name", null, true, listOf(
             ResponseField.Condition.booleanCondition("myBool", false)
           )),
-          ResponseField.forObject("friendsConnection", "friendsConnection", mapOf<String, Any>(
-            "first" to mapOf<String, Any>(
+          ResponseField.forObject("friendsConnection", "friendsConnection", mapOf<String, Any?>(
+            "first" to mapOf<String, Any?>(
               "kind" to "Variable",
               "variableName" to "first")), false, null),
-          ResponseField.forDouble("height", "height", mapOf<String, Any>(
-            "unit" to mapOf<String, Any>(
+          ResponseField.forDouble("height", "height", mapOf<String, Any?>(
+            "unit" to mapOf<String, Any?>(
               "kind" to "Variable",
               "variableName" to "unit")), true, null),
-          ResponseField.forDouble("heightInMeters", "height", mapOf<String, Any>(
-            "unit" to mapOf<String, Any>(
+          ResponseField.forDouble("heightInMeters", "height", mapOf<String, Any?>(
+            "unit" to mapOf<String, Any?>(
               "kind" to "Variable",
               "variableName" to "optionalUnit")), true, null)
           )
@@ -311,8 +311,8 @@ data class GetHero(
           ResponseField.forString("name", "name", null, true, listOf(
             ResponseField.Condition.booleanCondition("myBool", false)
           )),
-          ResponseField.forObject("friendsConnection", "friendsConnection", mapOf<String, Any>(
-            "first" to mapOf<String, Any>(
+          ResponseField.forObject("friendsConnection", "friendsConnection", mapOf<String, Any?>(
+            "first" to mapOf<String, Any?>(
               "kind" to "Variable",
               "variableName" to "first")), false, null),
           ResponseField.forFragment("__typename", "__typename", listOf(
@@ -392,8 +392,8 @@ data class GetHero(
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forObject("hero", "hero", null, true, null),
-          ResponseField.forObject("heroWithReview", "heroWithReview", mapOf<String, Any>(
-            "listOfInts" to mapOf<String, Any>(
+          ResponseField.forObject("heroWithReview", "heroWithReview", mapOf<String, Any?>(
+            "listOfInts" to mapOf<String, Any?>(
               "kind" to "Variable",
               "variableName" to "listOfInts")), true, null)
           )

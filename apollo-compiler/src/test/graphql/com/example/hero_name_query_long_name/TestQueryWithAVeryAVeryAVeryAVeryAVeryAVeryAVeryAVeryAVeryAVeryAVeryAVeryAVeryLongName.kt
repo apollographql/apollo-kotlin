@@ -164,8 +164,8 @@ data class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryA
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forObject("heroAVeryAVeryAVeryAVeryAVeryAVeryAV", "hero", mapOf<String,
-              Any>(
-            "episode" to mapOf<String, Any>(
+              Any?>(
+            "episode" to mapOf<String, Any?>(
               "kind" to "Variable",
               "variableName" to
               "episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")),

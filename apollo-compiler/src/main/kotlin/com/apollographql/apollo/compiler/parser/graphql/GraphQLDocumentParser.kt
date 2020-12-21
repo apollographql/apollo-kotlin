@@ -555,6 +555,9 @@ class GraphQLDocumentParser(
   }
 
   private fun GraphQLParser.ValueContext.parse(schemaTypeRef: IntrospectionSchema.TypeRef): Any? {
+    if (schemaTypeRef.kind != IntrospectionSchema.Kind.NON_NULL && text.toLowerCase() == "null") {
+      return null
+    }
     return when (schemaTypeRef.kind) {
       IntrospectionSchema.Kind.ENUM -> text.toString().trim()
       IntrospectionSchema.Kind.INTERFACE, IntrospectionSchema.Kind.OBJECT, IntrospectionSchema.Kind.INPUT_OBJECT, IntrospectionSchema.Kind.UNION -> {
