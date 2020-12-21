@@ -6,11 +6,6 @@ import com.apollographql.apollo.compiler.frontend.toIntrospectionSchema
 import com.apollographql.apollo.compiler.frontend.toSchema
 import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.introspection.IntrospectionSchema.Companion.wrap
-import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
-import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema.Companion.wrap
-import com.apollographql.apollo.compiler.parser.introspection.toSDL
-import com.apollographql.apollo.compiler.parser.sdl.GraphSdlSchema
-import com.apollographql.apollo.compiler.parser.sdl.toIntrospectionSchema
 import com.apollographql.apollo.compiler.toJson
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
