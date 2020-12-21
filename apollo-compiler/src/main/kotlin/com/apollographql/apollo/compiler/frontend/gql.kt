@@ -221,7 +221,7 @@ data class GQLObjectTypeDefinition(
         directives.join(bufferedSink)
       }
       if (fields.isNotEmpty()) {
-        fields.join(bufferedSink, prefix = "{\n", separator = "\n", postfix = "\n}\n")
+        fields.join(bufferedSink, prefix = " {\n", separator = "\n", postfix = "\n}\n")
       }
     }
   }
