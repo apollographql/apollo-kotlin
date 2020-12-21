@@ -137,24 +137,19 @@ package com.apollographql.apollo.api {
 
   public final class Error {
     ctor public Error(String message, java.util.List<com.apollographql.apollo.api.Error.Location> locations, java.util.Map<java.lang.String,?> customAttributes);
-    method @Deprecated public java.util.Map<java.lang.String,java.lang.Object> customAttributes();
     method public boolean equals(Object? other);
     method public java.util.Map<java.lang.String,java.lang.Object> getCustomAttributes();
     method public java.util.List<com.apollographql.apollo.api.Error.Location> getLocations();
     method public String getMessage();
     method public int hashCode();
-    method @Deprecated public java.util.List<com.apollographql.apollo.api.Error.Location> locations();
-    method @Deprecated public String? message();
   }
 
   public static final class Error.Location {
     ctor public Error.Location(long line, long column);
-    method @Deprecated public long column();
     method public boolean equals(Object? other);
     method public long getColumn();
     method public long getLine();
     method public int hashCode();
-    method @Deprecated public long line();
   }
 
   @com.apollographql.apollo.api.ApolloExperimental public interface ExecutionContext {
@@ -225,23 +220,22 @@ package com.apollographql.apollo.api {
   public final class KotlinExtensions {
   }
 
-  public interface Mutation<D extends com.apollographql.apollo.api.Operation.Data, T, V extends com.apollographql.apollo.api.Operation.Variables> extends com.apollographql.apollo.api.Operation<D,T,V> {
+  public interface Mutation<D extends com.apollographql.apollo.api.Operation.Data, V extends com.apollographql.apollo.api.Operation.Variables> extends com.apollographql.apollo.api.Operation<D,V> {
   }
 
-  public interface Operation<D extends com.apollographql.apollo.api.Operation.Data, T, V extends com.apollographql.apollo.api.Operation.Variables> {
+  public interface Operation<D extends com.apollographql.apollo.api.Operation.Data, V extends com.apollographql.apollo.api.Operation.Variables> {
     method public okio.ByteString composeRequestBody(boolean autoPersistQueries, boolean withQueryDocument, com.apollographql.apollo.api.ScalarTypeAdapters scalarTypeAdapters);
     method public okio.ByteString composeRequestBody(com.apollographql.apollo.api.ScalarTypeAdapters scalarTypeAdapters);
     method public okio.ByteString composeRequestBody();
     method public com.apollographql.apollo.api.OperationName name();
     method public String operationId();
-    method public com.apollographql.apollo.api.Response<T> parse(okio.BufferedSource source, com.apollographql.apollo.api.ScalarTypeAdapters scalarTypeAdapters);
-    method public com.apollographql.apollo.api.Response<T> parse(okio.ByteString byteString, com.apollographql.apollo.api.ScalarTypeAdapters scalarTypeAdapters);
-    method public com.apollographql.apollo.api.Response<T> parse(okio.BufferedSource source);
-    method public com.apollographql.apollo.api.Response<T> parse(okio.ByteString byteString);
+    method public com.apollographql.apollo.api.Response<D> parse(okio.BufferedSource source, com.apollographql.apollo.api.ScalarTypeAdapters scalarTypeAdapters);
+    method public com.apollographql.apollo.api.Response<D> parse(okio.ByteString byteString, com.apollographql.apollo.api.ScalarTypeAdapters scalarTypeAdapters);
+    method public com.apollographql.apollo.api.Response<D> parse(okio.BufferedSource source);
+    method public com.apollographql.apollo.api.Response<D> parse(okio.ByteString byteString);
     method public String queryDocument();
     method public com.apollographql.apollo.api.internal.ResponseFieldMapper<D> responseFieldMapper();
     method public V variables();
-    method public T? wrapData(D? data);
     field public static final com.apollographql.apollo.api.Operation.Companion Companion;
     field public static final com.apollographql.apollo.api.Operation.Variables EMPTY_VARIABLES;
   }
@@ -271,71 +265,58 @@ package com.apollographql.apollo.api {
     method public String name();
   }
 
-  public interface Query<D extends com.apollographql.apollo.api.Operation.Data, T, V extends com.apollographql.apollo.api.Operation.Variables> extends com.apollographql.apollo.api.Operation<D,T,V> {
+  public interface Query<D extends com.apollographql.apollo.api.Operation.Data, V extends com.apollographql.apollo.api.Operation.Variables> extends com.apollographql.apollo.api.Operation<D,V> {
   }
 
-  public final class Response<T> {
-    ctor public Response(com.apollographql.apollo.api.Operation<?,?,?> operation, T? data, java.util.List<com.apollographql.apollo.api.Error>? errors, java.util.Set<java.lang.String> dependentKeys, boolean isFromCache, java.util.Map<java.lang.String,?> extensions, com.apollographql.apollo.api.ExecutionContext executionContext);
-    ctor public Response(com.apollographql.apollo.api.Response.Builder<T> builder);
-    method public static <T> com.apollographql.apollo.api.Response.Builder<T> builder(com.apollographql.apollo.api.Operation<?,?,?> operation);
-    method public com.apollographql.apollo.api.Operation<?,?,?> component1();
-    method public T? component2();
+  public final class Response<D extends com.apollographql.apollo.api.Operation.Data> {
+    ctor public Response(com.apollographql.apollo.api.Operation<?,?> operation, D? data, java.util.List<com.apollographql.apollo.api.Error>? errors, java.util.Set<java.lang.String> dependentKeys, boolean isFromCache, java.util.Map<java.lang.String,?> extensions, com.apollographql.apollo.api.ExecutionContext executionContext);
+    ctor public Response(com.apollographql.apollo.api.Response.Builder<D> builder);
+    method public static <D extends com.apollographql.apollo.api.Operation.Data> com.apollographql.apollo.api.Response.Builder<D> builder(com.apollographql.apollo.api.Operation<?,?> operation);
+    method public com.apollographql.apollo.api.Operation<?,?> component1();
+    method public D? component2();
     method public java.util.List<com.apollographql.apollo.api.Error>? component3();
     method public java.util.Set<java.lang.String> component4();
     method public boolean component5();
     method public java.util.Map<java.lang.String,java.lang.Object> component6();
     method public com.apollographql.apollo.api.ExecutionContext component7();
-    method public com.apollographql.apollo.api.Response<T> copy(com.apollographql.apollo.api.Operation<?,?,?> operation, T? data, java.util.List<com.apollographql.apollo.api.Error>? errors, java.util.Set<java.lang.String> dependentKeys, boolean isFromCache, java.util.Map<java.lang.String,?> extensions, com.apollographql.apollo.api.ExecutionContext executionContext);
-    method @Deprecated public T? data();
-    method @Deprecated public java.util.Set<java.lang.String> dependentKeys();
+    method public com.apollographql.apollo.api.Response<D> copy(com.apollographql.apollo.api.Operation<?,?> operation, D? data, java.util.List<com.apollographql.apollo.api.Error>? errors, java.util.Set<java.lang.String> dependentKeys, boolean isFromCache, java.util.Map<java.lang.String,?> extensions, com.apollographql.apollo.api.ExecutionContext executionContext);
     method public boolean equals(Object? other);
-    method @Deprecated public java.util.List<com.apollographql.apollo.api.Error>? errors();
-    method @Deprecated public java.util.Map<java.lang.String,java.lang.Object> extensions();
-    method @Deprecated public boolean fromCache();
-    method public T? getData();
+    method public D? getData();
     method public java.util.Set<java.lang.String> getDependentKeys();
     method public java.util.List<com.apollographql.apollo.api.Error>? getErrors();
     method public com.apollographql.apollo.api.ExecutionContext getExecutionContext();
     method public java.util.Map<java.lang.String,java.lang.Object> getExtensions();
-    method @Deprecated public boolean getFromCache();
-    method public com.apollographql.apollo.api.Operation<?,?,?> getOperation();
+    method public com.apollographql.apollo.api.Operation<?,?> getOperation();
     method public boolean hasErrors();
     method public int hashCode();
     method public boolean isFromCache();
-    method @Deprecated public com.apollographql.apollo.api.Operation<?,?,?> operation();
-    method public com.apollographql.apollo.api.Response.Builder<T> toBuilder();
+    method public com.apollographql.apollo.api.Response.Builder<D> toBuilder();
     method public String toString();
-    property @Deprecated public final boolean fromCache;
     field public static final com.apollographql.apollo.api.Response.Companion Companion;
   }
 
-  public static final class Response.Builder<T> {
-    method public com.apollographql.apollo.api.Response<T> build();
-    method public com.apollographql.apollo.api.Response.Builder<T> data(T? data);
-    method public com.apollographql.apollo.api.Response.Builder<T> dependentKeys(java.util.Set<java.lang.String>? dependentKeys);
-    method public com.apollographql.apollo.api.Response.Builder<T> errors(java.util.List<com.apollographql.apollo.api.Error>? errors);
-    method public com.apollographql.apollo.api.Response.Builder<T> executionContext(com.apollographql.apollo.api.ExecutionContext executionContext);
-    method public com.apollographql.apollo.api.Response.Builder<T> extensions(java.util.Map<java.lang.String,?>? extensions);
-    method public com.apollographql.apollo.api.Response.Builder<T> fromCache(boolean fromCache);
+  public static final class Response.Builder<D extends com.apollographql.apollo.api.Operation.Data> {
+    method public com.apollographql.apollo.api.Response<D> build();
+    method public com.apollographql.apollo.api.Response.Builder<D> data(D? data);
+    method public com.apollographql.apollo.api.Response.Builder<D> dependentKeys(java.util.Set<java.lang.String>? dependentKeys);
+    method public com.apollographql.apollo.api.Response.Builder<D> errors(java.util.List<com.apollographql.apollo.api.Error>? errors);
+    method public com.apollographql.apollo.api.Response.Builder<D> executionContext(com.apollographql.apollo.api.ExecutionContext executionContext);
+    method public com.apollographql.apollo.api.Response.Builder<D> extensions(java.util.Map<java.lang.String,?>? extensions);
+    method public com.apollographql.apollo.api.Response.Builder<D> fromCache(boolean fromCache);
   }
 
   public static final class Response.Companion {
-    method public <T> com.apollographql.apollo.api.Response.Builder<T> builder(com.apollographql.apollo.api.Operation<?,?,?> operation);
+    method public <D extends com.apollographql.apollo.api.Operation.Data> com.apollographql.apollo.api.Response.Builder<D> builder(com.apollographql.apollo.api.Operation<?,?> operation);
   }
 
   public class ResponseField {
-    method @Deprecated public final java.util.Map<java.lang.String,java.lang.Object> arguments();
-    method @Deprecated public final java.util.List<com.apollographql.apollo.api.ResponseField.Condition> conditions();
     method public boolean equals(Object? other);
-    method @Deprecated public final String fieldName();
     method public static final com.apollographql.apollo.api.ResponseField forBoolean(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
     method public static final com.apollographql.apollo.api.ResponseField.CustomTypeField forCustomType(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, com.apollographql.apollo.api.ScalarType scalarType, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
     method public static final com.apollographql.apollo.api.ResponseField forDouble(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
     method public static final com.apollographql.apollo.api.ResponseField forEnum(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
-    method public static final com.apollographql.apollo.api.ResponseField forFragment(String responseName, String fieldName, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
     method public static final com.apollographql.apollo.api.ResponseField forInt(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
     method public static final com.apollographql.apollo.api.ResponseField forList(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
-    method public static final com.apollographql.apollo.api.ResponseField forLong(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
     method public static final com.apollographql.apollo.api.ResponseField forObject(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
     method public static final com.apollographql.apollo.api.ResponseField forString(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
     method public final java.util.Map<java.lang.String,java.lang.Object> getArguments();
@@ -346,23 +327,20 @@ package com.apollographql.apollo.api {
     method public final com.apollographql.apollo.api.ResponseField.Type getType();
     method public int hashCode();
     method public static final boolean isArgumentValueVariableType(java.util.Map<java.lang.String,?> objectMap);
-    method @Deprecated public final boolean optional();
     method public final Object? resolveArgument(String name, com.apollographql.apollo.api.Operation.Variables variables);
-    method @Deprecated public final String responseName();
-    method @Deprecated public final com.apollographql.apollo.api.ResponseField.Type type();
     field public static final com.apollographql.apollo.api.ResponseField.Companion Companion;
     field public static final String VARIABLE_NAME_KEY = "variableName";
   }
 
   public static final class ResponseField.BooleanCondition extends com.apollographql.apollo.api.ResponseField.Condition {
-    method public boolean equals(Object? other);
-    method @Deprecated public boolean getInverted();
+    method public String component1();
+    method public boolean component2();
+    method public com.apollographql.apollo.api.ResponseField.BooleanCondition copy(String variableName, boolean isInverted);
+    method public boolean equals(Object? p);
     method public String getVariableName();
     method public int hashCode();
-    method @Deprecated public boolean inverted();
     method public boolean isInverted();
-    method @Deprecated public String variableName();
-    property @Deprecated public final boolean inverted;
+    method public String toString();
   }
 
   public static final class ResponseField.Companion {
@@ -370,10 +348,8 @@ package com.apollographql.apollo.api {
     method public com.apollographql.apollo.api.ResponseField.CustomTypeField forCustomType(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, com.apollographql.apollo.api.ScalarType scalarType, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
     method public com.apollographql.apollo.api.ResponseField forDouble(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
     method public com.apollographql.apollo.api.ResponseField forEnum(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
-    method public com.apollographql.apollo.api.ResponseField forFragment(String responseName, String fieldName, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
     method public com.apollographql.apollo.api.ResponseField forInt(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
     method public com.apollographql.apollo.api.ResponseField forList(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
-    method public com.apollographql.apollo.api.ResponseField forLong(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
     method public com.apollographql.apollo.api.ResponseField forObject(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
     method public com.apollographql.apollo.api.ResponseField forString(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
     method public boolean isArgumentValueVariableType(java.util.Map<java.lang.String,?> objectMap);
@@ -381,18 +357,15 @@ package com.apollographql.apollo.api {
 
   public static class ResponseField.Condition {
     method public static final com.apollographql.apollo.api.ResponseField.BooleanCondition booleanCondition(String variableName, boolean inverted);
-    method public static final com.apollographql.apollo.api.ResponseField.TypeNameCondition typeCondition(String![] types);
     field public static final com.apollographql.apollo.api.ResponseField.Condition.Companion Companion;
   }
 
   public static final class ResponseField.Condition.Companion {
     method public com.apollographql.apollo.api.ResponseField.BooleanCondition booleanCondition(String variableName, boolean inverted);
-    method public com.apollographql.apollo.api.ResponseField.TypeNameCondition typeCondition(String![] types);
   }
 
   public static final class ResponseField.CustomTypeField extends com.apollographql.apollo.api.ResponseField {
     method public com.apollographql.apollo.api.ScalarType getScalarType();
-    method @Deprecated public com.apollographql.apollo.api.ScalarType scalarType();
   }
 
   public enum ResponseField.Type {
@@ -402,20 +375,10 @@ package com.apollographql.apollo.api {
     enum_constant public static final com.apollographql.apollo.api.ResponseField.Type CUSTOM;
     enum_constant public static final com.apollographql.apollo.api.ResponseField.Type DOUBLE;
     enum_constant public static final com.apollographql.apollo.api.ResponseField.Type ENUM;
-    enum_constant public static final com.apollographql.apollo.api.ResponseField.Type FRAGMENT;
-    enum_constant public static final com.apollographql.apollo.api.ResponseField.Type FRAGMENTS;
     enum_constant public static final com.apollographql.apollo.api.ResponseField.Type INT;
     enum_constant public static final com.apollographql.apollo.api.ResponseField.Type LIST;
-    enum_constant public static final com.apollographql.apollo.api.ResponseField.Type LONG;
     enum_constant public static final com.apollographql.apollo.api.ResponseField.Type OBJECT;
     enum_constant public static final com.apollographql.apollo.api.ResponseField.Type STRING;
-  }
-
-  public static final class ResponseField.TypeNameCondition extends com.apollographql.apollo.api.ResponseField.Condition {
-    method public boolean equals(Object? other);
-    method public java.util.List<java.lang.String> getTypeNames();
-    method public int hashCode();
-    method @Deprecated public java.util.List<java.lang.String> typeNames();
   }
 
   public interface ScalarType {
@@ -434,7 +397,7 @@ package com.apollographql.apollo.api {
   public static final class ScalarTypeAdapters.Companion {
   }
 
-  public interface Subscription<D extends com.apollographql.apollo.api.Operation.Data, T, V extends com.apollographql.apollo.api.Operation.Variables> extends com.apollographql.apollo.api.Operation<D,T,V> {
+  public interface Subscription<D extends com.apollographql.apollo.api.Operation.Data, V extends com.apollographql.apollo.api.Operation.Variables> extends com.apollographql.apollo.api.Operation<D,V> {
   }
 
 }

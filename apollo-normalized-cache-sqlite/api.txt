@@ -1,18 +1,6 @@
 // Signature format: 3.0
 package com.apollographql.apollo.cache.normalized.sql {
 
-  @Deprecated public final class ApolloSqlHelper {
-    ctor @Deprecated public ApolloSqlHelper(android.content.Context context, String? name);
-    method @Deprecated public static com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper create(android.content.Context context, String? name = "apollo.db");
-    method @Deprecated public static com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper create(android.content.Context context);
-    field @Deprecated public static final com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper.Companion Companion;
-  }
-
-  @Deprecated public static final class ApolloSqlHelper.Companion {
-    method @Deprecated public com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper create(android.content.Context context, String? name = "apollo.db");
-    method @Deprecated public com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper create(android.content.Context context);
-  }
-
   public final class SqlNormalizedCache extends com.apollographql.apollo.cache.normalized.NormalizedCache {
     method public void clearAll();
     method public void createRecord(String key, String fields);
@@ -46,7 +34,6 @@ package com.apollographql.apollo.cache.normalized.sql {
     ctor public SqlNormalizedCacheFactory(android.content.Context context, String? name, androidx.sqlite.db.SupportSQLiteOpenHelper.Factory factory);
     ctor public SqlNormalizedCacheFactory(android.content.Context context, String? name);
     ctor public SqlNormalizedCacheFactory(android.content.Context context);
-    ctor public SqlNormalizedCacheFactory(com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper apolloSqlHelper);
     method public com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCache create(com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter recordFieldAdapter);
   }
 

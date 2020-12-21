@@ -8,8 +8,8 @@ package com.apollographql.apollo.cache.normalized {
     method public com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer<java.util.Map<java.lang.String,java.lang.Object>> networkResponseNormalizer();
     method public com.apollographql.apollo.cache.normalized.NormalizedCache normalizedCache();
     method public void publish(java.util.Set<java.lang.String> keys);
-    method public <D extends com.apollographql.apollo.api.Operation.Data, T, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.cache.normalized.ApolloStoreOperation<T> read(com.apollographql.apollo.api.Operation<D,T,V> operation);
-    method public <D extends com.apollographql.apollo.api.Operation.Data, T, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.cache.normalized.ApolloStoreOperation<com.apollographql.apollo.api.Response<T>> read(com.apollographql.apollo.api.Operation<D,T,V> operation, com.apollographql.apollo.api.internal.ResponseFieldMapper<D> responseFieldMapper, com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer<com.apollographql.apollo.cache.normalized.Record> responseNormalizer, com.apollographql.apollo.cache.CacheHeaders cacheHeaders);
+    method public <D extends com.apollographql.apollo.api.Operation.Data, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.cache.normalized.ApolloStoreOperation<D> read(com.apollographql.apollo.api.Operation<D,V> operation);
+    method public <D extends com.apollographql.apollo.api.Operation.Data, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.cache.normalized.ApolloStoreOperation<com.apollographql.apollo.api.Response<D>> read(com.apollographql.apollo.api.Operation<D,V> operation, com.apollographql.apollo.api.internal.ResponseFieldMapper<D> responseFieldMapper, com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer<com.apollographql.apollo.cache.normalized.Record> responseNormalizer, com.apollographql.apollo.cache.CacheHeaders cacheHeaders);
     method public <F extends com.apollographql.apollo.api.GraphqlFragment> com.apollographql.apollo.cache.normalized.ApolloStoreOperation<F> read(com.apollographql.apollo.api.internal.ResponseFieldMapper<F> fieldMapper, com.apollographql.apollo.cache.normalized.CacheKey cacheKey, com.apollographql.apollo.api.Operation.Variables variables);
     method public <R> R! readTransaction(com.apollographql.apollo.cache.normalized.internal.Transaction<com.apollographql.apollo.cache.normalized.internal.ReadableStore,R> transaction);
     method public com.apollographql.apollo.cache.normalized.ApolloStoreOperation<java.lang.Boolean> remove(com.apollographql.apollo.cache.normalized.CacheKey cacheKey);
@@ -19,12 +19,12 @@ package com.apollographql.apollo.cache.normalized {
     method public com.apollographql.apollo.cache.normalized.ApolloStoreOperation<java.lang.Boolean> rollbackOptimisticUpdatesAndPublish(error.NonExistentClass mutationId);
     method public void subscribe(com.apollographql.apollo.cache.normalized.ApolloStore.RecordChangeSubscriber subscriber);
     method public void unsubscribe(com.apollographql.apollo.cache.normalized.ApolloStore.RecordChangeSubscriber subscriber);
-    method public <D extends com.apollographql.apollo.api.Operation.Data, T, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.cache.normalized.ApolloStoreOperation<java.util.Set<java.lang.String>> write(com.apollographql.apollo.api.Operation<D,T,V> operation, D operationData);
+    method public <D extends com.apollographql.apollo.api.Operation.Data, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.cache.normalized.ApolloStoreOperation<java.util.Set<java.lang.String>> write(com.apollographql.apollo.api.Operation<D,V> operation, D operationData);
     method public com.apollographql.apollo.cache.normalized.ApolloStoreOperation<java.util.Set<java.lang.String>> write(com.apollographql.apollo.api.GraphqlFragment fragment, com.apollographql.apollo.cache.normalized.CacheKey cacheKey, com.apollographql.apollo.api.Operation.Variables variables);
-    method public <D extends com.apollographql.apollo.api.Operation.Data, T, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.cache.normalized.ApolloStoreOperation<java.lang.Boolean> writeAndPublish(com.apollographql.apollo.api.Operation<D,T,V> operation, D operationData);
+    method public <D extends com.apollographql.apollo.api.Operation.Data, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.cache.normalized.ApolloStoreOperation<java.lang.Boolean> writeAndPublish(com.apollographql.apollo.api.Operation<D,V> operation, D operationData);
     method public com.apollographql.apollo.cache.normalized.ApolloStoreOperation<java.lang.Boolean> writeAndPublish(com.apollographql.apollo.api.GraphqlFragment fragment, com.apollographql.apollo.cache.normalized.CacheKey cacheKey, com.apollographql.apollo.api.Operation.Variables variables);
-    method public <D extends com.apollographql.apollo.api.Operation.Data, T, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.cache.normalized.ApolloStoreOperation<java.util.Set<java.lang.String>> writeOptimisticUpdates(com.apollographql.apollo.api.Operation<D,T,V> operation, D operationData, error.NonExistentClass mutationId);
-    method public <D extends com.apollographql.apollo.api.Operation.Data, T, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.cache.normalized.ApolloStoreOperation<java.lang.Boolean> writeOptimisticUpdatesAndPublish(com.apollographql.apollo.api.Operation<D,T,V> operation, D operationData, error.NonExistentClass mutationId);
+    method public <D extends com.apollographql.apollo.api.Operation.Data, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.cache.normalized.ApolloStoreOperation<java.util.Set<java.lang.String>> writeOptimisticUpdates(com.apollographql.apollo.api.Operation<D,V> operation, D operationData, error.NonExistentClass mutationId);
+    method public <D extends com.apollographql.apollo.api.Operation.Data, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.cache.normalized.ApolloStoreOperation<java.lang.Boolean> writeOptimisticUpdatesAndPublish(com.apollographql.apollo.api.Operation<D,V> operation, D operationData, error.NonExistentClass mutationId);
     method public <R> R! writeTransaction(com.apollographql.apollo.cache.normalized.internal.Transaction<com.apollographql.apollo.cache.normalized.internal.WriteableStore,R> transaction);
     field public static final com.apollographql.apollo.cache.normalized.ApolloStore.Companion Companion;
     field public static final com.apollographql.apollo.cache.normalized.ApolloStore NO_APOLLO_STORE;
@@ -76,18 +76,12 @@ package com.apollographql.apollo.cache.normalized.lru {
 
   public final class EvictionPolicy {
     method public static com.apollographql.apollo.cache.normalized.lru.EvictionPolicy.Builder builder();
-    method @Deprecated public com.apollographql.apollo.api.internal.Optional<java.lang.Long> expireAfterAccess();
-    method @Deprecated public com.apollographql.apollo.api.internal.Optional<error.NonExistentClass> expireAfterAccessTimeUnit();
-    method @Deprecated public com.apollographql.apollo.api.internal.Optional<java.lang.Long> expireAfterWrite();
-    method @Deprecated public com.apollographql.apollo.api.internal.Optional<error.NonExistentClass> expireAfterWriteTimeUnit();
     method public Long? getExpireAfterAccess();
     method public error.NonExistentClass? getExpireAfterAccessTimeUnit();
     method public Long? getExpireAfterWrite();
     method public error.NonExistentClass? getExpireAfterWriteTimeUnit();
     method public Long? getMaxEntries();
     method public Long? getMaxSizeBytes();
-    method @Deprecated public com.apollographql.apollo.api.internal.Optional<java.lang.Long> maxEntries();
-    method @Deprecated public com.apollographql.apollo.api.internal.Optional<java.lang.Long> maxSizeBytes();
     field public static final com.apollographql.apollo.cache.normalized.lru.EvictionPolicy.Companion Companion;
     field public static final com.apollographql.apollo.cache.normalized.lru.EvictionPolicy NO_EVICTION;
   }

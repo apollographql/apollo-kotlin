@@ -1,28 +1,28 @@
 // Signature format: 3.0
 package com.apollographql.apollo {
 
-  public interface ApolloCall<T> {
-    method public com.apollographql.apollo.ApolloCall<T!> cacheHeaders(com.apollographql.apollo.cache.CacheHeaders);
+  public interface ApolloCall<D extends com.apollographql.apollo.api.Operation.Data> {
+    method public com.apollographql.apollo.ApolloCall<D!> cacheHeaders(com.apollographql.apollo.cache.CacheHeaders);
     method public void cancel();
-    method public com.apollographql.apollo.ApolloCall<T!> clone();
-    method public void enqueue(com.apollographql.apollo.ApolloCall.Callback<T!>?);
-    method public com.apollographql.apollo.api.Operation operation();
-    method public com.apollographql.apollo.ApolloCall.Builder<T!> toBuilder();
+    method public com.apollographql.apollo.ApolloCall<D!> clone();
+    method public void enqueue(com.apollographql.apollo.ApolloCall.Callback<D!>?);
+    method public com.apollographql.apollo.api.Operation<D!,?> operation();
+    method public com.apollographql.apollo.ApolloCall.Builder<D!> toBuilder();
   }
 
-  public static interface ApolloCall.Builder<T> {
-    method public com.apollographql.apollo.ApolloCall<T!> build();
-    method public com.apollographql.apollo.ApolloCall.Builder<T!> cacheHeaders(com.apollographql.apollo.cache.CacheHeaders);
+  public static interface ApolloCall.Builder<D extends com.apollographql.apollo.api.Operation.Data> {
+    method public com.apollographql.apollo.ApolloCall<D!> build();
+    method public com.apollographql.apollo.ApolloCall.Builder<D!> cacheHeaders(com.apollographql.apollo.cache.CacheHeaders);
   }
 
-  public abstract static class ApolloCall.Callback<T> {
+  public abstract static class ApolloCall.Callback<D extends com.apollographql.apollo.api.Operation.Data> {
     ctor public ApolloCall.Callback();
     method public void onCanceledError(com.apollographql.apollo.exception.ApolloCanceledException);
     method public abstract void onFailure(com.apollographql.apollo.exception.ApolloException);
     method public void onHttpError(com.apollographql.apollo.exception.ApolloHttpException);
     method public void onNetworkError(com.apollographql.apollo.exception.ApolloNetworkException);
     method public void onParseError(com.apollographql.apollo.exception.ApolloParseException);
-    method public abstract void onResponse(com.apollographql.apollo.api.Response<T!>);
+    method public abstract void onResponse(com.apollographql.apollo.api.Response<D!>);
     method public void onStatusEvent(com.apollographql.apollo.ApolloCall.StatusEvent);
   }
 
@@ -36,12 +36,10 @@ package com.apollographql.apollo {
   public final class ApolloClient implements com.apollographql.apollo.ApolloMutationCall.Factory com.apollographql.apollo.ApolloPrefetch.Factory com.apollographql.apollo.ApolloQueryCall.Factory com.apollographql.apollo.ApolloSubscriptionCall.Factory {
     method public int activeCallsCount();
     method public void addOnSubscriptionManagerStateChangeListener(com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeListener);
-    method @Deprecated public com.apollographql.apollo.cache.normalized.ApolloStore! apolloStore();
     method public static com.apollographql.apollo.ApolloClient.Builder! builder();
     method public void clearHttpCache();
     method public void clearNormalizedCache(com.apollographql.apollo.cache.normalized.ApolloStoreOperation.Callback<Boolean>);
     method public boolean clearNormalizedCache();
-    method @Deprecated public com.apollographql.apollo.cache.CacheHeaders! defaultCacheHeaders();
     method public void disableSubscriptions();
     method public void enableSubscriptions();
     method public com.apollographql.apollo.cache.normalized.ApolloStore! getApolloStore();
@@ -49,19 +47,19 @@ package com.apollographql.apollo {
     method public List<ApolloInterceptor> getApplicationInterceptors();
     method public com.apollographql.apollo.interceptor.ApolloInterceptorFactory! getAutoPersistedOperationsInterceptorFactory();
     method public com.apollographql.apollo.cache.CacheHeaders! getDefaultCacheHeaders();
-    method public HttpCache getHttpCache();
+    method public com.apollographql.apollo.api.cache.http.HttpCache! getHttpCache();
     method public com.apollographql.apollo.api.ScalarTypeAdapters! getScalarTypeAdapters();
     method public okhttp3.HttpUrl! getServerUrl();
     method public com.apollographql.apollo.internal.subscription.SubscriptionManager! getSubscriptionManager();
     method public com.apollographql.apollo.subscription.SubscriptionManagerState! getSubscriptionManagerState();
     method public void idleCallback(com.apollographql.apollo.IdleResourceCallback!);
-    method public <D extends com.apollographql.apollo.api.Operation.Data, T, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.ApolloMutationCall<T!>! mutate(com.apollographql.apollo.api.Mutation<D!,T!,V!>);
-    method public <D extends com.apollographql.apollo.api.Operation.Data, T, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.ApolloMutationCall<T!>! mutate(com.apollographql.apollo.api.Mutation<D!,T!,V!>, D);
+    method public <D extends com.apollographql.apollo.api.Operation.Data, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.ApolloMutationCall<D!>! mutate(com.apollographql.apollo.api.Mutation<D!,V!>);
+    method public <D extends com.apollographql.apollo.api.Operation.Data, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.ApolloMutationCall<D!>! mutate(com.apollographql.apollo.api.Mutation<D!,V!>, D);
     method public com.apollographql.apollo.ApolloClient.Builder! newBuilder();
-    method public <D extends com.apollographql.apollo.api.Operation.Data, T, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.ApolloPrefetch! prefetch(com.apollographql.apollo.api.Operation<D!,T!,V!>);
-    method public <D extends com.apollographql.apollo.api.Operation.Data, T, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.ApolloQueryCall<T!>! query(com.apollographql.apollo.api.Query<D!,T!,V!>);
+    method public <D extends com.apollographql.apollo.api.Operation.Data, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.ApolloPrefetch! prefetch(com.apollographql.apollo.api.Operation<D!,V!>);
+    method public <D extends com.apollographql.apollo.api.Operation.Data, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.ApolloQueryCall<D!>! query(com.apollographql.apollo.api.Query<D!,V!>);
     method public void removeOnSubscriptionManagerStateChangeListener(com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeListener);
-    method public <D extends com.apollographql.apollo.api.Operation.Data, T, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.ApolloSubscriptionCall<T!>! subscribe(com.apollographql.apollo.api.Subscription<D!,T!,V!>);
+    method public <D extends com.apollographql.apollo.api.Operation.Data, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.ApolloSubscriptionCall<D!>! subscribe(com.apollographql.apollo.api.Subscription<D!,V!>);
   }
 
   public static class ApolloClient.Builder {
@@ -71,12 +69,12 @@ package com.apollographql.apollo {
     method public com.apollographql.apollo.ApolloClient! build();
     method public com.apollographql.apollo.ApolloClient.Builder! callFactory(okhttp3.Call.Factory);
     method public com.apollographql.apollo.ApolloClient.Builder! defaultCacheHeaders(com.apollographql.apollo.cache.CacheHeaders);
-    method public com.apollographql.apollo.ApolloClient.Builder! defaultHttpCachePolicy(HttpCachePolicy.Policy);
+    method public com.apollographql.apollo.ApolloClient.Builder! defaultHttpCachePolicy(com.apollographql.apollo.api.cache.http.HttpCachePolicy.Policy);
     method public com.apollographql.apollo.ApolloClient.Builder! defaultResponseFetcher(com.apollographql.apollo.fetcher.ResponseFetcher);
     method public com.apollographql.apollo.ApolloClient.Builder! dispatcher(Executor);
     method public com.apollographql.apollo.ApolloClient.Builder! enableAutoPersistedQueries(boolean);
     method public com.apollographql.apollo.ApolloClient.Builder! enableAutoPersistedSubscriptions(boolean);
-    method public com.apollographql.apollo.ApolloClient.Builder! httpCache(HttpCache);
+    method public com.apollographql.apollo.ApolloClient.Builder! httpCache(com.apollographql.apollo.api.cache.http.HttpCache);
     method public com.apollographql.apollo.ApolloClient.Builder! logger(com.apollographql.apollo.Logger?);
     method public com.apollographql.apollo.ApolloClient.Builder! normalizedCache(com.apollographql.apollo.cache.normalized.NormalizedCacheFactory);
     method public com.apollographql.apollo.ApolloClient.Builder! normalizedCache(com.apollographql.apollo.cache.normalized.NormalizedCacheFactory, com.apollographql.apollo.cache.normalized.CacheKeyResolver);
@@ -100,26 +98,26 @@ package com.apollographql.apollo {
     method public okhttp3.Response intercept(okhttp3.Interceptor.Chain chain);
   }
 
-  public interface ApolloMutationCall<T> extends com.apollographql.apollo.ApolloCall<T> {
-    method public com.apollographql.apollo.ApolloMutationCall<T!> cacheHeaders(com.apollographql.apollo.cache.CacheHeaders);
-    method public com.apollographql.apollo.ApolloMutationCall<T!> clone();
-    method public com.apollographql.apollo.ApolloMutationCall<T!> refetchQueries(com.apollographql.apollo.api.OperationName!...);
-    method public com.apollographql.apollo.ApolloMutationCall<T!> refetchQueries(com.apollographql.apollo.api.Query!...);
-    method public com.apollographql.apollo.ApolloMutationCall<T!> requestHeaders(com.apollographql.apollo.request.RequestHeaders);
-    method public com.apollographql.apollo.ApolloMutationCall.Builder<T!> toBuilder();
+  public interface ApolloMutationCall<D extends com.apollographql.apollo.api.Operation.Data> extends com.apollographql.apollo.ApolloCall<D> {
+    method public com.apollographql.apollo.ApolloMutationCall<D!> cacheHeaders(com.apollographql.apollo.cache.CacheHeaders);
+    method public com.apollographql.apollo.ApolloMutationCall<D!> clone();
+    method public com.apollographql.apollo.ApolloMutationCall<D!> refetchQueries(com.apollographql.apollo.api.OperationName!...);
+    method public com.apollographql.apollo.ApolloMutationCall<D!> refetchQueries(com.apollographql.apollo.api.Query!...);
+    method public com.apollographql.apollo.ApolloMutationCall<D!> requestHeaders(com.apollographql.apollo.request.RequestHeaders);
+    method public com.apollographql.apollo.ApolloMutationCall.Builder<D!> toBuilder();
   }
 
-  public static interface ApolloMutationCall.Builder<T> extends com.apollographql.apollo.ApolloCall.Builder<T> {
-    method public com.apollographql.apollo.ApolloMutationCall<T!> build();
-    method public com.apollographql.apollo.ApolloMutationCall.Builder<T!> cacheHeaders(com.apollographql.apollo.cache.CacheHeaders);
-    method public com.apollographql.apollo.ApolloMutationCall.Builder<T!> refetchQueries(List<Query>);
-    method public com.apollographql.apollo.ApolloMutationCall.Builder<T!> refetchQueryNames(List<OperationName>);
-    method public com.apollographql.apollo.ApolloMutationCall.Builder<T!> requestHeaders(com.apollographql.apollo.request.RequestHeaders);
+  public static interface ApolloMutationCall.Builder<D extends com.apollographql.apollo.api.Operation.Data> extends com.apollographql.apollo.ApolloCall.Builder<D> {
+    method public com.apollographql.apollo.ApolloMutationCall<D!> build();
+    method public com.apollographql.apollo.ApolloMutationCall.Builder<D!> cacheHeaders(com.apollographql.apollo.cache.CacheHeaders);
+    method public com.apollographql.apollo.ApolloMutationCall.Builder<D!> refetchQueries(List<Query>);
+    method public com.apollographql.apollo.ApolloMutationCall.Builder<D!> refetchQueryNames(List<OperationName>);
+    method public com.apollographql.apollo.ApolloMutationCall.Builder<D!> requestHeaders(com.apollographql.apollo.request.RequestHeaders);
   }
 
   public static interface ApolloMutationCall.Factory {
-    method public <D extends com.apollographql.apollo.api.Operation.Data, T, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.ApolloMutationCall<T!>! mutate(com.apollographql.apollo.api.Mutation<D!,T!,V!>);
-    method public <D extends com.apollographql.apollo.api.Operation.Data, T, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.ApolloMutationCall<T!>! mutate(com.apollographql.apollo.api.Mutation<D!,T!,V!>, D);
+    method public <D extends com.apollographql.apollo.api.Operation.Data, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.ApolloMutationCall<D!>! mutate(com.apollographql.apollo.api.Mutation<D!,V!>);
+    method public <D extends com.apollographql.apollo.api.Operation.Data, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.ApolloMutationCall<D!>! mutate(com.apollographql.apollo.api.Mutation<D!,V!>, D);
   }
 
   public interface ApolloPrefetch {
@@ -139,44 +137,44 @@ package com.apollographql.apollo {
   }
 
   public static interface ApolloPrefetch.Factory {
-    method public <D extends com.apollographql.apollo.api.Operation.Data, T, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.ApolloPrefetch! prefetch(com.apollographql.apollo.api.Operation<D!,T!,V!>);
+    method public <D extends com.apollographql.apollo.api.Operation.Data, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.ApolloPrefetch! prefetch(com.apollographql.apollo.api.Operation<D!,V!>);
   }
 
-  public interface ApolloQueryCall<T> extends com.apollographql.apollo.ApolloCall<T> {
-    method public com.apollographql.apollo.ApolloQueryCall<T!> cacheHeaders(com.apollographql.apollo.cache.CacheHeaders);
-    method public com.apollographql.apollo.ApolloQueryCall<T!> clone();
-    method public com.apollographql.apollo.ApolloQueryCall<T!> httpCachePolicy(HttpCachePolicy.Policy);
-    method public com.apollographql.apollo.ApolloQueryCall<T!> requestHeaders(com.apollographql.apollo.request.RequestHeaders);
-    method public com.apollographql.apollo.ApolloQueryCall<T!> responseFetcher(com.apollographql.apollo.fetcher.ResponseFetcher);
-    method public com.apollographql.apollo.ApolloQueryCall.Builder<T!> toBuilder();
-    method public com.apollographql.apollo.ApolloQueryWatcher<T!> watcher();
+  public interface ApolloQueryCall<D extends com.apollographql.apollo.api.Operation.Data> extends com.apollographql.apollo.ApolloCall<D> {
+    method public com.apollographql.apollo.ApolloQueryCall<D!> cacheHeaders(com.apollographql.apollo.cache.CacheHeaders);
+    method public com.apollographql.apollo.ApolloQueryCall<D!> clone();
+    method public com.apollographql.apollo.ApolloQueryCall<D!> httpCachePolicy(com.apollographql.apollo.api.cache.http.HttpCachePolicy.Policy);
+    method public com.apollographql.apollo.ApolloQueryCall<D!> requestHeaders(com.apollographql.apollo.request.RequestHeaders);
+    method public com.apollographql.apollo.ApolloQueryCall<D!> responseFetcher(com.apollographql.apollo.fetcher.ResponseFetcher);
+    method public com.apollographql.apollo.ApolloQueryCall.Builder<D!> toBuilder();
+    method public com.apollographql.apollo.ApolloQueryWatcher<D!> watcher();
   }
 
-  public static interface ApolloQueryCall.Builder<T> extends com.apollographql.apollo.ApolloCall.Builder<T> {
-    method public com.apollographql.apollo.ApolloQueryCall<T!> build();
-    method public com.apollographql.apollo.ApolloQueryCall.Builder<T!> cacheHeaders(com.apollographql.apollo.cache.CacheHeaders);
-    method public com.apollographql.apollo.ApolloQueryCall.Builder<T!> httpCachePolicy(HttpCachePolicy.Policy);
-    method public com.apollographql.apollo.ApolloQueryCall.Builder<T!> requestHeaders(com.apollographql.apollo.request.RequestHeaders);
-    method public com.apollographql.apollo.ApolloQueryCall.Builder<T!> responseFetcher(com.apollographql.apollo.fetcher.ResponseFetcher);
+  public static interface ApolloQueryCall.Builder<D extends com.apollographql.apollo.api.Operation.Data> extends com.apollographql.apollo.ApolloCall.Builder<D> {
+    method public com.apollographql.apollo.ApolloQueryCall<D!> build();
+    method public com.apollographql.apollo.ApolloQueryCall.Builder<D!> cacheHeaders(com.apollographql.apollo.cache.CacheHeaders);
+    method public com.apollographql.apollo.ApolloQueryCall.Builder<D!> httpCachePolicy(com.apollographql.apollo.api.cache.http.HttpCachePolicy.Policy);
+    method public com.apollographql.apollo.ApolloQueryCall.Builder<D!> requestHeaders(com.apollographql.apollo.request.RequestHeaders);
+    method public com.apollographql.apollo.ApolloQueryCall.Builder<D!> responseFetcher(com.apollographql.apollo.fetcher.ResponseFetcher);
   }
 
   public static interface ApolloQueryCall.Factory {
-    method public <D extends com.apollographql.apollo.api.Operation.Data, T, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.ApolloQueryCall<T!>! query(com.apollographql.apollo.api.Query<D!,T!,V!>);
+    method public <D extends com.apollographql.apollo.api.Operation.Data, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.ApolloQueryCall<D!>! query(com.apollographql.apollo.api.Query<D!,V!>);
   }
 
-  public interface ApolloQueryWatcher<T> {
+  public interface ApolloQueryWatcher<D extends com.apollographql.apollo.api.Operation.Data> {
     method public void cancel();
-    method public com.apollographql.apollo.ApolloQueryWatcher<T!> clone();
-    method public com.apollographql.apollo.ApolloQueryWatcher<T!>! enqueueAndWatch(com.apollographql.apollo.ApolloCall.Callback<T!>?);
+    method public com.apollographql.apollo.ApolloQueryWatcher<D!> clone();
+    method public com.apollographql.apollo.ApolloQueryWatcher<D!>! enqueueAndWatch(com.apollographql.apollo.ApolloCall.Callback<D!>?);
     method public com.apollographql.apollo.api.Operation operation();
     method public void refetch();
-    method public com.apollographql.apollo.ApolloQueryWatcher<T!> refetchResponseFetcher(com.apollographql.apollo.fetcher.ResponseFetcher);
+    method public com.apollographql.apollo.ApolloQueryWatcher<D!> refetchResponseFetcher(com.apollographql.apollo.fetcher.ResponseFetcher);
   }
 
-  public interface ApolloSubscriptionCall<T> {
-    method public com.apollographql.apollo.ApolloSubscriptionCall<T!> cachePolicy(com.apollographql.apollo.ApolloSubscriptionCall.CachePolicy);
-    method public com.apollographql.apollo.ApolloSubscriptionCall<T!>! clone();
-    method public void execute(com.apollographql.apollo.ApolloSubscriptionCall.Callback<T!>);
+  public interface ApolloSubscriptionCall<D extends com.apollographql.apollo.api.Operation.Data> {
+    method public com.apollographql.apollo.ApolloSubscriptionCall<D!> cachePolicy(com.apollographql.apollo.ApolloSubscriptionCall.CachePolicy);
+    method public com.apollographql.apollo.ApolloSubscriptionCall<D!>! clone();
+    method public void execute(com.apollographql.apollo.ApolloSubscriptionCall.Callback<D!>);
   }
 
   public enum ApolloSubscriptionCall.CachePolicy {
@@ -185,20 +183,51 @@ package com.apollographql.apollo {
     enum_constant public static final com.apollographql.apollo.ApolloSubscriptionCall.CachePolicy NO_CACHE;
   }
 
-  public static interface ApolloSubscriptionCall.Callback<T> {
+  public static interface ApolloSubscriptionCall.Callback<D extends com.apollographql.apollo.api.Operation.Data> {
     method public void onCompleted();
     method public void onConnected();
     method public void onFailure(com.apollographql.apollo.exception.ApolloException);
-    method public void onResponse(com.apollographql.apollo.api.Response<T!>);
+    method public void onResponse(com.apollographql.apollo.api.Response<D!>);
     method public void onTerminated();
   }
 
   public static interface ApolloSubscriptionCall.Factory {
-    method public <D extends com.apollographql.apollo.api.Operation.Data, T, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.ApolloSubscriptionCall<T!>! subscribe(com.apollographql.apollo.api.Subscription<D!,T!,V!>);
+    method public <D extends com.apollographql.apollo.api.Operation.Data, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.ApolloSubscriptionCall<D!>! subscribe(com.apollographql.apollo.api.Subscription<D!,V!>);
   }
 
   public interface IdleResourceCallback {
     method public void onIdle();
+  }
+
+}
+
+package com.apollographql.apollo.api.internal {
+
+  public interface Action<T> {
+    method public void apply(T);
+  }
+
+  public interface Function<T, R> {
+    method public R apply(T);
+  }
+
+  public abstract class Optional<T> {
+    method public static <T> com.apollographql.apollo.api.internal.Optional<T!>! absent();
+    method public abstract com.apollographql.apollo.api.internal.Optional<T!>! apply(com.apollographql.apollo.api.internal.Action<T!>!);
+    method public abstract Set<T> asSet();
+    method public abstract boolean equals(Object);
+    method public abstract <V> com.apollographql.apollo.api.internal.Optional<V!>! flatMap(com.apollographql.apollo.api.internal.Function<? super T,com.apollographql.apollo.api.internal.Optional<V!>!>!);
+    method public static <T> com.apollographql.apollo.api.internal.Optional<T!>! fromNullable(T?);
+    method public abstract T! get();
+    method public abstract int hashCode();
+    method public abstract boolean isPresent();
+    method public abstract <V> com.apollographql.apollo.api.internal.Optional<V!>! map(com.apollographql.apollo.api.internal.Function<? super T,V!>!);
+    method public static <T> com.apollographql.apollo.api.internal.Optional<T!>! of(T!);
+    method public abstract T! or(T!);
+    method public abstract com.apollographql.apollo.api.internal.Optional<T!>! or(com.apollographql.apollo.api.internal.Optional<? extends T>!);
+    method public abstract T? orNull();
+    method public abstract String toString();
+    method public abstract <V> com.apollographql.apollo.api.internal.Optional<V!>! transform(com.apollographql.apollo.api.internal.Function<? super T,V!>!);
   }
 
 }
@@ -274,7 +303,7 @@ package com.apollographql.apollo.interceptor {
   public static class ApolloAutoPersistedOperationInterceptor.Factory implements com.apollographql.apollo.interceptor.ApolloInterceptorFactory {
     ctor public ApolloAutoPersistedOperationInterceptor.Factory(boolean, boolean, boolean);
     ctor public ApolloAutoPersistedOperationInterceptor.Factory();
-    method public com.apollographql.apollo.interceptor.ApolloInterceptor? newInterceptor(com.apollographql.apollo.api.internal.ApolloLogger, com.apollographql.apollo.api.Operation<?,?,?>);
+    method public com.apollographql.apollo.interceptor.ApolloInterceptor? newInterceptor(com.apollographql.apollo.api.internal.ApolloLogger, com.apollographql.apollo.api.Operation<?,?>);
   }
 
   public interface ApolloInterceptor {
@@ -334,7 +363,7 @@ package com.apollographql.apollo.interceptor {
   }
 
   public interface ApolloInterceptorFactory {
-    method public com.apollographql.apollo.interceptor.ApolloInterceptor? newInterceptor(com.apollographql.apollo.api.internal.ApolloLogger logger, com.apollographql.apollo.api.Operation<?,?,?> operation);
+    method public com.apollographql.apollo.interceptor.ApolloInterceptor? newInterceptor(com.apollographql.apollo.api.internal.ApolloLogger logger, com.apollographql.apollo.api.Operation<?,?> operation);
   }
 
 }
@@ -361,11 +390,11 @@ package com.apollographql.apollo.request {
 
 package com.apollographql.apollo.response {
 
-  public final class OperationResponseParser<D extends com.apollographql.apollo.api.Operation.Data, W> {
-    ctor public OperationResponseParser(com.apollographql.apollo.api.Operation<D!,W!,?>!, com.apollographql.apollo.api.internal.ResponseFieldMapper!, com.apollographql.apollo.api.ScalarTypeAdapters!);
-    ctor public OperationResponseParser(com.apollographql.apollo.api.Operation<D!,W!,?>!, com.apollographql.apollo.api.internal.ResponseFieldMapper!, com.apollographql.apollo.api.ScalarTypeAdapters!, com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer<Map<String,Object>>!);
-    method public com.apollographql.apollo.api.Response<W!>! parse(Map<String,Object>);
-    method public com.apollographql.apollo.api.Response<W!>! parse(okio.BufferedSource!);
+  public final class OperationResponseParser<D extends com.apollographql.apollo.api.Operation.Data> {
+    ctor public OperationResponseParser(com.apollographql.apollo.api.Operation<D!,?>!, com.apollographql.apollo.api.internal.ResponseFieldMapper!, com.apollographql.apollo.api.ScalarTypeAdapters!);
+    ctor public OperationResponseParser(com.apollographql.apollo.api.Operation<D!,?>!, com.apollographql.apollo.api.internal.ResponseFieldMapper!, com.apollographql.apollo.api.ScalarTypeAdapters!, com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer<Map<String,Object>>!);
+    method public com.apollographql.apollo.api.Response<D!>! parse(Map<String,Object>);
+    method public com.apollographql.apollo.api.Response<D!>! parse(okio.BufferedSource!);
     method public static com.apollographql.apollo.api.Error! parseError(Map<String,Object>);
   }
 
@@ -412,12 +441,12 @@ package com.apollographql.apollo.subscription {
   }
 
   public static final class OperationClientMessage.Start extends com.apollographql.apollo.subscription.OperationClientMessage {
-    ctor public OperationClientMessage.Start(String subscriptionId, com.apollographql.apollo.api.Subscription<?,?,?> subscription, com.apollographql.apollo.api.ScalarTypeAdapters scalarTypeAdapters, boolean autoPersistSubscription, boolean sendSubscriptionDocument);
+    ctor public OperationClientMessage.Start(String subscriptionId, com.apollographql.apollo.api.Subscription<?,?> subscription, com.apollographql.apollo.api.ScalarTypeAdapters scalarTypeAdapters, boolean autoPersistSubscription, boolean sendSubscriptionDocument);
     field public static final com.apollographql.apollo.subscription.OperationClientMessage.Start.Companion Companion;
     field public final boolean autoPersistSubscription;
     field public final com.apollographql.apollo.api.ScalarTypeAdapters scalarTypeAdapters;
     field public final boolean sendSubscriptionDocument;
-    field public final com.apollographql.apollo.api.Subscription<?,?,?> subscription;
+    field public final com.apollographql.apollo.api.Subscription<?,?> subscription;
     field public final String subscriptionId;
   }
 
