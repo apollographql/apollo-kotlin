@@ -4,6 +4,7 @@ import com.apollographql.apollo.compiler.frontend.GraphQLParser
 import com.apollographql.apollo.compiler.frontend.toFile
 import com.apollographql.apollo.compiler.frontend.toIntrospectionSchema
 import com.apollographql.apollo.compiler.frontend.toSchema
+import com.apollographql.apollo.compiler.frontend.toUtf8WithIndents
 import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.introspection.IntrospectionSchema.Companion.wrap
 import com.apollographql.apollo.compiler.toJson
@@ -44,7 +45,9 @@ abstract class ApolloConvertSchemaTask: DefaultTask() {
     }
 
     if (from.isIntrospection()) {
-      IntrospectionSchema(from).toSchema().toDocument().toFile(to)
+      IntrospectionSchema(from).toSchema().toDocument().toUtf8WithIndents().let {
+        to.writeText(it)
+      }
     } else {
       GraphQLParser.parseSchema(from).toIntrospectionSchema().wrap().toJson(to)
     }
