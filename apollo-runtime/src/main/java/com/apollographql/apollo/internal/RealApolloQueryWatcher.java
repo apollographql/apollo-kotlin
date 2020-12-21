@@ -13,7 +13,6 @@ import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.exception.ApolloParseException;
-import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,7 +29,7 @@ import static com.apollographql.apollo.internal.CallState.TERMINATED;
 
 final class RealApolloQueryWatcher<D extends Query.Data> implements ApolloQueryWatcher<D> {
   private RealApolloCall<D> activeCall;
-  private ResponseFetcher refetchResponseFetcher = ApolloResponseFetchers.CACHE_FIRST;
+  private ResponseFetcher refetchResponseFetcher;
   final ApolloStore apolloStore;
   Set<String> dependentKeys = Collections.emptySet();
   final ApolloLogger logger;
@@ -45,11 +44,18 @@ final class RealApolloQueryWatcher<D extends Query.Data> implements ApolloQueryW
   private final AtomicReference<CallState> state = new AtomicReference<>(IDLE);
   private final AtomicReference<ApolloCall.Callback<D>> originalCallback = new AtomicReference<>();
 
-  RealApolloQueryWatcher(RealApolloCall<D> originalCall, ApolloStore apolloStore, ApolloLogger logger, ApolloCallTracker tracker) {
+  RealApolloQueryWatcher(
+      RealApolloCall<D> originalCall,
+      ApolloStore apolloStore,
+      ApolloLogger logger,
+      ApolloCallTracker tracker,
+      ResponseFetcher refetchResponseFetcher
+      ) {
     this.activeCall = originalCall;
     this.apolloStore = apolloStore;
     this.logger = logger;
     this.tracker = tracker;
+    this.refetchResponseFetcher = refetchResponseFetcher;
   }
 
   @Override public ApolloQueryWatcher<D> enqueueAndWatch(@Nullable final ApolloCall.Callback<D> callback) {
@@ -128,7 +134,7 @@ final class RealApolloQueryWatcher<D extends Query.Data> implements ApolloQueryW
   }
 
   @NotNull @Override public ApolloQueryWatcher<D> clone() {
-    return new RealApolloQueryWatcher<>(activeCall.clone(), apolloStore, logger, tracker);
+    return new RealApolloQueryWatcher<>(activeCall.clone(), apolloStore, logger, tracker, refetchResponseFetcher);
   }
 
   private ApolloCall.Callback<D> callbackProxy() {
