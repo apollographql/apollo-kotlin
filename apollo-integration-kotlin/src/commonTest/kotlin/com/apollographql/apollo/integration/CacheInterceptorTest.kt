@@ -6,6 +6,7 @@ import com.apollographql.apollo.cache.normalized.simple.MapNormalizedCache
 import com.apollographql.apollo.interceptor.cache.ApolloCacheInterceptor
 import com.apollographql.apollo.interceptor.cache.ApolloStore
 import com.apollographql.apollo.interceptor.cache.fromCache
+import com.apollographql.apollo.interceptor.cache.normalizedCache
 import com.apollographql.apollo.testing.MockNetworkTransport
 import com.apollographql.apollo.testing.TestLoggerExecutor
 import com.apollographql.apollo.testing.runBlocking
@@ -25,11 +26,9 @@ class CacheInterceptorTest {
   fun setUp() {
     networkTransport = MockNetworkTransport()
     apolloClient = ApolloClient.DefaultBuilder()
-        .networkTransport( networkTransport)
+        .networkTransport(networkTransport)
         .addInterceptor(TestLoggerExecutor)
-        .addInterceptor(ApolloCacheInterceptor(
-            ApolloStore(MapNormalizedCache())
-        ))
+        .normalizedCache(MapNormalizedCache())
         .build()
   }
 

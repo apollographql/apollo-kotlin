@@ -6,6 +6,8 @@ import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.cache.normalized.NormalizedCache
+import com.apollographql.apollo.cache.normalized.simple.MapNormalizedCache
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ApolloExperimental
 data class CacheExecutionContext(
@@ -17,10 +19,11 @@ data class CacheExecutionContext(
 }
 
 @ApolloExperimental
-val <D: Operation.Data> Response<D>.fromCache
-  get() =  executionContext[CacheExecutionContext]?.fromCache ?: throw IllegalStateException("ApolloGraphQL: no CacheExecutionContext")
+val <D : Operation.Data> Response<D>.fromCache
+  get() = executionContext[CacheExecutionContext]?.fromCache ?: throw IllegalStateException("ApolloGraphQL: no CacheExecutionContext")
 
+@ExperimentalCoroutinesApi
 @ApolloExperimental
-fun ApolloClient.cloneWithCache(normalizedCache: NormalizedCache) {
-  return
+fun ApolloClient.Builder.normalizedCache(normalizedCache: NormalizedCache): ApolloClient.Builder {
+  return addInterceptor(ApolloCacheInterceptor(ApolloStore(normalizedCache)))
 }
