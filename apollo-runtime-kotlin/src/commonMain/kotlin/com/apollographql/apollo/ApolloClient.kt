@@ -22,7 +22,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  * Use the auto-generated [ApolloClient.Builder] to create one
  */
 @ApolloExperimental
-@ExperimentalCoroutinesApi
 class ApolloClient private constructor(
     private val networkTransport: NetworkTransport,
     private val subscriptionNetworkTransport: NetworkTransport,
