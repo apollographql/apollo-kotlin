@@ -1,6 +1,4 @@
-val skipAndroidModule = findProperty("apollographql_skipAndroidModules") == "true"
-
-if (!skipAndroidModule) {
+if (System.getProperty("idea.sync.active") == null) {
   apply(plugin = "com.android.library")
 }
 apply(plugin = "org.jetbrains.kotlin.multiplatform")
@@ -29,7 +27,7 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
     }
   }
 
-  if (!skipAndroidModule) {
+  if (System.getProperty("idea.sync.active") == null) {
     android {
       publishAllLibraryVariants()
     }
@@ -52,7 +50,7 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
       }
     }
 
-    if (!skipAndroidModule) {
+    if (System.getProperty("idea.sync.active") == null) {
       val androidMain by getting {
         dependsOn(commonMain)
         dependencies {
@@ -91,7 +89,7 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
       }
     }
 
-    if (!skipAndroidModule) {
+    if (System.getProperty("idea.sync.active") == null) {
       val androidTest by getting {
         dependsOn(jvmTest)
       }
@@ -107,7 +105,7 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
   }
 }
 
-if (!skipAndroidModule) {
+if (System.getProperty("idea.sync.active") == null) {
   configure<com.android.build.gradle.LibraryExtension> {
     compileSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt())
 

@@ -15,9 +15,7 @@ include("apollo-runtime-kotlin")
 
 include("apollo-normalized-cache-sqlite")
 
-val skipAndroidModules = extra.properties.get("apollographql_skipAndroidModules") == "true"
-
-if (!skipAndroidModules) {
+if (System.getProperty("idea.sync.active") == null) {
   include("apollo-idling-resource")
   include("apollo-android-support")
 }
