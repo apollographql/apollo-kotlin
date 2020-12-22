@@ -1,6 +1,7 @@
 package com.apollographql.apollo.kmpsample.data
 
 import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.kmpsample.GithubRepositoriesQuery
 import com.apollographql.apollo.kmpsample.GithubRepositoryCommitsQuery
 import com.apollographql.apollo.kmpsample.GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.Companion.asCommit
@@ -11,25 +12,27 @@ import com.apollographql.apollo.kmpsample.fragment.RepositoryFragment
 import com.apollographql.apollo.kmpsample.type.OrderDirection
 import com.apollographql.apollo.kmpsample.type.PullRequestState
 import com.apollographql.apollo.kmpsample.type.RepositoryOrderField
-import com.apollographql.apollo.network.http.ApolloHttpNetworkTransport
 import com.apollographql.apollo.network.HttpExecutionContext
-import com.apollographql.apollo.ApolloException
+import com.apollographql.apollo.network.http.ApolloHttpNetworkTransport
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.single
 
 /**
  * An implementation of a [GitHubDataSource] that shows how we can use coroutines to make our apollo requests.
  */
+@OptIn(ApolloExperimental::class, ExperimentalCoroutinesApi::class)
 class ApolloCoroutinesRepository {
-  private val apolloClient = ApolloClient(
-      networkTransport = ApolloHttpNetworkTransport(
-          serverUrl = "https://api.github.com/graphql",
-          headers = mapOf(
-              "Accept" to "application/json",
-              "Content-Type" to "application/json",
-              "Authorization" to "bearer $GITHUB_KEY"
+  private val apolloClient = ApolloClient.DefaultBuilder()
+      .networkTransport(
+          ApolloHttpNetworkTransport(
+              serverUrl = "https://api.github.com/graphql",
+              headers = mapOf(
+                  "Accept" to "application/json",
+                  "Content-Type" to "application/json",
+                  "Authorization" to "bearer $GITHUB_KEY"
+              )
           )
-      )
-  )
+      ).build()
 
   suspend fun fetchRepositories(): List<RepositoryFragment> {
     val repositoriesQuery = GithubRepositoriesQuery(

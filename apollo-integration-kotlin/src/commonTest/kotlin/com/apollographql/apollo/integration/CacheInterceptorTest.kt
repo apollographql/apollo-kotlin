@@ -5,7 +5,7 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.cache.normalized.simple.MapNormalizedCache
 import com.apollographql.apollo.interceptor.cache.ApolloCacheInterceptor
 import com.apollographql.apollo.interceptor.cache.ApolloStore
-import com.apollographql.apollo.interceptor.cache.cacheContext
+import com.apollographql.apollo.interceptor.cache.fromCache
 import com.apollographql.apollo.testing.MockNetworkTransport
 import com.apollographql.apollo.testing.TestLoggerExecutor
 import com.apollographql.apollo.testing.runBlocking
@@ -24,15 +24,13 @@ class CacheInterceptorTest {
   @BeforeTest
   fun setUp() {
     networkTransport = MockNetworkTransport()
-    apolloClient = ApolloClient(
-        networkTransport = networkTransport,
-        interceptors = listOf(
-            TestLoggerExecutor,
-            ApolloCacheInterceptor(
-                ApolloStore(MapNormalizedCache())
-            )
-        )
-    )
+    apolloClient = ApolloClient.DefaultBuilder()
+        .networkTransport( networkTransport)
+        .addInterceptor(TestLoggerExecutor)
+        .addInterceptor(ApolloCacheInterceptor(
+            ApolloStore(MapNormalizedCache())
+        ))
+        .build()
   }
 
   @Test
@@ -46,7 +44,7 @@ class CacheInterceptorTest {
           .single()
 
       assertNotNull(response.data)
-      assertFalse(response.cacheContext().fromCache)
+      assertFalse(response.fromCache)
 
       response = apolloClient
           .query(HeroNameQuery())
@@ -54,7 +52,7 @@ class CacheInterceptorTest {
           .single()
 
       assertNotNull(response.data)
-      assertTrue(response.cacheContext().fromCache)
+      assertTrue(response.fromCache)
     }
   }
 }
