@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
 @ApolloExperimental
-@ExperimentalCoroutinesApi
 class NetworkRequestInterceptor(
     private val networkTransport: NetworkTransport,
     private val subscriptionNetworkTransport: NetworkTransport
