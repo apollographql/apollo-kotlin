@@ -34,7 +34,7 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl> {
         when (selectField(RESPONSE_FIELDS)) {
           0 -> __typename = readString(RESPONSE_FIELDS[0])
           1 -> name = readString(RESPONSE_FIELDS[1])
-          2 -> profileLink = readCustomType<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)
+          2 -> profileLink = readCustomScalar<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomScalarField)
           3 -> friendsConnection = readObject<HumanDetailsImpl.FriendsConnection>(RESPONSE_FIELDS[3]) { reader ->
             FriendsConnection.fromResponse(reader)
           }
@@ -53,7 +53,7 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl> {
   override fun toResponse(writer: ResponseWriter, value: HumanDetailsImpl) {
     writer.writeString(RESPONSE_FIELDS[0], value.__typename)
     writer.writeString(RESPONSE_FIELDS[1], value.name)
-    writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, value.profileLink)
+    writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomScalarField, value.profileLink)
     writer.writeObject(RESPONSE_FIELDS[3]) { writer ->
       FriendsConnection.toResponse(writer, value.friendsConnection)
     }

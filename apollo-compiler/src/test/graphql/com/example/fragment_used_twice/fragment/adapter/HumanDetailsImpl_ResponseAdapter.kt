@@ -53,7 +53,7 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl> {
           when (selectField(RESPONSE_FIELDS)) {
             0 -> __typename = readString(RESPONSE_FIELDS[0])
             1 -> name = readString(RESPONSE_FIELDS[1])
-            2 -> birthDate = readCustomType<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)
+            2 -> birthDate = readCustomScalar<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomScalarField)
             else -> break
           }
         }
@@ -69,7 +69,7 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl> {
         value: HumanDetailsImpl.CharacterHumanDetailsImpl) {
       writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       writer.writeString(RESPONSE_FIELDS[1], value.name)
-      writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, value.birthDate)
+      writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomScalarField, value.birthDate)
     }
   }
 

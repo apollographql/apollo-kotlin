@@ -25,18 +25,18 @@ class StreamResponseReaderJvmCustomTypesTest {
 
   @Test
   fun readCustom() {
-    val successField = ResponseField.forCustomType("successFieldResponseName", "successFieldName", null,
+    val successField = ResponseField.forCustomScalar("successFieldResponseName", "successFieldName", null,
         false, DATE_CUSTOM_TYPE, noConditions)
-    val classCastExceptionField = ResponseField.forCustomType("classCastExceptionField",
+    val classCastExceptionField = ResponseField.forCustomScalar("classCastExceptionField",
         "classCastExceptionField", null, false, DATE_CUSTOM_TYPE, noConditions)
     val recordSet: MutableMap<String, Any> = HashMap()
     recordSet["successFieldResponseName"] = "2017-04-16"
     recordSet["successFieldName"] = "2018-04-16"
     recordSet["classCastExceptionField"] = 0
     val responseReader = responseReader(recordSet)
-    assertEquals(DATE_TIME_FORMAT.parse("2017-04-16"), responseReader.readCustomType<Date>(successField))
+    assertEquals(DATE_TIME_FORMAT.parse("2017-04-16"), responseReader.readCustomScalar<Date>(successField))
     try {
-      responseReader.readCustomType<Any>(classCastExceptionField)
+      responseReader.readCustomScalar<Any>(classCastExceptionField)
       Assert.fail("expected ClassCastException")
     } catch (expected: ClassCastException) {
       // expected
@@ -53,14 +53,14 @@ class StreamResponseReaderJvmCustomTypesTest {
     val responseReader = responseReader(recordSet)
     assertEquals(
         listOf(DATE_TIME_FORMAT.parse("2017-04-16"), DATE_TIME_FORMAT.parse("2017-04-17"), DATE_TIME_FORMAT.parse("2017-04-18")),
-        responseReader.readList(successField) { reader -> reader.readCustomType<Date>(DATE_CUSTOM_TYPE) }
+        responseReader.readList(successField) { reader -> reader.readCustomScalar<Date>(DATE_CUSTOM_TYPE) }
     )
   }
 
   @Test
   fun optionalFieldsIOException() {
     val responseReader = responseReader(emptyMap())
-    responseReader.readCustomType<Any>(ResponseField.forCustomType("customTypeField", "customTypeField", null, true, DATE_CUSTOM_TYPE,
+    responseReader.readCustomScalar<Any>(ResponseField.forCustomScalar("CustomScalarField", "CustomScalarField", null, true, DATE_CUSTOM_TYPE,
         noConditions))
   }
 
@@ -68,7 +68,7 @@ class StreamResponseReaderJvmCustomTypesTest {
   fun mandatoryFieldsIOException() {
     val responseReader = responseReader(emptyMap())
     try {
-      responseReader.readCustomType<Any>(ResponseField.forCustomType("customTypeField", "customTypeField", null, false, DATE_CUSTOM_TYPE,
+      responseReader.readCustomScalar<Any>(ResponseField.forCustomScalar("CustomScalarField", "CustomScalarField", null, false, DATE_CUSTOM_TYPE,
           noConditions))
       Assert.fail("expected NullPointerException")
     } catch (expected: NullPointerException) {

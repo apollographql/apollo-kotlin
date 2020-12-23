@@ -188,7 +188,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               when (selectField(RESPONSE_FIELDS)) {
                 0 -> __typename = readString(RESPONSE_FIELDS[0])
                 1 -> name = readString(RESPONSE_FIELDS[1])
-                2 -> profileLink = readCustomType<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)
+                2 -> profileLink = readCustomScalar<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomScalarField)
                 3 -> friendsConnection = readObject<TestQuery.Data.Hero.HumanHero.FriendsConnection>(RESPONSE_FIELDS[3]) { reader ->
                   FriendsConnection.fromResponse(reader)
                 }
@@ -207,7 +207,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero.HumanHero) {
           writer.writeString(RESPONSE_FIELDS[0], value.__typename)
           writer.writeString(RESPONSE_FIELDS[1], value.name)
-          writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, value.profileLink)
+          writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomScalarField, value.profileLink)
           writer.writeObject(RESPONSE_FIELDS[3]) { writer ->
             FriendsConnection.toResponse(writer, value.friendsConnection)
           }

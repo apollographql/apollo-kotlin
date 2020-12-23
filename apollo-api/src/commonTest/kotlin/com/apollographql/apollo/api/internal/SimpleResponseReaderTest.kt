@@ -97,7 +97,7 @@ class SimpleResponseReaderTest {
       override val className = "kotlin.collections.Map"
     }
 
-    val successField = ResponseField.forCustomType(
+    val successField = ResponseField.forCustomScalar(
         "successFieldResponseName", "successFieldName", null,
         false, mapScalarType, noConditions
     )
@@ -125,7 +125,7 @@ class SimpleResponseReaderTest {
         )
     )
 
-    assertEquals(expected = objectMap.toString(), actual = responseReader.readCustomType<Map<*, *>>(successField).toString())
+    assertEquals(expected = objectMap.toString(), actual = responseReader.readCustomScalar<Map<*, *>>(successField).toString())
   }
 
   @Test
@@ -136,7 +136,7 @@ class SimpleResponseReaderTest {
       override val className = "kotlin.collections.List"
     }
 
-    val successField = ResponseField.forCustomType(
+    val successField = ResponseField.forCustomScalar(
         "successFieldResponseName", "successFieldName", null,
         false, listScalarType, noConditions
     )
@@ -156,36 +156,36 @@ class SimpleResponseReaderTest {
         )
     )
 
-    assertEquals(expected = objectList.toString(), actual = responseReader.readCustomType<List<*>>(successField).toString())
+    assertEquals(expected = objectList.toString(), actual = responseReader.readCustomScalar<List<*>>(successField).toString())
   }
 
   @Test
   fun readCustomWithDefaultAdapter() {
-    val stringField = ResponseField.forCustomType(
+    val stringField = ResponseField.forCustomScalar(
         "stringField", "stringField", null, false,
         scalarTypeFor(String::class, "kotlin.String"), noConditions
     )
-    val booleanField = ResponseField.forCustomType(
+    val booleanField = ResponseField.forCustomScalar(
         "booleanField", "booleanField", null, false,
         scalarTypeFor(Boolean::class, "kotlin.Boolean"), noConditions
     )
-    val integerField = ResponseField.forCustomType(
+    val integerField = ResponseField.forCustomScalar(
         "integerField", "integerField", null, false,
         scalarTypeFor(Int::class, "kotlin.Int"), noConditions
     )
-    val longField = ResponseField.forCustomType(
+    val longField = ResponseField.forCustomScalar(
         "longField", "longField", null, false,
         scalarTypeFor(Long::class, "kotlin.Long"), noConditions
     )
-    val floatField = ResponseField.forCustomType(
+    val floatField = ResponseField.forCustomScalar(
         "floatField", "floatField", null, false,
         scalarTypeFor(Float::class, "kotlin.Float"), noConditions
     )
-    val doubleField = ResponseField.forCustomType(
+    val doubleField = ResponseField.forCustomScalar(
         "doubleField", "doubleField", null, false,
         scalarTypeFor(Double::class, "kotlin.Double"), noConditions
     )
-    val unsupportedField = ResponseField.forCustomType(
+    val unsupportedField = ResponseField.forCustomScalar(
         "unsupportedField", "unsupportedField", null, false,
         scalarTypeFor(RuntimeException::class, "kotlin.RuntimeException"), noConditions
     )
@@ -202,15 +202,15 @@ class SimpleResponseReaderTest {
         )
     )
 
-    assertEquals(expected = "string", actual = responseReader.readCustomType(stringField)!!)
-    assertEquals(expected = true, actual = responseReader.readCustomType(booleanField)!!)
-    assertEquals(expected = 1, actual = responseReader.readCustomType(integerField)!!)
-    assertEquals(expected = 2L, actual = responseReader.readCustomType(longField)!!)
-    assertEquals(expected = 3.99f, actual = responseReader.readCustomType(floatField)!!)
-    assertEquals(expected = 4.99, actual = responseReader.readCustomType(doubleField)!!)
+    assertEquals(expected = "string", actual = responseReader.readCustomScalar(stringField)!!)
+    assertEquals(expected = true, actual = responseReader.readCustomScalar(booleanField)!!)
+    assertEquals(expected = 1, actual = responseReader.readCustomScalar(integerField)!!)
+    assertEquals(expected = 2L, actual = responseReader.readCustomScalar(longField)!!)
+    assertEquals(expected = 3.99f, actual = responseReader.readCustomScalar(floatField)!!)
+    assertEquals(expected = 4.99, actual = responseReader.readCustomScalar(doubleField)!!)
 
     try {
-      responseReader.readCustomType<Any>(unsupportedField)
+      responseReader.readCustomScalar<Any>(unsupportedField)
       fail("Expect IllegalArgumentException")
     } catch (expected: IllegalArgumentException) {
       // expected

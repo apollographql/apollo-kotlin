@@ -139,7 +139,7 @@ private fun CodeGenerationAst.Field.writeCode(responseField: String): CodeBlock 
         CodeBlock.of(
             "writer.writeCustom(%L·as·%T,·value.%L)\n",
             responseField.escapeKotlinReservedWord(),
-            ResponseField.CustomTypeField::class,
+            ResponseField.CustomScalarField::class,
             this.name.escapeKotlinReservedWord()
         )
       }

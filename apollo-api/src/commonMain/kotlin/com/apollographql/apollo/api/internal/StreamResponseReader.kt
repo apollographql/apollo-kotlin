@@ -104,7 +104,7 @@ class StreamResponseReader private constructor(
     }
   }
 
-  override fun <T : Any> readCustomType(field: ResponseField.CustomTypeField): T? {
+  override fun <T : Any> readCustomScalar(field: ResponseField.CustomScalarField): T? {
     val typeAdapter = scalarTypeAdapters.adapterFor<T>(field.scalarType)
     val value = readValue(field) {
       readRecursively()
@@ -158,7 +158,7 @@ class StreamResponseReader private constructor(
       return jsonReader.nextBoolean()
     }
 
-    override fun <T : Any> readCustomType(scalarType: ScalarType): T {
+    override fun <T : Any> readCustomScalar(scalarType: ScalarType): T {
       val typeAdapter = scalarTypeAdapters.adapterFor<T>(scalarType)
       val value = jsonReader.readRecursively()!!
       return typeAdapter.decode(CustomTypeValue.fromRawValue(value))

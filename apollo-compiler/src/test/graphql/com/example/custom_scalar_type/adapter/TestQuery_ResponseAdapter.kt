@@ -87,14 +87,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           while(true) {
             when (selectField(RESPONSE_FIELDS)) {
               0 -> name = readString(RESPONSE_FIELDS[0])
-              1 -> birthDate = readCustomType<Date>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+              1 -> birthDate = readCustomScalar<Date>(RESPONSE_FIELDS[1] as ResponseField.CustomScalarField)
               2 -> appearanceDates = readList<Date>(RESPONSE_FIELDS[2]) { reader ->
-                reader.readCustomType<Date>(CustomScalarType.Date)
+                reader.readCustomScalar<Date>(CustomScalarType.Date)
               }?.map { it!! }
-              3 -> fieldWithUnsupportedType = readCustomType<Any>(RESPONSE_FIELDS[3] as ResponseField.CustomTypeField)
-              4 -> profileLink = readCustomType<java.lang.String>(RESPONSE_FIELDS[4] as ResponseField.CustomTypeField)
+              3 -> fieldWithUnsupportedType = readCustomScalar<Any>(RESPONSE_FIELDS[3] as ResponseField.CustomScalarField)
+              4 -> profileLink = readCustomScalar<java.lang.String>(RESPONSE_FIELDS[4] as ResponseField.CustomScalarField)
               5 -> links = readList<java.lang.String>(RESPONSE_FIELDS[5]) { reader ->
-                reader.readCustomType<java.lang.String>(CustomScalarType.URL)
+                reader.readCustomScalar<java.lang.String>(CustomScalarType.URL)
               }?.map { it!! }
               else -> break
             }
@@ -112,13 +112,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero) {
         writer.writeString(RESPONSE_FIELDS[0], value.name)
-        writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, value.birthDate)
+        writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomScalarField, value.birthDate)
         writer.writeList(RESPONSE_FIELDS[2], value.appearanceDates) { values, listItemWriter ->
           values?.forEach { value ->
             listItemWriter.writeCustom(CustomScalarType.Date, value)}
         }
-        writer.writeCustom(RESPONSE_FIELDS[3] as ResponseField.CustomTypeField, value.fieldWithUnsupportedType)
-        writer.writeCustom(RESPONSE_FIELDS[4] as ResponseField.CustomTypeField, value.profileLink)
+        writer.writeCustom(RESPONSE_FIELDS[3] as ResponseField.CustomScalarField, value.fieldWithUnsupportedType)
+        writer.writeCustom(RESPONSE_FIELDS[4] as ResponseField.CustomScalarField, value.profileLink)
         writer.writeList(RESPONSE_FIELDS[5], value.links) { values, listItemWriter ->
           values?.forEach { value ->
             listItemWriter.writeCustom(CustomScalarType.URL, value)}

@@ -99,6 +99,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
             TestQuery.Data.Hero.CharacterHero {
+<<<<<<< HEAD
           val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
           return when(typename) {
             "Droid" -> CharacterCharacterHero.fromResponse(reader, typename)
@@ -134,6 +135,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
                   2 -> birthDate = readCustomType<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)
                   else -> break
                 }
+=======
+          return reader.run {
+            var __typename: String? = __typename
+            var name: String? = null
+            var birthDate: Any? = null
+            while(true) {
+              when (selectField(RESPONSE_FIELDS)) {
+                0 -> __typename = readString(RESPONSE_FIELDS[0])
+                1 -> name = readString(RESPONSE_FIELDS[1])
+                2 -> birthDate = readCustomScalar<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomScalarField)
+                else -> break
+>>>>>>> cafc01855... customType -> customScalarType
               }
               TestQuery.Data.Hero.CharacterHero.CharacterCharacterHero(
                 __typename = __typename!!,
@@ -151,6 +164,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           }
         }
 
+<<<<<<< HEAD
         object OtherCharacterHero :
             ResponseAdapter<TestQuery.Data.Hero.CharacterHero.OtherCharacterHero> {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
@@ -182,6 +196,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             writer.writeString(RESPONSE_FIELDS[0], value.__typename)
             writer.writeString(RESPONSE_FIELDS[1], value.name)
           }
+=======
+        override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero.CharacterHero) {
+          writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+          writer.writeString(RESPONSE_FIELDS[1], value.name)
+          writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomScalarField, value.birthDate)
+>>>>>>> cafc01855... customType -> customScalarType
         }
       }
 
@@ -198,15 +218,36 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
             TestQuery.Data.Hero.CharacterHumanHero {
+<<<<<<< HEAD
           val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
           return when(typename) {
             "Human" -> CharacterCharacterHumanHero.fromResponse(reader, typename)
             else -> OtherCharacterHumanHero.fromResponse(reader, typename)
+=======
+          return reader.run {
+            var __typename: String? = __typename
+            var name: String? = null
+            var birthDate: Any? = null
+            while(true) {
+              when (selectField(RESPONSE_FIELDS)) {
+                0 -> __typename = readString(RESPONSE_FIELDS[0])
+                1 -> name = readString(RESPONSE_FIELDS[1])
+                2 -> birthDate = readCustomScalar<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomScalarField)
+                else -> break
+              }
+            }
+            TestQuery.Data.Hero.CharacterHumanHero(
+              __typename = __typename!!,
+              name = name!!,
+              birthDate = birthDate!!
+            )
+>>>>>>> cafc01855... customType -> customScalarType
           }
         }
 
         override fun toResponse(writer: ResponseWriter,
             value: TestQuery.Data.Hero.CharacterHumanHero) {
+<<<<<<< HEAD
           when(value) {
             is TestQuery.Data.Hero.CharacterHumanHero.CharacterCharacterHumanHero -> CharacterCharacterHumanHero.toResponse(writer, value)
             is TestQuery.Data.Hero.CharacterHumanHero.OtherCharacterHumanHero -> OtherCharacterHumanHero.toResponse(writer, value)
@@ -282,6 +323,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             writer.writeString(RESPONSE_FIELDS[0], value.__typename)
             writer.writeString(RESPONSE_FIELDS[1], value.name)
           }
+=======
+          writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+          writer.writeString(RESPONSE_FIELDS[1], value.name)
+          writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomScalarField, value.birthDate)
+>>>>>>> cafc01855... customType -> customScalarType
         }
       }
 

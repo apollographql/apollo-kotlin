@@ -45,7 +45,7 @@ class SimpleResponseWriter(private val scalarTypeAdapters: ScalarTypeAdapters) :
     data[field.responseName] = value
   }
 
-  override fun writeCustom(field: ResponseField.CustomTypeField, value: Any?) {
+  override fun writeCustom(field: ResponseField.CustomScalarField, value: Any?) {
     if (value == null) {
       data[field.responseName] = null
     } else {

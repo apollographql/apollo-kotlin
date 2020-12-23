@@ -312,7 +312,7 @@ package com.apollographql.apollo.api {
   public class ResponseField {
     method public boolean equals(Object? other);
     method public static final com.apollographql.apollo.api.ResponseField forBoolean(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
-    method public static final com.apollographql.apollo.api.ResponseField.CustomTypeField forCustomType(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, com.apollographql.apollo.api.ScalarType scalarType, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
+    method public static final com.apollographql.apollo.api.ResponseField.CustomScalarField forCustomScalar(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, com.apollographql.apollo.api.ScalarType scalarType, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
     method public static final com.apollographql.apollo.api.ResponseField forDouble(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
     method public static final com.apollographql.apollo.api.ResponseField forEnum(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
     method public static final com.apollographql.apollo.api.ResponseField forInt(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
@@ -345,7 +345,7 @@ package com.apollographql.apollo.api {
 
   public static final class ResponseField.Companion {
     method public com.apollographql.apollo.api.ResponseField forBoolean(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
-    method public com.apollographql.apollo.api.ResponseField.CustomTypeField forCustomType(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, com.apollographql.apollo.api.ScalarType scalarType, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
+    method public com.apollographql.apollo.api.ResponseField.CustomScalarField forCustomScalar(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, com.apollographql.apollo.api.ScalarType scalarType, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
     method public com.apollographql.apollo.api.ResponseField forDouble(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
     method public com.apollographql.apollo.api.ResponseField forEnum(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
     method public com.apollographql.apollo.api.ResponseField forInt(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
@@ -364,7 +364,7 @@ package com.apollographql.apollo.api {
     method public com.apollographql.apollo.api.ResponseField.BooleanCondition booleanCondition(String variableName, boolean inverted);
   }
 
-  public static final class ResponseField.CustomTypeField extends com.apollographql.apollo.api.ResponseField {
+  public static final class ResponseField.CustomScalarField extends com.apollographql.apollo.api.ResponseField {
     method public com.apollographql.apollo.api.ScalarType getScalarType();
   }
 

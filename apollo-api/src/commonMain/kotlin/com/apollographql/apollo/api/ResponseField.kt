@@ -80,7 +80,7 @@ open class ResponseField internal constructor(
   /**
    * Abstraction for a Field representing a custom GraphQL scalar type.
    */
-  class CustomTypeField internal constructor(
+  class CustomScalarField internal constructor(
       responseName: String,
       fieldName: String,
       arguments: Map<String, Any?>?,
@@ -98,7 +98,7 @@ open class ResponseField internal constructor(
 
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
-      if (other !is CustomTypeField) return false
+      if (other !is CustomScalarField) return false
       if (!super.equals(other)) return false
 
       if (scalarType != other.scalarType) return false
@@ -356,8 +356,8 @@ open class ResponseField internal constructor(
         optional: Boolean,
         scalarType: ScalarType,
         conditions: List<Condition>?
-    ): CustomTypeField {
-      return CustomTypeField(
+    ): CustomScalarField {
+      return CustomScalarField(
           responseName = responseName,
           fieldName = fieldName,
           arguments = arguments.orEmpty(),

@@ -110,7 +110,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
                 2 -> friendsConnection = readObject<TestQuery.Data.Hero.CharacterHero.FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
                   FriendsConnection.fromResponse(reader)
                 }
-                3 -> profileLink = readCustomType<Any>(RESPONSE_FIELDS[3] as ResponseField.CustomTypeField)
+                3 -> profileLink = readCustomScalar<Any>(RESPONSE_FIELDS[3] as ResponseField.CustomScalarField)
                 else -> break
               }
             }
@@ -129,7 +129,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           writer.writeObject(RESPONSE_FIELDS[2]) { writer ->
             FriendsConnection.toResponse(writer, value.friendsConnection)
           }
-          writer.writeCustom(RESPONSE_FIELDS[3] as ResponseField.CustomTypeField, value.profileLink)
+          writer.writeCustom(RESPONSE_FIELDS[3] as ResponseField.CustomScalarField, value.profileLink)
         }
 
         object FriendsConnection :

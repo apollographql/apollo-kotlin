@@ -122,7 +122,7 @@ class RealResponseReader<R : Map<String, Any?>>(
     return result
   }
 
-  override fun <T : Any> readCustomType(field: ResponseField.CustomTypeField): T? {
+  override fun <T : Any> readCustomScalar(field: ResponseField.CustomScalarField): T? {
     val value = fieldValueResolver.valueFor<Any>(recordSet, field)
     checkValue(field, value)
     willResolve(field, value)
@@ -199,7 +199,7 @@ class RealResponseReader<R : Map<String, Any?>>(
       return value as Boolean
     }
 
-    override fun <T : Any> readCustomType(scalarType: ScalarType): T {
+    override fun <T : Any> readCustomScalar(scalarType: ScalarType): T {
       val scalarTypeAdapter: CustomScalarTypeAdapter<T> = scalarTypeAdapters.adapterFor(scalarType)
       resolveDelegate.didResolveScalar(value)
       return scalarTypeAdapter.decode(fromRawValue(value))

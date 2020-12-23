@@ -76,7 +76,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           while(true) {
             when (selectField(RESPONSE_FIELDS)) {
               0 -> links = readList<Any>(RESPONSE_FIELDS[0]) { reader ->
-                reader.readCustomType<Any>(CustomScalarType.URL)
+                reader.readCustomScalar<Any>(CustomScalarType.URL)
               }?.map { it!! }
               else -> break
             }

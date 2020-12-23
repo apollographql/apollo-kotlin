@@ -117,7 +117,7 @@ internal object CreateReviewForEpisode_ResponseAdapter :
               }?.map { it!! }
               4 -> listOfListOfCustom = readList<List<Date>>(RESPONSE_FIELDS[4]) { reader ->
                 reader.readList<Date> { reader ->
-                  reader.readCustomType<Date>(CustomScalarType.Date)
+                  reader.readCustomScalar<Date>(CustomScalarType.Date)
                 }.map { it!! }
               }?.map { it!! }
               5 -> listOfListOfObject = readList<List<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject>>(RESPONSE_FIELDS[5]) { reader ->
