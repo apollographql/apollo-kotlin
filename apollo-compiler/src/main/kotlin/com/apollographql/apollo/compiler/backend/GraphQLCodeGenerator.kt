@@ -17,7 +17,7 @@ import java.io.File
 internal class GraphQLCodeGenerator(
     private val backendIr: BackendIr,
     private val schema: Schema,
-    private val customTypeMap: Map<String, String>,
+    private val customScalarsMapping: Map<String, String>,
     private val generateAsInternal: Boolean = false,
     private val operationOutput: OperationOutput,
     private val generateFilterNotNull: Boolean,
@@ -33,7 +33,7 @@ internal class GraphQLCodeGenerator(
     val introspectionSchema = schema.toIntrospectionSchema()
     val ast = backendIr.buildAst(
         schema = introspectionSchema,
-        customScalarTypeMap = customTypeMap,
+        customScalarsMapping = customScalarsMapping,
         operationOutput = operationOutput,
         typesPackageName = typesPackageName,
         fragmentsPackage = fragmentsPackageName

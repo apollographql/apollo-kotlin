@@ -129,12 +129,17 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
 
     // TODO: use another schema for codegen than introspection schema
     val introspectionSchema = schema.toIntrospectionSchema()
+
+    /**
+     * Generate the mapping for all custom scalars
+     *
+     * If the user specified a mapping, use it, else fallback to [Any]
+     */
     val customScalarsMapping = introspectionSchema.types
         .values
         .filter { type -> type is IntrospectionSchema.Type.Scalar && !GQLTypeDefinition.builtInTypes.contains(type.name) }
         .map { type -> type.name }
         .map {
-          // fallback to [Any] if no mapping is registered
           it to (userScalarTypesMap[it] ?: anyClassName(generateKotlinModels))
         }.toMap()
 
@@ -144,7 +149,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
         enumsToGenerate = typesToGenerate.enumsToGenerate,
         inputObjectsToGenerate = typesToGenerate.inputObjectsToGenerate,
         generateScalarMapping = typesToGenerate.generateScalarMapping,
-        customTypeMap = customScalarsMapping,
+        customScalarsMapping = customScalarsMapping,
         operationOutput = operationOutput,
         generateAsInternal = args.generateAsInternal,
         generateFilterNotNull = args.generateFilterNotNull,
