@@ -37,7 +37,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
     val (schema, schemaPackageName) = getSchemaInfo(roots, args.rootPackageName, args.schemaFile, metadata)
 
     val generateKotlinModels = metadata?.generateKotlinModels ?: args.generateKotlinModels
-    val userCustomTypesMap = metadata?.customTypesMap ?: args.customTypeMap
+    val userScalarTypesMap = metadata?.customScalarsMapping ?: args.customScalarsMapping
 
     val packageNameProvider = DefaultPackageNameProvider(
         roots = roots,
@@ -129,11 +129,14 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
 
     // TODO: use another schema for codegen than introspection schema
     val introspectionSchema = schema.toIntrospectionSchema()
-    val customTypeMap = introspectionSchema.types
+    val customScalarsMapping = introspectionSchema.types
         .values
         .filter { type -> type is IntrospectionSchema.Type.Scalar && !GQLTypeDefinition.builtInTypes.contains(type.name) }
         .map { type -> type.name }
-        .supportedTypeMap(userCustomTypesMap, generateKotlinModels)
+        .map {
+          // fallback to [Any] if no mapping is registered
+          it to (userScalarTypesMap[it] ?: anyClassName(generateKotlinModels))
+        }.toMap()
 
     GraphQLCodeGenerator(
         backendIr = backendIr,
@@ -141,7 +144,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
         enumsToGenerate = typesToGenerate.enumsToGenerate,
         inputObjectsToGenerate = typesToGenerate.inputObjectsToGenerate,
         generateScalarMapping = typesToGenerate.generateScalarMapping,
-        customTypeMap = customTypeMap,
+        customTypeMap = customScalarsMapping,
         operationOutput = operationOutput,
         generateAsInternal = args.generateAsInternal,
         generateFilterNotNull = args.generateFilterNotNull,
@@ -158,30 +161,19 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
         types = typesToGenerate.enumsToGenerate + typesToGenerate.inputObjectsToGenerate,
         fragments = documents.flatMap { it.definitions.filterIsInstance<GQLFragmentDefinition>() },
         generateKotlinModels = generateKotlinModels,
-        customTypesMap = args.customTypeMap,
+        customScalarsMapping = args.customScalarsMapping,
         pluginVersion = VERSION
     )
     outgoingMetadata.writeTo(args.metadataOutputFile)
   }
 
   private fun anyClassName(generateKotlinModels: Boolean) = if (generateKotlinModels) {
+    // kotlin.Any
     Any::class.asClassName().toString()
   } else {
     TODO("ClassNames.OBJECT.toString()")
   }
 
-  private fun List<String>.supportedTypeMap(customTypeMap: Map<String, String>, generateKotlinModels: Boolean): Map<String, String> {
-    return associate {
-      val userClassName = customTypeMap[it]
-      val className = when {
-        userClassName != null -> userClassName
-        // unknown scalars will be mapped to Object/Any
-        else -> anyClassName(generateKotlinModels)
-      }
-
-      it to className
-    }
-  }
 
   companion object {
 
@@ -290,7 +282,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
 
       val rootPackageName: String = "",
       val generateKotlinModels: Boolean = false,
-      val customTypeMap: Map<String, String> = emptyMap(),
+      val customScalarsMapping: Map<String, String> = emptyMap(),
       val useSemanticNaming: Boolean = true,
       val warnOnDeprecatedUsages: Boolean = true,
       val failOnWarnings: Boolean = false,

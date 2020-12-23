@@ -53,7 +53,7 @@ class UpToDateTests {
     val apolloBlock = """
       
       apollo {
-        customTypeMapping = ["DateTime": "java.util.Date"]
+        customScalarsMapping = ["DateTime": "java.util.Date"]
       }
     """.trimIndent()
 
@@ -61,7 +61,7 @@ class UpToDateTests {
 
     val result = TestUtils.executeTask("generateApolloSources", dir)
 
-    // modifying the customTypeMapping should cause the task to be out of date
+    // modifying the customScalarsMapping should cause the task to be out of date
     // and the task should run again
     assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
 

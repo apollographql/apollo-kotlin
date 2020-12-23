@@ -110,7 +110,7 @@ class CodegenTest(private val folder: File) {
           schemaFile = schemaFile,
           outputDir = File("build/generated/test/${folder.name}"),
           operationOutputGenerator = operationOutputGenerator,
-          customTypeMap = customTypeMap,
+          customScalarsMapping = customTypeMap,
           generateKotlinModels = true,
           useSemanticNaming = useSemanticNaming,
           generateAsInternal = generateAsInternal,

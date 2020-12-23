@@ -12,7 +12,7 @@ You first need to define the mapping in your `build.gradle` file. This maps from
 
 ```groovy
 apollo {
-  customTypeMapping = [
+  customScalarsMapping = [
     "Date" : "java.util.Date"
   ]
 }
@@ -20,7 +20,7 @@ apollo {
 
 ```kotlin
 apollo {
-  customTypeMapping.set(mapOf(
+  customScalarsMapping.set(mapOf(
     "Date" to "java.util.Date"
   ))
 }

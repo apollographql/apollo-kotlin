@@ -21,10 +21,10 @@ import java.nio.file.Files
 
 class ServiceTests {
   @Test
-  fun `customTypeMapping is working`() {
+  fun `customScalarsMapping is working`() {
     withSimpleProject("""
       apollo {
-        customTypeMapping = ["DateTime": "java.util.Date"]
+        customScalarsMapping = ["DateTime": "java.util.Date"]
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
@@ -33,10 +33,10 @@ class ServiceTests {
   }
 
   @Test
-  fun `customTypeMapping put is working`() {
+  fun `customScalarsMapping put is working`() {
     withSimpleProject("""
       apollo {
-        customTypeMapping.put("DateTime", "java.util.Date")
+        customScalarsMapping.put("DateTime", "java.util.Date")
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
@@ -45,13 +45,13 @@ class ServiceTests {
   }
 
   @Test
-  fun `customTypeMapping can be applied from a service block`() {
+  fun `customScalarsMapping can be applied from a service block`() {
     withSimpleProject("""
       apollo {
         service("other") {
         }
         service("api") {
-          customTypeMapping = ["DateTime": "java.util.Date"]
+          customScalarsMapping = ["DateTime": "java.util.Date"]
         }
       }
     """.trimIndent()) { dir ->
