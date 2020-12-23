@@ -1,8 +1,9 @@
 package com.apollographql.apollo
 
-import com.apollographql.apollo.mock.MockNetworkTransport
-import com.apollographql.apollo.mock.MockQuery
-import com.apollographql.apollo.mock.TestLoggerExecutor
+import com.apollographql.apollo.testing.MockNetworkTransport
+import com.apollographql.apollo.testing.MockQuery
+import com.apollographql.apollo.testing.TestLoggerExecutor
+import com.apollographql.apollo.testing.runBlocking
 import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.flow.single
 import kotlin.test.BeforeTest
@@ -19,10 +20,10 @@ class ApolloClientTest {
   @BeforeTest
   fun setUp() {
     networkTransport = MockNetworkTransport()
-    apolloClient = ApolloClient(
-        networkTransport = networkTransport,
-        interceptors = listOf(TestLoggerExecutor)
-    )
+    apolloClient = ApolloClient.Builder()
+        .networkTransport(networkTransport)
+        .interceptors(TestLoggerExecutor)
+        .build()
   }
 
   @Test

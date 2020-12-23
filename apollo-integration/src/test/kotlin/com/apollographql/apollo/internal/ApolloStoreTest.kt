@@ -24,7 +24,7 @@ class ApolloStoreTest {
             return null
           }
 
-          override fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String?> {
+          override fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
             return emptySet<String>()
           }
 

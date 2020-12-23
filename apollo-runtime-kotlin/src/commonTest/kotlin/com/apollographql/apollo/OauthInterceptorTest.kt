@@ -6,10 +6,11 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.interceptor.ApolloRequest
 import com.apollographql.apollo.interceptor.ApolloResponse
 import com.apollographql.apollo.interceptor.BearerTokenInterceptor
-import com.apollographql.apollo.mock.MockQuery
-import com.apollographql.apollo.mock.TestTokenProvider
 import com.apollographql.apollo.network.HttpExecutionContext
 import com.apollographql.apollo.network.NetworkTransport
+import com.apollographql.apollo.testing.MockQuery
+import com.apollographql.apollo.testing.TestTokenProvider
+import com.apollographql.apollo.testing.runBlocking
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -57,16 +58,19 @@ class OauthInterceptorTest {
     }
   }
 
-
   private fun apolloClient(currentAccessToken: String, newAccessToken: String): ApolloClient {
     val networkTransport = AuthenticatedNetworkTransport()
-    return ApolloClient(
-        networkTransport = networkTransport,
-        interceptors = listOf(BearerTokenInterceptor(TestTokenProvider(
-            currentAccessToken,
-            newAccessToken
-        )))
-    )
+    return ApolloClient.Builder()
+        .networkTransport(networkTransport)
+        .interceptors(
+            BearerTokenInterceptor(
+                TestTokenProvider(
+                    currentAccessToken,
+                    newAccessToken
+                )
+            )
+        )
+        .build()
   }
 
   @Test

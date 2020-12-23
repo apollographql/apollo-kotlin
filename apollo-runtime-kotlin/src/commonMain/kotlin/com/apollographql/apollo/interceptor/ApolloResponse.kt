@@ -7,7 +7,7 @@ import com.apollographql.apollo.api.Response
 import com.benasher44.uuid.Uuid
 
 @ApolloExperimental
-class ApolloResponse<D : Operation.Data>(
+data class ApolloResponse<D : Operation.Data>(
   val requestUuid: Uuid,
   val response: Response<D>,
   val executionContext: ExecutionContext

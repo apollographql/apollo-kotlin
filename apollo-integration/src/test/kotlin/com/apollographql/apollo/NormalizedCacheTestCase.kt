@@ -113,7 +113,7 @@ class NormalizedCacheTestCase {
     cacheAndAssertCachedResponse(
         server,
         "HeroAndFriendsNameWithIdsParentOnlyResponse.json",
-        apolloClient!!.query(HeroAndFriendsNamesWithIDForParentOnlyQuery(fromNullable(Episode.NEWHOPE)))
+        apolloClient.query(HeroAndFriendsNamesWithIDForParentOnlyQuery(fromNullable(Episode.NEWHOPE)))
     ) { response ->
       assertThat(response.hasErrors()).isFalse()
       assertThat(response.data!!.hero?.id).isEqualTo("2001")
@@ -132,7 +132,7 @@ class NormalizedCacheTestCase {
     cacheAndAssertCachedResponse(
         server,
         "HeroAppearsInResponse.json",
-        apolloClient!!.query(HeroAppearsInQuery())
+        apolloClient.query(HeroAppearsInQuery())
     ) { response ->
       assertThat(response.hasErrors()).isFalse()
       assertThat(response.data!!.hero?.appearsIn).hasSize(3)
@@ -149,7 +149,7 @@ class NormalizedCacheTestCase {
     cacheAndAssertCachedResponse(
         server,
         "HeroAppearsInResponseWithNulls.json",
-        apolloClient!!.query(HeroAppearsInQuery())
+        apolloClient.query(HeroAppearsInQuery())
     ) { response ->
       assertThat(response.hasErrors()).isFalse()
       assertThat(response.data!!.hero?.appearsIn).hasSize(6)
@@ -169,7 +169,7 @@ class NormalizedCacheTestCase {
     cacheAndAssertCachedResponse(
         server,
         "HeroParentTypeDependentFieldDroidResponse.json",
-        apolloClient!!.query(HeroParentTypeDependentFieldQuery(fromNullable(Episode.NEWHOPE)))
+        apolloClient.query(HeroParentTypeDependentFieldQuery(fromNullable(Episode.NEWHOPE)))
     ) { response ->
       assertThat(response.hasErrors()).isFalse()
       assertThat(response.data!!.hero?.name).isEqualTo("R2-D2")
@@ -189,7 +189,7 @@ class NormalizedCacheTestCase {
     cacheAndAssertCachedResponse(
         server,
         "HeroTypeDependentAliasedFieldResponse.json",
-        apolloClient!!.query(HeroTypeDependentAliasedFieldQuery(fromNullable(Episode.NEWHOPE)))
+        apolloClient.query(HeroTypeDependentAliasedFieldQuery(fromNullable(Episode.NEWHOPE)))
     ) { response ->
       assertThat(response.hasErrors()).isFalse()
       assertThat(response.data!!.hero).isInstanceOf(HeroTypeDependentAliasedFieldQuery.Data.Hero.DroidHero::class.java)
@@ -200,7 +200,7 @@ class NormalizedCacheTestCase {
     cacheAndAssertCachedResponse(
         server,
         "HeroTypeDependentAliasedFieldResponse.json",
-        apolloClient!!.query(HeroTypeDependentAliasedFieldQuery(fromNullable(Episode.NEWHOPE)))
+        apolloClient.query(HeroTypeDependentAliasedFieldQuery(fromNullable(Episode.NEWHOPE)))
     ) { response ->
       assertThat(response.hasErrors()).isFalse()
       assertThat(response.data!!.hero).isInstanceOf(HeroTypeDependentAliasedFieldQuery.Data.Hero.HumanHero::class.java)
@@ -215,7 +215,7 @@ class NormalizedCacheTestCase {
     cacheAndAssertCachedResponse(
         server,
         "SameHeroTwiceResponse.json",
-        apolloClient!!.query(SameHeroTwiceQuery())
+        apolloClient.query(SameHeroTwiceQuery())
     ) { response ->
       assertThat(response.hasErrors()).isFalse()
       assertThat(response.data!!.hero?.name).isEqualTo("R2-D2")
@@ -233,11 +233,11 @@ class NormalizedCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameWithIdsResponse.json",
-        apolloClient!!.query(HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.NEWHOPE)))
+        apolloClient.query(HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.NEWHOPE)))
             .responseFetcher(ApolloResponseFetchers.NETWORK_ONLY), Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>> { response -> !response.hasErrors() }
     )
     assertResponse(
-        apolloClient!!.query(CharacterNameByIdQuery("1002")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
+        apolloClient.query(CharacterNameByIdQuery("1002")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
     ) { (_, data) ->
       assertThat(data!!.character).isNotNull()
       assertThat(data!!.character!!.name).isEqualTo("Han Solo")
@@ -251,11 +251,11 @@ class NormalizedCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameWithIdsResponse.json",
-        apolloClient!!.query(HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.NEWHOPE)))
+        apolloClient.query(HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.NEWHOPE)))
             .responseFetcher(ApolloResponseFetchers.NETWORK_ONLY), Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>> { response -> !response.hasErrors() }
     )
     assertResponse(
-        apolloClient!!.query(CharacterDetailsQuery("1002")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
+        apolloClient.query(CharacterDetailsQuery("1002")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
         Predicate<Response<CharacterDetailsQuery.Data>> { (_, data) ->
           assertThat(data).isNull()
           true
@@ -269,7 +269,7 @@ class NormalizedCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "HeroNameResponse.json",
-        apolloClient!!.query(EpisodeHeroNameQuery(fromNullable(Episode.EMPIRE))),
+        apolloClient.query(EpisodeHeroNameQuery(fromNullable(Episode.EMPIRE))),
         Predicate<Response<EpisodeHeroNameQuery.Data>> { response ->
           assertThat(response.hasErrors()).isFalse()
           Truth.assertThat(response.data).isNotNull()
@@ -279,7 +279,7 @@ class NormalizedCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "AllPlanetsNullableField.json",
-        apolloClient!!.query(AllPlanetsQuery())
+        apolloClient.query(AllPlanetsQuery())
     ) { response ->
       assertThat(response.hasErrors()).isFalse()
       assertThat(response.data!!.allPlanets).isNotNull()
@@ -291,7 +291,7 @@ class NormalizedCacheTestCase {
   @Throws(Exception::class)
   fun cacheOnlyMissReturnsNullData() {
     assertResponse(
-        apolloClient!!.query(EpisodeHeroNameQuery(fromNullable(Episode.EMPIRE))).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
+        apolloClient.query(EpisodeHeroNameQuery(fromNullable(Episode.EMPIRE))).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
         Predicate<Response<EpisodeHeroNameQuery.Data>> { (_, data) -> data == null }
     )
   }
@@ -302,7 +302,7 @@ class NormalizedCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "AllPlanetsNullableField.json",
-        apolloClient!!.query(AllPlanetsQuery()).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY),
+        apolloClient.query(AllPlanetsQuery()).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY),
         Predicate<Response<AllPlanetsQuery.Data>> { response ->
           Truth.assertThat(response).isNotNull()
           assertThat(response.hasErrors()).isFalse()
@@ -310,7 +310,7 @@ class NormalizedCacheTestCase {
         }
     )
     assertResponse(
-        apolloClient!!.query(AllPlanetsQuery()).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
+        apolloClient.query(AllPlanetsQuery()).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
         Predicate<Response<AllPlanetsQuery.Data>> { response ->
           Truth.assertThat(response).isNotNull()
           assertThat(response.hasErrors()).isFalse()
@@ -325,7 +325,7 @@ class NormalizedCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameWithIdsResponse.json",
-        apolloClient!!.query(HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.NEWHOPE)))
+        apolloClient.query(HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.NEWHOPE)))
     ) { (_, data) ->
       assertThat(data!!.hero?.id).isEqualTo("2001")
       assertThat(data!!.hero?.name).isEqualTo("R2-D2")
@@ -349,10 +349,10 @@ class NormalizedCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsWithFragmentResponse.json",
-        apolloClient!!.query(HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.NEWHOPE))),
+        apolloClient.query(HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.NEWHOPE))),
         Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>> { response -> !response.hasErrors() }
     )
-    val heroWithFriendsFragment = apolloClient!!.apolloStore.read(
+    val heroWithFriendsFragment = apolloClient.apolloStore.read(
         HeroWithFriendsFragment.Mapper(),
         from("2001"),
         Operation.EMPTY_VARIABLES).execute()
@@ -366,7 +366,7 @@ class NormalizedCacheTestCase {
     assertThat((heroWithFriendsFragment?.friends?.get(2) as HumanWithIdFragment)?.id).isEqualTo("1003")
     assertThat((heroWithFriendsFragment?.friends?.get(2) as HumanWithIdFragment)?.name).isEqualTo("Leia Organa")
 
-    var fragment: HumanWithIdFragment = apolloClient!!.apolloStore.read(
+    var fragment: HumanWithIdFragment = apolloClient.apolloStore.read(
         HumanWithIdFragment.Mapper(),
         from("1000"),
         Operation.EMPTY_VARIABLES
@@ -375,7 +375,7 @@ class NormalizedCacheTestCase {
     assertThat(fragment?.id).isEqualTo("1000")
     assertThat(fragment?.name).isEqualTo("Luke Skywalker")
 
-    fragment = apolloClient!!.apolloStore.read(
+    fragment = apolloClient.apolloStore.read(
         HumanWithIdFragment.Mapper(),
         from("1002"),
         Operation.EMPTY_VARIABLES
@@ -383,7 +383,7 @@ class NormalizedCacheTestCase {
     assertThat(fragment?.id).isEqualTo("1002")
     assertThat(fragment?.name).isEqualTo("Han Solo")
 
-    fragment = apolloClient!!.apolloStore.read(
+    fragment = apolloClient.apolloStore.read(
         HumanWithIdFragment.Mapper(),
         from("1003"),
         Operation.EMPTY_VARIABLES
@@ -398,25 +398,25 @@ class NormalizedCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "HeroNameResponse.json",
-        apolloClient!!.query(EpisodeHeroNameQuery(fromNullable(Episode.EMPIRE))),
+        apolloClient.query(EpisodeHeroNameQuery(fromNullable(Episode.EMPIRE))),
         Predicate<Response<EpisodeHeroNameQuery.Data>> { response -> !response.isFromCache }
     )
     enqueueAndAssertResponse(
         server,
         "HeroNameResponse.json",
-        apolloClient!!.query(EpisodeHeroNameQuery(fromNullable(Episode.EMPIRE))).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY),
+        apolloClient.query(EpisodeHeroNameQuery(fromNullable(Episode.EMPIRE))).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY),
         Predicate<Response<EpisodeHeroNameQuery.Data>> { response -> !response.isFromCache }
     )
     assertResponse(
-        apolloClient!!.query(EpisodeHeroNameQuery(fromNullable(Episode.EMPIRE))).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
+        apolloClient.query(EpisodeHeroNameQuery(fromNullable(Episode.EMPIRE))).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
         Predicate<Response<EpisodeHeroNameQuery.Data>> { response -> response.isFromCache }
     )
     assertResponse(
-        apolloClient!!.query(EpisodeHeroNameQuery(fromNullable(Episode.EMPIRE))).responseFetcher(ApolloResponseFetchers.CACHE_FIRST),
+        apolloClient.query(EpisodeHeroNameQuery(fromNullable(Episode.EMPIRE))).responseFetcher(ApolloResponseFetchers.CACHE_FIRST),
         Predicate<Response<EpisodeHeroNameQuery.Data>> { response -> response.isFromCache }
     )
     assertResponse(
-        apolloClient!!.query(EpisodeHeroNameQuery(fromNullable(Episode.EMPIRE))).responseFetcher(ApolloResponseFetchers.NETWORK_FIRST),
+        apolloClient.query(EpisodeHeroNameQuery(fromNullable(Episode.EMPIRE))).responseFetcher(ApolloResponseFetchers.NETWORK_FIRST),
         Predicate<Response<EpisodeHeroNameQuery.Data>> { response -> response.isFromCache }
     )
   }
@@ -427,7 +427,7 @@ class NormalizedCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameWithIdsResponse.json",
-        apolloClient!!.query(HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.NEWHOPE)))
+        apolloClient.query(HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.NEWHOPE)))
             .responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
     ) { (_, data) ->
       assertThat(data!!.hero?.name).isEqualTo("R2-D2")
@@ -435,7 +435,7 @@ class NormalizedCacheTestCase {
       true
     }
     assertResponse(
-        apolloClient!!.query(CharacterNameByIdQuery("1002")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
+        apolloClient.query(CharacterNameByIdQuery("1002")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
     ) { response ->
       assertThat(response.isFromCache).isTrue()
       assertThat(response.data!!.character!!.name).isEqualTo("Han Solo")
@@ -443,9 +443,9 @@ class NormalizedCacheTestCase {
     }
 
     // test remove root query object
-    Truth.assertThat(apolloClient!!.apolloStore.remove(from("2001")).execute()).isTrue()
+    Truth.assertThat(apolloClient.apolloStore.remove(from("2001")).execute()).isTrue()
     assertResponse(
-        apolloClient!!.query(HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.NEWHOPE)))
+        apolloClient.query(HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.NEWHOPE)))
             .responseFetcher(ApolloResponseFetchers.CACHE_ONLY), Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>> { response ->
       assertThat(response.isFromCache).isTrue()
       assertThat(response.data).isNull()
@@ -455,11 +455,11 @@ class NormalizedCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameWithIdsResponse.json",
-        apolloClient!!.query(HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.NEWHOPE)))
+        apolloClient.query(HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.NEWHOPE)))
             .responseFetcher(ApolloResponseFetchers.NETWORK_ONLY), Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>> { response -> !response.hasErrors() }
     )
     assertResponse(
-        apolloClient!!.query(CharacterNameByIdQuery("1002")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
+        apolloClient.query(CharacterNameByIdQuery("1002")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
     ) { response ->
       assertThat(response.isFromCache).isTrue()
       assertThat(response.data!!.character!!.name).isEqualTo("Han Solo")
@@ -467,9 +467,9 @@ class NormalizedCacheTestCase {
     }
 
     // test remove object from the list
-    Truth.assertThat(apolloClient!!.apolloStore.remove(from("1002")).execute()).isTrue()
+    Truth.assertThat(apolloClient.apolloStore.remove(from("1002")).execute()).isTrue()
     assertResponse(
-        apolloClient!!.query(HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.NEWHOPE)))
+        apolloClient.query(HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.NEWHOPE)))
             .responseFetcher(ApolloResponseFetchers.CACHE_ONLY), Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>> { response ->
       assertThat(response.isFromCache).isTrue()
       assertThat(response.data).isNull()
@@ -477,7 +477,7 @@ class NormalizedCacheTestCase {
     }
     )
     assertResponse(
-        apolloClient!!.query(CharacterNameByIdQuery("1002")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
+        apolloClient.query(CharacterNameByIdQuery("1002")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
         Predicate<Response<CharacterNameByIdQuery.Data>> { response ->
           assertThat(response.isFromCache).isTrue()
           assertThat(response.data).isNull()
@@ -485,7 +485,7 @@ class NormalizedCacheTestCase {
         }
     )
     assertResponse(
-        apolloClient!!.query(CharacterNameByIdQuery("1003")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
+        apolloClient.query(CharacterNameByIdQuery("1003")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
     ) { response ->
       assertThat(response.isFromCache).isTrue()
       Truth.assertThat(response.data).isNotNull()
@@ -500,7 +500,7 @@ class NormalizedCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameWithIdsResponse.json",
-        apolloClient!!.query(HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.NEWHOPE)))
+        apolloClient.query(HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.NEWHOPE)))
             .responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
     ) { (_, data) ->
       assertThat(data!!.hero?.name).isEqualTo("R2-D2")
@@ -508,30 +508,30 @@ class NormalizedCacheTestCase {
       true
     }
     assertResponse(
-        apolloClient!!.query(CharacterNameByIdQuery("1000")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
+        apolloClient.query(CharacterNameByIdQuery("1000")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
     ) { response ->
       assertThat(response.isFromCache).isTrue()
       assertThat(response.data!!.character!!.name).isEqualTo("Luke Skywalker")
       true
     }
     assertResponse(
-        apolloClient!!.query(CharacterNameByIdQuery("1002")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
+        apolloClient.query(CharacterNameByIdQuery("1002")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
     ) { response ->
       assertThat(response.isFromCache).isTrue()
       assertThat(response.data!!.character!!.name).isEqualTo("Han Solo")
       true
     }
     assertResponse(
-        apolloClient!!.query(CharacterNameByIdQuery("1003")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
+        apolloClient.query(CharacterNameByIdQuery("1003")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
     ) { response ->
       assertThat(response.isFromCache).isTrue()
       assertThat(response.data!!.character!!.name).isEqualTo("Leia Organa")
       true
     }
-    Truth.assertThat(apolloClient!!.apolloStore.remove(Arrays.asList(from("1002"), from("1000")))
+    Truth.assertThat(apolloClient.apolloStore.remove(Arrays.asList(from("1002"), from("1000")))
         .execute()).isEqualTo(2)
     assertResponse(
-        apolloClient!!.query(CharacterNameByIdQuery("1000")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
+        apolloClient.query(CharacterNameByIdQuery("1000")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
         Predicate<Response<CharacterNameByIdQuery.Data>> { response ->
           assertThat(response.isFromCache).isTrue()
           assertThat(response.data).isNull()
@@ -539,7 +539,7 @@ class NormalizedCacheTestCase {
         }
     )
     assertResponse(
-        apolloClient!!.query(CharacterNameByIdQuery("1002")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
+        apolloClient.query(CharacterNameByIdQuery("1002")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
         Predicate<Response<CharacterNameByIdQuery.Data>> { response ->
           assertThat(response.isFromCache).isTrue()
           assertThat(response.data).isNull()
@@ -547,7 +547,7 @@ class NormalizedCacheTestCase {
         }
     )
     assertResponse(
-        apolloClient!!.query(CharacterNameByIdQuery("1003")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
+        apolloClient.query(CharacterNameByIdQuery("1003")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
     ) { response ->
       assertThat(response.isFromCache).isTrue()
       assertThat(response.data!!.character!!.name).isEqualTo("Leia Organa")
@@ -561,11 +561,11 @@ class NormalizedCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameResponse.json",
-        apolloClient!!.query(HeroAndFriendsDirectivesQuery(episode = Input.fromNullable(Episode.JEDI), includeName = true, skipFriends = false)),
+        apolloClient.query(HeroAndFriendsDirectivesQuery(episode = Input.fromNullable(Episode.JEDI), includeName = true, skipFriends = false)),
         Predicate<Response<HeroAndFriendsDirectivesQuery.Data>> { response -> !response.hasErrors() }
     )
     assertResponse(
-        apolloClient!!.query(HeroAndFriendsDirectivesQuery(episode = Input.fromNullable(Episode.JEDI), includeName = true, skipFriends = false)).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
+        apolloClient.query(HeroAndFriendsDirectivesQuery(episode = Input.fromNullable(Episode.JEDI), includeName = true, skipFriends = false)).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
         Predicate<Response<HeroAndFriendsDirectivesQuery.Data>> { (_, data) ->
           assertThat(data!!.hero?.name).isEqualTo("R2-D2")
           assertThat(data!!.hero?.friends).hasSize(3)
@@ -697,7 +697,7 @@ LruNormalizedCache {
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameWithIdsResponse.json",
-        apolloClient!!.query(HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.NEWHOPE)))
+        apolloClient.query(HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.NEWHOPE)))
             .responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
     ) { (_, data) ->
       assertThat(data!!.hero?.name).isEqualTo("R2-D2")
@@ -705,21 +705,21 @@ LruNormalizedCache {
       true
     }
     assertResponse(
-        apolloClient!!.query(CharacterNameByIdQuery("1000")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
+        apolloClient.query(CharacterNameByIdQuery("1000")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
     ) { response ->
       assertThat(response.isFromCache).isTrue()
       assertThat(response.data!!.character!!.name).isEqualTo("Luke Skywalker")
       true
     }
     assertResponse(
-        apolloClient!!.query(CharacterNameByIdQuery("1002")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
+        apolloClient.query(CharacterNameByIdQuery("1002")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
     ) { response ->
       assertThat(response.isFromCache).isTrue()
       assertThat(response.data!!.character!!.name).isEqualTo("Han Solo")
       true
     }
     assertResponse(
-        apolloClient!!.query(CharacterNameByIdQuery("1003")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
+        apolloClient.query(CharacterNameByIdQuery("1003")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
     ) { response ->
       assertThat(response.isFromCache).isTrue()
       assertThat(response.data!!.character!!.name).isEqualTo("Leia Organa")
@@ -727,9 +727,9 @@ LruNormalizedCache {
     }
 
     // test remove root query object
-    assertThat(apolloClient!!.apolloStore.remove(from("2001"), true).execute()).isTrue()
+    assertThat(apolloClient.apolloStore.remove(from("2001"), true).execute()).isTrue()
     assertResponse(
-        apolloClient!!.query(HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.NEWHOPE)))
+        apolloClient.query(HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.NEWHOPE)))
             .responseFetcher(ApolloResponseFetchers.CACHE_ONLY), Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>> { response ->
       assertThat(response.isFromCache).isTrue()
       assertThat(response.data).isNull()
@@ -737,7 +737,7 @@ LruNormalizedCache {
     }
     )
     assertResponse(
-        apolloClient!!.query(CharacterNameByIdQuery("1000")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
+        apolloClient.query(CharacterNameByIdQuery("1000")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
         Predicate<Response<CharacterNameByIdQuery.Data>> { response ->
           assertThat(response.isFromCache).isTrue()
           assertThat(response.data).isNull()
@@ -745,7 +745,7 @@ LruNormalizedCache {
         }
     )
     assertResponse(
-        apolloClient!!.query(CharacterNameByIdQuery("1002")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
+        apolloClient.query(CharacterNameByIdQuery("1002")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
         Predicate<Response<CharacterNameByIdQuery.Data>> { response ->
           assertThat(response.isFromCache).isTrue()
           assertThat(response.data).isNull()
@@ -753,14 +753,14 @@ LruNormalizedCache {
         }
     )
     assertResponse(
-        apolloClient!!.query(CharacterNameByIdQuery("1003")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
+        apolloClient.query(CharacterNameByIdQuery("1003")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
         Predicate<Response<CharacterNameByIdQuery.Data>> { response ->
           assertThat(response.isFromCache).isTrue()
           assertThat(response.data).isNull()
           true
         }
     )
-    Truth.assertThat(prettifyDump(apolloClient!!.apolloStore.normalizedCache().dump())).isEqualTo("""OptimisticNormalizedCache {}
+    Truth.assertThat(prettifyDump(apolloClient.apolloStore.normalizedCache().dump())).isEqualTo("""OptimisticNormalizedCache {}
 LruNormalizedCache {
   "QUERY_ROOT" : {
     "hero({"episode":"NEWHOPE"})" : CacheRecordRef(2001)

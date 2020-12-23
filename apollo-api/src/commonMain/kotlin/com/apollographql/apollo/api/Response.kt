@@ -30,6 +30,7 @@ data class Response<D : Operation.Data>(
 
     /**
      * Indicates if response is resolved from the cache.
+     * // TODO remove as it is now in the ExecutionContext
      */
     val isFromCache: Boolean = false,
 
