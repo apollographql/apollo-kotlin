@@ -216,13 +216,9 @@ class CacheKeyBuilderTest {
             writer.writeNumber("number", BigDecimal.valueOf(4))
             writer.writeBoolean("boolean", true)
             writer.writeCustom("custom", object : ScalarType {
-              override fun typeName(): String {
-                return "EPISODE"
-              }
-
-              override fun className(): String {
-                return String::class.java.name
-              }
+              override val graphqlName = "EPISODE"
+              override val className: String
+                get() = String::class.java.name
             }, "JEDI")
             writer.writeObject("object", object : InputFieldMarshaller {
               @Throws(IOException::class)
@@ -239,13 +235,9 @@ class CacheKeyBuilderTest {
               listItemWriter.writeNumber(BigDecimal.valueOf(4))
               listItemWriter.writeBoolean(true)
               listItemWriter.writeCustom(object : ScalarType {
-                override fun typeName(): String {
-                  return "EPISODE"
-                }
-
-                override fun className(): String {
-                  return String::class.java.name
-                }
+                override val graphqlName = "EPISODE"
+                override val className: String
+                  get() = String::class.java.name
               }, "JEDI")
               listItemWriter.writeObject(object : InputFieldMarshaller {
                 @Throws(IOException::class)
@@ -304,13 +296,9 @@ class CacheKeyBuilderTest {
             writer.writeNumber("number", null)
             writer.writeBoolean("boolean", null)
             writer.writeCustom("custom", object : ScalarType {
-              override fun typeName(): String {
-                return "EPISODE"
-              }
-
-              override fun className(): String {
-                return String::class.java.name
-              }
+              override val graphqlName = "EPISODE"
+              override val className: String
+                get() = String::class.java.name
             }, null)
             writer.writeObject("object", null)
             writer.writeList("listNull", null)
@@ -324,13 +312,9 @@ class CacheKeyBuilderTest {
                 listItemWriter.writeNumber(null)
                 listItemWriter.writeBoolean(null)
                 listItemWriter.writeCustom(object : ScalarType {
-                  override fun typeName(): String {
-                    return "EPISODE"
-                  }
-
-                  override fun className(): String {
-                    return String::class.java.name
-                  }
+                  override val graphqlName = "EPISODE"
+                  override val className: String
+                    get() = String::class.java.name
                 }, null)
                 listItemWriter.writeObject(null)
                 listItemWriter.writeList(null)

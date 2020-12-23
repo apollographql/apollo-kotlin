@@ -78,7 +78,7 @@ internal class AstBuilder private constructor(
 
   private fun buildCustomTypes(): CustomScalarTypes {
     return customScalarsMapping.mapValues { (schemaType, mappedType) ->
-      CodeGenerationAst.CustomType(
+      CodeGenerationAst.CustomScalarType(
           name = schemaType.normalizeTypeName(),
           schemaType = schemaType,
           mappedType = mappedType,

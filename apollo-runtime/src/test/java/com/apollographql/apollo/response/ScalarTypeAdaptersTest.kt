@@ -13,13 +13,15 @@ class ScalarTypeAdaptersTest {
     val customTypeAdapters = mutableMapOf<ScalarType, CustomScalarTypeAdapter<*>>()
     val expectedAdapter = MockCustomScalarTypeAdapter()
     customTypeAdapters[object : ScalarType {
-      override fun typeName() = "String"
-      override fun className() = String::class.java.name
+      override val graphqlName = "String"
+      override val className: String
+        get() = String::class.java.name
     }] = expectedAdapter
 
     val actualAdapter = ScalarTypeAdapters(customTypeAdapters).adapterFor<String>(object : ScalarType {
-      override fun typeName() = "String"
-      override fun className() = String::class.java.name
+      override val graphqlName = "String"
+      override val className: String
+        get() = String::class.java.name
     })
     assertThat(actualAdapter).isEqualTo(expectedAdapter)
   }
@@ -29,8 +31,9 @@ class ScalarTypeAdaptersTest {
     ScalarTypeAdapters(emptyMap<ScalarType, CustomScalarTypeAdapter<*>>())
         .adapterFor<RuntimeException>(
             object : ScalarType {
-              override fun typeName() = "RuntimeException"
-              override fun className() = RuntimeException::class.java.name
+              override val graphqlName = "RuntimeException"
+              override val className: String
+                get() = RuntimeException::class.java.name
             }
         )
   }
@@ -118,11 +121,12 @@ class ScalarTypeAdaptersTest {
   }
 
   private fun <T : Any> defaultAdapter(clazz: Class<T>): CustomScalarTypeAdapter<T> {
-    return ScalarTypeAdapters(emptyMap<ScalarType, CustomScalarTypeAdapter<*>>()).adapterFor<T>(
+    return ScalarTypeAdapters(emptyMap()).adapterFor<T>(
         object : ScalarType {
-          override fun typeName(): String = clazz.simpleName
-
-          override fun className(): String = clazz.name
+          override val graphqlName: String
+            get() = clazz.simpleName
+          override val className: String
+            get() = clazz.name
         }
     )
   }

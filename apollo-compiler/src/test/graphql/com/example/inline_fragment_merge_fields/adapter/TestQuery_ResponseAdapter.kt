@@ -10,7 +10,7 @@ import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.inline_fragment_merge_fields.TestQuery
-import com.example.inline_fragment_merge_fields.type.CustomType
+import com.example.inline_fragment_merge_fields.type.CustomScalarType
 import kotlin.Any
 import kotlin.Array
 import kotlin.String
@@ -93,7 +93,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, false, null),
           ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null),
-          ResponseField.forCustomType("profileLink", "profileLink", null, false, CustomType.URL, null)
+          ResponseField.forCustomScalar("profileLink", "profileLink", null, false, CustomScalarType.URL, null)
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):

@@ -208,14 +208,9 @@ class InputFieldJsonWriterTest {
     assertEquals("{\"someField\":[[\"someValue\"]],\"someNullField\":null", jsonBuffer.readUtf8())
   }
 
-  private data class MockCustomScalarType internal constructor(val clazz: KClass<*>, val qualifiedName: String) : ScalarType {
-    override fun typeName(): String {
-      return clazz.simpleName!!
-    }
-
-    override fun className(): String {
-      return qualifiedName
-    }
+  private data class MockCustomScalarType(val clazz: KClass<*>, override val className: String) : ScalarType {
+    override val graphqlName
+      get() = clazz.simpleName!!
   }
 
   private abstract inner class MockCustomScalarTypeAdapter : CustomScalarTypeAdapter<Any?> {

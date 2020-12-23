@@ -10,7 +10,7 @@ import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.custom_scalar_type_warnings.TestQuery
-import com.example.custom_scalar_type_warnings.type.CustomType
+import com.example.custom_scalar_type_warnings.type.CustomScalarType
 import kotlin.Any
 import kotlin.Array
 import kotlin.String
@@ -76,7 +76,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           while(true) {
             when (selectField(RESPONSE_FIELDS)) {
               0 -> links = readList<Any>(RESPONSE_FIELDS[0]) { reader ->
-                reader.readCustomType<Any>(CustomType.URL)
+                reader.readCustomType<Any>(CustomScalarType.URL)
               }?.map { it!! }
               else -> break
             }
@@ -90,7 +90,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero) {
         writer.writeList(RESPONSE_FIELDS[0], value.links) { values, listItemWriter ->
           values?.forEach { value ->
-            listItemWriter.writeCustom(CustomType.URL, value)}
+            listItemWriter.writeCustom(CustomScalarType.URL, value)}
         }
       }
     }

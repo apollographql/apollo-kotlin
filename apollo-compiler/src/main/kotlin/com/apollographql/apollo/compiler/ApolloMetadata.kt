@@ -38,7 +38,7 @@ data class ApolloMetadata(
     val moduleName: String,
     val generateKotlinModels: Boolean,
     val pluginVersion: String,
-    val customTypesMap: Map<String, String>
+    val customScalarsMapping: Map<String, String>
   )
 
   companion object {
@@ -97,7 +97,7 @@ data class ApolloMetadata(
             moduleName = moduleName,
             generateKotlinModels = generateKotlinModels,
             pluginVersion = pluginVersion,
-            customScalarsMapping = customTypesMap
+            customScalarsMapping = customScalarsMapping
         )
       }
     }
@@ -112,7 +112,7 @@ data class ApolloMetadata(
         moduleName = moduleName,
         generateKotlinModels = generateKotlinModels,
         pluginVersion = pluginVersion,
-        customTypesMap = customScalarsMapping
+        customScalarsMapping = customScalarsMapping
     )
     serializedMetadata.toJson(file)
   }

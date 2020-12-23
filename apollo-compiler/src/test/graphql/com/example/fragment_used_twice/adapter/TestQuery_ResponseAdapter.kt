@@ -10,7 +10,7 @@ import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.fragment_used_twice.TestQuery
-import com.example.fragment_used_twice.type.CustomType
+import com.example.fragment_used_twice.type.CustomScalarType
 import kotlin.Any
 import kotlin.Array
 import kotlin.String
@@ -89,7 +89,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       object CharacterHero : ResponseAdapter<TestQuery.Data.Hero.CharacterHero> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
+<<<<<<< HEAD
           ResponseField.forString("name", "name", null, false, null)
+=======
+          ResponseField.forString("name", "name", null, false, null),
+          ResponseField.forCustomScalar("birthDate", "birthDate", null, false, CustomScalarType.Date, null)
+>>>>>>> 90ab44814... Simplify ScalarType
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -183,7 +188,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       object CharacterHumanHero : ResponseAdapter<TestQuery.Data.Hero.CharacterHumanHero> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
+<<<<<<< HEAD
           ResponseField.forString("name", "name", null, false, null)
+=======
+          ResponseField.forString("name", "name", null, false, null),
+          ResponseField.forCustomScalar("birthDate", "birthDate", null, false, CustomScalarType.Date, null)
+>>>>>>> 90ab44814... Simplify ScalarType
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):

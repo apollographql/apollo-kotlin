@@ -1,6 +1,6 @@
 package com.apollographql.apollo.compiler.backend.ast
 
-internal typealias CustomScalarTypes = Map<String, CodeGenerationAst.CustomType>
+internal typealias CustomScalarTypes = Map<String, CodeGenerationAst.CustomScalarType>
 
 /**
  * Represents the minimum of possible AST for the code generator.
@@ -20,7 +20,7 @@ internal data class CodeGenerationAst(
     val customScalarScalarTypes: CustomScalarTypes
 ) {
 
-  data class CustomType(
+  data class CustomScalarType(
       val name: String,
       val schemaType: String,
       val mappedType: String
@@ -208,7 +208,7 @@ internal data class CodeGenerationAst(
   companion object {
     fun customTypeRef(typesPackageName: String): TypeRef {
       return TypeRef(
-          name = "CustomType",
+          name = "CustomScalarType",
           packageName = typesPackageName
       )
     }

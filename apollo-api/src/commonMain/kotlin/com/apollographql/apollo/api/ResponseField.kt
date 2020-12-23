@@ -349,7 +349,7 @@ open class ResponseField internal constructor(
      * @return Field instance representing [Type.CUSTOM]
      */
     @JvmStatic
-    fun forCustomType(
+    fun forCustomScalar(
         responseName: String,
         fieldName: String,
         arguments: Map<String, Any?>?,

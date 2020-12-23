@@ -10,24 +10,24 @@ import kotlin.jvm.JvmField
 
 class ScalarTypeAdapters(val customScalarTypeAdapters: Map<ScalarType, CustomScalarTypeAdapter<*>>) {
 
-  private val customTypeAdapters = customScalarTypeAdapters.mapKeys { it.key.typeName() }
+  private val customTypeAdapters = customScalarTypeAdapters.mapKeys { it.key.graphqlName }
 
   @Suppress("UNCHECKED_CAST")
   fun <T : Any> adapterFor(scalarType: ScalarType): CustomScalarTypeAdapter<T> {
     /**
      * Look in user-registered adapters by scalar type name first
      */
-    var customScalarTypeAdapter: CustomScalarTypeAdapter<*>? = customTypeAdapters[scalarType.typeName()]
+    var customScalarTypeAdapter: CustomScalarTypeAdapter<*>? = customTypeAdapters[scalarType.graphqlName]
     if (customScalarTypeAdapter == null) {
       /**
        * If none is found, provide a default adapter based on the implementation class name
        * This saves the user the hassle of registering a scalar adapter for mapping to widespread such as Long, Map, etc...
        * The ScalarType must still be declared in the Gradle plugin configuration.
        */
-      customScalarTypeAdapter = DEFAULT_ADAPTERS[scalarType.className()]
+      customScalarTypeAdapter = DEFAULT_ADAPTERS[scalarType.className]
     }
     return requireNotNull(customScalarTypeAdapter) {
-      "Can't map GraphQL type: `${scalarType.typeName()}` to: `${scalarType.className()}`. Did you forget to add a custom type adapter?"
+      "Can't map GraphQL type: `${scalarType.graphqlName}` to: `${scalarType.className}`. Did you forget to add a custom type adapter?"
     } as CustomScalarTypeAdapter<T>
   }
 

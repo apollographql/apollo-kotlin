@@ -93,14 +93,10 @@ class SimpleResponseReaderTest {
   @Test
   fun readCustomObjectMap() {
     val mapScalarType: ScalarType = object : ScalarType {
-      override fun typeName(): String {
-        return Map::class.simpleName!!
-      }
-
-      override fun className(): String {
-        return "kotlin.collections.Map"
-      }
+      override val graphqlName = "CustomObject"
+      override val className = "kotlin.collections.Map"
     }
+
     val successField = ResponseField.forCustomType(
         "successFieldResponseName", "successFieldName", null,
         false, mapScalarType, noConditions
@@ -135,14 +131,11 @@ class SimpleResponseReaderTest {
   @Test
   fun readCustomObjectList() {
     val listScalarType: ScalarType = object : ScalarType {
-      override fun typeName(): String {
-        return List::class.simpleName!!
-      }
+      override val graphqlName = "CustomList"
 
-      override fun className(): String {
-        return "kotlin.collections.List"
-      }
+      override val className = "kotlin.collections.List"
     }
+
     val successField = ResponseField.forCustomType(
         "successFieldResponseName", "successFieldName", null,
         false, listScalarType, noConditions
@@ -465,24 +458,17 @@ class SimpleResponseReaderTest {
 
     private fun scalarTypeFor(clazz: KClass<*>, className: String): ScalarType {
       return object : ScalarType {
-        override fun typeName(): String {
-          return clazz.simpleName!!
-        }
+        override val graphqlName
+          get() = clazz.simpleName!!
 
-        override fun className(): String {
-          return className
-        }
+        override val className = className
       }
     }
 
     private val OBJECT_CUSTOM_TYPE: ScalarType = object : ScalarType {
-      override fun typeName(): String {
-        return String::class.simpleName!!
-      }
+      override val graphqlName = "CustomObject"
 
-      override fun className(): String {
-        return "kotlin.String"
-      }
+      override val className = "kotlin.String"
     }
   }
 }
