@@ -74,31 +74,27 @@ class ApolloClient private constructor(
     private var interceptors: List<ApolloRequestInterceptor> = emptyList()
     private var executionContext: ExecutionContext = ExecutionContext.Empty
 
-    fun serverUrl(serverUrl: String): Builder {
+    fun serverUrl(serverUrl: String) = apply {
       networkTransport(ApolloHttpNetworkTransport(serverUrl = serverUrl, headers = emptyMap()))
-      return this
     }
 
-    fun networkTransport(networkTransport: NetworkTransport): Builder {
+    fun networkTransport(networkTransport: NetworkTransport) = apply {
       check(this.networkTransport == null) {
         "ApolloGraphQL: networkTransport is already set. If you're using serverUrl(), you shouldn't call networkTransport() manually"
       }
       this.networkTransport = networkTransport
-      return this
     }
 
-    fun subscriptionNetworkTransport(subscriptionNetworkTransport: NetworkTransport): Builder {
+    fun subscriptionNetworkTransport(subscriptionNetworkTransport: NetworkTransport) = apply {
       check(this.subscriptionNetworkTransport == null) {
         "ApolloGraphQL: subscriptionNetworkTransport is already set."
       }
       this.subscriptionNetworkTransport = subscriptionNetworkTransport
-      return this
     }
 
-    fun addInterceptor(interceptor: ApolloRequestInterceptor, executionContext: ExecutionContext = ExecutionContext.Empty): Builder {
+    fun addInterceptor(interceptor: ApolloRequestInterceptor, executionContext: ExecutionContext = ExecutionContext.Empty) = apply {
       interceptors = interceptors + interceptor
       this.executionContext = this.executionContext + executionContext
-      return this
     }
 
     fun build(): ApolloClient {
@@ -120,30 +116,28 @@ class ApolloClient private constructor(
     /**
      * internal because only used from tests
      */
-    internal fun interceptors(interceptors: List<ApolloRequestInterceptor>): Builder {
+    internal fun interceptors(interceptors: List<ApolloRequestInterceptor>) = apply {
       check(this.interceptors.isEmpty()) {
         "ApolloGraphQL: interceptors is already set"
       }
       this.interceptors = interceptors
-      return this
     }
 
     /**
      * Convenience overload of [interceptors] with variadic parameters
      */
-    internal fun interceptors(vararg interceptors: ApolloRequestInterceptor): Builder {
-      return interceptors(interceptors.toList())
+    internal fun interceptors(vararg interceptors: ApolloRequestInterceptor) = apply {
+      interceptors(interceptors.toList())
     }
 
     /**
      * internal because only used from tests
      */
-    internal fun executionContext(executionContext: ExecutionContext): Builder {
+    internal fun executionContext(executionContext: ExecutionContext) = apply {
       check(this.executionContext == ExecutionContext.Empty) {
         "ApolloGraphQL: executionContext is already set."
       }
       this.executionContext = executionContext
-      return this
     }
   }
 
