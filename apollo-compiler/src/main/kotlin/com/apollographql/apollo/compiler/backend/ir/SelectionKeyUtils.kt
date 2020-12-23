@@ -33,8 +33,8 @@ internal object SelectionKeyUtils {
   }
 
   fun BackendIr.Fragment.addFragmentSelectionKey(selectionKey: SelectionKey): BackendIr.Fragment {
-    return when (this.kind) {
-      BackendIr.Fragment.Kind.Interface -> this.copy(
+    return when (this.type) {
+      BackendIr.Fragment.Type.Interface -> this.copy(
           fields = this.fields.addFieldSelectionKey(selectionKey + this.name),
           selectionKeys = this.selectionKeys + (selectionKey + this.name)
       )
