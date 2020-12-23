@@ -81,8 +81,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           TestQuery.Data.Search {
         val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
-          "Droid" -> CharacterSearch.fromResponse(reader, typename)
           "Human" -> CharacterSearch.fromResponse(reader, typename)
+          "Droid" -> CharacterSearch.fromResponse(reader, typename)
           "Starship" -> StarshipSearch.fromResponse(reader, typename)
           else -> OtherSearch.fromResponse(reader, typename)
         }

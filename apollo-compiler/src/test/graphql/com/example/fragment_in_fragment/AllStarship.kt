@@ -194,7 +194,8 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
                   override fun marshaller(): ResponseFieldMarshaller
 
                   interface Person : Node, PilotFragment,
-                      StarshipFragment.PilotConnection.Edge.Node.Person {
+                      StarshipFragment.PilotConnection.Edge.Node.Person,
+                      StarshipFragment.PilotConnection.Edge.Node {
                     override val __typename: String
 
                     /**
@@ -220,7 +221,9 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
                       override fun marshaller(): ResponseFieldMarshaller
 
                       interface Planet : Homeworld, PlanetFragment, PilotFragment.Homeworld.Planet,
-                          StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet {
+                          PilotFragment.Homeworld,
+                          StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet,
+                          StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld {
                         override val __typename: String
 
                         /**
@@ -308,7 +311,8 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
 
                   interface Person : Starship.PilotConnection.Edge.Node,
                       Starship.PilotConnection.Edge.Node.Person, PilotFragment,
-                      StarshipFragment.PilotConnection.Edge.Node.Person {
+                      StarshipFragment.PilotConnection.Edge.Node.Person,
+                      StarshipFragment.PilotConnection.Edge.Node, Node {
                     override val __typename: String
 
                     /**
@@ -336,8 +340,9 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
 
                       interface Planet : Starship.PilotConnection.Edge.Node.Person.Homeworld,
                           Starship.PilotConnection.Edge.Node.Person.Homeworld.Planet,
-                          PlanetFragment, PilotFragment.Homeworld.Planet,
-                          StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet {
+                          PlanetFragment, PilotFragment.Homeworld.Planet, PilotFragment.Homeworld,
+                          StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet,
+                          StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld, Homeworld {
                         override val __typename: String
 
                         /**
@@ -369,8 +374,8 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
                      */
                     override val homeworld: Homeworld?
                   ) : Starship.PilotConnection.Edge.Node, Starship.PilotConnection.Edge.Node.Person,
-                      PilotFragment, StarshipFragment.PilotConnection.Edge.Node.Person, Person, Node
-                      {
+                      PilotFragment, StarshipFragment.PilotConnection.Edge.Node.Person,
+                      StarshipFragment.PilotConnection.Edge.Node, Person, Node {
                     override fun marshaller(): ResponseFieldMarshaller {
                       return ResponseFieldMarshaller { writer ->
                         AllStarship_ResponseAdapter.Data.AllStarship.Edge.Node.StarshipNode.PilotConnection.Edge.Node.PersonNode.toResponse(writer, this)
@@ -391,9 +396,10 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
 
                       interface Planet : Starship.PilotConnection.Edge.Node.Person.Homeworld,
                           Starship.PilotConnection.Edge.Node.Person.Homeworld.Planet,
-                          PlanetFragment, PilotFragment.Homeworld.Planet,
+                          PlanetFragment, PilotFragment.Homeworld.Planet, PilotFragment.Homeworld,
                           StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet,
-                          Person.Homeworld.Planet {
+                          StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld,
+                          Person.Homeworld.Planet, Person.Homeworld, Homeworld {
                         override val __typename: String
 
                         /**
@@ -412,9 +418,10 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
                         override val name: String?
                       ) : Starship.PilotConnection.Edge.Node.Person.Homeworld,
                           Starship.PilotConnection.Edge.Node.Person.Homeworld.Planet,
-                          PlanetFragment, PilotFragment.Homeworld.Planet,
+                          PlanetFragment, PilotFragment.Homeworld.Planet, PilotFragment.Homeworld,
                           StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet,
-                          Person.Homeworld.Planet, Planet, Homeworld {
+                          StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld,
+                          Person.Homeworld.Planet, Person.Homeworld, Planet, Homeworld {
                         override fun marshaller(): ResponseFieldMarshaller {
                           return ResponseFieldMarshaller { writer ->
                             AllStarship_ResponseAdapter.Data.AllStarship.Edge.Node.StarshipNode.PilotConnection.Edge.Node.PersonNode.Homeworld.PlanetHomeworld.toResponse(writer, this)
@@ -436,9 +443,7 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
                       }
 
                       companion object {
-                        fun Homeworld.asHomeworld():
-                            Starship.PilotConnection.Edge.Node.Person.Homeworld? = this as?
-                            Starship.PilotConnection.Edge.Node.Person.Homeworld
+                        fun Homeworld.asHomeworld(): Person.Homeworld? = this as? Person.Homeworld
 
                         fun Homeworld.asPlanet(): Planet? = this as? Planet
 
@@ -459,8 +464,8 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
                   }
 
                   companion object {
-                    fun Node.asNode(): Starship.PilotConnection.Edge.Node? = this as?
-                        Starship.PilotConnection.Edge.Node
+                    fun Node.asNode(): StarshipFragment.PilotConnection.Edge.Node? = this as?
+                        StarshipFragment.PilotConnection.Edge.Node
 
                     fun Node.asPerson(): Person? = this as? Person
 

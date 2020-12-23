@@ -86,7 +86,8 @@ interface StarshipFragment : GraphqlFragment {
 
             override fun marshaller(): ResponseFieldMarshaller
 
-            interface Planet : Homeworld, PlanetFragment, PilotFragment.Homeworld.Planet {
+            interface Planet : Homeworld, PlanetFragment, PilotFragment.Homeworld.Planet,
+                PilotFragment.Homeworld {
               override val __typename: String
 
               /**

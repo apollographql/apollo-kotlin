@@ -307,7 +307,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
 
             override fun marshaller(): ResponseFieldMarshaller
 
-            interface Character : Human.Friend.Friend, Human.Friend.Friend.Character, HeroDetail {
+            interface Character : Human.Friend.Friend, Human.Friend.Friend.Character, HeroDetail,
+                Friend {
               override val __typename: String
 
               /**

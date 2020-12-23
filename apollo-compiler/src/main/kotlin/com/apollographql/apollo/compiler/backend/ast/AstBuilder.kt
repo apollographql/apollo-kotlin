@@ -469,7 +469,7 @@ internal class AstBuilder private constructor(
       alternativeSelectionKeys: Set<SelectionKey>,
   ): CodeGenerationAst.ObjectType {
     val possibleImplementations = if (abstract) emptyMap() else fragments
-        .filter { fragment -> fragment.kind != BackendIr.Fragment.Kind.Fallback }
+        .filter { fragment -> fragment.kind == BackendIr.Fragment.Kind.Implementation }
         .flatMap { fragment ->
           val typeRef = (selectionKey + fragment.name).asTypeRef(targetPackageName)
           fragment.possibleTypes.map { possibleType -> possibleType.name!! to typeRef }
@@ -571,7 +571,14 @@ internal class AstBuilder private constructor(
           alternativeSelectionKeys = this.selectionKeys,
       )
       objectType.copy(
-          nestedObjects = objectType.nestedObjects
+          nestedObjects = objectType.nestedObjects + (this.nestedFragments?.map { nestedFragment ->
+            nestedFragment.buildObjectType(
+                targetPackageName = targetPackageName,
+                abstract = true,
+                selectionKey = selectionKey + this.name,
+                customScalarTypes = customScalarTypes,
+            )
+          } ?: emptyList())
       )
     } else {
       buildObjectType(
@@ -579,7 +586,7 @@ internal class AstBuilder private constructor(
           description = null,
           schemaTypename = null,
           fields = this.fields,
-          fragments = BackendIr.Fragments(
+          fragments = this.nestedFragments ?: BackendIr.Fragments(
               fragments = emptyList(),
               accessors = emptyMap(),
           ),

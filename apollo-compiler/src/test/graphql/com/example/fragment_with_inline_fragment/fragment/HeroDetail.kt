@@ -127,6 +127,71 @@ interface HeroDetail : GraphqlFragment {
         }
       }
     }
+
+    interface Droid : HeroDetail.Droid {
+      override val __typename: String
+
+      /**
+       * The name of the character
+       */
+      override val name: String
+
+      /**
+       * The friends of the character exposed as a connection with edges
+       */
+      override val friendsConnection: FriendsConnection
+
+      /**
+       * This droid's primary function
+       */
+      val primaryFunction: String?
+
+      override fun marshaller(): ResponseFieldMarshaller
+
+      /**
+       * A connection object for a character's friends
+       */
+      interface FriendsConnection : HeroDetail.FriendsConnection, HeroDetail.Droid.FriendsConnection
+          {
+        /**
+         * The total number of friends
+         */
+        override val totalCount: Int?
+
+        /**
+         * The edges for each of the character's friends.
+         */
+        override val edges: List<Edge?>?
+
+        override fun marshaller(): ResponseFieldMarshaller
+
+        /**
+         * An edge object for a character's friends
+         */
+        interface Edge : HeroDetail.FriendsConnection.Edge, HeroDetail.Droid.FriendsConnection.Edge
+            {
+          /**
+           * The character represented by this friendship edge
+           */
+          override val node: Node?
+
+          override fun marshaller(): ResponseFieldMarshaller
+
+          /**
+           * A character from the Star Wars universe
+           */
+          interface Node : HeroDetail.FriendsConnection.Edge.Node,
+              HeroDetail.Droid.FriendsConnection.Edge.Node {
+            /**
+             * The name of the character
+             */
+            override val name: String
+
+            override fun marshaller(): ResponseFieldMarshaller
+          }
+        }
+      }
+    }
   }
 
   interface Human : HeroDetail, HumanDetail {

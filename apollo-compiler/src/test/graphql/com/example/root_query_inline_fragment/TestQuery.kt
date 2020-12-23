@@ -216,7 +216,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
         override fun marshaller(): ResponseFieldMarshaller
 
-        interface Human : Query.Hero, Query.Hero.Human {
+        interface Human : Query.Hero, Query.Hero.Human, Hero {
           override val __typename: String
 
           /**
@@ -292,7 +292,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
         override fun marshaller(): ResponseFieldMarshaller
 
-        interface Droid : Query.Droid, Query.Droid.Droid {
+        interface Droid : Query.Droid, Query.Droid.Droid, QueryDatum.Droid {
           override val __typename: String
 
           /**

@@ -5,7 +5,7 @@ internal object SelectionKeyUtils {
   fun List<BackendIr.Field>.addFieldSelectionKey(selectionKey: SelectionKey?): List<BackendIr.Field> {
     if (selectionKey == null) return this
     return this.map { field ->
-      field.addFieldSelectionKey(selectionKey.plus(field.responseName))
+      field.addFieldSelectionKey(selectionKey + field.responseName)
     }
   }
 
@@ -14,23 +14,29 @@ internal object SelectionKeyUtils {
     return this.copy(
         fields = this.fields.addFieldSelectionKey(selectionKey),
         fragments = this.fragments.copy(
-            fragments = this.fragments.fragments.addFragmentSelectionKey(selectionKey),
+            fragments = this.fragments.fragments
+                .addFragmentSelectionKey(selectionKey)
+                .map { fragment ->
+                  fragment.copy(
+                      selectionKeys = fragment.selectionKeys + selectionKey
+                  )
+                },
         ),
         selectionKeys = this.selectionKeys + selectionKey
     )
   }
 
-  private fun List<BackendIr.Fragment>.addFragmentSelectionKey(selectionKey: SelectionKey): List<BackendIr.Fragment> {
+  fun List<BackendIr.Fragment>.addFragmentSelectionKey(selectionKey: SelectionKey): List<BackendIr.Fragment> {
     return this.map { fragment ->
-      fragment.addFragmentSelectionKey(selectionKey.plus(fragment.name))
+      fragment.addFragmentSelectionKey(selectionKey)
     }
   }
 
-  private fun BackendIr.Fragment.addFragmentSelectionKey(selectionKey: SelectionKey): BackendIr.Fragment {
+  fun BackendIr.Fragment.addFragmentSelectionKey(selectionKey: SelectionKey): BackendIr.Fragment {
     return when (this.kind) {
       BackendIr.Fragment.Kind.Interface -> this.copy(
-          fields = this.fields.addFieldSelectionKey(selectionKey),
-          selectionKeys = this.selectionKeys + selectionKey
+          fields = this.fields.addFieldSelectionKey(selectionKey + this.name),
+          selectionKeys = this.selectionKeys + (selectionKey + this.name)
       )
       // it looks like a hack but for fragment implementations we don't allow to change their locations
       // (by adding another selection key) as they must be used only in one place where they defined.

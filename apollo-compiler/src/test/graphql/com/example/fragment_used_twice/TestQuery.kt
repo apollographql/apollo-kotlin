@@ -116,7 +116,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
       fun marshaller(): ResponseFieldMarshaller
 
-      interface Character : Hero, HeroDetail, HeroDetail.Character, HumanDetail.Character {
+      interface Character : Hero, HeroDetail {
         override val __typename: String
 
         /**
@@ -124,12 +124,23 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          */
         override val name: String
 
-        /**
-         * The date character was born.
-         */
-        override val birthDate: Any
-
         override fun marshaller(): ResponseFieldMarshaller
+
+        interface Character : Hero.Character, HeroDetail.Character {
+          override val __typename: String
+
+          /**
+           * The name of the character
+           */
+          override val name: String
+
+          /**
+           * The date character was born.
+           */
+          override val birthDate: Any
+
+          override fun marshaller(): ResponseFieldMarshaller
+        }
       }
 
       interface Human : Hero, HumanDetail {
@@ -141,42 +152,153 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         override val name: String
 
         override fun marshaller(): ResponseFieldMarshaller
-      }
 
-      data class CharacterHero(
-        override val __typename: String,
-        /**
-         * The name of the character
-         */
-        override val name: String,
-        /**
-         * The date character was born.
-         */
-        override val birthDate: Any
-      ) : Hero, Character, HeroDetail, HeroDetail.Character, HumanDetail.Character {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Hero.CharacterHero.toResponse(writer, this)
-          }
+        interface Character : Human, HumanDetail.Character {
+          override val __typename: String
+
+          /**
+           * What this human calls themselves
+           */
+          override val name: String
+
+          /**
+           * The date character was born.
+           */
+          override val birthDate: Any
+
+          override fun marshaller(): ResponseFieldMarshaller
         }
       }
 
-      data class CharacterHumanHero(
-        override val __typename: String,
+      interface CharacterHero : Hero, Character, HeroDetail {
+        override val __typename: String
+
         /**
          * The name of the character
          */
-        override val name: String,
-        /**
-         * The date character was born.
-         */
-        override val birthDate: Any
-      ) : Hero, Character, HeroDetail, HeroDetail.Character, HumanDetail.Character, Human,
-          HumanDetail {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Hero.CharacterHumanHero.toResponse(writer, this)
+        override val name: String
+
+        override fun marshaller(): ResponseFieldMarshaller
+
+        interface Character : Hero.Character, Hero.Character.Character, HeroDetail.Character,
+            CharacterHero {
+          override val __typename: String
+
+          /**
+           * The name of the character
+           */
+          override val name: String
+
+          /**
+           * The date character was born.
+           */
+          override val birthDate: Any
+
+          override fun marshaller(): ResponseFieldMarshaller
+        }
+
+        data class CharacterCharacterHero(
+          override val __typename: String,
+          /**
+           * The name of the character
+           */
+          override val name: String,
+          /**
+           * The date character was born.
+           */
+          override val birthDate: Any
+        ) : Hero.Character, Hero.Character.Character, HeroDetail.Character, Character, CharacterHero
+            {
+          override fun marshaller(): ResponseFieldMarshaller {
+            return ResponseFieldMarshaller { writer ->
+              TestQuery_ResponseAdapter.Data.Hero.CharacterHero.CharacterCharacterHero.toResponse(writer, this)
+            }
           }
+        }
+
+        data class OtherCharacterHero(
+          override val __typename: String,
+          /**
+           * The name of the character
+           */
+          override val name: String
+        ) : Hero, Hero.Character, HeroDetail, CharacterHero {
+          override fun marshaller(): ResponseFieldMarshaller {
+            return ResponseFieldMarshaller { writer ->
+              TestQuery_ResponseAdapter.Data.Hero.CharacterHero.OtherCharacterHero.toResponse(writer, this)
+            }
+          }
+        }
+
+        companion object {
+          fun CharacterHero.asCharacter(): Character? = this as? Character
+        }
+      }
+
+      interface CharacterHumanHero : Hero, Character, HeroDetail, Human, HumanDetail {
+        override val __typename: String
+
+        /**
+         * The name of the character
+         */
+        override val name: String
+
+        override fun marshaller(): ResponseFieldMarshaller
+
+        interface Character : Hero.Character, Hero.Character.Character, HeroDetail.Character, Human,
+            Human.Character, HumanDetail.Character, CharacterHumanHero {
+          override val __typename: String
+
+          /**
+           * The name of the character
+           */
+          override val name: String
+
+          /**
+           * The date character was born.
+           */
+          override val birthDate: Any
+
+          override fun marshaller(): ResponseFieldMarshaller
+        }
+
+        data class CharacterCharacterHumanHero(
+          override val __typename: String,
+          /**
+           * The name of the character
+           */
+          override val name: String,
+          /**
+           * The date character was born.
+           */
+          override val birthDate: Any
+        ) : Hero.Character, Hero.Character.Character, HeroDetail.Character, Human, Human.Character,
+            HumanDetail.Character, Character, CharacterHumanHero {
+          override fun marshaller(): ResponseFieldMarshaller {
+            return ResponseFieldMarshaller { writer ->
+              TestQuery_ResponseAdapter.Data.Hero.CharacterHumanHero.CharacterCharacterHumanHero.toResponse(writer, this)
+            }
+          }
+        }
+
+        data class OtherCharacterHumanHero(
+          override val __typename: String,
+          /**
+           * The name of the character
+           */
+          override val name: String
+        ) : Hero, Hero.Character, HeroDetail, Human, HumanDetail, CharacterHumanHero {
+          override fun marshaller(): ResponseFieldMarshaller {
+            return ResponseFieldMarshaller { writer ->
+              TestQuery_ResponseAdapter.Data.Hero.CharacterHumanHero.OtherCharacterHumanHero.toResponse(writer, this)
+            }
+          }
+        }
+
+        companion object {
+          fun CharacterHumanHero.asCharacter(): Character? = this as? Character
+
+          fun CharacterHumanHero.asHuman(): Human? = this as? Human
         }
       }
 
@@ -191,7 +313,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       }
 
       companion object {
-        fun Hero.asCharacter(): HumanDetail.Character? = this as? HumanDetail.Character
+        fun Hero.asCharacter(): Character? = this as? Character
 
         fun Hero.heroDetails(): HeroDetail? = this as? HeroDetail
 

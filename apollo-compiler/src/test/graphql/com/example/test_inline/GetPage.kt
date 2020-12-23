@@ -164,7 +164,7 @@ class GetPage : Query<GetPage.Data, Operation.Variables> {
           override fun marshaller(): ResponseFieldMarshaller
 
           interface ParticularItem : ParticularCollection.Item,
-              ParticularCollection.Item.ParticularItem {
+              ParticularCollection.Item.ParticularItem, Item {
             override val __typename: String
 
             override val image: String

@@ -275,7 +275,7 @@ data class TestQuery(
 
           override fun marshaller(): ResponseFieldMarshaller
 
-          interface Human : Hero.Human.Friend, Hero.Human.Friend.Human {
+          interface Human : Hero.Human.Friend, Hero.Human.Friend.Human, Friend {
             override val __typename: String
 
             /**
@@ -361,7 +361,7 @@ data class TestQuery(
 
           override fun marshaller(): ResponseFieldMarshaller
 
-          interface Human : Droid.Friend, Droid.Friend.Human {
+          interface Human : Droid.Friend, Droid.Friend.Human, Friend {
             override val __typename: String
 
             /**

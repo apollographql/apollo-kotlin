@@ -108,6 +108,7 @@ internal data class BackendIr(
   data class Fragment(
       val name: String,
       val fields: List<Field>,
+      val nestedFragments: Fragments?,
       val possibleTypes: Set<IntrospectionSchema.TypeRef>,
       val selectionKeys: Set<SelectionKey>,
       val description: String?,
