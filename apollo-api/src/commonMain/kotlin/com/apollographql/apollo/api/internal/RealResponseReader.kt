@@ -1,7 +1,7 @@
 package com.apollographql.apollo.internal.response
 
 import com.apollographql.apollo.api.BigDecimal
-import com.apollographql.apollo.api.CustomTypeAdapter
+import com.apollographql.apollo.api.CustomScalarTypeAdapter
 import com.apollographql.apollo.api.CustomTypeValue.Companion.fromRawValue
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
@@ -131,8 +131,8 @@ class RealResponseReader<R : Map<String, Any?>>(
       resolveDelegate.didResolveNull()
       result = null
     } else {
-      val typeAdapter: CustomTypeAdapter<T> = scalarTypeAdapters.adapterFor(field.scalarType)
-      result = typeAdapter.decode(fromRawValue(value))
+      val scalarTypeAdapter: CustomScalarTypeAdapter<T> = scalarTypeAdapters.adapterFor(field.scalarType)
+      result = scalarTypeAdapter.decode(fromRawValue(value))
       checkValue(field, result)
       resolveDelegate.didResolveScalar(value)
     }
@@ -200,9 +200,9 @@ class RealResponseReader<R : Map<String, Any?>>(
     }
 
     override fun <T : Any> readCustomType(scalarType: ScalarType): T {
-      val typeAdapter: CustomTypeAdapter<T> = scalarTypeAdapters.adapterFor(scalarType)
+      val scalarTypeAdapter: CustomScalarTypeAdapter<T> = scalarTypeAdapters.adapterFor(scalarType)
       resolveDelegate.didResolveScalar(value)
-      return typeAdapter.decode(fromRawValue(value))
+      return scalarTypeAdapter.decode(fromRawValue(value))
     }
 
     @Suppress("UNCHECKED_CAST")

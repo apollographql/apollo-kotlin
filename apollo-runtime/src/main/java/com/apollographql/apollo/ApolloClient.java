@@ -1,6 +1,6 @@
 package com.apollographql.apollo;
 
-import com.apollographql.apollo.api.CustomTypeAdapter;
+import com.apollographql.apollo.api.CustomScalarTypeAdapter;
 import com.apollographql.apollo.api.Mutation;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
@@ -381,7 +381,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     HttpCachePolicy.Policy defaultHttpCachePolicy = HttpCachePolicy.NETWORK_ONLY;
     ResponseFetcher defaultResponseFetcher = ApolloResponseFetchers.CACHE_FIRST;
     CacheHeaders defaultCacheHeaders = CacheHeaders.NONE;
-    final Map<ScalarType, CustomTypeAdapter<?>> customTypeAdapters = new LinkedHashMap<>();
+    final Map<ScalarType, CustomScalarTypeAdapter<?>> customTypeAdapters = new LinkedHashMap<>();
     Executor dispatcher;
     @Nullable
     Logger logger = null;
@@ -411,7 +411,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       defaultHttpCachePolicy = apolloClient.defaultHttpCachePolicy;
       defaultResponseFetcher = apolloClient.defaultResponseFetcher;
       defaultCacheHeaders = apolloClient.defaultCacheHeaders;
-      customTypeAdapters.putAll(apolloClient.scalarTypeAdapters.getCustomAdapters());
+      customTypeAdapters.putAll(apolloClient.scalarTypeAdapters.getCustomScalarTypeAdapters());
       dispatcher = apolloClient.dispatcher;
       logger = apolloClient.logger.getLogger();
       applicationInterceptors.addAll(apolloClient.applicationInterceptors);
@@ -520,13 +520,13 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
      * Set the type adapter to use for serializing and de-serializing custom GraphQL scalar types.
      *
      * @param scalarType the scalar type to serialize/deserialize
-     * @param customTypeAdapter the type adapter to use
+     * @param customScalarTypeAdapter the type adapter to use
      * @param <T> the value type
      * @return The {@link Builder} object to be used for chaining method calls
      */
     public <T> Builder addCustomTypeAdapter(@NotNull ScalarType scalarType,
-        @NotNull final CustomTypeAdapter<T> customTypeAdapter) {
-      customTypeAdapters.put(scalarType, customTypeAdapter);
+        @NotNull final CustomScalarTypeAdapter<T> customScalarTypeAdapter) {
+      customTypeAdapters.put(scalarType, customScalarTypeAdapter);
       return this;
     }
 

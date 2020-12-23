@@ -1,7 +1,7 @@
 package com.apollographql.apollo.api.internal
 
 import com.apollographql.apollo.api.BigDecimal
-import com.apollographql.apollo.api.CustomTypeAdapter
+import com.apollographql.apollo.api.CustomScalarTypeAdapter
 import com.apollographql.apollo.api.CustomTypeValue
 import com.apollographql.apollo.api.EMPTY_OPERATION
 import com.apollographql.apollo.api.ResponseField
@@ -15,8 +15,6 @@ import okio.Buffer
 import kotlin.reflect.KClass
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
-import kotlin.test.assertSame
 import kotlin.test.assertTrue
 import kotlin.test.fail
 
@@ -439,8 +437,8 @@ class SimpleResponseReaderTest {
 
   companion object {
     private fun responseReader(recordSet: Map<String, Any>): StreamResponseReader {
-      val customTypeAdapters: MutableMap<ScalarType, CustomTypeAdapter<*>> = HashMap()
-      customTypeAdapters[OBJECT_CUSTOM_TYPE] = object : CustomTypeAdapter<Any?> {
+      val customScalarTypeAdapters: MutableMap<ScalarType, CustomScalarTypeAdapter<*>> = HashMap()
+      customScalarTypeAdapters[OBJECT_CUSTOM_TYPE] = object : CustomScalarTypeAdapter<Any?> {
         override fun decode(value: CustomTypeValue<*>): Any {
           return value.value.toString()
         }
@@ -461,7 +459,7 @@ class SimpleResponseReaderTest {
       return StreamResponseReader(
           jsonReader = jsonReader,
           variables = EMPTY_OPERATION.variables(),
-          scalarTypeAdapters = ScalarTypeAdapters(customTypeAdapters),
+          scalarTypeAdapters = ScalarTypeAdapters(customScalarTypeAdapters),
       )
     }
 

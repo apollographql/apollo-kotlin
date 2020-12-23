@@ -24,7 +24,7 @@ package com.apollographql.apollo.api
  *   }
  * ```
  */
-interface CustomTypeAdapter<T> {
+interface CustomScalarTypeAdapter<T> {
 
   /**
    * De-serializes the [value] to the custom scalar type [T]. Usually used in parsing the GraphQL response.

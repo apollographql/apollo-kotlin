@@ -8,34 +8,34 @@ import com.apollographql.apollo.api.internal.json.use
 import okio.Buffer
 import kotlin.jvm.JvmField
 
-class ScalarTypeAdapters(val customAdapters: Map<ScalarType, CustomTypeAdapter<*>>) {
+class ScalarTypeAdapters(val customScalarTypeAdapters: Map<ScalarType, CustomScalarTypeAdapter<*>>) {
 
-  private val customTypeAdapters = customAdapters.mapKeys { it.key.typeName() }
+  private val customTypeAdapters = customScalarTypeAdapters.mapKeys { it.key.typeName() }
 
   @Suppress("UNCHECKED_CAST")
-  fun <T : Any> adapterFor(scalarType: ScalarType): CustomTypeAdapter<T> {
+  fun <T : Any> adapterFor(scalarType: ScalarType): CustomScalarTypeAdapter<T> {
     /**
      * Look in user-registered adapters by scalar type name first
      */
-    var customTypeAdapter: CustomTypeAdapter<*>? = customTypeAdapters[scalarType.typeName()]
-    if (customTypeAdapter == null) {
+    var customScalarTypeAdapter: CustomScalarTypeAdapter<*>? = customTypeAdapters[scalarType.typeName()]
+    if (customScalarTypeAdapter == null) {
       /**
        * If none is found, provide a default adapter based on the implementation class name
        * This saves the user the hassle of registering a scalar adapter for mapping to widespread such as Long, Map, etc...
        * The ScalarType must still be declared in the Gradle plugin configuration.
        */
-      customTypeAdapter = DEFAULT_ADAPTERS[scalarType.className()]
+      customScalarTypeAdapter = DEFAULT_ADAPTERS[scalarType.className()]
     }
-    return requireNotNull(customTypeAdapter) {
+    return requireNotNull(customScalarTypeAdapter) {
       "Can't map GraphQL type: `${scalarType.typeName()}` to: `${scalarType.className()}`. Did you forget to add a custom type adapter?"
-    } as CustomTypeAdapter<T>
+    } as CustomScalarTypeAdapter<T>
   }
 
   companion object {
     @JvmField
     val DEFAULT = ScalarTypeAdapters(emptyMap())
 
-    private val DEFAULT_ADAPTERS = emptyMap<String, CustomTypeAdapter<*>>() +
+    private val DEFAULT_ADAPTERS = emptyMap<String, CustomScalarTypeAdapter<*>>() +
         createDefaultScalarTypeAdapter("java.lang.String", "kotlin.String") { value ->
           if (value is GraphQLJsonList || value is GraphQLJsonObject) {
             val buffer = Buffer()
@@ -82,7 +82,7 @@ class ScalarTypeAdapters(val customAdapters: Map<ScalarType, CustomTypeAdapter<*
             else -> throw IllegalArgumentException("Can't decode: $value into Double")
           }
         } +
-        mapOf("com.apollographql.apollo.api.FileUpload" to object : CustomTypeAdapter<FileUpload> {
+        mapOf("com.apollographql.apollo.api.FileUpload" to object : CustomScalarTypeAdapter<FileUpload> {
           override fun decode(value: CustomTypeValue<*>): FileUpload {
             // TODO: is there a valid use case for decoding a FileUpload or should we throw here?
             return FileUpload("", value.value?.toString() ?: "")
@@ -113,8 +113,8 @@ class ScalarTypeAdapters(val customAdapters: Map<ScalarType, CustomTypeAdapter<*
     private fun createDefaultScalarTypeAdapter(
         vararg classNames: String,
         decode: (value: CustomTypeValue<*>) -> Any
-    ): Map<String, CustomTypeAdapter<*>> {
-      val adapter = object : CustomTypeAdapter<Any> {
+    ): Map<String, CustomScalarTypeAdapter<*>> {
+      val adapter = object : CustomScalarTypeAdapter<Any> {
         override fun decode(value: CustomTypeValue<*>): Any {
           return decode(value)
         }

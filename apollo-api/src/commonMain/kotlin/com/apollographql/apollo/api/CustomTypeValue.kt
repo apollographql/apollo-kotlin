@@ -4,7 +4,7 @@ import kotlin.jvm.JvmField
 import kotlin.jvm.JvmStatic
 
 /**
- * A wrapper class for representation of custom GraphQL type value, used in user provided [CustomTypeAdapter]
+ * A wrapper class for representation of custom GraphQL type value, used in user provided [CustomScalarTypeAdapter]
  * encoding / decoding functions.
  **/
 sealed class CustomTypeValue<T>(@JvmField val value: T) {
