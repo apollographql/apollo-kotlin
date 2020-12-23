@@ -60,7 +60,11 @@ subprojects {
   repositories {
     google()
     mavenCentral()
-    jcenter() // for trove4j
+    jcenter {
+      content {
+        includeGroup("org.jetbrains.trove4j")
+      }
+    }
   }
 
   group = property("GROUP")!!
@@ -85,6 +89,17 @@ fun Project.configurePublishing() {
    */
   val emptySourcesJarTaskProvider = tasks.register("sourcesJar", org.gradle.jvm.tasks.Jar::class.java) {
     archiveClassifier.set("sources")
+  }
+
+  tasks.withType(Jar::class.java) {
+      manifest {
+        attributes["Built-By"] = findProperty("POM_DEVELOPER_ID") as String?
+        attributes["Build-Jdk"] = "${System.getProperty("java.version")} (${System.getProperty("java.vendor")} ${System.getProperty("java.vm.version")})"
+        attributes["Build-Timestamp"] = java.time.Instant.now().toString()
+        attributes["Created-By"] = "Gradle ${gradle.gradleVersion}"
+        attributes["Implementation-Title"] = findProperty("POM_NAME") as String?
+        attributes["Implementation-Version"] = findProperty("VERSION_NAME") as String?
+      }
   }
 
   configure<PublishingExtension> {
@@ -251,6 +266,26 @@ tasks.register("publishSnapshotsIfNeeded") {
   }
 }
 
+tasks.register("publishToBintrayIfNeeded") {
+  if (isTag()) {
+    project.logger.log(LogLevel.LIFECYCLE, "Deploying release to Bintray...")
+    dependsOn(subprojectTasks("publishAllPublicationsToBintrayRepository"))
+  }
+}
+
+tasks.register("publishToOssStagingIfNeeded") {
+  if (isTag()) {
+    project.logger.log(LogLevel.LIFECYCLE, "Deploying release to OSS staging...")
+    dependsOn(subprojectTasks("publishAllPublicationsToOssStagingRepository"))
+  }
+}
+
+tasks.register("publishToGradlePortalIfNeeded") {
+  if (isTag()) {
+    project.logger.log(LogLevel.LIFECYCLE, "Deploying release to Gradle Portal...")
+    dependsOn(":apollo-gradle-plugin:publishPlugins")
+  }
+}
 
 tasks.register("sonatypeCloseAndReleaseRepository") {
   doLast {
@@ -290,3 +325,4 @@ tasks.register("bintrayPublish") {
     }
   }
 }
+

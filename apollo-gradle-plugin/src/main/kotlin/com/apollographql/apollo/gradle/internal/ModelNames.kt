@@ -19,8 +19,10 @@ object ModelNames {
   fun downloadApolloSchema() = camelCase("downloadApolloSchema")
   fun downloadApolloSchemaIntrospection(service: Service) = camelCase("download", service.name, "ApolloSchemaFromIntrospection")
   fun downloadApolloSchemaRegistry(service: Service) = camelCase("download", service.name, "ApolloSchemaFromRegistry")
+  fun pushApolloSchema() = camelCase("pushApolloSchema")
   fun checkApolloVersions() = "checkApolloVersions"
   fun checkApolloDuplicates(service: Service) = camelCase("check", service.name, "ApolloDuplicates")
+  fun convertApolloSchema() = "convertApolloSchema"
 
   // Configuration names
   fun apolloConfiguration() = "apolloMetadata" // not just 'apollo' to avoid name clashing with the apollo {} extension

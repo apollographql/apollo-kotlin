@@ -50,6 +50,7 @@ ext.dep = [
     kotlinCompileTesting  : "com.github.tschuchortdev:kotlin-compile-testing:1.3.1",
     cache                 : "com.nytimes.android:cache:$versions.cache",
     gradleJapiCmpPlugin   : "me.champeau.gradle:japicmp-gradle-plugin:0.2.8",
+    gradleMetalavaPlugin  : "me.tylerbwong.gradle:metalava-gradle:0.1.5",
     vanniktechPlugin      : "com.vanniktech:gradle-maven-publish-plugin:0.11.1",
     gradlePublishPlugin   : "com.gradle.publish:plugin-publish-plugin:0.12.0",
     guavaJre              : "com.google.guava:guava:$versions.guava",

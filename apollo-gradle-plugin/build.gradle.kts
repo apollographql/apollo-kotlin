@@ -5,6 +5,10 @@ plugins {
 }
 
 
+metalava {
+  hiddenPackages += setOf("com.apollographql.apollo.gradle.internal")
+}
+
 dependencies {
   compileOnly(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
   compileOnly(groovy.util.Eval.x(project, "x.dep.android.minPlugin"))

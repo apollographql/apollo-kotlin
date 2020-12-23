@@ -1,15 +1,9 @@
 import JapiCmp.configureJapiCmp
-import MetalavaHelper.configureMetalava
+import me.tylerbwong.gradle.metalava.plugin.MetalavaPlugin
 import org.gradle.api.Project
 
 object ApiCompatibility {
   fun configure(project: Project) {
-
-    val downloadMetalavaJar = project.tasks.register("downloadMetalava", DownloadFileTask::class.java) {
-      it.url.set("https://storage.googleapis.com/android-ci/metalava-full-1.3.0-SNAPSHOT.jar")
-      it.output.set(project.layout.buildDirectory.file("metalava/metalava.jar"))
-    }
-
     project.subprojects {
       when(it.name) {
         "apollo-compiler" -> {
@@ -22,7 +16,7 @@ object ApiCompatibility {
         }
         else -> {
           it.configureJapiCmp()
-          it.configureMetalava(downloadMetalavaJar)
+          MetalavaPlugin().apply(it)
 
         }
       }

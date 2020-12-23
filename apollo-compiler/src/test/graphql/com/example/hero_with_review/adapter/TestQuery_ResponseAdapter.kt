@@ -20,21 +20,21 @@ import kotlin.Suppress
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forObject("createReview", "createReview", mapOf<String, Any>(
-      "episode" to mapOf<String, Any>(
+    ResponseField.forObject("createReview", "createReview", mapOf<String, Any?>(
+      "episode" to mapOf<String, Any?>(
         "kind" to "Variable",
         "variableName" to "ep"),
-      "review" to mapOf<String, Any>(
+      "review" to mapOf<String, Any?>(
         "stars" to 5,
-        "listOfEnums" to listOf<Any>(
+        "listOfEnums" to listOf<Any?>(
           "JEDI",
           "EMPIRE",
           "NEWHOPE"),
-        "listOfStringNonOptional" to listOf<Any>(
+        "listOfStringNonOptional" to listOf<Any?>(
           "1",
           "2",
           "3"),
-        "favoriteColor" to mapOf<String, Any>(
+        "favoriteColor" to mapOf<String, Any?>(
           "red" to 1,
           "blue" to 1.0))), true, null)
   )
@@ -49,21 +49,21 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object Data : ResponseAdapter<TestQuery.Data> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forObject("createReview", "createReview", mapOf<String, Any>(
-        "episode" to mapOf<String, Any>(
+      ResponseField.forObject("createReview", "createReview", mapOf<String, Any?>(
+        "episode" to mapOf<String, Any?>(
           "kind" to "Variable",
           "variableName" to "ep"),
-        "review" to mapOf<String, Any>(
+        "review" to mapOf<String, Any?>(
           "stars" to 5,
-          "listOfEnums" to listOf<Any>(
+          "listOfEnums" to listOf<Any?>(
             "JEDI",
             "EMPIRE",
             "NEWHOPE"),
-          "listOfStringNonOptional" to listOf<Any>(
+          "listOfStringNonOptional" to listOf<Any?>(
             "1",
             "2",
             "3"),
-          "favoriteColor" to mapOf<String, Any>(
+          "favoriteColor" to mapOf<String, Any?>(
             "red" to 1,
             "blue" to 1.0))), true, null)
     )

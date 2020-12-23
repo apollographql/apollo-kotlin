@@ -20,7 +20,7 @@ import kotlin.collections.List
     "RemoveRedundantQualifierName")
 object AllStarship_ResponseAdapter : ResponseAdapter<AllStarship.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forObject("allStarships", "allStarships", mapOf<String, Any>(
+    ResponseField.forObject("allStarships", "allStarships", mapOf<String, Any?>(
       "first" to 7), true, null)
   )
 
@@ -34,7 +34,7 @@ object AllStarship_ResponseAdapter : ResponseAdapter<AllStarship.Data> {
 
   object Data : ResponseAdapter<AllStarship.Data> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forObject("allStarships", "allStarships", mapOf<String, Any>(
+      ResponseField.forObject("allStarships", "allStarships", mapOf<String, Any?>(
         "first" to 7), true, null)
     )
 

@@ -20,7 +20,7 @@ import kotlin.collections.List
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forList("search", "search", mapOf<String, Any>(
+    ResponseField.forList("search", "search", mapOf<String, Any?>(
       "text" to "bla-bla"), true, null)
   )
 
@@ -34,7 +34,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object Data : ResponseAdapter<TestQuery.Data> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forList("search", "search", mapOf<String, Any>(
+      ResponseField.forList("search", "search", mapOf<String, Any?>(
         "text" to "bla-bla"), true, null)
     )
 

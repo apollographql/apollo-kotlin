@@ -625,13 +625,18 @@ private class InputValueValidationScope(val schema: Schema) {
   private fun validateAndCoerceInternal(operation: GQLOperationDefinition?, value: GQLValue, expectedType: GQLType): GQLValue {
     if (value is GQLVariableValue) {
       return validateAndCoerceVariable(operation, value, expectedType)
+    } else if (value is GQLNullValue) {
+      if (expectedType is GQLNonNullType) {
+        registerIssue(value, expectedType)
+        return value
+      }
+
+      // null is always valid in a nullable position
+      return value
     }
+
     when (expectedType) {
       is GQLNonNullType -> {
-        if (value is GQLNullValue) {
-          registerIssue(value, expectedType)
-          return value
-        }
         return validateAndCoerceInternal(operation, value, expectedType.type)
       }
       is GQLListType -> {

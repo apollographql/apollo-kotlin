@@ -2,6 +2,10 @@ plugins {
   kotlin("jvm")
 }
 
+metalava {
+  hiddenPackages += setOf("com.apollographql.apollo.internal")
+}
+
 dependencies {
   api(project(":apollo-api"))
   api(project(":apollo-normalized-cache"))

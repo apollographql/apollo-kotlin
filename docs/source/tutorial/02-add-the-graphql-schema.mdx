@@ -13,7 +13,7 @@ The [schema](https://graphql.org/learn/schema/) defines which GraphQL operations
 
 ## Download your server's schema
 
-Apollo Android requires a schema to generate typesafe models and code from your queries. There are multiple ways to get a schema. For an exemple, you can download a json schema directly from GraphQL Playground by clicking **Schema > Download** in the right pane.
+Apollo Android requires a schema to generate typesafe models and code from your queries. There are multiple ways to get a schema. For an example, you can download a json schema directly from GraphQL Playground by clicking **Schema > Download** in the right pane.
 
 In this tutorial, we will use the `apolloDownloadSchema` task that is created by the plugin automatically. Since GraphQL supports [introspection](https://graphql.org/learn/introspection/), this will work with any GraphQL endpoint that has introspection enabled.
 
@@ -21,7 +21,7 @@ From the root of the project, run the following:
 
 ```shell:title=(shell)
 mkdir -p app/src/main/graphql/com/example/rocketreserver/
-./gradlew :app:downloadApolloSchema -Pcom.apollographql.apollo.endpoint='https://apollo-fullstack-tutorial.herokuapp.com/' -Pcom.apollographql.apollo.schema='src/main/graphql/com/example/rocketreserver/schema.json'
+./gradlew :app:downloadApolloSchema --endpoint='https://apollo-fullstack-tutorial.herokuapp.com/' --schema='src/main/graphql/com/example/rocketreserver/schema.json'
 ```
 
 This will download a `schema.json` file from your endpoint to `app/src/main/graphql/com/example/rocketserver/schema.json`.

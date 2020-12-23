@@ -279,6 +279,15 @@ type Query {
   character(id: ID!): Character
   droid(id: ID!): Droid
 
+  testNullableArguments(
+      int: Int,
+      float: Float,
+      string: String,
+      episode: Episode,
+      review: ReviewInput,
+      boolean: Boolean,
+      list: [Episode]): Int!
+
   """For testing fragment type coercion"""
   foo: Foo
   hero(

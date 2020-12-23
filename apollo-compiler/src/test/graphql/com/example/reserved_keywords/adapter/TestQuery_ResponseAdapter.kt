@@ -21,7 +21,7 @@ import kotlin.collections.List
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forObject("yield", "hero", null, true, null),
-    ResponseField.forList("objects", "search", mapOf<String, Any>(
+    ResponseField.forList("objects", "search", mapOf<String, Any?>(
       "text" to "abc"), true, null)
   )
 
@@ -36,7 +36,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   object Data : ResponseAdapter<TestQuery.Data> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forObject("yield", "hero", null, true, null),
-      ResponseField.forList("objects", "search", mapOf<String, Any>(
+      ResponseField.forList("objects", "search", mapOf<String, Any?>(
         "text" to "abc"), true, null)
     )
 

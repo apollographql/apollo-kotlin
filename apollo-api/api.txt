@@ -1,7 +1,8 @@
+// Signature format: 3.0
 package com.apollographql.apollo {
 
-  public abstract interface Logger {
-    method public abstract void log(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass...);
+  public interface Logger {
+    method public void log(int priority, String message, Throwable? t, java.lang.Object... args);
     field public static final com.apollographql.apollo.Logger.Companion Companion;
     field public static final int DEBUG = 3; // 0x3
     field public static final int ERROR = 6; // 0x6
@@ -18,172 +19,169 @@ package com.apollographql.apollo {
 
 package com.apollographql.apollo.api {
 
-  public abstract class ApolloExperimental implements java.lang.annotation.Annotation {
+  @kotlin.RequiresOptIn(level=RequiresOptIn.Level.WARNING) @kotlin.annotation.MustBeDocumented @kotlin.annotation.Retention(AnnotationRetention.BINARY) public @interface ApolloExperimental {
   }
 
   public final class BigDecimal {
-    ctor public BigDecimal(error.NonExistentClass);
-    ctor public BigDecimal(error.NonExistentClass);
-    ctor public BigDecimal(error.NonExistentClass);
-    ctor public BigDecimal(error.NonExistentClass);
-    method public com.apollographql.apollo.api.BigDecimal add(com.apollographql.apollo.api.BigDecimal);
-    method public com.apollographql.apollo.api.BigDecimal divide(com.apollographql.apollo.api.BigDecimal);
-    method public error.NonExistentClass equals(error.NonExistentClass);
-    method public error.NonExistentClass hashCode();
-    method public com.apollographql.apollo.api.BigDecimal multiply(com.apollographql.apollo.api.BigDecimal);
+    ctor public BigDecimal(String strVal);
+    ctor public BigDecimal(double doubleVal);
+    ctor public BigDecimal(int intVal);
+    ctor public BigDecimal(long longVal);
+    method public com.apollographql.apollo.api.BigDecimal add(com.apollographql.apollo.api.BigDecimal augend);
+    method public com.apollographql.apollo.api.BigDecimal divide(com.apollographql.apollo.api.BigDecimal divisor);
+    method public boolean equals(Object? other);
+    method public int hashCode();
+    method public com.apollographql.apollo.api.BigDecimal multiply(com.apollographql.apollo.api.BigDecimal multiplicand);
     method public com.apollographql.apollo.api.BigDecimal negate();
-    method public error.NonExistentClass signum();
-    method public com.apollographql.apollo.api.BigDecimal subtract(com.apollographql.apollo.api.BigDecimal);
-    method public error.NonExistentClass toByte();
-    method public error.NonExistentClass toChar();
-    method public error.NonExistentClass toDouble();
-    method public error.NonExistentClass toFloat();
-    method public error.NonExistentClass toInt();
-    method public error.NonExistentClass toLong();
-    method public error.NonExistentClass toShort();
-    method public error.NonExistentClass toString();
+    method public int signum();
+    method public com.apollographql.apollo.api.BigDecimal subtract(com.apollographql.apollo.api.BigDecimal subtrahend);
+    method public byte toByte();
+    method public char toChar();
+    method public double toDouble();
+    method public float toFloat();
+    method public int toInt();
+    method public long toLong();
+    method public short toShort();
+    method public String toString();
   }
 
   public final class BigDecimal {
     ctor public BigDecimal();
-    ctor public BigDecimal(error.NonExistentClass);
-    ctor public BigDecimal(error.NonExistentClass);
-    ctor public BigDecimal(error.NonExistentClass);
-    ctor public BigDecimal(error.NonExistentClass);
-    method public com.apollographql.apollo.api.BigDecimal add(com.apollographql.apollo.api.BigDecimal);
-    method public com.apollographql.apollo.api.BigDecimal divide(com.apollographql.apollo.api.BigDecimal);
-    method public error.NonExistentClass equals(error.NonExistentClass);
-    method public error.NonExistentClass hashCode();
-    method public com.apollographql.apollo.api.BigDecimal multiply(com.apollographql.apollo.api.BigDecimal);
+    ctor public BigDecimal(String strVal);
+    ctor public BigDecimal(double doubleVal);
+    ctor public BigDecimal(int intVal);
+    ctor public BigDecimal(long longVal);
+    method public com.apollographql.apollo.api.BigDecimal add(com.apollographql.apollo.api.BigDecimal augend);
+    method public com.apollographql.apollo.api.BigDecimal divide(com.apollographql.apollo.api.BigDecimal divisor);
+    method public boolean equals(Object? other);
+    method public int hashCode();
+    method public com.apollographql.apollo.api.BigDecimal multiply(com.apollographql.apollo.api.BigDecimal multiplicand);
     method public com.apollographql.apollo.api.BigDecimal negate();
-    method public error.NonExistentClass signum();
-    method public com.apollographql.apollo.api.BigDecimal subtract(com.apollographql.apollo.api.BigDecimal);
-    method public error.NonExistentClass toByte();
-    method public error.NonExistentClass toChar();
-    method public error.NonExistentClass toDouble();
-    method public error.NonExistentClass toFloat();
-    method public error.NonExistentClass toInt();
-    method public error.NonExistentClass toLong();
-    method public error.NonExistentClass toShort();
-    method public error.NonExistentClass toString();
+    method public int signum();
+    method public com.apollographql.apollo.api.BigDecimal subtract(com.apollographql.apollo.api.BigDecimal subtrahend);
+    method public byte toByte();
+    method public char toChar();
+    method public double toDouble();
+    method public float toFloat();
+    method public int toInt();
+    method public long toLong();
+    method public short toShort();
+    method public String toString();
   }
 
   public final class BigDecimalKt {
-    ctor public BigDecimalKt();
-    method public static error.NonExistentClass toNumber(com.apollographql.apollo.api.BigDecimal);
+    method public static Number toNumber(com.apollographql.apollo.api.BigDecimal);
   }
 
   public final class BigDecimalKt {
-    ctor public BigDecimalKt();
-    method public static error.NonExistentClass toNumber(com.apollographql.apollo.api.BigDecimal);
+    method public static Number toNumber(com.apollographql.apollo.api.BigDecimal);
   }
 
   public final class BigDecimalKt {
-    ctor public BigDecimalKt();
-    method public static error.NonExistentClass toNumber(com.apollographql.apollo.api.BigDecimal);
+    method public static Number toNumber(com.apollographql.apollo.api.BigDecimal);
   }
 
-  public abstract interface CustomTypeAdapter<T> {
-    method public abstract T decode(com.apollographql.apollo.api.CustomTypeValue<?>);
-    method public abstract com.apollographql.apollo.api.CustomTypeValue<?> encode(T);
+  public interface CustomTypeAdapter<T> {
+    method public T! decode(com.apollographql.apollo.api.CustomTypeValue<?> value);
+    method public com.apollographql.apollo.api.CustomTypeValue<?> encode(T? value);
   }
 
-  public sealed abstract class CustomTypeValue<T> {
-    method public final T getValue();
+  public abstract sealed class CustomTypeValue<T> {
+    method public static final com.apollographql.apollo.api.CustomTypeValue<?> fromRawValue(Object value);
     field public static final com.apollographql.apollo.api.CustomTypeValue.Companion Companion;
+    field public final T? value;
   }
 
   public static final class CustomTypeValue.Companion {
-    method public com.apollographql.apollo.api.CustomTypeValue<?> fromRawValue(error.NonExistentClass);
+    method public com.apollographql.apollo.api.CustomTypeValue<?> fromRawValue(Object value);
   }
 
-  public static final class CustomTypeValue.GraphQLBoolean extends com.apollographql.apollo.api.CustomTypeValue {
-    ctor public CustomTypeValue.GraphQLBoolean(error.NonExistentClass);
-    method public error.NonExistentClass equals(error.NonExistentClass);
-    method public error.NonExistentClass hashCode();
+  public static final class CustomTypeValue.GraphQLBoolean extends com.apollographql.apollo.api.CustomTypeValue<java.lang.Boolean> {
+    ctor public CustomTypeValue.GraphQLBoolean(boolean value);
+    method public boolean equals(Object? other);
+    method public int hashCode();
   }
 
-  public static final class CustomTypeValue.GraphQLJsonList extends com.apollographql.apollo.api.CustomTypeValue {
-    ctor public CustomTypeValue.GraphQLJsonList(error.NonExistentClass);
-    method public error.NonExistentClass equals(error.NonExistentClass);
-    method public error.NonExistentClass hashCode();
+  public static final class CustomTypeValue.GraphQLJsonList extends com.apollographql.apollo.api.CustomTypeValue<java.util.List<?>> {
+    ctor public CustomTypeValue.GraphQLJsonList(java.util.List<?> value);
+    method public boolean equals(Object? other);
+    method public int hashCode();
   }
 
-  public static final class CustomTypeValue.GraphQLJsonObject extends com.apollographql.apollo.api.CustomTypeValue {
-    ctor public CustomTypeValue.GraphQLJsonObject(error.NonExistentClass);
-    method public error.NonExistentClass equals(error.NonExistentClass);
-    method public error.NonExistentClass hashCode();
+  public static final class CustomTypeValue.GraphQLJsonObject extends com.apollographql.apollo.api.CustomTypeValue<java.util.Map<java.lang.String,?>> {
+    ctor public CustomTypeValue.GraphQLJsonObject(java.util.Map<java.lang.String,?> value);
+    method public boolean equals(Object? other);
+    method public int hashCode();
   }
 
-  public static final class CustomTypeValue.GraphQLNull extends com.apollographql.apollo.api.CustomTypeValue {
+  public static final class CustomTypeValue.GraphQLNull extends com.apollographql.apollo.api.CustomTypeValue<kotlin.Unit> {
     field public static final com.apollographql.apollo.api.CustomTypeValue.GraphQLNull INSTANCE;
   }
 
-  public static final class CustomTypeValue.GraphQLNumber extends com.apollographql.apollo.api.CustomTypeValue {
-    ctor public CustomTypeValue.GraphQLNumber(error.NonExistentClass);
-    method public error.NonExistentClass equals(error.NonExistentClass);
-    method public error.NonExistentClass hashCode();
+  public static final class CustomTypeValue.GraphQLNumber extends com.apollographql.apollo.api.CustomTypeValue<java.lang.Number> {
+    ctor public CustomTypeValue.GraphQLNumber(Number value);
+    method public boolean equals(Object? other);
+    method public int hashCode();
   }
 
-  public static final class CustomTypeValue.GraphQLString extends com.apollographql.apollo.api.CustomTypeValue {
-    ctor public CustomTypeValue.GraphQLString(error.NonExistentClass);
-    method public error.NonExistentClass equals(error.NonExistentClass);
-    method public error.NonExistentClass hashCode();
+  public static final class CustomTypeValue.GraphQLString extends com.apollographql.apollo.api.CustomTypeValue<java.lang.String> {
+    ctor public CustomTypeValue.GraphQLString(String value);
+    method public boolean equals(Object? other);
+    method public int hashCode();
+  }
+
+  public interface EnumValue {
+    method public String getRawValue();
+    property public abstract String rawValue;
   }
 
   public final class Error {
-    ctor public Error(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
-    method public error.NonExistentClass customAttributes();
-    method public error.NonExistentClass equals(error.NonExistentClass);
-    method public error.NonExistentClass getCustomAttributes();
-    method public error.NonExistentClass getLocations();
-    method public error.NonExistentClass getMessage();
-    method public error.NonExistentClass hashCode();
-    method public error.NonExistentClass locations();
-    method public error.NonExistentClass message();
+    ctor public Error(String message, java.util.List<com.apollographql.apollo.api.Error.Location> locations, java.util.Map<java.lang.String,?> customAttributes);
+    method public boolean equals(Object? other);
+    method public java.util.Map<java.lang.String,java.lang.Object> getCustomAttributes();
+    method public java.util.List<com.apollographql.apollo.api.Error.Location> getLocations();
+    method public String getMessage();
+    method public int hashCode();
   }
 
   public static final class Error.Location {
-    ctor public Error.Location(error.NonExistentClass, error.NonExistentClass);
-    method public error.NonExistentClass column();
-    method public error.NonExistentClass equals(error.NonExistentClass);
-    method public error.NonExistentClass getColumn();
-    method public error.NonExistentClass getLine();
-    method public error.NonExistentClass hashCode();
-    method public error.NonExistentClass line();
+    ctor public Error.Location(long line, long column);
+    method public boolean equals(Object? other);
+    method public long getColumn();
+    method public long getLine();
+    method public int hashCode();
   }
 
-  public abstract interface ExecutionContext {
-    method public abstract <R> R fold(R, kotlin.jvm.functions.Function2<? super R, ? super com.apollographql.apollo.api.ExecutionContext.Element, ? extends R>);
-    method public operator abstract <E extends com.apollographql.apollo.api.ExecutionContext.Element> E get(com.apollographql.apollo.api.ExecutionContext.Key<E>);
-    method public abstract com.apollographql.apollo.api.ExecutionContext minusKey(com.apollographql.apollo.api.ExecutionContext.Key<?>);
-    method public default operator com.apollographql.apollo.api.ExecutionContext plus(com.apollographql.apollo.api.ExecutionContext);
+  @com.apollographql.apollo.api.ApolloExperimental public interface ExecutionContext {
+    method public <R> R! fold(R? initial, kotlin.jvm.functions.Function2<? super R,? super com.apollographql.apollo.api.ExecutionContext.Element,? extends R> operation);
+    method public operator <E extends com.apollographql.apollo.api.ExecutionContext.Element> E? get(com.apollographql.apollo.api.ExecutionContext.Key<E> key);
+    method public com.apollographql.apollo.api.ExecutionContext minusKey(com.apollographql.apollo.api.ExecutionContext.Key<?> key);
+    method public default operator com.apollographql.apollo.api.ExecutionContext plus(com.apollographql.apollo.api.ExecutionContext context);
     field public static final com.apollographql.apollo.api.ExecutionContext.Companion Companion;
+    field public static final com.apollographql.apollo.api.ExecutionContext Empty;
   }
 
   public static final class ExecutionContext.Companion {
-    method public com.apollographql.apollo.api.ExecutionContext getEmpty();
-    property public final com.apollographql.apollo.api.ExecutionContext Empty;
   }
 
-  public static abstract interface ExecutionContext.Element implements com.apollographql.apollo.api.ExecutionContext {
-    method public default <R> R fold(R, kotlin.jvm.functions.Function2<? super R, ? super com.apollographql.apollo.api.ExecutionContext.Element, ? extends R>);
-    method public default operator <E extends com.apollographql.apollo.api.ExecutionContext.Element> E get(com.apollographql.apollo.api.ExecutionContext.Key<E>);
-    method public abstract com.apollographql.apollo.api.ExecutionContext.Key<?> getKey();
-    method public default com.apollographql.apollo.api.ExecutionContext minusKey(com.apollographql.apollo.api.ExecutionContext.Key<?>);
+  public static interface ExecutionContext.Element extends com.apollographql.apollo.api.ExecutionContext {
+    method public default <R> R! fold(R? initial, kotlin.jvm.functions.Function2<? super R,? super com.apollographql.apollo.api.ExecutionContext.Element,? extends R> operation);
+    method public default operator <E extends com.apollographql.apollo.api.ExecutionContext.Element> E? get(com.apollographql.apollo.api.ExecutionContext.Key<E> key);
+    method public com.apollographql.apollo.api.ExecutionContext.Key<?> getKey();
+    method public default com.apollographql.apollo.api.ExecutionContext minusKey(com.apollographql.apollo.api.ExecutionContext.Key<?> key);
     property public abstract com.apollographql.apollo.api.ExecutionContext.Key<?> key;
   }
 
-  public static abstract interface ExecutionContext.Key<E extends com.apollographql.apollo.api.ExecutionContext.Element> {
+  public static interface ExecutionContext.Key<E extends com.apollographql.apollo.api.ExecutionContext.Element> {
   }
 
   public class FileUpload {
-    ctor public FileUpload(error.NonExistentClass, error.NonExistentClass);
-    method public error.NonExistentClass contentLength();
-    method public error.NonExistentClass fileName();
-    method public final error.NonExistentClass getFilePath();
-    method public final error.NonExistentClass getMimetype();
-    method public void writeTo(error.NonExistentClass);
+    ctor public FileUpload(String mimetype, String? filePath);
+    method public long contentLength();
+    method public String? fileName();
+    method public final String? getFilePath();
+    method public final String getMimetype();
+    method public void writeTo(okio.BufferedSink sink);
     field public static final com.apollographql.apollo.api.FileUpload.Companion Companion;
   }
 
@@ -191,235 +189,215 @@ package com.apollographql.apollo.api {
   }
 
   public final class FileuploadKt {
-    ctor public FileuploadKt();
-    method public static com.apollographql.apollo.api.FileUpload create(com.apollographql.apollo.api.FileUpload.Companion, error.NonExistentClass, error.NonExistentClass);
+    method public static com.apollographql.apollo.api.FileUpload create(com.apollographql.apollo.api.FileUpload.Companion, String mimetype, String filePath);
   }
 
-  public abstract interface GraphqlFragment {
-    method public abstract com.apollographql.apollo.api.internal.ResponseFieldMarshaller marshaller();
+  public interface GraphqlFragment {
+    method public com.apollographql.apollo.api.internal.ResponseFieldMarshaller marshaller();
   }
 
   public final class Input<V> {
-    method public error.NonExistentClass equals(error.NonExistentClass);
-    method public error.NonExistentClass getDefined();
-    method public V getValue();
-    method public error.NonExistentClass hashCode();
+    method public static <V> com.apollographql.apollo.api.Input<V> absent();
+    method public boolean equals(Object? other);
+    method public static <V> com.apollographql.apollo.api.Input<V> fromNullable(V? value);
+    method public int hashCode();
+    method public static <V> com.apollographql.apollo.api.Input<V> optional(V? value);
     field public static final com.apollographql.apollo.api.Input.Companion Companion;
+    field public final boolean defined;
+    field public final V? value;
   }
 
   public static final class Input.Companion {
     method public <V> com.apollographql.apollo.api.Input<V> absent();
-    method public <V> com.apollographql.apollo.api.Input<V> fromNullable(V);
-    method public <V> com.apollographql.apollo.api.Input<V> optional(V);
+    method public <V> com.apollographql.apollo.api.Input<V> fromNullable(V? value);
+    method public <V> com.apollographql.apollo.api.Input<V> optional(V? value);
   }
 
-  public abstract interface InputType {
-    method public abstract com.apollographql.apollo.api.internal.InputFieldMarshaller marshaller();
+  public interface InputType {
+    method public com.apollographql.apollo.api.internal.InputFieldMarshaller marshaller();
   }
 
   public final class KotlinExtensions {
-    ctor public KotlinExtensions();
-    method public static inline <T> com.apollographql.apollo.api.Input<T> toInput(T);
   }
 
-  public abstract interface Mutation<D extends com.apollographql.apollo.api.Operation.Data, T, V extends com.apollographql.apollo.api.Operation.Variables> implements com.apollographql.apollo.api.Operation {
+  public interface Mutation<D extends com.apollographql.apollo.api.Operation.Data, V extends com.apollographql.apollo.api.Operation.Variables> extends com.apollographql.apollo.api.Operation<D,V> {
   }
 
-  public abstract interface Operation<D extends com.apollographql.apollo.api.Operation.Data, T, V extends com.apollographql.apollo.api.Operation.Variables> {
-    method public abstract error.NonExistentClass composeRequestBody(error.NonExistentClass, error.NonExistentClass, com.apollographql.apollo.api.ScalarTypeAdapters);
-    method public abstract error.NonExistentClass composeRequestBody(com.apollographql.apollo.api.ScalarTypeAdapters);
-    method public abstract error.NonExistentClass composeRequestBody();
-    method public abstract com.apollographql.apollo.api.OperationName name();
-    method public abstract error.NonExistentClass operationId();
-    method public abstract com.apollographql.apollo.api.Response<T> parse(error.NonExistentClass, com.apollographql.apollo.api.ScalarTypeAdapters);
-    method public abstract com.apollographql.apollo.api.Response<T> parse(error.NonExistentClass, com.apollographql.apollo.api.ScalarTypeAdapters);
-    method public abstract com.apollographql.apollo.api.Response<T> parse(error.NonExistentClass);
-    method public abstract com.apollographql.apollo.api.Response<T> parse(error.NonExistentClass);
-    method public abstract error.NonExistentClass queryDocument();
-    method public abstract com.apollographql.apollo.api.internal.ResponseFieldMapper<D> responseFieldMapper();
-    method public abstract V variables();
-    method public abstract T wrapData(D);
+  public interface Operation<D extends com.apollographql.apollo.api.Operation.Data, V extends com.apollographql.apollo.api.Operation.Variables> {
+    method public okio.ByteString composeRequestBody(boolean autoPersistQueries, boolean withQueryDocument, com.apollographql.apollo.api.ScalarTypeAdapters scalarTypeAdapters);
+    method public okio.ByteString composeRequestBody(com.apollographql.apollo.api.ScalarTypeAdapters scalarTypeAdapters);
+    method public okio.ByteString composeRequestBody();
+    method public com.apollographql.apollo.api.OperationName name();
+    method public String operationId();
+    method public com.apollographql.apollo.api.Response<D> parse(okio.BufferedSource source, com.apollographql.apollo.api.ScalarTypeAdapters scalarTypeAdapters);
+    method public com.apollographql.apollo.api.Response<D> parse(okio.ByteString byteString, com.apollographql.apollo.api.ScalarTypeAdapters scalarTypeAdapters);
+    method public com.apollographql.apollo.api.Response<D> parse(okio.BufferedSource source);
+    method public com.apollographql.apollo.api.Response<D> parse(okio.ByteString byteString);
+    method public String queryDocument();
+    method public com.apollographql.apollo.api.internal.ResponseFieldMapper<D> responseFieldMapper();
+    method public V variables();
     field public static final com.apollographql.apollo.api.Operation.Companion Companion;
+    field public static final com.apollographql.apollo.api.Operation.Variables EMPTY_VARIABLES;
   }
 
   public static final class Operation.Companion {
-    method public com.apollographql.apollo.api.Operation.Variables getEMPTY_VARIABLES();
-    property public final com.apollographql.apollo.api.Operation.Variables EMPTY_VARIABLES;
   }
 
-  public static abstract interface Operation.Data {
-    method public abstract com.apollographql.apollo.api.internal.ResponseFieldMarshaller marshaller();
+  public static interface Operation.Data {
+    method public com.apollographql.apollo.api.internal.ResponseFieldMarshaller marshaller();
   }
 
   public static class Operation.Variables {
     ctor public Operation.Variables();
-    method public final error.NonExistentClass marshal();
-    method public final error.NonExistentClass marshal(com.apollographql.apollo.api.ScalarTypeAdapters);
+    method public final String marshal();
+    method public final String marshal(com.apollographql.apollo.api.ScalarTypeAdapters scalarTypeAdapters);
     method public com.apollographql.apollo.api.internal.InputFieldMarshaller marshaller();
-    method public error.NonExistentClass valueMap();
+    method public java.util.Map<java.lang.String,java.lang.Object> valueMap();
   }
 
   public final class OperationDataJsonSerializer {
-    ctor public OperationDataJsonSerializer();
-    method public static error.NonExistentClass toJson(com.apollographql.apollo.api.Operation.Data, error.NonExistentClass, com.apollographql.apollo.api.ScalarTypeAdapters);
+    method public static String serialize(com.apollographql.apollo.api.Operation.Data, String indent = "", com.apollographql.apollo.api.ScalarTypeAdapters scalarTypeAdapters = com.apollographql.apollo.api.ScalarTypeAdapters.DEFAULT);
+    method public static String serialize(com.apollographql.apollo.api.Operation.Data, String indent = "");
+    method public static String serialize(com.apollographql.apollo.api.Operation.Data);
   }
 
-  public abstract interface OperationName {
-    method public abstract error.NonExistentClass name();
+  public interface OperationName {
+    method public String name();
   }
 
-  public abstract interface Query<D extends com.apollographql.apollo.api.Operation.Data, T, V extends com.apollographql.apollo.api.Operation.Variables> implements com.apollographql.apollo.api.Operation {
+  public interface Query<D extends com.apollographql.apollo.api.Operation.Data, V extends com.apollographql.apollo.api.Operation.Variables> extends com.apollographql.apollo.api.Operation<D,V> {
   }
 
-  public final class Response<T> {
-    ctor public Response(com.apollographql.apollo.api.Operation<?, ?, ?>, T, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, com.apollographql.apollo.api.ExecutionContext);
-    ctor public Response(com.apollographql.apollo.api.Response.Builder<T>);
-    method public com.apollographql.apollo.api.Operation<?, ?, ?> component1();
-    method public T component2();
-    method public error.NonExistentClass component3();
-    method public error.NonExistentClass component4();
-    method public error.NonExistentClass component5();
-    method public error.NonExistentClass component6();
+  public final class Response<D extends com.apollographql.apollo.api.Operation.Data> {
+    ctor public Response(com.apollographql.apollo.api.Operation<?,?> operation, D? data, java.util.List<com.apollographql.apollo.api.Error>? errors, java.util.Set<java.lang.String> dependentKeys, boolean isFromCache, java.util.Map<java.lang.String,?> extensions, com.apollographql.apollo.api.ExecutionContext executionContext);
+    ctor public Response(com.apollographql.apollo.api.Response.Builder<D> builder);
+    method public static <D extends com.apollographql.apollo.api.Operation.Data> com.apollographql.apollo.api.Response.Builder<D> builder(com.apollographql.apollo.api.Operation<?,?> operation);
+    method public com.apollographql.apollo.api.Operation<?,?> component1();
+    method public D? component2();
+    method public java.util.List<com.apollographql.apollo.api.Error>? component3();
+    method public java.util.Set<java.lang.String> component4();
+    method public boolean component5();
+    method public java.util.Map<java.lang.String,java.lang.Object> component6();
     method public com.apollographql.apollo.api.ExecutionContext component7();
-    method public com.apollographql.apollo.api.Response<T> copy(com.apollographql.apollo.api.Operation<?, ?, ?>, T, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, com.apollographql.apollo.api.ExecutionContext);
-    method public T data();
-    method public error.NonExistentClass dependentKeys();
-    method public error.NonExistentClass equals(error.NonExistentClass);
-    method public boolean equals(java.lang.Object);
-    method public error.NonExistentClass errors();
-    method public error.NonExistentClass extensions();
-    method public error.NonExistentClass fromCache();
-    method public T getData();
-    method public error.NonExistentClass getDependentKeys();
-    method public error.NonExistentClass getErrors();
+    method public com.apollographql.apollo.api.Response<D> copy(com.apollographql.apollo.api.Operation<?,?> operation, D? data, java.util.List<com.apollographql.apollo.api.Error>? errors, java.util.Set<java.lang.String> dependentKeys, boolean isFromCache, java.util.Map<java.lang.String,?> extensions, com.apollographql.apollo.api.ExecutionContext executionContext);
+    method public boolean equals(Object? other);
+    method public D? getData();
+    method public java.util.Set<java.lang.String> getDependentKeys();
+    method public java.util.List<com.apollographql.apollo.api.Error>? getErrors();
     method public com.apollographql.apollo.api.ExecutionContext getExecutionContext();
-    method public error.NonExistentClass getExtensions();
-    method public error.NonExistentClass getFromCache();
-    method public com.apollographql.apollo.api.Operation<?, ?, ?> getOperation();
-    method public error.NonExistentClass hasErrors();
-    method public error.NonExistentClass hashCode();
-    method public error.NonExistentClass isFromCache();
-    method public com.apollographql.apollo.api.Operation<?, ?, ?> operation();
-    method public com.apollographql.apollo.api.Response.Builder<T> toBuilder();
-    method public java.lang.String toString();
-    property public final error.NonExistentClass fromCache;
+    method public java.util.Map<java.lang.String,java.lang.Object> getExtensions();
+    method public com.apollographql.apollo.api.Operation<?,?> getOperation();
+    method public boolean hasErrors();
+    method public int hashCode();
+    method public boolean isFromCache();
+    method public com.apollographql.apollo.api.Response.Builder<D> toBuilder();
+    method public String toString();
     field public static final com.apollographql.apollo.api.Response.Companion Companion;
   }
 
-  public static final class Response.Builder<T> {
-    method public com.apollographql.apollo.api.Response<T> build();
-    method public error.NonExistentClass data(T);
-    method public error.NonExistentClass dependentKeys(error.NonExistentClass);
-    method public error.NonExistentClass errors(error.NonExistentClass);
-    method public error.NonExistentClass executionContext(com.apollographql.apollo.api.ExecutionContext);
-    method public error.NonExistentClass extensions(error.NonExistentClass);
-    method public error.NonExistentClass fromCache(error.NonExistentClass);
+  public static final class Response.Builder<D extends com.apollographql.apollo.api.Operation.Data> {
+    method public com.apollographql.apollo.api.Response<D> build();
+    method public com.apollographql.apollo.api.Response.Builder<D> data(D? data);
+    method public com.apollographql.apollo.api.Response.Builder<D> dependentKeys(java.util.Set<java.lang.String>? dependentKeys);
+    method public com.apollographql.apollo.api.Response.Builder<D> errors(java.util.List<com.apollographql.apollo.api.Error>? errors);
+    method public com.apollographql.apollo.api.Response.Builder<D> executionContext(com.apollographql.apollo.api.ExecutionContext executionContext);
+    method public com.apollographql.apollo.api.Response.Builder<D> extensions(java.util.Map<java.lang.String,?>? extensions);
+    method public com.apollographql.apollo.api.Response.Builder<D> fromCache(boolean fromCache);
   }
 
   public static final class Response.Companion {
-    method public <T> com.apollographql.apollo.api.Response.Builder<T> builder(com.apollographql.apollo.api.Operation<?, ?, ?>);
+    method public <D extends com.apollographql.apollo.api.Operation.Data> com.apollographql.apollo.api.Response.Builder<D> builder(com.apollographql.apollo.api.Operation<?,?> operation);
   }
 
   public class ResponseField {
-    method public final error.NonExistentClass arguments();
-    method public final error.NonExistentClass conditions();
-    method public error.NonExistentClass equals(error.NonExistentClass);
-    method public final error.NonExistentClass fieldName();
-    method public final error.NonExistentClass getArguments();
-    method public final error.NonExistentClass getConditions();
-    method public final error.NonExistentClass getFieldName();
-    method public final error.NonExistentClass getOptional();
-    method public final error.NonExistentClass getResponseName();
+    method public boolean equals(Object? other);
+    method public static final com.apollographql.apollo.api.ResponseField forBoolean(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
+    method public static final com.apollographql.apollo.api.ResponseField.CustomTypeField forCustomType(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, com.apollographql.apollo.api.ScalarType scalarType, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
+    method public static final com.apollographql.apollo.api.ResponseField forDouble(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
+    method public static final com.apollographql.apollo.api.ResponseField forEnum(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
+    method public static final com.apollographql.apollo.api.ResponseField forInt(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
+    method public static final com.apollographql.apollo.api.ResponseField forList(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
+    method public static final com.apollographql.apollo.api.ResponseField forObject(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
+    method public static final com.apollographql.apollo.api.ResponseField forString(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
+    method public final java.util.Map<java.lang.String,java.lang.Object> getArguments();
+    method public final java.util.List<com.apollographql.apollo.api.ResponseField.Condition> getConditions();
+    method public final String getFieldName();
+    method public final boolean getOptional();
+    method public final String getResponseName();
     method public final com.apollographql.apollo.api.ResponseField.Type getType();
-    method public error.NonExistentClass hashCode();
-    method public final error.NonExistentClass optional();
-    method public final error.NonExistentClass resolveArgument(error.NonExistentClass, com.apollographql.apollo.api.Operation.Variables);
-    method public final error.NonExistentClass responseName();
-    method public final com.apollographql.apollo.api.ResponseField.Type type();
+    method public int hashCode();
+    method public static final boolean isArgumentValueVariableType(java.util.Map<java.lang.String,?> objectMap);
+    method public final Object? resolveArgument(String name, com.apollographql.apollo.api.Operation.Variables variables);
     field public static final com.apollographql.apollo.api.ResponseField.Companion Companion;
-    field public static final java.lang.String VARIABLE_NAME_KEY = "variableName";
+    field public static final String VARIABLE_NAME_KEY = "variableName";
   }
 
   public static final class ResponseField.BooleanCondition extends com.apollographql.apollo.api.ResponseField.Condition {
-    method public error.NonExistentClass equals(error.NonExistentClass);
-    method public error.NonExistentClass getInverted();
-    method public error.NonExistentClass getVariableName();
-    method public error.NonExistentClass hashCode();
-    method public error.NonExistentClass inverted();
-    method public error.NonExistentClass isInverted();
-    method public error.NonExistentClass variableName();
-    property public final error.NonExistentClass inverted;
+    method public String component1();
+    method public boolean component2();
+    method public com.apollographql.apollo.api.ResponseField.BooleanCondition copy(String variableName, boolean isInverted);
+    method public boolean equals(Object? p);
+    method public String getVariableName();
+    method public int hashCode();
+    method public boolean isInverted();
+    method public String toString();
   }
 
   public static final class ResponseField.Companion {
-    method public com.apollographql.apollo.api.ResponseField forBoolean(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
-    method public com.apollographql.apollo.api.ResponseField.CustomTypeField forCustomType(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, com.apollographql.apollo.api.ScalarType, error.NonExistentClass);
-    method public com.apollographql.apollo.api.ResponseField forDouble(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
-    method public com.apollographql.apollo.api.ResponseField forEnum(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
-    method public com.apollographql.apollo.api.ResponseField forFragment(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
-    method public com.apollographql.apollo.api.ResponseField forInt(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
-    method public com.apollographql.apollo.api.ResponseField forList(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
-    method public com.apollographql.apollo.api.ResponseField forLong(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
-    method public com.apollographql.apollo.api.ResponseField forObject(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
-    method public com.apollographql.apollo.api.ResponseField forString(error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass, error.NonExistentClass);
-    method public error.NonExistentClass isArgumentValueVariableType(error.NonExistentClass);
+    method public com.apollographql.apollo.api.ResponseField forBoolean(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
+    method public com.apollographql.apollo.api.ResponseField.CustomTypeField forCustomType(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, com.apollographql.apollo.api.ScalarType scalarType, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
+    method public com.apollographql.apollo.api.ResponseField forDouble(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
+    method public com.apollographql.apollo.api.ResponseField forEnum(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
+    method public com.apollographql.apollo.api.ResponseField forInt(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
+    method public com.apollographql.apollo.api.ResponseField forList(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
+    method public com.apollographql.apollo.api.ResponseField forObject(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
+    method public com.apollographql.apollo.api.ResponseField forString(String responseName, String fieldName, java.util.Map<java.lang.String,?>? arguments, boolean optional, java.util.List<? extends com.apollographql.apollo.api.ResponseField.Condition>? conditions);
+    method public boolean isArgumentValueVariableType(java.util.Map<java.lang.String,?> objectMap);
   }
 
   public static class ResponseField.Condition {
+    method public static final com.apollographql.apollo.api.ResponseField.BooleanCondition booleanCondition(String variableName, boolean inverted);
     field public static final com.apollographql.apollo.api.ResponseField.Condition.Companion Companion;
   }
 
   public static final class ResponseField.Condition.Companion {
-    method public com.apollographql.apollo.api.ResponseField.BooleanCondition booleanCondition(error.NonExistentClass, error.NonExistentClass);
-    method public com.apollographql.apollo.api.ResponseField.TypeNameCondition typeCondition(error.NonExistentClass);
+    method public com.apollographql.apollo.api.ResponseField.BooleanCondition booleanCondition(String variableName, boolean inverted);
   }
 
   public static final class ResponseField.CustomTypeField extends com.apollographql.apollo.api.ResponseField {
     method public com.apollographql.apollo.api.ScalarType getScalarType();
-    method public com.apollographql.apollo.api.ScalarType scalarType();
   }
 
-  public static class ResponseField.Type {
-    method public static com.apollographql.apollo.api.ResponseField.Type valueOf(java.lang.String);
-    method public static final com.apollographql.apollo.api.ResponseField.Type[] values();
+  public enum ResponseField.Type {
+    method public static com.apollographql.apollo.api.ResponseField.Type valueOf(String name);
+    method public static com.apollographql.apollo.api.ResponseField.Type[] values();
     enum_constant public static final com.apollographql.apollo.api.ResponseField.Type BOOLEAN;
     enum_constant public static final com.apollographql.apollo.api.ResponseField.Type CUSTOM;
     enum_constant public static final com.apollographql.apollo.api.ResponseField.Type DOUBLE;
     enum_constant public static final com.apollographql.apollo.api.ResponseField.Type ENUM;
-    enum_constant public static final com.apollographql.apollo.api.ResponseField.Type FRAGMENT;
-    enum_constant public static final com.apollographql.apollo.api.ResponseField.Type FRAGMENTS;
     enum_constant public static final com.apollographql.apollo.api.ResponseField.Type INT;
     enum_constant public static final com.apollographql.apollo.api.ResponseField.Type LIST;
-    enum_constant public static final com.apollographql.apollo.api.ResponseField.Type LONG;
     enum_constant public static final com.apollographql.apollo.api.ResponseField.Type OBJECT;
     enum_constant public static final com.apollographql.apollo.api.ResponseField.Type STRING;
   }
 
-  public static final class ResponseField.TypeNameCondition extends com.apollographql.apollo.api.ResponseField.Condition {
-    method public error.NonExistentClass equals(error.NonExistentClass);
-    method public error.NonExistentClass getTypeNames();
-    method public error.NonExistentClass hashCode();
-    method public error.NonExistentClass typeNames();
-  }
-
-  public abstract interface ScalarType {
-    method public abstract error.NonExistentClass className();
-    method public abstract error.NonExistentClass typeName();
+  public interface ScalarType {
+    method public String className();
+    method public String typeName();
   }
 
   public final class ScalarTypeAdapters {
-    ctor public ScalarTypeAdapters(error.NonExistentClass);
-    method public <T> com.apollographql.apollo.api.CustomTypeAdapter<T> adapterFor(com.apollographql.apollo.api.ScalarType);
-    method public error.NonExistentClass getCustomAdapters();
+    ctor public ScalarTypeAdapters(java.util.Map<com.apollographql.apollo.api.ScalarType,? extends com.apollographql.apollo.api.CustomTypeAdapter<?>> customAdapters);
+    method public <T> com.apollographql.apollo.api.CustomTypeAdapter<T> adapterFor(com.apollographql.apollo.api.ScalarType scalarType);
+    method public java.util.Map<com.apollographql.apollo.api.ScalarType,com.apollographql.apollo.api.CustomTypeAdapter<?>> getCustomAdapters();
     field public static final com.apollographql.apollo.api.ScalarTypeAdapters.Companion Companion;
+    field public static final com.apollographql.apollo.api.ScalarTypeAdapters DEFAULT;
   }
 
   public static final class ScalarTypeAdapters.Companion {
-    method public com.apollographql.apollo.api.ScalarTypeAdapters getDEFAULT();
-    property public final com.apollographql.apollo.api.ScalarTypeAdapters DEFAULT;
   }
 
-  public abstract interface Subscription<D extends com.apollographql.apollo.api.Operation.Data, T, V extends com.apollographql.apollo.api.Operation.Variables> implements com.apollographql.apollo.api.Operation {
+  public interface Subscription<D extends com.apollographql.apollo.api.Operation.Data, V extends com.apollographql.apollo.api.Operation.Variables> extends com.apollographql.apollo.api.Operation<D,V> {
   }
 
 }
@@ -427,8 +405,8 @@ package com.apollographql.apollo.api {
 package com.apollographql.apollo.exception {
 
   public class ApolloException {
-    ctor public ApolloException(error.NonExistentClass);
-    ctor public ApolloException(error.NonExistentClass, error.NonExistentClass);
+    ctor public ApolloException(String message);
+    ctor public ApolloException(String message, Throwable cause);
   }
 
 }
