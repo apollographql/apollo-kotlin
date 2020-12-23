@@ -10,7 +10,7 @@ package com.apollographql.apollo.api
  * ```
  *    val adapter = object : CustomScalarTypeAdapter<Date> {
  *
- *      override fun(value: CustomTypeValue<*>): Date {
+ *      override fun(jsonElement: JsonElement): Date {
  *        try {
  *          return ISO8601_DATE_FORMAT.parse(value);
  *        } catch (ParseException e) {
@@ -18,7 +18,7 @@ package com.apollographql.apollo.api
  *        }
  *      }
  *
- *      override fun encode(value: Date): CustomTypeValue {
+ *      override fun encode(value: Date): JsonElement {
  *        return ISO8601_DATE_FORMAT.format(value);
  *      }
  *   }
@@ -29,11 +29,11 @@ interface CustomScalarTypeAdapter<T> {
   /**
    * De-serializes the [value] to the custom scalar type [T]. Usually used in parsing the GraphQL response.
    */
-  fun decode(value: CustomTypeValue<*>): T
+  fun decode(jsonElement: JsonElement): T
 
   /**
-   * Serializes the custom scalar type [value] to the corresponding [CustomTypeValue]. Usually used in serializing variables or input
+   * Serializes the custom scalar type [value] to the corresponding [JsonElement]. Usually used in serializing variables or input
    * values.
    */
-  fun encode(value: T): CustomTypeValue<*>
+  fun encode(value: T): JsonElement
 }

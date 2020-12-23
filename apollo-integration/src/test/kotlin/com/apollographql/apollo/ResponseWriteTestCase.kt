@@ -5,8 +5,8 @@ import com.apollographql.apollo.Utils.enqueueAndAssertResponse
 import com.apollographql.apollo.Utils.immediateExecutor
 import com.apollographql.apollo.Utils.immediateExecutorService
 import com.apollographql.apollo.api.CustomScalarTypeAdapter
-import com.apollographql.apollo.api.CustomTypeValue
-import com.apollographql.apollo.api.CustomTypeValue.GraphQLString
+import com.apollographql.apollo.api.JsonElement
+import com.apollographql.apollo.api.JsonElement.JsonString
 import com.apollographql.apollo.api.Input.Companion.fromNullable
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Operation
@@ -53,16 +53,16 @@ class ResponseWriteTestCase {
         .normalizedCache(LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), IdFieldCacheKeyResolver())
         .dispatcher(immediateExecutor())
         .addCustomScalarTypeAdapter(CustomScalarType.Date, object : CustomScalarTypeAdapter<Date> {
-          override fun decode(value: CustomTypeValue<*>): Date {
+          override fun decode(jsonElement: JsonElement): Date {
             return try {
-              DATE_TIME_FORMAT.parse(value.value.toString())
+              DATE_TIME_FORMAT.parse(jsonElement.toRawValue().toString())
             } catch (e: ParseException) {
               throw RuntimeException(e)
             }
           }
 
-          override fun encode(value: Date): CustomTypeValue<*> {
-            return GraphQLString(DATE_TIME_FORMAT.format(value))
+          override fun encode(value: Date): JsonElement {
+            return JsonString(DATE_TIME_FORMAT.format(value))
           }
         })
         .build()

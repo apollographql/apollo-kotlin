@@ -1,6 +1,6 @@
 package com.apollographql.apollo.api.internal
 
-import com.apollographql.apollo.api.CustomTypeValue
+import com.apollographql.apollo.api.JsonElement
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ScalarType
@@ -109,7 +109,7 @@ class StreamResponseReader private constructor(
     val value = readValue(field) {
       readRecursively()
     }
-    return value?.let { typeAdapter.decode(CustomTypeValue.fromRawValue(it)) }
+    return value?.let { typeAdapter.decode(JsonElement.fromRawValue(it)) }
   }
 
   private inline fun <T> readValue(field: ResponseField, readValue: JsonReader.() -> T?): T? {
@@ -161,7 +161,7 @@ class StreamResponseReader private constructor(
     override fun <T : Any> readCustomScalar(scalarType: ScalarType): T {
       val typeAdapter = scalarTypeAdapters.adapterFor<T>(scalarType)
       val value = jsonReader.readRecursively()!!
-      return typeAdapter.decode(CustomTypeValue.fromRawValue(value))
+      return typeAdapter.decode(JsonElement.fromRawValue(value))
     }
 
     override fun <T : Any> readObject(block: (ResponseReader) -> T): T {

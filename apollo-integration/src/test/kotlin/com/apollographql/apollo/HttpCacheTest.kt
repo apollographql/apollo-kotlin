@@ -5,8 +5,8 @@ import com.apollographql.apollo.Utils.immediateExecutor
 import com.apollographql.apollo.Utils.immediateExecutorService
 import com.apollographql.apollo.Utils.readFileToString
 import com.apollographql.apollo.api.CustomScalarTypeAdapter
-import com.apollographql.apollo.api.CustomTypeValue
-import com.apollographql.apollo.api.CustomTypeValue.GraphQLString
+import com.apollographql.apollo.api.JsonElement
+import com.apollographql.apollo.api.JsonElement.JsonString
 import com.apollographql.apollo.api.cache.http.HttpCache
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.cache.ApolloCacheHeaders
@@ -51,16 +51,16 @@ class HttpCacheTest {
   @Before
   fun setUp() {
     val dateCustomScalarTypeAdapter: CustomScalarTypeAdapter<Date> = object : CustomScalarTypeAdapter<Date> {
-      override fun decode(value: CustomTypeValue<*>): Date {
+      override fun decode(jsonElement: JsonElement): Date {
         return try {
-          DATE_FORMAT.parse(value.value.toString())
+          DATE_FORMAT.parse(jsonElement.toRawValue().toString())
         } catch (e: ParseException) {
           throw RuntimeException(e)
         }
       }
 
-      override fun encode(value: Date): CustomTypeValue<*> {
-        return GraphQLString(DATE_FORMAT.format(value))
+      override fun encode(value: Date): JsonElement {
+        return JsonString(DATE_FORMAT.format(value))
       }
     }
     cacheStore = MockHttpCacheStore()

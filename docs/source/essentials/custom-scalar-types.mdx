@@ -32,7 +32,7 @@ Next, register your custom adapter and add it to your `ApolloClient` builder:
 
 ```kotlin
 val dateCustomScalarTypeAdapter = object : CustomScalarTypeAdapter<Date> {
-  override fun decode(value: CustomTypeValue<*>): Date {
+  override fun decode(jsonElement: JsonElement): Date {
     return try {
       DATE_FORMAT.parse(value.value.toString())
     } catch (e: ParseException) {
@@ -40,7 +40,7 @@ val dateCustomScalarTypeAdapter = object : CustomScalarTypeAdapter<Date> {
     }
   }
 
-  override fun encode(value: Date): CustomTypeValue<*> {
+  override fun encode(value: Date): JsonElement {
     return GraphQLString(DATE_FORMAT.format(value))
   }
 }

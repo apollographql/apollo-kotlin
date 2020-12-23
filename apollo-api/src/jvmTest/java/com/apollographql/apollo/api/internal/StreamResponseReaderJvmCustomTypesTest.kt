@@ -1,7 +1,7 @@
 package com.apollographql.apollo.api.internal
 
 import com.apollographql.apollo.api.CustomScalarTypeAdapter
-import com.apollographql.apollo.api.CustomTypeValue
+import com.apollographql.apollo.api.JsonElement
 import com.apollographql.apollo.api.EMPTY_OPERATION
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ScalarType
@@ -80,7 +80,7 @@ class StreamResponseReaderJvmCustomTypesTest {
     private fun responseReader(recordSet: Map<String, Any>): StreamResponseReader {
       val CustomScalarTypeAdapters: MutableMap<ScalarType, CustomScalarTypeAdapter<*>> = HashMap()
       CustomScalarTypeAdapters[DATE_CUSTOM_TYPE] = object : CustomScalarTypeAdapter<Any?> {
-        override fun decode(value: CustomTypeValue<*>): Any {
+        override fun decode(jsonElement: JsonElement): Any {
           return try {
             DATE_TIME_FORMAT.parse(value.value.toString())
           } catch (e: ParseException) {
@@ -88,25 +88,25 @@ class StreamResponseReaderJvmCustomTypesTest {
           }
         }
 
-        override fun encode(value: Any?): CustomTypeValue<*> {
+        override fun encode(value: Any?): JsonElement {
           throw UnsupportedOperationException()
         }
       }
       CustomScalarTypeAdapters[URL_CUSTOM_TYPE] = object : CustomScalarTypeAdapter<Any?> {
-        override fun decode(value: CustomTypeValue<*>): Any {
+        override fun decode(jsonElement: JsonElement): Any {
           throw UnsupportedOperationException()
         }
 
-        override fun encode(value: Any?): CustomTypeValue<*> {
+        override fun encode(value: Any?): JsonElement {
           throw UnsupportedOperationException()
         }
       }
       CustomScalarTypeAdapters[OBJECT_CUSTOM_TYPE] = object : CustomScalarTypeAdapter<Any?> {
-        override fun decode(value: CustomTypeValue<*>): Any {
+        override fun decode(jsonElement: JsonElement): Any {
           return value.value.toString()
         }
 
-        override fun encode(value: Any?): CustomTypeValue<*> {
+        override fun encode(value: Any?): JsonElement {
           throw UnsupportedOperationException()
         }
       }

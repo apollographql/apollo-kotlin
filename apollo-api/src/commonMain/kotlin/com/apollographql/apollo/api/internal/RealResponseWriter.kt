@@ -38,7 +38,7 @@ class RealResponseWriter(
 
   override fun writeCustom(field: ResponseField.CustomScalarField, value: Any?) {
     val typeAdapter = scalarTypeAdapters.adapterFor<Any>(field.scalarType)
-    writeScalarFieldValue(field, if (value != null) typeAdapter.encode(value).value else null)
+    writeScalarFieldValue(field, if (value != null) typeAdapter.encode(value).toRawValue() else null)
   }
 
   override fun writeObject(field: ResponseField, marshaller: ResponseFieldMarshaller?) {
@@ -199,7 +199,7 @@ class RealResponseWriter(
 
     override fun writeCustom(scalarType: ScalarType, value: Any?) {
       val typeAdapter = scalarTypeAdapters.adapterFor<Any>(scalarType)
-      accumulator.add(if (value != null) typeAdapter.encode(value).value else null)
+      accumulator.add(if (value != null) typeAdapter.encode(value).toRawValue() else null)
     }
 
     override fun writeObject(marshaller: ResponseFieldMarshaller?) {

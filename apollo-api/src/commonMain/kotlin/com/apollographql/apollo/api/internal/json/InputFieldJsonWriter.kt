@@ -1,6 +1,6 @@
 package com.apollographql.apollo.api.internal.json
 
-import com.apollographql.apollo.api.CustomTypeValue.*
+import com.apollographql.apollo.api.JsonElement.*
 import com.apollographql.apollo.api.ScalarType
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
@@ -76,13 +76,13 @@ class InputFieldJsonWriter(
     }
 
     val CustomScalarTypeAdapter = scalarTypeAdapters.adapterFor<Any>(scalarType)
-    when (val customTypeValue = CustomScalarTypeAdapter.encode(value)) {
-      is GraphQLString -> writeString(fieldName, customTypeValue.value)
-      is GraphQLBoolean -> writeBoolean(fieldName, customTypeValue.value)
-      is GraphQLNumber -> writeNumber(fieldName, customTypeValue.value)
-      is GraphQLNull -> writeString(fieldName, null)
-      is GraphQLJsonObject -> jsonWriter.name(fieldName).apply { writeToJson(customTypeValue.value, this) }
-      is GraphQLJsonList -> jsonWriter.name(fieldName).apply { writeToJson(customTypeValue.value, this) }
+    when (val jsonElement = CustomScalarTypeAdapter.encode(value)) {
+      is JsonString -> writeString(fieldName, jsonElement.value)
+      is JsonBoolean -> writeBoolean(fieldName, jsonElement.value)
+      is JsonNumber -> writeNumber(fieldName, jsonElement.value)
+      is JsonNull -> writeString(fieldName, null)
+      is JsonObject -> jsonWriter.name(fieldName).apply { writeToJson(jsonElement.value, this) }
+      is JsonList -> jsonWriter.name(fieldName).apply { writeToJson(jsonElement.value, this) }
     }
   }
 
@@ -190,13 +190,13 @@ class InputFieldJsonWriter(
       }
 
       val CustomScalarTypeAdapter = scalarTypeAdapters.adapterFor<Any>(scalarType)
-      when (val customTypeValue = CustomScalarTypeAdapter.encode(value)) {
-        is GraphQLString -> writeString(customTypeValue.value)
-        is GraphQLBoolean -> writeBoolean(customTypeValue.value)
-        is GraphQLNumber -> writeNumber(customTypeValue.value)
-        is GraphQLJsonObject -> writeToJson(customTypeValue.value, jsonWriter)
-        is GraphQLJsonList -> writeToJson(customTypeValue.value, jsonWriter)
-        is GraphQLNull -> writeString(null)
+      when (val jsonElement = CustomScalarTypeAdapter.encode(value)) {
+        is JsonString -> writeString(jsonElement.value)
+        is JsonBoolean -> writeBoolean(jsonElement.value)
+        is JsonNumber -> writeNumber(jsonElement.value)
+        is JsonObject -> writeToJson(jsonElement.value, jsonWriter)
+        is JsonList -> writeToJson(jsonElement.value, jsonWriter)
+        is JsonNull -> writeString(null)
       }
     }
 

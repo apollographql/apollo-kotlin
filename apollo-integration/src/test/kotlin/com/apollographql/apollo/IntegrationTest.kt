@@ -5,7 +5,7 @@ import com.apollographql.apollo.Utils.immediateExecutor
 import com.apollographql.apollo.Utils.immediateExecutorService
 import com.apollographql.apollo.Utils.readFileToString
 import com.apollographql.apollo.api.*
-import com.apollographql.apollo.api.CustomTypeValue.GraphQLString
+import com.apollographql.apollo.api.JsonElement.JsonString
 import com.apollographql.apollo.api.Input.Companion.fromNullable
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
@@ -52,16 +52,16 @@ class IntegrationTest {
   @Before
   fun setUp() {
     dateCustomScalarTypeAdapter = object : CustomScalarTypeAdapter<Date> {
-      override fun decode(value: CustomTypeValue<*>): Date {
+      override fun decode(jsonElement: JsonElement): Date {
         return try {
-          DATE_FORMAT.parse(value.value.toString())
+          DATE_FORMAT.parse(jsonElement.toRawValue().toString())
         } catch (e: ParseException) {
           throw RuntimeException(e)
         }
       }
 
-      override fun encode(value: Date): CustomTypeValue<*> {
-        return GraphQLString(DATE_FORMAT.format(value))
+      override fun encode(value: Date): JsonElement {
+        return JsonString(DATE_FORMAT.format(value))
       }
     }
     apolloClient = ApolloClient.builder()
@@ -183,7 +183,7 @@ class IntegrationTest {
       assertThat(response.data!!.allFilms?.films).hasSize(6)
       val dates = response.data!!.allFilms?.films?.mapNotNull {
         val releaseDate = it!!.releaseDate!!
-        dateCustomScalarTypeAdapter!!.encode(releaseDate).value.toString()
+        dateCustomScalarTypeAdapter!!.encode(releaseDate).toRawValue().toString()
       }
       assertThat(dates).isEqualTo(Arrays.asList("1977-05-25", "1980-05-17", "1983-05-25", "1999-05-19",
           "2002-05-16", "2005-05-19"))

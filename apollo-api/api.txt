@@ -82,50 +82,50 @@ package com.apollographql.apollo.api {
   }
 
   public interface CustomScalarTypeAdapter<T> {
-    method public T! decode(com.apollographql.apollo.api.CustomTypeValue<?> value);
-    method public com.apollographql.apollo.api.CustomTypeValue<?> encode(T? value);
+    method public T! decode(com.apollographql.apollo.api.JsonElement<?> value);
+    method public com.apollographql.apollo.api.JsonElement<?> encode(T? value);
   }
 
-  public abstract sealed class CustomTypeValue<T> {
-    method public static final com.apollographql.apollo.api.CustomTypeValue<?> fromRawValue(Object value);
-    field public static final com.apollographql.apollo.api.CustomTypeValue.Companion Companion;
+  public abstract sealed class JsonElement<T> {
+    method public static final com.apollographql.apollo.api.JsonElement<?> fromRawValue(Object value);
+    field public static final com.apollographql.apollo.api.JsonElement.Companion Companion;
     field public final T? value;
   }
 
-  public static final class CustomTypeValue.Companion {
-    method public com.apollographql.apollo.api.CustomTypeValue<?> fromRawValue(Object value);
+  public static final class JsonElement.Companion {
+    method public com.apollographql.apollo.api.JsonElement<?> fromRawValue(Object value);
   }
 
-  public static final class CustomTypeValue.GraphQLBoolean extends com.apollographql.apollo.api.CustomTypeValue<java.lang.Boolean> {
-    ctor public CustomTypeValue.GraphQLBoolean(boolean value);
+  public static final class JsonElement.GraphQLBoolean extends com.apollographql.apollo.api.JsonElement<java.lang.Boolean> {
+    ctor public JsonElement.GraphQLBoolean(boolean value);
     method public boolean equals(Object? other);
     method public int hashCode();
   }
 
-  public static final class CustomTypeValue.GraphQLJsonList extends com.apollographql.apollo.api.CustomTypeValue<java.util.List<?>> {
-    ctor public CustomTypeValue.GraphQLJsonList(java.util.List<?> value);
+  public static final class JsonElement.GraphQLJsonList extends com.apollographql.apollo.api.JsonElement<java.util.List<?>> {
+    ctor public JsonElement.GraphQLJsonList(java.util.List<?> value);
     method public boolean equals(Object? other);
     method public int hashCode();
   }
 
-  public static final class CustomTypeValue.GraphQLJsonObject extends com.apollographql.apollo.api.CustomTypeValue<java.util.Map<java.lang.String,?>> {
-    ctor public CustomTypeValue.GraphQLJsonObject(java.util.Map<java.lang.String,?> value);
+  public static final class JsonElement.GraphQLJsonObject extends com.apollographql.apollo.api.JsonElement<java.util.Map<java.lang.String,?>> {
+    ctor public JsonElement.GraphQLJsonObject(java.util.Map<java.lang.String,?> value);
     method public boolean equals(Object? other);
     method public int hashCode();
   }
 
-  public static final class CustomTypeValue.GraphQLNull extends com.apollographql.apollo.api.CustomTypeValue<kotlin.Unit> {
-    field public static final com.apollographql.apollo.api.CustomTypeValue.GraphQLNull INSTANCE;
+  public static final class JsonElement.GraphQLNull extends com.apollographql.apollo.api.JsonElement<kotlin.Unit> {
+    field public static final com.apollographql.apollo.api.JsonElement.GraphQLNull INSTANCE;
   }
 
-  public static final class CustomTypeValue.GraphQLNumber extends com.apollographql.apollo.api.CustomTypeValue<java.lang.Number> {
-    ctor public CustomTypeValue.GraphQLNumber(Number value);
+  public static final class JsonElement.GraphQLNumber extends com.apollographql.apollo.api.JsonElement<java.lang.Number> {
+    ctor public JsonElement.GraphQLNumber(Number value);
     method public boolean equals(Object? other);
     method public int hashCode();
   }
 
-  public static final class CustomTypeValue.GraphQLString extends com.apollographql.apollo.api.CustomTypeValue<java.lang.String> {
-    ctor public CustomTypeValue.GraphQLString(String value);
+  public static final class JsonElement.GraphQLString extends com.apollographql.apollo.api.JsonElement<java.lang.String> {
+    ctor public JsonElement.GraphQLString(String value);
     method public boolean equals(Object? other);
     method public int hashCode();
   }

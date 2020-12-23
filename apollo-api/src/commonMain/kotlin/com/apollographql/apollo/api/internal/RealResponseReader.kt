@@ -2,7 +2,7 @@ package com.apollographql.apollo.internal.response
 
 import com.apollographql.apollo.api.BigDecimal
 import com.apollographql.apollo.api.CustomScalarTypeAdapter
-import com.apollographql.apollo.api.CustomTypeValue.Companion.fromRawValue
+import com.apollographql.apollo.api.JsonElement.Companion.fromRawValue
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ScalarType

@@ -2,7 +2,7 @@ package com.apollographql.apollo.api.internal.json
 
 import com.apollographql.apollo.api.BigDecimal
 import com.apollographql.apollo.api.CustomScalarTypeAdapter
-import com.apollographql.apollo.api.CustomTypeValue
+import com.apollographql.apollo.api.JsonElement
 import com.apollographql.apollo.api.ScalarType
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
@@ -88,10 +88,10 @@ class InputFieldJsonWriterTest {
   @Test
   fun writeCustomBoolean() {
     val customScalarTypeAdapters: MutableMap<ScalarType, CustomScalarTypeAdapter<*>> = HashMap()
-    val scalarType = MockCustomScalarType(CustomTypeValue.GraphQLBoolean::class, "com.apollographql.apollo.api.CustomTypeValue.GraphQLBoolean")
+    val scalarType = MockCustomScalarType(JsonElement.JsonBoolean::class, "com.apollographql.apollo.api.JsonElement.GraphQLBoolean")
     customScalarTypeAdapters[scalarType] = object : MockCustomScalarTypeAdapter() {
-      override fun encode(value: Any?): CustomTypeValue<*> {
-        return CustomTypeValue.GraphQLBoolean((value as Boolean))
+      override fun encode(value: Any?): JsonElement {
+        return JsonElement.JsonBoolean((value as Boolean))
       }
     }
     val inputFieldJsonWriter = InputFieldJsonWriter(jsonWriter, ScalarTypeAdapters(customScalarTypeAdapters))
@@ -103,10 +103,10 @@ class InputFieldJsonWriterTest {
   @Test
   fun writeCustomNumber() {
     val customScalarTypeAdapters: MutableMap<ScalarType, CustomScalarTypeAdapter<*>> = HashMap()
-    val scalarType = MockCustomScalarType(CustomTypeValue.GraphQLNumber::class, "com.apollographql.apollo.api.CustomTypeValue.GraphQLNumber")
+    val scalarType = MockCustomScalarType(JsonElement.JsonNumber::class, "com.apollographql.apollo.api.JsonElement.GraphQLNumber")
     customScalarTypeAdapters[scalarType] = object : MockCustomScalarTypeAdapter() {
-      override fun encode(value: Any?): CustomTypeValue<*> {
-        return CustomTypeValue.GraphQLNumber((value as BigDecimal).toNumber())
+      override fun encode(value: Any?): JsonElement {
+        return JsonElement.JsonNumber((value as BigDecimal).toNumber())
       }
     }
     val inputFieldJsonWriter = InputFieldJsonWriter(jsonWriter, ScalarTypeAdapters(customScalarTypeAdapters))
@@ -118,10 +118,10 @@ class InputFieldJsonWriterTest {
   @Test
   fun writeCustomString() {
     val customScalarTypeAdapters: MutableMap<ScalarType, CustomScalarTypeAdapter<*>> = HashMap()
-    val scalarType = MockCustomScalarType(CustomTypeValue.GraphQLString::class, "com.apollographql.apollo.api.CustomTypeValue.GraphQLString")
+    val scalarType = MockCustomScalarType(JsonElement.JsonString::class, "com.apollographql.apollo.api.JsonElement.JsonString")
     customScalarTypeAdapters[scalarType] = object : MockCustomScalarTypeAdapter() {
-      override fun encode(value: Any?): CustomTypeValue<*> {
-        return CustomTypeValue.GraphQLString((value as String))
+      override fun encode(value: Any?): JsonElement {
+        return JsonElement.JsonString((value as String))
       }
     }
     val inputFieldJsonWriter = InputFieldJsonWriter(jsonWriter, ScalarTypeAdapters(customScalarTypeAdapters))
@@ -133,10 +133,10 @@ class InputFieldJsonWriterTest {
   @Test
   fun writeCustomNull() {
     val customScalarTypeAdapters: MutableMap<ScalarType, CustomScalarTypeAdapter<*>> = HashMap()
-    val scalarType = MockCustomScalarType(CustomTypeValue.GraphQLNumber::class, "com.apollographql.apollo.api.CustomTypeValue.GraphQLNull")
+    val scalarType = MockCustomScalarType(JsonElement.JsonNumber::class, "com.apollographql.apollo.api.JsonElement.JsonNumber")
     customScalarTypeAdapters[scalarType] = object : MockCustomScalarTypeAdapter() {
-      override fun encode(value: Any?): CustomTypeValue<*> {
-        return CustomTypeValue.GraphQLNull
+      override fun encode(value: Any?): JsonElement {
+        return JsonElement.JsonNull
       }
     }
     val inputFieldJsonWriter = InputFieldJsonWriter(jsonWriter, ScalarTypeAdapters(customScalarTypeAdapters))
@@ -214,7 +214,7 @@ class InputFieldJsonWriterTest {
   }
 
   private abstract inner class MockCustomScalarTypeAdapter : CustomScalarTypeAdapter<Any?> {
-    override fun decode(value: CustomTypeValue<*>): Any {
+    override fun decode(jsonElement: JsonElement): Any {
       throw UnsupportedOperationException()
     }
   }
