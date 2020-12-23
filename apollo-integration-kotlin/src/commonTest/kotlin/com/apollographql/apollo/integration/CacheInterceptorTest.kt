@@ -25,7 +25,7 @@ class CacheInterceptorTest {
   @BeforeTest
   fun setUp() {
     networkTransport = MockNetworkTransport()
-    apolloClient = ApolloClient.DefaultBuilder()
+    apolloClient = ApolloClient.Builder()
         .networkTransport(networkTransport)
         .addInterceptor(TestLoggerExecutor)
         .normalizedCache(MapNormalizedCache())

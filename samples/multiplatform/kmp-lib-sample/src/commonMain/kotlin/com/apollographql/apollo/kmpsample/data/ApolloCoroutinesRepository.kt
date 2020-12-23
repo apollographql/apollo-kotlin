@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.single
  */
 @OptIn(ApolloExperimental::class, ExperimentalCoroutinesApi::class)
 class ApolloCoroutinesRepository {
-  private val apolloClient = ApolloClient.DefaultBuilder()
+  private val apolloClient = ApolloClient.Builder()
       .networkTransport(
           ApolloHttpNetworkTransport(
               serverUrl = "https://api.github.com/graphql",

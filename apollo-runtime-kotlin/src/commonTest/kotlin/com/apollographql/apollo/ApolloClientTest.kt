@@ -20,7 +20,7 @@ class ApolloClientTest {
   @BeforeTest
   fun setUp() {
     networkTransport = MockNetworkTransport()
-    apolloClient = ApolloClient.DefaultBuilder()
+    apolloClient = ApolloClient.Builder()
         .networkTransport(networkTransport)
         .interceptors(TestLoggerExecutor)
         .build()
