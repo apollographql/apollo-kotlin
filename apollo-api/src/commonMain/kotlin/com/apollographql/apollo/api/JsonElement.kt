@@ -51,7 +51,9 @@ sealed class JsonElement {
         is Boolean -> JsonBoolean(value)
         is BigDecimal -> JsonNumber(value.toNumber())
         is Number -> JsonNumber(value)
+        is String -> JsonString(value.toString())
         null -> JsonNull
+        // What can happen here?
         else -> JsonString(value.toString())
       }
     }

@@ -9,7 +9,7 @@ import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader;
 import com.apollographql.apollo.api.internal.json.ResponseJsonStreamReader;
 import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer;
 import com.apollographql.apollo.internal.field.MapFieldValueResolver;
-import com.apollographql.apollo.internal.response.RealResponseReader;
+import com.apollographql.apollo.api.internal.RealResponseReader;
 import okio.BufferedSource;
 import org.jetbrains.annotations.NotNull;
 

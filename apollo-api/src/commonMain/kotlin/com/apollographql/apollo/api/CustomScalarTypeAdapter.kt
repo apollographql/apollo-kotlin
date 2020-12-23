@@ -35,5 +35,5 @@ interface CustomScalarTypeAdapter<T> {
    * Serializes the custom scalar type [value] to the corresponding [JsonElement]. Usually used in serializing variables or input
    * values.
    */
-  fun encode(value: T): JsonElement
+  fun encode(value: T?): JsonElement
 }

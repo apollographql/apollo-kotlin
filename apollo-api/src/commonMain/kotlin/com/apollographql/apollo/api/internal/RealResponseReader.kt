@@ -1,4 +1,4 @@
-package com.apollographql.apollo.internal.response
+package com.apollographql.apollo.api.internal
 
 import com.apollographql.apollo.api.BigDecimal
 import com.apollographql.apollo.api.CustomScalarTypeAdapter
@@ -7,8 +7,6 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ScalarType
 import com.apollographql.apollo.api.ScalarTypeAdapters
-import com.apollographql.apollo.api.internal.FieldValueResolver
-import com.apollographql.apollo.api.internal.ResolveDelegate
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.toNumber
 

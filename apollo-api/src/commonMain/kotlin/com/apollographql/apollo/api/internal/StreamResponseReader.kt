@@ -158,7 +158,7 @@ class StreamResponseReader private constructor(
       return jsonReader.nextBoolean()
     }
 
-    override fun <T : Any> readCustomScalar(scalarType: ScalarType): T {
+    override fun <T : Any> readCustomScalar(scalarType: ScalarType): T{
       val typeAdapter = scalarTypeAdapters.adapterFor<T>(scalarType)
       val value = jsonReader.readRecursively()!!
       return typeAdapter.decode(JsonElement.fromRawValue(value))
