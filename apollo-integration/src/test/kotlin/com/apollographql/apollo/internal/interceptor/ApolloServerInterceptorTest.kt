@@ -2,7 +2,7 @@ package com.apollographql.apollo.internal.interceptor
 
 import com.apollographql.apollo.Logger
 import com.apollographql.apollo.Utils.checkTestFixture
-import com.apollographql.apollo.api.CustomTypeAdapter
+import com.apollographql.apollo.api.CustomScalarTypeAdapter
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.ScalarType
 import com.apollographql.apollo.api.ScalarTypeAdapters
@@ -48,7 +48,7 @@ class ApolloServerInterceptorTest {
     }
     val interceptor = ApolloServerInterceptor(serverUrl,
         AssertHttpCallFactory(requestAssertPredicate), null, false,
-        ScalarTypeAdapters(emptyMap<ScalarType, CustomTypeAdapter<*>>()),
+        ScalarTypeAdapters(emptyMap<ScalarType, CustomScalarTypeAdapter<*>>()),
         ApolloLogger(null))
     interceptor.httpPostCall(query, CacheHeaders.NONE, RequestHeaders.NONE, true, false)
   }
@@ -56,7 +56,7 @@ class ApolloServerInterceptorTest {
   @Test
   @Throws(Exception::class)
   fun testCachedHttpCall() {
-    val scalarTypeAdapters = ScalarTypeAdapters(emptyMap<ScalarType, CustomTypeAdapter<*>>())
+    val scalarTypeAdapters = ScalarTypeAdapters(emptyMap<ScalarType, CustomScalarTypeAdapter<*>>())
     val cacheKey: String = ApolloServerInterceptor.cacheKey(query, scalarTypeAdapters)
     val requestAssertPredicate = Predicate<Request?> { request ->
       Truth.assertThat(request).isNotNull()
@@ -114,7 +114,7 @@ class ApolloServerInterceptorTest {
         .build()
     val interceptor = ApolloServerInterceptor(serverUrl,
         AssertHttpCallFactory(requestAssertPredicate), null, false,
-        ScalarTypeAdapters(emptyMap<ScalarType, CustomTypeAdapter<*>>()),
+        ScalarTypeAdapters(emptyMap<ScalarType, CustomScalarTypeAdapter<*>>()),
         ApolloLogger(null))
     interceptor.httpPostCall(query, CacheHeaders.NONE, requestHeaders, true, false)
   }
@@ -141,7 +141,7 @@ class ApolloServerInterceptorTest {
     }
     val interceptor = ApolloServerInterceptor(serverUrl,
         AssertHttpCallFactory(requestAssertPredicate), null, false,
-        ScalarTypeAdapters(emptyMap<ScalarType, CustomTypeAdapter<*>>()),
+        ScalarTypeAdapters(emptyMap<ScalarType, CustomScalarTypeAdapter<*>>()),
         ApolloLogger(null))
     interceptor.httpGetCall(query, CacheHeaders.NONE, RequestHeaders.NONE, true, true)
   }

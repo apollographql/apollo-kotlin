@@ -8,7 +8,7 @@ package com.apollographql.apollo.api
  * to customize conversion. Here's an example of a type adapter for scalar type `java.util.Date`:
  *
  * ```
- *    val adapter = object : CustomTypeAdapter<Date> {
+ *    val adapter = object : CustomScalarTypeAdapter<Date> {
  *
  *      override fun(value: CustomTypeValue<*>): Date {
  *        try {

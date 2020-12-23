@@ -10,14 +10,14 @@ import kotlin.jvm.JvmField
 
 class ScalarTypeAdapters(val customScalarTypeAdapters: Map<ScalarType, CustomScalarTypeAdapter<*>>) {
 
-  private val customTypeAdapters = customScalarTypeAdapters.mapKeys { it.key.graphqlName }
+  private val CustomScalarTypeAdapters = customScalarTypeAdapters.mapKeys { it.key.graphqlName }
 
   @Suppress("UNCHECKED_CAST")
   fun <T : Any> adapterFor(scalarType: ScalarType): CustomScalarTypeAdapter<T> {
     /**
      * Look in user-registered adapters by scalar type name first
      */
-    var customScalarTypeAdapter: CustomScalarTypeAdapter<*>? = customTypeAdapters[scalarType.graphqlName]
+    var customScalarTypeAdapter: CustomScalarTypeAdapter<*>? = CustomScalarTypeAdapters[scalarType.graphqlName]
     if (customScalarTypeAdapter == null) {
       /**
        * If none is found, provide a default adapter based on the implementation class name

@@ -10,15 +10,15 @@ import org.junit.Test
 class ScalarTypeAdaptersTest {
   @Test
   fun customAdapterTakePrecedentOverDefault() {
-    val customTypeAdapters = mutableMapOf<ScalarType, CustomScalarTypeAdapter<*>>()
+    val CustomScalarTypeAdapters = mutableMapOf<ScalarType, CustomScalarTypeAdapter<*>>()
     val expectedAdapter = MockCustomScalarTypeAdapter()
-    customTypeAdapters[object : ScalarType {
+    CustomScalarTypeAdapters[object : ScalarType {
       override val graphqlName = "String"
       override val className: String
         get() = String::class.java.name
     }] = expectedAdapter
 
-    val actualAdapter = ScalarTypeAdapters(customTypeAdapters).adapterFor<String>(object : ScalarType {
+    val actualAdapter = ScalarTypeAdapters(CustomScalarTypeAdapters).adapterFor<String>(object : ScalarType {
       override val graphqlName = "String"
       override val className: String
         get() = String::class.java.name

@@ -81,7 +81,7 @@ package com.apollographql.apollo.api {
     method public static Number toNumber(com.apollographql.apollo.api.BigDecimal);
   }
 
-  public interface CustomTypeAdapter<T> {
+  public interface CustomScalarTypeAdapter<T> {
     method public T! decode(com.apollographql.apollo.api.CustomTypeValue<?> value);
     method public com.apollographql.apollo.api.CustomTypeValue<?> encode(T? value);
   }
@@ -387,9 +387,9 @@ package com.apollographql.apollo.api {
   }
 
   public final class ScalarTypeAdapters {
-    ctor public ScalarTypeAdapters(java.util.Map<com.apollographql.apollo.api.ScalarType,? extends com.apollographql.apollo.api.CustomTypeAdapter<?>> customAdapters);
-    method public <T> com.apollographql.apollo.api.CustomTypeAdapter<T> adapterFor(com.apollographql.apollo.api.ScalarType scalarType);
-    method public java.util.Map<com.apollographql.apollo.api.ScalarType,com.apollographql.apollo.api.CustomTypeAdapter<?>> getCustomAdapters();
+    ctor public ScalarTypeAdapters(java.util.Map<com.apollographql.apollo.api.ScalarType,? extends com.apollographql.apollo.api.CustomScalarTypeAdapter<?>> customAdapters);
+    method public <T> com.apollographql.apollo.api.CustomScalarTypeAdapter<T> adapterFor(com.apollographql.apollo.api.ScalarType scalarType);
+    method public java.util.Map<com.apollographql.apollo.api.ScalarType,com.apollographql.apollo.api.CustomScalarTypeAdapter<?>> getCustomAdapters();
     field public static final com.apollographql.apollo.api.ScalarTypeAdapters.Companion Companion;
     field public static final com.apollographql.apollo.api.ScalarTypeAdapters DEFAULT;
   }

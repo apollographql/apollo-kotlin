@@ -65,7 +65,7 @@ package com.apollographql.apollo {
   public static class ApolloClient.Builder {
     method public com.apollographql.apollo.ApolloClient.Builder! addApplicationInterceptor(com.apollographql.apollo.interceptor.ApolloInterceptor);
     method public com.apollographql.apollo.ApolloClient.Builder! addApplicationInterceptorFactory(com.apollographql.apollo.interceptor.ApolloInterceptorFactory);
-    method public <T> com.apollographql.apollo.ApolloClient.Builder! addCustomTypeAdapter(com.apollographql.apollo.api.ScalarType, com.apollographql.apollo.api.CustomTypeAdapter<T!>);
+    method public <T> com.apollographql.apollo.ApolloClient.Builder! addCustomScalarTypeAdapter(com.apollographql.apollo.api.ScalarType, com.apollographql.apollo.api.CustomScalarTypeAdapter<T!>);
     method public com.apollographql.apollo.ApolloClient! build();
     method public com.apollographql.apollo.ApolloClient.Builder! callFactory(okhttp3.Call.Factory);
     method public com.apollographql.apollo.ApolloClient.Builder! defaultCacheHeaders(com.apollographql.apollo.cache.CacheHeaders);

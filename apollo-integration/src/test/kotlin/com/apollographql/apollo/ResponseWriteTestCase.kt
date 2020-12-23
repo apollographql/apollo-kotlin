@@ -4,7 +4,7 @@ import com.apollographql.apollo.Utils.assertResponse
 import com.apollographql.apollo.Utils.enqueueAndAssertResponse
 import com.apollographql.apollo.Utils.immediateExecutor
 import com.apollographql.apollo.Utils.immediateExecutorService
-import com.apollographql.apollo.api.CustomTypeAdapter
+import com.apollographql.apollo.api.CustomScalarTypeAdapter
 import com.apollographql.apollo.api.CustomTypeValue
 import com.apollographql.apollo.api.CustomTypeValue.GraphQLString
 import com.apollographql.apollo.api.Input.Companion.fromNullable
@@ -21,7 +21,7 @@ import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsF
 import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragment
 import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragmentImpl
 import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsFragmentImpl
-import com.apollographql.apollo.integration.normalizer.type.CustomType
+import com.apollographql.apollo.integration.normalizer.type.CustomScalarType
 import com.apollographql.apollo.integration.normalizer.type.Episode
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
@@ -52,7 +52,7 @@ class ResponseWriteTestCase {
         .okHttpClient(okHttpClient)
         .normalizedCache(LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), IdFieldCacheKeyResolver())
         .dispatcher(immediateExecutor())
-        .addCustomTypeAdapter(CustomType.Date, object : CustomTypeAdapter<Date> {
+        .addCustomScalarTypeAdapter(CustomScalarType.Date, object : CustomScalarTypeAdapter<Date> {
           override fun decode(value: CustomTypeValue<*>): Date {
             return try {
               DATE_TIME_FORMAT.parse(value.value.toString())

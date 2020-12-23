@@ -75,8 +75,8 @@ class InputFieldJsonWriter(
       return
     }
 
-    val customTypeAdapter = scalarTypeAdapters.adapterFor<Any>(scalarType)
-    when (val customTypeValue = customTypeAdapter.encode(value)) {
+    val CustomScalarTypeAdapter = scalarTypeAdapters.adapterFor<Any>(scalarType)
+    when (val customTypeValue = CustomScalarTypeAdapter.encode(value)) {
       is GraphQLString -> writeString(fieldName, customTypeValue.value)
       is GraphQLBoolean -> writeBoolean(fieldName, customTypeValue.value)
       is GraphQLNumber -> writeNumber(fieldName, customTypeValue.value)
@@ -189,8 +189,8 @@ class InputFieldJsonWriter(
         return
       }
 
-      val customTypeAdapter = scalarTypeAdapters.adapterFor<Any>(scalarType)
-      when (val customTypeValue = customTypeAdapter.encode(value)) {
+      val CustomScalarTypeAdapter = scalarTypeAdapters.adapterFor<Any>(scalarType)
+      when (val customTypeValue = CustomScalarTypeAdapter.encode(value)) {
         is GraphQLString -> writeString(customTypeValue.value)
         is GraphQLBoolean -> writeBoolean(customTypeValue.value)
         is GraphQLNumber -> writeNumber(customTypeValue.value)

@@ -17,7 +17,7 @@ import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery.Data.AllPlanet.Planet
 import com.apollographql.apollo.integration.httpcache.fragment.FilmFragment
 import com.apollographql.apollo.integration.httpcache.fragment.PlanetFragment
-import com.apollographql.apollo.integration.httpcache.type.CustomType
+import com.apollographql.apollo.integration.httpcache.type.CustomScalarType
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo.integration.normalizer.type.Episode
@@ -45,13 +45,13 @@ import java.util.*
 
 class IntegrationTest {
   private lateinit var apolloClient: ApolloClient
-  private lateinit var dateCustomTypeAdapter: CustomTypeAdapter<Date>
+  private lateinit var dateCustomScalarTypeAdapter: CustomScalarTypeAdapter<Date>
 
   val server = MockWebServer()
 
   @Before
   fun setUp() {
-    dateCustomTypeAdapter = object : CustomTypeAdapter<Date> {
+    dateCustomScalarTypeAdapter = object : CustomScalarTypeAdapter<Date> {
       override fun decode(value: CustomTypeValue<*>): Date {
         return try {
           DATE_FORMAT.parse(value.value.toString())
@@ -67,7 +67,7 @@ class IntegrationTest {
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(OkHttpClient.Builder().dispatcher(Dispatcher(immediateExecutorService())).build())
-        .addCustomTypeAdapter(CustomType.Date, dateCustomTypeAdapter)
+        .addCustomScalarTypeAdapter(CustomScalarType.Date, dateCustomScalarTypeAdapter)
         .normalizedCache(LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), IdFieldCacheKeyResolver())
         .defaultResponseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
         .dispatcher(immediateExecutor())
@@ -183,7 +183,7 @@ class IntegrationTest {
       assertThat(response.data!!.allFilms?.films).hasSize(6)
       val dates = response.data!!.allFilms?.films?.mapNotNull {
         val releaseDate = it!!.releaseDate!!
-        dateCustomTypeAdapter!!.encode(releaseDate).value.toString()
+        dateCustomScalarTypeAdapter!!.encode(releaseDate).value.toString()
       }
       assertThat(dates).isEqualTo(Arrays.asList("1977-05-25", "1980-05-17", "1983-05-25", "1999-05-19",
           "2002-05-16", "2005-05-19"))

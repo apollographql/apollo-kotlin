@@ -381,7 +381,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     HttpCachePolicy.Policy defaultHttpCachePolicy = HttpCachePolicy.NETWORK_ONLY;
     ResponseFetcher defaultResponseFetcher = ApolloResponseFetchers.CACHE_FIRST;
     CacheHeaders defaultCacheHeaders = CacheHeaders.NONE;
-    final Map<ScalarType, CustomScalarTypeAdapter<?>> customTypeAdapters = new LinkedHashMap<>();
+    final Map<ScalarType, CustomScalarTypeAdapter<?>> CustomScalarTypeAdapters = new LinkedHashMap<>();
     Executor dispatcher;
     @Nullable
     Logger logger = null;
@@ -411,7 +411,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       defaultHttpCachePolicy = apolloClient.defaultHttpCachePolicy;
       defaultResponseFetcher = apolloClient.defaultResponseFetcher;
       defaultCacheHeaders = apolloClient.defaultCacheHeaders;
-      customTypeAdapters.putAll(apolloClient.scalarTypeAdapters.getCustomScalarTypeAdapters());
+      CustomScalarTypeAdapters.putAll(apolloClient.scalarTypeAdapters.getCustomScalarTypeAdapters());
       dispatcher = apolloClient.dispatcher;
       logger = apolloClient.logger.getLogger();
       applicationInterceptors.addAll(apolloClient.applicationInterceptors);
@@ -524,9 +524,9 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
      * @param <T> the value type
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public <T> Builder addCustomTypeAdapter(@NotNull ScalarType scalarType,
+    public <T> Builder addCustomScalarTypeAdapter(@NotNull ScalarType scalarType,
         @NotNull final CustomScalarTypeAdapter<T> customScalarTypeAdapter) {
-      customTypeAdapters.put(scalarType, customScalarTypeAdapter);
+      CustomScalarTypeAdapters.put(scalarType, customScalarTypeAdapter);
       return this;
     }
 
@@ -745,7 +745,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         dispatcher = defaultDispatcher();
       }
 
-      ScalarTypeAdapters scalarTypeAdapters = new ScalarTypeAdapters(Collections.unmodifiableMap(customTypeAdapters));
+      ScalarTypeAdapters scalarTypeAdapters = new ScalarTypeAdapters(Collections.unmodifiableMap(CustomScalarTypeAdapters));
 
       ApolloStore apolloStore = this.apolloStore;
       Optional<NormalizedCacheFactory> cacheFactory = this.cacheFactory;

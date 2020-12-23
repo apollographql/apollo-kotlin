@@ -15,10 +15,10 @@ internal fun CustomScalarTypes.typeSpec(generateAsInternal: Boolean = false): Ty
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .addSuperinterface(ScalarType::class.java)
       .apply {
-        toSortedMap().map { (_, customType) ->
+        toSortedMap().map { (_, customScalarType) ->
           addEnumConstant(
-              name = customType.name.escapeKotlinReservedWord(),
-              typeSpec = customType.enumConstantTypeSpec()
+              name = customScalarType.name.escapeKotlinReservedWord(),
+              typeSpec = customScalarType.enumConstantTypeSpec()
           )
         }
       }
