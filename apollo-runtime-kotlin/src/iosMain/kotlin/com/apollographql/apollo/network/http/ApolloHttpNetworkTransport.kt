@@ -220,7 +220,7 @@ actual class ApolloHttpNetworkTransport(
     return try {
       val response = request.operation.parse(
           source = Buffer().write(data.toByteString()).apply { flush() },
-          scalarTypeAdapters = request.customScalarAdapters
+          customScalarAdapters = request.customScalarAdapters
       )
       Result.Success(
           ApolloResponse<D>(
