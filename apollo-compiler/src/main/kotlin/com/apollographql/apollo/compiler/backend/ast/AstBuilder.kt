@@ -8,6 +8,7 @@ import com.apollographql.apollo.compiler.introspection.resolveType
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo.compiler.operationoutput.findOperationId
 import com.apollographql.apollo.compiler.singularize
+import com.squareup.kotlinpoet.MemberName
 
 internal class AstBuilder private constructor(
     private val backendIr: BackendIr,
@@ -182,11 +183,7 @@ internal class AstBuilder private constructor(
                 nullable = true,
                 schemaType = this.name,
                 type = customType,
-                customEnumType = CodeGenerationAst.TypeRef(
-                    name = this.name,
-                    packageName = typesPackageName,
-                    enclosingType = CodeGenerationAst.customTypeRef(typesPackageName),
-                )
+                memberName = MemberName(typesPackageName, this.name.toUpperCase())
             )
           }
         }
@@ -679,11 +676,7 @@ internal class AstBuilder private constructor(
                 nullable = true,
                 schemaType = schemaTypeRef.name,
                 type = customType,
-                customEnumType = CodeGenerationAst.TypeRef(
-                    name = schemaTypeRef.name,
-                    packageName = typesPackageName,
-                    enclosingType = CodeGenerationAst.customTypeRef(typesPackageName)
-                )
+                memberName = MemberName(typesPackageName, schemaTypeRef.name.toUpperCase())
             )
           }
         }

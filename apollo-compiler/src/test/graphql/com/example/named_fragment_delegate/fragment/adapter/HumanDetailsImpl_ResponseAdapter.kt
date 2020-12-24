@@ -5,12 +5,13 @@
 //
 package com.example.named_fragment_delegate.fragment.adapter
 
+import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.named_fragment_delegate.fragment.HumanDetailsImpl
-import com.example.named_fragment_delegate.type.CustomScalar
+import com.example.named_fragment_delegate.type.URL
 import kotlin.Any
 import kotlin.Array
 import kotlin.String

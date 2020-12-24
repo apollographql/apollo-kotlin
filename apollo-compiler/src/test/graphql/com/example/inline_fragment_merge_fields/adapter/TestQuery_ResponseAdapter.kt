@@ -5,12 +5,13 @@
 //
 package com.example.inline_fragment_merge_fields.adapter
 
+import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.inline_fragment_merge_fields.TestQuery
-import com.example.inline_fragment_merge_fields.type.CustomScalar
+import com.example.inline_fragment_merge_fields.type.URL
 import kotlin.Any
 import kotlin.Array
 import kotlin.String

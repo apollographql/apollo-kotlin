@@ -1,5 +1,7 @@
 package com.apollographql.apollo.compiler.backend.ast
 
+import com.squareup.kotlinpoet.MemberName
+
 internal typealias CustomScalarTypes = Map<String, CodeGenerationAst.CustomScalarType>
 
 /**
@@ -184,7 +186,7 @@ internal data class CodeGenerationAst(
           override val nullable: kotlin.Boolean,
           val schemaType: kotlin.String,
           val type: kotlin.String,
-          val customEnumType: TypeRef
+          val memberName: MemberName,
       ) : Scalar()
     }
 

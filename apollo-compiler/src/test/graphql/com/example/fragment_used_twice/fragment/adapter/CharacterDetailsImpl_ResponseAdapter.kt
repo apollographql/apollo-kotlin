@@ -5,12 +5,13 @@
 //
 package com.example.fragment_used_twice.fragment.adapter
 
+import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.fragment_used_twice.fragment.CharacterDetailsImpl
-import com.example.fragment_used_twice.type.CustomScalar
+import com.example.fragment_used_twice.type.DATE
 import kotlin.Any
 import kotlin.Array
 import kotlin.String
@@ -19,7 +20,7 @@ object CharacterDetailsImpl_ResponseAdapter : ResponseAdapter<CharacterDetailsIm
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forString("__typename", "__typename", null, false, null),
     ResponseField.forString("name", "name", null, false, null),
-    ResponseField.forCustomScalar("birthDate", "birthDate", null, false, CustomScalar.Date, null)
+    ResponseField.forCustomScalar("birthDate", "birthDate", null, false, CustomScalar.DATE, null)
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): CharacterDetailsImpl {

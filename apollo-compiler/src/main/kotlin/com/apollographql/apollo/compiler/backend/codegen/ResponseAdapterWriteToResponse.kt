@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler.backend.codegen
 
+import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseWriter
 import com.apollographql.apollo.compiler.applyIf
@@ -201,7 +202,7 @@ private val CodeGenerationAst.FieldType.Array.writeListItemCode: CodeBlock
         is CodeGenerationAst.FieldType.Scalar.Float -> CodeBlock.of("listItemWriter.writeDouble(value)")
         is CodeGenerationAst.FieldType.Scalar.Enum -> CodeBlock.of("listItemWriter.writeString($safeValue.rawValue)")
         is CodeGenerationAst.FieldType.Scalar.Custom -> CodeBlock.of(
-            "listItemWriter.writeCustom(%T,·value)", rawType.customEnumType.asTypeName()
+            "listItemWriter.writeCustom(%T.%M,·value)", CustomScalar::class.asTypeName(), rawType.memberName
         )
       }
       is CodeGenerationAst.FieldType.Object -> {

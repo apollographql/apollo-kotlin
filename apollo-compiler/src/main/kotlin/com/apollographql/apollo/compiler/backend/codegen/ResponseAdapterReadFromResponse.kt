@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler.backend.codegen
 
+import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.compiler.applyIf
@@ -10,6 +11,7 @@ import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
+import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
 
 internal fun CodeGenerationAst.ObjectType.readFromResponseFunSpec(): FunSpec {
@@ -166,7 +168,7 @@ private fun CodeGenerationAst.FieldType.fromResponseCode(field: String): CodeBlo
             notNullOperator)
       } else {
         CodeBlock.of(
-            "readCustomScalar<%T>(%T)%L", ClassName.bestGuess(type), customEnumType.asTypeName().copy(nullable = false), notNullOperator
+            "readCustomScalar<%T>(%T.%M)%L", ClassName.bestGuess(type), CustomScalar::class.asTypeName(), memberName, notNullOperator
         )
       }
     }
@@ -211,7 +213,7 @@ private fun CodeGenerationAst.FieldType.readListItemCode(): CodeBlock {
           "%T.safeValueOf(reader.readString())", typeRef.asTypeName().copy(nullable = false)
       )
       is CodeGenerationAst.FieldType.Scalar.Custom -> CodeBlock.of(
-          "reader.readCustomScalar<%T>(%T)", ClassName.bestGuess(type), customEnumType.asTypeName()
+          "reader.readCustomScalar<%T>(%T.%M)", ClassName.bestGuess(type), CustomScalar::class.asTypeName(), memberName
       )
     }
     is CodeGenerationAst.FieldType.Object -> {

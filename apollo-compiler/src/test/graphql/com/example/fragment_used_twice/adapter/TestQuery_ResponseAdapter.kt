@@ -5,12 +5,13 @@
 //
 package com.example.fragment_used_twice.adapter
 
+import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.fragment_used_twice.TestQuery
-import com.example.fragment_used_twice.type.CustomScalar
+import com.example.fragment_used_twice.type.DATE
 import kotlin.Any
 import kotlin.Array
 import kotlin.String
@@ -89,7 +90,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       object CharacterHero : ResponseAdapter<TestQuery.Data.Hero.CharacterHero> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
+<<<<<<< HEAD
           ResponseField.forString("name", "name", null, false, null)
+=======
+          ResponseField.forString("name", "name", null, false, null),
+          ResponseField.forCustomScalar("birthDate", "birthDate", null, false, CustomScalar.DATE, null)
+>>>>>>> 1058510c5... Generate CustomScalar as a data class
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -183,7 +189,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       object CharacterHumanHero : ResponseAdapter<TestQuery.Data.Hero.CharacterHumanHero> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
+<<<<<<< HEAD
           ResponseField.forString("name", "name", null, false, null)
+=======
+          ResponseField.forString("name", "name", null, false, null),
+          ResponseField.forCustomScalar("birthDate", "birthDate", null, false, CustomScalar.DATE, null)
+>>>>>>> 1058510c5... Generate CustomScalar as a data class
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
