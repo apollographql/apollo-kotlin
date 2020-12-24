@@ -1,7 +1,7 @@
 package com.apollographql.apollo
 
 import com.apollographql.apollo.api.ApolloExperimental
-import com.apollographql.apollo.api.CustomScalarTypeAdapter
+import com.apollographql.apollo.api.CustomScalarAdapter
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
@@ -59,13 +59,13 @@ class ApolloClient private constructor(
     return Builder()
         .networkTransport(networkTransport)
         .subscriptionNetworkTransport(subscriptionNetworkTransport)
-        .scalarTypeAdapters(scalarTypeAdapters.customScalarTypeAdapters)
+        .scalarTypeAdapters(scalarTypeAdapters.customScalarAdapters)
         .interceptors(interceptors)
         .executionContext(executionContext)
   }
 
   class Builder {
-    private var scalarTypeAdapters = emptyMap<ScalarType, CustomScalarTypeAdapter<*>>()
+    private var scalarTypeAdapters = emptyMap<ScalarType, CustomScalarAdapter<*>>()
 
     private var networkTransport: NetworkTransport? = null
     private var subscriptionNetworkTransport: NetworkTransport? = null
@@ -76,8 +76,8 @@ class ApolloClient private constructor(
       networkTransport(ApolloHttpNetworkTransport(serverUrl = serverUrl, headers = emptyMap()))
     }
 
-    fun addScalarTypeAdapter(scalarType: ScalarType, customScalarTypeAdapter: CustomScalarTypeAdapter<*>) = apply {
-      this.scalarTypeAdapters = this.scalarTypeAdapters + (scalarType to customScalarTypeAdapter)
+    fun addScalarTypeAdapter(scalarType: ScalarType, customScalarAdapter: CustomScalarAdapter<*>) = apply {
+      this.scalarTypeAdapters = this.scalarTypeAdapters + (scalarType to customScalarAdapter)
     }
 
     fun networkTransport(networkTransport: NetworkTransport) = apply {
@@ -145,8 +145,8 @@ class ApolloClient private constructor(
     /**
      * internal because only used from tests
      */
-    fun scalarTypeAdapters(customScalarTypeAdapters: Map<ScalarType, CustomScalarTypeAdapter<*>>) = apply {
-      this.scalarTypeAdapters = customScalarTypeAdapters
+    fun scalarTypeAdapters(customScalarAdapters: Map<ScalarType, CustomScalarAdapter<*>>) = apply {
+      this.scalarTypeAdapters = customScalarAdapters
     }
   }
 }

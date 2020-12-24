@@ -1,6 +1,6 @@
 package com.apollographql.apollo.internal.subscription;
 
-import com.apollographql.apollo.api.CustomScalarTypeAdapter;
+import com.apollographql.apollo.api.CustomScalarAdapter;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Response;
@@ -41,7 +41,7 @@ public class SubscriptionAutoPersistTest {
 
   @Before public void setUp() {
     subscriptionTransportFactory = new MockSubscriptionTransportFactory();
-    subscriptionManager = new RealSubscriptionManager(new ScalarTypeAdapters(Collections.<ScalarType, CustomScalarTypeAdapter<?>>emptyMap()),
+    subscriptionManager = new RealSubscriptionManager(new ScalarTypeAdapters(Collections.<ScalarType, CustomScalarAdapter<?>>emptyMap()),
         subscriptionTransportFactory, new SubscriptionConnectionParamsProvider.Const(new SubscriptionConnectionParams()),
         new MockExecutor(), -1, new Function0<ResponseNormalizer<Map<String, Object>>>() {
       @Override public ResponseNormalizer<Map<String, Object>> invoke() {

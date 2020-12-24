@@ -1,6 +1,6 @@
 package com.apollographql.apollo.response
 
-import com.apollographql.apollo.api.CustomScalarTypeAdapter
+import com.apollographql.apollo.api.CustomScalarAdapter
 import com.apollographql.apollo.api.JsonElement
 import com.apollographql.apollo.api.ScalarType
 import com.apollographql.apollo.api.ScalarTypeAdapters
@@ -10,15 +10,15 @@ import org.junit.Test
 class ScalarTypeAdaptersTest {
   @Test
   fun customAdapterTakePrecedentOverDefault() {
-    val customScalarTypeAdapters = mutableMapOf<ScalarType, CustomScalarTypeAdapter<*>>()
-    val expectedAdapter = MockCustomScalarTypeAdapter()
-    customScalarTypeAdapters[object : ScalarType {
+    val customScalarAdapters = mutableMapOf<ScalarType, CustomScalarAdapter<*>>()
+    val expectedAdapter = MockCustomScalarAdapter()
+    customScalarAdapters[object : ScalarType {
       override val graphqlName = "String"
       override val className: String
         get() = String::class.java.name
     }] = expectedAdapter
 
-    val actualAdapter = ScalarTypeAdapters(customScalarTypeAdapters).adapterFor<String>(object : ScalarType {
+    val actualAdapter = ScalarTypeAdapters(customScalarAdapters).adapterFor<String>(object : ScalarType {
       override val graphqlName = "String"
       override val className: String
         get() = String::class.java.name
@@ -40,49 +40,49 @@ class ScalarTypeAdaptersTest {
 
   @Test
   fun defaultStringAdapter() {
-    val adapterScalar: CustomScalarTypeAdapter<String> = defaultAdapter(String::class.java)
+    val adapterScalar: CustomScalarAdapter<String> = defaultAdapter(String::class.java)
     assertThat(adapterScalar.decode(JsonElement.fromRawValue("string"))).isEqualTo("string")
     assertThat(adapterScalar.encode("string").toRawValue()).isEqualTo("string")
   }
 
   @Test
   fun defaultBooleanAdapter() {
-    val adapterScalar: CustomScalarTypeAdapter<Boolean> = defaultAdapter(Boolean::class.java)
+    val adapterScalar: CustomScalarAdapter<Boolean> = defaultAdapter(Boolean::class.java)
     assertThat(adapterScalar.decode(JsonElement.fromRawValue(true))).isEqualTo(true)
     assertThat(adapterScalar.encode(true).toRawValue()).isEqualTo(true)
   }
 
   @Test
   fun defaultIntegerAdapter() {
-    val adapterScalar: CustomScalarTypeAdapter<Int> = defaultAdapter(Int::class.java)
+    val adapterScalar: CustomScalarAdapter<Int> = defaultAdapter(Int::class.java)
     assertThat(adapterScalar.decode(JsonElement.fromRawValue(100))).isEqualTo(100)
     assertThat(adapterScalar.encode(100).toRawValue()).isEqualTo(100)
   }
 
   @Test
   fun defaultLongAdapter() {
-    val adapterScalar: CustomScalarTypeAdapter<Long> = defaultAdapter(Long::class.java)
+    val adapterScalar: CustomScalarAdapter<Long> = defaultAdapter(Long::class.java)
     assertThat(adapterScalar.decode(JsonElement.fromRawValue(100L))).isEqualTo(100L)
     assertThat(adapterScalar.encode(100L).toRawValue()).isEqualTo(100L)
   }
 
   @Test
   fun defaultFloatAdapter() {
-    val adapterScalar: CustomScalarTypeAdapter<Float> = defaultAdapter(Float::class.java)
+    val adapterScalar: CustomScalarAdapter<Float> = defaultAdapter(Float::class.java)
     assertThat(adapterScalar.decode(JsonElement.fromRawValue(10.10f))).isWithin(0.0f).of(10.10f)
     assertThat(adapterScalar.encode(10.10f).toRawValue()).isEqualTo(10.10f)
   }
 
   @Test
   fun defaultDoubleAdapter() {
-    val adapterScalar: CustomScalarTypeAdapter<Double> = defaultAdapter(Double::class.java)
+    val adapterScalar: CustomScalarAdapter<Double> = defaultAdapter(Double::class.java)
     assertThat(adapterScalar.decode(JsonElement.fromRawValue(10.10))).isWithin(0.0).of(10.10)
     assertThat(adapterScalar.encode(10.10).toRawValue()).isEqualTo(10.10)
   }
 
   @Test
   fun defaultObjectAdapter() {
-    val adapterScalar: CustomScalarTypeAdapter<Any> = defaultAdapter(Any::class.java)
+    val adapterScalar: CustomScalarAdapter<Any> = defaultAdapter(Any::class.java)
     assertThat(adapterScalar.decode(JsonElement.fromRawValue(RuntimeException::class.java))).isEqualTo("class java.lang.RuntimeException")
     assertThat(adapterScalar.encode(RuntimeException::class.java).toRawValue()).isEqualTo("class java.lang.RuntimeException")
   }
@@ -93,7 +93,7 @@ class ScalarTypeAdaptersTest {
         "key1" to "value1",
         "key2" to "value2"
     )
-    val adapterScalar: CustomScalarTypeAdapter<Map<*, *>> = defaultAdapter(Map::class.java)
+    val adapterScalar: CustomScalarAdapter<Map<*, *>> = defaultAdapter(Map::class.java)
     assertThat(adapterScalar.decode(JsonElement.fromRawValue(value))).isEqualTo(value)
     assertThat(adapterScalar.encode(value).toRawValue()).isEqualTo(value)
   }
@@ -101,7 +101,7 @@ class ScalarTypeAdaptersTest {
   @Test
   fun defaultListAdapter() {
     val value = listOf("item 1", "item 2")
-    val adapterScalar: CustomScalarTypeAdapter<List<*>> = defaultAdapter(List::class.java)
+    val adapterScalar: CustomScalarAdapter<List<*>> = defaultAdapter(List::class.java)
     assertThat(adapterScalar.decode(JsonElement.fromRawValue(value))).isEqualTo(value)
     assertThat(adapterScalar.encode(value).toRawValue()).isEqualTo(value)
   }
@@ -126,7 +126,7 @@ class ScalarTypeAdaptersTest {
     assertThat(adapter.decode(actualObject)).isEqualTo(expectedJsonString)
   }
 
-  private fun <T : Any> defaultAdapter(clazz: Class<T>): CustomScalarTypeAdapter<T> {
+  private fun <T : Any> defaultAdapter(clazz: Class<T>): CustomScalarAdapter<T> {
     return ScalarTypeAdapters(emptyMap()).adapterFor<T>(
         object : ScalarType {
           override val graphqlName: String
@@ -137,7 +137,7 @@ class ScalarTypeAdaptersTest {
     )
   }
 
-  private inner class MockCustomScalarTypeAdapter : CustomScalarTypeAdapter<Any?> {
+  private inner class MockCustomScalarAdapter : CustomScalarAdapter<Any?> {
     override fun decode(jsonElement: JsonElement): Any {
       throw UnsupportedOperationException()
     }

@@ -2,7 +2,7 @@ package com.apollographql.apollo.cache.normalized
 
 /**
  * A Factory used to construct an instance of a [NormalizedCache] configured with the custom scalar adapters set in
- * ApolloClient.Builder#addCustomScalarTypeAdapter(ScalarType, CustomScalarTypeAdapter).
+ * ApolloClient.Builder#addCustomScalarAdapter(ScalarType, CustomScalarAdapter).
  */
 abstract class NormalizedCacheFactory<T : NormalizedCache> {
 
@@ -10,7 +10,7 @@ abstract class NormalizedCacheFactory<T : NormalizedCache> {
 
   /**
    * @param recordFieldAdapter A [RecordFieldJsonAdapter] configured with the custom scalar adapters set in
-   * ApolloClient.Builder#addCustomScalarTypeAdapter(ScalarType, CustomScalarTypeAdapter).
+   * ApolloClient.Builder#addCustomScalarAdapter(ScalarType, CustomScalarAdapter).
    * @return An implementation of [NormalizedCache].
    */
   abstract fun create(recordFieldAdapter: RecordFieldJsonAdapter): T

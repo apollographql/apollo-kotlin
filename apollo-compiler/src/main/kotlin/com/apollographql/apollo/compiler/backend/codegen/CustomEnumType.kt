@@ -11,7 +11,7 @@ import com.squareup.kotlinpoet.TypeSpec
 
 internal fun CustomScalarTypes.typeSpec(generateAsInternal: Boolean = false): TypeSpec {
   return TypeSpec
-      .enumBuilder("CustomScalarType")
+      .enumBuilder("CustomScalar")
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .addSuperinterface(ScalarType::class.java)
       .apply {

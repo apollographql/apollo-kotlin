@@ -4,7 +4,7 @@ import com.apollographql.apollo.FaultyHttpCacheStore
 import com.apollographql.apollo.Utils.immediateExecutor
 import com.apollographql.apollo.Utils.immediateExecutorService
 import com.apollographql.apollo.Utils.readFileToString
-import com.apollographql.apollo.api.CustomScalarTypeAdapter
+import com.apollographql.apollo.api.CustomScalarAdapter
 import com.apollographql.apollo.api.JsonElement
 import com.apollographql.apollo.api.JsonElement.JsonString
 import com.apollographql.apollo.api.cache.http.HttpCache
@@ -19,7 +19,7 @@ import com.apollographql.apollo.exception.ApolloHttpException
 import com.apollographql.apollo.integration.httpcache.AllFilmsQuery
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo.integration.httpcache.DroidDetailsQuery
-import com.apollographql.apollo.integration.httpcache.type.CustomScalarType
+import com.apollographql.apollo.integration.httpcache.type.CustomScalar
 import com.apollographql.apollo.rx2.Rx2Apollo
 import com.google.common.truth.Truth
 import okhttp3.*
@@ -50,7 +50,7 @@ class HttpCacheTest {
 
   @Before
   fun setUp() {
-    val dateCustomScalarTypeAdapter: CustomScalarTypeAdapter<Date> = object : CustomScalarTypeAdapter<Date> {
+    val dateCustomScalarAdapter: CustomScalarAdapter<Date> = object : CustomScalarAdapter<Date> {
       override fun decode(jsonElement: JsonElement): Date {
         return try {
           DATE_FORMAT.parse(jsonElement.toRawValue().toString())
@@ -77,7 +77,7 @@ class HttpCacheTest {
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
         .dispatcher(immediateExecutor())
-        .addCustomScalarTypeAdapter(CustomScalarType.Date, dateCustomScalarTypeAdapter)
+        .addCustomScalarAdapter(CustomScalar.Date, dateCustomScalarAdapter)
         .httpCache(cache)
         .build()
   }

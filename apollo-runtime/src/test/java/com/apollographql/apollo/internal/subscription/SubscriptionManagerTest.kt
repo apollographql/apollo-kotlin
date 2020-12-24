@@ -1,6 +1,6 @@
 package com.apollographql.apollo.internal.subscription
 
-import com.apollographql.apollo.api.CustomScalarTypeAdapter
+import com.apollographql.apollo.api.CustomScalarAdapter
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.ScalarType
@@ -34,7 +34,7 @@ class SubscriptionManagerTest {
   private val onStateChangeListener = SubscriptionManagerOnStateChangeListener()
 
   init {
-    subscriptionManager = RealSubscriptionManager(ScalarTypeAdapters(emptyMap<ScalarType, CustomScalarTypeAdapter<*>>()),
+    subscriptionManager = RealSubscriptionManager(ScalarTypeAdapters(emptyMap<ScalarType, CustomScalarAdapter<*>>()),
         subscriptionTransportFactory, SubscriptionConnectionParamsProvider.Const(SubscriptionConnectionParams()),
         MockExecutor(), connectionHeartbeatTimeoutMs, { ApolloStore.NO_APOLLO_STORE.networkResponseNormalizer() }, false)
     subscriptionManager.addOnStateChangeListener(onStateChangeListener)

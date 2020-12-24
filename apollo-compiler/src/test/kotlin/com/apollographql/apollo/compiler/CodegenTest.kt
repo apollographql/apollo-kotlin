@@ -65,7 +65,7 @@ class CodegenTest(private val folder: File) {
 
   companion object {
     fun arguments(folder: File): GraphQLCompiler.Arguments {
-      val customTypeMap = if (folder.name in listOf("custom_scalar_type", "input_object_type", "mutation_create_review")) {
+      val customScalarsMapping = if (folder.name in listOf("custom_scalar_type", "input_object_type", "mutation_create_review")) {
         mapOf("Date" to "java.util.Date", "URL" to "java.lang.String", "ID" to "java.lang.Integer")
       } else {
         emptyMap()
@@ -110,7 +110,7 @@ class CodegenTest(private val folder: File) {
           schemaFile = schemaFile,
           outputDir = File("build/generated/test/${folder.name}"),
           operationOutputGenerator = operationOutputGenerator,
-          customScalarsMapping = customTypeMap,
+          customScalarsMapping = customScalarsMapping,
           generateKotlinModels = true,
           useSemanticNaming = useSemanticNaming,
           generateAsInternal = generateAsInternal,

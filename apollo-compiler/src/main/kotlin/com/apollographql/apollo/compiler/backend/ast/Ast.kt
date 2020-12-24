@@ -17,7 +17,7 @@ internal data class CodeGenerationAst(
     val fragmentTypes: List<FragmentType>,
     val inputTypes: List<InputType>,
     val enumTypes: List<EnumType>,
-    val customScalarScalarTypes: CustomScalarTypes
+    val customScalarTypes: CustomScalarTypes
 ) {
 
   data class CustomScalarType(
@@ -208,7 +208,7 @@ internal data class CodeGenerationAst(
   companion object {
     fun customTypeRef(typesPackageName: String): TypeRef {
       return TypeRef(
-          name = "CustomScalarType",
+          name = "CustomScalar",
           packageName = typesPackageName
       )
     }

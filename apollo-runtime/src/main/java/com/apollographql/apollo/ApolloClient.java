@@ -1,6 +1,6 @@
 package com.apollographql.apollo;
 
-import com.apollographql.apollo.api.CustomScalarTypeAdapter;
+import com.apollographql.apollo.api.CustomScalarAdapter;
 import com.apollographql.apollo.api.Mutation;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
@@ -381,7 +381,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     HttpCachePolicy.Policy defaultHttpCachePolicy = HttpCachePolicy.NETWORK_ONLY;
     ResponseFetcher defaultResponseFetcher = ApolloResponseFetchers.CACHE_FIRST;
     CacheHeaders defaultCacheHeaders = CacheHeaders.NONE;
-    final Map<ScalarType, CustomScalarTypeAdapter<?>> CustomScalarTypeAdapters = new LinkedHashMap<>();
+    final Map<ScalarType, CustomScalarAdapter<?>> CustomScalarAdapters = new LinkedHashMap<>();
     Executor dispatcher;
     @Nullable
     Logger logger = null;
@@ -411,7 +411,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       defaultHttpCachePolicy = apolloClient.defaultHttpCachePolicy;
       defaultResponseFetcher = apolloClient.defaultResponseFetcher;
       defaultCacheHeaders = apolloClient.defaultCacheHeaders;
-      CustomScalarTypeAdapters.putAll(apolloClient.scalarTypeAdapters.getCustomScalarTypeAdapters());
+      CustomScalarAdapters.putAll(apolloClient.scalarTypeAdapters.getCustomScalarAdapters());
       dispatcher = apolloClient.dispatcher;
       logger = apolloClient.logger.getLogger();
       applicationInterceptors.addAll(apolloClient.applicationInterceptors);
@@ -520,13 +520,13 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
      * Set the type adapter to use for serializing and de-serializing custom GraphQL scalar types.
      *
      * @param scalarType the scalar type to serialize/deserialize
-     * @param customScalarTypeAdapter the type adapter to use
+     * @param customScalarAdapter the type adapter to use
      * @param <T> the value type
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public <T> Builder addCustomScalarTypeAdapter(@NotNull ScalarType scalarType,
-        @NotNull final CustomScalarTypeAdapter<T> customScalarTypeAdapter) {
-      CustomScalarTypeAdapters.put(scalarType, customScalarTypeAdapter);
+    public <T> Builder addCustomScalarAdapter(@NotNull ScalarType scalarType,
+        @NotNull final CustomScalarAdapter<T> customScalarAdapter) {
+      CustomScalarAdapters.put(scalarType, customScalarAdapter);
       return this;
     }
 
@@ -745,7 +745,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         dispatcher = defaultDispatcher();
       }
 
-      ScalarTypeAdapters scalarTypeAdapters = new ScalarTypeAdapters(Collections.unmodifiableMap(CustomScalarTypeAdapters));
+      ScalarTypeAdapters scalarTypeAdapters = new ScalarTypeAdapters(Collections.unmodifiableMap(CustomScalarAdapters));
 
       ApolloStore apolloStore = this.apolloStore;
       Optional<NormalizedCacheFactory> cacheFactory = this.cacheFactory;

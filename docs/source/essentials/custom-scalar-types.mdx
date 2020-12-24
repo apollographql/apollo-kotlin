@@ -31,7 +31,7 @@ apollo {
 Next, register your custom adapter and add it to your `ApolloClient` builder:
 
 ```kotlin
-val dateCustomScalarTypeAdapter = object : CustomScalarTypeAdapter<Date> {
+val dateCustomScalarAdapter = object : CustomScalarAdapter<Date> {
   override fun decode(jsonElement: JsonElement): Date {
     return try {
       DATE_FORMAT.parse(value.value.toString())
@@ -47,6 +47,6 @@ val dateCustomScalarTypeAdapter = object : CustomScalarTypeAdapter<Date> {
 
 ApolloClient.builder()
   .serverUrl(serverUrl)
-  .addCustomScalarTypeAdapter(CustomScalarType.DATE, dateCustomScalarTypeAdapter)
+  .addCustomScalarAdapter(CustomScalar.DATE, dateCustomScalarAdapter)
   .build()
 ```

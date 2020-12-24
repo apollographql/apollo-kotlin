@@ -137,13 +137,13 @@ data class ReviewInput(
           value ->
         InputFieldWriter.ListWriter { listItemWriter ->
           value.forEach { value ->
-            listItemWriter.writeCustom(CustomScalarType.Date, value)
+            listItemWriter.writeCustom(CustomScalar.Date, value)
           }
         }
       })
     }
     if (this@ReviewInput.customScalar.defined) {
-      writer.writeCustom("customScalar", CustomScalarType.Date, this@ReviewInput.customScalar.value)
+      writer.writeCustom("customScalar", CustomScalar.Date, this@ReviewInput.customScalar.value)
     }
     if (this@ReviewInput.listOfEnums.defined) {
       writer.writeList("listOfEnums", this@ReviewInput.listOfEnums.value?.let { value ->
@@ -226,7 +226,7 @@ data class ReviewInput(
           value.forEach { value ->
             listItemWriter.writeList { listItemWriter ->
               value.forEach { value ->
-                listItemWriter.writeCustom(CustomScalarType.Date, value)
+                listItemWriter.writeCustom(CustomScalar.Date, value)
               }
             }
           }

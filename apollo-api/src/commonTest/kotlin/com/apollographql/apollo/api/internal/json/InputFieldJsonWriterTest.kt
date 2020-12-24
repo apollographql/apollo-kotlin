@@ -1,7 +1,7 @@
 package com.apollographql.apollo.api.internal.json
 
 import com.apollographql.apollo.api.BigDecimal
-import com.apollographql.apollo.api.CustomScalarTypeAdapter
+import com.apollographql.apollo.api.CustomScalarAdapter
 import com.apollographql.apollo.api.JsonElement
 import com.apollographql.apollo.api.ScalarType
 import com.apollographql.apollo.api.ScalarTypeAdapters
@@ -53,7 +53,7 @@ class InputFieldJsonWriterTest {
   fun writeNumber() {
     inputFieldJsonWriter.writeNumber("someField", BigDecimal("1.001").toNumber())
     inputFieldJsonWriter.writeNumber("someNullField", null)
-    kotlin.test.assertEquals("{\"someField\":1.001,\"someNullField\":null", jsonBuffer.readUtf8())
+    assertEquals("{\"someField\":1.001,\"someNullField\":null", jsonBuffer.readUtf8())
   }
 
   @Test
@@ -87,14 +87,14 @@ class InputFieldJsonWriterTest {
 
   @Test
   fun writeCustomBoolean() {
-    val customScalarTypeAdapters: MutableMap<ScalarType, CustomScalarTypeAdapter<*>> = HashMap()
-    val scalarType = MockCustomScalarType(JsonElement.JsonBoolean::class, "com.apollographql.apollo.api.JsonElement.GraphQLBoolean")
-    customScalarTypeAdapters[scalarType] = object : MockCustomScalarTypeAdapter() {
+    val customScalarAdapters: MutableMap<ScalarType, CustomScalarAdapter<*>> = HashMap()
+    val scalarType = MockCustomScalar(JsonElement.JsonBoolean::class, "com.apollographql.apollo.api.JsonElement.GraphQLBoolean")
+    customScalarAdapters[scalarType] = object : MockCustomScalarAdapter() {
       override fun encode(value: Any?): JsonElement {
         return JsonElement.JsonBoolean((value as Boolean))
       }
     }
-    val inputFieldJsonWriter = InputFieldJsonWriter(jsonWriter, ScalarTypeAdapters(customScalarTypeAdapters))
+    val inputFieldJsonWriter = InputFieldJsonWriter(jsonWriter, ScalarTypeAdapters(customScalarAdapters))
     inputFieldJsonWriter.writeCustom("someField", scalarType, true)
     inputFieldJsonWriter.writeCustom("someNullField", scalarType, null)
     assertEquals("{\"someField\":true,\"someNullField\":null", jsonBuffer.readUtf8())
@@ -102,14 +102,14 @@ class InputFieldJsonWriterTest {
 
   @Test
   fun writeCustomNumber() {
-    val customScalarTypeAdapters: MutableMap<ScalarType, CustomScalarTypeAdapter<*>> = HashMap()
-    val scalarType = MockCustomScalarType(JsonElement.JsonNumber::class, "com.apollographql.apollo.api.JsonElement.GraphQLNumber")
-    customScalarTypeAdapters[scalarType] = object : MockCustomScalarTypeAdapter() {
+    val customScalarAdapters: MutableMap<ScalarType, CustomScalarAdapter<*>> = HashMap()
+    val scalarType = MockCustomScalar(JsonElement.JsonNumber::class, "com.apollographql.apollo.api.JsonElement.GraphQLNumber")
+    customScalarAdapters[scalarType] = object : MockCustomScalarAdapter() {
       override fun encode(value: Any?): JsonElement {
         return JsonElement.JsonNumber((value as BigDecimal).toNumber())
       }
     }
-    val inputFieldJsonWriter = InputFieldJsonWriter(jsonWriter, ScalarTypeAdapters(customScalarTypeAdapters))
+    val inputFieldJsonWriter = InputFieldJsonWriter(jsonWriter, ScalarTypeAdapters(customScalarAdapters))
     inputFieldJsonWriter.writeCustom("someField", scalarType, BigDecimal("100.1"))
     inputFieldJsonWriter.writeCustom("someNullField", scalarType, null)
     assertEquals("{\"someField\":100.1,\"someNullField\":null", jsonBuffer.readUtf8())
@@ -117,14 +117,14 @@ class InputFieldJsonWriterTest {
 
   @Test
   fun writeCustomString() {
-    val customScalarTypeAdapters: MutableMap<ScalarType, CustomScalarTypeAdapter<*>> = HashMap()
-    val scalarType = MockCustomScalarType(JsonElement.JsonString::class, "com.apollographql.apollo.api.JsonElement.JsonString")
-    customScalarTypeAdapters[scalarType] = object : MockCustomScalarTypeAdapter() {
+    val customScalarAdapters: MutableMap<ScalarType, CustomScalarAdapter<*>> = HashMap()
+    val scalarType = MockCustomScalar(JsonElement.JsonString::class, "com.apollographql.apollo.api.JsonElement.JsonString")
+    customScalarAdapters[scalarType] = object : MockCustomScalarAdapter() {
       override fun encode(value: Any?): JsonElement {
         return JsonElement.JsonString((value as String))
       }
     }
-    val inputFieldJsonWriter = InputFieldJsonWriter(jsonWriter, ScalarTypeAdapters(customScalarTypeAdapters))
+    val inputFieldJsonWriter = InputFieldJsonWriter(jsonWriter, ScalarTypeAdapters(customScalarAdapters))
     inputFieldJsonWriter.writeCustom("someField", scalarType, "someValue")
     inputFieldJsonWriter.writeCustom("someNullField", scalarType, null)
     assertEquals("{\"someField\":\"someValue\",\"someNullField\":null", jsonBuffer.readUtf8())
@@ -132,14 +132,14 @@ class InputFieldJsonWriterTest {
 
   @Test
   fun writeCustomNull() {
-    val customScalarTypeAdapters: MutableMap<ScalarType, CustomScalarTypeAdapter<*>> = HashMap()
-    val scalarType = MockCustomScalarType(JsonElement.JsonNumber::class, "com.apollographql.apollo.api.JsonElement.JsonNumber")
-    customScalarTypeAdapters[scalarType] = object : MockCustomScalarTypeAdapter() {
+    val customScalarAdapters: MutableMap<ScalarType, CustomScalarAdapter<*>> = HashMap()
+    val scalarType = MockCustomScalar(JsonElement.JsonNumber::class, "com.apollographql.apollo.api.JsonElement.JsonNumber")
+    customScalarAdapters[scalarType] = object : MockCustomScalarAdapter() {
       override fun encode(value: Any?): JsonElement {
         return JsonElement.JsonNull
       }
     }
-    val inputFieldJsonWriter = InputFieldJsonWriter(jsonWriter, ScalarTypeAdapters(customScalarTypeAdapters))
+    val inputFieldJsonWriter = InputFieldJsonWriter(jsonWriter, ScalarTypeAdapters(customScalarAdapters))
     inputFieldJsonWriter.writeCustom("someField", scalarType, null)
     assertEquals("{\"someField\":null", jsonBuffer.readUtf8())
   }
@@ -168,7 +168,7 @@ class InputFieldJsonWriterTest {
             "listField" to listOf(1, 2, 3)
         )
     )
-    val scalarType = MockCustomScalarType(Map::class, "kotlin.collections.Map")
+    val scalarType = MockCustomScalar(Map::class, "kotlin.collections.Map")
     inputFieldJsonWriter.writeCustom("someField", scalarType, value)
     inputFieldJsonWriter.writeCustom("someNullField", scalarType, null)
     assertEquals("{\"someField\":{\"stringField\":\"string\",\"booleanField\":true,\"numberField\":100,\"listField\":[\"string\",true,100,{\"stringField\":\"string\",\"numberField\":100,\"booleanField\":true,\"listField\":[1,2,3]}],\"objectField\":{\"stringField\":\"string\",\"numberField\":100,\"booleanField\":true,\"listField\":[1,2,3]}},\"someNullField\":null", jsonBuffer.readUtf8())
@@ -187,7 +187,7 @@ class InputFieldJsonWriterTest {
             "listField" to listOf(1, 2, 3)
         )
     )
-    val scalarType = MockCustomScalarType(List::class, "kotlin.collections.List")
+    val scalarType = MockCustomScalar(List::class, "kotlin.collections.List")
     inputFieldJsonWriter.writeCustom("someField", scalarType, value)
     inputFieldJsonWriter.writeCustom("someNullField", scalarType, null)
     assertEquals("{\"someField\":[\"string\",true,100,{\"stringField\":\"string\",\"numberField\":100,\"booleanField\":true,\"listField\":[1,2,3]}],\"someNullField\":null", jsonBuffer.readUtf8())
@@ -208,12 +208,12 @@ class InputFieldJsonWriterTest {
     assertEquals("{\"someField\":[[\"someValue\"]],\"someNullField\":null", jsonBuffer.readUtf8())
   }
 
-  private data class MockCustomScalarType(val clazz: KClass<*>, override val className: String) : ScalarType {
+  private data class MockCustomScalar(val clazz: KClass<*>, override val className: String) : ScalarType {
     override val graphqlName
       get() = clazz.simpleName!!
   }
 
-  private abstract inner class MockCustomScalarTypeAdapter : CustomScalarTypeAdapter<Any?> {
+  private abstract inner class MockCustomScalarAdapter : CustomScalarAdapter<Any?> {
     override fun decode(jsonElement: JsonElement): Any {
       throw UnsupportedOperationException()
     }

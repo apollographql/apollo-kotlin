@@ -48,7 +48,7 @@ internal class AstBuilder private constructor(
         fragmentTypes = fragments,
         inputTypes = inputTypes,
         enumTypes = enums,
-        customScalarScalarTypes = customTypes,
+        customScalarTypes = customTypes,
     )
   }
 

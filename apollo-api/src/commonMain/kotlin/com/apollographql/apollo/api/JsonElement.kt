@@ -1,7 +1,7 @@
 package com.apollographql.apollo.api
 
 /**
- * A wrapper class for representation of custom GraphQL type value, used in user provided [CustomScalarTypeAdapter]
+ * A wrapper class for representation of custom GraphQL type value, used in user provided [CustomScalarAdapter]
  * encoding / decoding functions.
  **/
 sealed class JsonElement {

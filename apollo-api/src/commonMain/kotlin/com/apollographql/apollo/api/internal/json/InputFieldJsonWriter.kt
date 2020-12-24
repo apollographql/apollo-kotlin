@@ -75,8 +75,8 @@ class InputFieldJsonWriter(
       return
     }
 
-    val customScalarTypeAdapter = scalarTypeAdapters.adapterFor<Any>(scalarType)
-    when (val jsonElement = customScalarTypeAdapter.encode(value)) {
+    val customScalarAdapter = scalarTypeAdapters.adapterFor<Any>(scalarType)
+    when (val jsonElement = customScalarAdapter.encode(value)) {
       is JsonString -> writeString(fieldName, jsonElement.value)
       is JsonBoolean -> writeBoolean(fieldName, jsonElement.value)
       is JsonNumber -> writeNumber(fieldName, jsonElement.value)
@@ -189,8 +189,8 @@ class InputFieldJsonWriter(
         return
       }
 
-      val customScalarTypeAdapter = scalarTypeAdapters.adapterFor<Any>(scalarType)
-      when (val jsonElement = customScalarTypeAdapter.encode(value)) {
+      val customScalarAdapter = scalarTypeAdapters.adapterFor<Any>(scalarType)
+      when (val jsonElement = customScalarAdapter.encode(value)) {
         is JsonString -> writeString(jsonElement.value)
         is JsonBoolean -> writeBoolean(jsonElement.value)
         is JsonNumber -> writeNumber(jsonElement.value)

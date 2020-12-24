@@ -40,7 +40,7 @@ internal class GraphQLCodeGenerator(
     )
 
     if (generateScalarMapping) {
-      ast.customScalarScalarTypes
+      ast.customScalarTypes
           .takeIf {
             /**
              * Skip generating the ScalarType enum if it's empty

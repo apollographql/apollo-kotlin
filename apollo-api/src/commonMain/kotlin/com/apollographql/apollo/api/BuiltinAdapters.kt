@@ -6,7 +6,7 @@ import com.apollographql.apollo.api.internal.json.use
 import okio.Buffer
 
 /**
- * Builtin CustomScalarTypeAdapter provided for convenience. Encoding is most of the times straightforward. Decoding
+ * Builtin CustomScalarAdapter provided for convenience. Encoding is most of the times straightforward. Decoding
  * can involve coercion. If you need stricter decoding or different logic, define your own adapter
  */
 object BuiltinScalarTypeAdapters {
@@ -87,7 +87,7 @@ object BuiltinScalarTypeAdapters {
     jsonElement.toRawValue()
   }
 
-  val FILE_UPLOAD_ADAPTER = object : CustomScalarTypeAdapter<FileUpload> {
+  val FILE_UPLOAD_ADAPTER = object : CustomScalarAdapter<FileUpload> {
     override fun decode(jsonElement: JsonElement): FileUpload {
       throw IllegalStateException("ApolloGraphQL: cannot decode FileUpload")
     }
@@ -100,8 +100,8 @@ object BuiltinScalarTypeAdapters {
 
 private fun <T> adapterWithDefaultEncode(
     decode: (jsonElement: JsonElement) -> T
-): CustomScalarTypeAdapter<T> {
-  return object : CustomScalarTypeAdapter<T> {
+): CustomScalarAdapter<T> {
+  return object : CustomScalarAdapter<T> {
     override fun decode(jsonElement: JsonElement): T {
       return decode(jsonElement)
     }

@@ -1,6 +1,6 @@
 package com.apollographql.apollo.api.internal
 
-import com.apollographql.apollo.api.CustomScalarTypeAdapter
+import com.apollographql.apollo.api.CustomScalarAdapter
 import com.apollographql.apollo.api.JsonElement
 import com.apollographql.apollo.api.EMPTY_OPERATION
 import com.apollographql.apollo.api.ResponseField
@@ -78,8 +78,8 @@ class StreamResponseReaderJvmCustomTypesTest {
 
   companion object {
     private fun responseReader(recordSet: Map<String, Any>): StreamResponseReader {
-      val customScalarTypeAdapters: MutableMap<ScalarType, CustomScalarTypeAdapter<*>> = HashMap()
-      customScalarTypeAdapters[DATE_CUSTOM_TYPE] = object : CustomScalarTypeAdapter<Any?> {
+      val customScalarAdapters: MutableMap<ScalarType, CustomScalarAdapter<*>> = HashMap()
+      customScalarAdapters[DATE_CUSTOM_TYPE] = object : CustomScalarAdapter<Any?> {
         override fun decode(jsonElement: JsonElement): Any {
           return try {
             DATE_TIME_FORMAT.parse(value.value.toString())
@@ -92,7 +92,7 @@ class StreamResponseReaderJvmCustomTypesTest {
           throw UnsupportedOperationException()
         }
       }
-      customScalarTypeAdapters[URL_CUSTOM_TYPE] = object : CustomScalarTypeAdapter<Any?> {
+      customScalarAdapters[URL_CUSTOM_TYPE] = object : CustomScalarAdapter<Any?> {
         override fun decode(jsonElement: JsonElement): Any {
           throw UnsupportedOperationException()
         }
@@ -101,7 +101,7 @@ class StreamResponseReaderJvmCustomTypesTest {
           throw UnsupportedOperationException()
         }
       }
-      customScalarTypeAdapters[OBJECT_CUSTOM_TYPE] = object : CustomScalarTypeAdapter<Any?> {
+      customScalarAdapters[OBJECT_CUSTOM_TYPE] = object : CustomScalarAdapter<Any?> {
         override fun decode(jsonElement: JsonElement): Any {
           return value.value.toString()
         }
@@ -123,7 +123,7 @@ class StreamResponseReaderJvmCustomTypesTest {
       return StreamResponseReader(
           jsonReader = jsonReader,
           variables = EMPTY_OPERATION.variables(),
-          scalarTypeAdapters = ScalarTypeAdapters(customScalarTypeAdapters),
+          scalarTypeAdapters = ScalarTypeAdapters(customScalarAdapters),
       )
     }
 
