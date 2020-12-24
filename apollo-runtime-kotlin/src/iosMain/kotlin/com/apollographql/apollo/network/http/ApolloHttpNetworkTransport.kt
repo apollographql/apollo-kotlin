@@ -150,7 +150,7 @@ actual class ApolloHttpNetworkTransport(
     urlComponents.queryItems = listOfNotNull(
         NSURLQueryItem(name = "query", value = operation.queryDocument()),
         NSURLQueryItem(name = "operationName", value = operation.name().name()),
-        operation.variables().marshal(scalarTypeAdapters).let { variables ->
+        operation.variables().marshal(customScalarAdapters).let { variables ->
           if (variables.isNotEmpty()) NSURLQueryItem(name = "variables", value = variables) else null
         }
     )
@@ -168,7 +168,7 @@ actual class ApolloHttpNetworkTransport(
 
   private fun ApolloRequest<*>.toHttpPostRequest(httpExecutionContext: HttpExecutionContext.Request?): NSURLRequest {
     return NSMutableURLRequest.requestWithURL(serverUrl).apply {
-      val postBody = operation.composeRequestBody(scalarTypeAdapters).toByteArray().toNSData()
+      val postBody = operation.composeRequestBody(customScalarAdapters).toByteArray().toNSData()
       setHTTPMethod("POST")
       headers
           .plus("Content-Type" to "application/json; charset=utf-8")
@@ -220,7 +220,7 @@ actual class ApolloHttpNetworkTransport(
     return try {
       val response = request.operation.parse(
           source = Buffer().write(data.toByteString()).apply { flush() },
-          scalarTypeAdapters = request.scalarTypeAdapters
+          scalarTypeAdapters = request.customScalarAdapters
       )
       Result.Success(
           ApolloResponse<D>(

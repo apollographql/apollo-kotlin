@@ -30,7 +30,6 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okhttp3.internal.closeQuietly
 import java.io.IOException
-import java.time.Duration
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -125,7 +124,7 @@ actual class ApolloHttpNetworkTransport(
 
     val response = request.operation.parse(
         source = responseBody.source(),
-        scalarTypeAdapters = request.scalarTypeAdapters
+        customScalarAdapters = request.customScalarAdapters
     )
     return ApolloResponse(
         requestUuid = request.requestUuid,
@@ -156,7 +155,7 @@ actual class ApolloHttpNetworkTransport(
         .addQueryParameter("query", operation.queryDocument())
         .addQueryParameter("operationName", operation.name().name())
         .apply {
-          operation.variables().marshal(scalarTypeAdapters).let { variables ->
+          operation.variables().marshal(customScalarAdapters).let { variables ->
             if (variables.isNotEmpty()) addQueryParameter("variables", variables)
           }
         }
@@ -173,7 +172,7 @@ actual class ApolloHttpNetworkTransport(
   }
 
   private fun <D : Operation.Data> ApolloRequest<D>.toHttpPostRequest(httpExecutionContext: HttpExecutionContext.Request?): Request {
-    val requestBody = operation.composeRequestBody(scalarTypeAdapters).toRequestBody(contentType = MEDIA_TYPE.toMediaType())
+    val requestBody = operation.composeRequestBody(customScalarAdapters).toRequestBody(contentType = MEDIA_TYPE.toMediaType())
     return Request.Builder()
         .url(serverUrl)
         .headers(headers)

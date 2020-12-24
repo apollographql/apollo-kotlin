@@ -46,7 +46,7 @@ class ApolloClient private constructor(
   private fun <D : Operation.Data, V : Operation.Variables> Operation<D, V>.prepareCall(): RealApolloCall<D> {
     return RealApolloCall(
         operation = this,
-        scalarTypeAdapters = customScalarAdapters,
+        customScalarAdapters = customScalarAdapters,
         interceptors = interceptors + NetworkRequestInterceptor(
             networkTransport = networkTransport,
             subscriptionNetworkTransport = subscriptionNetworkTransport
@@ -145,8 +145,8 @@ class ApolloClient private constructor(
     /**
      * internal because only used from tests
      */
-    fun scalarTypeAdapters(customCustomScalarAdapters: Map<CustomScalar, CustomScalarAdapter<*>>) = apply {
-      this.scalarTypeAdapters = customCustomScalarAdapters
+    fun scalarTypeAdapters(customScalarAdapters: Map<CustomScalar, CustomScalarAdapter<*>>) = apply {
+      this.scalarTypeAdapters = customScalarAdapters
     }
   }
 }

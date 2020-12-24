@@ -52,7 +52,7 @@ class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor
 
   private fun <D : Operation.Data> writeToCache(request: ApolloRequest<D>, data: D) {
     val operation = request.operation
-    val writer = RealResponseWriter(operation.variables(), request.scalarTypeAdapters)
+    val writer = RealResponseWriter(operation.variables(), request.customScalarAdapters)
     data.marshaller().marshal(writer)
 
     val responseNormalizer = object : ResponseNormalizer<Map<String, Any>?>() {
@@ -82,7 +82,7 @@ class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor
         CacheHeaders.NONE,
         RealCacheKeyBuilder()
     )
-    val responseReader = RealResponseReader(operation.variables(), rootRecord, fieldValueResolver, request.scalarTypeAdapters, NoOpResolveDelegate())
+    val responseReader = RealResponseReader(operation.variables(), rootRecord, fieldValueResolver, request.customScalarAdapters, NoOpResolveDelegate())
     val data = operation.responseFieldMapper().map(responseReader)
     return builder<D>(operation)
         .data(data)

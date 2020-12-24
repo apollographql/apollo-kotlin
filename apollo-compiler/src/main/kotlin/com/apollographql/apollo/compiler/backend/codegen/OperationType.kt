@@ -33,7 +33,7 @@ import okio.Buffer
 import okio.BufferedSource
 import okio.ByteString
 
-private val DEFAULT_SCALAR_TYPE_ADAPTERS = MemberName(CustomScalarAdapters.Companion::class.asClassName(), "DEFAULT")
+private val DEFAULT_CUSTOM_SCALAR_ADAPTERS = MemberName(CustomScalarAdapters.Companion::class.asClassName(), "DEFAULT")
 
 internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, generateAsInternal: Boolean = false): TypeSpec {
   val operationResponseAdapter = CodeGenerationAst.TypeRef(name = name, packageName = targetPackage).asAdapterTypeName()
@@ -234,10 +234,10 @@ private fun CodeGenerationAst.OperationType.parseWithAdaptersFunSpec(): FunSpec 
   return FunSpec.builder("parse")
       .addModifiers(KModifier.OVERRIDE)
       .addParameter(ParameterSpec("source", BufferedSource::class.asTypeName()))
-      .addParameter(ParameterSpec("scalarTypeAdapters", CustomScalarAdapters::class.asTypeName()))
+      .addParameter(ParameterSpec("customScalarAdapters", CustomScalarAdapters::class.asTypeName()))
       .throwsMultiplatformIOException()
       .returns(responseReturnType())
-      .addStatement("return·%T.parse(source,·this,·scalarTypeAdapters)", SimpleOperationResponseParser::class)
+      .addStatement("return·%T.parse(source,·this,·customScalarAdapters)", SimpleOperationResponseParser::class)
       .build()
 }
 
@@ -245,10 +245,10 @@ private fun CodeGenerationAst.OperationType.parseByteStringWithAdaptersFunSpec()
   return FunSpec.builder("parse")
       .addModifiers(KModifier.OVERRIDE)
       .addParameter(ParameterSpec("byteString", ByteString::class.asTypeName()))
-      .addParameter(ParameterSpec("scalarTypeAdapters", CustomScalarAdapters::class.asTypeName()))
+      .addParameter(ParameterSpec("customScalarAdapters", CustomScalarAdapters::class.asTypeName()))
       .throwsMultiplatformIOException()
       .returns(responseReturnType())
-      .addStatement("return·parse(%T().write(byteString),·scalarTypeAdapters)", Buffer::class)
+      .addStatement("return·parse(%T().write(byteString),·customScalarAdapters)", Buffer::class)
       .build()
 }
 
@@ -258,7 +258,7 @@ private fun CodeGenerationAst.OperationType.parseFunSpec(): FunSpec {
       .addParameter(ParameterSpec("source", BufferedSource::class.asTypeName()))
       .throwsMultiplatformIOException()
       .returns(responseReturnType())
-      .addStatement("return·parse(source,·%M)", DEFAULT_SCALAR_TYPE_ADAPTERS)
+      .addStatement("return·parse(source,·%M)", DEFAULT_CUSTOM_SCALAR_ADAPTERS)
       .build()
 }
 
@@ -268,7 +268,7 @@ private fun CodeGenerationAst.OperationType.parseByteStringFunSpec(): FunSpec {
       .addParameter(ParameterSpec("byteString", ByteString::class.asTypeName()))
       .throwsMultiplatformIOException()
       .returns(responseReturnType())
-      .addStatement("return·parse(byteString,·%M)", DEFAULT_SCALAR_TYPE_ADAPTERS)
+      .addStatement("return·parse(byteString,·%M)", DEFAULT_CUSTOM_SCALAR_ADAPTERS)
       .build()
 }
 
@@ -279,7 +279,7 @@ private fun CodeGenerationAst.OperationType.responseReturnType(): TypeName {
 private fun composeRequestBodyFunSpec(): FunSpec {
   return FunSpec.builder("composeRequestBody")
       .addModifiers(KModifier.OVERRIDE)
-      .addParameter(ParameterSpec("scalarTypeAdapters", CustomScalarAdapters::class.asTypeName()))
+      .addParameter(ParameterSpec("customScalarAdapters", CustomScalarAdapters::class.asTypeName()))
       .returns(ByteString::class)
       .addCode(
           CodeBlock.builder()
@@ -288,7 +288,7 @@ private fun composeRequestBodyFunSpec(): FunSpec {
               .addStatement("operation = this,")
               .addStatement("autoPersistQueries = false,")
               .addStatement("withQueryDocument = true,")
-              .addStatement("scalarTypeAdapters = scalarTypeAdapters")
+              .addStatement("customScalarAdapters = customScalarAdapters")
               .unindent()
               .add(")\n")
               .build()
@@ -307,7 +307,7 @@ private fun composeRequestBodyWithDefaultAdaptersFunSpec(): FunSpec {
               .addStatement("operation = this,")
               .addStatement("autoPersistQueries = false,")
               .addStatement("withQueryDocument = true,")
-              .addStatement("scalarTypeAdapters = %M", DEFAULT_SCALAR_TYPE_ADAPTERS)
+              .addStatement("customScalarAdapters = %M", DEFAULT_CUSTOM_SCALAR_ADAPTERS)
               .unindent()
               .add(")\n")
               .build()
@@ -320,7 +320,7 @@ private fun composeRequestBodyFunSpecForQuery(): FunSpec {
       .addModifiers(KModifier.OVERRIDE)
       .addParameter(ParameterSpec("autoPersistQueries", Boolean::class.asTypeName()))
       .addParameter(ParameterSpec("withQueryDocument", Boolean::class.asTypeName()))
-      .addParameter(ParameterSpec("scalarTypeAdapters", CustomScalarAdapters::class.asTypeName()))
+      .addParameter(ParameterSpec("customScalarAdapters", CustomScalarAdapters::class.asTypeName()))
       .returns(ByteString::class)
       .addCode(
           CodeBlock.builder()
@@ -329,7 +329,7 @@ private fun composeRequestBodyFunSpecForQuery(): FunSpec {
               .addStatement("operation = this,")
               .addStatement("autoPersistQueries = autoPersistQueries,")
               .addStatement("withQueryDocument = withQueryDocument,")
-              .addStatement("scalarTypeAdapters = scalarTypeAdapters")
+              .addStatement("customScalarAdapters = customScalarAdapters")
               .unindent()
               .add(")\n")
               .build()

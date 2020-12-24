@@ -1,8 +1,11 @@
 package com.apollographql.apollo.api
 
-class ScalarTypeAdapters(val customCustomScalarAdapters: Map<CustomScalar, CustomScalarAdapter<*>>) {
+/**
+ * A wrapper around a Map of [CustomScalarAdapter] that allows to easily retrieve an adapter for the given [CustomScalar]
+ */
+class CustomScalarAdapters(val customScalarAdapters: Map<CustomScalar, CustomScalarAdapter<*>>) {
 
-  private val adapterByGraphQLName = customCustomScalarAdapters.mapKeys { it.key.graphqlName }
+  private val adapterByGraphQLName = customScalarAdapters.mapKeys { it.key.graphqlName }
 
   @Suppress("UNCHECKED_CAST")
   fun <T : Any> adapterFor(customScalar: CustomScalar): CustomScalarAdapter<T> {
@@ -24,7 +27,7 @@ class ScalarTypeAdapters(val customCustomScalarAdapters: Map<CustomScalar, Custo
   }
 
   companion object {
-    val DEFAULT = ScalarTypeAdapters(emptyMap())
+    val DEFAULT = CustomScalarAdapters(emptyMap())
 
     private val adapterByClassName = mapOf(
         "java.lang.String" to BuiltinCustomScalarAdapters.STRING_ADAPTER,

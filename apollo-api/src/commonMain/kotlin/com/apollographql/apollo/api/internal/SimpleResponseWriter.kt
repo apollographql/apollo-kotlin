@@ -2,14 +2,14 @@ package com.apollographql.apollo.api.internal
 
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.CustomScalar
-import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.json.Utils.writeToJson
 import com.apollographql.apollo.api.internal.json.use
 import okio.Buffer
 import okio.IOException
 
-class SimpleResponseWriter(private val scalarTypeAdapters: ScalarTypeAdapters) : ResponseWriter {
+class SimpleResponseWriter(private val customScalarAdapters: CustomScalarAdapters) : ResponseWriter {
   private val data: MutableMap<String, Any?> = LinkedHashMap()
 
   @Throws(IOException::class)
@@ -49,7 +49,7 @@ class SimpleResponseWriter(private val scalarTypeAdapters: ScalarTypeAdapters) :
     if (value == null) {
       data[field.responseName] = null
     } else {
-      val typeAdapter = scalarTypeAdapters.adapterFor<Any>(field.customScalar)
+      val typeAdapter = customScalarAdapters.adapterFor<Any>(field.customScalar)
       val jsonElement = typeAdapter.encode(value)
       data[field.responseName] = jsonElement.toRawValue()
     }
@@ -59,7 +59,7 @@ class SimpleResponseWriter(private val scalarTypeAdapters: ScalarTypeAdapters) :
     if (marshaller == null) {
       data[field.responseName] = null
     } else {
-      val objectResponseWriter = SimpleResponseWriter(scalarTypeAdapters)
+      val objectResponseWriter = SimpleResponseWriter(customScalarAdapters)
       marshaller.marshal(objectResponseWriter)
       data[field.responseName] = objectResponseWriter.data
     }
@@ -73,13 +73,13 @@ class SimpleResponseWriter(private val scalarTypeAdapters: ScalarTypeAdapters) :
     if (values == null) {
       data[field.responseName] = null
     } else {
-      val listItemWriter = CustomListItemWriter(scalarTypeAdapters)
+      val listItemWriter = CustomListItemWriter(customScalarAdapters)
       block(values, listItemWriter)
       data[field.responseName] = listItemWriter.data
     }
   }
 
-  private class CustomListItemWriter(private val scalarTypeAdapters: ScalarTypeAdapters) : ResponseWriter.ListItemWriter {
+  private class CustomListItemWriter(private val customScalarAdapters: CustomScalarAdapters) : ResponseWriter.ListItemWriter {
     val data = ArrayList<Any?>()
 
     override fun writeString(value: String?) {
@@ -106,7 +106,7 @@ class SimpleResponseWriter(private val scalarTypeAdapters: ScalarTypeAdapters) :
       if (value == null) {
         data.add(null)
       } else {
-        val typeAdapter = scalarTypeAdapters.adapterFor<Any>(customScalar)
+        val typeAdapter = customScalarAdapters.adapterFor<Any>(customScalar)
         val jsonElement = typeAdapter.encode(value)
         data.add(jsonElement.toRawValue())
       }
@@ -116,7 +116,7 @@ class SimpleResponseWriter(private val scalarTypeAdapters: ScalarTypeAdapters) :
       if (marshaller == null) {
         data.add(null)
       } else {
-        val objectResponseWriter = SimpleResponseWriter(scalarTypeAdapters)
+        val objectResponseWriter = SimpleResponseWriter(customScalarAdapters)
         marshaller.marshal(objectResponseWriter)
         data.add(objectResponseWriter.data)
       }
@@ -126,7 +126,7 @@ class SimpleResponseWriter(private val scalarTypeAdapters: ScalarTypeAdapters) :
       if (items == null) {
         data.add(null)
       } else {
-        val listItemWriter = CustomListItemWriter(scalarTypeAdapters)
+        val listItemWriter = CustomListItemWriter(customScalarAdapters)
         block(items, listItemWriter)
         data.add(listItemWriter.data)
       }

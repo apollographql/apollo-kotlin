@@ -430,8 +430,8 @@ class SimpleResponseReaderTest {
 
   companion object {
     private fun responseReader(recordSet: Map<String, Any>): StreamResponseReader {
-      val customCustomScalarAdapters: MutableMap<CustomScalar, CustomScalarAdapter<*>> = HashMap()
-      customCustomScalarAdapters[OBJECT_CUSTOM_CUSTOM] = object : CustomScalarAdapter<Any?> {
+      val customScalarAdapters: MutableMap<CustomScalar, CustomScalarAdapter<*>> = HashMap()
+      customScalarAdapters[OBJECT_CUSTOM_CUSTOM] = object : CustomScalarAdapter<Any?> {
         override fun decode(jsonElement: JsonElement): Any {
           return jsonElement.toRawValue().toString()
         }
@@ -452,7 +452,7 @@ class SimpleResponseReaderTest {
       return StreamResponseReader(
           jsonReader = jsonReader,
           variables = EMPTY_OPERATION.variables(),
-          customScalarAdapters = CustomScalarAdapters(customCustomScalarAdapters),
+          customScalarAdapters = CustomScalarAdapters(customScalarAdapters),
       )
     }
 
