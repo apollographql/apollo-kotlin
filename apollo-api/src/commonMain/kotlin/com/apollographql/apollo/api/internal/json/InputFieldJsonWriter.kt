@@ -1,7 +1,7 @@
 package com.apollographql.apollo.api.internal.json
 
 import com.apollographql.apollo.api.JsonElement.*
-import com.apollographql.apollo.api.ScalarType
+import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.InputFieldWriter
@@ -69,13 +69,13 @@ class InputFieldJsonWriter(
   }
 
   @Throws(IOException::class)
-  override fun writeCustom(fieldName: String, scalarType: ScalarType, value: Any?) {
+  override fun writeCustom(fieldName: String, customScalar: CustomScalar, value: Any?) {
     if (value == null) {
       jsonWriter.name(fieldName).nullValue()
       return
     }
 
-    val customScalarAdapter = scalarTypeAdapters.adapterFor<Any>(scalarType)
+    val customScalarAdapter = scalarTypeAdapters.adapterFor<Any>(customScalar)
     when (val jsonElement = customScalarAdapter.encode(value)) {
       is JsonString -> writeString(fieldName, jsonElement.value)
       is JsonBoolean -> writeBoolean(fieldName, jsonElement.value)
@@ -183,13 +183,13 @@ class InputFieldJsonWriter(
     }
 
     @Throws(IOException::class)
-    override fun writeCustom(scalarType: ScalarType, value: Any?) {
+    override fun writeCustom(customScalar: CustomScalar, value: Any?) {
       if (value == null) {
         jsonWriter.nullValue()
         return
       }
 
-      val customScalarAdapter = scalarTypeAdapters.adapterFor<Any>(scalarType)
+      val customScalarAdapter = scalarTypeAdapters.adapterFor<Any>(customScalar)
       when (val jsonElement = customScalarAdapter.encode(value)) {
         is JsonString -> writeString(jsonElement.value)
         is JsonBoolean -> writeBoolean(jsonElement.value)

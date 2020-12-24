@@ -5,7 +5,7 @@ import com.apollographql.apollo.api.CustomScalarAdapter
 import com.apollographql.apollo.api.JsonElement
 import com.apollographql.apollo.api.EMPTY_OPERATION
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.ScalarType
+import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo.api.internal.json.JsonDataException
@@ -92,14 +92,14 @@ class SimpleResponseReaderTest {
 
   @Test
   fun readCustomObjectMap() {
-    val mapScalarType: ScalarType = object : ScalarType {
+    val mapCustomScalar: CustomScalar = object : CustomScalar {
       override val graphqlName = "CustomObject"
       override val className = "kotlin.collections.Map"
     }
 
     val successField = ResponseField.forCustomScalar(
         "successFieldResponseName", "successFieldName", null,
-        false, mapScalarType, noConditions
+        false, mapCustomScalar, noConditions
     )
 
     val objectMap = mapOf(
@@ -130,7 +130,7 @@ class SimpleResponseReaderTest {
 
   @Test
   fun readCustomObjectList() {
-    val listScalarType: ScalarType = object : ScalarType {
+    val listCustomScalar: CustomScalar = object : CustomScalar {
       override val graphqlName = "CustomList"
 
       override val className = "kotlin.collections.List"
@@ -138,7 +138,7 @@ class SimpleResponseReaderTest {
 
     val successField = ResponseField.forCustomScalar(
         "successFieldResponseName", "successFieldName", null,
-        false, listScalarType, noConditions
+        false, listCustomScalar, noConditions
     )
 
     val objectMap = mapOf(
@@ -430,8 +430,8 @@ class SimpleResponseReaderTest {
 
   companion object {
     private fun responseReader(recordSet: Map<String, Any>): StreamResponseReader {
-      val customScalarAdapters: MutableMap<ScalarType, CustomScalarAdapter<*>> = HashMap()
-      customScalarAdapters[OBJECT_CUSTOM_TYPE] = object : CustomScalarAdapter<Any?> {
+      val customCustomScalarAdapters: MutableMap<CustomScalar, CustomScalarAdapter<*>> = HashMap()
+      customCustomScalarAdapters[OBJECT_CUSTOM_CUSTOM] = object : CustomScalarAdapter<Any?> {
         override fun decode(jsonElement: JsonElement): Any {
           return jsonElement.toRawValue().toString()
         }
@@ -452,12 +452,12 @@ class SimpleResponseReaderTest {
       return StreamResponseReader(
           jsonReader = jsonReader,
           variables = EMPTY_OPERATION.variables(),
-          scalarTypeAdapters = ScalarTypeAdapters(customScalarAdapters),
+          scalarTypeAdapters = ScalarTypeAdapters(customCustomScalarAdapters),
       )
     }
 
-    private fun scalarTypeFor(clazz: KClass<*>, className: String): ScalarType {
-      return object : ScalarType {
+    private fun scalarTypeFor(clazz: KClass<*>, className: String): CustomScalar {
+      return object : CustomScalar {
         override val graphqlName
           get() = clazz.simpleName!!
 
@@ -465,7 +465,7 @@ class SimpleResponseReaderTest {
       }
     }
 
-    private val OBJECT_CUSTOM_TYPE: ScalarType = object : ScalarType {
+    private val OBJECT_CUSTOM_CUSTOM: CustomScalar = object : CustomScalar {
       override val graphqlName = "CustomObject"
 
       override val className = "kotlin.String"

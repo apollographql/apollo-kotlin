@@ -5,7 +5,7 @@ import com.apollographql.apollo.api.Mutation;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
-import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.api.CustomScalar;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.api.cache.http.HttpCache;
@@ -381,7 +381,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     HttpCachePolicy.Policy defaultHttpCachePolicy = HttpCachePolicy.NETWORK_ONLY;
     ResponseFetcher defaultResponseFetcher = ApolloResponseFetchers.CACHE_FIRST;
     CacheHeaders defaultCacheHeaders = CacheHeaders.NONE;
-    final Map<ScalarType, CustomScalarAdapter<?>> CustomScalarAdapters = new LinkedHashMap<>();
+    final Map<CustomScalar, CustomScalarAdapter<?>> CustomScalarAdapters = new LinkedHashMap<>();
     Executor dispatcher;
     @Nullable
     Logger logger = null;
@@ -411,7 +411,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       defaultHttpCachePolicy = apolloClient.defaultHttpCachePolicy;
       defaultResponseFetcher = apolloClient.defaultResponseFetcher;
       defaultCacheHeaders = apolloClient.defaultCacheHeaders;
-      CustomScalarAdapters.putAll(apolloClient.scalarTypeAdapters.getCustomScalarAdapters());
+      CustomScalarAdapters.putAll(apolloClient.scalarTypeAdapters.getCustomCustomScalarAdapters());
       dispatcher = apolloClient.dispatcher;
       logger = apolloClient.logger.getLogger();
       applicationInterceptors.addAll(apolloClient.applicationInterceptors);
@@ -519,14 +519,14 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     /**
      * Set the type adapter to use for serializing and de-serializing custom GraphQL scalar types.
      *
-     * @param scalarType the scalar type to serialize/deserialize
+     * @param customScalar the scalar type to serialize/deserialize
      * @param customScalarAdapter the type adapter to use
      * @param <T> the value type
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public <T> Builder addCustomScalarAdapter(@NotNull ScalarType scalarType,
+    public <T> Builder addCustomScalarAdapter(@NotNull CustomScalar customScalar,
         @NotNull final CustomScalarAdapter<T> customScalarAdapter) {
-      CustomScalarAdapters.put(scalarType, customScalarAdapter);
+      CustomScalarAdapters.put(customScalar, customScalarAdapter);
       return this;
     }
 

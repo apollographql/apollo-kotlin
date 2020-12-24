@@ -3,7 +3,7 @@ package com.apollographql.apollo.internal.response
 import com.apollographql.apollo.api.BigDecimal
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.ScalarType
+import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.internal.ResolveDelegate
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
@@ -37,7 +37,7 @@ class RealResponseWriter(
   }
 
   override fun writeCustom(field: ResponseField.CustomScalarField, value: Any?) {
-    val typeAdapter = scalarTypeAdapters.adapterFor<Any>(field.scalarType)
+    val typeAdapter = scalarTypeAdapters.adapterFor<Any>(field.customScalar)
     writeScalarFieldValue(field, if (value != null) typeAdapter.encode(value).toRawValue() else null)
   }
 
@@ -197,8 +197,8 @@ class RealResponseWriter(
       accumulator.add(value)
     }
 
-    override fun writeCustom(scalarType: ScalarType, value: Any?) {
-      val typeAdapter = scalarTypeAdapters.adapterFor<Any>(scalarType)
+    override fun writeCustom(customScalar: CustomScalar, value: Any?) {
+      val typeAdapter = scalarTypeAdapters.adapterFor<Any>(customScalar)
       accumulator.add(if (value != null) typeAdapter.encode(value).toRawValue() else null)
     }
 

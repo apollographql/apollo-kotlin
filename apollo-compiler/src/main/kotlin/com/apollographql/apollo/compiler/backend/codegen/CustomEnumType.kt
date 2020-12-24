@@ -1,6 +1,6 @@
 package com.apollographql.apollo.compiler.backend.codegen
 
-import com.apollographql.apollo.api.ScalarType
+import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
 import com.apollographql.apollo.compiler.backend.ast.CustomScalarTypes
@@ -13,7 +13,7 @@ internal fun CustomScalarTypes.typeSpec(generateAsInternal: Boolean = false): Ty
   return TypeSpec
       .enumBuilder("CustomScalar")
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
-      .addSuperinterface(ScalarType::class.java)
+      .addSuperinterface(CustomScalar::class.java)
       .apply {
         toSortedMap().map { (_, customScalarType) ->
           addEnumConstant(

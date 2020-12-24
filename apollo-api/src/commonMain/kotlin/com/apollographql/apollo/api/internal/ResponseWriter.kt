@@ -1,7 +1,7 @@
 package com.apollographql.apollo.api.internal
 
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.ScalarType
+import com.apollographql.apollo.api.CustomScalar
 
 interface ResponseWriter {
   fun writeString(field: ResponseField, value: String?)
@@ -35,7 +35,7 @@ interface ResponseWriter {
 
     fun writeBoolean(value: Boolean?)
 
-    fun writeCustom(scalarType: ScalarType, value: Any?)
+    fun writeCustom(customScalar: CustomScalar, value: Any?)
 
     fun writeObject(marshaller: ResponseFieldMarshaller?)
 

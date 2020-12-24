@@ -5,9 +5,8 @@ import com.apollographql.apollo.api.CustomScalarAdapter
 import com.apollographql.apollo.api.JsonElement.Companion.fromRawValue
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.ScalarType
+import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.ScalarTypeAdapters
-import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.toNumber
 
 class RealResponseReader<R : Map<String, Any?>>(
@@ -129,7 +128,7 @@ class RealResponseReader<R : Map<String, Any?>>(
       resolveDelegate.didResolveNull()
       result = null
     } else {
-      val scalarTypeAdapter: CustomScalarAdapter<T> = scalarTypeAdapters.adapterFor(field.scalarType)
+      val scalarTypeAdapter: CustomScalarAdapter<T> = scalarTypeAdapters.adapterFor(field.customScalar)
       result = scalarTypeAdapter.decode(fromRawValue(value))
       checkValue(field, result)
       resolveDelegate.didResolveScalar(value)
@@ -197,8 +196,8 @@ class RealResponseReader<R : Map<String, Any?>>(
       return value as Boolean
     }
 
-    override fun <T : Any> readCustomScalar(scalarType: ScalarType): T {
-      val scalarTypeAdapter: CustomScalarAdapter<T> = scalarTypeAdapters.adapterFor(scalarType)
+    override fun <T : Any> readCustomScalar(customScalar: CustomScalar): T {
+      val scalarTypeAdapter: CustomScalarAdapter<T> = scalarTypeAdapters.adapterFor(customScalar)
       resolveDelegate.didResolveScalar(value)
       return scalarTypeAdapter.decode(fromRawValue(value))
     }

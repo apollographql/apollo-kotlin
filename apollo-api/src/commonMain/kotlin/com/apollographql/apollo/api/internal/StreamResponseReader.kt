@@ -3,7 +3,7 @@ package com.apollographql.apollo.api.internal
 import com.apollographql.apollo.api.JsonElement
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.ScalarType
+import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.Utils.readRecursively
@@ -105,7 +105,7 @@ class StreamResponseReader private constructor(
   }
 
   override fun <T : Any> readCustomScalar(field: ResponseField.CustomScalarField): T? {
-    val typeAdapter = scalarTypeAdapters.adapterFor<T>(field.scalarType)
+    val typeAdapter = scalarTypeAdapters.adapterFor<T>(field.customScalar)
     val value = readValue(field) {
       readRecursively()
     }
@@ -158,8 +158,8 @@ class StreamResponseReader private constructor(
       return jsonReader.nextBoolean()
     }
 
-    override fun <T : Any> readCustomScalar(scalarType: ScalarType): T{
-      val typeAdapter = scalarTypeAdapters.adapterFor<T>(scalarType)
+    override fun <T : Any> readCustomScalar(customScalar: CustomScalar): T{
+      val typeAdapter = scalarTypeAdapters.adapterFor<T>(customScalar)
       val value = jsonReader.readRecursively()!!
       return typeAdapter.decode(JsonElement.fromRawValue(value))
     }

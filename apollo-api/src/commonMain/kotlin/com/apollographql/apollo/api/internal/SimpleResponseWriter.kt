@@ -1,7 +1,7 @@
 package com.apollographql.apollo.api.internal
 
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.ScalarType
+import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.json.Utils.writeToJson
@@ -49,7 +49,7 @@ class SimpleResponseWriter(private val scalarTypeAdapters: ScalarTypeAdapters) :
     if (value == null) {
       data[field.responseName] = null
     } else {
-      val typeAdapter = scalarTypeAdapters.adapterFor<Any>(field.scalarType)
+      val typeAdapter = scalarTypeAdapters.adapterFor<Any>(field.customScalar)
       val jsonElement = typeAdapter.encode(value)
       data[field.responseName] = jsonElement.toRawValue()
     }
@@ -102,11 +102,11 @@ class SimpleResponseWriter(private val scalarTypeAdapters: ScalarTypeAdapters) :
       data.add(value)
     }
 
-    override fun writeCustom(scalarType: ScalarType, value: Any?) {
+    override fun writeCustom(customScalar: CustomScalar, value: Any?) {
       if (value == null) {
         data.add(null)
       } else {
-        val typeAdapter = scalarTypeAdapters.adapterFor<Any>(scalarType)
+        val typeAdapter = scalarTypeAdapters.adapterFor<Any>(customScalar)
         val jsonElement = typeAdapter.encode(value)
         data.add(jsonElement.toRawValue())
       }

@@ -4,7 +4,7 @@ import com.apollographql.apollo.api.InputType
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseField.Companion.forString
-import com.apollographql.apollo.api.ScalarType
+import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.InputFieldWriter
 import com.google.common.truth.Truth
@@ -215,7 +215,7 @@ class CacheKeyBuilderTest {
             writer.writeDouble("double", 3.0)
             writer.writeNumber("number", BigDecimal.valueOf(4))
             writer.writeBoolean("boolean", true)
-            writer.writeCustom("custom", object : ScalarType {
+            writer.writeCustom("custom", object : CustomScalar {
               override val graphqlName = "EPISODE"
               override val className: String
                 get() = String::class.java.name
@@ -234,7 +234,7 @@ class CacheKeyBuilderTest {
               listItemWriter.writeDouble(3.0)
               listItemWriter.writeNumber(BigDecimal.valueOf(4))
               listItemWriter.writeBoolean(true)
-              listItemWriter.writeCustom(object : ScalarType {
+              listItemWriter.writeCustom(object : CustomScalar {
                 override val graphqlName = "EPISODE"
                 override val className: String
                   get() = String::class.java.name
@@ -295,7 +295,7 @@ class CacheKeyBuilderTest {
             writer.writeDouble("double", null)
             writer.writeNumber("number", null)
             writer.writeBoolean("boolean", null)
-            writer.writeCustom("custom", object : ScalarType {
+            writer.writeCustom("custom", object : CustomScalar {
               override val graphqlName = "EPISODE"
               override val className: String
                 get() = String::class.java.name
@@ -311,7 +311,7 @@ class CacheKeyBuilderTest {
                 listItemWriter.writeDouble(null)
                 listItemWriter.writeNumber(null)
                 listItemWriter.writeBoolean(null)
-                listItemWriter.writeCustom(object : ScalarType {
+                listItemWriter.writeCustom(object : CustomScalar {
                   override val graphqlName = "EPISODE"
                   override val className: String
                     get() = String::class.java.name

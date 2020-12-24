@@ -2,23 +2,23 @@ package com.apollographql.apollo.response
 
 import com.apollographql.apollo.api.CustomScalarAdapter
 import com.apollographql.apollo.api.JsonElement
-import com.apollographql.apollo.api.ScalarType
+import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
-class ScalarTypeAdaptersTest {
+class CustomScalarAdaptersTest {
   @Test
   fun customAdapterTakePrecedentOverDefault() {
-    val customScalarAdapters = mutableMapOf<ScalarType, CustomScalarAdapter<*>>()
+    val customScalarAdapters = mutableMapOf<CustomScalar, CustomScalarAdapter<*>>()
     val expectedAdapter = MockCustomScalarAdapter()
-    customScalarAdapters[object : ScalarType {
+    customScalarAdapters[object : CustomScalar {
       override val graphqlName = "String"
       override val className: String
         get() = String::class.java.name
     }] = expectedAdapter
 
-    val actualAdapter = ScalarTypeAdapters(customScalarAdapters).adapterFor<String>(object : ScalarType {
+    val actualAdapter = ScalarTypeAdapters(customScalarAdapters).adapterFor<String>(object : CustomScalar {
       override val graphqlName = "String"
       override val className: String
         get() = String::class.java.name
@@ -30,7 +30,7 @@ class ScalarTypeAdaptersTest {
   fun missingAdapter() {
     ScalarTypeAdapters(emptyMap())
         .adapterFor<RuntimeException>(
-            object : ScalarType {
+            object : CustomScalar {
               override val graphqlName = "RuntimeException"
               override val className: String
                 get() = RuntimeException::class.java.name
@@ -128,7 +128,7 @@ class ScalarTypeAdaptersTest {
 
   private fun <T : Any> defaultAdapter(clazz: Class<T>): CustomScalarAdapter<T> {
     return ScalarTypeAdapters(emptyMap()).adapterFor<T>(
-        object : ScalarType {
+        object : CustomScalar {
           override val graphqlName: String
             get() = clazz.simpleName
           override val className: String

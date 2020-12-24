@@ -1,25 +1,25 @@
 package com.apollographql.apollo.api
 
-class ScalarTypeAdapters(val customScalarAdapters: Map<ScalarType, CustomScalarAdapter<*>>) {
+class ScalarTypeAdapters(val customCustomScalarAdapters: Map<CustomScalar, CustomScalarAdapter<*>>) {
 
-  private val adapterByGraphQLName = customScalarAdapters.mapKeys { it.key.graphqlName }
+  private val adapterByGraphQLName = customCustomScalarAdapters.mapKeys { it.key.graphqlName }
 
   @Suppress("UNCHECKED_CAST")
-  fun <T : Any> adapterFor(scalarType: ScalarType): CustomScalarAdapter<T> {
+  fun <T : Any> adapterFor(customScalar: CustomScalar): CustomScalarAdapter<T> {
     /**
      * Look in user-registered adapters by scalar type name first
      */
-    var customScalarAdapter: CustomScalarAdapter<*>? = adapterByGraphQLName[scalarType.graphqlName]
+    var customScalarAdapter: CustomScalarAdapter<*>? = adapterByGraphQLName[customScalar.graphqlName]
     if (customScalarAdapter == null) {
       /**
        * If none is found, provide a default adapter based on the implementation class name
        * This saves the user the hassle of registering a scalar adapter for mapping to widespread such as Long, Map, etc...
        * The ScalarType must still be declared in the Gradle plugin configuration.
        */
-      customScalarAdapter = adapterByClassName[scalarType.className]
+      customScalarAdapter = adapterByClassName[customScalar.className]
     }
     return requireNotNull(customScalarAdapter) {
-      "Can't map GraphQL type: `${scalarType.graphqlName}` to: `${scalarType.className}`. Did you forget to add a CustomScalarAdapter?"
+      "Can't map GraphQL type: `${customScalar.graphqlName}` to: `${customScalar.className}`. Did you forget to add a CustomScalarAdapter?"
     } as CustomScalarAdapter<T>
   }
 
