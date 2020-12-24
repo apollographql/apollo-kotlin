@@ -78,8 +78,8 @@ class StreamResponseReaderJvmCustomTypesTest {
 
   companion object {
     private fun responseReader(recordSet: Map<String, Any>): StreamResponseReader {
-      val CustomScalarTypeAdapters: MutableMap<ScalarType, CustomScalarTypeAdapter<*>> = HashMap()
-      CustomScalarTypeAdapters[DATE_CUSTOM_TYPE] = object : CustomScalarTypeAdapter<Any?> {
+      val customScalarTypeAdapters: MutableMap<ScalarType, CustomScalarTypeAdapter<*>> = HashMap()
+      customScalarTypeAdapters[DATE_CUSTOM_TYPE] = object : CustomScalarTypeAdapter<Any?> {
         override fun decode(jsonElement: JsonElement): Any {
           return try {
             DATE_TIME_FORMAT.parse(value.value.toString())
@@ -92,7 +92,7 @@ class StreamResponseReaderJvmCustomTypesTest {
           throw UnsupportedOperationException()
         }
       }
-      CustomScalarTypeAdapters[URL_CUSTOM_TYPE] = object : CustomScalarTypeAdapter<Any?> {
+      customScalarTypeAdapters[URL_CUSTOM_TYPE] = object : CustomScalarTypeAdapter<Any?> {
         override fun decode(jsonElement: JsonElement): Any {
           throw UnsupportedOperationException()
         }
@@ -101,7 +101,7 @@ class StreamResponseReaderJvmCustomTypesTest {
           throw UnsupportedOperationException()
         }
       }
-      CustomScalarTypeAdapters[OBJECT_CUSTOM_TYPE] = object : CustomScalarTypeAdapter<Any?> {
+      customScalarTypeAdapters[OBJECT_CUSTOM_TYPE] = object : CustomScalarTypeAdapter<Any?> {
         override fun decode(jsonElement: JsonElement): Any {
           return value.value.toString()
         }
@@ -123,7 +123,7 @@ class StreamResponseReaderJvmCustomTypesTest {
       return StreamResponseReader(
           jsonReader = jsonReader,
           variables = EMPTY_OPERATION.variables(),
-          scalarTypeAdapters = ScalarTypeAdapters(CustomScalarTypeAdapters),
+          scalarTypeAdapters = ScalarTypeAdapters(customScalarTypeAdapters),
       )
     }
 
