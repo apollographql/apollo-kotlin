@@ -135,10 +135,15 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
      *
      * If the user specified a mapping, use it, else fallback to [Any]
      */
-    val customScalarsMapping = introspectionSchema.types
+    val schemaScalars = introspectionSchema.types
         .values
         .filter { type -> type is IntrospectionSchema.Type.Scalar && !GQLTypeDefinition.builtInTypes.contains(type.name) }
         .map { type -> type.name }
+    val unknownScalars = userScalarTypesMap.keys.subtract(schemaScalars.toSet())
+    check (unknownScalars.isEmpty()) {
+      "ApolloGraphQL: unknown custom scalar(s): ${unknownScalars.joinToString(",")}"
+    }
+    val customScalarsMapping = schemaScalars
         .map {
           it to (userScalarTypesMap[it] ?: anyClassName(generateKotlinModels))
         }.toMap()

@@ -1,12 +1,15 @@
 package com.apollographql.apollo.gradle.test
 
 
+import com.apollographql.apollo.gradle.internal.DefaultApolloExtension
 import com.apollographql.apollo.gradle.util.TestUtils
 import com.apollographql.apollo.gradle.util.TestUtils.fixturesDirectory
 import com.apollographql.apollo.gradle.util.TestUtils.withSimpleProject
 import com.apollographql.apollo.gradle.util.TestUtils.withTestProject
 import com.apollographql.apollo.gradle.util.generatedChild
 import com.apollographql.apollo.gradle.util.replaceInText
+import com.google.common.truth.Truth
+import org.gradle.api.tasks.TaskExecutionException
 import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.hamcrest.CoreMatchers.containsString
@@ -15,6 +18,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertThat
 import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.Test
 import java.io.File
 import java.nio.file.Files
@@ -31,6 +35,23 @@ class ServiceTests {
       TestUtils.assertFileContains(dir, "service/com/example/type/CustomScalars.kt", "\"java.util.Date\"")
     }
   }
+
+  @Test
+  fun `registering an unknown custom scalar fails`() {
+    withSimpleProject("""
+      apollo {
+        customScalarsMapping = ["UnknownScalar": "java.util.Date"]
+      }
+    """.trimIndent()) { dir ->
+      try {
+        TestUtils.executeTask("generateApolloSources", dir)
+        fail("Registering an unknown scalar should fail")
+      } catch (e: UnexpectedBuildFailure) {
+        Truth.assertThat(e.message).contains("unknown custom scalar(s)")
+      }
+    }
+  }
+
 
   @Test
   fun `customScalarsMapping put is working`() {
