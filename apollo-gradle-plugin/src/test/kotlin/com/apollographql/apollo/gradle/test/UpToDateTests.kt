@@ -35,7 +35,7 @@ class UpToDateTests {
     assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").isFile)
 
     // verify that the custom type generated was Any because no customScalarsMapping was specified
-    TestUtils.assertFileContains(dir, "service/com/example/type/CustomScalars.kt", "= \"kotlin.Any\"")
+    TestUtils.assertFileContains(dir, "service/com/example/type/CustomScalars.kt", "\"kotlin.Any\"")
   }
 
   fun `nothing changed, task up to date`(dir: File) {
