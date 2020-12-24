@@ -20,7 +20,7 @@ class UpToDateTests {
     withSimpleProject { dir ->
       `builds successfully and generates expected outputs`(dir)
       `nothing changed, task up to date`(dir)
-      `adding a custom scalar type to the build script re-generates the CustomScalar class`(dir)
+      `adding a custom scalar to the build script re-generates the CustomScalars`(dir)
     }
   }
 
@@ -35,7 +35,7 @@ class UpToDateTests {
     assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").isFile)
 
     // verify that the custom type generated was Any because no customScalarsMapping was specified
-    TestUtils.assertFileContains(dir, "service/com/example/type/CustomScalar.kt", "= \"kotlin.Any\"")
+    TestUtils.assertFileContains(dir, "service/com/example/type/CustomScalars.kt", "= \"kotlin.Any\"")
   }
 
   fun `nothing changed, task up to date`(dir: File) {
@@ -49,7 +49,7 @@ class UpToDateTests {
     assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").isFile)
   }
 
-  fun `adding a custom scalar type to the build script re-generates the CustomScalar class`(dir: File) {
+  fun `adding a custom scalar to the build script re-generates the CustomScalars`(dir: File) {
     val apolloBlock = """
       
       apollo {
@@ -65,7 +65,7 @@ class UpToDateTests {
     // and the task should run again
     assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
 
-    TestUtils.assertFileContains(dir, "service/com/example/type/CustomScalar.kt", "= \"java.util.Date\"")
+    TestUtils.assertFileContains(dir, "service/com/example/type/CustomScalars.kt", "\"java.util.Date\"")
 
     val text = File(dir, "build.gradle").readText()
     File(dir, "build.gradle").writeText(text.replace(apolloBlock, ""))
