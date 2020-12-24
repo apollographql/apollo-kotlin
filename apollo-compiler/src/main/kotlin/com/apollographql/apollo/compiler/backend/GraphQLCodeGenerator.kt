@@ -47,11 +47,9 @@ internal class GraphQLCodeGenerator(
     )
 
     if (generateScalarMapping) {
-      fileSpec(typesPackageName, "CustomScalars") {
-        ast.customScalarTypes.values.forEach {
-          addProperty(propertySpec = it.propertySpec(generateAsInternal))
-        }
-      }.writeTo(outputDir)
+      ast.customScalarTypes.values.typeSpec(generateAsInternal)
+          .fileSpec(typesPackageName)
+          .writeTo(outputDir)
     }
 
     ast.enumTypes
@@ -116,19 +114,6 @@ internal class GraphQLCodeGenerator(
           .fileSpec("${operationType.packageName}.adapter")
           .writeTo(outputDir)
     }
-  }
-
-  internal fun CodeGenerationAst.CustomScalarType.propertySpec(generateAsInternal: Boolean): PropertySpec {
-    return PropertySpec
-        .builder(name.toUpperCase(), CustomScalar::class)
-        .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL)}
-        .receiver(CustomScalar.Companion::class)
-        .getter(
-            FunSpec.getterBuilder()
-                .addCode("return %T(%S, %S)", CustomScalar::class.asTypeName(), schemaType, mappedType)
-            .build()
-        )
-        .build()
   }
 
   private fun TypeSpec.fileSpec(packageName: String) = fileSpec(packageName, name!!) {

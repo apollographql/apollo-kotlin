@@ -5,3 +5,4 @@
 //
 package com.example.fragment_in_fragment.type
 
+object CustomScalars

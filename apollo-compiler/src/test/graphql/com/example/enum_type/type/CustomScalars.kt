@@ -7,5 +7,6 @@ package com.example.enum_type.type
 
 import com.apollographql.apollo.api.CustomScalar
 
-val CustomScalar.Companion.DATE: CustomScalar
-  get() = CustomScalar("Date", "kotlin.Any")
+object CustomScalars {
+  val Date: CustomScalar = CustomScalar("Date", "kotlin.Any")
+}

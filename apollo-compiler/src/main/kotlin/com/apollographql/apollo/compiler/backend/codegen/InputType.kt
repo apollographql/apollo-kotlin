@@ -176,10 +176,9 @@ internal fun CodeGenerationAst.InputField.writeCodeBlock(thisRef: String): CodeB
               .addStatement("if·(this@%L.%L.defined)·{", thisRef, name)
               .indent()
               .addStatement(
-                  "writer.writeCustom(%S, %T.%M, this@%L.%L.value)",
+                  "writer.writeCustom(%S, %T, this@%L.%L.value)",
                   schemaName,
-                  CustomScalar::class.asTypeName(),
-                  type.memberName,
+                  type.typeName,
                   thisRef,
                   name.escapeKotlinReservedWord()
               )
@@ -188,10 +187,9 @@ internal fun CodeGenerationAst.InputField.writeCodeBlock(thisRef: String): CodeB
               .build()
         } else {
           CodeBlock.of(
-              "writer.writeCustom(%S, %T.%M, this@%L.%L)\n",
+              "writer.writeCustom(%S, %T, this@%L.%L)\n",
               schemaName,
-              CustomScalar::class.asTypeName(),
-              type.memberName,
+              type.typeName,
               thisRef,
               name.escapeKotlinReservedWord()
           )
@@ -251,7 +249,7 @@ private fun CodeGenerationAst.FieldType.writeListItem(): CodeBlock {
           "listItemWriter.writeString(value%L.rawValue)\n", if (nullable) "?" else ""
       )
       is CodeGenerationAst.FieldType.Scalar.Custom -> CodeBlock.of(
-          "listItemWriter.writeCustom(%T.%M, value)\n", CustomScalar::class.asTypeName(), memberName
+          "listItemWriter.writeCustom(%T, value)\n", typeName
       )
     }
     is CodeGenerationAst.FieldType.Object -> {

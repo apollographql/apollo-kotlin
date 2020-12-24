@@ -5,13 +5,12 @@
 //
 package com.example.named_fragment_delegate.adapter
 
-import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.named_fragment_delegate.TestQuery
-import com.example.named_fragment_delegate.type.URL
+import com.example.named_fragment_delegate.type.CustomScalars
 import kotlin.Any
 import kotlin.Array
 import kotlin.String
@@ -174,7 +173,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, false, null),
-          ResponseField.forCustomScalar("profileLink", "profileLink", null, false, CustomScalar.URL, null),
+          ResponseField.forCustomScalar("profileLink", "profileLink", null, false, CustomScalars.URL, null),
           ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
         )
 

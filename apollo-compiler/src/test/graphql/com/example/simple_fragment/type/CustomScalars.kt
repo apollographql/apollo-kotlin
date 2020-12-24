@@ -7,9 +7,10 @@ package com.example.simple_fragment.type
 
 import com.apollographql.apollo.api.CustomScalar
 
-internal val CustomScalar.Companion.DATE: CustomScalar
-  get() = CustomScalar("Date", "kotlin.Any")
-internal val CustomScalar.Companion.UNSUPPORTEDTYPE: CustomScalar
-  get() = CustomScalar("UnsupportedType", "kotlin.Any")
-internal val CustomScalar.Companion.URL: CustomScalar
-  get() = CustomScalar("URL", "kotlin.Any")
+internal object CustomScalars {
+  val Date: CustomScalar = CustomScalar("Date", "kotlin.Any")
+
+  val UnsupportedType: CustomScalar = CustomScalar("UnsupportedType", "kotlin.Any")
+
+  val URL: CustomScalar = CustomScalar("URL", "kotlin.Any")
+}

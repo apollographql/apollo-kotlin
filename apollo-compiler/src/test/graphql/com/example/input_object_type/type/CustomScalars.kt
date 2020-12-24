@@ -7,9 +7,10 @@ package com.example.input_object_type.type
 
 import com.apollographql.apollo.api.CustomScalar
 
-val CustomScalar.Companion.DATE: CustomScalar
-  get() = CustomScalar("Date", "java.util.Date")
-val CustomScalar.Companion.UNSUPPORTEDTYPE: CustomScalar
-  get() = CustomScalar("UnsupportedType", "kotlin.Any")
-val CustomScalar.Companion.URL: CustomScalar
-  get() = CustomScalar("URL", "java.lang.String")
+object CustomScalars {
+  val Date: CustomScalar = CustomScalar("Date", "java.util.Date")
+
+  val UnsupportedType: CustomScalar = CustomScalar("UnsupportedType", "kotlin.Any")
+
+  val URL: CustomScalar = CustomScalar("URL", "java.lang.String")
+}

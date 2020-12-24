@@ -7,5 +7,6 @@ package com.example.inline_frgament_intersection.type
 
 import com.apollographql.apollo.api.CustomScalar
 
-val CustomScalar.Companion.LONG: CustomScalar
-  get() = CustomScalar("Long", "kotlin.Any")
+object CustomScalars {
+  val Long: CustomScalar = CustomScalar("Long", "kotlin.Any")
+}

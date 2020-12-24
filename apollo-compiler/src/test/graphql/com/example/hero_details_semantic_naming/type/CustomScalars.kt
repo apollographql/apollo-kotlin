@@ -7,9 +7,10 @@ package com.example.hero_details_semantic_naming.type
 
 import com.apollographql.apollo.api.CustomScalar
 
-val CustomScalar.Companion.DATE: CustomScalar
-  get() = CustomScalar("Date", "kotlin.Any")
-val CustomScalar.Companion.UNSUPPORTEDTYPE: CustomScalar
-  get() = CustomScalar("UnsupportedType", "kotlin.Any")
-val CustomScalar.Companion.URL: CustomScalar
-  get() = CustomScalar("URL", "kotlin.Any")
+object CustomScalars {
+  val Date: CustomScalar = CustomScalar("Date", "kotlin.Any")
+
+  val UnsupportedType: CustomScalar = CustomScalar("UnsupportedType", "kotlin.Any")
+
+  val URL: CustomScalar = CustomScalar("URL", "kotlin.Any")
+}

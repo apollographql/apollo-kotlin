@@ -5,15 +5,12 @@
 //
 package com.example.custom_scalar_type.adapter
 
-import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.custom_scalar_type.TestQuery
-import com.example.custom_scalar_type.type.DATE
-import com.example.custom_scalar_type.type.UNSUPPORTEDTYPE
-import com.example.custom_scalar_type.type.URL
+import com.example.custom_scalar_type.type.CustomScalars
 import java.util.Date
 import kotlin.Any
 import kotlin.Array
@@ -72,10 +69,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     object Hero : ResponseAdapter<TestQuery.Data.Hero> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forCustomScalar("birthDate", "birthDate", null, false, CustomScalar.DATE, null),
+        ResponseField.forCustomScalar("birthDate", "birthDate", null, false, CustomScalars.Date, null),
         ResponseField.forList("appearanceDates", "appearanceDates", null, false, null),
-        ResponseField.forCustomScalar("fieldWithUnsupportedType", "fieldWithUnsupportedType", null, false, CustomScalar.UNSUPPORTEDTYPE, null),
-        ResponseField.forCustomScalar("profileLink", "profileLink", null, false, CustomScalar.URL, null),
+        ResponseField.forCustomScalar("fieldWithUnsupportedType", "fieldWithUnsupportedType", null, false, CustomScalars.UnsupportedType, null),
+        ResponseField.forCustomScalar("profileLink", "profileLink", null, false, CustomScalars.URL, null),
         ResponseField.forList("links", "links", null, false, null)
       )
 
@@ -92,12 +89,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               0 -> name = readString(RESPONSE_FIELDS[0])
               1 -> birthDate = readCustomScalar<Date>(RESPONSE_FIELDS[1] as ResponseField.CustomScalarField)
               2 -> appearanceDates = readList<Date>(RESPONSE_FIELDS[2]) { reader ->
-                reader.readCustomScalar<Date>(CustomScalar.DATE)
+                reader.readCustomScalar<Date>(CustomScalars.Date)
               }?.map { it!! }
               3 -> fieldWithUnsupportedType = readCustomScalar<Any>(RESPONSE_FIELDS[3] as ResponseField.CustomScalarField)
               4 -> profileLink = readCustomScalar<java.lang.String>(RESPONSE_FIELDS[4] as ResponseField.CustomScalarField)
               5 -> links = readList<java.lang.String>(RESPONSE_FIELDS[5]) { reader ->
-                reader.readCustomScalar<java.lang.String>(CustomScalar.URL)
+                reader.readCustomScalar<java.lang.String>(CustomScalars.URL)
               }?.map { it!! }
               else -> break
             }
@@ -118,13 +115,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomScalarField, value.birthDate)
         writer.writeList(RESPONSE_FIELDS[2], value.appearanceDates) { values, listItemWriter ->
           values?.forEach { value ->
-            listItemWriter.writeCustom(CustomScalar.DATE, value)}
+            listItemWriter.writeCustom(CustomScalars.Date, value)}
         }
         writer.writeCustom(RESPONSE_FIELDS[3] as ResponseField.CustomScalarField, value.fieldWithUnsupportedType)
         writer.writeCustom(RESPONSE_FIELDS[4] as ResponseField.CustomScalarField, value.profileLink)
         writer.writeList(RESPONSE_FIELDS[5], value.links) { values, listItemWriter ->
           values?.forEach { value ->
-            listItemWriter.writeCustom(CustomScalar.URL, value)}
+            listItemWriter.writeCustom(CustomScalars.URL, value)}
         }
       }
     }

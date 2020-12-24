@@ -5,3 +5,4 @@
 //
 package com.example.test_inline.type
 
+object CustomScalars

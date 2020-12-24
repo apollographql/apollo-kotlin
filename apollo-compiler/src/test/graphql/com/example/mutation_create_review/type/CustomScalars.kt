@@ -7,9 +7,10 @@ package com.example.mutation_create_review.type
 
 import com.apollographql.apollo.api.CustomScalar
 
-internal val CustomScalar.Companion.DATE: CustomScalar
-  get() = CustomScalar("Date", "java.util.Date")
-internal val CustomScalar.Companion.UNSUPPORTEDTYPE: CustomScalar
-  get() = CustomScalar("UnsupportedType", "kotlin.Any")
-internal val CustomScalar.Companion.URL: CustomScalar
-  get() = CustomScalar("URL", "java.lang.String")
+internal object CustomScalars {
+  val Date: CustomScalar = CustomScalar("Date", "java.util.Date")
+
+  val UnsupportedType: CustomScalar = CustomScalar("UnsupportedType", "kotlin.Any")
+
+  val URL: CustomScalar = CustomScalar("URL", "java.lang.String")
+}

@@ -130,8 +130,8 @@ private val CodeGenerationAst.Field.responseFieldInitializerCode: CodeBlock
     val builder = CodeBlock.builder().add("%T.%L", ResponseField::class, factoryMethod)
     when {
       type is CodeGenerationAst.FieldType.Scalar && type is CodeGenerationAst.FieldType.Scalar.Custom -> {
-        builder.add("(%S,·%S,·%L,·%L,·%T.%M,·%L)", responseName, schemaName, arguments.takeIf { it.isNotEmpty() }.toCode(), type.nullable,
-            CustomScalar::class.asTypeName(), type.memberName, conditionsListCode(conditions))
+        builder.add("(%S,·%S,·%L,·%L,·%T,·%L)", responseName, schemaName, arguments.takeIf { it.isNotEmpty() }.toCode(), type.nullable,
+            type.typeName, conditionsListCode(conditions))
       }
       else -> {
         builder.add("(%S,·%S,·%L,·%L,·%L)", responseName, schemaName, arguments.takeIf { it.isNotEmpty() }.toCode(), type.nullable,

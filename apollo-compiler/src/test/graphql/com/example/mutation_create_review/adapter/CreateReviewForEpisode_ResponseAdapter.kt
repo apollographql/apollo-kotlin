@@ -5,13 +5,12 @@
 //
 package com.example.mutation_create_review.adapter
 
-import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.mutation_create_review.CreateReviewForEpisode
-import com.example.mutation_create_review.type.DATE
+import com.example.mutation_create_review.type.CustomScalars
 import com.example.mutation_create_review.type.Episode
 import java.util.Date
 import kotlin.Array
@@ -118,7 +117,7 @@ internal object CreateReviewForEpisode_ResponseAdapter :
               }?.map { it!! }
               4 -> listOfListOfCustom = readList<List<Date>>(RESPONSE_FIELDS[4]) { reader ->
                 reader.readList<Date> { reader ->
-                  reader.readCustomScalar<Date>(CustomScalar.DATE)
+                  reader.readCustomScalar<Date>(CustomScalars.Date)
                 }.map { it!! }
               }?.map { it!! }
               5 -> listOfListOfObject = readList<List<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject>>(RESPONSE_FIELDS[5]) { reader ->
@@ -166,7 +165,7 @@ internal object CreateReviewForEpisode_ResponseAdapter :
           values?.forEach { value ->
             listItemWriter.writeList(value) { value, listItemWriter ->
               value?.forEach { value ->
-                listItemWriter.writeCustom(CustomScalar.DATE, value)}
+                listItemWriter.writeCustom(CustomScalars.Date, value)}
             }
           }
         }

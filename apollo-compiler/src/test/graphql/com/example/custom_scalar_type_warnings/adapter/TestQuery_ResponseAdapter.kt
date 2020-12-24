@@ -5,13 +5,12 @@
 //
 package com.example.custom_scalar_type_warnings.adapter
 
-import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.custom_scalar_type_warnings.TestQuery
-import com.example.custom_scalar_type_warnings.type.URL
+import com.example.custom_scalar_type_warnings.type.CustomScalars
 import kotlin.Any
 import kotlin.Array
 import kotlin.String
@@ -77,7 +76,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           while(true) {
             when (selectField(RESPONSE_FIELDS)) {
               0 -> links = readList<Any>(RESPONSE_FIELDS[0]) { reader ->
-                reader.readCustomScalar<Any>(CustomScalar.URL)
+                reader.readCustomScalar<Any>(CustomScalars.URL)
               }?.map { it!! }
               else -> break
             }
@@ -91,7 +90,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero) {
         writer.writeList(RESPONSE_FIELDS[0], value.links) { values, listItemWriter ->
           values?.forEach { value ->
-            listItemWriter.writeCustom(CustomScalar.URL, value)}
+            listItemWriter.writeCustom(CustomScalars.URL, value)}
         }
       }
     }

@@ -5,3 +5,4 @@
 //
 package com.example.subscriptions.type
 
+object CustomScalars

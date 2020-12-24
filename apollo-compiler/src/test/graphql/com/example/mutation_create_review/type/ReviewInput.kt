@@ -5,7 +5,6 @@
 //
 package com.example.mutation_create_review.type
 
-import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.InputType
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
@@ -138,13 +137,13 @@ internal data class ReviewInput(
           value ->
         InputFieldWriter.ListWriter { listItemWriter ->
           value.forEach { value ->
-            listItemWriter.writeCustom(CustomScalar.DATE, value)
+            listItemWriter.writeCustom(CustomScalars.Date, value)
           }
         }
       })
     }
     if (this@ReviewInput.customScalar.defined) {
-      writer.writeCustom("customScalar", CustomScalar.DATE, this@ReviewInput.customScalar.value)
+      writer.writeCustom("customScalar", CustomScalars.Date, this@ReviewInput.customScalar.value)
     }
     if (this@ReviewInput.listOfEnums.defined) {
       writer.writeList("listOfEnums", this@ReviewInput.listOfEnums.value?.let { value ->
@@ -227,7 +226,7 @@ internal data class ReviewInput(
           value.forEach { value ->
             listItemWriter.writeList { listItemWriter ->
               value.forEach { value ->
-                listItemWriter.writeCustom(CustomScalar.DATE, value)
+                listItemWriter.writeCustom(CustomScalars.Date, value)
               }
             }
           }

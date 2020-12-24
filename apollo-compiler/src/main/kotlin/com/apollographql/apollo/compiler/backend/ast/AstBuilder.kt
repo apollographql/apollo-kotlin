@@ -8,6 +8,7 @@ import com.apollographql.apollo.compiler.introspection.resolveType
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo.compiler.operationoutput.findOperationId
 import com.apollographql.apollo.compiler.singularize
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.MemberName
 
 internal class AstBuilder private constructor(
@@ -182,7 +183,7 @@ internal class AstBuilder private constructor(
                 nullable = true,
                 schemaType = this.name,
                 type = className,
-                memberName = MemberName(typesPackageName, this.name.toUpperCase())
+                typeName = ClassName(typesPackageName, "CustomScalars", this.name.capitalize())
             )
           }
         }
@@ -662,7 +663,7 @@ internal class AstBuilder private constructor(
                 nullable = true,
                 schemaType = schemaTypeRef.name,
                 type = className,
-                memberName = MemberName(typesPackageName, schemaTypeRef.name.toUpperCase())
+                typeName = ClassName(typesPackageName, "CustomScalars", schemaTypeRef.name.capitalize())
             )
           }
         }

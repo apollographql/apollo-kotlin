@@ -5,6 +5,7 @@ import com.apollographql.apollo.Utils.immediateExecutor
 import com.apollographql.apollo.Utils.immediateExecutorService
 import com.apollographql.apollo.Utils.readFileToString
 import com.apollographql.apollo.api.CustomScalarAdapter
+import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.JsonElement
 import com.apollographql.apollo.api.JsonElement.JsonString
 import com.apollographql.apollo.api.cache.http.HttpCache
@@ -19,7 +20,7 @@ import com.apollographql.apollo.exception.ApolloHttpException
 import com.apollographql.apollo.integration.httpcache.AllFilmsQuery
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo.integration.httpcache.DroidDetailsQuery
-import com.apollographql.apollo.integration.httpcache.type.CustomScalar
+import com.apollographql.apollo.integration.httpcache.type.Date
 import com.apollographql.apollo.rx2.Rx2Apollo
 import com.google.common.truth.Truth
 import okhttp3.*
@@ -64,8 +65,8 @@ class HttpCacheTest {
       }
     }
     cacheStore = MockHttpCacheStore()
-    cacheStore!!.delegate = DiskLruHttpCacheStore(inMemoryFileSystem, File("/cache/"), Int.MAX_VALUE.toLong())
-    val cache: HttpCache = ApolloHttpCache(cacheStore!!, null)
+    cacheStore.delegate = DiskLruHttpCacheStore(inMemoryFileSystem, File("/cache/"), Int.MAX_VALUE.toLong())
+    val cache: HttpCache = ApolloHttpCache(cacheStore, null)
     okHttpClient = OkHttpClient.Builder()
         .addInterceptor(TrackingInterceptor())
         .addInterceptor(cache.interceptor())
@@ -263,7 +264,7 @@ class HttpCacheTest {
         .query(AllPlanetsQuery()))
         .test()
     checkCachedResponse("/HttpCacheTestAllPlanets.json")
-    cacheStore!!.delegate?.delete()
+    cacheStore.delegate?.delete()
     enqueueResponse("/HttpCacheTestAllPlanets.json")
     Rx2Apollo.from(apolloClient
         .query(AllPlanetsQuery())
@@ -359,7 +360,7 @@ class HttpCacheTest {
   @Test
   @Throws(IOException::class, ApolloException::class)
   fun fileSystemUnavailable() {
-    cacheStore!!.delegate = DiskLruHttpCacheStore(NoFileSystem(), File("/cache/"), Int.MAX_VALUE.toLong())
+    cacheStore.delegate = DiskLruHttpCacheStore(NoFileSystem(), File("/cache/"), Int.MAX_VALUE.toLong())
     enqueueResponse("/HttpCacheTestAllPlanets.json")
     Rx2Apollo.from(apolloClient
         .query(AllPlanetsQuery()))
@@ -372,7 +373,7 @@ class HttpCacheTest {
   @Throws(IOException::class, ApolloException::class)
   fun fileSystemWriteFailure() {
     val faultyCacheStore = FaultyHttpCacheStore(FileSystem.SYSTEM)
-    cacheStore!!.delegate = faultyCacheStore
+    cacheStore.delegate = faultyCacheStore
     enqueueResponse("/HttpCacheTestAllPlanets.json")
     faultyCacheStore.failStrategy(FaultyHttpCacheStore.FailStrategy.FAIL_HEADER_WRITE)
     Rx2Apollo.from(apolloClient
@@ -393,7 +394,7 @@ class HttpCacheTest {
   @Throws(IOException::class, ApolloException::class)
   fun fileSystemReadFailure() {
     val faultyCacheStore = FaultyHttpCacheStore(inMemoryFileSystem)
-    cacheStore!!.delegate = faultyCacheStore
+    cacheStore.delegate = faultyCacheStore
     enqueueResponse("/HttpCacheTestAllPlanets.json")
     Rx2Apollo.from(apolloClient
         .query(AllPlanetsQuery()))
