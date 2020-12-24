@@ -1,6 +1,7 @@
 package com.apollographql.apollo.api
 
 import com.apollographql.apollo.api.JsonElement.*
+import kotlin.jvm.JvmField
 
 class ScalarTypeAdapters(val customScalarTypeAdapters: Map<ScalarType, CustomScalarTypeAdapter<*>>) {
 
@@ -31,6 +32,10 @@ class ScalarTypeAdapters(val customScalarTypeAdapters: Map<ScalarType, CustomSca
     private val adapterByClassName = mapOf(
         "java.lang.String" to BuiltinScalarTypeAdapters.STRING_ADAPTER,
         "kotlin.String" to  BuiltinScalarTypeAdapters.STRING_ADAPTER,
+
+        "java.lang.Boolean" to BuiltinScalarTypeAdapters.BOOLEAN_ADAPTER,
+        "boolean" to  BuiltinScalarTypeAdapters.BOOLEAN_ADAPTER,
+        "kotlin.Boolean" to  BuiltinScalarTypeAdapters.BOOLEAN_ADAPTER,
 
         "java.lang.Integer" to BuiltinScalarTypeAdapters.INT_ADAPTER,
         "int" to BuiltinScalarTypeAdapters.INT_ADAPTER,

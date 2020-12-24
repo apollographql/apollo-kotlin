@@ -28,12 +28,17 @@ interface CustomScalarTypeAdapter<T> {
 
   /**
    * De-serializes the [value] to the custom scalar type [T]. Usually used in parsing the GraphQL response.
+   *
+   * null are handled by the caller so jsonElement will never be [JsonElement.JsonNull] and this method must always return a non-null value.
+   * If jsonElement is an instance of [JsonElement.JsonObject] or [JsonElement.JsonList], it can contain [JsonElement.JsonNull]
+   *
+   * Note: we do not support mapping null json values to non-null kotlin values or the other way around
    */
   fun decode(jsonElement: JsonElement): T
 
   /**
-   * Serializes the custom scalar type [value] to the corresponding [JsonElement]. Usually used in serializing variables or input
-   * values.
+   * Serializes the custom scalar type [value] to the corresponding [JsonElement]. Used when serializing variables, input
+   * values or for storing in the cache.
    */
-  fun encode(value: T?): JsonElement
+  fun encode(value: T): JsonElement
 }

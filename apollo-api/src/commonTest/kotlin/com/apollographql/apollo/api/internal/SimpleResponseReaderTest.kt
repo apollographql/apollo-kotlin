@@ -433,7 +433,7 @@ class SimpleResponseReaderTest {
       val customScalarTypeAdapters: MutableMap<ScalarType, CustomScalarTypeAdapter<*>> = HashMap()
       customScalarTypeAdapters[OBJECT_CUSTOM_TYPE] = object : CustomScalarTypeAdapter<Any?> {
         override fun decode(jsonElement: JsonElement): Any {
-          return value.value.toString()
+          return jsonElement.toRawValue().toString()
         }
 
         override fun encode(value: Any?): JsonElement {

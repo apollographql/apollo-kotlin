@@ -89,11 +89,10 @@ object BuiltinScalarTypeAdapters {
 
   val FILE_UPLOAD_ADAPTER = object : CustomScalarTypeAdapter<FileUpload> {
     override fun decode(jsonElement: JsonElement): FileUpload {
-      // TODO: is there a valid use case for decoding a FileUpload or should we throw here?
-      return FileUpload("", jsonElement.toRawValue()?.toString() ?: "")
+      throw IllegalStateException("ApolloGraphQL: cannot decode FileUpload")
     }
 
-    override fun encode(value: FileUpload?): JsonElement {
+    override fun encode(value: FileUpload): JsonElement {
       return JsonElement.JsonNull
     }
   }
@@ -107,7 +106,7 @@ private fun <T> adapterWithDefaultEncode(
       return decode(jsonElement)
     }
 
-    override fun encode(value: T?): JsonElement {
+    override fun encode(value: T): JsonElement {
       return JsonElement.fromRawValue(value)
     }
   }

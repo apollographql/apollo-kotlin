@@ -81,8 +81,8 @@ class InputFieldJsonWriter(
       is JsonBoolean -> writeBoolean(fieldName, jsonElement.value)
       is JsonNumber -> writeNumber(fieldName, jsonElement.value)
       is JsonNull -> writeString(fieldName, null)
-      is JsonObject -> jsonWriter.name(fieldName).apply { writeToJson(jsonElement.value, this) }
-      is JsonList -> jsonWriter.name(fieldName).apply { writeToJson(jsonElement.value, this) }
+      is JsonObject -> jsonWriter.name(fieldName).apply { writeToJson(jsonElement.toRawValue(), this) }
+      is JsonList -> jsonWriter.name(fieldName).apply { writeToJson(jsonElement.toRawValue(), this) }
     }
   }
 
