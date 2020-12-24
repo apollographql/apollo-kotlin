@@ -4,7 +4,7 @@ import com.apollographql.apollo.api.GraphqlFragment;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseField;
-import com.apollographql.apollo.api.ScalarTypeAdapters;
+import com.apollographql.apollo.api.CustomScalarAdapters;
 import com.apollographql.apollo.api.internal.ApolloLogger;
 import com.apollographql.apollo.api.internal.ResolveDelegate;
 import com.apollographql.apollo.api.internal.ResponseFieldMapper;
@@ -46,7 +46,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 public final class RealApolloStore implements ApolloStore, ReadableStore, WriteableStore {
   final OptimisticNormalizedCache optimisticCache;
   final CacheKeyResolver cacheKeyResolver;
-  final ScalarTypeAdapters scalarTypeAdapters;
+  final CustomScalarAdapters customScalarAdapters;
   private final ReadWriteLock lock;
   private final Set<RecordChangeSubscriber> subscribers;
   private final Executor dispatcher;
@@ -54,13 +54,13 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
   final ApolloLogger logger;
 
   public RealApolloStore(@NotNull NormalizedCache normalizedCache, @NotNull CacheKeyResolver cacheKeyResolver,
-      @NotNull final ScalarTypeAdapters scalarTypeAdapters, @NotNull Executor dispatcher,
+      @NotNull final CustomScalarAdapters customScalarAdapters, @NotNull Executor dispatcher,
       @NotNull ApolloLogger logger) {
     checkNotNull(normalizedCache, "cacheStore == null");
 
     this.optimisticCache = (OptimisticNormalizedCache) new OptimisticNormalizedCache().chain(normalizedCache);
     this.cacheKeyResolver = checkNotNull(cacheKeyResolver, "cacheKeyResolver == null");
-    this.scalarTypeAdapters = checkNotNull(scalarTypeAdapters, "scalarTypeAdapters == null");
+    this.customScalarAdapters = checkNotNull(customScalarAdapters, "scalarTypeAdapters == null");
     this.dispatcher = checkNotNull(dispatcher, "dispatcher == null");
     this.logger = checkNotNull(logger, "logger == null");
     this.lock = new ReentrantReadWriteLock();
@@ -368,7 +368,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
             cacheKeyResolver(), CacheHeaders.NONE, cacheKeyBuilder);
         //noinspection unchecked
         RealResponseReader<Record> responseReader = new RealResponseReader<Record>(operation.variables(), rootRecord,
-            fieldValueResolver, scalarTypeAdapters, (ResolveDelegate<Record>) ResponseNormalizer.NO_OP_NORMALIZER);
+            fieldValueResolver, customScalarAdapters, (ResolveDelegate<Record>) ResponseNormalizer.NO_OP_NORMALIZER);
         return responseFieldMapper.map(responseReader);
       }
     });
@@ -387,7 +387,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
         CacheFieldValueResolver fieldValueResolver = new CacheFieldValueResolver(cache, operation.variables(),
             cacheKeyResolver(), cacheHeaders, cacheKeyBuilder);
         RealResponseReader<Record> responseReader = new RealResponseReader<>(operation.variables(), rootRecord,
-            fieldValueResolver, scalarTypeAdapters, responseNormalizer);
+            fieldValueResolver, customScalarAdapters, responseNormalizer);
         try {
           responseNormalizer.willResolveRootQuery(operation);
           D data = responseFieldMapper.map(responseReader);
@@ -417,7 +417,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
             cacheKeyResolver(), CacheHeaders.NONE, cacheKeyBuilder);
         //noinspection unchecked
         RealResponseReader<Record> responseReader = new RealResponseReader<Record>(variables, rootRecord,
-            fieldValueResolver, scalarTypeAdapters, (ResolveDelegate<Record>) ResponseNormalizer.NO_OP_NORMALIZER);
+            fieldValueResolver, customScalarAdapters, (ResolveDelegate<Record>) ResponseNormalizer.NO_OP_NORMALIZER);
         return responseFieldMapper.map(responseReader);
       }
     });
@@ -428,7 +428,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
       final UUID mutationId) {
     return writeTransaction(new Transaction<WriteableStore, Set<String>>() {
       @Override public Set<String> execute(WriteableStore cache) {
-        RealResponseWriter responseWriter = new RealResponseWriter(operation.variables(), scalarTypeAdapters);
+        RealResponseWriter responseWriter = new RealResponseWriter(operation.variables(), customScalarAdapters);
         operationData.marshaller().marshal(responseWriter);
 
         ResponseNormalizer<Map<String, Object>> responseNormalizer = networkResponseNormalizer();
@@ -450,7 +450,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
   Set<String> doWrite(final GraphqlFragment fragment, final CacheKey cacheKey, final Operation.Variables variables) {
     return writeTransaction(new Transaction<WriteableStore, Set<String>>() {
       @Override public Set<String> execute(WriteableStore cache) {
-        RealResponseWriter responseWriter = new RealResponseWriter(variables, scalarTypeAdapters);
+        RealResponseWriter responseWriter = new RealResponseWriter(variables, customScalarAdapters);
         fragment.marshaller().marshal(responseWriter);
 
         ResponseNormalizer<Map<String, Object>> responseNormalizer = networkResponseNormalizer();

@@ -1,6 +1,6 @@
 package com.apollographql.apollo.subscription
 
-import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import okio.Buffer
@@ -36,7 +36,7 @@ sealed class OperationClientMessage {
       @JvmField
       val subscription: Subscription<*, *>,
       @JvmField
-      val scalarTypeAdapters: ScalarTypeAdapters,
+      val customScalarAdapters: CustomScalarAdapters,
       @JvmField
       val autoPersistSubscription: Boolean,
       @JvmField

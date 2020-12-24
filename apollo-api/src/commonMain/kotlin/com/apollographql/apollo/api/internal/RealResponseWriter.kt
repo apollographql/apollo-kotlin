@@ -4,14 +4,14 @@ import com.apollographql.apollo.api.BigDecimal
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.CustomScalar
-import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.internal.ResolveDelegate
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseWriter
 
 class RealResponseWriter(
     private val operationVariables: Operation.Variables,
-    private val scalarTypeAdapters: ScalarTypeAdapters
+    private val customScalarAdapters: CustomScalarAdapters
 ) : ResponseWriter {
 
   private val buffer: MutableMap<String, FieldDescriptor> = LinkedHashMap()
@@ -37,7 +37,7 @@ class RealResponseWriter(
   }
 
   override fun writeCustom(field: ResponseField.CustomScalarField, value: Any?) {
-    val typeAdapter = scalarTypeAdapters.adapterFor<Any>(field.customScalar)
+    val typeAdapter = customScalarAdapters.adapterFor<Any>(field.customScalar)
     writeScalarFieldValue(field, if (value != null) typeAdapter.encode(value).toRawValue() else null)
   }
 
@@ -47,7 +47,7 @@ class RealResponseWriter(
       buffer[field.responseName] = FieldDescriptor(field, null)
       return
     }
-    val nestedResponseWriter = RealResponseWriter(operationVariables, scalarTypeAdapters)
+    val nestedResponseWriter = RealResponseWriter(operationVariables, customScalarAdapters)
     marshaller.marshal(nestedResponseWriter)
     buffer[field.responseName] = FieldDescriptor(field, nestedResponseWriter.buffer)
   }
@@ -62,7 +62,7 @@ class RealResponseWriter(
       return
     }
     val accumulated = ArrayList<Any?>()
-    block(values, ListItemWriter(operationVariables, scalarTypeAdapters, accumulated))
+    block(values, ListItemWriter(operationVariables, customScalarAdapters, accumulated))
     buffer[field.responseName] = FieldDescriptor(field, accumulated)
   }
 
@@ -174,7 +174,7 @@ class RealResponseWriter(
 
   private class ListItemWriter(
       private val operationVariables: Operation.Variables,
-      private val scalarTypeAdapters: ScalarTypeAdapters,
+      private val customScalarAdapters: CustomScalarAdapters,
       private val accumulator: MutableList<Any?>
   ) : ResponseWriter.ListItemWriter {
     override fun writeString(value: String?) {
@@ -198,12 +198,12 @@ class RealResponseWriter(
     }
 
     override fun writeCustom(customScalar: CustomScalar, value: Any?) {
-      val typeAdapter = scalarTypeAdapters.adapterFor<Any>(customScalar)
+      val typeAdapter = customScalarAdapters.adapterFor<Any>(customScalar)
       accumulator.add(if (value != null) typeAdapter.encode(value).toRawValue() else null)
     }
 
     override fun writeObject(marshaller: ResponseFieldMarshaller?) {
-      val nestedResponseWriter = RealResponseWriter(operationVariables, scalarTypeAdapters)
+      val nestedResponseWriter = RealResponseWriter(operationVariables, customScalarAdapters)
       marshaller!!.marshal(nestedResponseWriter)
       accumulator.add(nestedResponseWriter.buffer)
     }
@@ -213,7 +213,7 @@ class RealResponseWriter(
         accumulator.add(null)
       } else {
         val nestedAccumulated = ArrayList<Any?>()
-        block(items, ListItemWriter(operationVariables, scalarTypeAdapters, nestedAccumulated))
+        block(items, ListItemWriter(operationVariables, customScalarAdapters, nestedAccumulated))
         accumulator.add(nestedAccumulated)
       }
     }

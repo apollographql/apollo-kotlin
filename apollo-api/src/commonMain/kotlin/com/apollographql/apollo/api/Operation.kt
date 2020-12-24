@@ -44,16 +44,16 @@ interface Operation<D : Operation.Data, V : Operation.Variables> {
   fun operationId(): String
 
   /**
-   * Parses GraphQL operation raw response from the [source] with provided [scalarTypeAdapters] and returns result [Response]
+   * Parses GraphQL operation raw response from the [source] with provided [customScalarAdapters] and returns result [Response]
    */
   @Throws(IOException::class)
-  fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters): Response<D>
+  fun parse(source: BufferedSource, customScalarAdapters: CustomScalarAdapters): Response<D>
 
   /**
-   * Parses GraphQL operation raw response from the [byteString] with provided [scalarTypeAdapters] and returns result [Response]
+   * Parses GraphQL operation raw response from the [byteString] with provided [customScalarAdapters] and returns result [Response]
    */
   @Throws(IOException::class)
-  fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters): Response<D>
+  fun parse(byteString: ByteString, customScalarAdapters: CustomScalarAdapters): Response<D>
 
   /**
    * Parses GraphQL operation raw response from the [source] and returns result [Response]
@@ -74,7 +74,7 @@ interface Operation<D : Operation.Data, V : Operation.Variables> {
    * will be encoded along with regular GraphQL request body. If query was previously persisted on the GraphQL server
    * set [withQueryDocument] to `false` to skip query document be sent in the request.
    *
-   * Optional [scalarTypeAdapters] must be provided in case when this operation defines variables with custom GraphQL scalar type.
+   * Optional [customScalarAdapters] must be provided in case when this operation defines variables with custom GraphQL scalar type.
    *
    * *Example*:
    * ```
@@ -94,11 +94,11 @@ interface Operation<D : Operation.Data, V : Operation.Variables> {
   fun composeRequestBody(
       autoPersistQueries: Boolean,
       withQueryDocument: Boolean,
-      scalarTypeAdapters: ScalarTypeAdapters
+      customScalarAdapters: CustomScalarAdapters
   ): ByteString
 
   /**
-   * Composes POST JSON-encoded request body with provided [scalarTypeAdapters] to be sent to the GraphQL server.
+   * Composes POST JSON-encoded request body with provided [customScalarAdapters] to be sent to the GraphQL server.
    *
    * *Example*:
    * ```
@@ -109,7 +109,7 @@ interface Operation<D : Operation.Data, V : Operation.Variables> {
    * }
    * ```
    */
-  fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters): ByteString
+  fun composeRequestBody(customScalarAdapters: CustomScalarAdapters): ByteString
 
   /**
    * Composes POST JSON-encoded request body to be sent to the GraphQL server.
@@ -173,19 +173,19 @@ interface Operation<D : Operation.Data, V : Operation.Variables> {
      */
     @Throws(IOException::class)
     fun marshal(): String {
-      return marshal(ScalarTypeAdapters.DEFAULT)
+      return marshal(CustomScalarAdapters.DEFAULT)
     }
 
     /**
-     * Serializes variables with provided scalarTypeAdapters [scalarTypeAdapters] as JSON string to be sent to the GraphQL server.
+     * Serializes variables with provided scalarTypeAdapters [customScalarAdapters] as JSON string to be sent to the GraphQL server.
      */
     @Throws(IOException::class)
-    fun marshal(scalarTypeAdapters: ScalarTypeAdapters): String {
+    fun marshal(customScalarAdapters: CustomScalarAdapters): String {
       return Buffer().apply {
         JsonWriter.of(this).use { jsonWriter ->
           jsonWriter.serializeNulls = true
           jsonWriter.beginObject()
-          marshaller().marshal(InputFieldJsonWriter(jsonWriter, scalarTypeAdapters))
+          marshaller().marshal(InputFieldJsonWriter(jsonWriter, customScalarAdapters))
           jsonWriter.endObject()
         }
       }.readUtf8()

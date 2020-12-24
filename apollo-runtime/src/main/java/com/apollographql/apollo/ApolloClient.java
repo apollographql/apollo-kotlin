@@ -6,7 +6,7 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.CustomScalar;
-import com.apollographql.apollo.api.ScalarTypeAdapters;
+import com.apollographql.apollo.api.CustomScalarAdapters;
 import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.api.cache.http.HttpCache;
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
@@ -84,7 +84,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   private final Call.Factory httpCallFactory;
   private final HttpCache httpCache;
   private final ApolloStore apolloStore;
-  private final ScalarTypeAdapters scalarTypeAdapters;
+  private final CustomScalarAdapters customScalarAdapters;
   private final ResponseFieldMapperFactory responseFieldMapperFactory = new ResponseFieldMapperFactory();
   private final Executor dispatcher;
   private final HttpCachePolicy.Policy defaultHttpCachePolicy;
@@ -105,7 +105,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       Call.Factory httpCallFactory,
       HttpCache httpCache,
       ApolloStore apolloStore,
-      ScalarTypeAdapters scalarTypeAdapters,
+      CustomScalarAdapters customScalarAdapters,
       Executor dispatcher,
       HttpCachePolicy.Policy defaultHttpCachePolicy,
       ResponseFetcher defaultResponseFetcher,
@@ -123,7 +123,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     this.httpCallFactory = httpCallFactory;
     this.httpCache = httpCache;
     this.apolloStore = apolloStore;
-    this.scalarTypeAdapters = scalarTypeAdapters;
+    this.customScalarAdapters = customScalarAdapters;
     this.dispatcher = dispatcher;
     this.defaultHttpCachePolicy = defaultHttpCachePolicy;
     this.defaultResponseFetcher = defaultResponseFetcher;
@@ -165,7 +165,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   @Override
   public <D extends Operation.Data, V extends Operation.Variables> ApolloPrefetch prefetch(
       @NotNull Operation<D, V> operation) {
-    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, scalarTypeAdapters, dispatcher, logger,
+    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, customScalarAdapters, dispatcher, logger,
         tracker);
   }
 
@@ -286,10 +286,10 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   }
 
   /**
-   * @return The {@link ScalarTypeAdapters} scalarTypeAdapters
+   * @return The {@link CustomScalarAdapters} scalarTypeAdapters
    */
-  public ScalarTypeAdapters getScalarTypeAdapters() {
-    return scalarTypeAdapters;
+  public CustomScalarAdapters getScalarTypeAdapters() {
+    return customScalarAdapters;
   }
 
   /**
@@ -351,7 +351,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         .httpCache(httpCache)
         .httpCachePolicy(defaultHttpCachePolicy)
         .responseFieldMapperFactory(responseFieldMapperFactory)
-        .scalarTypeAdapters(scalarTypeAdapters)
+        .scalarTypeAdapters(customScalarAdapters)
         .apolloStore(apolloStore)
         .responseFetcher(defaultResponseFetcher)
         .cacheHeaders(defaultCacheHeaders)
@@ -411,7 +411,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       defaultHttpCachePolicy = apolloClient.defaultHttpCachePolicy;
       defaultResponseFetcher = apolloClient.defaultResponseFetcher;
       defaultCacheHeaders = apolloClient.defaultCacheHeaders;
-      CustomScalarAdapters.putAll(apolloClient.scalarTypeAdapters.getCustomCustomScalarAdapters());
+      CustomScalarAdapters.putAll(apolloClient.customScalarAdapters.getCustomScalarAdapters());
       dispatcher = apolloClient.dispatcher;
       logger = apolloClient.logger.getLogger();
       applicationInterceptors.addAll(apolloClient.applicationInterceptors);
@@ -745,14 +745,14 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         dispatcher = defaultDispatcher();
       }
 
-      ScalarTypeAdapters scalarTypeAdapters = new ScalarTypeAdapters(Collections.unmodifiableMap(CustomScalarAdapters));
+      CustomScalarAdapters customScalarAdapters = new CustomScalarAdapters(Collections.unmodifiableMap(CustomScalarAdapters));
 
       ApolloStore apolloStore = this.apolloStore;
       Optional<NormalizedCacheFactory> cacheFactory = this.cacheFactory;
       Optional<CacheKeyResolver> cacheKeyResolver = this.cacheKeyResolver;
       if (cacheFactory.isPresent() && cacheKeyResolver.isPresent()) {
         final NormalizedCache normalizedCache = cacheFactory.get().createChain(new RecordFieldJsonAdapter());
-        apolloStore = new RealApolloStore(normalizedCache, cacheKeyResolver.get(), scalarTypeAdapters, dispatcher, apolloLogger);
+        apolloStore = new RealApolloStore(normalizedCache, cacheKeyResolver.get(), customScalarAdapters, dispatcher, apolloLogger);
       }
 
       SubscriptionManager subscriptionManager = this.subscriptionManager;
@@ -765,7 +765,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
                 return finalApolloStore.networkResponseNormalizer();
               }
             };
-        subscriptionManager = new RealSubscriptionManager(scalarTypeAdapters, subscriptionTransportFactory.get(),
+        subscriptionManager = new RealSubscriptionManager(customScalarAdapters, subscriptionTransportFactory.get(),
             subscriptionConnectionParams, dispatcher, subscriptionHeartbeatTimeout, responseNormalizer, enableAutoPersistedSubscriptions);
       }
 
@@ -773,7 +773,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
           callFactory,
           httpCache,
           apolloStore,
-          scalarTypeAdapters,
+          customScalarAdapters,
           dispatcher,
           defaultHttpCachePolicy,
           defaultResponseFetcher,

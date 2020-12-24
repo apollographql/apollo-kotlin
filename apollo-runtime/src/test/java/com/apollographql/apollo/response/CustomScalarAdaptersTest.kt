@@ -3,7 +3,7 @@ package com.apollographql.apollo.response
 import com.apollographql.apollo.api.CustomScalarAdapter
 import com.apollographql.apollo.api.JsonElement
 import com.apollographql.apollo.api.CustomScalar
-import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
@@ -18,7 +18,7 @@ class CustomScalarAdaptersTest {
         get() = String::class.java.name
     }] = expectedAdapter
 
-    val actualAdapter = ScalarTypeAdapters(customScalarAdapters).adapterFor<String>(object : CustomScalar {
+    val actualAdapter = CustomScalarAdapters(customScalarAdapters).adapterFor<String>(object : CustomScalar {
       override val graphqlName = "String"
       override val className: String
         get() = String::class.java.name
@@ -28,7 +28,7 @@ class CustomScalarAdaptersTest {
 
   @Test(expected = IllegalArgumentException::class)
   fun missingAdapter() {
-    ScalarTypeAdapters(emptyMap())
+    CustomScalarAdapters(emptyMap())
         .adapterFor<RuntimeException>(
             object : CustomScalar {
               override val graphqlName = "RuntimeException"
@@ -127,7 +127,7 @@ class CustomScalarAdaptersTest {
   }
 
   private fun <T : Any> defaultAdapter(clazz: Class<T>): CustomScalarAdapter<T> {
-    return ScalarTypeAdapters(emptyMap()).adapterFor<T>(
+    return CustomScalarAdapters(emptyMap()).adapterFor<T>(
         object : CustomScalar {
           override val graphqlName: String
             get() = clazz.simpleName

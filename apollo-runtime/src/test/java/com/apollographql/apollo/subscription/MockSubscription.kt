@@ -3,7 +3,7 @@ package com.apollographql.apollo.subscription
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
@@ -46,21 +46,21 @@ class MockSubscription(
   @kotlin.jvm.Throws(IOException::class)
   override fun parse(source: BufferedSource): Response<Operation.Data> = throw UnsupportedOperationException()
 
-  override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters): Response<Operation.Data> =
+  override fun parse(source: BufferedSource, customScalarAdapters: CustomScalarAdapters): Response<Operation.Data> =
       throw UnsupportedOperationException()
 
   override fun parse(byteString: ByteString): Response<Operation.Data> =
       throw UnsupportedOperationException()
 
-  override fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters): Response<Operation.Data> =
+  override fun parse(byteString: ByteString, customScalarAdapters: CustomScalarAdapters): Response<Operation.Data> =
       throw UnsupportedOperationException()
 
   override fun composeRequestBody(
       autoPersistQueries: Boolean,
       withQueryDocument: Boolean,
-      scalarTypeAdapters: ScalarTypeAdapters): ByteString = throw UnsupportedOperationException()
+      customScalarAdapters: CustomScalarAdapters): ByteString = throw UnsupportedOperationException()
 
-  override fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters): ByteString = throw UnsupportedOperationException()
+  override fun composeRequestBody(customScalarAdapters: CustomScalarAdapters): ByteString = throw UnsupportedOperationException()
 
   override fun composeRequestBody(): ByteString = throw UnsupportedOperationException()
 }

@@ -6,14 +6,14 @@ import com.apollographql.apollo.api.JsonElement.Companion.fromRawValue
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.CustomScalar
-import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.toNumber
 
 class RealResponseReader<R : Map<String, Any?>>(
     val operationVariables: Operation.Variables,
     private val recordSet: R,
     internal val fieldValueResolver: FieldValueResolver<R>,
-    internal val scalarTypeAdapters: ScalarTypeAdapters,
+    internal val customScalarAdapters: CustomScalarAdapters,
     internal val resolveDelegate: ResolveDelegate<R>
 ) : ResponseReader {
   private val variableValues: Map<String, Any?> = operationVariables.valueMap()
@@ -90,7 +90,7 @@ class RealResponseReader<R : Map<String, Any?>>(
       resolveDelegate.didResolveNull()
       null
     } else {
-      block(RealResponseReader(operationVariables, value, fieldValueResolver, scalarTypeAdapters, resolveDelegate))
+      block(RealResponseReader(operationVariables, value, fieldValueResolver, customScalarAdapters, resolveDelegate))
     }
     resolveDelegate.didResolveObject(field, value)
     didResolve(field)
@@ -128,7 +128,7 @@ class RealResponseReader<R : Map<String, Any?>>(
       resolveDelegate.didResolveNull()
       result = null
     } else {
-      val scalarTypeAdapter: CustomScalarAdapter<T> = scalarTypeAdapters.adapterFor(field.customScalar)
+      val scalarTypeAdapter: CustomScalarAdapter<T> = customScalarAdapters.adapterFor(field.customScalar)
       result = scalarTypeAdapter.decode(fromRawValue(value))
       checkValue(field, result)
       resolveDelegate.didResolveScalar(value)
@@ -197,7 +197,7 @@ class RealResponseReader<R : Map<String, Any?>>(
     }
 
     override fun <T : Any> readCustomScalar(customScalar: CustomScalar): T {
-      val scalarTypeAdapter: CustomScalarAdapter<T> = scalarTypeAdapters.adapterFor(customScalar)
+      val scalarTypeAdapter: CustomScalarAdapter<T> = customScalarAdapters.adapterFor(customScalar)
       resolveDelegate.didResolveScalar(value)
       return scalarTypeAdapter.decode(fromRawValue(value))
     }
@@ -206,7 +206,7 @@ class RealResponseReader<R : Map<String, Any?>>(
     override fun <T : Any> readObject(block: (ResponseReader) -> T): T {
       val value = value as R
       resolveDelegate.willResolveObject(field, value)
-      val item = block(RealResponseReader(operationVariables, value, fieldValueResolver, scalarTypeAdapters, resolveDelegate))
+      val item = block(RealResponseReader(operationVariables, value, fieldValueResolver, customScalarAdapters, resolveDelegate))
       resolveDelegate.didResolveObject(field, value)
       return item
     }

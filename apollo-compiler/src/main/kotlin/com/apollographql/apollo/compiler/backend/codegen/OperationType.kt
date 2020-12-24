@@ -6,7 +6,7 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.OperationRequestBodyComposer
@@ -33,7 +33,7 @@ import okio.Buffer
 import okio.BufferedSource
 import okio.ByteString
 
-private val DEFAULT_SCALAR_TYPE_ADAPTERS = MemberName(ScalarTypeAdapters.Companion::class.asClassName(), "DEFAULT")
+private val DEFAULT_SCALAR_TYPE_ADAPTERS = MemberName(CustomScalarAdapters.Companion::class.asClassName(), "DEFAULT")
 
 internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, generateAsInternal: Boolean = false): TypeSpec {
   val operationResponseAdapter = CodeGenerationAst.TypeRef(name = name, packageName = targetPackage).asAdapterTypeName()
@@ -234,7 +234,7 @@ private fun CodeGenerationAst.OperationType.parseWithAdaptersFunSpec(): FunSpec 
   return FunSpec.builder("parse")
       .addModifiers(KModifier.OVERRIDE)
       .addParameter(ParameterSpec("source", BufferedSource::class.asTypeName()))
-      .addParameter(ParameterSpec("scalarTypeAdapters", ScalarTypeAdapters::class.asTypeName()))
+      .addParameter(ParameterSpec("scalarTypeAdapters", CustomScalarAdapters::class.asTypeName()))
       .throwsMultiplatformIOException()
       .returns(responseReturnType())
       .addStatement("return·%T.parse(source,·this,·scalarTypeAdapters)", SimpleOperationResponseParser::class)
@@ -245,7 +245,7 @@ private fun CodeGenerationAst.OperationType.parseByteStringWithAdaptersFunSpec()
   return FunSpec.builder("parse")
       .addModifiers(KModifier.OVERRIDE)
       .addParameter(ParameterSpec("byteString", ByteString::class.asTypeName()))
-      .addParameter(ParameterSpec("scalarTypeAdapters", ScalarTypeAdapters::class.asTypeName()))
+      .addParameter(ParameterSpec("scalarTypeAdapters", CustomScalarAdapters::class.asTypeName()))
       .throwsMultiplatformIOException()
       .returns(responseReturnType())
       .addStatement("return·parse(%T().write(byteString),·scalarTypeAdapters)", Buffer::class)
@@ -279,7 +279,7 @@ private fun CodeGenerationAst.OperationType.responseReturnType(): TypeName {
 private fun composeRequestBodyFunSpec(): FunSpec {
   return FunSpec.builder("composeRequestBody")
       .addModifiers(KModifier.OVERRIDE)
-      .addParameter(ParameterSpec("scalarTypeAdapters", ScalarTypeAdapters::class.asTypeName()))
+      .addParameter(ParameterSpec("scalarTypeAdapters", CustomScalarAdapters::class.asTypeName()))
       .returns(ByteString::class)
       .addCode(
           CodeBlock.builder()
@@ -320,7 +320,7 @@ private fun composeRequestBodyFunSpecForQuery(): FunSpec {
       .addModifiers(KModifier.OVERRIDE)
       .addParameter(ParameterSpec("autoPersistQueries", Boolean::class.asTypeName()))
       .addParameter(ParameterSpec("withQueryDocument", Boolean::class.asTypeName()))
-      .addParameter(ParameterSpec("scalarTypeAdapters", ScalarTypeAdapters::class.asTypeName()))
+      .addParameter(ParameterSpec("scalarTypeAdapters", CustomScalarAdapters::class.asTypeName()))
       .returns(ByteString::class)
       .addCode(
           CodeBlock.builder()

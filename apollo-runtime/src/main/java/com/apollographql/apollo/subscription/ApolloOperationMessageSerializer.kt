@@ -83,7 +83,7 @@ object ApolloOperationMessageSerializer : OperationMessageSerializer {
 
   internal fun OperationClientMessage.Start.writePayloadContentsTo(writer: JsonWriter) {
     with(writer) {
-      name(JSON_KEY_VARIABLES).jsonValue(subscription.variables().marshal(scalarTypeAdapters))
+      name(JSON_KEY_VARIABLES).jsonValue(subscription.variables().marshal(customScalarAdapters))
       name(JSON_KEY_OPERATION_NAME).value(subscription.name().name())
       if (!autoPersistSubscription || sendSubscriptionDocument) {
         name(JSON_KEY_QUERY).value(subscription.queryDocument())

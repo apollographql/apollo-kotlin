@@ -6,7 +6,7 @@ import com.apollographql.apollo.api.JsonElement
 import com.apollographql.apollo.api.EMPTY_OPERATION
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.CustomScalar
-import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo.api.internal.json.JsonDataException
 import com.apollographql.apollo.api.internal.json.JsonUtf8Writer
@@ -452,7 +452,7 @@ class SimpleResponseReaderTest {
       return StreamResponseReader(
           jsonReader = jsonReader,
           variables = EMPTY_OPERATION.variables(),
-          scalarTypeAdapters = ScalarTypeAdapters(customCustomScalarAdapters),
+          customScalarAdapters = CustomScalarAdapters(customCustomScalarAdapters),
       )
     }
 

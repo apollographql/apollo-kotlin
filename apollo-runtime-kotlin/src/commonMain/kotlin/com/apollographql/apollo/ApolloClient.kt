@@ -7,7 +7,7 @@ import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.CustomScalar
-import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.dispatcher.ApolloCoroutineDispatcherContext
 import com.apollographql.apollo.interceptor.ApolloRequestInterceptor
@@ -24,7 +24,7 @@ import kotlinx.coroutines.Dispatchers
 class ApolloClient private constructor(
     private val networkTransport: NetworkTransport,
     private val subscriptionNetworkTransport: NetworkTransport,
-    private val scalarTypeAdapters: ScalarTypeAdapters,
+    private val customScalarAdapters: CustomScalarAdapters,
     private val interceptors: List<ApolloRequestInterceptor>,
     private val executionContext: ExecutionContext
 ) {
@@ -46,7 +46,7 @@ class ApolloClient private constructor(
   private fun <D : Operation.Data, V : Operation.Variables> Operation<D, V>.prepareCall(): RealApolloCall<D> {
     return RealApolloCall(
         operation = this,
-        scalarTypeAdapters = scalarTypeAdapters,
+        scalarTypeAdapters = customScalarAdapters,
         interceptors = interceptors + NetworkRequestInterceptor(
             networkTransport = networkTransport,
             subscriptionNetworkTransport = subscriptionNetworkTransport
@@ -59,7 +59,7 @@ class ApolloClient private constructor(
     return Builder()
         .networkTransport(networkTransport)
         .subscriptionNetworkTransport(subscriptionNetworkTransport)
-        .scalarTypeAdapters(scalarTypeAdapters.customCustomScalarAdapters)
+        .scalarTypeAdapters(customScalarAdapters.customScalarAdapters)
         .interceptors(interceptors)
         .executionContext(executionContext)
   }
@@ -109,7 +109,7 @@ class ApolloClient private constructor(
       return ApolloClient(
           networkTransport = transport,
           subscriptionNetworkTransport = subscriptionTransport,
-          scalarTypeAdapters = ScalarTypeAdapters(scalarTypeAdapters),
+          customScalarAdapters = CustomScalarAdapters(scalarTypeAdapters),
           interceptors = interceptors,
           executionContext = executionContext
       )

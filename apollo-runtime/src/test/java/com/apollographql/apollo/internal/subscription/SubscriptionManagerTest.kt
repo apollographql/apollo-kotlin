@@ -4,7 +4,7 @@ import com.apollographql.apollo.api.CustomScalarAdapter
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.CustomScalar
-import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseReader
@@ -34,7 +34,7 @@ class SubscriptionManagerTest {
   private val onStateChangeListener = SubscriptionManagerOnStateChangeListener()
 
   init {
-    subscriptionManager = RealSubscriptionManager(ScalarTypeAdapters(emptyMap<CustomScalar, CustomScalarAdapter<*>>()),
+    subscriptionManager = RealSubscriptionManager(CustomScalarAdapters(emptyMap<CustomScalar, CustomScalarAdapter<*>>()),
         subscriptionTransportFactory, SubscriptionConnectionParamsProvider.Const(SubscriptionConnectionParams()),
         MockExecutor(), connectionHeartbeatTimeoutMs, { ApolloStore.NO_APOLLO_STORE.networkResponseNormalizer() }, false)
     subscriptionManager.addOnStateChangeListener(onStateChangeListener)
@@ -369,16 +369,16 @@ class SubscriptionManagerTest {
     override fun operationId() = operationId
 
     override fun parse(source: BufferedSource) = throw UnsupportedOperationException()
-    override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters) = throw UnsupportedOperationException()
+    override fun parse(source: BufferedSource, customScalarAdapters: CustomScalarAdapters) = throw UnsupportedOperationException()
     override fun parse(byteString: ByteString) = throw UnsupportedOperationException()
-    override fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters) = throw UnsupportedOperationException()
+    override fun parse(byteString: ByteString, customScalarAdapters: CustomScalarAdapters) = throw UnsupportedOperationException()
     override fun composeRequestBody(
         autoPersistQueries: Boolean,
         withQueryDocument: Boolean,
-        scalarTypeAdapters: ScalarTypeAdapters
+        customScalarAdapters: CustomScalarAdapters
     ): ByteString = throw UnsupportedOperationException()
 
-    override fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters) = throw UnsupportedOperationException()
+    override fun composeRequestBody(customScalarAdapters: CustomScalarAdapters) = throw UnsupportedOperationException()
     override fun composeRequestBody() = throw UnsupportedOperationException()
   }
 
