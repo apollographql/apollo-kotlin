@@ -95,7 +95,6 @@ fun Project.configurePublishing() {
       manifest {
         attributes["Built-By"] = findProperty("POM_DEVELOPER_ID") as String?
         attributes["Build-Jdk"] = "${System.getProperty("java.version")} (${System.getProperty("java.vendor")} ${System.getProperty("java.vm.version")})"
-        attributes["Build-Timestamp"] = java.time.Instant.now().toString()
         attributes["Created-By"] = "Gradle ${gradle.gradleVersion}"
         attributes["Implementation-Title"] = findProperty("POM_NAME") as String?
         attributes["Implementation-Version"] = findProperty("VERSION_NAME") as String?
