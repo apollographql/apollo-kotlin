@@ -54,7 +54,7 @@ class ApolloIdlingResourceTest {
   @Test
   @Throws(InterruptedException::class)
   fun checkIsIdleNow_whenCallIsQueued() {
-    server.enqueue(mockResponse())
+    server.enqueue(mockResponse().setHeadersDelay(500, java.util.concurrent.TimeUnit.MILLISECONDS))
     val latch = CountDownLatch(1)
     val executorService = Executors.newFixedThreadPool(1)
     apolloClient = ApolloClient.builder()
