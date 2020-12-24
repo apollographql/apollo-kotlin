@@ -9,7 +9,7 @@ import okio.Buffer
  * Builtin CustomScalarAdapter provided for convenience. Encoding is most of the times straightforward. Decoding
  * can involve coercion. If you need stricter decoding or different logic, define your own adapter
  */
-object BuiltinScalarTypeAdapters {
+object BuiltinCustomScalarAdapters {
   val STRING_ADAPTER = adapterWithDefaultEncode { jsonElement ->
     when (jsonElement) {
       is JsonElement.JsonString -> jsonElement.value

@@ -1,8 +1,5 @@
 package com.apollographql.apollo.api
 
-import com.apollographql.apollo.api.JsonElement.*
-import kotlin.jvm.JvmField
-
 class ScalarTypeAdapters(val customScalarAdapters: Map<ScalarType, CustomScalarAdapter<*>>) {
 
   private val adapterByGraphQLName = customScalarAdapters.mapKeys { it.key.graphqlName }
@@ -30,39 +27,39 @@ class ScalarTypeAdapters(val customScalarAdapters: Map<ScalarType, CustomScalarA
     val DEFAULT = ScalarTypeAdapters(emptyMap())
 
     private val adapterByClassName = mapOf(
-        "java.lang.String" to BuiltinScalarTypeAdapters.STRING_ADAPTER,
-        "kotlin.String" to  BuiltinScalarTypeAdapters.STRING_ADAPTER,
+        "java.lang.String" to BuiltinCustomScalarAdapters.STRING_ADAPTER,
+        "kotlin.String" to  BuiltinCustomScalarAdapters.STRING_ADAPTER,
 
-        "java.lang.Boolean" to BuiltinScalarTypeAdapters.BOOLEAN_ADAPTER,
-        "boolean" to  BuiltinScalarTypeAdapters.BOOLEAN_ADAPTER,
-        "kotlin.Boolean" to  BuiltinScalarTypeAdapters.BOOLEAN_ADAPTER,
+        "java.lang.Boolean" to BuiltinCustomScalarAdapters.BOOLEAN_ADAPTER,
+        "boolean" to  BuiltinCustomScalarAdapters.BOOLEAN_ADAPTER,
+        "kotlin.Boolean" to  BuiltinCustomScalarAdapters.BOOLEAN_ADAPTER,
 
-        "java.lang.Integer" to BuiltinScalarTypeAdapters.INT_ADAPTER,
-        "int" to BuiltinScalarTypeAdapters.INT_ADAPTER,
-        "kotlin.Int" to  BuiltinScalarTypeAdapters.INT_ADAPTER,
+        "java.lang.Integer" to BuiltinCustomScalarAdapters.INT_ADAPTER,
+        "int" to BuiltinCustomScalarAdapters.INT_ADAPTER,
+        "kotlin.Int" to  BuiltinCustomScalarAdapters.INT_ADAPTER,
 
-        "java.lang.Long" to BuiltinScalarTypeAdapters.LONG_ADAPTER,
-        "long" to BuiltinScalarTypeAdapters.LONG_ADAPTER,
-        "kotlin.Long" to  BuiltinScalarTypeAdapters.LONG_ADAPTER,
+        "java.lang.Long" to BuiltinCustomScalarAdapters.LONG_ADAPTER,
+        "long" to BuiltinCustomScalarAdapters.LONG_ADAPTER,
+        "kotlin.Long" to  BuiltinCustomScalarAdapters.LONG_ADAPTER,
 
-        "java.lang.Float" to BuiltinScalarTypeAdapters.FLOAT_ADAPTER,
-        "float" to BuiltinScalarTypeAdapters.FLOAT_ADAPTER,
-        "kotlin.Float" to  BuiltinScalarTypeAdapters.FLOAT_ADAPTER,
+        "java.lang.Float" to BuiltinCustomScalarAdapters.FLOAT_ADAPTER,
+        "float" to BuiltinCustomScalarAdapters.FLOAT_ADAPTER,
+        "kotlin.Float" to  BuiltinCustomScalarAdapters.FLOAT_ADAPTER,
 
-        "java.lang.Double" to BuiltinScalarTypeAdapters.DOUBLE_ADAPTER,
-        "double" to BuiltinScalarTypeAdapters.DOUBLE_ADAPTER,
-        "kotlin.Double" to  BuiltinScalarTypeAdapters.DOUBLE_ADAPTER,
+        "java.lang.Double" to BuiltinCustomScalarAdapters.DOUBLE_ADAPTER,
+        "double" to BuiltinCustomScalarAdapters.DOUBLE_ADAPTER,
+        "kotlin.Double" to  BuiltinCustomScalarAdapters.DOUBLE_ADAPTER,
 
-        "java.util.Map" to BuiltinScalarTypeAdapters.MAP_ADAPTER,
-        "kotlin.collections.Map" to  BuiltinScalarTypeAdapters.MAP_ADAPTER,
+        "java.util.Map" to BuiltinCustomScalarAdapters.MAP_ADAPTER,
+        "kotlin.collections.Map" to  BuiltinCustomScalarAdapters.MAP_ADAPTER,
 
-        "java.util.List" to BuiltinScalarTypeAdapters.LIST_ADAPTER,
-        "kotlin.collections.List" to  BuiltinScalarTypeAdapters.LIST_ADAPTER,
+        "java.util.List" to BuiltinCustomScalarAdapters.LIST_ADAPTER,
+        "kotlin.collections.List" to  BuiltinCustomScalarAdapters.LIST_ADAPTER,
 
-        "com.apollographql.apollo.api.FileUpload" to  BuiltinScalarTypeAdapters.FILE_UPLOAD_ADAPTER,
+        "com.apollographql.apollo.api.FileUpload" to  BuiltinCustomScalarAdapters.FILE_UPLOAD_ADAPTER,
 
-        "java.lang.Object" to  BuiltinScalarTypeAdapters.FALLBACK_ADAPTER,
-        "kotlin.Any" to  BuiltinScalarTypeAdapters.FALLBACK_ADAPTER,
+        "java.lang.Object" to  BuiltinCustomScalarAdapters.FALLBACK_ADAPTER,
+        "kotlin.Any" to  BuiltinCustomScalarAdapters.FALLBACK_ADAPTER,
     )
   }
 }
