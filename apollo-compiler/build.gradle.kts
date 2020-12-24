@@ -57,4 +57,6 @@ tasks.withType<Checkstyle> {
 }
 
 // since test/graphql is not an input to Test tasks, they're not run with the changes made in there.
-tasks.withType<Test>().configureEach { outputs.upToDateWhen { false } }
+tasks.withType<Test>().configureEach {
+  inputs.dir("src/test/graphql")
+}
