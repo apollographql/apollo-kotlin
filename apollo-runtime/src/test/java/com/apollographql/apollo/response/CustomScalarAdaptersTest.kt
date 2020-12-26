@@ -12,17 +12,14 @@ class CustomScalarAdaptersTest {
   fun customAdapterTakePrecedentOverDefault() {
     val customScalarAdapters = mutableMapOf<CustomScalar, CustomScalarAdapter<*>>()
     val expectedAdapter = MockCustomScalarAdapter()
-    customScalarAdapters[object : CustomScalar {
-      override val graphqlName = "String"
-      override val className: String
-        get() = String::class.java.name
-    }] = expectedAdapter
+    customScalarAdapters[CustomScalar("String", String::class.java.name)] = expectedAdapter
 
-    val actualAdapter = CustomScalarAdapters(customScalarAdapters).adapterFor<String>(object : CustomScalar {
-      override val graphqlName = "String"
-      override val className: String
-        get() = String::class.java.name
-    })
+    val actualAdapter = CustomScalarAdapters(customScalarAdapters).adapterFor<String>(
+        CustomScalar(
+            "String",
+            String::class.java.name
+        )
+    )
     assertThat(actualAdapter).isEqualTo(expectedAdapter)
   }
 
@@ -30,11 +27,10 @@ class CustomScalarAdaptersTest {
   fun missingAdapter() {
     CustomScalarAdapters(emptyMap())
         .adapterFor<RuntimeException>(
-            object : CustomScalar {
-              override val graphqlName = "RuntimeException"
-              override val className: String
-                get() = RuntimeException::class.java.name
-            }
+            CustomScalar(
+                "RuntimeException",
+                RuntimeException::class.java.name
+            )
         )
   }
 
@@ -127,13 +123,8 @@ class CustomScalarAdaptersTest {
   }
 
   private fun <T : Any> defaultAdapter(clazz: Class<T>): CustomScalarAdapter<T> {
-    return CustomScalarAdapters(emptyMap()).adapterFor<T>(
-        object : CustomScalar {
-          override val graphqlName: String
-            get() = clazz.simpleName
-          override val className: String
-            get() = clazz.name
-        }
+    return CustomScalarAdapters(emptyMap()).adapterFor(
+        CustomScalar(clazz.simpleName, clazz.name)
     )
   }
 

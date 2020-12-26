@@ -21,7 +21,7 @@ import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsF
 import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragment
 import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragmentImpl
 import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsFragmentImpl
-import com.apollographql.apollo.integration.normalizer.type.CustomScalar
+import com.apollographql.apollo.integration.normalizer.type.CustomScalars
 import com.apollographql.apollo.integration.normalizer.type.Episode
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
@@ -52,7 +52,7 @@ class ResponseWriteTestCase {
         .okHttpClient(okHttpClient)
         .normalizedCache(LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), IdFieldCacheKeyResolver())
         .dispatcher(immediateExecutor())
-        .addCustomScalarAdapter(CustomScalar.Date, object : CustomScalarAdapter<Date> {
+        .addCustomScalarAdapter(CustomScalars.Date, object : CustomScalarAdapter<Date> {
           override fun decode(jsonElement: JsonElement): Date {
             return try {
               DATE_TIME_FORMAT.parse(jsonElement.toRawValue().toString())
