@@ -170,7 +170,7 @@ data class StarshipFragmentImpl(
             ) : StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld,
                 StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet, PlanetFragment,
                 PilotFragment.Homeworld.Planet, PilotFragment.Homeworld, Person.Homeworld,
-                Person.Homeworld.Planet, Planet, Homeworld {
+                Person.Homeworld.Planet, Homeworld, Planet {
               override fun marshaller(): ResponseFieldMarshaller {
                 return ResponseFieldMarshaller { writer ->
                   StarshipFragmentImpl_ResponseAdapter.PilotConnection.Edge.Node.PersonNode.Homeworld.PlanetHomeworld.toResponse(writer, this)

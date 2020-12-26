@@ -242,7 +242,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            */
           override val name: String
         ) : Query.Hero, Query.Hero.Character, HeroFragment, QueryFragment.Hero.Character,
-            QueryFragment.Hero, Character, Hero {
+            QueryFragment.Hero, Hero, Character {
           override fun marshaller(): ResponseFieldMarshaller {
             return ResponseFieldMarshaller { writer ->
               TestQuery_ResponseAdapter.Data.QueryDatum.Hero.CharacterHero.toResponse(writer, this)
@@ -305,7 +305,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            */
           override val primaryFunction: String?
         ) : Query.Droid, Query.Droid.Droid, DroidFragment, QueryFragment.Droid.Droid,
-            QueryFragment.Droid, Droid, QueryDatum.Droid {
+            QueryFragment.Droid, QueryDatum.Droid, Droid {
           override fun marshaller(): ResponseFieldMarshaller {
             return ResponseFieldMarshaller { writer ->
               TestQuery_ResponseAdapter.Data.QueryDatum.Droid.DroidDroid.toResponse(writer, this)
@@ -365,8 +365,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            * The home planet of the human, or null if unknown
            */
           override val homePlanet: String?
-        ) : Query.Human, Query.Human.Human, QueryFragment.Human.Human, QueryFragment.Human, Human,
-            QueryDatum.Human {
+        ) : Query.Human, Query.Human.Human, QueryFragment.Human.Human, QueryFragment.Human,
+            QueryDatum.Human, Human {
           override fun marshaller(): ResponseFieldMarshaller {
             return ResponseFieldMarshaller { writer ->
               TestQuery_ResponseAdapter.Data.QueryDatum.Human.HumanHuman.toResponse(writer, this)

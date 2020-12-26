@@ -184,7 +184,7 @@ internal class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            * What this human calls themselves
            */
           override val name: String
-        ) : Character, Character.Human, HeroDetail.Human, Human, CharacterHumanHero {
+        ) : Character, Character.Human, HeroDetail.Human, CharacterHumanHero, Human {
           override fun marshaller(): ResponseFieldMarshaller {
             return ResponseFieldMarshaller { writer ->
               TestQuery_ResponseAdapter.Data.Hero.CharacterHumanHero.HumanCharacterHumanHero.toResponse(writer, this)

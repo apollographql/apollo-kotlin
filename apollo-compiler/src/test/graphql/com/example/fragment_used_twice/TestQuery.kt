@@ -207,7 +207,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            * The date character was born.
            */
           override val birthDate: Any
-        ) : Hero.Character, Hero.Character.Character, HeroDetail.Character, Character, CharacterHero
+        ) : Hero.Character, Hero.Character.Character, HeroDetail.Character, CharacterHero, Character
             {
           override fun marshaller(): ResponseFieldMarshaller {
             return ResponseFieldMarshaller { writer ->
@@ -245,8 +245,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
         override fun marshaller(): ResponseFieldMarshaller
 
-        interface Character : Hero.Character, Hero.Character.Character, HeroDetail.Character, Human,
-            Human.Character, HumanDetail.Character, CharacterHumanHero {
+        interface Character : Hero.Character, Hero.Character.Character, HeroDetail.Character,
+            CharacterHumanHero, Human, Human.Character, HumanDetail.Character {
           override val __typename: String
 
           /**
@@ -272,8 +272,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            * The date character was born.
            */
           override val birthDate: Any
-        ) : Hero.Character, Hero.Character.Character, HeroDetail.Character, Human, Human.Character,
-            HumanDetail.Character, Character, CharacterHumanHero {
+        ) : Hero.Character, Hero.Character.Character, HeroDetail.Character, CharacterHumanHero,
+            Character, Human, Human.Character, HumanDetail.Character {
           override fun marshaller(): ResponseFieldMarshaller {
             return ResponseFieldMarshaller { writer ->
               TestQuery_ResponseAdapter.Data.Hero.CharacterHumanHero.CharacterCharacterHumanHero.toResponse(writer, this)
@@ -296,7 +296,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         }
 
         companion object {
-          fun CharacterHumanHero.asCharacter(): Character? = this as? Character
+          fun CharacterHumanHero.asCharacter(): HumanDetail.Character? = this as?
+              HumanDetail.Character
 
           fun CharacterHumanHero.asHuman(): Human? = this as? Human
         }

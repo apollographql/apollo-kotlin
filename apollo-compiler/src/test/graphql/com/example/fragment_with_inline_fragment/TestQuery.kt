@@ -527,7 +527,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
             }
           }
 
-          interface Droid : Character.Droid, Character.Droid.Droid, HeroDetail.Droid.Droid {
+          interface Droid : Character.Droid, Character.Droid.Droid, HeroDetail.Droid.Droid,
+              CharacterHero.Droid {
             override val __typename: String
 
             /**
@@ -557,7 +558,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
              */
             interface FriendsConnection : Character.FriendsConnection, HeroDetail.FriendsConnection,
                 HeroDetail.Droid.FriendsConnection, Character.Droid.FriendsConnection,
-                HeroDetail.Droid.Droid.FriendsConnection, Character.Droid.Droid.FriendsConnection {
+                HeroDetail.Droid.Droid.FriendsConnection, Character.Droid.Droid.FriendsConnection,
+                CharacterHero.FriendsConnection, CharacterHero.Droid.FriendsConnection {
               /**
                * The total number of friends
                */
@@ -576,7 +578,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
               interface Edge : Character.FriendsConnection.Edge, HeroDetail.FriendsConnection.Edge,
                   HeroDetail.Droid.FriendsConnection.Edge, Character.Droid.FriendsConnection.Edge,
                   HeroDetail.Droid.Droid.FriendsConnection.Edge,
-                  Character.Droid.Droid.FriendsConnection.Edge {
+                  Character.Droid.Droid.FriendsConnection.Edge,
+                  CharacterHero.FriendsConnection.Edge, CharacterHero.Droid.FriendsConnection.Edge {
                 /**
                  * The character represented by this friendship edge
                  */
@@ -592,7 +595,9 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
                     HeroDetail.Droid.FriendsConnection.Edge.Node,
                     Character.Droid.FriendsConnection.Edge.Node,
                     HeroDetail.Droid.Droid.FriendsConnection.Edge.Node,
-                    Character.Droid.Droid.FriendsConnection.Edge.Node {
+                    Character.Droid.Droid.FriendsConnection.Edge.Node,
+                    CharacterHero.FriendsConnection.Edge.Node,
+                    CharacterHero.Droid.FriendsConnection.Edge.Node {
                   /**
                    * The name of the character
                    */
@@ -675,8 +680,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           }
         }
 
-        interface DroidCharacterHero : Character, Character.Droid, HeroDetail.Droid, Droid,
-            CharacterHero {
+        interface DroidCharacterHero : Character, Character.Droid, HeroDetail.Droid, CharacterHero,
+            Droid {
           override val __typename: String
 
           /**
@@ -746,7 +751,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
           }
 
           interface Droid : Character.Droid, Character.Droid.Droid, HeroDetail.Droid.Droid,
-              DroidCharacterHero {
+              CharacterHero.Droid, CharacterHero.Droid.Droid, DroidCharacterHero {
             override val __typename: String
 
             /**
@@ -778,7 +783,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
                 HeroDetail.Droid.FriendsConnection, Character.Droid.FriendsConnection,
                 HeroDetail.Droid.Droid.FriendsConnection, Character.Droid.Droid.FriendsConnection,
                 CharacterHero.FriendsConnection, CharacterHero.Droid.FriendsConnection,
-                DroidCharacterHero.FriendsConnection {
+                CharacterHero.Droid.Droid.FriendsConnection, DroidCharacterHero.FriendsConnection {
               /**
                * The total number of friends
                */
@@ -799,6 +804,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
                   HeroDetail.Droid.Droid.FriendsConnection.Edge,
                   Character.Droid.Droid.FriendsConnection.Edge,
                   CharacterHero.FriendsConnection.Edge, CharacterHero.Droid.FriendsConnection.Edge,
+                  CharacterHero.Droid.Droid.FriendsConnection.Edge,
                   DroidCharacterHero.FriendsConnection.Edge {
                 /**
                  * The character represented by this friendship edge
@@ -818,6 +824,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
                     Character.Droid.Droid.FriendsConnection.Edge.Node,
                     CharacterHero.FriendsConnection.Edge.Node,
                     CharacterHero.Droid.FriendsConnection.Edge.Node,
+                    CharacterHero.Droid.Droid.FriendsConnection.Edge.Node,
                     DroidCharacterHero.FriendsConnection.Edge.Node {
                   /**
                    * The name of the character
@@ -848,8 +855,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
              * This droid's primary function
              */
             override val primaryFunction: String?
-          ) : Character.Droid, Character.Droid.Droid, HeroDetail.Droid.Droid, Droid,
-              DroidCharacterHero {
+          ) : Character.Droid, Character.Droid.Droid, HeroDetail.Droid.Droid, CharacterHero.Droid,
+              CharacterHero.Droid.Droid, DroidCharacterHero, Droid {
             override fun marshaller(): ResponseFieldMarshaller {
               return ResponseFieldMarshaller { writer ->
                 TestQuery_ResponseAdapter.Data.Hero.CharacterHero.DroidCharacterHero.DroidDroidCharacterHero.toResponse(writer, this)
@@ -869,10 +876,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
                */
               override val edges: List<Edge?>?
             ) : Character.FriendsConnection, HeroDetail.FriendsConnection,
-                CharacterHero.FriendsConnection, HeroDetail.Droid.FriendsConnection,
-                Character.Droid.FriendsConnection, CharacterHero.Droid.FriendsConnection,
-                DroidCharacterHero.FriendsConnection, HeroDetail.Droid.Droid.FriendsConnection,
-                Character.Droid.Droid.FriendsConnection, Droid.FriendsConnection {
+                CharacterHero.FriendsConnection, DroidCharacterHero.FriendsConnection,
+                HeroDetail.Droid.FriendsConnection, Character.Droid.FriendsConnection,
+                CharacterHero.Droid.FriendsConnection, HeroDetail.Droid.Droid.FriendsConnection,
+                Character.Droid.Droid.FriendsConnection,
+                CharacterHero.Droid.Droid.FriendsConnection, Droid.FriendsConnection {
               override fun marshaller(): ResponseFieldMarshaller {
                 return ResponseFieldMarshaller { writer ->
                   TestQuery_ResponseAdapter.Data.Hero.CharacterHero.DroidCharacterHero.DroidDroidCharacterHero.FriendsConnection.toResponse(writer, this)
@@ -888,12 +896,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
                  */
                 override val node: Node?
               ) : Character.FriendsConnection.Edge, HeroDetail.FriendsConnection.Edge,
-                  CharacterHero.FriendsConnection.Edge, HeroDetail.Droid.FriendsConnection.Edge,
-                  Character.Droid.FriendsConnection.Edge,
+                  CharacterHero.FriendsConnection.Edge, DroidCharacterHero.FriendsConnection.Edge,
+                  HeroDetail.Droid.FriendsConnection.Edge, Character.Droid.FriendsConnection.Edge,
                   CharacterHero.Droid.FriendsConnection.Edge,
-                  DroidCharacterHero.FriendsConnection.Edge,
                   HeroDetail.Droid.Droid.FriendsConnection.Edge,
-                  Character.Droid.Droid.FriendsConnection.Edge, Droid.FriendsConnection.Edge {
+                  Character.Droid.Droid.FriendsConnection.Edge,
+                  CharacterHero.Droid.Droid.FriendsConnection.Edge, Droid.FriendsConnection.Edge {
                 override fun marshaller(): ResponseFieldMarshaller {
                   return ResponseFieldMarshaller { writer ->
                     TestQuery_ResponseAdapter.Data.Hero.CharacterHero.DroidCharacterHero.DroidDroidCharacterHero.FriendsConnection.Edge.toResponse(writer, this)
@@ -910,12 +918,13 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
                   override val name: String
                 ) : Character.FriendsConnection.Edge.Node, HeroDetail.FriendsConnection.Edge.Node,
                     CharacterHero.FriendsConnection.Edge.Node,
+                    DroidCharacterHero.FriendsConnection.Edge.Node,
                     HeroDetail.Droid.FriendsConnection.Edge.Node,
                     Character.Droid.FriendsConnection.Edge.Node,
                     CharacterHero.Droid.FriendsConnection.Edge.Node,
-                    DroidCharacterHero.FriendsConnection.Edge.Node,
                     HeroDetail.Droid.Droid.FriendsConnection.Edge.Node,
                     Character.Droid.Droid.FriendsConnection.Edge.Node,
+                    CharacterHero.Droid.Droid.FriendsConnection.Edge.Node,
                     Droid.FriendsConnection.Edge.Node {
                   override fun marshaller(): ResponseFieldMarshaller {
                     return ResponseFieldMarshaller { writer ->
@@ -941,7 +950,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
              * The friends of the character exposed as a connection with edges
              */
             override val friendsConnection: FriendsConnection
-          ) : Character, Character.Droid, HeroDetail.Droid, CharacterHero.Droid, CharacterHero,
+          ) : Character, Character.Droid, HeroDetail.Droid, CharacterHero, CharacterHero.Droid,
               DroidCharacterHero {
             override fun marshaller(): ResponseFieldMarshaller {
               return ResponseFieldMarshaller { writer ->
@@ -962,9 +971,9 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
                */
               override val edges: List<Edge?>?
             ) : Character.FriendsConnection, HeroDetail.FriendsConnection,
-                CharacterHero.FriendsConnection, HeroDetail.Droid.FriendsConnection,
-                Character.Droid.FriendsConnection, CharacterHero.Droid.FriendsConnection,
-                DroidCharacterHero.FriendsConnection {
+                CharacterHero.FriendsConnection, DroidCharacterHero.FriendsConnection,
+                HeroDetail.Droid.FriendsConnection, Character.Droid.FriendsConnection,
+                CharacterHero.Droid.FriendsConnection {
               override fun marshaller(): ResponseFieldMarshaller {
                 return ResponseFieldMarshaller { writer ->
                   TestQuery_ResponseAdapter.Data.Hero.CharacterHero.DroidCharacterHero.OtherDroidCharacterHero.FriendsConnection.toResponse(writer, this)
@@ -980,10 +989,9 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
                  */
                 override val node: Node?
               ) : Character.FriendsConnection.Edge, HeroDetail.FriendsConnection.Edge,
-                  CharacterHero.FriendsConnection.Edge, HeroDetail.Droid.FriendsConnection.Edge,
-                  Character.Droid.FriendsConnection.Edge,
-                  CharacterHero.Droid.FriendsConnection.Edge,
-                  DroidCharacterHero.FriendsConnection.Edge {
+                  CharacterHero.FriendsConnection.Edge, DroidCharacterHero.FriendsConnection.Edge,
+                  HeroDetail.Droid.FriendsConnection.Edge, Character.Droid.FriendsConnection.Edge,
+                  CharacterHero.Droid.FriendsConnection.Edge {
                 override fun marshaller(): ResponseFieldMarshaller {
                   return ResponseFieldMarshaller { writer ->
                     TestQuery_ResponseAdapter.Data.Hero.CharacterHero.DroidCharacterHero.OtherDroidCharacterHero.FriendsConnection.Edge.toResponse(writer, this)
@@ -1000,10 +1008,10 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
                   override val name: String
                 ) : Character.FriendsConnection.Edge.Node, HeroDetail.FriendsConnection.Edge.Node,
                     CharacterHero.FriendsConnection.Edge.Node,
+                    DroidCharacterHero.FriendsConnection.Edge.Node,
                     HeroDetail.Droid.FriendsConnection.Edge.Node,
                     Character.Droid.FriendsConnection.Edge.Node,
-                    CharacterHero.Droid.FriendsConnection.Edge.Node,
-                    DroidCharacterHero.FriendsConnection.Edge.Node {
+                    CharacterHero.Droid.FriendsConnection.Edge.Node {
                   override fun marshaller(): ResponseFieldMarshaller {
                     return ResponseFieldMarshaller { writer ->
                       TestQuery_ResponseAdapter.Data.Hero.CharacterHero.DroidCharacterHero.OtherDroidCharacterHero.FriendsConnection.Edge.Node.toResponse(writer, this)
@@ -1033,7 +1041,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            * The friends of the character exposed as a connection with edges
            */
           override val friendsConnection: FriendsConnection
-        ) : Character, Character.Human, HeroDetail.Human, Human, CharacterHero {
+        ) : Character, Character.Human, HeroDetail.Human, CharacterHero, Human {
           override fun marshaller(): ResponseFieldMarshaller {
             return ResponseFieldMarshaller { writer ->
               TestQuery_ResponseAdapter.Data.Hero.CharacterHero.HumanCharacterHero.toResponse(writer, this)

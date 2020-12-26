@@ -131,7 +131,7 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
       }
     }
 
-    interface Droid : HeroDetail.Droid, HeroDetail.Droid.Droid {
+    interface Droid : HeroDetail.Droid, HeroDetail.Droid.Droid, HeroDetailsImpl.Droid {
       override val __typename: String
 
       /**
@@ -155,7 +155,8 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
        * A connection object for a character's friends
        */
       interface FriendsConnection : HeroDetail.FriendsConnection,
-          HeroDetail.Droid.FriendsConnection, HeroDetail.Droid.Droid.FriendsConnection {
+          HeroDetail.Droid.FriendsConnection, HeroDetail.Droid.Droid.FriendsConnection,
+          HeroDetailsImpl.FriendsConnection, HeroDetailsImpl.Droid.FriendsConnection {
         /**
          * The total number of friends
          */
@@ -172,7 +173,8 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
          * An edge object for a character's friends
          */
         interface Edge : HeroDetail.FriendsConnection.Edge, HeroDetail.Droid.FriendsConnection.Edge,
-            HeroDetail.Droid.Droid.FriendsConnection.Edge {
+            HeroDetail.Droid.Droid.FriendsConnection.Edge, HeroDetailsImpl.FriendsConnection.Edge,
+            HeroDetailsImpl.Droid.FriendsConnection.Edge {
           /**
            * The character represented by this friendship edge
            */
@@ -185,7 +187,9 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
            */
           interface Node : HeroDetail.FriendsConnection.Edge.Node,
               HeroDetail.Droid.FriendsConnection.Edge.Node,
-              HeroDetail.Droid.Droid.FriendsConnection.Edge.Node {
+              HeroDetail.Droid.Droid.FriendsConnection.Edge.Node,
+              HeroDetailsImpl.FriendsConnection.Edge.Node,
+              HeroDetailsImpl.Droid.FriendsConnection.Edge.Node {
             /**
              * The name of the character
              */
@@ -320,7 +324,8 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
       }
     }
 
-    interface Droid : HeroDetail.Droid, HeroDetail.Droid.Droid, DroidHeroDetailsImpl {
+    interface Droid : HeroDetail.Droid, HeroDetail.Droid.Droid, HeroDetailsImpl.Droid,
+        HeroDetailsImpl.Droid.Droid, DroidHeroDetailsImpl {
       override val __typename: String
 
       /**
@@ -346,7 +351,7 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
       interface FriendsConnection : HeroDetail.FriendsConnection,
           HeroDetail.Droid.FriendsConnection, HeroDetail.Droid.Droid.FriendsConnection,
           HeroDetailsImpl.FriendsConnection, HeroDetailsImpl.Droid.FriendsConnection,
-          DroidHeroDetailsImpl.FriendsConnection {
+          HeroDetailsImpl.Droid.Droid.FriendsConnection, DroidHeroDetailsImpl.FriendsConnection {
         /**
          * The total number of friends
          */
@@ -365,6 +370,7 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
         interface Edge : HeroDetail.FriendsConnection.Edge, HeroDetail.Droid.FriendsConnection.Edge,
             HeroDetail.Droid.Droid.FriendsConnection.Edge, HeroDetailsImpl.FriendsConnection.Edge,
             HeroDetailsImpl.Droid.FriendsConnection.Edge,
+            HeroDetailsImpl.Droid.Droid.FriendsConnection.Edge,
             DroidHeroDetailsImpl.FriendsConnection.Edge {
           /**
            * The character represented by this friendship edge
@@ -381,6 +387,7 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
               HeroDetail.Droid.Droid.FriendsConnection.Edge.Node,
               HeroDetailsImpl.FriendsConnection.Edge.Node,
               HeroDetailsImpl.Droid.FriendsConnection.Edge.Node,
+              HeroDetailsImpl.Droid.Droid.FriendsConnection.Edge.Node,
               DroidHeroDetailsImpl.FriendsConnection.Edge.Node {
             /**
              * The name of the character
@@ -407,7 +414,8 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
        * This droid's primary function
        */
       override val primaryFunction: String?
-    ) : HeroDetail.Droid, HeroDetail.Droid.Droid, Droid, DroidHeroDetailsImpl {
+    ) : HeroDetail.Droid, HeroDetail.Droid.Droid, HeroDetailsImpl.Droid,
+        HeroDetailsImpl.Droid.Droid, DroidHeroDetailsImpl, Droid {
       override fun marshaller(): ResponseFieldMarshaller {
         return ResponseFieldMarshaller { writer ->
           HeroDetailsImpl_ResponseAdapter.DroidHeroDetailsImpl.DroidDroidHeroDetailsImpl.toResponse(writer, this)
@@ -427,9 +435,9 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
          */
         override val edges: List<Edge?>?
       ) : HeroDetail.FriendsConnection, HeroDetailsImpl.FriendsConnection,
-          HeroDetail.Droid.FriendsConnection, HeroDetailsImpl.Droid.FriendsConnection,
-          DroidHeroDetailsImpl.FriendsConnection, HeroDetail.Droid.Droid.FriendsConnection,
-          Droid.FriendsConnection {
+          DroidHeroDetailsImpl.FriendsConnection, HeroDetail.Droid.FriendsConnection,
+          HeroDetailsImpl.Droid.FriendsConnection, HeroDetail.Droid.Droid.FriendsConnection,
+          HeroDetailsImpl.Droid.Droid.FriendsConnection, Droid.FriendsConnection {
         override fun marshaller(): ResponseFieldMarshaller {
           return ResponseFieldMarshaller { writer ->
             HeroDetailsImpl_ResponseAdapter.DroidHeroDetailsImpl.DroidDroidHeroDetailsImpl.FriendsConnection.toResponse(writer, this)
@@ -445,9 +453,10 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
            */
           override val node: Node?
         ) : HeroDetail.FriendsConnection.Edge, HeroDetailsImpl.FriendsConnection.Edge,
-            HeroDetail.Droid.FriendsConnection.Edge, HeroDetailsImpl.Droid.FriendsConnection.Edge,
-            DroidHeroDetailsImpl.FriendsConnection.Edge,
-            HeroDetail.Droid.Droid.FriendsConnection.Edge, Droid.FriendsConnection.Edge {
+            DroidHeroDetailsImpl.FriendsConnection.Edge, HeroDetail.Droid.FriendsConnection.Edge,
+            HeroDetailsImpl.Droid.FriendsConnection.Edge,
+            HeroDetail.Droid.Droid.FriendsConnection.Edge,
+            HeroDetailsImpl.Droid.Droid.FriendsConnection.Edge, Droid.FriendsConnection.Edge {
           override fun marshaller(): ResponseFieldMarshaller {
             return ResponseFieldMarshaller { writer ->
               HeroDetailsImpl_ResponseAdapter.DroidHeroDetailsImpl.DroidDroidHeroDetailsImpl.FriendsConnection.Edge.toResponse(writer, this)
@@ -463,11 +472,12 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
              */
             override val name: String
           ) : HeroDetail.FriendsConnection.Edge.Node, HeroDetailsImpl.FriendsConnection.Edge.Node,
+              DroidHeroDetailsImpl.FriendsConnection.Edge.Node,
               HeroDetail.Droid.FriendsConnection.Edge.Node,
               HeroDetailsImpl.Droid.FriendsConnection.Edge.Node,
-              DroidHeroDetailsImpl.FriendsConnection.Edge.Node,
-              HeroDetail.Droid.Droid.FriendsConnection.Edge.Node, Droid.FriendsConnection.Edge.Node
-              {
+              HeroDetail.Droid.Droid.FriendsConnection.Edge.Node,
+              HeroDetailsImpl.Droid.Droid.FriendsConnection.Edge.Node,
+              Droid.FriendsConnection.Edge.Node {
             override fun marshaller(): ResponseFieldMarshaller {
               return ResponseFieldMarshaller { writer ->
                 HeroDetailsImpl_ResponseAdapter.DroidHeroDetailsImpl.DroidDroidHeroDetailsImpl.FriendsConnection.Edge.Node.toResponse(writer, this)
@@ -508,8 +518,8 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
          */
         override val edges: List<Edge?>?
       ) : HeroDetail.FriendsConnection, HeroDetailsImpl.FriendsConnection,
-          HeroDetail.Droid.FriendsConnection, HeroDetailsImpl.Droid.FriendsConnection,
-          DroidHeroDetailsImpl.FriendsConnection {
+          DroidHeroDetailsImpl.FriendsConnection, HeroDetail.Droid.FriendsConnection,
+          HeroDetailsImpl.Droid.FriendsConnection {
         override fun marshaller(): ResponseFieldMarshaller {
           return ResponseFieldMarshaller { writer ->
             HeroDetailsImpl_ResponseAdapter.DroidHeroDetailsImpl.OtherDroidHeroDetailsImpl.FriendsConnection.toResponse(writer, this)
@@ -525,8 +535,8 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
            */
           override val node: Node?
         ) : HeroDetail.FriendsConnection.Edge, HeroDetailsImpl.FriendsConnection.Edge,
-            HeroDetail.Droid.FriendsConnection.Edge, HeroDetailsImpl.Droid.FriendsConnection.Edge,
-            DroidHeroDetailsImpl.FriendsConnection.Edge {
+            DroidHeroDetailsImpl.FriendsConnection.Edge, HeroDetail.Droid.FriendsConnection.Edge,
+            HeroDetailsImpl.Droid.FriendsConnection.Edge {
           override fun marshaller(): ResponseFieldMarshaller {
             return ResponseFieldMarshaller { writer ->
               HeroDetailsImpl_ResponseAdapter.DroidHeroDetailsImpl.OtherDroidHeroDetailsImpl.FriendsConnection.Edge.toResponse(writer, this)
@@ -542,9 +552,9 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
              */
             override val name: String
           ) : HeroDetail.FriendsConnection.Edge.Node, HeroDetailsImpl.FriendsConnection.Edge.Node,
+              DroidHeroDetailsImpl.FriendsConnection.Edge.Node,
               HeroDetail.Droid.FriendsConnection.Edge.Node,
-              HeroDetailsImpl.Droid.FriendsConnection.Edge.Node,
-              DroidHeroDetailsImpl.FriendsConnection.Edge.Node {
+              HeroDetailsImpl.Droid.FriendsConnection.Edge.Node {
             override fun marshaller(): ResponseFieldMarshaller {
               return ResponseFieldMarshaller { writer ->
                 HeroDetailsImpl_ResponseAdapter.DroidHeroDetailsImpl.OtherDroidHeroDetailsImpl.FriendsConnection.Edge.Node.toResponse(writer, this)

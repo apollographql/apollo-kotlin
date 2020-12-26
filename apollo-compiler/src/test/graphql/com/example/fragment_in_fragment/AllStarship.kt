@@ -375,7 +375,7 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
                     override val homeworld: Homeworld?
                   ) : Starship.PilotConnection.Edge.Node, Starship.PilotConnection.Edge.Node.Person,
                       PilotFragment, StarshipFragment.PilotConnection.Edge.Node.Person,
-                      StarshipFragment.PilotConnection.Edge.Node, Person, Node {
+                      StarshipFragment.PilotConnection.Edge.Node, Node, Person {
                     override fun marshaller(): ResponseFieldMarshaller {
                       return ResponseFieldMarshaller { writer ->
                         AllStarship_ResponseAdapter.Data.AllStarship.Edge.Node.StarshipNode.PilotConnection.Edge.Node.PersonNode.toResponse(writer, this)
@@ -399,7 +399,7 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
                           PlanetFragment, PilotFragment.Homeworld.Planet, PilotFragment.Homeworld,
                           StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet,
                           StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld,
-                          Person.Homeworld.Planet, Person.Homeworld, Homeworld {
+                          Person.Homeworld, Person.Homeworld.Planet, Homeworld {
                         override val __typename: String
 
                         /**
@@ -421,7 +421,7 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
                           PlanetFragment, PilotFragment.Homeworld.Planet, PilotFragment.Homeworld,
                           StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet,
                           StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld,
-                          Person.Homeworld.Planet, Person.Homeworld, Planet, Homeworld {
+                          Person.Homeworld, Person.Homeworld.Planet, Homeworld, Planet {
                         override fun marshaller(): ResponseFieldMarshaller {
                           return ResponseFieldMarshaller { writer ->
                             AllStarship_ResponseAdapter.Data.AllStarship.Edge.Node.StarshipNode.PilotConnection.Edge.Node.PersonNode.Homeworld.PlanetHomeworld.toResponse(writer, this)

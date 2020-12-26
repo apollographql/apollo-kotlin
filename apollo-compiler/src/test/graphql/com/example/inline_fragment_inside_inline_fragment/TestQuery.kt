@@ -208,7 +208,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            * The home planet of the human, or null if unknown
            */
           override val homePlanet: String?
-        ) : Character, Character.Human, Human, CharacterSearch {
+        ) : Character, Character.Human, CharacterSearch, Human {
           override fun marshaller(): ResponseFieldMarshaller {
             return ResponseFieldMarshaller { writer ->
               TestQuery_ResponseAdapter.Data.Search.CharacterSearch.HumanCharacterSearch.toResponse(writer, this)
@@ -226,7 +226,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            * This droid's primary function
            */
           override val primaryFunction: String?
-        ) : Character, Character.Droid, Droid, CharacterSearch {
+        ) : Character, Character.Droid, CharacterSearch, Droid {
           override fun marshaller(): ResponseFieldMarshaller {
             return ResponseFieldMarshaller { writer ->
               TestQuery_ResponseAdapter.Data.Search.CharacterSearch.DroidCharacterSearch.toResponse(writer, this)

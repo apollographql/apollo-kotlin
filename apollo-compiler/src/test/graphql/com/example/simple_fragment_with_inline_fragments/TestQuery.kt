@@ -259,7 +259,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
              */
             override val height: Double?
           ) : Character.Friend, Character.Friend.Human, HeroDetail.Friend.Human, HeroDetail.Friend,
-              Human, Friend {
+              Friend, Human {
             override fun marshaller(): ResponseFieldMarshaller {
               return ResponseFieldMarshaller { writer ->
                 TestQuery_ResponseAdapter.Data.Hero.CharacterHero.Friend.HumanFriend.toResponse(writer, this)
@@ -278,7 +278,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
              */
             override val primaryFunction: String?
           ) : Character.Friend, Character.Friend.Droid, HeroDetail.Friend.Droid, HeroDetail.Friend,
-              Droid, Friend {
+              Friend, Droid {
             override fun marshaller(): ResponseFieldMarshaller {
               return ResponseFieldMarshaller { writer ->
                 TestQuery_ResponseAdapter.Data.Hero.CharacterHero.Friend.DroidFriend.toResponse(writer, this)

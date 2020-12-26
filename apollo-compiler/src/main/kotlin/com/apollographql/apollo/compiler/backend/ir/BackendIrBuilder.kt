@@ -3,7 +3,7 @@ package com.apollographql.apollo.compiler.backend.ir
 import com.apollographql.apollo.compiler.PackageNameProvider
 import com.apollographql.apollo.compiler.backend.ir.BackendIrMergeUtils.mergeFields
 import com.apollographql.apollo.compiler.backend.ir.SelectionKeyUtils.addFieldSelectionKey
-import com.apollographql.apollo.compiler.backend.ir.SelectionKeyUtils.addFragmentSelectionKey
+import com.apollographql.apollo.compiler.backend.ir.SelectionKeyUtils.copyToDifferentSelectionRoot
 import com.apollographql.apollo.compiler.frontend.GQLNamedType
 import com.apollographql.apollo.compiler.frontend.Schema
 import com.apollographql.apollo.compiler.frontend.SourceLocation
@@ -181,32 +181,34 @@ internal class BackendIrBuilder constructor(
   }
 
   private fun FrontendIr.NamedFragmentDefinition.buildBackendIrNamedFragment(): BackendIr.NamedFragment {
-    val selectionSet = buildSelectionSet(
-        rootSelectionKey = SelectionKey(
-            root = this.name,
-            keys = listOf(this.name),
-            type = SelectionKey.Type.Fragment,
-        ),
+    val rootSelectionKey = SelectionKey(
+        root = this.name,
+        keys = listOf(this.name),
+        type = SelectionKey.Type.Fragment,
     )
 
-    val defaultImplementationSelectionKey = SelectionKey(
+    val selectionSet = buildSelectionSet(
+        rootSelectionKey = rootSelectionKey,
+    )
+
+    val defaultImplementationRootSelectionKey = SelectionKey(
         root = "${this@buildBackendIrNamedFragment.name.capitalize()}Impl",
         keys = listOf("${this@buildBackendIrNamedFragment.name.capitalize()}Impl"),
         type = SelectionKey.Type.Fragment,
     )
 
     val defaultImplementationSelectionSet = selectionSet
-        .patchWithDefaultImplementationSelectionKey(
-            fragmentNameToPatch = this.name,
-            fragmentImplementationName = defaultImplementationSelectionKey.root,
+        .copyToDifferentSelectionRoot(
+            currentRootSelectionKey = rootSelectionKey,
+            newRootSelectionKey = defaultImplementationRootSelectionKey,
         )
         .buildDefaultImplementationSelectionSet(
-            rootSelectionKey = defaultImplementationSelectionKey
+            rootSelectionKey = defaultImplementationRootSelectionKey
         )
 
     return BackendIr.NamedFragment(
         name = this.name,
-        defaultImplementationSelectionKey = defaultImplementationSelectionKey,
+        defaultImplementationSelectionKey = defaultImplementationRootSelectionKey,
         source = this.source,
         comment = this.description ?: "",
         selectionSet = selectionSet,
@@ -319,110 +321,6 @@ internal class BackendIrBuilder constructor(
     return this.copy(
         fields = fields,
         fragments = fragments,
-    )
-  }
-
-  // do deep recursive traversal of all fields and nested fragments
-  // find any selection key that belongs to the named fragment we generate default selection set for (`root == fragmentNameToPatch`)
-  // copy it with `defaultImplementationName` as a root and add to the original selection set
-  private fun BackendIr.NamedFragment.SelectionSet.patchWithDefaultImplementationSelectionKey(
-      fragmentNameToPatch: String,
-      fragmentImplementationName: String,
-  ): BackendIr.NamedFragment.SelectionSet {
-    val patchedFields = this.fields.map { field ->
-      field.patchWithDefaultImplementationSelectionKey(
-          fragmentNameToPatch = fragmentNameToPatch,
-          defaultImplementationName = fragmentImplementationName,
-      )
-    }
-
-    val patchedFragments = fragments.copy(
-        fragments = fragments.map { fragment ->
-          fragment.patchWithDefaultImplementationSelectionKey(
-              fragmentNameToPatch = fragmentNameToPatch,
-              defaultImplementationName = fragmentImplementationName,
-          )
-        }
-    )
-
-    val patchedSelectionKeys = this.selectionKeys + this.selectionKeys
-        .filter { selectionKey ->
-          selectionKey.type == SelectionKey.Type.Fragment && selectionKey.root == fragmentNameToPatch
-        }
-        .map { key ->
-          key.copy(root = fragmentImplementationName, keys = listOf(fragmentImplementationName) + key.keys.drop(1))
-        }
-
-    return this.copy(
-        fields = patchedFields,
-        fragments = patchedFragments,
-        selectionKeys = patchedSelectionKeys,
-    )
-  }
-
-  // do deep recursive traversal of all fields and nested fragments
-  // find any selection key that belongs to the named fragment we generate default selection set for (`root == fragmentNameToPatch`)
-  // copy it with `defaultImplementationName` as a root and add to the original selection set
-  private fun BackendIr.Field.patchWithDefaultImplementationSelectionKey(
-      fragmentNameToPatch: String,
-      defaultImplementationName: String,
-  ): BackendIr.Field {
-    val patchedFields = this.fields.map { field ->
-      field.patchWithDefaultImplementationSelectionKey(
-          fragmentNameToPatch = fragmentNameToPatch,
-          defaultImplementationName = defaultImplementationName,
-      )
-    }
-
-    val patchedFragments = fragments.copy(
-        fragments = fragments.fragments.map { fragment ->
-          fragment.patchWithDefaultImplementationSelectionKey(
-              fragmentNameToPatch = fragmentNameToPatch,
-              defaultImplementationName = defaultImplementationName,
-          )
-        }
-    )
-
-    val patchedSelectionKeys = this.selectionKeys + this.selectionKeys
-        .filter { selectionKey ->
-          selectionKey.type == SelectionKey.Type.Fragment && selectionKey.root == fragmentNameToPatch
-        }
-        .map { key ->
-          key.copy(root = defaultImplementationName, keys = listOf(defaultImplementationName) + key.keys.drop(1))
-        }
-
-    return this.copy(
-        fields = patchedFields,
-        fragments = patchedFragments,
-        selectionKeys = patchedSelectionKeys,
-    )
-  }
-
-  // do deep recursive traversal of all fields and nested fragments
-  // find any selection key that belongs to the named fragment we generate default selection set for (`root == fragmentNameToPatch`)
-  // copy it with `defaultImplementationName` as a root and add to the original selection set
-  private fun BackendIr.Fragment.patchWithDefaultImplementationSelectionKey(
-      fragmentNameToPatch: String,
-      defaultImplementationName: String,
-  ): BackendIr.Fragment {
-    val patchedFields = this.fields.map { field ->
-      field.patchWithDefaultImplementationSelectionKey(
-          fragmentNameToPatch = fragmentNameToPatch,
-          defaultImplementationName = defaultImplementationName,
-      )
-    }
-
-    val patchedSelectionKeys = this.selectionKeys + this.selectionKeys
-        .filter { selectionKey ->
-          selectionKey.type == SelectionKey.Type.Fragment && selectionKey.root == fragmentNameToPatch
-        }
-        .map { key ->
-          key.copy(root = defaultImplementationName, keys = listOf(defaultImplementationName) + key.keys.drop(1))
-        }
-
-    return this.copy(
-        fields = patchedFields,
-        selectionKeys = patchedSelectionKeys,
     )
   }
 
@@ -557,12 +455,32 @@ internal class BackendIrBuilder constructor(
         .joinToString(separator = "", postfix = parentName.capitalize()) { fragment -> fragment.name.capitalize() }
 
     val nestedFragments = this
-        .flatMap { fragment -> fragment.nestedFragments?.fragments ?: emptyList() }
+        .flatMap { fragment ->
+          fragment.nestedFragments?.fragments?.map { nestedFragment ->
+            nestedFragment.copyToDifferentSelectionRoot(
+                currentRootSelectionKey = selectionKey + fragment.name,
+                newRootSelectionKey = selectionKey + fragmentName,
+            )
+          } ?: emptyList()
+        }
         .filter { fragment -> fragment.possibleTypes.intersect(possibleSchemaTypes).isNotEmpty() }
+        .mergeInterfaceFragmentsWithTheSameName()
 
-    val fields = this.fold(parentFields) { acc, fragment ->
+    val patchedParentFields = parentFields.map { field ->
+      field.copyToDifferentSelectionRoot(
+          currentRootSelectionKey = selectionKey,
+          newRootSelectionKey = selectionKey + fragmentName,
+      )
+    }
+
+    val fields = this.fold(patchedParentFields) { acc, fragment ->
       acc.mergeFields(
-          fragment.fields.addFieldSelectionKey(selectionKey + fragmentName)
+          fragment.fields.map { field ->
+            field.copyToDifferentSelectionRoot(
+                currentRootSelectionKey = selectionKey + fragment.name,
+                newRootSelectionKey = selectionKey + fragmentName,
+            )
+          }
       )
     }.run {
       if (nestedFragments.isEmpty()) this.map { field ->
@@ -576,22 +494,13 @@ internal class BackendIrBuilder constructor(
       acc.plus(fragment.selectionKeys)
     }.plus(selectionKey)
 
-    val nestedFragmentsImplementations = nestedFragments
-        .mergeInterfaceFragmentsWithTheSameName()
-        .addFragmentSelectionKey(selectionKey + fragmentName)
-        .map { fragment ->
-          fragment.copy(
-              fields = fragment.fields.mergeFields(fields),
-              selectionKeys = fragment.selectionKeys + (selectionKey + fragmentName)
-          )
-        }
-        .buildFragmentImplementations(
-            parentName = fragmentName,
-            parentFields = fields,
-            parentPossibleSchemaTypes = possibleSchemaTypes,
-            parentSelectionKeys = selectionsKeys,
-            selectionKey = selectionKey + fragmentName,
-        )
+    val nestedFragmentsImplementations = nestedFragments.buildFragmentImplementations(
+        parentName = fragmentName,
+        parentFields = fields,
+        parentPossibleSchemaTypes = possibleSchemaTypes,
+        parentSelectionKeys = selectionsKeys,
+        selectionKey = selectionKey + fragmentName,
+    )
 
     return BackendIr.Fragment(
         name = fragmentName,

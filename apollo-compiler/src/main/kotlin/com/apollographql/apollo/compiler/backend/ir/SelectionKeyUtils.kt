@@ -43,4 +43,128 @@ internal object SelectionKeyUtils {
       else -> this
     }
   }
+
+  fun BackendIr.NamedFragment.SelectionSet.copyToDifferentSelectionRoot(
+      currentRootSelectionKey: SelectionKey,
+      newRootSelectionKey: SelectionKey,
+  ): BackendIr.NamedFragment.SelectionSet {
+    val patchedFields = this.fields.map { field ->
+      field.copyToDifferentSelectionRoot(
+          currentRootSelectionKey = currentRootSelectionKey,
+          newRootSelectionKey = newRootSelectionKey,
+      )
+    }
+
+    val patchedNestedFragments = this.fragments.copy(
+        fragments = fragments.map { fragment ->
+          fragment.copyToDifferentSelectionRoot(
+              currentRootSelectionKey = currentRootSelectionKey,
+              newRootSelectionKey = newRootSelectionKey,
+          )
+        }
+    )
+
+    val patchedSelectionKeys = this.selectionKeys + this.selectionKeys
+        .filter { selectionKey -> selectionKey.startsWith(currentRootSelectionKey) }
+        .map { key ->
+          key.copy(
+              root = newRootSelectionKey.root,
+              keys = newRootSelectionKey.keys + key.keys.drop(currentRootSelectionKey.keys.size),
+          )
+        }
+
+    return this.copy(
+        fields = patchedFields,
+        fragments = patchedNestedFragments,
+        selectionKeys = patchedSelectionKeys,
+    )
+  }
+
+  fun BackendIr.Field.copyToDifferentSelectionRoot(
+      currentRootSelectionKey: SelectionKey,
+      newRootSelectionKey: SelectionKey,
+  ): BackendIr.Field {
+    val patchedFields = this.fields.map { field ->
+      field.copyToDifferentSelectionRoot(
+          currentRootSelectionKey = currentRootSelectionKey,
+          newRootSelectionKey = newRootSelectionKey,
+      )
+    }
+
+    val patchedFragments = this.fragments.copy(
+        fragments = this.fragments.copy(
+            fragments = this.fragments.map { fragment ->
+              fragment.copyToDifferentSelectionRoot(
+                  currentRootSelectionKey = currentRootSelectionKey,
+                  newRootSelectionKey = newRootSelectionKey,
+              )
+            },
+        )
+    )
+
+    val patchedSelectionKeys = this.selectionKeys + this.selectionKeys
+        .filter { selectionKey -> selectionKey.startsWith(currentRootSelectionKey) }
+        .map { key ->
+          key.copy(
+              root = newRootSelectionKey.root,
+              keys = newRootSelectionKey.keys + key.keys.drop(currentRootSelectionKey.keys.size),
+          )
+        }
+
+    return this.copy(
+        fields = patchedFields,
+        fragments = patchedFragments,
+        selectionKeys = patchedSelectionKeys,
+    )
+  }
+
+  fun BackendIr.Fragment.copyToDifferentSelectionRoot(
+      currentRootSelectionKey: SelectionKey,
+      newRootSelectionKey: SelectionKey
+  ): BackendIr.Fragment {
+    val patchedFields = this.fields.map { field ->
+      field.copyToDifferentSelectionRoot(
+          currentRootSelectionKey = currentRootSelectionKey,
+          newRootSelectionKey = newRootSelectionKey,
+      )
+    }
+
+    val patchedNestedFragments = this.nestedFragments?.copy(
+        fragments = this.nestedFragments.map { fragment ->
+          fragment.copyToDifferentSelectionRoot(
+              currentRootSelectionKey = currentRootSelectionKey,
+              newRootSelectionKey = newRootSelectionKey,
+          )
+        },
+    )
+
+    val patchedSelectionKeys = this.selectionKeys + this.selectionKeys
+        .filter { selectionKey -> selectionKey.startsWith(currentRootSelectionKey) }
+        .map { key ->
+          key.copy(
+              root = newRootSelectionKey.root,
+              keys = newRootSelectionKey.keys + key.keys.drop(currentRootSelectionKey.keys.size),
+          )
+        }
+
+    return this.copy(
+        fields = patchedFields,
+        nestedFragments = patchedNestedFragments,
+        selectionKeys = patchedSelectionKeys,
+    )
+  }
+
+  private fun SelectionKey.startsWith(otherSelectionKey: SelectionKey): Boolean {
+    if (this.type != otherSelectionKey.type) return false
+
+    this.keys.forEachIndexed { index, key ->
+      if (index >= otherSelectionKey.keys.size) {
+        return true
+      } else if (otherSelectionKey.keys[index] != key) {
+        return false
+      }
+    }
+
+    return true
+  }
 }
