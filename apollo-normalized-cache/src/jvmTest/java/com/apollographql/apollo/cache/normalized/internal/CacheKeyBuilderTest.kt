@@ -215,11 +215,9 @@ class CacheKeyBuilderTest {
             writer.writeDouble("double", 3.0)
             writer.writeNumber("number", BigDecimal.valueOf(4))
             writer.writeBoolean("boolean", true)
-            writer.writeCustom("custom", object : CustomScalar {
-              override val graphqlName = "EPISODE"
-              override val className: String
-                get() = String::class.java.name
-            }, "JEDI")
+            writer.writeCustom("custom",
+                CustomScalar("EPISODE", String::class.java.name)
+            , "JEDI")
             writer.writeObject("object", object : InputFieldMarshaller {
               @Throws(IOException::class)
               override fun marshal(writer: InputFieldWriter) {
@@ -234,11 +232,10 @@ class CacheKeyBuilderTest {
               listItemWriter.writeDouble(3.0)
               listItemWriter.writeNumber(BigDecimal.valueOf(4))
               listItemWriter.writeBoolean(true)
-              listItemWriter.writeCustom(object : CustomScalar {
-                override val graphqlName = "EPISODE"
-                override val className: String
-                  get() = String::class.java.name
-              }, "JEDI")
+              listItemWriter.writeCustom(
+                  CustomScalar("EPISODE", String::class.java.name),
+                  "JEDI"
+              )
               listItemWriter.writeObject(object : InputFieldMarshaller {
                 @Throws(IOException::class)
                 override fun marshal(writer: InputFieldWriter) {
@@ -295,11 +292,11 @@ class CacheKeyBuilderTest {
             writer.writeDouble("double", null)
             writer.writeNumber("number", null)
             writer.writeBoolean("boolean", null)
-            writer.writeCustom("custom", object : CustomScalar {
-              override val graphqlName = "EPISODE"
-              override val className: String
-                get() = String::class.java.name
-            }, null)
+            writer.writeCustom(
+                "custom",
+                CustomScalar("EPISODE", String::class.java.name),
+                null
+            )
             writer.writeObject("object", null)
             writer.writeList("listNull", null)
             writer.writeList("listWithNulls", object : InputFieldWriter.ListWriter {
@@ -311,11 +308,10 @@ class CacheKeyBuilderTest {
                 listItemWriter.writeDouble(null)
                 listItemWriter.writeNumber(null)
                 listItemWriter.writeBoolean(null)
-                listItemWriter.writeCustom(object : CustomScalar {
-                  override val graphqlName = "EPISODE"
-                  override val className: String
-                    get() = String::class.java.name
-                }, null)
+                listItemWriter.writeCustom(
+                    CustomScalar("EPISODE", String::class.java.name),
+                    null
+                )
                 listItemWriter.writeObject(null)
                 listItemWriter.writeList(null)
               }
