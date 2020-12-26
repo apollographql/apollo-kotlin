@@ -377,7 +377,7 @@ class ServiceTests {
       assertThat(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").readText(), containsString("internal class"))
 
       assertTrue(dir.generatedChild("service/com/example/type/CustomScalars.kt").isFile)
-      assertThat(dir.generatedChild("service/com/example/type/CustomScalars.kt").readText(), containsString("internal val CustomScalar.Companion.DATETIME"))
+      assertThat(dir.generatedChild("service/com/example/type/CustomScalars.kt").readText(), containsString("internal object CustomScalars"))
 
       assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").isFile)
       assertThat(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").readText(), containsString("internal interface"))
