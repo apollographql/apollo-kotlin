@@ -43,7 +43,6 @@ configure<ApolloExtension> {
   }
   service("upload") {
     customScalarsMapping.set(mapOf(
-        "Date" to "java.util.Date",
         "Upload" to "com.apollographql.apollo.api.FileUpload"
     ))
     sourceFolder.set("com/apollographql/apollo/integration/upload")
