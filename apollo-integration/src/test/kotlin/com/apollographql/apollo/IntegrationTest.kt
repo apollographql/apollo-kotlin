@@ -9,7 +9,7 @@ import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Error
 import com.apollographql.apollo.api.Input.Companion.fromNullable
 import com.apollographql.apollo.api.JsonElement
-import com.apollographql.apollo.api.JsonElement.JsonString
+import com.apollographql.apollo.api.JsonString
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.toJson

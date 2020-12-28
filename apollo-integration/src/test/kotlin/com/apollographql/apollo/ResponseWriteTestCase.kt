@@ -6,7 +6,7 @@ import com.apollographql.apollo.Utils.immediateExecutor
 import com.apollographql.apollo.Utils.immediateExecutorService
 import com.apollographql.apollo.api.CustomScalarAdapter
 import com.apollographql.apollo.api.JsonElement
-import com.apollographql.apollo.api.JsonElement.JsonString
+import com.apollographql.apollo.api.JsonString
 import com.apollographql.apollo.api.Input.Companion.fromNullable
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Operation
@@ -30,7 +30,6 @@ import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import java.text.ParseException
 import java.text.SimpleDateFormat

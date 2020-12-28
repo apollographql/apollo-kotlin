@@ -4,6 +4,9 @@ import com.apollographql.apollo.api.CustomScalarAdapter
 import com.apollographql.apollo.api.JsonElement
 import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.JsonList
+import com.apollographql.apollo.api.JsonObject
+import com.apollographql.apollo.api.JsonString
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
@@ -104,15 +107,15 @@ class CustomScalarAdaptersTest {
 
   @Test
   fun defaultJsonString() {
-    val actualObject = JsonElement.JsonObject(
+    val actualObject = JsonObject(
         mapOf(
-            "key" to JsonElement.JsonString("scalar"),
-            "object" to JsonElement.JsonObject(mapOf("nestedKey" to JsonElement.JsonString("nestedScalar"))),
-            "list" to JsonElement.JsonList(
+            "key" to JsonString("scalar"),
+            "object" to JsonObject(mapOf("nestedKey" to JsonString("nestedScalar"))),
+            "list" to JsonList(
                 listOf(
-                    JsonElement.JsonString("1"),
-                    JsonElement.JsonString("2"),
-                    JsonElement.JsonString("3"),
+                    JsonString("1"),
+                    JsonString("2"),
+                    JsonString("3"),
                 )
             )
         )

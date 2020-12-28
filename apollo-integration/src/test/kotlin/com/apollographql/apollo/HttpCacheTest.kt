@@ -1,12 +1,11 @@
 package com.apollographql.apollo
 
-import com.apollographql.apollo.FaultyHttpCacheStore
 import com.apollographql.apollo.Utils.immediateExecutor
 import com.apollographql.apollo.Utils.immediateExecutorService
 import com.apollographql.apollo.Utils.readFileToString
 import com.apollographql.apollo.api.CustomScalarAdapter
 import com.apollographql.apollo.api.JsonElement
-import com.apollographql.apollo.api.JsonElement.JsonString
+import com.apollographql.apollo.api.JsonString
 import com.apollographql.apollo.api.cache.http.HttpCache
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.cache.ApolloCacheHeaders

@@ -1,8 +1,13 @@
 package com.apollographql.apollo.api.internal.json
 
-import com.apollographql.apollo.api.JsonElement.*
 import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.JsonBoolean
+import com.apollographql.apollo.api.JsonList
+import com.apollographql.apollo.api.JsonNull
+import com.apollographql.apollo.api.JsonNumber
+import com.apollographql.apollo.api.JsonObject
+import com.apollographql.apollo.api.JsonString
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.InputFieldWriter
 import com.apollographql.apollo.api.internal.Throws

@@ -14,35 +14,7 @@ sealed class JsonElement {
     is JsonList -> value.map { it.toRawValue() }
   }
 
-  object JsonNull: JsonElement()
-
-  /**
-   * Represents a `String` value
-   */
-  class JsonString(val value: String) : JsonElement()
-
-  /**
-   * Represents a `Boolean` value
-   */
-  class JsonBoolean(val value: Boolean) : JsonElement()
-
-  /**
-   * Represents a `Number` value
-   */
-  class JsonNumber(val value: Number) : JsonElement()
-
-  /**
-   * Represents a JSON `Object` value
-   */
-  class JsonObject(val value: Map<String, JsonElement>) : JsonElement()
-
-  /**
-   * Represents a JSON `List` value
-   */
-  class JsonList(val value: List<JsonElement>) : JsonElement()
-
   companion object {
-
     @Suppress("UNCHECKED_CAST")
     fun fromRawValue(value: Any?): JsonElement {
       return when (value) {
@@ -59,3 +31,10 @@ sealed class JsonElement {
     }
   }
 }
+
+object JsonNull: JsonElement()
+class JsonString(val value: String) : JsonElement()
+class JsonBoolean(val value: Boolean) : JsonElement()
+class JsonNumber(val value: Number) : JsonElement()
+class JsonObject(val value: Map<String, JsonElement>) : JsonElement()
+class JsonList(val value: List<JsonElement>) : JsonElement()
