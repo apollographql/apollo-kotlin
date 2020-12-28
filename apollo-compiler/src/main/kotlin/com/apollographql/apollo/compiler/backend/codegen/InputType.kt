@@ -1,6 +1,5 @@
 package com.apollographql.apollo.compiler.backend.codegen
 
-import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.InputFieldWriter
@@ -15,7 +14,6 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
-import com.squareup.kotlinpoet.asTypeName
 
 internal fun CodeGenerationAst.InputField.asPropertySpec(initializer: CodeBlock): PropertySpec {
   return PropertySpec
@@ -178,7 +176,7 @@ internal fun CodeGenerationAst.InputField.writeCodeBlock(thisRef: String): CodeB
               .addStatement(
                   "writer.writeCustom(%S, %T, this@%L.%L.value)",
                   schemaName,
-                  type.typeName,
+                  type.typeRef.asTypeName(),
                   thisRef,
                   name.escapeKotlinReservedWord()
               )
@@ -189,7 +187,7 @@ internal fun CodeGenerationAst.InputField.writeCodeBlock(thisRef: String): CodeB
           CodeBlock.of(
               "writer.writeCustom(%S, %T, this@%L.%L)\n",
               schemaName,
-              type.typeName,
+              type.typeRef.asTypeName(),
               thisRef,
               name.escapeKotlinReservedWord()
           )
@@ -249,7 +247,7 @@ private fun CodeGenerationAst.FieldType.writeListItem(): CodeBlock {
           "listItemWriter.writeString(value%L.rawValue)\n", if (nullable) "?" else ""
       )
       is CodeGenerationAst.FieldType.Scalar.Custom -> CodeBlock.of(
-          "listItemWriter.writeCustom(%T, value)\n", typeName
+          "listItemWriter.writeCustom(%T, value)\n", typeRef.asTypeName()
       )
     }
     is CodeGenerationAst.FieldType.Object -> {

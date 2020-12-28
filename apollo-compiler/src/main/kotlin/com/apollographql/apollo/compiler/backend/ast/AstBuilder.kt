@@ -183,7 +183,14 @@ internal class AstBuilder private constructor(
                 nullable = true,
                 schemaType = this.name,
                 type = className,
-                typeName = ClassName(typesPackageName, "CustomScalars", this.name.capitalize())
+                typeRef = CodeGenerationAst.TypeRef(
+                    name = this.name.capitalize(),
+                    packageName = typesPackageName,
+                    enclosingType = CodeGenerationAst.TypeRef(
+                        packageName = typesPackageName,
+                        name = "CustomScalars"
+                    )
+                )
             )
           }
         }
@@ -663,7 +670,14 @@ internal class AstBuilder private constructor(
                 nullable = true,
                 schemaType = schemaTypeRef.name,
                 type = className,
-                typeName = ClassName(typesPackageName, "CustomScalars", schemaTypeRef.name.capitalize())
+                typeRef = CodeGenerationAst.TypeRef(
+                    name = schemaTypeRef.name.capitalize(),
+                    packageName = typesPackageName,
+                    enclosingType = CodeGenerationAst.TypeRef(
+                        packageName = typesPackageName,
+                        name = "CustomScalars"
+                    )
+                )
             )
           }
         }

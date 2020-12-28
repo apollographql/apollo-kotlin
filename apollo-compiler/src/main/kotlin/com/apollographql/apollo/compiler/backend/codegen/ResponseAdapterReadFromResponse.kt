@@ -168,7 +168,7 @@ private fun CodeGenerationAst.FieldType.fromResponseCode(field: String): CodeBlo
             notNullOperator)
       } else {
         CodeBlock.of(
-            "readCustomScalar<%T>(%T)%L", ClassName.bestGuess(type), typeName, notNullOperator
+            "readCustomScalar<%T>(%T)%L", ClassName.bestGuess(type), typeRef.asTypeName(), notNullOperator
         )
       }
     }
@@ -213,7 +213,7 @@ private fun CodeGenerationAst.FieldType.readListItemCode(): CodeBlock {
           "%T.safeValueOf(reader.readString())", typeRef.asTypeName().copy(nullable = false)
       )
       is CodeGenerationAst.FieldType.Scalar.Custom -> CodeBlock.of(
-          "reader.readCustomScalar<%T>(%T)", ClassName.bestGuess(type), typeName
+          "reader.readCustomScalar<%T>(%T)", ClassName.bestGuess(type), typeRef.asTypeName()
       )
     }
     is CodeGenerationAst.FieldType.Object -> {

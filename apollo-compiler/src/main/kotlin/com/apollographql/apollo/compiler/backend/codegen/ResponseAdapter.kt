@@ -131,7 +131,7 @@ private val CodeGenerationAst.Field.responseFieldInitializerCode: CodeBlock
     when {
       type is CodeGenerationAst.FieldType.Scalar && type is CodeGenerationAst.FieldType.Scalar.Custom -> {
         builder.add("(%S,·%S,·%L,·%L,·%T,·%L)", responseName, schemaName, arguments.takeIf { it.isNotEmpty() }.toCode(), type.nullable,
-            type.typeName, conditionsListCode(conditions))
+            type.typeRef.asTypeName(), conditionsListCode(conditions))
       }
       else -> {
         builder.add("(%S,·%S,·%L,·%L,·%L)", responseName, schemaName, arguments.takeIf { it.isNotEmpty() }.toCode(), type.nullable,

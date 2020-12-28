@@ -202,7 +202,7 @@ private val CodeGenerationAst.FieldType.Array.writeListItemCode: CodeBlock
         is CodeGenerationAst.FieldType.Scalar.Float -> CodeBlock.of("listItemWriter.writeDouble(value)")
         is CodeGenerationAst.FieldType.Scalar.Enum -> CodeBlock.of("listItemWriter.writeString($safeValue.rawValue)")
         is CodeGenerationAst.FieldType.Scalar.Custom -> CodeBlock.of(
-            "listItemWriter.writeCustom(%T,·value)", rawType.typeName
+            "listItemWriter.writeCustom(%T,·value)", rawType.typeRef.asTypeName()
         )
       }
       is CodeGenerationAst.FieldType.Object -> {
