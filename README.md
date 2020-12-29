@@ -69,6 +69,8 @@ dependencies {
   implementation("com.apollographql.apollo:apollo-coroutines-support:x.y.z")
   // optional: for RxJava3 support  
   implementation("com.apollographql.apollo:apollo-rx3-support:x.y.z")
+  // optional: for additional Android utilities
+  implementation("com.apollographql.apollo:apollo-android-support:x.y.z")
   // optional: if you just want the generated models and parsers and write your own HTTP code/cache code, you can remove apollo-runtime
   // and use apollo-api instead  
   implementation("com.apollographql.apollo:apollo-api:x.y.z")
