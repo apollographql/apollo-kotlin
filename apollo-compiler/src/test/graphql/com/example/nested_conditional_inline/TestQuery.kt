@@ -268,28 +268,7 @@ data class TestQuery(
         interface Friend : Human.Friend {
           override val __typename: String
 
-          /**
-           * The name of the character
-           */
-          override val name: String
-
           override fun marshaller(): ResponseFieldMarshaller
-
-          interface Human : Hero.Human.Friend, Hero.Human.Friend.Human, Friend {
-            override val __typename: String
-
-            /**
-             * The name of the character
-             */
-            override val name: String
-
-            /**
-             * Height in the preferred unit, default is meters
-             */
-            override val height: Double?
-
-            override fun marshaller(): ResponseFieldMarshaller
-          }
 
           data class HumanFriend(
             override val __typename: String,
@@ -301,7 +280,7 @@ data class TestQuery(
              * Height in the preferred unit, default is meters
              */
             override val height: Double?
-          ) : Hero.Human.Friend, Hero.Human.Friend.Human, Friend, Human {
+          ) : Human.Friend, Human.Friend.Human, Friend {
             override fun marshaller(): ResponseFieldMarshaller {
               return ResponseFieldMarshaller { writer ->
                 TestQuery_ResponseAdapter.Data.Hero.HumanHero.Friend.HumanFriend.toResponse(writer, this)
@@ -315,18 +294,12 @@ data class TestQuery(
              * The name of the character
              */
             override val name: String
-          ) : Hero.Human.Friend, Friend {
+          ) : Human.Friend, Friend {
             override fun marshaller(): ResponseFieldMarshaller {
               return ResponseFieldMarshaller { writer ->
                 TestQuery_ResponseAdapter.Data.Hero.HumanHero.Friend.OtherFriend.toResponse(writer, this)
               }
             }
-          }
-
-          companion object {
-            fun Friend.asFriends(): Hero.Human.Friend? = this as? Hero.Human.Friend
-
-            fun Friend.asHuman(): Human? = this as? Human
           }
         }
       }
@@ -354,28 +327,7 @@ data class TestQuery(
         interface Friend : Droid.Friend {
           override val __typename: String
 
-          /**
-           * The name of the character
-           */
-          override val name: String
-
           override fun marshaller(): ResponseFieldMarshaller
-
-          interface Human : Droid.Friend, Droid.Friend.Human, Friend {
-            override val __typename: String
-
-            /**
-             * The name of the character
-             */
-            override val name: String
-
-            /**
-             * Height in the preferred unit, default is meters
-             */
-            override val height: Double?
-
-            override fun marshaller(): ResponseFieldMarshaller
-          }
 
           data class HumanFriend(
             override val __typename: String,
@@ -387,7 +339,7 @@ data class TestQuery(
              * Height in the preferred unit, default is meters
              */
             override val height: Double?
-          ) : Droid.Friend, Droid.Friend.Human, Friend, Human {
+          ) : Droid.Friend, Droid.Friend.Human, Friend {
             override fun marshaller(): ResponseFieldMarshaller {
               return ResponseFieldMarshaller { writer ->
                 TestQuery_ResponseAdapter.Data.Hero.DroidHero.Friend.HumanFriend.toResponse(writer, this)
@@ -407,12 +359,6 @@ data class TestQuery(
                 TestQuery_ResponseAdapter.Data.Hero.DroidHero.Friend.OtherFriend.toResponse(writer, this)
               }
             }
-          }
-
-          companion object {
-            fun Friend.asFriends(): Droid.Friend? = this as? Droid.Friend
-
-            fun Friend.asHuman(): Human? = this as? Human
           }
         }
       }

@@ -89,189 +89,73 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       object CharacterHero : ResponseAdapter<TestQuery.Data.Hero.CharacterHero> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("name", "name", null, false, null)
+          ResponseField.forString("name", "name", null, false, null),
+          ResponseField.forCustomType("birthDate", "birthDate", null, false, CustomType.Date, null)
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
             TestQuery.Data.Hero.CharacterHero {
-          val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
-          return when(typename) {
-            "Droid" -> CharacterCharacterHero.fromResponse(reader, typename)
-            else -> OtherCharacterHero.fromResponse(reader, typename)
+          return reader.run {
+            var __typename: String? = __typename
+            var name: String? = null
+            var birthDate: Any? = null
+            while(true) {
+              when (selectField(RESPONSE_FIELDS)) {
+                0 -> __typename = readString(RESPONSE_FIELDS[0])
+                1 -> name = readString(RESPONSE_FIELDS[1])
+                2 -> birthDate = readCustomType<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)
+                else -> break
+              }
+            }
+            TestQuery.Data.Hero.CharacterHero(
+              __typename = __typename!!,
+              name = name!!,
+              birthDate = birthDate!!
+            )
           }
         }
 
         override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero.CharacterHero) {
-          when(value) {
-            is TestQuery.Data.Hero.CharacterHero.CharacterCharacterHero -> CharacterCharacterHero.toResponse(writer, value)
-            is TestQuery.Data.Hero.CharacterHero.OtherCharacterHero -> OtherCharacterHero.toResponse(writer, value)
-          }
-        }
-
-        object CharacterCharacterHero :
-            ResponseAdapter<TestQuery.Data.Hero.CharacterHero.CharacterCharacterHero> {
-          private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField.forString("__typename", "__typename", null, false, null),
-            ResponseField.forString("name", "name", null, false, null),
-            ResponseField.forCustomType("birthDate", "birthDate", null, false, CustomType.Date, null)
-          )
-
-          override fun fromResponse(reader: ResponseReader, __typename: String?):
-              TestQuery.Data.Hero.CharacterHero.CharacterCharacterHero {
-            return reader.run {
-              var __typename: String? = __typename
-              var name: String? = null
-              var birthDate: Any? = null
-              while(true) {
-                when (selectField(RESPONSE_FIELDS)) {
-                  0 -> __typename = readString(RESPONSE_FIELDS[0])
-                  1 -> name = readString(RESPONSE_FIELDS[1])
-                  2 -> birthDate = readCustomType<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)
-                  else -> break
-                }
-              }
-              TestQuery.Data.Hero.CharacterHero.CharacterCharacterHero(
-                __typename = __typename!!,
-                name = name!!,
-                birthDate = birthDate!!
-              )
-            }
-          }
-
-          override fun toResponse(writer: ResponseWriter,
-              value: TestQuery.Data.Hero.CharacterHero.CharacterCharacterHero) {
-            writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-            writer.writeString(RESPONSE_FIELDS[1], value.name)
-            writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, value.birthDate)
-          }
-        }
-
-        object OtherCharacterHero :
-            ResponseAdapter<TestQuery.Data.Hero.CharacterHero.OtherCharacterHero> {
-          private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField.forString("__typename", "__typename", null, false, null),
-            ResponseField.forString("name", "name", null, false, null)
-          )
-
-          override fun fromResponse(reader: ResponseReader, __typename: String?):
-              TestQuery.Data.Hero.CharacterHero.OtherCharacterHero {
-            return reader.run {
-              var __typename: String? = __typename
-              var name: String? = null
-              while(true) {
-                when (selectField(RESPONSE_FIELDS)) {
-                  0 -> __typename = readString(RESPONSE_FIELDS[0])
-                  1 -> name = readString(RESPONSE_FIELDS[1])
-                  else -> break
-                }
-              }
-              TestQuery.Data.Hero.CharacterHero.OtherCharacterHero(
-                __typename = __typename!!,
-                name = name!!
-              )
-            }
-          }
-
-          override fun toResponse(writer: ResponseWriter,
-              value: TestQuery.Data.Hero.CharacterHero.OtherCharacterHero) {
-            writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-            writer.writeString(RESPONSE_FIELDS[1], value.name)
-          }
+          writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+          writer.writeString(RESPONSE_FIELDS[1], value.name)
+          writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, value.birthDate)
         }
       }
 
       object CharacterHumanHero : ResponseAdapter<TestQuery.Data.Hero.CharacterHumanHero> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("name", "name", null, false, null)
+          ResponseField.forString("name", "name", null, false, null),
+          ResponseField.forCustomType("birthDate", "birthDate", null, false, CustomType.Date, null)
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
             TestQuery.Data.Hero.CharacterHumanHero {
-          val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
-          return when(typename) {
-            "Human" -> CharacterCharacterHumanHero.fromResponse(reader, typename)
-            else -> OtherCharacterHumanHero.fromResponse(reader, typename)
+          return reader.run {
+            var __typename: String? = __typename
+            var name: String? = null
+            var birthDate: Any? = null
+            while(true) {
+              when (selectField(RESPONSE_FIELDS)) {
+                0 -> __typename = readString(RESPONSE_FIELDS[0])
+                1 -> name = readString(RESPONSE_FIELDS[1])
+                2 -> birthDate = readCustomType<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)
+                else -> break
+              }
+            }
+            TestQuery.Data.Hero.CharacterHumanHero(
+              __typename = __typename!!,
+              name = name!!,
+              birthDate = birthDate!!
+            )
           }
         }
 
         override fun toResponse(writer: ResponseWriter,
             value: TestQuery.Data.Hero.CharacterHumanHero) {
-          when(value) {
-            is TestQuery.Data.Hero.CharacterHumanHero.CharacterCharacterHumanHero -> CharacterCharacterHumanHero.toResponse(writer, value)
-            is TestQuery.Data.Hero.CharacterHumanHero.OtherCharacterHumanHero -> OtherCharacterHumanHero.toResponse(writer, value)
-          }
-        }
-
-        object CharacterCharacterHumanHero :
-            ResponseAdapter<TestQuery.Data.Hero.CharacterHumanHero.CharacterCharacterHumanHero> {
-          private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField.forString("__typename", "__typename", null, false, null),
-            ResponseField.forString("name", "name", null, false, null),
-            ResponseField.forCustomType("birthDate", "birthDate", null, false, CustomType.Date, null)
-          )
-
-          override fun fromResponse(reader: ResponseReader, __typename: String?):
-              TestQuery.Data.Hero.CharacterHumanHero.CharacterCharacterHumanHero {
-            return reader.run {
-              var __typename: String? = __typename
-              var name: String? = null
-              var birthDate: Any? = null
-              while(true) {
-                when (selectField(RESPONSE_FIELDS)) {
-                  0 -> __typename = readString(RESPONSE_FIELDS[0])
-                  1 -> name = readString(RESPONSE_FIELDS[1])
-                  2 -> birthDate = readCustomType<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)
-                  else -> break
-                }
-              }
-              TestQuery.Data.Hero.CharacterHumanHero.CharacterCharacterHumanHero(
-                __typename = __typename!!,
-                name = name!!,
-                birthDate = birthDate!!
-              )
-            }
-          }
-
-          override fun toResponse(writer: ResponseWriter,
-              value: TestQuery.Data.Hero.CharacterHumanHero.CharacterCharacterHumanHero) {
-            writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-            writer.writeString(RESPONSE_FIELDS[1], value.name)
-            writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, value.birthDate)
-          }
-        }
-
-        object OtherCharacterHumanHero :
-            ResponseAdapter<TestQuery.Data.Hero.CharacterHumanHero.OtherCharacterHumanHero> {
-          private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField.forString("__typename", "__typename", null, false, null),
-            ResponseField.forString("name", "name", null, false, null)
-          )
-
-          override fun fromResponse(reader: ResponseReader, __typename: String?):
-              TestQuery.Data.Hero.CharacterHumanHero.OtherCharacterHumanHero {
-            return reader.run {
-              var __typename: String? = __typename
-              var name: String? = null
-              while(true) {
-                when (selectField(RESPONSE_FIELDS)) {
-                  0 -> __typename = readString(RESPONSE_FIELDS[0])
-                  1 -> name = readString(RESPONSE_FIELDS[1])
-                  else -> break
-                }
-              }
-              TestQuery.Data.Hero.CharacterHumanHero.OtherCharacterHumanHero(
-                __typename = __typename!!,
-                name = name!!
-              )
-            }
-          }
-
-          override fun toResponse(writer: ResponseWriter,
-              value: TestQuery.Data.Hero.CharacterHumanHero.OtherCharacterHumanHero) {
-            writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-            writer.writeString(RESPONSE_FIELDS[1], value.name)
-          }
+          writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+          writer.writeString(RESPONSE_FIELDS[1], value.name)
+          writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, value.birthDate)
         }
       }
 

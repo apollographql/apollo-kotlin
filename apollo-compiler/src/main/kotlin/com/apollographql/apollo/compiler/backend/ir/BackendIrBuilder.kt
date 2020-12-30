@@ -3,7 +3,6 @@ package com.apollographql.apollo.compiler.backend.ir
 import com.apollographql.apollo.compiler.PackageNameProvider
 import com.apollographql.apollo.compiler.backend.ir.BackendIrMergeUtils.mergeFields
 import com.apollographql.apollo.compiler.backend.ir.SelectionKeyUtils.addFieldSelectionKey
-import com.apollographql.apollo.compiler.backend.ir.SelectionKeyUtils.copyToDifferentSelectionRoot
 import com.apollographql.apollo.compiler.frontend.GQLNamedType
 import com.apollographql.apollo.compiler.frontend.Schema
 import com.apollographql.apollo.compiler.frontend.SourceLocation
@@ -68,7 +67,10 @@ internal class BackendIrBuilder constructor(
         description = description,
     )
         .buildBackendIrField(dataFieldSelectionKey)
-        .buildFragmentImplementations(dataFieldSelectionKey)
+        .buildFragmentImplementations(
+            selectionKey = dataFieldSelectionKey,
+            keepInterfaces = true,
+        )
 
     return BackendIr.Operation(
         name = normalizedName,
@@ -197,14 +199,9 @@ internal class BackendIrBuilder constructor(
         type = SelectionKey.Type.Fragment,
     )
 
-    val defaultImplementationSelectionSet = selectionSet
-        .copyToDifferentSelectionRoot(
-            currentRootSelectionKey = rootSelectionKey,
-            newRootSelectionKey = defaultImplementationRootSelectionKey,
-        )
-        .buildDefaultImplementationSelectionSet(
-            rootSelectionKey = defaultImplementationRootSelectionKey
-        )
+    val defaultImplementationSelectionSet = selectionSet.buildDefaultImplementationSelectionSet(
+        rootSelectionKey = defaultImplementationRootSelectionKey
+    )
 
     return BackendIr.NamedFragment(
         name = this.name,
@@ -258,7 +255,8 @@ internal class BackendIrBuilder constructor(
       return this.copy(
           fields = this.fields.map { field ->
             field.buildFragmentImplementations(
-                selectionKey = rootSelectionKey + field.responseName
+                selectionKey = rootSelectionKey + field.responseName,
+                keepInterfaces = false,
             )
           },
       )
@@ -271,7 +269,9 @@ internal class BackendIrBuilder constructor(
 
     val fragmentInterfaces = this.fragments.filter { it.type == BackendIr.Fragment.Type.Interface }
 
-    val fragmentImplementations = fragmentInterfaces.groupFragmentsByPossibleTypes()
+    val fragmentImplementations = fragmentInterfaces
+        .flattenFragments()
+        .groupFragmentsByPossibleTypes()
         .map { (fragments, fragmentsPossibleTypes) ->
           fragments.buildFragmentImplementation(
               parentName = rootSelectionKey.root,
@@ -284,6 +284,7 @@ internal class BackendIrBuilder constructor(
     val fields = this.fields.map { field ->
       field.buildFragmentImplementations(
           selectionKey = rootSelectionKey + field.responseName,
+          keepInterfaces = true,
       )
     }
 
@@ -314,12 +315,12 @@ internal class BackendIrBuilder constructor(
         .toMap()
 
     val fragments = BackendIr.Fragments(
-        fragments = fragmentInterfaces + fragmentImplementations + fallbackImplementation,
+        fragments = fragmentImplementations + fallbackImplementation,
         accessors = fragmentAccessors,
     )
 
     return this.copy(
-        fields = fields,
+        fields = fields.filter { it.name == "__typename" },
         fragments = fragments,
     )
   }
@@ -360,11 +361,13 @@ internal class BackendIrBuilder constructor(
 
   private fun BackendIr.Field.buildFragmentImplementations(
       selectionKey: SelectionKey,
+      keepInterfaces: Boolean,
   ): BackendIr.Field {
     if (this.fragments.isEmpty()) {
       val fields = this.fields.map { field ->
         field.buildFragmentImplementations(
             selectionKey = selectionKey + field.responseName,
+            keepInterfaces = keepInterfaces,
         )
       }
       return this.copy(
@@ -372,32 +375,30 @@ internal class BackendIrBuilder constructor(
       )
     }
 
-    val fragmentInterfaces = this.fragments
-        .filter { fragment -> fragment.type == BackendIr.Fragment.Type.Interface }
-        .mergeInterfaceFragmentsWithTheSameName()
-
     val fieldPossibleSchemaTypes = schema.typeDefinition(this.type.rawType.name!!)
         .possibleTypes(schema.typeDefinitions)
         .map { GQLNamedType(sourceLocation = SourceLocation.UNKNOWN, it).toSchemaType(schema) }
         .toSet()
 
-    val fields = this.fields.map { field ->
-      field.buildFragmentImplementations(
-          selectionKey = selectionKey + field.responseName,
-      )
-    }
+    val fragmentInterfaces = this.fragments
+        .mergeInterfaceFragmentsWithTheSameName()
 
-    val fragments = fragmentInterfaces.buildFragmentImplementations(
-        parentName = this.responseName,
-        parentFields = this.fields,
-        parentPossibleSchemaTypes = fieldPossibleSchemaTypes,
-        parentSelectionKeys = this.selectionKeys,
-        selectionKey = selectionKey,
-    )!!
+    val fragmentImplementations = fragmentInterfaces
+        .flattenFragments()
+        .buildFragmentImplementations(
+            parentName = this.responseName,
+            parentFields = this.fields,
+            parentPossibleSchemaTypes = fieldPossibleSchemaTypes,
+            parentSelectionKeys = this.selectionKeys,
+            selectionKey = selectionKey,
+        )
 
     return this.copy(
-        fields = fields,
-        fragments = fragments,
+        fields = this.fields.takeIf { keepInterfaces } ?: this.fields.filter { it.name == "__typename" },
+        fragments = BackendIr.Fragments(
+            fragments = (fragmentInterfaces.takeIf { keepInterfaces } ?: emptyList()) + fragmentImplementations,
+            accessors = (this.fragments.accessors.takeIf { keepInterfaces } ?: emptyMap()),
+        ),
         selectionKeys = this.selectionKeys + selectionKey,
     )
   }
@@ -408,8 +409,8 @@ internal class BackendIrBuilder constructor(
       parentPossibleSchemaTypes: Set<IntrospectionSchema.TypeRef>,
       parentSelectionKeys: Set<SelectionKey>,
       selectionKey: SelectionKey,
-  ): BackendIr.Fragments? {
-    if (this.isEmpty()) return null
+  ): List<BackendIr.Fragment> {
+    if (this.isEmpty()) return emptyList()
 
     val fragmentImplementations = this.groupFragmentsByPossibleTypes()
         .map { (fragments, fragmentsPossibleTypes) ->
@@ -426,6 +427,7 @@ internal class BackendIrBuilder constructor(
         .map { field ->
           field.buildFragmentImplementations(
               selectionKey = selectionKey + "Other${parentName.capitalize()}" + field.responseName,
+              keepInterfaces = false,
           )
         }
 
@@ -439,10 +441,13 @@ internal class BackendIrBuilder constructor(
         type = BackendIr.Fragment.Type.Fallback,
     )
 
-    return createFragments(
-        selectionKey = selectionKey,
-        fragments = this + fragmentImplementations + fallbackImplementation,
-    )
+    return fragmentImplementations + fallbackImplementation
+  }
+
+  private fun List<BackendIr.Fragment>.flattenFragments(): List<BackendIr.Fragment> {
+    return this.flatMap { fragment ->
+      listOf(fragment.copy(nestedFragments = null)) + (fragment.nestedFragments?.fragments?.flattenFragments() ?: emptyList())
+    }
   }
 
   private fun List<BackendIr.Fragment>.buildFragmentImplementation(
@@ -454,58 +459,25 @@ internal class BackendIrBuilder constructor(
     val fragmentName = this.distinctBy { fragment -> fragment.name }
         .joinToString(separator = "", postfix = parentName.capitalize()) { fragment -> fragment.name.capitalize() }
 
-    val nestedFragments = this
-        .flatMap { fragment ->
-          fragment.nestedFragments?.fragments?.map { nestedFragment ->
-            nestedFragment.copyToDifferentSelectionRoot(
-                currentRootSelectionKey = selectionKey + fragment.name,
-                newRootSelectionKey = selectionKey + fragmentName,
-            )
-          } ?: emptyList()
-        }
-        .filter { fragment -> fragment.possibleTypes.intersect(possibleSchemaTypes).isNotEmpty() }
-        .mergeInterfaceFragmentsWithTheSameName()
-
-    val patchedParentFields = parentFields.map { field ->
-      field.copyToDifferentSelectionRoot(
-          currentRootSelectionKey = selectionKey,
-          newRootSelectionKey = selectionKey + fragmentName,
-      )
-    }
-
-    val fields = this.fold(patchedParentFields) { acc, fragment ->
-      acc.mergeFields(
-          fragment.fields.map { field ->
-            field.copyToDifferentSelectionRoot(
-                currentRootSelectionKey = selectionKey + fragment.name,
-                newRootSelectionKey = selectionKey + fragmentName,
-            )
-          }
-      )
+    val fields = this.fold(parentFields) { acc, fragment ->
+      acc.mergeFields(fragment.fields)
     }.run {
-      if (nestedFragments.isEmpty()) this.map { field ->
+      this.map { field ->
         field.buildFragmentImplementations(
             selectionKey = selectionKey + fragmentName + field.responseName,
+            keepInterfaces = false,
         )
-      } else this
-    }
+      }
+    }.addFieldSelectionKey(selectionKey + fragmentName)
 
     val selectionsKeys = this.fold(emptySet<SelectionKey>()) { acc, fragment ->
-      acc.plus(fragment.selectionKeys)
+      acc + fragment.selectionKeys//.filterNot { it.startsWith(selectionKey + fragmentName) }
     }.plus(selectionKey)
-
-    val nestedFragmentsImplementations = nestedFragments.buildFragmentImplementations(
-        parentName = fragmentName,
-        parentFields = fields,
-        parentPossibleSchemaTypes = possibleSchemaTypes,
-        parentSelectionKeys = selectionsKeys,
-        selectionKey = selectionKey + fragmentName,
-    )
 
     return BackendIr.Fragment(
         name = fragmentName,
         fields = fields,
-        nestedFragments = nestedFragmentsImplementations,
+        nestedFragments = null,
         possibleTypes = possibleSchemaTypes.toSet(),
         selectionKeys = selectionsKeys,
         description = null,
@@ -797,4 +769,3 @@ internal class BackendIrBuilder constructor(
       val selectionKeys: Set<SelectionKey>,
   )
 }
-

@@ -18,24 +18,13 @@ internal interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
 
   override fun marshaller(): ResponseFieldMarshaller
 
-  interface Human : HeroDetail, HeroDetail.Human, HumanDetail, HeroDetailsImpl {
-    override val __typename: String
-
-    /**
-     * What this human calls themselves
-     */
-    override val name: String
-
-    override fun marshaller(): ResponseFieldMarshaller
-  }
-
   data class HumanHeroDetailsImpl(
     override val __typename: String,
     /**
      * What this human calls themselves
      */
     override val name: String
-  ) : HeroDetail, HeroDetail.Human, HumanDetail, HeroDetailsImpl, Human {
+  ) : HeroDetail, HeroDetail.Human, HumanDetail, HeroDetailsImpl {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
         HeroDetailsImpl_ResponseAdapter.HumanHeroDetailsImpl.toResponse(writer, this)

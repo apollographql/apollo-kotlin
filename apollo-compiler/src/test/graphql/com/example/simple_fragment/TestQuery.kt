@@ -157,59 +157,17 @@ internal class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         }
       }
 
-      interface CharacterHumanHero : Hero, Character, HeroDetail, Human, HumanDetail {
-        override val __typename: String
-
+      data class CharacterHumanHero(
+        override val __typename: String,
         /**
          * What this human calls themselves
          */
         override val name: String
-
-        override fun marshaller(): ResponseFieldMarshaller
-
-        interface Human : Character, Character.Human, HeroDetail.Human, CharacterHumanHero {
-          override val __typename: String
-
-          /**
-           * What this human calls themselves
-           */
-          override val name: String
-
-          override fun marshaller(): ResponseFieldMarshaller
-        }
-
-        data class HumanCharacterHumanHero(
-          override val __typename: String,
-          /**
-           * What this human calls themselves
-           */
-          override val name: String
-        ) : Character, Character.Human, HeroDetail.Human, CharacterHumanHero, Human {
-          override fun marshaller(): ResponseFieldMarshaller {
-            return ResponseFieldMarshaller { writer ->
-              TestQuery_ResponseAdapter.Data.Hero.CharacterHumanHero.HumanCharacterHumanHero.toResponse(writer, this)
-            }
+      ) : Hero, Character, HeroDetail, Character.Human, HeroDetail.Human, Human, HumanDetail {
+        override fun marshaller(): ResponseFieldMarshaller {
+          return ResponseFieldMarshaller { writer ->
+            TestQuery_ResponseAdapter.Data.Hero.CharacterHumanHero.toResponse(writer, this)
           }
-        }
-
-        data class OtherCharacterHumanHero(
-          override val __typename: String,
-          /**
-           * What this human calls themselves
-           */
-          override val name: String
-        ) : Hero, Character, HeroDetail, Hero.Human, HumanDetail, CharacterHumanHero {
-          override fun marshaller(): ResponseFieldMarshaller {
-            return ResponseFieldMarshaller { writer ->
-              TestQuery_ResponseAdapter.Data.Hero.CharacterHumanHero.OtherCharacterHumanHero.toResponse(writer, this)
-            }
-          }
-        }
-
-        companion object {
-          fun CharacterHumanHero.asCharacter(): Character? = this as? Character
-
-          fun CharacterHumanHero.asHuman(): Human? = this as? Human
         }
       }
 

@@ -157,29 +157,15 @@ class GetPage : Query<GetPage.Data, Operation.Variables> {
         }
 
         interface Item : Collection.Item, ParticularCollection.Item {
-          override val title: String
-
           override val __typename: String
 
           override fun marshaller(): ResponseFieldMarshaller
-
-          interface ParticularItem : ParticularCollection.Item,
-              ParticularCollection.Item.ParticularItem, Item {
-            override val __typename: String
-
-            override val image: String
-
-            override val title: String
-
-            override fun marshaller(): ResponseFieldMarshaller
-          }
 
           data class ParticularItemItem(
             override val title: String,
             override val __typename: String,
             override val image: String
-          ) : ParticularCollection.Item, ParticularCollection.Item.ParticularItem, Item,
-              ParticularItem {
+          ) : ParticularCollection.Item, ParticularCollection.Item.ParticularItem, Item {
             override fun marshaller(): ResponseFieldMarshaller {
               return ResponseFieldMarshaller { writer ->
                 GetPage_ResponseAdapter.Data.Collection.ParticularCollectionCollection.Item.ParticularItemItem.toResponse(writer, this)
@@ -190,18 +176,12 @@ class GetPage : Query<GetPage.Data, Operation.Variables> {
           data class OtherItem(
             override val title: String,
             override val __typename: String
-          ) : Collection.Item, Item, ParticularCollection.Item {
+          ) : Collection.Item, ParticularCollection.Item, Item {
             override fun marshaller(): ResponseFieldMarshaller {
               return ResponseFieldMarshaller { writer ->
                 GetPage_ResponseAdapter.Data.Collection.ParticularCollectionCollection.Item.OtherItem.toResponse(writer, this)
               }
             }
-          }
-
-          companion object {
-            fun Item.asItems(): ParticularCollection.Item? = this as? ParticularCollection.Item
-
-            fun Item.asParticularItem(): ParticularItem? = this as? ParticularItem
           }
         }
       }

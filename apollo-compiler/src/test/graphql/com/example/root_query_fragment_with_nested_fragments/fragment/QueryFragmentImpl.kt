@@ -33,24 +33,13 @@ data class QueryFragmentImpl(
 
     override fun marshaller(): ResponseFieldMarshaller
 
-    interface Character : QueryFragment.Hero, QueryFragment.Hero.Character, HeroFragment, Hero {
-      override val __typename: String
-
-      /**
-       * The name of the character
-       */
-      override val name: String
-
-      override fun marshaller(): ResponseFieldMarshaller
-    }
-
     data class CharacterHero(
       override val __typename: String,
       /**
        * The name of the character
        */
       override val name: String
-    ) : QueryFragment.Hero, QueryFragment.Hero.Character, HeroFragment, Hero, Character {
+    ) : QueryFragment.Hero, QueryFragment.Hero.Character, HeroFragment, Hero {
       override fun marshaller(): ResponseFieldMarshaller {
         return ResponseFieldMarshaller { writer ->
           QueryFragmentImpl_ResponseAdapter.Hero.CharacterHero.toResponse(writer, this)
@@ -67,14 +56,6 @@ data class QueryFragmentImpl(
         }
       }
     }
-
-    companion object {
-      fun Hero.asHero(): QueryFragment.Hero? = this as? QueryFragment.Hero
-
-      fun Hero.asCharacter(): Character? = this as? Character
-
-      fun Hero.heroFragment(): HeroFragment? = this as? HeroFragment
-    }
   }
 
   /**
@@ -84,23 +65,6 @@ data class QueryFragmentImpl(
     override val __typename: String
 
     override fun marshaller(): ResponseFieldMarshaller
-
-    interface Droid : QueryFragment.Droid, QueryFragment.Droid.Droid, DroidFragment,
-        QueryFragmentImpl.Droid {
-      override val __typename: String
-
-      /**
-       * What others call this droid
-       */
-      override val name: String
-
-      /**
-       * This droid's primary function
-       */
-      override val primaryFunction: String?
-
-      override fun marshaller(): ResponseFieldMarshaller
-    }
 
     data class DroidDroid(
       override val __typename: String,
@@ -112,8 +76,7 @@ data class QueryFragmentImpl(
        * This droid's primary function
        */
       override val primaryFunction: String?
-    ) : QueryFragment.Droid, QueryFragment.Droid.Droid, DroidFragment, QueryFragmentImpl.Droid,
-        Droid {
+    ) : QueryFragment.Droid, QueryFragment.Droid.Droid, DroidFragment, Droid {
       override fun marshaller(): ResponseFieldMarshaller {
         return ResponseFieldMarshaller { writer ->
           QueryFragmentImpl_ResponseAdapter.Droid.DroidDroid.toResponse(writer, this)
@@ -123,18 +86,12 @@ data class QueryFragmentImpl(
 
     data class OtherDroid(
       override val __typename: String
-    ) : QueryFragment.Droid, QueryFragmentImpl.Droid {
+    ) : QueryFragment.Droid, Droid {
       override fun marshaller(): ResponseFieldMarshaller {
         return ResponseFieldMarshaller { writer ->
           QueryFragmentImpl_ResponseAdapter.Droid.OtherDroid.toResponse(writer, this)
         }
       }
-    }
-
-    companion object {
-      fun QueryFragmentImpl.Droid.asDroid(): Droid? = this as? Droid
-
-      fun QueryFragmentImpl.Droid.droidFragment(): DroidFragment? = this as? DroidFragment
     }
   }
 
@@ -146,22 +103,6 @@ data class QueryFragmentImpl(
 
     override fun marshaller(): ResponseFieldMarshaller
 
-    interface Human : QueryFragment.Human, QueryFragment.Human.Human, QueryFragmentImpl.Human {
-      override val __typename: String
-
-      /**
-       * What this human calls themselves
-       */
-      override val name: String
-
-      /**
-       * The home planet of the human, or null if unknown
-       */
-      override val homePlanet: String?
-
-      override fun marshaller(): ResponseFieldMarshaller
-    }
-
     data class HumanHuman(
       override val __typename: String,
       /**
@@ -172,7 +113,7 @@ data class QueryFragmentImpl(
        * The home planet of the human, or null if unknown
        */
       override val homePlanet: String?
-    ) : QueryFragment.Human, QueryFragment.Human.Human, QueryFragmentImpl.Human, Human {
+    ) : QueryFragment.Human, QueryFragment.Human.Human, Human {
       override fun marshaller(): ResponseFieldMarshaller {
         return ResponseFieldMarshaller { writer ->
           QueryFragmentImpl_ResponseAdapter.Human.HumanHuman.toResponse(writer, this)
@@ -182,16 +123,12 @@ data class QueryFragmentImpl(
 
     data class OtherHuman(
       override val __typename: String
-    ) : QueryFragment.Human, QueryFragmentImpl.Human {
+    ) : QueryFragment.Human, Human {
       override fun marshaller(): ResponseFieldMarshaller {
         return ResponseFieldMarshaller { writer ->
           QueryFragmentImpl_ResponseAdapter.Human.OtherHuman.toResponse(writer, this)
         }
       }
-    }
-
-    companion object {
-      fun QueryFragmentImpl.Human.asHuman(): Human? = this as? Human
     }
   }
 }
