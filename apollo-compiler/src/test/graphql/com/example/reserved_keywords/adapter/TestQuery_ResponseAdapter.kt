@@ -124,8 +124,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           TestQuery.Data.Object {
         val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
         return when(typename) {
-          "Droid" -> CharacterObject.fromResponse(reader, typename)
           "Human" -> CharacterObject.fromResponse(reader, typename)
+          "Droid" -> CharacterObject.fromResponse(reader, typename)
           else -> OtherObject.fromResponse(reader, typename)
         }
       }

@@ -123,7 +123,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
         override fun marshaller(): ResponseFieldMarshaller
 
-        interface Character : Hero, HeroFragment, QueryFragment.Hero.Character {
+        interface Character : Hero, HeroFragment, QueryFragment.Hero.Character, QueryFragment.Hero {
           override val __typename: String
 
           /**
@@ -149,7 +149,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
         override fun marshaller(): ResponseFieldMarshaller
 
-        interface Droid : Query.Droid, DroidFragment, QueryFragment.Droid.Droid {
+        interface Droid : Query.Droid, DroidFragment, QueryFragment.Droid.Droid, QueryFragment.Droid
+            {
           override val __typename: String
 
           /**
@@ -180,7 +181,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
         override fun marshaller(): ResponseFieldMarshaller
 
-        interface Human : Query.Human, QueryFragment.Human.Human {
+        interface Human : Query.Human, QueryFragment.Human.Human, QueryFragment.Human {
           override val __typename: String
 
           /**
@@ -223,7 +224,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         override fun marshaller(): ResponseFieldMarshaller
 
         interface Character : Query.Hero, Query.Hero.Character, HeroFragment,
-            QueryFragment.Hero.Character {
+            QueryFragment.Hero.Character, QueryFragment.Hero, Hero {
           override val __typename: String
 
           /**
@@ -240,8 +241,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            * The name of the character
            */
           override val name: String
-        ) : Query.Hero, Query.Hero.Character, HeroFragment, QueryFragment.Hero.Character, Character,
-            Hero {
+        ) : Query.Hero, Query.Hero.Character, HeroFragment, QueryFragment.Hero.Character,
+            QueryFragment.Hero, Hero, Character {
           override fun marshaller(): ResponseFieldMarshaller {
             return ResponseFieldMarshaller { writer ->
               TestQuery_ResponseAdapter.Data.QueryDatum.Hero.CharacterHero.toResponse(writer, this)
@@ -260,7 +261,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         }
 
         companion object {
-          fun Hero.asHero(): Query.Hero? = this as? Query.Hero
+          fun Hero.asHero(): QueryFragment.Hero? = this as? QueryFragment.Hero
 
           fun Hero.asCharacter(): Character? = this as? Character
 
@@ -276,7 +277,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
         override fun marshaller(): ResponseFieldMarshaller
 
-        interface Droid : Query.Droid, Query.Droid.Droid, DroidFragment, QueryFragment.Droid.Droid {
+        interface Droid : Query.Droid, Query.Droid.Droid, DroidFragment, QueryFragment.Droid.Droid,
+            QueryFragment.Droid, QueryDatum.Droid {
           override val __typename: String
 
           /**
@@ -302,8 +304,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            * This droid's primary function
            */
           override val primaryFunction: String?
-        ) : Query.Droid, Query.Droid.Droid, DroidFragment, QueryFragment.Droid.Droid, Droid,
-            QueryDatum.Droid {
+        ) : Query.Droid, Query.Droid.Droid, DroidFragment, QueryFragment.Droid.Droid,
+            QueryFragment.Droid, QueryDatum.Droid, Droid {
           override fun marshaller(): ResponseFieldMarshaller {
             return ResponseFieldMarshaller { writer ->
               TestQuery_ResponseAdapter.Data.QueryDatum.Droid.DroidDroid.toResponse(writer, this)
@@ -336,7 +338,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
         override fun marshaller(): ResponseFieldMarshaller
 
-        interface Human : Query.Human, Query.Human.Human, QueryFragment.Human.Human {
+        interface Human : Query.Human, Query.Human.Human, QueryFragment.Human.Human,
+            QueryFragment.Human, QueryDatum.Human {
           override val __typename: String
 
           /**
@@ -362,7 +365,8 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            * The home planet of the human, or null if unknown
            */
           override val homePlanet: String?
-        ) : Query.Human, Query.Human.Human, QueryFragment.Human.Human, Human, QueryDatum.Human {
+        ) : Query.Human, Query.Human.Human, QueryFragment.Human.Human, QueryFragment.Human,
+            QueryDatum.Human, Human {
           override fun marshaller(): ResponseFieldMarshaller {
             return ResponseFieldMarshaller { writer ->
               TestQuery_ResponseAdapter.Data.QueryDatum.Human.HumanHuman.toResponse(writer, this)

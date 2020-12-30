@@ -164,7 +164,7 @@ class GetPage : Query<GetPage.Data, Operation.Variables> {
           override fun marshaller(): ResponseFieldMarshaller
 
           interface ParticularItem : ParticularCollection.Item,
-              ParticularCollection.Item.ParticularItem {
+              ParticularCollection.Item.ParticularItem, Item {
             override val __typename: String
 
             override val image: String
@@ -178,8 +178,8 @@ class GetPage : Query<GetPage.Data, Operation.Variables> {
             override val title: String,
             override val __typename: String,
             override val image: String
-          ) : ParticularCollection.Item, ParticularCollection.Item.ParticularItem, ParticularItem,
-              Item {
+          ) : ParticularCollection.Item, ParticularCollection.Item.ParticularItem, Item,
+              ParticularItem {
             override fun marshaller(): ResponseFieldMarshaller {
               return ResponseFieldMarshaller { writer ->
                 GetPage_ResponseAdapter.Data.Collection.ParticularCollectionCollection.Item.ParticularItemItem.toResponse(writer, this)
@@ -190,7 +190,7 @@ class GetPage : Query<GetPage.Data, Operation.Variables> {
           data class OtherItem(
             override val title: String,
             override val __typename: String
-          ) : Collection.Item, ParticularCollection.Item, Item {
+          ) : Collection.Item, Item, ParticularCollection.Item {
             override fun marshaller(): ResponseFieldMarshaller {
               return ResponseFieldMarshaller { writer ->
                 GetPage_ResponseAdapter.Data.Collection.ParticularCollectionCollection.Item.OtherItem.toResponse(writer, this)

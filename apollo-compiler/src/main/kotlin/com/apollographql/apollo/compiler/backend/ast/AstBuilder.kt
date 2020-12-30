@@ -233,11 +233,11 @@ internal class AstBuilder private constructor(
   }
 
   private fun BackendIr.Operation.buildOperationType(customScalarTypes: CustomScalarTypes): CodeGenerationAst.OperationType {
-    val operationType = when (this.operationType) {
+    val operationType = when (this.operationSchemaType) {
       schema.resolveType(schema.queryType) -> CodeGenerationAst.OperationType.Type.QUERY
       schema.mutationType?.let { schema.resolveType(it) } -> CodeGenerationAst.OperationType.Type.MUTATION
       schema.subscriptionType?.let { schema.resolveType(it) } -> CodeGenerationAst.OperationType.Type.SUBSCRIPTION
-      else -> throw IllegalArgumentException("Unsupported GraphQL operation type: `${this.operationType}`")
+      else -> throw IllegalArgumentException("Unsupported GraphQL operation type: `${this.operationSchemaType}`")
     }
     val operationId = operationOutput.findOperationId(
         name = this.operationName,
@@ -322,16 +322,16 @@ internal class AstBuilder private constructor(
         alternativeSelectionKeys = selectionSet.selectionKeys,
     )
     val implementationType = buildObjectType(
-        name = this.defaultSelectionSetRootKey.root,
+        name = this.defaultImplementationSelectionKey.root,
         description = schemaType.description,
         schemaTypename = schemaType.name,
-        fields = implementationSelectionSet.fields,
-        fragments = implementationSelectionSet.fragments,
+        fields = defaultImplementationSelectionSet.fields,
+        fragments = defaultImplementationSelectionSet.fragments,
         targetPackageName = fragmentsPackage,
         abstract = false,
         customScalarTypes = customScalarTypes,
-        currentSelectionKey = defaultSelectionSetRootKey,
-        alternativeSelectionKeys = implementationSelectionSet.selectionKeys,
+        currentSelectionKey = defaultImplementationSelectionKey,
+        alternativeSelectionKeys = defaultImplementationSelectionSet.selectionKeys,
     )
     return CodeGenerationAst.FragmentType(
         name = this.name.normalizeTypeName(),
@@ -469,7 +469,7 @@ internal class AstBuilder private constructor(
       alternativeSelectionKeys: Set<SelectionKey>,
   ): CodeGenerationAst.ObjectType {
     val possibleImplementations = if (abstract) emptyMap() else fragments
-        .filter { fragment -> fragment.kind != BackendIr.Fragment.Kind.Fallback }
+        .filter { fragment -> fragment.type == BackendIr.Fragment.Type.Implementation }
         .flatMap { fragment ->
           val typeRef = (selectionKey + fragment.name).asTypeRef(targetPackageName)
           fragment.possibleTypes.map { possibleType -> possibleType.name!! to typeRef }
@@ -558,7 +558,7 @@ internal class AstBuilder private constructor(
       selectionKey: SelectionKey,
       customScalarTypes: CustomScalarTypes,
   ): CodeGenerationAst.ObjectType {
-    return if (abstract || this.kind == BackendIr.Fragment.Kind.Interface) {
+    return if (abstract || this.type == BackendIr.Fragment.Type.Interface) {
       val objectType = buildObjectTypeWithoutFragments(
           name = this.name,
           description = null,
@@ -571,7 +571,14 @@ internal class AstBuilder private constructor(
           alternativeSelectionKeys = this.selectionKeys,
       )
       objectType.copy(
-          nestedObjects = objectType.nestedObjects
+          nestedObjects = objectType.nestedObjects + (this.nestedFragments?.map { nestedFragment ->
+            nestedFragment.buildObjectType(
+                targetPackageName = targetPackageName,
+                abstract = true,
+                selectionKey = selectionKey + this.name,
+                customScalarTypes = customScalarTypes,
+            )
+          } ?: emptyList())
       )
     } else {
       buildObjectType(
@@ -579,7 +586,7 @@ internal class AstBuilder private constructor(
           description = null,
           schemaTypename = null,
           fields = this.fields,
-          fragments = BackendIr.Fragments(
+          fragments = this.nestedFragments ?: BackendIr.Fragments(
               fragments = emptyList(),
               accessors = emptyMap(),
           ),

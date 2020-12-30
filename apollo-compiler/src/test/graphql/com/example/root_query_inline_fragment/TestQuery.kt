@@ -216,7 +216,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
         override fun marshaller(): ResponseFieldMarshaller
 
-        interface Human : Query.Hero, Query.Hero.Human {
+        interface Human : Query.Hero, Query.Hero.Human, Hero {
           override val __typename: String
 
           /**
@@ -251,7 +251,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            * Height in the preferred unit, default is meters
            */
           override val height: Double?
-        ) : Query.Hero, Query.Hero.Human, Human, Hero {
+        ) : Query.Hero, Query.Hero.Human, Hero, Human {
           override fun marshaller(): ResponseFieldMarshaller {
             return ResponseFieldMarshaller { writer ->
               TestQuery_ResponseAdapter.Data.QueryDatum.Hero.HumanHero.toResponse(writer, this)
@@ -292,7 +292,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
         override fun marshaller(): ResponseFieldMarshaller
 
-        interface Droid : Query.Droid, Query.Droid.Droid {
+        interface Droid : Query.Droid, Query.Droid.Droid, QueryDatum.Droid {
           override val __typename: String
 
           /**
@@ -318,7 +318,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            * This droid's primary function
            */
           override val primaryFunction: String?
-        ) : Query.Droid, Query.Droid.Droid, Droid, QueryDatum.Droid {
+        ) : Query.Droid, Query.Droid.Droid, QueryDatum.Droid, Droid {
           override fun marshaller(): ResponseFieldMarshaller {
             return ResponseFieldMarshaller { writer ->
               TestQuery_ResponseAdapter.Data.QueryDatum.Droid.DroidDroid.toResponse(writer, this)

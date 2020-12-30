@@ -98,7 +98,7 @@ data class StarshipFragmentImpl(
 
             interface Planet : StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld,
                 StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet, PlanetFragment,
-                PilotFragment.Homeworld.Planet, Homeworld {
+                PilotFragment.Homeworld.Planet, PilotFragment.Homeworld, Homeworld {
               override val __typename: String
 
               /**
@@ -149,7 +149,8 @@ data class StarshipFragmentImpl(
 
             interface Planet : StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld,
                 StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet, PlanetFragment,
-                PilotFragment.Homeworld.Planet, Person.Homeworld, Person.Homeworld.Planet {
+                PilotFragment.Homeworld.Planet, PilotFragment.Homeworld, Person.Homeworld,
+                Person.Homeworld.Planet, Homeworld {
               override val __typename: String
 
               /**
@@ -168,8 +169,8 @@ data class StarshipFragmentImpl(
               override val name: String?
             ) : StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld,
                 StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet, PlanetFragment,
-                PilotFragment.Homeworld.Planet, Person.Homeworld, Person.Homeworld.Planet, Planet,
-                Homeworld {
+                PilotFragment.Homeworld.Planet, PilotFragment.Homeworld, Person.Homeworld,
+                Person.Homeworld.Planet, Homeworld, Planet {
               override fun marshaller(): ResponseFieldMarshaller {
                 return ResponseFieldMarshaller { writer ->
                   StarshipFragmentImpl_ResponseAdapter.PilotConnection.Edge.Node.PersonNode.Homeworld.PlanetHomeworld.toResponse(writer, this)

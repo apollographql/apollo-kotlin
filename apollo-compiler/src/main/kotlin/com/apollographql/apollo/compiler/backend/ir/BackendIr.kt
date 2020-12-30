@@ -42,7 +42,7 @@ internal data class BackendIr(
       val name: String,
       val operationName: String,
       val targetPackageName: String,
-      val operationType: IntrospectionSchema.TypeRef,
+      val operationSchemaType: IntrospectionSchema.TypeRef,
       val comment: String,
       val variables: List<Variable>,
       val definition: String,
@@ -108,29 +108,30 @@ internal data class BackendIr(
   data class Fragment(
       val name: String,
       val fields: List<Field>,
+      val nestedFragments: Fragments?,
       val possibleTypes: Set<IntrospectionSchema.TypeRef>,
       val selectionKeys: Set<SelectionKey>,
       val description: String?,
-      val kind: Kind,
+      val type: Type,
   ) {
-    enum class Kind {
+    enum class Type {
       Interface, Implementation, Fallback
     }
   }
 
   data class NamedFragment(
       val name: String,
-      val defaultSelectionSetRootKey: SelectionKey,
       val source: String,
       val comment: String,
       val selectionSet: SelectionSet,
-      val implementationSelectionSet: SelectionSet,
+      val defaultImplementationSelectionKey: SelectionKey,
+      val defaultImplementationSelectionSet: SelectionSet,
   ) {
     data class SelectionSet(
         val fields: List<Field>,
         val fragments: Fragments,
         val typeCondition: IntrospectionSchema.TypeRef,
-        val possibleTypes: List<IntrospectionSchema.TypeRef>,
+        val possibleTypes: Set<IntrospectionSchema.TypeRef>,
         val selectionKeys: Set<SelectionKey>,
     )
   }

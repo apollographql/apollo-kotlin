@@ -275,7 +275,7 @@ data class TestQuery(
 
           override fun marshaller(): ResponseFieldMarshaller
 
-          interface Human : Hero.Human.Friend, Hero.Human.Friend.Human {
+          interface Human : Hero.Human.Friend, Hero.Human.Friend.Human, Friend {
             override val __typename: String
 
             /**
@@ -301,7 +301,7 @@ data class TestQuery(
              * Height in the preferred unit, default is meters
              */
             override val height: Double?
-          ) : Hero.Human.Friend, Hero.Human.Friend.Human, Human, Friend {
+          ) : Hero.Human.Friend, Hero.Human.Friend.Human, Friend, Human {
             override fun marshaller(): ResponseFieldMarshaller {
               return ResponseFieldMarshaller { writer ->
                 TestQuery_ResponseAdapter.Data.Hero.HumanHero.Friend.HumanFriend.toResponse(writer, this)
@@ -361,7 +361,7 @@ data class TestQuery(
 
           override fun marshaller(): ResponseFieldMarshaller
 
-          interface Human : Droid.Friend, Droid.Friend.Human {
+          interface Human : Droid.Friend, Droid.Friend.Human, Friend {
             override val __typename: String
 
             /**
@@ -387,7 +387,7 @@ data class TestQuery(
              * Height in the preferred unit, default is meters
              */
             override val height: Double?
-          ) : Droid.Friend, Droid.Friend.Human, Human, Friend {
+          ) : Droid.Friend, Droid.Friend.Human, Friend, Human {
             override fun marshaller(): ResponseFieldMarshaller {
               return ResponseFieldMarshaller { writer ->
                 TestQuery_ResponseAdapter.Data.Hero.DroidHero.Friend.HumanFriend.toResponse(writer, this)

@@ -3,6 +3,7 @@ package com.apollographql.apollo.compiler.backend.ir
 import com.apollographql.apollo.compiler.PackageNameProvider
 import com.apollographql.apollo.compiler.backend.ir.BackendIrMergeUtils.mergeFields
 import com.apollographql.apollo.compiler.backend.ir.SelectionKeyUtils.addFieldSelectionKey
+import com.apollographql.apollo.compiler.backend.ir.SelectionKeyUtils.copyToDifferentSelectionRoot
 import com.apollographql.apollo.compiler.frontend.GQLNamedType
 import com.apollographql.apollo.compiler.frontend.Schema
 import com.apollographql.apollo.compiler.frontend.SourceLocation
@@ -36,7 +37,21 @@ internal class BackendIrBuilder constructor(
   private fun FrontendIr.Operation.buildBackendIrOperation(): BackendIr.Operation {
     val normalizedName = this.normalizeOperationName()
 
-    val selectionKey = SelectionKey(
+    val packageName = packageNameProvider?.operationPackageName(filePath = gqlOperationDefinition.sourceLocation.filePath ?: "") ?: ""
+
+    val variables = this.variables.map { variable ->
+      BackendIr.Variable(
+          name = variable.name,
+          type = variable.type.toSchemaType()
+      )
+    }
+
+    val operationSchemaType = IntrospectionSchema.TypeRef(
+        kind = IntrospectionSchema.Kind.OBJECT,
+        name = this.typeDefinition.name,
+    )
+
+    val dataFieldSelectionKey = SelectionKey(
         root = normalizedName,
         keys = listOf(normalizedName, "data"),
         type = SelectionKey.Type.Query,
@@ -47,30 +62,19 @@ internal class BackendIrBuilder constructor(
         alias = null,
         arguments = emptyList(),
         condition = FrontendIr.Condition.True,
-        selections = selections,
+        selections = this.selections,
         type = FrontendIr.Type.Named(typeDefinition),
         deprecationReason = null,
         description = description,
     )
-        .buildBackendIrField(selectionKey)
-        .buildFragmentImplementations(selectionKey)
-
-    val variables = this.variables.map { variable ->
-      BackendIr.Variable(
-          name = variable.name,
-          type = variable.type.toSchemaType()
-      )
-    }
+        .buildBackendIrField(dataFieldSelectionKey)
+        .buildFragmentImplementations(dataFieldSelectionKey)
 
     return BackendIr.Operation(
         name = normalizedName,
-        operationName = name,
-        targetPackageName = packageNameProvider?.operationPackageName(filePath = gqlOperationDefinition.sourceLocation.filePath ?: "")
-            ?: "",
-        operationType = IntrospectionSchema.TypeRef(
-            kind = IntrospectionSchema.Kind.OBJECT,
-            name = this.typeDefinition.name,
-        ),
+        operationName = this.name,
+        targetPackageName = packageName,
+        operationSchemaType = operationSchemaType,
         comment = description ?: "",
         variables = variables,
         definition = sourceWithFragments,
@@ -114,20 +118,26 @@ internal class BackendIrBuilder constructor(
   }
 
   private fun FrontendIr.Selection.Field.buildBackendIrField(selectionKey: SelectionKey): BackendIr.Field {
-    val selectionSet = selections.filterIsInstance<FrontendIr.Selection.Field>()
+    val fields = selections.filterIsInstance<FrontendIr.Selection.Field>()
         .buildBackendIrFields(selectionKey)
 
-    val possibleTypes = this.type.leafTypeDefinition.possibleTypes(schema.typeDefinitions)
+    val fieldPossibleTypes = this.type.leafTypeDefinition.possibleTypes(schema.typeDefinitions)
 
     val genericFragments = buildGenericFragments(
         inlineFragments = selections.filterIsInstance<FrontendIr.Selection.InlineFragment>(),
         namedFragments = selections.filterIsInstance<FrontendIr.Selection.FragmentSpread>(),
         parentSelectionKey = selectionKey,
-        parentSelectionSet = selectionSet,
+        parentFields = fields,
     )
 
     val fragmentInterfaces = genericFragments.buildBackendIrFragmentInterfaces(
-        fieldPossibleTypes = possibleTypes,
+        parentSelectionKey = selectionKey,
+        parentPossibleTypes = fieldPossibleTypes,
+    )
+
+    val fragments = createFragments(
+        selectionKey = selectionKey,
+        fragments = fragmentInterfaces,
     )
 
     val arguments = this.arguments.map { argument ->
@@ -143,24 +153,21 @@ internal class BackendIrBuilder constructor(
         alias = this.alias,
         type = type.toSchemaType(),
         args = arguments,
-        fields = selectionSet,
-        fragments = createFragments(
-            selectionKey = selectionKey,
-            fragments = fragmentInterfaces,
-        ),
+        fields = fields,
+        fragments = fragments,
         deprecationReason = this.deprecationReason,
         description = this.description ?: "",
-        condition = this.condition.toBackendIrCondition(),
+        condition = this.condition.buildBackendIrCondition(),
         selectionKeys = setOf(selectionKey),
     )
   }
 
-  private fun FrontendIr.Condition.toBackendIrCondition(): BackendIr.Condition {
+  private fun FrontendIr.Condition.buildBackendIrCondition(): BackendIr.Condition {
     return when (this) {
       is FrontendIr.Condition.True -> BackendIr.Condition.True
       is FrontendIr.Condition.False -> BackendIr.Condition.False
-      is FrontendIr.Condition.Or -> BackendIr.Condition.Or(conditions = conditions.map { it.toBackendIrCondition() }.toSet())
-      is FrontendIr.Condition.And -> BackendIr.Condition.And(conditions = conditions.map { it.toBackendIrCondition() }.toSet())
+      is FrontendIr.Condition.Or -> BackendIr.Condition.Or(conditions = conditions.map { it.buildBackendIrCondition() }.toSet())
+      is FrontendIr.Condition.And -> BackendIr.Condition.And(conditions = conditions.map { it.buildBackendIrCondition() }.toSet())
       is FrontendIr.Condition.Variable -> BackendIr.Condition.Variable(name = name, inverted = inverted)
     }
   }
@@ -174,249 +181,179 @@ internal class BackendIrBuilder constructor(
   }
 
   private fun FrontendIr.NamedFragmentDefinition.buildBackendIrNamedFragment(): BackendIr.NamedFragment {
-    val selectionSet = buildSelectionSet(
-        rootSelectionKey = SelectionKey(
-            root = this.name,
-            keys = listOf(this.name),
-            type = SelectionKey.Type.Fragment,
-        ),
+    val rootSelectionKey = SelectionKey(
+        root = this.name,
+        keys = listOf(this.name),
+        type = SelectionKey.Type.Fragment,
     )
 
-    val implementationSelectionRootKey = SelectionKey(
+    val selectionSet = buildSelectionSet(
+        rootSelectionKey = rootSelectionKey,
+    )
+
+    val defaultImplementationRootSelectionKey = SelectionKey(
         root = "${this@buildBackendIrNamedFragment.name.capitalize()}Impl",
         keys = listOf("${this@buildBackendIrNamedFragment.name.capitalize()}Impl"),
         type = SelectionKey.Type.Fragment,
     )
 
-    val implementationSelectionSet = selectionSet
-        .patchWithDefaultImplementationSelectionKey(
-            fragmentNameToPatch = this.name,
-            fragmentImplementationName = implementationSelectionRootKey.root,
+    val defaultImplementationSelectionSet = selectionSet
+        .copyToDifferentSelectionRoot(
+            currentRootSelectionKey = rootSelectionKey,
+            newRootSelectionKey = defaultImplementationRootSelectionKey,
         )
-        .buildImplementationSelectionSet(
-            implementationSelectionRootKey = implementationSelectionRootKey
+        .buildDefaultImplementationSelectionSet(
+            rootSelectionKey = defaultImplementationRootSelectionKey
         )
 
     return BackendIr.NamedFragment(
         name = this.name,
-        defaultSelectionSetRootKey = implementationSelectionRootKey,
+        defaultImplementationSelectionKey = defaultImplementationRootSelectionKey,
         source = this.source,
         comment = this.description ?: "",
         selectionSet = selectionSet,
-        implementationSelectionSet = implementationSelectionSet,
+        defaultImplementationSelectionSet = defaultImplementationSelectionSet,
     )
   }
 
   private fun FrontendIr.NamedFragmentDefinition.buildSelectionSet(rootSelectionKey: SelectionKey): BackendIr.NamedFragment.SelectionSet {
-    val selectionSet = this.selections.filterIsInstance<FrontendIr.Selection.Field>()
+    val fields = this.selections.filterIsInstance<FrontendIr.Selection.Field>()
         .buildBackendIrFields(rootSelectionKey)
 
-    val possibleTypes = schema.typeDefinition(typeCondition.name).possibleTypes(schema.typeDefinitions)
+    val fragmentPossibleTypes = schema.typeDefinition(typeCondition.name).possibleTypes(schema.typeDefinitions)
+    val fragmentPossibleSchemaTypes = fragmentPossibleTypes.map { type ->
+      GQLNamedType(sourceLocation = SourceLocation.UNKNOWN, type).toSchemaType(schema)
+    }.toSet()
 
-    val fragments = buildGenericFragments(
+    val genericFragments = buildGenericFragments(
         inlineFragments = this.selections.filterIsInstance<FrontendIr.Selection.InlineFragment>(),
         namedFragments = this.selections.filterIsInstance<FrontendIr.Selection.FragmentSpread>(),
         parentSelectionKey = rootSelectionKey,
-        parentSelectionSet = selectionSet,
+        parentFields = fields,
     )
 
-    val fragmentInterfaces = fragments.buildBackendIrFragmentInterfaces(
-        fieldPossibleTypes = possibleTypes
+    val fragmentInterfaces = genericFragments.buildBackendIrFragmentInterfaces(
+        parentSelectionKey = rootSelectionKey,
+        parentPossibleTypes = fragmentPossibleTypes
+    )
+
+    val fragments = createFragments(
+        selectionKey = rootSelectionKey,
+        fragments = fragmentInterfaces
     )
 
     return BackendIr.NamedFragment.SelectionSet(
-        fields = selectionSet,
-        fragments = createFragments(
-            selectionKey = rootSelectionKey,
-            fragments = fragmentInterfaces
-        ),
+        fields = fields,
+        fragments = fragments,
         typeCondition = FrontendIr.Type.Named(typeCondition).toSchemaType(),
-        possibleTypes = possibleTypes.map { GQLNamedType(sourceLocation = SourceLocation.UNKNOWN, it).toSchemaType(schema) },
+        possibleTypes = fragmentPossibleSchemaTypes,
         selectionKeys = setOf(rootSelectionKey)
     )
   }
 
-  private fun BackendIr.NamedFragment.SelectionSet.buildImplementationSelectionSet(
-      implementationSelectionRootKey: SelectionKey,
+  private fun BackendIr.NamedFragment.SelectionSet.buildDefaultImplementationSelectionSet(
+      rootSelectionKey: SelectionKey,
   ): BackendIr.NamedFragment.SelectionSet {
-    return if (this.fragments.isEmpty()) {
-      this.copy(
+    if (this.fragments.isEmpty()) {
+      return this.copy(
           fields = this.fields.map { field ->
             field.buildFragmentImplementations(
-                selectionKey = implementationSelectionRootKey + field.responseName
+                selectionKey = rootSelectionKey + field.responseName
             )
           },
       )
-    } else {
-      val rootFragmentPossibleTypes = schema.typeDefinition(this.typeCondition.rawType.name!!)
-          .possibleTypes(schema.typeDefinitions)
-          .map { GQLNamedType(sourceLocation = SourceLocation.UNKNOWN, it).toSchemaType(schema) }
-          .toSet()
-
-      val fragmentInterfaces = this.fragments.filter { it.kind == BackendIr.Fragment.Kind.Interface }
-      val groupedFragmentInterfaces = fragmentInterfaces.groupFragmentsByPossibleTypes()
-      val fragmentImplementations = groupedFragmentInterfaces.map { (fragments, fragmentsPossibleTypes) ->
-        fragments.buildFragmentImplementation(
-            parentName = implementationSelectionRootKey.root,
-            parentSelectionSet = this.fields,
-            possibleTypes = rootFragmentPossibleTypes.intersect(fragmentsPossibleTypes),
-            selectionKey = implementationSelectionRootKey,
-        )
-      }
-
-      val fields = this.fields.map { field ->
-        field.buildFragmentImplementations(
-            selectionKey = implementationSelectionRootKey + field.responseName,
-        )
-      }
-
-      val fallbackImplementation = BackendIr.Fragment(
-          name = "Other${implementationSelectionRootKey.root}",
-          fields = fields,
-          possibleTypes = emptySet(),
-          selectionKeys = this.selectionKeys + implementationSelectionRootKey,
-          description = null,
-          kind = BackendIr.Fragment.Kind.Fallback,
-      )
-
-      this.copy(
-          fields = fields,
-          fragments = BackendIr.Fragments(
-              fragments = fragmentInterfaces + fragmentImplementations + fallbackImplementation,
-              accessors = fragmentInterfaces
-                  .flatMap { fragmentInterface ->
-                    fragmentInterface.selectionKeys
-                        .filter { selectionKey -> selectionKey.type == SelectionKey.Type.Fragment }
-                        .takeUnless { it.isEmpty() }
-                        ?: fragmentInterface.selectionKeys
-                  }
-                  .filter { key -> key != implementationSelectionRootKey }
-                  .map { key ->
-                    when {
-                      key.type == SelectionKey.Type.Fragment && key.keys.size == 1 -> key.root.decapitalize() to key
-                      else -> "as${key.keys.last().capitalize()}" to key
-                    }
-                  }
-                  .toMap()
-          ),
-      )
     }
-  }
 
-  // do deep recursive traversal of all fields and nested fragments
-  // find any selection key that belongs to the named fragment we generate default selection set for (`root == fragmentNameToPatch`)
-  // copy it with `defaultImplementationName` as a root and add to the original selection set
-  private fun BackendIr.NamedFragment.SelectionSet.patchWithDefaultImplementationSelectionKey(
-      fragmentNameToPatch: String,
-      fragmentImplementationName: String,
-  ): BackendIr.NamedFragment.SelectionSet {
-    return this.copy(
-        fields = this.fields.map { field ->
-          field.patchWithDefaultImplementationSelectionKey(
-              fragmentNameToPatch = fragmentNameToPatch,
-              defaultImplementationName = fragmentImplementationName,
+    val fragmentPossibleSchemaTypes = schema.typeDefinition(this.typeCondition.rawType.name!!)
+        .possibleTypes(schema.typeDefinitions)
+        .map { type -> GQLNamedType(sourceLocation = SourceLocation.UNKNOWN, type).toSchemaType(schema) }
+        .toSet()
+
+    val fragmentInterfaces = this.fragments.filter { it.type == BackendIr.Fragment.Type.Interface }
+
+    val fragmentImplementations = fragmentInterfaces.groupFragmentsByPossibleTypes()
+        .map { (fragments, fragmentsPossibleTypes) ->
+          fragments.buildFragmentImplementation(
+              parentName = rootSelectionKey.root,
+              parentFields = this.fields,
+              possibleSchemaTypes = fragmentPossibleSchemaTypes.intersect(fragmentsPossibleTypes),
+              selectionKey = rootSelectionKey,
           )
-        },
-        fragments = fragments.copy(
-            fragments = fragments.map { fragment ->
-              fragment.patchWithDefaultImplementationSelectionKey(
-                  fragmentNameToPatch = fragmentNameToPatch,
-                  defaultImplementationName = fragmentImplementationName,
-              )
-            }
-        ),
-        selectionKeys = this.selectionKeys + this.selectionKeys
-            .filter { selectionKey ->
-              selectionKey.type == SelectionKey.Type.Fragment && selectionKey.root == fragmentNameToPatch
-            }
-            .map { key ->
-              key.copy(root = fragmentImplementationName, keys = listOf(fragmentImplementationName) + key.keys.drop(1))
-            },
-    )
-  }
-
-  // do deep recursive traversal of all fields and nested fragments
-  // find any selection key that belongs to the named fragment we generate default selection set for (`root == fragmentNameToPatch`)
-  // copy it with `defaultImplementationName` as a root and add to the original selection set
-  private fun BackendIr.Field.patchWithDefaultImplementationSelectionKey(
-      fragmentNameToPatch: String,
-      defaultImplementationName: String,
-  ): BackendIr.Field {
-    return this.copy(
-        selectionKeys = this.selectionKeys + this.selectionKeys
-            .filter { selectionKey ->
-              selectionKey.type == SelectionKey.Type.Fragment && selectionKey.root == fragmentNameToPatch
-            }
-            .map { key ->
-              key.copy(root = defaultImplementationName, keys = listOf(defaultImplementationName) + key.keys.drop(1))
-            },
-        fields = this.fields.map { field ->
-          field.patchWithDefaultImplementationSelectionKey(
-              fragmentNameToPatch = fragmentNameToPatch,
-              defaultImplementationName = defaultImplementationName,
-          )
-        },
-        fragments = fragments.copy(
-            fragments = fragments.fragments.map { fragment ->
-              fragment.patchWithDefaultImplementationSelectionKey(
-                  fragmentNameToPatch = fragmentNameToPatch,
-                  defaultImplementationName = defaultImplementationName,
-              )
-            }
-        )
-    )
-  }
-
-  // do deep recursive traversal of all fields and nested fragments
-  // find any selection key that belongs to the named fragment we generate default selection set for (`root == fragmentNameToPatch`)
-  // copy it with `defaultImplementationName` as a root and add to the original selection set
-  private fun BackendIr.Fragment.patchWithDefaultImplementationSelectionKey(
-      fragmentNameToPatch: String,
-      defaultImplementationName: String,
-  ): BackendIr.Fragment {
-    val selectionKeys = this.selectionKeys + this.selectionKeys
-        .filter { selectionKey ->
-          selectionKey.type == SelectionKey.Type.Fragment && selectionKey.root == fragmentNameToPatch
         }
-        .map { key ->
-          key.copy(root = defaultImplementationName, keys = listOf(defaultImplementationName) + key.keys.drop(1))
-        }
+
     val fields = this.fields.map { field ->
-      field.patchWithDefaultImplementationSelectionKey(
-          fragmentNameToPatch = fragmentNameToPatch,
-          defaultImplementationName = defaultImplementationName,
+      field.buildFragmentImplementations(
+          selectionKey = rootSelectionKey + field.responseName,
       )
     }
-    return this.copy(
-        selectionKeys = selectionKeys,
+
+    val fallbackImplementation = BackendIr.Fragment(
+        name = "Other${rootSelectionKey.root}",
         fields = fields,
+        nestedFragments = null,
+        possibleTypes = emptySet(),
+        selectionKeys = this.selectionKeys + rootSelectionKey,
+        description = null,
+        type = BackendIr.Fragment.Type.Fallback,
+    )
+
+    val fragmentAccessors = fragmentInterfaces
+        .flatMap { fragmentInterface ->
+          fragmentInterface.selectionKeys
+              .filter { selectionKey -> selectionKey.type == SelectionKey.Type.Fragment }
+              .takeUnless { it.isEmpty() }
+              ?: fragmentInterface.selectionKeys
+        }
+        .filter { key -> key != rootSelectionKey }
+        .map { key ->
+          when {
+            key.type == SelectionKey.Type.Fragment && key.keys.size == 1 -> key.root.decapitalize() to key
+            else -> "as${key.keys.last().capitalize()}" to key
+          }
+        }
+        .toMap()
+
+    val fragments = BackendIr.Fragments(
+        fragments = fragmentInterfaces + fragmentImplementations + fallbackImplementation,
+        accessors = fragmentAccessors,
+    )
+
+    return this.copy(
+        fields = fields,
+        fragments = fragments,
     )
   }
 
   private fun List<GenericFragment>.buildBackendIrFragmentInterfaces(
-      fieldPossibleTypes: Set<String>,
+      parentSelectionKey: SelectionKey,
+      parentPossibleTypes: Set<String>,
   ): List<BackendIr.Fragment> {
-    // we might get fragments defined with the same type condition - group them
-    val groupedFragments = this.groupBy { fragment -> fragment.name }
-
     // merge fragments with the same type condition into one interface
-    return groupedFragments.map { (_, fragments) ->
-      val selectionSet = fragments.fold(emptyList<BackendIr.Field>()) { acc, fragment ->
-        acc.mergeFields(fragment.selectionSet)
-      }
-      val selectionsKeys = fragments.fold(emptySet<SelectionKey>()) { acc, fragment ->
-        acc.plus(fragment.selectionKeys)
-      }
+    return this.map { fragment ->
+      val nestedFragments = fragment.fragments.buildBackendIrFragmentInterfaces(
+          parentSelectionKey = parentSelectionKey + fragment.name,
+          parentPossibleTypes = fragment.possibleTypes.toSet(),
+      )
+
       // as fragment can be defined on interface that has more possible implementations than field type where it used
       // build intersection of fragment's and field's possible types
-      val possibleTypes = fragments.first().possibleTypes.intersect(fieldPossibleTypes)
+      val possibleTypes = fragment.possibleTypes.intersect(parentPossibleTypes)
+
+      val possibleSchemaTypes = possibleTypes.map { type ->
+        GQLNamedType(sourceLocation = SourceLocation.UNKNOWN, type).toSchemaType(schema)
+      }.toSet()
+
       BackendIr.Fragment(
-          name = fragments.first().name,
-          fields = selectionSet,
-          selectionKeys = selectionsKeys,
-          possibleTypes = possibleTypes.map { GQLNamedType(sourceLocation = SourceLocation.UNKNOWN, it).toSchemaType(schema) }.toSet(),
-          description = fragments.first().description,
-          kind = BackendIr.Fragment.Kind.Interface,
+          name = fragment.name,
+          fields = fragment.fields,
+          nestedFragments = createFragments(
+              selectionKey = parentSelectionKey,
+              fragments = nestedFragments,
+          ),
+          selectionKeys = fragment.selectionKeys,
+          possibleTypes = possibleSchemaTypes,
+          description = fragment.description,
+          type = BackendIr.Fragment.Type.Interface,
       )
     }
   }
@@ -424,153 +361,214 @@ internal class BackendIrBuilder constructor(
   private fun BackendIr.Field.buildFragmentImplementations(
       selectionKey: SelectionKey,
   ): BackendIr.Field {
-    return if (this.fragments.isEmpty()) {
-      this.copy(
-          fields = this.fields.map { field ->
-            field.buildFragmentImplementations(
-                selectionKey = selectionKey + field.responseName,
-            )
-          }
-      )
-    } else {
-      val fragmentInterfaces = this.fragments.filter { it.kind == BackendIr.Fragment.Kind.Interface }
-      val groupedFragmentInterfaces = fragmentInterfaces.groupFragmentsByPossibleTypes()
-      val fieldPossibleTypes = schema.typeDefinition(this.type.rawType.name!!)
-          .possibleTypes(schema.typeDefinitions)
-          .map { GQLNamedType(sourceLocation = SourceLocation.UNKNOWN, it).toSchemaType(schema) }
-          .toSet()
-      val fragmentImplementations = groupedFragmentInterfaces.map { (fragments, fragmentsPossibleTypes) ->
-        fragments.buildFragmentImplementation(
-            parentName = this.responseName,
-            parentSelectionSet = this.fields,
-            possibleTypes = fieldPossibleTypes.intersect(fragmentsPossibleTypes),
-            selectionKey = selectionKey,
-        )
-      }
+    if (this.fragments.isEmpty()) {
       val fields = this.fields.map { field ->
         field.buildFragmentImplementations(
             selectionKey = selectionKey + field.responseName,
         )
       }
-
-      val fallbackImplementationFields = this.fields
-          .addFieldSelectionKey(selectionKey + "Other${this.responseName.capitalize()}")
-          .map { field ->
-            field.buildFragmentImplementations(
-                selectionKey = selectionKey + "Other${this.responseName.capitalize()}" + field.responseName,
-            )
-          }
-
-      val fallbackImplementation = BackendIr.Fragment(
-          name = "Other${this.responseName.capitalize()}",
-          fields = fallbackImplementationFields,
-          possibleTypes = emptySet(),
-          selectionKeys = this.selectionKeys + selectionKey,
-          description = null,
-          kind = BackendIr.Fragment.Kind.Fallback,
-      )
-
-      this.copy(
-          fields = fields,
-          fragments = createFragments(
-              selectionKey = selectionKey,
-              fragments = fragmentInterfaces + fragmentImplementations + fallbackImplementation,
-          ),
-          selectionKeys = this.selectionKeys + selectionKey,
+      return this.copy(
+          fields = fields
       )
     }
+
+    val fragmentInterfaces = this.fragments
+        .filter { fragment -> fragment.type == BackendIr.Fragment.Type.Interface }
+        .mergeInterfaceFragmentsWithTheSameName()
+
+    val fieldPossibleSchemaTypes = schema.typeDefinition(this.type.rawType.name!!)
+        .possibleTypes(schema.typeDefinitions)
+        .map { GQLNamedType(sourceLocation = SourceLocation.UNKNOWN, it).toSchemaType(schema) }
+        .toSet()
+
+    val fields = this.fields.map { field ->
+      field.buildFragmentImplementations(
+          selectionKey = selectionKey + field.responseName,
+      )
+    }
+
+    val fragments = fragmentInterfaces.buildFragmentImplementations(
+        parentName = this.responseName,
+        parentFields = this.fields,
+        parentPossibleSchemaTypes = fieldPossibleSchemaTypes,
+        parentSelectionKeys = this.selectionKeys,
+        selectionKey = selectionKey,
+    )!!
+
+    return this.copy(
+        fields = fields,
+        fragments = fragments,
+        selectionKeys = this.selectionKeys + selectionKey,
+    )
+  }
+
+  private fun List<BackendIr.Fragment>.buildFragmentImplementations(
+      parentName: String,
+      parentFields: List<BackendIr.Field>,
+      parentPossibleSchemaTypes: Set<IntrospectionSchema.TypeRef>,
+      parentSelectionKeys: Set<SelectionKey>,
+      selectionKey: SelectionKey,
+  ): BackendIr.Fragments? {
+    if (this.isEmpty()) return null
+
+    val fragmentImplementations = this.groupFragmentsByPossibleTypes()
+        .map { (fragments, fragmentsPossibleTypes) ->
+          fragments.buildFragmentImplementation(
+              parentName = parentName,
+              parentFields = parentFields,
+              possibleSchemaTypes = parentPossibleSchemaTypes.intersect(fragmentsPossibleTypes),
+              selectionKey = selectionKey,
+          )
+        }
+
+    val fallbackImplementationFields = parentFields
+        .addFieldSelectionKey(selectionKey + "Other${parentName.capitalize()}")
+        .map { field ->
+          field.buildFragmentImplementations(
+              selectionKey = selectionKey + "Other${parentName.capitalize()}" + field.responseName,
+          )
+        }
+
+    val fallbackImplementation = BackendIr.Fragment(
+        name = "Other${parentName.capitalize()}",
+        fields = fallbackImplementationFields,
+        nestedFragments = null,
+        possibleTypes = emptySet(),
+        selectionKeys = parentSelectionKeys + selectionKey,
+        description = null,
+        type = BackendIr.Fragment.Type.Fallback,
+    )
+
+    return createFragments(
+        selectionKey = selectionKey,
+        fragments = this + fragmentImplementations + fallbackImplementation,
+    )
   }
 
   private fun List<BackendIr.Fragment>.buildFragmentImplementation(
       parentName: String,
-      parentSelectionSet: List<BackendIr.Field>,
-      possibleTypes: Set<IntrospectionSchema.TypeRef>,
+      parentFields: List<BackendIr.Field>,
+      possibleSchemaTypes: Set<IntrospectionSchema.TypeRef>,
       selectionKey: SelectionKey,
   ): BackendIr.Fragment {
     val fragmentName = this.distinctBy { fragment -> fragment.name }
         .joinToString(separator = "", postfix = parentName.capitalize()) { fragment -> fragment.name.capitalize() }
 
-    val selectionSet = this.fold(parentSelectionSet) { acc, fragment ->
+    val nestedFragments = this
+        .flatMap { fragment ->
+          fragment.nestedFragments?.fragments?.map { nestedFragment ->
+            nestedFragment.copyToDifferentSelectionRoot(
+                currentRootSelectionKey = selectionKey + fragment.name,
+                newRootSelectionKey = selectionKey + fragmentName,
+            )
+          } ?: emptyList()
+        }
+        .filter { fragment -> fragment.possibleTypes.intersect(possibleSchemaTypes).isNotEmpty() }
+        .mergeInterfaceFragmentsWithTheSameName()
+
+    val patchedParentFields = parentFields.map { field ->
+      field.copyToDifferentSelectionRoot(
+          currentRootSelectionKey = selectionKey,
+          newRootSelectionKey = selectionKey + fragmentName,
+      )
+    }
+
+    val fields = this.fold(patchedParentFields) { acc, fragment ->
       acc.mergeFields(
-          fragment.fields.addFieldSelectionKey(selectionKey + fragmentName)
+          fragment.fields.map { field ->
+            field.copyToDifferentSelectionRoot(
+                currentRootSelectionKey = selectionKey + fragment.name,
+                newRootSelectionKey = selectionKey + fragmentName,
+            )
+          }
       )
-    }.map { field ->
-      field.buildFragmentImplementations(
-          selectionKey = selectionKey + fragmentName + field.responseName,
-      )
+    }.run {
+      if (nestedFragments.isEmpty()) this.map { field ->
+        field.buildFragmentImplementations(
+            selectionKey = selectionKey + fragmentName + field.responseName,
+        )
+      } else this
     }
 
     val selectionsKeys = this.fold(emptySet<SelectionKey>()) { acc, fragment ->
       acc.plus(fragment.selectionKeys)
     }.plus(selectionKey)
 
+    val nestedFragmentsImplementations = nestedFragments.buildFragmentImplementations(
+        parentName = fragmentName,
+        parentFields = fields,
+        parentPossibleSchemaTypes = possibleSchemaTypes,
+        parentSelectionKeys = selectionsKeys,
+        selectionKey = selectionKey + fragmentName,
+    )
+
     return BackendIr.Fragment(
         name = fragmentName,
-        fields = selectionSet,
-        possibleTypes = possibleTypes.toSet(),
+        fields = fields,
+        nestedFragments = nestedFragmentsImplementations,
+        possibleTypes = possibleSchemaTypes.toSet(),
         selectionKeys = selectionsKeys,
         description = null,
-        kind = BackendIr.Fragment.Kind.Implementation,
+        type = BackendIr.Fragment.Type.Implementation,
     )
   }
 
+  @Suppress("NAME_SHADOWING")
   private fun buildGenericFragments(
       inlineFragments: List<FrontendIr.Selection.InlineFragment>,
       namedFragments: List<FrontendIr.Selection.FragmentSpread>,
       parentSelectionKey: SelectionKey,
-      parentSelectionSet: List<BackendIr.Field>,
+      parentFields: List<BackendIr.Field>,
       parentNamedFragmentSelectionKey: SelectionKey? = null,
   ): List<GenericFragment> {
-    val genericInlineFragments = inlineFragments
-        .map { inlineFragment ->
-          val fragmentName = inlineFragment.fragmentDefinition.typeCondition.name.capitalize()
-          buildGenericFragment(
-              fragmentName = fragmentName,
-              fragmentTypeCondition = inlineFragment.fragmentDefinition.typeCondition.name,
-              fragmentSelectionSet = inlineFragment.fragmentDefinition.selections,
-              fragmentDescription = inlineFragment.fragmentDefinition.typeCondition.description ?: "",
-              fragmentCondition = inlineFragment.condition.toBackendIrCondition(),
-              namedFragmentSelectionKey = parentNamedFragmentSelectionKey?.plus(fragmentName),
-              parentSelectionKey = parentSelectionKey,
-              parentSelectionSet = parentSelectionSet.addFieldSelectionKey(
-                  parentNamedFragmentSelectionKey?.plus(fragmentName)
-              ),
-          )
-        }
+    val genericInlineFragments = inlineFragments.map { inlineFragment ->
+      val fragmentName = inlineFragment.fragmentDefinition.typeCondition.name.capitalize()
 
-    val genericNamedFragments = namedFragments
-        .mapNotNull { fragmentSpread -> allFragmentDefinitions[fragmentSpread.name] }
-        .flatMap { namedFragment ->
-          val namedFragmentSelectionKey = SelectionKey(
+      val parentFields = parentFields.addFieldSelectionKey(
+          parentNamedFragmentSelectionKey?.plus(fragmentName)
+      )
+
+      buildGenericFragment(
+          fragmentName = fragmentName,
+          fragmentTypeCondition = inlineFragment.fragmentDefinition.typeCondition.name,
+          fragmentFields = inlineFragment.fragmentDefinition.selections,
+          nestedInlineFragments = inlineFragment.fragmentDefinition.selections.filterIsInstance<FrontendIr.Selection.InlineFragment>(),
+          nestedNamedFragments = inlineFragment.fragmentDefinition.selections.filterIsInstance<FrontendIr.Selection.FragmentSpread>(),
+          fragmentDescription = inlineFragment.fragmentDefinition.typeCondition.description ?: "",
+          fragmentCondition = inlineFragment.condition.buildBackendIrCondition(),
+          namedFragmentSelectionKey = parentNamedFragmentSelectionKey?.plus(fragmentName),
+          parentSelectionKey = parentSelectionKey,
+          parentFields = parentFields,
+      )
+    }
+
+    val genericNamedFragments = namedFragments.map { fragmentSpread ->
+      val namedFragment = checkNotNull(allFragmentDefinitions[fragmentSpread.name])
+
+      val namedFragmentSelectionKey = parentNamedFragmentSelectionKey?.plus(namedFragment.typeCondition.name.capitalize())
+          ?: SelectionKey(
               root = namedFragment.name.capitalize(),
               keys = listOf(namedFragment.name.capitalize()),
               type = SelectionKey.Type.Fragment,
           )
 
-          val genericFragment = buildGenericFragment(
-              fragmentName = namedFragment.typeCondition.name.capitalize(),
-              fragmentTypeCondition = namedFragment.typeCondition.name,
-              fragmentSelectionSet = namedFragment.selections.filterIsInstance<FrontendIr.Selection.Field>(),
-              fragmentDescription = namedFragment.description ?: "",
-              fragmentCondition = BackendIr.Condition.True,
-              namedFragmentSelectionKey = parentNamedFragmentSelectionKey?.plus(namedFragment.typeCondition.name.capitalize())
-                  ?: namedFragmentSelectionKey,
-              parentSelectionKey = parentSelectionKey,
-              parentSelectionSet = parentSelectionSet.addFieldSelectionKey(
-                  parentNamedFragmentSelectionKey?.plus(namedFragment.typeCondition.name.capitalize())
-              ),
-          )
+      val parentFields = parentFields.addFieldSelectionKey(
+          parentNamedFragmentSelectionKey?.plus(namedFragment.typeCondition.name.capitalize())
+      )
 
-          val nestedGenericFragments = buildGenericFragments(
-              inlineFragments = namedFragment.selections.filterIsInstance<FrontendIr.Selection.InlineFragment>(),
-              namedFragments = namedFragment.selections.filterIsInstance<FrontendIr.Selection.FragmentSpread>(),
-              parentSelectionKey = parentSelectionKey,
-              parentSelectionSet = genericFragment.selectionSet,
-              parentNamedFragmentSelectionKey = namedFragmentSelectionKey,
-          )
-
-          listOf(genericFragment) + nestedGenericFragments
-        }
+      buildGenericFragment(
+          fragmentName = namedFragment.typeCondition.name.capitalize(),
+          fragmentTypeCondition = namedFragment.typeCondition.name,
+          fragmentFields = namedFragment.selections.filterIsInstance<FrontendIr.Selection.Field>(),
+          nestedInlineFragments = namedFragment.selections.filterIsInstance<FrontendIr.Selection.InlineFragment>(),
+          nestedNamedFragments = namedFragment.selections.filterIsInstance<FrontendIr.Selection.FragmentSpread>(),
+          fragmentDescription = namedFragment.description ?: "",
+          fragmentCondition = BackendIr.Condition.True,
+          namedFragmentSelectionKey = namedFragmentSelectionKey,
+          parentFields = parentFields,
+          parentSelectionKey = parentSelectionKey,
+      )
+    }
 
     return genericInlineFragments + genericNamedFragments
   }
@@ -626,37 +624,87 @@ internal class BackendIrBuilder constructor(
    * }
    * ```
    */
+  @Suppress("NAME_SHADOWING")
   private fun buildGenericFragment(
       fragmentName: String,
       fragmentTypeCondition: String,
-      fragmentSelectionSet: List<FrontendIr.Selection>,
+      fragmentFields: List<FrontendIr.Selection>,
+      nestedInlineFragments: List<FrontendIr.Selection.InlineFragment>,
+      nestedNamedFragments: List<FrontendIr.Selection.FragmentSpread>,
       fragmentDescription: String,
       fragmentCondition: BackendIr.Condition,
       namedFragmentSelectionKey: SelectionKey?,
+      parentFields: List<BackendIr.Field>,
       parentSelectionKey: SelectionKey,
-      parentSelectionSet: List<BackendIr.Field>,
   ): GenericFragment {
-    val selectionSet = parentSelectionSet
+    val fields = parentFields
         .addFieldSelectionKey(parentSelectionKey + fragmentName)
         .mergeFields(
-            fragmentSelectionSet
+            fragmentFields
                 .filterIsInstance<FrontendIr.Selection.Field>()
                 .buildBackendIrFields(parentSelectionKey + fragmentName)
                 .addFieldSelectionKey(namedFragmentSelectionKey)
         )
 
+    val selectionKey = parentSelectionKey + fragmentName
+
     val selectionKeys = listOfNotNull(
         parentSelectionKey,
-        parentSelectionKey + fragmentName,
+        selectionKey,
         namedFragmentSelectionKey
     ).toSet()
+
+    val nestedInlineFragments = nestedInlineFragments.map { inlineFragment ->
+      val nestedFragmentName = inlineFragment.fragmentDefinition.typeCondition.name.capitalize()
+
+      val parentFields = fields.addFieldSelectionKey(
+          namedFragmentSelectionKey?.plus(nestedFragmentName)
+      )
+
+      buildGenericFragment(
+          fragmentName = nestedFragmentName,
+          fragmentTypeCondition = inlineFragment.fragmentDefinition.typeCondition.name,
+          fragmentFields = inlineFragment.fragmentDefinition.selections,
+          nestedInlineFragments = inlineFragment.fragmentDefinition.selections.filterIsInstance<FrontendIr.Selection.InlineFragment>(),
+          nestedNamedFragments = inlineFragment.fragmentDefinition.selections.filterIsInstance<FrontendIr.Selection.FragmentSpread>(),
+          fragmentDescription = inlineFragment.fragmentDefinition.typeCondition.description ?: "",
+          fragmentCondition = inlineFragment.condition.buildBackendIrCondition(),
+          namedFragmentSelectionKey = namedFragmentSelectionKey?.plus(nestedFragmentName),
+          parentFields = parentFields,
+          parentSelectionKey = selectionKey,
+      )
+    }
+
+    val nestedNamedFragments = nestedNamedFragments.map { fragmentSpread ->
+      val namedFragment = checkNotNull(allFragmentDefinitions[fragmentSpread.name])
+
+      val nestedFragmentName = namedFragment.typeCondition.name.capitalize()
+
+      val parentFields = fields.addFieldSelectionKey(
+          namedFragmentSelectionKey?.plus(nestedFragmentName)
+      )
+
+      buildGenericFragment(
+          fragmentName = nestedFragmentName,
+          fragmentTypeCondition = namedFragment.typeCondition.name,
+          fragmentFields = namedFragment.selections,
+          nestedInlineFragments = namedFragment.selections.filterIsInstance<FrontendIr.Selection.InlineFragment>(),
+          nestedNamedFragments = namedFragment.selections.filterIsInstance<FrontendIr.Selection.FragmentSpread>(),
+          fragmentDescription = namedFragment.typeCondition.description ?: "",
+          fragmentCondition = fragmentSpread.condition.buildBackendIrCondition(),
+          namedFragmentSelectionKey = namedFragmentSelectionKey?.plus(nestedFragmentName),
+          parentFields = parentFields,
+          parentSelectionKey = selectionKey,
+      )
+    }
 
     return GenericFragment(
         name = fragmentName,
         typeCondition = GQLNamedType(sourceLocation = SourceLocation.UNKNOWN, fragmentTypeCondition).toSchemaType(schema),
         possibleTypes = schema.typeDefinition(fragmentTypeCondition).possibleTypes(schema.typeDefinitions).toList(),
         description = fragmentDescription,
-        selectionSet = selectionSet,
+        fields = fields,
+        fragments = nestedInlineFragments + nestedNamedFragments,
         condition = fragmentCondition,
         selectionKeys = selectionKeys,
     )
@@ -684,8 +732,7 @@ internal class BackendIrBuilder constructor(
    * ]
    * ```
    */
-  private fun List<BackendIr.Fragment>.groupFragmentsByPossibleTypes()
-      : Map<List<BackendIr.Fragment>, List<IntrospectionSchema.TypeRef>> {
+  private fun List<BackendIr.Fragment>.groupFragmentsByPossibleTypes(): Map<List<BackendIr.Fragment>, List<IntrospectionSchema.TypeRef>> {
     return this
         .flatMap { fragment -> fragment.possibleTypes }
         .toSet()
@@ -698,6 +745,27 @@ internal class BackendIrBuilder constructor(
         }
   }
 
+  private fun List<BackendIr.Fragment>.mergeInterfaceFragmentsWithTheSameName(): List<BackendIr.Fragment> {
+    this.forEach { fragment -> check(fragment.type == BackendIr.Fragment.Type.Interface) }
+
+    return this
+        .groupBy { fragment -> fragment.name }
+        .map { (name, fragments) ->
+          BackendIr.Fragment(
+              name = name,
+              fields = fragments.fold(emptyList()) { acc, fragment -> acc.mergeFields(fragment.fields) },
+              nestedFragments = BackendIr.Fragments(
+                  fragments = fragments.flatMap { it.nestedFragments ?: emptyList() },
+                  accessors = fragments.fold(emptyMap()) { acc, fragment -> acc.plus(fragment.nestedFragments?.accessors ?: emptyMap()) }
+              ).takeIf { it.isNotEmpty() },
+              possibleTypes = fragments.fold(emptySet()) { acc, fragment -> acc + fragment.possibleTypes },
+              selectionKeys = fragments.fold(emptySet()) { acc, fragment -> acc + fragment.selectionKeys },
+              description = null,
+              type = BackendIr.Fragment.Type.Interface,
+          )
+        }
+  }
+
   private fun createFragments(
       selectionKey: SelectionKey,
       fragments: List<BackendIr.Fragment>,
@@ -705,7 +773,7 @@ internal class BackendIrBuilder constructor(
     return BackendIr.Fragments(
         fragments = fragments,
         accessors = fragments
-            .filter { fragment -> fragment.kind == BackendIr.Fragment.Kind.Interface }
+            .filter { fragment -> fragment.type == BackendIr.Fragment.Type.Interface }
             .flatMap { fragmentInterface -> fragmentInterface.selectionKeys }
             .filter { key -> key != selectionKey }
             .map { key ->
@@ -723,7 +791,8 @@ internal class BackendIrBuilder constructor(
       val typeCondition: IntrospectionSchema.TypeRef,
       val possibleTypes: List<String>,
       val description: String,
-      val selectionSet: List<BackendIr.Field>,
+      val fields: List<BackendIr.Field>,
+      val fragments: List<GenericFragment>,
       val condition: BackendIr.Condition,
       val selectionKeys: Set<SelectionKey>,
   )
