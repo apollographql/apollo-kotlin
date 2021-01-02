@@ -422,14 +422,14 @@ internal class BackendIrBuilder constructor(
           )
         }
 
-    val fallbackImplementationFields = parentFields
-        .addFieldSelectionKey(selectionKey + "Other${parentName.capitalize()}")
-        .map { field ->
-          field.buildFragmentImplementations(
-              selectionKey = selectionKey + "Other${parentName.capitalize()}" + field.responseName,
-              keepInterfaces = false,
-          )
-        }
+    val fallbackImplementationFields = parentFields.map { field ->
+      field.buildFragmentImplementations(
+          selectionKey = selectionKey + "Other${parentName.capitalize()}" + field.responseName,
+          keepInterfaces = false,
+      )
+    }.addFieldSelectionKey(
+        selectionKey + "Other${parentName.capitalize()}"
+    )
 
     val fallbackImplementation = BackendIr.Fragment(
         name = "Other${parentName.capitalize()}",
@@ -471,7 +471,7 @@ internal class BackendIrBuilder constructor(
     }.addFieldSelectionKey(selectionKey + fragmentName)
 
     val selectionsKeys = this.fold(emptySet<SelectionKey>()) { acc, fragment ->
-      acc + fragment.selectionKeys//.filterNot { it.startsWith(selectionKey + fragmentName) }
+      acc + fragment.selectionKeys
     }.plus(selectionKey)
 
     return BackendIr.Fragment(
