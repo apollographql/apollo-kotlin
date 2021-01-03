@@ -1,9 +1,6 @@
 package com.apollographql.apollo.compiler.backend
 
-import com.apollographql.apollo.api.CustomScalar
-import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.backend.ast.AstBuilder.Companion.buildAst
-import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
 import com.apollographql.apollo.compiler.backend.codegen.implementationTypeSpec
 import com.apollographql.apollo.compiler.backend.codegen.interfaceTypeSpec
 import com.apollographql.apollo.compiler.backend.codegen.patchKotlinNativeOptionalArrayProperties
@@ -14,11 +11,7 @@ import com.apollographql.apollo.compiler.frontend.Schema
 import com.apollographql.apollo.compiler.frontend.toIntrospectionSchema
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import com.squareup.kotlinpoet.FileSpec
-import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.asTypeName
 import java.io.File
 
 internal class GraphQLCodeGenerator(
@@ -46,7 +39,7 @@ internal class GraphQLCodeGenerator(
         fragmentsPackage = fragmentsPackageName
     )
 
-    if (generateScalarMapping) {
+    if (generateScalarMapping && ast.customScalarTypes.isNotEmpty()) {
       ast.customScalarTypes.values.typeSpec(generateAsInternal)
           .fileSpec(typesPackageName)
           .writeTo(outputDir)
