@@ -5,6 +5,7 @@ import com.apollographql.apollo.ApolloNetworkException
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.composeRequestBody
 import com.apollographql.apollo.interceptor.ApolloRequest
 import com.apollographql.apollo.testing.MockQuery
 import com.apollographql.apollo.network.HttpExecutionContext
@@ -93,7 +94,7 @@ class ApolloHttpNetworkTransportTest {
       networkTransport.execute(request = mockGraphQLRequest(), executionContext = ExecutionContext.Empty).single()
     }
 
-    assertEquals("{\"data\":{\"name\":\"MockQuery\"}}", response.response.data?.rawResponse)
+    assertEquals(MockQuery.Data, response.response.data)
     assertNotNull(response.executionContext[HttpExecutionContext.Response])
     assertEquals(200, response.executionContext[HttpExecutionContext.Response]?.statusCode)
     assertEquals("header1Value", response.executionContext[HttpExecutionContext.Response]?.headers?.get("header1"))

@@ -8,6 +8,8 @@ import com.apollographql.apollo.ApolloSerializationException
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.composeRequestBody
+import com.apollographql.apollo.api.parse
 import com.apollographql.apollo.interceptor.ApolloRequest
 import com.apollographql.apollo.interceptor.ApolloResponse
 import com.apollographql.apollo.network.HttpExecutionContext
@@ -30,7 +32,6 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okhttp3.internal.closeQuietly
 import java.io.IOException
-import java.time.Duration
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException

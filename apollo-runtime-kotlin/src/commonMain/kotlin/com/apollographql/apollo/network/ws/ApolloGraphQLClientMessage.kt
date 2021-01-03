@@ -1,6 +1,7 @@
 package com.apollographql.apollo.network.ws
 
 import com.apollographql.apollo.api.ApolloExperimental
+import com.apollographql.apollo.api.composeRequestBody
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.json.Utils.writeToJson
 import com.apollographql.apollo.interceptor.ApolloRequest

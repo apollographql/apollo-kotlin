@@ -4,7 +4,6 @@ import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
-import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
