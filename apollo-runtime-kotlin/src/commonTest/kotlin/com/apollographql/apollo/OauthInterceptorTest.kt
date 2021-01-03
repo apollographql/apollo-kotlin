@@ -3,6 +3,7 @@ package com.apollographql.apollo
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.parse
 import com.apollographql.apollo.interceptor.ApolloRequest
 import com.apollographql.apollo.interceptor.ApolloResponse
 import com.apollographql.apollo.interceptor.BearerTokenInterceptor
@@ -82,7 +83,7 @@ class OauthInterceptorTest {
     }
 
     assertNotNull(response.data)
-    assertEquals(expected = MockQuery.Data("{\"data\":{\"name\":\"MockQuery\"}}"), actual = response.data)
+    assertEquals(expected = MockQuery.Data, actual = response.data)
   }
 
   @Test
@@ -110,6 +111,6 @@ class OauthInterceptorTest {
     }
 
     assertNotNull(response.data)
-    assertEquals(expected = MockQuery.Data("{\"data\":{\"name\":\"MockQuery\"}}"), actual = response.data)
+    assertEquals(expected = MockQuery.Data, actual = response.data)
   }
 }

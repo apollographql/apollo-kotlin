@@ -3,7 +3,6 @@ package com.apollographql.apollo.internal.subscription;
 import com.apollographql.apollo.api.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
-import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.ScalarTypeAdapters;
 import com.apollographql.apollo.api.Subscription;
@@ -19,8 +18,6 @@ import com.apollographql.apollo.subscription.SubscriptionConnectionParamsProvide
 import com.apollographql.apollo.subscription.SubscriptionManagerState;
 import com.apollographql.apollo.subscription.SubscriptionTransport;
 import kotlin.jvm.functions.Function0;
-import okio.BufferedSource;
-import okio.ByteString;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
@@ -193,37 +190,6 @@ public class SubscriptionAutoPersistTest {
 
     @NotNull @Override public String operationId() {
       return operationId;
-    }
-
-    @NotNull @Override public Response<Data> parse(@NotNull BufferedSource source) {
-      throw new UnsupportedOperationException();
-    }
-
-    @NotNull @Override public Response<Data> parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
-      throw new UnsupportedOperationException();
-    }
-
-    @NotNull @Override public Response parse(@NotNull ByteString byteString) {
-      throw new UnsupportedOperationException();
-    }
-
-    @NotNull @Override public Response parse(@NotNull ByteString byteString, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
-      throw new UnsupportedOperationException();
-    }
-
-    @NotNull @Override public ByteString composeRequestBody(
-        boolean autoPersistQueries,
-        boolean withQueryDocument,
-        @NotNull ScalarTypeAdapters scalarTypeAdapters) {
-      throw new UnsupportedOperationException();
-    }
-
-    @NotNull @Override public ByteString composeRequestBody(@NotNull ScalarTypeAdapters scalarTypeAdapters) {
-      throw new UnsupportedOperationException();
-    }
-
-    @NotNull @Override public ByteString composeRequestBody() {
-      throw new UnsupportedOperationException();
     }
   }
 

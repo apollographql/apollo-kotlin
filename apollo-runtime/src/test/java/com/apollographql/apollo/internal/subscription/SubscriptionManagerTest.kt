@@ -3,16 +3,12 @@ package com.apollographql.apollo.internal.subscription
 import com.apollographql.apollo.api.CustomTypeAdapter
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
-import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ScalarType
 import com.apollographql.apollo.api.ScalarTypeAdapters
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.cache.normalized.ApolloStore
-import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
-import com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeListener
 import com.apollographql.apollo.subscription.OperationClientMessage
 import com.apollographql.apollo.subscription.OperationServerMessage
 import com.apollographql.apollo.subscription.SubscriptionConnectionParams
@@ -371,19 +367,6 @@ class SubscriptionManagerTest {
     }
 
     override fun operationId() = operationId
-
-    override fun parse(source: BufferedSource) = throw UnsupportedOperationException()
-    override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters) = throw UnsupportedOperationException()
-    override fun parse(byteString: ByteString) = throw UnsupportedOperationException()
-    override fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters) = throw UnsupportedOperationException()
-    override fun composeRequestBody(
-        autoPersistQueries: Boolean,
-        withQueryDocument: Boolean,
-        scalarTypeAdapters: ScalarTypeAdapters
-    ): ByteString = throw UnsupportedOperationException()
-
-    override fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters) = throw UnsupportedOperationException()
-    override fun composeRequestBody() = throw UnsupportedOperationException()
   }
 
   private class SubscriptionManagerCallbackAdapter<D : Operation.Data> : SubscriptionManager.Callback<D> {

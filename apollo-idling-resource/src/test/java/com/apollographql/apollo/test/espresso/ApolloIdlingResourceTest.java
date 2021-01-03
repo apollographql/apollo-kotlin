@@ -75,34 +75,6 @@ public class ApolloIdlingResourceTest {
     @NotNull @Override public String operationId() {
       return "";
     }
-
-    @NotNull @Override public ByteString composeRequestBody(boolean autoPersistQueries, boolean withQueryDocument, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
-      return OperationRequestBodyComposer.compose(this, false, true, ScalarTypeAdapters.DEFAULT);
-    }
-
-    @NotNull @Override public Response<Operation.Data> parse(@NotNull BufferedSource source, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
-      throw new UnsupportedOperationException();
-    }
-
-    @NotNull @Override public Response<Operation.Data> parse(@NotNull BufferedSource source) {
-      throw new UnsupportedOperationException();
-    }
-
-    @NotNull @Override public Response parse(@NotNull ByteString byteString) {
-      throw new UnsupportedOperationException();
-    }
-
-    @NotNull @Override public Response parse(@NotNull ByteString byteString, @NotNull ScalarTypeAdapters scalarTypeAdapters) {
-      throw new UnsupportedOperationException();
-    }
-
-    @NotNull @Override public ByteString composeRequestBody(@NotNull ScalarTypeAdapters scalarTypeAdapters) {
-      return OperationRequestBodyComposer.compose(this, false, true, ScalarTypeAdapters.DEFAULT);
-    }
-
-    @NotNull @Override public ByteString composeRequestBody() {
-      return OperationRequestBodyComposer.compose(this, false, true, ScalarTypeAdapters.DEFAULT);
-    }
   };
 
   @After

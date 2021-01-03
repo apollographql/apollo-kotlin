@@ -2,6 +2,7 @@ package com.apollographql.apollo.testing
 
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
@@ -13,8 +14,18 @@ class MockSubscription : Subscription<MockSubscription.Data, Operation.Variables
   override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
 
   override fun responseFieldMapper(): ResponseFieldMapper<Data> {
-    return ResponseFieldMapper {
-      Data
+    return ResponseFieldMapper { reader ->
+      Data(
+          name = reader.readString(
+              ResponseField.forString(
+                  responseName = "name",
+                  fieldName = "name",
+                  arguments = null,
+                  optional = false,
+                  conditions = null
+              )
+          )!!
+      )
     }
   }
 
@@ -24,7 +35,7 @@ class MockSubscription : Subscription<MockSubscription.Data, Operation.Variables
 
   override fun operationId(): String = "MockSubscription".hashCode().toString()
 
-  object Data : Operation.Data {
+  data class Data(val name: String) : Operation.Data {
     override fun marshaller(): ResponseFieldMarshaller {
       throw UnsupportedOperationException("Unsupported")
     }

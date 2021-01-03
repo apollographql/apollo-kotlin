@@ -38,7 +38,7 @@ class ApolloClientTest {
     }
 
     assertNotNull(response.data)
-    assertEquals(expected = MockQuery.Data("{\"data\":{\"name\":\"MockQuery\"}"), actual = response.data)
+    assertEquals(expected = MockQuery.Data, actual = response.data)
   }
 
   @Test
@@ -74,6 +74,6 @@ class ApolloClientTest {
     }
 
     assertNotNull(response.data)
-    assertEquals(expected = MockQuery.Data("{\"data\":{\"name\":\"MockQuery\"}}"), actual = response.data)
+    assertEquals(expected = MockQuery.Data, actual = response.data)
   }
 }
