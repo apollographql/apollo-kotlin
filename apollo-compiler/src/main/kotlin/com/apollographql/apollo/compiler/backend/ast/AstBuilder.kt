@@ -8,8 +8,6 @@ import com.apollographql.apollo.compiler.introspection.resolveType
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo.compiler.operationoutput.findOperationId
 import com.apollographql.apollo.compiler.singularize
-import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.MemberName
 
 internal class AstBuilder private constructor(
     private val backendIr: BackendIr,
@@ -233,7 +231,7 @@ internal class AstBuilder private constructor(
   }
 
   private fun BackendIr.Operation.buildOperationType(): CodeGenerationAst.OperationType {
-    val operationType = when (this.operationType) {
+    val operationType = when (this.operationSchemaType) {
       schema.resolveType(schema.queryType) -> CodeGenerationAst.OperationType.Type.QUERY
       schema.mutationType?.let { schema.resolveType(it) } -> CodeGenerationAst.OperationType.Type.MUTATION
       schema.subscriptionType?.let { schema.resolveType(it) } -> CodeGenerationAst.OperationType.Type.SUBSCRIPTION
@@ -325,15 +323,8 @@ internal class AstBuilder private constructor(
         fragments = defaultImplementationSelectionSet.fragments,
         targetPackageName = fragmentsPackage,
         abstract = false,
-<<<<<<< HEAD
-        customScalarTypes = customScalarTypes,
         currentSelectionKey = defaultImplementationSelectionKey,
         alternativeSelectionKeys = defaultImplementationSelectionSet.selectionKeys,
-=======
-
-        currentSelectionKey = defaultSelectionSetRootKey,
-        alternativeSelectionKeys = implementationSelectionSet.selectionKeys,
->>>>>>> 74c07a8d3... simplify AstBuilder
     )
     return CodeGenerationAst.FragmentType(
         name = this.name.normalizeTypeName(),
@@ -570,7 +561,6 @@ internal class AstBuilder private constructor(
                 targetPackageName = targetPackageName,
                 abstract = true,
                 selectionKey = selectionKey + this.name,
-                customScalarTypes = customScalarTypes,
             )
           } ?: emptyList())
       )

@@ -89,16 +89,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       object CharacterHero : ResponseAdapter<TestQuery.Data.Hero.CharacterHero> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
-<<<<<<< HEAD
           ResponseField.forString("name", "name", null, false, null)
-=======
-          ResponseField.forString("name", "name", null, false, null),
-<<<<<<< HEAD
-          ResponseField.forCustomScalar("birthDate", "birthDate", null, false, CustomScalar.DATE, null)
->>>>>>> 1058510c5... Generate CustomScalar as a data class
-=======
-          ResponseField.forCustomScalar("birthDate", "birthDate", null, false, CustomScalars.Date, null)
->>>>>>> da7da119a... revert to not using extension properties as it leads to nasty
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -122,7 +113,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField.forString("__typename", "__typename", null, false, null),
             ResponseField.forString("name", "name", null, false, null),
-            ResponseField.forCustomScalar("birthDate", "birthDate", null, false, CustomScalar.Date, null)
+            ResponseField.forCustomScalar("birthDate", "birthDate", null, false, CustomScalars.Date, null)
           )
 
           override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -192,16 +183,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       object CharacterHumanHero : ResponseAdapter<TestQuery.Data.Hero.CharacterHumanHero> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
-<<<<<<< HEAD
           ResponseField.forString("name", "name", null, false, null)
-=======
-          ResponseField.forString("name", "name", null, false, null),
-<<<<<<< HEAD
-          ResponseField.forCustomScalar("birthDate", "birthDate", null, false, CustomScalar.DATE, null)
->>>>>>> 1058510c5... Generate CustomScalar as a data class
-=======
-          ResponseField.forCustomScalar("birthDate", "birthDate", null, false, CustomScalars.Date, null)
->>>>>>> da7da119a... revert to not using extension properties as it leads to nasty
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -226,7 +208,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField.forString("__typename", "__typename", null, false, null),
             ResponseField.forString("name", "name", null, false, null),
-            ResponseField.forCustomScalar("birthDate", "birthDate", null, false, CustomScalar.Date, null)
+            ResponseField.forCustomScalar("birthDate", "birthDate", null, false, CustomScalars.Date, null)
           )
 
           override fun fromResponse(reader: ResponseReader, __typename: String?):
