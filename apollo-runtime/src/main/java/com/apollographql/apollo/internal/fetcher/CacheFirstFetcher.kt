@@ -1,57 +1,56 @@
-package com.apollographql.apollo.internal.fetcher;
+package com.apollographql.apollo.internal.fetcher
 
-import com.apollographql.apollo.api.internal.ApolloLogger;
-import com.apollographql.apollo.exception.ApolloException;
-import com.apollographql.apollo.fetcher.ResponseFetcher;
-import com.apollographql.apollo.interceptor.ApolloInterceptor;
-import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.concurrent.Executor;
+import com.apollographql.apollo.api.internal.ApolloLogger
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.fetcher.ResponseFetcher
+import com.apollographql.apollo.interceptor.ApolloInterceptor
+import com.apollographql.apollo.interceptor.ApolloInterceptor.CallBack
+import com.apollographql.apollo.interceptor.ApolloInterceptor.FetchSourceType
+import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorRequest
+import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorResponse
+import com.apollographql.apollo.interceptor.ApolloInterceptorChain
+import java.util.concurrent.Executor
 
 /**
  * Signals the apollo client to first fetch the data from the normalized cache. If it's not present in the normalized
  * cache or if an exception occurs while trying to fetch it from the normalized cache, then the data is instead fetched
  * from the network.
  */
-public final class CacheFirstFetcher implements ResponseFetcher {
-
-  @Override public ApolloInterceptor provideInterceptor(final ApolloLogger apolloLogger) {
-    return new CacheFirstInterceptor();
+class CacheFirstFetcher : ResponseFetcher {
+  override fun provideInterceptor(apolloLogger: ApolloLogger?): ApolloInterceptor? {
+    return CacheFirstInterceptor()
   }
 
-  private static final class CacheFirstInterceptor implements ApolloInterceptor {
-
-    volatile boolean disposed;
-
-    @Override
-    public void interceptAsync(@NotNull final InterceptorRequest request, @NotNull final ApolloInterceptorChain chain,
-        @NotNull final Executor dispatcher, @NotNull final CallBack callBack) {
-      InterceptorRequest cacheRequest = request.toBuilder().fetchFromCache(true).build();
-      chain.proceedAsync(cacheRequest, dispatcher, new CallBack() {
-        @Override public void onResponse(@NotNull InterceptorResponse response) {
-          callBack.onResponse(response);
+  private class CacheFirstInterceptor : ApolloInterceptor {
+    @Volatile
+    var disposed = false
+    override fun interceptAsync(request: InterceptorRequest, chain: ApolloInterceptorChain,
+                                dispatcher: Executor, callBack: CallBack) {
+      val cacheRequest = request.toBuilder().fetchFromCache(true).build()
+      chain.proceedAsync(cacheRequest, dispatcher, object : CallBack {
+        override fun onResponse(response: InterceptorResponse) {
+          callBack.onResponse(response)
         }
 
-        @Override public void onFailure(@NotNull ApolloException e) {
+        override fun onFailure(e: ApolloException) {
           if (!disposed) {
-            InterceptorRequest networkRequest = request.toBuilder().fetchFromCache(false).build();
-            chain.proceedAsync(networkRequest, dispatcher, callBack);
+            val networkRequest = request.toBuilder().fetchFromCache(false).build()
+            chain.proceedAsync(networkRequest, dispatcher, callBack)
           }
         }
 
-        @Override public void onCompleted() {
-          callBack.onCompleted();
+        override fun onCompleted() {
+          callBack.onCompleted()
         }
 
-        @Override public void onFetch(FetchSourceType sourceType) {
-          callBack.onFetch(sourceType);
+        override fun onFetch(sourceType: FetchSourceType?) {
+          callBack.onFetch(sourceType)
         }
-      });
+      })
     }
 
-    @Override public void dispose() {
-      disposed = true;
+    override fun dispose() {
+      disposed = true
     }
   }
 }

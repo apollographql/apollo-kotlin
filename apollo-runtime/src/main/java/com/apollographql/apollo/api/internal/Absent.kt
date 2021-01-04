@@ -16,7 +16,6 @@
 package com.apollographql.apollo.api.internal
 
 import com.apollographql.apollo.api.internal.Utils.__checkNotNull
-import java.lang.IllegalStateException
 
 /**
  * Implementation of an [Optional] not containing a reference.

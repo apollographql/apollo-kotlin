@@ -3,10 +3,6 @@ package com.apollographql.apollo.interceptor
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.internal.Optional
 import com.apollographql.apollo.api.internal.Utils.__checkNotNull
-import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorRequest
-import com.apollographql.apollo.interceptor.ApolloInterceptor.CallBack
-import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorResponse
-import com.apollographql.apollo.interceptor.ApolloInterceptor.FetchSourceType
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.exception.ApolloException

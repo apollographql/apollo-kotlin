@@ -2,10 +2,8 @@ package com.apollographql.apollo.internal.subscription
 
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Subscription
-import com.apollographql.apollo.subscription.SubscriptionManagerState
 import com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeListener
-import com.apollographql.apollo.internal.subscription.SubscriptionResponse
-import com.apollographql.apollo.internal.subscription.ApolloSubscriptionException
+import com.apollographql.apollo.subscription.SubscriptionManagerState
 
 interface SubscriptionManager {
   /**
@@ -24,11 +22,19 @@ interface SubscriptionManager {
   fun unsubscribe(subscription: Subscription<*>)
 
   /**
+ * Returns the current state of subscription manager.
+ *
+ * @return current state
+ */
+  /**
    * Returns the current state of subscription manager.
    *
    * @return current state
    */
-  val state: SubscriptionManagerState
+  val subscriptionManagerState: SubscriptionManagerState
+get() {
+        return subscriptionManager.state
+    }
 
   /**
    * Adds new listener for subscription manager state changes.

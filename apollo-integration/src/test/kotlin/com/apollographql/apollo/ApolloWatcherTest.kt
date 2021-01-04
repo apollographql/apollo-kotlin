@@ -117,7 +117,7 @@ class ApolloWatcherTest {
     Truth.assertThat(heroNameList[0]).isEqualTo("R2-D2")
 
     // Someone writes to the store directly
-    val changedKeys: Set<String> = apolloClient.getApolloStore().writeTransaction(object : Transaction<WriteableStore, Set<String>> {
+    val changedKeys: Set<String> = apolloClient.apolloStore.writeTransaction(object : Transaction<WriteableStore, Set<String>> {
       override fun execute(cache: WriteableStore): Set<String>? {
         val record: Record = Record.builder("2001")
             .addField("name", "Artoo")
@@ -125,7 +125,7 @@ class ApolloWatcherTest {
         return cache.merge(listOf(record), CacheHeaders.NONE)
       }
     })
-    apolloClient.getApolloStore().publish(changedKeys)
+    apolloClient.apolloStore.publish(changedKeys)
     Truth.assertThat(heroNameList[1]).isEqualTo("Artoo")
     watcher.cancel()
   }

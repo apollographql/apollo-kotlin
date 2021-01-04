@@ -2,19 +2,17 @@ package com.apollographql.apollo.internal
 
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloMutationCall
-import com.apollographql.apollo.api.internal.Utils.__checkNotNull
-import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.ApolloPrefetch
 import com.apollographql.apollo.ApolloQueryCall
 import com.apollographql.apollo.ApolloQueryWatcher
-import java.util.concurrent.atomic.AtomicInteger
 import com.apollographql.apollo.IdleResourceCallback
 import com.apollographql.apollo.api.Mutation
+import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
-import java.lang.AssertionError
-import java.lang.IllegalArgumentException
+import com.apollographql.apollo.api.internal.Utils.__checkNotNull
 import java.util.HashMap
 import java.util.HashSet
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * ApolloCallTracker is responsible for keeping track of running [ApolloPrefetch] & [ApolloQueryCall]

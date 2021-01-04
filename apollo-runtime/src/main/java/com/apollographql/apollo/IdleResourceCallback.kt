@@ -1,14 +1,12 @@
-package com.apollographql.apollo;
+package com.apollographql.apollo
 
 /**
  * Callback which gets invoked when the resource transitions
  * from active to idle state.
  */
-public interface IdleResourceCallback {
-
+interface IdleResourceCallback {
   /**
    * Gets called when the resource transitions from active to idle state.
    */
-  void onIdle();
-
+  fun onIdle()
 }

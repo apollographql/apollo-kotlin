@@ -1,37 +1,36 @@
-package com.apollographql.apollo.exception;
+package com.apollographql.apollo.exception
 
-import org.jetbrains.annotations.Nullable;
+import okhttp3.Response
 
-import okhttp3.Response;
+class ApolloHttpException(rawResponse: Response?) : ApolloException(formatMessage(rawResponse)) {
+  private val code: Int
+  private override val message: String
 
-public final class ApolloHttpException extends ApolloException {
-  private final int code;
-  private final String message;
-  private final transient Response rawResponse;
-
-  public ApolloHttpException(@Nullable okhttp3.Response rawResponse) {
-    super(formatMessage(rawResponse));
-    this.code = rawResponse != null ? rawResponse.code() : 0;
-    this.message = rawResponse != null ? rawResponse.message() : "";
-    this.rawResponse = rawResponse;
+  @Transient
+  private val rawResponse: Response?
+  fun code(): Int {
+    return code
   }
 
-  public int code() {
-    return code;
+  fun message(): String {
+    return message
   }
 
-  public String message() {
-    return message;
+  fun rawResponse(): Response? {
+    return rawResponse
   }
 
-  @Nullable public Response rawResponse() {
-    return rawResponse;
-  }
-
-  private static String formatMessage(Response response) {
-    if (response == null) {
-      return "Empty HTTP response";
+  companion object {
+    private fun formatMessage(response: Response?): String {
+      return if (response == null) {
+        "Empty HTTP response"
+      } else "HTTP " + response.code() + " " + response.message()
     }
-    return "HTTP " + response.code() + " " + response.message();
+  }
+
+  init {
+    code = rawResponse?.code() ?: 0
+    message = if (rawResponse != null) rawResponse.message() else ""
+    this.rawResponse = rawResponse
   }
 }

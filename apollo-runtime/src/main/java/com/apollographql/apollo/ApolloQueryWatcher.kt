@@ -1,46 +1,41 @@
-package com.apollographql.apollo;
+package com.apollographql.apollo
 
-import com.apollographql.apollo.api.Operation;
-import com.apollographql.apollo.api.Query;
-import com.apollographql.apollo.fetcher.ResponseFetcher;
-import com.apollographql.apollo.internal.util.Cancelable;
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.fetcher.ResponseFetcher
+import com.apollographql.apollo.internal.util.Cancelable
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-public interface ApolloQueryWatcher<D extends Operation.Data> extends Cancelable {
-
-  ApolloQueryWatcher<D> enqueueAndWatch(@Nullable ApolloCall.Callback<D> callback);
+interface ApolloQueryWatcher<D : Operation.Data> : Cancelable {
+  fun enqueueAndWatch(callback: ApolloCall.Callback<D>?): ApolloQueryWatcher<D>?
 
   /**
-   * @param fetcher The {@link ResponseFetcher} to use when the call is refetched due to a field changing in the
+   * @param fetcher The [ResponseFetcher] to use when the call is refetched due to a field changing in the
    * cache.
    */
-  @NotNull ApolloQueryWatcher<D> refetchResponseFetcher(@NotNull ResponseFetcher fetcher);
+  fun refetchResponseFetcher(fetcher: ResponseFetcher): ApolloQueryWatcher<D>
 
   /**
    * Returns GraphQL watched operation.
    *
-   * @return {@link Operation}
+   * @return [Operation]
    */
-  @NotNull Operation operation();
+  fun operation(): Operation<*>
 
   /**
    * Re-fetches watched GraphQL query.
    */
-  void refetch();
+  fun refetch()
 
   /**
-   * Cancels this {@link ApolloQueryWatcher}. The {@link com.apollographql.apollo.ApolloCall.Callback}
+   * Cancels this [ApolloQueryWatcher]. The [com.apollographql.apollo.ApolloCall.Callback]
    * will be disposed, and will receive no more events. Any active operations will attempt to abort and
    * release resources, if possible.
    */
-  @Override void cancel();
+  override fun cancel()
 
   /**
    * Creates a new, identical call to this one which can be enqueued or executed even if this call has already been.
    *
    * @return The cloned ApolloQueryWatcher object.
    */
-  @NotNull ApolloQueryWatcher<D> clone();
+  override fun clone(): ApolloQueryWatcher<D>
 }

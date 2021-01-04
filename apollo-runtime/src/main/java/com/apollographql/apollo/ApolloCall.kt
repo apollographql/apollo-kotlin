@@ -1,172 +1,168 @@
-package com.apollographql.apollo;
+package com.apollographql.apollo
 
-import com.apollographql.apollo.api.Operation;
-import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.cache.ApolloCacheHeaders;
-import com.apollographql.apollo.cache.CacheHeaders;
-import com.apollographql.apollo.exception.ApolloCanceledException;
-import com.apollographql.apollo.exception.ApolloException;
-import com.apollographql.apollo.exception.ApolloHttpException;
-import com.apollographql.apollo.exception.ApolloNetworkException;
-import com.apollographql.apollo.exception.ApolloParseException;
-import com.apollographql.apollo.fetcher.ResponseFetcher;
-import com.apollographql.apollo.internal.util.Cancelable;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.cache.CacheHeaders
+import com.apollographql.apollo.exception.ApolloCanceledException
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.ApolloHttpException
+import com.apollographql.apollo.exception.ApolloNetworkException
+import com.apollographql.apollo.exception.ApolloParseException
+import com.apollographql.apollo.fetcher.ResponseFetcher
+import com.apollographql.apollo.internal.util.Cancelable
 
 /**
- * <p>ApolloCall is an abstraction for a request that has been prepared for execution. ApolloCall represents a single
- * request/response pair and cannot be executed twice, though it can be cancelled.</p>
  *
- * <p>In order to execute the request again, call the {@link ApolloCall#clone()} method which creates a new ApolloCall
- * object.</p>
+ * ApolloCall is an abstraction for a request that has been prepared for execution. ApolloCall represents a single
+ * request/response pair and cannot be executed twice, though it can be cancelled.
+ *
+ *
+ * In order to execute the request again, call the [ApolloCall.clone] method which creates a new ApolloCall
+ * object.
  */
-public interface ApolloCall<D extends Operation.Data> extends Cancelable {
+interface ApolloCall<D : Operation.Data> : Cancelable {
   /**
    * Schedules the request to be executed at some point in the future.
    *
    * @param callback Callback which will handle the response or a failure exception.
    * @throws IllegalStateException when the call has already been executed
    */
-  void enqueue(@Nullable Callback<D> callback);
+  fun enqueue(callback: Callback<D>?)
 
   /**
-   * Sets the {@link CacheHeaders} to use for this call. {@link com.apollographql.apollo.interceptor.FetchOptions} will
-   * be configured with this headers, and will be accessible from the {@link ResponseFetcher} used for this call.
+   * Sets the [CacheHeaders] to use for this call. [com.apollographql.apollo.interceptor.FetchOptions] will
+   * be configured with this headers, and will be accessible from the [ResponseFetcher] used for this call.
    *
-   * Deprecated, use {@link #toBuilder()} to mutate the ApolloCall
+   * Deprecated, use [.toBuilder] to mutate the ApolloCall
    *
-   * @param cacheHeaders the {@link CacheHeaders} that will be passed with records generated from this request to {@link
-   *                     com.apollographql.apollo.cache.normalized.NormalizedCache}. Standardized cache headers are
-   *                     defined in {@link ApolloCacheHeaders}.
-   * @return The ApolloCall object with the provided {@link CacheHeaders}.
+   * @param cacheHeaders the [CacheHeaders] that will be passed with records generated from this request to [                     ]. Standardized cache headers are
+   * defined in [ApolloCacheHeaders].
+   * @return The ApolloCall object with the provided [CacheHeaders].
    */
-  @Deprecated @NotNull ApolloCall<D> cacheHeaders(@NotNull CacheHeaders cacheHeaders);
+  @Deprecated("")
+  fun cacheHeaders(cacheHeaders: CacheHeaders): ApolloCall<D>
 
   /**
    * Creates a new, identical call to this one which can be enqueued or executed even if this call has already been.
    *
-   * Deprecated, use {@link #toBuilder()} to mutate the ApolloCall
+   * Deprecated, use [.toBuilder] to mutate the ApolloCall
    *
    * @return The cloned ApolloCall object.
    */
-  @Deprecated @NotNull ApolloCall<D> clone();
+  @Deprecated("")
+  override fun clone(): ApolloCall<D>
 
   /**
    * Returns GraphQL operation this call executes
    *
-   * @return {@link Operation}
+   * @return [Operation]
    */
-  @NotNull Operation<D> operation();
+  fun operation(): Operation<D>
 
   /**
-   * Cancels this {@link ApolloCall}. If the call was started with {@link #enqueue(Callback)}, the
-   * {@link com.apollographql.apollo.ApolloCall.Callback} will be disposed, and will receive no more events.
+   * Cancels this [ApolloCall]. If the call was started with [.enqueue], the
+   * [com.apollographql.apollo.ApolloCall.Callback] will be disposed, and will receive no more events.
    * The call will attempt to abort and release resources, if possible.
    */
-  @Override void cancel();
-
-  @NotNull Builder<D> toBuilder();
-
-  interface Builder<D extends Operation.Data> {
-    @NotNull ApolloCall<D> build();
+  override fun cancel()
+  fun toBuilder(): Builder<D>
+  interface Builder<D : Operation.Data> {
+    fun build(): ApolloCall<D>
 
     /**
-     * Sets the {@link CacheHeaders} to use for this call. {@link com.apollographql.apollo.interceptor.FetchOptions} will
-     * be configured with this headers, and will be accessible from the {@link ResponseFetcher} used for this call.
+     * Sets the [CacheHeaders] to use for this call. [com.apollographql.apollo.interceptor.FetchOptions] will
+     * be configured with this headers, and will be accessible from the [ResponseFetcher] used for this call.
      *
-     * @param cacheHeaders the {@link CacheHeaders} that will be passed with records generated from this request to {@link
-     *                     com.apollographql.apollo.cache.normalized.NormalizedCache}. Standardized cache headers are
-     *                     defined in {@link ApolloCacheHeaders}.
+     * @param cacheHeaders the [CacheHeaders] that will be passed with records generated from this request to [                     ]. Standardized cache headers are
+     * defined in [ApolloCacheHeaders].
      * @return The builder
      */
-    @NotNull Builder<D> cacheHeaders(@NotNull CacheHeaders cacheHeaders);
+    fun cacheHeaders(cacheHeaders: CacheHeaders): Builder<D>
   }
 
   /**
    * Communicates responses from a server or offline requests.
    */
-  abstract class Callback<D extends Operation.Data> {
-
+  abstract class Callback<D : Operation.Data> {
     /**
      * Gets called when GraphQL response is received and parsed successfully. Depending on the
-     * {@link ResponseFetcher} used with the call, this may be called multiple times. {@link #onCompleted()}
+     * [ResponseFetcher] used with the call, this may be called multiple times. [.onCompleted]
      * will be called after the final call to onResponse.
      *
      * @param response the GraphQL response
      */
-    public abstract void onResponse(@NotNull Response<D> response);
+    abstract fun onResponse(response: Response<D>)
 
     /**
      * Gets called when an unexpected exception occurs while creating the request or processing the response.
      * Will be called at most one time. It is considered a terminal event. After called,
-     * neither {@link #onResponse(Response)} or {@link #onCompleted()} will be called again.
+     * neither [.onResponse] or [.onCompleted] will be called again.
      */
-    public abstract void onFailure(@NotNull ApolloException e);
+    abstract fun onFailure(e: ApolloException)
 
     /**
-     * Gets called whenever any action happen to this {@link ApolloCall}.
+     * Gets called whenever any action happen to this [ApolloCall].
      *
-     * @param event status that corresponds to a {@link ApolloCall} action
+     * @param event status that corresponds to a [ApolloCall] action
      */
-    public void onStatusEvent(@NotNull StatusEvent event) { }
+    open fun onStatusEvent(event: StatusEvent) {}
 
     /**
-     * <p>Gets called when an http request error takes place. This is the case when the returned http status code
-     * doesn't lie in the range 200 (inclusive) and 300 (exclusive).</p>
      *
-     * <b>NOTE:</b> by overriding this callback you must call {@link okhttp3.Response#close()} on {@link
-     * ApolloHttpException#rawResponse} to close the network connection.
+     * Gets called when an http request error takes place. This is the case when the returned http status code
+     * doesn't lie in the range 200 (inclusive) and 300 (exclusive).
+     *
+     * **NOTE:** by overriding this callback you must call [okhttp3.Response.close] on [ ][ApolloHttpException.rawResponse] to close the network connection.
      */
-    public void onHttpError(@NotNull ApolloHttpException e) {
-      onFailure(e);
-      okhttp3.Response response = e.rawResponse();
-      if (response != null) {
-        response.close();
-      }
+    fun onHttpError(e: ApolloHttpException) {
+      onFailure(e)
+      val response = e.rawResponse()
+      response?.close()
     }
 
     /**
      * Gets called when an http request error takes place due to network failures, timeouts etc.
      */
-    public void onNetworkError(@NotNull ApolloNetworkException e) {
-      onFailure(e);
+    fun onNetworkError(e: ApolloNetworkException) {
+      onFailure(e)
     }
 
     /**
      * Gets called when the network request succeeds but there was an error parsing the response.
      */
-    public void onParseError(@NotNull ApolloParseException e) {
-      onFailure(e);
+    fun onParseError(e: ApolloParseException) {
+      onFailure(e)
     }
 
     /**
-     * Gets called when {@link ApolloCall} has been canceled.
+     * Gets called when [ApolloCall] has been canceled.
      */
-    public void onCanceledError(@NotNull ApolloCanceledException e) {
-      onFailure(e);
+    fun onCanceledError(e: ApolloCanceledException) {
+      onFailure(e)
     }
   }
 
   /**
-   * Represents a status event that corresponds to a {@link ApolloCall} action
+   * Represents a status event that corresponds to a [ApolloCall] action
    */
-  enum StatusEvent {
+  enum class StatusEvent {
     /**
-     * {@link ApolloCall} is scheduled for execution
+     * [ApolloCall] is scheduled for execution
      */
     SCHEDULED,
+
     /**
-     * {@link ApolloCall} fetches response from cache
+     * [ApolloCall] fetches response from cache
      */
     FETCH_CACHE,
+
     /**
-     * {@link ApolloCall} fetches response from network
+     * [ApolloCall] fetches response from network
      */
     FETCH_NETWORK,
+
     /**
-     * {@link ApolloCall} is finished its execution
+     * [ApolloCall] is finished its execution
      */
     COMPLETED
   }

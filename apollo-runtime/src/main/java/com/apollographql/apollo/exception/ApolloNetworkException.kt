@@ -1,11 +1,6 @@
-package com.apollographql.apollo.exception;
+package com.apollographql.apollo.exception
 
-public final class ApolloNetworkException extends ApolloException {
-  public ApolloNetworkException(String message) {
-    super(message);
-  }
-
-  public ApolloNetworkException(String message, Throwable cause) {
-    super(message, cause);
-  }
+class ApolloNetworkException : ApolloException {
+  constructor(message: String?) : super(message!!) {}
+  constructor(message: String?, cause: Throwable?) : super(message!!, cause!!) {}
 }

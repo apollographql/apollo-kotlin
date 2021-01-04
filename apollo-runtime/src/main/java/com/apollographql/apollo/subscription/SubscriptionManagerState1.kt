@@ -1,10 +1,9 @@
-package com.apollographql.apollo.subscription;
+package com.apollographql.apollo.subscription
 
 /**
  * Subscription manager state.
  */
-public enum SubscriptionManagerState {
-
+enum class SubscriptionManagerState {
   /**
    * Indicates there is no active connection to the subscription server.
    */

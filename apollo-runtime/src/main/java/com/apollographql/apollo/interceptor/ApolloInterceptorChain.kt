@@ -1,7 +1,7 @@
 package com.apollographql.apollo.interceptor
 
-import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorRequest
 import com.apollographql.apollo.interceptor.ApolloInterceptor.CallBack
+import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorRequest
 import java.util.concurrent.Executor
 
 /**

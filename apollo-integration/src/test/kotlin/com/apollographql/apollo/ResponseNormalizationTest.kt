@@ -44,7 +44,7 @@ class ResponseNormalizationTest {
         .normalizedCache(LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), IdFieldCacheKeyResolver())
         .dispatcher(immediateExecutor())
         .build()
-    normalizedCache = apolloClient.getApolloStore().normalizedCache()
+    normalizedCache = apolloClient.apolloStore.normalizedCache()
   }
 
   @Test

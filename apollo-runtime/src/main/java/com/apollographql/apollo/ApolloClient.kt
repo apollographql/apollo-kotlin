@@ -1,177 +1,147 @@
-package com.apollographql.apollo;
+package com.apollographql.apollo
 
-import com.apollographql.apollo.api.CustomScalarAdapter;
-import com.apollographql.apollo.api.Mutation;
-import com.apollographql.apollo.api.Operation;
-import com.apollographql.apollo.api.OperationName;
-import com.apollographql.apollo.api.Query;
-import com.apollographql.apollo.api.CustomScalar;
-import com.apollographql.apollo.api.CustomScalarAdapters;
-import com.apollographql.apollo.api.Subscription;
-import com.apollographql.apollo.api.cache.http.HttpCache;
-import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
-import com.apollographql.apollo.api.internal.ApolloLogger;
-import com.apollographql.apollo.api.internal.Optional;
-import com.apollographql.apollo.cache.CacheHeaders;
-import com.apollographql.apollo.cache.normalized.ApolloStore;
-import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
-import com.apollographql.apollo.cache.normalized.NormalizedCache;
-import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
-import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter;
-import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
-import com.apollographql.apollo.fetcher.ResponseFetcher;
-import com.apollographql.apollo.interceptor.ApolloInterceptor;
-import com.apollographql.apollo.interceptor.ApolloInterceptorFactory;
-import com.apollographql.apollo.internal.ApolloCallTracker;
-import com.apollographql.apollo.internal.RealApolloCall;
-import com.apollographql.apollo.internal.RealApolloPrefetch;
-import com.apollographql.apollo.internal.RealApolloSubscriptionCall;
-import com.apollographql.apollo.internal.RealApolloStore;
-import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer;
-import com.apollographql.apollo.internal.subscription.NoOpSubscriptionManager;
-import com.apollographql.apollo.internal.subscription.RealSubscriptionManager;
-import com.apollographql.apollo.internal.subscription.SubscriptionManager;
-import com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeListener;
-import com.apollographql.apollo.subscription.SubscriptionConnectionParams;
-import com.apollographql.apollo.subscription.SubscriptionConnectionParamsProvider;
-import com.apollographql.apollo.subscription.SubscriptionManagerState;
-import com.apollographql.apollo.subscription.SubscriptionTransport;
-import kotlin.jvm.functions.Function0;
-import okhttp3.Call;
-import okhttp3.HttpUrl;
-import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
-import okhttp3.Response;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executor;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
-import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+import com.apollographql.apollo.ApolloClient.Builder
+import com.apollographql.apollo.api.CustomScalar
+import com.apollographql.apollo.api.CustomScalarAdapter
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Mutation
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.Subscription
+import com.apollographql.apollo.api.cache.http.HttpCache
+import com.apollographql.apollo.api.cache.http.HttpCachePolicy
+import com.apollographql.apollo.api.internal.ApolloLogger
+import com.apollographql.apollo.api.internal.Optional.Companion.absent
+import com.apollographql.apollo.api.internal.Optional.Companion.fromNullable
+import com.apollographql.apollo.api.internal.Optional.Companion.of
+import com.apollographql.apollo.api.internal.Utils.__checkNotNull
+import com.apollographql.apollo.cache.CacheHeaders
+import com.apollographql.apollo.cache.normalized.ApolloStore
+import com.apollographql.apollo.cache.normalized.ApolloStoreOperation
+import com.apollographql.apollo.cache.normalized.CacheKeyResolver
+import com.apollographql.apollo.cache.normalized.NormalizedCache
+import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory
+import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter
+import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
+import com.apollographql.apollo.fetcher.ApolloResponseFetchers
+import com.apollographql.apollo.fetcher.ResponseFetcher
+import com.apollographql.apollo.interceptor.ApolloInterceptor
+import com.apollographql.apollo.interceptor.ApolloInterceptorFactory
+import com.apollographql.apollo.internal.ApolloCallTracker
+import com.apollographql.apollo.internal.RealApolloCall
+import com.apollographql.apollo.internal.RealApolloPrefetch
+import com.apollographql.apollo.internal.RealApolloStore
+import com.apollographql.apollo.internal.RealApolloSubscriptionCall
+import com.apollographql.apollo.internal.subscription.NoOpSubscriptionManager
+import com.apollographql.apollo.internal.subscription.RealSubscriptionManager
+import com.apollographql.apollo.internal.subscription.SubscriptionManager
+import com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeListener
+import com.apollographql.apollo.subscription.SubscriptionConnectionParams
+import com.apollographql.apollo.subscription.SubscriptionConnectionParamsProvider
+import com.apollographql.apollo.subscription.SubscriptionTransport
+import okhttp3.Call
+import okhttp3.HttpUrl
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
+import okhttp3.Response
+import java.io.IOException
+import java.util.ArrayList
+import java.util.Collections
+import java.util.LinkedHashMap
+import java.util.concurrent.Executor
+import java.util.concurrent.SynchronousQueue
+import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.TimeUnit
+import kotlin.jvm.functions.Function0
 
 /**
  * ApolloClient class represents the abstraction for the graphQL client that will be used to execute queries and read the responses back.
  *
  * <h3>ApolloClient should be shared</h3>
- * <p>
+ *
+ *
  * Since each ApolloClient holds its own connection pool and thread pool, it is recommended to only create a single ApolloClient and use
  * that for execution of all the queries, as this would reduce latency and would also save memory. Conversely, creating a client for each
  * query execution would result in resource wastage on idle pools.
  *
  *
- * <p>See the {@link ApolloClient.Builder} class for configuring the ApolloClient.
+ *
+ * See the [ApolloClient.Builder] class for configuring the ApolloClient.
  */
-public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutationCall.Factory, ApolloPrefetch.Factory,
-    ApolloSubscriptionCall.Factory {
+class ApolloClient internal constructor(
+    /**
+     * @return The [HttpUrl] serverUrl
+     */
+    val serverUrl: HttpUrl?,
+    private val httpCallFactory: Call.Factory?,
+    /**
+     * @return The [HttpCache] httpCache
+     */
+    val httpCache: HttpCache?,
+    /**
+     * @return The [ApolloStore] managing access to the normalized cache created by
+     * [Builder.normalizedCache]  }
+     */
+    val apolloStore: ApolloStore,
+    /**
+     * @return The [CustomScalarAdapters] scalarTypeAdapters
+     */
+    val scalarTypeAdapters: CustomScalarAdapters,
+    private val dispatcher: Executor?,
+    private val defaultHttpCachePolicy: HttpCachePolicy.Policy,
+    private val defaultResponseFetcher: ResponseFetcher,
+    /**
+     * @return The default [CacheHeaders] which this instance of [ApolloClient] was configured.
+     */
+    val defaultCacheHeaders: CacheHeaders,
+    private val logger: ApolloLogger,
+    applicationInterceptors: List<ApolloInterceptor>,
+    applicationInterceptorFactories: List<ApolloInterceptorFactory>,
+    autoPersistedOperationsInterceptorFactory: ApolloInterceptorFactory?,
+    enableAutoPersistedQueries: Boolean,
+    subscriptionManager: SubscriptionManager,
+    useHttpGetMethodForQueries: Boolean,
+    useHttpGetMethodForPersistedQueries: Boolean,
+    writeToNormalizedCacheAsynchronously: Boolean) : ApolloQueryCall.Factory, ApolloMutationCall.Factory, ApolloPrefetch.Factory, ApolloSubscriptionCall.Factory {
+  private val tracker = ApolloCallTracker()
+  private val applicationInterceptors: List<ApolloInterceptor>
+  private val applicationInterceptorFactories: List<ApolloInterceptorFactory>
 
-  public static Builder builder() {
-    return new Builder();
+  /**
+   * @return The [ApolloInterceptor] used for auto persisted operations
+   */
+  val autoPersistedOperationsInterceptorFactory: ApolloInterceptorFactory?
+  private val enableAutoPersistedQueries: Boolean
+  val subscriptionManager: SubscriptionManager
+  private val useHttpGetMethodForQueries: Boolean
+  private val useHttpGetMethodForPersistedQueries: Boolean
+  private val writeToNormalizedCacheAsynchronously: Boolean
+  override fun <D : Operation.Data> mutate(
+      mutation: Mutation<D>): ApolloMutationCall<D> {
+    return newCall(mutation).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
   }
 
-  private final HttpUrl serverUrl;
-  private final Call.Factory httpCallFactory;
-  private final HttpCache httpCache;
-  private final ApolloStore apolloStore;
-  private final CustomScalarAdapters customScalarAdapters;
-  private final Executor dispatcher;
-  private final HttpCachePolicy.Policy defaultHttpCachePolicy;
-  private final ResponseFetcher defaultResponseFetcher;
-  private final CacheHeaders defaultCacheHeaders;
-  private final ApolloLogger logger;
-  private final ApolloCallTracker tracker = new ApolloCallTracker();
-  private final List<ApolloInterceptor> applicationInterceptors;
-  private final List<ApolloInterceptorFactory> applicationInterceptorFactories;
-  private final ApolloInterceptorFactory autoPersistedOperationsInterceptorFactory;
-  private final boolean enableAutoPersistedQueries;
-  private final SubscriptionManager subscriptionManager;
-  private final boolean useHttpGetMethodForQueries;
-  private final boolean useHttpGetMethodForPersistedQueries;
-  private final boolean writeToNormalizedCacheAsynchronously;
-
-  ApolloClient(HttpUrl serverUrl,
-      Call.Factory httpCallFactory,
-      HttpCache httpCache,
-      ApolloStore apolloStore,
-      CustomScalarAdapters customScalarAdapters,
-      Executor dispatcher,
-      HttpCachePolicy.Policy defaultHttpCachePolicy,
-      ResponseFetcher defaultResponseFetcher,
-      CacheHeaders defaultCacheHeaders,
-      ApolloLogger logger,
-      List<ApolloInterceptor> applicationInterceptors,
-      List<ApolloInterceptorFactory> applicationInterceptorFactories,
-      ApolloInterceptorFactory autoPersistedOperationsInterceptorFactory,
-      boolean enableAutoPersistedQueries,
-      SubscriptionManager subscriptionManager,
-      boolean useHttpGetMethodForQueries,
-      boolean useHttpGetMethodForPersistedQueries,
-      boolean writeToNormalizedCacheAsynchronously) {
-    this.serverUrl = serverUrl;
-    this.httpCallFactory = httpCallFactory;
-    this.httpCache = httpCache;
-    this.apolloStore = apolloStore;
-    this.customScalarAdapters = customScalarAdapters;
-    this.dispatcher = dispatcher;
-    this.defaultHttpCachePolicy = defaultHttpCachePolicy;
-    this.defaultResponseFetcher = defaultResponseFetcher;
-    this.defaultCacheHeaders = defaultCacheHeaders;
-    this.logger = logger;
-    if (!applicationInterceptorFactories.isEmpty() && !applicationInterceptors.isEmpty()) {
-      throw new IllegalArgumentException("You can either use applicationInterceptors or applicationInterceptorFactories "
-          + "but not both at the same time.");
-    }
-    this.applicationInterceptors = applicationInterceptors;
-    this.applicationInterceptorFactories = applicationInterceptorFactories;
-    this.autoPersistedOperationsInterceptorFactory = autoPersistedOperationsInterceptorFactory;
-    this.enableAutoPersistedQueries = enableAutoPersistedQueries;
-    this.subscriptionManager = subscriptionManager;
-    this.useHttpGetMethodForQueries = useHttpGetMethodForQueries;
-    this.useHttpGetMethodForPersistedQueries = useHttpGetMethodForPersistedQueries;
-    this.writeToNormalizedCacheAsynchronously = writeToNormalizedCacheAsynchronously;
-  }
-
-  @Override
-  public <D extends Mutation.Data> ApolloMutationCall<D> mutate(
-      @NotNull Mutation<D> mutation) {
-    return newCall(mutation).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY);
-  }
-
-  @Override
-  public <D extends Mutation.Data> ApolloMutationCall<D> mutate(
-      @NotNull Mutation<D> mutation, @NotNull D withOptimisticUpdates) {
-    checkNotNull(withOptimisticUpdates, "withOptimisticUpdate == null");
+  override fun <D : Operation.Data> mutate(
+      mutation: Mutation<D>, withOptimisticUpdates: D): ApolloMutationCall<D> {
+    __checkNotNull(withOptimisticUpdates, "withOptimisticUpdate == null")
     return newCall(mutation).toBuilder().responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
-        .optimisticUpdates(Optional.<Operation.Data>fromNullable(withOptimisticUpdates)).build();
+        .optimisticUpdates(fromNullable(withOptimisticUpdates)).build()
   }
 
-  @Override
-  public <D extends Query.Data> ApolloQueryCall<D> query(@NotNull Query<D> query) {
-    return newCall(query);
+  override fun <D : Operation.Data> query(query: Query<D>): ApolloQueryCall<D> {
+    return newCall(query)
   }
 
-  @Override
-  public <D extends Operation.Data> ApolloPrefetch prefetch(
-      @NotNull Operation<D> operation) {
-    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, customScalarAdapters, dispatcher, logger,
-        tracker);
+  override fun <D : Operation.Data> prefetch(
+      operation: Operation<D>): ApolloPrefetch {
+    return RealApolloPrefetch(operation, serverUrl!!, httpCallFactory!!, scalarTypeAdapters, dispatcher!!, logger,
+        tracker)
   }
 
-  @Override
-  public <D extends Subscription.Data> ApolloSubscriptionCall<D> subscribe(
-      @NotNull Subscription<D> subscription) {
-    return new RealApolloSubscriptionCall<>(subscription, subscriptionManager, apolloStore, ApolloSubscriptionCall.CachePolicy.NO_CACHE,
-        dispatcher, logger);
+  override fun <D : Operation.Data> subscribe(
+      subscription: Subscription<D>): ApolloSubscriptionCall<D> {
+    return RealApolloSubscriptionCall(subscription, subscriptionManager, apolloStore, ApolloSubscriptionCall.CachePolicy.NO_CACHE,
+        dispatcher!!, logger)
   }
 
   /**
@@ -179,8 +149,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
    *
    * @param onStateChangeListener to be called when state changed
    */
-  public void addOnSubscriptionManagerStateChangeListener(@NotNull OnSubscriptionManagerStateChangeListener onStateChangeListener) {
-    subscriptionManager.addOnStateChangeListener(checkNotNull(onStateChangeListener, "onStateChangeListener is null"));
+  fun addOnSubscriptionManagerStateChangeListener(onStateChangeListener: OnSubscriptionManagerStateChangeListener) {
+    subscriptionManager.addOnStateChangeListener(__checkNotNull(onStateChangeListener, "onStateChangeListener is null"))
   }
 
   /**
@@ -188,58 +158,38 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
    *
    * @param onStateChangeListener to remove
    */
-  public void removeOnSubscriptionManagerStateChangeListener(@NotNull OnSubscriptionManagerStateChangeListener onStateChangeListener) {
-    subscriptionManager.removeOnStateChangeListener(checkNotNull(onStateChangeListener, "onStateChangeListener is null"));
+  fun removeOnSubscriptionManagerStateChangeListener(onStateChangeListener: OnSubscriptionManagerStateChangeListener) {
+    subscriptionManager.removeOnStateChangeListener(__checkNotNull(onStateChangeListener, "onStateChangeListener is null"))
   }
 
   /**
-   * Returns the current state of subscription manager.
-   *
-   * @return current state
-   */
-  public SubscriptionManagerState getSubscriptionManagerState() {
-    return subscriptionManager.getState();
-  }
-
-  public SubscriptionManager getSubscriptionManager() {
-    return subscriptionManager;
-  }
-
-  /**
-   * Call {@link SubscriptionManager.start start} on the subscriptionManager. Which will put the subscriptionManager in a connectible state
+   * Call [start][SubscriptionManager.start] on the subscriptionManager. Which will put the subscriptionManager in a connectible state
    * if its current state is STOPPED. This is a noop if the current state is anything other than STOPPED.
-   * <p>
+   *
+   *
    * When subscriptions are re-enabled after having been disabled, the underlying transport isn't reconnected immediately, but will be on
    * the first new subscription created.
    */
-  public void enableSubscriptions() {
-    subscriptionManager.start();
+  fun enableSubscriptions() {
+    subscriptionManager.start()
   }
 
   /**
-   * Call {@link SubscriptionManager.stop stop} on the subscriptionManager. Which will unsubscribe from all active subscriptions, disconnect
+   * Call [stop][SubscriptionManager.stop] on the subscriptionManager. Which will unsubscribe from all active subscriptions, disconnect
    * the underlying transport (eg websocket), and put the subscriptionManager in the STOPPED state.
-   * <p>
-   * New subscriptions will fail until {@link #enableSubscriptions} is called.
+   *
+   *
+   * New subscriptions will fail until [.enableSubscriptions] is called.
    */
-  public void disableSubscriptions() {
-    subscriptionManager.stop();
+  fun disableSubscriptions() {
+    subscriptionManager.stop()
   }
 
   /**
-   * @return The default {@link CacheHeaders} which this instance of {@link ApolloClient} was configured.
+   * Clear all entries from the [HttpCache], if present.
    */
-  public CacheHeaders getDefaultCacheHeaders() {
-    return defaultCacheHeaders;
-  }
-
-  /**
-   * Clear all entries from the {@link HttpCache}, if present.
-   */
-  public void clearHttpCache() {
-    if (httpCache != null) {
-      httpCache.clear();
-    }
+  fun clearHttpCache() {
+    httpCache?.clear()
   }
 
   /**
@@ -247,108 +197,69 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
    *
    * @param callback to be notified when operation is completed
    */
-  public void clearNormalizedCache(@NotNull ApolloStoreOperation.Callback<Boolean> callback) {
-    checkNotNull(callback, "callback == null");
-    apolloStore.clearAll().enqueue(callback);
+  fun clearNormalizedCache(callback: ApolloStoreOperation.Callback<Boolean?>) {
+    __checkNotNull<ApolloStoreOperation.Callback<Boolean>>(callback, "callback == null")
+    apolloStore.clearAll().enqueue(callback)
   }
 
   /**
    * Clear all entries from the normalized cache. This is synchronous operation and will be executed int the current thread
    *
-   * @return {@code true} if operation succeed, {@code false} otherwise
+   * @return `true` if operation succeed, `false` otherwise
    */
-  public boolean clearNormalizedCache() {
-    return apolloStore.clearAll().execute();
+  fun clearNormalizedCache(): Boolean {
+    return apolloStore.clearAll().execute()
   }
 
   /**
-   * @return The {@link ApolloStore} managing access to the normalized cache created by
-   * {@link Builder#normalizedCache(NormalizedCacheFactory, CacheKeyResolver)}  }
+   * @return The list of [ApolloInterceptor]s
    */
-  public ApolloStore getApolloStore() {
-    return apolloStore;
+  fun getApplicationInterceptors(): List<ApolloInterceptor> {
+    return Collections.unmodifiableList(applicationInterceptors)
   }
 
   /**
-   * @return The {@link HttpUrl} serverUrl
+   * @return The list of [ApolloInterceptorFactory]
    */
-  public HttpUrl getServerUrl() {
-    return serverUrl;
-  }
-
-  /**
-   * @return The {@link HttpCache} httpCache
-   */
-  public HttpCache getHttpCache() {
-    return httpCache;
-  }
-
-  /**
-   * @return The {@link CustomScalarAdapters} scalarTypeAdapters
-   */
-  public CustomScalarAdapters getScalarTypeAdapters() {
-    return customScalarAdapters;
-  }
-
-  /**
-   * @return The list of {@link ApolloInterceptor}s
-   */
-  public List<ApolloInterceptor> getApplicationInterceptors() {
-    return Collections.unmodifiableList(applicationInterceptors);
-  }
-
-  /**
-   * @return The list of {@link ApolloInterceptorFactory}
-   */
-  public List<ApolloInterceptorFactory> getApplicationInterceptorFactories() {
-    return Collections.unmodifiableList(applicationInterceptorFactories);
-  }
-
-  /**
-   * @return The {@link ApolloInterceptor} used for auto persisted operations
-   */
-  public ApolloInterceptorFactory getAutoPersistedOperationsInterceptorFactory() {
-    return autoPersistedOperationsInterceptorFactory;
+  fun getApplicationInterceptorFactories(): List<ApolloInterceptorFactory> {
+    return Collections.unmodifiableList(applicationInterceptorFactories)
   }
 
   /**
    * Sets the idleResourceCallback which will be called when this ApolloClient is idle.
    */
-  public void idleCallback(IdleResourceCallback idleResourceCallback) {
-    tracker.setIdleResourceCallback(idleResourceCallback);
+  fun idleCallback(idleResourceCallback: IdleResourceCallback?) {
+    tracker.setIdleResourceCallback(idleResourceCallback)
   }
 
   /**
-   * Returns the count of {@link ApolloCall} & {@link ApolloPrefetch} objects which are currently in progress.
+   * Returns the count of [ApolloCall] & [ApolloPrefetch] objects which are currently in progress.
    */
-  public int activeCallsCount() {
-    return tracker.activeCallsCount();
+  fun activeCallsCount(): Int {
+    return tracker.activeCallsCount()
   }
 
   /**
-   * @return a new instance of {@link Builder} to customize an existing {@link ApolloClient}
+   * @return a new instance of [Builder] to customize an existing [ApolloClient]
    */
-  public Builder newBuilder() {
-    return new Builder(this);
+  fun newBuilder(): Builder {
+    return Builder(this)
   }
 
-  Response cachedHttpResponse(String cacheKey) throws IOException {
-    if (httpCache != null) {
-      return httpCache.read(cacheKey);
-    } else {
-      return null;
-    }
+  @Throws(IOException::class)
+  fun cachedHttpResponse(cacheKey: String?): Response? {
+    return httpCache?.read(cacheKey!!)
   }
 
-  private <D extends Operation.Data> RealApolloCall<D> newCall(
-      @NotNull Operation<D> operation) {
-    return RealApolloCall.<D>builder()
+  private fun <D : Operation.Data> newCall(
+      operation: Operation<D>): RealApolloCall<D> {
+    return RealApolloCall.builder<D>()
         .operation(operation)
         .serverUrl(serverUrl)
         .httpCallFactory(httpCallFactory)
         .httpCache(httpCache)
         .httpCachePolicy(defaultHttpCachePolicy)
-        .scalarTypeAdapters(customScalarAdapters)
+        .scalarTypeAdapters(scalarTypeAdapters)
         .apolloStore(apolloStore)
         .responseFetcher(defaultResponseFetcher)
         .cacheHeaders(defaultCacheHeaders)
@@ -358,159 +269,149 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         .applicationInterceptorFactories(applicationInterceptorFactories)
         .autoPersistedOperationsInterceptorFactory(autoPersistedOperationsInterceptorFactory)
         .tracker(tracker)
-        .refetchQueries(Collections.<Query>emptyList())
-        .refetchQueryNames(Collections.<OperationName>emptyList())
+        .refetchQueries(emptyList())
+        .refetchQueryNames(emptyList())
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .useHttpGetMethodForQueries(useHttpGetMethodForQueries)
         .useHttpGetMethodForPersistedQueries(useHttpGetMethodForPersistedQueries)
         .writeToNormalizedCacheAsynchronously(writeToNormalizedCacheAsynchronously)
-        .build();
+        .build()
   }
 
-  @SuppressWarnings("WeakerAccess")
-  public static class Builder {
-    Call.Factory callFactory;
-    HttpUrl serverUrl;
-    HttpCache httpCache;
-    ApolloStore apolloStore = ApolloStore.NO_APOLLO_STORE;
-    Optional<NormalizedCacheFactory> cacheFactory = Optional.absent();
-    Optional<CacheKeyResolver> cacheKeyResolver = Optional.absent();
-    HttpCachePolicy.Policy defaultHttpCachePolicy = HttpCachePolicy.NETWORK_ONLY;
-    ResponseFetcher defaultResponseFetcher = ApolloResponseFetchers.CACHE_FIRST;
-    CacheHeaders defaultCacheHeaders = CacheHeaders.NONE;
-    final Map<CustomScalar, CustomScalarAdapter<?>> CustomScalarAdapters = new LinkedHashMap<>();
-    Executor dispatcher;
-    @Nullable
-    Logger logger = null;
-    final List<ApolloInterceptor> applicationInterceptors = new ArrayList<>();
-    final List<ApolloInterceptorFactory> applicationInterceptorFactories = new ArrayList<>();
-    @Nullable
-    ApolloInterceptorFactory autoPersistedOperationsInterceptorFactory = null;
-    boolean enableAutoPersistedQueries;
-    SubscriptionManager subscriptionManager = new NoOpSubscriptionManager();
-    boolean enableAutoPersistedSubscriptions;
-    Optional<SubscriptionTransport.Factory> subscriptionTransportFactory = Optional.absent();
-    SubscriptionConnectionParamsProvider subscriptionConnectionParams = new SubscriptionConnectionParamsProvider.Const(
-        new SubscriptionConnectionParams());
-    long subscriptionHeartbeatTimeout = -1;
-    boolean useHttpGetMethodForQueries;
-    boolean useHttpGetMethodForPersistedQueries;
-    boolean writeToNormalizedCacheAsynchronously;
+  class Builder {
+    var callFactory: Call.Factory? = null
+    var serverUrl: HttpUrl? = null
+    var httpCache: HttpCache? = null
+    var apolloStore = ApolloStore.NO_APOLLO_STORE
+    var cacheFactory = absent<NormalizedCacheFactory<*>>()
+    var cacheKeyResolver = absent<CacheKeyResolver>()
+    var defaultHttpCachePolicy = HttpCachePolicy.NETWORK_ONLY
+    var defaultResponseFetcher = ApolloResponseFetchers.CACHE_FIRST
+    var defaultCacheHeaders = CacheHeaders.NONE
+    val CustomScalarAdapters: MutableMap<CustomScalar, CustomScalarAdapter<*>> = LinkedHashMap()
+    var dispatcher: Executor? = null
+    var logger: Logger? = null
+    val applicationInterceptors: MutableList<ApolloInterceptor> = ArrayList()
+    val applicationInterceptorFactories: MutableList<ApolloInterceptorFactory> = ArrayList()
+    var autoPersistedOperationsInterceptorFactory: ApolloInterceptorFactory? = null
+    var enableAutoPersistedQueries = false
+    var subscriptionManager: SubscriptionManager = NoOpSubscriptionManager()
+    var enableAutoPersistedSubscriptions = false
+    var subscriptionTransportFactory = absent<SubscriptionTransport.Factory>()
+    var subscriptionConnectionParams: SubscriptionConnectionParamsProvider = SubscriptionConnectionParamsProvider.Const(
+        SubscriptionConnectionParams())
+    var subscriptionHeartbeatTimeout: Long = -1
+    var useHttpGetMethodForQueries = false
+    var useHttpGetMethodForPersistedQueries = false
+    var writeToNormalizedCacheAsynchronously = false
 
-    Builder() {
-    }
-
-    private Builder(@NotNull ApolloClient apolloClient) {
-      callFactory = apolloClient.httpCallFactory;
-      serverUrl = apolloClient.serverUrl;
-      httpCache = apolloClient.httpCache;
-      apolloStore = apolloClient.apolloStore;
-      defaultHttpCachePolicy = apolloClient.defaultHttpCachePolicy;
-      defaultResponseFetcher = apolloClient.defaultResponseFetcher;
-      defaultCacheHeaders = apolloClient.defaultCacheHeaders;
-      CustomScalarAdapters.putAll(apolloClient.customScalarAdapters.getCustomScalarAdapters());
-      dispatcher = apolloClient.dispatcher;
-      logger = apolloClient.logger.getLogger();
-      applicationInterceptors.addAll(apolloClient.applicationInterceptors);
-      applicationInterceptorFactories.addAll(apolloClient.applicationInterceptorFactories);
-      autoPersistedOperationsInterceptorFactory = apolloClient.getAutoPersistedOperationsInterceptorFactory();
-      enableAutoPersistedQueries = apolloClient.enableAutoPersistedQueries;
-      subscriptionManager = apolloClient.subscriptionManager;
-      useHttpGetMethodForQueries = apolloClient.useHttpGetMethodForQueries;
-      useHttpGetMethodForPersistedQueries = apolloClient.useHttpGetMethodForPersistedQueries;
-      writeToNormalizedCacheAsynchronously = apolloClient.writeToNormalizedCacheAsynchronously;
+    internal constructor() {}
+    constructor(apolloClient: ApolloClient) {
+      callFactory = apolloClient.httpCallFactory
+      serverUrl = apolloClient.serverUrl
+      httpCache = apolloClient.httpCache
+      apolloStore = apolloClient.apolloStore
+      defaultHttpCachePolicy = apolloClient.defaultHttpCachePolicy
+      defaultResponseFetcher = apolloClient.defaultResponseFetcher
+      defaultCacheHeaders = apolloClient.defaultCacheHeaders
+      CustomScalarAdapters.putAll(apolloClient.scalarTypeAdapters.customScalarAdapters)
+      dispatcher = apolloClient.dispatcher
+      logger = apolloClient.logger.logger
+      applicationInterceptors.addAll(apolloClient.applicationInterceptors)
+      applicationInterceptorFactories.addAll(apolloClient.applicationInterceptorFactories)
+      autoPersistedOperationsInterceptorFactory = apolloClient.autoPersistedOperationsInterceptorFactory
+      enableAutoPersistedQueries = apolloClient.enableAutoPersistedQueries
+      subscriptionManager = apolloClient.subscriptionManager
+      useHttpGetMethodForQueries = apolloClient.useHttpGetMethodForQueries
+      useHttpGetMethodForPersistedQueries = apolloClient.useHttpGetMethodForPersistedQueries
+      writeToNormalizedCacheAsynchronously = apolloClient.writeToNormalizedCacheAsynchronously
     }
 
     /**
-     * Set the {@link OkHttpClient} to use for making network requests.
+     * Set the [OkHttpClient] to use for making network requests.
      *
      * @param okHttpClient the client to use.
-     * @return The {@link Builder} object to be used for chaining method calls
+     * @return The [Builder] object to be used for chaining method calls
      */
-    public Builder okHttpClient(@NotNull OkHttpClient okHttpClient) {
-      return callFactory(checkNotNull(okHttpClient, "okHttpClient is null"));
+    fun okHttpClient(okHttpClient: OkHttpClient): Builder {
+      return callFactory(__checkNotNull(okHttpClient, "okHttpClient is null"))
     }
 
     /**
-     * Set the custom call factory for creating {@link Call} instances. <p> Note: Calling {@link #okHttpClient(OkHttpClient)} automatically
+     * Set the custom call factory for creating [Call] instances.
+     *
+     * Note: Calling [.okHttpClient] automatically
      * sets this value.
      */
-    public Builder callFactory(@NotNull Call.Factory factory) {
-      this.callFactory = checkNotNull(factory, "factory == null");
-      return this;
+    fun callFactory(factory: Call.Factory): Builder {
+      callFactory = __checkNotNull(factory, "factory == null")
+      return this
     }
 
     /**
-     * <p>Set the API server's base url.</p>
+     *
+     * Set the API server's base url.
      *
      * @param serverUrl the url to set.
-     * @return The {@link Builder} object to be used for chaining method calls
+     * @return The [Builder] object to be used for chaining method calls
      */
-    public Builder serverUrl(@NotNull HttpUrl serverUrl) {
-      this.serverUrl = checkNotNull(serverUrl, "serverUrl is null");
-      return this;
+    fun serverUrl(serverUrl: HttpUrl): Builder {
+      this.serverUrl = __checkNotNull(serverUrl, "serverUrl is null")
+      return this
     }
 
     /**
-     * <p>Set the API server's base url.</p>
+     *
+     * Set the API server's base url.
      *
      * @param serverUrl the url to set.
-     * @return The {@link Builder} object to be used for chaining method calls
+     * @return The [Builder] object to be used for chaining method calls
      */
-    public Builder serverUrl(@NotNull String serverUrl) {
-      this.serverUrl = HttpUrl.parse(checkNotNull(serverUrl, "serverUrl == null"));
-      return this;
+    fun serverUrl(serverUrl: String): Builder {
+      this.serverUrl = HttpUrl.parse(__checkNotNull(serverUrl, "serverUrl == null"))
+      return this
     }
 
     /**
      * Set the configuration to be used for request/response http cache.
      *
      * @param httpCache The to use for reading and writing cached response.
-     * @return The {@link Builder} object to be used for chaining method calls
+     * @return The [Builder] object to be used for chaining method calls
      */
-    public Builder httpCache(@NotNull HttpCache httpCache) {
-      this.httpCache = checkNotNull(httpCache, "httpCache == null");
-      return this;
+    fun httpCache(httpCache: HttpCache): Builder {
+      this.httpCache = __checkNotNull(httpCache, "httpCache == null")
+      return this
     }
-
     /**
      * Set the configuration to be used for normalized cache.
      *
-     * @param normalizedCacheFactory the {@link NormalizedCacheFactory} used to construct a {@link NormalizedCache}.
-     * @return The {@link Builder} object to be used for chaining method calls
-     */
-    public Builder normalizedCache(@NotNull NormalizedCacheFactory normalizedCacheFactory) {
-      return normalizedCache(normalizedCacheFactory, CacheKeyResolver.DEFAULT);
-    }
-
-    /**
-     * Set the configuration to be used for normalized cache.
-     *
-     * @param normalizedCacheFactory the {@link NormalizedCacheFactory} used to construct a {@link NormalizedCache}.
-     * @param keyResolver the {@link CacheKeyResolver} to use to normalize records
-     * @return The {@link Builder} object to be used for chaining method calls
-     */
-    public Builder normalizedCache(@NotNull NormalizedCacheFactory normalizedCacheFactory,
-        @NotNull CacheKeyResolver keyResolver) {
-        return normalizedCache(normalizedCacheFactory, keyResolver, false);
-    }
-
-    /**
-     * Set the configuration to be used for normalized cache.
-     *
-     * @param normalizedCacheFactory the {@link NormalizedCacheFactory} used to construct a {@link NormalizedCache}.
-     * @param keyResolver the {@link CacheKeyResolver} to use to normalize records
+     * @param normalizedCacheFactory the [NormalizedCacheFactory] used to construct a [NormalizedCache].
+     * @param keyResolver the [CacheKeyResolver] to use to normalize records
      * @param writeToCacheAsynchronously If true returning response data will not wait on the normalized cache write. This can
      * improve request performance, but means that subsequent requests are not guaranteed to hit the cache for data contained
      * in previously received requests.
-     * @return The {@link Builder} object to be used for chaining method calls
+     * @return The [Builder] object to be used for chaining method calls
      */
-    public Builder normalizedCache(@NotNull NormalizedCacheFactory normalizedCacheFactory,
-        @NotNull CacheKeyResolver keyResolver, boolean writeToCacheAsynchronously) {
-      cacheFactory = Optional.fromNullable(checkNotNull(normalizedCacheFactory, "normalizedCacheFactory == null"));
-      cacheKeyResolver = Optional.fromNullable(checkNotNull(keyResolver, "cacheKeyResolver == null"));
-      this.writeToNormalizedCacheAsynchronously = writeToCacheAsynchronously;
-      return this;
+    /**
+     * Set the configuration to be used for normalized cache.
+     *
+     * @param normalizedCacheFactory the [NormalizedCacheFactory] used to construct a [NormalizedCache].
+     * @param keyResolver the [CacheKeyResolver] to use to normalize records
+     * @return The [Builder] object to be used for chaining method calls
+     */
+    /**
+     * Set the configuration to be used for normalized cache.
+     *
+     * @param normalizedCacheFactory the [NormalizedCacheFactory] used to construct a [NormalizedCache].
+     * @return The [Builder] object to be used for chaining method calls
+     */
+    @JvmOverloads
+    fun normalizedCache(normalizedCacheFactory: NormalizedCacheFactory<*>,
+                        keyResolver: CacheKeyResolver = CacheKeyResolver.DEFAULT, writeToCacheAsynchronously: Boolean = false): Builder {
+      cacheFactory = fromNullable(__checkNotNull(normalizedCacheFactory, "normalizedCacheFactory == null"))
+      cacheKeyResolver = fromNullable(__checkNotNull(keyResolver, "cacheKeyResolver == null"))
+      writeToNormalizedCacheAsynchronously = writeToCacheAsynchronously
+      return this
     }
 
     /**
@@ -519,254 +420,252 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
      * @param customScalar the scalar type to serialize/deserialize
      * @param customScalarAdapter the type adapter to use
      * @param <T> the value type
-     * @return The {@link Builder} object to be used for chaining method calls
-     */
-    public <T> Builder addCustomScalarAdapter(@NotNull CustomScalar customScalar,
-        @NotNull final CustomScalarAdapter<T> customScalarAdapter) {
-      CustomScalarAdapters.put(customScalar, customScalarAdapter);
-      return this;
+     * @return The [Builder] object to be used for chaining method calls
+    </T> */
+    fun <T> addCustomScalarAdapter(customScalar: CustomScalar,
+                                   customScalarAdapter: CustomScalarAdapter<T>): Builder {
+      CustomScalarAdapters[customScalar] = customScalarAdapter
+      return this
     }
 
     /**
-     * The #{@link Executor} to use for dispatching the requests.
+     * The #[Executor] to use for dispatching the requests.
      *
-     * @return The {@link Builder} object to be used for chaining method calls
+     * @return The [Builder] object to be used for chaining method calls
      */
-    public Builder dispatcher(@NotNull Executor dispatcher) {
-      this.dispatcher = checkNotNull(dispatcher, "dispatcher == null");
-      return this;
+    fun dispatcher(dispatcher: Executor): Builder {
+      this.dispatcher = __checkNotNull(dispatcher, "dispatcher == null")
+      return this
     }
 
     /**
-     * Sets the http cache policy to be used as default for all GraphQL {@link Query} operations. Will be ignored for any {@link Mutation}
-     * operations. By default http cache policy is set to {@link HttpCachePolicy#NETWORK_ONLY}.
+     * Sets the http cache policy to be used as default for all GraphQL [Query] operations. Will be ignored for any [Mutation]
+     * operations. By default http cache policy is set to [HttpCachePolicy.NETWORK_ONLY].
      *
-     * @return The {@link Builder} object to be used for chaining method calls
+     * @return The [Builder] object to be used for chaining method calls
      */
-    public Builder defaultHttpCachePolicy(@NotNull HttpCachePolicy.Policy cachePolicy) {
-      this.defaultHttpCachePolicy = checkNotNull(cachePolicy, "cachePolicy == null");
-      return this;
+    fun defaultHttpCachePolicy(cachePolicy: HttpCachePolicy.Policy): Builder {
+      defaultHttpCachePolicy = __checkNotNull(cachePolicy, "cachePolicy == null")
+      return this
     }
 
     /**
-     * Set the default {@link CacheHeaders} strategy that will be passed to the {@link com.apollographql.apollo.interceptor.FetchOptions}
-     * used in each new {@link ApolloCall}.
+     * Set the default [CacheHeaders] strategy that will be passed to the [com.apollographql.apollo.interceptor.FetchOptions]
+     * used in each new [ApolloCall].
      *
-     * @return The {@link Builder} object to be used for chaining method calls
+     * @return The [Builder] object to be used for chaining method calls
      */
-    public Builder defaultCacheHeaders(@NotNull CacheHeaders cacheHeaders) {
-      this.defaultCacheHeaders = checkNotNull(cacheHeaders, "cacheHeaders == null");
-      return this;
+    fun defaultCacheHeaders(cacheHeaders: CacheHeaders): Builder {
+      defaultCacheHeaders = __checkNotNull(cacheHeaders, "cacheHeaders == null")
+      return this
     }
 
     /**
-     * Set the default {@link ResponseFetcher} to be used with each new {@link ApolloCall}.
+     * Set the default [ResponseFetcher] to be used with each new [ApolloCall].
      *
-     * @return The {@link Builder} object to be used for chaining method calls
+     * @return The [Builder] object to be used for chaining method calls
      */
-    public Builder defaultResponseFetcher(@NotNull ResponseFetcher defaultResponseFetcher) {
-      this.defaultResponseFetcher = checkNotNull(defaultResponseFetcher, "defaultResponseFetcher == null");
-      return this;
+    fun defaultResponseFetcher(defaultResponseFetcher: ResponseFetcher): Builder {
+      this.defaultResponseFetcher = __checkNotNull(defaultResponseFetcher, "defaultResponseFetcher == null")
+      return this
     }
 
     /**
-     * The {@link Logger} to use for logging purposes.
+     * The [Logger] to use for logging purposes.
      *
-     * @return The {@link Builder} object to be used for chaining method calls
+     * @return The [Builder] object to be used for chaining method calls
      */
-    public Builder logger(@Nullable Logger logger) {
-      this.logger = logger;
-      return this;
+    fun logger(logger: Logger?): Builder {
+      this.logger = logger
+      return this
     }
 
     /**
-     * <p>Adds an interceptor that observes the full span of each call: from before the connection is established until
+     *
+     * Adds an interceptor that observes the full span of each call: from before the connection is established until
      * after the response source is selected (either the server, cache or both). This method can be called multiple times for adding
-     * multiple application interceptors. </p>
+     * multiple application interceptors.
      *
-     * <p>Note: Interceptors will be called <b>in the order in which they are added to the list of interceptors</b> and
-     * if any of the interceptors tries to short circuit the responses, then subsequent interceptors <b>won't</b> be called.</p>
+     *
+     * Note: Interceptors will be called **in the order in which they are added to the list of interceptors** and
+     * if any of the interceptors tries to short circuit the responses, then subsequent interceptors **won't** be called.
      *
      * @param interceptor Application level interceptor to add
-     * @return The {@link Builder} object to be used for chaining method calls
+     * @return The [Builder] object to be used for chaining method calls
      */
-    public Builder addApplicationInterceptor(@NotNull ApolloInterceptor interceptor) {
-      applicationInterceptors.add(interceptor);
-      return this;
+    fun addApplicationInterceptor(interceptor: ApolloInterceptor): Builder {
+      applicationInterceptors.add(interceptor)
+      return this
     }
 
     /**
-     * <p>Adds an interceptorFactory that creates interceptors that observes the full span of each call: from before
-     * the connection is established until after the response source is selected (either the server, cache or both). This method can be
-     * called multiple times for adding multiple application interceptors. </p>
      *
-     * <p>Note: Interceptors will be called <b>in the order in which they are added to the list of interceptors</b> and
-     * if any of the interceptors tries to short circuit the responses, then subsequent interceptors <b>won't</b> be called.</p>
+     * Adds an interceptorFactory that creates interceptors that observes the full span of each call: from before
+     * the connection is established until after the response source is selected (either the server, cache or both). This method can be
+     * called multiple times for adding multiple application interceptors.
+     *
+     *
+     * Note: Interceptors will be called **in the order in which they are added to the list of interceptors** and
+     * if any of the interceptors tries to short circuit the responses, then subsequent interceptors **won't** be called.
      *
      * @param interceptorFactory Application level interceptor to add
-     * @return The {@link Builder} object to be used for chaining method calls
+     * @return The [Builder] object to be used for chaining method calls
      */
-    public Builder addApplicationInterceptorFactory(@NotNull ApolloInterceptorFactory interceptorFactory) {
-      applicationInterceptorFactories.add(interceptorFactory);
-      return this;
+    fun addApplicationInterceptorFactory(interceptorFactory: ApolloInterceptorFactory): Builder {
+      applicationInterceptorFactories.add(interceptorFactory)
+      return this
     }
 
     /**
-     * <p>Sets the interceptor to use for auto persisted operations.</p>
+     *
+     * Sets the interceptor to use for auto persisted operations.
      *
      *
      * @param interceptorFactory interceptor to set
-     * @return The {@link Builder} object to be used for chaining method calls
+     * @return The [Builder] object to be used for chaining method calls
      */
-    public Builder setAutoPersistedOperationsInterceptorFactory(@Nullable ApolloInterceptorFactory interceptorFactory) {
-      autoPersistedOperationsInterceptorFactory = interceptorFactory;
-      return this;
+    fun setAutoPersistedOperationsInterceptorFactory(interceptorFactory: ApolloInterceptorFactory?): Builder {
+      autoPersistedOperationsInterceptorFactory = interceptorFactory
+      return this
     }
 
     /**
-       * @param enableAutoPersistedQueries True if ApolloClient should enable Automatic Persisted Queries support. Default: false.
-       * @return The {@link Builder} object to be used for chaining method calls
-       */
-    public Builder enableAutoPersistedQueries(boolean enableAutoPersistedQueries) {
-      this.enableAutoPersistedQueries = enableAutoPersistedQueries;
-      return this;
+     * @param enableAutoPersistedQueries True if ApolloClient should enable Automatic Persisted Queries support. Default: false.
+     * @return The [Builder] object to be used for chaining method calls
+     */
+    fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean): Builder {
+      this.enableAutoPersistedQueries = enableAutoPersistedQueries
+      return this
     }
 
     /**
-     * <p>Sets up subscription transport factory to be used for subscription server communication.<p/> See also: {@link
-     * com.apollographql.apollo.subscription.WebSocketSubscriptionTransport}
+     *
+     * Sets up subscription transport factory to be used for subscription server communication.
+     *
+     * See also: [ ]
      *
      * @param subscriptionTransportFactory transport layer to be used for subscriptions.
-     * @return The {@link Builder} object to be used for chaining method calls
+     * @return The [Builder] object to be used for chaining method calls
      */
-    public Builder subscriptionTransportFactory(@NotNull SubscriptionTransport.Factory subscriptionTransportFactory) {
-      this.subscriptionTransportFactory = Optional.of(checkNotNull(subscriptionTransportFactory,
-          "subscriptionTransportFactory is null"));
-      return this;
+    fun subscriptionTransportFactory(subscriptionTransportFactory: SubscriptionTransport.Factory): Builder {
+      this.subscriptionTransportFactory = of(__checkNotNull(subscriptionTransportFactory,
+          "subscriptionTransportFactory is null"))
+      return this
     }
 
     /**
-     * <p>Sets up subscription connection parameters to be sent to the server when connection is established with subscription server</p>
+     *
+     * Sets up subscription connection parameters to be sent to the server when connection is established with subscription server
      *
      * @param connectionParams map of connection parameters to be sent
-     * @return The {@link Builder} object to be used for chaining method calls
+     * @return The [Builder] object to be used for chaining method calls
      */
-    public Builder subscriptionConnectionParams(@NotNull final SubscriptionConnectionParams connectionParams) {
-      this.subscriptionConnectionParams = new SubscriptionConnectionParamsProvider.Const(checkNotNull(connectionParams,
-          "connectionParams is null"));
-      return this;
+    fun subscriptionConnectionParams(connectionParams: SubscriptionConnectionParams): Builder {
+      subscriptionConnectionParams = SubscriptionConnectionParamsProvider.Const(__checkNotNull(connectionParams,
+          "connectionParams is null"))
+      return this
     }
 
     /**
-     * <p>Sets up subscription connection parameters to be sent to the server when connection is established with subscription server</p>
+     *
+     * Sets up subscription connection parameters to be sent to the server when connection is established with subscription server
      *
      * @param provider connection parameters provider
-     * @return The {@link Builder} object to be used for chaining method calls
+     * @return The [Builder] object to be used for chaining method calls
      */
-    public Builder subscriptionConnectionParams(@NotNull SubscriptionConnectionParamsProvider provider) {
-      this.subscriptionConnectionParams = checkNotNull(provider, "provider is null");
-      return this;
+    fun subscriptionConnectionParams(provider: SubscriptionConnectionParamsProvider): Builder {
+      subscriptionConnectionParams = __checkNotNull(provider, "provider is null")
+      return this
     }
 
     /**
-     * <p>Sets up subscription heartbeat message timeout. Timeout for how long subscription manager should wait for a
-     * keep-alive message from the subscription server before reconnect. <b>NOTE: will be ignored if server doesn't send keep-alive
-     * messages.<b/></p>. By default heartbeat timeout is disabled.
+     *
+     * Sets up subscription heartbeat message timeout. Timeout for how long subscription manager should wait for a
+     * keep-alive message from the subscription server before reconnect. **NOTE: will be ignored if server doesn't send keep-alive
+     * messages.******. By default heartbeat timeout is disabled.
      *
      * @param timeout connection keep alive timeout. Min value is 10 secs.
      * @param timeUnit time unit
-     * @return The {@link Builder} object to be used for chaining method calls
+     * @return The [Builder] object to be used for chaining method calls
      */
-    public Builder subscriptionHeartbeatTimeout(long timeout, @NotNull TimeUnit timeUnit) {
-      checkNotNull(timeUnit, "timeUnit is null");
-      this.subscriptionHeartbeatTimeout = Math.max(timeUnit.toMillis(timeout), TimeUnit.SECONDS.toMillis(10));
-      return this;
+    fun subscriptionHeartbeatTimeout(timeout: Long, timeUnit: TimeUnit): Builder {
+      __checkNotNull(timeUnit, "timeUnit is null")
+      subscriptionHeartbeatTimeout = Math.max(timeUnit.toMillis(timeout), TimeUnit.SECONDS.toMillis(10))
+      return this
     }
 
     /**
      * @param enableAutoPersistedSubscriptions True if ApolloClient should enable Automatic Persisted Subscriptions support. Default:
      * false.
-     * @return The {@link Builder} object to be used for chaining method calls
+     * @return The [Builder] object to be used for chaining method calls
      */
-    public Builder enableAutoPersistedSubscriptions(boolean enableAutoPersistedSubscriptions) {
-      this.enableAutoPersistedSubscriptions = enableAutoPersistedSubscriptions;
-      return this;
+    fun enableAutoPersistedSubscriptions(enableAutoPersistedSubscriptions: Boolean): Builder {
+      this.enableAutoPersistedSubscriptions = enableAutoPersistedSubscriptions
+      return this
     }
 
     /**
      * Sets flag whether GraphQL queries should be sent via HTTP GET requests.
      *
-     * @param useHttpGetMethodForQueries {@code true} if HTTP GET requests should be used, {@code false} otherwise.
-     * @return The {@link Builder} object to be used for chaining method calls
+     * @param useHttpGetMethodForQueries `true` if HTTP GET requests should be used, `false` otherwise.
+     * @return The [Builder] object to be used for chaining method calls
      */
-    public Builder useHttpGetMethodForQueries(boolean useHttpGetMethodForQueries) {
-      this.useHttpGetMethodForQueries = useHttpGetMethodForQueries;
-      return this;
+    fun useHttpGetMethodForQueries(useHttpGetMethodForQueries: Boolean): Builder {
+      this.useHttpGetMethodForQueries = useHttpGetMethodForQueries
+      return this
     }
 
     /**
      * Sets flag whether GraphQL Persisted queries should be sent via HTTP GET requests.
      *
-     * @param useHttpGetMethodForPersistedQueries {@code true} if HTTP GET requests should be used, {@code false} otherwise.
-     * @return The {@link Builder} object to be used for chaining method calls
+     * @param useHttpGetMethodForPersistedQueries `true` if HTTP GET requests should be used, `false` otherwise.
+     * @return The [Builder] object to be used for chaining method calls
      */
-    public Builder useHttpGetMethodForPersistedQueries(boolean useHttpGetMethodForPersistedQueries) {
-      this.useHttpGetMethodForPersistedQueries = useHttpGetMethodForPersistedQueries;
-      return this;
+    fun useHttpGetMethodForPersistedQueries(useHttpGetMethodForPersistedQueries: Boolean): Builder {
+      this.useHttpGetMethodForPersistedQueries = useHttpGetMethodForPersistedQueries
+      return this
     }
 
     /**
-     * Builds the {@link ApolloClient} instance using the configured values.
-     * <p>
-     * Note that if the {@link #dispatcher} is not called, then a default {@link Executor} is used.
+     * Builds the [ApolloClient] instance using the configured values.
      *
-     * @return The configured {@link ApolloClient}
+     *
+     * Note that if the [.dispatcher] is not called, then a default [Executor] is used.
+     *
+     * @return The configured [ApolloClient]
      */
-    public ApolloClient build() {
-      checkNotNull(serverUrl, "serverUrl is null");
-
-      ApolloLogger apolloLogger = new ApolloLogger(logger);
-
-      okhttp3.Call.Factory callFactory = this.callFactory;
+    fun build(): ApolloClient {
+      __checkNotNull(serverUrl, "serverUrl is null")
+      val apolloLogger = ApolloLogger(logger)
+      var callFactory = callFactory
       if (callFactory == null) {
-        callFactory = new OkHttpClient();
+        callFactory = OkHttpClient()
       }
-
-      HttpCache httpCache = this.httpCache;
+      val httpCache = httpCache
       if (httpCache != null) {
-        callFactory = addHttpCacheInterceptorIfNeeded(callFactory, httpCache.interceptor());
+        callFactory = addHttpCacheInterceptorIfNeeded(callFactory, httpCache.interceptor())
       }
-
-      Executor dispatcher = this.dispatcher;
+      var dispatcher = dispatcher
       if (dispatcher == null) {
-        dispatcher = defaultDispatcher();
+        dispatcher = defaultDispatcher()
       }
-
-      CustomScalarAdapters customScalarAdapters = new CustomScalarAdapters(Collections.unmodifiableMap(CustomScalarAdapters));
-
-      ApolloStore apolloStore = this.apolloStore;
-      Optional<NormalizedCacheFactory> cacheFactory = this.cacheFactory;
-      Optional<CacheKeyResolver> cacheKeyResolver = this.cacheKeyResolver;
-      if (cacheFactory.isPresent() && cacheKeyResolver.isPresent()) {
-        final NormalizedCache normalizedCache = cacheFactory.get().createChain(new RecordFieldJsonAdapter());
-        apolloStore = new RealApolloStore(normalizedCache, cacheKeyResolver.get(), customScalarAdapters, dispatcher, apolloLogger);
+      val customScalarAdapters = CustomScalarAdapters(Collections.unmodifiableMap(CustomScalarAdapters))
+      var apolloStore = apolloStore
+      val cacheFactory = cacheFactory
+      val cacheKeyResolver = cacheKeyResolver
+      if (cacheFactory.isPresent && cacheKeyResolver.isPresent) {
+        val normalizedCache = cacheFactory.get().createChain(RecordFieldJsonAdapter())
+        apolloStore = RealApolloStore(normalizedCache, cacheKeyResolver.get(), customScalarAdapters, dispatcher, apolloLogger)
       }
-
-      SubscriptionManager subscriptionManager = this.subscriptionManager;
-      Optional<SubscriptionTransport.Factory> subscriptionTransportFactory = this.subscriptionTransportFactory;
-      if (subscriptionTransportFactory.isPresent()) {
-        final ApolloStore finalApolloStore = apolloStore;
-        final Function0<ResponseNormalizer<Map<String, Object>>> responseNormalizer =
-            new Function0<ResponseNormalizer<Map<String, Object>>>() {
-              @Override public ResponseNormalizer<Map<String, Object>> invoke() {
-                return finalApolloStore.networkResponseNormalizer();
-              }
-            };
-        subscriptionManager = new RealSubscriptionManager(customScalarAdapters, subscriptionTransportFactory.get(),
-            subscriptionConnectionParams, dispatcher, subscriptionHeartbeatTimeout, responseNormalizer, enableAutoPersistedSubscriptions);
+      var subscriptionManager = subscriptionManager
+      val subscriptionTransportFactory = subscriptionTransportFactory
+      if (subscriptionTransportFactory.isPresent) {
+        val finalApolloStore = apolloStore
+        val responseNormalizer: Function0<ResponseNormalizer<Map<String, Any>>> = { finalApolloStore.networkResponseNormalizer() }
+        subscriptionManager = RealSubscriptionManager(customScalarAdapters, subscriptionTransportFactory.get(),
+            subscriptionConnectionParams, dispatcher, subscriptionHeartbeatTimeout, responseNormalizer, enableAutoPersistedSubscriptions)
       }
-
-      return new ApolloClient(serverUrl,
+      return ApolloClient(serverUrl,
           callFactory,
           httpCache,
           apolloStore,
@@ -783,31 +682,50 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
           subscriptionManager,
           useHttpGetMethodForQueries,
           useHttpGetMethodForPersistedQueries,
-          writeToNormalizedCacheAsynchronously);
+          writeToNormalizedCacheAsynchronously)
     }
 
-    private Executor defaultDispatcher() {
-      return new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60, TimeUnit.SECONDS,
-          new SynchronousQueue<Runnable>(), new ThreadFactory() {
-        @Override
-        public Thread newThread(@NotNull Runnable runnable) {
-          return new Thread(runnable, "Apollo Dispatcher");
-        }
-      });
+    private fun defaultDispatcher(): Executor {
+      return ThreadPoolExecutor(0, Int.MAX_VALUE, 60, TimeUnit.SECONDS,
+          SynchronousQueue()) { runnable -> Thread(runnable, "Apollo Dispatcher") }
     }
 
-    private static okhttp3.Call.Factory addHttpCacheInterceptorIfNeeded(Call.Factory callFactory,
-        Interceptor httpCacheInterceptor) {
-      if (callFactory instanceof OkHttpClient) {
-        OkHttpClient client = (OkHttpClient) callFactory;
-        for (Interceptor interceptor : client.interceptors()) {
-          if (interceptor.getClass().equals(httpCacheInterceptor.getClass())) {
-            return callFactory;
+    companion object {
+      private fun addHttpCacheInterceptorIfNeeded(callFactory: Call.Factory,
+                                                  httpCacheInterceptor: Interceptor): Call.Factory {
+        if (callFactory is OkHttpClient) {
+          val client = callFactory
+          for (interceptor in client.interceptors()) {
+            if (interceptor.javaClass == httpCacheInterceptor.javaClass) {
+              return callFactory
+            }
           }
+          return client.newBuilder().addInterceptor(httpCacheInterceptor).build()
         }
-        return client.newBuilder().addInterceptor(httpCacheInterceptor).build();
+        return callFactory
       }
-      return callFactory;
     }
+  }
+
+  companion object {
+    @JvmStatic
+    fun builder(): Builder {
+      return Builder()
+    }
+  }
+
+  init {
+    require(!(!applicationInterceptorFactories.isEmpty() && !applicationInterceptors.isEmpty())) {
+      ("You can either use applicationInterceptors or applicationInterceptorFactories "
+          + "but not both at the same time.")
+    }
+    this.applicationInterceptors = applicationInterceptors
+    this.applicationInterceptorFactories = applicationInterceptorFactories
+    this.autoPersistedOperationsInterceptorFactory = autoPersistedOperationsInterceptorFactory
+    this.enableAutoPersistedQueries = enableAutoPersistedQueries
+    this.subscriptionManager = subscriptionManager
+    this.useHttpGetMethodForQueries = useHttpGetMethodForQueries
+    this.useHttpGetMethodForPersistedQueries = useHttpGetMethodForPersistedQueries
+    this.writeToNormalizedCacheAsynchronously = writeToNormalizedCacheAsynchronously
   }
 }

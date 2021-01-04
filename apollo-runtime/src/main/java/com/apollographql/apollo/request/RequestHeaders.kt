@@ -1,66 +1,54 @@
-package com.apollographql.apollo.request;
+package com.apollographql.apollo.request
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-
-import org.jetbrains.annotations.Nullable;
+import java.util.LinkedHashMap
 
 /**
  * A key/value collection of HTTP headers which are added to a request.
  */
-public final class RequestHeaders {
-  private final Map<String, String> headerMap;
-
-  public static RequestHeaders.Builder builder() {
-    return new Builder();
-  }
-
-  public static final RequestHeaders NONE = new RequestHeaders(Collections.<String, String>emptyMap());
-
-  public static final class Builder {
-
-    private final Map<String, String> headerMap = new LinkedHashMap<>();
-
-    public Builder addHeader(String headerName, String headerValue) {
-      headerMap.put(headerName, headerValue);
-      return this;
+class RequestHeaders internal constructor(private val headerMap: Map<String, String>) {
+  class Builder {
+    private val headerMap: MutableMap<String, String> = LinkedHashMap()
+    fun addHeader(headerName: String, headerValue: String): Builder {
+      headerMap[headerName] = headerValue
+      return this
     }
 
-    public Builder addHeaders(Map<String, String> headerMap) {
-      this.headerMap.putAll(headerMap);
-      return this;
+    fun addHeaders(headerMap: Map<String, String>?): Builder {
+      this.headerMap.putAll(headerMap!!)
+      return this
     }
 
-    public RequestHeaders build() {
-      return new RequestHeaders(headerMap);
+    fun build(): RequestHeaders {
+      return RequestHeaders(headerMap)
     }
   }
 
   /**
-   * @return A {@link RequestHeaders.Builder} with a copy of this {@link RequestHeaders} values.
+   * @return A [RequestHeaders.Builder] with a copy of this [RequestHeaders] values.
    */
-  public RequestHeaders.Builder toBuilder() {
-    RequestHeaders.Builder builder = builder();
-    builder.addHeaders(headerMap);
-    return builder;
+  fun toBuilder(): Builder {
+    val builder = builder()
+    builder.addHeaders(headerMap)
+    return builder
   }
 
-  RequestHeaders(Map<String, String> headerMap) {
-    this.headerMap = headerMap;
+  fun headers(): Set<String> {
+    return headerMap.keys
   }
 
-  public Set<String> headers() {
-    return headerMap.keySet();
+  fun headerValue(header: String): String? {
+    return headerMap[header]
   }
 
-  @Nullable
-  public String headerValue(String header) {
-    return headerMap.get(header);
+  fun hasHeader(headerName: String): Boolean {
+    return headerMap.containsKey(headerName)
   }
 
-  public boolean hasHeader(String headerName) {
-    return headerMap.containsKey(headerName);
+  companion object {
+    fun builder(): Builder {
+      return Builder()
+    }
+
+    val NONE = RequestHeaders(emptyMap())
   }
 }

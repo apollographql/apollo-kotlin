@@ -1,32 +1,31 @@
-package com.apollographql.apollo.subscription;
-
-import org.jetbrains.annotations.NotNull;
+package com.apollographql.apollo.subscription
 
 /**
- * <p>{@code ApolloSubscriptionCall} is an abstraction for network transport layer that handles connection to the
- * subscription server. All updates related to the subscription pushed from the server will be delivered via {@link
- * Callback}<p/>
+ *
+ * `ApolloSubscriptionCall` is an abstraction for network transport layer that handles connection to the
+ * subscription server. All updates related to the subscription pushed from the server will be delivered via [ ]
+ *
+ *
  */
-public interface SubscriptionTransport {
-
+interface SubscriptionTransport {
   /**
    * Opens connection to the subscription server
    */
-  void connect();
+  fun connect()
 
   /**
    * Disconnects from the subscription server.
    *
    * @param message to be sent as terminal event.
    */
-  void disconnect(OperationClientMessage message);
+  fun disconnect(message: OperationClientMessage?)
 
   /**
-   * Sends {@link OperationClientMessage} message to the subscription server.
+   * Sends [OperationClientMessage] message to the subscription server.
    *
    * @param message to be sent to the server
    */
-  void send(OperationClientMessage message);
+  fun send(message: OperationClientMessage?)
 
   /**
    * Communicates responses from a subscription server.
@@ -35,38 +34,38 @@ public interface SubscriptionTransport {
     /**
      * Gets called when connection with subscription server has been established.
      */
-    void onConnected();
+    fun onConnected()
 
     /**
      * Gets called when an unexpected exception occurs during communication to the server.
      *
      * @param t exception occurred during communication.
      */
-    void onFailure(Throwable t);
+    fun onFailure(t: Throwable?)
 
     /**
      * Gets called when subscription server pushed new updates.
      *
      * @param message new message received from the server.
      */
-    void onMessage(OperationServerMessage message);
+    fun onMessage(message: OperationServerMessage?)
 
     /**
      * Gets called when connection with subscription server is closed.
      */
-    void onClosed();
+    fun onClosed()
   }
 
   /**
-   * Factory for creating new {@link SubscriptionTransport} transport layer.
+   * Factory for creating new [SubscriptionTransport] transport layer.
    */
   interface Factory {
     /**
-     * Creates and prepares a new {@link SubscriptionTransport}.
+     * Creates and prepares a new [SubscriptionTransport].
      *
      * @param callback which will handle the transport communication events.
-     * @return prepared {@link SubscriptionTransport}
+     * @return prepared [SubscriptionTransport]
      */
-    SubscriptionTransport create(@NotNull Callback callback);
+    fun create(callback: Callback): SubscriptionTransport?
   }
 }

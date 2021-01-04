@@ -2,11 +2,9 @@ package com.apollographql.apollo.internal.interceptor
 
 import com.apollographql.apollo.api.internal.Utils.__checkNotNull
 import com.apollographql.apollo.interceptor.ApolloInterceptor
-import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorRequest
 import com.apollographql.apollo.interceptor.ApolloInterceptor.CallBack
+import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorRequest
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain
-import java.lang.IllegalStateException
-import com.apollographql.apollo.internal.interceptor.RealApolloInterceptorChain
 import java.util.ArrayList
 import java.util.concurrent.Executor
 

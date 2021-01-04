@@ -1,12 +1,6 @@
-package com.apollographql.apollo.exception;
+package com.apollographql.apollo.exception
 
-public final class ApolloParseException extends ApolloException {
-
-  public ApolloParseException(String message) {
-    super(message);
-  }
-
-  public ApolloParseException(String message, Throwable cause) {
-    super(message, cause);
-  }
+class ApolloParseException : ApolloException {
+  constructor(message: String?) : super(message!!) {}
+  constructor(message: String?, cause: Throwable?) : super(message!!, cause!!) {}
 }
