@@ -20,7 +20,6 @@ dependencies {
   testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer"))
-  testImplementation(groovy.util.Eval.x(project, "x.dep.mockito"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
 }
 
