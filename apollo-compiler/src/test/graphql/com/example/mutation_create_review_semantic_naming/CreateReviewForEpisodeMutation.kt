@@ -5,15 +5,9 @@
 //
 package com.example.mutation_create_review_semantic_naming
 
-import com.apollographql.apollo.api.CustomScalarAdapters
-import com.apollographql.apollo.api.CustomScalarAdapters.Companion.DEFAULT
 import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
-<<<<<<< HEAD
-=======
-import com.apollographql.apollo.api.Response
->>>>>>> dev-3.x
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
@@ -64,58 +58,6 @@ data class CreateReviewForEpisodeMutation(
     }
   }
 
-<<<<<<< HEAD
-=======
-  @Throws(IOException::class)
-  override fun parse(source: BufferedSource, customScalarAdapters: CustomScalarAdapters):
-      Response<Data> {
-    return SimpleOperationResponseParser.parse(source, this, customScalarAdapters)
-  }
-
-  @Throws(IOException::class)
-  override fun parse(byteString: ByteString, customScalarAdapters: CustomScalarAdapters):
-      Response<Data> {
-    return parse(Buffer().write(byteString), customScalarAdapters)
-  }
-
-  @Throws(IOException::class)
-  override fun parse(source: BufferedSource): Response<Data> {
-    return parse(source, DEFAULT)
-  }
-
-  @Throws(IOException::class)
-  override fun parse(byteString: ByteString): Response<Data> {
-    return parse(byteString, DEFAULT)
-  }
-
-  override fun composeRequestBody(customScalarAdapters: CustomScalarAdapters): ByteString {
-    return OperationRequestBodyComposer.compose(
-      operation = this,
-      autoPersistQueries = false,
-      withQueryDocument = true,
-      customScalarAdapters = customScalarAdapters
-    )
-  }
-
-  override fun composeRequestBody(): ByteString = OperationRequestBodyComposer.compose(
-    operation = this,
-    autoPersistQueries = false,
-    withQueryDocument = true,
-    customScalarAdapters = DEFAULT
-  )
-
-  override fun composeRequestBody(
-    autoPersistQueries: Boolean,
-    withQueryDocument: Boolean,
-    customScalarAdapters: CustomScalarAdapters
-  ): ByteString = OperationRequestBodyComposer.compose(
-    operation = this,
-    autoPersistQueries = autoPersistQueries,
-    withQueryDocument = withQueryDocument,
-    customScalarAdapters = customScalarAdapters
-  )
-
->>>>>>> dev-3.x
   /**
    * The mutation type, represents all updates we can make to our data
    */
