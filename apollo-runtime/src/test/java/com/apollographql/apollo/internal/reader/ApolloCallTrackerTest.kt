@@ -21,9 +21,6 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 class ApolloCallTrackerTest {
   internal class QueryData : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller {
-      throw UnsupportedOperationException()
-    }
   }
 
   @get:Rule
@@ -138,7 +135,7 @@ class ApolloCallTrackerTest {
         return Operation.EMPTY_VARIABLES
       }
 
-      override fun adapter = throw UnsupportedOperationException()
+      override fun adapter() = throw UnsupportedOperationException()
 
       override fun name(): OperationName {
         return operationName
