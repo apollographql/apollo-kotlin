@@ -13,5 +13,5 @@ dependencies {
 
 apollo {
   generateApolloMetadata.set(true)
-  customTypeMapping.set(mapOf("Date" to "java.util.Date"))
+  customScalarsMapping.set(mapOf("Date" to "java.util.Date"))
 }

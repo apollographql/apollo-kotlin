@@ -1,7 +1,7 @@
 package com.apollographql.apollo.internal
 
 import com.apollographql.apollo.NamedCountDownLatch
-import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.internal.ApolloLogger
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.CacheKey
@@ -41,7 +41,7 @@ class ApolloStoreTest {
           }
         },
         CacheKeyResolver.DEFAULT,
-        ScalarTypeAdapters(emptyMap()),
+        CustomScalarAdapters(emptyMap()),
         Executors.newSingleThreadExecutor(),
         ApolloLogger(null)
     )

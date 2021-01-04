@@ -1,7 +1,7 @@
 package com.apollographql.apollo.api.internal
 
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.ScalarType
+import com.apollographql.apollo.api.CustomScalar
 
 /*
  * ResponseReader is an abstraction for reading GraphQL fields.
@@ -22,7 +22,7 @@ interface ResponseReader {
 
   fun <T : Any> readList(field: ResponseField, block: (ListItemReader) -> T): List<T?>?
 
-  fun <T : Any> readCustomType(field: ResponseField.CustomTypeField): T?
+  fun <T : Any> readCustomScalar(field: ResponseField.CustomScalarField): T?
 
   interface ObjectReader<T : Any> {
     fun read(reader: ResponseReader): T
@@ -42,7 +42,7 @@ interface ResponseReader {
 
     fun readBoolean(): Boolean
 
-    fun <T : Any> readCustomType(scalarType: ScalarType): T
+    fun <T : Any> readCustomScalar(customScalar: CustomScalar): T
 
     fun <T : Any> readObject(block: (ResponseReader) -> T): T
 

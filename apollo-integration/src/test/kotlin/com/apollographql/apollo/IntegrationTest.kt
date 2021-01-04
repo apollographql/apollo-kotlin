@@ -4,9 +4,15 @@ import com.apollographql.apollo.Utils.checkTestFixture
 import com.apollographql.apollo.Utils.immediateExecutor
 import com.apollographql.apollo.Utils.immediateExecutorService
 import com.apollographql.apollo.Utils.readFileToString
-import com.apollographql.apollo.api.*
-import com.apollographql.apollo.api.CustomTypeValue.GraphQLString
+import com.apollographql.apollo.api.CustomScalarAdapter
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Error
 import com.apollographql.apollo.api.Input.Companion.fromNullable
+import com.apollographql.apollo.api.JsonElement
+import com.apollographql.apollo.api.JsonString
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.api.toJson
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
 import com.apollographql.apollo.exception.ApolloException
@@ -14,19 +20,15 @@ import com.apollographql.apollo.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo.http.OkHttpExecutionContext
 import com.apollographql.apollo.integration.httpcache.AllFilmsQuery
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery
-import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery.Data.AllPlanet.Planet
 import com.apollographql.apollo.integration.httpcache.fragment.FilmFragment
 import com.apollographql.apollo.integration.httpcache.fragment.PlanetFragment
-import com.apollographql.apollo.integration.httpcache.type.CustomType
+import com.apollographql.apollo.integration.httpcache.type.CustomScalars
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo.integration.normalizer.type.Episode
 import com.apollographql.apollo.response.OperationResponseParser
 import com.apollographql.apollo.rx2.Rx2Apollo
 import com.google.common.base.Charsets
-import com.google.common.base.Function
-import com.google.common.collect.FluentIterable
-import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import io.reactivex.functions.Predicate
 import okhttp3.Dispatcher
@@ -35,39 +37,41 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okio.Buffer
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
 import java.math.BigDecimal
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.ArrayList
+import java.util.Arrays
+import java.util.Date
+import java.util.Locale
 
 class IntegrationTest {
   private lateinit var apolloClient: ApolloClient
-  private lateinit var dateCustomTypeAdapter: CustomTypeAdapter<Date>
+  private lateinit var dateCustomScalarAdapter: CustomScalarAdapter<Date>
 
   val server = MockWebServer()
 
   @Before
   fun setUp() {
-    dateCustomTypeAdapter = object : CustomTypeAdapter<Date> {
-      override fun decode(value: CustomTypeValue<*>): Date {
+    dateCustomScalarAdapter = object : CustomScalarAdapter<Date> {
+      override fun decode(jsonElement: JsonElement): Date {
         return try {
-          DATE_FORMAT.parse(value.value.toString())
+          DATE_FORMAT.parse(jsonElement.toRawValue().toString())
         } catch (e: ParseException) {
           throw RuntimeException(e)
         }
       }
 
-      override fun encode(value: Date): CustomTypeValue<*> {
-        return GraphQLString(DATE_FORMAT.format(value))
+      override fun encode(value: Date): JsonElement {
+        return JsonString(DATE_FORMAT.format(value))
       }
     }
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(OkHttpClient.Builder().dispatcher(Dispatcher(immediateExecutorService())).build())
-        .addCustomTypeAdapter(CustomType.Date, dateCustomTypeAdapter)
+        .addCustomScalarAdapter(CustomScalars.Date, dateCustomScalarAdapter)
         .normalizedCache(LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), IdFieldCacheKeyResolver())
         .defaultResponseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
         .dispatcher(immediateExecutor())
@@ -79,7 +83,7 @@ class IntegrationTest {
   fun allPlanetQuery() {
     server.enqueue(mockResponse("HttpCacheTestAllPlanets.json"))
     assertResponse(
-        apolloClient!!.query(AllPlanetsQuery())
+        apolloClient.query(AllPlanetsQuery())
     ) { (_, data) ->
       assertThat(data!!.allPlanets?.planets?.size).isEqualTo(60)
       val planets = data!!.allPlanets?.planets?.mapNotNull {
@@ -112,7 +116,7 @@ class IntegrationTest {
   fun error_response() {
     server.enqueue(mockResponse("ResponseError.json"))
     assertResponse(
-        apolloClient!!.query(AllPlanetsQuery()),
+        apolloClient.query(AllPlanetsQuery()),
         Predicate<Response<AllPlanetsQuery.Data>> { response ->
           assertThat(response.hasErrors()).isTrue()
           assertThat(response.errors).containsExactly(Error(
@@ -127,7 +131,7 @@ class IntegrationTest {
   fun error_response_with_nulls_and_custom_attributes() {
     server.enqueue(mockResponse("ResponseErrorWithNullsAndCustomAttributes.json"))
     assertResponse(
-        apolloClient!!.query(AllPlanetsQuery())
+        apolloClient.query(AllPlanetsQuery())
     ) { response ->
       assertThat(response.hasErrors()).isTrue()
       assertThat(response.errors).hasSize(1)
@@ -145,7 +149,7 @@ class IntegrationTest {
   fun errorResponse_custom_attributes() {
     server.enqueue(mockResponse("ResponseErrorWithCustomAttributes.json"))
     assertResponse(
-        apolloClient!!.query(AllPlanetsQuery())
+        apolloClient.query(AllPlanetsQuery())
     ) { response ->
       assertThat(response.hasErrors()).isTrue()
       assertThat(response.errors!![0].customAttributes).hasSize(4)
@@ -162,7 +166,7 @@ class IntegrationTest {
   fun errorResponse_with_data() {
     server.enqueue(mockResponse("ResponseErrorWithData.json"))
     assertResponse(
-        apolloClient!!.query(EpisodeHeroNameQuery(fromNullable(Episode.JEDI)))
+        apolloClient.query(EpisodeHeroNameQuery(fromNullable(Episode.JEDI)))
     ) { (_, data, errors) ->
       assertThat(data).isNotNull()
       assertThat(data!!.hero?.name).isEqualTo("R2-D2")
@@ -177,13 +181,13 @@ class IntegrationTest {
   fun allFilmsWithDate() {
     server.enqueue(mockResponse("HttpCacheTestAllFilms.json"))
     assertResponse(
-        apolloClient!!.query(AllFilmsQuery())
+        apolloClient.query(AllFilmsQuery())
     ) { response ->
       assertThat(response.hasErrors()).isFalse()
       assertThat(response.data!!.allFilms?.films).hasSize(6)
       val dates = response.data!!.allFilms?.films?.mapNotNull {
         val releaseDate = it!!.releaseDate!!
-        dateCustomTypeAdapter!!.encode(releaseDate).value.toString()
+        dateCustomScalarAdapter!!.encode(releaseDate).toRawValue().toString()
       }
       assertThat(dates).isEqualTo(Arrays.asList("1977-05-25", "1980-05-17", "1983-05-25", "1999-05-19",
           "2002-05-16", "2005-05-19"))
@@ -196,7 +200,7 @@ class IntegrationTest {
   fun dataNull() {
     server.enqueue(mockResponse("ResponseDataNull.json"))
     assertResponse(
-        apolloClient!!.query(HeroNameQuery()),
+        apolloClient.query(HeroNameQuery()),
         Predicate<Response<HeroNameQuery.Data>> { response ->
           assertThat(response.data).isNull()
           assertThat(response.hasErrors()).isFalse()
@@ -209,7 +213,7 @@ class IntegrationTest {
   @Throws(Exception::class)
   fun fieldMissing() {
     server.enqueue(mockResponse("ResponseDataMissing.json"))
-    Rx2Apollo.from(apolloClient!!.query(HeroNameQuery()))
+    Rx2Apollo.from(apolloClient.query(HeroNameQuery()))
         .test()
         .assertError(ApolloException::class.java)
   }
@@ -218,14 +222,14 @@ class IntegrationTest {
   @Throws(Exception::class)
   fun statusEvents() {
     server.enqueue(mockResponse("HeroNameResponse.json"))
-    var statusEvents = enqueueCall(apolloClient!!.query(HeroNameQuery()))
+    var statusEvents = enqueueCall(apolloClient.query(HeroNameQuery()))
     assertThat(statusEvents).isEqualTo(Arrays.asList(ApolloCall.StatusEvent.SCHEDULED, ApolloCall.StatusEvent.FETCH_NETWORK, ApolloCall.StatusEvent.COMPLETED))
     statusEvents = enqueueCall(
-        apolloClient!!.query(HeroNameQuery()).responseFetcher(ApolloResponseFetchers.CACHE_ONLY))
+        apolloClient.query(HeroNameQuery()).responseFetcher(ApolloResponseFetchers.CACHE_ONLY))
     assertThat(statusEvents).isEqualTo(Arrays.asList(ApolloCall.StatusEvent.SCHEDULED, ApolloCall.StatusEvent.FETCH_CACHE, ApolloCall.StatusEvent.COMPLETED))
     server.enqueue(mockResponse("HeroNameResponse.json"))
     statusEvents = enqueueCall(
-        apolloClient!!.query(HeroNameQuery()).responseFetcher(ApolloResponseFetchers.CACHE_AND_NETWORK))
+        apolloClient.query(HeroNameQuery()).responseFetcher(ApolloResponseFetchers.CACHE_AND_NETWORK))
     assertThat(statusEvents).isEqualTo(Arrays.asList(ApolloCall.StatusEvent.SCHEDULED, ApolloCall.StatusEvent.FETCH_CACHE, ApolloCall.StatusEvent.FETCH_NETWORK, ApolloCall.StatusEvent.COMPLETED))
   }
 
@@ -234,7 +238,7 @@ class IntegrationTest {
   fun operationResponseParser() {
     val json = readFileToString(javaClass, "/HeroNameResponse.json")
     val query = HeroNameQuery()
-    val (_, data) = OperationResponseParser(query, query.responseFieldMapper(), ScalarTypeAdapters(emptyMap()))
+    val (_, data) = OperationResponseParser(query, query.responseFieldMapper(), CustomScalarAdapters(emptyMap()))
         .parse(Buffer().writeUtf8(json))
     assertThat(data!!.hero?.name).isEqualTo("R2-D2")
   }
@@ -244,7 +248,7 @@ class IntegrationTest {
   fun operationJsonWriter() {
     val expected = readFileToString(javaClass, "/OperationJsonWriter.json")
     val query = AllPlanetsQuery()
-    val (_, data) = OperationResponseParser(query, query.responseFieldMapper(), ScalarTypeAdapters.DEFAULT)
+    val (_, data) = OperationResponseParser(query, query.responseFieldMapper(), CustomScalarAdapters.DEFAULT)
         .parse(Buffer().writeUtf8(expected))
     val actual = data!!.toJson("  ")
     assertThat(actual).isEqualTo(expected)
@@ -256,7 +260,7 @@ class IntegrationTest {
     val query = AllPlanetsQuery()
     val response = query.parse(
         Buffer().readFrom(javaClass.getResourceAsStream("/AllPlanetsNullableField.json")),
-        ScalarTypeAdapters(emptyMap())
+        CustomScalarAdapters(emptyMap())
     )
     assertThat(response.operation).isEqualTo(query)
     assertThat(response.hasErrors()).isFalse()
@@ -270,7 +274,7 @@ class IntegrationTest {
     val query = EpisodeHeroNameQuery(fromNullable(Episode.EMPIRE))
     val (_, data, errors) = query.parse(
         Buffer().readFrom(javaClass.getResourceAsStream("/ResponseErrorWithData.json")),
-        ScalarTypeAdapters(emptyMap())
+        CustomScalarAdapters(emptyMap())
     )
     assertThat(data).isNotNull()
     assertThat(data!!.hero).isNotNull()
@@ -299,7 +303,7 @@ class IntegrationTest {
     val source = Buffer().readFrom(javaClass.getResourceAsStream("/HeroNameResponse.json"))
     val query = HeroNameQuery()
     val (_, _, _, _, _, extensions) = OperationResponseParser(query, query.responseFieldMapper(),
-        ScalarTypeAdapters(emptyMap())).parse(source)
+        CustomScalarAdapters(emptyMap())).parse(source)
     assertThat(extensions.toString()).isEqualTo("{cost={requestedQueryCost=3, actualQueryCost=3, throttleStatus={maximumAvailable=1000, currentlyAvailable=997, restoreRate=50}}}")
   }
 
@@ -319,7 +323,7 @@ class IntegrationTest {
         .setHeader("Header2", "Header2#value")
     server.enqueue(httpResponse)
     assertResponse(
-        apolloClient!!.query(AllPlanetsQuery()),
+        apolloClient.query(AllPlanetsQuery()),
         Predicate { response: Response<AllPlanetsQuery.Data> ->
           assertThat(response.executionContext[OkHttpExecutionContext.KEY]).isNotNull()
           assertThat(response.executionContext[OkHttpExecutionContext.KEY]!!.response).isNotNull()

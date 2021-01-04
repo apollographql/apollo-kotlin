@@ -176,7 +176,7 @@ internal fun CodeGenerationAst.InputField.writeCodeBlock(thisRef: String): CodeB
               .addStatement(
                   "writer.writeCustom(%S, %T, this@%L.%L.value)",
                   schemaName,
-                  type.customEnumType.asTypeName(),
+                  type.typeRef.asTypeName(),
                   thisRef,
                   name.escapeKotlinReservedWord()
               )
@@ -187,7 +187,7 @@ internal fun CodeGenerationAst.InputField.writeCodeBlock(thisRef: String): CodeB
           CodeBlock.of(
               "writer.writeCustom(%S, %T, this@%L.%L)\n",
               schemaName,
-              type.customEnumType.asTypeName(),
+              type.typeRef.asTypeName(),
               thisRef,
               name.escapeKotlinReservedWord()
           )
@@ -247,7 +247,7 @@ private fun CodeGenerationAst.FieldType.writeListItem(): CodeBlock {
           "listItemWriter.writeString(value%L.rawValue)\n", if (nullable) "?" else ""
       )
       is CodeGenerationAst.FieldType.Scalar.Custom -> CodeBlock.of(
-          "listItemWriter.writeCustom(%T, value)\n", customEnumType.asTypeName()
+          "listItemWriter.writeCustom(%T, value)\n", typeRef.asTypeName()
       )
     }
     is CodeGenerationAst.FieldType.Object -> {

@@ -5,13 +5,13 @@
 //
 package com.example.hero_name_query_long_name
 
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.CustomScalarAdapters.Companion.DEFAULT
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.ScalarTypeAdapters
-import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.OperationRequestBodyComposer
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
@@ -74,15 +74,15 @@ data class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryA
   }
 
   @Throws(IOException::class)
-  override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters):
+  override fun parse(source: BufferedSource, customScalarAdapters: CustomScalarAdapters):
       Response<Data> {
-    return SimpleOperationResponseParser.parse(source, this, scalarTypeAdapters)
+    return SimpleOperationResponseParser.parse(source, this, customScalarAdapters)
   }
 
   @Throws(IOException::class)
-  override fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters):
+  override fun parse(byteString: ByteString, customScalarAdapters: CustomScalarAdapters):
       Response<Data> {
-    return parse(Buffer().write(byteString), scalarTypeAdapters)
+    return parse(Buffer().write(byteString), customScalarAdapters)
   }
 
   @Throws(IOException::class)
@@ -95,12 +95,12 @@ data class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryA
     return parse(byteString, DEFAULT)
   }
 
-  override fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters): ByteString {
+  override fun composeRequestBody(customScalarAdapters: CustomScalarAdapters): ByteString {
     return OperationRequestBodyComposer.compose(
       operation = this,
       autoPersistQueries = false,
       withQueryDocument = true,
-      scalarTypeAdapters = scalarTypeAdapters
+      customScalarAdapters = customScalarAdapters
     )
   }
 
@@ -108,18 +108,18 @@ data class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryA
     operation = this,
     autoPersistQueries = false,
     withQueryDocument = true,
-    scalarTypeAdapters = DEFAULT
+    customScalarAdapters = DEFAULT
   )
 
   override fun composeRequestBody(
     autoPersistQueries: Boolean,
     withQueryDocument: Boolean,
-    scalarTypeAdapters: ScalarTypeAdapters
+    customScalarAdapters: CustomScalarAdapters
   ): ByteString = OperationRequestBodyComposer.compose(
     operation = this,
     autoPersistQueries = autoPersistQueries,
     withQueryDocument = withQueryDocument,
-    scalarTypeAdapters = scalarTypeAdapters
+    customScalarAdapters = customScalarAdapters
   )
 
   /**

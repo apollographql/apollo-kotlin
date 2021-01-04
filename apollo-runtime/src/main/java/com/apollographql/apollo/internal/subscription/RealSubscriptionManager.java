@@ -3,7 +3,7 @@ package com.apollographql.apollo.internal.subscription;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.api.ScalarTypeAdapters;
+import com.apollographql.apollo.api.CustomScalarAdapters;
 import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.api.internal.ResponseFieldMapper;
 import com.apollographql.apollo.cache.normalized.Record;
@@ -48,7 +48,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
   volatile SubscriptionManagerState state = SubscriptionManagerState.DISCONNECTED;
   final AutoReleaseTimer timer = new AutoReleaseTimer();
 
-  private final ScalarTypeAdapters scalarTypeAdapters;
+  private final CustomScalarAdapters customScalarAdapters;
   private final SubscriptionTransport transport;
   private final SubscriptionConnectionParamsProvider connectionParams;
   private final Executor dispatcher;
@@ -76,16 +76,16 @@ public final class RealSubscriptionManager implements SubscriptionManager {
   private final List<OnSubscriptionManagerStateChangeListener> onStateChangeListeners = new CopyOnWriteArrayList<>();
   private final boolean autoPersistSubscription;
 
-  public RealSubscriptionManager(@NotNull ScalarTypeAdapters scalarTypeAdapters,
+  public RealSubscriptionManager(@NotNull CustomScalarAdapters customScalarAdapters,
       @NotNull final SubscriptionTransport.Factory transportFactory, @NotNull SubscriptionConnectionParamsProvider connectionParams,
       @NotNull final Executor dispatcher, long connectionHeartbeatTimeoutMs,
       @NotNull Function0<ResponseNormalizer<Map<String, Object>>> responseNormalizer, boolean autoPersistSubscription) {
-    checkNotNull(scalarTypeAdapters, "scalarTypeAdapters == null");
+    checkNotNull(customScalarAdapters, "scalarTypeAdapters == null");
     checkNotNull(transportFactory, "transportFactory == null");
     checkNotNull(dispatcher, "dispatcher == null");
     checkNotNull(responseNormalizer, "responseNormalizer == null");
 
-    this.scalarTypeAdapters = checkNotNull(scalarTypeAdapters, "scalarTypeAdapters == null");
+    this.customScalarAdapters = checkNotNull(customScalarAdapters, "scalarTypeAdapters == null");
     this.connectionParams = checkNotNull(connectionParams, "connectionParams == null");
     this.transport = transportFactory.create(new SubscriptionTransportCallback(this, dispatcher));
     this.dispatcher = dispatcher;
@@ -178,7 +178,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
           transport.connect();
         } else if (state == SubscriptionManagerState.ACTIVE) {
           transport.send(
-              new OperationClientMessage.Start(subscriptionId.toString(), subscription, scalarTypeAdapters, autoPersistSubscription, false)
+              new OperationClientMessage.Start(subscriptionId.toString(), subscription, customScalarAdapters, autoPersistSubscription, false)
           );
         }
       }
@@ -406,7 +406,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
       ResponseNormalizer<Map<String, Object>> normalizer = responseNormalizer.invoke();
       ResponseFieldMapper responseFieldMapper = responseFieldMapperFactory.create(subscriptionRecord.subscription);
       OperationResponseParser parser = new OperationResponseParser(subscriptionRecord.subscription, responseFieldMapper,
-          scalarTypeAdapters, normalizer);
+          customScalarAdapters, normalizer);
 
       Response response;
       try {
@@ -434,7 +434,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
         state = SubscriptionManagerState.ACTIVE;
         for (SubscriptionRecord subscriptionRecord : subscriptions.values()) {
           transport.send(
-              new OperationClientMessage.Start(subscriptionRecord.id.toString(), subscriptionRecord.subscription, scalarTypeAdapters,
+              new OperationClientMessage.Start(subscriptionRecord.id.toString(), subscriptionRecord.subscription, customScalarAdapters,
                   autoPersistSubscription, false)
           );
         }
@@ -464,7 +464,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
       synchronized (this) {
         subscriptions.put(subscriptionRecord.id, subscriptionRecord);
         transport.send(new OperationClientMessage.Start(
-            subscriptionRecord.id.toString(), subscriptionRecord.subscription, scalarTypeAdapters, true, true
+            subscriptionRecord.id.toString(), subscriptionRecord.subscription, customScalarAdapters, true, true
         ));
       }
     } else {

@@ -7,9 +7,6 @@ import okio.IOException
 import kotlin.jvm.JvmStatic
 
 object Utils {
-
-  @JvmStatic
-  @Throws(IOException::class)
   fun writeToJson(value: Any?, jsonWriter: JsonWriter) {
     when (value) {
       null -> jsonWriter.nullValue()

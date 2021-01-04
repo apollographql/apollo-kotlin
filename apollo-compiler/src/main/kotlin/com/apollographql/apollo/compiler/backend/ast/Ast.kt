@@ -1,6 +1,8 @@
 package com.apollographql.apollo.compiler.backend.ast
 
-internal typealias CustomScalarTypes = Map<String, CodeGenerationAst.CustomType>
+import com.squareup.kotlinpoet.TypeName
+
+internal typealias CustomScalarTypes = Map<String, CodeGenerationAst.CustomScalarType>
 
 /**
  * Represents the minimum of possible AST for the code generator.
@@ -17,10 +19,10 @@ internal data class CodeGenerationAst(
     val fragmentTypes: List<FragmentType>,
     val inputTypes: List<InputType>,
     val enumTypes: List<EnumType>,
-    val customScalarScalarTypes: CustomScalarTypes
+    val customScalarTypes: CustomScalarTypes
 ) {
 
-  data class CustomType(
+  data class CustomScalarType(
       val name: String,
       val schemaType: String,
       val mappedType: String
@@ -184,7 +186,7 @@ internal data class CodeGenerationAst(
           override val nullable: kotlin.Boolean,
           val schemaType: kotlin.String,
           val type: kotlin.String,
-          val customEnumType: TypeRef
+          val typeRef: TypeRef,
       ) : Scalar()
     }
 
@@ -208,7 +210,7 @@ internal data class CodeGenerationAst(
   companion object {
     fun customTypeRef(typesPackageName: String): TypeRef {
       return TypeRef(
-          name = "CustomType",
+          name = "CustomScalar",
           packageName = typesPackageName
       )
     }

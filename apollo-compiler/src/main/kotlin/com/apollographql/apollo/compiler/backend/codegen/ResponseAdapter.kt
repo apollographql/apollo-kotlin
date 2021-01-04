@@ -1,12 +1,12 @@
 package com.apollographql.apollo.compiler.backend.codegen
 
+import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
-import com.apollographql.apollo.compiler.backend.ir.BackendIr
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -121,7 +121,7 @@ private val CodeGenerationAst.Field.responseFieldInitializerCode: CodeBlock
         is CodeGenerationAst.FieldType.Scalar.Boolean -> "forBoolean"
         is CodeGenerationAst.FieldType.Scalar.Float -> "forDouble"
         is CodeGenerationAst.FieldType.Scalar.Enum -> "forEnum"
-        is CodeGenerationAst.FieldType.Scalar.Custom -> "forCustomType"
+        is CodeGenerationAst.FieldType.Scalar.Custom -> "forCustomScalar"
       }
       is CodeGenerationAst.FieldType.Object -> "forObject"
       is CodeGenerationAst.FieldType.Array -> "forList"
@@ -131,7 +131,7 @@ private val CodeGenerationAst.Field.responseFieldInitializerCode: CodeBlock
     when {
       type is CodeGenerationAst.FieldType.Scalar && type is CodeGenerationAst.FieldType.Scalar.Custom -> {
         builder.add("(%S,·%S,·%L,·%L,·%T,·%L)", responseName, schemaName, arguments.takeIf { it.isNotEmpty() }.toCode(), type.nullable,
-            type.customEnumType.asTypeName(), conditionsListCode(conditions))
+            type.typeRef.asTypeName(), conditionsListCode(conditions))
       }
       else -> {
         builder.add("(%S,·%S,·%L,·%L,·%L)", responseName, schemaName, arguments.takeIf { it.isNotEmpty() }.toCode(), type.nullable,

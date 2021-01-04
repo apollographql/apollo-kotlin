@@ -1,17 +1,17 @@
 package com.apollographql.apollo.api.internal
 
-import com.apollographql.apollo.api.CustomTypeValue
+import com.apollographql.apollo.api.JsonElement
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.ScalarType
-import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.CustomScalar
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.Utils.readRecursively
 
 class StreamResponseReader private constructor(
     private val jsonReader: JsonReader,
     private val variableValues: Map<String, Any?>,
-    private val scalarTypeAdapters: ScalarTypeAdapters,
+    private val customScalarAdapters: CustomScalarAdapters,
 ) : ResponseReader {
   private var selectedFieldIndex: Int = -1
   private var selectedField: ResponseField? = null
@@ -19,8 +19,8 @@ class StreamResponseReader private constructor(
   constructor(
       jsonReader: JsonReader,
       variables: Operation.Variables,
-      scalarTypeAdapters: ScalarTypeAdapters
-  ) : this(jsonReader, variables.valueMap(), scalarTypeAdapters)
+      customScalarAdapters: CustomScalarAdapters
+  ) : this(jsonReader, variables.valueMap(), customScalarAdapters)
 
   override fun selectField(fields: Array<ResponseField>): Int {
     while (jsonReader.hasNext()) {
@@ -76,7 +76,7 @@ class StreamResponseReader private constructor(
         StreamResponseReader(
           jsonReader = this,
           variableValues = variableValues,
-          scalarTypeAdapters = scalarTypeAdapters,
+          customScalarAdapters = customScalarAdapters,
         )
       )
       endObject()
@@ -90,7 +90,7 @@ class StreamResponseReader private constructor(
       val listItemReader = ListItemReader(
         jsonReader = this,
         variableValues = variableValues,
-        scalarTypeAdapters = scalarTypeAdapters,
+        customScalarAdapters = customScalarAdapters,
       )
       val result = ArrayList<T?>()
       while (hasNext()) {
@@ -104,12 +104,12 @@ class StreamResponseReader private constructor(
     }
   }
 
-  override fun <T : Any> readCustomType(field: ResponseField.CustomTypeField): T? {
-    val typeAdapter = scalarTypeAdapters.adapterFor<T>(field.scalarType)
+  override fun <T : Any> readCustomScalar(field: ResponseField.CustomScalarField): T? {
+    val typeAdapter = customScalarAdapters.adapterFor<T>(field.customScalar)
     val value = readValue(field) {
       readRecursively()
     }
-    return value?.let { typeAdapter.decode(CustomTypeValue.fromRawValue(it)) }
+    return value?.let { typeAdapter.decode(JsonElement.fromRawValue(it)) }
   }
 
   private inline fun <T> readValue(field: ResponseField, readValue: JsonReader.() -> T?): T? {
@@ -139,7 +139,7 @@ class StreamResponseReader private constructor(
   private class ListItemReader(
       private val jsonReader: JsonReader,
       private val variableValues: Map<String, Any?>,
-      private val scalarTypeAdapters: ScalarTypeAdapters,
+      private val customScalarAdapters: CustomScalarAdapters,
   ) : ResponseReader.ListItemReader {
 
     override fun readString(): String {
@@ -158,10 +158,10 @@ class StreamResponseReader private constructor(
       return jsonReader.nextBoolean()
     }
 
-    override fun <T : Any> readCustomType(scalarType: ScalarType): T {
-      val typeAdapter = scalarTypeAdapters.adapterFor<T>(scalarType)
+    override fun <T : Any> readCustomScalar(customScalar: CustomScalar): T{
+      val typeAdapter = customScalarAdapters.adapterFor<T>(customScalar)
       val value = jsonReader.readRecursively()!!
-      return typeAdapter.decode(CustomTypeValue.fromRawValue(value))
+      return typeAdapter.decode(JsonElement.fromRawValue(value))
     }
 
     override fun <T : Any> readObject(block: (ResponseReader) -> T): T {
@@ -170,7 +170,7 @@ class StreamResponseReader private constructor(
         StreamResponseReader(
           jsonReader = jsonReader,
           variableValues = variableValues,
-          scalarTypeAdapters = scalarTypeAdapters,
+          customScalarAdapters = customScalarAdapters,
         )
       )
       jsonReader.endObject()

@@ -5,7 +5,7 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import okio.BufferedSource
@@ -17,12 +17,12 @@ class MockQuery : Query<MockQuery.Data, Operation.Variables> {
   override fun composeRequestBody(
       autoPersistQueries: Boolean,
       withQueryDocument: Boolean,
-      scalarTypeAdapters: ScalarTypeAdapters
+      customScalarAdapters: CustomScalarAdapters
   ): ByteString {
     return composeRequestBody()
   }
 
-  override fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters): ByteString {
+  override fun composeRequestBody(customScalarAdapters: CustomScalarAdapters): ByteString {
     return composeRequestBody()
   }
 
@@ -50,7 +50,7 @@ class MockQuery : Query<MockQuery.Data, Operation.Variables> {
 
   override fun operationId(): String = "MockQuery".hashCode().toString()
 
-  override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters): Response<Data> {
+  override fun parse(source: BufferedSource, customScalarAdapters: CustomScalarAdapters): Response<Data> {
     val data = source.readUtf8()
     if (data.isEmpty()) throw ApolloParseException(
         message = "Failed to parse mocked response"
@@ -61,7 +61,7 @@ class MockQuery : Query<MockQuery.Data, Operation.Variables> {
     )
   }
 
-  override fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters): Response<Data> {
+  override fun parse(byteString: ByteString, customScalarAdapters: CustomScalarAdapters): Response<Data> {
     if (byteString.size == 0) throw ApolloParseException(
         message = "Failed to parse mocked response"
     )
@@ -72,11 +72,11 @@ class MockQuery : Query<MockQuery.Data, Operation.Variables> {
   }
 
   override fun parse(source: BufferedSource): Response<Data> {
-    return parse(source, ScalarTypeAdapters.DEFAULT)
+    return parse(source, CustomScalarAdapters.DEFAULT)
   }
 
   override fun parse(byteString: ByteString): Response<Data> {
-    return parse(byteString, ScalarTypeAdapters.DEFAULT)
+    return parse(byteString, CustomScalarAdapters.DEFAULT)
   }
 
   data class Data(val rawResponse: String) : Operation.Data {

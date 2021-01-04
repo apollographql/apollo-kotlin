@@ -1,6 +1,6 @@
 package com.apollographql.apollo.api.internal
 
-import com.apollographql.apollo.api.ScalarType
+import com.apollographql.apollo.api.CustomScalar
 import okio.IOException
 import kotlin.jvm.JvmSynthetic
 
@@ -24,7 +24,7 @@ interface InputFieldWriter {
   fun writeBoolean(fieldName: String, value: Boolean?)
 
   @Throws(IOException::class)
-  fun writeCustom(fieldName: String, scalarType: ScalarType, value: Any?)
+  fun writeCustom(fieldName: String, customScalar: CustomScalar, value: Any?)
 
   @Throws(IOException::class)
   fun writeObject(fieldName: String, marshaller: InputFieldMarshaller?)
@@ -79,7 +79,7 @@ interface InputFieldWriter {
     fun writeBoolean(value: Boolean?)
 
     @Throws(IOException::class)
-    fun writeCustom(scalarType: ScalarType, value: Any?)
+    fun writeCustom(customScalar: CustomScalar, value: Any?)
 
     @Throws(IOException::class)
     fun writeObject(marshaller: InputFieldMarshaller?)

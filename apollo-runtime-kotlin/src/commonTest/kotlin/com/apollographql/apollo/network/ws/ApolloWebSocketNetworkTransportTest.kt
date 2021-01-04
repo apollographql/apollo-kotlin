@@ -4,7 +4,7 @@ import com.apollographql.apollo.ApolloWebSocketException
 import com.apollographql.apollo.ApolloWebSocketServerException
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
-import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.dispatcher.ApolloCoroutineDispatcherContext
 import com.apollographql.apollo.interceptor.ApolloRequest
 import com.apollographql.apollo.testing.MockSubscription
@@ -34,7 +34,7 @@ class ApolloWebSocketNetworkTransportTest {
     runBlocking {
       val expectedRequest = ApolloRequest(
           operation = MockSubscription(),
-          scalarTypeAdapters = ScalarTypeAdapters.DEFAULT,
+          customScalarAdapters = CustomScalarAdapters.DEFAULT,
           executionContext = ApolloCoroutineDispatcherContext(Dispatchers.Unconfined)
       )
       val expectedResponses = listOf(
@@ -71,7 +71,7 @@ class ApolloWebSocketNetworkTransportTest {
     runBlocking {
       val expectedRequest = ApolloRequest(
           operation = MockSubscription(),
-          scalarTypeAdapters = ScalarTypeAdapters.DEFAULT,
+          customScalarAdapters = CustomScalarAdapters.DEFAULT,
           executionContext = ApolloCoroutineDispatcherContext(Dispatchers.Unconfined)
       )
 
@@ -98,7 +98,7 @@ class ApolloWebSocketNetworkTransportTest {
     val result = runBlocking {
       val expectedRequest = ApolloRequest(
           operation = MockSubscription(),
-          scalarTypeAdapters = ScalarTypeAdapters.DEFAULT,
+          customScalarAdapters = CustomScalarAdapters.DEFAULT,
           executionContext = ApolloCoroutineDispatcherContext(Dispatchers.Unconfined)
       )
       val expectedOnStartResponse = "{\"data\":{\"name\":\"MockQuery\"}}"
@@ -134,7 +134,7 @@ class ApolloWebSocketNetworkTransportTest {
     runBlocking {
       val expectedRequest = ApolloRequest(
           operation = MockSubscription(),
-          scalarTypeAdapters = ScalarTypeAdapters.DEFAULT,
+          customScalarAdapters = CustomScalarAdapters.DEFAULT,
           executionContext = ApolloCoroutineDispatcherContext(Dispatchers.Unconfined)
       )
       val expectedOnStartResponse = "{\"data\":{\"name\":\"MockQuery\"}}"
@@ -165,7 +165,7 @@ class ApolloWebSocketNetworkTransportTest {
     runBlocking {
       val expectedRequest = ApolloRequest(
           operation = MockSubscription(),
-          scalarTypeAdapters = ScalarTypeAdapters.DEFAULT,
+          customScalarAdapters = CustomScalarAdapters.DEFAULT,
           executionContext = ApolloCoroutineDispatcherContext(Dispatchers.Unconfined)
       )
       val expectedOnStartResponse = "{\"data\":{\"name\":\"MockQuery\"}}"

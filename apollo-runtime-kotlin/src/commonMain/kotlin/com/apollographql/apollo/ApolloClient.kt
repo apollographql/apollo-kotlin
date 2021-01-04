@@ -1,13 +1,13 @@
 package com.apollographql.apollo
 
 import com.apollographql.apollo.api.ApolloExperimental
-import com.apollographql.apollo.api.CustomTypeAdapter
+import com.apollographql.apollo.api.CustomScalarAdapter
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
-import com.apollographql.apollo.api.ScalarType
-import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.CustomScalar
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.dispatcher.ApolloCoroutineDispatcherContext
 import com.apollographql.apollo.interceptor.ApolloRequestInterceptor
@@ -16,7 +16,6 @@ import com.apollographql.apollo.internal.RealApolloCall
 import com.apollographql.apollo.network.NetworkTransport
 import com.apollographql.apollo.network.http.ApolloHttpNetworkTransport
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
  * The main entry point for the Apollo runtime. An [ApolloClient] is responsible for executing queries, mutations and subscriptions
@@ -25,7 +24,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 class ApolloClient private constructor(
     private val networkTransport: NetworkTransport,
     private val subscriptionNetworkTransport: NetworkTransport,
-    private val scalarTypeAdapters: ScalarTypeAdapters,
+    private val customScalarAdapters: CustomScalarAdapters,
     private val interceptors: List<ApolloRequestInterceptor>,
     private val executionContext: ExecutionContext
 ) {
@@ -47,7 +46,7 @@ class ApolloClient private constructor(
   private fun <D : Operation.Data, V : Operation.Variables> Operation<D, V>.prepareCall(): RealApolloCall<D> {
     return RealApolloCall(
         operation = this,
-        scalarTypeAdapters = scalarTypeAdapters,
+        customScalarAdapters = customScalarAdapters,
         interceptors = interceptors + NetworkRequestInterceptor(
             networkTransport = networkTransport,
             subscriptionNetworkTransport = subscriptionNetworkTransport
@@ -60,13 +59,13 @@ class ApolloClient private constructor(
     return Builder()
         .networkTransport(networkTransport)
         .subscriptionNetworkTransport(subscriptionNetworkTransport)
-        .scalarTypeAdapters(scalarTypeAdapters.customAdapters)
+        .scalarTypeAdapters(customScalarAdapters.customScalarAdapters)
         .interceptors(interceptors)
         .executionContext(executionContext)
   }
 
   class Builder {
-    private var scalarTypeAdapters = emptyMap<ScalarType, CustomTypeAdapter<*>>()
+    private var scalarTypeAdapters = emptyMap<CustomScalar, CustomScalarAdapter<*>>()
 
     private var networkTransport: NetworkTransport? = null
     private var subscriptionNetworkTransport: NetworkTransport? = null
@@ -77,8 +76,8 @@ class ApolloClient private constructor(
       networkTransport(ApolloHttpNetworkTransport(serverUrl = serverUrl, headers = emptyMap()))
     }
 
-    fun addScalarTypeAdapter(scalarType: ScalarType, customTypeAdapter: CustomTypeAdapter<*>) = apply {
-      this.scalarTypeAdapters = this.scalarTypeAdapters + (scalarType to customTypeAdapter)
+    fun addScalarTypeAdapter(customScalar: CustomScalar, customScalarAdapter: CustomScalarAdapter<*>) = apply {
+      this.scalarTypeAdapters = this.scalarTypeAdapters + (customScalar to customScalarAdapter)
     }
 
     fun networkTransport(networkTransport: NetworkTransport) = apply {
@@ -110,7 +109,7 @@ class ApolloClient private constructor(
       return ApolloClient(
           networkTransport = transport,
           subscriptionNetworkTransport = subscriptionTransport,
-          scalarTypeAdapters = ScalarTypeAdapters(scalarTypeAdapters),
+          customScalarAdapters = CustomScalarAdapters(scalarTypeAdapters),
           interceptors = interceptors,
           executionContext = executionContext
       )
@@ -146,8 +145,8 @@ class ApolloClient private constructor(
     /**
      * internal because only used from tests
      */
-    fun scalarTypeAdapters(scalarTypeAdapters: Map<ScalarType, CustomTypeAdapter<*>>) = apply {
-      this.scalarTypeAdapters = scalarTypeAdapters
+    fun scalarTypeAdapters(customScalarAdapters: Map<CustomScalar, CustomScalarAdapter<*>>) = apply {
+      this.scalarTypeAdapters = customScalarAdapters
     }
   }
 }

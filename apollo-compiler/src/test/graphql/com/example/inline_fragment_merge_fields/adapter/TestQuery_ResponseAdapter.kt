@@ -10,7 +10,7 @@ import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.inline_fragment_merge_fields.TestQuery
-import com.example.inline_fragment_merge_fields.type.CustomType
+import com.example.inline_fragment_merge_fields.type.CustomScalars
 import kotlin.Any
 import kotlin.Array
 import kotlin.String
@@ -93,7 +93,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, false, null),
           ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null),
-          ResponseField.forCustomType("profileLink", "profileLink", null, false, CustomType.URL, null)
+          ResponseField.forCustomScalar("profileLink", "profileLink", null, false, CustomScalars.URL, null)
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -110,7 +110,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
                 2 -> friendsConnection = readObject<TestQuery.Data.Hero.CharacterHero.FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
                   FriendsConnection.fromResponse(reader)
                 }
-                3 -> profileLink = readCustomType<Any>(RESPONSE_FIELDS[3] as ResponseField.CustomTypeField)
+                3 -> profileLink = readCustomScalar<Any>(RESPONSE_FIELDS[3] as ResponseField.CustomScalarField)
                 else -> break
               }
             }
@@ -129,7 +129,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           writer.writeObject(RESPONSE_FIELDS[2]) { writer ->
             FriendsConnection.toResponse(writer, value.friendsConnection)
           }
-          writer.writeCustom(RESPONSE_FIELDS[3] as ResponseField.CustomTypeField, value.profileLink)
+          writer.writeCustom(RESPONSE_FIELDS[3] as ResponseField.CustomScalarField, value.profileLink)
         }
 
         object FriendsConnection :
