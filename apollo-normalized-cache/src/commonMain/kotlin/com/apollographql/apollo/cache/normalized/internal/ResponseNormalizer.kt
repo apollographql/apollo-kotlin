@@ -20,7 +20,7 @@ abstract class ResponseNormalizer<R> : ResolveDelegate<R> {
   private var recordSet = RecordSet()
   private var dependentKeys = mutableSetOf<String>()
 
-  open fun records(): Collection<Record?>? {
+  open fun records(): Collection<Record> {
     return recordSet.allRecords()
   }
 
@@ -141,7 +141,7 @@ abstract class ResponseNormalizer<R> : ResolveDelegate<R> {
       override fun willResolveElement(atIndex: Int) {}
       override fun didResolveElement(atIndex: Int) {}
       override fun didResolveNull() {}
-      override fun records(): Collection<Record?>? {
+      override fun records(): Collection<Record> {
         return emptyList()
       }
 
