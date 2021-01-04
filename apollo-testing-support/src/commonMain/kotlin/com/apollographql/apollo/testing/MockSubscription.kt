@@ -15,10 +15,10 @@ class MockSubscription : Subscription<MockSubscription.Data, Operation.Variables
 
   override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
 
-  override fun adapter(): ResponseAdapter<MockQuery.Data> {
-    return object: ResponseAdapter<MockQuery.Data> {
-      override fun fromResponse(reader: ResponseReader, __typename: String?): MockQuery.Data {
-        Data(
+  override fun adapter(): ResponseAdapter<Data> {
+    return object: ResponseAdapter<Data> {
+      override fun fromResponse(reader: ResponseReader, __typename: String?): Data {
+        return Data(
             name = reader.readString(
                 ResponseField.forString(
                     responseName = "name",
@@ -31,7 +31,7 @@ class MockSubscription : Subscription<MockSubscription.Data, Operation.Variables
         )
       }
 
-      override fun toResponse(writer: ResponseWriter, value: MockQuery.Data) {
+      override fun toResponse(writer: ResponseWriter, value: Data) {
         TODO("Not yet implemented")
       }
     }
