@@ -3,7 +3,7 @@ package com.apollographql.apollo.testing
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
@@ -16,11 +16,11 @@ class MockSubscription : Subscription<MockSubscription.Data, Operation.Variables
   override fun composeRequestBody(
       autoPersistQueries: Boolean,
       withQueryDocument: Boolean,
-      scalarTypeAdapters: ScalarTypeAdapters): ByteString {
+      customScalarAdapters: CustomScalarAdapters): ByteString {
     return composeRequestBody()
   }
 
-  override fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters): ByteString {
+  override fun composeRequestBody(customScalarAdapters: CustomScalarAdapters): ByteString {
     return composeRequestBody()
   }
 
@@ -48,14 +48,14 @@ class MockSubscription : Subscription<MockSubscription.Data, Operation.Variables
 
   override fun operationId(): String = "MockSubscription".hashCode().toString()
 
-  override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters): Response<Data> {
+  override fun parse(source: BufferedSource, customScalarAdapters: CustomScalarAdapters): Response<Data> {
     return Response(
         operation = this,
         data = Data(source.readUtf8())
     )
   }
 
-  override fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters): Response<Data> {
+  override fun parse(byteString: ByteString, customScalarAdapters: CustomScalarAdapters): Response<Data> {
     return Response(
         operation = this,
         data = Data(byteString.toString())
@@ -63,11 +63,11 @@ class MockSubscription : Subscription<MockSubscription.Data, Operation.Variables
   }
 
   override fun parse(source: BufferedSource): Response<Data> {
-    return parse(source, ScalarTypeAdapters.DEFAULT)
+    return parse(source, CustomScalarAdapters.DEFAULT)
   }
 
   override fun parse(byteString: ByteString): Response<Data> {
-    return parse(byteString, ScalarTypeAdapters.DEFAULT)
+    return parse(byteString, CustomScalarAdapters.DEFAULT)
   }
 
   class Data(val rawResponse: String) : Operation.Data {

@@ -5,7 +5,7 @@ import com.apollographql.apollo.ApolloQueryWatcher;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.api.ScalarTypeAdapters;
+import com.apollographql.apollo.api.CustomScalarAdapters;
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.api.internal.ApolloLogger;
 import com.apollographql.apollo.cache.CacheHeaders;
@@ -46,7 +46,7 @@ final class QueryReFetcher {
           .serverUrl(builder.serverUrl)
           .httpCallFactory(builder.httpCallFactory)
           .responseFieldMapperFactory(builder.responseFieldMapperFactory)
-          .scalarTypeAdapters(builder.scalarTypeAdapters)
+          .scalarTypeAdapters(builder.customScalarAdapters)
           .apolloStore(builder.apolloStore)
           .httpCachePolicy(HttpCachePolicy.NETWORK_ONLY)
           .responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
@@ -121,7 +121,7 @@ final class QueryReFetcher {
     HttpUrl serverUrl;
     Call.Factory httpCallFactory;
     ResponseFieldMapperFactory responseFieldMapperFactory;
-    ScalarTypeAdapters scalarTypeAdapters;
+    CustomScalarAdapters customScalarAdapters;
     ApolloStore apolloStore;
     Executor dispatcher;
     ApolloLogger logger;
@@ -155,8 +155,8 @@ final class QueryReFetcher {
       return this;
     }
 
-    Builder scalarTypeAdapters(ScalarTypeAdapters scalarTypeAdapters) {
-      this.scalarTypeAdapters = scalarTypeAdapters;
+    Builder scalarTypeAdapters(CustomScalarAdapters customScalarAdapters) {
+      this.customScalarAdapters = customScalarAdapters;
       return this;
     }
 

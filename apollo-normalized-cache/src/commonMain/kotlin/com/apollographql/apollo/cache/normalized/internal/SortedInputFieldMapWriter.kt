@@ -1,6 +1,6 @@
 package com.apollographql.apollo.cache.normalized.internal
 
-import com.apollographql.apollo.api.ScalarType
+import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.InputFieldWriter
 import com.apollographql.apollo.api.internal.Throws
@@ -37,7 +37,7 @@ class SortedInputFieldMapWriter() : InputFieldWriter {
     buffer[fieldName] = value
   }
 
-  override fun writeCustom(fieldName: String, scalarType: ScalarType, value: Any?) {
+  override fun writeCustom(fieldName: String, customScalar: CustomScalar, value: Any?) {
     buffer[fieldName] = value
   }
 
@@ -105,7 +105,7 @@ class SortedInputFieldMapWriter() : InputFieldWriter {
       }
     }
 
-    override fun writeCustom(scalarType: ScalarType, value: Any?) {
+    override fun writeCustom(customScalar: CustomScalar, value: Any?) {
       if (value != null) {
         list.add(value)
       }

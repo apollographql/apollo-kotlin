@@ -7,7 +7,7 @@ import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.interceptor.ApolloRequest
 import com.apollographql.apollo.interceptor.ApolloRequestInterceptor
 import com.apollographql.apollo.interceptor.RealInterceptorChain
@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.map
 @OptIn(ExperimentalCoroutinesApi::class)
 class RealApolloCall<D : Operation.Data> constructor(
     private val operation: Operation<D, *>,
-    private val scalarTypeAdapters: ScalarTypeAdapters,
+    private val customScalarAdapters: CustomScalarAdapters,
     private val interceptors: List<ApolloRequestInterceptor>,
     private val executionContext: ExecutionContext
 ) : ApolloQueryCall<D>, ApolloMutationCall<D>, ApolloSubscriptionCall<D> {
@@ -30,7 +30,7 @@ class RealApolloCall<D : Operation.Data> constructor(
   override fun execute(executionContext: ExecutionContext): Flow<Response<D>> {
     val request = ApolloRequest(
         operation = operation,
-        scalarTypeAdapters = scalarTypeAdapters,
+        customScalarAdapters = customScalarAdapters,
         executionContext = this.executionContext + executionContext
     )
     return flow {

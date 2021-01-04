@@ -2,7 +2,7 @@ package com.apollographql.apollo.internal.interceptor;
 
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.api.ScalarTypeAdapters;
+import com.apollographql.apollo.api.CustomScalarAdapters;
 import com.apollographql.apollo.api.cache.http.HttpCache;
 import com.apollographql.apollo.api.internal.ApolloLogger;
 import com.apollographql.apollo.api.internal.ResponseFieldMapper;
@@ -29,16 +29,16 @@ public final class ApolloParseInterceptor implements ApolloInterceptor {
   private final HttpCache httpCache;
   private final ResponseNormalizer<Map<String, Object>> normalizer;
   private final ResponseFieldMapper responseFieldMapper;
-  private final ScalarTypeAdapters scalarTypeAdapters;
+  private final CustomScalarAdapters customScalarAdapters;
   private final ApolloLogger logger;
   volatile boolean disposed;
 
   public ApolloParseInterceptor(HttpCache httpCache, ResponseNormalizer<Map<String, Object>> normalizer,
-      ResponseFieldMapper responseFieldMapper, ScalarTypeAdapters scalarTypeAdapters, ApolloLogger logger) {
+      ResponseFieldMapper responseFieldMapper, CustomScalarAdapters customScalarAdapters, ApolloLogger logger) {
     this.httpCache = httpCache;
     this.normalizer = normalizer;
     this.responseFieldMapper = responseFieldMapper;
-    this.scalarTypeAdapters = scalarTypeAdapters;
+    this.customScalarAdapters = customScalarAdapters;
     this.logger = logger;
   }
 
@@ -82,7 +82,7 @@ public final class ApolloParseInterceptor implements ApolloInterceptor {
     String cacheKey = httpResponse.request().header(HttpCache.CACHE_KEY_HEADER);
     if (httpResponse.isSuccessful()) {
       try {
-        final OperationResponseParser parser = new OperationResponseParser(operation, responseFieldMapper, scalarTypeAdapters, normalizer);
+        final OperationResponseParser parser = new OperationResponseParser(operation, responseFieldMapper, customScalarAdapters, normalizer);
         final OkHttpExecutionContext httpExecutionContext = new OkHttpExecutionContext(httpResponse);
         Response parsedResponse = parser.parse(httpResponse.body().source());
         parsedResponse = parsedResponse

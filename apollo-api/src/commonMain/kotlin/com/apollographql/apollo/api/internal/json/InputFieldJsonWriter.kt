@@ -1,8 +1,13 @@
 package com.apollographql.apollo.api.internal.json
 
-import com.apollographql.apollo.api.JsonElement.*
-import com.apollographql.apollo.api.ScalarType
-import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.CustomScalar
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.JsonBoolean
+import com.apollographql.apollo.api.JsonList
+import com.apollographql.apollo.api.JsonNull
+import com.apollographql.apollo.api.JsonNumber
+import com.apollographql.apollo.api.JsonObject
+import com.apollographql.apollo.api.JsonString
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.InputFieldWriter
 import com.apollographql.apollo.api.internal.Throws
@@ -11,7 +16,7 @@ import okio.IOException
 
 class InputFieldJsonWriter(
     private val jsonWriter: JsonWriter,
-    private val scalarTypeAdapters: ScalarTypeAdapters
+    private val customScalarAdapters: CustomScalarAdapters
 ) : InputFieldWriter {
 
   @Throws(IOException::class)
@@ -69,13 +74,13 @@ class InputFieldJsonWriter(
   }
 
   @Throws(IOException::class)
-  override fun writeCustom(fieldName: String, scalarType: ScalarType, value: Any?) {
+  override fun writeCustom(fieldName: String, customScalar: CustomScalar, value: Any?) {
     if (value == null) {
       jsonWriter.name(fieldName).nullValue()
       return
     }
 
-    val customScalarAdapter = scalarTypeAdapters.adapterFor<Any>(scalarType)
+    val customScalarAdapter = customScalarAdapters.adapterFor<Any>(customScalar)
     when (val jsonElement = customScalarAdapter.encode(value)) {
       is JsonString -> writeString(fieldName, jsonElement.value)
       is JsonBoolean -> writeBoolean(fieldName, jsonElement.value)
@@ -103,7 +108,7 @@ class InputFieldJsonWriter(
       jsonWriter.name(fieldName).nullValue()
     } else {
       jsonWriter.name(fieldName).beginArray()
-      listWriter.write(JsonListItemWriter(jsonWriter, scalarTypeAdapters))
+      listWriter.write(JsonListItemWriter(jsonWriter, customScalarAdapters))
       jsonWriter.endArray()
     }
   }
@@ -120,7 +125,7 @@ class InputFieldJsonWriter(
 
   private class JsonListItemWriter(
       private val jsonWriter: JsonWriter,
-      private val scalarTypeAdapters: ScalarTypeAdapters
+      private val customScalarAdapters: CustomScalarAdapters
   ) : InputFieldWriter.ListItemWriter {
 
     @Throws(IOException::class)
@@ -183,13 +188,13 @@ class InputFieldJsonWriter(
     }
 
     @Throws(IOException::class)
-    override fun writeCustom(scalarType: ScalarType, value: Any?) {
+    override fun writeCustom(customScalar: CustomScalar, value: Any?) {
       if (value == null) {
         jsonWriter.nullValue()
         return
       }
 
-      val customScalarAdapter = scalarTypeAdapters.adapterFor<Any>(scalarType)
+      val customScalarAdapter = customScalarAdapters.adapterFor<Any>(customScalar)
       when (val jsonElement = customScalarAdapter.encode(value)) {
         is JsonString -> writeString(jsonElement.value)
         is JsonBoolean -> writeBoolean(jsonElement.value)
@@ -206,7 +211,7 @@ class InputFieldJsonWriter(
         jsonWriter.nullValue()
       } else {
         jsonWriter.beginObject()
-        marshaller.marshal(InputFieldJsonWriter(jsonWriter, scalarTypeAdapters))
+        marshaller.marshal(InputFieldJsonWriter(jsonWriter, customScalarAdapters))
         jsonWriter.endObject()
       }
     }
@@ -217,7 +222,7 @@ class InputFieldJsonWriter(
         jsonWriter.nullValue()
       } else {
         jsonWriter.beginArray()
-        listWriter.write(JsonListItemWriter(jsonWriter, scalarTypeAdapters))
+        listWriter.write(JsonListItemWriter(jsonWriter, customScalarAdapters))
         jsonWriter.endArray()
       }
     }

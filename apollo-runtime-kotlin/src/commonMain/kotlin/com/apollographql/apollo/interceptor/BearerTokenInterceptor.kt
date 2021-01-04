@@ -28,7 +28,7 @@ class BearerTokenInterceptor(private val tokenProvider: TokenProvider) : ApolloR
 
     return ApolloRequest(
         operation = operation,
-        scalarTypeAdapters = scalarTypeAdapters,
+        customScalarAdapters = customScalarAdapters,
         executionContext = executionContext + httpRequestContext
     )
   }

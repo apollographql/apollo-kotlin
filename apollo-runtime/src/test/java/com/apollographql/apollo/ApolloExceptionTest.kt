@@ -4,7 +4,7 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.internal.OperationRequestBodyComposer.compose
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
@@ -69,7 +69,7 @@ class ApolloExceptionTest {
       throw UnsupportedOperationException()
     }
 
-    override fun parse(source: BufferedSource, scalarTypeAdapters: ScalarTypeAdapters): Response<Operation.Data> {
+    override fun parse(source: BufferedSource, customScalarAdapters: CustomScalarAdapters): Response<Operation.Data> {
       throw UnsupportedOperationException()
     }
 
@@ -77,24 +77,24 @@ class ApolloExceptionTest {
       throw UnsupportedOperationException()
     }
 
-    override fun parse(byteString: ByteString, scalarTypeAdapters: ScalarTypeAdapters): Response<Operation.Data> {
+    override fun parse(byteString: ByteString, customScalarAdapters: CustomScalarAdapters): Response<Operation.Data> {
       throw UnsupportedOperationException()
     }
 
     override fun composeRequestBody(
         autoPersistQueries: Boolean,
         withQueryDocument: Boolean,
-        scalarTypeAdapters: ScalarTypeAdapters
+        customScalarAdapters: CustomScalarAdapters
     ): ByteString {
-      return compose(this, autoPersistQueries, withQueryDocument, scalarTypeAdapters)
+      return compose(this, autoPersistQueries, withQueryDocument, customScalarAdapters)
     }
 
-    override fun composeRequestBody(scalarTypeAdapters: ScalarTypeAdapters): ByteString {
-      return compose(this, false, true, scalarTypeAdapters)
+    override fun composeRequestBody(customScalarAdapters: CustomScalarAdapters): ByteString {
+      return compose(this, false, true, customScalarAdapters)
     }
 
     override fun composeRequestBody(): ByteString {
-      return compose(this, false, true, ScalarTypeAdapters.DEFAULT)
+      return compose(this, false, true, CustomScalarAdapters.DEFAULT)
     }
   }
 

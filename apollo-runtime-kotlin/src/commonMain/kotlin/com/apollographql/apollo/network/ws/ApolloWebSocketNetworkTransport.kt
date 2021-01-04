@@ -39,7 +39,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withTimeout
-import kotlinx.coroutines.yield
 import okio.Buffer
 import okio.ByteString
 
@@ -106,7 +105,7 @@ class ApolloWebSocketNetworkTransport(
           val response = try {
             request.operation.parse(
                 source = buffer,
-                scalarTypeAdapters = request.scalarTypeAdapters
+                customScalarAdapters = request.customScalarAdapters
             )
           } catch (e: Exception) {
             throw ApolloParseException(

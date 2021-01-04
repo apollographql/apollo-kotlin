@@ -33,7 +33,7 @@ sealed class ApolloGraphQLClientMessage {
             .beginObject()
             .name("type").value("start")
             .name("id").value(request.requestUuid.toString())
-            .name("payload").jsonValue(request.operation.composeRequestBody(request.scalarTypeAdapters).utf8())
+            .name("payload").jsonValue(request.operation.composeRequestBody(request.customScalarAdapters).utf8())
             .endObject()
             .close()
       }.readByteString()

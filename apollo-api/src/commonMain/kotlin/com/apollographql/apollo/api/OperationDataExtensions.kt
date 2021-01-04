@@ -2,7 +2,7 @@
 
 package com.apollographql.apollo.api
 
-import com.apollographql.apollo.api.ScalarTypeAdapters.Companion.DEFAULT
+import com.apollographql.apollo.api.CustomScalarAdapters.Companion.DEFAULT
 import com.apollographql.apollo.api.internal.SimpleResponseWriter
 import okio.IOException
 import kotlin.jvm.JvmName
@@ -31,14 +31,14 @@ import kotlin.jvm.JvmOverloads
  * @param indent the indentation string to be repeated for each level of indentation in the encoded document. Must be a string
  * containing only whitespace. If [indent] is an empty String the encoded document will be compact. Otherwise the encoded
  * document will be more human-readable.
- * @param scalarTypeAdapters configured instance of custom GraphQL scalar type adapters. Default adapters are used if this
+ * @param customScalarAdapters configured instance of custom GraphQL scalar type adapters. Default adapters are used if this
  * param is not provided.
  */
 @JvmName("serialize")
 @JvmOverloads
-fun Operation.Data.toJson(indent: String = "", scalarTypeAdapters: ScalarTypeAdapters = DEFAULT): String {
+fun Operation.Data.toJson(indent: String = "", customScalarAdapters: CustomScalarAdapters = DEFAULT): String {
   return try {
-    SimpleResponseWriter(scalarTypeAdapters).let { writer ->
+    SimpleResponseWriter(customScalarAdapters).let { writer ->
       marshaller().marshal(writer)
       writer.toJson(indent)
     }

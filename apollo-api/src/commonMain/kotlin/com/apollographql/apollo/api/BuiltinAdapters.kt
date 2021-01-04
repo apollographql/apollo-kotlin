@@ -12,12 +12,12 @@ import okio.Buffer
 object BuiltinCustomScalarAdapters {
   val STRING_ADAPTER = adapterWithDefaultEncode { jsonElement ->
     when (jsonElement) {
-      is JsonElement.JsonString -> jsonElement.value
-      is JsonElement.JsonNull -> null
-      is JsonElement.JsonBoolean -> jsonElement.value.toString()
-      is JsonElement.JsonNumber -> jsonElement.value.toString()
-      is JsonElement.JsonObject,
-      is JsonElement.JsonList -> {
+      is JsonString -> jsonElement.value
+      is JsonNull -> null
+      is JsonBoolean -> jsonElement.value.toString()
+      is JsonNumber -> jsonElement.value.toString()
+      is JsonObject,
+      is JsonList -> {
         val buffer = Buffer()
         JsonWriter.of(buffer).use { writer ->
           Utils.writeToJson(jsonElement.toRawValue(), writer)
@@ -29,46 +29,46 @@ object BuiltinCustomScalarAdapters {
 
   val BOOLEAN_ADAPTER = adapterWithDefaultEncode { jsonElement ->
     when (jsonElement) {
-      is JsonElement.JsonBoolean -> jsonElement.value
-      is JsonElement.JsonString -> jsonElement.value.toBoolean()
+      is JsonBoolean -> jsonElement.value
+      is JsonString -> jsonElement.value.toBoolean()
       else -> throw IllegalArgumentException("Can't decode: $jsonElement into Boolean")
     }
   }
 
   val INT_ADAPTER = adapterWithDefaultEncode { jsonElement ->
     when (jsonElement) {
-      is JsonElement.JsonNumber -> jsonElement.value.toInt()
-      is JsonElement.JsonString -> jsonElement.value.toInt()
+      is JsonNumber -> jsonElement.value.toInt()
+      is JsonString -> jsonElement.value.toInt()
       else -> throw IllegalArgumentException("Can't decode: $jsonElement into Integer")
     }
   }
 
   val LONG_ADAPTER = adapterWithDefaultEncode { jsonElement ->
     when (jsonElement) {
-      is JsonElement.JsonNumber -> jsonElement.value.toLong()
-      is JsonElement.JsonString -> jsonElement.value.toLong()
+      is JsonNumber -> jsonElement.value.toLong()
+      is JsonString -> jsonElement.value.toLong()
       else -> throw IllegalArgumentException("Can't decode: $jsonElement into Long")
     }
   }
 
   val FLOAT_ADAPTER = adapterWithDefaultEncode { jsonElement ->
     when (jsonElement) {
-      is JsonElement.JsonNumber -> jsonElement.value.toFloat()
-      is JsonElement.JsonString -> jsonElement.value.toFloat()
+      is JsonNumber -> jsonElement.value.toFloat()
+      is JsonString -> jsonElement.value.toFloat()
       else -> throw IllegalArgumentException("Can't decode: $jsonElement into Float")
     }
   }
 
   val DOUBLE_ADAPTER = adapterWithDefaultEncode { jsonElement ->
     when (jsonElement) {
-      is JsonElement.JsonNumber -> jsonElement.value.toDouble()
-      is JsonElement.JsonString -> jsonElement.value.toDouble()
+      is JsonNumber -> jsonElement.value.toDouble()
+      is JsonString -> jsonElement.value.toDouble()
       else -> throw IllegalArgumentException("Can't decode: $jsonElement into Double")
     }
   }
 
   val MAP_ADAPTER = adapterWithDefaultEncode { jsonElement ->
-    if (jsonElement is JsonElement.JsonObject) {
+    if (jsonElement is JsonObject) {
       jsonElement.toRawValue() as Map<String, Any?>
     } else {
       throw IllegalArgumentException("Can't decode: $jsonElement into Map")
@@ -76,7 +76,7 @@ object BuiltinCustomScalarAdapters {
   }
 
   val LIST_ADAPTER = adapterWithDefaultEncode { jsonElement ->
-    if (jsonElement is JsonElement.JsonList) {
+    if (jsonElement is JsonList) {
       jsonElement.toRawValue() as List<Any?>
     } else {
       throw IllegalArgumentException("Can't decode: $jsonElement into List")
@@ -93,7 +93,7 @@ object BuiltinCustomScalarAdapters {
     }
 
     override fun encode(value: FileUpload): JsonElement {
-      return JsonElement.JsonNull
+      return JsonNull
     }
   }
 }

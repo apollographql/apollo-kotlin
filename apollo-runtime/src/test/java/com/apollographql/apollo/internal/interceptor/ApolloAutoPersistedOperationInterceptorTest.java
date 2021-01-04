@@ -3,7 +3,7 @@ package com.apollographql.apollo.internal.interceptor;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
-import com.apollographql.apollo.api.ScalarTypeAdapters;
+import com.apollographql.apollo.api.CustomScalarAdapters;
 import com.apollographql.apollo.api.internal.ApolloLogger;
 import com.apollographql.apollo.api.internal.ResponseFieldMapper;
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller;
@@ -312,7 +312,7 @@ public class ApolloAutoPersistedOperationInterceptorTest {
 
     @NotNull @Override public com.apollographql.apollo.api.Response<Data> parse(
         @NotNull BufferedSource source,
-        @NotNull ScalarTypeAdapters scalarTypeAdapters
+        @NotNull CustomScalarAdapters customScalarAdapters
     ) {
       throw new UnsupportedOperationException();
     }
@@ -323,7 +323,7 @@ public class ApolloAutoPersistedOperationInterceptorTest {
 
     @NotNull @Override public com.apollographql.apollo.api.Response parse(
         @NotNull ByteString byteString,
-        @NotNull ScalarTypeAdapters scalarTypeAdapters
+        @NotNull CustomScalarAdapters customScalarAdapters
     ) {
       throw new UnsupportedOperationException();
     }
@@ -331,11 +331,11 @@ public class ApolloAutoPersistedOperationInterceptorTest {
     @NotNull @Override public ByteString composeRequestBody(
         boolean autoPersistQueries,
         boolean withQueryDocument,
-        @NotNull ScalarTypeAdapters scalarTypeAdapters) {
+        @NotNull CustomScalarAdapters customScalarAdapters) {
       throw new UnsupportedOperationException();
     }
 
-    @NotNull @Override public ByteString composeRequestBody(@NotNull ScalarTypeAdapters scalarTypeAdapters) {
+    @NotNull @Override public ByteString composeRequestBody(@NotNull CustomScalarAdapters customScalarAdapters) {
       throw new UnsupportedOperationException();
     }
 
