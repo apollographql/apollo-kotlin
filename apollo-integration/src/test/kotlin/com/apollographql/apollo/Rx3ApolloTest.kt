@@ -80,7 +80,7 @@ class Rx3ApolloTest {
         .subscribeWith(testObserver)
     disposable.dispose()
     testObserver.assertComplete()
-    Truth.assertThat(testObserver.isDisposed()).isTrue()
+    Truth.assertThat(testObserver.isDisposed).isTrue()
   }
 
   @Test
@@ -105,7 +105,7 @@ class Rx3ApolloTest {
         .subscribeWith(testObserver)
     disposable.dispose()
     testObserver.assertNotComplete()
-    Truth.assertThat(testObserver.isDisposed()).isTrue()
+    Truth.assertThat(testObserver.isDisposed).isTrue()
   }
 
   @Test

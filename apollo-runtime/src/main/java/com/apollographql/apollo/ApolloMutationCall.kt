@@ -55,8 +55,10 @@ interface ApolloMutationCall<D : Operation.Data> : ApolloCall<D> {
    */
   @Deprecated("")
   fun requestHeaders(requestHeaders: RequestHeaders): ApolloMutationCall<D>
+
   @Deprecated("")
   override fun clone(): ApolloMutationCall<D>
+
   override fun toBuilder(): Builder<D>
   interface Builder<D : Operation.Data> : ApolloCall.Builder<D> {
     override fun build(): ApolloMutationCall<D>

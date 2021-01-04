@@ -268,7 +268,7 @@ class ApolloServerInterceptorFileUploadTest {
   }
 
   private fun assertRequestBodyMultiple(request: Request) {
-    Truth.assertThat(request!!.body()).isInstanceOf(MultipartBody::class.java)
+    Truth.assertThat(request.body()).isInstanceOf(MultipartBody::class.java)
     val body = request.body() as MultipartBody?
     Truth.assertThat(body!!.contentType()!!.type()).isEqualTo("multipart")
     Truth.assertThat(body.contentType()!!.subtype()).isEqualTo("form-data")
@@ -286,7 +286,7 @@ class ApolloServerInterceptorFileUploadTest {
   }
 
   private fun assertRequestBodyNested(request: Request) {
-    Truth.assertThat(request!!.body()).isInstanceOf(MultipartBody::class.java)
+    Truth.assertThat(request.body()).isInstanceOf(MultipartBody::class.java)
     val body = request.body() as MultipartBody?
     Truth.assertThat(body!!.contentType()!!.type()).isEqualTo("multipart")
     Truth.assertThat(body.contentType()!!.subtype()).isEqualTo("form-data")
@@ -330,7 +330,7 @@ class ApolloServerInterceptorFileUploadTest {
     Truth.assertThat(part.body().contentType()).isEqualTo(MediaType.parse(expectedMimeType))
   }
 
-  private class AssertHttpCallFactory internal constructor(val predicate: Predicate<Request>) : Call.Factory {
+  private class AssertHttpCallFactory(val predicate: Predicate<Request>) : Call.Factory {
     override fun newCall(request: Request): Call {
       if (!predicate.apply(request)) {
         Assert.fail("Assertion failed")

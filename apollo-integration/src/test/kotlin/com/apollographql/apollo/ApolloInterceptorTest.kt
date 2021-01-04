@@ -85,7 +85,7 @@ class ApolloInterceptorTest {
       override fun dispose() {}
     }
     client = createApolloClient(interceptor)
-    Rx2Apollo.from(client!!.query(query)).test().assertValue(rewrittenResponse.parsedResponse.get() as Response<EpisodeHeroNameQuery.Data>)
+    Rx2Apollo.from(client.query(query)).test().assertValue(rewrittenResponse.parsedResponse.get() as Response<EpisodeHeroNameQuery.Data>)
   }
 
   @Test
@@ -103,7 +103,7 @@ class ApolloInterceptorTest {
       override fun dispose() {}
     }
     client = createApolloClient(interceptor)
-    Rx2Apollo.from(client!!.query(query))
+    Rx2Apollo.from(client.query(query))
         .test()
         .assertError { throwable -> message == throwable.message && throwable is ApolloParseException }
   }
@@ -122,7 +122,7 @@ class ApolloInterceptorTest {
       override fun dispose() {}
     }
     client = createApolloClient(interceptor)
-    Rx2Apollo.from(client!!.query(query)).test().assertError { throwable -> throwable is RuntimeException && message == throwable.message }
+    Rx2Apollo.from(client.query(query)).test().assertError { throwable -> throwable is RuntimeException && message == throwable.message }
   }
 
   @Test
@@ -135,7 +135,7 @@ class ApolloInterceptorTest {
     enqueueAndAssertResponse(
         server,
         FILE_EPISODE_HERO_NAME_WITH_ID,
-        client!!.query(query)
+        client.query(query)
     ) { (_, data) ->
       assertThat(data!!.hero?.name).isEqualTo("Artoo")
       true
@@ -172,7 +172,7 @@ class ApolloInterceptorTest {
     val interceptor = SpyingApolloInterceptor()
     val testExecutor = Utils.TestExecutor()
     client = createApolloClient(interceptor, testExecutor)
-    val apolloCall: ApolloCall<EpisodeHeroNameQuery.Data> = client!!.query(query)
+    val apolloCall: ApolloCall<EpisodeHeroNameQuery.Data> = client.query(query)
     apolloCall.enqueue(object : ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
       override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {}
       override fun onFailure(e: ApolloException) {}

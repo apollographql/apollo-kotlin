@@ -24,17 +24,24 @@ import okhttp3.HttpUrl
 import java.util.concurrent.Executor
 import java.util.concurrent.atomic.AtomicReference
 
-class RealApolloPrefetch(val operation: Operation<*>, val serverUrl: HttpUrl, val httpCallFactory: Call.Factory,
-                         val customScalarAdapters: CustomScalarAdapters, val dispatcher: Executor, val logger: ApolloLogger, val tracker: ApolloCallTracker) : ApolloPrefetch {
+class RealApolloPrefetch(
+    val operation: Operation<*>,
+    val serverUrl: HttpUrl,
+    val httpCallFactory: Call.Factory,
+    val customScalarAdapters: CustomScalarAdapters,
+    val dispatcher: Executor,
+    val logger: ApolloLogger,
+    val tracker: ApolloCallTracker
+) : ApolloPrefetch {
   val interceptorChain: ApolloInterceptorChain
   val state = AtomicReference(CallState.IDLE)
   val originalCallback = AtomicReference<ApolloPrefetch.Callback?>()
-  override fun enqueue(responseCallback: ApolloPrefetch.Callback?) {
+  override fun enqueue(callback: ApolloPrefetch.Callback?) {
     try {
-      activate(Optional.fromNullable(responseCallback))
+      activate(Optional.fromNullable(callback))
     } catch (e: ApolloCanceledException) {
-      if (responseCallback != null) {
-        responseCallback.onFailure(e)
+      if (callback != null) {
+        callback.onFailure(e)
       } else {
         logger.e(e, "Operation: %s was canceled", operation().name().name())
       }

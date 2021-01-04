@@ -44,7 +44,7 @@ class ApolloPrefetchTest {
   @Before
   fun setup() {
     cacheStore = MockHttpCacheStore()
-    cacheStore!!.delegate = DiskLruHttpCacheStore(inMemoryFileSystem, File("/cache/"), Int.MAX_VALUE.toLong())
+    cacheStore.delegate = DiskLruHttpCacheStore(inMemoryFileSystem, File("/cache/"), Int.MAX_VALUE.toLong())
     okHttpClient = OkHttpClient.Builder()
         .addInterceptor { chain ->
           lastHttRequest = chain.request()
@@ -57,20 +57,20 @@ class ApolloPrefetchTest {
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
         .dispatcher(immediateExecutor())
-        .httpCache(ApolloHttpCache(cacheStore!!, null))
+        .httpCache(ApolloHttpCache(cacheStore, null))
         .build()
   }
 
   @After
   fun tearDown() {
-    apolloClient!!.clearHttpCache()
+    apolloClient.clearHttpCache()
   }
 
   @Test
   @Throws(IOException::class, ApolloException::class)
   fun prefetchDefault() {
     server.enqueue(mockResponse("HttpCacheTestAllPlanets.json"))
-    prefetch(apolloClient!!.prefetch(AllPlanetsQuery()))
+    prefetch(apolloClient.prefetch(AllPlanetsQuery()))
     checkCachedResponse("HttpCacheTestAllPlanets.json")
     assertResponse(
         apolloClient
@@ -85,7 +85,7 @@ class ApolloPrefetchTest {
   fun prefetchNoCacheStore() {
     val apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
-        .okHttpClient(okHttpClient!!)
+        .okHttpClient(okHttpClient)
         .dispatcher(immediateExecutor())
         .build()
     server.enqueue(mockResponse("HttpCacheTestAllPlanets.json"))
@@ -102,16 +102,16 @@ class ApolloPrefetchTest {
   @Throws(IOException::class)
   fun prefetchFileSystemWriteFailure() {
     val faultyCacheStore = FaultyHttpCacheStore(FileSystem.SYSTEM)
-    cacheStore!!.delegate = faultyCacheStore
+    cacheStore.delegate = faultyCacheStore
     faultyCacheStore.failStrategy(FaultyHttpCacheStore.FailStrategy.FAIL_HEADER_WRITE)
     server.enqueue(mockResponse("HttpCacheTestAllPlanets.json"))
-    Rx2Apollo.from(apolloClient!!.prefetch(AllPlanetsQuery()))
+    Rx2Apollo.from(apolloClient.prefetch(AllPlanetsQuery()))
         .test()
         .assertError(Exception::class.java)
     checkNoCachedResponse()
     server.enqueue(mockResponse("HttpCacheTestAllPlanets.json"))
     faultyCacheStore.failStrategy(FaultyHttpCacheStore.FailStrategy.FAIL_BODY_WRITE)
-    Rx2Apollo.from(apolloClient!!.prefetch(AllPlanetsQuery()))
+    Rx2Apollo.from(apolloClient.prefetch(AllPlanetsQuery()))
         .test()
         .assertError(Exception::class.java)
     checkNoCachedResponse()
@@ -120,16 +120,16 @@ class ApolloPrefetchTest {
   @Throws(IOException::class)
   private fun checkCachedResponse(fileName: String) {
     val cacheKey = lastHttRequest!!.headers(HttpCache.CACHE_KEY_HEADER)[0]
-    val response = apolloClient!!.cachedHttpResponse(cacheKey)
+    val response = apolloClient.cachedHttpResponse(cacheKey)
     Truth.assertThat(response).isNotNull()
-    Truth.assertThat(response.body()!!.source().readUtf8()).isEqualTo(readFileToString(javaClass, "/$fileName"))
+    Truth.assertThat(response!!.body()!!.source().readUtf8()).isEqualTo(readFileToString(javaClass, "/$fileName"))
     response.body()!!.source().close()
   }
 
   @Throws(IOException::class)
   private fun checkNoCachedResponse() {
     val cacheKey = lastHttRequest!!.header(HttpCache.CACHE_KEY_HEADER)
-    val cachedResponse = apolloClient!!.cachedHttpResponse(cacheKey)
+    val cachedResponse = apolloClient.cachedHttpResponse(cacheKey)
     Truth.assertThat(cachedResponse).isNull()
   }
 

@@ -162,7 +162,7 @@ class ApolloServerInterceptorTest {
     checkTestFixture(bodyBuffer.readUtf8(), "ApolloServerInterceptorTest/interceptorRequestBody.json")
   }
 
-  private class AssertHttpCallFactory internal constructor(val predicate: Predicate<Request?>) : Call.Factory {
+  private class AssertHttpCallFactory(val predicate: Predicate<Request?>) : Call.Factory {
     override fun newCall(request: Request): Call {
       if (!predicate.apply(request)) {
         Assert.fail("Assertion failed")

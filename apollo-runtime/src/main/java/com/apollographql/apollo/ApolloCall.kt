@@ -114,7 +114,7 @@ interface ApolloCall<D : Operation.Data> : Cancelable {
      *
      * **NOTE:** by overriding this callback you must call [okhttp3.Response.close] on [ ][ApolloHttpException.rawResponse] to close the network connection.
      */
-    fun onHttpError(e: ApolloHttpException) {
+    open fun onHttpError(e: ApolloHttpException) {
       onFailure(e)
       val response = e.rawResponse()
       response?.close()
@@ -123,21 +123,21 @@ interface ApolloCall<D : Operation.Data> : Cancelable {
     /**
      * Gets called when an http request error takes place due to network failures, timeouts etc.
      */
-    fun onNetworkError(e: ApolloNetworkException) {
+    open fun onNetworkError(e: ApolloNetworkException) {
       onFailure(e)
     }
 
     /**
      * Gets called when the network request succeeds but there was an error parsing the response.
      */
-    fun onParseError(e: ApolloParseException) {
+    open fun onParseError(e: ApolloParseException) {
       onFailure(e)
     }
 
     /**
      * Gets called when [ApolloCall] has been canceled.
      */
-    fun onCanceledError(e: ApolloCanceledException) {
+    open fun onCanceledError(e: ApolloCanceledException) {
       onFailure(e)
     }
   }

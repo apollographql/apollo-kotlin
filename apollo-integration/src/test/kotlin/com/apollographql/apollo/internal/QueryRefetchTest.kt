@@ -39,12 +39,12 @@ class QueryRefetchTest {
   @Throws(IOException::class)
   fun setUp() {
     server = MockWebServer()
-    server!!.start()
+    server.start()
     val okHttpClient = OkHttpClient.Builder()
         .dispatcher(Dispatcher(immediateExecutorService()))
         .build()
     apolloClient = ApolloClient.builder()
-        .serverUrl(server!!.url("/"))
+        .serverUrl(server.url("/"))
         .dispatcher(immediateExecutor())
         .okHttpClient(okHttpClient)
         .normalizedCache(LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), IdFieldCacheKeyResolver())
@@ -54,7 +54,7 @@ class QueryRefetchTest {
   @After
   fun tearDown() {
     try {
-      server!!.shutdown()
+      server.shutdown()
     } catch (ignored: IOException) {
     }
   }
@@ -66,19 +66,19 @@ class QueryRefetchTest {
         Episode.EMPIRE,
         ReviewInput(stars = 5, commentary = Input.fromNullable("Awesome"), favoriteColor = ColorInput())
     )
-    server!!.enqueue(mockResponse("CreateReviewResponse.json"))
-    server!!.enqueue(mockResponse("ReviewsEmpireEpisodeResponse.json"))
-    val call = apolloClient!!.mutate(mutation).refetchQueries(ReviewsByEpisodeQuery(Episode.EMPIRE)) as RealApolloCall<*>
+    server.enqueue(mockResponse("CreateReviewResponse.json"))
+    server.enqueue(mockResponse("ReviewsEmpireEpisodeResponse.json"))
+    val call = apolloClient.mutate(mutation).refetchQueries(ReviewsByEpisodeQuery(Episode.EMPIRE)) as RealApolloCall<*>
     Rx2Apollo
         .from(call)
         .test()
-    Truth.assertThat(server!!.requestCount).isEqualTo(2)
+    Truth.assertThat(server.requestCount).isEqualTo(2)
     assertResponse(
-        apolloClient!!.query(ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
+        apolloClient.query(ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
     ) { (_, data) ->
       assertThat(data!!.reviews).hasSize(3)
-      assertThat(data!!.reviews?.get(2)?.stars).isEqualTo(5)
-      assertThat(data!!.reviews?.get(2)?.commentary).isEqualTo("Amazing")
+      assertThat(data.reviews?.get(2)?.stars).isEqualTo(5)
+      assertThat(data.reviews?.get(2)?.commentary).isEqualTo("Amazing")
       true
     }
   }
@@ -87,36 +87,36 @@ class QueryRefetchTest {
   @Throws(Exception::class)
   fun refetchPreCachedQuery() {
     enqueueAndAssertResponse(
-        server!!,
+        server,
         "ReviewsEmpireEpisodeResponse.json",
-        apolloClient!!.query(ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(ApolloResponseFetchers.NETWORK_FIRST),
+        apolloClient.query(ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(ApolloResponseFetchers.NETWORK_FIRST),
         Predicate<Response<ReviewsByEpisodeQuery.Data>> { response -> !response.hasErrors() }
     )
     assertResponse(
-        apolloClient!!.query(ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
+        apolloClient.query(ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
     ) { (_, data) ->
       assertThat(data!!.reviews).hasSize(3)
-      assertThat(data!!.reviews?.get(2)?.stars).isEqualTo(5)
-      assertThat(data!!.reviews?.get(2)?.commentary).isEqualTo("Amazing")
+      assertThat(data.reviews?.get(2)?.stars).isEqualTo(5)
+      assertThat(data.reviews?.get(2)?.commentary).isEqualTo("Amazing")
       true
     }
     val mutation = CreateReviewMutation(
         Episode.EMPIRE,
         ReviewInput(stars = 5, commentary = Input.fromNullable("Awesome"), favoriteColor = ColorInput())
     )
-    server!!.enqueue(mockResponse("CreateReviewResponse.json"))
-    server!!.enqueue(mockResponse("ReviewsEmpireEpisodeResponseUpdated.json"))
-    val call = apolloClient!!.mutate(mutation).refetchQueries(ReviewsByEpisodeQuery(Episode.EMPIRE)) as RealApolloCall<*>
+    server.enqueue(mockResponse("CreateReviewResponse.json"))
+    server.enqueue(mockResponse("ReviewsEmpireEpisodeResponseUpdated.json"))
+    val call = apolloClient.mutate(mutation).refetchQueries(ReviewsByEpisodeQuery(Episode.EMPIRE)) as RealApolloCall<*>
     Rx2Apollo
         .from(call)
         .test()
-    Truth.assertThat(server!!.requestCount).isEqualTo(3)
+    Truth.assertThat(server.requestCount).isEqualTo(3)
     assertResponse(
-        apolloClient!!.query(ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
+        apolloClient.query(ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
     ) { (_, data) ->
       assertThat(data!!.reviews).hasSize(4)
-      assertThat(data!!.reviews?.get(3)?.stars).isEqualTo(5)
-      assertThat(data!!.reviews?.get(3)?.commentary).isEqualTo("Awesome")
+      assertThat(data.reviews?.get(3)?.stars).isEqualTo(5)
+      assertThat(data.reviews?.get(3)?.commentary).isEqualTo("Awesome")
       true
     }
   }
@@ -124,11 +124,11 @@ class QueryRefetchTest {
   @Test
   @Throws(Exception::class)
   fun refetchWatchers() {
-    server!!.enqueue(mockResponse("ReviewsEmpireEpisodeResponse.json"))
-    server!!.enqueue(mockResponse("CreateReviewResponse.json"))
-    server!!.enqueue(mockResponse("ReviewsEmpireEpisodeResponseUpdated.json"))
+    server.enqueue(mockResponse("ReviewsEmpireEpisodeResponse.json"))
+    server.enqueue(mockResponse("CreateReviewResponse.json"))
+    server.enqueue(mockResponse("ReviewsEmpireEpisodeResponseUpdated.json"))
     val empireReviewsWatchResponse = AtomicReference<Response<ReviewsByEpisodeQuery.Data>>()
-    val queryWatcher = apolloClient!!.query(ReviewsByEpisodeQuery(Episode.EMPIRE))
+    val queryWatcher = apolloClient.query(ReviewsByEpisodeQuery(Episode.EMPIRE))
         .watcher()
         .refetchResponseFetcher(ApolloResponseFetchers.NETWORK_FIRST)
         .enqueueAndWatch(object : ApolloCall.Callback<ReviewsByEpisodeQuery.Data>() {
@@ -143,13 +143,13 @@ class QueryRefetchTest {
         ReviewInput(stars = 5, commentary = Input.fromNullable("Awesome"), favoriteColor = ColorInput())
     )
     Rx2Apollo
-        .from(apolloClient!!.mutate(mutation).refetchQueries(queryWatcher.operation().name()))
+        .from(apolloClient.mutate(mutation).refetchQueries(queryWatcher.operation().name()))
         .test()
-    Truth.assertThat(server!!.requestCount).isEqualTo(3)
+    Truth.assertThat(server.requestCount).isEqualTo(3)
     val (_, data) = empireReviewsWatchResponse.get()
     assertThat(data!!.reviews).hasSize(4)
-    assertThat(data!!.reviews?.get(3)?.stars).isEqualTo(5)
-    assertThat(data!!.reviews?.get(3)?.commentary).isEqualTo("Awesome")
+    assertThat(data.reviews?.get(3)?.stars).isEqualTo(5)
+    assertThat(data.reviews?.get(3)?.commentary).isEqualTo("Awesome")
     queryWatcher.cancel()
   }
 }

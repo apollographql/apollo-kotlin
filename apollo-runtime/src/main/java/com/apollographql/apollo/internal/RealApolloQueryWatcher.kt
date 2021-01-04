@@ -35,15 +35,11 @@ class RealApolloQueryWatcher<D : Operation.Data>(
   }
   private val state = AtomicReference(CallState.IDLE)
   private val originalCallback = AtomicReference<ApolloCall.Callback<D>?>()
-  override fun enqueueAndWatch(callback: ApolloCall.Callback<D>?): ApolloQueryWatcher<D> {
+  override fun enqueueAndWatch(callback: ApolloCall.Callback<D>): ApolloQueryWatcher<D> {
     try {
       activate(Optional.fromNullable(callback))
     } catch (e: ApolloCanceledException) {
-      if (callback != null) {
-        callback.onCanceledError(e)
-      } else {
-        logger.e(e, "Operation: %s was canceled", operation().name().name())
-      }
+      callback.onCanceledError(e)
       return this
     }
     activeCall.enqueue(callbackProxy())

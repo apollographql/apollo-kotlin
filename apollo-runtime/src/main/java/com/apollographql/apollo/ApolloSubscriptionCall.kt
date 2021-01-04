@@ -34,7 +34,7 @@ interface ApolloSubscriptionCall<D : Operation.Data> : Cancelable {
    *
    * @return The cloned `ApolloSubscriptionCall` object.
    */
-  fun clone(): ApolloSubscriptionCall<D>?
+  fun clone(): ApolloSubscriptionCall<D>
 
   /**
    * Sets the cache policy for response/request cache.

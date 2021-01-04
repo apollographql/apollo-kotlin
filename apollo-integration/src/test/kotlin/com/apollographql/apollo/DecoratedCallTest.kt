@@ -64,7 +64,7 @@ class DecoratedCallTest {
     override fun onFailure(e: ApolloException) {}
   }
 
-  private class DecoratedCall internal constructor(private val call: Call) : Call {
+  private class DecoratedCall(private val call: Call) : Call {
     override fun request(): Request = call.request()
 
     override fun execute(): okhttp3.Response = call.execute()
@@ -73,9 +73,9 @@ class DecoratedCallTest {
 
     override fun cancel() = call.cancel()
 
-    override fun isExecuted() = call.isExecuted()
+    override fun isExecuted() = call.isExecuted
 
-    override fun isCanceled() = call.isCanceled()
+    override fun isCanceled() = call.isCanceled
 
     override fun timeout(): Timeout = call.timeout()
 

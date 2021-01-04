@@ -74,7 +74,7 @@ interface ApolloPrefetch : Cancelable {
      * Gets called when an http request error takes place. This is the case when the returned http status code doesn't
      * lie in the range 200 (inclusive) and 300 (exclusive).
      */
-    fun onHttpError(e: ApolloHttpException) {
+    open fun onHttpError(e: ApolloHttpException) {
       onFailure(e)
       val response = e.rawResponse()
       response?.close()
@@ -83,14 +83,14 @@ interface ApolloPrefetch : Cancelable {
     /**
      * Gets called when an http request error takes place due to network failures, timeouts etc.
      */
-    fun onNetworkError(e: ApolloNetworkException) {
+    open fun onNetworkError(e: ApolloNetworkException) {
       onFailure(e)
     }
 
     /**
      * Gets called when [ApolloCall] has been canceled.
      */
-    fun onCanceledError(e: ApolloCanceledException) {
+    open fun onCanceledError(e: ApolloCanceledException) {
       onFailure(e)
     }
   }

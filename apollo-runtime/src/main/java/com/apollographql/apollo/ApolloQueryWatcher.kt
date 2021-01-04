@@ -5,7 +5,7 @@ import com.apollographql.apollo.fetcher.ResponseFetcher
 import com.apollographql.apollo.internal.util.Cancelable
 
 interface ApolloQueryWatcher<D : Operation.Data> : Cancelable {
-  fun enqueueAndWatch(callback: ApolloCall.Callback<D>?): ApolloQueryWatcher<D>?
+  fun enqueueAndWatch(callback: ApolloCall.Callback<D>): ApolloQueryWatcher<D>
 
   /**
    * @param fetcher The [ResponseFetcher] to use when the call is refetched due to a field changing in the
