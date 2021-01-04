@@ -125,7 +125,6 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
 
         object Item : ResponseAdapter<GetPage.Data.Collection.ParticularCollectionCollection.Item> {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField.forString("title", "title", null, false, null),
             ResponseField.forString("__typename", "__typename", null, false, null)
           )
 

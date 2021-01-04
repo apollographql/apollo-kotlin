@@ -39,25 +39,13 @@ data class PilotFragmentImpl(
 
     override fun marshaller(): ResponseFieldMarshaller
 
-    interface Planet : PilotFragment.Homeworld, PilotFragment.Homeworld.Planet, PlanetFragment,
-        Homeworld {
-      override val __typename: String
-
-      /**
-       * The name of this planet.
-       */
-      override val name: String?
-
-      override fun marshaller(): ResponseFieldMarshaller
-    }
-
     data class PlanetHomeworld(
       override val __typename: String,
       /**
        * The name of this planet.
        */
       override val name: String?
-    ) : PilotFragment.Homeworld, PilotFragment.Homeworld.Planet, PlanetFragment, Homeworld, Planet {
+    ) : PilotFragment.Homeworld, PilotFragment.Homeworld.Planet, PlanetFragment, Homeworld {
       override fun marshaller(): ResponseFieldMarshaller {
         return ResponseFieldMarshaller { writer ->
           PilotFragmentImpl_ResponseAdapter.Homeworld.PlanetHomeworld.toResponse(writer, this)
@@ -73,14 +61,6 @@ data class PilotFragmentImpl(
           PilotFragmentImpl_ResponseAdapter.Homeworld.OtherHomeworld.toResponse(writer, this)
         }
       }
-    }
-
-    companion object {
-      fun Homeworld.asHomeworld(): PilotFragment.Homeworld? = this as? PilotFragment.Homeworld
-
-      fun Homeworld.asPlanet(): Planet? = this as? Planet
-
-      fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
     }
   }
 }

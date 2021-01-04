@@ -38,44 +38,7 @@ data class HeroDetailsImpl(
   interface Friend : HeroDetail.Friend {
     override val __typename: String
 
-    /**
-     * The name of the character
-     */
-    override val name: String
-
     override fun marshaller(): ResponseFieldMarshaller
-
-    interface Human : HeroDetail.Friend, HeroDetail.Friend.Human, Friend {
-      override val __typename: String
-
-      /**
-       * The name of the character
-       */
-      override val name: String
-
-      /**
-       * Height in the preferred unit, default is meters
-       */
-      override val height: Double?
-
-      override fun marshaller(): ResponseFieldMarshaller
-    }
-
-    interface Droid : HeroDetail.Friend, HeroDetail.Friend.Droid, Friend {
-      override val __typename: String
-
-      /**
-       * The name of the character
-       */
-      override val name: String
-
-      /**
-       * This droid's primary function
-       */
-      override val primaryFunction: String?
-
-      override fun marshaller(): ResponseFieldMarshaller
-    }
 
     data class HumanFriend(
       override val __typename: String,
@@ -87,7 +50,7 @@ data class HeroDetailsImpl(
        * Height in the preferred unit, default is meters
        */
       override val height: Double?
-    ) : HeroDetail.Friend, HeroDetail.Friend.Human, Friend, Human {
+    ) : HeroDetail.Friend, HeroDetail.Friend.Human, Friend {
       override fun marshaller(): ResponseFieldMarshaller {
         return ResponseFieldMarshaller { writer ->
           HeroDetailsImpl_ResponseAdapter.Friend.HumanFriend.toResponse(writer, this)
@@ -105,7 +68,7 @@ data class HeroDetailsImpl(
        * This droid's primary function
        */
       override val primaryFunction: String?
-    ) : HeroDetail.Friend, HeroDetail.Friend.Droid, Friend, Droid {
+    ) : HeroDetail.Friend, HeroDetail.Friend.Droid, Friend {
       override fun marshaller(): ResponseFieldMarshaller {
         return ResponseFieldMarshaller { writer ->
           HeroDetailsImpl_ResponseAdapter.Friend.DroidFriend.toResponse(writer, this)
@@ -125,14 +88,6 @@ data class HeroDetailsImpl(
           HeroDetailsImpl_ResponseAdapter.Friend.OtherFriend.toResponse(writer, this)
         }
       }
-    }
-
-    companion object {
-      fun Friend.asFriends(): HeroDetail.Friend? = this as? HeroDetail.Friend
-
-      fun Friend.asHuman(): Human? = this as? Human
-
-      fun Friend.asDroid(): Droid? = this as? Droid
     }
   }
 }

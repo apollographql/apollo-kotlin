@@ -70,55 +70,6 @@ data class StarshipFragmentImpl(
 
         override fun marshaller(): ResponseFieldMarshaller
 
-        interface Person : StarshipFragment.PilotConnection.Edge.Node,
-            StarshipFragment.PilotConnection.Edge.Node.Person, PilotFragment, Node {
-          override val __typename: String
-
-          /**
-           * The name of this person.
-           */
-          override val name: String?
-
-          /**
-           * A planet that this person was born on or inhabits.
-           */
-          override val homeworld: Homeworld?
-
-          override fun marshaller(): ResponseFieldMarshaller
-
-          /**
-           * A large mass, planet or planetoid in the Star Wars Universe, at the time of
-           * 0 ABY.
-           */
-          interface Homeworld : StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld,
-              PilotFragment.Homeworld {
-            override val __typename: String
-
-            override fun marshaller(): ResponseFieldMarshaller
-
-            interface Planet : StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld,
-                StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet, PlanetFragment,
-                PilotFragment.Homeworld.Planet, PilotFragment.Homeworld, Homeworld {
-              override val __typename: String
-
-              /**
-               * The name of this planet.
-               */
-              override val name: String?
-
-              override fun marshaller(): ResponseFieldMarshaller
-            }
-
-            companion object {
-              fun Homeworld.asPlanet():
-                  StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet? = this as?
-                  StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet
-
-              fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
-            }
-          }
-        }
-
         data class PersonNode(
           override val __typename: String,
           /**
@@ -130,7 +81,7 @@ data class StarshipFragmentImpl(
            */
           override val homeworld: Homeworld?
         ) : StarshipFragment.PilotConnection.Edge.Node,
-            StarshipFragment.PilotConnection.Edge.Node.Person, PilotFragment, Node, Person {
+            StarshipFragment.PilotConnection.Edge.Node.Person, PilotFragment, Node {
           override fun marshaller(): ResponseFieldMarshaller {
             return ResponseFieldMarshaller { writer ->
               StarshipFragmentImpl_ResponseAdapter.PilotConnection.Edge.Node.PersonNode.toResponse(writer, this)
@@ -142,24 +93,10 @@ data class StarshipFragmentImpl(
            * 0 ABY.
            */
           interface Homeworld : StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld,
-              PilotFragment.Homeworld, Person.Homeworld {
+              PilotFragment.Homeworld {
             override val __typename: String
 
             override fun marshaller(): ResponseFieldMarshaller
-
-            interface Planet : StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld,
-                StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet, PlanetFragment,
-                PilotFragment.Homeworld.Planet, PilotFragment.Homeworld, Person.Homeworld,
-                Person.Homeworld.Planet, Homeworld {
-              override val __typename: String
-
-              /**
-               * The name of this planet.
-               */
-              override val name: String?
-
-              override fun marshaller(): ResponseFieldMarshaller
-            }
 
             data class PlanetHomeworld(
               override val __typename: String,
@@ -169,8 +106,7 @@ data class StarshipFragmentImpl(
               override val name: String?
             ) : StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld,
                 StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet, PlanetFragment,
-                PilotFragment.Homeworld.Planet, PilotFragment.Homeworld, Person.Homeworld,
-                Person.Homeworld.Planet, Homeworld, Planet {
+                PilotFragment.Homeworld.Planet, PilotFragment.Homeworld, Homeworld {
               override fun marshaller(): ResponseFieldMarshaller {
                 return ResponseFieldMarshaller { writer ->
                   StarshipFragmentImpl_ResponseAdapter.PilotConnection.Edge.Node.PersonNode.Homeworld.PlanetHomeworld.toResponse(writer, this)
@@ -181,20 +117,12 @@ data class StarshipFragmentImpl(
             data class OtherHomeworld(
               override val __typename: String
             ) : StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld,
-                PilotFragment.Homeworld, Person.Homeworld, Homeworld {
+                PilotFragment.Homeworld, Homeworld {
               override fun marshaller(): ResponseFieldMarshaller {
                 return ResponseFieldMarshaller { writer ->
                   StarshipFragmentImpl_ResponseAdapter.PilotConnection.Edge.Node.PersonNode.Homeworld.OtherHomeworld.toResponse(writer, this)
                 }
               }
-            }
-
-            companion object {
-              fun Homeworld.asHomeworld(): Person.Homeworld? = this as? Person.Homeworld
-
-              fun Homeworld.asPlanet(): Planet? = this as? Planet
-
-              fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
             }
           }
         }
@@ -207,15 +135,6 @@ data class StarshipFragmentImpl(
               StarshipFragmentImpl_ResponseAdapter.PilotConnection.Edge.Node.OtherNode.toResponse(writer, this)
             }
           }
-        }
-
-        companion object {
-          fun Node.asNode(): StarshipFragment.PilotConnection.Edge.Node? = this as?
-              StarshipFragment.PilotConnection.Edge.Node
-
-          fun Node.asPerson(): Person? = this as? Person
-
-          fun Node.pilotFragment(): PilotFragment? = this as? PilotFragment
         }
       }
     }

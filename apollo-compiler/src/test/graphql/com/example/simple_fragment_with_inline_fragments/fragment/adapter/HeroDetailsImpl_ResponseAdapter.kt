@@ -65,8 +65,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl> {
 
   object Friend : ResponseAdapter<HeroDetailsImpl.Friend> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
-      ResponseField.forString("name", "name", null, false, null)
+      ResponseField.forString("__typename", "__typename", null, false, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): HeroDetailsImpl.Friend {

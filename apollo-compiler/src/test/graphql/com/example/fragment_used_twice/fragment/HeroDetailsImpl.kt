@@ -17,28 +17,7 @@ import kotlin.String
 interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
   override val __typename: String
 
-  /**
-   * The name of the character
-   */
-  override val name: String
-
   override fun marshaller(): ResponseFieldMarshaller
-
-  interface Character : HeroDetail, HeroDetail.Character, CharacterDetail, HeroDetailsImpl {
-    override val __typename: String
-
-    /**
-     * The name of the character
-     */
-    override val name: String
-
-    /**
-     * The date character was born.
-     */
-    override val birthDate: Any
-
-    override fun marshaller(): ResponseFieldMarshaller
-  }
 
   data class CharacterHeroDetailsImpl(
     override val __typename: String,
@@ -50,7 +29,7 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
      * The date character was born.
      */
     override val birthDate: Any
-  ) : HeroDetail, HeroDetail.Character, CharacterDetail, HeroDetailsImpl, Character {
+  ) : HeroDetail, HeroDetail.Character, CharacterDetail, HeroDetailsImpl {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
         HeroDetailsImpl_ResponseAdapter.CharacterHeroDetailsImpl.toResponse(writer, this)
