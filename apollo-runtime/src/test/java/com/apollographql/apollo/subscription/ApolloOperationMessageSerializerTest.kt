@@ -3,7 +3,6 @@ package com.apollographql.apollo.subscription
 import com.apollographql.apollo.api.BigDecimal
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
-import com.apollographql.apollo.api.internal.json.ResponseJsonStreamReader
 import com.apollographql.apollo.api.internal.json.Utils.readRecursively
 import com.google.common.truth.Truth.assertThat
 import okio.Buffer
