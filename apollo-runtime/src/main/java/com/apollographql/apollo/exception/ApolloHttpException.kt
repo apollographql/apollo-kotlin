@@ -2,19 +2,13 @@ package com.apollographql.apollo.exception
 
 import okhttp3.Response
 
-class ApolloHttpException(rawResponse: Response?) : ApolloException(formatMessage(rawResponse)) {
-  private val code: Int
-  override val message: String
+class ApolloHttpException(val rawResponse: Response?) : ApolloException(formatMessage(rawResponse)) {
+  private val code: Int = rawResponse?.code() ?: 0
 
-  @Transient
-  private val rawResponse: Response?
   fun code(): Int {
     return code
   }
 
-  fun message(): String {
-    return message
-  }
 
   fun rawResponse(): Response? {
     return rawResponse
@@ -26,11 +20,5 @@ class ApolloHttpException(rawResponse: Response?) : ApolloException(formatMessag
         "Empty HTTP response"
       } else "HTTP " + response.code() + " " + response.message()
     }
-  }
-
-  init {
-    code = rawResponse?.code() ?: 0
-    message = if (rawResponse != null) rawResponse.message() else ""
-    this.rawResponse = rawResponse
   }
 }

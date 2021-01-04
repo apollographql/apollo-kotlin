@@ -1,340 +1,281 @@
-package com.apollographql.apollo.internal.interceptor;
+package com.apollographql.apollo.internal.interceptor
 
-import com.apollographql.apollo.api.Error;
-import com.apollographql.apollo.api.Operation;
-import com.apollographql.apollo.api.OperationName;
-import com.apollographql.apollo.api.internal.ApolloLogger;
-import com.apollographql.apollo.api.internal.ResponseAdapter;
-import com.apollographql.apollo.cache.normalized.Record;
-import com.apollographql.apollo.interceptor.ApolloAutoPersistedOperationInterceptor;
-import com.apollographql.apollo.interceptor.ApolloInterceptor;
-import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
-import okhttp3.MediaType;
-import okhttp3.Protocol;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
-import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
+import com.apollographql.apollo.api.Error
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.OperationName
+import com.apollographql.apollo.api.Response.Companion.builder
+import com.apollographql.apollo.api.internal.ApolloLogger
+import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo.interceptor.ApolloAutoPersistedOperationInterceptor
+import com.apollographql.apollo.interceptor.ApolloInterceptor.CallBack
+import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorRequest
+import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorRequest.Companion.builder
+import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorResponse
+import com.apollographql.apollo.interceptor.ApolloInterceptorChain
+import com.google.common.truth.Truth
+import okhttp3.MediaType
+import okhttp3.Protocol
+import okhttp3.Request
+import okhttp3.Response
+import okhttp3.ResponseBody
+import org.junit.Assert
+import org.junit.Test
+import org.mockito.ArgumentCaptor
+import org.mockito.Matchers
+import org.mockito.Mockito
+import java.util.UUID
+import java.util.concurrent.AbstractExecutorService
+import java.util.concurrent.Executor
+import java.util.concurrent.TimeUnit
 
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.AbstractExecutorService;
-import java.util.concurrent.Executor;
-import java.util.concurrent.TimeUnit;
-
-import static com.google.common.truth.Truth.assertThat;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
-public class ApolloAutoPersistedOperationInterceptorTest {
-  private ApolloAutoPersistedOperationInterceptor interceptor =
-      new ApolloAutoPersistedOperationInterceptor(new ApolloLogger(null), false);
-
-  private ApolloAutoPersistedOperationInterceptor interceptorWithGetMethod =
-      new ApolloAutoPersistedOperationInterceptor(new ApolloLogger(null), true);
-
-  private ApolloInterceptor.InterceptorRequest request = ApolloInterceptor.InterceptorRequest.builder(new MockOperation())
+class ApolloAutoPersistedOperationInterceptorTest {
+  private val interceptor = ApolloAutoPersistedOperationInterceptor(ApolloLogger(null), false)
+  private val interceptorWithGetMethod = ApolloAutoPersistedOperationInterceptor(ApolloLogger(null), true)
+  private val request = builder(MockOperation())
       .autoPersistQueries(true)
-      .build();
+      .build()
 
   @Test
-  public void initialRequestWithoutQueryDocument() {
-    ApolloInterceptorChain chain = mock(ApolloInterceptorChain.class);
-
-    interceptor.interceptAsync(request, chain, new TrampolineExecutor(), mock(ApolloInterceptor.CallBack.class));
-
-    ArgumentCaptor<ApolloInterceptor.InterceptorRequest> requestArgumentCaptor =
-        ArgumentCaptor.forClass(ApolloInterceptor.InterceptorRequest.class);
-    verify(chain).proceedAsync(requestArgumentCaptor.capture(), any(Executor.class),
-        any(ApolloInterceptor.CallBack.class));
-
-    assertThat(requestArgumentCaptor.getValue().sendQueryDocument).isFalse();
-    assertThat(requestArgumentCaptor.getValue().useHttpGetMethodForQueries).isFalse();
-    assertThat(requestArgumentCaptor.getValue().autoPersistQueries).isTrue();
+  fun initialRequestWithoutQueryDocument() {
+    val chain = Mockito.mock(ApolloInterceptorChain::class.java)
+    interceptor.interceptAsync(request, chain, TrampolineExecutor(), Mockito.mock(CallBack::class.java))
+    val requestArgumentCaptor = ArgumentCaptor.forClass(InterceptorRequest::class.java)
+    Mockito.verify(chain).proceedAsync(requestArgumentCaptor.capture(), Matchers.any(Executor::class.java),
+        Matchers.any(CallBack::class.java))
+    Truth.assertThat(requestArgumentCaptor.value.sendQueryDocument).isFalse()
+    Truth.assertThat(requestArgumentCaptor.value.useHttpGetMethodForQueries).isFalse()
+    Truth.assertThat(requestArgumentCaptor.value.autoPersistQueries).isTrue()
   }
 
   @Test
-  public void initialRequestWithGetMethodForPersistedQueries() {
-    ApolloInterceptorChain chain = mock(ApolloInterceptorChain.class);
-
-    interceptorWithGetMethod.interceptAsync(request, chain, new TrampolineExecutor(), mock(ApolloInterceptor.CallBack.class));
-
-    ArgumentCaptor<ApolloInterceptor.InterceptorRequest> requestArgumentCaptor =
-        ArgumentCaptor.forClass(ApolloInterceptor.InterceptorRequest.class);
-    verify(chain).proceedAsync(requestArgumentCaptor.capture(), any(Executor.class),
-        any(ApolloInterceptor.CallBack.class));
-
-    assertThat(requestArgumentCaptor.getValue().sendQueryDocument).isFalse();
-    assertThat(requestArgumentCaptor.getValue().useHttpGetMethodForQueries).isTrue();
-    assertThat(requestArgumentCaptor.getValue().autoPersistQueries).isTrue();
+  fun initialRequestWithGetMethodForPersistedQueries() {
+    val chain = Mockito.mock(ApolloInterceptorChain::class.java)
+    interceptorWithGetMethod.interceptAsync(request, chain, TrampolineExecutor(), Mockito.mock(CallBack::class.java))
+    val requestArgumentCaptor = ArgumentCaptor.forClass(InterceptorRequest::class.java)
+    Mockito.verify(chain).proceedAsync(requestArgumentCaptor.capture(), Matchers.any(Executor::class.java),
+        Matchers.any(CallBack::class.java))
+    Truth.assertThat(requestArgumentCaptor.value.sendQueryDocument).isFalse()
+    Truth.assertThat(requestArgumentCaptor.value.useHttpGetMethodForQueries).isTrue()
+    Truth.assertThat(requestArgumentCaptor.value.autoPersistQueries).isTrue()
   }
 
   @Test
-  public void onPersistedQueryNotFoundErrorRequestWithQueryDocument() {
-    ApolloInterceptorChainAdapter chain = new ApolloInterceptorChainAdapter() {
-      @Override
-      public void proceedAsync(@NotNull ApolloInterceptor.InterceptorRequest request, @NotNull Executor dispatcher,
-          @NotNull ApolloInterceptor.CallBack callBack) {
-        super.proceedAsync(request, dispatcher, callBack);
-        if (proceedAsyncInvocationCount == 1) {
-          assertThat(request.sendQueryDocument).isFalse();
-          assertThat(request.autoPersistQueries).isTrue();
-          callBack.onResponse(
-              new ApolloInterceptor.InterceptorResponse(
-                  mockHttpResponse(),
-                  com.apollographql.apollo.api.Response.<MockOperation.Data>builder(new MockOperation())
-                      .errors(
-                          Collections.singletonList(
-                              new Error("PersistedQueryNotFound", Collections.emptyList(), Collections.emptyMap())
-                          )
-                      )
-                      .build(),
-                  Collections.<Record>emptyList()
-              )
-          );
-        } else if (proceedAsyncInvocationCount == 2) {
-          assertThat(request.sendQueryDocument).isTrue();
-          assertThat(request.autoPersistQueries).isTrue();
-          callBack.onResponse(
-              new ApolloInterceptor.InterceptorResponse(
-                  mockHttpResponse(),
-                  com.apollographql.apollo.api.Response.<MockOperation.Data>builder(new MockOperation())
-                      .data(new MockOperation.Data())
-                      .build(),
-                  Collections.<Record>emptyList()
-              )
-          );
-        } else {
-          fail("expected only 2 invocation first without query document, second with it");
+  fun onPersistedQueryNotFoundErrorRequestWithQueryDocument() {
+    val chain: ApolloInterceptorChainAdapter = object : ApolloInterceptorChainAdapter() {
+      override fun proceedAsync(request: InterceptorRequest, dispatcher: Executor,
+                                callBack: CallBack) {
+        super.proceedAsync(request, dispatcher, callBack)
+        when (proceedAsyncInvocationCount) {
+          1 -> {
+            Truth.assertThat(request.sendQueryDocument).isFalse()
+            Truth.assertThat(request.autoPersistQueries).isTrue()
+            callBack.onResponse(
+                InterceptorResponse(
+                    mockHttpResponse(),
+                    builder<MockOperation.Data>(MockOperation())
+                        .errors(listOf(
+                            Error("PersistedQueryNotFound", emptyList(), emptyMap<String, Any>())
+                        ))
+                        .build(), emptyList())
+            )
+          }
+          2 -> {
+            Truth.assertThat(request.sendQueryDocument).isTrue()
+            Truth.assertThat(request.autoPersistQueries).isTrue()
+            callBack.onResponse(
+                InterceptorResponse(
+                    mockHttpResponse(),
+                    builder<MockOperation.Data>(MockOperation())
+                        .data(MockOperation.Data())
+                        .build(), emptyList())
+            )
+          }
+          else -> {
+            Assert.fail("expected only 2 invocation first without query document, second with it")
+          }
         }
       }
-    };
-    ApolloInterceptor.CallBack interceptorCallBack = mock(ApolloInterceptor.CallBack.class);
-
-    interceptor.interceptAsync(request, chain, new TrampolineExecutor(), interceptorCallBack);
-
-    assertThat(chain.proceedAsyncInvocationCount).isEqualTo(2);
-
-    ArgumentCaptor<ApolloInterceptor.InterceptorResponse> interceptorResponseArgumentCaptor =
-        ArgumentCaptor.forClass(ApolloInterceptor.InterceptorResponse.class);
-    verify(interceptorCallBack).onResponse(interceptorResponseArgumentCaptor.capture());
-    assertThat(interceptorResponseArgumentCaptor.getValue().parsedResponse.get().hasErrors()).isFalse();
-    assertThat(interceptorResponseArgumentCaptor.getValue().parsedResponse.get().getData()).isNotNull();
+    }
+    val interceptorCallBack = Mockito.mock(CallBack::class.java)
+    interceptor.interceptAsync(request, chain, TrampolineExecutor(), interceptorCallBack)
+    Truth.assertThat(chain.proceedAsyncInvocationCount).isEqualTo(2)
+    val interceptorResponseArgumentCaptor = ArgumentCaptor.forClass(InterceptorResponse::class.java)
+    Mockito.verify(interceptorCallBack).onResponse(interceptorResponseArgumentCaptor.capture())
+    Truth.assertThat(interceptorResponseArgumentCaptor.value.parsedResponse.get()!!.hasErrors()).isFalse()
+    Truth.assertThat(interceptorResponseArgumentCaptor.value.parsedResponse.get()!!.data).isNotNull()
   }
 
   @Test
-  public void onPersistedQueryNotSupportedErrorRequestWithQueryDocument() {
-    ApolloInterceptorChainAdapter chain = new ApolloInterceptorChainAdapter() {
-      @Override
-      public void proceedAsync(@NotNull ApolloInterceptor.InterceptorRequest request, @NotNull Executor dispatcher,
-          @NotNull ApolloInterceptor.CallBack callBack) {
-        super.proceedAsync(request, dispatcher, callBack);
-        if (proceedAsyncInvocationCount == 1) {
-          assertThat(request.sendQueryDocument).isFalse();
-          assertThat(request.autoPersistQueries).isTrue();
-          callBack.onResponse(
-              new ApolloInterceptor.InterceptorResponse(
-                  mockHttpResponse(),
-                  com.apollographql.apollo.api.Response.<MockOperation.Data>builder(new MockOperation())
-                      .errors(
-                          Collections.singletonList(
-                              new Error("PersistedQueryNotSupported", Collections.emptyList(), Collections.emptyMap())
-                          )
-                      )
-                      .build(),
-                  Collections.<Record>emptyList()
-              )
-          );
-        } else if (proceedAsyncInvocationCount == 2) {
-          assertThat(request.sendQueryDocument).isTrue();
-          assertThat(request.autoPersistQueries).isTrue();
-          callBack.onResponse(
-              new ApolloInterceptor.InterceptorResponse(
-                  mockHttpResponse(),
-                  com.apollographql.apollo.api.Response.<MockOperation.Data>builder(new MockOperation())
-                      .data(new MockOperation.Data())
-                      .build(),
-                  Collections.<Record>emptyList()
-              )
-          );
-        } else {
-          fail("expected only 2 invocation first without query document, second with it");
+  fun onPersistedQueryNotSupportedErrorRequestWithQueryDocument() {
+    val chain: ApolloInterceptorChainAdapter = object : ApolloInterceptorChainAdapter() {
+      override fun proceedAsync(request: InterceptorRequest, dispatcher: Executor,
+                                callBack: CallBack) {
+        super.proceedAsync(request, dispatcher, callBack)
+        when (proceedAsyncInvocationCount) {
+          1 -> {
+            Truth.assertThat(request.sendQueryDocument).isFalse()
+            Truth.assertThat(request.autoPersistQueries).isTrue()
+            callBack.onResponse(
+                InterceptorResponse(
+                    mockHttpResponse(),
+                    builder<MockOperation.Data>(MockOperation())
+                        .errors(listOf(
+                            Error("PersistedQueryNotSupported", emptyList(), emptyMap<String, Any>())
+                        ))
+                        .build(), emptyList())
+            )
+          }
+          2 -> {
+            Truth.assertThat(request.sendQueryDocument).isTrue()
+            Truth.assertThat(request.autoPersistQueries).isTrue()
+            callBack.onResponse(
+                InterceptorResponse(
+                    mockHttpResponse(),
+                    builder<MockOperation.Data>(MockOperation())
+                        .data(MockOperation.Data())
+                        .build(), emptyList())
+            )
+          }
+          else -> {
+            Assert.fail("expected only 2 invocation first without query document, second with it")
+          }
         }
       }
-    };
-    ApolloInterceptor.CallBack interceptorCallBack = mock(ApolloInterceptor.CallBack.class);
-
-    interceptor.interceptAsync(request, chain, new TrampolineExecutor(), interceptorCallBack);
-
-    assertThat(chain.proceedAsyncInvocationCount).isEqualTo(2);
-
-    ArgumentCaptor<ApolloInterceptor.InterceptorResponse> interceptorResponseArgumentCaptor =
-        ArgumentCaptor.forClass(ApolloInterceptor.InterceptorResponse.class);
-    verify(interceptorCallBack).onResponse(interceptorResponseArgumentCaptor.capture());
-    assertThat(interceptorResponseArgumentCaptor.getValue().parsedResponse.get().hasErrors()).isFalse();
-    assertThat(interceptorResponseArgumentCaptor.getValue().parsedResponse.get().getData()).isNotNull();
+    }
+    val interceptorCallBack = Mockito.mock(CallBack::class.java)
+    interceptor.interceptAsync(request, chain, TrampolineExecutor(), interceptorCallBack)
+    Truth.assertThat(chain.proceedAsyncInvocationCount).isEqualTo(2)
+    val interceptorResponseArgumentCaptor = ArgumentCaptor.forClass(InterceptorResponse::class.java)
+    Mockito.verify(interceptorCallBack).onResponse(interceptorResponseArgumentCaptor.capture())
+    Truth.assertThat(interceptorResponseArgumentCaptor.value.parsedResponse.get()!!.hasErrors()).isFalse()
+    Truth.assertThat(interceptorResponseArgumentCaptor.value.parsedResponse.get()!!.data).isNotNull()
   }
 
   @Test
-  public void onNonPersistedQueryErrorOriginalCallbackCalled() {
-    ApolloInterceptorChain chain = mock(ApolloInterceptorChain.class);
-    doAnswer(new Answer() {
-      @Override public Object answer(InvocationOnMock invocation) throws Throwable {
-        ((ApolloInterceptor.CallBack) invocation.getArguments()[2]).onResponse(
-            new ApolloInterceptor.InterceptorResponse(
-                mockHttpResponse(),
-                com.apollographql.apollo.api.Response.<MockOperation.Data>builder(new MockOperation())
-                    .errors(
-                        Collections.singletonList(
-                            new Error("SomeOtherError", Collections.<Error.Location>emptyList(), Collections.<String, Object>emptyMap())
-                        )
-                    )
-                    .build(),
-                Collections.<Record>emptyList()
-            )
-        );
-        return null;
-      }
-    }).when(chain).proceedAsync(
-        any(ApolloInterceptor.InterceptorRequest.class),
-        any(Executor.class),
-        any(ApolloInterceptor.CallBack.class)
-    );
-
-    ApolloInterceptor.CallBack interceptorCallBack = mock(ApolloInterceptor.CallBack.class);
-
-    interceptor.interceptAsync(request, chain, new TrampolineExecutor(), interceptorCallBack);
-
-    verify(chain).proceedAsync(any(ApolloInterceptor.InterceptorRequest.class), any(Executor.class),
-        any(ApolloInterceptor.CallBack.class));
-
-    ArgumentCaptor<ApolloInterceptor.InterceptorResponse> interceptorResponseArgumentCaptor =
-        ArgumentCaptor.forClass(ApolloInterceptor.InterceptorResponse.class);
-    verify(interceptorCallBack).onResponse(interceptorResponseArgumentCaptor.capture());
-    assertThat(interceptorResponseArgumentCaptor.getValue().parsedResponse.get().hasErrors()).isTrue();
+  fun onNonPersistedQueryErrorOriginalCallbackCalled() {
+    val chain = Mockito.mock(ApolloInterceptorChain::class.java)
+    Mockito.doAnswer { invocation ->
+      (invocation.arguments[2] as CallBack).onResponse(
+          InterceptorResponse(
+              mockHttpResponse(),
+              builder<MockOperation.Data>(MockOperation())
+                  .errors(listOf(
+                      Error("SomeOtherError", emptyList(), emptyMap<String, Any>())
+                  ))
+                  .build(), emptyList())
+      )
+      null
+    }.`when`(chain).proceedAsync(
+        Matchers.any(InterceptorRequest::class.java),
+        Matchers.any(Executor::class.java),
+        Matchers.any(CallBack::class.java)
+    )
+    val interceptorCallBack = Mockito.mock(CallBack::class.java)
+    interceptor.interceptAsync(request, chain, TrampolineExecutor(), interceptorCallBack)
+    Mockito.verify(chain).proceedAsync(Matchers.any(InterceptorRequest::class.java), Matchers.any(Executor::class.java),
+        Matchers.any(CallBack::class.java))
+    val interceptorResponseArgumentCaptor = ArgumentCaptor.forClass(InterceptorResponse::class.java)
+    Mockito.verify(interceptorCallBack).onResponse(interceptorResponseArgumentCaptor.capture())
+    Truth.assertThat(interceptorResponseArgumentCaptor.value.parsedResponse.get()!!.hasErrors()).isTrue()
   }
 
   @Test
-  public void onPersistedQueryFoundCallbackCalled() {
-    ApolloInterceptorChain chain = mock(ApolloInterceptorChain.class);
-    doAnswer(new Answer() {
-      @Override public Object answer(InvocationOnMock invocation) throws Throwable {
-        ((ApolloInterceptor.CallBack) invocation.getArguments()[2]).onResponse(
-            new ApolloInterceptor.InterceptorResponse(
-                mockHttpResponse(),
-                com.apollographql.apollo.api.Response.<MockOperation.Data>builder(new MockOperation())
-                    .data(new MockOperation.Data())
-                    .build(),
-                Collections.<Record>emptyList()
-            )
-        );
-        return null;
-      }
-    }).when(chain).proceedAsync(
-        any(ApolloInterceptor.InterceptorRequest.class),
-        any(Executor.class),
-        any(ApolloInterceptor.CallBack.class)
-    );
-
-    ApolloInterceptor.CallBack interceptorCallBack = mock(ApolloInterceptor.CallBack.class);
-
-    interceptor.interceptAsync(request, chain, new TrampolineExecutor(), interceptorCallBack);
-
-    verify(chain).proceedAsync(any(ApolloInterceptor.InterceptorRequest.class), any(Executor.class),
-        any(ApolloInterceptor.CallBack.class));
-
-    ArgumentCaptor<ApolloInterceptor.InterceptorResponse> interceptorResponseArgumentCaptor =
-        ArgumentCaptor.forClass(ApolloInterceptor.InterceptorResponse.class);
-    verify(interceptorCallBack).onResponse(interceptorResponseArgumentCaptor.capture());
-    assertThat(interceptorResponseArgumentCaptor.getValue().parsedResponse.get().getData()).isNotNull();
-    assertThat(interceptorResponseArgumentCaptor.getValue().parsedResponse.get().hasErrors()).isFalse();
+  fun onPersistedQueryFoundCallbackCalled() {
+    val chain = Mockito.mock(ApolloInterceptorChain::class.java)
+    Mockito.doAnswer { invocation ->
+      (invocation.arguments[2] as CallBack).onResponse(
+          InterceptorResponse(
+              mockHttpResponse(),
+              builder<MockOperation.Data>(MockOperation())
+                  .data(MockOperation.Data())
+                  .build(), emptyList())
+      )
+      null
+    }.`when`(chain).proceedAsync(
+        Matchers.any(InterceptorRequest::class.java),
+        Matchers.any(Executor::class.java),
+        Matchers.any(CallBack::class.java)
+    )
+    val interceptorCallBack = Mockito.mock(CallBack::class.java)
+    interceptor.interceptAsync(request, chain, TrampolineExecutor(), interceptorCallBack)
+    Mockito.verify(chain).proceedAsync(Matchers.any(InterceptorRequest::class.java), Matchers.any(Executor::class.java),
+        Matchers.any(CallBack::class.java))
+    val interceptorResponseArgumentCaptor = ArgumentCaptor.forClass(InterceptorResponse::class.java)
+    Mockito.verify(interceptorCallBack).onResponse(interceptorResponseArgumentCaptor.capture())
+    Truth.assertThat(interceptorResponseArgumentCaptor.value.parsedResponse.get()!!.data).isNotNull()
+    Truth.assertThat(interceptorResponseArgumentCaptor.value.parsedResponse.get()!!.hasErrors()).isFalse()
   }
 
-  private Response mockHttpResponse() {
-    return new okhttp3.Response.Builder()
-        .request(new Request.Builder()
+  private fun mockHttpResponse(): Response {
+    return Response.Builder()
+        .request(Request.Builder()
             .url("https://localhost/")
             .build())
         .protocol(Protocol.HTTP_2)
         .code(200)
         .message("Intercepted")
         .body(ResponseBody.create(MediaType.parse("text/plain; charset=utf-8"), "fakeResponse"))
-        .build();
+        .build()
   }
 
-  static class MockOperation implements Operation<MockOperation.Data> {
-
-    @Override public String queryDocument() {
-      throw new UnsupportedOperationException();
+  internal class MockOperation : Operation<MockOperation.Data> {
+    override fun queryDocument(): String {
+      throw UnsupportedOperationException()
     }
 
-    @Override public Variables variables() {
-      throw new UnsupportedOperationException();
+    override fun variables(): Operation.Variables {
+      throw UnsupportedOperationException()
     }
 
-    @Override public ResponseAdapter<Data> adapter() {
-      throw new UnsupportedOperationException();
+    override fun adapter(): ResponseAdapter<Data> {
+      throw UnsupportedOperationException()
     }
 
-    @NotNull @Override public OperationName name() {
-      return new OperationName() {
-        @Override public String name() {
-          return "MockOperation";
+    override fun name(): OperationName {
+      return object : OperationName {
+        override fun name(): String {
+          return "MockOperation"
         }
-      };
+      }
     }
 
-    @NotNull @Override public String operationId() {
-      return UUID.randomUUID().toString();
+    override fun operationId(): String {
+      return UUID.randomUUID().toString()
     }
 
-    static class Data implements Operation.Data {
+    internal class Data : Operation.Data
+  }
+
+  internal class TrampolineExecutor : AbstractExecutorService() {
+    override fun shutdown() {}
+    override fun shutdownNow(): List<Runnable> {
+      return emptyList()
+    }
+
+    override fun isShutdown(): Boolean {
+      return false
+    }
+
+    override fun isTerminated(): Boolean {
+      return false
+    }
+
+    override fun awaitTermination(l: Long, timeUnit: TimeUnit): Boolean {
+      return false
+    }
+
+    override fun execute(runnable: Runnable) {
+      runnable.run()
     }
   }
 
-  static class TrampolineExecutor extends AbstractExecutorService {
-    @Override public void shutdown() {
+  internal open class ApolloInterceptorChainAdapter : ApolloInterceptorChain {
+    var proceedAsyncInvocationCount = 0
+    override fun proceedAsync(request: InterceptorRequest, dispatcher: Executor,
+                              callBack: CallBack) {
+      proceedAsyncInvocationCount++
     }
 
-    @Override public List<Runnable> shutdownNow() {
-      return null;
-    }
-
-    @Override public boolean isShutdown() {
-      return false;
-    }
-
-    @Override public boolean isTerminated() {
-      return false;
-    }
-
-    @Override public boolean awaitTermination(long l, TimeUnit timeUnit) {
-      return false;
-    }
-
-    @Override public void execute(Runnable runnable) {
-      runnable.run();
-    }
-  }
-
-  static class ApolloInterceptorChainAdapter implements ApolloInterceptorChain {
-    int proceedAsyncInvocationCount;
-
-    @Override
-    public void proceedAsync(@NotNull ApolloInterceptor.InterceptorRequest request, @NotNull Executor dispatcher,
-        @NotNull ApolloInterceptor.CallBack callBack) {
-      proceedAsyncInvocationCount++;
-    }
-
-    @Override public void dispose() {
-    }
+    override fun dispose() {}
   }
 }
