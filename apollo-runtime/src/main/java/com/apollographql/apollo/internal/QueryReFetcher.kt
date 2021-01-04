@@ -22,7 +22,7 @@ import java.util.concurrent.Executor
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 
-internal class QueryReFetcher(builder: Builder) {
+class QueryReFetcher(builder: Builder) {
   val logger: ApolloLogger?
   private val calls: MutableList<RealApolloCall<Operation.Data>>
   private val queryWatchers: List<OperationName>

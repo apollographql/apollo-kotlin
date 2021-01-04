@@ -1,75 +1,69 @@
-package com.apollographql.apollo.internal.subscription;
+package com.apollographql.apollo.internal.subscription
 
-import com.apollographql.apollo.api.Operation;
-import com.apollographql.apollo.api.Subscription;
-import com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeListener;
-import com.apollographql.apollo.subscription.SubscriptionManagerState;
-import org.jetbrains.annotations.NotNull;
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.Subscription
+import com.apollographql.apollo.subscription.SubscriptionManagerState
+import com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeListener
+import com.apollographql.apollo.internal.subscription.SubscriptionResponse
+import com.apollographql.apollo.internal.subscription.ApolloSubscriptionException
 
-public interface SubscriptionManager {
-
+interface SubscriptionManager {
   /**
    * Starts provided subscription. Establishes connection to the subscription server if it was previously disconnected.
    *
    * @param subscription to start
    * @param callback to be called on result
    */
-  <D extends Operation.Data> void subscribe(@NotNull Subscription<D> subscription, @NotNull RealSubscriptionManager.Callback<D> callback);
+  fun <D : Operation.Data> subscribe(subscription: Subscription<D>, callback: Callback<D>)
 
   /**
    * Stops provided subscription. If there are no active subscriptions left, disconnects from the subscription server.
    *
    * @param subscription to stop
    */
-  void unsubscribe(@NotNull Subscription<?> subscription);
+  fun unsubscribe(subscription: Subscription<*>)
 
   /**
    * Returns the current state of subscription manager.
    *
    * @return current state
    */
-  SubscriptionManagerState getState();
+  val state: SubscriptionManagerState
 
   /**
    * Adds new listener for subscription manager state changes.
    *
    * @param onStateChangeListener to be called when state changed
    */
-  void addOnStateChangeListener(@NotNull OnSubscriptionManagerStateChangeListener onStateChangeListener);
+  fun addOnStateChangeListener(onStateChangeListener: OnSubscriptionManagerStateChangeListener)
 
   /**
    * Removes listener for subscription manager state changes.
    *
    * @param onStateChangeListener to remove
    */
-  void removeOnStateChangeListener(@NotNull OnSubscriptionManagerStateChangeListener onStateChangeListener);
+  fun removeOnStateChangeListener(onStateChangeListener: OnSubscriptionManagerStateChangeListener)
 
   /**
-   * Put the {@link SubscriptionManager} in a connectible state. Does not necessarily open a web socket.
+   * Put the [SubscriptionManager] in a connectible state. Does not necessarily open a web socket.
    */
-  void start();
+  fun start()
 
   /**
    * Unsubscribe from all active subscriptions, and disconnect the web socket.
    */
-  void stop();
+  fun stop()
 
   /**
    * Reconnect the web socket. Use this together with SubscriptionConnectionParamsProvider if you need to update connectionParams.
    */
-  void reconnect();
-
-  interface Callback<D extends Subscription.Data> {
-    void onResponse(@NotNull SubscriptionResponse<D> response);
-
-    void onError(@NotNull ApolloSubscriptionException error);
-
-    void onNetworkError(@NotNull Throwable t);
-
-    void onCompleted();
-
-    void onTerminated();
-
-    void onConnected();
+  fun reconnect()
+  interface Callback<D : Operation.Data> {
+    fun onResponse(response: SubscriptionResponse<D>)
+    fun onError(error: ApolloSubscriptionException)
+    fun onNetworkError(t: Throwable)
+    fun onCompleted()
+    fun onTerminated()
+    fun onConnected()
   }
 }

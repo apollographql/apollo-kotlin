@@ -1,144 +1,114 @@
-package com.apollographql.apollo.interceptor;
+package com.apollographql.apollo.interceptor
 
-import com.apollographql.apollo.api.Error;
-import com.apollographql.apollo.api.Mutation;
-import com.apollographql.apollo.api.Operation;
-import com.apollographql.apollo.api.Query;
-import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.api.internal.ApolloLogger;
-import com.apollographql.apollo.api.internal.Function;
-import com.apollographql.apollo.api.internal.Optional;
-import com.apollographql.apollo.exception.ApolloException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.apollographql.apollo.api.Error
+import com.apollographql.apollo.api.Mutation
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.internal.ApolloLogger
+import com.apollographql.apollo.api.internal.Function
+import com.apollographql.apollo.api.internal.Optional
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.interceptor.ApolloInterceptor.CallBack
+import com.apollographql.apollo.interceptor.ApolloInterceptor.FetchSourceType
+import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorRequest
+import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorResponse
+import java.util.concurrent.Executor
 
-import java.util.List;
-import java.util.concurrent.Executor;
-
-public class ApolloAutoPersistedOperationInterceptor implements ApolloInterceptor {
-  private static final String PROTOCOL_NEGOTIATION_ERROR_QUERY_NOT_FOUND = "PersistedQueryNotFound";
-  private static final String PROTOCOL_NEGOTIATION_ERROR_NOT_SUPPORTED = "PersistedQueryNotSupported";
-
-  private final ApolloLogger logger;
-  private volatile boolean disposed;
-
-  final boolean useHttpGetMethodForPersistedOperations;
-
-  public ApolloAutoPersistedOperationInterceptor(@NotNull ApolloLogger logger,
-                                             boolean useHttpGetMethodForPersistedOperations) {
-    this.logger = logger;
-    this.useHttpGetMethodForPersistedOperations = useHttpGetMethodForPersistedOperations;
-  }
-
-  @Override
-  public void interceptAsync(@NotNull final InterceptorRequest request, @NotNull final ApolloInterceptorChain chain,
-      @NotNull final Executor dispatcher, @NotNull final CallBack callBack) {
-
-    InterceptorRequest newRequest = request.toBuilder()
-            .sendQueryDocument(false)
-            .autoPersistQueries(true)
-            .useHttpGetMethodForQueries(request.useHttpGetMethodForQueries || useHttpGetMethodForPersistedOperations)
-            .build();
-    chain.proceedAsync(newRequest, dispatcher, new CallBack() {
-      @Override public void onResponse(@NotNull InterceptorResponse response) {
-        if (disposed) return;
-
-        Optional<InterceptorRequest> retryRequest = handleProtocolNegotiation(request, response);
-        if (retryRequest.isPresent()) {
-          chain.proceedAsync(retryRequest.get(), dispatcher, callBack);
+class ApolloAutoPersistedOperationInterceptor(private val logger: ApolloLogger,
+                                              val useHttpGetMethodForPersistedOperations: Boolean) : ApolloInterceptor {
+  @Volatile
+  private var disposed = false
+  override fun interceptAsync(request: InterceptorRequest, chain: ApolloInterceptorChain,
+                              dispatcher: Executor, callBack: CallBack) {
+    val newRequest = request.toBuilder()
+        .sendQueryDocument(false)
+        .autoPersistQueries(true)
+        .useHttpGetMethodForQueries(request.useHttpGetMethodForQueries || useHttpGetMethodForPersistedOperations)
+        .build()
+    chain.proceedAsync(newRequest, dispatcher, object : CallBack {
+      override fun onResponse(response: InterceptorResponse) {
+        if (disposed) return
+        val retryRequest = handleProtocolNegotiation(request, response)
+        if (retryRequest.isPresent) {
+          chain.proceedAsync(retryRequest.get(), dispatcher, callBack)
         } else {
-          callBack.onResponse(response);
-          callBack.onCompleted();
+          callBack.onResponse(response)
+          callBack.onCompleted()
         }
       }
 
-      @Override public void onFetch(FetchSourceType sourceType) {
-        callBack.onFetch(sourceType);
+      override fun onFetch(sourceType: FetchSourceType?) {
+        callBack.onFetch(sourceType)
       }
 
-      @Override public void onFailure(@NotNull ApolloException e) {
-        callBack.onFailure(e);
+      override fun onFailure(e: ApolloException) {
+        callBack.onFailure(e)
       }
 
-      @Override public void onCompleted() {
+      override fun onCompleted() {
         // call onCompleted in onResponse
       }
-    });
+    })
   }
 
-  @Override public void dispose() {
-    disposed = true;
+  override fun dispose() {
+    disposed = true
   }
 
-  Optional<InterceptorRequest> handleProtocolNegotiation(final InterceptorRequest request,
-      InterceptorResponse response) {
-    return response.parsedResponse.flatMap(new Function<Response, Optional<InterceptorRequest>>() {
-      @NotNull @Override public Optional<InterceptorRequest> apply(@NotNull Response response) {
-        if (response.hasErrors()) {
-          if (isPersistedQueryNotFound(response.getErrors())) {
-            logger.w("GraphQL server couldn't find Automatic Persisted Query for operation name: "
-                + request.operation.name().name() + " id: " + request.operation.operationId());
-
-            InterceptorRequest retryRequest = request.toBuilder()
-                .autoPersistQueries(true)
-                .sendQueryDocument(true)
-                .build();
-            return Optional.of(retryRequest);
-          }
-
-          if (isPersistedQueryNotSupported(response.getErrors())) {
-            // TODO how to disable Automatic Persisted Queries in future and how to notify user about this
-            logger.e("GraphQL server doesn't support Automatic Persisted Queries");
-            return Optional.of(request);
-          }
+  fun handleProtocolNegotiation(request: InterceptorRequest,
+                                response: InterceptorResponse): Optional<InterceptorRequest> {
+    return response.parsedResponse.flatMap(Function { response ->
+      if (response.hasErrors()) {
+        if (isPersistedQueryNotFound(response.errors)) {
+          logger.w("GraphQL server couldn't find Automatic Persisted Query for operation name: "
+              + request.operation.name().name() + " id: " + request.operation.operationId())
+          val retryRequest = request.toBuilder()
+              .autoPersistQueries(true)
+              .sendQueryDocument(true)
+              .build()
+          return@Function Optional.of(retryRequest)
         }
-        return Optional.absent();
+        if (isPersistedQueryNotSupported(response.errors)) {
+          // TODO how to disable Automatic Persisted Queries in future and how to notify user about this
+          logger.e("GraphQL server doesn't support Automatic Persisted Queries")
+          return@Function Optional.of(request)
+        }
       }
-    });
+      Optional.absent()
+    })
   }
 
-  boolean isPersistedQueryNotFound(List<Error> errors) {
-    for (Error error : errors) {
-      if (PROTOCOL_NEGOTIATION_ERROR_QUERY_NOT_FOUND.equalsIgnoreCase(error.getMessage())) {
-        return true;
+  fun isPersistedQueryNotFound(errors: List<Error>?): Boolean {
+    for (error in errors!!) {
+      if (PROTOCOL_NEGOTIATION_ERROR_QUERY_NOT_FOUND.equals(error.message, ignoreCase = true)) {
+        return true
       }
     }
-    return false;
+    return false
   }
 
-  boolean isPersistedQueryNotSupported(List<Error> errors) {
-    for (Error error : errors) {
-      if (PROTOCOL_NEGOTIATION_ERROR_NOT_SUPPORTED.equalsIgnoreCase(error.getMessage())) {
-        return true;
+  fun isPersistedQueryNotSupported(errors: List<Error>?): Boolean {
+    for (error in errors!!) {
+      if (PROTOCOL_NEGOTIATION_ERROR_NOT_SUPPORTED.equals(error.message, ignoreCase = true)) {
+        return true
       }
     }
-    return false;
+    return false
   }
 
-  public static class Factory implements ApolloInterceptorFactory {
-
-    final boolean useHttpGet;
-    final boolean persistQueries;
-    final boolean persistMutations;
-
-    public Factory(boolean useHttpGet, boolean persistQueries, boolean persistMutations) {
-      this.useHttpGet = useHttpGet;
-      this.persistQueries = persistQueries;
-      this.persistMutations = persistMutations;
-    }
-
-    public Factory() {
-      this(false, true, true);
-    }
-
-    @Nullable @Override public ApolloInterceptor newInterceptor(@NotNull ApolloLogger logger, @NotNull Operation<?> operation) {
-      if (operation instanceof Query && !persistQueries) {
-        return null;
+  class Factory @JvmOverloads constructor(val useHttpGet: Boolean = false, val persistQueries: Boolean = true, val persistMutations: Boolean = true) : ApolloInterceptorFactory {
+    override fun newInterceptor(logger: ApolloLogger, operation: Operation<*>): ApolloInterceptor? {
+      if (operation is Query<*> && !persistQueries) {
+        return null
       }
-      if (operation instanceof Mutation && !persistMutations) {
-        return null;
-      }
-      return new ApolloAutoPersistedOperationInterceptor(logger, useHttpGet);
+      return if (operation is Mutation<*> && !persistMutations) {
+        null
+      } else ApolloAutoPersistedOperationInterceptor(logger, useHttpGet)
     }
+  }
+
+  companion object {
+    private const val PROTOCOL_NEGOTIATION_ERROR_QUERY_NOT_FOUND = "PersistedQueryNotFound"
+    private const val PROTOCOL_NEGOTIATION_ERROR_NOT_SUPPORTED = "PersistedQueryNotSupported"
   }
 }

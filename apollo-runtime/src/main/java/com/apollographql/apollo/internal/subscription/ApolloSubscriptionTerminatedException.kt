@@ -1,14 +1,8 @@
-package com.apollographql.apollo.internal.subscription;
+package com.apollographql.apollo.internal.subscription
 
-import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.exception.ApolloException
 
-public class ApolloSubscriptionTerminatedException extends ApolloException {
-
-  public ApolloSubscriptionTerminatedException(String message) {
-    super(message);
-  }
-
-  public ApolloSubscriptionTerminatedException(String message, Throwable cause) {
-    super(message, cause);
-  }
+class ApolloSubscriptionTerminatedException : ApolloException {
+  constructor(message: String?) : super(message!!)
+  constructor(message: String?, cause: Throwable?) : super(message!!, cause!!)
 }

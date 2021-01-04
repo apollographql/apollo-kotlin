@@ -13,95 +13,81 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.apollographql.apollo.api.internal
 
-package com.apollographql.apollo.api.internal;
-
-
-import java.util.Collections;
-import java.util.Set;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+import com.apollographql.apollo.api.internal.Utils.__checkNotNull
 
 /**
- * Implementation of an {@link Optional} containing a reference.
+ * Implementation of an [Optional] containing a reference.
  */
-final class Present<T> extends Optional<T> {
-  private final T reference;
+internal class Present<T>(private val reference: T) : Optional<T>() {
+  override val isPresent: Boolean
+    get() = true
 
-  Present(T reference) {
-    this.reference = reference;
+  override fun get(): T {
+    return reference
   }
 
-  @Override public boolean isPresent() {
-    return true;
+  override fun or(defaultValue: T): T {
+    __checkNotNull(defaultValue, "use Optional.orNull() instead of Optional.or(null)")
+    return reference
   }
 
-  @Override public T get() {
-    return reference;
+  override fun or(secondChoice: Optional<out T>?): Optional<T>? {
+    __checkNotNull(secondChoice)
+    return this
   }
 
-  @Override public T or(T defaultValue) {
-    checkNotNull(defaultValue, "use Optional.orNull() instead of Optional.or(null)");
-    return reference;
+  override fun <V> transform(function: Function<in T, V>?): Optional<V>? {
+    return Present(__checkNotNull(function!!.apply(reference),
+        "the Function passed to Optional.transform() must not return null."))
   }
 
-  @Override public Optional<T> or(Optional<? extends T> secondChoice) {
-    checkNotNull(secondChoice);
-    return this;
+  override fun <V> map(function: Function<in T, V>?): Optional<V>? {
+    return Present(__checkNotNull(function!!.apply(reference),
+        "the Function passed to Optional.map() must not return null."))
   }
 
-  @Override public <V> Optional<V> transform(Function<? super T, V> function) {
-    return new Present<V>(checkNotNull(function.apply(reference),
-        "the Function passed to Optional.transform() must not return null."));
+  override fun <V> flatMap(function: Function<in T, Optional<V>?>?): Optional<V>? {
+    __checkNotNull(function)
+    return __checkNotNull(function!!.apply(reference),
+        "the Function passed to Optional.flatMap() must not return null.")
   }
 
-  @Override public <V> Optional<V> map(Function<? super T, V> function) {
-    return new Present<V>(checkNotNull(function.apply(reference),
-        "the Function passed to Optional.map() must not return null."));
-  }
-
-  @Override public <V> Optional<V> flatMap(Function<? super T, Optional<V>> function) {
-    checkNotNull(function);
-    return checkNotNull(function.apply(reference),
-        "the Function passed to Optional.flatMap() must not return null.");
-  }
-
-  @Override public Optional<T> apply(final Action<T> action) {
-    checkNotNull(action);
-    return map(new Function<T, T>() {
-      @NotNull @Override public T apply(@NotNull T t) {
-        action.apply(t);
-        return t;
+  override fun apply(action: Action<T>?): Optional<T>? {
+    __checkNotNull(action)
+    return map(object : Function<T, T> {
+      override fun apply(t: T): T {
+        action!!.apply(t)
+        return t
       }
-    });
+    })
   }
 
-  @Override public T orNull() {
-    return reference;
+  override fun orNull(): T? {
+    return reference
   }
 
-  @Override public Set<T> asSet() {
-    return Collections.singleton(reference);
+  override fun asSet(): Set<T>? {
+    return setOf(reference)
   }
 
-  @Override public boolean equals(@Nullable Object object) {
-    if (object instanceof Present) {
-      Present<?> other = (Present<?>) object;
-      return reference.equals(other.reference);
+  override fun equals(`object`: Any?): Boolean {
+    if (`object` is Present<*>) {
+      return reference == `object`.reference
     }
-    return false;
+    return false
   }
 
-  @Override public int hashCode() {
-    return 0x598df91c + reference.hashCode();
+  override fun hashCode(): Int {
+    return 0x598df91c + reference.hashCode()
   }
 
-  @Override public String toString() {
-    return "Optional.of(" + reference + ")";
+  override fun toString(): String {
+    return "Optional.of($reference)"
   }
 
-  private static final long serialVersionUID = 0;
+  companion object {
+    private const val serialVersionUID: Long = 0
+  }
 }

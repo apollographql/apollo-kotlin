@@ -1,27 +1,27 @@
-package com.apollographql.apollo.interceptor;
+package com.apollographql.apollo.interceptor
 
-import java.util.concurrent.Executor;
-
-import org.jetbrains.annotations.NotNull;
+import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorRequest
+import com.apollographql.apollo.interceptor.ApolloInterceptor.CallBack
+import java.util.concurrent.Executor
 
 /**
- * ApolloInterceptorChain is responsible for building chain of {@link ApolloInterceptor} .
+ * ApolloInterceptorChain is responsible for building chain of [ApolloInterceptor] .
  */
-public interface ApolloInterceptorChain {
+interface ApolloInterceptorChain {
   /**
-   * Passes the control over to the next {@link ApolloInterceptor} in the responsibility chain and immediately exits as
+   * Passes the control over to the next [ApolloInterceptor] in the responsibility chain and immediately exits as
    * this is a non blocking call. In order to receive the results back, pass in a callback which will handle the
    * received response or error.
    *
    * @param request    outgoing request object.
-   * @param dispatcher the {@link Executor} which dispatches the calls asynchronously.
+   * @param dispatcher the [Executor] which dispatches the calls asynchronously.
    * @param callBack   the callback which will handle the response or a failure exception.
    */
-  void proceedAsync(@NotNull ApolloInterceptor.InterceptorRequest request, @NotNull Executor dispatcher,
-      @NotNull ApolloInterceptor.CallBack callBack);
+  fun proceedAsync(request: InterceptorRequest, dispatcher: Executor,
+                   callBack: CallBack)
 
   /**
    * Disposes of the resources which are no longer required.
    */
-  void dispose();
+  fun dispose()
 }

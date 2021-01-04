@@ -13,103 +13,82 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.apollographql.apollo.api.internal
 
-package com.apollographql.apollo.api.internal;
-
-
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Collections;
-import java.util.Set;
-
-import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+import com.apollographql.apollo.api.internal.Utils.__checkNotNull
+import java.lang.IllegalStateException
 
 /**
- * Implementation of an {@link Optional} not containing a reference.
+ * Implementation of an [Optional] not containing a reference.
  */
-
-final class Absent<T> extends Optional<T> {
-  static final Absent<Object> INSTANCE = new Absent<Object>();
-
-  @SuppressWarnings("unchecked") // implementation is "fully variant"
-  static <T> Optional<T> withType() {
-    return (Optional<T>) INSTANCE;
+internal class Absent<T> private constructor() : Optional<T>() {
+  override fun isPresent(): Boolean {
+    return false
   }
 
-  private Absent() {
+  override fun get(): T {
+    throw IllegalStateException("Optional.get() cannot be called on an absent value")
   }
 
-  @Override
-  public boolean isPresent() {
-    return false;
+  override fun or(defaultValue: T): T {
+    return __checkNotNull(defaultValue, "use Optional.orNull() instead of Optional.or(null)")
   }
 
-  @Override
-  public T get() {
-    throw new IllegalStateException("Optional.get() cannot be called on an absent value");
+  override fun or(secondChoice: Optional<out T>): Optional<T> {
+    return __checkNotNull(secondChoice) as Optional<T>
   }
 
-  @Override
-  public T or(T defaultValue) {
-    return checkNotNull(defaultValue, "use Optional.orNull() instead of Optional.or(null)");
+  override fun orNull(): T? {
+    return null
   }
 
-  @SuppressWarnings("unchecked") // safe covariant cast
-  @Override
-  public Optional<T> or(Optional<? extends T> secondChoice) {
-    return (Optional<T>) checkNotNull(secondChoice);
+  override fun <V> transform(function: Function<in T, V>): Optional<V> {
+    __checkNotNull(function)
+    return absent()
   }
 
-  @Override
-  @Nullable
-  public T orNull() {
-    return null;
+  override fun <V> map(function: Function<in T, V>): Optional<V> {
+    __checkNotNull(function)
+    return absent()
   }
 
-  @Override
-  public <V> Optional<V> transform(Function<? super T, V> function) {
-    checkNotNull(function);
-    return Optional.absent();
+  override fun <V> flatMap(function: Function<in T, Optional<V>>): Optional<V> {
+    __checkNotNull(function)
+    return absent()
   }
 
-  @Override public <V> Optional<V> map(Function<? super T, V> function) {
-    checkNotNull(function);
-    return Optional.absent();
+  override fun apply(action: Action<T>): Optional<T> {
+    __checkNotNull(action)
+    return absent()
   }
 
-  @Override public <V> Optional<V> flatMap(Function<? super T, Optional<V>> function) {
-    checkNotNull(function);
-    return Optional.absent();
+  override fun asSet(): Set<T> {
+    return emptySet()
   }
 
-  @Override public Optional<T> apply(Action<T> action) {
-    checkNotNull(action);
-    return Optional.absent();
+  override fun equals(`object`: Any?): Boolean {
+    return `object` === this
   }
 
-  @Override
-  public Set<T> asSet() {
-    return Collections.emptySet();
+  override fun hashCode(): Int {
+    return 0x79a31aac
   }
 
-  @Override
-  public boolean equals(@Nullable Object object) {
-    return object == this;
+  override fun toString(): String {
+    return "Optional.absent()"
   }
 
-  @Override
-  public int hashCode() {
-    return 0x79a31aac;
+  private fun readResolve(): Any {
+    return INSTANCE
   }
 
-  @Override
-  public String toString() {
-    return "Optional.absent()";
-  }
+  companion object {
+    val INSTANCE = Absent<Any>()
+    @JvmStatic
+    fun <T> withType(): Optional<T> {
+      return INSTANCE as Optional<T>
+    }
 
-  private Object readResolve() {
-    return INSTANCE;
+    private const val serialVersionUID: Long = 0
   }
-
-  private static final long serialVersionUID = 0;
 }

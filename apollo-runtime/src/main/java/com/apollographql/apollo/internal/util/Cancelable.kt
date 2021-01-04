@@ -1,18 +1,18 @@
-package com.apollographql.apollo.internal.util;
+package com.apollographql.apollo.internal.util
 
 /**
  * Represents an operation which can be canceled.
  */
-public interface Cancelable {
+interface Cancelable {
   /**
    * Cancels the operation.
    */
-  void cancel();
+  fun cancel()
 
   /**
    * Checks if this operation has been canceled.
    *
    * @return true if this operation has been canceled else returns false
    */
-  boolean isCanceled();
+  val isCanceled: Boolean
 }

@@ -1,15 +1,8 @@
-package com.apollographql.apollo.internal.subscription;
+package com.apollographql.apollo.internal.subscription
 
-import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.exception.ApolloException
 
-@SuppressWarnings("WeakerAccess")
-public class ApolloSubscriptionException extends ApolloException {
-
-  public ApolloSubscriptionException(String message) {
-    super(message);
-  }
-
-  public ApolloSubscriptionException(String message, Throwable cause) {
-    super(message, cause);
-  }
+open class ApolloSubscriptionException : ApolloException {
+  constructor(message: String?) : super(message!!)
+  constructor(message: String?, cause: Throwable?) : super(message!!, cause!!)
 }

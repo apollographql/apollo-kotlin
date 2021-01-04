@@ -18,7 +18,7 @@ import com.apollographql.apollo.fetcher.ResponseFetcher
 import com.apollographql.apollo.internal.CallState.IllegalStateMessage.Companion.forCurrentState
 import java.util.concurrent.atomic.AtomicReference
 
-internal class RealApolloQueryWatcher<D : Operation.Data>(
+class RealApolloQueryWatcher<D : Operation.Data>(
     private var activeCall: RealApolloCall<D>,
     val apolloStore: ApolloStore,
     val logger: ApolloLogger,
